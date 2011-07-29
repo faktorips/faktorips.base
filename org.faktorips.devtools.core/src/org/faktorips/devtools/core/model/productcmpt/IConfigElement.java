@@ -95,11 +95,6 @@ public interface IConfigElement extends IPropertyValue, IValueSetOwner, IDescrib
     public final static String MSGCODE_VALUESET_IS_NOT_A_SUBSET = MSGCODE_PREFIX + "ValueSetIsNotASubset"; //$NON-NLS-1$
 
     /**
-     * Returns the product component this configuration element belongs to.
-     */
-    public IProductCmpt getProductCmpt();
-
-    /**
      * Returns the product component generation this configuration element belongs to.
      */
     public IProductCmptGeneration getProductCmptGeneration();

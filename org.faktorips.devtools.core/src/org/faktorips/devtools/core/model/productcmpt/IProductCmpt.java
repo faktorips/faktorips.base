@@ -91,6 +91,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProperty
      * 
      * @throws CoreException if an exception occurs while searching for the type.
      */
+    @Override
     public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**
@@ -208,5 +209,12 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProperty
      */
     @Override
     public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns this {@link IProductCmpt}'s generations in a type safe list.
+     * 
+     * @return this {@link IProductCmpt}'s generations as a type safe list.
+     */
+    public abstract List<IProductCmptGeneration> getProductCmptGenerations();
 
 }

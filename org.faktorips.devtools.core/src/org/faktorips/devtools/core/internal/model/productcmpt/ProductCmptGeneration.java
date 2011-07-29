@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -85,6 +86,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
         return getProductCmpt().findProductCmptType(ipsProject);
+    }
+
+    @Override
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException {
+        return getProductCmpt().findPolicyCmptType(ipsProject);
     }
 
     void dependsOn(Set<IDependency> dependencies, Map<IDependency, List<IDependencyDetail>> details) {

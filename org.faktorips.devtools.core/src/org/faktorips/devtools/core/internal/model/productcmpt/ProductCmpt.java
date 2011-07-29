@@ -419,4 +419,14 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         propertyValueCollection.clear();
     }
 
+    @Override
+    public List<IProductCmptGeneration> getProductCmptGenerations() {
+        List<IProductCmptGeneration> generations = new ArrayList<IProductCmptGeneration>();
+        List<IIpsObjectGeneration> ipsObject = getGenerations();
+        for (IIpsObjectGeneration ipsObjectGeneration : ipsObject) {
+            generations.add((IProductCmptGeneration)ipsObjectGeneration);
+        }
+        return generations;
+    }
+
 }

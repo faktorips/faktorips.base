@@ -33,7 +33,6 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -73,11 +72,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     @Override
     public final IPropertyValueContainer getPropertyValueContainer() {
         return (IPropertyValueContainer)getParent();
-    }
-
-    @Override
-    public IProductCmpt getProductCmpt() {
-        return (IProductCmpt)getParent().getParent();
     }
 
     @Override
@@ -132,7 +126,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     @Override
     public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) throws CoreException {
-        IPolicyCmptType pcType = getProductCmpt().findPolicyCmptType(ipsProject);
+        IPolicyCmptType pcType = getPropertyValueContainer().findPolicyCmptType(ipsProject);
         if (pcType == null) {
             return null;
         }
@@ -167,7 +161,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
         IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
         if (attribute == null) {
-            IPolicyCmptType policyCmptType = getProductCmpt().findPolicyCmptType(ipsProject);
+            IPolicyCmptType policyCmptType = getPropertyValueContainer().findPolicyCmptType(ipsProject);
             if (policyCmptType == null) {
                 String text = NLS.bind(Messages.ConfigElement_policyCmptTypeNotFound, pcTypeAttribute);
                 list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this,

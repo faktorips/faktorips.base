@@ -23,17 +23,18 @@ import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 
 public class ProductCmptToTypeDelta extends PropertyValueContainerToTypeDelta {
 
-    public ProductCmptToTypeDelta(ProductCmpt productCmpt, IIpsProject ipsProject) throws CoreException {
+    public ProductCmptToTypeDelta(IProductCmpt productCmpt, IIpsProject ipsProject) throws CoreException {
         super(productCmpt, ipsProject);
     }
 
     @Override
-    public ProductCmpt getPropertyValueContainer() {
-        return (ProductCmpt)super.getPropertyValueContainer();
+    public IProductCmpt getPropertyValueContainer() {
+        return (IProductCmpt)super.getPropertyValueContainer();
     }
 
     @Override
