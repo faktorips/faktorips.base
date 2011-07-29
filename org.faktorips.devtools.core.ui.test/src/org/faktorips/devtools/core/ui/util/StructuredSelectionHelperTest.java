@@ -45,6 +45,17 @@ public class StructuredSelectionHelperTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testConstructor() {
+        StructuredSelectionHelper helper = new StructuredSelectionHelper(new StructuredSelection());
+        IProductCmptType foundType = helper.getFirstElementAsIpsObject(IProductCmptType.class);
+        assertNull(foundType);
+
+        helper = new StructuredSelectionHelper(null);
+        foundType = helper.getFirstElementAsIpsObject(IProductCmptType.class);
+        assertNull(foundType);
+    }
+
+    @Test
     public void testProdCmpt() {
         StructuredSelectionHelper helper = new StructuredSelectionHelper(new StructuredSelection(prodCmpt));
         assertProdCmpt(helper);

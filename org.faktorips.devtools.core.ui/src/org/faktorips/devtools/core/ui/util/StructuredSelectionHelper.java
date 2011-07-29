@@ -14,9 +14,9 @@
 package org.faktorips.devtools.core.ui.util;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -32,9 +32,16 @@ public class StructuredSelectionHelper {
 
     private final IStructuredSelection selection;
 
+    /**
+     * Constructs a {@link StructuredSelectionHelper} based on the given
+     * {@link IStructuredSelection}. If the given selection is <code>null</code> this helper will
+     * act as if having been initialized with an empty selection. No Exception is thrown in this
+     * case as the platforms selection provider returns <code>null</code> in some cases.
+     * 
+     * @param selection the selection to extract objects from
+     */
     public StructuredSelectionHelper(IStructuredSelection selection) {
-        Assert.isNotNull(selection);
-        this.selection = selection;
+        this.selection = selection == null ? new StructuredSelection() : selection;
     }
 
     /**
