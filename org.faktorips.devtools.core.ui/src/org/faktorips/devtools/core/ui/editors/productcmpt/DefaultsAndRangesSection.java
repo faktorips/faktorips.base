@@ -166,7 +166,7 @@ public class DefaultsAndRangesSection extends IpsSection {
             IpsObjectUIController controller = new IpsObjectUIController(element);
             uiMasterController.add(controller);
             createConfigElementNameLabel(element, attribute);
-            boolean controlCreated = createEditControlForValueSet(element, controller);
+            boolean controlCreated = createEditControlForValueSet(element, attribute, controller);
             if (controlCreated) {
                 // "indent the next line"
                 toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
@@ -203,8 +203,15 @@ public class DefaultsAndRangesSection extends IpsSection {
      * 
      * @return <code>true</code> if the control(s) have bean created, otherwise <code>false</code>.
      */
-    private boolean createEditControlForValueSet(IConfigElement element, IpsObjectUIController controller) {
-        IValueSet valueSet = element.getValueSet();
+    private boolean createEditControlForValueSet(IConfigElement element,
+            IPolicyCmptTypeAttribute attribute,
+            IpsObjectUIController controller) {
+        IValueSet valueSet;
+        if (attribute != null) {
+            valueSet = attribute.getValueSet();
+        } else {
+            valueSet = element.getValueSet();
+        }
         if (valueSet == null) {
             return false;
         }
