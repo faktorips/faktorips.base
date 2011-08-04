@@ -1093,7 +1093,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     @Override
     public void resourceChanged(IResourceChangeEvent event) {
         if (event.getType() == IResourceChangeEvent.PRE_REFRESH) {
-            clearIpsObjectCache(event.getResource());
+            if (event.getResource() == null || event.getResource() instanceof IProject) {
+                forceReloadOfCachedIpsSrcFileContents((IProject)event.getResource());
+            }
             return;
         }
         IResourceDelta delta = event.getDelta();
@@ -1111,19 +1113,18 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Clearing the cache of a single project or the entire cache if the project is null;
+     * Forces to reload the the cached IPS source file contents of a single project or the whole
+     * workspace. This is done by setting -1 as modification stamp in each content object.
      * 
-     * @param iResource The project that cache should be cleared.
+     * @param project The project that should considered or <code>null</code> if the whole workspace
+     *            should be considered.
      */
-    synchronized private void clearIpsObjectCache(IResource iResource) {
-        if (iResource == null) {
-            ipsObjectsMap.clear();
-        } else {
-            HashSet<IIpsSrcFile> copyKeys = new HashSet<IIpsSrcFile>(ipsObjectsMap.keySet());
-            for (IIpsSrcFile srcFile : copyKeys) {
-                if (srcFile.getIpsProject().getProject().equals(iResource)) {
-                    ipsObjectsMap.remove(srcFile);
-                }
+    synchronized private void forceReloadOfCachedIpsSrcFileContents(IProject project) {
+        HashSet<IIpsSrcFile> copyKeys = new HashSet<IIpsSrcFile>(ipsObjectsMap.keySet());
+        for (IIpsSrcFile srcFile : copyKeys) {
+            if (project == null || srcFile.getIpsProject().getProject().equals(project)) {
+                IpsSrcFileContent contents = ipsObjectsMap.get(srcFile);
+                contents.setModificationStamp(-1);
             }
         }
     }
