@@ -357,7 +357,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
     protected InputStream getXmlAsStream(TableContentTocEntry tocEntry) {
         InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
         if (is == null) {
-            throw new RuntimeException("Can' find resource " + tocEntry.getXmlResourceName() + " for toc entry "
+            throw new RuntimeException("Can't find resource " + tocEntry.getXmlResourceName() + " for toc entry "
                     + tocEntry);
         }
         return is;
