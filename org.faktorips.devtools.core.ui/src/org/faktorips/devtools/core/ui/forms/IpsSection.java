@@ -338,6 +338,9 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
      */
     public void setText(String text) {
         section.setText(text);
+        // till target platform is 3.7, where https://bugs.eclipse.org/bugs/show_bug.cgi?id=168745
+        // is fixed
+        getSectionControl().layout();
     }
 
     /**
