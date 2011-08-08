@@ -1,9 +1,4 @@
 #!/bin/bash
-##############################################################################################################################
-# Faktor IPS release build script for AOK
-#   see showUsageAndExit()
-#   this script uses the releaseFaktorIps.sh script to build customized AOK releases
-##############################################################################################################################
 
 SCRIPTNAME=$(basename $0)
 LOGFILE=${SCRIPTNAME}_$$.log
@@ -105,16 +100,23 @@ EOF
 
   echo create updatesite for nwds
   cp /var/www/update.faktorzehn.org/faktorips/aok/downloads/faktorips-3.4/$UPDATE_SITE_ZIP_NAME .
+  # unzip updatesite
+  # in der site.xml de.aoksystems.omc.faktorips.feature.product auskommentieren
   cp -r tmp_fips_release/checkout_release/org.faktorips.devtarget/eclipse/dropins/aok/eclipse/plugins .
   cp -r tmp_fips_release/checkout_release/org.faktorips.devtarget/eclipse/dropins/aok/eclipse/features .
+  mv plugins/org.apache.commons.lang_2.6.jar plugins/org.apache.commons.lang_2.6.0.jar
+  mv plugins/org.apache.commons.lang_2.6-sources.jar plugins/org.apache.commons.lang.sources_2.6.0.jar
+  # jar -xf features/org.faktorips.feature_3.4.2.rfinal.jar feature.xml
+  #  auskommentieren von <!-- <requires> ... </requires> -->
+  # jar -uf features/org.faktorips.feature_3.4.2.rfinal.jar feature.xml
+  # rm feature.xml
+  # fix nebula.jar Snapshot nicht im de.aok feature.xml umbenennen in ...20110316...jar
+  # zip udpatesite
   zip -r $UPDATE_SITE_ZIP_NAME plugins -x \*CVS\* >> $LOGFILE
   zip -r $UPDATE_SITE_ZIP_NAME features -x \*CVS\* >> $LOGFILE
   echo copy result to $DOWNLOAD_PATH
   cp $UPDATE_SITE_ZIP_NAME /var/www/update.faktorzehn.org/faktorips/aok/downloads/faktorips-3.4/updateSite_faktorips-${BUILD_VERSION}_nwds_aok.zip
-#TODO manuelle Schritte
 #b) in der site.xml de.aoksystems.omc.faktorips.feature.product auskommentieren
-#c) in features/org.faktorips.feature_3.4.0.rfinal.jar feature.xml anpassen:
-#  auskommentieren von <!-- <requires> ... </requires> -->
 }
 
 parseArgs $*
