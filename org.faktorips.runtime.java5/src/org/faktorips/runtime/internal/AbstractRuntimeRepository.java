@@ -96,6 +96,11 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     public final void addDirectlyReferencedRepository(IRuntimeRepository repository) {
         if (!(repository instanceof AbstractRuntimeRepository)) {
             throw new IllegalArgumentException(
