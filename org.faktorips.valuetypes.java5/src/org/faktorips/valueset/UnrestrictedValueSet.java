@@ -45,6 +45,10 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
         return false;
     }
 
+    public boolean isRange() {
+        return false;
+    }
+
     public int size() {
         return Integer.MAX_VALUE;
     }

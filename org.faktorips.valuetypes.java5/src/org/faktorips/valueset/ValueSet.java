@@ -47,6 +47,11 @@ public interface ValueSet<T> extends Serializable {
     public boolean isEmpty();
 
     /**
+     * Returns <code>true</code> if the set is a range, otherwise <code>false</code>.
+     */
+    public boolean isRange();
+
+    /**
      * Returns the number of values in the set or <code>Integer.MAX_VALUE</code> if there is an
      * unlimited number of values in the set.
      */

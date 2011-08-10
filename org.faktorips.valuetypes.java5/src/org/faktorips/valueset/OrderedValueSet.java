@@ -166,6 +166,10 @@ public class OrderedValueSet<E> implements ValueSet<E> {
         return set.isEmpty();
     }
 
+    public boolean isRange() {
+        return false;
+    }
+
     public int size() {
         return set.size();
     }

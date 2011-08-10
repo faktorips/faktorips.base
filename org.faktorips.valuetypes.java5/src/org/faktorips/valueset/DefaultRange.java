@@ -177,6 +177,10 @@ public abstract class DefaultRange<T extends Comparable<? super T>> implements R
         return (lowerBound.compareTo(upperBound) > 0);
     }
 
+    public boolean isRange() {
+        return true;
+    }
+
     /**
      * {@inheritDoc}
      * 
