@@ -446,7 +446,9 @@ public class BindingContext {
             if (mapping.getField().getControl() == control) {
                 it.remove();
                 mapping.getField().removeChangeListener(listener);
-                mapping.getField().getControl().removeFocusListener(listener);
+                if (!mapping.getField().getControl().isDisposed()) {
+                    mapping.getField().getControl().removeFocusListener(listener);
+                }
                 listenerRemoveCandidates.add(mapping.getObject());
             }
         }
