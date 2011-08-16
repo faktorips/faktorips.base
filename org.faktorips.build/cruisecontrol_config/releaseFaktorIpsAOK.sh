@@ -1,9 +1,4 @@
 #!/bin/bash
-##############################################################################################################################
-# Faktor IPS release build script for AOK
-#   see showUsageAndExit()
-#   this script uses the releaseFaktorIps.sh script to build customized AOK releases
-##############################################################################################################################
 
 SCRIPTNAME=$(basename $0)
 LOGFILE=${SCRIPTNAME}_$$.log
@@ -72,6 +67,7 @@ showParameter()
   echo -e "  Store Logfile (even if build successful)=\e[35m$STORE_LOG\e[0m"
   echo -e "  Downloadpath=\e[35m$DOWNLOAD_PATH\e[0m"
   echo -e "=> Start release build (\e[33my\e[0m)es? <="
+  echo -e "   (make sure you've tagged all necessary projects!)"
   echo 
   read ANSWER
   if [ ! "$ANSWER" = "y" ]
@@ -82,6 +78,7 @@ showParameter()
 doReleaseBuild()
 {
   local UPDATE_SITE_ZIP_NAME=faktorips-updateSite-$BUILD_VERSION.zip
+  local UPDATE_SITE_RESULT_PATH=tmp_fips_release/pluginbuilder_release_tmp/org.faktorips.pluginbuilder_release/results/updateSite-$BUILD_VERSION.zip
   touch $LOGFILE
   echo build default updatesite ...
   /opt/cc/work/releaseFaktorIps.sh -version $BUILD_VERSION -skipTest -forceBuild -skipTaggingCvs -customBuild aok -skipPublish >> $LOGFILE 2>&1 << EOF
@@ -89,7 +86,7 @@ y
 EOF
   handleError
   echo copy result to $DOWNLOAD_PATH ...
-  cp tmp_fips_release/pluginbuilder_release_tmp/org.faktorips.pluginbuilder_release/results/updateSite-$BUILD_VERSION.zip $DOWNLOAD_PATH/$UPDATE_SITE_ZIP_NAME
+  ##cp $UPDATE_SITE_RESULT_PATH $DOWNLOAD_PATH/$UPDATE_SITE_ZIP_NAME
   handleError
   echo
  
@@ -105,16 +102,32 @@ EOF
 
   echo create updatesite for nwds
   cp /var/www/update.faktorzehn.org/faktorips/aok/downloads/faktorips-3.4/$UPDATE_SITE_ZIP_NAME .
-  cp -r tmp_fips_release/checkout_release/org.faktorips.devtarget/eclipse/dropins/aok/eclipse/plugins .
-  cp -r tmp_fips_release/checkout_release/org.faktorips.devtarget/eclipse/dropins/aok/eclipse/features .
-  zip -r $UPDATE_SITE_ZIP_NAME plugins -x \*CVS\* >> $LOGFILE
-  zip -r $UPDATE_SITE_ZIP_NAME features -x \*CVS\* >> $LOGFILE
+  # TODO in der site.xml de.aoksystems.omc.faktorips.feature.product auskommentieren
+  mkdir tmp
+  cp -r tmp_fips_release/checkout_release/org.faktorips.devtarget/eclipse/dropins/aok/eclipse/plugins tmp
+  cp -r tmp_fips_release/checkout_release/org.faktorips.devtarget/eclipse/dropins/aok/eclipse/features tmp
+  unzip -d tmp $UPDATE_SITE_ZIP_NAME 
+  mv tmp/plugins/org.apache.commons.lang_2.6.jar tmp/plugins/org.apache.commons.lang_2.6.0.jar
+  mv tmp/plugins/org.apache.commons.lang_2.6-sources.jar tmp/plugins/org.apache.commons.lang.sources_2.6.0.jar
+  #  auskommentieren von <!-- <requires> ... </requires> -->
+  mkdir tmpPatch
+  cd tmpPatch  
+  jar -xf ../tmp/features/org.faktorips.feature_${BUILD_VERSION}.jar feature.xml
+  local FEATURE_XML=feature.xml
+  cat $FEATURE_XML | sed "s/<requires>/<\!-- <requires>/" > ${FEATURE_XML}_TMP
+  cat ${FEATURE_XML}_TMP | sed "s/<\/requires>/<\/requires> -->/" > $FEATURE_XML
+  jar -uf ../tmp/features/org.faktorips.feature_${BUILD_VERSION}.jar *
+  cd ..
+  rm -r tmpPatch
+  # fix nebula.jar Snapshot nicht im de.aok feature.xml umbenennen in ...20110316...jar
+  # TODO warum liegt im devtarget deploy das Snapshot jar?
+  mv tmp/plugins/org.eclipse.nebula.widgets.grid-1.0.0-SNAPSHOT.jar tmp/plugins/org.eclipse.nebula.widgets.grid-1.0.0.201103161451.jar
+  cd tmp 
+  zip -r $UPDATE_SITE_ZIP_NAME * -x \*CVS\* >> $LOGFILE
   echo copy result to $DOWNLOAD_PATH
   cp $UPDATE_SITE_ZIP_NAME /var/www/update.faktorzehn.org/faktorips/aok/downloads/faktorips-3.4/updateSite_faktorips-${BUILD_VERSION}_nwds_aok.zip
-#TODO manuelle Schritte
-#b) in der site.xml de.aoksystems.omc.faktorips.feature.product auskommentieren
-#c) in features/org.faktorips.feature_3.4.0.rfinal.jar feature.xml anpassen:
-#  auskommentieren von <!-- <requires> ... </requires> -->
+  cd ..
+  rm -r tmp
 }
 
 parseArgs $*
