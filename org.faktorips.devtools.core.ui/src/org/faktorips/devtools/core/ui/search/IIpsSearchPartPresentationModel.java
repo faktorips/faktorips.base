@@ -13,21 +13,22 @@
 
 package org.faktorips.devtools.core.ui.search;
 
+import java.util.Locale;
 
-import org.eclipse.search.ui.ISearchQuery;
-import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
+import org.eclipse.jface.dialogs.IDialogSettings;
 
-public interface IIpsSearchPresentationModel extends IIpsSearchPartPresentationModel {
+public interface IIpsSearchPartPresentationModel {
 
-    public static final String SRC_FILE_PATTERN = "srcFilePattern"; //$NON-NLS-1$
+    public Locale getSearchLocale();
 
-    public void setSearchScope(IIpsSearchScope searchScope);
+    /**
+     * stores the actual values into the dialog settings
+     */
+    public void store(IDialogSettings settings);
 
-    public IIpsSearchScope getSearchScope();
+    /**
+     * reads the dialog setting and uses the values for the actual search
+     */
+    public void read(IDialogSettings settings);
 
-    public void setSrcFilePattern(String newValue);
-
-    public String getSrcFilePattern();
-
-    public ISearchQuery createSearchQuery();
 }

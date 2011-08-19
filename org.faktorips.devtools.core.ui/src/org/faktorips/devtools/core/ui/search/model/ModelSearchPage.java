@@ -23,12 +23,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchPage;
-import org.faktorips.devtools.core.ui.search.IIpsSearchPresentationModel;
 
 /**
  * DialogPage for the Faktor-IPS Model Search
@@ -40,7 +38,6 @@ public class ModelSearchPage extends AbstractIpsSearchPage<ModelSearchPresentati
     private static final String MODEL_SEARCH_PAGE_NAME = "ModelSearchPage"; //$NON-NLS-1$
     private static final String MODEL_SEARCH_DATA = "ModelSearchData"; //$NON-NLS-1$
 
-    private Text txtTypeName;
     private StringValueComboField txtSearchString;
     private Combo cboSearchString;
 
@@ -83,6 +80,7 @@ public class ModelSearchPage extends AbstractIpsSearchPage<ModelSearchPresentati
 
         cboSearchString.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         txtSearchString = new StringValueComboField(cboSearchString);
+        getBindingContext().bindContent(txtSearchString, getModel(), ModelSearchPresentationModel.SEARCH_TERM);
 
         for (IDialogSettings settings : getPreviousSearchData()) {
             cboSearchString.add(settings.get(ModelSearchPresentationModel.SEARCH_TERM));
@@ -92,31 +90,29 @@ public class ModelSearchPage extends AbstractIpsSearchPage<ModelSearchPresentati
                 .createGridGroup(composite, Messages.ModelSearchPage_groupLabelSearchFor, 2, true);
 
         ckbSearchAttributes = toolkit.createCheckbox(searchForGroup, Messages.ModelSearchPage_labelAttributes);
+        getBindingContext()
+                .bindContent(ckbSearchAttributes, getModel(), ModelSearchPresentationModel.SEARCH_ATTRIBUTES);
 
         ckbSearchMethods = toolkit.createCheckbox(searchForGroup, Messages.ModelSearchPage_labelMethodsAndFormulas);
+        getBindingContext().bindContent(ckbSearchMethods, getModel(), ModelSearchPresentationModel.SEARCH_METHODS);
 
         ckbSearchAssociations = toolkit.createCheckbox(searchForGroup, Messages.ModelSearchPage_labelAssociations);
+        getBindingContext().bindContent(ckbSearchAssociations, getModel(),
+                ModelSearchPresentationModel.SEARCH_ASSOCIATIONS);
 
         ckbSearchTableStructureUsages = toolkit.createCheckbox(searchForGroup,
                 Messages.ModelSearchPage_labelTableStructureUsage);
-
-        ckbSearchValidationRules = toolkit.createCheckbox(searchForGroup, Messages.ModelSearchPage_labelRules);
-
-        toolkit.createVerticalSpacer(composite, 10);
-        toolkit.createLabel(composite, Messages.ModelSearchPage_labelTypeName);
-        txtTypeName = toolkit.createText(composite);
-
-        setControl(composite);
-
-        getBindingContext().bindContent(txtSearchString, getModel(), ModelSearchPresentationModel.SEARCH_TERM);
-        getBindingContext().bindContent(txtTypeName, getModel(), IIpsSearchPresentationModel.SRC_FILE_PATTERN);
-        getBindingContext().bindContent(ckbSearchAttributes, getModel(), ModelSearchPresentationModel.SEARCH_ATTRIBUTES);
-        getBindingContext().bindContent(ckbSearchMethods, getModel(), ModelSearchPresentationModel.SEARCH_METHODS);
-        getBindingContext().bindContent(ckbSearchAssociations, getModel(), ModelSearchPresentationModel.SEARCH_ASSOCIATIONS);
         getBindingContext().bindContent(ckbSearchTableStructureUsages, getModel(),
                 ModelSearchPresentationModel.SEARCH_TABLE_STRUCTURE_USAGES);
+
+        ckbSearchValidationRules = toolkit.createCheckbox(searchForGroup, Messages.ModelSearchPage_labelRules);
         getBindingContext().bindContent(ckbSearchValidationRules, getModel(),
                 ModelSearchPresentationModel.SEARCH_VALIDATION_RULES);
+
+        toolkit.createVerticalSpacer(composite, 10);
+        createSrcFilePatternText(toolkit, composite);
+
+        setControl(composite);
 
         getBindingContext().updateUI();
     }
@@ -149,6 +145,8 @@ public class ModelSearchPage extends AbstractIpsSearchPage<ModelSearchPresentati
 
     @Override
     protected ModelSearchPresentationModel createPresentationModel() {
-        return new ModelSearchPresentationModel();
+        ModelSearchPresentationModel model = new ModelSearchPresentationModel();
+        model.initDefaultSearchValues();
+        return model;
     }
 }

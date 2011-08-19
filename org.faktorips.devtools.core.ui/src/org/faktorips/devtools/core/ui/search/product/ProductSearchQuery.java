@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.search.product;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -20,12 +21,19 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.search.ui.text.Match;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchQuery;
+import org.faktorips.devtools.core.ui.search.product.conditions.ISearchOperator;
+import org.faktorips.devtools.core.ui.search.product.conditions.ISearchOperatorType;
+import org.faktorips.devtools.core.ui.search.product.conditions.OperandProvider;
 
 public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPresentationModel> {
 
@@ -44,20 +52,95 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
 
     @Override
     protected void searchDetails() throws CoreException {
-        // da gibt es noch nix
+        Set<IIpsSrcFile> matchingSrcFiles = getMatchingSrcFiles();
 
+        List<ISearchOperator> searchOperators = new ArrayList<ISearchOperator>();
+        List<ProductSearchConditionPresentationModel> models = searchModel
+                .getProductSearchConditionPresentationModels();
+        for (ProductSearchConditionPresentationModel conditionModel : models) {
+            if (conditionModel.isValid()) {
+
+                ISearchOperator searchOperator = createSearchOperator(conditionModel);
+
+                searchOperators.add(searchOperator);
+            }
+        }
+
+        for (IIpsSrcFile srcFile : matchingSrcFiles) {
+            boolean matching = isMatching(srcFile, searchOperators);
+            if (matching) {
+                searchResult.addMatch(new Match(srcFile.getIpsObject(), 0, 0));
+            }
+        }
+    }
+
+    protected ISearchOperator createSearchOperator(ProductSearchConditionPresentationModel conditionModel) {
+
+        OperandProvider operandProvider = conditionModel.getCondition().createOperandProvider(
+                conditionModel.getSearchedElement());
+        ISearchOperatorType operatorType = conditionModel.getOperatorType();
+
+        ISearchOperator searchOperator = operatorType.createSearchOperator(operandProvider,
+                conditionModel.getValueDatatype(), conditionModel.getArgument());
+
+        return searchOperator;
+    }
+
+    private boolean isMatching(IIpsSrcFile srcFile, List<ISearchOperator> searchOperators) throws CoreException {
+        if (!IpsObjectType.PRODUCT_CMPT.equals(srcFile.getIpsObjectType())) {
+            return false;
+        }
+
+        IProductCmpt productComponent = (IProductCmpt)srcFile.getIpsObject();
+
+        List<IProductCmptGeneration> generations = productComponent.getProductCmptGenerations();
+
+        for (IProductCmptGeneration productCmptGeneration : generations) {
+            if (isMatchingProductCmptGeneration(searchOperators, productCmptGeneration)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected boolean isMatchingProductCmptGeneration(List<ISearchOperator> searchOperators,
+            IProductCmptGeneration productCmptGeneration) {
+
+        for (ISearchOperator searchOperator : searchOperators) {
+            if (!searchOperator.check(productCmptGeneration)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     protected Set<IIpsSrcFile> getSelectedSrcFiles() throws CoreException {
         Set<IIpsSrcFile> selectedSrcFiles = super.getSelectedSrcFiles();
-
         Set<IIpsSrcFile> matchingProductComponents = new HashSet<IIpsSrcFile>();
+
+        IProductCmptType productCmptType = searchModel.getProductCmptType();
+
+        /*
+         * for (IIpsSrcFile srcFile : selectedSrcFiles) { IProductCmpt ipsObject =
+         * (IProductCmpt)srcFile.getIpsObject();
+         * 
+         * boolean subtypeOrSameType =
+         * ipsObject.findProductCmptType(ipsObject.getIpsProject()).isSubtypeOrSameType(
+         * productCmptType, ipsObject.getIpsProject());
+         * 
+         * if (subtypeOrSameType) { matchingProductComponents.add(srcFile); } }
+         */
 
         IIpsProject[] productDefinitionProjects = ipsModel.getIpsProductDefinitionProjects();
         for (IIpsProject project : productDefinitionProjects) {
-            matchingProductComponents.addAll(Arrays.asList(project.findAllProductCmptSrcFiles(
-                    searchModel.getProductCmptType(), true)));
+
+            // TODO das ist unschön, aknn man die bausteine ohne diesen Umweg finden?
+            IProductCmptType type = project.findProductCmptType(productCmptType.getQualifiedName());
+
+            List<IIpsSrcFile> asList = Arrays.asList(project.findAllProductCmptSrcFiles(type, true));
+            matchingProductComponents.addAll(asList);
         }
 
         selectedSrcFiles.retainAll(matchingProductComponents);
@@ -67,6 +150,12 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
 
     @Override
     protected boolean isJustTypeNameSearch() {
+        for (ProductSearchConditionPresentationModel conditionModel : searchModel
+                .getProductSearchConditionPresentationModels()) {
+            if (conditionModel.isValid()) {
+                return false;
+            }
+        }
         return true;
     }
 

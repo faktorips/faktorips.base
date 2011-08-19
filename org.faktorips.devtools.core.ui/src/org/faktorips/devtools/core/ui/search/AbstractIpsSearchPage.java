@@ -25,8 +25,12 @@ import org.eclipse.search.ui.ISearchPage;
 import org.eclipse.search.ui.ISearchPageContainer;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.NewSearchUI;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.search.model.Messages;
 import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
 import org.faktorips.devtools.core.ui.search.scope.IpsSearchProjectsScope;
 import org.faktorips.devtools.core.ui.search.scope.IpsSearchSelectionScope;
@@ -173,5 +177,12 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
 
     protected T getModel() {
         return model;
+    }
+
+    protected Text createSrcFilePatternText(UIToolkit toolkit, Composite composite) {
+        toolkit.createLabel(composite, Messages.ModelSearchPage_labelTypeName);
+        Text txtTypeName = toolkit.createText(composite);
+        getBindingContext().bindContent(txtTypeName, getModel(), IIpsSearchPresentationModel.SRC_FILE_PATTERN);
+        return txtTypeName;
     }
 }

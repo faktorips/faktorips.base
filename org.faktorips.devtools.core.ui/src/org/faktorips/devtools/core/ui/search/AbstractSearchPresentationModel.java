@@ -25,7 +25,7 @@ public abstract class AbstractSearchPresentationModel extends PresentationModelO
         IIpsSearchPresentationModel {
 
     private IIpsSearchScope searchScope;
-    private String typeName = ""; //$NON-NLS-1$
+    private String srcFilePattern = ""; //$NON-NLS-1$
 
     @Override
     public void setSearchScope(IIpsSearchScope searchScope) {
@@ -50,13 +50,15 @@ public abstract class AbstractSearchPresentationModel extends PresentationModelO
 
     @Override
     public String getSrcFilePattern() {
-        return typeName;
+        return srcFilePattern;
     }
 
     @Override
     public void setSrcFilePattern(String newValue) {
-        String oldValue = typeName;
-        typeName = newValue;
+        String oldValue = srcFilePattern;
+        srcFilePattern = newValue;
         notifyListeners(new PropertyChangeEvent(this, SRC_FILE_PATTERN, oldValue, newValue));
     }
+
+    protected abstract void initDefaultSearchValues();
 }

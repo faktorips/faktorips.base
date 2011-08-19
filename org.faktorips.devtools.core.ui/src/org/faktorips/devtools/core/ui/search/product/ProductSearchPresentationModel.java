@@ -15,8 +15,6 @@ package org.faktorips.devtools.core.ui.search.product;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -31,20 +29,15 @@ import org.faktorips.devtools.core.ui.search.scope.IpsSearchWorkspaceScope;
 
 public class ProductSearchPresentationModel extends AbstractSearchPresentationModel {
 
-    private static final String SEARCH_PRODUCT_COMPONENT_TYPE_INDEX = "productCmptTypeIndex"; //$NON-NLS-1$
-    private List<IProductCmptType> productCmptTypes;
+    public static final String VALID_SEARCH = "validSearch"; //$NON-NLS-1$
+    public static final String PRODUCT_COMPONENT_TYPE_CHOSEN = "productCmptTypeChosen"; //$NON-NLS-1$
+    public static final String PRODUCT_COMPONENT_TYPE = "productCmptType"; //$NON-NLS-1$
+
+    private List<IIpsSrcFile> productCmptTypesSrcFiles;
+    private final List<ProductSearchConditionPresentationModel> productSearchConditionPresentationModels = new ArrayList<ProductSearchConditionPresentationModel>();
+
     private IProductCmptType productCmptType;
-    private int productCmptTypeIndex;
-
-    private boolean validSearch = true;
-
-    public boolean isValidSearch() {
-        return validSearch;
-    }
-
-    public ProductSearchPresentationModel() {
-        updateProductComponentTypes();
-    }
+    private boolean validSearch = false;
 
     @Override
     public void store(IDialogSettings settings) {
@@ -63,72 +56,73 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         return new ProductSearchQuery(this);
     }
 
-    public List<String> getProductComponentTypeLabels() {
-        List<String> productComponentTypeLabels = new ArrayList<String>();
-
-        for (IProductCmptType productCmptType : productCmptTypes) {
-            productComponentTypeLabels.add(getProductCmptTypeCompareValue(productCmptType));
-        }
-
-        return productComponentTypeLabels;
+    public List<IIpsSrcFile> getProductCmptTypesSrcFiles() {
+        return productCmptTypesSrcFiles;
     }
 
     protected String getProductCmptTypeCompareValue(IProductCmptType productCmptType) {
         return productCmptType.getName();
     }
 
-    protected void updateProductComponentTypes() {
-
-        // TODO doch mit IpsModel???
-        IpsSearchWorkspaceScope ipsSearchWorkspaceScope = new IpsSearchWorkspaceScope();
-        List<IProductCmptType> productCmptTypes;
-        try {
-            Set<IIpsSrcFile> selectedIpsSrcFiles = ipsSearchWorkspaceScope.getSelectedIpsSrcFiles();
-
-            productCmptTypes = new ArrayList<IProductCmptType>();
-
-            for (IIpsSrcFile srcFile : selectedIpsSrcFiles) {
-                if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(srcFile.getIpsObjectType())) {
-                    productCmptTypes.add((IProductCmptType)srcFile.getIpsObject());
-                }
-            }
-
-            Collections.sort(productCmptTypes, new Comparator<IProductCmptType>() {
-                @Override
-                public int compare(IProductCmptType o1, IProductCmptType o2) {
-                    return getProductCmptTypeCompareValue(o1).compareTo(getProductCmptTypeCompareValue(o2));
-                }
-            });
-
-            validSearch = true;
-        } catch (CoreException e) {
-            validSearch = false;
-            productCmptTypes = Collections.emptyList();
-        }
-        this.productCmptTypes = productCmptTypes;
-    }
-
     public IProductCmptType getProductCmptType() {
         return productCmptType;
     }
 
-    public void setProductCmptTypeIndex(int newValue) {
-        int oldValue = productCmptTypeIndex;
-        if (newValue == -1) {
-            productCmptType = null;
-            validSearch = false;
-        } else {
-            productCmptType = productCmptTypes.get(newValue);
-            validSearch = true;
-        }
+    public void setProductCmptType(IProductCmptType newValue) {
+        IProductCmptType oldValue = productCmptType;
+        productCmptType = newValue;
+        notifyListeners(new PropertyChangeEvent(this, PRODUCT_COMPONENT_TYPE, oldValue, newValue));
 
-        notifyListeners(new PropertyChangeEvent(this, SEARCH_PRODUCT_COMPONENT_TYPE_INDEX, oldValue, newValue));
-
-        this.productCmptTypeIndex = newValue;
+        setValidSearch(productCmptType != null);
     }
 
-    public int getProductCmptTypeIndex() {
+    public boolean isValidSearch() {
+        return validSearch;
+    }
 
-        return productCmptTypeIndex;
+    public boolean isProductCmptTypeChosen() {
+        return productCmptType != null;
+    }
+
+    private void setValidSearch(boolean newValue) {
+        boolean oldValue = validSearch;
+        validSearch = newValue;
+
+        notifyListeners(new PropertyChangeEvent(this, VALID_SEARCH, oldValue, newValue));
+
+    }
+
+    @Override
+    protected void initDefaultSearchValues() {
+        setValidSearch(false);
+
+        // TODO doch mit IpsModel???
+        IpsSearchWorkspaceScope ipsSearchWorkspaceScope = new IpsSearchWorkspaceScope();
+        try {
+            Set<IIpsSrcFile> selectedIpsSrcFiles = ipsSearchWorkspaceScope.getSelectedIpsSrcFiles();
+
+            productCmptTypesSrcFiles = new ArrayList<IIpsSrcFile>();
+            for (IIpsSrcFile srcFile : selectedIpsSrcFiles) {
+                if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(srcFile.getIpsObjectType())) {
+                    productCmptTypesSrcFiles.add(srcFile);
+                }
+            }
+
+        } catch (CoreException e) {
+            // TODO was mach ma da?
+
+        }
+    }
+
+    public List<ProductSearchConditionPresentationModel> getProductSearchConditionPresentationModels() {
+        return new ArrayList<ProductSearchConditionPresentationModel>(productSearchConditionPresentationModels);
+    }
+
+    public void addProductSearchConditionPresentationModels(ProductSearchConditionPresentationModel productSearchConditionPresentationModel) {
+        productSearchConditionPresentationModels.add(productSearchConditionPresentationModel);
+    }
+
+    public boolean removeProductSearchConditionPresentationModels(ProductSearchConditionPresentationModel productSearchConditionPresentationModel) {
+        return productSearchConditionPresentationModels.remove(productSearchConditionPresentationModel);
     }
 }

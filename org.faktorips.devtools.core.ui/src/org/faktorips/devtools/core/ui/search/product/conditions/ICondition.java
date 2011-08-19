@@ -11,23 +11,23 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search;
+package org.faktorips.devtools.core.ui.search.product.conditions;
 
+import java.util.List;
 
-import org.eclipse.search.ui.ISearchQuery;
-import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
-public interface IIpsSearchPresentationModel extends IIpsSearchPartPresentationModel {
+public interface ICondition {
 
-    public static final String SRC_FILE_PATTERN = "srcFilePattern"; //$NON-NLS-1$
+    public List<? extends IIpsElement> getSearchableElements(IProductCmptType element) throws CoreException;
 
-    public void setSearchScope(IIpsSearchScope searchScope);
+    public List<ISearchOperatorType> getSearchOperatorTypes(IIpsElement elementPart);
 
-    public IIpsSearchScope getSearchScope();
+    public ValueDatatype getValueDatatype(IIpsElement elementPart);
 
-    public void setSrcFilePattern(String newValue);
+    public OperandProvider createOperandProvider(IIpsElement elementPart);
 
-    public String getSrcFilePattern();
-
-    public ISearchQuery createSearchQuery();
 }

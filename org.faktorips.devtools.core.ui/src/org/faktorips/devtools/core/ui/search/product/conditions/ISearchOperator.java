@@ -11,23 +11,13 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search;
+package org.faktorips.devtools.core.ui.search.product.conditions;
 
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 
-import org.eclipse.search.ui.ISearchQuery;
-import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
+public interface ISearchOperator {
 
-public interface IIpsSearchPresentationModel extends IIpsSearchPartPresentationModel {
+    public boolean check(IProductCmptGeneration productCmptGeneration);
 
-    public static final String SRC_FILE_PATTERN = "srcFilePattern"; //$NON-NLS-1$
-
-    public void setSearchScope(IIpsSearchScope searchScope);
-
-    public IIpsSearchScope getSearchScope();
-
-    public void setSrcFilePattern(String newValue);
-
-    public String getSrcFilePattern();
-
-    public ISearchQuery createSearchQuery();
+    public String getLabel();
 }

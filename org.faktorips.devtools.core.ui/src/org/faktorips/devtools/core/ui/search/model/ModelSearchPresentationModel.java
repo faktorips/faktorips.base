@@ -44,10 +44,7 @@ public class ModelSearchPresentationModel extends AbstractSearchPresentationMode
     private String searchTerm = ""; //$NON-NLS-1$
     private final Set<Class<? extends IIpsObjectPart>> searchedClazzes = new HashSet<Class<? extends IIpsObjectPart>>();
 
-    public ModelSearchPresentationModel() {
-        initDefaultSearchValues();
-    }
-
+    @Override
     protected void initDefaultSearchValues() {
         setSearchAttributes(true);
         setSearchMethods(true);
