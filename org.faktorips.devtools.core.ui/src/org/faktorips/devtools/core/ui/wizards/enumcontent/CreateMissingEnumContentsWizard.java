@@ -254,13 +254,9 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             }
             if (preselectedIpsElement instanceof IIpsProject) {
                 IIpsProject ipsProject = (IIpsProject)preselectedIpsElement;
-                try {
-                    IIpsPackageFragmentRoot[] rootsInProject = ipsProject.getIpsPackageFragmentRoots();
-                    if (rootsInProject.length > 0) {
-                        sourceFolderName = rootsInProject[0].getName();
-                    }
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
+                IIpsPackageFragmentRoot[] rootsInProject = ipsProject.getIpsPackageFragmentRoots();
+                if (rootsInProject.length > 0) {
+                    sourceFolderName = rootsInProject[0].getName();
                 }
             }
             if (sourceFolderName != null) {

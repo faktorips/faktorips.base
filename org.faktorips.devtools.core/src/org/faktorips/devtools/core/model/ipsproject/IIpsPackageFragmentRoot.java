@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model.ipsproject;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -142,5 +144,15 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      */
     @Override
     public void delete() throws CoreException;
+
+    /**
+     * Finding and returning all {@link IIpsSrcFile}s of the specified {@link IpsObjectType} that
+     * are stored in this {@link IIpsPackageFragmentRoot}
+     * 
+     * @param type The type of {@link IIpsSrcFile}s you want to find
+     * @return A List of all {@link IIpsSrcFile}s found in this {@link IIpsPackageFragmentRoot}
+     * @throws CoreException In case of a core exception finding the resources
+     */
+    List<IIpsSrcFile> findAllIpsSrcFiled(IpsObjectType type) throws CoreException;
 
 }

@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.policycmpttype;
+package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
+import org.faktorips.devtools.stdbuilder.policycmpttype.MessagesProperties;
 
 public class ValidationRuleMessagesGenerator {
 
@@ -43,7 +44,7 @@ public class ValidationRuleMessagesGenerator {
      * The separator to concatenate the key. We use the minus character because this character is
      * not allowed in names.
      */
-    private static final String KEY_SEPARATOR = "-";
+    public static final String KEY_SEPARATOR = "-";
 
     // matching a text that follows '{' and is followed by '}' or ','
     public static final Pattern REPLACEMENT_PARAMETER_REGEXT = Pattern.compile("(?<=(\\{))[\\p{L}0-9]+(?=([,\\}]))");

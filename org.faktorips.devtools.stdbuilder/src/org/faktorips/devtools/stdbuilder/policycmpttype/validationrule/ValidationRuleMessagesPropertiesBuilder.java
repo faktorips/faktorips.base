@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.policycmpttype;
+package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 
 import java.util.HashMap;
 import java.util.Locale;

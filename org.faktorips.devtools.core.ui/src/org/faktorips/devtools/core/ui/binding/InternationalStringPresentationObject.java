@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.binding;
 
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ILocalizedString;
@@ -59,6 +60,8 @@ public class InternationalStringPresentationObject extends PresentationModelObje
         ILocalizedString localizedString = internationalString.get(locale);
         if (localizedString != null) {
             text = localizedString.getValue();
+        } else {
+            text = StringUtils.EMPTY;
         }
         notifyListeners();
     }

@@ -97,5 +97,16 @@
             name="%org.faktorips.devtools.stdbuilder.ui.commands.OpenJumpToSourceCodeContextMenu">
       </command>
    </extension>
+   <!--
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.stdbuilder.ui.messagesimport.MessagesImportWizard"
+            id="org.faktorips.devtools.stdbuilder.ui.messagesimport.MessagesImportWizard"
+            name="Import Messages">
+      </wizard>
+   </extension>
+   -->
 
 </plugin>

@@ -162,7 +162,7 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      * {@inheritDoc}
      */
     @Override
-    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() throws CoreException {
+    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
         return null; // container entry hasn't got a root!
     }
 

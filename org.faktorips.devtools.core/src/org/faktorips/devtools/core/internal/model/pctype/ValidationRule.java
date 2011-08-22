@@ -21,6 +21,7 @@ import java.util.Observer;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
@@ -29,6 +30,7 @@ import org.faktorips.devtools.core.internal.model.InternationalStringXmlHelper;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.IInternationalString;
+import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -180,12 +182,26 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
                     PROPERTY_MESSAGE_CODE);
             list.add(msg);
         }
+        validateNoLineSeperators(list);
 
         IIpsProject project = getIpsProject();
         validateBusinessFunctions(list, project);
 
         validateValidatedAttribute(list, ipsProject);
         validateCheckValueAgainstValueSet(list);
+    }
+
+    private void validateNoLineSeperators(MessageList list) {
+        for (ILocalizedString localizedString : msgText.values()) {
+            String message = localizedString.getValue();
+            if (StringUtils.isNotEmpty(SystemUtils.LINE_SEPARATOR) && message.indexOf(SystemUtils.LINE_SEPARATOR) != -1) {
+                String text = NLS.bind(Messages.ValidationRule_msgNoNewlineAllowed, localizedString.getLocale()
+                        .getDisplayLanguage());
+                list.add(new Message(IValidationRule.MSGCODE_NO_NEWLINE, text, Message.ERROR, this,
+                        IValidationRule.PROPERTY_MESSAGE_TEXT));
+            }
+        }
+
     }
 
     private void validateBusinessFunctions(MessageList list, IIpsProject ipsProject) throws CoreException {

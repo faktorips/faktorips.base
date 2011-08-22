@@ -11,13 +11,14 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.policycmpttype;
+package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 
 import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 import static org.junit.Assert.assertEquals;
 
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptTypeBuilderTest;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;

@@ -24,10 +24,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  */
 public class FileSelectionControl extends TextButtonControl {
 
-    /**
-     * The style of the file dialog. Common styles are {@link SWT#SAVE} or {@link SWT#OPEN}
-     */
-    private int dialogStyle;
+    private final FileDialog dialog;
 
     /**
      * Create a new control for file selection
@@ -39,7 +36,7 @@ public class FileSelectionControl extends TextButtonControl {
      */
     public FileSelectionControl(Composite parent, UIToolkit toolkit, int dialogStyle) {
         super(parent, toolkit, Messages.FileSelectionControl_titleBrowse);
-        this.dialogStyle = dialogStyle;
+        dialog = new FileDialog(getShell(), dialogStyle);
     }
 
     @Override
@@ -51,9 +48,8 @@ public class FileSelectionControl extends TextButtonControl {
      * Open the file dialog to ask the user to select the file. Returns the selected filename
      */
     protected String askForFilename() {
-        FileDialog dialog = new FileDialog(getShell(), dialogStyle);
-        dialog.setFileName(getText());
-        String newFile = dialog.open();
+        getDialog().setFileName(getText());
+        String newFile = getDialog().open();
         if (newFile != null) {
             setText(newFile);
         }
@@ -66,5 +62,12 @@ public class FileSelectionControl extends TextButtonControl {
 
     public void setFile(String file) {
         setText(file);
+    }
+
+    /**
+     * @return Returns the dialog.
+     */
+    public FileDialog getDialog() {
+        return dialog;
     }
 }

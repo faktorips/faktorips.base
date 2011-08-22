@@ -191,7 +191,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         validateMissingAndInvalidUniqueKeyValue(result, datatypes, tableStructure, uniqueKeys);
         validateRowValue(result, tableStructure, datatypes);
         if (uniqueKeyCheck) {
-            validateUniqueKey(result, tableStructure, datatypes);
+            // validateUniqueKey(result, tableStructure, datatypes);
         }
     }
 

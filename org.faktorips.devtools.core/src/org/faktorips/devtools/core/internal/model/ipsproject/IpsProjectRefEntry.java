@@ -97,7 +97,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     }
 
     @Override
-    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() throws CoreException {
+    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
         return null;
     }
 

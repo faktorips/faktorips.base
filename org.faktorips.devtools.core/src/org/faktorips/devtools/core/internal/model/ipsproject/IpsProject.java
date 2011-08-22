@@ -531,7 +531,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots() throws CoreException {
+    public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots() {
         List<IIpsPackageFragmentRoot> roots = new ArrayList<IIpsPackageFragmentRoot>();
         IIpsObjectPathEntry[] entries = getIpsObjectPathInternal().getEntries();
         for (IIpsObjectPathEntry entrie : entries) {
@@ -546,17 +546,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public IIpsPackageFragmentRoot findIpsPackageFragmentRoot(String name) {
-        try {
-            IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
-            for (IIpsPackageFragmentRoot root : roots) {
-                if (root.getName().equals(name)) {
-                    return root;
-                }
+        IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
+        for (IIpsPackageFragmentRoot root : roots) {
+            if (root.getName().equals(name)) {
+                return root;
             }
-        } catch (CoreException e) {
-            // nothing to do, return null
         }
-
         return null;
     }
 
@@ -611,7 +606,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Returns true if the given IResource is a folder that corresponds to an IpsPackageFragmentRoot
      * of this IpsProject, false otherwise.
      */
-    private boolean isPackageFragmentRoot(IResource res) throws CoreException {
+    private boolean isPackageFragmentRoot(IResource res) {
         IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
             if (res.equals(root.getCorrespondingResource())) {
@@ -1439,7 +1434,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return sourceRoots;
     }
 
-    public void getSourceIpsFragmentRoots(List<IIpsPackageFragmentRoot> result) throws CoreException {
+    public void getSourceIpsFragmentRoots(List<IIpsPackageFragmentRoot> result) {
         IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
             if (root.isBasedOnSourceFolder()) {
@@ -1720,7 +1715,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    private List<IPath> collectTocPaths(IIpsArtefactBuilderSet builderSet, IIpsProject ipsProject) throws CoreException {
+    private List<IPath> collectTocPaths(IIpsArtefactBuilderSet builderSet, IIpsProject ipsProject) {
         List<IPath> tocPaths = new ArrayList<IPath>();
         IIpsPackageFragmentRoot[] roots = ipsProject.getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {

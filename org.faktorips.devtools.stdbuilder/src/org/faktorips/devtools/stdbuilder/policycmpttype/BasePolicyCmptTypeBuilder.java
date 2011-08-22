@@ -37,6 +37,7 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenPolicyCmptTypeMethod;
+import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.GenValidationRule;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.util.LocalizedStringsSet;

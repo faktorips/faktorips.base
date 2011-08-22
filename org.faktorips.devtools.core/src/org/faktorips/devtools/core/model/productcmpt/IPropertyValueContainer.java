@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.model.productcmpt;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -26,7 +27,8 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
 
     /**
      * Returns the property value for the given property or <code>null</code> if no value is defined
-     * for this generation. In this case {@link #computeDeltaToModel(IIpsProject)} returns a delta
+     * for this container. In this case
+     * {@link IFixDifferencesToModelSupport#computeDeltaToModel(IIpsProject)} returns a delta
      * containing an entry for the missing property value.
      * <p>
      * Returns <code>null</code> if property is <code>null</code>.
@@ -39,8 +41,9 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
 
     /**
      * Returns the property values for the given property name or <code>null</code> if no value is
-     * defined for this generation. In this case {@link #computeDeltaToModel(IIpsProject)} returns a
-     * delta containing an entry for the missing property value.
+     * defined for this container. In this case
+     * {@link IFixDifferencesToModelSupport#computeDeltaToModel(IIpsProject)} returns a delta
+     * containing an entry for the missing property value.
      * <p>
      * Returns <code>null</code> if propertyName is <code>null</code>.
      */
@@ -90,10 +93,13 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Finds the {@link IPolicyCmptType} this this property value container is based on.
+     * Finds the {@link IPolicyCmptType} this this property value container configures or returns
+     * <code>null</code> if the {@link IPolicyCmptType} could not be found or this container does
+     * not configure a {@link IPolicyCmptType}.
      * 
      * @param ipsProject The {@link IIpsProject} used as base project to search
-     * @return the product component type or null if no one was found
+     * @return the {@link IPolicyCmptType} or null if no one was found or this container does not
+     *         configure a {@link IPolicyCmptType}
      * @throws CoreException in case of getting a core exception while searching the model
      */
     public abstract IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;

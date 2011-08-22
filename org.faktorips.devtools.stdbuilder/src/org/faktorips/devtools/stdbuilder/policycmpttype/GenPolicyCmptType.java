@@ -41,6 +41,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenConstantAtt
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenPolicyCmptTypeMethod;
+import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.GenValidationRule;
 import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;

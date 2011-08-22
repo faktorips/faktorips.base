@@ -51,6 +51,11 @@ public interface IValidationRule extends IIpsObjectPart, IProductCmptProperty {
     public final static String MSGCODE_PREFIX = "VALIDATIONRULE-"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the message text contains a newline.
+     */
+    public final static String MSGCODE_NO_NEWLINE = MSGCODE_PREFIX + "NoNewlineAllowed"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that the message code shouldn't be empty.
      */
     public final static String MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY = MSGCODE_PREFIX + "MsgCodeShouldntBeEmpty"; //$NON-NLS-1$

@@ -120,8 +120,8 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         return new CoreException(new IpsStatus("Not possible for archives because they are not modifiable.")); //$NON-NLS-1$
     }
 
-    public void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result)
-            throws CoreException {
+    @Override
+    void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result) throws CoreException {
         if (type == null) {
             return;
         }

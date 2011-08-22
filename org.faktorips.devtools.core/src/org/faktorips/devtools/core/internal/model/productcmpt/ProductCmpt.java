@@ -422,8 +422,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public List<IProductCmptGeneration> getProductCmptGenerations() {
         List<IProductCmptGeneration> generations = new ArrayList<IProductCmptGeneration>();
-        List<IIpsObjectGeneration> ipsObject = getGenerations();
-        for (IIpsObjectGeneration ipsObjectGeneration : ipsObject) {
+        List<IIpsObjectGeneration> ipsObjectGenerations = getGenerations();
+        for (IIpsObjectGeneration ipsObjectGeneration : ipsObjectGenerations) {
             generations.add((IProductCmptGeneration)ipsObjectGeneration);
         }
         return generations;

@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.policycmpttype;
+package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -40,6 +40,9 @@ import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.stdbuilder.policycmpttype.AbstractValidationMessagesBuilderTest;
+import org.faktorips.devtools.stdbuilder.policycmpttype.MessagesProperties;
+import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessagesGenerator;
 import org.junit.Test;
 
 public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessagesBuilderTest {

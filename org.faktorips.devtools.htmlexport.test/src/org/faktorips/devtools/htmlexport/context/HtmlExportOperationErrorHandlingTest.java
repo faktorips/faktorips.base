@@ -56,15 +56,11 @@ public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportPlug
                     return documentedSourceFiles;
                 }
 
-                try {
-                    IpsSrcFile ipsSrcFile = new MockIpsSrcFile(
-                            ipsProject.getIpsPackageFragmentRoots()[0].getDefaultIpsPackageFragment(),
-                            "MichGibtEsNicht." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
+                IpsSrcFile ipsSrcFile = new MockIpsSrcFile(
+                        ipsProject.getIpsPackageFragmentRoots()[0].getDefaultIpsPackageFragment(), "MichGibtEsNicht."
+                                + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
 
-                    documentedSourceFiles.add(ipsSrcFile);
-                } catch (CoreException e) {
-                    throw new RuntimeException("Error running the test: " + e.getMessage(), e);
-                }
+                documentedSourceFiles.add(ipsSrcFile);
 
                 alreadyAdded = true;
                 return documentedSourceFiles;

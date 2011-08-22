@@ -190,15 +190,9 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
         if (element instanceof IIpsProject) {
             IIpsPackageFragmentRoot[] roots;
-            try {
-                roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
-                if (roots.length > 0) {
-                    setIpsPackageFragment(roots[0].getDefaultIpsPackageFragment());
-                }
-            } catch (CoreException e) {
-                IpsPlugin.log(e); // user can still work with the system, just so the defaults are
-                // missing
-                // so just log it.
+            roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
+            if (roots.length > 0) {
+                setIpsPackageFragment(roots[0].getDefaultIpsPackageFragment());
             }
         } else if (element instanceof IIpsPackageFragmentRoot) {
             setIpsPackageFragment(((IIpsPackageFragmentRoot)element).getDefaultIpsPackageFragment());

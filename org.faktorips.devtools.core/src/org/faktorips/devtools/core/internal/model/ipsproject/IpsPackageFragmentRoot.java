@@ -187,6 +187,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
         return getIpsPackageFragments();
     }
 
+    @Override
     void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result) throws CoreException {
         if (!exists()) {
             return;
@@ -227,12 +228,12 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
         }
     }
 
-    public String getJavaBasePackageNameForGeneratedJavaClasses() throws CoreException {
+    public String getJavaBasePackageNameForGeneratedJavaClasses() {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)getIpsObjectPathEntry();
         return entry.getBasePackageNameForMergableJavaClasses();
     }
 
-    public String getJavaBasePackageNameForExtensionJavaClasses() throws CoreException {
+    public String getJavaBasePackageNameForExtensionJavaClasses() {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)getIpsObjectPathEntry();
         return entry.getBasePackageNameForDerivedJavaClasses();
     }

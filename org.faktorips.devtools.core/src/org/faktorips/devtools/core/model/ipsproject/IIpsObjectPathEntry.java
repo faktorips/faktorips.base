@@ -128,7 +128,7 @@ public interface IIpsObjectPathEntry {
      * project reference entry. Note that is not guaranteed that the returned package fragment root
      * exists.
      */
-    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() throws CoreException;
+    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot();
 
     /**
      * Validates the object path entry and returns the result as list of messages.

@@ -68,7 +68,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
      * Creates a new operation to create an IPS archive. From the given project the content from all
      * source folders are packed into the new archive.
      */
-    public CreateIpsArchiveOperation(IIpsProject projectToArchive, File archive) throws CoreException {
+    public CreateIpsArchiveOperation(IIpsProject projectToArchive, File archive) {
         this.archive = archive;
         List<IIpsPackageFragmentRoot> rootsInt = new ArrayList<IIpsPackageFragmentRoot>();
         IIpsPackageFragmentRoot[] candidateRoots = projectToArchive.getIpsPackageFragmentRoots();

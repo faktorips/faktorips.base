@@ -113,17 +113,9 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
         IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
         if (element instanceof IIpsProject) {
             IIpsPackageFragmentRoot[] roots;
-            try {
-                roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
-                if (roots.length > 0) {
-                    setIpsPackageFragmentRoot(roots[0]);
-                }
-            } catch (CoreException e) {
-                /*
-                 * user can still work with the system, just so the defaults are missing so just log
-                 * it.
-                 */
-                IpsPlugin.log(e);
+            roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
+            if (roots.length > 0) {
+                setIpsPackageFragmentRoot(roots[0]);
             }
         } else if (element instanceof IIpsPackageFragmentRoot) {
             setIpsPackageFragmentRoot((IIpsPackageFragmentRoot)element);

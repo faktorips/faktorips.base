@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -100,5 +103,15 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
         }
         return entry.findIpsSrcFile(qnt);
     }
+
+    @Override
+    public List<IIpsSrcFile> findAllIpsSrcFiled(IpsObjectType type) throws CoreException {
+        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        findIpsSourceFiles(type, null, result);
+        return result;
+    }
+
+    abstract void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result)
+            throws CoreException;
 
 }

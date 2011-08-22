@@ -217,25 +217,20 @@ public class SrcFolderComposite extends Composite {
         mergableSrcFolderControl.setRoot(ipsObjectPath.getIpsProject().getProject());
         mergableSrcFolderControl.setFolder(ipsObjectPath.getOutputFolderForMergableSources());
 
-        try {
-            IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsObjectPath.getIpsProject()
-                    .getIpsPackageFragmentRoots();
-            if (ipsPackageFragmentRoots.length > 0) {
+        IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsObjectPath.getIpsProject().getIpsPackageFragmentRoots();
+        if (ipsPackageFragmentRoots.length > 0) {
 
-                IIpsPackageFragmentRoot ipsPackageFragmentRoot = ipsPackageFragmentRoots[0];
+            IIpsPackageFragmentRoot ipsPackageFragmentRoot = ipsPackageFragmentRoots[0];
 
-                basePackageMergableControl.setIpsPckFragmentRoot(ipsPackageFragmentRoot);
-                IIpsPackageFragment ipsPackageFragmentMergable = ipsPackageFragmentRoot
-                        .getIpsPackageFragment(ipsObjectPath.getBasePackageNameForMergableJavaClasses());
-                basePackageMergableControl.setIpsPackageFragment(ipsPackageFragmentMergable);
+            basePackageMergableControl.setIpsPckFragmentRoot(ipsPackageFragmentRoot);
+            IIpsPackageFragment ipsPackageFragmentMergable = ipsPackageFragmentRoot.getIpsPackageFragment(ipsObjectPath
+                    .getBasePackageNameForMergableJavaClasses());
+            basePackageMergableControl.setIpsPackageFragment(ipsPackageFragmentMergable);
 
-                basePackageDerivedControl.setIpsPckFragmentRoot(ipsPackageFragmentRoot);
-                IIpsPackageFragment ipsPackageFragmentDerived = ipsPackageFragmentRoot
-                        .getIpsPackageFragment(ipsObjectPath.getBasePackageNameForDerivedJavaClasses());
-                basePackageDerivedControl.setIpsPackageFragment(ipsPackageFragmentDerived);
-            }
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+            basePackageDerivedControl.setIpsPckFragmentRoot(ipsPackageFragmentRoot);
+            IIpsPackageFragment ipsPackageFragmentDerived = ipsPackageFragmentRoot.getIpsPackageFragment(ipsObjectPath
+                    .getBasePackageNameForDerivedJavaClasses());
+            basePackageDerivedControl.setIpsPackageFragment(ipsPackageFragmentDerived);
         }
 
         multipleOutputCheckBoxField.addChangeListener(srcFolderAdapter);
