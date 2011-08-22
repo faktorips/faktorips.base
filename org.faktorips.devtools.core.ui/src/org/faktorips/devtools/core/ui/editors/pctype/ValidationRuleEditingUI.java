@@ -80,6 +80,8 @@ public class ValidationRuleEditingUI {
 
     private CTabFolder msgTextFolder;
 
+    private SelectionListener msgTextFolderSelectionListener;
+
     public ValidationRuleEditingUI(UIToolkit uiToolkit) {
         this.uiToolkit = uiToolkit;
     }
@@ -189,11 +191,12 @@ public class ValidationRuleEditingUI {
         final InternationalStringPresentationObject msgTextPMO = new InternationalStringPresentationObject(
                 rule.getMessageText());
         createTabsForLocales(rule.getIpsProject());
-        msgTextFolder.addSelectionListener(new SelectionListener() {
+        msgTextFolderSelectionListener = new SelectionListener() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
                 CTabItem selectedTabItem = msgTextFolder.getSelection();
+                selectedTabItem.setControl(msgText);
                 Locale locale = (Locale)selectedTabItem.getData();
                 msgTextPMO.setLocale(locale);
             }
@@ -202,7 +205,8 @@ public class ValidationRuleEditingUI {
             public void widgetDefaultSelected(SelectionEvent e) {
                 // nothing to do
             }
-        });
+        };
+        msgTextFolder.addSelectionListener(msgTextFolderSelectionListener);
 
         msgTextPMO.setLocale(rule.getIpsProject().getProperties().getDefaultLanguage().getLocale());
         bindingContext.bindContent(msgTextField, msgTextPMO, InternationalStringPresentationObject.PROPERTY_TEXT);
@@ -225,8 +229,8 @@ public class ValidationRuleEditingUI {
             CTabItem tabItem = new CTabItem(msgTextFolder, SWT.NONE);
             tabItem.setText(supportedLanguage.getLanguageName());
             tabItem.setData(supportedLanguage.getLocale());
-            tabItem.setControl(msgText);
             if (supportedLanguage.isDefaultLanguage()) {
+                tabItem.setControl(msgText);
                 msgTextFolder.setSelection(tabItem);
             }
         }
@@ -261,6 +265,7 @@ public class ValidationRuleEditingUI {
         bindingContext.removeBindings(msgTextField.getControl());
         bindingContext.removeBindings(configurableByProductBox);
         bindingContext.removeBindings(defaultActivationBox);
+        msgTextFolder.removeSelectionListener(msgTextFolderSelectionListener);
     }
 
     private static class CharCountPainter implements PaintListener {
