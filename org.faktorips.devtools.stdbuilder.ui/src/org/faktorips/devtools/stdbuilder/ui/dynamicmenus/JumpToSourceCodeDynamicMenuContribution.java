@@ -163,7 +163,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
                 Set<IMember> members = javaTypesToJavaElements.get(type);
                 members.add((IMember)javaElement);
             } else {
-                throw new RuntimeException("Unknown Java type.");
+                throw new RuntimeException("Unknown Java type."); //$NON-NLS-1$
             }
         }
         return javaTypesToJavaElements;
