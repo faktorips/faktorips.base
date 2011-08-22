@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
  */
 public enum StdBuilderUICommandId {
 
-    COMMAND_NO_SOURCE_CODE_FOUND("org.faktorips.devtools.stdbuilder.ui.commands.NoSourceCodeFound"),
+    COMMAND_NO_SOURCE_CODE_FOUND("org.faktorips.devtools.stdbuilder.ui.commands.NoSourceCodeFound"), //$NON-NLS-1$
 
     /**
      * Opens a context menu that allows to navigate to the generated Java source code for a selected
@@ -31,7 +31,7 @@ public enum StdBuilderUICommandId {
      * editor.
      */
     COMMAND_OPEN_JUMP_TO_SOURCE_CODE_CONTEXT_MENU(
-            "org.faktorips.devtools.stdbuilder.ui.commands.OpenJumpToSourceCodeContextMenu");
+            "org.faktorips.devtools.stdbuilder.ui.commands.OpenJumpToSourceCodeContextMenu"); //$NON-NLS-1$
 
     private String id;
 

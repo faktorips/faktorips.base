@@ -65,10 +65,10 @@ import org.faktorips.devtools.stdbuilder.ui.StdBuilderUICommandId;
 public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributionItem implements IWorkbenchContribution {
 
     // Unfortunately JDT does not expose this ID via an enum or interface.
-    private static final String JDT_COMMAND_ID_OPEN_ELEMENT_IN_JAVA_EDITOR = "org.eclipse.jdt.ui.commands.openElementInEditor";
+    private static final String JDT_COMMAND_ID_OPEN_ELEMENT_IN_JAVA_EDITOR = "org.eclipse.jdt.ui.commands.openElementInEditor"; //$NON-NLS-1$
 
     // Unfortunately JDT does not expose this ID via an enum or interface.
-    private static final String JDT_PARAMETER_ID_ELEMENT_REF = "elementRef";
+    private static final String JDT_PARAMETER_ID_ELEMENT_REF = "elementRef"; //$NON-NLS-1$
 
     private IServiceLocator serviceLocator;
 
