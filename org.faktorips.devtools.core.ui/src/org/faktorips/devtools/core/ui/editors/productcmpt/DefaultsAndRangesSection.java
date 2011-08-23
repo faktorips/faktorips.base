@@ -206,21 +206,35 @@ public class DefaultsAndRangesSection extends IpsSection {
     private boolean createEditControlForValueSet(IConfigElement element,
             IPolicyCmptTypeAttribute attribute,
             IpsObjectUIController controller) {
-        IValueSet valueSet;
-        if (attribute != null) {
-            valueSet = attribute.getValueSet();
-        } else {
-            valueSet = element.getValueSet();
-        }
+
+        IValueSet valueSet = element.getValueSet();
         if (valueSet == null) {
             return false;
         }
-        if (valueSet.isRange()) {
+        if (areRangeControlsRequired(valueSet, attribute)) {
             createEditControlsForRange((IRangeValueSet)valueSet, controller);
         } else {
             createEditControlsForOtherThanRange(element, controller);
         }
         return true;
+    }
+
+    /**
+     * Returns true if range controls are required to edit the value set (without the possibility to
+     * change the type of the value set to an enumeration. This is the case if either the attribute
+     * defines the value set type to be a range. Or, if the attribute is not found, the value set is
+     * itself a range.
+     * 
+     * @param valueSet The value set
+     * @param attribute The attribute that belongs to the element.
+     * 
+     * @throws NullPointerException if valueSet is <code>null</code>.
+     */
+    private boolean areRangeControlsRequired(IValueSet valueSet, IPolicyCmptTypeAttribute attribute) {
+        if (attribute != null && attribute.getValueSet() != null) {
+            return attribute.getValueSet().isRange();
+        }
+        return valueSet.isRange();
     }
 
     private void createEditControlsForOtherThanRange(IConfigElement element, IpsObjectUIController controller) {
