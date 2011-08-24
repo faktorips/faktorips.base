@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.faktorips.feature_0.0.0.jar" id="org.faktorips.feature" version="0.0.0">
+      <category name="faktor_ips"/>
+   </feature>
+   <feature url="features/org.faktorips.feature.nls1_0.0.0.jar" id="org.faktorips.feature.nls1" version="0.0.0">
+      <category name="faktor_ips"/>
+   </feature>
+   <feature url="features/org.faktorips.ormext.feature_0.0.0.jar" id="org.faktorips.ormext.feature" version="0.0.0">
+      <category name="faktor_ips_extensions"/>
+   </feature>
+   <feature url="features/org.faktorips.ormext.feature.nls1_0.0.0.jar" id="org.faktorips.ormext.feature.nls1" version="0.0.0">
+      <category name="faktor_ips_extensions"/>
+   </feature>
+   <feature url="features/org.faktorips.uml.feature_0.0.0.jar" id="org.faktorips.uml.feature" version="0.0.0">
+      <category name="faktor_ips_extensions"/>
+   </feature>
+   <feature url="features/org.faktorips.uml.feature.nls1_0.0.0.jar" id="org.faktorips.uml.feature.nls1" version="0.0.0">
+      <category name="faktor_ips_extensions"/>
+   </feature>
+   <category-def name="faktor_ips" label="Faktor-IPS">
+      <description>
+         In this category you get the core features of Faktor-IPS
+      </description>
+   </category-def>
+   <category-def name="faktor_ips_extensions" label="Faktor-IPS Extensions">
+      <description>
+         Extensional plugins for Faktor-IPS. You do not need these features for basic use.
+      </description>
+   </category-def>
+</site>
