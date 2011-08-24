@@ -772,10 +772,6 @@ Zehn AG über das Link “Daten-
 schutz” abgerufen und ausgedruckt werden.
    </license>
 
-   <url>
-      <update label="Faktor-IPS" url="http://update.faktorzehn.org/faktorips/v3/"/>
-   </url>
-
    <requires>
       <import plugin="org.faktorips.devtools.core"/>
       <import plugin="org.faktorips.devtools.core.ui"/>

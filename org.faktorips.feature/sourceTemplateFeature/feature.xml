@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<feature id="org.faktorips.feature.source" label="Faktor-IPS Source" version="0.0.0" provider-name="Faktor Zehn AG">
-    <description url="http://www.faktorips.org">
+<feature
+      id="org.faktorips.feature.source"
+      label="Faktor-IPS Source"
+      version="0.0.0"
+      provider-name="Faktor Zehn AG">
+
+   <description url="http://www.faktorips.org">
       Faktor-IPS
    </description>
-    <copyright url="http://www.faktorips.org">A - Lizenzvertrag
+
+   <copyright url="http://www.faktorips.org">
+      A - Lizenzvertrag
 B - Datenschutzbestimmung
 
 -----------------
@@ -379,11 +386,10 @@ Nutzer dort auf die Änderung hinweisen.
 9 Abrufbarkeit der Datenschutzbestimmungen
 Diese Datenschutzbestimmungen können auf der Website der Faktor Zehn AG über das Link “Daten-
 schutz” abgerufen und ausgedruckt werden.
+   </copyright>
 
-
-
-</copyright>
-    <license url="http://www.faktorips.org">A - Lizenzvertrag
+   <license url="http://www.faktorips.org">
+      A - Lizenzvertrag
 B - Datenschutzbestimmung
 
 -----------------
@@ -759,12 +765,12 @@ Nutzer dort auf die Änderung hinweisen.
 9 Abrufbarkeit der Datenschutzbestimmungen
 Diese Datenschutzbestimmungen können auf der Website der Faktor Zehn AG über das Link “Daten-
 schutz” abgerufen und ausgedruckt werden.
+   </license>
 
+   <plugin
+         id="org.faktorips.feature.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
-
-</license>
-    <url>
-        <update label="Faktor-IPS" url="http://update.faktorzehn.org/faktorips/v3/"/>
-    </url>
-    <plugin id="org.faktorips.feature.source" install-size="0" download-size="0" version="0.0.0"/>
 </feature>
