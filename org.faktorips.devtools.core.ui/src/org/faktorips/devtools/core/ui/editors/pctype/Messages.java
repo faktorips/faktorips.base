@@ -340,4 +340,8 @@ public class Messages extends NLS {
     public static String ValidatedAttributesControl_description;
     public static String ValidatedAttributesControl_label;
 
+    public static String RuleEditDialog_groupText;
+
+    public static String RuleEditDialog_labelLocale;
+
 }

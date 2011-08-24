@@ -14,20 +14,18 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import java.util.Locale;
+import java.util.Set;
 
 import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
@@ -46,6 +44,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.InternationalStringPresentationObject;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
+import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -67,8 +66,6 @@ public class ValidationRuleEditingUI {
 
     private boolean uiInitialized = false;
 
-    private Text msgText;
-    // private Label charCountPainter;
     private CharCountPainter charCountPainter;
     private TextField nameField;
     private TextField msgCodeField;
@@ -78,9 +75,7 @@ public class ValidationRuleEditingUI {
     private Checkbox configurableByProductBox;
     private Checkbox defaultActivationBox;
 
-    private CTabFolder msgTextFolder;
-
-    private SelectionListener msgTextFolderSelectionListener;
+    private ComboViewerField<Locale> localeComboField;
 
     public ValidationRuleEditingUI(UIToolkit uiToolkit) {
         this.uiToolkit = uiToolkit;
@@ -112,17 +107,26 @@ public class ValidationRuleEditingUI {
         Text codeText = uiToolkit.createText(msgComposite);
         uiToolkit.createFormLabel(msgComposite, Messages.RuleEditDialog_labelSeverity);
         Combo severityCombo = uiToolkit.createCombo(msgComposite, MessageSeverity.getEnumType());
-        Label label = uiToolkit.createFormLabel(msgComposite, Messages.RuleEditDialog_labelText);
+
+        // text group
+        Group textGroup = uiToolkit.createGroup(msgComposite, Messages.RuleEditDialog_groupText);
+        ((GridData)textGroup.getLayoutData()).horizontalSpan = 2;
+        Composite textComposite = uiToolkit.createLabelEditColumnComposite(textGroup);
+        layoutData = new GridData(GridData.FILL_BOTH);
+        textComposite.setLayoutData(layoutData);
+
+        uiToolkit.createLabel(textComposite, Messages.RuleEditDialog_labelLocale);
+        Combo localeCombo = uiToolkit.createCombo(textComposite);
+
+        Label label = uiToolkit.createFormLabel(textComposite, Messages.RuleEditDialog_labelText);
         label.getParent().setLayoutData(
                 new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING));
 
-        msgTextFolder = new CTabFolder(msgComposite, SWT.BOTTOM | SWT.BORDER);
-        GridData folderLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        folderLayoutData.heightHint = 50;
-        folderLayoutData.widthHint = UIToolkit.DEFAULT_WIDTH;
-        msgTextFolder.setLayoutData(folderLayoutData);
-
-        msgText = uiToolkit.createMultilineText(msgTextFolder);
+        Text msgText = uiToolkit.createMultilineText(textComposite);
+        GridData msgTextLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        msgTextLayoutData.heightHint = 50;
+        msgTextLayoutData.widthHint = UIToolkit.DEFAULT_WIDTH;
+        msgText.setLayoutData(msgTextLayoutData);
         msgText.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
@@ -130,19 +134,26 @@ public class ValidationRuleEditingUI {
             }
         });
 
-        // uiToolkit.createVerticalSpacer(msgComposite, 1);
-
-        //        charCountPainter = uiToolkit.createFormLabel(msgComposite, ""); //$NON-NLS-1$
-        // charCountPainter.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, true, true));
         charCountPainter = new CharCountPainter();
         msgText.addPaintListener(charCountPainter);
-        updateCharCount();
 
         // create fields
+        localeComboField = new ComboViewerField<Locale>(localeCombo, Locale.class);
+        localeComboField.setLabelProvider(new LabelProvider() {
+            @Override
+            public String getText(Object element) {
+                if (element instanceof Locale) {
+                    Locale locale = (Locale)element;
+                    return locale.getDisplayLanguage();
+                }
+                return super.getText(element);
+            }
+        });
         msgCodeField = new TextField(codeText);
         msgTextField = new TextField(msgText);
         msgSeverityField = new EnumValueField(severityCombo, MessageSeverity.getEnumType());
 
+        updateCharCount();
         uiInitialized = true;
     }
 
@@ -170,10 +181,9 @@ public class ValidationRuleEditingUI {
     }
 
     private void updateCharCount() {
-        String msg = NLS.bind(Messages.RuleEditDialog_contains, new Integer(msgText.getText().length()));
+        String msg = NLS.bind(Messages.RuleEditDialog_contains, new Integer(msgTextField.getText().length()));
         charCountPainter.setText(msg);
-        msgText.redraw();
-        // charCountPainter.getParent().layout();
+        msgTextField.getTextControl().redraw();
     }
 
     /**
@@ -190,26 +200,13 @@ public class ValidationRuleEditingUI {
         bindingContext.bindContent(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
         final InternationalStringPresentationObject msgTextPMO = new InternationalStringPresentationObject(
                 rule.getMessageText());
-        createTabsForLocales(rule.getIpsProject());
-        msgTextFolderSelectionListener = new SelectionListener() {
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                CTabItem selectedTabItem = msgTextFolder.getSelection();
-                selectedTabItem.setControl(msgText);
-                Locale locale = (Locale)selectedTabItem.getData();
-                msgTextPMO.setLocale(locale);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // nothing to do
-            }
-        };
-        msgTextFolder.addSelectionListener(msgTextFolderSelectionListener);
+        localeComboField.setInput(getSupportedLocales(rule.getIpsProject()));
+        bindingContext.bindContent(localeComboField, msgTextPMO, InternationalStringPresentationObject.PROPERTY_LOCALE);
 
         msgTextPMO.setLocale(rule.getIpsProject().getProperties().getDefaultLanguage().getLocale());
         bindingContext.bindContent(msgTextField, msgTextPMO, InternationalStringPresentationObject.PROPERTY_TEXT);
+
         bindingContext.bindContent(new CheckboxField(configurableByProductBox), rule,
                 IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT);
         bindingContext.bindContent(new CheckboxField(defaultActivationBox), rule,
@@ -221,19 +218,15 @@ public class ValidationRuleEditingUI {
                 IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT);
     }
 
-    private void createTabsForLocales(IIpsProject ipsProject) {
-        for (CTabItem item : msgTextFolder.getItems()) {
-            item.dispose();
+    private Locale[] getSupportedLocales(IIpsProject ipsProject) {
+        Set<ISupportedLanguage> supportedLanguages = ipsProject.getProperties().getSupportedLanguages();
+        Locale[] result = new Locale[supportedLanguages.size()];
+        int i = 0;
+        for (ISupportedLanguage supportedLanguage : supportedLanguages) {
+            result[i] = supportedLanguage.getLocale();
+            i++;
         }
-        for (ISupportedLanguage supportedLanguage : ipsProject.getProperties().getSupportedLanguages()) {
-            CTabItem tabItem = new CTabItem(msgTextFolder, SWT.NONE);
-            tabItem.setText(supportedLanguage.getLanguageName());
-            tabItem.setData(supportedLanguage.getLocale());
-            if (supportedLanguage.isDefaultLanguage()) {
-                tabItem.setControl(msgText);
-                msgTextFolder.setSelection(tabItem);
-            }
-        }
+        return result;
     }
 
     public void setFocusToNameField() {
@@ -262,10 +255,10 @@ public class ValidationRuleEditingUI {
         bindingContext.removeBindings(nameField.getControl());
         bindingContext.removeBindings(msgCodeField.getControl());
         bindingContext.removeBindings(msgSeverityField.getControl());
-        bindingContext.removeBindings(msgTextField.getControl());
         bindingContext.removeBindings(configurableByProductBox);
         bindingContext.removeBindings(defaultActivationBox);
-        msgTextFolder.removeSelectionListener(msgTextFolderSelectionListener);
+        bindingContext.removeBindings(localeComboField.getControl());
+        bindingContext.removeBindings(msgTextField.getControl());
     }
 
     private static class CharCountPainter implements PaintListener {
