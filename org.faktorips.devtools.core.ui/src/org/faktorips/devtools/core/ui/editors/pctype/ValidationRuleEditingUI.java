@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
@@ -111,18 +110,9 @@ public class ValidationRuleEditingUI {
         // text group
         Group textGroup = uiToolkit.createGroup(msgComposite, Messages.RuleEditDialog_groupText);
         ((GridData)textGroup.getLayoutData()).horizontalSpan = 2;
-        Composite textComposite = uiToolkit.createLabelEditColumnComposite(textGroup);
-        layoutData = new GridData(GridData.FILL_BOTH);
-        textComposite.setLayoutData(layoutData);
+        Combo localeCombo = uiToolkit.createCombo(textGroup);
 
-        uiToolkit.createLabel(textComposite, Messages.RuleEditDialog_labelLocale);
-        Combo localeCombo = uiToolkit.createCombo(textComposite);
-
-        Label label = uiToolkit.createFormLabel(textComposite, Messages.RuleEditDialog_labelText);
-        label.getParent().setLayoutData(
-                new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING));
-
-        Text msgText = uiToolkit.createMultilineText(textComposite);
+        Text msgText = uiToolkit.createMultilineText(textGroup);
         GridData msgTextLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
         msgTextLayoutData.heightHint = 50;
         msgTextLayoutData.widthHint = UIToolkit.DEFAULT_WIDTH;
