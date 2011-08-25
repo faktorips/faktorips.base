@@ -38,7 +38,6 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.enums.DefaultEnumType;
 import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
-import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
@@ -114,7 +113,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
 
-    private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
+    private IProductCmptNamingStrategy productCmptNamingStrategy;
     private String productCmptNamingStrategyId = null; // must keep id as well, to report validation
     // errors, if strategy is not found!
 
@@ -586,13 +585,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         Element artefactEl = XmlUtil.getFirstElement(element, IIpsArtefactBuilderSet.XML_ELEMENT);
         if (artefactEl != null) {
             builderSetId = artefactEl.getAttribute("id"); //$NON-NLS-1$
+            Element artefactConfigEl = XmlUtil.getFirstElement(artefactEl,
+                    IIpsArtefactBuilderSetConfigModel.XML_ELEMENT);
+            if (artefactConfigEl != null) {
+                builderSetConfig = new IpsArtefactBuilderSetConfigModel();
+                builderSetConfig.initFromXml(artefactConfigEl);
+            }
         } else {
             builderSetId = ""; //$NON-NLS-1$
-        }
-        Element artefactConfigEl = XmlUtil.getFirstElement(artefactEl, IIpsArtefactBuilderSetConfigModel.XML_ELEMENT);
-        if (artefactConfigEl != null) {
-            builderSetConfig = new IpsArtefactBuilderSetConfigModel();
-            builderSetConfig.initFromXml(artefactConfigEl);
         }
         initProductCmptNamingStrategyFromXml(ipsProject,
                 XmlUtil.getFirstElement(element, IProductCmptNamingStrategy.XML_TAG_NAME));
