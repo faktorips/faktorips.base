@@ -57,7 +57,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        ipsProject = this.newIpsProject("TestProject");
+        ipsProject = this.newIpsProject();
         properties = new IpsProjectProperties();
         properties.addSupportedLanguage(Locale.ENGLISH);
         properties.addSupportedLanguage(Locale.GERMAN);
@@ -72,6 +72,18 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         properties.setProductCmptNamingStrategy(new NoVersionIdProductCmptNamingStrategy());
         result = properties.validate(ipsProject);
         assertNull(result.getMessageByCode(IIpsProjectProperties.MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY));
+    }
+
+    @Test
+    public void testNoNamingStrategy() throws Exception {
+        assertNull(properties.getProductCmptNamingStrategy());
+        Element element = mock(Element.class);
+        NodeList nodeList = mock(NodeList.class);
+        when(element.getChildNodes()).thenReturn(nodeList);
+        ((IpsProjectProperties)properties).initFromXml(ipsProject, element);
+        assertNotNull(properties.getProductCmptNamingStrategy());
+        assertTrue(properties.getProductCmptNamingStrategy() instanceof NoVersionIdProductCmptNamingStrategy);
+        assertNotNull(properties.getProductCmptNamingStrategy().getIpsProject());
     }
 
     @Test
@@ -468,17 +480,5 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
             fail();
         } catch (NullPointerException e) {
         }
-    }
-
-    @Test
-    public void testNoNamingStrategy() throws Exception {
-        assertNull(properties.getProductCmptNamingStrategy());
-        Element element = mock(Element.class);
-        NodeList nodeList = mock(NodeList.class);
-        when(element.getChildNodes()).thenReturn(nodeList);
-        ((IpsProjectProperties)properties).initFromXml(ipsProject, element);
-        assertNotNull(properties.getProductCmptNamingStrategy());
-        assertTrue(properties.getProductCmptNamingStrategy() instanceof NoVersionIdProductCmptNamingStrategy);
-        assertNotNull(properties.getProductCmptNamingStrategy().getIpsProject());
     }
 }
