@@ -19,6 +19,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Locale;
@@ -43,6 +45,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
@@ -54,7 +57,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        ipsProject = this.newIpsProject("TestProject");
+        ipsProject = this.newIpsProject();
         properties = new IpsProjectProperties();
         properties.addSupportedLanguage(Locale.ENGLISH);
         properties.addSupportedLanguage(Locale.GERMAN);
@@ -69,6 +72,18 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         properties.setProductCmptNamingStrategy(new NoVersionIdProductCmptNamingStrategy());
         result = properties.validate(ipsProject);
         assertNull(result.getMessageByCode(IIpsProjectProperties.MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY));
+    }
+
+    @Test
+    public void testNoNamingStrategy() throws Exception {
+        assertNull(properties.getProductCmptNamingStrategy());
+        Element element = mock(Element.class);
+        NodeList nodeList = mock(NodeList.class);
+        when(element.getChildNodes()).thenReturn(nodeList);
+        ((IpsProjectProperties)properties).initFromXml(ipsProject, element);
+        assertNotNull(properties.getProductCmptNamingStrategy());
+        assertTrue(properties.getProductCmptNamingStrategy() instanceof NoVersionIdProductCmptNamingStrategy);
+        assertNotNull(properties.getProductCmptNamingStrategy().getIpsProject());
     }
 
     @Test

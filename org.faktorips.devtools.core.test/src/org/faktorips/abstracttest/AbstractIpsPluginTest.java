@@ -80,6 +80,7 @@ import org.faktorips.devtools.core.internal.model.enums.EnumContent;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
@@ -278,8 +279,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
 
         IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(name);
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setProductCmptNamingStrategy(new NoVersionIdProductCmptNamingStrategyFactory()
+                .newProductCmptNamingStrategy(ipsProject));
         if (supportedLocales.size() > 0) {
-            IIpsProjectProperties properties = ipsProject.getProperties();
             for (Locale locale : supportedLocales) {
                 properties.addSupportedLanguage(locale);
             }
