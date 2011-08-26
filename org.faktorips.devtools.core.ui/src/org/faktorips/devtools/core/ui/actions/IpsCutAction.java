@@ -13,17 +13,11 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.ui.commands.IpsCutHandler;
 
 /**
  * An action to cut IpsObjectPartContainer-objects out of the model into the clipboard.
@@ -33,6 +27,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 public class IpsCutAction extends IpsAction {
 
     private Clipboard clipboard;
+    private final IpsCutHandler cutHandler = new IpsCutHandler();
 
     public IpsCutAction(ISelectionProvider selectionProvider, Shell shell) {
         super(selectionProvider);
@@ -41,21 +36,6 @@ public class IpsCutAction extends IpsAction {
 
     @Override
     public void run(IStructuredSelection selection) {
-        List<String> removedObjects = new ArrayList<String>();
-        IIpsObjectPart part;
-        for (Iterator<Object> iter = getSelectionIterator(selection); iter.hasNext();) {
-            Object selected = iter.next();
-            if (selected instanceof IIpsObjectPart) {
-                part = (IIpsObjectPart)selected;
-                removedObjects.add(new IpsObjectPartState(part).toString());
-                part.delete();
-            }
-        }
-
-        if (removedObjects.size() > 0) {
-            ArrayList<IResource> emptyList = new ArrayList<IResource>(0);
-            clipboard.setContents(getDataArray(removedObjects, emptyList, null),
-                    getTypeArray(removedObjects, emptyList, null));
-        }
+        cutHandler.cutToClipboard(selection, clipboard);
     }
 }

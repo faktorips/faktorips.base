@@ -19,7 +19,6 @@ import java.io.IOException;
 import javax.xml.transform.TransformerException;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -100,6 +99,35 @@ public class IpsObjectPartState {
     }
 
     /**
+     * Creates a new IpsObjectPartState parsed out of the given string using the given ClassLoader.
+     */
+    @SuppressWarnings("unchecked")
+    public IpsObjectPartState(String part, ClassLoader cl) {
+        try {
+            state = XmlUtil.parseDocument(new ByteArrayInputStream(part.getBytes()));
+        } catch (SAXException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        NodeList nodes = state.getDocumentElement().getElementsByTagName(ELEMENT_TYPE);
+        if (nodes.getLength() != 1) {
+            throw new RuntimeException(
+                    "Illegal String - expected exactly ONE node with tagname " + ELEMENT_TYPE + ", but found " + nodes.getLength()); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
+        Attr typeAttr = (Attr)nodes.item(0).getAttributes().getNamedItem("type"); //$NON-NLS-1$
+        String typeName = typeAttr.getValue();
+
+        try {
+            type = (Class<? extends IIpsObjectPart>)cl.loadClass(typeName);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Returns the string-representation of this state. This string can be parsed back to an object
      * by using the constructor taking a string.
      */
@@ -119,8 +147,8 @@ public class IpsObjectPartState {
      * @param parent The parent to create the part in.
      * @return The newly created IIpsObjectPart, initialized to match the stored state.
      */
-    public IIpsObjectPart newPart(IIpsObjectPartContainer parent) {
-        IIpsObjectPart part = ((IpsObjectPartContainer)parent).newPart(type);
+    public IIpsObjectPart newPart(IpsObjectPartContainer parent) {
+        IIpsObjectPart part = parent.newPart(type);
         NodeList nodes = state.getDocumentElement().getElementsByTagName(ELEMENT_DATA);
 
         if (nodes.getLength() != 1) {
@@ -129,8 +157,19 @@ public class IpsObjectPartState {
         }
 
         Element el = (Element)nodes.item(0);
-        part.initFromXml((Element)el.getElementsByTagName("*").item(0)); //$NON-NLS-1$
+        ((IpsObjectPart)part).initFromXml((Element)el.getElementsByTagName("*").item(0), part.getId()); //$NON-NLS-1$
+
+        parent.partWasAdded(part);
         return part;
+    }
+
+    /**
+     * Returns the type this {@link IpsObjectPartState} stores.
+     * 
+     * @return the type this {@link IpsObjectPartState} stores
+     */
+    public Class<? extends IIpsObjectPart> getType() {
+        return type;
     }
 
 }

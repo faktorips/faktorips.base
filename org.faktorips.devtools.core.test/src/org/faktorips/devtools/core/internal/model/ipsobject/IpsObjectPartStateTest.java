@@ -22,7 +22,6 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.junit.Before;
@@ -31,7 +30,7 @@ import org.junit.Test;
 public class IpsObjectPartStateTest extends AbstractIpsPluginTest {
 
     IPolicyCmptTypeAttribute attribute;
-    IPolicyCmptType pcType;
+    PolicyCmptType pcType;
 
     @Override
     @Before
