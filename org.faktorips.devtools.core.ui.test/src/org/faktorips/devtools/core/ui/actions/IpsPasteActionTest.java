@@ -109,7 +109,8 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         assertEquals(0, pcType.getNumOfAttributes());
         pasteAction.run();
         assertEquals(1, pcType.getNumOfAttributes());
-        assertEquals(old, new IpsObjectPartState(pcType.getAttributes().get(0)).toString());
+        assertEquals(old.replaceFirst("id=\"[a-z0-9-]+\"", "id=\"1\""), new IpsObjectPartState(pcType.getAttributes()
+                .get(0)).toString().replaceFirst("id=\"[a-z0-9-]+\"", "id=\"1\""));
 
         IpsCopyAction copyAction = newIpsCopyAction(pack);
         pasteAction = newIpsPasteAction(root);
