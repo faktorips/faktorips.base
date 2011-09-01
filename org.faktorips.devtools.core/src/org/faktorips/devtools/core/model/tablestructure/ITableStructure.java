@@ -90,10 +90,21 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement {
     public IColumn getColumn(int index);
 
     /**
-     * Returns the index of the given column in this tablestructure's list of columns. Returns null
-     * if the given column is not defined by this table structure.
+     * Returns the index of the given column in this tablestructure's list of columns. Throws a
+     * RuntimeException is the column is not part of this {@link ITableStructure}.
+     * 
+     * @throws RuntimeException if the column was not found
      */
     public int getColumnIndex(IColumn column);
+
+    /**
+     * Returns the index for the given name of a column in this tablestructure's list of columns.
+     * Throws a RuntimeException is the column is not part of this {@link ITableStructure}.
+     * 
+     * @param columnName The name of the column
+     * @throws RuntimeException if the column was not found
+     */
+    public int getColumnIndex(String columnName);
 
     /**
      * Returns the number of columns in the table.

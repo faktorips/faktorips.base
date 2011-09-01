@@ -166,6 +166,16 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
+    public int getColumnIndex(String columnName) {
+        for (int i = 0; i < columns.size(); i++) {
+            if (columns.get(i).getName().equals(columnName)) {
+                return i;
+            }
+        }
+        throw new RuntimeException("Can't get index for column " + columnName); //$NON-NLS-1$
+    }
+
+    @Override
     public IColumnRange[] getRanges() {
         IColumnRange[] c = new IColumnRange[ranges.size()];
         ranges.toArray(c);

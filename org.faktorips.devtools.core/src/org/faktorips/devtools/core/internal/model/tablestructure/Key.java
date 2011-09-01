@@ -32,6 +32,9 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
 
     private List<String> items = new ArrayList<String>(0);
 
+    // caching the keyItems for better performance
+    private List<IKeyItem> keyItems = new ArrayList<IKeyItem>();
+
     public Key(TableStructure tableStructure, String id) {
         super(tableStructure, id);
     }
@@ -52,36 +55,58 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
 
     @Override
     public IKeyItem[] getKeyItems() {
-        List<IKeyItem> keyItems = new ArrayList<IKeyItem>();
+        return keyItems.toArray(new IKeyItem[keyItems.size()]);
+    }
+
+    private void updateKeyItems() {
+        keyItems = new ArrayList<IKeyItem>();
         for (String item : items) {
-            IColumn c = getTableStructure().getColumn(item);
-            if (c != null) {
-                keyItems.add(c);
-            } else {
-                IColumnRange range = getTableStructure().getRange(item);
-                if (range != null) {
-                    keyItems.add(range);
-                }
+            IKeyItem keyItem = getKeyItem(item);
+            if (keyItem != null) {
+                keyItems.add(keyItem);
             }
         }
-        return keyItems.toArray(new IKeyItem[keyItems.size()]);
+    }
+
+    private IKeyItem getKeyItem(String item) {
+        IKeyItem keyItem = null;
+        IColumn c = getTableStructure().getColumn(item);
+        if (c != null) {
+            keyItem = c;
+        } else {
+            IColumnRange range = getTableStructure().getRange(item);
+            if (range != null) {
+                keyItem = range;
+            }
+        }
+        return keyItem;
     }
 
     @Override
     public void setKeyItems(String[] itemNames) {
         items = CollectionUtil.toArrayList(itemNames);
+        updateKeyItems();
         objectHasChanged();
     }
 
     @Override
     public void addKeyItem(String name) {
         items.add(name);
-
+        IKeyItem keyItem = getKeyItem(name);
+        if (keyItem != null) {
+            keyItems.add(keyItem);
+        }
+        objectHasChanged();
     }
 
     @Override
     public void removeKeyItem(String name) {
         items.remove(name);
+        IKeyItem keyItem = getKeyItem(name);
+        if (keyItem != null) {
+            keyItems.remove(keyItem);
+        }
+        objectHasChanged();
     }
 
     @Override
@@ -134,6 +159,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
             String item = itemElement.getAttribute("name"); //$NON-NLS-1$
             items.add(item);
         }
+        updateKeyItems();
     }
 
     @Override
