@@ -70,16 +70,19 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
 
     private IKeyItem getKeyItem(String item) {
         IKeyItem keyItem = null;
-        IColumn c = getTableStructure().getColumn(item);
-        if (c != null) {
-            keyItem = c;
-        } else {
-            IColumnRange range = getTableStructure().getRange(item);
-            if (range != null) {
-                keyItem = range;
+        if (getTableStructure() != null) {
+            IColumn c = getTableStructure().getColumn(item);
+            if (c != null) {
+                keyItem = c;
+            } else {
+                IColumnRange range = getTableStructure().getRange(item);
+                if (range != null) {
+                    keyItem = range;
+                }
             }
+            return keyItem;
         }
-        return keyItem;
+        return null;
     }
 
     @Override
