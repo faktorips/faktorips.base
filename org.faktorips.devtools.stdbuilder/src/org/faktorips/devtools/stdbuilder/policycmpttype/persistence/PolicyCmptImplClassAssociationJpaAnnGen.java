@@ -25,13 +25,14 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.RelationshipType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.RelationshipType;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
@@ -132,7 +133,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             // add special annotation in case of join table needed
             addAnnotationJoinTable(fragment, genAssociation);
         } catch (CoreException e) {
-            IpsPlugin.log(e);
+            StdBuilderPlugin.log(e);
         }
 
         return fragment;
@@ -171,8 +172,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         }
 
         if (StringUtils.isNotEmpty(persistenceAssociatonInfo.getJoinColumnName())) {
-            appendJoinColumn(fragment, persistenceAssociatonInfo.getJoinColumnName(), persistenceAssociatonInfo
-                    .isJoinColumnNullable());
+            appendJoinColumn(fragment, persistenceAssociatonInfo.getJoinColumnName(),
+                    persistenceAssociatonInfo.isJoinColumnNullable());
         }
     }
 
@@ -409,8 +410,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             IPolicyCmptTypeAssociation pcTypeAssociation) {
         GenAssociation pcTypeAssociationGenerator;
         try {
-            pcTypeAssociationGenerator = generator.getStandardBuilderSet().getGenerator(
-                    pcTypeAssociation.getPolicyCmptType()).getGenerator(pcTypeAssociation);
+            pcTypeAssociationGenerator = generator.getStandardBuilderSet()
+                    .getGenerator(pcTypeAssociation.getPolicyCmptType()).getGenerator(pcTypeAssociation);
             return pcTypeAssociationGenerator.getTargetPolicyCmptType().isPersistentEnabled();
         } catch (CoreException e) {
             // in some cases the getGenerator method could throw a CoreException e.g. if the
