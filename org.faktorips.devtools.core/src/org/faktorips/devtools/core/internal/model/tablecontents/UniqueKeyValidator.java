@@ -68,7 +68,7 @@ public class UniqueKeyValidator {
     }
 
     /** cache to validate simple column unique keys */
-    private Map<IUniqueKey, Map<AbstractKeyValue, Object>> uniqueKeyMapColumn = new HashMap<IUniqueKey, Map<AbstractKeyValue, Object>>();
+    private Map<IUniqueKey, Map<AbstractKeyValue, List<Row>>> uniqueKeyMapColumn = new HashMap<IUniqueKey, Map<AbstractKeyValue, List<Row>>>();
 
     /**
      * caches to validate column ranges of type TWO_COLUMN_RANGE note that the unique key validation
@@ -77,6 +77,8 @@ public class UniqueKeyValidator {
      * special UniqueKeyValidatorRange object for each unique key with at least one two column range
      */
     private Map<IUniqueKey, UniqueKeyValidatorRange> uniqueKeyValidatorForTwoColumnRange = new HashMap<IUniqueKey, UniqueKeyValidatorRange>();
+
+    private MessageList cachedMessageList;
 
     // cached TableStructure and ValueDatatypes (cached because of performance reasons)
     // the client is responsible to keep this fields up to date using the methods
@@ -150,6 +152,7 @@ public class UniqueKeyValidator {
      * calculated key value of the given row.
      */
     private void updateAllUniqueKeysCache(ITableContentsGeneration tableContentsGeneration, Row row, int operation) {
+        cachedMessageList = null;
         if (cachedTableStructure == null) {
             return;
         }
@@ -170,11 +173,11 @@ public class UniqueKeyValidator {
      * column range keys.
      */
     private void updateUniqueKeysCacheColumn(Row row, int operation, IUniqueKey uniqueKey) {
-        Map<AbstractKeyValue, Object> keyValueMap = uniqueKeyMapColumn.get(uniqueKey);
+        Map<AbstractKeyValue, List<Row>> keyValueMap = uniqueKeyMapColumn.get(uniqueKey);
 
         // if not exist, create a new cache (map) for the given unique key first
         if (keyValueMap == null) {
-            keyValueMap = new HashMap<AbstractKeyValue, Object>();
+            keyValueMap = new HashMap<AbstractKeyValue, List<Row>>();
             uniqueKeyMapColumn.put(uniqueKey, keyValueMap);
         }
 
@@ -197,97 +200,26 @@ public class UniqueKeyValidator {
     /**
      * Updates the key value and the given row in the given map (cache)
      */
-    @SuppressWarnings("unchecked")
-    static void updateKeyValueInMap(Map<AbstractKeyValue, Object> keyValueMap,
+    static void updateKeyValueInMap(Map<AbstractKeyValue, List<Row>> keyValueMap,
             AbstractKeyValue keyValue,
             Row row,
             int operation) {
 
-        Object rowOrRowsForKeyValue = keyValueMap.get(keyValue);
+        List<Row> rowsForKeyValue = keyValueMap.get(keyValue);
 
         // key value dosn't exists in cache
-        if (rowOrRowsForKeyValue == null) {
-            // in case of a row change, add the new key value
-            // do nothing if the row was removed
-            if (operation == HANDLE_UNIQUEKEY_ROW_CHANGED) {
-                keyValueMap.put(keyValue, row);
-            }
-            return;
+        if (rowsForKeyValue == null) {
+            rowsForKeyValue = new ArrayList<Row>();
+            keyValueMap.put(keyValue, rowsForKeyValue);
         }
-
-        // key value exists
-        // update the cache
-        if (rowOrRowsForKeyValue instanceof Row) {
-            // exact one row found for the given key value
-            updateKeyValueRowInMap(keyValueMap, keyValue, row, operation, (Row)rowOrRowsForKeyValue);
-            return;
-        } else if (rowOrRowsForKeyValue instanceof List) {
-            // more than one rows found for the given key value
-            updateKeyValueListInMap(keyValueMap, keyValue, row, operation, (List<Row>)rowOrRowsForKeyValue);
-            return;
-        }
-        throw new RuntimeException("Unsupported key value found !" + rowOrRowsForKeyValue.getClass().getName()); //$NON-NLS-1$
-    }
-
-    /**
-     * Update the row of for given key value in the map of cached key values 1) operation=update: a)
-     * if the row found is the current row then nothing to do b) if the row found is another row add
-     * a new list containing the two rows 2) operation=remove: remove the key value from the map of
-     * cached key items
-     */
-    private static void updateKeyValueRowInMap(Map<AbstractKeyValue, Object> keyValueMap,
-            AbstractKeyValue keyValue,
-            Row row,
-            int operation,
-            Row rowOrRowsForKeyValue) {
-
+        // key value exists, update the cache
         if (operation == HANDLE_UNIQUEKEY_ROW_CHANGED) {
-            if (row == rowOrRowsForKeyValue) {
-                // same row nothing to to
-                return;
-            }
-            // new row with same key, add a new List
-            List<Row> rows = new ArrayList<Row>(2);
-            rows.add(rowOrRowsForKeyValue);
-            rows.add(row);
-            keyValueMap.put(keyValue, rows);
-        } else if (operation == HANDLE_UNIQUEKEY_ROW_REMOVED) {
-            if (!(rowOrRowsForKeyValue == row) && keyValue.isValid(rowOrRowsForKeyValue)) {
-                // normally this can never be happen, because if this is not the current row
-                // then there must be a list of rows or the update has not worked correctly before
-                // (inconsistent cache)
-                // but sometimes while scrolling the table contents this state could be occur, thus
-                // we just ignore it here
-            }
-            keyValueMap.remove(keyValue);
-        } else {
-            throw new RuntimeException("Unsupported operation: " + operation); //$NON-NLS-1$
-        }
-    }
-
-    /**
-     * Update the list of rows for the give key value in the map of cached key values 1)
-     * operation=update: add the row to the list of rows 2) operation=remove: removes the row from
-     * the list of rows, if there is only one row left, add the row directly without a list
-     */
-    private static void updateKeyValueListInMap(Map<AbstractKeyValue, Object> keyValueMap,
-            AbstractKeyValue keyValue,
-            Row row,
-            int operation,
-            List<Row> rows) {
-
-        if (operation == HANDLE_UNIQUEKEY_ROW_CHANGED) {
-            if (!rows.contains(row)) {
+            if (!rowsForKeyValue.contains(row)) {
                 // new row
-                rows.add(row);
+                rowsForKeyValue.add(row);
             }
         } else if (operation == HANDLE_UNIQUEKEY_ROW_REMOVED) {
-            rows.remove(row);
-            if (rows.size() == 1) {
-                // only one row is left
-                // store the row instead the list
-                keyValueMap.put(keyValue, rows.get(0));
-            }
+            rowsForKeyValue.remove(row);
         }
     }
 
@@ -295,6 +227,10 @@ public class UniqueKeyValidator {
      * Validate all unique keys in all caches.
      */
     public void validateAllUniqueKeys(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes) {
+        if (cachedMessageList != null && !isInvalidUniqueKeyCache(tableStructure)) {
+            list.add(cachedMessageList);
+            return;
+        }
         cachedValueDatatypes = datatypes;
         cachedTableStructure = tableStructure;
 
@@ -308,6 +244,7 @@ public class UniqueKeyValidator {
 
         list.add(validationErrors);
         currentErrorStatus = validationErrors.containsErrorMsg();
+        cachedMessageList = list;
     }
 
     private void printCachedContent() {
@@ -331,13 +268,13 @@ public class UniqueKeyValidator {
      * map of key value objects. This method validates the key values for column key values only -
      * not key value ranges (two column key value objects)
      */
-    private void validateUniqueKeys(MessageList list, Map<IUniqueKey, Map<AbstractKeyValue, Object>> uniqueKeyMap2) {
+    private void validateUniqueKeys(MessageList list, Map<IUniqueKey, Map<AbstractKeyValue, List<Row>>> uniqueKeyMap2) {
         // iterate all unique keys, specified in the table structure
-        for (Map<AbstractKeyValue, Object> keyValuesForUniqueKeyCache : uniqueKeyMap2.values()) {
+        for (Map<AbstractKeyValue, List<Row>> keyValuesForUniqueKeyCache : uniqueKeyMap2.values()) {
             List<AbstractKeyValue> invalidkeyValues = new ArrayList<AbstractKeyValue>();
 
             // iterate all key values and check if there is a unique key violation
-            for (Entry<AbstractKeyValue, Object> keyValueEntry : keyValuesForUniqueKeyCache.entrySet()) {
+            for (Entry<AbstractKeyValue, List<Row>> keyValueEntry : keyValuesForUniqueKeyCache.entrySet()) {
                 validateKeyValue(list, keyValueEntry, invalidkeyValues);
             }
 
@@ -358,48 +295,45 @@ public class UniqueKeyValidator {
      * row, otherwise the key value is invalid and must be removed from the list; if no more rows
      * are left then the key value is invalid.
      */
-    @SuppressWarnings("unchecked")
     void validateKeyValue(MessageList list,
-            Entry<AbstractKeyValue, Object> keyValueEntry,
+            Entry<AbstractKeyValue, List<Row>> keyValueEntry,
             List<AbstractKeyValue> invalidkeyValues) {
 
         AbstractKeyValue keyValue = keyValueEntry.getKey();
 
-        if (keyValueEntry.getValue() instanceof List) {
-            List<Row> rows = (List<Row>)keyValueEntry.getValue();
-            List<Row> rowsChecked = new ArrayList<Row>(rows.size());
+        List<Row> rows = keyValueEntry.getValue();
+        List<Row> rowsChecked = new ArrayList<Row>(rows.size());
 
-            /*
-             * auto-fix invalid rows check if the row value matches the key value, if not remove the
-             * row this could be happen, because a row change triggers only the creation of new key
-             * values, the old key value will not be updated e.g. rowA has a key value 1, and rowB
-             * has key value 1 rowA changed to key value 2, then a new key value 2 is created and
-             * related to rowA but key value 1 still contains a relation to rowA and rowB so key
-             * value 1 must be fixed: isValid(rowA) returns false
-             */
-            for (Row currentRow : rows) {
-                if (keyValue.isValid(currentRow)) {
-                    rowsChecked.add(currentRow);
-                }
+        /*
+         * auto-fix invalid rows check if the row value matches the key value, if not remove the row
+         * this could be happen, because a row change triggers only the creation of new key values,
+         * the old key value will not be updated e.g. rowA has a key value 1, and rowB has key value
+         * 1 rowA changed to key value 2, then a new key value 2 is created and related to rowA but
+         * key value 1 still contains a relation to rowA and rowB so key value 1 must be fixed:
+         * isValid(rowA) returns false
+         */
+        for (Row currentRow : rows) {
+            if (keyValue.isValid(currentRow)) {
+                rowsChecked.add(currentRow);
             }
+        }
 
-            // check if the key value has more then one row
-            if (rowsChecked.size() == 0) {
-                // key value has no more rows
-                // will be removed later
-                invalidkeyValues.add(keyValue);
-                return;
-            }
+        // check if the key value has more then one row
+        if (rowsChecked.size() == 0) {
+            // key value has no more rows
+            // will be removed later
+            invalidkeyValues.add(keyValue);
+            return;
+        }
 
-            // update key value object
-            keyValueEntry.setValue(rowsChecked);
+        // update key value object
+        keyValueEntry.setValue(rowsChecked);
 
-            // check unique key violation
-            if (rowsChecked.size() > 1) {
-                // more then one unique key exists, create validation error for each row
-                for (Row row : rowsChecked) {
-                    createValidationErrorUniqueKeyViolation(list, keyValue.getUniqueKey(), row);
-                }
+        // check unique key violation
+        if (rowsChecked.size() > 1) {
+            // more then one unique key exists, create validation error for each row
+            for (Row row : rowsChecked) {
+                createValidationErrorUniqueKeyViolation(list, keyValue.getUniqueKey(), row);
             }
         }
     }

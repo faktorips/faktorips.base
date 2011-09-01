@@ -63,13 +63,9 @@ public class KeyValue extends AbstractKeyValue {
     }
 
     private String evalValue(Row row) {
-        return evalValue(structure, uniqueKey, row);
-    }
-
-    private String evalValue(ITableStructure structure, IUniqueKey uniqueKey, Row row) {
         String[] values;
         List<IKeyItem> keyItems = getNonTwoColumnRangeKeyItems(uniqueKey);
-
+        
         values = new String[keyItems.size()];
         for (int i = 0; i < keyItems.size(); i++) {
             values[i] = getValueForKeyItem(structure, row, keyItems.get(i));

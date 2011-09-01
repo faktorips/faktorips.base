@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -55,11 +54,14 @@ public class UniqueKeyValidatorRange {
      * cache contains for each key value a map of column ranges (key) and sorted maps (value) each
      * map contains the KeyValueRange ('from'-value) and the rows which matches this key value range
      */
-    private Map<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, Object>>> keyValueRanges = new HashMap<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, Object>>>();
+    private Map<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, List<Row>>>> keyValueRanges = new HashMap<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, List<Row>>>>();
+
+    private List<ColumnRange> twoColumnRanges;
 
     public UniqueKeyValidatorRange(UniqueKeyValidator uniqueKeyValidator, IUniqueKey uniqueKey) {
         this.uniqueKeyValidator = uniqueKeyValidator;
         this.uniqueKey = uniqueKey;
+        twoColumnRanges = AbstractKeyValue.getTwoColumnRanges(uniqueKey);
     }
 
     /**
@@ -68,18 +70,17 @@ public class UniqueKeyValidatorRange {
     public void updateUniqueKeysCache(Row row, int operation) {
         // update the key value (non two-column-key-item-value)
         KeyValue keyValue = KeyValue.createKeyValue(uniqueKeyValidator.getCachedTableStructure(), uniqueKey, row);
-        Map<ColumnRange, SortedMap<AbstractKeyValue, Object>> listOfRangeMaps = keyValueRanges.get(keyValue);
+        Map<ColumnRange, SortedMap<AbstractKeyValue, List<Row>>> listOfRangeMaps = keyValueRanges.get(keyValue);
         if (listOfRangeMaps == null) {
-            listOfRangeMaps = new HashMap<ColumnRange, SortedMap<AbstractKeyValue, Object>>();
+            listOfRangeMaps = new HashMap<ColumnRange, SortedMap<AbstractKeyValue, List<Row>>>();
             keyValueRanges.put(keyValue, listOfRangeMaps);
         }
 
         // update the sorted maps for each two-column-range key item
-        List<ColumnRange> twoColumnRanges = AbstractKeyValue.getTwoColumnRanges(uniqueKey);
         for (ColumnRange columnRange : twoColumnRanges) {
-            SortedMap<AbstractKeyValue, Object> sortedMap = listOfRangeMaps.get(columnRange);
+            SortedMap<AbstractKeyValue, List<Row>> sortedMap = listOfRangeMaps.get(columnRange);
             if (sortedMap == null) {
-                sortedMap = new TreeMap<AbstractKeyValue, Object>();
+                sortedMap = new TreeMap<AbstractKeyValue, List<Row>>();
                 listOfRangeMaps.put(columnRange, sortedMap);
             }
 
@@ -95,7 +96,7 @@ public class UniqueKeyValidatorRange {
             Row row,
             int operation,
             ColumnRange columnRange,
-            SortedMap<AbstractKeyValue, Object> keyValueRangeMap) {
+            SortedMap<AbstractKeyValue, List<Row>> keyValueRangeMap) {
 
         KeyValueRange keyValueRange = KeyValueRange.createKeyValue(tableStructure,
                 uniqueKeyValidator.getCachedValueDatatypes(), uniqueKey, row, columnRange);
@@ -112,10 +113,14 @@ public class UniqueKeyValidatorRange {
      * Validates the unique keys values in the cache.
      */
     public void validate(MessageList list) {
+        // update twoColumnRange (maybe uniqueKey has changed)
+        twoColumnRanges = AbstractKeyValue.getTwoColumnRanges(uniqueKey);
+
         // list to auto-fix invalid key values
         List<KeyValue> invalidKeyValues = new ArrayList<KeyValue>();
 
-        for (Entry<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, Object>>> entry : keyValueRanges.entrySet()) {
+        for (Entry<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, List<Row>>>> entry : keyValueRanges
+                .entrySet()) {
             // check if the key value is valid
             KeyValue keyValue = entry.getKey();
             if (!keyValue.isValid()) {
@@ -123,7 +128,7 @@ public class UniqueKeyValidatorRange {
                 continue;
             }
 
-            Map<ColumnRange, SortedMap<AbstractKeyValue, Object>> columnRangeMaps = entry.getValue();
+            Map<ColumnRange, SortedMap<AbstractKeyValue, List<Row>>> columnRangeMaps = entry.getValue();
 
             validateAllRanges(list, keyValue, columnRangeMaps);
 
@@ -145,16 +150,14 @@ public class UniqueKeyValidatorRange {
      */
     private void validateAllRanges(MessageList list,
             KeyValue keyValue,
-            Map<ColumnRange, SortedMap<AbstractKeyValue, Object>> columnRangeMaps) {
+            Map<ColumnRange, SortedMap<AbstractKeyValue, List<Row>>> columnRangeMaps) {
 
         Set<Row> rowsUniqueKeyViolation = new HashSet<Row>();
         Map<KeyValueRange, Set<Row>> allRangesRowsSameFromValue = null;
-        for (Entry<ColumnRange, SortedMap<AbstractKeyValue, Object>> entry2 : columnRangeMaps.entrySet()) {
-            MessageList uniqueKeyValidationErrors = new MessageList();
-            SortedMap<AbstractKeyValue, Object> keyValueRangeMap = entry2.getValue();
+        for (Entry<ColumnRange, SortedMap<AbstractKeyValue, List<Row>>> entry2 : columnRangeMaps.entrySet()) {
+            SortedMap<AbstractKeyValue, List<Row>> keyValueRangeMap = entry2.getValue();
             Map<KeyValueRange, Set<Row>> rowsSameFromValue = validateUniqueKeysRange(rowsUniqueKeyViolation, keyValue,
                     keyValueRangeMap);
-            list.add(uniqueKeyValidationErrors);
 
             /*
              * store entries with same 'from'-value, these entries must be handled separately,
@@ -171,12 +174,6 @@ public class UniqueKeyValidatorRange {
             }
         }
 
-        /*
-         * create errors for all rows with the same 'from'-value the set allRangesRowsSameFromValue
-         * contains all rows with the same from value in all ranges note that the validation above
-         * doesn't find these kind of errors, because only one key value range object ('from'-value)
-         * are exists in the sorted list with a list of rows
-         */
         MessageList uniqueKeyValidationErrors = new MessageList();
         for (Row row : rowsUniqueKeyViolation) {
             uniqueKeyValidator.createValidationErrorUniqueKeyViolation(uniqueKeyValidationErrors,
@@ -211,7 +208,7 @@ public class UniqueKeyValidatorRange {
                 Set<Row> rows = entry.getValue();
                 // add all rows to the set rowsViolation which are collision with second set
                 for (Entry<KeyValueRange, Set<Row>> entryInSecondSet : rowsSameFromValue.entrySet()) {
-                    addOverlappingRows(rowsViolation, keyValue, rows, entryInSecondSet.getValue());
+                    addOverlappingRows(rowsViolation, rows, entryInSecondSet.getValue());
                 }
                 if (rowsViolation.size() > 0) {
                     result.put(keyValue, rowsViolation);
@@ -224,10 +221,7 @@ public class UniqueKeyValidatorRange {
     /**
      * Check all row to each other if there are overlapping rows
      */
-    private void addOverlappingRows(Set<Row> rowsViolation,
-            KeyValueRange keyValue,
-            Set<Row> rows,
-            Set<Row> rowsInSecondSet) {
+    private void addOverlappingRows(Set<Row> rowsViolation, Set<Row> rows, Set<Row> rowsInSecondSet) {
 
         for (Row row : rows) {
             boolean collision = false;
@@ -235,7 +229,7 @@ public class UniqueKeyValidatorRange {
                 if (row == rowSecond) {
                     continue;
                 }
-                collision = collisionInAllRanges(keyValue.getUniqueKey(), row, rowSecond);
+                collision = collisionInAllRanges(row, rowSecond);
                 if (collision) {
                     rowsViolation.add(row);
                     break;
@@ -258,10 +252,9 @@ public class UniqueKeyValidatorRange {
      * map of key value range objects. This method validates the key value ranges for key value
      * ranges (two column key value objects) only
      */
-    @SuppressWarnings("unchecked")
     private Map<KeyValueRange, Set<Row>> validateUniqueKeysRange(Set<Row> rowsUniqueKeyViolation,
             KeyValue keyValue,
-            SortedMap<AbstractKeyValue, Object> keyValueRangeMap) {
+            SortedMap<AbstractKeyValue, List<Row>> keyValueRangeMap) {
 
         List<AbstractKeyValue> invalidkeyValues = new ArrayList<AbstractKeyValue>();
         Map<KeyValueRange, Set<Row>> mapRowsSameFrom = new HashMap<KeyValueRange, Set<Row>>();
@@ -274,9 +267,9 @@ public class UniqueKeyValidatorRange {
             invalidkeyValues.add(keyValue);
         }
 
-        for (Entry<AbstractKeyValue, Object> entry : keyValueRangeMap.entrySet()) {
+        for (Entry<AbstractKeyValue, List<Row>> entry : keyValueRangeMap.entrySet()) {
             KeyValueRange keyValueFrom = (KeyValueRange)entry.getKey();
-            Object keyValueObject = entry.getValue();
+            List<Row> keyValueObject = entry.getValue();
 
             /*
              * check if the key value object is valid, if one key item column has changed then the
@@ -295,29 +288,26 @@ public class UniqueKeyValidatorRange {
             }
 
             // there are rows with same 'from'-value
-            if (keyValueObject instanceof List) {
-                // cleanup list, maybe there are rows which are not valid anymore
-                List<Row> validRows = new ArrayList<Row>();
-                for (Iterator<Row> iterator = ((List<Row>)keyValueObject).iterator(); iterator.hasNext();) {
-                    Row row = iterator.next();
-                    // check if the key value is valid for the row
-                    // and check if the key value from is valid
-                    if (keyValue.isValid(row) && keyValueFrom.isValid(row)) {
-                        validRows.add(row);
-                    }
+            // cleanup list, maybe there are rows which are not valid anymore
+            List<Row> validRows = new ArrayList<Row>();
+            for (Row row : keyValueObject) {
+                // check if the key value is valid for the row
+                // and check if the key value from is valid
+                if (keyValue.isValid(row) && keyValueFrom.isValid(row)) {
+                    validRows.add(row);
                 }
+            }
 
-                if (validRows.size() > 1) {
-                    Set<Row> rowsSameFrom = mapRowsSameFrom.get(keyValueFrom);
-                    if (rowsSameFrom == null) {
-                        rowsSameFrom = new HashSet<Row>();
-                        mapRowsSameFrom.put(keyValueFrom, rowsSameFrom);
-                    }
-                    rowsSameFrom.addAll(validRows);
-                } else if (validRows.size() == 0) {
-                    invalidkeyValues.add(keyValueFrom);
-                    continue;
+            if (validRows.size() > 1) {
+                Set<Row> rowsSameFrom = mapRowsSameFrom.get(keyValueFrom);
+                if (rowsSameFrom == null) {
+                    rowsSameFrom = new HashSet<Row>();
+                    mapRowsSameFrom.put(keyValueFrom, rowsSameFrom);
                 }
+                rowsSameFrom.addAll(validRows);
+            } else if (validRows.size() == 0) {
+                invalidkeyValues.add(keyValueFrom);
+                continue;
             }
 
             // abort validation of current key if there are to many unique key violations
@@ -330,8 +320,8 @@ public class UniqueKeyValidatorRange {
                 continue;
             }
 
-            List<Row> rowsChecked = validateKeyValueRange(rowsUniqueKeyViolation, uniqueKey, prevKeyValueFrom,
-                    keyValueFrom, keyValueObject, invalidkeyValues);
+            List<Row> rowsChecked = validateKeyValueRange(rowsUniqueKeyViolation, prevKeyValueFrom, keyValueFrom,
+                    keyValueObject, invalidkeyValues);
 
             if (rowsChecked != null) {
                 // update the valid rows for the key value entry
@@ -351,7 +341,7 @@ public class UniqueKeyValidatorRange {
 
     private boolean isMaxNoOfUniqueKeyViolationsReached(MessageList list) {
         if (list.size() >= MAX_NO_OF_UNIQUE_KEY_VALIDATION_ERRORS) {
-            createValidationErrorToManyUniqueKeyViolations(list, uniqueKey, 10);
+            createValidationErrorToManyUniqueKeyViolations(list, MAX_NO_OF_UNIQUE_KEY_VALIDATION_ERRORS);
             return true;
         }
         return false;
@@ -359,114 +349,54 @@ public class UniqueKeyValidatorRange {
 
     /**
      * Validates the given key value range object entry against the given 'from'- and 'to'-value key
-     * value range objects. The key value entry (cache entry) contains the key value and either the
-     * row or a list of rows which matches (are greater or less) the key value range. Each matched
-     * key value range object must checked against the given 'to' or 'from' key value range object.
+     * value range objects. The key value entry (cache entry) contains the key value and list of
+     * rows which matches (are greater or less) the key value range. Each matched key value range
+     * object must checked against the given 'to' or 'from' key value range object.
      * <p>
      * Additional the key value range object will be checked if the stored value is up to date for
      * the stored row, otherwise the key value range object is invalid and must be removed from the
      * list if no more rows are left then the key value range object is invalid.
      */
     private List<Row> validateKeyValueRange(Set<Row> rowsUniqueKeyViolation,
-            IUniqueKey uniqueKey,
             KeyValueRange prevFrom,
             KeyValueRange keyValue,
-            Object keyValueObject,
+            List<Row> rows,
             List<AbstractKeyValue> invalidkeyValues) {
+        List<Row> rowsChecked = new ArrayList<Row>();
 
-        // ignore invalid key values
-        if (!prevFrom.isValid()) {
-            invalidkeyValues.add(prevFrom);
-            return null;
+        // first check if all rows are 'valid' for the key value
+        for (Row currentRow : rows) {
+            if (!keyValue.isValid(currentRow)) {
+                /*
+                 * note that the key value cannot be removed because there is at least one other row
+                 * with the same from value (the hashcode of the keyValue range object is only the
+                 * from value)
+                 */
+                continue;
+            }
+            rowsChecked.add(currentRow);
         }
 
-        if (keyValueObject instanceof Row) {
-            Row currentRow = (Row)keyValueObject;
-
-            // ignore invalid key values
-            if (!keyValue.isValid()) {
-                invalidkeyValues.add(keyValue);
-                return null;
-            }
-
-            validateKeyValueRangeFor(rowsUniqueKeyViolation, uniqueKey, prevFrom, keyValue, currentRow);
-        } else if (keyValueObject instanceof List) {
-            // TODO AW: Refactor, provide 2 methods instead of parameter instanceof switching
-            @SuppressWarnings("unchecked")
-            List<Row> rows = (List<Row>)keyValueObject;
-            List<Row> rowsChecked = new ArrayList<Row>();
-
-            // first check if all rows are 'valid' for the key value
-            for (Row currentRow : rows) {
-                if (!keyValue.isValid(currentRow)) {
-                    /*
-                     * note that the key value cannot be removed because there is at least one other
-                     * row with the same from value (the hashcode of the keyValue range object is
-                     * only the from value)
-                     */
-                    continue;
-                }
-                rowsChecked.add(currentRow);
-            }
-
-            if (rowsChecked.size() == 0) {
-                // key value has no more rows (invalid)
-                // will be removed later
-                invalidkeyValues.add(keyValue);
-                return rowsChecked;
-            }
-
-            // validate all valid rows
-            for (Row row : rowsChecked) {
-                Row currentRow = row;
-
-                // validate each row against the previous row
-                if (collisionInAllRanges(uniqueKey, prevFrom.getRow(), currentRow)) {
-                    rowsUniqueKeyViolation.add(prevFrom.getRow());
-                    rowsUniqueKeyViolation.add(currentRow);
-                }
-            }
+        if (rowsChecked.size() == 0) {
+            // key value has no more rows (invalid)
+            // will be removed later
+            invalidkeyValues.add(keyValue);
             return rowsChecked;
-        } else {
-            throw new RuntimeException("Wrong key value object :" + keyValueObject.getClass().getName()); //$NON-NLS-1$
         }
 
-        return null;
-    }
+        // validate all valid rows
+        for (Row currentRow : rowsChecked) {
 
-    /**
-     * Validates the given key value entry. Check if the range doesn't overlap with the given range
-     * ('from' and 'to' key value range)
-     * <p>
-     * The row could be an other as stored in the key value range
-     */
-    private void validateKeyValueRangeFor(Set<Row> rowsUniqueKeyViolation,
-            IUniqueKey uniqueKey,
-            KeyValueRange prevFrom,
-            KeyValueRange currKeyValue,
-            Row currentRow) {
-
-        Row prevRow = prevFrom.getRow();
-        if (currentRow == prevRow) {
-            return;
-        }
-
-        boolean isRangeOverlapping = currKeyValue.isFromLessOrEqual(prevFrom.getValueTo())
-                && prevFrom.isFromLessOrEqual(currKeyValue.getValueTo());
-        boolean isRangeDirectCollision = currKeyValue.isFromLessOrEqual(prevFrom.getKeyValue())
-                || prevFrom.isFromLessOrEqual(currKeyValue.getKeyValue());
-        if (isRangeOverlapping || isRangeDirectCollision) {
-            // range collision, check other ranges too
-            boolean collision = collisionInAllRanges(uniqueKey, prevRow, currentRow);
-            if (collision) {
-                rowsUniqueKeyViolation.add(prevRow);
+            // validate each row against the previous row
+            if (collisionInAllRanges(prevFrom.getRow(), currentRow)) {
+                rowsUniqueKeyViolation.add(prevFrom.getRow());
                 rowsUniqueKeyViolation.add(currentRow);
             }
         }
+        return rowsChecked;
     }
 
-    private boolean collisionInAllRanges(IUniqueKey uniqueKey, Row row1, Row row2) {
-        List<ColumnRange> twoColumnRanges = AbstractKeyValue.getTwoColumnRanges(uniqueKey);
+    private boolean collisionInAllRanges(Row row1, Row row2) {
         for (ColumnRange columnRange : twoColumnRanges) {
             if (!KeyValueRange.isRangeCollision(uniqueKeyValidator.getCachedTableStructure(),
                     uniqueKeyValidator.getCachedValueDatatypes(), columnRange, row1, row2)) {
@@ -477,9 +407,7 @@ public class UniqueKeyValidatorRange {
         return true;
     }
 
-    private void createValidationErrorToManyUniqueKeyViolations(MessageList list,
-            IUniqueKey uniqueKey,
-            int numberOfValidationErrors) {
+    private void createValidationErrorToManyUniqueKeyViolations(MessageList list, int numberOfValidationErrors) {
 
         String text = NLS.bind(Messages.UniqueKeyValidatorRange_msgToManyUniqueKeyViolations, numberOfValidationErrors,
                 uniqueKey);
@@ -489,40 +417,37 @@ public class UniqueKeyValidatorRange {
     public void printCachedContent(String offset) {
         offset += "  "; //$NON-NLS-1$
         System.out.println(offset + "UniqueKeyRange:" + uniqueKey.getName()); //$NON-NLS-1$
-        for (Entry<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, Object>>> entry : keyValueRanges.entrySet()) {
+        for (Entry<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, List<Row>>>> entry : keyValueRanges
+                .entrySet()) {
             System.out.println(offset + "KeyValue:" + entry.getKey()); //$NON-NLS-1$
             printCachedColumnRange(offset, entry.getValue());
         }
     }
 
-    private void printCachedColumnRange(String offset, Map<ColumnRange, SortedMap<AbstractKeyValue, Object>> sortedMap) {
+    private void printCachedColumnRange(String offset,
+            Map<ColumnRange, SortedMap<AbstractKeyValue, List<Row>>> sortedMap) {
         offset += "  "; //$NON-NLS-1$
-        for (Entry<ColumnRange, SortedMap<AbstractKeyValue, Object>> entry : sortedMap.entrySet()) {
+        for (Entry<ColumnRange, SortedMap<AbstractKeyValue, List<Row>>> entry : sortedMap.entrySet()) {
             System.out.println(offset + "ColumnRange:" + entry.getKey().getName()); //$NON-NLS-1$
             printCachedSordetMap(offset, entry.getValue());
         }
     }
 
-    private void printCachedSordetMap(String offset, SortedMap<AbstractKeyValue, Object> map) {
+    private void printCachedSordetMap(String offset, SortedMap<AbstractKeyValue, List<Row>> map) {
         offset += "  "; //$NON-NLS-1$
-        for (Entry<AbstractKeyValue, Object> entry : map.entrySet()) {
+        for (Entry<AbstractKeyValue, List<Row>> entry : map.entrySet()) {
             System.out.println(offset + "KeyValue:"); //$NON-NLS-1$
             printCachedEntryOrList(offset, entry.getValue());
         }
     }
 
-    private void printCachedEntryOrList(String offset, Object entry) {
+    private void printCachedEntryOrList(String offset, List<Row> entry) {
         offset += "  "; //$NON-NLS-1$
-        if (entry instanceof List<?>) {
-            List<?> elements = (List<?>)entry;
-            System.out.println(offset + elements.size() + " Rows colision candidates, same from column:"); //$NON-NLS-1$
-            int i = 0;
-            for (Object object : elements) {
-                i++;
-                System.out.println(offset + "  Row:" + printRow((Row)object)); //$NON-NLS-1$
-            }
-        } else {
-            System.out.println(offset + "Row:" + printRow((Row)entry)); //$NON-NLS-1$
+        System.out.println(offset + entry.size() + " Rows colision candidates, same from column:"); //$NON-NLS-1$
+        int i = 0;
+        for (Row object : entry) {
+            i++;
+            System.out.println(offset + "  Row:" + printRow(object)); //$NON-NLS-1$
         }
     }
 

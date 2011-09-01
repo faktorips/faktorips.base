@@ -18,7 +18,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.tablestructure.ColumnRange;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 
@@ -159,12 +158,12 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
     }
 
     private static int compareTo(ValueDatatype valueDatatype, String value1, String value2) {
-        if (!valueDatatype.isParsable(value1)) {
-            throw new RuntimeException("Value " + value1 + " not parsable, datatype = " + valueDatatype); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        if (!valueDatatype.isParsable(value2)) {
-            throw new RuntimeException("Value " + value2 + " not parsable, datatype = " + valueDatatype); //$NON-NLS-1$ //$NON-NLS-2$
-        }
+        // if (!valueDatatype.isParsable(value1)) {
+        //            throw new RuntimeException("Value " + value1 + " not parsable, datatype = " + valueDatatype); //$NON-NLS-1$ //$NON-NLS-2$
+        // }
+        // if (!valueDatatype.isParsable(value2)) {
+        //            throw new RuntimeException("Value " + value2 + " not parsable, datatype = " + valueDatatype); //$NON-NLS-1$ //$NON-NLS-2$
+        // }
 
         return valueDatatype.compare(value1, value2);
     }
@@ -176,28 +175,24 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
             ValueDatatype[] datatypes,
             ColumnRange columnRange) {
 
-        IColumn column = structure.getColumn(columnRange.getFromColumn());
-        if (column == null) {
-            IpsPlugin.log(new IpsStatus("Column " + columnRange.getFromColumn() + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
-            return null;
-        }
         if (datatypes != null) {
-            int columnIndex = structure.getColumnIndex(column);
-            if (columnIndex <= datatypes.length) {
-                return datatypes[columnIndex];
-            } else {
-                IpsPlugin.log(new IpsStatus("Datatype " + column.getDatatype() + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
+            try {
+                int columnIndex = structure.getColumnIndex(columnRange.getFromColumn());
+                if (columnIndex <= datatypes.length) {
+                    return datatypes[columnIndex];
+                } else {
+                    IpsPlugin.log(new IpsStatus("Datatype of column " + columnRange.getFromColumn() + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            } catch (RuntimeException e) {
+                IpsPlugin.log(new IpsStatus("Column " + columnRange.getFromColumn() + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
+                return null;
             }
         }
         return null;
     }
 
     private static String evalValue(ITableStructure tableStructure, Row row, String columnName) {
-        IColumn column = tableStructure.getColumn(columnName);
-        if (column == null) {
-            return null;
-        }
-        return row.getValue(tableStructure.getColumnIndex(column));
+        return row.getValue(tableStructure.getColumnIndex(columnName));
     }
 
     public static boolean isRangeCollision(ITableStructure tableStructure,
@@ -207,34 +202,22 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
             Row otherRow) {
 
         String fromColumnName = otherColumnRange.getFromColumn();
-        String from = evalValue(tableStructure, row, fromColumnName);
-
         String toColumnName = otherColumnRange.getToColumn();
-        String to = evalValue(tableStructure, row, toColumnName);
-        String otherFrom = evalValue(tableStructure, otherRow, fromColumnName);
+        String from = evalValue(tableStructure, row, fromColumnName);
         String otherTo = evalValue(tableStructure, otherRow, toColumnName);
-
         ValueDatatype valueDatatype = getValueDatatypeOfColumnRange(tableStructure, valueDatatypes, otherColumnRange);
-        int fromCompareToOtherFrom = compareTo(valueDatatype, from, otherFrom);
-        int fromCompareToOtherTo = compareTo(valueDatatype, from, otherTo);
-        int toCompareToOtherFrom = compareTo(valueDatatype, to, otherFrom);
-        int toCompareToOtherTo = compareTo(valueDatatype, to, otherTo);
 
-        if (fromCompareToOtherFrom == 0 || fromCompareToOtherTo == 0 || toCompareToOtherFrom == 0
-                || toCompareToOtherTo == 0) {
-            return true;
-        }
-        if (fromCompareToOtherFrom >= 0 && fromCompareToOtherTo <= 0) {
-            return true;
-        }
-        if (toCompareToOtherFrom >= 0 && toCompareToOtherTo <= 0) {
-            return true;
-        }
-        if (fromCompareToOtherFrom <= 0 && toCompareToOtherTo >= 0) {
-            return true;
+        if (compareTo(valueDatatype, otherTo, from) < 0) {
+            return false;
         }
 
-        return false;
+        String otherFrom = evalValue(tableStructure, otherRow, fromColumnName);
+        String to = evalValue(tableStructure, row, toColumnName);
+
+        if (compareTo(valueDatatype, to, otherFrom) < 0) {
+            return false;
+        }
+        return true;
     }
 
     /**

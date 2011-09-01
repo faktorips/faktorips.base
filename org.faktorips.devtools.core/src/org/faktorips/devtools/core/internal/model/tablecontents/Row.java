@@ -219,20 +219,18 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             for (IKeyItem keyItem : keyItems) {
                 if (keyItem instanceof IColumn) {
                     IColumn column = (IColumn)keyItem;
-                    validateUniqueKeyValue(list, structure, column);
+                    validateUniqueKeyValue(list, structure, column.getName());
                 } else if (keyItem instanceof IColumnRange) {
                     IColumnRange columnRange = (IColumnRange)keyItem;
-                    IColumn fromColumn = structure.getColumn(columnRange.getFromColumn());
-                    IColumn toColumn = structure.getColumn(columnRange.getToColumn());
                     if (columnRange.getColumnRangeType().isOneColumnFrom()) {
-                        validateUniqueKeyValue(list, structure, fromColumn);
+                        validateUniqueKeyValue(list, structure, columnRange.getFromColumn());
                     } else if (columnRange.getColumnRangeType().isOneColumnTo()) {
-                        validateUniqueKeyValue(list, structure, toColumn);
+                        validateUniqueKeyValue(list, structure, columnRange.getToColumn());
                     } else if (columnRange.getColumnRangeType().isTwoColumn()) {
-                        validateUniqueKeyValue(list, structure, fromColumn);
-                        validateUniqueKeyValue(list, structure, toColumn);
-                        validateFromAndToColumnCombination(list, datatypes, structure, columnRange, fromColumn,
-                                toColumn);
+                        validateUniqueKeyValue(list, structure, columnRange.getFromColumn());
+                        validateUniqueKeyValue(list, structure, columnRange.getToColumn());
+                        validateFromAndToColumnCombination(list, datatypes, structure, columnRange,
+                                columnRange.getFromColumn(), columnRange.getToColumn());
                     }
                 }
             }
@@ -243,61 +241,61 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             ValueDatatype[] datatypes,
             ITableStructure structure,
             IColumnRange columnRange,
-            IColumn fromColumn,
-            IColumn toColumn) {
+            String fromColumnName,
+            String toColumnName) {
 
-        if (fromColumn == null || toColumn == null) {
-            // ignored, will be another validation error
-            return;
-        }
-        int fromColumnIndex = structure.getColumnIndex(fromColumn);
-        int toColumnIndex = structure.getColumnIndex(toColumn);
-        ValueDatatype valueDatatypeFrom = datatypes[fromColumnIndex];
-        ValueDatatype valueDatatypeTo = datatypes[toColumnIndex];
-        if (valueDatatypeFrom == null || valueDatatypeTo == null) {
-            // Error 'from'-column or the 'to'-column datatype is null!
-            // ignored, will be another validation error
-            return;
-        }
-        if (!valueDatatypeFrom.equals(valueDatatypeTo)) {
-            // Error the 'from'-column and the 'to'-column datatypes are different!
-            // ignored, will be another validation error
-            return;
-        }
+        try {
+            int fromColumnIndex = structure.getColumnIndex(fromColumnName);
+            int toColumnIndex = structure.getColumnIndex(toColumnName);
+            ValueDatatype valueDatatypeFrom = datatypes[fromColumnIndex];
+            ValueDatatype valueDatatypeTo = datatypes[toColumnIndex];
+            if (valueDatatypeFrom == null || valueDatatypeTo == null) {
+                // Error 'from'-column or the 'to'-column datatype is null!
+                // ignored, will be another validation error
+                return;
+            }
+            if (!valueDatatypeFrom.equals(valueDatatypeTo)) {
+                // Error the 'from'-column and the 'to'-column datatypes are different!
+                // ignored, will be another validation error
+                return;
+            }
 
-        String valueFrom = getValue(fromColumnIndex);
-        String valueTo = getValue(toColumnIndex);
-        if (valueFrom == null || valueTo == null) {
-            // ignored, will be another validation error
-            return;
-        }
+            String valueFrom = getValue(fromColumnIndex);
+            String valueTo = getValue(toColumnIndex);
+            if (valueFrom == null || valueTo == null) {
+                // ignored, will be another validation error
+                return;
+            }
 
-        if (!valueDatatypeFrom.isParsable(valueFrom) || !valueDatatypeTo.isParsable(valueTo)) {
+            if (!valueDatatypeFrom.isParsable(valueFrom) || !valueDatatypeTo.isParsable(valueTo)) {
+                // ignored, will be another validation error
+                return;
+            }
+            if (valueDatatypeFrom.compare(getValue(fromColumnIndex), valueTo) > 0) {
+                String text = NLS.bind(Messages.Row_FromValueGreaterThanToValue, columnRange.getName());
+                list.add(new Message(MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE, text,
+                        Message.ERROR, new ObjectProperty(this, IRow.PROPERTY_VALUE, fromColumnIndex)));
+                list.add(new Message(MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE, text,
+                        Message.ERROR, new ObjectProperty(this, IRow.PROPERTY_VALUE, toColumnIndex)));
+            }
+        } catch (RuntimeException e) {
             // ignored, will be another validation error
-            return;
-        }
-        if (valueDatatypeFrom.compare(getValue(fromColumnIndex), valueTo) > 0) {
-            String text = NLS.bind(Messages.Row_FromValueGreaterThanToValue, columnRange.getName());
-            list.add(new Message(MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE, text, Message.ERROR,
-                    new ObjectProperty(this, IRow.PROPERTY_VALUE, fromColumnIndex)));
-            list.add(new Message(MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE, text, Message.ERROR,
-                    new ObjectProperty(this, IRow.PROPERTY_VALUE, toColumnIndex)));
         }
     }
 
-    private void validateUniqueKeyValue(MessageList list, ITableStructure structure, IColumn column) {
-        if (column == null) {
+    private void validateUniqueKeyValue(MessageList list, ITableStructure structure, String columnName) {
+        try {
+            int columnIndex = structure.getColumnIndex(columnName);
+            String value = getValue(columnIndex);
+            if (value != null && StringUtils.isEmpty(value.trim()) || value == null) {
+                String text = NLS.bind(Messages.Row_MissingValueForUniqueKey, columnName);
+                Message message = new Message(MSGCODE_UNDEFINED_UNIQUEKEY_VALUE, text, Message.ERROR,
+                        new ObjectProperty(this, IRow.PROPERTY_VALUE, columnIndex));
+                list.add(message);
+            }
+        } catch (RuntimeException e) {
             // ignored, can't validate key value because of missing column
             // will be another validation error
-            return;
-        }
-        int columnIndex = structure.getColumnIndex(column);
-        String value = getValue(columnIndex);
-        if (value != null && StringUtils.isEmpty(value.trim()) || value == null) {
-            String text = NLS.bind(Messages.Row_MissingValueForUniqueKey, column.getName());
-            Message message = new Message(MSGCODE_UNDEFINED_UNIQUEKEY_VALUE, text, Message.ERROR, new ObjectProperty(
-                    this, IRow.PROPERTY_VALUE, columnIndex));
-            list.add(message);
         }
     }
 
