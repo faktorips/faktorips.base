@@ -137,4 +137,12 @@ public interface IIpsArtefactBuilder {
      */
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException;
 
+    /**
+     * Initializes this builder's builder set if it hasn't been initialized yet. Does nothing
+     * otherwise.
+     * 
+     * @param builderSet this builder's builder set. Must not be <code>null</code>.
+     */
+    public abstract void init(IIpsArtefactBuilderSet builderSet);
+
 }

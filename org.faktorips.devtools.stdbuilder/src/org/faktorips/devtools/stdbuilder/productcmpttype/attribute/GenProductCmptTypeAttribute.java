@@ -235,6 +235,18 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
         builder.appendln(";");
     }
 
+    public void generateWritePropertyToXml(JavaCodeFragmentBuilder builder) {
+        builder.append("attributeElement= element.getOwnerDocument().createElement(\"AttributeValue\");");
+        builder.append("attributeElement.setAttribute(\"attribute\", \"");
+        builder.append(getAttribute().getName());
+        builder.append("\");");
+        builder.appendClassName(ValueToXmlHelper.class);
+        builder.append(".addValueToElement(");
+        builder.append((getDatatypeHelper()).getToStringExpression(getMemberVarName()));
+        builder.append(", attributeElement, \"Value\");");
+        builder.append("element.appendChild(attributeElement);");
+    }
+
     /**
      * Generates the getter code for the attribute this is a generator for.
      * 

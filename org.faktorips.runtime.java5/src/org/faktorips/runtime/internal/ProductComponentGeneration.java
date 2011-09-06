@@ -290,4 +290,27 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         ValidationRuleConfiguration ruleConfig = nameToValidationRuleConfigMap.get(ruleName);
         return ruleConfig != null && ruleConfig.isActive();
     }
+
+    /**
+     * Adds an XML {@link Element} representing this {@link ProductComponentGeneration} to the given
+     * element.
+     * 
+     * @param element the {@link Element} to add this generation's data to. The given element
+     *            contains the {@link ProductComponent}s data.
+     */
+    public final void toXml(Element element) {
+        Element genElement = element.getOwnerDocument().createElement("ProductComponentGeneration");
+        writePropertiesToXml(genElement);
+        element.appendChild(genElement);
+    }
+
+    /**
+     * Adds all product component's properties to the given XML {@link Element}.
+     * 
+     * @param generationElement the {@link Element} representing the
+     *            {@link ProductComponentGeneration}.
+     */
+    protected void writePropertiesToXml(Element generationElement) {
+        // default: do nothing
+    }
 }

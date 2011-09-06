@@ -76,7 +76,7 @@ public class ValueToXmlHelper {
      * @param valueEl The xml value element containing the value.
      */
     public final static String getValueFromElement(Element valueEl) {
-        if (Boolean.valueOf(valueEl.getAttribute("isNull")).equals(Boolean.TRUE)) { //$NON-NLS-1$
+        if (Boolean.parseBoolean(valueEl.getAttribute("isNull"))) { //$NON-NLS-1$
             return null;
         }
         Text text = XmlUtil.getTextNode(valueEl);

@@ -175,18 +175,18 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
 
         builder.appendln("super.doInitPropertiesFromXml(configMap);"); //$NON-NLS-1$
 
-        boolean attributeFound = false;
+        boolean reusableLocalVariablesGenerated = false;
         GenProductCmptType typeGenerator = getStandardBuilderSet().getGenerator(getProductCmptType());
         for (GenProductCmptTypeAttribute attributeGenerator : typeGenerator.getGenProdAttributes()) {
             if (attributeGenerator.getAttribute().isChangingOverTime() == isChangingOverTimeContainer()) {
-                if (attributeFound == false) {
+                if (reusableLocalVariablesGenerated == false) {
                     generateDefineLocalVariablesForXmlExtraction(builder);
-                    attributeFound = true;
+                    reusableLocalVariablesGenerated = true;
                 }
                 attributeGenerator.generateDoInitPropertiesFromXml(builder);
             }
         }
-        generateAdditionalDoInitPropertiesFromXml(builder, attributeFound);
+        generateAdditionalDoInitPropertiesFromXml(builder, reusableLocalVariablesGenerated);
         builder.methodEnd();
     }
 
@@ -207,6 +207,34 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
      */
     protected void generateAdditionalDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder,
             boolean localVariablesAlreadyGenerated) throws CoreException {
+        // default do nothing
+    }
+
+    protected void generateMethodWritePropertiesToXml(JavaCodeFragmentBuilder builder) throws CoreException {
+        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        appendOverrideAnnotation(builder, false);
+        builder.methodBegin(Modifier.PROTECTED, "void", "writePropertiesToXml", new String[] { "element" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                new String[] { Element.class.getName() });
+
+        builder.appendln("super.writePropertiesToXml(element);"); //$NON-NLS-1$
+
+        GenProductCmptType typeGenerator = getStandardBuilderSet().getGenerator(getProductCmptType());
+        boolean reusableLocalVariablesGenerated = false;
+        for (GenProductCmptTypeAttribute attributeGenerator : typeGenerator.getGenProdAttributes()) {
+            if (attributeGenerator.getAttribute().isChangingOverTime() == isChangingOverTimeContainer()) {
+                if (!reusableLocalVariablesGenerated) {
+                    reusableLocalVariablesGenerated = true;
+                    builder.appendClassName(Element.class);
+                    builder.append(" attributeElement= null;");
+                }
+                attributeGenerator.generateWritePropertyToXml(builder);
+            }
+        }
+        generateAdditionalWritePropertiesToXml(builder);
+        builder.methodEnd();
+    }
+
+    protected void generateAdditionalWritePropertiesToXml(JavaCodeFragmentBuilder builder) throws CoreException {
         // default do nothing
     }
 

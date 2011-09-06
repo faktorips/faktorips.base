@@ -36,7 +36,7 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
 
-    private final IIpsArtefactBuilderSet builderSet;
+    private IIpsArtefactBuilderSet builderSet;
     private final LocalizedStringsSet localizedStringsSet;
 
     public AbstractArtefactBuilder(IIpsArtefactBuilderSet builderSet) {
@@ -44,9 +44,16 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
     }
 
     public AbstractArtefactBuilder(IIpsArtefactBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
-        ArgumentCheck.notNull(builderSet);
         this.builderSet = builderSet;
         this.localizedStringsSet = localizedStringsSet;
+    }
+
+    @Override
+    public void init(IIpsArtefactBuilderSet builderSet) {
+        if (this.builderSet == null) {
+            ArgumentCheck.notNull(builderSet);
+            this.builderSet = builderSet;
+        }
     }
 
     @Override

@@ -176,4 +176,21 @@ public interface DatatypeHelper {
     public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment collectionExpression,
             JavaCodeFragment containsNullExpression,
             boolean useTypesafeCollections);
+
+    /**
+     * Returns a {@link JavaCodeFragment} containing the code for converting the value (of the given
+     * field) to a string representation with respect to its data type. The String must be built so
+     * that it can be read using the valueOf-Expression. If the value is <code>null</code>, the
+     * toString-code will yield <code>null</code> as a result.
+     * <p>
+     * The default implementation will call the values toString() method or return <code>null</code>
+     * . The default implementation for generic (extensible) data types will call the method defined
+     * using setToStringMethodName(). Custom {@link DatatypeHelper}s may override.
+     * 
+     * 
+     * @param fieldName the name of the field in the generated class that should be converted to a
+     *            string
+     * @return a {@link JavaCodeFragment} containing the toString() code.
+     */
+    public JavaCodeFragment getToStringExpression(String fieldName);
 }

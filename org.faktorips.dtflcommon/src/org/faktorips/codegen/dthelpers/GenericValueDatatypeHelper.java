@@ -65,4 +65,16 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
         return valueOfExpression('"' + value + '"');
     }
 
+    @Override
+    public JavaCodeFragment getToStringExpression(String fieldName) {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.append(fieldName);
+        fragment.append("==null?null:"); //$NON-NLS-1$
+        fragment.append(fieldName);
+        fragment.append("."); //$NON-NLS-1$
+        fragment.append(((GenericValueDatatype)getDatatype()).getToStringMethodName());
+        fragment.append("()"); //$NON-NLS-1$
+        return fragment;
+    }
+
 }

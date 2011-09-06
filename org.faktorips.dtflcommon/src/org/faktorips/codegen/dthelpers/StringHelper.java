@@ -64,4 +64,9 @@ public class StringHelper extends AbstractDatatypeHelper {
         return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
+    @Override
+    public JavaCodeFragment getToStringExpression(String fieldName) {
+        return new JavaCodeFragment(fieldName);
+    }
+
 }

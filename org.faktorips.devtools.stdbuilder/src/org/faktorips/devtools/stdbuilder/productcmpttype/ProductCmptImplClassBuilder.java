@@ -116,6 +116,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
 
         generateGetGenerationMethod(methodsBuilder);
         generateMethodDoInitPropertiesFromXml(methodsBuilder);
+        generateMethodWritePropertiesToXml(methodsBuilder);
         IPolicyCmptType policyCmptType = getPcType();
         if (policyCmptType != null && !policyCmptType.isAbstract()) {
             generateFactoryMethodsForPolicyCmptType(policyCmptType, methodsBuilder, new HashSet<IPolicyCmptType>());

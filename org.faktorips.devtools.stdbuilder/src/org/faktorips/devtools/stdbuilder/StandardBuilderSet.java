@@ -20,12 +20,15 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
@@ -476,29 +479,90 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         createAnnotationGeneratorMap();
 
+        List<IIpsArtefactBuilder> extendingBuilders = getExtendingBuilders();
+
         if (ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
             ModelTypeXmlBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this);
             ModelTypeXmlBuilder productModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.PRODUCT_CMPT_TYPE, this);
             tocFileBuilder.setPolicyModelTypeXmlBuilder(policyModelTypeBuilder);
             tocFileBuilder.setProductModelTypeXmlBuilder(productModelTypeBuilder);
             tocFileBuilder.setGenerateEntriesForModelTypes(true);
-            return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptInterfaceBuilder,
-                    productCmptImplClassBuilder, productCmptGenInterfaceBuilder, productCmptGenImplClassBuilder,
-                    policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
-                    tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
-                    formulaTestBuilder, tocFileBuilder, validationMessagesBuilder, policyModelTypeBuilder,
-                    productModelTypeBuilder, businessFunctionBuilder, enumTypeBuilder, enumContentBuilder,
-                    enumXmlAdapterBuilder };
+
+            List<IIpsArtefactBuilder> builders = new ArrayList<IIpsArtefactBuilder>();
+            builders.add(tableImplBuilder);
+            builders.add(tableRowBuilder);
+            builders.add(productCmptInterfaceBuilder);
+            builders.add(productCmptImplClassBuilder);
+            builders.add(productCmptGenInterfaceBuilder);
+            builders.add(productCmptGenImplClassBuilder);
+            builders.add(policyCmptImplClassBuilder);
+            builders.add(policyCmptInterfaceBuilder);
+            builders.add(productCmptGenerationImplBuilder);
+            builders.add(tableContentCopyBuilder);
+            builders.add(productCmptContentCopyBuilder);
+            builders.add(testCaseTypeClassBuilder);
+            builders.add(testCaseBuilder);
+            builders.add(formulaTestBuilder);
+            builders.add(tocFileBuilder);
+            builders.add(validationMessagesBuilder);
+            builders.add(policyModelTypeBuilder);
+            builders.add(productModelTypeBuilder);
+            builders.add(businessFunctionBuilder);
+            builders.add(enumTypeBuilder);
+            builders.add(enumContentBuilder);
+            builders.add(enumXmlAdapterBuilder);
+            builders.addAll(extendingBuilders);
+            return builders.toArray(new IIpsArtefactBuilder[builders.size()]);
         } else {
             tocFileBuilder.setGenerateEntriesForModelTypes(false);
-            return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptInterfaceBuilder,
-                    productCmptImplClassBuilder, productCmptGenInterfaceBuilder, productCmptGenImplClassBuilder,
-                    policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
-                    tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
-                    formulaTestBuilder, tocFileBuilder, validationMessagesBuilder, businessFunctionBuilder,
-                    enumTypeBuilder, enumContentBuilder };
+            List<IIpsArtefactBuilder> builders = new ArrayList<IIpsArtefactBuilder>();
+            builders.add(tableImplBuilder);
+            builders.add(tableRowBuilder);
+            builders.add(productCmptInterfaceBuilder);
+            builders.add(productCmptImplClassBuilder);
+            builders.add(productCmptGenInterfaceBuilder);
+            builders.add(productCmptGenImplClassBuilder);
+            builders.add(policyCmptImplClassBuilder);
+            builders.add(policyCmptInterfaceBuilder);
+            builders.add(productCmptGenerationImplBuilder);
+            builders.add(tableContentCopyBuilder);
+            builders.add(productCmptContentCopyBuilder);
+            builders.add(testCaseTypeClassBuilder);
+            builders.add(testCaseBuilder);
+            builders.add(formulaTestBuilder);
+            builders.add(tocFileBuilder);
+            builders.add(validationMessagesBuilder);
+            builders.add(businessFunctionBuilder);
+            builders.add(enumTypeBuilder);
+            builders.add(enumContentBuilder);
+            builders.addAll(extendingBuilders);
+            return builders.toArray(new IIpsArtefactBuilder[builders.size()]);
         }
+    }
 
+    /**
+     * Returns all builders registered with the standard builder set through the extension point
+     * "artefactBuilder".
+     * 
+     * @return a list containing all builders that extend this builder set.
+     */
+    private List<IIpsArtefactBuilder> getExtendingBuilders() {
+        List<IIpsArtefactBuilder> builders = new ArrayList<IIpsArtefactBuilder>();
+
+        ExtensionPoints extensionPoints = new ExtensionPoints(StdBuilderPlugin.PLUGIN_ID);
+        IExtension[] extensions = extensionPoints.getExtension("artefactBuilder");
+        for (IExtension extension : extensions) {
+            IConfigurationElement[] configurationElements = extension.getConfigurationElements();
+            for (IConfigurationElement configElement : configurationElements) {
+                if ("artefactBuilder".equals(configElement.getName())) { //$NON-NLS-1$
+                    IIpsArtefactBuilder builder = ExtensionPoints.createExecutableExtension(extension, configElement,
+                            "class", IIpsArtefactBuilder.class); //$NON-NLS-1$
+                    builder.init(this);
+                    builders.add(builder);
+                }
+            }
+        }
+        return builders;
     }
 
     private void createAnnotationGeneratorMap() throws CoreException {

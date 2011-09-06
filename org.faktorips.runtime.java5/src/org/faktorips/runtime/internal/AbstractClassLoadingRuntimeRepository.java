@@ -28,6 +28,7 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
+import org.faktorips.runtime.internal.productvariant.ProductVariantRuntimeHelper;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
@@ -74,9 +75,18 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         } catch (Exception e) {
             throw new RuntimeException("Can't create product component instance for toc entry " + tocEntry, e);
         }
-        Element docElement = getDocumentElement(tocEntry);
-        productCmpt.initFromXml(docElement);
+        initProductCmpt(tocEntry, productCmpt);
         return productCmpt;
+    }
+
+    protected void initProductCmpt(ProductCmptTocEntry tocEntry, ProductComponent productCmpt) {
+        Element docElement = getDocumentElement(tocEntry);
+        ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
+        if (helper.isProductVariantXML(docElement)) {
+            helper.loadProductComponentVariation(this, docElement, productCmpt);
+        } else {
+            productCmpt.initFromXml(docElement);
+        }
     }
 
     @Override
@@ -141,6 +151,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         }
         Element genElement = getDocumentElement(tocEntry);
         productCmptGen.initFromXml(genElement);
+
         return productCmptGen;
     }
 

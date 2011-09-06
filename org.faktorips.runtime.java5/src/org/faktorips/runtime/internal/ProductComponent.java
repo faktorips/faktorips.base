@@ -14,12 +14,14 @@
 package org.faktorips.runtime.internal;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 import org.faktorips.runtime.IClRepositoryObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -133,6 +135,40 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     @Override
     public String toString() {
         return id;
+    }
+
+    /**
+     * 
+     * @param document a document, that can be used to create XML elements.
+     * @param includeGenerations <code>true</code> if the created XML element should include the
+     *            data of all the product component's generations, <code>false</code> if generations
+     *            should be ignored when creating the XML output.
+     */
+    public final Element toXml(Document document, boolean includeGenerations) {
+        Element prodCmptElement = document.createElement("ProductComponent");
+        writePropertiesToXml(prodCmptElement);
+        writeExtensionPropertiesToXml(prodCmptElement);
+        if (includeGenerations) {
+            List<IProductComponentGeneration> generations = repository.getProductComponentGenerations(this);
+            for (IProductComponentGeneration generation : generations) {
+                ProductComponentGeneration gen = (ProductComponentGeneration)generation;
+                gen.toXml(prodCmptElement);
+            }
+        }
+        return prodCmptElement;
+    }
+
+    /**
+     * Writes this product components properties into the given XML element.
+     * 
+     * @param element the XML element to write the properties to
+     */
+    protected void writePropertiesToXml(Element element) {
+        // Nothing to be done base class
+        /*
+         * Note that this method is deliberately not declared abstract to allow calls to
+         * super.writePropertiesToXML() in subclasses.
+         */
     }
 
 }

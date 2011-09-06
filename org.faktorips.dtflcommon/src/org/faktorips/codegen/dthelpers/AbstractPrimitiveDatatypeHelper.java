@@ -51,4 +51,13 @@ public abstract class AbstractPrimitiveDatatypeHelper extends AbstractDatatypeHe
         throw new UnsupportedOperationException("Call the helper of the wrapper type instead."); //$NON-NLS-1$
     }
 
+    @Override
+    public JavaCodeFragment getToStringExpression(String fieldName) {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.append("String.valueOf("); //$NON-NLS-1$
+        fragment.append(fieldName);
+        fragment.append(")"); //$NON-NLS-1$
+        return fragment;
+    }
+
 }

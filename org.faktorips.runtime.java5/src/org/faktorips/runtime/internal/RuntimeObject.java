@@ -15,9 +15,11 @@ package org.faktorips.runtime.internal;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.faktorips.runtime.IRuntimeObject;
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -48,6 +50,27 @@ public class RuntimeObject implements IRuntimeObject {
                 String value = XmlUtil.getCDATAorTextContent(childElement);
                 extPropertyValues.put(id, value);
             }
+        }
+    }
+
+    protected void writeExtensionPropertiesToXml(Element cmptElement) {
+        writeExtensionPropertiesToXml(cmptElement, extPropertyValues);
+    }
+
+    protected void writeExtensionPropertiesToXml(Element cmptElement, Map<String, String> extPropertyMap) {
+        Element extPropRootElement = cmptElement.getOwnerDocument().createElement("ExtensionProperties");
+        cmptElement.appendChild(extPropRootElement);
+        for (Entry<String, String> extPropEntry : extPropertyMap.entrySet()) {
+            Element extPropElement = cmptElement.getOwnerDocument().createElement("Value");
+            extPropElement.setAttribute("id", extPropEntry.getKey());
+            String value = extPropEntry.getValue();
+            if (value == null) {
+                extPropElement.setAttribute("isNull", "true");
+            } else {
+                CDATASection cdataSection = cmptElement.getOwnerDocument().createCDATASection(value);
+                extPropElement.appendChild(cdataSection);
+            }
+            extPropRootElement.appendChild(extPropElement);
         }
     }
 

@@ -180,4 +180,13 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
                 + " does not override the method newSafeCopy!"); //$NON-NLS-1$
     }
 
+    public JavaCodeFragment getToStringExpression(String fieldName) {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.append(fieldName);
+        fragment.append("==null?null:"); //$NON-NLS-1$
+        fragment.append(fieldName);
+        fragment.append(".toString()"); //$NON-NLS-1$
+        return fragment;
+    }
+
 }

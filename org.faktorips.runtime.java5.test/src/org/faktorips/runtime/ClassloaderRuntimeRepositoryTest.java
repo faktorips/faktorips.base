@@ -23,8 +23,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.faktorips.runtime.internal.AbstractCachingRuntimeRepository;
 import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.test.IpsFormulaTestCase;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCase2;
@@ -39,6 +39,7 @@ import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Element;
 
 /**
  * This test case operates on the org.faktorips.runtime.testrepository.
@@ -47,7 +48,7 @@ import org.junit.Test;
  */
 public class ClassloaderRuntimeRepositoryTest {
 
-    private AbstractCachingRuntimeRepository repository;
+    private ClassloaderRuntimeRepository repository;
 
     @Before
     public void setUp() throws Exception {
@@ -310,6 +311,14 @@ public class ClassloaderRuntimeRepositoryTest {
             }
             assertTrue("Missing test case: " + element, found);
         }
+    }
+
+    @Test
+    public void testGetDocumentElement() {
+        ProductCmptTocEntry tocEntry = new ProductCmptTocEntry("", "qName", "", "", "resouce", "", "", new DateTime(
+                2000, 1, 1));
+        Element element = repository.getDocumentElement(tocEntry);
+        assertNotNull(element);
     }
 
 }

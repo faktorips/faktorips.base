@@ -206,7 +206,7 @@ public class TableOfContent {
         if (type != null) {
             return new QualifiedNameType(entry.getIpsObjectQualifiedName(), type);
         } else {
-            throw new RuntimeException("Entry does not math an IpsObjectType! Could not insert to Table of Content");
+            throw new RuntimeException("Entry does not match an IpsObjectType! Could not insert to Table of Content");
         }
     }
 }

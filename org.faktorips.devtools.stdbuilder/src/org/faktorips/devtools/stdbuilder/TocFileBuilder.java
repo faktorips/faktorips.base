@@ -188,7 +188,9 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         IpsObjectType type = ipsSrcFile.getIpsObjectType();
         return IpsObjectType.PRODUCT_CMPT.equals(type) || IpsObjectType.TABLE_CONTENTS.equals(type)
                 || IpsObjectType.TEST_CASE.equals(type) || IpsObjectType.ENUM_CONTENT.equals(type)
-                || IpsObjectType.ENUM_TYPE.equals(type) || (generateEntriesForModelTypes && type.isEntityType());
+                || IpsObjectType.ENUM_TYPE.equals(type)
+                || StdBuilderPlugin.getDefault().getTocEntryBuilderMap().containsKey(type)
+                || (generateEntriesForModelTypes && type.isEntityType());
     }
 
     /**
@@ -255,7 +257,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
             String version = getIpsProject().getProperties().getVersion();
             if (StringUtils.isEmpty(version)) {
-                version = "" + new Date().getTime();
+                version = Long.toString(new Date().getTime());
             }
             Element tocElement = getToc(root).toXml(version, doc);
             doc.appendChild(tocElement);
@@ -350,13 +352,13 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IIpsObject object = null;
         try {
-            TocEntryObject entry;
+            List<TocEntryObject> entries = new ArrayList<TocEntryObject>();
             object = ipsSrcFile.getIpsObject();
             IpsObjectType type = object.getIpsObjectType();
             if (type.equals(IpsObjectType.PRODUCT_CMPT)) {
                 // add entry for formula test, the formula test depends on the product cmpt
                 // source file, thus it will be implicit created or deleted here
-                entry = createFormulaTestTocEntry((IProductCmpt)object);
+                TocEntryObject entry = createFormulaTestTocEntry((IProductCmpt)object);
                 if (entry != null) {
                     // a new formula toc entry was created
                     getToc(ipsSrcFile).addOrReplaceTocEntry(entry);
@@ -367,24 +369,27 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                     // non formula type
                     removeFormulaTestEntry(ipsSrcFile);
                 }
-
                 // add entry for product cmpt
-                entry = createTocEntry((IProductCmpt)object);
+                entries.add(createTocEntry((IProductCmpt)object));
             } else if (type.equals(IpsObjectType.TABLE_CONTENTS)) {
-                entry = createTocEntry((ITableContents)object);
+                entries.add(createTocEntry((ITableContents)object));
             } else if (generateEntriesForModelTypes && type.isEntityType()) {
-                entry = createTocEntry((IType)object);
+                entries.add(createTocEntry((IType)object));
             } else if (type.equals(IpsObjectType.TEST_CASE)) {
-                entry = createTocEntry((ITestCase)object);
+                entries.add(createTocEntry((ITestCase)object));
             } else if (type.equals(IpsObjectType.ENUM_CONTENT)) {
-                entry = createTocEntry((IEnumContent)object);
+                entries.add(createTocEntry((IEnumContent)object));
             } else if (type.equals(IpsObjectType.ENUM_TYPE)) {
-                entry = createTocEntry((IEnumType)object);
+                entries.add(createTocEntry((IEnumType)object));
+            } else if (StdBuilderPlugin.getDefault().getTocEntryBuilderMap().containsKey(type)) {
+                entries.addAll(StdBuilderPlugin.getDefault().getTocEntryBuilderMap().get(type).createTocEntries(object));
             } else {
                 throw new RuntimeException("Unknown ips object type " + object.getIpsObjectType()); //$NON-NLS-1$
             }
-            if (entry != null) {
-                getToc(ipsSrcFile).addOrReplaceTocEntry(entry);
+            if (!entries.isEmpty()) {
+                for (TocEntryObject entry : entries) {
+                    getToc(ipsSrcFile).addOrReplaceTocEntry(entry);
+                }
             } else {
                 // no toc entry has been newly created, remove the previous toc entry
                 getToc(ipsSrcFile).removeEntry(object.getQualifiedNameType());

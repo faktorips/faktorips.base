@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
+   <extension-point id="tocEntryBuilder" name="TOC Entry Builder" schema="schema/tocEntryBuilder.exsd"/>
+   <extension-point id="artefactBuilder" name="artefactBuilder" schema="schema/artefactBuilder.exsd"/>
 
    <extension
          id="ipsstdbuilderset"
