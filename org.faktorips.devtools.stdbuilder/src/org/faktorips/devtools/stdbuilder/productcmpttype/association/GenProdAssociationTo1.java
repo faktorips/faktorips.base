@@ -15,7 +15,6 @@ package org.faktorips.devtools.stdbuilder.productcmpttype.association;
 
 import java.lang.reflect.Modifier;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -35,8 +34,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.runtime.CardinalityRange;
+import org.faktorips.runtime.internal.IXmlPersistenceSupport;
 import org.faktorips.runtime.internal.MethodNames;
 import org.w3c.dom.Element;
 
@@ -486,40 +485,27 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
     @Override
     public void generateCodeForMethodDoInitReferencesFromXml(IPolicyCmptTypeAssociation policyCmptTypeAssociation,
             JavaCodeFragmentBuilder builder) throws CoreException {
-        String cardinalityFieldName = policyCmptTypeAssociation == null ? "" : getFieldNameCardinalityForAssociation();
         String fieldName = getFieldNameTo1Association();
-        if (isUseTypesafeCollections()) {
-            builder.appendClassName(Element.class);
-            builder.append(" element = associationElements.get(0);");
-            builder.append(fieldName);
-            builder.append(" = ");
-            builder.append("new ");
-            builder.appendClassName(Java5ClassNames.Link_QualifiedName + "<"
-                    + getQualifiedInterfaceClassNameForTarget() + ">");
-            builder.appendln("(this);");
-            builder.append(fieldName);
-            builder.appendln(".initFromXml(element);");
-        } else {
-            builder.appendClassName(Element.class);
-            builder.append(" element = (");
-            builder.appendClassName(Element.class);
-            builder.append(")associationElements.get(0);");
-            builder.append(fieldName);
-            builder.append(" = ");
-            builder.appendln("element.getAttribute(\"" + ProductCmptGenImplClassBuilder.XML_ATTRIBUTE_TARGET_RUNTIME_ID
-                    + "\");");
-            if (policyCmptTypeAssociation != null) {
-                builder.append(cardinalityFieldName);
-                builder.append(" = new ");
-                builder.appendClassName(HashMap.class);
-                builder.appendln("(1);");
-                builder.append("addToCardinalityMap(");
-                builder.append(cardinalityFieldName);
-                builder.append(", ");
-                builder.append(fieldName);
-                builder.appendln(", element);");
-            }
-        }
+        builder.appendClassName(Element.class);
+        builder.append(" element = associationElements.get(0);");
+        builder.append(fieldName);
+        builder.append(" = ");
+        builder.append("new ");
+        builder.appendClassName(Java5ClassNames.Link_QualifiedName + "<" + getQualifiedInterfaceClassNameForTarget()
+                + ">");
+        builder.appendln("(this);");
+        builder.append(fieldName);
+        builder.appendln(".initFromXml(element);");
+    }
+
+    @Override
+    public void generateCodeForMethodWriteReferencesToXml(IPolicyCmptTypeAssociation policyCmptTypeAssociation,
+            JavaCodeFragmentBuilder builder) {
+        builder.appendln("element.appendChild(((");
+        builder.appendClassName(IXmlPersistenceSupport.class);
+        builder.appendln(")");
+        builder.append(getFieldNameTo1Association());
+        builder.appendln(").toXml(element.getOwnerDocument()));");
     }
 
     /**
@@ -544,10 +530,8 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         addMethodGet1RelatedCmptToGeneratedJavaElements(javaElements, generatedJavaType);
         addMethodGet1RelatedCmptGenToGeneratedJavaElements(javaElements, generatedJavaType);
 
-        if (isUseTypesafeCollections(ipsElement.getIpsProject())) {
-            addMethodGet1RelatedCmptLinkToGeneratedJavaElements(javaElements, generatedJavaType);
-            addMethodGetRelatedCmptLinkToGeneratedJavaElements(javaElements, generatedJavaType);
-        }
+        addMethodGet1RelatedCmptLinkToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetRelatedCmptLinkToGeneratedJavaElements(javaElements, generatedJavaType);
 
         try {
             if (association.constrainsPolicyCmptTypeAssociation(association.getIpsProject())) {
@@ -568,10 +552,8 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         addMethodGet1RelatedCmptGenToGeneratedJavaElements(javaElements, generatedJavaType);
         addMethodSet1RelatedCmptToGeneratedJavaElements(javaElements, generatedJavaType);
 
-        if (isUseTypesafeCollections(ipsElement.getIpsProject())) {
-            addMethodGet1RelatedCmptLinkToGeneratedJavaElements(javaElements, generatedJavaType);
-            addMethodGetRelatedCmptLinkToGeneratedJavaElements(javaElements, generatedJavaType);
-        }
+        addMethodGet1RelatedCmptLinkToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetRelatedCmptLinkToGeneratedJavaElements(javaElements, generatedJavaType);
 
         try {
             if (association.constrainsPolicyCmptTypeAssociation(association.getIpsProject())) {
@@ -591,8 +573,11 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
             IType generatedJavaType) {
 
         try {
-            IMethod method = generatedJavaType.getMethod(getMethodNameSet1RelatedCmpt(), new String[] { "Q"
-                    + QNameUtil.getUnqualifiedName(getQualifiedInterfaceClassNameForTarget()) + ";" });
+            IMethod method = generatedJavaType
+                    .getMethod(
+                            getMethodNameSet1RelatedCmpt(),
+                            new String[] { "Q"
+                                    + QNameUtil.getUnqualifiedName(getQualifiedInterfaceClassNameForTarget()) + ";" });
             javaElements.add(method);
         } catch (CoreException e) {
             throw new RuntimeException(e);

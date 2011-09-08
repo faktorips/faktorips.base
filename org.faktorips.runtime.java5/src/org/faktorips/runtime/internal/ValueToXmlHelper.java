@@ -34,12 +34,26 @@ public class ValueToXmlHelper {
      * @param tagName the tag name for the element that stored the value
      */
     public final static void addValueToElement(String value, Element el, String tagName) {
+        addValueAndReturnElement(value, el, tagName);
+    }
+
+    /**
+     * Adds the value to the given xml element as does
+     * {@link #addValueToElement(String, Element, String)}. The created element then is returned.
+     * 
+     * @param value the string representation of the value
+     * @param el the xml element.
+     * @param tagName the tag name for the element that stored the value
+     * @return the created element with the given tag name, that contains the given value.
+     */
+    public final static Element addValueAndReturnElement(String value, Element el, String tagName) {
         Element valueEl = el.getOwnerDocument().createElement(tagName);
         el.appendChild(valueEl);
         valueEl.setAttribute("isNull", value == null ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         if (value != null) {
             valueEl.appendChild(el.getOwnerDocument().createTextNode(value));
         }
+        return valueEl;
     }
 
     /**

@@ -234,6 +234,11 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
         builder.methodEnd();
     }
 
+    /**
+     * 
+     * @param builder the builder to append the code to
+     * @throws CoreException in case an error occurs
+     */
     protected void generateAdditionalWritePropertiesToXml(JavaCodeFragmentBuilder builder) throws CoreException {
         // default do nothing
     }

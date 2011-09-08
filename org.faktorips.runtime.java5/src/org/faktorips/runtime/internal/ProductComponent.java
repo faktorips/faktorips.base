@@ -17,7 +17,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import org.faktorips.runtime.IClRepositoryObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -27,7 +26,7 @@ import org.w3c.dom.Element;
 /**
  * Base class for all product components.
  */
-public abstract class ProductComponent extends RuntimeObject implements IProductComponent, IClRepositoryObject {
+public abstract class ProductComponent extends RuntimeObject implements IProductComponent, IXmlPersistenceSupport {
 
     // the component's id that identifies it in the repository
     private String id;
@@ -137,12 +136,16 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         return id;
     }
 
+    public Element toXml(Document document) {
+        return toXml(document, true);
+    }
+
     /**
      * 
      * @param document a document, that can be used to create XML elements.
-     * @param includeGenerations <code>true</code> if the created XML element should include the
-     *            data of all the product component's generations, <code>false</code> if generations
-     *            should be ignored when creating the XML output.
+     * @param includeGenerationnewChild) s <code>true</code> if the created XML element should
+     *            include the data of all the product component's generations, <code>false</code> if
+     *            generations should be ignored when creating the XML output.
      */
     public final Element toXml(Document document, boolean includeGenerations) {
         Element prodCmptElement = document.createElement("ProductComponent");
@@ -152,7 +155,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
             List<IProductComponentGeneration> generations = repository.getProductComponentGenerations(this);
             for (IProductComponentGeneration generation : generations) {
                 ProductComponentGeneration gen = (ProductComponentGeneration)generation;
-                gen.toXml(prodCmptElement);
+                prodCmptElement.appendChild(gen.toXml(document));
             }
         }
         return prodCmptElement;
@@ -164,10 +167,9 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      * @param element the XML element to write the properties to
      */
     protected void writePropertiesToXml(Element element) {
-        // Nothing to be done base class
         /*
-         * Note that this method is deliberately not declared abstract to allow calls to
-         * super.writePropertiesToXML() in subclasses.
+         * Nothing to be done base class. Note that this method is deliberately not declared
+         * abstract to allow calls to super.writePropertiesToXML() in subclasses.
          */
     }
 

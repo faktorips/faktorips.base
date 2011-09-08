@@ -167,10 +167,11 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         generateMethodDoInitTableUsagesFromXml(methodsBuilder);
 
         generateMethodWritePropertiesToXml(methodsBuilder);
-        if (isUseTypesafeCollections()) {
-            generateMethodGetLink(methodsBuilder);
-            generateMethodGetLinks(methodsBuilder);
-        }
+        generateMethodWriteReferencesToXml(methodsBuilder);
+        generateMethodWriteTableUsagesToXml(methodsBuilder);
+
+        generateMethodGetLink(methodsBuilder);
+        generateMethodGetLinks(methodsBuilder);
     }
 
     @Override
@@ -220,10 +221,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             }
             GenPolicyCmptType genPolicyCmptType = getStandardBuilderSet().getGenerator(attribute.getPolicyCmptType());
             GenPolicyCmptTypeAttribute generator = genPolicyCmptType.getGenerator(attribute);
-
-            GenPolicyAttributeForProdCmpts attributeReadWriteGenerator = new GenPolicyAttributeForProdCmpts(generator,
-                    this, enumTypeBuilder);
-            attributeReadWriteGenerator.generateWriteToXML(builder);
+            generator.setEnumTypeBuilder(enumTypeBuilder);
+            generator.generateWriteToXML(builder);
         }
     }
 
@@ -243,10 +242,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             }
             GenPolicyCmptType genPolicyCmptType = getStandardBuilderSet().getGenerator(attribute.getPolicyCmptType());
             GenPolicyCmptTypeAttribute generator = genPolicyCmptType.getGenerator(attribute);
-
-            GenPolicyAttributeForProdCmpts attributeReadWriteGenerator = new GenPolicyAttributeForProdCmpts(generator,
-                    this, enumTypeBuilder);
-            attributeReadWriteGenerator.generateExtractFromXML(builder);
+            generator.setEnumTypeBuilder(enumTypeBuilder);
+            generator.generateExtractFromXML(builder);
         }
     }
 
@@ -311,9 +308,9 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         appendOverrideAnnotation(builder, false);
         String[] argNames = new String[] { "elementsMap" }; //$NON-NLS-1$
-        String[] argTypes = new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<" //$NON-NLS-1$
-                + String.class.getName() + ", " + List.class.getName() + "<" + Element.class.getName() + ">>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        : Map.class.getName() };
+        String[] argTypes = new String[] { Map.class.getName() + "<" //$NON-NLS-1$
+                + String.class.getName() + ", " + List.class.getName() + "<" + Element.class.getName() + ">>" };//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
         builder.methodBegin(Modifier.PROTECTED, "void", "doInitReferencesFromXml", argNames, argTypes); //$NON-NLS-1$ //$NON-NLS-2$
         builder.appendln("super.doInitReferencesFromXml(elementsMap);"); //$NON-NLS-1$
 
@@ -437,6 +434,63 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             builder.appendClassName(ValueToXmlHelper.class);
             builder.append(".getValueFromElement(element, \"TableContentName\");"); //$NON-NLS-1$
             builder.appendln("}"); //$NON-NLS-1$
+        }
+        builder.appendln("}"); //$NON-NLS-1$
+    }
+
+    private void generateMethodWriteReferencesToXml(JavaCodeFragmentBuilder builder) throws CoreException {
+        IProductCmptType type = getProductCmptType();
+        if (type == null) {
+            return;
+        }
+        List<IAssociation> associations = type.getAssociations();
+        if (associations.isEmpty()) {
+            return;
+        }
+        String javaDoc = null;
+        builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
+        appendOverrideAnnotation(builder, false);
+        String[] argNames = new String[] { "element" }; //$NON-NLS-1$
+        String[] argTypes = new String[] { Element.class.getName() };
+        builder.methodBegin(Modifier.PROTECTED, "void", "writeReferencesToXml", argNames, argTypes); //$NON-NLS-1$ //$NON-NLS-2$
+        builder.appendln("super.writeReferencesToXml(element);"); //$NON-NLS-1$
+
+        for (IAssociation association : associations) {
+            IProductCmptTypeAssociation ass = (IProductCmptTypeAssociation)association;
+            if (!ass.isValid(getIpsProject())) {
+                continue;
+            }
+            if (!ass.isDerived()) {
+                IPolicyCmptTypeAssociation policyCmptTypeAssociation = ass
+                        .findMatchingPolicyCmptTypeAssociation(getIpsProject());
+                getGenerator(ass).generateCodeForMethodWriteReferencesToXml(policyCmptTypeAssociation, builder);
+            }
+        }
+        builder.methodEnd();
+    }
+
+    private void generateMethodWriteTableUsagesToXml(JavaCodeFragmentBuilder builder) throws CoreException {
+        IProductCmptType type = getProductCmptType();
+        if (type == null || !type.isValid(getIpsProject())) {
+            return;
+        }
+        List<ITableStructureUsage> tsus = type.getTableStructureUsages();
+        if (tsus.isEmpty()) {
+            return;
+        }
+        String javaDoc = null;
+        builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
+        appendOverrideAnnotation(builder, false);
+        String[] argNames = new String[] { "element" }; //$NON-NLS-1$
+        String[] argTypes = new String[] { Element.class.getName() };
+        builder.methodBegin(Modifier.PROTECTED, "void", "writeTableUsagesToXml", argNames, argTypes); //$NON-NLS-1$//$NON-NLS-2$
+        builder.appendln("super.writeTableUsagesToXml(element);"); //$NON-NLS-1$
+        for (ITableStructureUsage tsu : tsus) {
+            builder.append("writeTableUsageToXml(element, \"");
+            builder.append(tsu.getRoleName());
+            builder.append("\", ");
+            builder.append(getTableStructureUsageRoleName(tsu));
+            builder.append(");");
         }
         builder.appendln("}"); //$NON-NLS-1$
     }

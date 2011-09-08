@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import org.faktorips.runtime.IClRepositoryObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
@@ -30,6 +29,7 @@ import org.faktorips.runtime.formula.AbstractFormulaEvaluator;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.valueset.IntegerRange;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -39,7 +39,7 @@ import org.w3c.dom.NodeList;
  * 
  */
 public abstract class ProductComponentGeneration extends RuntimeObject implements IProductComponentGeneration,
-        IClRepositoryObject {
+        IXmlPersistenceSupport {
 
     // the product component this generation belongs to.
     private ProductComponent productCmpt;
@@ -291,17 +291,59 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         return ruleConfig != null && ruleConfig.isActive();
     }
 
-    /**
-     * Adds an XML {@link Element} representing this {@link ProductComponentGeneration} to the given
-     * element.
-     * 
-     * @param element the {@link Element} to add this generation's data to. The given element
-     *            contains the {@link ProductComponent}s data.
-     */
-    public final void toXml(Element element) {
-        Element genElement = element.getOwnerDocument().createElement("ProductComponentGeneration");
+    public Element toXml(Document document) {
+        Element genElement = document.createElement("ProductComponentGeneration");
         writePropertiesToXml(genElement);
-        element.appendChild(genElement);
+        writeTableUsagesToXml(genElement);
+        writeReferencesToXml(genElement);
+        writeFormulaToXml(genElement);
+        writeValidationRuleConfigsToXml(genElement);
+        /*
+         * SW 09.2011: Extension properties are never read from XML. Generations, it seems, will
+         * never be extended that way. Use code regardlessly.
+         */
+        writeExtensionPropertiesToXml(genElement);
+        return genElement;
+    }
+
+    protected void writeTableUsagesToXml(Element element) {
+        /*
+         * Nothing to be done base class. Note that this method is deliberately not declared
+         * abstract to allow calls to super.writeTableUsagesToXml() in subclasses.
+         */
+    }
+
+    protected void writeTableUsageToXml(Element element, String structureUsage, String tableContentName) {
+        Element tableContentElement = element.getOwnerDocument().createElement("TableContentUsage");
+        tableContentElement.setAttribute("structureUsage", structureUsage);
+        ValueToXmlHelper.addValueToElement(tableContentName, tableContentElement, "TableContentName");
+        element.appendChild(tableContentElement);
+    }
+
+    protected void writeReferencesToXml(Element element) {
+        /*
+         * Nothing to be done base class. Note that this method is deliberately not declaredtoXml
+         * abstract to allow calls to super.writeReferencesToXml() in subclasses.
+         */
+    }
+
+    protected void writeReferenceToXml(Element element, IProductComponentLink<? extends IProductComponent> link) {
+        Element linkElement = element.getOwnerDocument().createElement("Link");
+        linkElement.setAttribute("association", link.getAssociationName());
+        linkElement.setAttribute("target", link.getTarget().getId());
+        linkElement.setAttribute("minCardinality", Integer.toString(link.getCardinality().getLowerBound()));
+        linkElement.setAttribute("maxCardinality", Integer.toString(link.getCardinality().getUpperBound()));
+        linkElement.setAttribute("defaultCardinality", Integer.toString(link.getCardinality().getDefaultCardinality()));
+        element.appendChild(linkElement);
+    }
+
+    protected void writeFormulaToXml(Element element) {
+
+    }
+
+    protected void writeValidationRuleConfigsToXml(Element genElement) {
+        // Map<String, ValidationRuleConfiguration> configMap = new HashMap<String,
+        // ValidationRuleConfiguration>();
     }
 
     /**
@@ -311,6 +353,9 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      *            {@link ProductComponentGeneration}.
      */
     protected void writePropertiesToXml(Element generationElement) {
-        // default: do nothing
+        /*
+         * Nothing to be done base class. Note that this method is deliberately not declared
+         * abstract to allow calls to super.writePropertiesToXML() in subclasses.
+         */
     }
 }

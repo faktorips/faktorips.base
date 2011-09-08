@@ -17,6 +17,7 @@ import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -30,7 +31,7 @@ import org.w3c.dom.Element;
  * @author Daniel Hohenberger
  */
 public class ProductComponentLink<E extends IProductComponent> extends RuntimeObject implements
-        IProductComponentLink<E> {
+        IProductComponentLink<E>, IXmlPersistenceSupport {
 
     private final IProductComponentGeneration source;
     private CardinalityRange cardinality;
@@ -95,6 +96,19 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
         Integer defaultCardinality = Integer.valueOf(element.getAttribute("defaultCardinality"));
         cardinality = new CardinalityRange(minCardinality, maxCardinality, defaultCardinality);
         initExtensionPropertiesFromXml(element);
+    }
+
+    public Element toXml(Document document) {
+        Element linkElement = document.createElement("Link");
+        linkElement.setAttribute("association", getAssociationName());
+        linkElement.setAttribute("targetRuntimeId", getTargetId());
+        linkElement.setAttribute("minCardinality", Integer.toString(getCardinality().getLowerBound()));
+        Integer upperBound = getCardinality().getUpperBound();
+        linkElement
+                .setAttribute("maxCardinality", upperBound == Integer.MAX_VALUE ? "*" : Integer.toString(upperBound));
+        linkElement.setAttribute("defaultCardinality", Integer.toString(getCardinality().getDefaultCardinality()));
+        writeExtensionPropertiesToXml(linkElement);
+        return linkElement;
     }
 
     @SuppressWarnings("unchecked")

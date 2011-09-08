@@ -30,13 +30,11 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.util.QNameUtil;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.runtime.CardinalityRange;
@@ -567,8 +565,6 @@ public abstract class GenProdAssociation extends GenTypePart {
         }
     }
 
-    protected final boolean isUseTypesafeCollections(IIpsProject ipsProject) {
-        return Boolean.parseBoolean(ipsProject.getProperties().getBuilderSetConfig()
-                .getPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS));
-    }
+    public abstract void generateCodeForMethodWriteReferencesToXml(IPolicyCmptTypeAssociation policyCmptTypeAssociation,
+            JavaCodeFragmentBuilder builder) throws CoreException;
 }

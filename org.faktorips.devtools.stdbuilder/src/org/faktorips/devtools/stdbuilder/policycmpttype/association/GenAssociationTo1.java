@@ -23,7 +23,6 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -33,6 +32,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
+import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.runtime.internal.MethodNames;
@@ -584,7 +584,7 @@ public class GenAssociationTo1 extends GenAssociation {
             }
             return true;
         } catch (CoreException e) {
-            IpsPlugin.log(e);
+            StdBuilderPlugin.log(e);
             return false;
         }
     }

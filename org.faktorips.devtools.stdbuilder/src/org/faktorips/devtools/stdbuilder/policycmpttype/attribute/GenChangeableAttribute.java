@@ -28,7 +28,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.DatatypeUtil;
@@ -41,6 +40,7 @@ import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuilder;
@@ -55,7 +55,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
 
-    public GenChangeableAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) {
+    public GenChangeableAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
         super(genPolicyCmptType, a);
         ArgumentCheck.isTrue(a.isChangeable());
     }
@@ -259,7 +259,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
             IPolicyCmptTypeAttribute overwrittenAttribute = (getAttribute()).findOverwrittenAttribute(getIpsProject());
             return overwrittenAttribute.isProductRelevant();
         } catch (CoreException e) {
-            IpsPlugin.log(e);
+            StdBuilderPlugin.log(e);
             return false;
         }
     }
@@ -302,9 +302,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
             body.append("().");
         } else { // Public
             body.append("((");
-            body
-                    .append(getProductCmptType(ipsProject).getName()
-                            + (getGenType()).getAbbreviationForGenerationConcept());
+            body.append(getProductCmptType(ipsProject).getName() + (getGenType()).getAbbreviationForGenerationConcept());
             body.append(")");
             body.append(genProductCmptType.getMethodNameGetProductCmptGeneration());
             body.append("()).");
@@ -449,8 +447,8 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
 
     protected String getConstantName(IValueSet valueSet) {
         if (valueSet.isEnum()) {
-            return getLocalizedText("FIELD_MAX_ALLOWED_VALUES_FOR_NAME", StringUtils
-                    .upperCase(getAttribute().getName()));
+            return getLocalizedText("FIELD_MAX_ALLOWED_VALUES_FOR_NAME",
+                    StringUtils.upperCase(getAttribute().getName()));
         }
         if (valueSet.isRange()) {
             return getLocalizedText("FIELD_MAX_RANGE_FOR_NAME", StringUtils.upperCase(getAttribute().getName()));
@@ -467,8 +465,9 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
                 createCastExpression(range.getUpperBound()), createCastExpression(range.getStep()), containsNullFrag,
                 isUseTypesafeCollections());
         membersBuilder.varDeclaration(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL
-                | java.lang.reflect.Modifier.STATIC, valuesetDatatypeHelper
-                .getRangeJavaClassName(isUseTypesafeCollections()), getConstantName(getValueSet()), frag);
+                | java.lang.reflect.Modifier.STATIC,
+                valuesetDatatypeHelper.getRangeJavaClassName(isUseTypesafeCollections()),
+                getConstantName(getValueSet()), frag);
     }
 
     protected void generateConstantEnumSetOfAllowedValues(JavaCodeFragmentBuilder builder) {

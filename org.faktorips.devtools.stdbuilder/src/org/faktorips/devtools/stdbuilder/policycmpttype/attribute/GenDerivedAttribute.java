@@ -42,7 +42,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
 
-    public GenDerivedAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) {
+    public GenDerivedAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
         super(genPolicyCmptType, a);
         ArgumentCheck.isTrue(a.isDerived());
     }

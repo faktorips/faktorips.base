@@ -132,7 +132,7 @@ public class GenPolicyCmptType extends GenType {
         return genPolicyCmptTypeAttributes;
     }
 
-    private GenPolicyCmptTypeAttribute createGenerator(IPolicyCmptTypeAttribute a) {
+    private GenPolicyCmptTypeAttribute createGenerator(IPolicyCmptTypeAttribute a) throws CoreException {
         if (a.isDerived()) {
             return new GenDerivedAttribute(this, a);
         }
