@@ -22,7 +22,6 @@ import java.util.Calendar;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,8 +38,6 @@ public class GenProdAssociationTo1Test extends GenProdAssociationTest {
         association.setMaxCardinality(1);
 
         genAssociationTo1 = new GenProdAssociationTo1(genProductCmptType, association);
-
-        ProjectConfigurationUtil.setUpUseTypesafeCollections(ipsProject, true);
     }
 
     @Test
@@ -70,16 +67,6 @@ public class GenProdAssociationTo1Test extends GenProdAssociationTest {
     }
 
     @Test
-    public void testGetGeneratedJavaElementsForPublishedInterfaceDoNotUseTypesafeCollections() throws CoreException {
-        ProjectConfigurationUtil.setUpUseTypesafeCollections(ipsProject, false);
-        genAssociationTo1.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterfaceGeneration,
-                association);
-        expectMethodGet1RelatedCmpt(javaInterfaceGeneration);
-        expectMethodGet1RelatedCmptGen(javaInterfaceGeneration);
-        assertEquals(2, generatedJavaElements.size());
-    }
-
-    @Test
     public void testGetGeneratedJavaElementsForImplementation() {
         genAssociationTo1.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 association);
@@ -104,18 +91,6 @@ public class GenProdAssociationTo1Test extends GenProdAssociationTest {
         expectMethodGetRelatedCmptLink(genAssociationTo1, javaClassGeneration);
         expectMethodGetCardinalityForAssociation(genAssociationTo1, javaClassGeneration);
         assertEquals(7, generatedJavaElements.size());
-    }
-
-    @Test
-    public void testGetGeneratedJavaElementsForImplementationDoNotUseTypesafeCollections() throws CoreException {
-        ProjectConfigurationUtil.setUpUseTypesafeCollections(ipsProject, false);
-        genAssociationTo1.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
-                association);
-        expectFieldTo1Association(0, javaClassGeneration);
-        expectMethodGet1RelatedCmpt(javaClassGeneration);
-        expectMethodGet1RelatedCmptGen(javaClassGeneration);
-        expectMethodSet1RelatedCmpt(javaClassGeneration);
-        assertEquals(4, generatedJavaElements.size());
     }
 
     private void expectFieldTo1Association(int index, IType javaType) {

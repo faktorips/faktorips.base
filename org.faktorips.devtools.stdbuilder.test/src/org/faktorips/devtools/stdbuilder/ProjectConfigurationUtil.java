@@ -32,15 +32,4 @@ public class ProjectConfigurationUtil {
         ipsProject.setProperties(properties);
     }
 
-    public static final void setUpUseTypesafeCollections(IIpsProject ipsProject, boolean useFeature)
-            throws CoreException {
-
-        IIpsProjectProperties properties = ipsProject.getProperties();
-        IIpsArtefactBuilderSetConfigModel builderConfig = properties.getBuilderSetConfig();
-        String booleanLiteral = useFeature ? "true" : "false";
-        builderConfig.setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS, booleanLiteral,
-                null);
-        ipsProject.setProperties(properties);
-    }
-
 }

@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
 import org.faktorips.valueset.IntegerRange;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,8 +41,6 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         association.setMaxCardinality(IAssociation.CARDINALITY_MANY);
 
         genAssociationToMany = new GenProdAssociationToMany(genProductCmptType, association);
-
-        ProjectConfigurationUtil.setUpUseTypesafeCollections(ipsProject, true);
     }
 
     @Test
@@ -74,18 +71,6 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         expectMethodGetRelatedCmptLink(genAssociationToMany, javaInterfaceGeneration);
         expectMethodGetCardinalityForAssociation(genAssociationToMany, javaInterfaceGeneration);
         assertEquals(7, generatedJavaElements.size());
-    }
-
-    @Test
-    public void testGetGeneratedJavaElementsForPublishedInterfaceDoNotUseTypesafeCollections() throws CoreException {
-        ProjectConfigurationUtil.setUpUseTypesafeCollections(ipsProject, false);
-        genAssociationToMany.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                javaInterfaceGeneration, association);
-        expectMethodGetManyRelatedCmpts(javaInterfaceGeneration);
-        expectMethodGetNumOfRelatedCmpts(javaInterfaceGeneration);
-        expectMethodGetManyRelatedCmptGens(javaInterfaceGeneration);
-        expectMethodGetRelatedCmptAtIndex(javaInterfaceGeneration);
-        assertEquals(4, generatedJavaElements.size());
     }
 
     @Test
@@ -130,21 +115,6 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         expectMethodGetNumOfRelatedCmpts(javaClassGeneration);
         expectMethodGetCardinalityForAssociation(genAssociationToMany, javaClassGeneration);
         assertEquals(10, generatedJavaElements.size());
-    }
-
-    @Test
-    public void testGetGeneratedJavaElementsForImplementationDoNotUseTypesafeCollections() throws CoreException {
-        ProjectConfigurationUtil.setUpUseTypesafeCollections(ipsProject, false);
-        genAssociationToMany.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
-                association);
-        expectFieldToManyAssociation(0, javaClassGeneration);
-        expectMethodGetManyRelatedCmpts(javaClassGeneration);
-        expectMethodGetManyRelatedCmptGens(javaClassGeneration);
-        expectMethodGetRelatedCmptAtIndex(javaClassGeneration);
-        expectMethodAddRelatedCmpt(javaClassGeneration);
-        expectMethodAddRelatedCmptWithCardinality(javaClassGeneration);
-        expectMethodGetNumOfRelatedCmpts(javaClassGeneration);
-        assertEquals(7, generatedJavaElements.size());
     }
 
     @Test
