@@ -53,7 +53,6 @@ import org.faktorips.runtime.internal.Range;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.valueset.OrderedValueSet;
-import org.faktorips.valueset.ValueSet;
 import org.w3c.dom.Element;
 
 /**
@@ -163,8 +162,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
         builder.append("if (" + propMapName + ".containsKey(");
         builder.appendQuoted(getAttribute().getName());
         builder.appendln(")) {");
-        String expr = (isUseTypesafeCollections() ? "" : "(String)") + propMapName + ".get(\""
-                + getAttribute().getName() + "\")";
+        String expr = propMapName + ".get(\"" + getAttribute().getName() + "\")";
         builder.append("this.").append(getMemberVarName() + " = ");
         if (getDatatypeHelper() instanceof EnumTypeDatatypeHelper) {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)getDatatypeHelper();
@@ -241,22 +239,15 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
      */
     protected String getJavaTypeForValueSet(IValueSet valueSet) {
         if (valueSet.isUnrestricted()) {
-            if (isUseTypesafeCollections()) {
-                return Java5ClassNames.ValueSet_QualifiedName + '<' + valuesetDatatypeHelper.getJavaClassName() + '>';
-            } else {
-                return ValueSet.class.getName();
-            }
+            return Java5ClassNames.ValueSet_QualifiedName + '<' + valuesetDatatypeHelper.getJavaClassName() + '>';
+
         }
         if (valueSet.isRange()) {
             return valuesetDatatypeHelper.getRangeJavaClassName(isUseTypesafeCollections());
         }
         if (valueSet.isEnum()) {
-            if (isUseTypesafeCollections()) {
-                return Java5ClassNames.OrderedValueSet_QualifiedName + '<' + valuesetDatatypeHelper.getJavaClassName()
-                        + '>';
-            } else {
-                return JAVA4_CLASS_EnumValueSet;
-            }
+            return Java5ClassNames.OrderedValueSet_QualifiedName + '<' + valuesetDatatypeHelper.getJavaClassName()
+                    + '>';
         }
         throw new RuntimeException("Can't handle value set " + valueSet);
     }
@@ -375,13 +366,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
     }
 
     private void generateGetElementFromConfigMapAndIfStatement(String attributeName, JavaCodeFragmentBuilder builder) {
-        if (isUseTypesafeCollections()) {
-            builder.append("configElement = configMap.get(\""); //$NON-NLS-1$
-        } else {
-            builder.append("configElement = ("); //$NON-NLS-1$
-            builder.appendClassName(Element.class);
-            builder.append(")configMap.get(\""); //$NON-NLS-1$
-        }
+        builder.append("configElement = configMap.get(\""); //$NON-NLS-1$
         builder.append(attributeName);
         builder.appendln("\");"); //$NON-NLS-1$
         builder.append("if (configElement != null) "); //$NON-NLS-1$
@@ -469,11 +454,9 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
     private void generateCreateUnrestrictedValueSet(DatatypeHelper helper, JavaCodeFragment frag) {
         frag.append("new "); //$NON-NLS-1$
         frag.appendClassName(UnrestrictedValueSet.class);
-        if (isUseTypesafeCollections()) {
-            frag.append("<"); //$NON-NLS-1$
-            frag.appendClassName(helper.getJavaClassName());
-            frag.append(">"); //$NON-NLS-1$
-        }
+        frag.append("<"); //$NON-NLS-1$
+        frag.appendClassName(helper.getJavaClassName());
+        frag.append(">"); //$NON-NLS-1$
         frag.append("();"); //$NON-NLS-1$
     }
 
@@ -509,11 +492,9 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
             JavaCodeFragment frag) {
         frag.append("new "); //$NON-NLS-1$
         frag.appendClassName(UnrestrictedValueSet.class);
-        if (isUseTypesafeCollections()) {
-            frag.append("<"); //$NON-NLS-1$
-            frag.appendClassName(helper.getJavaClassName());
-            frag.append(">"); //$NON-NLS-1$
-        }
+        frag.append("<"); //$NON-NLS-1$
+        frag.appendClassName(helper.getJavaClassName());
+        frag.append(">"); //$NON-NLS-1$
         frag.append("();"); //$NON-NLS-1$
     }
 
@@ -528,18 +509,14 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
         frag.append("if (values != null)"); //$NON-NLS-1$
         frag.appendOpenBracket();
         frag.appendClassName(ArrayList.class);
-        if (isUseTypesafeCollections()) {
-            frag.append("<"); //$NON-NLS-1$
-            frag.appendClassName(helper.getJavaClassName());
-            frag.append(">"); //$NON-NLS-1$
-        }
+        frag.append("<"); //$NON-NLS-1$
+        frag.appendClassName(helper.getJavaClassName());
+        frag.append(">"); //$NON-NLS-1$
         frag.append(" enumValues = new "); //$NON-NLS-1$
         frag.appendClassName(ArrayList.class);
-        if (isUseTypesafeCollections()) {
-            frag.append("<"); //$NON-NLS-1$
-            frag.appendClassName(helper.getJavaClassName());
-            frag.append(">"); //$NON-NLS-1$
-        }
+        frag.append("<"); //$NON-NLS-1$
+        frag.appendClassName(helper.getJavaClassName());
+        frag.append(">"); //$NON-NLS-1$
         frag.append("();"); //$NON-NLS-1$
         frag.append("for (int i = 0; i < values.getNumberOfValues(); i++)"); //$NON-NLS-1$
         frag.appendOpenBracket();
@@ -680,7 +657,9 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
 
     protected void appendGenericDatatypeClassname(JavaCodeFragmentBuilder builder) {
         builder.append("<");
-        builder.append(datatype.getJavaClassName());
+        // Convert primitive data type names to Object names (e.g. int to Integer)
+        DatatypeHelper helper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsProject(), datatypeHelper);
+        builder.append(helper.getJavaClassName());
         builder.append(">");
     }
 
