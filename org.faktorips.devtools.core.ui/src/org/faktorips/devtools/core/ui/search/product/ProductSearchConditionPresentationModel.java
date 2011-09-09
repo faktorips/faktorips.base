@@ -43,7 +43,7 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     private final List<? extends IIpsElement> searchableElements;
     private Integer searchedElementIndex;
 
-    private List<ISearchOperatorType> operatorTypes;
+    private List<? extends ISearchOperatorType> operatorTypes;
     private Integer operatorTypeIndex;
 
     private String argument = null;
@@ -118,7 +118,7 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
         return condition;
     }
 
-    protected List<ISearchOperatorType> getSearchOperatorTypes() {
+    protected List<? extends ISearchOperatorType> getSearchOperatorTypes() {
         return operatorTypes;
     }
 

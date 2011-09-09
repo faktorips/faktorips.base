@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 
@@ -106,14 +107,14 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
 
     private void addMatchedElement(IIpsElement element, IIpsElement child) {
 
-        IIpsElement parent = getIpsElementParent(element);
-
-        if (parent != null) {
-            addMatchedElement(parent, element);
-        }
-
         IpsElementSearchTreeNode ipsElementSearchTreeNode = ipsElementTree.get(element);
         if (ipsElementSearchTreeNode == null) {
+
+            IIpsElement parent = getIpsElementParent(element);
+            if (parent != null) {
+                addMatchedElement(parent, element);
+            }
+
             ipsElementSearchTreeNode = new IpsElementSearchTreeNode();
             ipsElementTree.put(element, ipsElementSearchTreeNode);
         }
@@ -138,8 +139,11 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
             return ipsSrcFile.getIpsPackageFragment();
         }
+        if (element instanceof IIpsPackageFragmentRoot) {
+            return ((IIpsPackageFragmentRoot)element).getIpsProject();
+        }
         if (element instanceof IIpsPackageFragment) {
-            return ((IIpsPackageFragment)element).getIpsProject();
+            return ((IIpsPackageFragment)element).getParent();
         }
         if (element instanceof IIpsObject) {
             IIpsObject ipsSrcFile = (IIpsObject)element;

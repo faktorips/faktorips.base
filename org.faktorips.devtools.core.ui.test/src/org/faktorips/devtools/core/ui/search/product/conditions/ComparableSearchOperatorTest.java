@@ -28,7 +28,7 @@ public class ComparableSearchOperatorTest {
         String fuenf = "5";
         String vier = "4";
 
-        OperandProvider operandProvider = new OperandProvider() {
+        IOperandProvider operandProvider = new IOperandProvider() {
 
             @Override
             public String getSearchOperand(IProductCmptGeneration productComponentGeneration) {
@@ -38,13 +38,13 @@ public class ComparableSearchOperatorTest {
 
         ComparableSearchOperator searchOperator = new ComparableSearchOperator(new IntegerDatatype(),
                 searchOperatorType, operandProvider, fuenf);
-        assertTrue(searchOperator.check(vier));
-        assertFalse(searchOperator.check(fuenf));
+        assertTrue(searchOperator.check(vier, null));
+        assertFalse(searchOperator.check(fuenf, null));
 
         searchOperatorType = ComparableSearchOperatorType.GREATER_THAN_OR_EQUALS;
 
         searchOperator = new ComparableSearchOperator(new IntegerDatatype(), searchOperatorType, operandProvider, vier);
-        assertTrue(searchOperator.check(vier));
-        assertTrue(searchOperator.check(fuenf));
+        assertTrue(searchOperator.check(vier, null));
+        assertTrue(searchOperator.check(fuenf, null));
     }
 }

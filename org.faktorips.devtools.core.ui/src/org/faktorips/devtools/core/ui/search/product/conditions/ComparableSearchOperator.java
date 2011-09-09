@@ -15,11 +15,11 @@ package org.faktorips.devtools.core.ui.search.product.conditions;
 
 import org.faktorips.datatype.ValueDatatype;
 
-public class ComparableSearchOperator extends AbstractSearchOperator<ComparableSearchOperatorType> {
+public class ComparableSearchOperator extends AbstractStringSearchOperator<ComparableSearchOperatorType> {
 
     protected ComparableSearchOperator(ValueDatatype valueDatatype, ComparableSearchOperatorType searchOperatorType,
-            OperandProvider operandProvider, String argument) {
-        super(valueDatatype, searchOperatorType, operandProvider, argument);
+            IOperandProvider iOperandProvider, String argument) {
+        super(valueDatatype, searchOperatorType, iOperandProvider, argument);
     }
 
     @Override

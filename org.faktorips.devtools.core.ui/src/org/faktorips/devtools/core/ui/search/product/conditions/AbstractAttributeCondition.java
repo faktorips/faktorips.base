@@ -13,26 +13,35 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 
-public interface ICondition {
+public abstract class AbstractAttributeCondition implements ICondition {
 
-    public List<? extends IIpsElement> getSearchableElements(IProductCmptType productCmptType) throws CoreException;
+    @Override
+    public ValueDatatype getValueDatatype(IIpsElement elementPart) {
+        IAttribute attribute = (IAttribute)elementPart;
+        try {
+            return attribute.findDatatype(attribute.getIpsProject());
+        } catch (CoreException e) {
+            // TODO Exception Handling
+            throw new RuntimeException(e);
+        }
+    }
 
-    public List<? extends ISearchOperatorType> getSearchOperatorTypes(IIpsElement elementPart);
+    @Override
+    public IValueSet getValueSet(IIpsElement elementPart) {
+        IAttribute attribute = (IAttribute)elementPart;
 
-    public ValueDatatype getValueDatatype(IIpsElement elementPart);
-
-    public IValueSet getValueSet(IIpsElement elementPart);
-
-    public IOperandProvider createOperandProvider(IIpsElement elementPart);
-
-    public String getName();
+        try {
+            return attribute.getValueSet();
+        } catch (CoreException e) {
+            // TODO Exception Handling
+            throw new RuntimeException(e);
+        }
+    }
 
 }

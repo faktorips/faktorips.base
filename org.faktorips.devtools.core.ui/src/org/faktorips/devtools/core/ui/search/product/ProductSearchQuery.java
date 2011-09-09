@@ -31,9 +31,9 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchQuery;
+import org.faktorips.devtools.core.ui.search.product.conditions.IOperandProvider;
 import org.faktorips.devtools.core.ui.search.product.conditions.ISearchOperator;
 import org.faktorips.devtools.core.ui.search.product.conditions.ISearchOperatorType;
-import org.faktorips.devtools.core.ui.search.product.conditions.OperandProvider;
 
 public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPresentationModel> {
 
@@ -76,7 +76,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
 
     protected ISearchOperator createSearchOperator(ProductSearchConditionPresentationModel conditionModel) {
 
-        OperandProvider operandProvider = conditionModel.getCondition().createOperandProvider(
+        IOperandProvider operandProvider = conditionModel.getCondition().createOperandProvider(
                 conditionModel.getSearchedElement());
         ISearchOperatorType operatorType = conditionModel.getOperatorType();
 
@@ -136,11 +136,13 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
         IIpsProject[] productDefinitionProjects = ipsModel.getIpsProductDefinitionProjects();
         for (IIpsProject project : productDefinitionProjects) {
 
-            // TODO das ist unschön, aknn man die bausteine ohne diesen Umweg finden?
-            IProductCmptType type = project.findProductCmptType(productCmptType.getQualifiedName());
+            // TODO das ist unschön, kann man die bausteine ohne diesen Umweg finden?
+            IProductCmptType type = productCmptType;// project.findProductCmptType(productCmptType.getQualifiedName());
 
-            List<IIpsSrcFile> asList = Arrays.asList(project.findAllProductCmptSrcFiles(type, true));
-            matchingProductComponents.addAll(asList);
+            if (type != null) {
+                List<IIpsSrcFile> asList = Arrays.asList(project.findAllProductCmptSrcFiles(type, true));
+                matchingProductComponents.addAll(asList);
+            }
         }
 
         selectedSrcFiles.retainAll(matchingProductComponents);

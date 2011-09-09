@@ -13,26 +13,23 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions;
 
-import java.util.List;
-
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 
-public interface ICondition {
+public abstract class AbstractStringSearchOperator<S extends ISearchOperatorType> extends AbstractSearchOperator<S> {
 
-    public List<? extends IIpsElement> getSearchableElements(IProductCmptType productCmptType) throws CoreException;
+    protected AbstractStringSearchOperator(ValueDatatype valueDatatype, S searchOperatorType,
+            IOperandProvider operandProvider, String argument) {
+        super(valueDatatype, searchOperatorType, operandProvider, argument);
+    }
 
-    public List<? extends ISearchOperatorType> getSearchOperatorTypes(IIpsElement elementPart);
+    @Override
+    protected final boolean check(Object operand, IProductCmptGeneration productCmptGeneration) {
+        if (operand instanceof String && getValueDatatype().isParsable((String)operand)) {
+            return checkInternal((String)operand);
+        }
+        return false;
+    }
 
-    public ValueDatatype getValueDatatype(IIpsElement elementPart);
-
-    public IValueSet getValueSet(IIpsElement elementPart);
-
-    public IOperandProvider createOperandProvider(IIpsElement elementPart);
-
-    public String getName();
-
+    protected abstract boolean checkInternal(String operand);
 }

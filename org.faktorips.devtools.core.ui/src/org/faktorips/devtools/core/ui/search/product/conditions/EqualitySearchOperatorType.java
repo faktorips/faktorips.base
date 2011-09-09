@@ -28,11 +28,6 @@ public enum EqualitySearchOperatorType implements ISearchOperatorType {
     }
 
     @Override
-    public Class<?> getApplicableClass() {
-        return Object.class;
-    }
-
-    @Override
     public String getLabel() {
         return label;
     }
@@ -47,7 +42,7 @@ public enum EqualitySearchOperatorType implements ISearchOperatorType {
     }
 
     @Override
-    public ISearchOperator createSearchOperator(OperandProvider operandProvider,
+    public ISearchOperator createSearchOperator(IOperandProvider operandProvider,
             ValueDatatype valueDatatype,
             String argument) {
         return new EqualitySearchOperator(valueDatatype, this, operandProvider, argument);

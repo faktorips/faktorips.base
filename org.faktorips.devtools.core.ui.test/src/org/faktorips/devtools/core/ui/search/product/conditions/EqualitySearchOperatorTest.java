@@ -27,17 +27,18 @@ public class EqualitySearchOperatorTest {
         String fuenf = "5";
         String vier = "4";
 
-        AbstractSearchOperator searchOperator = (AbstractSearchOperator)equalityType.createSearchOperator(null,
+        AbstractStringSearchOperator<?> searchOperator = (AbstractStringSearchOperator<?>)equalityType.createSearchOperator(null,
                 new IntegerDatatype(), vier);
-        assertTrue(searchOperator.check(vier));
-        assertFalse(searchOperator.check(fuenf));
+        assertTrue(searchOperator.check(vier, null));
+        assertFalse(searchOperator.check(fuenf, null));
         assertFalse(searchOperator.checkInternal(null));
 
         EqualitySearchOperatorType inEqualityType = EqualitySearchOperatorType.INEQUALITY;
 
-        searchOperator = (AbstractSearchOperator)inEqualityType.createSearchOperator(null, new IntegerDatatype(), vier);
-        assertFalse(searchOperator.check(vier));
-        assertTrue(searchOperator.check(fuenf));
+        searchOperator = (AbstractStringSearchOperator<?>)inEqualityType.createSearchOperator(null, new IntegerDatatype(),
+                vier);
+        assertFalse(searchOperator.check(vier, null));
+        assertTrue(searchOperator.check(fuenf, null));
         assertTrue(searchOperator.checkInternal(null));
     }
 

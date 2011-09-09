@@ -18,13 +18,13 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 
 public abstract class AbstractSearchOperator<S extends ISearchOperatorType> implements ISearchOperator {
 
-    private final S searchOperatorType;
-    private final String argument;
-    private final ValueDatatype valueDatatype;
-    private final OperandProvider operandProvider;
+    protected final S searchOperatorType;
+    protected final String argument;
+    protected final ValueDatatype valueDatatype;
+    protected final IOperandProvider operandProvider;
 
-    protected AbstractSearchOperator(ValueDatatype valueDatatype, S searchOperatorType,
-            OperandProvider operandProvider, String argument) {
+    public AbstractSearchOperator(ValueDatatype valueDatatype, S searchOperatorType, IOperandProvider operandProvider,
+            String argument) {
         this.valueDatatype = valueDatatype;
         this.searchOperatorType = searchOperatorType;
         this.argument = argument;
@@ -33,17 +33,10 @@ public abstract class AbstractSearchOperator<S extends ISearchOperatorType> impl
 
     @Override
     public final boolean check(IProductCmptGeneration productCmptGeneration) {
-        return check(operandProvider.getSearchOperand(productCmptGeneration));
+        return check(operandProvider.getSearchOperand(productCmptGeneration), productCmptGeneration);
     }
 
-    protected final boolean check(String operand) {
-        if (getValueDatatype().isParsable(operand)) {
-            return checkInternal(operand);
-        }
-        return false;
-    }
-
-    protected abstract boolean checkInternal(String operand);
+    protected abstract boolean check(Object searchOperand, IProductCmptGeneration productCmptGeneration);
 
     protected S getSearchOperatorType() {
         return searchOperatorType;
@@ -61,4 +54,5 @@ public abstract class AbstractSearchOperator<S extends ISearchOperatorType> impl
     public ValueDatatype getValueDatatype() {
         return valueDatatype;
     }
+
 }

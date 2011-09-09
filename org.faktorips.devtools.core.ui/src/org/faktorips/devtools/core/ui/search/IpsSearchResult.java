@@ -101,7 +101,8 @@ public class IpsSearchResult extends AbstractTextSearchResult {
 
     @Override
     public void removeMatch(Match match) {
-        matchingIpsElements.remove(match.getElement());
+        IIpsElement element = (IIpsElement)match.getElement();
+        matchingIpsElements.remove(element);
         super.removeMatch(match);
     }
 

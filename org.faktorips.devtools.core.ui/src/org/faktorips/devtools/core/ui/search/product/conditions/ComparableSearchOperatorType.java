@@ -38,11 +38,6 @@ public enum ComparableSearchOperatorType implements ISearchOperatorType {
     }
 
     @Override
-    public Class<?> getApplicableClass() {
-        return Comparable.class;
-    }
-
-    @Override
     public String getLabel() {
         return label;
     }
@@ -61,9 +56,9 @@ public enum ComparableSearchOperatorType implements ISearchOperatorType {
     }
 
     @Override
-    public ISearchOperator createSearchOperator(OperandProvider operandProvider,
+    public ISearchOperator createSearchOperator(IOperandProvider iOperandProvider,
             ValueDatatype valueDatatype,
             String argument) {
-        return new ComparableSearchOperator(valueDatatype, this, operandProvider, argument);
+        return new ComparableSearchOperator(valueDatatype, this, iOperandProvider, argument);
     }
 }

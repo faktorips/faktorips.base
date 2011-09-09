@@ -19,11 +19,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -115,7 +118,39 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
     private void addResource(Set<IIpsSrcFile> srcFiles, IResource resource) throws CoreException {
         IIpsElement element = (IIpsElement)resource.getAdapter(IIpsElement.class);
 
-        addSrcFilesOfElement(srcFiles, element);
+        if (element != null) {
+            addSrcFilesOfElement(srcFiles, element);
+            return;
+        }
+
+        IIpsArchive archive = getIpsArchive(resource);
+
+        if (archive != null) {
+            addSrcFilesOfElement(srcFiles, archive.getRoot());
+        }
+
+        // TODO aufpassen: Parent vom IpsPackageFragmentRoot muss nicht unbedingt das Projekt sein
+        // ==> im projekt alle IPFR durchgehen!
+    }
+
+    private IIpsArchive getIpsArchive(IResource resource) throws CoreException {
+
+        IProject project = resource.getProject();
+
+        IIpsProject ipsProject = (IIpsProject)project.getAdapter(IIpsElement.class);
+
+        IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsProject.getIpsPackageFragmentRoots();
+        for (IIpsPackageFragmentRoot ipsPackageFragmentRoot : ipsPackageFragmentRoots) {
+            if (ipsPackageFragmentRoot.isBasedOnIpsArchive()) {
+                IPath archiveLocation = ipsPackageFragmentRoot.getIpsArchive().getLocation();
+                IPath resourceLocation = resource.getLocation();
+
+                if (resourceLocation.isPrefixOf(archiveLocation)) {
+                    return ipsPackageFragmentRoot.getIpsArchive();
+                }
+            }
+        }
+        return null;
     }
 
     private IResource getResource(Object object) {
@@ -144,6 +179,17 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
 
             for (IResource resource : ipsProject.getProject().members()) {
                 addResource(srcFiles, resource);
+            }
+
+            /*
+             * IIpsArchiveEntry[] archiveEntries =
+             * ipsProject.getIpsObjectPath().getArchiveEntries(); for (IIpsArchiveEntry
+             * iIpsArchiveEntry : archiveEntries) { iIpsArchiveEntry. }
+             */
+
+            IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsProject.getIpsPackageFragmentRoots();
+            for (IIpsPackageFragmentRoot iIpsPackageFragmentRoot : ipsPackageFragmentRoots) {
+                addSrcFilesOfElement(srcFiles, iIpsPackageFragmentRoot);
             }
 
             return;

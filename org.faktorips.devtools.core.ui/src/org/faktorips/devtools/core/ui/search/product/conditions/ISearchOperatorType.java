@@ -17,13 +17,11 @@ import org.faktorips.datatype.ValueDatatype;
 
 public interface ISearchOperatorType {
 
-    public Class<?> getApplicableClass();
-
     public String getLabel();
 
     public int getArgumentCount();
 
-    public ISearchOperator createSearchOperator(OperandProvider operandProvider,
+    public ISearchOperator createSearchOperator(IOperandProvider operandProvider,
             ValueDatatype valueDatatype,
             String argument);
 }

@@ -25,9 +25,9 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 
-public class ProductAttributeCondition implements ICondition {
+public class ProductAttributeCondition extends AbstractAttributeCondition {
 
-    private final class ProductAttributeArgumentProvider implements OperandProvider {
+    private static final class ProductAttributeArgumentProvider implements IOperandProvider {
         private final IAttribute attribute;
 
         public ProductAttributeArgumentProvider(IAttribute attribute) {
@@ -66,19 +66,12 @@ public class ProductAttributeCondition implements ICondition {
     }
 
     @Override
-    public ValueDatatype getValueDatatype(IIpsElement elementPart) {
-        IAttribute attribute = (IAttribute)elementPart;
-        try {
-            return attribute.findDatatype(attribute.getIpsProject());
-        } catch (CoreException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public OperandProvider createOperandProvider(IIpsElement elementPart) {
+    public IOperandProvider createOperandProvider(IIpsElement elementPart) {
         return new ProductAttributeArgumentProvider((IAttribute)elementPart);
     }
 
+    @Override
+    public String getName() {
+        return "Product Attribute";
+    }
 }

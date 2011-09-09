@@ -64,6 +64,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         return productCmptType.getName();
     }
 
+    // TODO string mit qualname
     public IProductCmptType getProductCmptType() {
         return productCmptType;
     }
@@ -115,7 +116,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     }
 
     public List<ProductSearchConditionPresentationModel> getProductSearchConditionPresentationModels() {
-        return new ArrayList<ProductSearchConditionPresentationModel>(productSearchConditionPresentationModels);
+        return productSearchConditionPresentationModels;
     }
 
     public void addProductSearchConditionPresentationModels(ProductSearchConditionPresentationModel productSearchConditionPresentationModel) {

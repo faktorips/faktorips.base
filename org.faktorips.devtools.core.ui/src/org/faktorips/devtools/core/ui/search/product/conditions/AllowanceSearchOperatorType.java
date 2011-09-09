@@ -15,23 +15,37 @@ package org.faktorips.devtools.core.ui.search.product.conditions;
 
 import org.faktorips.datatype.ValueDatatype;
 
-public class EqualitySearchOperator extends AbstractStringSearchOperator<EqualitySearchOperatorType> {
+public enum AllowanceSearchOperatorType implements ISearchOperatorType {
+    ALLOWED("Allowed Value", false),
+    NOT_ALLOWED("Not allowed Value", true);
 
-    public EqualitySearchOperator(ValueDatatype valueDatatype, EqualitySearchOperatorType searchOperatorType,
-            IOperandProvider iOperandProvider, String argument) {
-        super(valueDatatype, searchOperatorType, iOperandProvider, argument);
+    private final String label;
+    private final boolean negation;
+
+    private AllowanceSearchOperatorType(String label, boolean negation) {
+        this.label = label;
+        this.negation = negation;
     }
 
     @Override
-    public boolean checkInternal(String operand) {
-        return checkEquality(operand) == getSearchOperatorType().isEquality();
+    public String getLabel() {
+        return label;
     }
 
-    protected boolean checkEquality(String operand) {
-        // TODO macht die pruefung hier sinn? macht doch bereits der valuedatatype?
-        if (getArgument() == null) {
-            return operand == null;
-        }
-        return getValueDatatype().areValuesEqual(operand, getArgument());
+    @Override
+    public int getArgumentCount() {
+        return 1;
     }
+
+    @Override
+    public ISearchOperator createSearchOperator(IOperandProvider operandProvider,
+            ValueDatatype valueDatatype,
+            String argument) {
+        return new AllowanceSearchOperator(valueDatatype, this, operandProvider, argument);
+    }
+
+    public boolean isNegation() {
+        return negation;
+    }
+
 }

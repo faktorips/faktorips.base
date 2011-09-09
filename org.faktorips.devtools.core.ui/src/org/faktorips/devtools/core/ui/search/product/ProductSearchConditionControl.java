@@ -65,7 +65,8 @@ public class ProductSearchConditionControl extends ControlComposite {
                 model.dispose();
                 ProductSearchConditionControl.this.dispose();
                 if (!getParent().isDisposed()) {
-                    getParent().layout();
+                    ProductSearchConditionControl.this.getParent().layout();
+                    ProductSearchConditionControl.this.getParent().pack();
                 }
             }
 
@@ -75,7 +76,7 @@ public class ProductSearchConditionControl extends ControlComposite {
 
         List<? extends IIpsElement> compareObjects = model.getSearchableElements();
         for (IIpsElement compareObject : compareObjects) {
-            // TODO Label statt namen verwenden
+            // TODO Label statt namen verwenden?
             cboObject.add(compareObject.getName());
         }
 
@@ -114,7 +115,7 @@ public class ProductSearchConditionControl extends ControlComposite {
 
     protected void updateOperatorTypes() {
         cboOperatorType.removeAll();
-        List<ISearchOperatorType> operatorTypes = model.getSearchOperatorTypes();
+        List<? extends ISearchOperatorType> operatorTypes = model.getSearchOperatorTypes();
         for (ISearchOperatorType searchOperatorType : operatorTypes) {
             cboOperatorType.add(searchOperatorType.getLabel());
         }

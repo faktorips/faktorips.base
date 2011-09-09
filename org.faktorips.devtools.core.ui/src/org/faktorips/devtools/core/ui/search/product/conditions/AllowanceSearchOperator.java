@@ -13,26 +13,30 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 
-public interface ICondition {
+public class AllowanceSearchOperator extends AbstractSearchOperator<AllowanceSearchOperatorType> {
 
-    public List<? extends IIpsElement> getSearchableElements(IProductCmptType productCmptType) throws CoreException;
+    protected AllowanceSearchOperator(ValueDatatype valueDatatype, AllowanceSearchOperatorType searchOperatorType,
+            IOperandProvider operandProvider, String argument) {
+        super(valueDatatype, searchOperatorType, operandProvider, argument);
+    }
 
-    public List<? extends ISearchOperatorType> getSearchOperatorTypes(IIpsElement elementPart);
+    @Override
+    protected boolean check(Object searchOperand, IProductCmptGeneration productCmptGeneration) {
+        try {
+            IValueSet valueSet = (IValueSet)searchOperand;
+            boolean isContained = valueSet.containsValue(argument, productCmptGeneration.getIpsProject());
 
-    public ValueDatatype getValueDatatype(IIpsElement elementPart);
+            return isContained != searchOperatorType.isNegation();
+        } catch (CoreException e) {
+            // TODO exception handlen
+            throw new RuntimeException(e);
+        }
 
-    public IValueSet getValueSet(IIpsElement elementPart);
-
-    public IOperandProvider createOperandProvider(IIpsElement elementPart);
-
-    public String getName();
+    }
 
 }
