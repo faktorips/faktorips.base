@@ -13,6 +13,9 @@
 
 package org.faktorips.runtime.formula;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.runtime.IProductComponentGeneration;
 
@@ -31,11 +34,14 @@ public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
 
     private final IProductComponentGeneration productCmptGeneration;
 
-    public AbstractFormulaEvaluator(IProductComponentGeneration gen) {
+    private final Map<String, String> nameToExpressionMap;
+
+    public AbstractFormulaEvaluator(IProductComponentGeneration gen, Map<String, String> nameToExpressionMap) {
         if (gen == null) {
             throw new NullPointerException();
         }
         this.productCmptGeneration = gen;
+        this.nameToExpressionMap = nameToExpressionMap;
     }
 
     public IProductComponentGeneration getProductComponentGeneration() {
@@ -75,5 +81,17 @@ public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
      * @return the return value of the evaluated formula
      */
     protected abstract Object evaluateInternal(String formularName, Object... parameters) throws Exception;
+
+    /**
+     * Returns a defensive copy of the map of expressions/formulas held by this evaluator.
+     * 
+     * @return a map containing the expressions (with their names as keys) held by this formula
+     *         evaluator
+     */
+    public Map<String, String> getNameToExpressionMap() {
+        Map<String, String> map = new LinkedHashMap<String, String>();
+        map.putAll(nameToExpressionMap);
+        return map;
+    }
 
 }

@@ -13,14 +13,14 @@
 
 package org.faktorips.runtime.formula;
 
-import java.util.List;
+import java.util.Map;
 
 import org.faktorips.runtime.IProductComponentGeneration;
 
 /**
  * An interface for formula evaluator factories to create a {@link IFormulaEvaluator}. It is part of
- * the creation of an evaluator to set the {@link IProductComponentGeneration} and a list of
- * compiled expressions the evaluator should handle.
+ * the creation of an evaluator to set the {@link IProductComponentGeneration} and a map of compiled
+ * expressions the evaluator should handle.
  * 
  * @author dirmeier
  */
@@ -33,10 +33,12 @@ public interface IFormulaEvaluatorFactory {
      * 
      * @param gen The {@link IProductComponentGeneration} in which context a formula have to be
      *            executed
-     * @param compiledExpressions The list of compiled formula expressions
+     * @param nameToCompiledExpressionMap The map of compiled formula expressions with their name as
+     *            a key
      * @return The new formula evaluator that is able to evaluate every formula the was in the list
      *         of compiled expressions
      */
-    public IFormulaEvaluator createFormulaEvaluator(IProductComponentGeneration gen, List<String> compiledExpressions);
+    public IFormulaEvaluator createFormulaEvaluator(IProductComponentGeneration gen,
+            Map<String, String> nameToCompiledExpressionMap);
 
 }

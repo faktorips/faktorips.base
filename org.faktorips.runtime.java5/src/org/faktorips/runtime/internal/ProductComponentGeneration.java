@@ -13,11 +13,12 @@
 
 package org.faktorips.runtime.internal;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TimeZone;
 
 import org.faktorips.runtime.IProductComponent;
@@ -166,7 +167,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         if (getRepository() != null) {
             IFormulaEvaluatorFactory factory = getRepository().getFormulaEvaluatorFactory();
             if (factory != null) {
-                List<String> expressions = new ArrayList<String>();
+                Map<String, String> expressions = new LinkedHashMap<String, String>();
                 NodeList formulas = genElement.getElementsByTagName("Formula");
                 for (int i = 0; i < formulas.getLength(); i++) {
                     Element aFormula = (Element)formulas.item(i);
@@ -176,7 +177,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
                     if (nodeList.getLength() == 1) {
                         Element expression = (Element)nodeList.item(0);
                         String formulaExpression = expression.getTextContent();
-                        expressions.add(formulaExpression);
+                        expressions.put(name, formulaExpression);
                     } else {
                         throw new RuntimeException("Expression for Formula: " + name + " not found");
                     }
@@ -306,6 +307,12 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         return genElement;
     }
 
+    /**
+     * This is a utility method called by generated code. The given {@link Element} is the element
+     * representing this {@link ProductComponentGeneration}.
+     * 
+     * @param element the element all table usages should be added to
+     */
     protected void writeTableUsagesToXml(Element element) {
         /*
          * Nothing to be done base class. Note that this method is deliberately not declared
@@ -320,7 +327,14 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         element.appendChild(tableContentElement);
     }
 
+    /**
+     * This is a utility method called by generated code. The given {@link Element} is the element
+     * representing this {@link ProductComponentGeneration}.
+     * 
+     * @param element the element all table usages should be added to
+     */
     protected void writeReferencesToXml(Element element) {
+
         /*
          * Nothing to be done base class. Note that this method is deliberately not declaredtoXml
          * abstract to allow calls to super.writeReferencesToXml() in subclasses.
@@ -338,12 +352,26 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     }
 
     protected void writeFormulaToXml(Element element) {
-
+        if (formulaEvaluator == null) {
+            return;
+        }
+        for (Entry<String, String> expressionEntry : formulaEvaluator.getNameToExpressionMap().entrySet()) {
+            Element formula = element.getOwnerDocument().createElement("Formula");
+            formula.setAttribute("formulaSignature", expressionEntry.getKey());
+            ValueToXmlHelper.addCDataValueToElement(expressionEntry.getValue(), formula,
+                    AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
+            element.appendChild(formula);
+        }
     }
 
     protected void writeValidationRuleConfigsToXml(Element genElement) {
-        // Map<String, ValidationRuleConfiguration> configMap = new HashMap<String,
-        // ValidationRuleConfiguration>();
+        for (String vRuleName : nameToValidationRuleConfigMap.keySet()) {
+            Element vRuleElement = genElement.getOwnerDocument().createElement("ValidationRuleConfig");
+            ValidationRuleConfiguration vRule = nameToValidationRuleConfigMap.get(vRuleName);
+            vRuleElement.setAttribute("ruleName", vRuleName);
+            vRuleElement.setAttribute("active", Boolean.toString(vRule.isActive()));
+            genElement.appendChild(vRuleElement);
+        }
     }
 
     /**

@@ -13,6 +13,8 @@
 
 package org.faktorips.runtime.formula;
 
+import java.util.Map;
+
 import org.faktorips.runtime.IProductComponentGeneration;
 
 /**
@@ -34,9 +36,17 @@ public interface IFormulaEvaluator {
      * Evaluates the formula with the given name and the specified parameters.
      * 
      * @param formularName The name of the formula to evaluate
-     * @param parameters the parameters the formula neet to evaluate
+     * @param parameters the parameters the formula requires when being evaluated
      * @return the result of the evaluated formula
      */
     public Object evaluate(String formularName, Object... parameters);
+
+    /**
+     * Returns a defensive copy of the map of expressions/formulas held by this evaluator.
+     * 
+     * @return a map containing the expressions (with their names as keys) held by this formula
+     *         evaluator
+     */
+    public Map<String, String> getNameToExpressionMap();
 
 }

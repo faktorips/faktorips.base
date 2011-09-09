@@ -34,7 +34,18 @@ public class ValueToXmlHelper {
      * @param tagName the tag name for the element that stored the value
      */
     public final static void addValueToElement(String value, Element el, String tagName) {
-        addValueAndReturnElement(value, el, tagName);
+        addValueAndReturnElement(value, el, tagName, false);
+    }
+
+    /**
+     * Adds the value to the given xml element. The value is inserted inside a CDATA section.
+     * 
+     * @param value the string representation of the value
+     * @param el the xml element.
+     * @param tagName the tag name for the element that stored the value
+     */
+    public final static void addCDataValueToElement(String value, Element el, String tagName) {
+        addValueAndReturnElement(value, el, tagName, true);
     }
 
     /**
@@ -42,18 +53,40 @@ public class ValueToXmlHelper {
      * {@link #addValueToElement(String, Element, String)}. The created element then is returned.
      * 
      * @param value the string representation of the value
-     * @param el the xml element.
+     * @param el the XML element to add the value to.
      * @param tagName the tag name for the element that stored the value
+     * @param useCDataSection when <code>true</code> the value is inserted into a CDATA section,
+     *            otherwise it is added as text directly.
      * @return the created element with the given tag name, that contains the given value.
      */
-    public final static Element addValueAndReturnElement(String value, Element el, String tagName) {
+    private final static Element addValueAndReturnElement(String value,
+            Element el,
+            String tagName,
+            boolean useCDataSection) {
         Element valueEl = el.getOwnerDocument().createElement(tagName);
         el.appendChild(valueEl);
         valueEl.setAttribute("isNull", value == null ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         if (value != null) {
-            valueEl.appendChild(el.getOwnerDocument().createTextNode(value));
+            if (useCDataSection) {
+                valueEl.appendChild(el.getOwnerDocument().createCDATASection(value));
+            } else {
+                valueEl.appendChild(el.getOwnerDocument().createTextNode(value));
+            }
         }
         return valueEl;
+    }
+
+    /**
+     * Adds the value to the given xml element as does
+     * {@link #addValueToElement(String, Element, String)}. The created element then is returned.
+     * 
+     * @param value the string representation of the value
+     * @param el the XML element to add the value to.
+     * @param tagName the tag name for the element that stored the value
+     * @return the created element with the given tag name, that contains the given value.
+     */
+    public final static Element addValueAndReturnElement(String value, Element el, String tagName) {
+        return addValueAndReturnElement(value, el, tagName, false);
     }
 
     /**
