@@ -38,17 +38,32 @@ import org.faktorips.devtools.core.ui.search.product.conditions.ISearchOperatorT
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 
 public class ProductSearchConditionsTableViewerProvider {
-    private final class ArgumentLabelProvider extends CellLabelProvider {
+    private static final String EMPTY_TEXT = ""; //$NON-NLS-1$
+
+    private static final class ArgumentLabelProvider extends CellLabelProvider {
         @Override
         public void update(ViewerCell cell) {
             ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)cell.getElement();
 
-            // TODO formatiere Ausgabe??
-            cell.setText(model.getArgument() == null ? "" : model.getArgument()); //$NON-NLS-1$
+            ValueDatatype valueDatatype = getValueDatatype(model);
+
+            if (valueDatatype != null) {
+                cell.setText(IpsUIPlugin.getDefault().getDatatypeFormatter()
+                        .formatValue(valueDatatype, model.getArgument()));
+            } else {
+                cell.setText(model.getArgument() == null ? EMPTY_TEXT : model.getArgument());
+            }
+        }
+
+        private ValueDatatype getValueDatatype(ProductSearchConditionPresentationModel model) {
+            if (model.getSearchedElement() == null) {
+                return null;
+            }
+            return model.getCondition().getValueDatatype(model.getSearchedElement());
         }
     }
 
-    private class ArgumentEditingSupport extends EditingSupport {
+    private static final class ArgumentEditingSupport extends EditingSupport {
 
         public ArgumentEditingSupport(TableViewer viewer) {
             super(viewer);
@@ -66,7 +81,7 @@ public class ProductSearchConditionsTableViewerProvider {
             IValueSet valueSet = model.getCondition().getValueSet(model.getSearchedElement());
 
             IpsCellEditor tableCellEditor = controlFactory.createTableCellEditor(new UIToolkit(null), valueDatatype,
-                    valueSet, tableViewer, 3, model.getSearchedElement().getIpsProject());
+                    valueSet, (TableViewer)getViewer(), 3, model.getSearchedElement().getIpsProject());
 
             return tableCellEditor;
         }
@@ -95,20 +110,21 @@ public class ProductSearchConditionsTableViewerProvider {
         }
     }
 
-    private final class OperatorLabelProvider extends CellLabelProvider {
+    private static final class OperatorLabelProvider extends CellLabelProvider {
+
         @Override
         public void update(ViewerCell cell) {
             ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)cell.getElement();
             if (model.getOperatorTypeIndex() == null) {
-                cell.setText("");
+                cell.setText(EMPTY_TEXT);
             } else {
                 ISearchOperatorType operatorType = model.getOperatorType();
-                cell.setText(operatorType == null ? "" : operatorType.getLabel());
+                cell.setText(operatorType == null ? EMPTY_TEXT : operatorType.getLabel());
             }
         }
     }
 
-    private class OperatorEditingSupport extends EditingSupport {
+    private static final class OperatorEditingSupport extends EditingSupport {
 
         public OperatorEditingSupport(TableViewer viewer) {
             super(viewer);
@@ -151,23 +167,23 @@ public class ProductSearchConditionsTableViewerProvider {
         }
     }
 
-    private class ElementLabelProvider extends CellLabelProvider {
+    private static final class ElementLabelProvider extends CellLabelProvider {
         @Override
         public void update(ViewerCell cell) {
             ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)cell.getElement();
 
             if (model.getSearchedElementIndex() == null) {
-                cell.setText("");
+                cell.setText(EMPTY_TEXT);
             } else {
                 IIpsElement searchedElement = model.getSearchedElement();
-                cell.setText(searchedElement == null ? "" : searchedElement.getName());
+                cell.setText(searchedElement == null ? EMPTY_TEXT : searchedElement.getName());
             }
 
         }
 
     }
 
-    private class ElementEditingSupport extends EditingSupport {
+    private static final class ElementEditingSupport extends EditingSupport {
 
         public ElementEditingSupport(TableViewer viewer) {
             super(viewer);
@@ -207,7 +223,7 @@ public class ProductSearchConditionsTableViewerProvider {
         }
     }
 
-    private class ConditionTypeLabelProvider extends ColumnLabelProvider {
+    private static final class ConditionTypeLabelProvider extends ColumnLabelProvider {
         @Override
         public String getText(Object element) {
             return ((ProductSearchConditionPresentationModel)element).getCondition().getName();

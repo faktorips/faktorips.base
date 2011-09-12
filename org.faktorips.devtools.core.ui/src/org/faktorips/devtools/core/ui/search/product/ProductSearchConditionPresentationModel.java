@@ -111,6 +111,9 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     }
 
     public IIpsElement getSearchedElement() {
+        if (searchedElementIndex == null) {
+            return null;
+        }
         return getSearchableElements().get(searchedElementIndex);
     }
 
