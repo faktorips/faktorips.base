@@ -977,12 +977,16 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         produktToTarif.setTargetRoleSingular("produktToTarif");
         produktToTarif.setTarget(tarif.getQualifiedName());
 
-        assertNull(produktToTarif.findMatchingPolicyCmptTypeAssociation(ipsProject));
-
-        policeToTarifvereinbarung.setMatchingAssociationSource(produkt.getQualifiedName());
-        policeToTarifvereinbarung.setMatchingAssociationName(produktToTarif.getName());
+        IProductCmptTypeAssociation produktToTarif2 = produkt.newProductCmptTypeAssociation();
+        produktToTarif2.setTargetRoleSingular("produktToTarif2");
+        produktToTarif2.setTarget(tarif.getQualifiedName());
 
         assertEquals(produktToTarif, policeToTarifvereinbarung.findMatchingProductCmptTypeAssociation(ipsProject));
+
+        policeToTarifvereinbarung.setMatchingAssociationSource(produkt.getQualifiedName());
+        policeToTarifvereinbarung.setMatchingAssociationName(produktToTarif2.getName());
+
+        assertEquals(produktToTarif2, policeToTarifvereinbarung.findMatchingProductCmptTypeAssociation(ipsProject));
     }
 
     /**
