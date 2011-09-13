@@ -55,7 +55,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
 
-    public GenChangeableAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
+    public GenChangeableAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) {
         super(genPolicyCmptType, a);
         ArgumentCheck.isTrue(a.isChangeable());
     }

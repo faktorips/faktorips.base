@@ -36,7 +36,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class GenConstantAttribute extends GenPolicyCmptTypeAttribute {
 
-    public GenConstantAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) throws CoreException {
+    public GenConstantAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) {
         super(genPolicyCmptType, a);
         ArgumentCheck.isTrue(a.getAttributeType() == AttributeType.CONSTANT);
     }

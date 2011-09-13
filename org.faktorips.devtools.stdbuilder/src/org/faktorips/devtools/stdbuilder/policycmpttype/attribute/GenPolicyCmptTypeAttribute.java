@@ -27,7 +27,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
@@ -68,18 +67,11 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
 
     private IProductCmptType productCmptType;
 
-    private final ValueDatatype datatype;
-    private final DatatypeHelper datatypeHelper;
     private EnumTypeBuilder enumTypeBuilder;
 
-    public GenPolicyCmptTypeAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a)
-            throws CoreException {
-
+    public GenPolicyCmptTypeAttribute(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAttribute a) {
         super(genPolicyCmptType, a, new LocalizedStringsSet(GenPolicyCmptTypeAttribute.class));
         valuesetDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(a.getIpsProject(), getDatatypeHelper());
-
-        datatype = getAttribute().findDatatype(getIpsProject());
-        datatypeHelper = getAttribute().getIpsProject().getDatatypeHelper(datatype);
     }
 
     public void setEnumTypeBuilder(EnumTypeBuilder enumTypeBuilder) {
@@ -360,8 +352,8 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
 
     public void generateExtractFromXML(JavaCodeFragmentBuilder builder) throws CoreException {
         generateGetElementFromConfigMapAndIfStatement(getAttribute().getName(), builder);
-        generateExtractValueFromXml(getFieldNameDefaultValue(), datatypeHelper, builder);
-        generateExtractValueSetFromXml(this, datatypeHelper, builder);
+        generateExtractValueFromXml(getFieldNameDefaultValue(), getDatatypeHelper(), builder);
+        generateExtractValueSetFromXml(this, getDatatypeHelper(), builder);
         builder.closeBracket(); // close if statement generated three lines above
     }
 
@@ -570,7 +562,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
         builder.append("\");");
         builder.appendClassName(ValueToXmlHelper.class);
         builder.append(".addValueToElement(");
-        builder.append(datatypeHelper.getToStringExpression(getFieldNameDefaultValue()));
+        builder.append(getDatatypeHelper().getToStringExpression(getFieldNameDefaultValue()));
         builder.append(", configElement, \"Value\");");
 
         generateWriteValueSetToXml(builder);
@@ -658,14 +650,14 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
     protected void appendGenericDatatypeClassname(JavaCodeFragmentBuilder builder) {
         builder.append("<");
         // Convert primitive data type names to Object names (e.g. int to Integer)
-        DatatypeHelper helper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsProject(), datatypeHelper);
+        DatatypeHelper helper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsProject(), getDatatypeHelper());
         builder.append(helper.getJavaClassName());
         builder.append(">");
     }
 
     protected String generateRangeValueToString(String getter, boolean generateInstanceOf) {
         String fieldName = generateInstanceOf ? "range" : getFieldNameSetOfAllowedValues();
-        return datatypeHelper.getToStringExpression(fieldName + getter).toString();
+        return getDatatypeHelper().getToStringExpression(fieldName + getter).toString();
     }
 
     protected void generateWriteValueToXML(JavaCodeFragmentBuilder builder,
@@ -698,13 +690,13 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
         builder.append(getFieldNameSetOfAllowedValues());
         builder.append(".containsNull()));");
         builder.append("for (");
-        builder.append(datatype.getJavaClassName());
+        builder.append(getDatatype().getJavaClassName());
         builder.append(" value : ");
         builder.append(getFieldNameSetOfAllowedValues());
         builder.append(".getValues(true)) {");
         builder.appendClassName(Element.class);
         builder.append(" valueElement = element.getOwnerDocument().createElement(\"Value\");");
-        generateWriteValueToXML(builder, datatypeHelper.getToStringExpression("value").toString(), "valueElement",
+        generateWriteValueToXML(builder, getDatatypeHelper().getToStringExpression("value").toString(), "valueElement",
                 "Data");
         builder.append("valueSetValuesElement.appendChild(valueElement);");
         builder.append("}");
