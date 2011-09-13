@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.migrationextensions;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -102,6 +103,25 @@ public class Migration_3_5Test extends XmlAbstractTestCase {
 
         Element lsElement = (Element)msgTextElement.getElementsByTagName(
                 InternationalString.XML_ELEMENT_LOCALIZED_STRING).item(0);
+        assertNotNull(lsElement);
+        assertEquals(locale.toString(), lsElement.getAttribute(InternationalString.XML_ATTR_LOCALE));
+        assertEquals("testMsgText", lsElement.getAttribute(InternationalString.XML_ATTR_TEXT));
+
+        // a second call of the migration should change nothing
+        migrateXml = migration_3_5.migrateXml(element);
+
+        assertFalse(migrateXml);
+        ruleElement = (Element)element.getElementsByTagName("ValidationRuleDef").item(0);
+        assertTrue(StringUtils.isEmpty(ruleElement.getAttribute("messageText")));
+
+        msgTextElement = (Element)ruleElement.getElementsByTagName(ValidationRule.XML_TAG_MSG_TXT).item(0);
+        assertNotNull(msgTextElement);
+
+        isElement = msgTextElement.getElementsByTagName(InternationalString.XML_TAG).item(0);
+        assertNotNull(isElement);
+
+        lsElement = (Element)msgTextElement.getElementsByTagName(InternationalString.XML_ELEMENT_LOCALIZED_STRING)
+                .item(0);
         assertNotNull(lsElement);
         assertEquals(locale.toString(), lsElement.getAttribute(InternationalString.XML_ATTR_LOCALE));
         assertEquals("testMsgText", lsElement.getAttribute(InternationalString.XML_ATTR_TEXT));

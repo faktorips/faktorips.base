@@ -19,6 +19,7 @@ import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -103,6 +104,11 @@ public class Migration_3_5 extends DefaultMigration {
     private boolean migrateRuleNode(Element ruleNode) {
         Locale locale = getIpsProject().getProperties().getDefaultLanguage().getLocale();
         String oldMsgText = ruleNode.getAttribute(OLD_XML_ATTR_MESSAGE_TEXT);
+        if (StringUtils.isEmpty(oldMsgText)) {
+            // either there is no text yet or the element is already migrated. However we do not
+            // need to create an empty element.
+            return false;
+        }
         IInternationalString internationalString = new InternationalString();
         internationalString.add(new LocalizedString(locale, oldMsgText));
         InternationalStringXmlHelper.toXml(internationalString, ruleNode, ValidationRule.XML_TAG_MSG_TXT);
