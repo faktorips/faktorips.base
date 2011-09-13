@@ -18,7 +18,9 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -149,10 +151,21 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         } catch (Exception e) {
             throw new RuntimeException("Can't create product component instance for toc entry " + tocEntry, e);
         }
-        Element genElement = getDocumentElement(tocEntry);
-        productCmptGen.initFromXml(genElement);
-
+        initProductComponentGeneration(tocEntry, productCmpt, productCmptGen);
         return productCmptGen;
+    }
+
+    private void initProductComponentGeneration(GenerationTocEntry tocEntry,
+            ProductComponent prodCmpt,
+            ProductComponentGeneration productCmptGen) {
+        Element genElement = getDocumentElement(tocEntry);
+        GregorianCalendar generationValidFrom = tocEntry.getValidFrom().toGregorianCalendar(TimeZone.getDefault());
+        ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
+        if (helper.isProductVariantXML(genElement)) {
+            helper.loadProductComponentGenerationVariation(prodCmpt, generationValidFrom, genElement, productCmptGen);
+        } else {
+            productCmptGen.initFromXml(genElement);
+        }
     }
 
     private Constructor<?> getConstructor(GenerationTocEntry tocEntry) {

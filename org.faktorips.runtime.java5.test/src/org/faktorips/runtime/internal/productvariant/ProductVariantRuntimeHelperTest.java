@@ -17,20 +17,35 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
+
+import java.util.GregorianCalendar;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.faktorips.runtime.IClRepositoryObject;
+import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.internal.IXmlPersistenceSupport;
+import org.faktorips.runtime.internal.ProductComponent;
+import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class ProductVariantRuntimeHelperTest {
 
-    private static final String ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT = "variedProductCmpt";
     private static final String XML_TAG_PRODUCT_VARIANT_CMPT = "ProductVariantCmpt";
 
     @Before
@@ -38,28 +53,24 @@ public class ProductVariantRuntimeHelperTest {
     }
 
     @Test
-    public void returnTrueForProductVariantXML() {
-        Element element = createMockElementWithNodeName("ProductVariant");
+    public void testIsProductVariantXML() {
+        Element element = mock(Element.class);
         ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
 
+        when(element.hasAttribute(ProductVariantRuntimeHelper.ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT)).thenReturn(true);
         assertTrue(helper.isProductVariantXML(element));
+
+        when(element.hasAttribute(ProductVariantRuntimeHelper.ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT)).thenReturn(false);
+        assertFalse(helper.isProductVariantXML(element));
     }
 
     @Test
-    public void returnFalseForAllOtherXMLs() {
-        ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
-        Element element = createMockElementWithNodeName("ProductComponent");
-        assertFalse(helper.isProductVariantXML(element));
-        element = createMockElementWithNodeName("TestCase");
-        assertFalse(helper.isProductVariantXML(element));
-        element = createMockElementWithNodeName("XXX1234");
-        assertFalse(helper.isProductVariantXML(element));
-    }
-
-    private Element createMockElementWithNodeName(String nodeName) {
+    public void returnFalseForProductVariantXML() {
         Element element = mock(Element.class);
-        when(element.getNodeName()).thenReturn(nodeName);
-        return element;
+        when(element.hasAttribute(ProductVariantRuntimeHelper.ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT)).thenReturn(false);
+        ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
+
+        assertFalse(helper.isProductVariantXML(element));
     }
 
     @Test
@@ -100,4 +111,68 @@ public class ProductVariantRuntimeHelperTest {
         rootCmpt.setAttribute(ProductVariantRuntimeHelper.ATTRIBUTE_NAME_RUNTIME_ID, id);
         return rootCmpt;
     }
+
+    @Test
+    public void initProdCmpt() {
+        IRuntimeRepository runtimeRepository = mock(IRuntimeRepository.class);
+        ProductComponent originalProductCmpt = mock(ProductComponent.class);
+        when(runtimeRepository.getProductComponent(anyString())).thenReturn(originalProductCmpt);
+
+        ProductComponent productCmptToInitialize = mock(ProductComponent.class);
+        Element variationElement = mock(Element.class);
+
+        ProductVariantRuntimeHelper helper = spy(new ProductVariantRuntimeHelper());
+        doNothing().when(helper).initWithVariation(originalProductCmpt, variationElement, productCmptToInitialize);
+        helper.loadProductComponentVariation(runtimeRepository, variationElement, productCmptToInitialize);
+
+        verify(helper).initWithVariation(originalProductCmpt, variationElement, productCmptToInitialize);
+    }
+
+    @Test
+    public void initGeneration() {
+        IProductComponent originalProductCmpt = mock(IProductComponent.class,
+                withSettings().extraInterfaces(IXmlPersistenceSupport.class));
+        ProductComponentGeneration originalProductCmptGen = mock(ProductComponentGeneration.class);
+        GregorianCalendar gregCal = new GregorianCalendar();
+        when(originalProductCmpt.getGenerationBase(gregCal)).thenReturn(originalProductCmptGen);
+
+        ProductComponentGeneration productCmptGenToInitialize = mock(ProductComponentGeneration.class);
+        Element variationElement = mock(Element.class);
+
+        ProductVariantRuntimeHelper helper = spy(new ProductVariantRuntimeHelper());
+        doNothing().when(helper)
+                .initWithVariation(originalProductCmptGen, variationElement, productCmptGenToInitialize);
+        helper.loadProductComponentGenerationVariation(originalProductCmpt, gregCal, variationElement,
+                productCmptGenToInitialize);
+
+        verify(helper).initWithVariation(originalProductCmptGen, variationElement, productCmptGenToInitialize);
+    }
+
+    @Test
+    public void initWithVariation() {
+        Element variationElement = mock(Element.class);
+        Document docMock = mock(Document.class);
+        when(variationElement.getOwnerDocument()).thenReturn(docMock);
+        when(docMock.cloneNode(false)).thenReturn(docMock);
+
+        Element originalElement = mock(Element.class);
+        IXmlPersistenceSupport originalObject = mock(IXmlPersistenceSupport.class);
+        when(originalObject.toXml(docMock)).thenReturn(originalElement);
+
+        IClRepositoryObject objectToInitialize = mock(IClRepositoryObject.class);
+
+        ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
+        helper.initWithVariation(originalObject, variationElement, objectToInitialize);
+
+        InOrder order = inOrder(objectToInitialize);
+        order.verify(objectToInitialize).initFromXml(originalElement);
+        order.verify(objectToInitialize).initFromXml(variationElement);
+        verifyNoMoreInteractions(objectToInitialize);
+    }
+
+    @Test
+    public void initProdCmptGeneration() {
+
+    }
+
 }
