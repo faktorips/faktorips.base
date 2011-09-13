@@ -84,11 +84,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     protected void initProductCmpt(ProductCmptTocEntry tocEntry, ProductComponent productCmpt) {
         Element docElement = getDocumentElement(tocEntry);
         ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
-        if (helper.isProductVariantXML(docElement)) {
-            helper.loadProductComponentVariation(this, docElement, productCmpt);
-        } else {
-            productCmpt.initFromXml(docElement);
-        }
+        helper.initProductComponent(this, productCmpt, docElement);
     }
 
     @Override
@@ -161,11 +157,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         Element genElement = getDocumentElement(tocEntry);
         GregorianCalendar generationValidFrom = tocEntry.getValidFrom().toGregorianCalendar(TimeZone.getDefault());
         ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
-        if (helper.isProductVariantXML(genElement)) {
-            helper.loadProductComponentGenerationVariation(prodCmpt, generationValidFrom, genElement, productCmptGen);
-        } else {
-            productCmptGen.initFromXml(genElement);
-        }
+        helper.initProductComponentGeneration(prodCmpt, generationValidFrom, genElement, productCmptGen);
     }
 
     private Constructor<?> getConstructor(GenerationTocEntry tocEntry) {

@@ -35,18 +35,38 @@ public class ProductVariantRuntimeHelper {
 
     protected static final String ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT = "variedProductCmpt";
     protected static final String ATTRIBUTE_NAME_RUNTIME_ID = "runtimeID";
-    protected static final String ATTRIBUTE_NAME_VALID_TO = "validTo";
 
-    public void loadProductComponentVariation(IRuntimeRepository runtimeRepository,
+    public void initProductComponent(IRuntimeRepository runtimeRepository,
+            ProductComponent productCmpt,
+            Element docElement) {
+        if (isProductVariantXML(docElement)) {
+            loadAndVaryProductComponent(runtimeRepository, docElement, productCmpt);
+        } else {
+            productCmpt.initFromXml(docElement);
+        }
+    }
+
+    protected void loadAndVaryProductComponent(IRuntimeRepository runtimeRepository,
             Element variationElement,
             ProductComponent productCmptToBeLoaded) {
         String originalRuntimeID = variationElement.getAttribute(ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT);
         ProductComponent originalCmpt = (ProductComponent)runtimeRepository.getProductComponent(originalRuntimeID);
 
-        initWithVariation(originalCmpt, variationElement, productCmptToBeLoaded);
+        loadAndVary(originalCmpt, variationElement, productCmptToBeLoaded);
     }
 
-    protected void initWithVariation(IXmlPersistenceSupport originalObject,
+    public void initProductComponentGeneration(ProductComponent prodCmpt,
+            GregorianCalendar generationValidFrom,
+            Element genElement,
+            ProductComponentGeneration productCmptGen) {
+        if (isProductVariantXML(genElement)) {
+            loadAndVaryProductComponentGeneration(prodCmpt, generationValidFrom, genElement, productCmptGen);
+        } else {
+            productCmptGen.initFromXml(genElement);
+        }
+    }
+
+    protected void loadAndVary(IXmlPersistenceSupport originalObject,
             Element variationXML,
             IClRepositoryObject objectToInitialize) {
         Document document = (Document)variationXML.getOwnerDocument().cloneNode(false);
@@ -55,16 +75,16 @@ public class ProductVariantRuntimeHelper {
         objectToInitialize.initFromXml(variationXML);
     }
 
-    public void loadProductComponentGenerationVariation(IProductComponent prodCmptVariation,
+    protected void loadAndVaryProductComponentGeneration(IProductComponent prodCmptVariation,
             GregorianCalendar generationValidFrom,
             Element generationVariationElement,
             ProductComponentGeneration productCmptGenToBeLoaded) {
         ProductComponentGeneration originalGeneration = (ProductComponentGeneration)prodCmptVariation
                 .getGenerationBase(generationValidFrom);
-        initWithVariation(originalGeneration, generationVariationElement, productCmptGenToBeLoaded);
+        loadAndVary(originalGeneration, generationVariationElement, productCmptGenToBeLoaded);
     }
 
-    public boolean isProductVariantXML(Element productVariantElement) {
+    protected boolean isProductVariantXML(Element productVariantElement) {
         return productVariantElement.hasAttribute(ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT);
     }
 
@@ -111,5 +131,4 @@ public class ProductVariantRuntimeHelper {
             return null;
         }
     }
-
 }

@@ -122,10 +122,15 @@ public class ProductVariantRuntimeHelperTest {
         Element variationElement = mock(Element.class);
 
         ProductVariantRuntimeHelper helper = spy(new ProductVariantRuntimeHelper());
-        doNothing().when(helper).initWithVariation(originalProductCmpt, variationElement, productCmptToInitialize);
-        helper.loadProductComponentVariation(runtimeRepository, variationElement, productCmptToInitialize);
+        /*
+         * Do nothing as invoking initWithVariation() normally throws exceptions.
+         * initWithVariation() calls two methods that are final (initFromXML(), toXml()) and thus
+         * cannot be mocked.
+         */
+        doNothing().when(helper).loadAndVary(originalProductCmpt, variationElement, productCmptToInitialize);
+        helper.loadAndVaryProductComponent(runtimeRepository, variationElement, productCmptToInitialize);
 
-        verify(helper).initWithVariation(originalProductCmpt, variationElement, productCmptToInitialize);
+        verify(helper).loadAndVary(originalProductCmpt, variationElement, productCmptToInitialize);
     }
 
     @Test
@@ -140,12 +145,17 @@ public class ProductVariantRuntimeHelperTest {
         Element variationElement = mock(Element.class);
 
         ProductVariantRuntimeHelper helper = spy(new ProductVariantRuntimeHelper());
+        /*
+         * Do nothing as invoking initWithVariation() normally throws exceptions.
+         * initWithVariation() calls two methods that are final (initFromXML(), toXml()) and thus
+         * cannot be mocked.
+         */
         doNothing().when(helper)
-                .initWithVariation(originalProductCmptGen, variationElement, productCmptGenToInitialize);
-        helper.loadProductComponentGenerationVariation(originalProductCmpt, gregCal, variationElement,
+                .loadAndVary(originalProductCmptGen, variationElement, productCmptGenToInitialize);
+        helper.loadAndVaryProductComponentGeneration(originalProductCmpt, gregCal, variationElement,
                 productCmptGenToInitialize);
 
-        verify(helper).initWithVariation(originalProductCmptGen, variationElement, productCmptGenToInitialize);
+        verify(helper).loadAndVary(originalProductCmptGen, variationElement, productCmptGenToInitialize);
     }
 
     @Test
@@ -162,7 +172,7 @@ public class ProductVariantRuntimeHelperTest {
         IClRepositoryObject objectToInitialize = mock(IClRepositoryObject.class);
 
         ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
-        helper.initWithVariation(originalObject, variationElement, objectToInitialize);
+        helper.loadAndVary(originalObject, variationElement, objectToInitialize);
 
         InOrder order = inOrder(objectToInitialize);
         order.verify(objectToInitialize).initFromXml(originalElement);
