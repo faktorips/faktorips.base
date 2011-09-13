@@ -42,7 +42,7 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
 
     private static final String MESSAGES_COMMENT = "MESSAGES_COMMENT";
 
-    static final String MESSAGES_BASENAME = "messages";
+    static final String MESSAGES_BASENAME = "validation-messages";
 
     static final String MESSAGES_PREFIX = ".properties";
 

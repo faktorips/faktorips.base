@@ -250,7 +250,7 @@ public class GenValidationRule extends GenTypePart {
         String localVarObjectProperties = "invalidObjectProperties";
         String localVarReplacementParams = "replacementParameters";
         String localVarMessageHelper = "messageHelper";
-        String localVarMessage = "message";
+        String localVarMessage = "msgText";
         String parameterContext = "context";
 
         Set<String> replacementParameters = ValidationRuleMessagesGenerator.getReplacementParameters(
