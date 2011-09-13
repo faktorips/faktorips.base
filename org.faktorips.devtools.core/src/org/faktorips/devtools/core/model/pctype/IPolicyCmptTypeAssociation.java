@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -42,15 +43,13 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
             AssociationType.COMPOSITION_MASTER_TO_DETAIL, AssociationType.COMPOSITION_DETAIL_TO_MASTER,
             AssociationType.ASSOCIATION };
 
-    public final static String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
     public final static String PROPERTY_INVERSE_ASSOCIATION = "inverseAssociation"; //$NON-NLS-1$
     public final static String PROPERTY_SHARED_ASSOCIATION = "sharedAssociation"; //$NON-NLS-1$
     public final static String PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE = "containerRelationApplicable"; //$NON-NLS-1$
 
-    public final static String PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE = "targetRoleSingularProductSide"; //$NON-NLS-1$
-    public final static String PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE = "targetRolePluralProductSide"; //$NON-NLS-1$
-    public final static String PROPERTY_MIN_CARDINALITY_PRODUCTSIDE = "minCardinalityProductSide"; //$NON-NLS-1$
-    public final static String PROPERTY_MAX_CARDINALITY_PRODUCTSIDE = "maxCardinalityProductSide"; //$NON-NLS-1$
+    public final static String PROPERTY_MATCHING_ASSOCIATION_SOURCE = "matchingAssociationSource"; //$NON-NLS-1$
+
+    public final static String PROPERTY_MATCHING_ASSOCIATION_NAME = "matchingAssociationName"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
@@ -132,6 +131,22 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      */
     public final static String MSGCODE_SUBSETTED_DERIVED_UNION_INVERSE_MUST_BE_EXISTS_IF_INVERSE_DERIVED_UNION_EXISTS = MSGCODE_PREFIX
             + "SubsettedDerivedUnionInverseMustBeExistsIfInverseDerivedUnionExists"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the specified matching association was not found
+     */
+    public final static String MSGCODE_MATCHING_ASSOCIATION_INVALID_SOURCE = MSGCODE_PREFIX
+            + "MatchingAssociationInvalidSource"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the specified matching association was not found
+     */
+    public final static String MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND = MSGCODE_PREFIX + "MatchingAssociationNotFound"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the specified matching association is invalid
+     */
+    public final static String MSGCODE_MATCHING_ASSOCIATION_INVALID = MSGCODE_PREFIX + "MatchingAssociationIsInvalid"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this relation belongs to.
@@ -244,22 +259,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     public boolean isConstrainedByProductStructure(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Searches for a matching association in the product side of the model.
-     * <p>
-     * Example: We have two policy component types called 'Policy' and 'Coverage' with a composition
-     * relationship between them. A policy contains several coverages. Policy is configured by the
-     * product component type 'Product' and coverage by 'CoverageType'. There is also an association
-     * between product and coverage type. This association is the matching association for the
-     * Policy-Coverage composition.
-     * 
-     * @param ipsProject The IPS project which IPS object path is used to search.
-     * 
-     * @throws CoreException if an error occurs while searching for the target.
-     */
-    public IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation(IIpsProject ipsProject)
-            throws CoreException;
-
-    /**
      * Returns the name of the reverse relation.
      */
     public String getInverseAssociation();
@@ -297,7 +296,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * <p>
      * <ul>
      * <li>The association is a composition (master-to-detail)</li>
-     * <li>Te target policy component type exists and is configurable by a product component type.
+     * <li>The target policy component type exists and is configurable by a product component type.
      * </ul>
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
@@ -400,6 +399,67 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * @throws CoreException in case of a core exception in the finder methods
      */
     IPolicyCmptTypeAssociation findSharedAssociationHost(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Searches for a matching association in the product side of the model. The matching
+     * association could be specified explicitly by setting
+     * {@link #setMatchingAssociationSource(String)} and {@link #setMatchingAssociationName(String)}
+     * . If at least one of these fields are empty, this method try to find the matching association
+     * automatically by comparing associations targets and order.
+     * <p>
+     * Example: We have two policy component types called 'Policy' and 'Coverage' with a composition
+     * relationship between them. A policy contains several coverages. Policy is constraining by the
+     * product component type 'Product' and coverage by 'CoverageType'. There is also an association
+     * between product and coverage type. This association is the matching association for the
+     * Policy-Coverage composition.
+     * 
+     * @param ipsProject The IPS project which IPS object path is used to search.
+     * 
+     * @throws CoreException if an error occurs while searching for the target.
+     */
+    public IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation(IIpsProject ipsProject)
+            throws CoreException;
+
+    /**
+     * Setting the source product component of the explicitly specified association that constrains
+     * this {@link IPolicyCmptTypeAssociation}. The name of the association is set by
+     * {@link #setMatchingAssociationName(String)}. If the matching association should be found
+     * automatically you have to set this field to {@link StringUtils#EMPTY}.
+     * 
+     * @param matchingAssociationSource The qualified name of the source {@link IProductCmptType}
+     */
+    void setMatchingAssociationSource(String matchingAssociationSource);
+
+    /**
+     * Getting the qualified name for the source {@link IProductCmptType} of the
+     * {@link IProductCmptTypeAssociation} that constrains this association. The name of the
+     * association is returned by {@link #getMatchingAssociationName()}. If the matching association
+     * should be found automatically this method returns {@link StringUtils#EMPTY}.
+     * 
+     * @return The qualified name of the source {@link IProductCmptType} that's association should
+     *         constrains this one
+     */
+    String getMatchingAssociationSource();
+
+    /**
+     * Setting the name of the association that constrains this one. The source component of this
+     * association is set by {@link #setMatchingAssociationSource(String)}. If the matching
+     * association should be found automatically you have to set this field to
+     * {@link StringUtils#EMPTY}.
+     * 
+     * @param matchingAssociationName The name of the association that constrains this one
+     */
+    void setMatchingAssociationName(String matchingAssociationName);
+
+    /**
+     * Getting the name of the {@link IProductCmptTypeAssociation} that constrains this association.
+     * The qualified name of the source {@link IProductCmptType} is returned by
+     * {@link #getMatchingAssociationSource()}. If the matching association should be found
+     * automatically this method returns {@link StringUtils#EMPTY}.
+     * 
+     * @return The name of the association that constrains this one
+     */
+    String getMatchingAssociationName();
 
     /**
      * This method looks for an association with the same name in the super type hierarchy. It

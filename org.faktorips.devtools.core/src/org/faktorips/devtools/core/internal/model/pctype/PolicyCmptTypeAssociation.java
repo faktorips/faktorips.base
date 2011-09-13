@@ -15,8 +15,10 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -61,6 +63,10 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
      * Also read the discussion of FIPS-85.
      */
     private boolean sharedAssociation;
+
+    private String matchingAssociationSource = StringUtils.EMPTY;
+
+    private String matchingAssociationName = StringUtils.EMPTY;
 
     private IIpsObjectPart persistenceAssociationInfo;
 
@@ -133,6 +139,20 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     @Override
     public IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation(IIpsProject ipsProject)
+            throws CoreException {
+        if (StringUtils.isEmpty(matchingAssociationName) || StringUtils.isEmpty(getMatchingAssociationSource())) {
+            return findDefaultMatchingProductCmptTypeAssociation(ipsProject);
+        }
+        IProductCmptType productCmptType = ipsProject.findProductCmptType(getMatchingAssociationSource());
+        if (productCmptType == null) {
+            return null;
+        }
+        IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)productCmptType.findAssociation(
+                matchingAssociationName, ipsProject);
+        return association;
+    }
+
+    public IProductCmptTypeAssociation findDefaultMatchingProductCmptTypeAssociation(IIpsProject ipsProject)
             throws CoreException {
         IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(ipsProject);
         if (productCmptType == null) {
@@ -317,6 +337,34 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
+    public void setMatchingAssociationSource(String matchingAssociationSource) {
+        String oldSource = this.matchingAssociationSource;
+        this.matchingAssociationSource = matchingAssociationSource;
+        valueChanged(oldSource, matchingAssociationSource);
+    }
+
+    @Override
+    public String getMatchingAssociationSource() {
+        if (getPolicyCmptType().isConfigurableByProductCmptType()) {
+            return getPolicyCmptType().getProductCmptType();
+        } else {
+            return matchingAssociationSource;
+        }
+    }
+
+    @Override
+    public void setMatchingAssociationName(String matchingAssociationName) {
+        String oldName = this.matchingAssociationName;
+        this.matchingAssociationName = matchingAssociationName;
+        valueChanged(oldName, this.matchingAssociationName);
+    }
+
+    @Override
+    public String getMatchingAssociationName() {
+        return matchingAssociationName;
+    }
+
+    @Override
     public IPolicyCmptTypeAssociation findSuperAssociationWithSameName(final IIpsProject ipsProject)
             throws CoreException {
         IType supertype = getType().findSupertype(ipsProject);
@@ -339,6 +387,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
         validateDerivedUnion(list, ipsProject);
         validateInverseRelation(list, ipsProject);
+        validateMatchingAssociation(list, ipsProject);
     }
 
     private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) throws CoreException {
@@ -512,6 +561,70 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return false;
     }
 
+    private void validateMatchingAssociation(MessageList list, IIpsProject ipsProject) throws CoreException {
+        if (!getPolicyCmptType().isConfigurableByProductCmptType()) {
+            if (StringUtils.isNotEmpty(getMatchingAssociationSource())) {
+                IProductCmptType matchingProdCmptType = ipsProject.findProductCmptType(getMatchingAssociationSource());
+                if (matchingProdCmptType == null) {
+                    list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID_SOURCE,
+                            Messages.PolicyCmptTypeAssociation_error_MatchingAssociationInvalidSourceForConfiguredType,
+                            Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
+                    return;
+                } else {
+                    IPolicyCmptType matchingPolicyCmptType = matchingProdCmptType.findPolicyCmptType(ipsProject);
+                    boolean found = findCorrectMatchingPolicyCmptTypeRecoursive(matchingPolicyCmptType, ipsProject,
+                            new HashSet<IPolicyCmptType>());
+                    if (!found) {
+                        list.add(new Message(
+                                MSGCODE_MATCHING_ASSOCIATION_INVALID_SOURCE,
+                                Messages.PolicyCmptTypeAssociation_error_MatchingAssociationInvalidSourceForNotConfiguredType,
+                                Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
+                        return;
+                    }
+                }
+            }
+        }
+        IProductCmptTypeAssociation matchingAssociation = findMatchingProductCmptTypeAssociation(ipsProject);
+        if (StringUtils.isNotEmpty(matchingAssociationSource) && StringUtils.isNotEmpty(matchingAssociationName)
+                && matchingAssociation == null) {
+            list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND, NLS.bind(
+                    Messages.PolicyCmptTypeAssociation_error_matchingAssociatonNotFound,
+                    getMatchingAssociationName(), getMatchingAssociationSource()), Message.ERROR, this,
+                    PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
+        } else {
+            if (matchingAssociation != null
+                    && !this.equals(matchingAssociation.findMatchingPolicyCmptTypeAssociation(ipsProject))) {
+                list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID, NLS.bind(
+                        Messages.PolicyCmptTypeAssociation_error_MatchingAssociationInvalid, getMatchingAssociationName(),
+                        getMatchingAssociationSource()), Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME,
+                        PROPERTY_MATCHING_ASSOCIATION_SOURCE));
+            }
+        }
+    }
+
+    boolean findCorrectMatchingPolicyCmptTypeRecoursive(IPolicyCmptType parentPolicyCmptType,
+            IIpsProject ipsProject,
+            Set<IPolicyCmptType> visited) throws CoreException {
+        if (!visited.add(parentPolicyCmptType)) {
+            return false;
+        }
+        // breath first search
+        for (IPolicyCmptTypeAssociation association : parentPolicyCmptType.getPolicyCmptTypeAssociations()) {
+            if (association.isCompositionMasterToDetail()) {
+                if (getPolicyCmptType().getQualifiedName().equals(association.getTarget())) {
+                    return true;
+                }
+            }
+        }
+        for (IPolicyCmptTypeAssociation association : parentPolicyCmptType.getPolicyCmptTypeAssociations()) {
+            IPolicyCmptType nextParent = (IPolicyCmptType)association.findTarget(ipsProject);
+            if (findCorrectMatchingPolicyCmptTypeRecoursive(nextParent, ipsProject, visited)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
@@ -543,6 +656,8 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         subsettedDerivedUnion = element.getAttribute(PROPERTY_SUBSETTED_DERIVED_UNION);
         inverseAssociation = element.getAttribute(PROPERTY_INVERSE_ASSOCIATION);
         sharedAssociation = Boolean.parseBoolean(element.getAttribute(PROPERTY_SHARED_ASSOCIATION));
+        matchingAssociationName = element.getAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME);
+        matchingAssociationSource = element.getAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE);
     }
 
     @Override
@@ -551,6 +666,8 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         newElement.setAttribute(PROPERTY_QUALIFIED, "" + qualified); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_INVERSE_ASSOCIATION, inverseAssociation);
         newElement.setAttribute(PROPERTY_SHARED_ASSOCIATION, Boolean.toString(sharedAssociation));
+        newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME, matchingAssociationName);
+        newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE, getMatchingAssociationSource());
     }
 
     @Override

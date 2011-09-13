@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
@@ -959,4 +960,68 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals(associationHost, host);
 
     }
+
+    @Test
+    public void testFindMatchingProductCmptTypeAssociation() throws Exception {
+        PolicyCmptType police = newPolicyAndProductCmptType(ipsProject, "Police", "Produkt");
+        IProductCmptType produkt = police.findProductCmptType(ipsProject);
+
+        PolicyCmptType tarifvereinbarung = newPolicyAndProductCmptType(ipsProject, "Tarifvereinbarung", "Tarif");
+        IProductCmptType tarif = tarifvereinbarung.findProductCmptType(ipsProject);
+
+        IPolicyCmptTypeAssociation policeToTarifvereinbarung = police.newPolicyCmptTypeAssociation();
+        policeToTarifvereinbarung.setTargetRoleSingular("VersPers");
+        policeToTarifvereinbarung.setTarget(tarifvereinbarung.getQualifiedName());
+
+        IProductCmptTypeAssociation produktToTarif = produkt.newProductCmptTypeAssociation();
+        produktToTarif.setTargetRoleSingular("produktToTarif");
+        produktToTarif.setTarget(tarif.getQualifiedName());
+
+        assertNull(produktToTarif.findMatchingPolicyCmptTypeAssociation(ipsProject));
+
+        policeToTarifvereinbarung.setMatchingAssociationSource(produkt.getQualifiedName());
+        policeToTarifvereinbarung.setMatchingAssociationName(produktToTarif.getName());
+
+        assertEquals(produktToTarif, policeToTarifvereinbarung.findMatchingProductCmptTypeAssociation(ipsProject));
+    }
+
+    /**
+     * This is testing the special combination of product and policy type associations discussed in
+     * FIPS-563
+     * 
+     */
+    @Test
+    public void testFindMatchingProductCmptTypeAssociation2() throws Exception {
+        PolicyCmptType police = newPolicyAndProductCmptType(ipsProject, "Police", "Produkt");
+        IProductCmptType produkt = police.findProductCmptType(ipsProject);
+
+        PolicyCmptType versPerson = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "VersPerson");
+
+        PolicyCmptType tarifvereinbarung = newPolicyAndProductCmptType(ipsProject, "Tarifvereinbarung", "Tarif");
+        IProductCmptType tarif = tarifvereinbarung.findProductCmptType(ipsProject);
+
+        IPolicyCmptTypeAssociation policeToVersPerson = police.newPolicyCmptTypeAssociation();
+        policeToVersPerson.setTargetRoleSingular("VersPers");
+        policeToVersPerson.setTarget(versPerson.getQualifiedName());
+
+        IPolicyCmptTypeAssociation versPersonToTarifvereinbarung = versPerson.newPolicyCmptTypeAssociation();
+        versPersonToTarifvereinbarung.setTargetRoleSingular("versPersonToTarifvereinbarung");
+        versPersonToTarifvereinbarung.setTarget(tarifvereinbarung.getQualifiedName());
+
+        IProductCmptTypeAssociation produktToTarif = produkt.newProductCmptTypeAssociation();
+        produktToTarif.setTargetRoleSingular("produktToTarif");
+        produktToTarif.setTarget(tarif.getQualifiedName());
+
+        assertNull(produktToTarif.findMatchingPolicyCmptTypeAssociation(ipsProject));
+
+        versPersonToTarifvereinbarung.setMatchingAssociationSource(produkt.getQualifiedName());
+        versPersonToTarifvereinbarung.setMatchingAssociationName(produktToTarif.getName());
+
+        assertNull(produktToTarif.findMatchingPolicyCmptTypeAssociation(ipsProject));
+
+        policeToVersPerson.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+
+        assertEquals(produktToTarif, versPersonToTarifvereinbarung.findMatchingProductCmptTypeAssociation(ipsProject));
+    }
+
 }

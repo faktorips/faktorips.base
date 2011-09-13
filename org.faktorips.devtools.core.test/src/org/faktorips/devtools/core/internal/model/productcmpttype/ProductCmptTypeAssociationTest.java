@@ -19,9 +19,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -57,6 +59,45 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         association = productType.newProductCmptTypeAssociation();
     }
 
+    /**
+     * This is testing the special combination of product and policy type associations discussed in
+     * FIPS-563
+     * 
+     */
+    @Test
+    public void testFindPolicyCmptTypeAssociation2() throws CoreException {
+        PolicyCmptType police = newPolicyAndProductCmptType(ipsProject, "Police", "Produkt");
+        IProductCmptType produkt = police.findProductCmptType(ipsProject);
+
+        PolicyCmptType versPerson = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "VersPerson");
+
+        PolicyCmptType tarifvereinbarung = newPolicyAndProductCmptType(ipsProject, "Tarifvereinbarung", "Tarif");
+        IProductCmptType tarif = tarifvereinbarung.findProductCmptType(ipsProject);
+
+        IPolicyCmptTypeAssociation policeToVersPerson = police.newPolicyCmptTypeAssociation();
+        policeToVersPerson.setTargetRoleSingular("VersPers");
+        policeToVersPerson.setTarget(versPerson.getQualifiedName());
+
+        IPolicyCmptTypeAssociation versPersonToTarifvereinbarung = versPerson.newPolicyCmptTypeAssociation();
+        versPersonToTarifvereinbarung.setTargetRoleSingular("versPersonToTarifvereinbarung");
+        versPersonToTarifvereinbarung.setTarget(tarifvereinbarung.getQualifiedName());
+
+        IProductCmptTypeAssociation produktToTarif = produkt.newProductCmptTypeAssociation();
+        produktToTarif.setTargetRoleSingular("produktToTarif");
+        produktToTarif.setTarget(tarif.getQualifiedName());
+
+        assertNull(produktToTarif.findMatchingPolicyCmptTypeAssociation(ipsProject));
+
+        versPersonToTarifvereinbarung.setMatchingAssociationSource(produkt.getQualifiedName());
+        versPersonToTarifvereinbarung.setMatchingAssociationName(produktToTarif.getName());
+
+        assertNull(produktToTarif.findMatchingPolicyCmptTypeAssociation(ipsProject));
+
+        policeToVersPerson.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+
+        assertEquals(versPersonToTarifvereinbarung, produktToTarif.findMatchingPolicyCmptTypeAssociation(ipsProject));
+    }
+
     @Test
     public void testFindPolicyCmptTypeAssociation() throws CoreException {
         assertNull(association.findMatchingPolicyCmptTypeAssociation(ipsProject));
@@ -80,11 +121,115 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         detailToMasterAssoc.setTarget(coverageType.getQualifiedName());
 
         coverageTypeType.setPolicyCmptType(coverageType.getQualifiedName());
+        assertNull(association.findMatchingPolicyCmptTypeAssociation(ipsProject));
+
+        policyTypeAssociation.setMatchingAssociationSource(productType.getQualifiedName());
+        policyTypeAssociation.setMatchingAssociationName(association.getName());
         assertEquals(policyTypeAssociation, association.findMatchingPolicyCmptTypeAssociation(ipsProject));
 
         IProductCmptTypeAssociation association2 = productType.newProductCmptTypeAssociation();
+        association2.setTargetRoleSingular("otherAssociation");
         association2.setTarget(coverageTypeType.getQualifiedName());
         assertNull(association2.findMatchingPolicyCmptTypeAssociation(ipsProject));
+    }
+
+    /**
+     * Test scenario described in FIPS-563
+     */
+    @Test
+    public void testFindPossibleMatchingPolicyCmptTypeAssociations() throws Exception {
+        PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Police", "Produkt");
+        IProductCmptType produkt = policy.findProductCmptType(ipsProject);
+
+        PolicyCmptType versPerson = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "VersPerson");
+
+        PolicyCmptType tarifvereinbarung = newPolicyAndProductCmptType(ipsProject, "Tarifvereinbarung", "Tarif");
+        IProductCmptType tarif = tarifvereinbarung.findProductCmptType(ipsProject);
+
+        IProductCmptTypeAssociation produktToTarif = newAggregation(produkt, tarif);
+
+        Set<IPolicyCmptTypeAssociation> possibleMatchingPolicyCmptTypeAssociations = produktToTarif
+                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+        assertEquals(0, possibleMatchingPolicyCmptTypeAssociations.size());
+
+        IPolicyCmptTypeAssociation policyToVersPerson = newComposition(policy, versPerson);
+
+        possibleMatchingPolicyCmptTypeAssociations = produktToTarif
+                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+        assertEquals(0, possibleMatchingPolicyCmptTypeAssociations.size());
+
+        IPolicyCmptTypeAssociation versPersonToTarifvereinbarung = newComposition(versPerson, tarifvereinbarung);
+
+        possibleMatchingPolicyCmptTypeAssociations = produktToTarif
+                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+        assertEquals(2, possibleMatchingPolicyCmptTypeAssociations.size());
+        assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(policyToVersPerson));
+        assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(versPersonToTarifvereinbarung));
+
+        versPerson.delete();
+
+        possibleMatchingPolicyCmptTypeAssociations = produktToTarif
+                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+        assertEquals(0, possibleMatchingPolicyCmptTypeAssociations.size());
+    }
+
+    @Test
+    public void testFindPossibleMatchingPolicyCmptTypeAssociations2() throws Exception {
+        PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Police", "Produkt");
+        IProductCmptType produkt = policy.findProductCmptType(ipsProject);
+        PolicyCmptType tarifvereinbarung = newPolicyAndProductCmptType(ipsProject, "Tarifvereinbarung", "Tarif");
+        IProductCmptType tarif = tarifvereinbarung.findProductCmptType(ipsProject);
+
+        IPolicyCmptTypeAssociation policyToTarifvereinbarung = newComposition(policy, tarifvereinbarung);
+        IProductCmptTypeAssociation produktToTarif = newAggregation(produkt, tarif);
+
+        Set<IPolicyCmptTypeAssociation> possibleMatchingPolicyCmptTypeAssociations = produktToTarif
+                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+        assertEquals(1, possibleMatchingPolicyCmptTypeAssociations.size());
+        assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(policyToTarifvereinbarung));
+
+        PolicyCmptType versPerson = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "VersPerson");
+
+        possibleMatchingPolicyCmptTypeAssociations = produktToTarif
+                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+        assertEquals(1, possibleMatchingPolicyCmptTypeAssociations.size());
+        assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(policyToTarifvereinbarung));
+
+        IPolicyCmptTypeAssociation versPersonToTarifvereinbarung = newComposition(versPerson, tarifvereinbarung);
+        IPolicyCmptTypeAssociation policyToVersPerson = newComposition(policy, versPerson);
+
+        possibleMatchingPolicyCmptTypeAssociations = produktToTarif
+                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+        assertEquals(3, possibleMatchingPolicyCmptTypeAssociations.size());
+        assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(policyToTarifvereinbarung));
+        assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(policyToVersPerson));
+        assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(versPersonToTarifvereinbarung));
+
+    }
+
+    @Test
+    public void testFindPossibleMatchingPolicyCmptTypeAssociations3() throws Exception {
+        PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Police", "Produkt");
+        IProductCmptType produkt = policy.findProductCmptType(ipsProject);
+
+        PolicyCmptType tarifvereinbarung = newPolicyAndProductCmptType(ipsProject, "Tarifvereinbarung", "Tarif");
+        IProductCmptType tarif = tarifvereinbarung.findProductCmptType(ipsProject);
+
+        IProductCmptTypeAssociation produktToTarif = newAggregation(produkt, tarif);
+
+        PolicyCmptType vp1 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "VP1");
+        PolicyCmptType vp2 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "VP2");
+
+        IPolicyCmptTypeAssociation policyToVp1 = newComposition(policy, vp1);
+        IPolicyCmptTypeAssociation vp1ToVp2 = newComposition(vp1, vp2);
+        IPolicyCmptTypeAssociation vp2ToTarifvereinbarung = newComposition(vp2, tarifvereinbarung);
+
+        Set<IPolicyCmptTypeAssociation> possibleMatchingPolicyCmptTypeAssociations = produktToTarif
+                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+        assertEquals(3, possibleMatchingPolicyCmptTypeAssociations.size());
+        assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(policyToVp1));
+        assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(vp1ToVp2));
+        assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(vp2ToTarifvereinbarung));
     }
 
     /**

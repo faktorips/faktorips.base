@@ -241,6 +241,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
             msgList = part.validate(part.getIpsProject());
             MessageList objMsgList = part.getIpsObject().validate(part.getIpsProject());
             msgList.add(objMsgList.getMessagesFor(part));
+            addAdditionalDialogMessages(msgList);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return;
@@ -276,6 +277,16 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         }
 
         setMessage(null);
+    }
+
+    /**
+     * Overwrite this method to add additional messages to the dialog message area.
+     * 
+     * @param messageList Add your additional messages to this {@link MessageList}.
+     * 
+     */
+    protected void addAdditionalDialogMessages(MessageList messageList) {
+        // default implementation does nothing
     }
 
     private Message getFirstMessage(MessageList messageList, int severity, Set<String> ignoredMessageCodes) {

@@ -23,7 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -44,6 +43,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.FormulaSignatureFinder;
@@ -551,7 +551,26 @@ public class ProductCmptType extends Type implements IProductCmptType {
         // to force a check is a policy component type exists with the same qualified name
         dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
                 getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE)));
-        dependsOn(dependencies, details);
+
+        /*
+         * Adding dependency for explicitly specified matching associations for differing policy and
+         * product structure. @see FIPS-563
+         */
+        for (IProductCmptTypeAssociation association : getProductCmptTypeAssociations()) {
+            if (association.constrainsPolicyCmptTypeAssociation(getIpsProject())) {
+                IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociations = association
+                        .findMatchingPolicyCmptTypeAssociation(getIpsProject());
+                if (!matchingPolicyCmptTypeAssociations.getPolicyCmptType().isConfigurableByProductCmptType()) {
+                    IpsObjectDependency dependency = IpsObjectDependency.createReferenceDependency(
+                            getQualifiedNameType(), matchingPolicyCmptTypeAssociations.getPolicyCmptType()
+                                    .getQualifiedNameType());
+                    dependencies.add(dependency);
+                }
+            }
+        }
+
+        super.dependsOn(dependencies, details);
+
         return dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
@@ -589,7 +608,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public String getCaption(Locale locale) throws CoreException {
-        return ResourceBundle.getBundle(Messages.BUNDLE_NAME, locale).getString("ProductCmptType_caption"); //$NON-NLS-1$
+        return Messages.ProductCmptType_caption;
     }
 
     private static class TableStructureUsageFinder extends TypeHierarchyVisitor<IProductCmptType> {

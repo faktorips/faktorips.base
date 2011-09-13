@@ -83,6 +83,10 @@ public class Messages extends NLS {
     public static String PolicyCmptTypeAssociation_Association_msg_InverseAssociationMustNotBeEmpty;
     public static String PolicyCmptTypeAssociation_Association_msg_InverseAssociationMustNotBeEmptyIfDerivedUnionHasInverse;
     public static String PolicyCmptTypeAssociation_Association_msg_InverseOfMasterToDetailMustBeADetailToMaster;
+    public static String PolicyCmptTypeAssociation_error_MatchingAssociationInvalid;
+    public static String PolicyCmptTypeAssociation_error_MatchingAssociationInvalidSourceForConfiguredType;
+    public static String PolicyCmptTypeAssociation_error_MatchingAssociationInvalidSourceForNotConfiguredType;
+    public static String PolicyCmptTypeAssociation_error_matchingAssociatonNotFound;
     public static String PolicyCmptTypeAssociation_InverseOfDetailToMasterMustBeAMasterToDetail;
     public static String PolicyCmptTypeAssociation_sharedAssociation_invalidAssociationHost;
     public static String PolicyCmptTypeAssociation_sharedAssociation_noAssociationHost;

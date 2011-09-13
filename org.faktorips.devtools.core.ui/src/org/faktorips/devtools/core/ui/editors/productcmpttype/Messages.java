@@ -29,10 +29,22 @@ public class Messages extends NLS {
 
     public static String ProductCmptTypeAssociationsSection_menuOpenTargetInNewEditor;
 
+    public static String AssociationEditDialog_associationLabel_AssociationNameInPolicyCmptType;
+
+    public static String AssociationEditDialog_check_selectExplicitly;
+
     public static String AssociationEditDialog_derivedUnionCheckbox;
     public static String AssociationEditDialog_derivedUnionGroup;
     public static String AssociationEditDialog_derivedUnionLabel;
     public static String AssociationEditDialog_generalGroup;
+
+    public static String AssociationEditDialog_group_matchingPolicyCmptTypeAssociation;
+
+    public static String AssociationEditDialog_hint_AlreadyConfiguredIn;
+
+    public static String AssociationEditDialog_info_dialogAutoFixErrors;
+
+    public static String AssociationEditDialog_label_matchingAssociation;
     public static String AssociationEditDialog_maxCardLabel;
     public static String AssociationEditDialog_minCardLabel;
     public static String AssociationEditDialog_properties;
@@ -42,8 +54,8 @@ public class Messages extends NLS {
     public static String AssociationEditDialog_targetLabel;
     public static String AssociationEditDialog_title;
     public static String AssociationEditDialog_typeLabel;
-    public static String AttributeEditDialog_changeOverTimeCheckbox;
 
+    public static String AttributeEditDialog_changeOverTimeCheckbox;
     public static String AttributeEditDialog_changeOverTimeLabel;
 
     public static String AttributeEditDialog_datatypeLabel;

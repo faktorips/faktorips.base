@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -443,7 +442,25 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         // to force a check if a product component type exists with the same qualified name (hack)
         dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
                 getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE)));
-        dependsOn(dependencies, details);
+
+        if (!isConfigurableByProductCmptType()) {
+            /*
+             * Adding dependency for explicitly specified matching associations for differing
+             * policy and product structure. @see FIPS-563
+             */
+            for (IPolicyCmptTypeAssociation association : getPolicyCmptTypeAssociations()) {
+                if (association.isConstrainedByProductStructure(getIpsProject())) {
+                    IpsObjectDependency dependency = IpsObjectDependency.createReferenceDependency(
+                            getQualifiedNameType(), new QualifiedNameType(association.getMatchingAssociationSource(),
+                                    IpsObjectType.PRODUCT_CMPT_TYPE));
+                    dependencies.add(dependency);
+                    addDetails(details, dependency, association,
+                            IPolicyCmptTypeAssociation.PROPERTY_MATCHING_ASSOCIATION_SOURCE);
+                }
+            }
+        }
+
+        super.dependsOn(dependencies, details);
         return dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
@@ -645,7 +662,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     @Override
     public String getCaption(Locale locale) throws CoreException {
-        return ResourceBundle.getBundle(Messages.BUNDLE_NAME, locale).getString("PolicyCmptType_caption"); //$NON-NLS-1$
+        return Messages.PolicyCmptType_caption;
     }
 
     private static class IsAggregrateRootVisitor extends TypeHierarchyVisitor<IPolicyCmptType> {

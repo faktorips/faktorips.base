@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.ui.controller.FieldExtensionPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMappingByPropertyDescriptor;
 import org.faktorips.devtools.core.ui.controller.Messages;
+import org.faktorips.devtools.core.ui.controller.ProblemMarkerPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
@@ -285,6 +286,20 @@ public class BindingContext {
      */
     public void bindContent(EditField<?> field, Object object, String property) {
         add(createMapping(field, object, property));
+    }
+
+    /**
+     * Binds the given object's property to the given field to show the problem markers. This
+     * binding will not update neither the control nor the object's property. This binding could not
+     * be used for object type of {@link IExtensionPropertyAccess}
+     * 
+     * @throws NullPointerException if any argument is <code>null</code>.
+     */
+    public <T> void bindProblemMarker(EditField<T> field, Object object, String propertyName) {
+        PropertyDescriptor property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
+        ProblemMarkerPropertyMapping<T> problemMarkerPropertyMapping = new ProblemMarkerPropertyMapping<T>(field,
+                object, property);
+        add(problemMarkerPropertyMapping);
     }
 
     protected <T> FieldPropertyMapping createMapping(EditField<T> editField, Object object, String propertyName) {

@@ -59,9 +59,19 @@ public class Messages extends NLS {
 
     public static String AssociationEditDialog_associationTypeLabel;
 
+    public static String AssociationEditDialog_check_selectMatchingAssociationExpliclitly;
+
     public static String AssociationEditDialog_generalGroup;
 
+    public static String AssociationEditDialog_group_matchingProdCmptTypeAssociation;
+
+    public static String AssociationEditDialog_info_dialogAutoFixErrors;
+
     public static String AssociationEditDialog_inverseAssociationLabel;
+
+    public static String AssociationEditDialog_label_matchingAssociation;
+
+    public static String AssociationEditDialog_label_productCmptType;
 
     public static String AssociationEditDialog_labelAssociationIsOwningSideOfManyToMany;
 
@@ -109,10 +119,6 @@ public class Messages extends NLS {
 
     public static String AssociationEditDialog_note;
 
-    public static String AssociationEditDialog_noteAssociationIsConstrainedByProductStructure;
-
-    public static String AssociationEditDialog_noteAssociationNotConstrainedByProductStructure;
-
     public static String AssociationEditDialog_noteForeignKeyColumnDefinedInInverseAssociation;
 
     public static String AssociationEditDialog_noteForeignKeyIsColumnOfTheTargetEntity;
@@ -140,8 +146,6 @@ public class Messages extends NLS {
     public static String AssociationEditDialog_textNotSupportedByPersistenceProvider;
 
     public static String AssociationEditDialog_title;
-
-    public static String AssociationEditDialog_toConstraintTheAssociation;
 
     public static String PolicyCmptTypeAssociationsSection_menuOpenTargetInNewEditor;
 
