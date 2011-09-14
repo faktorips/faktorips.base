@@ -98,6 +98,9 @@ public class GenProdAssociationToMany extends GenProdAssociation {
             generateMethodInterfaceGetRelatedCmptAtIndex(builder);
             generateMethodInterfaceGetManyRelatedCmptLinks(builder);
             generateMethodInterfaceGetRelatedCmptLink(builder);
+            if (association.constrainsPolicyCmptTypeAssociation(ipsProject)) {
+                generateMethodGetCardinalityForAssociation(builder);
+            }
             generateMethodGetNumOfRelatedCmpts(builder);
         } else {
             generateMethodGetManyRelatedCmpts(builder);
