@@ -683,16 +683,13 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
             builder.append(" instanceof ");
             builder.appendClassName(OrderedValueSet.class);
             builder.append("){");
-            // builder.append("<");
-            // builder.append(datatype.getJavaClassName());
-            // builder.append(">) {");
         }
         builder.append("valueSetValuesElement = element.getOwnerDocument().createElement(\"Enum\");");
         builder.append("valueSetValuesElement.setAttribute(\"containsNull\", Boolean.toString(");
         builder.append(getFieldNameSetOfAllowedValues());
         builder.append(".containsNull()));");
         builder.append("for (");
-        builder.append(getDatatype().getJavaClassName());
+        builder.append(getDatatypeHelper().getJavaClassName());
         builder.append(" value : ");
         builder.append(getFieldNameSetOfAllowedValues());
         builder.append(".getValues(true)) {");
