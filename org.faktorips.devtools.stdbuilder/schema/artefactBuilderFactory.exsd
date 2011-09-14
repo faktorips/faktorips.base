@@ -16,12 +16,12 @@
             <meta.element />
          </appInfo>
          <documentation>
-            Adds an artefact builder to the FaktorIPS standard builderset.
+            Adds an artefact builder to the FaktorIPS standard builder set.
          </documentation>
       </annotation>
       <complexType>
          <choice>
-            <element ref="artefactBuilder"/>
+            <element ref="artefactBuilderFactory"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -50,7 +50,12 @@
       </complexType>
    </element>
 
-   <element name="artefactBuilder">
+   <element name="artefactBuilderFactory">
+      <annotation>
+         <documentation>
+            A factory for a custom artefact builder.
+         </documentation>
+      </annotation>
       <complexType>
          <attribute name="class" type="string">
             <annotation>
@@ -58,17 +63,7 @@
                   The class implementing the builders functionality.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder"/>
-               </appInfo>
-            </annotation>
-         </attribute>
-         <attribute name="ipsObjectType" type="string">
-            <annotation>
-               <documentation>
-                  The type of IPS object the builder creates artefacts for.
-               </documentation>
-               <appInfo>
-                  <meta.attribute kind="java" basedOn="org.faktorips.devtools.core.model.ipsobject.IpsObjectType:"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.stdbuilder.IIpsArtefactBuilderFactory"/>
                </appInfo>
             </annotation>
          </attribute>

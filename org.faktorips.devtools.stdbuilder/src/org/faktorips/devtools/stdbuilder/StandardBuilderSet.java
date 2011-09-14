@@ -94,6 +94,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class StandardBuilderSet extends DefaultBuilderSet {
 
+    private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
+
     public final static String ID = "org.faktorips.devtools.stdbuilder.ipsstdbuilderset";
 
     /**
@@ -473,7 +475,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         createAnnotationGeneratorMap();
 
-        List<IIpsArtefactBuilder> extendingBuilders = getExtendingBuilders();
+        List<IIpsArtefactBuilder> extendingBuilders = getExtendingArtefactBuilders();
 
         if (ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
             ModelTypeXmlBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this);
@@ -540,18 +542,18 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * 
      * @return a list containing all builders that extend this builder set.
      */
-    private List<IIpsArtefactBuilder> getExtendingBuilders() {
+    private List<IIpsArtefactBuilder> getExtendingArtefactBuilders() {
         List<IIpsArtefactBuilder> builders = new ArrayList<IIpsArtefactBuilder>();
 
         ExtensionPoints extensionPoints = new ExtensionPoints(StdBuilderPlugin.PLUGIN_ID);
-        IExtension[] extensions = extensionPoints.getExtension("artefactBuilder");
+        IExtension[] extensions = extensionPoints.getExtension(EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY);
         for (IExtension extension : extensions) {
             IConfigurationElement[] configurationElements = extension.getConfigurationElements();
             for (IConfigurationElement configElement : configurationElements) {
-                if ("artefactBuilder".equals(configElement.getName())) { //$NON-NLS-1$
-                    IIpsArtefactBuilder builder = ExtensionPoints.createExecutableExtension(extension, configElement,
-                            "class", IIpsArtefactBuilder.class); //$NON-NLS-1$
-                    builder.init(this);
+                if (EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY.equals(configElement.getName())) {
+                    IIpsArtefactBuilderFactory builderFactory = ExtensionPoints.createExecutableExtension(extension,
+                            configElement, "class", IIpsArtefactBuilderFactory.class); //$NON-NLS-1$
+                    IIpsArtefactBuilder builder = builderFactory.createBuilder(this);
                     builders.add(builder);
                 }
             }

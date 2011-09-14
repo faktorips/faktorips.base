@@ -2,7 +2,7 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension-point id="tocEntryBuilder" name="TOC Entry Builder" schema="schema/tocEntryBuilder.exsd"/>
-   <extension-point id="artefactBuilder" name="artefactBuilder" schema="schema/artefactBuilder.exsd"/>
+   <extension-point id="artefactBuilderFactory" name="artefactBuilderFactory" schema="schema/artefactBuilderFactory.exsd"/>
 
    <extension
          id="ipsstdbuilderset"

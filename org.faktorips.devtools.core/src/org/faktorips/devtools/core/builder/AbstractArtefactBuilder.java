@@ -49,14 +49,6 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
     }
 
     @Override
-    public void init(IIpsArtefactBuilderSet builderSet) {
-        if (this.builderSet == null) {
-            ArgumentCheck.notNull(builderSet);
-            this.builderSet = builderSet;
-        }
-    }
-
-    @Override
     public IIpsArtefactBuilderSet getBuilderSet() {
         return builderSet;
     }
