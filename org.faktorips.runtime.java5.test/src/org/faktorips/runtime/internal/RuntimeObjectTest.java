@@ -25,6 +25,10 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/**
+ * 
+ * @author Stefan Widmaier, FaktorZehn AG
+ */
 public class RuntimeObjectTest {
     @Test
     public void writeExtensionPropertiesToXML() throws ParserConfigurationException {
@@ -63,4 +67,5 @@ public class RuntimeObjectTest {
         Element productCmpt = document.createElement("ProductComponent");
         return productCmpt;
     }
+
 }
