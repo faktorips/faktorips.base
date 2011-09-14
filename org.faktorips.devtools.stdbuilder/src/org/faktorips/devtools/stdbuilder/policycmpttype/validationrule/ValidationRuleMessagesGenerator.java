@@ -24,16 +24,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.faktorips.devtools.core.internal.model.InternationalString;
-import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.devtools.stdbuilder.policycmpttype.MessagesProperties;
@@ -45,9 +43,6 @@ public class ValidationRuleMessagesGenerator {
      * not allowed in names.
      */
     public static final String KEY_SEPARATOR = "-";
-
-    // matching a text that follows '{' and is followed by '}' or ','
-    public static final Pattern REPLACEMENT_PARAMETER_REGEXT = Pattern.compile("(?<=(\\{))[\\p{L}0-9]+(?=([,\\}]))");
 
     private final Map<String, Set<String>> pcTypeNamesToValidationRuleNamesMap = new HashMap<String, Set<String>>();
 
@@ -78,32 +73,6 @@ public class ValidationRuleMessagesGenerator {
 
     public static String getMessageKey(String policyCmptTypeQName, String ruleName) {
         return policyCmptTypeQName + KEY_SEPARATOR + ruleName;
-    }
-
-    /**
-     * Extracting the replacement parameters from given messageText. The replacement parameters are
-     * defined curly braces. In contrast to the replacement parameters used in {@link MessageFormat}
-     * , these parameters could have names and not only indices. However you could use additional
-     * format information separated by comma as used by {@link MessageFormat}.
-     * 
-     * @param internationalString the {@link InternationalString} containing all message texts
-     * @param makeJavaIdentifier true to make parameter names to valid java identifier
-     */
-    public static LinkedHashSet<String> getReplacementParameters(IInternationalString internationalString,
-            boolean makeJavaIdentifier) {
-        LinkedHashSet<String> result = new LinkedHashSet<String>();
-        for (ILocalizedString localizedString : internationalString.values()) {
-            String text = localizedString.getValue();
-            Matcher matcher = ValidationRuleMessagesGenerator.REPLACEMENT_PARAMETER_REGEXT.matcher(text);
-            while (matcher.find()) {
-                String parameterName = matcher.group();
-                if (makeJavaIdentifier && !Character.isJavaIdentifierStart(parameterName.charAt(0))) {
-                    parameterName = "p" + parameterName;
-                }
-                result.add(parameterName);
-            }
-        }
-        return result;
     }
 
     /**
@@ -220,7 +189,7 @@ public class ValidationRuleMessagesGenerator {
      * @return the text of validationRule with converted replacement parameters
      */
     String getMessageText(IValidationRule validationRule) {
-        IInternationalString internationalString = validationRule.getMessageText();
+        IValidationRuleMessageText internationalString = validationRule.getMessageText();
         ILocalizedString localizedString = internationalString.get(locale);
         if (localizedString == null) {
             return null;
@@ -231,9 +200,9 @@ public class ValidationRuleMessagesGenerator {
         }
         StringBuilder result = new StringBuilder();
 
-        Matcher matcher = REPLACEMENT_PARAMETER_REGEXT.matcher(messageText);
+        Matcher matcher = IValidationRuleMessageText.REPLACEMENT_PARAMETER_REGEXT.matcher(messageText);
         int lastEnd = 0;
-        LinkedHashSet<String> parameterNames = getReplacementParameters(internationalString, false);
+        LinkedHashSet<String> parameterNames = internationalString.getReplacementParameters();
         while (matcher.find()) {
             result.append(messageText.substring(lastEnd, matcher.start()));
             String parameterName = matcher.group();

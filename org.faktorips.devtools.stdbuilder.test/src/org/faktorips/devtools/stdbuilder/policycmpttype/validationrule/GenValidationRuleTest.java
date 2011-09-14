@@ -15,6 +15,10 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 
 import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -94,6 +98,34 @@ public class GenValidationRuleTest extends PolicyCmptTypeBuilderTest {
                     unresolvedParam(ObjectProperty.class.getSimpleName() + "[]") };
         }
         expectMethod(javaClass, genValidationRule.getMethodNameCreateMessageForRule(), parameters);
+    }
+
+    @Test
+    public void testConvertToJavaParameters() throws Exception {
+        LinkedHashSet<String> parameters = new LinkedHashSet<String>();
+        LinkedHashSet<String> javaParameters = genValidationRule.convertToJavaParameters(parameters);
+        assertTrue(javaParameters.isEmpty());
+
+        parameters.add("asd");
+        javaParameters = genValidationRule.convertToJavaParameters(parameters);
+        Iterator<String> iterator = javaParameters.iterator();
+        assertTrue(javaParameters.size() == 1);
+        assertEquals("asd", iterator.next());
+
+        parameters.add("0");
+        javaParameters = genValidationRule.convertToJavaParameters(parameters);
+        iterator = javaParameters.iterator();
+        assertTrue(javaParameters.size() == 2);
+        assertEquals("asd", iterator.next());
+        assertEquals("p0", iterator.next());
+
+        parameters.add("p0");
+        javaParameters = genValidationRule.convertToJavaParameters(parameters);
+        iterator = javaParameters.iterator();
+        assertTrue(javaParameters.size() == 3);
+        assertEquals("asd", iterator.next());
+        assertEquals("pp0", iterator.next());
+        assertEquals("p0", iterator.next());
     }
 
 }

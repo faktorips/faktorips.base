@@ -25,17 +25,16 @@ import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.InternationalString;
 import org.faktorips.devtools.core.internal.model.InternationalStringXmlHelper;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -59,7 +58,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
 
     public final static String XML_TAG_MSG_TXT = "MessageText"; //$NON-NLS-1$
 
-    private final IInternationalString msgText;
+    private final ValidationRuleMessageText msgText;
 
     private String msgCode = ""; //$NON-NLS-1$
 
@@ -93,7 +92,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
      */
     public ValidationRule(IPolicyCmptType pcType, String id) {
         super(pcType, id);
-        msgText = new InternationalString(new Observer() {
+        msgText = new ValidationRuleMessageText(new Observer() {
 
             @Override
             public void update(Observable o, Object arg) {
@@ -182,26 +181,15 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
                     PROPERTY_MESSAGE_CODE);
             list.add(msg);
         }
-        validateNoLineSeperators(list);
 
         IIpsProject project = getIpsProject();
         validateBusinessFunctions(list, project);
 
         validateValidatedAttribute(list, ipsProject);
         validateCheckValueAgainstValueSet(list);
-    }
 
-    private void validateNoLineSeperators(MessageList list) {
-        for (ILocalizedString localizedString : msgText.values()) {
-            String message = localizedString.getValue();
-            if (StringUtils.isNotEmpty(SystemUtils.LINE_SEPARATOR) && message.indexOf(SystemUtils.LINE_SEPARATOR) != -1) {
-                String text = NLS.bind(Messages.ValidationRule_msgNoNewlineAllowed, localizedString.getLocale()
-                        .getDisplayLanguage());
-                list.add(new Message(IValidationRule.MSGCODE_NO_NEWLINE, text, Message.ERROR, this,
-                        IValidationRule.PROPERTY_MESSAGE_TEXT));
-            }
-        }
-
+        validateNoLineSeperators(list);
+        validateReplacementParameters(ipsProject, list);
     }
 
     private void validateBusinessFunctions(MessageList list, IIpsProject ipsProject) throws CoreException {
@@ -282,8 +270,25 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         }
     }
 
+    private void validateNoLineSeperators(MessageList list) {
+        for (ILocalizedString localizedString : msgText.values()) {
+            String message = localizedString.getValue();
+            if (StringUtils.isNotEmpty(SystemUtils.LINE_SEPARATOR) && message.indexOf(SystemUtils.LINE_SEPARATOR) != -1) {
+                String text = NLS.bind(Messages.ValidationRule_msgNoNewlineAllowed, localizedString.getLocale()
+                        .getDisplayLanguage());
+                list.add(new Message(IValidationRule.MSGCODE_NO_NEWLINE, text, Message.ERROR, this,
+                        IValidationRule.PROPERTY_MESSAGE_TEXT));
+            }
+        }
+
+    }
+
+    private void validateReplacementParameters(IIpsProject ipsProject, MessageList list) {
+        msgText.validateReplacementParameters(ipsProject, list);
+    }
+
     @Override
-    public IInternationalString getMessageText() {
+    public IValidationRuleMessageText getMessageText() {
         return msgText;
     }
 

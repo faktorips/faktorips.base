@@ -30,12 +30,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.faktorips.devtools.core.internal.model.InternationalString;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
+import org.faktorips.devtools.core.internal.model.pctype.ValidationRuleMessageText;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.junit.Test;
 
@@ -94,7 +95,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
         when(rule.getIpsObject()).thenReturn(policyCmptType);
         when(rule.getName()).thenReturn("testRule");
-        when(rule.getMessageText()).thenReturn(new InternationalString());
+        when(rule.getMessageText()).thenReturn(new ValidationRuleMessageText());
 
         ArrayList<IValidationRule> rules = new ArrayList<IValidationRule>();
         rules.add(rule);
@@ -164,7 +165,8 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
         when(rule.getIpsObject()).thenReturn(policyCmptType);
         when(rule.getName()).thenReturn("testRule");
-        when(rule.getMessageText()).thenReturn(new InternationalString());
+        IValidationRuleMessageText messageText = mock(IValidationRuleMessageText.class);
+        when(rule.getMessageText()).thenReturn(messageText);
 
         ArrayList<IValidationRule> rules = new ArrayList<IValidationRule>();
         rules.add(rule);

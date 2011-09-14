@@ -28,21 +28,19 @@ import static org.mockito.Mockito.when;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.core.internal.model.InternationalString;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
-import org.faktorips.devtools.core.model.IInternationalString;
+import org.faktorips.devtools.core.internal.model.pctype.ValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.stdbuilder.policycmpttype.AbstractValidationMessagesBuilderTest;
 import org.faktorips.devtools.stdbuilder.policycmpttype.MessagesProperties;
-import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessagesGenerator;
 import org.junit.Test;
 
 public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessagesBuilderTest {
@@ -159,11 +157,11 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
                 mock(IFile.class), Locale.GERMAN);
 
-        IInternationalString msgTxt1 = mock(IInternationalString.class);
+        IValidationRuleMessageText msgTxt1 = mock(IValidationRuleMessageText.class);
         when(msgTxt1.get(any(Locale.class))).thenReturn(new LocalizedString(Locale.GERMAN, "text1"));
-        IInternationalString msgTxt2 = mock(IInternationalString.class);
+        IValidationRuleMessageText msgTxt2 = mock(IValidationRuleMessageText.class);
         when(msgTxt2.get(any(Locale.class))).thenReturn(new LocalizedString(Locale.GERMAN, "text2"));
-        IInternationalString msgTxt3 = mock(IInternationalString.class);
+        IValidationRuleMessageText msgTxt3 = mock(IValidationRuleMessageText.class);
         when(msgTxt3.get(any(Locale.class))).thenReturn(new LocalizedString(Locale.GERMAN, "text3"));
 
         IPolicyCmptType pcType = mock(IPolicyCmptType.class);
@@ -215,11 +213,11 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         IPolicyCmptType pcType2 = mock(IPolicyCmptType.class);
         when(pcType2.getQualifiedName()).thenReturn("pcType2");
 
-        IInternationalString msgTxt1 = mock(IInternationalString.class);
+        IValidationRuleMessageText msgTxt1 = mock(IValidationRuleMessageText.class);
         when(msgTxt1.get(any(Locale.class))).thenReturn(new LocalizedString(Locale.GERMAN, "text1"));
-        IInternationalString msgTxt2 = mock(IInternationalString.class);
+        IValidationRuleMessageText msgTxt2 = mock(IValidationRuleMessageText.class);
         when(msgTxt2.get(any(Locale.class))).thenReturn(new LocalizedString(Locale.GERMAN, "text2"));
-        IInternationalString msgTxt3 = mock(IInternationalString.class);
+        IValidationRuleMessageText msgTxt3 = mock(IValidationRuleMessageText.class);
         when(msgTxt3.get(any(Locale.class))).thenReturn(new LocalizedString(Locale.GERMAN, "text3"));
 
         IValidationRule validationRule1 = mockValidationRule(pcType);
@@ -261,7 +259,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
 
         IValidationRule validationRule = mockValidationRule(null);
 
-        IInternationalString text = new InternationalString();
+        IValidationRuleMessageText text = new ValidationRuleMessageText();
 
         text.add(new LocalizedString(locale, ""));
         when(validationRule.getMessageText()).thenReturn(text);
@@ -303,70 +301,6 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         when(validationRule.getMessageText()).thenReturn(text);
         result = validationRuleMessagesGenerator.getMessageText(validationRule);
         assertEquals("{0} Abc 123 alles klar {1} usw. blabla {1} asd {0} soso", result);
-    }
-
-    @Test
-    public void testGetReplacementParameters() throws Exception {
-        IInternationalString internationalString = new InternationalString();
-
-        internationalString.add(new LocalizedString(Locale.GERMAN, ""));
-        Set<String> replacementParameters = ValidationRuleMessagesGenerator.getReplacementParameters(
-                internationalString, true);
-        assertEquals(0, replacementParameters.size());
-
-        internationalString.add(new LocalizedString(Locale.GERMAN, "anc {abc123} afs"));
-        replacementParameters = ValidationRuleMessagesGenerator.getReplacementParameters(internationalString, true);
-        assertEquals(1, replacementParameters.size());
-        Iterator<String> iterator = replacementParameters.iterator();
-        assertEquals("abc123", iterator.next());
-
-        internationalString.add(new LocalizedString(Locale.GERMAN, "{abc123} xyq {0}"));
-        replacementParameters = ValidationRuleMessagesGenerator.getReplacementParameters(internationalString, true);
-        assertEquals(2, replacementParameters.size());
-        iterator = replacementParameters.iterator();
-        assertEquals("abc123", iterator.next());
-        assertEquals("p0", iterator.next());
-
-        internationalString.add(new LocalizedString(Locale.GERMAN, "{abc123} xyq {0}"));
-        replacementParameters = ValidationRuleMessagesGenerator.getReplacementParameters(internationalString, false);
-        assertEquals(2, replacementParameters.size());
-        iterator = replacementParameters.iterator();
-        assertEquals("abc123", iterator.next());
-        assertEquals("0", iterator.next());
-
-        internationalString.add(new LocalizedString(Locale.GERMAN, "abc {abc123} xyq {0} {abc123}"));
-        replacementParameters = ValidationRuleMessagesGenerator.getReplacementParameters(internationalString, true);
-        assertEquals(2, replacementParameters.size());
-        iterator = replacementParameters.iterator();
-        assertEquals("abc123", iterator.next());
-        assertEquals("p0", iterator.next());
-
-        internationalString.add(new LocalizedString(Locale.ENGLISH, "abc {abc123} xyq {0} {abc123}"));
-        replacementParameters = ValidationRuleMessagesGenerator.getReplacementParameters(internationalString, true);
-        assertEquals(2, replacementParameters.size());
-        iterator = replacementParameters.iterator();
-        assertEquals("abc123", iterator.next());
-        assertEquals("p0", iterator.next());
-
-        internationalString.add(new LocalizedString(Locale.GERMAN, "abc {0} xyq {1} {2}"));
-        internationalString.add(new LocalizedString(Locale.ENGLISH, "abc {1} xyq {2} {3}"));
-        replacementParameters = ValidationRuleMessagesGenerator.getReplacementParameters(internationalString, true);
-        assertEquals(4, replacementParameters.size());
-        iterator = replacementParameters.iterator();
-        assertEquals("p0", iterator.next());
-        assertEquals("p1", iterator.next());
-        assertEquals("p2", iterator.next());
-        assertEquals("p3", iterator.next());
-
-        internationalString.add(new LocalizedString(Locale.GERMAN, "abc {0} xyq {1} {2}"));
-        internationalString.add(new LocalizedString(Locale.ENGLISH, "abc {1} xyq {2} {3}"));
-        replacementParameters = ValidationRuleMessagesGenerator.getReplacementParameters(internationalString, false);
-        assertEquals(4, replacementParameters.size());
-        iterator = replacementParameters.iterator();
-        assertEquals("0", iterator.next());
-        assertEquals("1", iterator.next());
-        assertEquals("2", iterator.next());
-        assertEquals("3", iterator.next());
     }
 
 }

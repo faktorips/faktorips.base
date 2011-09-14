@@ -16,6 +16,7 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -182,8 +183,7 @@ public class GenValidationRule extends GenTypePart {
         boolean generateToDo = false;
         body.append("ml.add(");
         body.append(getMethodNameCreateMessageForRule());
-        Set<String> replacementParameters = ValidationRuleMessagesGenerator.getReplacementParameters(
-                rule.getMessageText(), true);
+        Set<String> replacementParameters = convertToJavaParameters(rule.getMessageText().getReplacementParameters());
         body.append("(context");
         for (@SuppressWarnings("unused")
         String replacement : replacementParameters) {
@@ -253,8 +253,7 @@ public class GenValidationRule extends GenTypePart {
         String localVarMessage = "msgText";
         String parameterContext = "context";
 
-        Set<String> replacementParameters = ValidationRuleMessagesGenerator.getReplacementParameters(
-                rule.getMessageText(), true);
+        Set<String> replacementParameters = convertToJavaParameters(rule.getMessageText().getReplacementParameters());
         // determine method parameters (name and type)
         List<String> methodParamNames = new ArrayList<String>(replacementParameters.size() + 2);
         List<String> methodParamTypes = new ArrayList<String>(replacementParameters.size() + 2);
@@ -486,6 +485,22 @@ public class GenValidationRule extends GenTypePart {
     private void addExecRuleMethodToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
         addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameExecRule(),
                 unresolvedParam(MessageList.class), unresolvedParam(IValidationContext.class));
+    }
+
+    LinkedHashSet<String> convertToJavaParameters(LinkedHashSet<String> parameters) {
+        LinkedHashSet<String> result = new LinkedHashSet<String>();
+        for (final String parameterName : parameters) {
+            if (!Character.isJavaIdentifierStart(parameterName.charAt(0))) {
+                String javaIdent = "p" + parameterName;
+                while (parameters.contains(javaIdent)) {
+                    javaIdent = "p" + javaIdent;
+                }
+                result.add(javaIdent);
+            } else {
+                result.add(parameterName);
+            }
+        }
+        return result;
     }
 
 }
