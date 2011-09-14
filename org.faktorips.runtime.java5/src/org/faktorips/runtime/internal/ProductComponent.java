@@ -143,9 +143,9 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     /**
      * 
      * @param document a document, that can be used to create XML elements.
-     * @param includeGenerationnewChild) s <code>true</code> if the created XML element should
-     *            include the data of all the product component's generations, <code>false</code> if
-     *            generations should be ignored when creating the XML output.
+     * @param includeGenerations <code>true</code> if the created XML element should include the
+     *            data of all the product component's generations, <code>false</code> if generations
+     *            should be ignored when creating the XML output.
      */
     public final Element toXml(Document document, boolean includeGenerations) {
         Element prodCmptElement = document.createElement("ProductComponent");
