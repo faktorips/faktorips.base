@@ -68,6 +68,9 @@ public class StructuredSelectionHelper {
     }
 
     private <T extends IIpsObject> T adaptToIpsObjectType(IAdaptable adaptable, Class<T> clazz) {
+        if (adaptable == null) {
+            return null;
+        }
         IIpsObject ipsObject = (IIpsObject)adaptable.getAdapter(IIpsObject.class);
         if (ipsObject != null && clazz.isAssignableFrom(ipsObject.getClass())) {
             return clazz.cast(ipsObject);
