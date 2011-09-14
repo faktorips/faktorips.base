@@ -30,7 +30,6 @@ import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
-import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -445,7 +444,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
      */
     private void generateCreateUnrestrictedValueSet(DatatypeHelper helper, JavaCodeFragment frag) {
         frag.append("new "); //$NON-NLS-1$
-        frag.appendClassName(UnrestrictedValueSet.class);
+        frag.appendClassName(org.faktorips.valueset.UnrestrictedValueSet.class);
         frag.append("<"); //$NON-NLS-1$
         frag.appendClassName(helper.getJavaClassName());
         frag.append(">"); //$NON-NLS-1$
@@ -483,7 +482,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
             DatatypeHelper helper,
             JavaCodeFragment frag) {
         frag.append("new "); //$NON-NLS-1$
-        frag.appendClassName(UnrestrictedValueSet.class);
+        frag.appendClassName(org.faktorips.valueset.UnrestrictedValueSet.class);
         frag.append("<"); //$NON-NLS-1$
         frag.appendClassName(helper.getJavaClassName());
         frag.append(">"); //$NON-NLS-1$
@@ -553,8 +552,9 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
      * value and value set.
      * 
      * @param builder the fragment builder to append source code to
+     * @throws CoreException if an error occurs when generating code that writes the valueSet to XML
      */
-    public void generateWriteToXML(JavaCodeFragmentBuilder builder) {
+    public void generateWriteToXML(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.append(" configElement = element.getOwnerDocument().createElement(\"ConfigElement\");");
 
         builder.append("configElement.setAttribute(\"attribute\", \"");
@@ -570,7 +570,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
         builder.append("element.appendChild(configElement);");
     }
 
-    private void generateWriteValueSetToXml(JavaCodeFragmentBuilder builder) {
+    private void generateWriteValueSetToXml(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.append(" valueSetElement= element.getOwnerDocument().createElement(\"ValueSet\");");
         /*
          * Set abstract flag to false, as value sets can never be abstract at runtime. (A value set
@@ -582,7 +582,9 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
         if (valueSet.isUnrestricted()) {
             // the ProductCmpt could define any type of value set
             generateCodeForUnrestrictedToXML(builder, true);
-            generateCodeForRangeToXML(builder, true);
+            if (getIpsProject().isValueSetTypeApplicable(getDatatype(), ValueSetType.RANGE)) {
+                generateCodeForRangeToXML(builder, true);
+            }
             generateCodeForEnumToXML(builder, true);
         } else if (valueSet.isRange()) {
             generateCodeForRangeToXML(builder, false);
