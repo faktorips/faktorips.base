@@ -34,9 +34,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
-import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.internal.IXmlPersistenceSupport;
-import org.faktorips.runtime.internal.MethodNames;
 import org.w3c.dom.Element;
 
 /**
@@ -62,11 +60,6 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
             boolean generatesInterface) throws CoreException {
         if (!generatesInterface) {
             generateFieldTo1Association(builder);
-            if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
-                if (!isUseTypesafeCollections()) {
-                    generateFieldCardinalityForAssociation(builder);
-                }
-            }
         }
     }
 
@@ -77,10 +70,8 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         if (generatesInterface) {
             generateMethodInterfaceGet1RelatedCmpt(builder);
             generateMethodInterfaceGet1RelatedCmptGen(builder);
-            if (isUseTypesafeCollections()) {
-                generateMethodInterfaceGet1RelatedCmptLink(builder);
-                generateMethodInterfaceGetRelatedCmptLink(builder);
-            }
+            generateMethodInterfaceGet1RelatedCmptLink(builder);
+            generateMethodInterfaceGetRelatedCmptLink(builder);
             if (association.constrainsPolicyCmptTypeAssociation(ipsProject)) {
                 generateMethodGetCardinalityForAssociation(builder);
             }
@@ -88,10 +79,8 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
             generateMethodGet1RelatedCmpt(builder);
             generateMethodGet1RelatedCmptGen(builder);
             generateMethodSet1RelatedCmpt(builder);
-            if (isUseTypesafeCollections()) {
-                generateMethodGet1RelatedCmptLink(builder);
-                generateMethodGetRelatedCmptLink(builder);
-            }
+            generateMethodGet1RelatedCmptLink(builder);
+            generateMethodGetRelatedCmptLink(builder);
             if (association.constrainsPolicyCmptTypeAssociation(ipsProject)) {
                 generateMethodGetCardinalityFor1To1Association(builder);
             }
@@ -180,24 +169,14 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         frag.append(" != null)");
         frag.appendOpenBracket();
         frag.append("return ");
-        if (isUseTypesafeCollections()) {
-            frag.append(getFieldNameTo1Association());
-            frag.append(" != null && ");
-            frag.append(getFieldNameTo1Association());
-            frag.append(".getTargetId().equals(");
-            frag.append(params[0][0]);
-            frag.append(".getId()) ? ");
-            frag.append(getFieldNameTo1Association());
-            frag.append(".getCardinality() : null;");
-        } else {
-            frag.append('(');
-            frag.appendClassName(CardinalityRange.class);
-            frag.append(')');
-            frag.append(getFieldNameCardinalityForAssociation());
-            frag.append(".get(");
-            frag.append(params[0][0]);
-            frag.append(".getId());");
-        }
+        frag.append(getFieldNameTo1Association());
+        frag.append(" != null && ");
+        frag.append(getFieldNameTo1Association());
+        frag.append(".getTargetId().equals(");
+        frag.append(params[0][0]);
+        frag.append(".getId()) ? ");
+        frag.append(getFieldNameTo1Association());
+        frag.append(".getCardinality() : null;");
         frag.appendCloseBracket();
         frag.append("return null;");
         frag.appendCloseBracket();
@@ -234,10 +213,9 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
     private void generateFieldTo1Association(JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
         String role = StringUtils.capitalize(association.getTargetRoleSingular());
         appendLocalizedJavaDoc("FIELD_TO1_ASSOCIATION", role, memberVarsBuilder);
-        memberVarsBuilder.varDeclaration(Modifier.PRIVATE,
-                isUseTypesafeCollections() ? Java5ClassNames.ILink_QualifiedName + "<"
-                        + getQualifiedInterfaceClassNameForTarget() + ">" : String.class.getName(),
-                getFieldNameTo1Association(), new JavaCodeFragment("null"));
+        memberVarsBuilder.varDeclaration(Modifier.PRIVATE, Java5ClassNames.ILink_QualifiedName + "<"
+                + getQualifiedInterfaceClassNameForTarget() + ">", getFieldNameTo1Association(), new JavaCodeFragment(
+                "null"));
     }
 
     /**
@@ -264,21 +242,12 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGet1RelatedCmpt(methodsBuilder);
         String fieldName = getFieldNameTo1Association();
-        String targetClass = getQualifiedInterfaceClassNameForTarget();
         methodsBuilder.openBracket();
-        if (isUseTypesafeCollections()) {
-            methodsBuilder.append("return ");
-            methodsBuilder.append(fieldName);
-            methodsBuilder.append(" != null ? ");
-            methodsBuilder.append(fieldName);
-            methodsBuilder.append(".getTarget() : null;");
-        } else {
-            methodsBuilder.append("return (");
-            methodsBuilder.appendClassName(targetClass);
-            methodsBuilder.append(")getRepository()." + MethodNames.GET_EXISTING_PRODUCT_COMPONENT + "(");
-            methodsBuilder.append(fieldName);
-            methodsBuilder.append(");");
-        }
+        methodsBuilder.append("return ");
+        methodsBuilder.append(fieldName);
+        methodsBuilder.append(" != null ? ");
+        methodsBuilder.append(fieldName);
+        methodsBuilder.append(".getTarget() : null;");
         methodsBuilder.closeBracket();
     }
 
@@ -307,25 +276,14 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGet1RelatedCmptGen(methodsBuilder);
         String fieldName = getFieldNameTo1Association();
-        String targetClass = getQualifiedInterfaceClassNameForTarget();
         methodsBuilder.openBracket();
-        if (isUseTypesafeCollections()) {
-            methodsBuilder.append("return ");
-            methodsBuilder.append(fieldName);
-            methodsBuilder.append(" != null ? ");
-            methodsBuilder.append(fieldName);
-            methodsBuilder.append(".getTarget().");
-            methodsBuilder.append(getMethodNameGetProductCmptGenerationForTarget());
-            methodsBuilder.append("(effectiveDate) : null;");
-        } else {
-            methodsBuilder.append("return ((");
-            methodsBuilder.appendClassName(targetClass);
-            methodsBuilder.append(")getRepository()." + MethodNames.GET_EXISTING_PRODUCT_COMPONENT + "(");
-            methodsBuilder.append(fieldName);
-            methodsBuilder.append(")).");
-            methodsBuilder.append(getMethodNameGetProductCmptGenerationForTarget());
-            methodsBuilder.append("(effectiveDate);");
-        }
+        methodsBuilder.append("return ");
+        methodsBuilder.append(fieldName);
+        methodsBuilder.append(" != null ? ");
+        methodsBuilder.append(fieldName);
+        methodsBuilder.append(".getTarget().");
+        methodsBuilder.append(getMethodNameGetProductCmptGenerationForTarget());
+        methodsBuilder.append("(effectiveDate) : null;");
         methodsBuilder.closeBracket();
     }
 
@@ -394,14 +352,10 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         methodsBuilder.openBracket();
         methodsBuilder.append(((GenProductCmptType)getGenType()).generateFragmentCheckIfRepositoryIsModifiable());
         methodsBuilder.append(fieldName + " = (" + argNames[0] + "==null ? null : ");
-        if (isUseTypesafeCollections()) {
-            methodsBuilder.append("new ");
-            methodsBuilder.appendClassName(Java5ClassNames.Link_QualifiedName + "<"
-                    + getQualifiedInterfaceClassNameForTarget() + ">");
-            methodsBuilder.append("(this, " + argNames[0] + "));");
-        } else {
-            methodsBuilder.append(argNames[0] + "." + MethodNames.GET_PRODUCT_COMPONENT_ID + "() );");
-        }
+        methodsBuilder.append("new ");
+        methodsBuilder.appendClassName(Java5ClassNames.Link_QualifiedName + "<"
+                + getQualifiedInterfaceClassNameForTarget() + ">");
+        methodsBuilder.append("(this, " + argNames[0] + "));");
         methodsBuilder.closeBracket();
     }
 
@@ -454,11 +408,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
             accessCode = getFieldNameTo1Association();
         }
         methodsBuilder.appendln("if (" + accessCode + "!=null) {");
-        if (isUseTypesafeCollections()) {
-            methodsBuilder.appendln("result.add(" + getMethodNameGet1RelatedCmpt() + "());");
-        } else {
-            methodsBuilder.appendln("result[index++] = " + getMethodNameGet1RelatedCmpt() + "();");
-        }
+        methodsBuilder.appendln("result.add(" + getMethodNameGet1RelatedCmpt() + "());");
         methodsBuilder.appendln("}");
     }
 

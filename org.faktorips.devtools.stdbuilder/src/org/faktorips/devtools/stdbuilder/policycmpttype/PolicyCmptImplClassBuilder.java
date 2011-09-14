@@ -1493,25 +1493,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * one detail to master association which is no inverse of a derived union association.
      */
     protected boolean isSupertypeDependant() throws CoreException {
-        // TODO CD 27.4.2011 Maybe use HasSuperTypeImplementationOfInverseForDerivedUnionVisitor
-        // although this logic may be quite different
-        if (StringUtils.isEmpty(getPcType().getSupertype())) {
-            return false;
-        }
-        IPolicyCmptType supertype = (IPolicyCmptType)getPcType().findSupertype(getIpsProject());
-        if (supertype == null) {
-            return false;
-        }
-        return isTypeDependant(supertype);
-    }
-
-    /**
-     * Returns true if the given type has dependant fields, means that the type has at least one
-     * detail to master association which is no inverse of a derived union association.
-     */
-    protected boolean isTypeDependant(IPolicyCmptType policyCmptType) throws CoreException {
-        return getAllDependantDetailToMasterAssociations(policyCmptType).size() > 0;
-
+        HasSuperTypeImplementationOfGetParentModelObjectVisitor visitor = new HasSuperTypeImplementationOfGetParentModelObjectVisitor(
+                getIpsProject());
+        visitor.start((IPolicyCmptType)getPcType().findSupertype(getIpsProject()));
+        return visitor.hasSuperTypeImplementationOfGetParentModelObject;
     }
 
     /**
@@ -1765,4 +1750,27 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
     }
 
+    /**
+     * Checks the type hierarchy whether the methode getParentModelObject() needs to call a super
+     * implementation or not
+     * 
+     * @author dirmeier
+     */
+    private class HasSuperTypeImplementationOfGetParentModelObjectVisitor extends TypeHierarchyVisitor<IPolicyCmptType> {
+
+        public HasSuperTypeImplementationOfGetParentModelObjectVisitor(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        boolean hasSuperTypeImplementationOfGetParentModelObject = false;
+
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+            if (getAllDependantDetailToMasterAssociations(currentType).size() > 0) {
+                hasSuperTypeImplementationOfGetParentModelObject = true;
+                return false;
+            }
+            return true;
+        }
+    }
 }

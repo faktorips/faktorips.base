@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
-import org.faktorips.devtools.stdbuilder.type.GenTypePart;
+import org.faktorips.devtools.stdbuilder.type.GenAbstractAssociation;
 import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.valueset.IntegerRange;
@@ -45,7 +45,7 @@ import org.faktorips.valueset.IntegerRange;
  * 
  * @author Daniel Hohenberger
  */
-public abstract class GenProdAssociation extends GenTypePart {
+public abstract class GenProdAssociation extends GenAbstractAssociation {
 
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenProdAssociation.class);
 
@@ -61,6 +61,11 @@ public abstract class GenProdAssociation extends GenTypePart {
         target = association.findTargetProductCmptType(association.getIpsProject());
     }
 
+    @Override
+    protected IProductCmptTypeAssociation getAssociation() {
+        return association;
+    }
+
     protected void generateFieldCardinalityForAssociation(JavaCodeFragmentBuilder fieldsBuilder) throws CoreException {
         appendLocalizedJavaDoc("FIELD_CARDINALITIES_FOR",
                 association.findMatchingPolicyCmptTypeAssociation(association.getIpsProject()).getTargetRoleSingular(),
@@ -68,93 +73,19 @@ public abstract class GenProdAssociation extends GenTypePart {
         JavaCodeFragment expression = new JavaCodeFragment();
         expression.append(" new ");
         expression.appendClassName(HashMap.class);
-        if (isUseTypesafeCollections()) {
-            expression.append('<');
-            expression.appendClassName(String.class);
-            expression.append(", ");
-            expression.appendClassName(IntegerRange.class);
-            expression.append('>');
-        }
+        expression.append('<');
+        expression.appendClassName(String.class);
+        expression.append(", ");
+        expression.appendClassName(IntegerRange.class);
+        expression.append('>');
         expression.append("(0)");
-        fieldsBuilder.varDeclaration(Modifier.PRIVATE, Map.class.getName()
-                + (isUseTypesafeCollections() ? "<" + String.class.getName() + ", " + IntegerRange.class.getName()
-                        + ">" : ""), getFieldNameCardinalityForAssociation(), expression);
+        fieldsBuilder.varDeclaration(Modifier.PRIVATE, Map.class.getName() + "<" + String.class.getName() + ", "
+                + IntegerRange.class.getName() + ">", getFieldNameCardinalityForAssociation(), expression);
     }
 
     public String getFieldNameCardinalityForAssociation() throws CoreException {
         return getLocalizedText("FIELD_CARDINALITIES_FOR_NAME",
                 association.findMatchingPolicyCmptTypeAssociation(association.getIpsProject()).getTargetRoleSingular());
-    }
-
-    /**
-     * Generates the getNumOfXXX() method for a container association.
-     * <p>
-     * Code sample:
-     * 
-     * <pre>
-     * [javadoc]
-     * public CoverageType getNumOfCoverageTypes() {
-     *     return getNumOfCoverageTypesInternal();
-     * }
-     * </pre>
-     */
-    protected void generateMethodGetNumOfRelatedProductCmpts(List<IAssociation> implAssociations,
-            JavaCodeFragmentBuilder builder) throws CoreException {
-
-        if (!association.isDerivedUnion()) {
-            throw new IllegalArgumentException("Association must be a container association.");
-        }
-        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-
-        IProductCmptType supertype = (IProductCmptType)((GenProductCmptType)getGenType()).getProductCmptType()
-                .findSupertype(((GenProductCmptType)getGenType()).getProductCmptType().getIpsProject());
-        appendOverrideAnnotation(builder, getIpsProject(), supertype == null || supertype.isAbstract());
-        generateSignatureGetNumOfRelatedCmpts(builder);
-        builder.openBracket();
-        String internalMethodName = getMethodNameGetNumOfRelatedCmptsInternal();
-        builder.appendln("return " + internalMethodName + "();");
-        builder.closeBracket();
-    }
-
-    /**
-     * Generates the getNumOfXXXInternal() method for a container association.
-     * <p>
-     * Code sample:
-     * 
-     * <pre>
-     * [javadoc]
-     * public CoverageType getNumOfCoverageTypesInternal() {
-     *     int numOf = 0;
-     *     numOf += getNumOfCollisionCoverages();
-     *     numOf += getNumOfTplCoverages();
-     *     return numOf;
-     * }
-     * </pre>
-     */
-    protected void generateMethodGetNumOfRelatedProductCmptsInternal(List<IAssociation> implAssociations,
-            JavaCodeFragmentBuilder builder) throws CoreException {
-        if (!association.isDerivedUnion()) {
-            throw new IllegalArgumentException("Association must be a container association.");
-        }
-        builder.javaDoc("", JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        String methodName = getMethodNameGetNumOfRelatedCmptsInternal();
-        builder.signature(java.lang.reflect.Modifier.PRIVATE, "int", methodName, new String[] {}, new String[] {});
-        builder.openBracket();
-        builder.appendln("int num = 0;");
-        IProductCmptType supertype = (IProductCmptType)((GenProductCmptType)getGenType()).getProductCmptType()
-                .findSupertype(((GenProductCmptType)getGenType()).getProductCmptType().getIpsProject());
-        if (supertype != null && !supertype.isAbstract()) {
-            String methodName2 = getMethodNameGetNumOfRelatedCmpts();
-            builder.appendln("num += super." + methodName2 + "();");
-        }
-        for (IAssociation iAssociation : implAssociations) {
-            IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)iAssociation;
-            builder.append("num += ");
-            ((GenProductCmptType)getGenType()).getGenerator(association)
-                    .generateCodeGetNumOfRelatedProductCmptsInternal(builder);
-        }
-        builder.appendln("return num;");
-        builder.closeBracket();
     }
 
     protected abstract void generateCodeGetNumOfRelatedProductCmptsInternal(JavaCodeFragmentBuilder builder)
@@ -164,7 +95,7 @@ public abstract class GenProdAssociation extends GenTypePart {
      * Returns the name of the internal method returning the number of referenced objects, e.g.
      * getNumOfCoveragesInternal()
      */
-    private String getMethodNameGetNumOfRelatedCmptsInternal() {
+    protected String getMethodNameGetNumOfRelatedCmptsInternal() {
         return getLocalizedText("METHOD_GET_NUM_OF_INTERNAL_NAME",
                 StringUtils.capitalize(association.getTargetRolePlural()));
     }
@@ -293,58 +224,26 @@ public abstract class GenProdAssociation extends GenTypePart {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        IProductCmptType supertype = (IProductCmptType)((GenProductCmptType)getGenType()).getProductCmptType()
-                .findSupertype(((GenProductCmptType)getGenType()).getProductCmptType().getIpsProject());
-        appendOverrideAnnotation(methodsBuilder, getIpsProject(), (supertype == null || supertype.isAbstract()));
+        appendOverrideAnnotation(methodsBuilder, getIpsProject(), !needSuperCallForDerivedUnion());
 
         generateSignatureDerivedUnionAssociation(methodsBuilder);
 
         String targetClass = getQualifiedInterfaceClassNameForTarget();
         methodsBuilder.openBracket();
-        if (isUseTypesafeCollections()) {
-            methodsBuilder.appendClassName(List.class.getName());
-            methodsBuilder.append("<");
-            methodsBuilder.appendClassName(targetClass);
-            methodsBuilder.append("> result = new ");
-            methodsBuilder.appendClassName(ArrayList.class.getName());
-            methodsBuilder.append("<");
-            methodsBuilder.appendClassName(targetClass);
-            methodsBuilder.append(">(");
-            methodsBuilder.append(getMethodNameGetNumOfRelatedCmptsInternal());
-            methodsBuilder.appendln("());");
-        } else {
-            methodsBuilder.appendClassName(targetClass);
-            methodsBuilder.append("[] result = new ");
-            methodsBuilder.appendClassName(targetClass);
-            methodsBuilder.append("[");
-            methodsBuilder.append(getMethodNameGetNumOfRelatedCmptsInternal());
-            methodsBuilder.appendln("()];");
-        }
+        methodsBuilder.appendClassName(List.class.getName());
+        methodsBuilder.append("<");
+        methodsBuilder.appendClassName(targetClass);
+        methodsBuilder.append("> result = new ");
+        methodsBuilder.appendClassName(ArrayList.class.getName());
+        methodsBuilder.append("<");
+        methodsBuilder.appendClassName(targetClass);
+        methodsBuilder.append(">(");
+        methodsBuilder.append(getMethodNameGetNumOfRelatedCmptsInternal());
+        methodsBuilder.appendln("());");
 
-        if (supertype != null && !supertype.isAbstract()) {
-            if (isUseTypesafeCollections()) {
-                // List<ICoverage> superResult = super.getCoverages();
-                // result.addAll(superResult);
-                methodsBuilder.appendClassName(List.class.getName());
-                methodsBuilder.append("<");
-                methodsBuilder.appendClassName(targetClass);
-                methodsBuilder.append("> superResult = super.");
-                methodsBuilder.appendln(getMethodNameGetManyRelatedCmpts() + "();");
-                methodsBuilder.appendln("result.addAll(superResult);");
-            } else {
-                // ICoverage[] superResult = super.getCoverages();
-                // System.arraycopy(superResult, 0, result, 0, superResult.length);
-                // int counter = superResult.length;
-                methodsBuilder.appendClassName(targetClass);
-                methodsBuilder.append("[] superResult = super.");
-                methodsBuilder.appendln(getMethodNameGetManyRelatedCmpts() + "();");
-                methodsBuilder.appendln("System.arraycopy(superResult, 0, result, 0, superResult.length);");
-                methodsBuilder.appendln("int index = superResult.length;");
-            }
-        } else {
-            if (!isUseTypesafeCollections()) {
-                methodsBuilder.append("int index = 0;");
-            }
+        if (needSuperCallForDerivedUnion()) {
+            // result.addAll(super.getCoverages());
+            methodsBuilder.appendln("result.addAll(super." + getMethodNameGetManyRelatedCmpts() + "());");
         }
         for (IAssociation iAssociation : implAssociations) {
             IProductCmptTypeAssociation implAssociation = (IProductCmptTypeAssociation)iAssociation;
@@ -393,12 +292,8 @@ public abstract class GenProdAssociation extends GenTypePart {
         String methodName = getMethodNameGetManyRelatedCmpts();
         IProductCmptType target = association.findTargetProductCmptType(association.getIpsProject());
         String returnType;
-        if (isUseTypesafeCollections()) {
-            returnType = List.class.getName() + "<"
-                    + getGenType().getBuilderSet().getGenerator(target).getQualifiedName(true) + ">";
-        } else {
-            returnType = getGenType().getBuilderSet().getGenerator(target).getQualifiedName(true) + "[]";
-        }
+        returnType = List.class.getName() + "<"
+                + getGenType().getBuilderSet().getGenerator(target).getQualifiedName(true) + ">";
         builder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType, methodName,
                 EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
@@ -420,16 +315,9 @@ public abstract class GenProdAssociation extends GenTypePart {
         String methodName = getMethodNameGetManyRelatedCmpts();
         IProductCmptType target = association.findTargetProductCmptType(association.getIpsProject());
         String returnType;
-        if (isUseTypesafeCollections()) {
-            returnType = List.class.getName()
-                    + "<"
-                    + getGenType().getBuilderSet().getGenerator(target)
-                            .getQualifiedClassNameForProductCmptTypeGen(true) + ">";
-        } else {
-            returnType = getGenType().getBuilderSet().getGenerator(target)
-                    .getQualifiedClassNameForProductCmptTypeGen(true)
-                    + "[]";
-        }
+        returnType = List.class.getName() + "<"
+                + getGenType().getBuilderSet().getGenerator(target).getQualifiedClassNameForProductCmptTypeGen(true)
+                + ">";
         builder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType, methodName,
                 new String[] { "effectiveDate" }, new String[] { Calendar.class.getName() });
     }

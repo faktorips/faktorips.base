@@ -77,11 +77,6 @@ public class GenProdAssociationToMany extends GenProdAssociation {
             boolean generatesInterface) throws CoreException {
         if (!generatesInterface) {
             generateFieldToManyAssociation(builder);
-            if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
-                if (!isUseTypesafeCollections()) {
-                    generateFieldCardinalityForAssociation(builder);
-                }
-            }
         }
     }
 
@@ -581,17 +576,8 @@ public class GenProdAssociationToMany extends GenProdAssociation {
 
     @Override
     protected void generateCodeGetRelatedCmptsInContainer(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String objectArrayVar = getFieldNameToManyAssociation() + "Objects";
         String getterMethod = getMethodNameGetManyRelatedCmpts() + "()";
-        methodsBuilder.appendClassName(List.class.getName());
-        methodsBuilder.append("<");
-        methodsBuilder.appendClassName(getQualifiedInterfaceClassNameForTarget());
-        methodsBuilder.append("> " + objectArrayVar + " = " + getterMethod + ";");
-        methodsBuilder.appendln("for (");
-        methodsBuilder.appendClassName(getQualifiedInterfaceClassNameForTarget());
-        methodsBuilder.appendln(" " + getFieldNameToManyAssociation() + "Object : " + objectArrayVar + ") {");
-        methodsBuilder.appendln("result.add(" + getFieldNameToManyAssociation() + "Object);");
-        methodsBuilder.appendln("}");
+        methodsBuilder.appendln("result.addAll(" + getterMethod + ");");
     }
 
     /**
@@ -608,8 +594,75 @@ public class GenProdAssociationToMany extends GenProdAssociation {
     public void generateCodeForDerivedUnionAssociationImplementation(List<IAssociation> implAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         super.generateCodeForDerivedUnionAssociationImplementation(implAssociations, methodsBuilder);
-        generateMethodGetNumOfRelatedProductCmpts(implAssociations, methodsBuilder);
+        generateMethodGetNumOfRelatedProductCmptsForDerivedUnion(methodsBuilder);
         generateMethodGetNumOfRelatedProductCmptsInternal(implAssociations, methodsBuilder);
+    }
+
+    /**
+     * Generates the getNumOfXXX() method for a container association.
+     * <p>
+     * Code sample:
+     * 
+     * <pre>
+     * [javadoc]
+     * public CoverageType getNumOfCoverageTypes() {
+     *     return getNumOfCoverageTypesInternal();
+     * }
+     * </pre>
+     */
+    private void generateMethodGetNumOfRelatedProductCmptsForDerivedUnion(JavaCodeFragmentBuilder builder)
+            throws CoreException {
+
+        if (!association.isDerivedUnion()) {
+            throw new IllegalArgumentException("Association must be a container association.");
+        }
+        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+
+        appendOverrideAnnotation(builder, getIpsProject(), !needSuperCallForDerivedUnion());
+        generateSignatureGetNumOfRelatedCmpts(builder);
+        builder.openBracket();
+        String internalMethodName = getMethodNameGetNumOfRelatedCmptsInternal();
+        builder.appendln("return " + internalMethodName + "();");
+        builder.closeBracket();
+    }
+
+    /**
+     * Generates the getNumOfXXXInternal() method for a container association.
+     * <p>
+     * Code sample:
+     * 
+     * <pre>
+     * [javadoc]
+     * public CoverageType getNumOfCoverageTypesInternal() {
+     *     int numOf = 0;
+     *     numOf += getNumOfCollisionCoverages();
+     *     numOf += getNumOfTplCoverages();
+     *     return numOf;
+     * }
+     * </pre>
+     */
+    private void generateMethodGetNumOfRelatedProductCmptsInternal(List<IAssociation> implAssociations,
+            JavaCodeFragmentBuilder builder) throws CoreException {
+        if (!association.isDerivedUnion()) {
+            throw new IllegalArgumentException("Association must be a container association.");
+        }
+        builder.javaDoc("", JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        String methodName = getMethodNameGetNumOfRelatedCmptsInternal();
+        builder.signature(java.lang.reflect.Modifier.PRIVATE, "int", methodName, new String[] {}, new String[] {});
+        builder.openBracket();
+        builder.appendln("int num = 0;");
+        if (needSuperCallForDerivedUnion()) {
+            String methodName2 = getMethodNameGetNumOfRelatedCmpts();
+            builder.appendln("num += super." + methodName2 + "();");
+        }
+        for (IAssociation iAssociation : implAssociations) {
+            IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)iAssociation;
+            builder.append("num += ");
+            ((GenProductCmptType)getGenType()).getGenerator(association)
+                    .generateCodeGetNumOfRelatedProductCmptsInternal(builder);
+        }
+        builder.appendln("return num;");
+        builder.closeBracket();
     }
 
     /**

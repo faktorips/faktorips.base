@@ -33,8 +33,8 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
+import org.faktorips.devtools.stdbuilder.type.GenAbstractAssociation;
 import org.faktorips.devtools.stdbuilder.type.GenType;
-import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.faktorips.valueset.IntegerRange;
@@ -43,7 +43,7 @@ import org.faktorips.valueset.IntegerRange;
  * 
  * @author Jan Ortmann
  */
-public abstract class GenAssociation extends GenTypePart {
+public abstract class GenAssociation extends GenAbstractAssociation {
 
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenAssociation.class);
 
@@ -1116,6 +1116,7 @@ public abstract class GenAssociation extends GenTypePart {
     /**
      * Returns the association this generator belongs to.
      */
+    @Override
     public IPolicyCmptTypeAssociation getAssociation() {
         return association;
     }

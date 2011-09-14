@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
@@ -44,8 +43,6 @@ import org.faktorips.runtime.internal.MethodNames;
  * @author Jan Ortmann
  */
 public class GenAssociationToMany extends GenAssociation {
-
-    private Boolean lazyNeedSuperCallForDerivedUnion = null;
 
     public GenAssociationToMany(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAssociation association)
             throws CoreException {
@@ -966,27 +963,6 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.closeBracket();
     }
 
-    /**
-     * This method check if a call of t
-     */
-    private boolean needSuperCallForDerivedUnion() throws CoreException {
-        if (lazyNeedSuperCallForDerivedUnion != null) {
-            return lazyNeedSuperCallForDerivedUnion;
-        }
-        IPolicyCmptType pcType = ((GenPolicyCmptType)getGenType()).getPolicyCmptType();
-        if (pcType.equals(association.getType())) {
-            // the derived union is defined in this generated class
-            lazyNeedSuperCallForDerivedUnion = false;
-        } else {
-            IPolicyCmptType supertype = (IPolicyCmptType)pcType.findSupertype(getIpsProject());
-            FindSubsetOfDerivedUnion findSubsetOfDerivedUnionVisitor = new FindSubsetOfDerivedUnion(getIpsProject(),
-                    association);
-            findSubsetOfDerivedUnionVisitor.start(supertype);
-            lazyNeedSuperCallForDerivedUnion = findSubsetOfDerivedUnionVisitor.foundSubset;
-        }
-        return lazyNeedSuperCallForDerivedUnion;
-    }
-
     @Override
     public void generateCodeForContainerAssociationImplementation(List<IAssociation> associations,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -1372,37 +1348,6 @@ public class GenAssociationToMany extends GenAssociation {
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static class FindSubsetOfDerivedUnion extends TypeHierarchyVisitor<IPolicyCmptType> {
-
-        private final IPolicyCmptTypeAssociation derivedUnion;
-
-        private final IIpsProject ipsProject;
-
-        private boolean foundSubset = false;
-
-        public FindSubsetOfDerivedUnion(IIpsProject ipsProject, IPolicyCmptTypeAssociation derivedUnion) {
-            super(ipsProject);
-            this.derivedUnion = derivedUnion;
-            this.ipsProject = ipsProject;
-        }
-
-        @Override
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
-            List<IPolicyCmptTypeAssociation> associations = currentType.getPolicyCmptTypeAssociations();
-            for (IPolicyCmptTypeAssociation aAssociation : associations) {
-                if (aAssociation.isSubsetOfDerivedUnion(derivedUnion, ipsProject)) {
-                    foundSubset = true;
-                    return false;
-                }
-            }
-            if (currentType.equals(derivedUnion.getType())) {
-                return false;
-            }
-            return true;
-        }
-
     }
 
 }
