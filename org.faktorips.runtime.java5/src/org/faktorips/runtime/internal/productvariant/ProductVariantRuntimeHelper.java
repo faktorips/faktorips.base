@@ -16,7 +16,6 @@ package org.faktorips.runtime.internal.productvariant;
 import java.util.GregorianCalendar;
 
 import org.faktorips.runtime.IClRepositoryObject;
-import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.IXmlPersistenceSupport;
 import org.faktorips.runtime.internal.ProductComponent;
@@ -36,34 +35,68 @@ public class ProductVariantRuntimeHelper {
     protected static final String ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT = "variedProductCmpt";
     protected static final String ATTRIBUTE_NAME_RUNTIME_ID = "runtimeID";
 
+    /**
+     * Determines whether the given XML element is a product variant. If it isn't the given product
+     * component is initialized normally (by calling its initFromXml() method). If however the XML
+     * element is a product variant XML, the given product component is initialized with the data of
+     * the original product component and the variations defined by the variant.
+     * 
+     * @param runtimeRepository the runtime repository calling this method. It will be used to load
+     *            the original product component.
+     * @param productCmpt the yet un-initialized product component.
+     * @param prodCmptElement the XML element that either contains normal product component XML data
+     *            or product variant XML data.
+     */
     public void initProductComponent(IRuntimeRepository runtimeRepository,
             ProductComponent productCmpt,
-            Element docElement) {
-        if (isProductVariantXML(docElement)) {
-            loadAndVaryProductComponent(runtimeRepository, docElement, productCmpt);
+            Element prodCmptElement) {
+        if (isProductVariantXML(prodCmptElement)) {
+            loadAndVaryProductComponent(runtimeRepository, prodCmptElement, productCmpt);
         } else {
-            productCmpt.initFromXml(docElement);
+            productCmpt.initFromXml(prodCmptElement);
         }
     }
 
     protected void loadAndVaryProductComponent(IRuntimeRepository runtimeRepository,
             Element variationElement,
             ProductComponent productCmptToBeLoaded) {
-        String originalRuntimeID = variationElement.getAttribute(ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT);
-        ProductComponent originalCmpt = (ProductComponent)runtimeRepository.getProductComponent(originalRuntimeID);
-
+        ProductComponent originalCmpt = getOriginalProdCmpt(runtimeRepository, variationElement);
         loadAndVary(originalCmpt, variationElement, productCmptToBeLoaded);
     }
 
-    public void initProductComponentGeneration(ProductComponent prodCmpt,
+    /**
+     * Determines whether the given XML element is a variation of a product component generation. If
+     * it isn't the given generation is initialized normally (by calling its initFromXml() method).
+     * If however the XML element is a product variant XML, the given generation is initialized with
+     * the data of the original product component generation and the variations defined by the
+     * variant.
+     * 
+     * @param runtimeRepository the runtime repository calling this method. It will be used to load
+     *            the original product component.
+     * @param generationValidFrom the valid from date of the requested product component generation
+     * @param genElement the XML element that either contains normal product component generation
+     *            XML data or a variation's XML data.
+     * @param productCmptGen the yet un-initialized product component generation
+     */
+    public void initProductComponentGeneration(IRuntimeRepository runtimeRepository,
             GregorianCalendar generationValidFrom,
             Element genElement,
             ProductComponentGeneration productCmptGen) {
         if (isProductVariantXML(genElement)) {
-            loadAndVaryProductComponentGeneration(prodCmpt, generationValidFrom, genElement, productCmptGen);
+            loadAndVaryProductComponentGeneration(runtimeRepository, generationValidFrom, genElement, productCmptGen);
         } else {
             productCmptGen.initFromXml(genElement);
         }
+    }
+
+    protected void loadAndVaryProductComponentGeneration(IRuntimeRepository runtimeRepository,
+            GregorianCalendar generationValidFrom,
+            Element generationVariationElement,
+            ProductComponentGeneration productCmptGenToBeLoaded) {
+        ProductComponent originalCmpt = getOriginalProdCmpt(runtimeRepository, generationVariationElement);
+        ProductComponentGeneration originalGeneration = (ProductComponentGeneration)originalCmpt
+                .getGenerationBase(generationValidFrom);
+        loadAndVary(originalGeneration, generationVariationElement, productCmptGenToBeLoaded);
     }
 
     protected void loadAndVary(IXmlPersistenceSupport originalObject,
@@ -75,13 +108,10 @@ public class ProductVariantRuntimeHelper {
         objectToInitialize.initFromXml(variationXML);
     }
 
-    protected void loadAndVaryProductComponentGeneration(IProductComponent prodCmptVariation,
-            GregorianCalendar generationValidFrom,
-            Element generationVariationElement,
-            ProductComponentGeneration productCmptGenToBeLoaded) {
-        ProductComponentGeneration originalGeneration = (ProductComponentGeneration)prodCmptVariation
-                .getGenerationBase(generationValidFrom);
-        loadAndVary(originalGeneration, generationVariationElement, productCmptGenToBeLoaded);
+    protected ProductComponent getOriginalProdCmpt(IRuntimeRepository runtimeRepository, Element element) {
+        String originalRuntimeID = element.getAttribute(ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT);
+        ProductComponent originalCmpt = (ProductComponent)runtimeRepository.getProductComponent(originalRuntimeID);
+        return originalCmpt;
     }
 
     protected boolean isProductVariantXML(Element productVariantElement) {

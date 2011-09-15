@@ -147,17 +147,15 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         } catch (Exception e) {
             throw new RuntimeException("Can't create product component instance for toc entry " + tocEntry, e);
         }
-        initProductComponentGeneration(tocEntry, productCmpt, productCmptGen);
+        initProductComponentGeneration(tocEntry, productCmptGen);
         return productCmptGen;
     }
 
-    private void initProductComponentGeneration(GenerationTocEntry tocEntry,
-            ProductComponent prodCmpt,
-            ProductComponentGeneration productCmptGen) {
+    private void initProductComponentGeneration(GenerationTocEntry tocEntry, ProductComponentGeneration productCmptGen) {
         Element genElement = getDocumentElement(tocEntry);
         GregorianCalendar generationValidFrom = tocEntry.getValidFrom().toGregorianCalendar(TimeZone.getDefault());
         ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
-        helper.initProductComponentGeneration(prodCmpt, generationValidFrom, genElement, productCmptGen);
+        helper.initProductComponentGeneration(this, generationValidFrom, genElement, productCmptGen);
     }
 
     private Constructor<?> getConstructor(GenerationTocEntry tocEntry) {
