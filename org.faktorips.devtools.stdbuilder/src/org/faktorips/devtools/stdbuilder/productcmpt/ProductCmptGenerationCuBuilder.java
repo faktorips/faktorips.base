@@ -30,7 +30,6 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
@@ -77,9 +76,17 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     private ProductCmptImplClassBuilder productCmptImplBuilder;
     private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
 
-    public ProductCmptGenerationCuBuilder(DefaultBuilderSet builderSet, ProductCmptBuilder productCmptBuilder) {
+    public ProductCmptGenerationCuBuilder(StandardBuilderSet builderSet, ProductCmptBuilder productCmptBuilder) {
         super(builderSet, new LocalizedStringsSet(ProductCmptGenerationCuBuilder.class));
         this.productCmptBuilder = productCmptBuilder;
+    }
+
+    /**
+     * We need the {@link StandardBuilderSet} for formula compilation {@inheritDoc}
+     */
+    @Override
+    public StandardBuilderSet getBuilderSet() {
+        return (StandardBuilderSet)super.getBuilderSet();
     }
 
     public void setProductCmptGeneration(IProductCmptGeneration generation) {
@@ -214,10 +221,13 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
 
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         if (addOverrideAnnotationIfNecessary) {
-            appendOverrideAnnotation(builder, method.getModifier().isPublished());
+            // if the formula is also compiled to XML we have a standard implementation of this
+            // method
+            appendOverrideAnnotation(builder, method.getModifier().isPublished()
+                    && !getBuilderSet().getFormulaCompiling().isCompileToXml());
         }
 
-        ((StandardBuilderSet)getBuilderSet())
+        getBuilderSet()
                 .getGenerator(getProductCmptType())
                 .getGenerator(method)
                 .generateSignatureForModelMethod(false, true, builder, methodSuffix, testParameterNames,

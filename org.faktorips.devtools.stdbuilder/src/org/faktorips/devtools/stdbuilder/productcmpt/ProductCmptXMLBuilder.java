@@ -76,7 +76,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
             updateTargetRuntimeId((IProductCmptGeneration)generations[i], (Element)generationNodes.item(i));
 
             // creating compiled formula expressions
-            if (getStandardBuilderSet().getFormulaCompiling().compileToXml()) {
+            if (getStandardBuilderSet().getFormulaCompiling().isCompileToXml()) {
                 IFormula[] formulas = ((IProductCmptGeneration)generations[i]).getFormulas();
                 NodeList formulaElements = ((Element)generationNodes.item(i)).getElementsByTagName(Formula.TAG_NAME);
                 addCompiledFormulaExpressions(document, formulas, formulaElements);

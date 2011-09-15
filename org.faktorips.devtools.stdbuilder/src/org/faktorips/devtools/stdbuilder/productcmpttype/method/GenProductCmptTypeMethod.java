@@ -64,7 +64,7 @@ public class GenProductCmptTypeMethod extends GenMethod {
             throws CoreException {
 
         if (((IProductCmptTypeMethod)getMethod()).isFormulaSignatureDefinition()) {
-            if (getGenType().getBuilderSet().getFormulaCompiling().compileToXml()) {
+            if (getGenType().getBuilderSet().getFormulaCompiling().isCompileToXml()) {
                 generateFormulaEvaluatorCall(methodsBuilder, ipsProject);
             } else {
                 if (isPublished()) {

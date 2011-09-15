@@ -102,7 +102,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(generation);
         generationBuilder.setProductCmptGeneration(generation);
         generationBuilder.beforeBuild(ipsSrcFile, buildStatus);
-        if (((StandardBuilderSet)getBuilderSet()).getFormulaCompiling().compileToSubclass()) {
+        if (((StandardBuilderSet)getBuilderSet()).getFormulaCompiling().isCompileToSubclass()) {
             generationBuilder.build(ipsSrcFile);
         }
         generationBuilder.afterBuild(ipsSrcFile);

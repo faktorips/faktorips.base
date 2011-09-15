@@ -45,6 +45,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -319,8 +320,15 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                                 attribute.getName(), datatype);
                     }
                     if (datatype instanceof IProductCmptType) {
-                        return getGenerator((IProductCmptType)datatype).getMethodNameGetPropertyValue(
-                                attribute.getName(), datatype);
+                        GenProductCmptType generator = getGenerator((IProductCmptType)datatype);
+                        String parameterAttributeGetter = generator.getMethodNameGetPropertyValue(attribute.getName(),
+                                datatype);
+                        if (attribute instanceof IProductCmptTypeAttribute) {
+                            if (!((IProductCmptTypeAttribute)attribute).isChangingOverTime()) {
+                                return generator.getMethodNameGetProductCmpt() + "()." + parameterAttributeGetter;
+                            }
+                        }
+                        return parameterAttributeGetter;
                     }
 
                 } catch (CoreException e) {
@@ -854,11 +862,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         XML,
         Both;
 
-        public boolean compileToSubclass() {
+        public boolean isCompileToSubclass() {
             return this == Subclass || this == Both;
         }
 
-        public boolean compileToXml() {
+        public boolean isCompileToXml() {
             return this == XML || this == Both;
         }
     }

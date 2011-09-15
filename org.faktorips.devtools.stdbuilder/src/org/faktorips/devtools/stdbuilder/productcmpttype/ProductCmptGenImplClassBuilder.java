@@ -99,7 +99,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         if ((modifier & Modifier.ABSTRACT) > 0) {
             return modifier;
         }
-        if (getStandardBuilderSet().getFormulaCompiling().compileToXml()) {
+        if (getStandardBuilderSet().getFormulaCompiling().isCompileToXml()) {
             return modifier;
         }
         // check if there is any formula in type hierarchy so we have to set class to abstract

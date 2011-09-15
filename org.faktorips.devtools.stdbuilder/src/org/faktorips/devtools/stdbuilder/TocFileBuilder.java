@@ -436,7 +436,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             DateTime validFrom = DateTime.createDateOnly(generation.getValidFrom());
             IProductCmptGeneration gen = (IProductCmptGeneration)generation;
             String generationClassName;
-            if (gen.getProductCmpt().containsFormula() && getBuilderSet().getFormulaCompiling().compileToSubclass()) {
+            if (gen.getProductCmpt().containsFormula() && getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
                 generationClassName = productCmptBuilder.getQualifiedClassName((IProductCmptGeneration)generation);
             } else {
                 generationClassName = productCmptGenImplClassBuilder.getQualifiedClassName(pcType);
