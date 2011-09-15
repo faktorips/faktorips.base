@@ -120,7 +120,7 @@ public interface IProductCmptTypeAssociation extends IAssociation {
      * 
      * @throws CoreException In case of a core exception while loading the objects and resources
      */
-    Set<IPolicyCmptTypeAssociation> findPossibleMatchingPolicyCmptTypeAssociations(IIpsProject ipsProject)
+    Set<IPolicyCmptTypeAssociation> findPossiblyMatchingPolicyCmptTypeAssociations(IIpsProject ipsProject)
             throws CoreException;
 
     /**

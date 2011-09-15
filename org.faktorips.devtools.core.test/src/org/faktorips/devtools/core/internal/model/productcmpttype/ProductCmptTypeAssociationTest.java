@@ -150,19 +150,19 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         IProductCmptTypeAssociation produktToTarif = newAggregation(produkt, tarif);
 
         Set<IPolicyCmptTypeAssociation> possibleMatchingPolicyCmptTypeAssociations = produktToTarif
-                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+                .findPossiblyMatchingPolicyCmptTypeAssociations(ipsProject);
         assertEquals(0, possibleMatchingPolicyCmptTypeAssociations.size());
 
         IPolicyCmptTypeAssociation policyToVersPerson = newComposition(policy, versPerson);
 
         possibleMatchingPolicyCmptTypeAssociations = produktToTarif
-                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+                .findPossiblyMatchingPolicyCmptTypeAssociations(ipsProject);
         assertEquals(0, possibleMatchingPolicyCmptTypeAssociations.size());
 
         IPolicyCmptTypeAssociation versPersonToTarifvereinbarung = newComposition(versPerson, tarifvereinbarung);
 
         possibleMatchingPolicyCmptTypeAssociations = produktToTarif
-                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+                .findPossiblyMatchingPolicyCmptTypeAssociations(ipsProject);
         assertEquals(2, possibleMatchingPolicyCmptTypeAssociations.size());
         assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(policyToVersPerson));
         assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(versPersonToTarifvereinbarung));
@@ -170,7 +170,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         versPerson.delete();
 
         possibleMatchingPolicyCmptTypeAssociations = produktToTarif
-                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+                .findPossiblyMatchingPolicyCmptTypeAssociations(ipsProject);
         assertEquals(0, possibleMatchingPolicyCmptTypeAssociations.size());
     }
 
@@ -185,14 +185,14 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         IProductCmptTypeAssociation produktToTarif = newAggregation(produkt, tarif);
 
         Set<IPolicyCmptTypeAssociation> possibleMatchingPolicyCmptTypeAssociations = produktToTarif
-                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+                .findPossiblyMatchingPolicyCmptTypeAssociations(ipsProject);
         assertEquals(1, possibleMatchingPolicyCmptTypeAssociations.size());
         assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(policyToTarifvereinbarung));
 
         PolicyCmptType versPerson = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "VersPerson");
 
         possibleMatchingPolicyCmptTypeAssociations = produktToTarif
-                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+                .findPossiblyMatchingPolicyCmptTypeAssociations(ipsProject);
         assertEquals(1, possibleMatchingPolicyCmptTypeAssociations.size());
         assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(policyToTarifvereinbarung));
 
@@ -200,7 +200,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAssociation policyToVersPerson = newComposition(policy, versPerson);
 
         possibleMatchingPolicyCmptTypeAssociations = produktToTarif
-                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+                .findPossiblyMatchingPolicyCmptTypeAssociations(ipsProject);
         assertEquals(3, possibleMatchingPolicyCmptTypeAssociations.size());
         assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(policyToTarifvereinbarung));
         assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(policyToVersPerson));
@@ -226,7 +226,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAssociation vp2ToTarifvereinbarung = newComposition(vp2, tarifvereinbarung);
 
         Set<IPolicyCmptTypeAssociation> possibleMatchingPolicyCmptTypeAssociations = produktToTarif
-                .findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+                .findPossiblyMatchingPolicyCmptTypeAssociations(ipsProject);
         assertEquals(3, possibleMatchingPolicyCmptTypeAssociations.size());
         assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(policyToVp1));
         assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(vp1ToVp2));

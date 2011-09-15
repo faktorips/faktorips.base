@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.ui.binding.ButtonTextBinding;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.binding.EnableBinding;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
+import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
@@ -127,8 +128,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     protected void addAdditionalDialogMessages(MessageList messageList) {
         super.addAdditionalDialogMessages(messageList);
         if (messageList.containsErrorMsg()) {
-            messageList.add(new Message(StringUtils.EMPTY,
-                    Messages.AssociationEditDialog_info_dialogAutoFixErrors,
+            messageList.add(new Message(StringUtils.EMPTY, Messages.AssociationEditDialog_info_dialogAutoFixErrors,
                     Message.INFO));
         }
     }
@@ -164,8 +164,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         createGeneralControls(groupGeneral);
 
         uiToolkit.createVerticalSpacer(c, 8);
-        Group groupConfiguration = uiToolkit.createGroup(c, Messages.AssociationEditDialog_group_matchingProdCmptTypeAssociation);
-        createConfigurationGroup(groupConfiguration);
+        Group groupConfiguration = uiToolkit.createGroup(c,
+                Messages.AssociationEditDialog_group_matchingProdCmptTypeAssociation);
+        createMatchingAssociationGroup(groupConfiguration);
 
         createQualificationGroup(uiToolkit.createGroup(c, Messages.AssociationEditDialog_qualificationGroup));
 
@@ -270,17 +271,28 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         extFactory.bind(bindingContext);
     }
 
-    private void createConfigurationGroup(Composite c) {
+    private void createMatchingAssociationGroup(Composite c) {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        Checkbox constrainedCheckbox = uiToolkit.createCheckbox(workArea, Messages.AssociationEditDialog_check_selectMatchingAssociationExpliclitly);
+        Checkbox constrainedCheckbox = uiToolkit.createCheckbox(workArea,
+                Messages.AssociationEditDialog_check_selectMatchingAssociationExpliclitly);
         ((GridData)constrainedCheckbox.getLayoutData()).horizontalSpan = 2;
         bindingContext.bindContent(constrainedCheckbox, pmoAssociation,
                 PmoPolicyCmptTypeAssociation.PROPERTY_MATCHING_EXPLICITLY);
+
+        uiToolkit.createVerticalSpacer(workArea, 4);
+
+        Label matchingAssociationInfoLabel = uiToolkit.createLabel(workArea, StringUtils.EMPTY);
+        ((GridData)matchingAssociationInfoLabel.getLayoutData()).horizontalSpan = 2;
+        bindingContext.bindContent(matchingAssociationInfoLabel, pmoAssociation,
+                PmoPolicyCmptTypeAssociation.PROPERTY_INFO_LABEL);
+
         uiToolkit.createLabel(workArea, Messages.AssociationEditDialog_label_productCmptType);
         ProductCmptType2RefControl refControl = new ProductCmptType2RefControl(ipsProject, workArea, uiToolkit, false);
-        bindingContext.bindContent(refControl, association,
+        EditField<String> refControlEditField = bindingContext.bindContent(refControl, pmoAssociation,
+                IPolicyCmptTypeAssociation.PROPERTY_MATCHING_ASSOCIATION_SOURCE);
+        bindingContext.bindProblemMarker(refControlEditField, association,
                 IPolicyCmptTypeAssociation.PROPERTY_MATCHING_ASSOCIATION_SOURCE);
 
         uiToolkit.createLabel(workArea, Messages.AssociationEditDialog_label_matchingAssociation);
@@ -633,6 +645,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public final static String PROPERTY_QUALIFICATION_NOTE = "qualificationNote"; //$NON-NLS-1$
         public final static String PROPERTY_QUALIFICATION_POSSIBLE = "qualificationPossible"; //$NON-NLS-1$
         public static final String PROPERTY_MATCHING_EXPLICITLY = "matchingExplicitly"; //$NON-NLS-1$
+        public static final String PROPERTY_INFO_LABEL = "infoLabel"; //$NON-NLS-1$
 
         private boolean matchingExplicitly;
 
@@ -698,15 +711,18 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
          */
         public void setMatchingExplicitly(boolean matchingExplicitly) {
             this.matchingExplicitly = matchingExplicitly;
-            if (!matchingExplicitly) {
-                association.setMatchingAssociationSource(StringUtils.EMPTY);
-                association.setMatchingAssociationName(StringUtils.EMPTY);
-            } else {
+            if (matchingExplicitly) {
                 IPolicyCmptType policyCmptType = association.getPolicyCmptType();
                 if (policyCmptType.isConfigurableByProductCmptType()) {
                     association.setMatchingAssociationSource(policyCmptType.getProductCmptType());
                 }
-                association.setMatchingAssociationName(getDefaultMatchingAssociationName());
+                IProductCmptTypeAssociation matchingProductCmptTypeAssociation = getDefaultMatchingAssociation();
+                association
+                        .setMatchingAssociationName(matchingProductCmptTypeAssociation != null ? matchingProductCmptTypeAssociation
+                                .getName() : StringUtils.EMPTY);
+            } else {
+                association.setMatchingAssociationSource(StringUtils.EMPTY);
+                association.setMatchingAssociationName(StringUtils.EMPTY);
             }
             notifyListeners();
         }
@@ -742,19 +758,54 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             if (matchingExplicitly) {
                 return association.getMatchingAssociationName();
             } else {
-                return getDefaultMatchingAssociationName();
+                IProductCmptTypeAssociation matchingProductCmptTypeAssociation = getDefaultMatchingAssociation();
+                return matchingProductCmptTypeAssociation != null ? matchingProductCmptTypeAssociation.getName()
+                        : StringUtils.EMPTY;
             }
         }
 
-        private String getDefaultMatchingAssociationName() {
+        /**
+         * @param matchingAssociationSource The matchingAssociationSource to set.
+         */
+        public void setMatchingAssociationSource(String matchingAssociationSource) {
+            if (matchingExplicitly) {
+                association.setMatchingAssociationSource(matchingAssociationSource);
+            }
+        }
+
+        /**
+         * @return Returns the matchingAssociationSource.
+         */
+        public String getMatchingAssociationSource() {
+            if (matchingExplicitly) {
+                return association.getMatchingAssociationSource();
+            } else {
+                IProductCmptTypeAssociation matchingProductCmptTypeAssociation = getDefaultMatchingAssociation();
+                return matchingProductCmptTypeAssociation != null ? matchingProductCmptTypeAssociation
+                        .getProductCmptType().getName() : StringUtils.EMPTY;
+            }
+        }
+
+        private IProductCmptTypeAssociation getDefaultMatchingAssociation() {
             try {
                 IProductCmptTypeAssociation matchingProductCmptTypeAssociation = association
                         .findMatchingProductCmptTypeAssociation(ipsProject);
-                return matchingProductCmptTypeAssociation != null ? matchingProductCmptTypeAssociation.getName()
-                        : StringUtils.EMPTY;
+                return matchingProductCmptTypeAssociation;
             } catch (CoreException e) {
                 IpsPlugin.log(e);
-                return StringUtils.EMPTY;
+                return null;
+            }
+        }
+
+        public String getInfoLabel() {
+            if (matchingExplicitly) {
+                return Messages.AssociationEditDialog_info_chooseMatchingAssociation;
+            } else {
+                if (getDefaultMatchingAssociation() != null) {
+                    return Messages.AssociationEditDialog_info_showMatchingAssociation;
+                } else {
+                    return Messages.AssociationEditDialog_info_noMatchingAssociation;
+                }
             }
         }
 

@@ -114,4 +114,9 @@ public class Messages extends NLS {
     public static String TblsStructureUsageEditDialog_title;
     public static String TblsStructureUsageEditDialog_upButton;
 
+    public static String AssociationEditDialog_info_chooseMatchingAssociation;
+    public static String AssociationEditDialog_info_showMatchingAssociation;
+    public static String AssociationEditDialog_info_noMatchingAssociation;
+    public static String AssociationEditDialog_info_noPossiblyMatchingAssociation;
+
 }

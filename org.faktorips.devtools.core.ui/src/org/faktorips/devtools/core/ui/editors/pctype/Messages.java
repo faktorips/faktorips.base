@@ -65,7 +65,13 @@ public class Messages extends NLS {
 
     public static String AssociationEditDialog_group_matchingProdCmptTypeAssociation;
 
+    public static String AssociationEditDialog_info_chooseMatchingAssociation;
+
     public static String AssociationEditDialog_info_dialogAutoFixErrors;
+
+    public static String AssociationEditDialog_info_noMatchingAssociation;
+
+    public static String AssociationEditDialog_info_showMatchingAssociation;
 
     public static String AssociationEditDialog_inverseAssociationLabel;
 

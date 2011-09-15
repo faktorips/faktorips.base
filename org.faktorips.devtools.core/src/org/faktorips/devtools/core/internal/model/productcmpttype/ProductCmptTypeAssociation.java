@@ -75,7 +75,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     @Override
-    public Set<IPolicyCmptTypeAssociation> findPossibleMatchingPolicyCmptTypeAssociations(IIpsProject ipsProject)
+    public Set<IPolicyCmptTypeAssociation> findPossiblyMatchingPolicyCmptTypeAssociations(IIpsProject ipsProject)
             throws CoreException {
         Set<IPolicyCmptTypeAssociation> result = new LinkedHashSet<IPolicyCmptTypeAssociation>();
 
@@ -309,7 +309,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
                     PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
             return;
         }
-        Set<IPolicyCmptTypeAssociation> possibleMatchingPolicyCmptTypeAssociations = findPossibleMatchingPolicyCmptTypeAssociations(ipsProject);
+        Set<IPolicyCmptTypeAssociation> possibleMatchingPolicyCmptTypeAssociations = findPossiblyMatchingPolicyCmptTypeAssociations(ipsProject);
         if (!possibleMatchingPolicyCmptTypeAssociations.contains(matchingPolicyCmptTypeAssociation)) {
             list.add(new Message(
                     MSGCODE_MATCHING_ASSOCIATION_INVALID,
