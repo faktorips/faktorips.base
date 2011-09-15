@@ -42,14 +42,9 @@ public final class JdtRefactoring extends JavaRefactoring {
 
     @Override
     public void perform(final IProgressMonitor pm) throws CoreException {
-        ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                IWorkspaceRunnable operation = new PerformRefactoringOperation(jdtRefactoring,
-                        CheckConditionsOperation.FINAL_CONDITIONS);
-                operation.run(pm);
-            }
-        }, pm);
+        IWorkspaceRunnable operation = new PerformRefactoringOperation(jdtRefactoring,
+                CheckConditionsOperation.FINAL_CONDITIONS);
+        ResourcesPlugin.getWorkspace().run(operation, pm);
     }
 
 }
