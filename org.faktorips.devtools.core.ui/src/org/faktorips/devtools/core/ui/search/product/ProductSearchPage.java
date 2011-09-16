@@ -17,13 +17,16 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -38,7 +41,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
 
     private static final String PRODUCT_SEARCH_PAGE_NAME = "ProductSearchPage"; //$NON-NLS-1$
     private static final String PRODUCT_SEARCH_DATA = "ProductSearchData"; //$NON-NLS-1$
-    // private ScrolledComposite conditionComposite;
+
     private Composite baseComposite;
     private TableViewer conditionTableViewer;
 
@@ -52,21 +55,22 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
         baseComposite = toolkit.createGridComposite(parent, 1, false, true);
         baseComposite.setLayoutData(layoutData);
 
-        Composite createGridComposite = toolkit.createGridComposite(baseComposite, 2, false, false);
-        toolkit.createLabel(createGridComposite, "Product Component Type");
+        Composite cmpProductComponentTypeChooser = toolkit.createGridComposite(baseComposite, 2, false, false);
+        toolkit.createLabel(cmpProductComponentTypeChooser, Messages.ProductSearchPage_labelProductComponentType);
 
-        IpsObjectRefControl ctrProductComponentTypeChooser = new IpsObjectRefControl(null, createGridComposite,
-                toolkit, "title", "message") {
+        IpsObjectRefControl ctrProductComponentTypeChooser = new IpsObjectRefControl(null,
+                cmpProductComponentTypeChooser, toolkit, Messages.ProductSearchPage_labelProductComponentType,
+                Messages.ProductSearchPage_labelChooseProductComponentType) {
 
             @Override
             protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
-                return getModel().getProductCmptTypesSrcFiles().toArray(new IIpsSrcFile[0]);
+                return getPresentationModel().getProductCmptTypesSrcFiles().toArray(new IIpsSrcFile[0]);
             }
 
             @Override
             protected void updateTextControlAfterDialogOK(List<IIpsSrcFile> ipsSrcFiles) {
                 try {
-                    getModel().setProductCmptType((IProductCmptType)ipsSrcFiles.get(0).getIpsObject());
+                    getPresentationModel().setProductCmptType((IProductCmptType)ipsSrcFiles.get(0).getIpsObject());
                 } catch (CoreException e) {
                     // TODO Exc handeln
                     throw new RuntimeException(e);
@@ -75,57 +79,50 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
             }
         };
         ctrProductComponentTypeChooser.setEnabled(true);
-        // ctrProductComponentTypeChooser.getTextControl().setEnabled(false);
+        ctrProductComponentTypeChooser.getTextControl().setEditable(false);
+        ctrProductComponentTypeChooser.getTextControl().setEnabled(false);
 
         // TODO qualname per binding an model binden
 
-        Text txtSrcFilePatternText = createSrcFilePatternText(toolkit, baseComposite);
-        getBindingContext().bindEnabled(txtSrcFilePatternText, getModel(),
+        Text txtSrcFilePatternText = createSrcFilePatternText(toolkit, baseComposite,
+                Messages.ProductSearchPage_labelProductComponent);
+        getBindingContext().bindEnabled(txtSrcFilePatternText, getPresentationModel(),
                 ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
 
-        /*
-         * conditionComposite = createConditionComposite(toolkit, baseComposite);
-         * 
-         * Composite content = new Composite(conditionComposite, 0); content.setLayout(new
-         * RowLayout(SWT.VERTICAL)); conditionComposite.setContent(content);
-         */
-        conditionTableViewer = createConditionTable(toolkit, baseComposite);
+        Group conditionsGroup = toolkit.createGroup(baseComposite, Messages.ProductSearchPage_labelSearchConditions);
 
-        createAddButton(toolkit, baseComposite);
+        conditionTableViewer = createConditionTable(conditionsGroup);
+        addConditionButtons(toolkit, conditionsGroup);
 
-        getModel().initDefaultSearchValues();
+        getBindingContext().bindEnabled(conditionsGroup, getPresentationModel(),
+                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
+
+        getPresentationModel().initDefaultSearchValues();
 
         setControl(baseComposite);
     }
 
-    private TableViewer createConditionTable(UIToolkit toolkit, Composite composite) {
-        Composite actComp = composite;
-        // Composite actComp = new Composite(composite, SWT.BORDER);
-        // actComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
+    private TableViewer createConditionTable(Composite composite) {
         ProductSearchConditionsTableViewerProvider productSearchConditionsTableViewerProvider = new ProductSearchConditionsTableViewerProvider(
-                getModel(), actComp);
+                getPresentationModel(), composite);
 
         return productSearchConditionsTableViewerProvider.getTableViewer();
     }
 
-    private ScrolledComposite createConditionComposite(UIToolkit toolkit, Composite composite) {
+    private void addConditionButtons(UIToolkit toolkit, Composite composite) {
 
-        ScrolledComposite scrComposite = new ScrolledComposite(composite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        Composite comp = toolkit.createComposite(composite);
 
-        // scrComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        comp.setLayout(new FillLayout(SWT.HORIZONTAL));
+        // comp.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 
-        toolkit.createCheckbox(scrComposite);
+        Button btnAddProduct = toolkit
+                .createButton(
+                        comp,
+                        NLS.bind(Messages.ProductSearchPage_labelAddConditionButton,
+                                new ProductAttributeCondition().getName()));
 
-        createAddButton(toolkit, composite);
-
-        return scrComposite;
-    }
-
-    private void createAddButton(UIToolkit toolkit, Composite composite) {
-        Button btnAddProduct = toolkit.createButton(composite, "Add Product Condition");
-
-        btnAddProduct.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
+        // btnAddProduct.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 
         btnAddProduct.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -134,12 +131,13 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
                 addCondition(condition);
             }
         });
-        getBindingContext().bindEnabled(btnAddProduct, getModel(),
-                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
+        // getBindingContext().bindEnabled(btnAddProduct, getModel(),
+        // ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
 
-        Button btnAddPolicy = toolkit.createButton(composite, "Add Policy Condition");
+        Button btnAddPolicy = toolkit.createButton(comp,
+                NLS.bind(Messages.ProductSearchPage_labelAddConditionButton, new PolicyAttributeCondition().getName()));
 
-        btnAddPolicy.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
+        // btnAddPolicy.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 
         btnAddPolicy.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -148,49 +146,29 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
                 addCondition(condition);
             }
         });
-        getBindingContext().bindEnabled(btnAddPolicy, getModel(),
-                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
+        // getBindingContext().bindEnabled(btnAddPolicy, getModel(),
+        // ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
 
     }
 
     private void addCondition(ICondition condition) {
         try {
-            // Composite content = new Composite(conditionComposite, NONE);
-            // content.setLayout(new RowLayout(SWT.VERTICAL | SWT.FILL));
+            if (condition.getSearchableElements(getPresentationModel().getProductCmptType()).isEmpty()) {
+                MessageBox mb = new MessageBox(getShell());
 
-            /*
-             * Control[] children = ((Composite)conditionComposite.getContent()).getChildren();
-             * 
-             * int conditions = 0; for (Control control : children) { if (control instanceof
-             * ProductSearchConditionControl) { conditions++; control.setParent(content); } }
-             * 
-             * ProductSearchConditionControl searchConditionControl = new
-             * ProductSearchConditionControl(content, condition, getModel());
-             * searchConditionControl.setSize(800, 70);
-             * 
-             * content.setSize(1200, (conditions + 1) * 70); conditionComposite.setContent(content);
-             */
+                mb.setMessage(condition.getNoSearchableElementsMessage(getPresentationModel().getProductCmptType()));
 
-            new ProductSearchConditionPresentationModel(getModel(), condition);
+                mb.open();
+                return;
+            }
+
+            new ProductSearchConditionPresentationModel(getPresentationModel(), condition);
 
             conditionTableViewer.refresh();
-
-            /*
-             * Composite content = (Composite)conditionComposite.getContent();
-             * ProductSearchConditionControl searchConditionControl = new
-             * ProductSearchConditionControl(content, condition);
-             * searchConditionControl.setSize(800, 200); searchConditionControl.layout(true);
-             * 
-             * content.layout(true); conditionComposite.setContent(content);
-             * conditionComposite.layout(true);
-             */
-
-            // getControl().redraw();
-
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            // TODO exception handling
             e.printStackTrace();
-        };
+        }
     }
 
     @Override

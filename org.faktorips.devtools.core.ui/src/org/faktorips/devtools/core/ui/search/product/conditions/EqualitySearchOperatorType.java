@@ -16,8 +16,8 @@ package org.faktorips.devtools.core.ui.search.product.conditions;
 import org.faktorips.datatype.ValueDatatype;
 
 public enum EqualitySearchOperatorType implements ISearchOperatorType {
-    EQUALITY("equals", true),
-    INEQUALITY("not equals", false);
+    EQUALITY(Messages.EqualitySearchOperatorType_equals, true),
+    INEQUALITY(Messages.EqualitySearchOperatorType_notEquals, false);
 
     private final String label;
     private final boolean equality;

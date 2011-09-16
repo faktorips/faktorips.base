@@ -47,7 +47,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
 
     @Override
     public String getLabel() {
-        return "Faktor-IPS Product Search";
+        return Messages.ProductSearchQuery_faktorIpsProductSearchLabel;
     }
 
     @Override
@@ -122,22 +122,14 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
 
         IProductCmptType productCmptType = searchModel.getProductCmptType();
 
-        /*
-         * for (IIpsSrcFile srcFile : selectedSrcFiles) { IProductCmpt ipsObject =
-         * (IProductCmpt)srcFile.getIpsObject();
-         * 
-         * boolean subtypeOrSameType =
-         * ipsObject.findProductCmptType(ipsObject.getIpsProject()).isSubtypeOrSameType(
-         * productCmptType, ipsObject.getIpsProject());
-         * 
-         * if (subtypeOrSameType) { matchingProductComponents.add(srcFile); } }
-         */
-
         IIpsProject[] productDefinitionProjects = ipsModel.getIpsProductDefinitionProjects();
         for (IIpsProject project : productDefinitionProjects) {
 
             // TODO das ist unschön, kann man die bausteine ohne diesen Umweg finden?
-            IProductCmptType type = productCmptType;// project.findProductCmptType(productCmptType.getQualifiedName());
+            // das problem ist, wenn man den type im modelprojekt auswaehlt, dann findet FIPS nicht
+            // die Produktbausteine, die von dem Type im ipsarchive abhaengen
+            // ==> im model doch qualified name verwenden?
+            IProductCmptType type = project.findProductCmptType(productCmptType.getQualifiedName());
 
             if (type != null) {
                 List<IIpsSrcFile> asList = Arrays.asList(project.findAllProductCmptSrcFiles(type, true));
@@ -168,7 +160,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
 
     @Override
     public String getResultLabel(int matchCount) {
-        return matchCount + " Hits for " + searchModel.getProductCmptType().getName();
+        return matchCount + Messages.ProductSearchQuery_1 + searchModel.getProductCmptType().getName();
     }
 
 }

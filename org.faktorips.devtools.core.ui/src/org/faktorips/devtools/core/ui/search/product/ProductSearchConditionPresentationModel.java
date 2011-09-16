@@ -41,9 +41,11 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     private final ICondition condition;
 
     private final List<? extends IIpsElement> searchableElements;
+    // TODO primitiv?
     private Integer searchedElementIndex;
 
     private List<? extends ISearchOperatorType> operatorTypes;
+    // TODO primitiv?
     private Integer operatorTypeIndex;
 
     private String argument = null;
@@ -130,7 +132,7 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     }
 
     public boolean isSearchedElementChosen() {
-        return searchedElementIndex >= 0;
+        return searchedElementIndex != null && searchedElementIndex >= 0;
     }
 
     public ValueDatatype getValueDatatype() {

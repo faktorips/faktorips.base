@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.search.product;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -38,8 +39,6 @@ import org.faktorips.devtools.core.ui.search.product.conditions.ISearchOperatorT
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 
 public class ProductSearchConditionsTableViewerProvider {
-    private static final String EMPTY_TEXT = ""; //$NON-NLS-1$
-
     private static final class ArgumentLabelProvider extends CellLabelProvider {
         @Override
         public void update(ViewerCell cell) {
@@ -51,7 +50,7 @@ public class ProductSearchConditionsTableViewerProvider {
                 cell.setText(IpsUIPlugin.getDefault().getDatatypeFormatter()
                         .formatValue(valueDatatype, model.getArgument()));
             } else {
-                cell.setText(model.getArgument() == null ? EMPTY_TEXT : model.getArgument());
+                cell.setText(model.getArgument() == null ? StringUtils.EMPTY : model.getArgument());
             }
         }
 
@@ -116,10 +115,10 @@ public class ProductSearchConditionsTableViewerProvider {
         public void update(ViewerCell cell) {
             ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)cell.getElement();
             if (model.getOperatorTypeIndex() == null) {
-                cell.setText(EMPTY_TEXT);
+                cell.setText(StringUtils.EMPTY);
             } else {
                 ISearchOperatorType operatorType = model.getOperatorType();
-                cell.setText(operatorType == null ? EMPTY_TEXT : operatorType.getLabel());
+                cell.setText(operatorType == null ? StringUtils.EMPTY : operatorType.getLabel());
             }
         }
     }
@@ -173,10 +172,10 @@ public class ProductSearchConditionsTableViewerProvider {
             ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)cell.getElement();
 
             if (model.getSearchedElementIndex() == null) {
-                cell.setText(EMPTY_TEXT);
+                cell.setText(StringUtils.EMPTY);
             } else {
                 IIpsElement searchedElement = model.getSearchedElement();
-                cell.setText(searchedElement == null ? EMPTY_TEXT : searchedElement.getName());
+                cell.setText(searchedElement == null ? StringUtils.EMPTY : searchedElement.getName());
             }
 
         }
@@ -242,19 +241,21 @@ public class ProductSearchConditionsTableViewerProvider {
     }
 
     private void createTableViewer() {
-        tableViewer = new TableViewer(parent);
+        UIToolkit toolkit = new UIToolkit(null);
+        Table table = toolkit.createTable(parent, SWT.NONE);
+
+        table.setHeaderVisible(true);
+        table.setLinesVisible(true);
+
+        tableViewer = new TableViewer(table);
 
         tableViewer.setContentProvider(new ArrayContentProvider());
         tableViewer.setInput(model.getProductSearchConditionPresentationModels());
 
-        Table table = tableViewer.getTable();
-        table.setHeaderVisible(true);
-        table.setLinesVisible(true);
-
-        createTableViewerColumn("Condition Type", 150, new ConditionTypeLabelProvider(), null);
-        createTableViewerColumn("Element", 180, new ElementLabelProvider(), new ElementEditingSupport(tableViewer));
-        createTableViewerColumn("Operator", 150, new OperatorLabelProvider(), new OperatorEditingSupport(tableViewer));
-        createTableViewerColumn("Argument", 170, new ArgumentLabelProvider(), new ArgumentEditingSupport(tableViewer));
+        createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_conditionType, 150, new ConditionTypeLabelProvider(), null);
+        createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_element, 180, new ElementLabelProvider(), new ElementEditingSupport(tableViewer));
+        createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_operator, 150, new OperatorLabelProvider(), new OperatorEditingSupport(tableViewer));
+        createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_argument, 170, new ArgumentLabelProvider(), new ArgumentEditingSupport(tableViewer));
 
         layoutViewer();
     }

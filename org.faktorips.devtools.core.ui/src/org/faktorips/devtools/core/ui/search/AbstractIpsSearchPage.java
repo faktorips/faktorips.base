@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.search.ui.ISearchPage;
 import org.eclipse.search.ui.ISearchPageContainer;
 import org.eclipse.search.ui.ISearchQuery;
@@ -30,7 +31,6 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
-import org.faktorips.devtools.core.ui.search.model.Messages;
 import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
 import org.faktorips.devtools.core.ui.search.scope.IpsSearchProjectsScope;
 import org.faktorips.devtools.core.ui.search.scope.IpsSearchSelectionScope;
@@ -41,7 +41,7 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
         ISearchPage {
 
     private final BindingContext bindingContext = new BindingContext();
-    private final T model = createPresentationModel();
+    private final T presentationModel = createPresentationModel();
 
     private ISearchPageContainer container;
     private List<IDialogSettings> previousSearchData;
@@ -114,7 +114,7 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
         // TODO evtl. sortierkriterium optimieren
         IDialogSettings newSection = settings.addNewSection(getDialogSettingPrefix() + System.currentTimeMillis());
 
-        getModel().store(newSection);
+        getPresentationModel().store(newSection);
 
     }
 
@@ -139,11 +139,12 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
 
     @Override
     public boolean performAction() {
-        // it is impossible to link the search scope to the model with the context binding, because
+        // it is impossible to link the search scope to the presentationModel with the context
+        // binding, because
         // a changed selection of the scope doesn't throw an event.
-        getModel().setSearchScope(createSearchScope());
+        getPresentationModel().setSearchScope(createSearchScope());
 
-        ISearchQuery query = getModel().createSearchQuery();
+        ISearchQuery query = getPresentationModel().createSearchQuery();
 
         writeConfiguration();
 
@@ -175,14 +176,17 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
         return bindingContext;
     }
 
-    protected T getModel() {
-        return model;
+    protected T getPresentationModel() {
+        return presentationModel;
     }
 
-    protected Text createSrcFilePatternText(UIToolkit toolkit, Composite composite) {
-        toolkit.createLabel(composite, Messages.ModelSearchPage_labelTypeName);
+    protected Text createSrcFilePatternText(UIToolkit toolkit, Composite composite, String srcFilePatternTextLabel) {
+        String patternLabel = Messages.AbstractIpsSearchPage_patternLabel;
+        toolkit.createLabel(composite, NLS.bind(Messages.AbstractIpsSearchPage_labelSrcFilePattern, srcFilePatternTextLabel, patternLabel));
         Text txtTypeName = toolkit.createText(composite);
-        getBindingContext().bindContent(txtTypeName, getModel(), IIpsSearchPresentationModel.SRC_FILE_PATTERN);
+
+        getBindingContext().bindContent(txtTypeName, getPresentationModel(),
+                IIpsSearchPresentationModel.SRC_FILE_PATTERN);
         return txtTypeName;
     }
 }

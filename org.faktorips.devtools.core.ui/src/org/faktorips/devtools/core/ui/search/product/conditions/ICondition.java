@@ -35,4 +35,6 @@ public interface ICondition {
 
     public String getName();
 
+    public String getNoSearchableElementsMessage(IProductCmptType productCmptType);
+
 }

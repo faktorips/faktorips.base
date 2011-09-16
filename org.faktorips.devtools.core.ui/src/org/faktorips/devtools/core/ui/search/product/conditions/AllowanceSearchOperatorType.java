@@ -16,8 +16,8 @@ package org.faktorips.devtools.core.ui.search.product.conditions;
 import org.faktorips.datatype.ValueDatatype;
 
 public enum AllowanceSearchOperatorType implements ISearchOperatorType {
-    ALLOWED("Allowed Value", false),
-    NOT_ALLOWED("Not allowed Value", true);
+    ALLOWED(Messages.AllowanceSearchOperatorType_allowed, false),
+    NOT_ALLOWED(Messages.AllowanceSearchOperatorType_notAllowed, true);
 
     private final String label;
     private final boolean negation;

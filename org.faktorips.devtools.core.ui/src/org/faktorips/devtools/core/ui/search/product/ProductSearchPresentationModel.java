@@ -110,7 +110,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
             }
 
         } catch (CoreException e) {
-            // TODO was mach ma da?
+            // TODO exc handeln
 
         }
     }

@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -86,7 +88,13 @@ public class PolicyAttributeCondition extends AbstractAttributeCondition {
 
     @Override
     public String getName() {
-        return "Policy Attribute";
+        return Messages.PolicyAttributeCondition_conditionName;
+    }
+
+    @Override
+    public String getNoSearchableElementsMessage(IProductCmptType productCmptType) {
+        return NLS.bind(Messages.PolicyAttributeCondition_noSearchableElementMessage,
+                productCmptType.getLabel(new MultiLanguageSupport().getLocalizationLocale()));
     }
 
 }

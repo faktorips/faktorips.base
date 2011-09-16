@@ -11,21 +11,26 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search;
+package org.faktorips.devtools.core.ui.search.product.conditions;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.search.messages"; //$NON-NLS-1$
-    public static String AbstractIpsSearchPage_labelSrcFilePattern;
-    public static String AbstractIpsSearchPage_patternLabel;
-    public static String AbstractSearchQuery_searchStatusOk;
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.search.product.conditions.messages"; //$NON-NLS-1$
+    public static String AllowanceSearchOperatorType_allowed;
+    public static String AllowanceSearchOperatorType_notAllowed;
+    public static String EqualitySearchOperatorType_equals;
+    public static String EqualitySearchOperatorType_notEquals;
+    public static String PolicyAttributeCondition_conditionName;
+    public static String PolicyAttributeCondition_noSearchableElementMessage;
+    public static String ProductAttributeCondition_conditionName;
+    public static String ProductAttributeCondition_noSearchableElementMessage;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
     private Messages() {
-        // do nothing
+        //
     }
 }

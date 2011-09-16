@@ -69,7 +69,7 @@ public class ModelSearchPage extends AbstractIpsSearchPage<ModelSearchPresentati
                     return;
                 }
 
-                getModel().read(getPreviousSearchData().get(selectionIndex));
+                getPresentationModel().read(getPreviousSearchData().get(selectionIndex));
             }
 
             @Override
@@ -80,7 +80,8 @@ public class ModelSearchPage extends AbstractIpsSearchPage<ModelSearchPresentati
 
         cboSearchString.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         txtSearchString = new StringValueComboField(cboSearchString);
-        getBindingContext().bindContent(txtSearchString, getModel(), ModelSearchPresentationModel.SEARCH_TERM);
+        getBindingContext().bindContent(txtSearchString, getPresentationModel(),
+                ModelSearchPresentationModel.SEARCH_TERM);
 
         for (IDialogSettings settings : getPreviousSearchData()) {
             cboSearchString.add(settings.get(ModelSearchPresentationModel.SEARCH_TERM));
@@ -90,27 +91,28 @@ public class ModelSearchPage extends AbstractIpsSearchPage<ModelSearchPresentati
                 .createGridGroup(composite, Messages.ModelSearchPage_groupLabelSearchFor, 2, true);
 
         ckbSearchAttributes = toolkit.createCheckbox(searchForGroup, Messages.ModelSearchPage_labelAttributes);
-        getBindingContext()
-                .bindContent(ckbSearchAttributes, getModel(), ModelSearchPresentationModel.SEARCH_ATTRIBUTES);
+        getBindingContext().bindContent(ckbSearchAttributes, getPresentationModel(),
+                ModelSearchPresentationModel.SEARCH_ATTRIBUTES);
 
         ckbSearchMethods = toolkit.createCheckbox(searchForGroup, Messages.ModelSearchPage_labelMethodsAndFormulas);
-        getBindingContext().bindContent(ckbSearchMethods, getModel(), ModelSearchPresentationModel.SEARCH_METHODS);
+        getBindingContext().bindContent(ckbSearchMethods, getPresentationModel(),
+                ModelSearchPresentationModel.SEARCH_METHODS);
 
         ckbSearchAssociations = toolkit.createCheckbox(searchForGroup, Messages.ModelSearchPage_labelAssociations);
-        getBindingContext().bindContent(ckbSearchAssociations, getModel(),
+        getBindingContext().bindContent(ckbSearchAssociations, getPresentationModel(),
                 ModelSearchPresentationModel.SEARCH_ASSOCIATIONS);
 
         ckbSearchTableStructureUsages = toolkit.createCheckbox(searchForGroup,
                 Messages.ModelSearchPage_labelTableStructureUsage);
-        getBindingContext().bindContent(ckbSearchTableStructureUsages, getModel(),
+        getBindingContext().bindContent(ckbSearchTableStructureUsages, getPresentationModel(),
                 ModelSearchPresentationModel.SEARCH_TABLE_STRUCTURE_USAGES);
 
         ckbSearchValidationRules = toolkit.createCheckbox(searchForGroup, Messages.ModelSearchPage_labelRules);
-        getBindingContext().bindContent(ckbSearchValidationRules, getModel(),
+        getBindingContext().bindContent(ckbSearchValidationRules, getPresentationModel(),
                 ModelSearchPresentationModel.SEARCH_VALIDATION_RULES);
 
         toolkit.createVerticalSpacer(composite, 10);
-        createSrcFilePatternText(toolkit, composite);
+        createSrcFilePatternText(toolkit, composite, Messages.ModelSearchPage_labelTypeName);
 
         setControl(composite);
 
@@ -122,9 +124,9 @@ public class ModelSearchPage extends AbstractIpsSearchPage<ModelSearchPresentati
         // it is impossible to link the search scope to the model with the context binding, because
         // a
         // changed selection of the scope doesn't throw an event.
-        getModel().setSearchScope(createSearchScope());
+        getPresentationModel().setSearchScope(createSearchScope());
 
-        ModelSearchQuery query = new ModelSearchQuery(getModel());
+        ModelSearchQuery query = new ModelSearchQuery(getPresentationModel());
 
         writeConfiguration();
 
