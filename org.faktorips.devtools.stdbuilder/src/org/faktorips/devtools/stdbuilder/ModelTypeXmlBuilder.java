@@ -150,11 +150,14 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                 modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_SUBSET_OF_A_DERIVED_UNION,
                         Boolean.toString(association.isSubsetOfADerivedUnion()));
                 try {
-                    modelTypeAssociation
-                            .setAttribute(
-                                    IModelTypeAssociation.PROPERTY_PRODUCT_RELEVANT,
-                                    Boolean.toString(association instanceof IPolicyCmptTypeAssociation ? ((IPolicyCmptTypeAssociation)association)
-                                            .isConstrainedByProductStructure(getIpsProject()) : true));
+                    boolean productRelevant = true;
+                    if (association instanceof IPolicyCmptTypeAssociation) {
+                        IPolicyCmptTypeAssociation polCmptTypeAsso = (IPolicyCmptTypeAssociation)association;
+                        productRelevant = polCmptTypeAsso.isConstrainedByProductStructure(getIpsProject())
+                                && polCmptTypeAsso.isConfigured();
+                    }
+                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_PRODUCT_RELEVANT,
+                            Boolean.toString(productRelevant));
                 } catch (DOMException e) {
                     // don't bother
                 } catch (CoreException e) {

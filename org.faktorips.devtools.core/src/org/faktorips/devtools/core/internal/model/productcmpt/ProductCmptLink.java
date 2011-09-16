@@ -320,10 +320,12 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             return false;
         }
         IProductCmptTypeAssociation association = findAssociation(ipsProject);
-        if (association == null || !association.constrainsPolicyCmptTypeAssociation(ipsProject)) {
+        if (association == null) {
             return false;
         }
-        return true;
+        IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = association
+                .findMatchingPolicyCmptTypeAssociation(ipsProject);
+        return matchingPolicyCmptTypeAssociation != null && matchingPolicyCmptTypeAssociation.isConfigured();
 
     }
 

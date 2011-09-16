@@ -49,6 +49,8 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     private boolean qualified = false;
 
+    private boolean configured = true;
+
     private String inverseAssociation = ""; //$NON-NLS-1$
 
     /**
@@ -152,6 +154,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return association;
     }
 
+    @Override
     public IProductCmptTypeAssociation findDefaultMatchingProductCmptTypeAssociation(IIpsProject ipsProject)
             throws CoreException {
         IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(ipsProject);
@@ -362,6 +365,24 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     @Override
     public String getMatchingAssociationName() {
         return matchingAssociationName;
+    }
+
+    /**
+     * @param configured The configured to set.
+     */
+    @Override
+    public void setConfigured(boolean configured) {
+        boolean oldValue = this.configured;
+        this.configured = configured;
+        valueChanged(oldValue, configured);
+    }
+
+    /**
+     * @return Returns the configured.
+     */
+    @Override
+    public boolean isConfigured() {
+        return configured;
     }
 
     @Override
@@ -588,16 +609,16 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         if (StringUtils.isNotEmpty(matchingAssociationSource) && StringUtils.isNotEmpty(matchingAssociationName)
                 && matchingAssociation == null) {
             list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND, NLS.bind(
-                    Messages.PolicyCmptTypeAssociation_error_matchingAssociatonNotFound,
-                    getMatchingAssociationName(), getMatchingAssociationSource()), Message.ERROR, this,
-                    PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
+                    Messages.PolicyCmptTypeAssociation_error_matchingAssociatonNotFound, getMatchingAssociationName(),
+                    getMatchingAssociationSource()), Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME,
+                    PROPERTY_MATCHING_ASSOCIATION_SOURCE));
         } else {
             if (matchingAssociation != null
                     && !this.equals(matchingAssociation.findMatchingPolicyCmptTypeAssociation(ipsProject))) {
                 list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID, NLS.bind(
-                        Messages.PolicyCmptTypeAssociation_error_MatchingAssociationInvalid, getMatchingAssociationName(),
-                        getMatchingAssociationSource()), Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME,
-                        PROPERTY_MATCHING_ASSOCIATION_SOURCE));
+                        Messages.PolicyCmptTypeAssociation_error_MatchingAssociationInvalid,
+                        getMatchingAssociationName(), getMatchingAssociationSource()), Message.ERROR, this,
+                        PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
             }
         }
     }

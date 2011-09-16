@@ -44,12 +44,16 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
             AssociationType.ASSOCIATION };
 
     public final static String PROPERTY_INVERSE_ASSOCIATION = "inverseAssociation"; //$NON-NLS-1$
+
     public final static String PROPERTY_SHARED_ASSOCIATION = "sharedAssociation"; //$NON-NLS-1$
+
     public final static String PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE = "containerRelationApplicable"; //$NON-NLS-1$
 
     public final static String PROPERTY_MATCHING_ASSOCIATION_SOURCE = "matchingAssociationSource"; //$NON-NLS-1$
 
     public final static String PROPERTY_MATCHING_ASSOCIATION_NAME = "matchingAssociationName"; //$NON-NLS-1$
+
+    public final static String PROPERTY_CONFIGURED = "configured"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
@@ -421,6 +425,18 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
             throws CoreException;
 
     /**
+     * Finding the default matching product component association. The dafault is used when no
+     * explicit matching association is set.
+     * 
+     * @see #findMatchingProductCmptTypeAssociation(IIpsProject)
+     * 
+     * @param ipsProject The project used to find the association
+     * @return the default matching association
+     */
+    IProductCmptTypeAssociation findDefaultMatchingProductCmptTypeAssociation(IIpsProject ipsProject)
+            throws CoreException;
+
+    /**
      * Setting the source product component of the explicitly specified association that constrains
      * this {@link IPolicyCmptTypeAssociation}. The name of the association is set by
      * {@link #setMatchingAssociationName(String)}. If the matching association should be found
@@ -470,5 +486,22 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * @throws CoreException in case of a core exception in the finder methods
      */
     IPolicyCmptTypeAssociation findSuperAssociationWithSameName(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Setting whether this association is configured by product component or not.
+     * 
+     * @param configured True to mark this association to be configured by product component
+     */
+    void setConfigured(boolean configured);
+
+    /**
+     * Getting whether this association is configured by product component or not. A
+     * {@link IPolicyCmptTypeAssociation} could only be configured if there is a matching
+     * {@link IProductCmptTypeAssociation}. Hence if you realy want to know if this association is
+     * configured you have to check {@link #isConstrainedByProductStructure(IIpsProject)} also.
+     * 
+     * @return true if this association is marked as being configured by product component
+     */
+    boolean isConfigured();
 
 }

@@ -93,7 +93,9 @@ public class GenProdAssociationToMany extends GenProdAssociation {
             generateMethodInterfaceGetRelatedCmptAtIndex(builder);
             generateMethodInterfaceGetManyRelatedCmptLinks(builder);
             generateMethodInterfaceGetRelatedCmptLink(builder);
-            if (association.constrainsPolicyCmptTypeAssociation(ipsProject)) {
+            IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = association
+                    .findMatchingPolicyCmptTypeAssociation(ipsProject);
+            if (matchingPolicyCmptTypeAssociation != null && matchingPolicyCmptTypeAssociation.isConfigured()) {
                 generateMethodGetCardinalityForAssociation(builder);
             }
             generateMethodGetNumOfRelatedCmpts(builder);
@@ -106,7 +108,11 @@ public class GenProdAssociationToMany extends GenProdAssociation {
             generateMethodAddRelatedCmpt(builder);
             generateMethodAddRelatedCmptWithCardinality(builder);
             if (association.constrainsPolicyCmptTypeAssociation(ipsProject)) {
-                generateMethodGetCardinalityFor1ToManyAssociation(builder);
+                IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = association
+                        .findMatchingPolicyCmptTypeAssociation(ipsProject);
+                if (matchingPolicyCmptTypeAssociation.isConfigured()) {
+                    generateMethodGetCardinalityFor1ToManyAssociation(builder);
+                }
             }
             generateMethodGetNumOfRelatedProductCmpts(builder);
         }
@@ -783,7 +789,9 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         addMethodGetRelatedCmptLinkToGeneratedJavaElements(javaElements, generatedJavaType);
 
         try {
-            if (association.constrainsPolicyCmptTypeAssociation(association.getIpsProject())) {
+            IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = association
+                    .findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
+            if (matchingPolicyCmptTypeAssociation != null && matchingPolicyCmptTypeAssociation.isConfigured()) {
                 addMethodGetCardinalityForAssociationToGeneratedJavaElements(javaElements, generatedJavaType);
             }
         } catch (CoreException e) {
@@ -813,7 +821,9 @@ public class GenProdAssociationToMany extends GenProdAssociation {
         addMethodGetNumOfRelatedCmptsToGeneratedJavaElements(javaElements, generatedJavaType);
 
         try {
-            if (association.constrainsPolicyCmptTypeAssociation(association.getIpsProject())) {
+            IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = association
+                    .findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
+            if (matchingPolicyCmptTypeAssociation != null && matchingPolicyCmptTypeAssociation.isConfigured()) {
                 addMethodGetCardinalityForAssociationToGeneratedJavaElements(javaElements, generatedJavaType);
             }
         } catch (CoreException e) {
