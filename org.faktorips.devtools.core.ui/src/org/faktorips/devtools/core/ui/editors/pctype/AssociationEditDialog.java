@@ -275,18 +275,23 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        Checkbox constrainedCheckbox = uiToolkit.createCheckbox(workArea,
-                Messages.AssociationEditDialog_check_selectMatchingAssociationExpliclitly);
-        ((GridData)constrainedCheckbox.getLayoutData()).horizontalSpan = 2;
-        bindingContext.bindContent(constrainedCheckbox, pmoAssociation,
-                PmoPolicyCmptTypeAssociation.PROPERTY_MATCHING_EXPLICITLY);
+        uiToolkit.createVerticalSpacer(workArea, 2);
+        uiToolkit.createVerticalSpacer(workArea, 2);
+
+        uiToolkit.createLabel(workArea, "Matching found by Faktor-IPS:");
+        Label matchingAssociationInfoLabel = uiToolkit.createLabel(workArea, StringUtils.EMPTY);
+        // ((GridData)matchingAssociationInfoLabel.getLayoutData()).horizontalSpan = 2;
+        bindingContext.bindContent(matchingAssociationInfoLabel, pmoAssociation,
+                PmoPolicyCmptTypeAssociation.PROPERTY_INFO_LABEL);
 
         uiToolkit.createVerticalSpacer(workArea, 4);
 
-        Label matchingAssociationInfoLabel = uiToolkit.createLabel(workArea, StringUtils.EMPTY);
-        ((GridData)matchingAssociationInfoLabel.getLayoutData()).horizontalSpan = 2;
-        bindingContext.bindContent(matchingAssociationInfoLabel, pmoAssociation,
-                PmoPolicyCmptTypeAssociation.PROPERTY_INFO_LABEL);
+        // Checkbox constrainedCheckbox = uiToolkit.createCheckbox(workArea,
+        // Messages.AssociationEditDialog_check_selectMatchingAssociationExpliclitly);
+        Checkbox constrainedCheckbox = uiToolkit.createCheckbox(workArea, "Assign manually");
+        ((GridData)constrainedCheckbox.getLayoutData()).horizontalSpan = 2;
+        bindingContext.bindContent(constrainedCheckbox, pmoAssociation,
+                PmoPolicyCmptTypeAssociation.PROPERTY_MATCHING_EXPLICITLY);
 
         uiToolkit.createLabel(workArea, Messages.AssociationEditDialog_label_productCmptType);
         ProductCmptType2RefControl refControl = new ProductCmptType2RefControl(ipsProject, workArea, uiToolkit, false);
@@ -789,7 +794,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         private IProductCmptTypeAssociation getDefaultMatchingAssociation() {
             try {
                 IProductCmptTypeAssociation matchingProductCmptTypeAssociation = association
-                        .findMatchingProductCmptTypeAssociation(ipsProject);
+                        .findDefaultMatchingProductCmptTypeAssociation(ipsProject);
                 return matchingProductCmptTypeAssociation;
             } catch (CoreException e) {
                 IpsPlugin.log(e);
@@ -798,15 +803,18 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         public String getInfoLabel() {
-            if (matchingExplicitly) {
-                return Messages.AssociationEditDialog_info_chooseMatchingAssociation;
-            } else {
-                if (getDefaultMatchingAssociation() != null) {
-                    return Messages.AssociationEditDialog_info_showMatchingAssociation;
-                } else {
-                    return Messages.AssociationEditDialog_info_noMatchingAssociation;
-                }
-            }
+            IProductCmptTypeAssociation defaultMatchingAssociation = getDefaultMatchingAssociation();
+            return defaultMatchingAssociation.getProductCmptType().getName() + "."
+                    + defaultMatchingAssociation.getName();
+            // if (matchingExplicitly) {
+            // return Messages.AssociationEditDialog_info_chooseMatchingAssociation;
+            // } else {
+            // if (getDefaultMatchingAssociation() != null) {
+            // return Messages.AssociationEditDialog_info_showMatchingAssociation;
+            // } else {
+            // return Messages.AssociationEditDialog_info_noMatchingAssociation;
+            // }
+            // }
         }
 
         /**
