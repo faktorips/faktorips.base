@@ -178,7 +178,9 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
                 preDefinedValuesTableViewer.refresh();
                 resultingValuesTableViewer.refresh();
                 IStructuredSelection selection = (IStructuredSelection)resultingValuesTableViewer.getSelection();
-                resultingValuesTableViewer.reveal(selection.getFirstElement());
+                if (selection != null) {
+                    resultingValuesTableViewer.reveal(selection.getFirstElement());
+                }
             }
         });
     }
