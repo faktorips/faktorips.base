@@ -121,7 +121,7 @@ EOF
   rm -r tmpPatch
   # fix nebula.jar Snapshot nicht im de.aok feature.xml umbenennen in ...20110316...jar
   # TODO warum liegt im devtarget deploy das Snapshot jar?
-  mv tmp/plugins/org.eclipse.nebula.widgets.grid-1.0.0-SNAPSHOT.jar tmp/plugins/org.eclipse.nebula.widgets.grid-1.0.0.201103161451.jar
+  mv tmp/plugins/org.eclipse.nebula.widgets.grid-1.0.0-SNAPSHOT.jar tmp/plugins/org.eclipse.nebula.widgets.grid_1.0.0.201103161451.jar
   cd tmp 
   zip -r $UPDATE_SITE_ZIP_NAME * -x \*CVS\* >> $LOGFILE
   echo copy result to $DOWNLOAD_PATH
