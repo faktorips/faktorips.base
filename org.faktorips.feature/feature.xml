@@ -772,7 +772,9 @@ schutz” abgerufen und ausgedruckt werden.
 
    <includes
          id="org.faktorips.feature.source"
-         version="0.0.0"/>
+         version="0.0.0"
+         name="Faktor-IPS Sources"
+         optional="true"/>
 
    <requires>
       <import plugin="org.apache.ant"/>
