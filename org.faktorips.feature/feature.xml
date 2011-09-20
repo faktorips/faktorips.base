@@ -770,13 +770,9 @@ Diese Datenschutzbestimmungen können auf der Website der Faktor Zehn AG über d
 schutz” abgerufen und ausgedruckt werden.
    </license>
 
-<!--
    <includes
          id="org.faktorips.feature.source"
-         version="0.0.0"
-         name="Faktor-IPS Source"
-         optional="true"/>
--->
+         version="0.0.0"/>
 
    <requires>
       <import plugin="org.apache.ant"/>
