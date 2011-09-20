@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -217,6 +218,25 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
+     * Informs the entire system that this model object has been changed. Subclasses should fire
+     * this event if any property of the object changes.
+     * 
+     * @param oldValue The old value of the property.
+     * @param newValue The new value of the property.
+     * 
+     * @return A flag indicating whether the valueChanged event has been fired successfully (it does
+     *         not if the old value and new value are considered to be equal).
+     */
+    protected final boolean valueChanged(Object oldValue, Object newValue, String propertyName) {
+        boolean changed = !ObjectUtils.equals(oldValue, newValue);
+        if (changed) {
+            objectHasChanged(new PropertyChangeEvent(this, propertyName, oldValue, newValue));
+        }
+
+        return changed;
+    }
+
+    /**
      * @see #valueChanged(Object, Object)
      */
     protected final boolean valueChanged(boolean oldValue, boolean newValue) {
@@ -244,6 +264,13 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * Called when the object's state has changed to inform about this.
      */
     protected abstract void objectHasChanged();
+
+    /**
+     * Called when the object's state has changed to inform about this.
+     * 
+     * @param propertyChangeEvent the propertyChangeEvent details the change.
+     */
+    protected abstract void objectHasChanged(PropertyChangeEvent propertyChangeEvent);
 
     /**
      * Has to be called when a part was added to the container to trigger event notification.

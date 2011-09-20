@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,6 +50,11 @@ public class ContentChangeEvent {
         return new ContentChangeEvent(part, TYPE_PROPERTY_CHANGED);
     }
 
+    public final static ContentChangeEvent newPartChangedEvent(IIpsObjectPart part,
+            PropertyChangeEvent propertyChangeEvent) {
+        return new ContentChangeEvent(part, propertyChangeEvent);
+    }
+
     public final static ContentChangeEvent newPartsChangedPositionsChangedEvent(IIpsSrcFile file, IIpsObjectPart[] parts) {
         return new ContentChangeEvent(file, parts);
     }
@@ -83,6 +89,8 @@ public class ContentChangeEvent {
 
     private int type = TYPE_PROPERTY_CHANGED;
 
+    private PropertyChangeEvent propertyChangeEvent;
+
     private ContentChangeEvent(IIpsSrcFile ipsSrcFile) {
         this.ipsSrcFile = ipsSrcFile;
         type = TYPE_WHOLE_CONTENT_CHANGED;
@@ -106,6 +114,14 @@ public class ContentChangeEvent {
 
     private ContentChangeEvent(List<? extends IIpsObjectPart> parts) {
         movedParts = Collections.unmodifiableList(parts);
+    }
+
+    private ContentChangeEvent(IIpsObjectPart part, PropertyChangeEvent propertyChangeEvent) {
+        ArgumentCheck.notNull(part);
+        this.part = part;
+        ipsSrcFile = part.getIpsObject().getIpsSrcFile();
+        type = TYPE_PROPERTY_CHANGED;
+        this.propertyChangeEvent = propertyChangeEvent;
     }
 
     /**
@@ -187,6 +203,10 @@ public class ContentChangeEvent {
     @Override
     public String toString() {
         return "ContentChangeEvent for " + ipsSrcFile; //$NON-NLS-1$
+    }
+
+    public PropertyChangeEvent getPropertyChangeEvent() {
+        return propertyChangeEvent;
     }
 
 }

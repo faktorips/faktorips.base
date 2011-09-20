@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,6 +123,11 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     protected void objectHasChanged() {
         ContentChangeEvent event = ContentChangeEvent.newWholeContentChangedEvent(getIpsSrcFile());
         objectHasChanged(event);
+    }
+
+    @Override
+    protected void objectHasChanged(PropertyChangeEvent propertyChangeEvent) {
+        objectHasChanged();
     }
 
     @Override

@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
+import java.beans.PropertyChangeEvent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -970,6 +971,11 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         @Override
         protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
             return null;
+        }
+
+        @Override
+        protected void objectHasChanged(PropertyChangeEvent propertyChangeEvent) {
+            objectHasChanged();
         }
 
     }

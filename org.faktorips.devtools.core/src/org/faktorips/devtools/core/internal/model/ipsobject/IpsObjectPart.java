@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import java.beans.PropertyChangeEvent;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceMapping;
@@ -88,6 +90,16 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     protected void objectHasChanged() {
         IpsModel model = (IpsModel)getIpsModel();
         ContentChangeEvent event = ContentChangeEvent.newPartChangedEvent(this);
+        IpsSrcFileContent content = model.getIpsSrcFileContent(getIpsSrcFile());
+        if (content != null) {
+            content.ipsObjectChanged(event);
+        }
+    }
+
+    @Override
+    protected void objectHasChanged(PropertyChangeEvent propertyChangeEvent) {
+        IpsModel model = (IpsModel)getIpsModel();
+        ContentChangeEvent event = ContentChangeEvent.newPartChangedEvent(this, propertyChangeEvent);
         IpsSrcFileContent content = model.getIpsSrcFileContent(getIpsSrcFile());
         if (content != null) {
             content.ipsObjectChanged(event);
