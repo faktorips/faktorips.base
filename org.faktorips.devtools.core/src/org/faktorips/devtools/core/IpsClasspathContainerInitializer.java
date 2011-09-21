@@ -16,6 +16,7 @@ package org.faktorips.devtools.core;
 import java.io.File;
 import java.net.URL;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -29,6 +30,8 @@ import org.eclipse.jdt.core.JavaCore;
 import org.osgi.framework.Bundle;
 
 public class IpsClasspathContainerInitializer extends ClasspathContainerInitializer {
+
+    private static final String NAME_VERSION_SEP = "_"; //$NON-NLS-1$
 
     public static final String RUNTIME_BUNDLE = "org.faktorips.runtime.java5"; //$NON-NLS-1$
 
@@ -57,44 +60,48 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
         URL installLocation;
         if (sources) {
-            // this entry is used for deployed bundles. In development runtime this would be null.
-            installLocation = bundle.getResource("src.zip"); //$NON-NLS-1$
-            if (installLocation == null) {
+            try {
                 installLocation = bundle.getEntry("src"); //$NON-NLS-1$ 
-            }
-            if (installLocation == null) {
-                bundle = Platform.getBundle(pluginId + ".source"); //$NON-NLS-1$
-                if (bundle != null) {
-                    installLocation = bundle.getEntry("/"); //$NON-NLS-1$
+                String fullPath;
+                if (installLocation != null) {
+                    URL local = FileLocator.toFileURL(installLocation);
+                    fullPath = new File(local.getPath()).getAbsolutePath();
+                } else {
+                    fullPath = FileLocator.getBundleFile(bundle).getAbsolutePath();
+                    String version = bundle.getVersion().toString();
+                    if (fullPath.endsWith(NAME_VERSION_SEP + version)) {
+                        String[] split = fullPath.split(NAME_VERSION_SEP);
+                        split[split.length - 2] = split[split.length - 2] + ".source"; //$NON-NLS-1$
+                        fullPath = StringUtils.EMPTY;
+                        for (String string : split) {
+                            if (string != split[split.length - 1]) {
+                                fullPath += string + NAME_VERSION_SEP;
+                            } else {
+                                fullPath += string;
+                            }
+                        }
+                    }
                 }
-            }
-        } else {
-            // this entry is used for development runtime. In deployed bundles this would be null.
-            installLocation = bundle.getEntry("/bin"); //$NON-NLS-1$
-            if (installLocation == null) {
-                installLocation = bundle.getEntry("/"); //$NON-NLS-1$
-            }
-        }
-
-        if (installLocation == null) {
-            if (sources) {
-                // source maybe not installed
+                return Path.fromOSString(fullPath);
+            } catch (Exception e) {
+                IpsPlugin.log(new IpsStatus("Error initializing classpath container for source bundle " + pluginId, e)); //$NON-NLS-1$ 
                 return null;
             }
-            IpsPlugin.log(new IpsStatus(
-                    "Error initializing classpath container. Install location for " + pluginId + " not found.")); //$NON-NLS-1$ //$NON-NLS-2$
-            return null;
-        }
-        // Install location is something like bundleentry://140/
-        try {
-            URL local = FileLocator.toFileURL(installLocation);
-            String fullPath = new File(local.getPath()).getAbsolutePath();
-            return Path.fromOSString(fullPath);
-        } catch (Exception e) {
-            IpsPlugin
-                    .log(new IpsStatus(
-                            "Error initializing " + (sources ? "source for " : "") + "classpath container. Bundle install locaction: " + installLocation, e)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-            return null;
+        } else {
+            try {
+                installLocation = bundle.getEntry("bin"); //$NON-NLS-1$ 
+                String fullPath;
+                if (installLocation != null) {
+                    URL local = FileLocator.toFileURL(installLocation);
+                    fullPath = new File(local.getPath()).getAbsolutePath();
+                } else {
+                    fullPath = FileLocator.getBundleFile(bundle).getAbsolutePath();
+                }
+                return Path.fromOSString(fullPath);
+            } catch (Exception e) {
+                IpsPlugin.log(new IpsStatus("Error initializing classpath container for bundle " + pluginId, e)); //$NON-NLS-1$ 
+                return null;
+            }
         }
     }
 
