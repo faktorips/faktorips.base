@@ -68,17 +68,17 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
                     fullPath = new File(local.getPath()).getAbsolutePath();
                 } else {
                     fullPath = FileLocator.getBundleFile(bundle).getAbsolutePath();
-                    String version = bundle.getVersion().toString();
-                    if (fullPath.endsWith(NAME_VERSION_SEP + version)) {
-                        String[] split = fullPath.split(NAME_VERSION_SEP);
-                        split[split.length - 2] = split[split.length - 2] + ".source"; //$NON-NLS-1$
-                        fullPath = StringUtils.EMPTY;
-                        for (String string : split) {
-                            if (string != split[split.length - 1]) {
-                                fullPath += string + NAME_VERSION_SEP;
-                            } else {
-                                fullPath += string;
-                            }
+                    String[] split = fullPath.split(NAME_VERSION_SEP);
+                    if (split.length < 2) {
+                        return null;
+                    }
+                    split[split.length - 2] = split[split.length - 2] + ".source"; //$NON-NLS-1$
+                    fullPath = StringUtils.EMPTY;
+                    for (String string : split) {
+                        if (string != split[split.length - 1]) {
+                            fullPath += string + NAME_VERSION_SEP;
+                        } else {
+                            fullPath += string;
                         }
                     }
                 }
