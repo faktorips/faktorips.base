@@ -123,7 +123,7 @@ public class Migration_3_5 extends DefaultMigration {
 
     @Override
     public String getDescription() {
-        return "Migrate the xml of validation rules in policy component types. The xml has changed to support localized message texts"; //$NON-NLS-1$
+        return "Migrate the xml of validation rules in policy component types. The xml has changed to support localized messages in validation rules."; //$NON-NLS-1$
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {
