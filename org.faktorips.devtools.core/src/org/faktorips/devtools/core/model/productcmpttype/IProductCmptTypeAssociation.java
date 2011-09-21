@@ -107,6 +107,18 @@ public interface IProductCmptTypeAssociation extends IAssociation {
             throws CoreException;
 
     /**
+     * Returns the corresponding policy component type association that is set per default or
+     * <code>null</code> if no such association is found. This method would try to find a matching
+     * association automatically by comparing the associations target and order.
+     * 
+     * @param ipsProject The project which IPS object path is used for the search. This is not
+     *            necessarily the project this type is part of.
+     * 
+     * @throws CoreException if an error occurs while searching for the matching association.
+     */
+    public IPolicyCmptTypeAssociation findDefaultPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException;
+
+    /**
      * Finding all {@link IPolicyCmptTypeAssociation}s that could be configured by this
      * {@link IProductCmptTypeAssociation}. In normal scenario these are all Associations (never
      * Detail-To-Master) from the {@link IPolicyCmptType} that is configured by the source of this

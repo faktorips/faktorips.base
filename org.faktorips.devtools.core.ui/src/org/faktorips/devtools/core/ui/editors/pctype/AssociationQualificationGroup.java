@@ -17,6 +17,8 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -46,7 +48,7 @@ import org.faktorips.devtools.core.util.QNameUtil;
  */
 public class AssociationQualificationGroup extends Composite {
 
-    private PmoAssociation pmoAssociation;
+    private final PmoAssociation pmoAssociation;
 
     public AssociationQualificationGroup(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent,
             IAssociation association) {
@@ -135,9 +137,15 @@ public class AssociationQualificationGroup extends Composite {
 
         public PmoAssociation(IPolicyCmptTypeAssociation association) {
             super(association);
-
             this.association = association;
             this.ipsProject = association.getIpsProject();
+            AssociationQualificationGroup.this.addDisposeListener(new DisposeListener() {
+
+                @Override
+                public void widgetDisposed(DisposeEvent e) {
+                    dispose();
+                }
+            });
         }
 
         public String getQualificationLabel() {

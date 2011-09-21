@@ -223,6 +223,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         return matchingAssociationName;
     }
 
+    @Override
     public IPolicyCmptTypeAssociation findDefaultPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException {
 
         IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);
@@ -304,18 +305,16 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         }
         if (!this.equals(matchingPolicyCmptTypeAssociation.findMatchingProductCmptTypeAssociation(ipsProject))) {
             list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID, NLS.bind(
-                    Messages.ProductCmptTypeAssociation_error_MatchingAssociationInvalid,
-                    getMatchingAssociationName(), getMatchingAssociationSource()), Message.ERROR, this,
-                    PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
+                    Messages.ProductCmptTypeAssociation_error_MatchingAssociationInvalid, getMatchingAssociationName(),
+                    getMatchingAssociationSource()), Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME,
+                    PROPERTY_MATCHING_ASSOCIATION_SOURCE));
             return;
         }
         Set<IPolicyCmptTypeAssociation> possibleMatchingPolicyCmptTypeAssociations = findPossiblyMatchingPolicyCmptTypeAssociations(ipsProject);
         if (!possibleMatchingPolicyCmptTypeAssociations.contains(matchingPolicyCmptTypeAssociation)) {
-            list.add(new Message(
-                    MSGCODE_MATCHING_ASSOCIATION_INVALID,
-                    NLS.bind(
-                            Messages.ProductCmptTypeAssociation_error_MatchingAssociationDoesNotReferenceThis,
-                            getMatchingAssociationName(), getMatchingAssociationSource()), Message.ERROR, this,
+            list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID, NLS.bind(
+                    Messages.ProductCmptTypeAssociation_error_MatchingAssociationDoesNotReferenceThis,
+                    getMatchingAssociationName(), getMatchingAssociationSource()), Message.ERROR, this,
                     PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
             return;
         }

@@ -59,23 +59,25 @@ public class Messages extends NLS {
 
     public static String AssociationEditDialog_associationTypeLabel;
 
-    public static String AssociationEditDialog_check_selectMatchingAssociationExpliclitly;
-
     public static String AssociationEditDialog_generalGroup;
 
-    public static String AssociationEditDialog_group_matchingProdCmptTypeAssociation;
+    public static String AssociationEditDialog_group_configuration;
 
-    public static String AssociationEditDialog_info_chooseMatchingAssociation;
+    public static String AssociationEditDialog_group_selectExplicitly;
 
     public static String AssociationEditDialog_info_dialogAutoFixErrors;
 
-    public static String AssociationEditDialog_info_noMatchingAssociation;
+    public static String AssociationEditDialog_check_configuration;
 
-    public static String AssociationEditDialog_info_showMatchingAssociation;
+    public static String AssociationEditDialog_check_selectMatchingAssociationExpliclitly;
 
     public static String AssociationEditDialog_inverseAssociationLabel;
 
+    public static String AssociationEditDialog_label_foundByFaktorIps;
+
     public static String AssociationEditDialog_label_matchingAssociation;
+
+    public static String AssociationEditDialog_label_none;
 
     public static String AssociationEditDialog_label_productCmptType;
 
@@ -140,6 +142,8 @@ public class Messages extends NLS {
     public static String AssociationEditDialog_sharedAssociations;
 
     public static String AssociationEditDialog_sharedAssociationsTooltip;
+
+    public static String AssociationEditDialog_tab_productAssociation;
 
     public static String AssociationEditDialog_targetLabel;
 
@@ -270,13 +274,11 @@ public class Messages extends NLS {
     public static String OverrideAttributeDialog_labelSelectAttribute;
     public static String OverrideAttributeDialog_title;
 
-    public static String AttributeEditDialog_descriptionContent;
     public static String AttributeEditDialog_generalTitle;
     public static String AttributeEditDialog_labelActivateValidationRule;
     public static String AttributeEditDialog_labelAttributeIsTransient;
 
     public static String AttributeEditDialog_labelAttrType;
-    public static String AttributeEditDialog_labelCode;
 
     public static String AttributeEditDialog_labelColumnName;
     public static String AttributeEditDialog_labelColumnScale;
@@ -297,16 +299,12 @@ public class Messages extends NLS {
     public static String AttributeEditDialog_labelPersistentProperties;
 
     public static String AttributeEditDialog_labelPrecision;
-    public static String AttributeEditDialog_labelSeverity;
 
     public static String AttributeEditDialog_labelSqlColumnDefinition;
     public static String AttributeEditDialog_labelTemporalType;
 
-    public static String AttributeEditDialog_labelText;
-
     public static String AttributeEditDialog_labelUnique;
     public static String AttributeEditDialog_lableOverwrites;
-    public static String AttributeEditDialog_messageTitle;
 
     public static String AttributeEditDialog_msgErrorWhileSearchingProductComponentType;
     public static String AttributeEditDialog_ruleTitle;
@@ -315,15 +313,6 @@ public class Messages extends NLS {
     public static String AttributeEditDialog_title;
     public static String AttributeEditDialog_tooltipActivateValidationRule;
     public static String AttributeEditDialog_validationRuleTitle;
-    public static String AttributeEditDialog_ValuesetDefinition_ModelConfiguration;
-
-    public static String AttributeEditDialog_ValuesetDefinition_ProductConfiguration;
-
-    public static String AttributeEditDialog_ValuesetDefinition_SubsetOfModelInProductConfiguration;
-
-    public static String AttributeEditDialog_ValuesetDefinitionGroupTitle;
-
-    public static String AttributeEditDialog_ValuesetGroupTitle;
 
     public static String AttributeEditDialog_valuesetTitle;
 
@@ -339,7 +328,6 @@ public class Messages extends NLS {
     public static String RuleEditDialog_labelName;
     public static String RuleEditDialog_labelSeverity;
     public static String RuleEditDialog_labelSpecifiedInSrc;
-    public static String RuleEditDialog_labelText;
     public static String RuleEditDialog_messageGroupTitle;
     public static String RuleEditDialog_generalTitle;
 
@@ -351,7 +339,5 @@ public class Messages extends NLS {
     public static String ValidatedAttributesControl_label;
 
     public static String RuleEditDialog_groupText;
-
-    public static String RuleEditDialog_labelLocale;
 
 }

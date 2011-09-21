@@ -38,19 +38,25 @@ public class Messages extends NLS {
     public static String AssociationEditDialog_derivedUnionLabel;
     public static String AssociationEditDialog_generalGroup;
 
-    public static String AssociationEditDialog_group_matchingPolicyCmptTypeAssociation;
+    public static String AssociationEditDialog_group_selectExplicitly;
 
     public static String AssociationEditDialog_hint_AlreadyConfiguredIn;
 
     public static String AssociationEditDialog_info_dialogAutoFixErrors;
 
+    public static String AssociationEditDialog_label_foundAssociation;
+
     public static String AssociationEditDialog_label_matchingAssociation;
+
+    public static String AssociationEditDialog_label_none;
     public static String AssociationEditDialog_maxCardLabel;
     public static String AssociationEditDialog_minCardLabel;
     public static String AssociationEditDialog_properties;
     public static String AssociationEditDialog_rolePluralLabel;
     public static String AssociationEditDialog_roleSingularLabel;
     public static String AssociationEditDialog_subsetCheckbox;
+    public static String AssociationEditDialog_tab_policyAssociation;
+
     public static String AssociationEditDialog_targetLabel;
     public static String AssociationEditDialog_title;
     public static String AssociationEditDialog_typeLabel;
@@ -113,10 +119,5 @@ public class Messages extends NLS {
     public static String TblsStructureUsageEditDialog_tableStructuresGroup;
     public static String TblsStructureUsageEditDialog_title;
     public static String TblsStructureUsageEditDialog_upButton;
-
-    public static String AssociationEditDialog_info_chooseMatchingAssociation;
-    public static String AssociationEditDialog_info_showMatchingAssociation;
-    public static String AssociationEditDialog_info_noMatchingAssociation;
-    public static String AssociationEditDialog_info_noPossiblyMatchingAssociation;
 
 }

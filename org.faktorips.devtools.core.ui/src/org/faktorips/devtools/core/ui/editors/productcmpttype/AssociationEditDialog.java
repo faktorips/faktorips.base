@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -26,6 +24,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
@@ -108,6 +107,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         TabItem firstPage = new TabItem(folder, SWT.NONE);
         firstPage.setText(Messages.AssociationEditDialog_properties);
         firstPage.setControl(createFirstPage(folder));
+        new MatchingAssociationTabItem(folder, SWT.NONE);
 
         return folder;
     }
@@ -117,8 +117,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         createExtensionArea(panel, IExtensionPropertyDefinition.POSITION_TOP);
         createGenerellGroup(uiToolkit.createGroup(panel, Messages.AssociationEditDialog_generalGroup));
-        createMatchingAssociationGroup(uiToolkit.createGroup(panel,
-                Messages.AssociationEditDialog_group_matchingPolicyCmptTypeAssociation));
+
         createDerivedUnionGroup(uiToolkit.createGroup(panel, Messages.AssociationEditDialog_derivedUnionGroup));
         createExtensionArea(panel, IExtensionPropertyDefinition.POSITION_BOTTOM);
 
@@ -194,36 +193,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         cardinalityField = new CardinalityField(maxCardinalityText);
         cardinalityField.setSupportsNull(false);
         bindingContext.bindContent(cardinalityField, association, IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
-    }
-
-    private void createMatchingAssociationGroup(Composite parent) {
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
-        Checkbox constrainedCheckbox = uiToolkit.createCheckbox(workArea,
-                Messages.AssociationEditDialog_check_selectExplicitly);
-        ((GridData)constrainedCheckbox.getLayoutData()).horizontalSpan = 2;
-        bindingContext.bindContent(constrainedCheckbox, pmoAssociation, PmoAssociation.PROPERTY_MATCHING_EXPLICITLY);
-
-        uiToolkit.createVerticalSpacer(workArea, 4);
-        Label matchingAssociationInfoLabel = uiToolkit.createLabel(workArea, StringUtils.EMPTY);
-        ((GridData)matchingAssociationInfoLabel.getLayoutData()).horizontalSpan = 2;
-        bindingContext.bindContent(matchingAssociationInfoLabel, pmoAssociation, PmoAssociation.PROPERTY_INFO_LABEL);
-
-        uiToolkit.createLabel(workArea, Messages.AssociationEditDialog_label_matchingAssociation);
-        Combo constrainedCombo = uiToolkit.createCombo(workArea);
-        bindingContext.bindEnabled(constrainedCombo, pmoAssociation, PmoAssociation.PROPERTY_MATCHING_EXPLICITLY);
-        ComboViewerField<IPolicyCmptTypeAssociation> comboViewerField = new ComboViewerField<IPolicyCmptTypeAssociation>(
-                constrainedCombo, IPolicyCmptTypeAssociation.class);
-        comboViewerField.setAllowEmptySelection(true);
-        comboViewerField.setLabelProvider(new MatchingAssociationLabelProvider());
-        try {
-            IPolicyCmptTypeAssociation[] possiblyMatchingAssociations = association
-                    .findPossiblyMatchingPolicyCmptTypeAssociations(association.getIpsProject()).toArray(
-                            new IPolicyCmptTypeAssociation[0]);
-            comboViewerField.setInput(possiblyMatchingAssociations);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-        bindingContext.bindContent(comboViewerField, pmoAssociation, PmoAssociation.PROPERTY_MATCHING_ASSOCIATION);
     }
 
     private void createDerivedUnionGroup(Composite workArea) {
@@ -303,6 +272,67 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 association, newName, newPluralName, false);
         IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(ipsRenameRefactoring, getShell());
         refactoringOperation.runDirectExecution();
+    }
+
+    @Override
+    public boolean close() {
+        pmoAssociation.dispose();
+        return super.close();
+    }
+
+    private class MatchingAssociationTabItem {
+
+        private final TabItem tabItem;
+
+        public MatchingAssociationTabItem(TabFolder parent, int style) {
+            tabItem = new TabItem(parent, style);
+            tabItem.setText(Messages.AssociationEditDialog_tab_policyAssociation);
+            Composite c = createTabItemComposite(parent, 1, false);
+            tabItem.setControl(createPage(c));
+        }
+
+        private Control createPage(Composite c) {
+
+            uiToolkit.createVerticalSpacer(c, 2);
+
+            Composite labelEditColumnComposite = uiToolkit.createLabelEditColumnComposite(c);
+            uiToolkit.createLabel(labelEditColumnComposite, Messages.AssociationEditDialog_label_foundAssociation);
+            Label matchingAssociationInfoLabel = uiToolkit.createLabel(labelEditColumnComposite, StringUtils.EMPTY);
+            bindingContext
+                    .bindContent(matchingAssociationInfoLabel, pmoAssociation, PmoAssociation.PROPERTY_INFO_LABEL);
+            uiToolkit.createVerticalSpacer(labelEditColumnComposite, 3);
+
+            Group groupMatching = uiToolkit.createGroup(c, Messages.AssociationEditDialog_group_selectExplicitly);
+            createMatchingAssociationGroup(groupMatching);
+            return c;
+        }
+
+        private void createMatchingAssociationGroup(Composite parent) {
+            Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
+            Checkbox constrainedCheckbox = uiToolkit.createCheckbox(workArea,
+                    Messages.AssociationEditDialog_check_selectExplicitly);
+            ((GridData)constrainedCheckbox.getLayoutData()).horizontalSpan = 2;
+            bindingContext
+                    .bindContent(constrainedCheckbox, pmoAssociation, PmoAssociation.PROPERTY_MATCHING_EXPLICITLY);
+
+            uiToolkit.createLabel(workArea, Messages.AssociationEditDialog_label_matchingAssociation);
+            Combo constrainedCombo = uiToolkit.createCombo(workArea);
+            bindingContext.bindEnabled(constrainedCombo, pmoAssociation, PmoAssociation.PROPERTY_MATCHING_EXPLICITLY);
+            ComboViewerField<IPolicyCmptTypeAssociation> comboViewerField = new ComboViewerField<IPolicyCmptTypeAssociation>(
+                    constrainedCombo, IPolicyCmptTypeAssociation.class);
+            comboViewerField.setAllowEmptySelection(true);
+            comboViewerField.setLabelProvider(new MatchingAssociationLabelProvider());
+            try {
+                IPolicyCmptTypeAssociation[] possiblyMatchingAssociations = association
+                        .findPossiblyMatchingPolicyCmptTypeAssociations(association.getIpsProject()).toArray(
+                                new IPolicyCmptTypeAssociation[0]);
+                comboViewerField.setInput(possiblyMatchingAssociations);
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+            bindingContext.bindContent(comboViewerField, pmoAssociation, PmoAssociation.PROPERTY_MATCHING_ASSOCIATION);
+        }
+
     }
 
     public class PmoAssociation extends IpsObjectPartPmo {
@@ -394,34 +424,18 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         public String getInfoLabel() {
-            if (matchingExplicitly) {
-                Set<IPolicyCmptTypeAssociation> possiblyMatchingPolicyCmptTypeAssociations = null;
-                try {
-                    possiblyMatchingPolicyCmptTypeAssociations = association
-                            .findPossiblyMatchingPolicyCmptTypeAssociations(association.getIpsProject());
-                } catch (CoreException e) {
-                    // do nothing - only an info message
+            IPolicyCmptTypeAssociation defaultPolicyCmptTypeAssociation;
+            try {
+                defaultPolicyCmptTypeAssociation = association.findDefaultPolicyCmptTypeAssociation(association
+                        .getIpsProject());
+                if (defaultPolicyCmptTypeAssociation != null) {
+                    return defaultPolicyCmptTypeAssociation.getPolicyCmptType().getName() + "." //$NON-NLS-1$
+                            + defaultPolicyCmptTypeAssociation.getName();
                 }
-                if (possiblyMatchingPolicyCmptTypeAssociations == null
-                        || possiblyMatchingPolicyCmptTypeAssociations.isEmpty()) {
-                    return Messages.AssociationEditDialog_info_noPossiblyMatchingAssociation;
-                } else {
-                    return Messages.AssociationEditDialog_info_chooseMatchingAssociation;
-                }
-            } else {
-                IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = null;
-                try {
-                    matchingPolicyCmptTypeAssociation = association.findMatchingPolicyCmptTypeAssociation(association
-                            .getIpsProject());
-                } catch (CoreException e) {
-                    // do nothing - only an info message
-                }
-                if (matchingPolicyCmptTypeAssociation != null) {
-                    return Messages.AssociationEditDialog_info_showMatchingAssociation;
-                } else {
-                    return Messages.AssociationEditDialog_info_noMatchingAssociation;
-                }
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
             }
+            return Messages.AssociationEditDialog_label_none;
         }
 
     }

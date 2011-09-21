@@ -42,8 +42,9 @@ public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
             }
             if (association instanceof IPolicyCmptTypeAssociation) {
                 try {
-                    if (((IPolicyCmptTypeAssociation)association).isConstrainedByProductStructure(association
-                            .getIpsProject())) {
+                    IPolicyCmptTypeAssociation polAssociation = (IPolicyCmptTypeAssociation)association;
+                    if (polAssociation.isConfigured()
+                            && polAssociation.isConstrainedByProductStructure(association.getIpsProject())) {
                         return IpsUIPlugin.getImageHandling().getSharedOverlayImage(baseName, OverlayIcons.PRODUCT_OVR,
                                 IDecoration.TOP_RIGHT);
                     }
