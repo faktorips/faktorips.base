@@ -58,7 +58,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      */
     public ProductComponent(IRuntimeRepository repository, String id, String productKindId, String versionId) {
         if (repository == null) {
-            throw new NullPointerException("RuntimeRepositor was null!");
+            throw new NullPointerException("RuntimeRepository was null!");
         }
         if (id == null) {
             throw new NullPointerException("Id was null!");
