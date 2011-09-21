@@ -18,6 +18,9 @@
    <feature url="features/org.faktorips.uml.feature.nls1_0.0.0.jar" id="org.faktorips.uml.feature.nls1" version="0.0.0">
       <category name="faktor_ips_extensions"/>
    </feature>
+   <feature url="features/org.faktorips.runtime.addons_0.0.0.jar" id="org.faktorips.runtime.addons" version="0.0.0">
+      <category name="faktor_ips_extensions"/>
+   </feature>
    <category-def name="faktor_ips" label="Faktor-IPS">
       <description>
          In this category you get the core features of Faktor-IPS
