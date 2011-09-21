@@ -26,18 +26,22 @@
   -->
   
    <extension point="org.eclipse.jdt.core.classpathVariableInitializer">            
-       <classpathVariableInitializer                                          
-          variable="FAKTORIPS_VALUETYPES_JAVA5"                                                        
-          class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"/>                           
-       <classpathVariableInitializer                                          
-          variable="FAKTORIPS_VALUETYPES_JAVA5_SRC"                                                        
-          class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"/>                           
-       <classpathVariableInitializer                                          
-          variable="FAKTORIPS_RUNTIME_JAVA5"                                                        
-          class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"/>                           
-       <classpathVariableInitializer                                          
-          variable="FAKTORIPS_RUNTIME_JAVA5_SRC"                                                        
-          class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"/>                           
+       <classpathVariableInitializer
+             class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"
+             deprecated="Use container org.faktorips.devtools.core.ipsClasspathContainer instead"
+             variable="FAKTORIPS_VALUETYPES_JAVA5"/>                           
+       <classpathVariableInitializer
+             class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"
+             deprecated="Use container org.faktorips.devtools.core.ipsClasspathContainer instead"
+             variable="FAKTORIPS_VALUETYPES_JAVA5_SRC"/>                           
+       <classpathVariableInitializer
+             class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"
+             deprecated="Use container org.faktorips.devtools.core.ipsClasspathContainer instead"
+             variable="FAKTORIPS_RUNTIME_JAVA5"/>                           
+       <classpathVariableInitializer
+             class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"
+             deprecated="Use container org.faktorips.devtools.core.ipsClasspathContainer instead"
+             variable="FAKTORIPS_RUNTIME_JAVA5_SRC"/>                           
    </extension>
 
 <!-- 

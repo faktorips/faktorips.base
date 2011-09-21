@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -31,7 +30,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer;
+import org.faktorips.devtools.core.IpsClasspathContainerInitializer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.Util;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
@@ -384,17 +383,10 @@ public class ProjectUtil {
     private static void addIpsRuntimeLibraries(IJavaProject javaProject) throws JavaModelException {
         IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
         if (targetVersionIsAtLeast5(javaProject)) {
-            int numOfJars = FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_JAVA5_BIN.length;
-            IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + numOfJars];
+            IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + 1];
             System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
-            for (int i = 0; i < numOfJars; i++) {
-                Path jarPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_JAVA5_BIN[i]);
-                Path srcZipPath = null;
-                if (StringUtils.isNotEmpty(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_JAVA5_SRC[i])) {
-                    srcZipPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_JAVA5_SRC[i]);
-                }
-                entries[oldEntries.length + i] = JavaCore.newVariableEntry(jarPath, srcZipPath, null);
-            }
+            entries[oldEntries.length] = JavaCore.newContainerEntry(new Path(
+                    IpsClasspathContainerInitializer.CONTAINER_ID));
             javaProject.setRawClasspath(entries, null);
         }
     }

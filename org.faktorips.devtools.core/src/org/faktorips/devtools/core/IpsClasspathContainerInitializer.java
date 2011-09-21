@@ -31,6 +31,8 @@ import org.osgi.framework.Bundle;
 
 public class IpsClasspathContainerInitializer extends ClasspathContainerInitializer {
 
+    public static final String CONTAINER_ID = "org.faktorips.devtools.core.ipsClasspathContainer"; //$NON-NLS-1$
+
     private static final String NAME_VERSION_SEP = "_"; //$NON-NLS-1$
 
     public static final String RUNTIME_BUNDLE = "org.faktorips.runtime.java5"; //$NON-NLS-1$
