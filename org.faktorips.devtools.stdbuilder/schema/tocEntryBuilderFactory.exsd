@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <choice>
-            <element ref="tocEntryBuilder"/>
+            <element ref="tocEntryBuilderFactory"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,25 +47,20 @@
       </complexType>
    </element>
 
-   <element name="tocEntryBuilder">
+   <element name="tocEntryBuilderFactory">
+      <annotation>
+         <documentation>
+            A factory for custom TOC entry builders. Builders created by a registered factory will be used by the TocFileBuilder to create custom TOC entries for the standard TOC file.
+         </documentation>
+      </annotation>
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  The qualified Java Class name of the custom TOC Entry Builder.
+                  The qualified Java Class name of the custom TOC Entry Builder Factory.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.stdbuilder.ITocEntryBuilder"/>
-               </appInfo>
-            </annotation>
-         </attribute>
-         <attribute name="ipsObjectType" type="string" use="required">
-            <annotation>
-               <documentation>
-                  The IpsObjectType Java-Class the Builder creates TOC Entries for.
-               </documentation>
-               <appInfo>
-                  <meta.attribute kind="java" basedOn="org.faktorips.devtools.core.model.ipsobject.IpsObjectType:"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.stdbuilder.ITocEntryBuilderFactory"/>
                </appInfo>
             </annotation>
          </attribute>

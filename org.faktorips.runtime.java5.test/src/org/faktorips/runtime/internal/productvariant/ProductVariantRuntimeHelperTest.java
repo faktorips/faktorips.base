@@ -133,8 +133,8 @@ public class ProductVariantRuntimeHelperTest {
     }
 
     /*
-     * Cant mock generation acquiring methods as of yet, do this is ignored. Integration test is
-     * working.
+     * This test writhes against mocking by means of several final methods. I have no idea how to
+     * test this.
      */
     @Test
     @Ignore

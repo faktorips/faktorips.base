@@ -107,8 +107,23 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 
     private boolean generateEntriesForModelTypes;
 
+    private Map<IpsObjectType, List<ITocEntryBuilder>> ipsObjectTypeToTocEntryBuilderMap;
+
     public TocFileBuilder(StandardBuilderSet builderSet) {
         super(builderSet);
+        List<ITocEntryBuilderFactory> tocEntryBuilderFactories = StdBuilderPlugin.getDefault()
+                .getTocEntryBuilderFactories();
+        ipsObjectTypeToTocEntryBuilderMap = new HashMap<IpsObjectType, List<ITocEntryBuilder>>();
+        for (ITocEntryBuilderFactory tocEntryBuilderFactory : tocEntryBuilderFactories) {
+            ITocEntryBuilder builder = tocEntryBuilderFactory.createTocEntryBuilder(this);
+            IpsObjectType ipsObjectType = builder.getIpsObjectType();
+            List<ITocEntryBuilder> builderList = ipsObjectTypeToTocEntryBuilderMap.get(ipsObjectType);
+            if (builderList == null) {
+                builderList = new ArrayList<ITocEntryBuilder>();
+                ipsObjectTypeToTocEntryBuilderMap.put(ipsObjectType, builderList);
+            }
+            builderList.add(builder);
+        }
     }
 
     @Override
@@ -188,8 +203,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         IpsObjectType type = ipsSrcFile.getIpsObjectType();
         return IpsObjectType.PRODUCT_CMPT.equals(type) || IpsObjectType.TABLE_CONTENTS.equals(type)
                 || IpsObjectType.TEST_CASE.equals(type) || IpsObjectType.ENUM_CONTENT.equals(type)
-                || IpsObjectType.ENUM_TYPE.equals(type)
-                || StdBuilderPlugin.getDefault().getTocEntryBuilderMap().containsKey(type)
+                || IpsObjectType.ENUM_TYPE.equals(type) || ipsObjectTypeToTocEntryBuilderMap.containsKey(type)
                 || (generateEntriesForModelTypes && type.isEntityType());
     }
 
@@ -381,8 +395,11 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 entries.add(createTocEntry((IEnumContent)object));
             } else if (type.equals(IpsObjectType.ENUM_TYPE)) {
                 entries.add(createTocEntry((IEnumType)object));
-            } else if (StdBuilderPlugin.getDefault().getTocEntryBuilderMap().containsKey(type)) {
-                entries.addAll(StdBuilderPlugin.getDefault().getTocEntryBuilderMap().get(type).createTocEntries(object));
+            } else if (ipsObjectTypeToTocEntryBuilderMap.containsKey(type)) {
+                List<ITocEntryBuilder> builderList = ipsObjectTypeToTocEntryBuilderMap.get(type);
+                for (ITocEntryBuilder builder : builderList) {
+                    entries.addAll(builder.createTocEntries(object));
+                }
             } else {
                 throw new RuntimeException("Unknown ips object type " + object.getIpsObjectType()); //$NON-NLS-1$
             }

@@ -13,8 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.faktorips.devtools.core.ExtensionPoints;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -45,7 +44,7 @@ public class StdBuilderPlugin extends Plugin {
     // The shared instance.
     private static StdBuilderPlugin plugin;
 
-    private Map<IpsObjectType, ITocEntryBuilder> ipsObjectTypeToTocEntryBuilderMap;
+    private List<ITocEntryBuilderFactory> tocEntryBuilderFactories;
 
     /**
      * Returns the shared instance.
@@ -83,26 +82,26 @@ public class StdBuilderPlugin extends Plugin {
     }
 
     private void loadTocEntryBuilders() {
-        ipsObjectTypeToTocEntryBuilderMap = new HashMap<IpsObjectType, ITocEntryBuilder>();
+        tocEntryBuilderFactories = new ArrayList<ITocEntryBuilderFactory>();
         ExtensionPoints extensionPoints = new ExtensionPoints(PLUGIN_ID);
-        IExtension[] extensions = extensionPoints.getExtension("tocEntryBuilder");
+        IExtension[] extensions = extensionPoints.getExtension("tocEntryBuilderFactory");
         for (IExtension extension : extensions) {
             IConfigurationElement[] configurationElements = extension.getConfigurationElements();
             for (IConfigurationElement configElement : configurationElements) {
-                if ("tocEntryBuilder".equals(configElement.getName())) { //$NON-NLS-1$
-                    ITocEntryBuilder builder = ExtensionPoints.createExecutableExtension(extension, configElement,
-                            "class", ITocEntryBuilder.class); //$NON-NLS-1$
-                    String ipsObjectName = ExtensionPoints.createExecutableExtension(extension, configElement,
-                            "ipsObjectType", IpsObjectType.class).getId(); //$NON-NLS-1$
-                    IpsObjectType objectType = IpsObjectType.getTypeForName(ipsObjectName);
-                    ipsObjectTypeToTocEntryBuilderMap.put(objectType, builder);
+                if ("tocEntryBuilderFactory".equals(configElement.getName())) { //$NON-NLS-1$
+                    ITocEntryBuilderFactory builderFactory = ExtensionPoints.createExecutableExtension(extension,
+                            configElement, "class", ITocEntryBuilderFactory.class); //$NON-NLS-1$
+                    tocEntryBuilderFactories.add(builderFactory);
                 }
             }
         }
     }
 
-    public Map<IpsObjectType, ITocEntryBuilder> getTocEntryBuilderMap() {
-        return ipsObjectTypeToTocEntryBuilderMap;
+    /**
+     * @return a defensive copy of the {@link ITocEntryBuilderFactory}s currently registered with
+     *         this plugin.
+     */
+    public List<ITocEntryBuilderFactory> getTocEntryBuilderFactories() {
+        return new ArrayList<ITocEntryBuilderFactory>(tocEntryBuilderFactories);
     }
-
 }

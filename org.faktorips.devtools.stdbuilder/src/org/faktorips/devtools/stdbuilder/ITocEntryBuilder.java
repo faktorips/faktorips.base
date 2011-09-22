@@ -15,12 +15,15 @@ package org.faktorips.devtools.stdbuilder;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
 
 /**
- * Interface for custom builders that create entries for the table of contents (TOC) file. Used by
- * the extension point "org.faktorips.devtools.stdbuilder.tocEntryBuilder".
+ * Interface for custom builders that create entries for the table of contents (TOC) file. Use the
+ * extension point "org.faktorips.devtools.stdbuilder.tocEntryBuilderFactory" to register a factory
+ * that creates instances of this interface.
  * 
  * @author Stefan Widmaier, FaktorZehn AG
  */
@@ -31,7 +34,14 @@ public interface ITocEntryBuilder {
      * 
      * @param ipsObject the {@link IIpsObject} to create TOC entries for.
      * @return a list of {@link TocEntryObject}s.
+     * @throws CoreException if an error occurs when creating TOC entries
      */
-    public List<TocEntryObject> createTocEntries(IIpsObject ipsObject);
+    public List<TocEntryObject> createTocEntries(IIpsObject ipsObject) throws CoreException;
 
+    /**
+     * Returns the {@link IpsObjectType} this builder can create TOC entries for.
+     * 
+     * @return the {@link IpsObjectType} this builder is responsible for.
+     */
+    public IpsObjectType getIpsObjectType();
 }
