@@ -41,6 +41,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -1215,6 +1216,49 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     public UIDatatypeFormatter getDatatypeFormatter() {
         return datatypeFormatter;
+    }
+
+    /**
+     * Logs the status and shows the status in a standard error dialog.
+     */
+    public final static void logAndShowErrorDialog(final IStatus status) {
+        plugin.getLog().log(status);
+        Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
+        display.asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.IpsPlugin_titleErrorDialog,
+                        Messages.IpsPlugin_msgUnexpectedError, status);
+            }
+        });
+    }
+
+    /**
+     * Logs the status and shows the status in a standard error dialog.
+     */
+    public final static void logAndShowErrorDialog(Exception e) {
+        logAndShowErrorDialog(new IpsStatus(e));
+    }
+
+    /**
+     * Logs the status and shows the status in a standard error dialog.
+     */
+    public final static void logAndShowErrorDialog(CoreException e) {
+        logAndShowErrorDialog(e.getStatus());
+    }
+
+    /**
+     * Does not log the status but show an error dialog with the status message
+     */
+    public final static void showErrorDialog(final IStatus status) {
+        Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
+        display.asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.IpsPlugin_titleErrorDialog, null,
+                        status);
+            }
+        });
     }
 
 }

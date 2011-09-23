@@ -33,6 +33,8 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
     public static final String CONTAINER_ID = "org.faktorips.devtools.core.ipsClasspathContainer"; //$NON-NLS-1$
 
+    public static final IPath ENTRY_PATH = new Path(CONTAINER_ID);
+
     private static final String NAME_VERSION_SEP = "_"; //$NON-NLS-1$
 
     public static final String RUNTIME_BUNDLE = "org.faktorips.runtime.java5"; //$NON-NLS-1$

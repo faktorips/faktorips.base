@@ -103,6 +103,10 @@ public class Messages extends NLS {
 
     public static String FaktorIpsPreferencePage_labelMaxHeapSizeIpsTestRunner;
 
+    public static String IpsClasspathContainerPage_0;
+
+    public static String IpsClasspathContainerPage_1;
+
     public static String LinkDropListener_selectAssociation;
 
 }
