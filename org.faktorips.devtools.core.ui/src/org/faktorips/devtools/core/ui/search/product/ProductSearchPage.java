@@ -13,9 +13,6 @@
 
 package org.faktorips.devtools.core.ui.search.product;
 
-import java.util.List;
-
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -28,10 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchPage;
 import org.faktorips.devtools.core.ui.search.product.conditions.ICondition;
 import org.faktorips.devtools.core.ui.search.product.conditions.PolicyAttributeCondition;
@@ -55,34 +49,16 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
         baseComposite = toolkit.createGridComposite(parent, 1, false, true);
         baseComposite.setLayoutData(layoutData);
 
-        Composite cmpProductComponentTypeChooser = toolkit.createGridComposite(baseComposite, 2, false, false);
+        Composite cmpProductComponentTypeChooser = toolkit.createGridComposite(baseComposite, 3, false, false);
         toolkit.createLabel(cmpProductComponentTypeChooser, Messages.ProductSearchPage_labelProductComponentType);
 
-        IpsObjectRefControl ctrProductComponentTypeChooser = new IpsObjectRefControl(null,
-                cmpProductComponentTypeChooser, toolkit, Messages.ProductSearchPage_labelProductComponentType,
-                Messages.ProductSearchPage_labelChooseProductComponentType) {
+        Text text = toolkit.createText(cmpProductComponentTypeChooser);
+        Button button = toolkit.createButton(cmpProductComponentTypeChooser,
+                Messages.ProductSearchPage_labelChooseProductComponentType);
+        ProductComponentTypeField chooser = new ProductComponentTypeField(text, button);
 
-            @Override
-            protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
-                return getPresentationModel().getProductCmptTypesSrcFiles().toArray(new IIpsSrcFile[0]);
-            }
-
-            @Override
-            protected void updateTextControlAfterDialogOK(List<IIpsSrcFile> ipsSrcFiles) {
-                try {
-                    getPresentationModel().setProductCmptType((IProductCmptType)ipsSrcFiles.get(0).getIpsObject());
-                } catch (CoreException e) {
-                    // TODO Exc handeln
-                    throw new RuntimeException(e);
-                }
-                super.updateTextControlAfterDialogOK(ipsSrcFiles);
-            }
-        };
-        ctrProductComponentTypeChooser.setEnabled(true);
-        ctrProductComponentTypeChooser.getTextControl().setEditable(false);
-        ctrProductComponentTypeChooser.getTextControl().setEnabled(false);
-
-        // TODO qualname per binding an model binden
+        getBindingContext().bindContent(chooser, getPresentationModel(),
+                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE);
 
         Text txtSrcFilePatternText = createSrcFilePatternText(toolkit, baseComposite,
                 Messages.ProductSearchPage_labelProductComponent);
@@ -114,30 +90,26 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
         Composite comp = toolkit.createComposite(composite);
 
         comp.setLayout(new FillLayout(SWT.HORIZONTAL));
-        // comp.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 
-        Button btnAddProduct = toolkit
+        Button btnAddProductCondition = toolkit
                 .createButton(
                         comp,
                         NLS.bind(Messages.ProductSearchPage_labelAddConditionButton,
                                 new ProductAttributeCondition().getName()));
 
-        // btnAddProduct.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-
-        btnAddProduct.addSelectionListener(new SelectionAdapter() {
+        btnAddProductCondition.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 ICondition condition = new ProductAttributeCondition();
                 addCondition(condition);
             }
         });
-        // getBindingContext().bindEnabled(btnAddProduct, getModel(),
-        // ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
+        getBindingContext().bindEnabled(btnAddProductCondition, getPresentationModel(),
+                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
 
         Button btnAddPolicy = toolkit.createButton(comp,
                 NLS.bind(Messages.ProductSearchPage_labelAddConditionButton, new PolicyAttributeCondition().getName()));
 
-        // btnAddPolicy.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 
         btnAddPolicy.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -146,8 +118,8 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
                 addCondition(condition);
             }
         });
-        // getBindingContext().bindEnabled(btnAddPolicy, getModel(),
-        // ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
+        getBindingContext().bindEnabled(btnAddPolicy, getPresentationModel(),
+                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
 
     }
 

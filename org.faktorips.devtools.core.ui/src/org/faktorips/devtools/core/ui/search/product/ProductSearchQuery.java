@@ -120,16 +120,10 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
         Set<IIpsSrcFile> selectedSrcFiles = super.getSelectedSrcFiles();
         Set<IIpsSrcFile> matchingProductComponents = new HashSet<IIpsSrcFile>();
 
-        IProductCmptType productCmptType = searchModel.getProductCmptType();
-
         IIpsProject[] productDefinitionProjects = ipsModel.getIpsProductDefinitionProjects();
         for (IIpsProject project : productDefinitionProjects) {
 
-            // TODO das ist unschön, kann man die bausteine ohne diesen Umweg finden?
-            // das problem ist, wenn man den type im modelprojekt auswaehlt, dann findet FIPS nicht
-            // die Produktbausteine, die von dem Type im ipsarchive abhaengen
-            // ==> im model doch qualified name verwenden?
-            IProductCmptType type = project.findProductCmptType(productCmptType.getQualifiedName());
+            IProductCmptType type = project.findProductCmptType(searchModel.getProductCmptType().getQualifiedName());
 
             if (type != null) {
                 List<IIpsSrcFile> asList = Arrays.asList(project.findAllProductCmptSrcFiles(type, true));
@@ -160,7 +154,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
 
     @Override
     public String getResultLabel(int matchCount) {
-        return matchCount + Messages.ProductSearchQuery_1 + searchModel.getProductCmptType().getName();
+        return matchCount + Messages.ProductSearchQuery_1 + searchModel.getProductCmptType().getQualifiedName();
     }
 
 }

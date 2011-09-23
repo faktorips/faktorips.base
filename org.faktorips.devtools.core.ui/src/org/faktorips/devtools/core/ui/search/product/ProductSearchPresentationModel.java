@@ -64,7 +64,6 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         return productCmptType.getName();
     }
 
-    // TODO string mit qualname
     public IProductCmptType getProductCmptType() {
         return productCmptType;
     }

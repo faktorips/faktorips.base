@@ -252,10 +252,14 @@ public class ProductSearchConditionsTableViewerProvider {
         tableViewer.setContentProvider(new ArrayContentProvider());
         tableViewer.setInput(model.getProductSearchConditionPresentationModels());
 
-        createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_conditionType, 150, new ConditionTypeLabelProvider(), null);
-        createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_element, 180, new ElementLabelProvider(), new ElementEditingSupport(tableViewer));
-        createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_operator, 150, new OperatorLabelProvider(), new OperatorEditingSupport(tableViewer));
-        createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_argument, 170, new ArgumentLabelProvider(), new ArgumentEditingSupport(tableViewer));
+        createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_conditionType, 150,
+                new ConditionTypeLabelProvider(), null);
+        createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_element, 180,
+                new ElementLabelProvider(), new ElementEditingSupport(tableViewer));
+        createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_operator, 150,
+                new OperatorLabelProvider(), new OperatorEditingSupport(tableViewer));
+        createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_argument, 170,
+                new ArgumentLabelProvider(), new ArgumentEditingSupport(tableViewer));
 
         layoutViewer();
     }

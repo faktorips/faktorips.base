@@ -20,7 +20,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -80,6 +79,6 @@ public class ProductAttributeCondition extends AbstractAttributeCondition {
     @Override
     public String getNoSearchableElementsMessage(IProductCmptType productCmptType) {
         return NLS.bind(Messages.ProductAttributeCondition_noSearchableElementMessage,
-                productCmptType.getLabel(new MultiLanguageSupport().getLocalizationLocale()));
+                productCmptType.getQualifiedName());
     }
 }
