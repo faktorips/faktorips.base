@@ -104,6 +104,18 @@ public class StringUtil {
     }
 
     /**
+     * Takes a name like a class name and removes the package information from the beginning,
+     * leaving the last two parts and the '.' between.
+     */
+    public final static String unqualifiedRelationName(String qualifiedName) {
+        int index = qualifiedName.lastIndexOf(".");
+        if (index == -1) {
+            return qualifiedName;
+        }
+        return qualifiedName.substring(qualifiedName.lastIndexOf('.', qualifiedName.lastIndexOf('.') - 1) + 1);
+    }
+
+    /**
      * Returns the qualified name for the given package name and unqualified name. If packageName is
      * <code>null</code> or the empty String the unqualified name is returned.
      * 
