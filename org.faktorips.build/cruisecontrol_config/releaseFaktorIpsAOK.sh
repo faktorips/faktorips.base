@@ -101,7 +101,7 @@ EOF
   echo
 
   echo create updatesite for nwds
-  cp /var/www/update.faktorzehn.org/faktorips/aok/downloads/faktorips-3.4/$UPDATE_SITE_ZIP_NAME .
+  cp /var/www/update.faktorzehn.org/faktorips/aok/downloads/faktorips-$MAJOR_VERSION.$MINOR_VERSION/$UPDATE_SITE_ZIP_NAME .
   # TODO in der site.xml de.aoksystems.omc.faktorips.feature.product auskommentieren
   mkdir tmp
   cp -r tmp_fips_release/checkout_release/org.faktorips.devtarget/eclipse/dropins/aok/eclipse/plugins tmp
@@ -125,7 +125,7 @@ EOF
   cd tmp 
   zip -r $UPDATE_SITE_ZIP_NAME * -x \*CVS\* >> $LOGFILE
   echo copy result to $DOWNLOAD_PATH
-  cp $UPDATE_SITE_ZIP_NAME /var/www/update.faktorzehn.org/faktorips/aok/downloads/faktorips-3.4/updateSite_faktorips-${BUILD_VERSION}_nwds_aok.zip
+  cp $UPDATE_SITE_ZIP_NAME /var/www/update.faktorzehn.org/faktorips/aok/downloads/faktorips-$MAJOR_VERSION.$MINOR_VERSION/updateSite_faktorips-${BUILD_VERSION}_nwds_aok.zip
   cd ..
   rm -r tmp
 }
