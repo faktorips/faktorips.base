@@ -86,7 +86,7 @@ y
 EOF
   handleError
   echo copy result to $DOWNLOAD_PATH ...
-  ##cp $UPDATE_SITE_RESULT_PATH $DOWNLOAD_PATH/$UPDATE_SITE_ZIP_NAME
+  cp $UPDATE_SITE_RESULT_PATH $DOWNLOAD_PATH/$UPDATE_SITE_ZIP_NAME
   handleError
   echo
  
@@ -101,7 +101,7 @@ EOF
   echo
 
   echo create updatesite for nwds
-  cp /var/www/update.faktorzehn.org/faktorips/aok/downloads/faktorips-$MAJOR_VERSION.$MINOR_VERSION/$UPDATE_SITE_ZIP_NAME .
+  cp $DOWNLOAD_PATH/$UPDATE_SITE_ZIP_NAME .
   # TODO in der site.xml de.aoksystems.omc.faktorips.feature.product auskommentieren
   mkdir tmp
   cp -r tmp_fips_release/checkout_release/org.faktorips.devtarget/eclipse/dropins/aok/eclipse/plugins tmp
