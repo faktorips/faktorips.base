@@ -196,7 +196,9 @@ public class AssociationDerivedUnionGroup extends Composite {
         public void setSubset(boolean newValue) {
             subset = newValue;
             if (!subset) {
-                association.setSubsettedDerivedUnion(""); //$NON-NLS-1$
+                association.setSubsettedDerivedUnion(StringUtils.EMPTY);
+            } else {
+                association.setSubsettedDerivedUnion(derivedUnionCombo.getItem(0));
             }
             notifyListeners();
         }
@@ -245,7 +247,7 @@ public class AssociationDerivedUnionGroup extends Composite {
                     // if at least one derived union candidate is available
                     // then set the first derived union as default
                     if (associations.length > 0 && !association.isSubsetOfADerivedUnion() && derivedUnionsInitialized) {
-                        subset = true;
+                        setSubset(true);
                         association.setSubsettedDerivedUnion(associations[0].getName());
                     }
                     derivedUnionsInitialized = true;

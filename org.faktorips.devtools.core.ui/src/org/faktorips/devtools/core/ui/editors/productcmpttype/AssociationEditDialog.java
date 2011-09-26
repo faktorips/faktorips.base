@@ -371,6 +371,16 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             subset = newValue;
             if (!subset) {
                 association.setSubsettedDerivedUnion(""); //$NON-NLS-1$
+            } else {
+                IAssociation[] derivedUnionCandidates;
+                try {
+                    derivedUnionCandidates = association.findDerivedUnionCandidates(association.getIpsProject());
+                    if (derivedUnionCandidates != null && derivedUnionCandidates.length > 0) {
+                        association.setSubsettedDerivedUnion(derivedUnionCandidates[0].getName());
+                    }
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
             }
             notifyListeners();
         }
