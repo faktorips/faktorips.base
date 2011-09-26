@@ -24,7 +24,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -385,8 +384,7 @@ public class ProjectUtil {
         if (targetVersionIsAtLeast5(javaProject)) {
             IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + 1];
             System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
-            entries[oldEntries.length] = JavaCore.newContainerEntry(new Path(
-                    IpsClasspathContainerInitializer.CONTAINER_ID));
+            entries[oldEntries.length] = JavaCore.newContainerEntry(IpsClasspathContainerInitializer.ENTRY_PATH);
             javaProject.setRawClasspath(entries, null);
         }
     }
