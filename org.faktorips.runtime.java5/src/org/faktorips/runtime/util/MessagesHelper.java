@@ -16,6 +16,7 @@ package org.faktorips.runtime.util;
 import java.lang.ref.SoftReference;
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -69,7 +70,11 @@ public class MessagesHelper {
      * @return the translated message located in the property file
      */
     public String getMessage(String key, Locale locale) {
-        return ResourceBundle.getBundle(name, locale, loader).getString(key);
+        try {
+            return ResourceBundle.getBundle(name, locale, loader).getString(key);
+        } catch (MissingResourceException e) {
+            return "";
+        }
     }
 
     /**
@@ -83,7 +88,7 @@ public class MessagesHelper {
      * @return the translated message located in the property file with replaced parameters
      */
     public String getMessage(String key, Locale locale, Object... replacements) {
-        String s = ResourceBundle.getBundle(name, locale, loader).getString(key);
+        String s = getMessage(key, locale);
         MessageFormat mf = new MessageFormat(s, locale);
         return mf.format(replacements);
     }
