@@ -69,7 +69,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -90,7 +89,6 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -117,7 +115,7 @@ import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
@@ -661,18 +659,14 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private class TestAttributeTblLabelProvider extends DefaultLabelProvider implements ITableLabelProvider {
 
-        private ResourceManager resourceManager;
-
         private IIpsProject ipsProject;
 
         public TestAttributeTblLabelProvider() {
             ipsProject = testCaseType.getIpsProject();
-            resourceManager = new LocalResourceManager(JFaceResources.getResources());
         }
 
         @Override
         public void dispose() {
-            resourceManager.dispose();
             super.dispose();
         }
 
@@ -801,7 +795,7 @@ public class TestCaseTypeSection extends IpsSection {
             }
 
             try {
-                if (!object.isValid() && !e.getState()) {
+                if (!object.isValid(object.getIpsProject()) && !e.getState()) {
                     postAsyncRunnable(new Runnable() {
                         @Override
                         public void run() {
@@ -1185,16 +1179,18 @@ public class TestCaseTypeSection extends IpsSection {
         structureLayout.marginHeight = 3;
         detailComposite.setLayout(structureLayout);
 
+        Composite details = createBorderComposite(detailComposite);
+        Section section = toolkit.getFormToolkit().createSection(details, 0);
+        section.setText(labelProvider.getText(testParam));
+        section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
         MessageList msgList = null;
         try {
             msgList = testParam.validate(testParam.getIpsProject());
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
+            return section;
         }
-        Composite details = createBorderComposite(detailComposite);
-        Section section = toolkit.getFormToolkit().createSection(details, 0);
-        section.setText(labelProvider.getText(testParam));
-        section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         // create error indicator in the description bar
         // show errors for property policy cmpt type and property association,
@@ -1365,10 +1361,10 @@ public class TestCaseTypeSection extends IpsSection {
         viewer.setContentProvider(new ArrayContentProvider());
         viewer.setLabelProvider(new TestAttributeTblLabelProvider());
 
-        EnumValue[] values = TestParameterType.getEnumType().getValues();
+        TestParameterType[] values = TestParameterType.values();
         String[] valueNames = new String[values.length - 1];
         int idx = 0;
-        for (EnumValue value : values) {
+        for (TestParameterType value : values) {
             if (value != TestParameterType.COMBINED) {
                 valueNames[idx++] = value.getName();
             }
@@ -1491,18 +1487,19 @@ public class TestCaseTypeSection extends IpsSection {
 
         label = toolkit.createFormLabel(editFieldsComposite,
                 Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
-        EditField<EnumValue> editFieldType = new EnumValueField(toolkit.createCombo(editFieldsComposite,
-                TestParameterType.getEnumType()), TestParameterType.getEnumType());
+        TestParameterType[] allowedValues;
+        if (testParam instanceof ITestValueParameter) {
+            allowedValues = new TestParameterType[] { TestParameterType.INPUT, TestParameterType.EXPECTED_RESULT };
+        } else if (testParam instanceof ITestRuleParameter) {
+            allowedValues = new TestParameterType[] { TestParameterType.EXPECTED_RESULT };
+        } else {
+            allowedValues = TestParameterType.values();
+        }
+
+        EnumField<TestParameterType> editFieldType = new EnumField<TestParameterType>(
+                toolkit.createCombo(editFieldsComposite), allowedValues);
         addSectionSelectionListeners(editFieldType, label, testParam);
         uiController.add(editFieldType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
-
-        if (testParam instanceof ITestValueParameter || testParam instanceof ITestRuleParameter) {
-            // remove enties in the combo box depending on the given test parameter
-            ((Combo)editFieldType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.COMBINED));
-            if (testParam instanceof ITestRuleParameter) {
-                ((Combo)editFieldType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.INPUT));
-            }
-        }
     }
 
     private boolean isAssociation(ITestPolicyCmptTypeParameter testParam) {
@@ -1651,7 +1648,7 @@ public class TestCaseTypeSection extends IpsSection {
             IpsObjectUIController uiController) {
 
         Label label = null;
-        if (!(parameter != null && isAssociation(parameter))) {
+        if (!(isAssociation(parameter))) {
             label = toolkit.createFormLabel(editFieldsComposite,
                     Messages.TestCaseTypeSection_EditFieldLabel_RequiresProduct);
             EditField<Boolean> editFieldReqProd = new CheckboxField(toolkit.createCheckbox(editFieldsComposite));
@@ -2093,7 +2090,7 @@ public class TestCaseTypeSection extends IpsSection {
                 }
             }
             if (selectedTestParamIndexes == null) {
-                throw new RuntimeException("Unable to determine the index of the given test parameter!");// $
+                throw new RuntimeException("Unable to determine the index of the given test parameter!"); //$NON-NLS-1$
             }
             testCaseType.moveTestParameters(selectedTestParamIndexes, up);
         } else {

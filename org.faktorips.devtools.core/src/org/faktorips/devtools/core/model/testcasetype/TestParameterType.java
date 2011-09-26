@@ -13,41 +13,21 @@
 
 package org.faktorips.devtools.core.model.testcasetype;
 
-import org.faktorips.devtools.core.enums.DefaultEnumType;
-import org.faktorips.devtools.core.enums.DefaultEnumValue;
-import org.faktorips.devtools.core.enums.EnumType;
-import org.faktorips.devtools.core.enums.EnumValue;
+public enum TestParameterType {
 
-public class TestParameterType extends DefaultEnumValue {
+    INPUT("input", Messages.TestParameterType_Input, 0), //$NON-NLS-1$
 
-    public final static TestParameterType INPUT;
+    EXPECTED_RESULT("expectedResult", Messages.TestParameterType_ExpectedResult, 1), //$NON-NLS-1$
 
-    public final static TestParameterType EXPECTED_RESULT;
+    COMBINED("combined", Messages.TestParameterType_Combined, 2); //$NON-NLS-1$
 
-    public final static TestParameterType COMBINED;
+    private final Integer index;
+    private final String id;
+    private final String name;
 
-    private final static DefaultEnumType enumType;
-
-    public final static TestParameterType UNKNOWN;
-
-    private final static DefaultEnumType nonDefaultEnumType;
-
-    private Integer index;
-
-    static {
-        enumType = new DefaultEnumType("TestParameterTypeValue", TestParameterType.class); //$NON-NLS-1$
-        INPUT = new TestParameterType(enumType, "input", Messages.TestParameterType_Input, 0); //$NON-NLS-1$
-        EXPECTED_RESULT = new TestParameterType(enumType,
-                "expectedResult", Messages.TestParameterType_ExpectedResult, 1); //$NON-NLS-1$
-        COMBINED = new TestParameterType(enumType, "combined", Messages.TestParameterType_Combined, 2); //$NON-NLS-1$
-
-        nonDefaultEnumType = new DefaultEnumType("TestParameterTypeValueUnknown", TestParameterType.class); //$NON-NLS-1$
-        UNKNOWN = new TestParameterType(nonDefaultEnumType,
-                "unknown", Messages.TestParameterType_Unknown, Integer.MAX_VALUE); //$NON-NLS-1$
-    }
-
-    public TestParameterType(DefaultEnumType type, String id, String name, int index) {
-        super(type, id, name);
+    TestParameterType(String id, String name, int index) {
+        this.id = id;
+        this.name = name;
         this.index = new Integer(index);
     }
 
@@ -56,19 +36,16 @@ public class TestParameterType extends DefaultEnumValue {
     }
 
     /**
-     * Returns the enumeration type which contains all test parameter types.
-     */
-    public final static EnumType getEnumType() {
-        return enumType;
-    }
-
-    /**
      * Returns the test parameter type by the given id or <code>UNKNOWN</code> if the id not
      * represent a test parameter type.
      */
     public final static TestParameterType getTestParameterType(String id) {
-        TestParameterType type = (TestParameterType)enumType.getEnumValue(id);
-        return type == null ? UNKNOWN : type;
+        for (TestParameterType type : values()) {
+            if (type.getId().equals(id)) {
+                return type;
+            }
+        }
+        return null;
     }
 
     /**
@@ -76,11 +53,12 @@ public class TestParameterType extends DefaultEnumValue {
      * is given.
      */
     public final static TestParameterType getTestParameterType(Integer index) {
-        EnumValue[] types = enumType.getValues();
-        if (index.intValue() >= types.length || index.intValue() < 0) {
-            return null;
+        for (TestParameterType type : values()) {
+            if (type.index.equals(index)) {
+                return type;
+            }
         }
-        return (TestParameterType)types[index.intValue()];
+        return null;
     }
 
     /**
@@ -131,17 +109,26 @@ public class TestParameterType extends DefaultEnumValue {
      * Returns the index of the given type inside the default enumeration.
      */
     public static int getIndexOfType(TestParameterType type) {
-        int idxOf = -1;
-        for (int i = 0; i < TestParameterType.getEnumType().getNumOfValues(); i++) {
-            if (type == TestParameterType.getTestParameterType(new Integer(i))) {
-                idxOf = i;
-                break;
-            }
-        }
-        if (idxOf == -1) {
-            throw new RuntimeException("Wrong content of test parameter type enum!"); //$NON-NLS-1$
-        }
-        return idxOf;
+        return type.index;
+    }
+
+    /**
+     * @return Returns the name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @return Returns the id.
+     */
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 
 }

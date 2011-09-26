@@ -148,7 +148,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
         }
 
         controller = new IpsObjectUIController(newTestParameter);
-        childParamSelectWizardPage.connectToModel(controller, newTestParameter);
+        childParamSelectWizardPage.connectToModel(controller);
         detailWizardPage.connectToModel(controller, newTestParameter);
         controller.updateUI();
 
@@ -168,7 +168,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
         }
 
         try {
-            return newTestParameter.isValid();
+            return newTestParameter.isValid(newTestParameter.getIpsProject());
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

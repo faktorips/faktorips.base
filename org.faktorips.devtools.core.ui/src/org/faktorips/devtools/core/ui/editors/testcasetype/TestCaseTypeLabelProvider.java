@@ -88,6 +88,9 @@ public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
      * Returns the type extension of the given type, format: " - typeName"
      */
     private String getTypeExtension(TestParameterType type) {
+        if (type == null) {
+            return StringUtils.EMPTY;
+        }
         return " - " + type.getName(); //$NON-NLS-1$
     }
 

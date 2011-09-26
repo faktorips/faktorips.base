@@ -20,17 +20,15 @@ import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
-import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -55,7 +53,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
 
     private EditField<String> editFieldDatatypeOrRule;
     private EditField<String> editFieldName;
-    private EditField<EnumValue> editFieldParamType;
+    private EnumField<TestParameterType> editFieldParamType;
 
     private String prevDatatypeOrRule;
 
@@ -283,23 +281,15 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         if (editFieldParamType != null) {
             editFieldParamType.getControl().dispose();
         }
-        editFieldParamType = new EnumValueField(wizard.getUiToolkit().createCombo(c, TestParameterType.getEnumType()),
-                TestParameterType.getEnumType());
-        editFieldParamType.addChangeListener(this);
-
-        // disable type drop down for test rule parameter, because only expected is allowed
+        TestParameterType[] allowedValues;
         if (wizard.getKindOfTestParameter() == NewRootParameterWizard.TEST_RULE_PARAMETER) {
-            editFieldParamType.getControl().setEnabled(false);
-            // remove combined type entry in drop down, because combined is not allowed for a test
-            // value parameter
-            ((Combo)editFieldParamType.getControl()).remove(TestParameterType
-                    .getIndexOfType(TestParameterType.COMBINED));
-            ((Combo)editFieldParamType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.INPUT));
+            allowedValues = new TestParameterType[] { TestParameterType.EXPECTED_RESULT };
         } else if (wizard.getKindOfTestParameter() == NewRootParameterWizard.TEST_VALUE_PARAMETER) {
-            // remove combined type entry in drop down, because combined is not allowed for a test
-            // value parameter
-            ((Combo)editFieldParamType.getControl()).remove(TestParameterType
-                    .getIndexOfType(TestParameterType.COMBINED));
+            allowedValues = new TestParameterType[] { TestParameterType.INPUT, TestParameterType.EXPECTED_RESULT };
+        } else {
+            allowedValues = TestParameterType.values();
         }
+        editFieldParamType = new EnumField<TestParameterType>(wizard.getUiToolkit().createCombo(c), allowedValues);
+        editFieldParamType.addChangeListener(this);
     }
 }

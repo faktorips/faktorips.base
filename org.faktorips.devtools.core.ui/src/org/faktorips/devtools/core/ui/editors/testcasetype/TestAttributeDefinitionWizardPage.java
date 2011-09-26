@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -40,7 +39,7 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
     private Text testAttributeNameText;
     private DatatypeRefControl datatypeRefControl;
     private Combo testAttributeType;
-    private EnumValue[] valuesWithoutCombined;
+    private TestParameterType[] valuesWithoutCombined;
 
     private BindingContext bindingContext = new BindingContext();
     private PmoTestAttribute testAttribute;
@@ -112,19 +111,19 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
         bindingContext.bindContent(testAttributeNameText, testAttribute, PmoTestAttribute.PROPERTY_NAME);
 
         // type of attribute
-        EnumValue[] values = TestParameterType.getEnumType().getValues();
-        valuesWithoutCombined = new EnumValue[values.length - 1];
+        TestParameterType[] values = TestParameterType.values();
+        valuesWithoutCombined = new TestParameterType[values.length - 1];
         int idx = 0;
-        for (EnumValue value : values) {
+        for (TestParameterType value : values) {
             if (value != TestParameterType.COMBINED) {
                 valuesWithoutCombined[idx++] = value;
             }
         }
         uiToolkit.createLabel(c, Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
-        testAttributeType = uiToolkit.createCombo(c, valuesWithoutCombined);
+        testAttributeType = uiToolkit.createCombo(c);
         testAttributeType.select(0);
         bindingContext.bindContent(testAttributeType, testAttribute, PmoTestAttribute.PROPERTY_TEST_PARAMETER_TYPE,
-                TestParameterType.getEnumType());
+                valuesWithoutCombined);
 
         // datatype of test attribute
         uiToolkit.createFormLabel(c, Messages.TestAttributeDefinitionWizardPage_testLabelDatatype);

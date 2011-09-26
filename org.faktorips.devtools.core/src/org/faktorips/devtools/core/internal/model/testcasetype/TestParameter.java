@@ -79,17 +79,17 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
 
     @Override
     public boolean isInputOrCombinedParameter() {
-        return type.equals(TestParameterType.INPUT) || type.equals(TestParameterType.COMBINED);
+        return type == TestParameterType.INPUT || type == TestParameterType.COMBINED;
     }
 
     @Override
     public boolean isExpextedResultOrCombinedParameter() {
-        return type.equals(TestParameterType.EXPECTED_RESULT) || type.equals(TestParameterType.COMBINED);
+        return TestParameterType.EXPECTED_RESULT == type || TestParameterType.COMBINED == type;
     }
 
     @Override
     public boolean isCombinedParameter() {
-        return type.equals(TestParameterType.COMBINED);
+        return type == TestParameterType.COMBINED;
     }
 
     @Override

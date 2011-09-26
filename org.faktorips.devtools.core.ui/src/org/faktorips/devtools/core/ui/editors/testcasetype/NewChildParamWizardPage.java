@@ -21,7 +21,6 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -29,7 +28,7 @@ import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
-import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -52,7 +51,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
     private EditField<String> editFieldAssociation;
     private EditField<String> editFieldTarget;
     private EditField<String> editFieldName;
-    private EditField<EnumValue> editFieldParamType;
+    private EnumField<TestParameterType> editFieldParamType;
 
     private String prevAssociation;
     private IPolicyCmptTypeAssociation association;
@@ -88,8 +87,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
         editFieldName.addChangeListener(this);
 
         uiToolkit.createLabel(c, Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
-        editFieldParamType = new EnumValueField(uiToolkit.createCombo(c, TestParameterType.getEnumType()),
-                TestParameterType.getEnumType());
+        editFieldParamType = new EnumField<TestParameterType>(uiToolkit.createCombo(c), TestParameterType.class);
         editFieldParamType.addChangeListener(this);
 
         setControl(c);
@@ -98,7 +96,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
     /**
      * Connects the edit fields with the given controller to the given test parameter
      */
-    void connectToModel(IpsObjectUIController controller, ITestParameter testParameter) {
+    void connectToModel(IpsObjectUIController controller) {
         controller.add(editFieldAssociation, ITestPolicyCmptTypeParameter.PROPERTY_ASSOCIATION);
         controller.add(editFieldTarget, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
         controller.add(editFieldName, ITestParameter.PROPERTY_NAME);
