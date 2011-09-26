@@ -20,13 +20,13 @@ import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
  */
 public enum AssociationType {
 
-    COMPOSITION_MASTER_TO_DETAIL("comp", "Composition (Master to Detail)"), //$NON-NLS-1$//$NON-NLS-2$
+    COMPOSITION_MASTER_TO_DETAIL("comp", Messages.AssociationType_label_composition_master_to_detail), //$NON-NLS-1$
 
-    COMPOSITION_DETAIL_TO_MASTER("reverseComp", "Composition (Detail to Master)"), //$NON-NLS-1$//$NON-NLS-2$
+    COMPOSITION_DETAIL_TO_MASTER("reverseComp", Messages.AssociationType_label_composition_detail_to_master), //$NON-NLS-1$
 
-    ASSOCIATION("ass", "Association"), //$NON-NLS-1$//$NON-NLS-2$
+    ASSOCIATION("ass", Messages.AssociationType_label_association), //$NON-NLS-1$
 
-    AGGREGATION("aggr", "Aggregation"); //$NON-NLS-1$//$NON-NLS-2$
+    AGGREGATION("aggr", Messages.AssociationType_label_aggregation); //$NON-NLS-1$
 
     private final String id;
     private final String name;

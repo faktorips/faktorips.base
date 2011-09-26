@@ -27,6 +27,10 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String AssociationType_label_aggregation;
+    public static String AssociationType_label_association;
+    public static String AssociationType_label_composition_detail_to_master;
+    public static String AssociationType_label_composition_master_to_detail;
     public static String ProductCmptPropertyType_defaultValueAndValueSet;
     public static String ProductCmptPropertyType_fomula;
     public static String ProductCmptPropertyType_productAttribute;
