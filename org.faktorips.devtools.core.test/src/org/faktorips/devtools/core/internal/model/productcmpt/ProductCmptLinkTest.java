@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -249,6 +250,43 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
         assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
 
+    }
+
+    @Test
+    public void testValidateCardinalityForQualified() throws CoreException {
+        IPolicyCmptType coverageType = newPolicyAndProductCmptType(ipsProject, "TestCoverage", "TestCoverageType");
+        IProductCmptType coverageTypeType = coverageType.findProductCmptType(ipsProject);
+
+        ProductCmpt cmpt = newProductCmpt(coverageTypeType, "CoverageType");
+        link.setTarget(cmpt.getQualifiedName());
+
+        IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
+        productAssociation.setTarget(coverageTypeType.getQualifiedName());
+        productAssociation.setTargetRoleSingular("CoverageType");
+
+        IPolicyCmptTypeAssociation policyAssociation = (IPolicyCmptTypeAssociation)policyCmptType.newAssociation();
+        policyAssociation.setTarget(coverageType.getQualifiedName());
+        policyAssociation.setTargetRoleSingular("Coverage");
+        policyAssociation.setQualified(true);
+        policyAssociation.setMinCardinality(1);
+        policyAssociation.setMaxCardinality(1);
+
+        MessageList msgList = link.validate(ipsProject);
+        assertTrue(msgList.isEmpty());
+
+        IProductCmptLink secondLink = generation.newLink("CoverageType");
+        secondLink.setTarget(cmpt.getQualifiedName());
+        secondLink.setMaxCardinality(1);
+
+        msgList = link.validate(ipsProject);
+        assertTrue(msgList.isEmpty());
+        msgList = secondLink.validate(ipsProject);
+        assertTrue(msgList.isEmpty());
+
+        secondLink.setMaxCardinality(2);
+        msgList = secondLink.validate(ipsProject);
+        assertFalse(msgList.isEmpty());
+        assertNotNull(msgList.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
     }
 
     @Test

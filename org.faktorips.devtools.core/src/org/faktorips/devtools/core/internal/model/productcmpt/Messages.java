@@ -66,6 +66,7 @@ public class Messages extends NLS {
     public static String ProductCmptRelation_msgMaxCardinalityIsLessThanMin;
     public static String ProductCmptLink_msgMaxCardinalityExceedsModelMax;
     public static String ProductCmptLink_msgMinCardinalityExceedsModelMin;
+    public static String ProductCmptLink_msgMaxCardinalityExceedsModelMaxQualified;
     public static String ProductCmptRelation_msgInvalidTarget;
 
     public static String DeepCopyOperation_taskTitle;

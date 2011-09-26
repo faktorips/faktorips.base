@@ -212,49 +212,58 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                 list.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[] {
                         PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY }));
             }
-            // MTB#515
-            // this.maxCardinality + ForAllOtherOfSameAssociation(Sum(other.minCardinality)) <=
-            // policyCmptAssociation.maxCardinality
-            int maxType = associationObj.getMaxCardinality();
-            if (maxType != IProductCmptTypeAssociation.CARDINALITY_MANY) {
-                int sumMinCardinality = this.getMaxCardinality();
-                IProductCmptLink[] links = getProductCmptGeneration().getLinks(getAssociation());
-                if (sumMinCardinality < IProductCmptLink.CARDINALITY_MANY) {
-                    for (IProductCmptLink productCmptLink : links) {
-                        if (!productCmptLink.equals(this)) {
-                            sumMinCardinality += productCmptLink.getMinCardinality();
-                        }
-                    }
-                }
-                if (sumMinCardinality > maxType) {
-                    String text = NLS.bind(Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMax,
-                            this.getMaxCardinality(), Integer.toString(maxType));
+            // For qulified associations the implicit
+            if (associationObj.isQualified()) {
+                if (getMaxCardinality() > associationObj.getMaxCardinality()) {
+                    String text = NLS.bind(Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMaxQualified,
+                            this.getMaxCardinality(), associationObj.getMaxCardinality());
                     list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this,
                             PROPERTY_MAX_CARDINALITY));
                 }
-            }
-            // MTB#515
-            // this.minCardinality + ForAllOtherOfSameAssociation(Sum(other.maxCardinality)) <=
-            // policyCmptAssociation.minCardinality
-            int minType = associationObj.getMinCardinality();
-            int sumMaxCardinality = this.getMinCardinality();
-            IProductCmptLink[] links = getProductCmptGeneration().getLinks(getAssociation());
-            for (IProductCmptLink productCmptLink : links) {
-                if (!productCmptLink.equals(this)) {
-                    if (productCmptLink.getMaxCardinality() == IProductCmptLink.CARDINALITY_MANY) {
-                        sumMaxCardinality = IProductCmptLink.CARDINALITY_MANY;
-                        break;
+            } else {
+                // MTB#515
+                // this.maxCardinality + ForAllOtherOfSameAssociation(Sum(other.minCardinality)) <=
+                // policyCmptAssociation.maxCardinality
+                int maxType = associationObj.getMaxCardinality();
+                if (maxType != IProductCmptTypeAssociation.CARDINALITY_MANY) {
+                    int sumMinCardinality = this.getMaxCardinality();
+                    IProductCmptLink[] links = getProductCmptGeneration().getLinks(getAssociation());
+                    if (sumMinCardinality < IProductCmptLink.CARDINALITY_MANY) {
+                        for (IProductCmptLink productCmptLink : links) {
+                            if (!productCmptLink.equals(this)) {
+                                sumMinCardinality += productCmptLink.getMinCardinality();
+                            }
+                        }
                     }
-                    sumMaxCardinality += productCmptLink.getMaxCardinality();
+                    if (sumMinCardinality > maxType) {
+                        String text = NLS.bind(Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMax,
+                                this.getMaxCardinality(), Integer.toString(maxType));
+                        list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this,
+                                PROPERTY_MAX_CARDINALITY));
+                    }
+                }
+                // MTB#515
+                // this.minCardinality + ForAllOtherOfSameAssociation(Sum(other.maxCardinality)) <=
+                // policyCmptAssociation.minCardinality
+                int minType = associationObj.getMinCardinality();
+                int sumMaxCardinality = this.getMinCardinality();
+                IProductCmptLink[] links = getProductCmptGeneration().getLinks(getAssociation());
+                for (IProductCmptLink productCmptLink : links) {
+                    if (!productCmptLink.equals(this)) {
+                        if (productCmptLink.getMaxCardinality() == IProductCmptLink.CARDINALITY_MANY) {
+                            sumMaxCardinality = IProductCmptLink.CARDINALITY_MANY;
+                            break;
+                        }
+                        sumMaxCardinality += productCmptLink.getMaxCardinality();
+                    }
+                }
+                if (sumMaxCardinality < minType) {
+                    String text = NLS.bind(Messages.ProductCmptLink_msgMinCardinalityExceedsModelMin,
+                            this.getMinCardinality(), Integer.toString(minType));
+                    list.add(new Message(MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, text, Message.ERROR, this,
+                            PROPERTY_MIN_CARDINALITY));
                 }
             }
-            if (sumMaxCardinality < minType) {
-                String text = NLS.bind(Messages.ProductCmptLink_msgMinCardinalityExceedsModelMin,
-                        this.getMinCardinality(), Integer.toString(minType));
-                list.add(new Message(MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, text, Message.ERROR, this,
-                        PROPERTY_MIN_CARDINALITY));
-            }
-
             if (defaultCardinality > maxCardinality || minCardinality > defaultCardinality
                     || defaultCardinality == Integer.MAX_VALUE) {
                 String text = NLS.bind(Messages.ProductCmptLink_msgDefaultCardinalityOutOfRange, Integer
