@@ -211,12 +211,12 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 
     @Override
     public boolean isExpextedResultAttribute() {
-        return type.equals(TestParameterType.EXPECTED_RESULT);
+        return type == TestParameterType.EXPECTED_RESULT;
     }
 
     @Override
     public boolean isInputAttribute() {
-        return type.equals(TestParameterType.INPUT);
+        return type == TestParameterType.INPUT;
     }
 
     @Override
@@ -228,7 +228,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     public void setTestAttributeType(TestParameterType type) {
         // assert that the given type is an input or an expected result type,
         // because attributes could have the type combined (input and expected result together)
-        ArgumentCheck.isTrue(type.equals(TestParameterType.INPUT) || type.equals(TestParameterType.EXPECTED_RESULT));
+        ArgumentCheck.isTrue(type == TestParameterType.INPUT || type == TestParameterType.EXPECTED_RESULT);
         TestParameterType oldType = this.type;
         this.type = type;
         valueChanged(oldType, type);
@@ -291,7 +291,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 
         // check the correct type
         if (!isInputAttribute() && !isExpextedResultAttribute()) {
-            String text = NLS.bind(Messages.TestAttribute_Error_TypeNotAllowed, type.getName(), name);
+            String text = NLS.bind(Messages.TestAttribute_Error_TypeNotAllowed, type, name);
             Message msg = new Message(MSGCODE_WRONG_TYPE, text, Message.ERROR, this, PROPERTY_TEST_ATTRIBUTE_TYPE);
             messageList.add(msg);
         }
@@ -299,8 +299,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         // check if the type of the attribute matches the type of the parent
         TestParameterType parentType = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterType();
         if (!TestParameterType.isChildTypeMatching(type, parentType)) {
-            String text = NLS.bind(Messages.TestAttribute_Error_TypeNotAllowedIfParent, type.getName(),
-                    parentType.getName());
+            String text = NLS.bind(Messages.TestAttribute_Error_TypeNotAllowedIfParent, type, parentType.getName());
             Message msg = new Message(MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE, text, Message.ERROR, this,
                     PROPERTY_TEST_ATTRIBUTE_TYPE);
             messageList.add(msg);

@@ -123,7 +123,7 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
 
         // check the correct type
         if (isCombinedParameter() || (!isInputOrCombinedParameter() && !isExpextedResultOrCombinedParameter())) {
-            String text = NLS.bind(Messages.TestValueParameter_ValidationError_TypeNotAllowed, type.getName(), name);
+            String text = NLS.bind(Messages.TestValueParameter_ValidationError_TypeNotAllowed, type, name);
             Message msg = new Message(MSGCODE_WRONG_TYPE, text, Message.ERROR, this, PROPERTY_TEST_PARAMETER_TYPE);
             list.add(msg);
         }
