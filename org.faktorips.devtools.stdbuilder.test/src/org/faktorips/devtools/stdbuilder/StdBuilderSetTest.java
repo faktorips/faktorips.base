@@ -68,7 +68,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
                 .getIpsArtefactBuilderSetInfo("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
         assertNotNull(builderSetInfo);
         IIpsBuilderSetPropertyDef[] propertyDefs = builderSetInfo.getPropertyDefinitions();
-        assertEquals(12, propertyDefs.length);
+        assertEquals(13, propertyDefs.length);
 
         ArrayList<String> propertyDefNames = new ArrayList<String>();
         for (IIpsBuilderSetPropertyDef propertyDef : propertyDefs) {
