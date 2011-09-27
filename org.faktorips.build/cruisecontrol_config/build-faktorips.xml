@@ -575,7 +575,6 @@
             <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/> 
-			<property name="releasePublishLocation" value="file:${updatesite.path}/"/>
         </ant>
 		
 	    <!-- build runtime and valuetypes separately,
@@ -801,6 +800,8 @@ ${faktoripsProductLinuxZipPath}
             <param name="source" value="${updateSiteNamePrefix}-${build.version}.zip" />
             <param name="dest.name" value="${faktoripsUpdateSiteZipPath}" />
         </antcall>
+        
+        <ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="-generate.p2.metadata" inheritall="true" />
         
         <!-- report -->
         <echo message=""/>
