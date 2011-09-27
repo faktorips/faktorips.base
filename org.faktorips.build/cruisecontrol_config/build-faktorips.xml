@@ -575,6 +575,7 @@
             <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/> 
+			<property name="releasePublishLocation" value="${updatesite.path}"/>
         </ant>
 		
 	    <!-- build runtime and valuetypes separately,
@@ -878,15 +879,9 @@ ${faktoripsProductLinuxZipPath}
 	<target name="-print.publish.info" unless="isSkipPublish">
         <echo message="-> updatesite: ${updatesite.path}"/>
         <echo message="-> download zip files: "/>
-        <echo message="   1. ${faktoripsReleaseDownloadZipPath}"/>
-        <echo message="   2. ${faktoripsNls1ReleaseDownloadZipPath}"/>
-        <echo message="   3. ${faktoripsUmlReleaseDownloadZipPath}"/>
-        <echo message="   4. ${faktoripsUmlNls1ReleaseDownloadZipPath}"/>    	
-        <echo message="   5. ${faktoripsOrmextReleaseDownloadZipPath}"/>
-        <echo message="   6. ${faktoripsOrmextNls1ReleaseDownloadZipPath}"/>    	
-        <echo message="   7. ${faktoripsUpdateSiteZipPath}"/>	
-        <echo message="   8. ${faktoripsRuntimeAndValuetypesZipPath}"/>    	
-        <echo message="   8. ${faktoripsRuntimeAddonsZipPath}"/>    	
+        <echo message="   1. ${faktoripsUpdateSiteZipPath}"/>	
+        <echo message="   2. ${faktoripsRuntimeAndValuetypesZipPath}"/>    	
+        <echo message="   3. ${faktoripsRuntimeAddonsZipPath}"/>    	
     </target>
 	
 	<target name="-checkout.all" >
