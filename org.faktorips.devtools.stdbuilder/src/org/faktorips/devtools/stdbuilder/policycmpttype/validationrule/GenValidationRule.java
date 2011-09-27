@@ -54,6 +54,8 @@ import org.faktorips.util.StringUtil;
  */
 public class GenValidationRule extends GenTypePart {
 
+    private static final String CONTINUE_VALIDATION = "CONTINUE_VALIDATION";
+
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenValidationRule.class);
 
     public GenValidationRule(GenPolicyCmptType genPolicyCmptType, IValidationRule part) {
@@ -154,7 +156,7 @@ public class GenValidationRule extends GenTypePart {
                     .append("))").appendOpenBracket();
         }
         if (!rule.isCheckValueAgainstValueSetRule()) {
-            body.appendln("//begin-user-code");
+            body.appendln(JavaSourceFileBuilder.MARKER_BEGIN_USER_CODE);
             body.appendln(getLocalizedToDo("EXEC_RULE_IMPLEMENT", rule.getName()));
         }
 
@@ -162,7 +164,6 @@ public class GenValidationRule extends GenTypePart {
 
         body.append("if(");
         if (rule.isCheckValueAgainstValueSetRule()) {
-            javaDocAnnotation = JavaSourceFileBuilder.ANNOTATION_GENERATED;
             IPolicyCmptTypeAttribute attr = ((IPolicyCmptType)rule.getIpsObject()).getPolicyCmptTypeAttribute(rule
                     .getValidatedAttributeAt(0));
             body.append('!');
@@ -180,6 +181,9 @@ public class GenValidationRule extends GenTypePart {
             body.append("true) ");
         }
         body.appendOpenBracket();
+        if (rule.isCheckValueAgainstValueSetRule()) {
+            body.appendln(JavaSourceFileBuilder.MARKER_BEGIN_USER_CODE);
+        }
         boolean generateToDo = false;
         body.append("ml.add(");
         body.append(getMethodNameCreateMessageForRule());
@@ -205,20 +209,25 @@ public class GenValidationRule extends GenTypePart {
             body.append(getLocalizedToDo("EXEC_RULE_COMPLETE_CALL_CREATE_MSG", rule.getName()));
         }
         body.appendln();
+
+        if (rule.isCheckValueAgainstValueSetRule()) {
+            body.appendln(JavaSourceFileBuilder.MARKER_END_USER_CODE);
+        }
+
         body.appendCloseBracket();
-        body.appendln(" return CONTINUE_VALIDATION;");
+        body.appendln("return " + CONTINUE_VALIDATION + ";");
 
         if (!rule.isCheckValueAgainstValueSetRule()) {
-            body.appendln("//end-user-code");
+            body.appendln(JavaSourceFileBuilder.MARKER_END_USER_CODE);
         }
         if (rule.isConfigurableByProductComponent()) {
             body.appendCloseBracket();
-            body.appendln(" return CONTINUE_VALIDATION;");
+            body.appendln("return " + CONTINUE_VALIDATION + ";");
         }
 
         if (!rule.isAppliedForAllBusinessFunctions() && businessFunctions.length > 0) {
             body.appendCloseBracket();
-            body.appendln(" return CONTINUE_VALIDATION;");
+            body.appendln("return " + CONTINUE_VALIDATION + ";");
         }
 
         builder.method(java.lang.reflect.Modifier.PROTECTED, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(),
