@@ -1,8 +1,4 @@
 #!/bin/bash
-# TODO aktuelles Problem bei Verwendung des Pluginbuilders:
-#   die src.zip in den plugin Ordnern in plugin/org.faktorips.feature.source../
-#   sind falsch (alle gleich) problem entsteht beim generieren der Updatesite
-#   Workaround: postBuild.xml -fixUpdateSiteStagingLocation
 # TODO siehe Assert1
 ##############################################################################################################################
 # Faktor IPS release build script
