@@ -87,6 +87,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
         assertTrue(propertyDefNames.contains("persistenceProvider"));
         assertTrue(propertyDefNames.contains("formulaCompiling"));
         assertTrue(propertyDefNames.contains("markNoneMergeableResourcesAsDerived"));
+        assertTrue(propertyDefNames.contains("toXMLSupport"));
 
         IIpsBuilderSetPropertyDef loggingConnectorPropertyDef = builderSetInfo
                 .getPropertyDefinition("loggingFrameworkConnector");

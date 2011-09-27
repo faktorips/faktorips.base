@@ -54,12 +54,17 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
     }
 
     @Override
+    public StandardBuilderSet getBuilderSet() {
+        return (StandardBuilderSet)super.getBuilderSet();
+    }
+
+    @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
     }
 
     public GenProdAssociation getGenerator(IProductCmptTypeAssociation a) throws CoreException {
-        return getStandardBuilderSet().getGenerator(getProductCmptType()).getGenerator(a);
+        return getBuilderSet().getGenerator(getProductCmptType()).getGenerator(a);
     }
 
     /**
@@ -77,7 +82,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        GenPolicyCmptType genPolicyCmptType = getStandardBuilderSet().getGenerator(attribute.getPolicyCmptType());
+        GenPolicyCmptType genPolicyCmptType = getBuilderSet().getGenerator(attribute.getPolicyCmptType());
         GenChangeableAttribute generator = (GenChangeableAttribute)genPolicyCmptType.getGenerator(attribute);
         if (generator != null) {
             generator.generateCodeForProductCmptType(generatesInterface(), getIpsProject(), getMainTypeSection());
@@ -100,7 +105,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
             JavaCodeFragmentBuilder methodsBuilder,
             JavaCodeFragmentBuilder constantBuilder) throws CoreException {
         if (attribute.isChangingOverTime() == isChangingOverTimeContainer()) {
-            GenProductCmptTypeAttribute generator = getStandardBuilderSet().getGenerator(getProductCmptType())
+            GenProductCmptTypeAttribute generator = getBuilderSet().getGenerator(getProductCmptType())
                     .getGenerator(attribute);
             if (generator != null) {
                 generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
@@ -118,16 +123,12 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
     protected abstract boolean isChangingOverTimeContainer();
 
     protected boolean isUseTypesafeCollections() {
-        return getStandardBuilderSet().isUseTypesafeCollections();
-    }
-
-    public StandardBuilderSet getStandardBuilderSet() {
-        return (StandardBuilderSet)getBuilderSet();
+        return getBuilderSet().isUseTypesafeCollections();
     }
 
     protected final GenType getGenType(IType type) {
         try {
-            return getStandardBuilderSet().getGenerator(type);
+            return getBuilderSet().getGenerator(type);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -176,7 +177,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
         builder.appendln("super.doInitPropertiesFromXml(configMap);"); //$NON-NLS-1$
 
         boolean reusableLocalVariablesGenerated = false;
-        GenProductCmptType typeGenerator = getStandardBuilderSet().getGenerator(getProductCmptType());
+        GenProductCmptType typeGenerator = getBuilderSet().getGenerator(getProductCmptType());
         for (GenProductCmptTypeAttribute attributeGenerator : typeGenerator.getGenProdAttributes()) {
             if (attributeGenerator.getAttribute().isChangingOverTime() == isChangingOverTimeContainer()) {
                 if (reusableLocalVariablesGenerated == false) {
@@ -218,7 +219,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
 
         builder.appendln("super.writePropertiesToXml(element);"); //$NON-NLS-1$
 
-        GenProductCmptType typeGenerator = getStandardBuilderSet().getGenerator(getProductCmptType());
+        GenProductCmptType typeGenerator = getBuilderSet().getGenerator(getProductCmptType());
         boolean reusableLocalVariablesGenerated = false;
         for (GenProductCmptTypeAttribute attributeGenerator : typeGenerator.getGenProdAttributes()) {
             if (attributeGenerator.getAttribute().isChangingOverTime() == isChangingOverTimeContainer()) {

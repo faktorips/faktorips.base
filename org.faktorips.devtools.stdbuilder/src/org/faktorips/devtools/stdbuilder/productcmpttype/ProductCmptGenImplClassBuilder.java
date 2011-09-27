@@ -99,7 +99,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         if ((modifier & Modifier.ABSTRACT) > 0) {
             return modifier;
         }
-        if (getStandardBuilderSet().getFormulaCompiling().isCompileToXml()) {
+        if (getBuilderSet().getFormulaCompiling().isCompileToXml()) {
             return modifier;
         }
         // check if there is any formula in type hierarchy so we have to set class to abstract
@@ -132,13 +132,13 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     @Override
     protected String[] getExtendedInterfaces() throws CoreException {
         // The implementation implements the published interface.
-        return new String[] { getStandardBuilderSet().getGenerator(getProductCmptType())
+        return new String[] { getBuilderSet().getGenerator(getProductCmptType())
                 .getQualifiedClassNameForProductCmptTypeGen(true) };
     }
 
     @Override
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
-        appendLocalizedJavaDoc("CLASS", getStandardBuilderSet().getGenerator(getProductCmptType()) //$NON-NLS-1$
+        appendLocalizedJavaDoc("CLASS", getBuilderSet().getGenerator(getProductCmptType()) //$NON-NLS-1$
                 .getUnqualifiedClassNameForProductCmptTypeGen(true), getIpsObject(), builder);
     }
 
@@ -148,7 +148,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         builder.append("public "); //$NON-NLS-1$
         builder.append(getUnqualifiedClassName());
         builder.append('(');
-        builder.appendClassName(getStandardBuilderSet().getGenerator(getProductCmptType()).getQualifiedName(false));
+        builder.appendClassName(getBuilderSet().getGenerator(getProductCmptType()).getQualifiedName(false));
         builder.append(" productCmpt)"); //$NON-NLS-1$
         builder.openBracket();
         builder.appendln("super(productCmpt);"); //$NON-NLS-1$
@@ -166,9 +166,11 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         generateMethodDoInitReferencesFromXml(methodsBuilder);
         generateMethodDoInitTableUsagesFromXml(methodsBuilder);
 
-        generateMethodWritePropertiesToXml(methodsBuilder);
-        generateMethodWriteReferencesToXml(methodsBuilder);
-        generateMethodWriteTableUsagesToXml(methodsBuilder);
+        if (getBuilderSet().isGenerateToXmlSupport()) {
+            generateMethodWritePropertiesToXml(methodsBuilder);
+            generateMethodWriteReferencesToXml(methodsBuilder);
+            generateMethodWriteTableUsagesToXml(methodsBuilder);
+        }
 
         generateMethodGetLink(methodsBuilder);
         generateMethodGetLinks(methodsBuilder);
@@ -219,7 +221,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 builder.appendClassName(Element.class);
                 builder.append(" valueSetValuesElement= null;");
             }
-            GenPolicyCmptType genPolicyCmptType = getStandardBuilderSet().getGenerator(attribute.getPolicyCmptType());
+            GenPolicyCmptType genPolicyCmptType = getBuilderSet().getGenerator(attribute.getPolicyCmptType());
             GenPolicyCmptTypeAttribute generator = genPolicyCmptType.getGenerator(attribute);
             generator.setEnumTypeBuilder(enumTypeBuilder);
             generator.generateWriteToXML(builder);
@@ -240,7 +242,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 generateDefineLocalVariablesForXmlExtraction(builder);
                 reusableLocalVariablesGenerated = true;
             }
-            GenPolicyCmptType genPolicyCmptType = getStandardBuilderSet().getGenerator(attribute.getPolicyCmptType());
+            GenPolicyCmptType genPolicyCmptType = getBuilderSet().getGenerator(attribute.getPolicyCmptType());
             GenPolicyCmptTypeAttribute generator = genPolicyCmptType.getGenerator(attribute);
             generator.setEnumTypeBuilder(enumTypeBuilder);
             generator.generateExtractFromXML(builder);
@@ -506,7 +508,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
-        GenProductCmptTypeMethod generator = getStandardBuilderSet().getGenerator(getProductCmptType()).getGenerator(
+        GenProductCmptTypeMethod generator = getBuilderSet().getGenerator(getProductCmptType()).getGenerator(
                 (IProductCmptTypeMethod)method);
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
@@ -518,13 +520,13 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        GenTableStructureUsage generator = getStandardBuilderSet().getGenerator(getProductCmptType()).getGenerator(tsu);
+        GenTableStructureUsage generator = getBuilderSet().getGenerator(getProductCmptType()).getGenerator(tsu);
         generator.generate(false, getIpsProject(), getMainTypeSection());
 
     }
 
     public String getTableStructureUsageRoleName(ITableStructureUsage tsu) throws CoreException {
-        GenTableStructureUsage generator = getStandardBuilderSet().getGenerator(getProductCmptType()).getGenerator(tsu);
+        GenTableStructureUsage generator = getBuilderSet().getGenerator(getProductCmptType()).getGenerator(tsu);
         return generator.getMemberVarName();
     }
 

@@ -195,7 +195,7 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
-        GenProductCmptTypeMethod generator = getStandardBuilderSet().getGenerator(getProductCmptType()).getGenerator(
+        GenProductCmptTypeMethod generator = getBuilderSet().getGenerator(getProductCmptType()).getGenerator(
                 (IProductCmptTypeMethod)method);
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());

@@ -123,6 +123,14 @@
                name="markNoneMergeableResourcesAsDerived"
                type="boolean">
          </builderSetPropertyDef>
+         <builderSetPropertyDef
+               defaultValue="false"
+               description="Generates toXml() methods into Product Component and Generation classes"
+               disableValue="false"
+               label="Generate toXML Support"
+               name="toXMLSupport"
+               type="boolean">
+         </builderSetPropertyDef>
       </builderSet>
    </extension>
    <extension

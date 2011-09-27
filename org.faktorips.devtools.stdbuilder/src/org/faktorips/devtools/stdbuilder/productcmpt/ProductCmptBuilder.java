@@ -167,7 +167,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         GregorianCalendar validFrom = generation.getValidFrom();
         int month = validFrom.get(Calendar.MONTH) + 1;
         int date = validFrom.get(Calendar.DATE);
-        String name = getUnchangedJavaSrcFilePrefix(generation.getIpsSrcFile()) + +validFrom.get(Calendar.YEAR)
+        String name = getUnchangedJavaSrcFilePrefix(generation.getIpsSrcFile()) + validFrom.get(Calendar.YEAR)
                 + (month < 10 ? "0" + month : "" + month) //$NON-NLS-1$ //$NON-NLS-2$
                 + (date < 10 ? "0" + date : "" + date); //$NON-NLS-1$ //$NON-NLS-2$
         name = generation.getIpsProject().getProductCmptNamingStrategy().getJavaClassIdentifier(name);

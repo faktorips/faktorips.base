@@ -111,7 +111,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
         String generationConceptName = convention.getGenerationConceptNameSingular(
                 getLanguageUsedInGeneratedSourceCode(), true);
         appendLocalizedJavaDoc("METHOD_GET_GENERATION", generationConceptName, getIpsObject(), methodsBuilder);
-        getStandardBuilderSet().getGenerator(getProductCmptType()).generateSignatureGetGeneration(methodsBuilder);
+        getBuilderSet().getGenerator(getProductCmptType()).generateSignatureGetGeneration(methodsBuilder);
         methodsBuilder.append(';');
     }
 
@@ -125,7 +125,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
      */
     private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         IPolicyCmptType policyCmptType = getPcType();
-        GenPolicyCmptType genPcType = getStandardBuilderSet().getGenerator(policyCmptType);
+        GenPolicyCmptType genPcType = getBuilderSet().getGenerator(policyCmptType);
         String policyCmptTypeName = genPcType.getPolicyCmptTypeName();
         appendLocalizedJavaDoc("METHOD_CREATE_POLICY_CMPT", new String[] { policyCmptTypeName }, getIpsObject(),
                 methodsBuilder);

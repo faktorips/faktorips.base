@@ -144,9 +144,15 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public final static String CONFIG_PROPERTY_PERSISTENCE_PROVIDER = "persistenceProvider"; //$NON-NLS-1$
 
     /**
-     * Configuration property contains kind of formula compiling.
+     * Configuration property contains the kind of formula compiling.
      */
     public final static String CONFIG_PROPERTY_FORMULA_COMPILING = "formulaCompiling"; //$NON-NLS-1$
+
+    /**
+     * Name of the configuration property that indicates whether toXml() methods should be
+     * generated.
+     */
+    public final static String CONFIG_PROPERTY_TO_XML_SUPPORT = "toXMLSupport"; //$NON-NLS-1$
 
     private TableImplBuilder tableImplBuilder;
 
@@ -677,6 +683,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public boolean isGenerateJaxbSupport() {
         return getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT);
+    }
+
+    /**
+     * Returns whether toXml() methods are to be generated.
+     */
+    public boolean isGenerateToXmlSupport() {
+        return getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_TO_XML_SUPPORT);
     }
 
     public FormulaCompiling getFormulaCompiling() {
