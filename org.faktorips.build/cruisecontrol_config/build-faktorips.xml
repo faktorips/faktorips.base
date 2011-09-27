@@ -575,7 +575,7 @@
             <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
             <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/> 
-			<property name="releasePublishLocation" value="${updatesite.path}"/>
+			<property name="releasePublishLocation" value="file:${updatesite.path}"/>
         </ant>
 		
 	    <!-- build runtime and valuetypes separately,
