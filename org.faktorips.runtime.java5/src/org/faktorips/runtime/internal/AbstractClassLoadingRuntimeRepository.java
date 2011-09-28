@@ -18,9 +18,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -66,25 +64,39 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
 
     @Override
     protected IProductComponent createProductCmpt(ProductCmptTocEntry tocEntry) {
-        Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
+        Element prodCmptElement = getDocumentElement(tocEntry);
+        ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
+        if (!helper.isProductVariantXML(prodCmptElement)) {
+            ProductComponent productCmpt = createProductComponentInstance(tocEntry.getImplementationClassName(),
+                    tocEntry.getIpsObjectId(), tocEntry.getKindId(), tocEntry.getVersionId());
+            productCmpt.initFromXml(prodCmptElement);
+            return productCmpt;
+        } else {
+            ProductComponent originalProdCmpt = helper.getOriginalProdCmpt(this, prodCmptElement);
+            ProductComponent productCmpt = createProductComponentInstance(originalProdCmpt.getClass().getName(),
+                    tocEntry.getIpsObjectId(), tocEntry.getKindId(), tocEntry.getVersionId());
+            helper.initProductComponentVariation(originalProdCmpt, productCmpt, prodCmptElement);
+            return productCmpt;
+        }
+    }
+
+    protected ProductComponent createProductComponentInstance(String implementationClassName,
+            String ipsObjectId,
+            String kindId,
+            String versionId) {
+        Class<?> implClass = getClass(implementationClassName, getClassLoader());
         ProductComponent productCmpt;
         try {
             Class<?> runtimeRepoClass = getClass(IRuntimeRepository.class.getName(), getClassLoader());
             Constructor<?> constructor = implClass.getConstructor(new Class[] { runtimeRepoClass, String.class,
                     String.class, String.class });
-            productCmpt = (ProductComponent)constructor.newInstance(new Object[] { this, tocEntry.getIpsObjectId(),
-                    tocEntry.getKindId(), tocEntry.getVersionId() });
+            productCmpt = (ProductComponent)constructor
+                    .newInstance(new Object[] { this, ipsObjectId, kindId, versionId });
         } catch (Exception e) {
-            throw new RuntimeException("Can't create product component instance for toc entry " + tocEntry, e);
+            throw new RuntimeException("Can't create product component instance for class name \""
+                    + implementationClassName + "\". RuntimeId=" + ipsObjectId, e);
         }
-        initProductCmpt(tocEntry, productCmpt);
         return productCmpt;
-    }
-
-    protected void initProductCmpt(ProductCmptTocEntry tocEntry, ProductComponent productCmpt) {
-        Element docElement = getDocumentElement(tocEntry);
-        ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
-        helper.initProductComponent(this, productCmpt, docElement);
     }
 
     @Override
@@ -136,10 +148,24 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
 
     @Override
     protected IProductComponentGeneration createProductCmptGeneration(GenerationTocEntry tocEntry) {
-        ProductComponent productCmpt = (ProductComponent)getProductComponent(tocEntry.getParent().getIpsObjectId());
-        if (productCmpt == null) {
-            throw new RuntimeException("Can't get product component for toc entry " + tocEntry);
+        Element prodCmptElement = getDocumentElement(tocEntry.getParent());
+        Element genElement = getDocumentElement(tocEntry);
+        ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
+        if (!helper.isProductVariantXML(prodCmptElement)) {
+            ProductComponent productCmpt = (ProductComponent)getProductComponent(tocEntry.getParent().getIpsObjectId());
+            if (productCmpt == null) {
+                throw new RuntimeException("Can't get product component for toc entry " + tocEntry);
+            }
+            ProductComponentGeneration productCmptGen = createProductComponentGenerationInstance(tocEntry, productCmpt);
+            productCmptGen.initFromXml(genElement);
+            return productCmptGen;
+        } else {
+            return helper.initProductComponentGenerationVariation(this, tocEntry, prodCmptElement, genElement);
         }
+    }
+
+    protected ProductComponentGeneration createProductComponentGenerationInstance(GenerationTocEntry tocEntry,
+            ProductComponent productCmpt) {
         ProductComponentGeneration productCmptGen;
         try {
             Constructor<?> constructor = getConstructor(tocEntry);
@@ -147,15 +173,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         } catch (Exception e) {
             throw new RuntimeException("Can't create product component instance for toc entry " + tocEntry, e);
         }
-        initProductComponentGeneration(tocEntry, productCmptGen);
         return productCmptGen;
-    }
-
-    private void initProductComponentGeneration(GenerationTocEntry tocEntry, ProductComponentGeneration productCmptGen) {
-        Element genElement = getDocumentElement(tocEntry);
-        GregorianCalendar generationValidFrom = tocEntry.getValidFrom().toGregorianCalendar(TimeZone.getDefault());
-        ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
-        helper.initProductComponentGeneration(this, generationValidFrom, genElement, productCmptGen);
     }
 
     private Constructor<?> getConstructor(GenerationTocEntry tocEntry) {

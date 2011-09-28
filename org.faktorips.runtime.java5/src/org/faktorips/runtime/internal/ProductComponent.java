@@ -99,8 +99,8 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         return repository;
     }
 
-    public final IProductComponentGeneration getGenerationBase(Calendar effectiveDate) {
-        return repository.getProductComponentGeneration(id, effectiveDate);
+    public IProductComponentGeneration getGenerationBase(Calendar effectiveDate) {
+        return getRepository().getProductComponentGeneration(id, effectiveDate);
     }
 
     public IProductComponentGeneration getLatestProductComponentGeneration() {
@@ -112,7 +112,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      * 
      * @throws NullPointerException if cmptElement is <code>null</code>.
      */
-    public final void initFromXml(Element cmptElement) {
+    public void initFromXml(Element cmptElement) {
         validTo = DateTime.parseIso(cmptElement.getAttribute("validTo"));
         Map<String, Element> propertyElements = ProductComponentXmlUtil.getPropertyElements(cmptElement);
         doInitPropertiesFromXml(propertyElements);
@@ -147,12 +147,12 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      *            data of all the product component's generations, <code>false</code> if generations
      *            should be ignored when creating the XML output.
      */
-    public final Element toXml(Document document, boolean includeGenerations) {
+    public Element toXml(Document document, boolean includeGenerations) {
         Element prodCmptElement = document.createElement("ProductComponent");
         writePropertiesToXml(prodCmptElement);
         writeExtensionPropertiesToXml(prodCmptElement);
         if (includeGenerations) {
-            List<IProductComponentGeneration> generations = repository.getProductComponentGenerations(this);
+            List<IProductComponentGeneration> generations = getRepository().getProductComponentGenerations(this);
             for (IProductComponentGeneration generation : generations) {
                 ProductComponentGeneration gen = (ProductComponentGeneration)generation;
                 prodCmptElement.appendChild(gen.toXml(document));

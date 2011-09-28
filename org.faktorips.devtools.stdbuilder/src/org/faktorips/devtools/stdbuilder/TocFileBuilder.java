@@ -111,6 +111,10 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 
     public TocFileBuilder(StandardBuilderSet builderSet) {
         super(builderSet);
+        initExtensionBuilders();
+    }
+
+    protected void initExtensionBuilders() {
         List<ITocEntryBuilderFactory> tocEntryBuilderFactories = StdBuilderPlugin.getDefault()
                 .getTocEntryBuilderFactories();
         ipsObjectTypeToTocEntryBuilderMap = new HashMap<IpsObjectType, List<ITocEntryBuilder>>();

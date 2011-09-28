@@ -13,6 +13,7 @@
 
 package org.faktorips.runtime.internal;
 
+import java.lang.reflect.Constructor;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -108,7 +109,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * 
      * @throws NullPointerException if genElement is <code>null</code>.
      */
-    public final void initFromXml(Element genElement) {
+    public void initFromXml(Element genElement) {
         if (validFrom != null && getRepository() != null && !getRepository().isModifiable()) {
             throw new IllegalRepositoryModificationException();
         }
@@ -385,5 +386,24 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
          * Nothing to be done base class. Note that this method is deliberately not declared
          * abstract to allow calls to super.writePropertiesToXML() in subclasses.
          */
+    }
+
+    /**
+     * Creates a new instance of this {@link ProductComponentGeneration} class. Uses the given
+     * {@link ProductComponent} as new parent.
+     * 
+     * @param parentProductCmpt the new paren component.
+     * @return a new {@link ProductComponentGeneration} instance of the same class as this class
+     */
+    public ProductComponentGeneration createNewInstance(ProductComponent parentProductCmpt) {
+        try {
+            Constructor<? extends ProductComponentGeneration> constructor = getClass().getConstructor(
+                    parentProductCmpt.getClass());
+            return constructor.newInstance(parentProductCmpt);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not create a new instance of class \"" + getClass().getName()
+                    + "\" (ProductComponent: \"" + getProductComponent().getId() + "\" validfrom "
+                    + getValidFrom(TimeZone.getDefault()) + ")", e);
+        }
     }
 }

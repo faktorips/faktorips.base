@@ -233,7 +233,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
         try {
             is = getClassLoader().getResourceAsStream(tocResourcePath);
             if (is == null) {
-                throw new IllegalArgumentException("Can' find table of contents file " + tocResourcePath);
+                throw new IllegalArgumentException("Can't find table of contents file " + tocResourcePath);
             }
             doc = getDocumentBuilder().parse(is);
         } catch (Exception e) {
