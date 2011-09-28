@@ -15,6 +15,8 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -96,6 +98,30 @@ public class DateISOStringFormatTest extends AbstractIpsPluginTest {
         input = "";
         formated = format.parse(input);
         assertEquals(null, formated);
+    }
+
+    @Test
+    public void testMapDateToObject() throws Exception {
+        DateISOStringFormat format = new DateISOStringFormat();
+        format.initFormat(Locale.GERMANY);
+
+        GregorianCalendar cal = new GregorianCalendar(2000, 0, 1);
+        Date date = cal.getTime();
+        String object = format.mapDateToObject(date);
+
+        assertEquals("2000-01-01", object);
+    }
+
+    @Test
+    public void testMapObjectToDate() throws Exception {
+        DateISOStringFormat format = new DateISOStringFormat();
+        format.initFormat(Locale.GERMANY);
+
+        GregorianCalendar cal = new GregorianCalendar(2000, 0, 1);
+        Date expectedDate = cal.getTime();
+
+        Date actDate = format.mapObjectToDate("2000-01-01");
+        assertEquals(expectedDate, actDate);
     }
 
 }
