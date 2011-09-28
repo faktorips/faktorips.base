@@ -233,6 +233,26 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertTrue(possibleMatchingPolicyCmptTypeAssociations.contains(vp2ToTarifvereinbarung));
     }
 
+    @Test
+    public void testFindPossibleMatchingAssociationsCycle() throws Exception {
+        PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Police", "Produkt");
+        IProductCmptType produkt = policy.findProductCmptType(ipsProject);
+
+        PolicyCmptType tarifvereinbarung = newPolicyAndProductCmptType(ipsProject, "Tarifvereinbarung", "Tarif");
+        IProductCmptType tarif = tarifvereinbarung.findProductCmptType(ipsProject);
+
+        IProductCmptTypeAssociation produktToTarif = newAggregation(produkt, tarif);
+
+        PolicyCmptType polRef = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "PolRef");
+
+        newComposition(policy, polRef);
+        newComposition(polRef, polRef);
+
+        Set<IPolicyCmptTypeAssociation> possiblyMatchingPolicyCmptTypeAssociations = produktToTarif
+                .findPossiblyMatchingPolicyCmptTypeAssociations(ipsProject);
+        assertEquals(0, possiblyMatchingPolicyCmptTypeAssociations.size());
+    }
+
     /**
      * Test method for
      * {@link org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer#toXml(org.w3c.dom.Document)}

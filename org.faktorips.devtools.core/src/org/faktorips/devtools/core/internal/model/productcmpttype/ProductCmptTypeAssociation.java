@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -93,7 +94,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         }
 
         String targetQName = targetPolicyCmptType.getQualifiedName();
-        collectPossibleMatchingAssociations(sourcePolicyCmptType, targetQName, result, ipsProject);
+        collectPossibleMatchingAssociations(sourcePolicyCmptType, targetQName, result, ipsProject,
+                new HashSet<IPolicyCmptType>());
         return result;
     }
 
@@ -113,13 +115,13 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     boolean collectPossibleMatchingAssociations(IPolicyCmptType sourcePolicyCmptType,
             String targetQName,
             Set<IPolicyCmptTypeAssociation> foundAssociations,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject,
+            Set<IPolicyCmptType> alreadyVisit) throws CoreException {
         boolean result = false;
         List<IPolicyCmptTypeAssociation> policyAssociations = sourcePolicyCmptType.getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyAssociations) {
-            if (AssociationType.COMPOSITION_DETAIL_TO_MASTER
-            // We ignore Detail-To-Master compositions
-                    .equals(policyCmptTypeAssociation.getAssociationType())) {
+            if (AssociationType.COMPOSITION_DETAIL_TO_MASTER.equals(policyCmptTypeAssociation.getAssociationType())) {
+                // We ignore Detail-To-Master compositions
                 continue;
             }
             if (targetQName.equals(policyCmptTypeAssociation.getTarget())) {
@@ -137,8 +139,11 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
                 continue;
             }
             IPolicyCmptType nextSource = policyCmptTypeAssociation.findTargetPolicyCmptType(ipsProject);
-            if (nextSource != null
-                    && collectPossibleMatchingAssociations(nextSource, targetQName, foundAssociations, ipsProject)) {
+            boolean notVisitedYet = alreadyVisit.add(nextSource);
+            if (notVisitedYet
+                    && nextSource != null
+                    && collectPossibleMatchingAssociations(nextSource, targetQName, foundAssociations, ipsProject,
+                            alreadyVisit)) {
                 if (!foundAssociations.add(policyCmptTypeAssociation)) {
                     // already visited this component -- return to avoid cycles
                     return true;
