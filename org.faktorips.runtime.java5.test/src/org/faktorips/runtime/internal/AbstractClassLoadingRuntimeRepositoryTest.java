@@ -24,9 +24,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.util.Calendar;
-
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
+import org.faktorips.runtime.internal.productvariant.ProductVariantRuntimeHelper;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.junit.Before;
@@ -111,28 +110,17 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
     @Test
     public void shouldLoadVariedGeneration() {
         GenerationTocEntry genEntry = mock(GenerationTocEntry.class);
-        ProductCmptTocEntry parentEntry = mock(ProductCmptTocEntry.class);
-        Element element = mock(Element.class);
-        Element originalElement = mock(Element.class);
-        Element prodCmptElement = mock(Element.class);
-        Document docMock = mock(Document.class);
-        ProductComponentGeneration gen = mock(ProductComponentGeneration.class);
-        ProductComponentGeneration newGen = mock(ProductComponentGeneration.class);
+        Element genElement = mock(Element.class);
+        ProductVariantRuntimeHelper helper = mock(ProductVariantRuntimeHelper.class);
 
-        when(element.getOwnerDocument()).thenReturn(docMock);
-        when(docMock.cloneNode(anyBoolean())).thenReturn(docMock);
-        when(genEntry.getValidFrom()).thenReturn(new DateTime(2010, 1, 1));
-        when(genEntry.getParent()).thenReturn(parentEntry);
-        doReturn(element).when(repo).getDocumentElement(genEntry);
-        doReturn(prodCmptElement).when(repo).getDocumentElement(parentEntry);
-        when(prodCmptElement.hasAttribute(anyString())).thenReturn(true);
-        when(gen.toXml(any(Document.class))).thenReturn(originalElement);
-        when(loadedProdCmpt.getGenerationBase(any(Calendar.class))).thenReturn(gen);
-        when(gen.createNewInstance(loadedProdCmpt)).thenReturn(newGen);
+        doReturn(genElement).when(repo).getDocumentElement(genEntry);
+        when(genElement.hasAttribute(anyString())).thenReturn(true);
+        doReturn(helper).when(repo).getProductVariantHelper();
+
+        when(helper.isProductVariantXML(genElement)).thenReturn(true);
 
         repo.createProductCmptGeneration(genEntry);
 
-        verify(newGen).initFromXml(originalElement);
-        verify(newGen).initFromXml(element);
+        verify(helper).initProductComponentGenerationVariation(repo, genEntry, genElement);
     }
 }

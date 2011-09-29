@@ -13,6 +13,7 @@
 
 package org.faktorips.runtime.internal.productvariant;
 
+import java.lang.reflect.Constructor;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
@@ -59,22 +60,41 @@ public class ProductVariantRuntimeHelper {
      * @param tocEntry the {@link GenerationTocEntry} for the requested
      *            {@link ProductComponentGeneration}
      * @param genElement the XML element containing the variation of a product component generation.
-     * @param prodCmptElement the XML element containing the product component's variation data
      */
 
     public IProductComponentGeneration initProductComponentGenerationVariation(IRuntimeRepository runtimeRepository,
             GenerationTocEntry tocEntry,
-            Element prodCmptElement,
             Element genElement) {
         GregorianCalendar validFrom = tocEntry.getValidFrom().toGregorianCalendar(TimeZone.getDefault());
-        ProductComponent originalCmpt = getOriginalProdCmpt(runtimeRepository, prodCmptElement);
+        ProductComponent originalCmpt = getOriginalProdCmpt(runtimeRepository, genElement);
         ProductComponent variedCmpt = (ProductComponent)runtimeRepository.getProductComponent(tocEntry.getParent()
                 .getIpsObjectId());
         ProductComponentGeneration originalGeneration = (ProductComponentGeneration)originalCmpt
                 .getGenerationBase(validFrom);
-        ProductComponentGeneration variedProductCmptGeneration = originalGeneration.createNewInstance(variedCmpt);
+        ProductComponentGeneration variedProductCmptGeneration = createNewInstance(originalGeneration, variedCmpt);
         loadAndVary(originalGeneration, genElement, variedProductCmptGeneration);
         return variedProductCmptGeneration;
+    }
+
+    /**
+     * Creates a new instance of the given {@link ProductComponentGeneration}'s class. Uses the
+     * given {@link ProductComponent} as new parent.
+     * 
+     * @param parentProductCmpt the new parent component.
+     * @param generationTemplate the generation a new instance is created of
+     * @return a new {@link ProductComponentGeneration} instance of the same class as this class
+     */
+    protected ProductComponentGeneration createNewInstance(ProductComponentGeneration generationTemplate,
+            ProductComponent parentProductCmpt) {
+        try {
+            Constructor<? extends ProductComponentGeneration> constructor = generationTemplate.getClass()
+                    .getConstructor(parentProductCmpt.getClass());
+            return constructor.newInstance(parentProductCmpt);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not create a new instance of class \"" + getClass().getName()
+                    + "\" (ProductComponent: \"" + parentProductCmpt.getId() + "\" validfrom "
+                    + generationTemplate.getValidFrom(TimeZone.getDefault()) + ")", e);
+        }
     }
 
     protected void loadAndVary(IXmlPersistenceSupport originalObject,

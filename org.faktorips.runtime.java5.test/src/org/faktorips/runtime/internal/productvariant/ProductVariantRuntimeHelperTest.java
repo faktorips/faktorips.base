@@ -79,20 +79,18 @@ public class ProductVariantRuntimeHelperTest {
         ProductComponent variedProdCmpt = mock(ProductComponent.class);
         ProductComponentGeneration originalProductCmptGen = mock(ProductComponentGeneration.class);
         ProductComponentGeneration productCmptGenToInitialize = mock(ProductComponentGeneration.class);
-        Element variationElement = mock(Element.class);
         Element genVariationElement = mock(Element.class);
 
         ProductVariantRuntimeHelper helper = spy(new ProductVariantRuntimeHelper());
         doNothing().when(helper).loadAndVary(originalProductCmptGen, genVariationElement, productCmptGenToInitialize);
-        doReturn(originalProductCmpt).when(helper).getOriginalProdCmpt(runtimeRepository, variationElement);
+        doReturn(originalProductCmpt).when(helper).getOriginalProdCmpt(runtimeRepository, genVariationElement);
         when(originalProductCmpt.getGenerationBase(any(Calendar.class))).thenReturn(originalProductCmptGen);
         when(runtimeRepository.getProductComponent(anyString())).thenReturn(variedProdCmpt);
-        when(originalProductCmptGen.createNewInstance(variedProdCmpt)).thenReturn(productCmptGenToInitialize);
+        doReturn(productCmptGenToInitialize).when(helper).createNewInstance(originalProductCmptGen, variedProdCmpt);
         when(genEntry.getValidFrom()).thenReturn(new DateTime(2010, 1, 1));
         when(genEntry.getParent()).thenReturn(parentEntry);
 
-        helper.initProductComponentGenerationVariation(runtimeRepository, genEntry, variationElement,
-                genVariationElement);
+        helper.initProductComponentGenerationVariation(runtimeRepository, genEntry, genVariationElement);
 
         verify(helper).loadAndVary(originalProductCmptGen, genVariationElement, productCmptGenToInitialize);
     }

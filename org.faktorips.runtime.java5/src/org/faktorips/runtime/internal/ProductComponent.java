@@ -167,6 +167,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      * @param element the XML element to write the properties to
      */
     protected void writePropertiesToXml(Element element) {
+
         /*
          * Nothing to be done base class. Note that this method is deliberately not declared
          * abstract to allow calls to super.writePropertiesToXML() in subclasses.

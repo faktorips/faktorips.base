@@ -51,6 +51,8 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
 
     private final ClassLoader cl;
 
+    private final ProductVariantRuntimeHelper productVariantHelper = new ProductVariantRuntimeHelper();
+
     /**
      * 
      * @param name The name of the runtime repository
@@ -65,17 +67,16 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     @Override
     protected IProductComponent createProductCmpt(ProductCmptTocEntry tocEntry) {
         Element prodCmptElement = getDocumentElement(tocEntry);
-        ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
-        if (!helper.isProductVariantXML(prodCmptElement)) {
+        if (!getProductVariantHelper().isProductVariantXML(prodCmptElement)) {
             ProductComponent productCmpt = createProductComponentInstance(tocEntry.getImplementationClassName(),
                     tocEntry.getIpsObjectId(), tocEntry.getKindId(), tocEntry.getVersionId());
             productCmpt.initFromXml(prodCmptElement);
             return productCmpt;
         } else {
-            ProductComponent originalProdCmpt = helper.getOriginalProdCmpt(this, prodCmptElement);
+            ProductComponent originalProdCmpt = getProductVariantHelper().getOriginalProdCmpt(this, prodCmptElement);
             ProductComponent productCmpt = createProductComponentInstance(originalProdCmpt.getClass().getName(),
                     tocEntry.getIpsObjectId(), tocEntry.getKindId(), tocEntry.getVersionId());
-            helper.initProductComponentVariation(originalProdCmpt, productCmpt, prodCmptElement);
+            getProductVariantHelper().initProductComponentVariation(originalProdCmpt, productCmpt, prodCmptElement);
             return productCmpt;
         }
     }
@@ -148,10 +149,8 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
 
     @Override
     protected IProductComponentGeneration createProductCmptGeneration(GenerationTocEntry tocEntry) {
-        Element prodCmptElement = getDocumentElement(tocEntry.getParent());
         Element genElement = getDocumentElement(tocEntry);
-        ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
-        if (!helper.isProductVariantXML(prodCmptElement)) {
+        if (!getProductVariantHelper().isProductVariantXML(genElement)) {
             ProductComponent productCmpt = (ProductComponent)getProductComponent(tocEntry.getParent().getIpsObjectId());
             if (productCmpt == null) {
                 throw new RuntimeException("Can't get product component for toc entry " + tocEntry);
@@ -160,8 +159,12 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
             productCmptGen.initFromXml(genElement);
             return productCmptGen;
         } else {
-            return helper.initProductComponentGenerationVariation(this, tocEntry, prodCmptElement, genElement);
+            return getProductVariantHelper().initProductComponentGenerationVariation(this, tocEntry, genElement);
         }
+    }
+
+    protected ProductVariantRuntimeHelper getProductVariantHelper() {
+        return productVariantHelper;
     }
 
     protected ProductComponentGeneration createProductComponentGenerationInstance(GenerationTocEntry tocEntry,
