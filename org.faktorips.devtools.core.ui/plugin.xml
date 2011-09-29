@@ -1945,7 +1945,7 @@
 		</page>
 	</extension>
 	
-
+<!--
 	<extension point="org.eclipse.search.searchPages">
 	   <page
           canSearchEnclosingProjects="true"
@@ -1957,7 +1957,8 @@
           sizeHint="460,160">
 		</page>
 	</extension>
-	
+-->
+
 	<extension point="org.eclipse.search.searchResultViewPages">
 		<viewPage
 			id="org.faktorips.devtools.core.ui.search.model.ModelSearchResultPage"

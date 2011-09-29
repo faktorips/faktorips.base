@@ -16,16 +16,11 @@ package org.faktorips.devtools.core.ui.search.product;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.search.ui.ISearchQuery;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.search.AbstractSearchPresentationModel;
-import org.faktorips.devtools.core.ui.search.scope.IpsSearchWorkspaceScope;
 
 public class ProductSearchPresentationModel extends AbstractSearchPresentationModel {
 
@@ -33,7 +28,6 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     public static final String PRODUCT_COMPONENT_TYPE_CHOSEN = "productCmptTypeChosen"; //$NON-NLS-1$
     public static final String PRODUCT_COMPONENT_TYPE = "productCmptType"; //$NON-NLS-1$
 
-    private List<IIpsSrcFile> productCmptTypesSrcFiles;
     private final List<ProductSearchConditionPresentationModel> productSearchConditionPresentationModels = new ArrayList<ProductSearchConditionPresentationModel>();
 
     private IProductCmptType productCmptType;
@@ -54,10 +48,6 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     @Override
     public ISearchQuery createSearchQuery() {
         return new ProductSearchQuery(this);
-    }
-
-    public List<IIpsSrcFile> getProductCmptTypesSrcFiles() {
-        return productCmptTypesSrcFiles;
     }
 
     protected String getProductCmptTypeCompareValue(IProductCmptType productCmptType) {
@@ -95,23 +85,6 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     @Override
     protected void initDefaultSearchValues() {
         setValidSearch(false);
-
-        // TODO doch mit IpsModel???
-        IpsSearchWorkspaceScope ipsSearchWorkspaceScope = new IpsSearchWorkspaceScope();
-        try {
-            Set<IIpsSrcFile> selectedIpsSrcFiles = ipsSearchWorkspaceScope.getSelectedIpsSrcFiles();
-
-            productCmptTypesSrcFiles = new ArrayList<IIpsSrcFile>();
-            for (IIpsSrcFile srcFile : selectedIpsSrcFiles) {
-                if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(srcFile.getIpsObjectType())) {
-                    productCmptTypesSrcFiles.add(srcFile);
-                }
-            }
-
-        } catch (CoreException e) {
-            // TODO exc handeln
-
-        }
     }
 
     public List<ProductSearchConditionPresentationModel> getProductSearchConditionPresentationModels() {
