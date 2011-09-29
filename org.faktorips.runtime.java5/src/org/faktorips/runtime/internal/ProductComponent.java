@@ -136,11 +136,23 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         return id;
     }
 
+    /**
+     * Creates an XML {@link Element} that represents this product component's data.
+     * <p/>
+     * Throws an {@link UnsupportedOperationException} if the support for toXml
+     * ("Generate toXml Support") is not activated in the FIPS standard builder.
+     * 
+     * @param document a document, that can be used to create XML elements.
+     */
     public Element toXml(Document document) {
         return toXml(document, true);
     }
 
     /**
+     * Creates an XML {@link Element} that represents this product component's data.
+     * <p/>
+     * Throws an {@link UnsupportedOperationException} if the support for toXml
+     * ("Generate toXml Support") is not activated in the FIPS standard builder.
      * 
      * @param document a document, that can be used to create XML elements.
      * @param includeGenerations <code>true</code> if the created XML element should include the
@@ -162,16 +174,17 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     /**
-     * Writes this product components properties into the given XML element.
+     * Subclasses override this method to write their properties into the given XML element.
+     * <p/>
+     * The standard implementation throws an {@link UnsupportedOperationException} if the support
+     * for toXml ("Generate toXml Support") is not activated in the FIPS standard builder. Generated
+     * classes override but do <em>NOT</em> call super.
      * 
      * @param element the XML element to write the properties to
      */
     protected void writePropertiesToXml(Element element) {
-
-        /*
-         * Nothing to be done base class. Note that this method is deliberately not declared
-         * abstract to allow calls to super.writePropertiesToXML() in subclasses.
-         */
+        throw new UnsupportedOperationException(
+                "The method toXml() is currently not supported, as the required methods were not generated. To activate toXml() please check your FIPS Builder properties and make sure \"Generated toXml Support\" is set to true.");
     }
 
 }

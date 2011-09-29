@@ -292,6 +292,14 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         return ruleConfig != null && ruleConfig.isActive();
     }
 
+    /**
+     * Creates an XML {@link Element} that represents this product component generation's data.
+     * <p/>
+     * Throws an {@link UnsupportedOperationException} if the support for toXml
+     * ("Generate toXml Support") is not activated in the FIPS standard builder.
+     * 
+     * @param document a document, that can be used to create XML elements.
+     */
     public Element toXml(Document document) {
         Element genElement = document.createElement("ProductComponentGeneration");
         writePropertiesToXml(genElement);
@@ -375,15 +383,16 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     }
 
     /**
-     * Adds all product component's properties to the given XML {@link Element}.
+     * Subclasses override this method to write their properties into the given XML element.
+     * <p/>
+     * The standard implementation throws an {@link UnsupportedOperationException} if the support
+     * for toXml ("Generate toXml Support") is not activated in the FIPS standard builder. Generated
+     * classes override but do <em>NOT</em> call super.
      * 
-     * @param generationElement the {@link Element} representing the
-     *            {@link ProductComponentGeneration}.
+     * @param generationElement the XML element to write the properties to
      */
     protected void writePropertiesToXml(Element generationElement) {
-        /*
-         * Nothing to be done base class. Note that this method is deliberately not declared
-         * abstract to allow calls to super.writePropertiesToXML() in subclasses.
-         */
+        throw new UnsupportedOperationException(
+                "The method toXml() is currently not supported, as the required methods were not generated. To activate toXml() please check your FIPS Builder properties and make sure \"Generated toXml Support\" is set to true.");
     }
 }

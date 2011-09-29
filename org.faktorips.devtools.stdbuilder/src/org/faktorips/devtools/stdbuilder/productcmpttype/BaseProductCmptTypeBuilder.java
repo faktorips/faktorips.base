@@ -23,6 +23,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -105,8 +106,8 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
             JavaCodeFragmentBuilder methodsBuilder,
             JavaCodeFragmentBuilder constantBuilder) throws CoreException {
         if (attribute.isChangingOverTime() == isChangingOverTimeContainer()) {
-            GenProductCmptTypeAttribute generator = getBuilderSet().getGenerator(getProductCmptType())
-                    .getGenerator(attribute);
+            GenProductCmptTypeAttribute generator = getBuilderSet().getGenerator(getProductCmptType()).getGenerator(
+                    attribute);
             if (generator != null) {
                 generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
             }
@@ -217,7 +218,15 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
         builder.methodBegin(Modifier.PROTECTED, "void", "writePropertiesToXml", new String[] { "element" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 new String[] { Element.class.getName() });
 
-        builder.appendln("super.writePropertiesToXml(element);"); //$NON-NLS-1$
+        /*
+         * Only call super, if the {@link ProductCmptType} has a supertype. See
+         * ProductComponent#toXml() for clarification.
+         */
+        if (superCallRequired()) {
+            builder.appendln("super.writePropertiesToXml(element);"); //$NON-NLS-1$            
+        } else {
+            builder.appendln("//Do not call super. See overridden method for clarification.");
+        }
 
         GenProductCmptType typeGenerator = getBuilderSet().getGenerator(getProductCmptType());
         boolean reusableLocalVariablesGenerated = false;
@@ -233,6 +242,13 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
         }
         generateAdditionalWritePropertiesToXml(builder);
         builder.methodEnd();
+    }
+
+    /**
+     * @return true if this builders {@link ProductCmptType} has a supertype.
+     */
+    private boolean superCallRequired() {
+        return getProductCmptType().hasSupertype();
     }
 
     /**
