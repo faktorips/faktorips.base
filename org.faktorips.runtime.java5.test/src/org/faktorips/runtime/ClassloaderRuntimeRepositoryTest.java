@@ -19,10 +19,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
+import org.faktorips.runtime.DummyTocEntryFactory.DummyRuntimeObject;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.test.IpsFormulaTestCase;
 import org.faktorips.runtime.test.IpsTest2;
@@ -311,4 +314,26 @@ public class ClassloaderRuntimeRepositoryTest {
         }
     }
 
+    @Test
+    public void testGetByType() {
+        DummyRuntimeObject dummyRuntimeObject = repository.getByType(DummyRuntimeObject.class,
+                "dummy.DummyRuntimeObject");
+        assertNotNull(dummyRuntimeObject);
+        dummyRuntimeObject = repository.getByType(DummyRuntimeObject.class, "dummy.DummyRuntimeObject2");
+        assertNull(dummyRuntimeObject);
+        class NoClass implements IRuntimeObject {
+
+            @Override
+            public Set<String> getExtensionPropertyIds() {
+                return Collections.emptySet();
+            }
+
+            @Override
+            public Object getExtensionPropertyValue(String propertyId) {
+                return null;
+            }
+        }
+        NoClass noClassObject = repository.getByType(NoClass.class, "dummy.DummyRuntimeObject");
+        assertNull(noClassObject);
+    }
 }

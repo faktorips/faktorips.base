@@ -37,31 +37,6 @@ public abstract class TocEntryObject extends TocEntry {
     /** The qualified name of the ips object. */
     private String ipsObjectQualifiedName;
 
-    public static TocEntryObject createFromXml(Element entryElement) {
-        String entryName = entryElement.getNodeName();
-
-        if (ProductCmptTocEntry.XML_TAG.equals(entryName)) {
-            return ProductCmptTocEntry.createFromXml(entryElement);
-        } else if (TableContentTocEntry.XML_TAG.equals(entryName)) {
-            return TableContentTocEntry.createFromXml(entryElement);
-        } else if (TestCaseTocEntry.TEST_XML_TAG.equals(entryName)) {
-            return TestCaseTocEntry.createFromXml(entryElement);
-        } else if (EnumContentTocEntry.XML_TAG.equals(entryName)) {
-            return EnumContentTocEntry.createFromXml(entryElement);
-        } else if (EnumXmlAdapterTocEntry.XML_TAG.equals(entryName)) {
-            return EnumXmlAdapterTocEntry.createFromXml(entryElement);
-        } else if (FormulaTestTocEntry.FORMULA_TEST_XML_TAG.equals(entryName)) {
-            return FormulaTestTocEntry.createFromXml(entryElement);
-        } else if (ProductCmptTypeTocEntry.XML_TAG.equals(entryName)) {
-            return ProductCmptTypeTocEntry.createFromXml(entryElement);
-        } else if (PolicyCmptTypeTocEntry.XML_TAG.equals(entryName)) {
-            return PolicyCmptTypeTocEntry.createFromXml(entryElement);
-        } else {
-            throw new IllegalArgumentException("Unknown element: " + entryName);
-        }
-
-    }
-
     protected TocEntryObject(String ipsObjectId, String ipsObjectQualifiedName, String xmlResourceName,
             String implementationClassName) {
         super(implementationClassName, xmlResourceName);

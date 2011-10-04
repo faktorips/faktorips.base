@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.faktorips.devtools.core.ExtensionPoints;
+import org.faktorips.runtime.internal.toc.ITocEntryFactory;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -46,6 +47,8 @@ public class StdBuilderPlugin extends Plugin {
 
     private List<ITocEntryBuilderFactory> tocEntryBuilderFactories;
 
+    private List<ITocEntryFactory<?>> tocEntryFactories;
+
     /**
      * Returns the shared instance.
      */
@@ -65,6 +68,7 @@ public class StdBuilderPlugin extends Plugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         loadTocEntryBuilders();
+        loadTocEntryFactories();
     }
 
     /**
@@ -97,11 +101,35 @@ public class StdBuilderPlugin extends Plugin {
         }
     }
 
+    private void loadTocEntryFactories() {
+        tocEntryFactories = new ArrayList<ITocEntryFactory<?>>();
+        ExtensionPoints extensionPoints = new ExtensionPoints(PLUGIN_ID);
+        IExtension[] extensions = extensionPoints.getExtension("tocEntryFactory");
+        for (IExtension extension : extensions) {
+            IConfigurationElement[] configurationElements = extension.getConfigurationElements();
+            for (IConfigurationElement configElement : configurationElements) {
+                if ("tocEntryFactory".equals(configElement.getName())) { //$NON-NLS-1$
+                    ITocEntryFactory<?> tocEntryFactory = ExtensionPoints.createExecutableExtension(extension,
+                            configElement, "class", ITocEntryFactory.class); //$NON-NLS-1$
+                    tocEntryFactories.add(tocEntryFactory);
+                }
+            }
+        }
+    }
+
     /**
      * @return a defensive copy of the {@link ITocEntryBuilderFactory}s currently registered with
      *         this plugin.
      */
     public List<ITocEntryBuilderFactory> getTocEntryBuilderFactories() {
         return new ArrayList<ITocEntryBuilderFactory>(tocEntryBuilderFactories);
+    }
+
+    /**
+     * @return a defensive copy of the {@link ITocEntryFactory}s currently registered with this
+     *         plugin.
+     */
+    public List<ITocEntryFactory<?>> getTocEntryFactories() {
+        return new ArrayList<ITocEntryFactory<?>>(tocEntryFactories);
     }
 }

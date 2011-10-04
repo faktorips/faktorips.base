@@ -19,6 +19,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +31,9 @@ import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.stdbuilder.MyDummyTocEntryFactory.MyDummyRuntimeObject;
+import org.faktorips.devtools.stdbuilder.MyDummyTocEntryFactory.MyDummyTypedTocEntryObject;
+import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.EnumXmlAdapterTocEntry;
@@ -37,6 +42,7 @@ import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
+import org.faktorips.runtime.internal.toc.TypedTocEntryObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -64,9 +70,15 @@ public class TableOfContentTest extends XmlAbstractTestCase {
                 "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicyPk", new DateTime(2010, 1, 1));
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
+        @SuppressWarnings("unchecked")
+        TypedTocEntryObject<IProductComponent> entry2 = mock(TypedTocEntryObject.class);
+        when(entry2.getIpsObjectTypeId()).thenReturn(IpsObjectType.PRODUCT_CMPT.getId());
+        when(entry2.getIpsObjectQualifiedName()).thenReturn("Other");
+        toc.addOrReplaceTocEntry(entry2);
 
         assertEquals(entry0, toc.getEntry(new QualifiedNameType("MotorPolicy", IpsObjectType.PRODUCT_CMPT)));
         assertEquals(entry1, toc.getEntry(new QualifiedNameType("HomePolicy", IpsObjectType.PRODUCT_CMPT)));
+        assertEquals(entry2, toc.getEntry(new QualifiedNameType("Other", IpsObjectType.PRODUCT_CMPT)));
         assertNull(toc.getEntry(new QualifiedNameType("Unkown", IpsObjectType.POLICY_CMPT_TYPE)));
     }
 
@@ -89,6 +101,19 @@ public class TableOfContentTest extends XmlAbstractTestCase {
     @Test
     public void testAddOrReplaceTocEntry_TestCase() {
         TocEntryObject entry0 = new TestCaseTocEntry("TestCaseId", "TestCaseName", "TestCase.xml", "TestCase");
+        boolean changed = toc.addOrReplaceTocEntry(entry0);
+        assertTrue(changed);
+        assertTrue(toc.isModified());
+        assertEquals(1, toc.getEntries().size());
+        assertEquals(entry0, toc.getEntries().iterator().next());
+    }
+
+    @Test
+    public void testAddOrReplaceTypedTocEntry() {
+        @SuppressWarnings("unchecked")
+        TypedTocEntryObject<IProductComponent> entry0 = mock(TypedTocEntryObject.class);
+        when(entry0.getIpsObjectTypeId()).thenReturn(IpsObjectType.PRODUCT_CMPT.getId());
+        when(entry0.getIpsObjectQualifiedName()).thenReturn("qualifiedName");
         boolean changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
         assertTrue(toc.isModified());
@@ -250,15 +275,18 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         TocEntryObject entry2 = new TestCaseTocEntry("TestCaseId", "TestCase", "TestCase.xml", "TestCase");
         TocEntryObject entry3 = new TableContentTocEntry("TableId", "Table", "Table.xml", "Table");
         TocEntryObject entry4 = new EnumXmlAdapterTocEntry("AnEnum", "AnEnum", "AnEnum");
+        TocEntryObject entry5 = new MyDummyTypedTocEntryObject("qualifiedName");
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
         toc.addOrReplaceTocEntry(entry2);
         toc.addOrReplaceTocEntry(entry3);
         toc.addOrReplaceTocEntry(entry4);
+        toc.addOrReplaceTocEntry(entry5);
 
         Element tocElement = toc.toXml("0", newDocument());
         assertNotNull(tocElement);
-        AbstractReadonlyTableOfContents readOnlyToc = new ReadonlyTableOfContents();
+        AbstractReadonlyTableOfContents readOnlyToc = new ReadonlyTableOfContents(
+                MyDummyTypedTocEntryObject.class.getClassLoader());
         readOnlyToc.initFromXml(tocElement);
         List<ProductCmptTocEntry> entries = readOnlyToc.getProductCmptTocEntries();
         assertEquals(2, entries.size());
@@ -268,6 +296,9 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         assertEquals(1, tableEntries.size());
         Set<EnumXmlAdapterTocEntry> xmlAdapterEntries = readOnlyToc.getEnumXmlAdapterTocEntries();
         assertEquals(1, xmlAdapterEntries.size());
+        List<TypedTocEntryObject<MyDummyRuntimeObject>> typedTocEntries = readOnlyToc
+                .getTypedTocEntries(MyDummyRuntimeObject.class);
+        assertEquals(1, typedTocEntries.size());
     }
 
     @Test

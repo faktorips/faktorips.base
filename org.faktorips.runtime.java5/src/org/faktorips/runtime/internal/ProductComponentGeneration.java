@@ -119,6 +119,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         doInitReferencesFromXml(ProductComponentXmlUtil.getLinkElements(genElement));
         doInitFormulaFromXml(genElement);
         doInitValidationRuleConfigsFromXml(genElement);
+        initExtensionPropertiesFromXml(genElement);
     }
 
     /**

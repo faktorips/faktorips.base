@@ -23,14 +23,17 @@ import java.util.TreeSet;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.AbstractTocEntryFactory;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.EnumXmlAdapterTocEntry;
+import org.faktorips.runtime.internal.toc.ITocEntryFactory;
 import org.faktorips.runtime.internal.toc.PolicyCmptTypeTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTypeTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
+import org.faktorips.runtime.internal.toc.TypedTocEntryObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -57,6 +60,26 @@ public class TableOfContent {
      * {@link #initFromXml(Element)} for incremental build. It is not considered at runtime.
      */
     public final static String ACTUAL_XML_VERSION = "3.0";
+
+    private static Map<String, ITocEntryFactory<?>> tocEntryFactoriesByXmlTag;
+
+    private Map<String, ITocEntryFactory<?>> getTocEntryFactoriesByXmlTag() {
+        if (tocEntryFactoriesByXmlTag == null) {
+            synchronized (TableOfContent.class) {
+                if (tocEntryFactoriesByXmlTag == null) {
+                    tocEntryFactoriesByXmlTag = new HashMap<String, ITocEntryFactory<?>>();
+                    for (ITocEntryFactory<?> tocEntryFactory : AbstractTocEntryFactory.getBaseTocEntryFactories()) {
+                        tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
+                    }
+                    for (ITocEntryFactory<?> tocEntryFactory : StdBuilderPlugin.getDefault().getTocEntryFactories()) {
+                        tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
+                    }
+                }
+
+            }
+        }
+        return tocEntryFactoriesByXmlTag;
+    }
 
     /**
      * Modified is true if there was any change since last initFromXml or toXml call (or
@@ -175,7 +198,8 @@ public class TableOfContent {
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
                 Element entryElement = (Element)nl.item(i);
-                addOrReplaceTocEntry(TocEntryObject.createFromXml(entryElement));
+                addOrReplaceTocEntry(getTocEntryFactoriesByXmlTag().get(entryElement.getNodeName()).createFromXml(
+                        entryElement));
             }
         }
         modified = false;
@@ -196,6 +220,8 @@ public class TableOfContent {
             return IpsObjectType.PRODUCT_CMPT_TYPE;
         } else if (entry instanceof EnumXmlAdapterTocEntry) {
             return IpsObjectType.ENUM_TYPE;
+        } else if (entry instanceof TypedTocEntryObject<?>) {
+            return IpsObjectType.getTypeForName(((TypedTocEntryObject<?>)entry).getIpsObjectTypeId());
         } else {
             return null;
         }

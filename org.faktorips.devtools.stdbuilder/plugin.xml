@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="artefactBuilderFactory" name="artefactBuilderFactory" schema="schema/artefactBuilderFactory.exsd"/>
    <extension-point id="tocEntryBuilderFactory" name="TOC entry builder factory" schema="schema/tocEntryBuilderFactory.exsd"/>
+   <extension-point id="tocEntryFactory" name="TOC entry factory" schema="schema/ tocEntryFactory.exsd"/>
 
    <extension
          id="ipsstdbuilderset"

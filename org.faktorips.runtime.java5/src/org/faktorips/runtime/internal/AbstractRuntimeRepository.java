@@ -40,6 +40,7 @@ import org.faktorips.runtime.IEnumValueLookupService;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IRuntimeObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.ProductCmptGenerationNotFoundException;
@@ -72,6 +73,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     private List<IRuntimeRepository> allRepositories = null;
 
     private Map<Class<?>, IModelType> modelTypes = new HashMap<Class<?>, IModelType>();
+
+    private Map<String, IModelType> modelTypesByName = new HashMap<String, IModelType>();
 
     private Map<Class<?>, IEnumValueLookupService<?>> enumValueLookups = new HashMap<Class<?>, IEnumValueLookupService<?>>();
 
@@ -614,6 +617,33 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
                     "Error loading model type info for " + modelObjectClass.getName() + " from XML.", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
         modelTypes.put(modelObjectClass, modelType);
+        modelTypesByName.put(modelType.getName(), modelType);
+        return modelType;
+    }
+
+    public IModelType getModelType(String qualifiedName) {
+        if (modelTypesByName.containsKey(qualifiedName)) {
+            return modelTypesByName.get(qualifiedName);
+        }
+        URL xmlFile = this.getClass().getResource(qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1) + ".xml"); //$NON-NLS-1$
+        IModelType modelType = new ModelType(this);
+        XMLInputFactory factory = XMLInputFactory.newInstance();
+        try {
+            InputStream in = xmlFile.openStream();
+            XMLStreamReader parser = factory.createXMLStreamReader(in);
+
+            while (parser.hasNext() && parser.next() != XMLStreamConstants.START_ELEMENT) {
+                // goto start element
+            }
+
+            modelType.initFromXml(parser);
+        } catch (IOException e) {
+            throw new RuntimeException("Error loading model type info for " + qualifiedName + " from XML.", e); //$NON-NLS-1$ //$NON-NLS-2$
+        } catch (XMLStreamException e) {
+            throw new RuntimeException("Error loading model type info for " + qualifiedName + " from XML.", e); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        modelTypes.put(modelType.getClass(), modelType);
+        modelTypesByName.put(qualifiedName, modelType);
         return modelType;
     }
 
@@ -819,5 +849,25 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     public IFormulaEvaluatorFactory getFormulaEvaluatorFactory() {
         return null;
     }
+
+    public <T extends IRuntimeObject> T getByType(Class<T> type, String ipsObjectQualifiedName) {
+        T pc = getByTypeInternal(type, ipsObjectQualifiedName);
+        if (pc != null) {
+            return pc;
+        }
+        for (IRuntimeRepository repository : repositories) {
+            pc = repository.getByType(type, ipsObjectQualifiedName);
+            if (pc != null) {
+                return pc;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Same as getByType(Class<T> type, String id) but searches only in this repository and not the
+     * ones this repository depends on.
+     */
+    protected abstract <T extends IRuntimeObject> T getByTypeInternal(Class<T> type, String ipsObjectQualifiedName);
 
 }

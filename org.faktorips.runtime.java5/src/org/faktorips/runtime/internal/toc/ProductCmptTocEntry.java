@@ -23,7 +23,6 @@ import java.util.TreeMap;
 
 import org.faktorips.runtime.internal.DateTime;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * A {@link TocEntryObject} for {@link org.faktorips.runtime.IProductComponent}s
@@ -58,28 +57,6 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * generation object
      */
     private final String generationImplClassName;
-
-    public static ProductCmptTocEntry createFromXml(Element entryElement) {
-        String ipsObjectId = entryElement.getAttribute(PROPERTY_IPS_OBJECT_ID);
-        String ipsObjectName = entryElement.getAttribute(PROPERTY_IPS_OBJECT_QNAME);
-        String xmlResourceName = entryElement.getAttribute(PROPERTY_XML_RESOURCE);
-        String implementationClassName = entryElement.getAttribute(PROPERTY_IMPLEMENTATION_CLASS);
-        String generationImplClassName = entryElement.getAttribute(PROPERTY_GENERATION_IMPL_CLASS_NAME);
-
-        DateTime validTo = DateTime.parseIso(entryElement.getAttribute(PROPERTY_VALID_TO));
-        String kindId = entryElement.getAttribute(PROPERTY_KIND_ID);
-        String versionId = entryElement.getAttribute(PROPERTY_VERSION_ID);
-
-        ProductCmptTocEntry newEntry = new ProductCmptTocEntry(ipsObjectId, ipsObjectName, kindId, versionId,
-                xmlResourceName, implementationClassName, generationImplClassName, validTo);
-
-        NodeList nl = entryElement.getElementsByTagName(GenerationTocEntry.XML_TAG);
-        for (int i = 0; i < nl.getLength(); i++) {
-            GenerationTocEntry entry = GenerationTocEntry.createFromXml(newEntry, (Element)nl.item(i));
-            newEntry.generationEntries.put(entry.getValidFromInMillisec(TimeZone.getDefault()), entry);
-        }
-        return newEntry;
-    }
 
     public ProductCmptTocEntry(String ipsObjectId, String ipsObjectQualifiedName, String kindId, String versionId,
             String xmlResourceName, String implementationClassName, String generationImplClassName, DateTime validTo) {

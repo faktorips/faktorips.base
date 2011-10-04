@@ -14,18 +14,23 @@
 package org.faktorips.runtime;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+import org.faktorips.runtime.DummyTocEntryFactory.DummyRuntimeObject;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.ProductComponent;
+import org.faktorips.runtime.internal.RuntimeObject;
 import org.faktorips.runtime.internal.TestProductCmptGeneration;
 import org.faktorips.runtime.internal.TestProductComponent;
 import org.faktorips.runtime.internal.TestTable;
@@ -545,6 +550,40 @@ public class InMemoryRuntimeRepositoryTest {
         public String getEnumValueId() {
             return id;
         }
+    }
+
+    @Test
+    public void testPutByType() {
+        class MyRuntimeObject extends RuntimeObject {
+        }
+        MyRuntimeObject myRuntimeObject = new MyRuntimeObject();
+        String ipsObjectQualifiedName = "MyRuntimeObjectId";
+        repository.putByType(MyRuntimeObject.class, ipsObjectQualifiedName, myRuntimeObject);
+        assertEquals(myRuntimeObject, repository.getByType(MyRuntimeObject.class, ipsObjectQualifiedName));
+    }
+
+    @Test
+    public void testGetByType() {
+        repository.putByType(DummyRuntimeObject.class, "dummy.DummyRuntimeObject", new DummyRuntimeObject());
+        DummyRuntimeObject dummyRuntimeObject = repository.getByType(DummyRuntimeObject.class,
+                "dummy.DummyRuntimeObject");
+        assertNotNull(dummyRuntimeObject);
+        dummyRuntimeObject = repository.getByType(DummyRuntimeObject.class, "dummy.DummyRuntimeObject2");
+        assertNull(dummyRuntimeObject);
+        class NoClass implements IRuntimeObject {
+
+            @Override
+            public Set<String> getExtensionPropertyIds() {
+                return Collections.emptySet();
+            }
+
+            @Override
+            public Object getExtensionPropertyValue(String propertyId) {
+                return null;
+            }
+        }
+        NoClass noClassObject = repository.getByType(NoClass.class, "dummy.DummyRuntimeObject");
+        assertNull(noClassObject);
     }
 
 }

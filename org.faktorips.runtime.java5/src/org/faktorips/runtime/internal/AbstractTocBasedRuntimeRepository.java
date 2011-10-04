@@ -27,6 +27,7 @@ import org.faktorips.runtime.GenerationId;
 import org.faktorips.runtime.ICacheFactory;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IRuntimeObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
@@ -38,6 +39,7 @@ import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
+import org.faktorips.runtime.internal.toc.TypedTocEntryObject;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 
@@ -339,5 +341,20 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
         }
         return createTestCase(tocEntry, runtimeRepository);
     }
+
+    @Override
+    protected <T extends IRuntimeObject> T getNotCachedByType(Class<T> type, String id) {
+        TypedTocEntryObject<T> tocEntry = toc.getTypedTocEntry(type, id);
+        if (tocEntry == null) {
+            return null;
+        }
+        try {
+            return createByType(tocEntry);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected abstract <T extends IRuntimeObject> T createByType(TypedTocEntryObject<T> tocEntry);
 
 }

@@ -13,9 +13,13 @@
 
 package org.faktorips.runtime.internal.toc;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 
+import org.faktorips.runtime.IRuntimeObject;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -34,8 +38,39 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
 
     private String productDataVersion;
 
-    public AbstractReadonlyTableOfContents() {
-        // do nothing
+    private Map<String, ITocEntryFactory<?>> tocEntryFactoriesByXmlTag;
+    private final ClassLoader classLoader;
+
+    private Map<String, ITocEntryFactory<?>> getTocEntryFactoriesByXmlTag() {
+        if (tocEntryFactoriesByXmlTag == null) {
+            synchronized (TocEntryObject.class) {
+                if (tocEntryFactoriesByXmlTag == null) {
+                    tocEntryFactoriesByXmlTag = new HashMap<String, ITocEntryFactory<?>>();
+                    for (ITocEntryFactory<?> tocEntryFactory : AbstractTocEntryFactory.getBaseTocEntryFactories()) {
+                        tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
+                    }
+                    @SuppressWarnings("rawtypes")
+                    ServiceLoader<ITocEntryFactory> tocEntryFactoryLoader = ServiceLoader.load(ITocEntryFactory.class,
+                            classLoader);
+                    for (ITocEntryFactory<?> tocEntryFactory : tocEntryFactoryLoader) {
+                        tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
+                    }
+                }
+
+            }
+        }
+        return tocEntryFactoriesByXmlTag;
+    }
+
+    /**
+     * Creats a new toc that uses the given {@link ClassLoader} to find {@link ITocEntryFactory}
+     * implementations via {@link ServiceLoader}.
+     * 
+     * @param classLoader the {@link ClassLoader} used to find {@link ITocEntryFactory}
+     *            implementations
+     */
+    public AbstractReadonlyTableOfContents(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
     /**
@@ -50,7 +85,8 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
                 Element entryElement = (Element)nl.item(i);
-                internalAddEntry(TocEntryObject.createFromXml(entryElement));
+                internalAddEntry(getTocEntryFactoriesByXmlTag().get(entryElement.getNodeName()).createFromXml(
+                        entryElement));
             }
         }
     }
@@ -151,5 +187,7 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
 
         return buf.toString();
     }
+
+    public abstract <T extends IRuntimeObject> List<TypedTocEntryObject<T>> getTypedTocEntries(Class<T> type);
 
 }

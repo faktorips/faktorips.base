@@ -13,7 +13,6 @@
 
 package org.faktorips.runtime.internal.toc;
 
-import org.w3c.dom.Element;
 
 /**
  * A {@link TocEntryObject} representing an enum content element
@@ -23,14 +22,6 @@ import org.w3c.dom.Element;
 public class EnumContentTocEntry extends TocEntryObject {
 
     public static final String XML_TAG = "EnumContent";
-
-    public static EnumContentTocEntry createFromXml(Element entryElement) {
-        String ipsObjectId = entryElement.getAttribute(PROPERTY_IPS_OBJECT_ID);
-        String ipsObjectQualifiedName = entryElement.getAttribute(PROPERTY_IPS_OBJECT_QNAME);
-        String xmlResourceName = entryElement.getAttribute(PROPERTY_XML_RESOURCE);
-        String implementationClassName = entryElement.getAttribute(PROPERTY_IMPLEMENTATION_CLASS);
-        return new EnumContentTocEntry(ipsObjectId, ipsObjectQualifiedName, xmlResourceName, implementationClassName);
-    }
 
     /**
      * Creates an entry that refers to an enum content.

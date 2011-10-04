@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-<jar path="C:/Dokumente und Einstellungen/admin/Eigene Dateien/Workspaces/FIPS Workspace/org.faktorips.tutorial.de.Grundmodell/lib/faktorips-runtime-java5.jar"/>
-<options buildIfNeeded="true" compress="true" descriptionLocation="/org.faktorips.runtime.java5/faktorips-runtime.java5.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
-<storedRefactorings deprecationInfo="true" structuralOnly="false"/>
-<selectedProjects/>
-<manifest generateManifest="false" manifestLocation="/org.faktorips.runtime.java5/META-INF/MANIFEST.MF" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
-<sealing sealJar="false">
-<packagesToSeal/>
-<packagesToUnSeal/>
-</sealing>
-</manifest>
-<selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-<javaElement handleIdentifier="=org.faktorips.runtime.java5/src"/>
-<folder path="/org.faktorips.runtime.java5/build"/>
-<file path="/org.faktorips.runtime.java5/description.txt"/>
-</selectedElements>
+    <jar path="../runtime-integration/org.faktorips.integrationtest.java5/lib/faktorips-runtime.java5.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/org.faktorips.runtime.java5/faktorips-runtime.java5.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="false" manifestLocation="/org.faktorips.runtime.java5/META-INF/MANIFEST.MF" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <folder path="/org.faktorips.runtime.java5/build"/>
+        <javaElement handleIdentifier="=org.faktorips.runtime.java5/src"/>
+        <file path="/org.faktorips.runtime.java5/description.txt"/>
+    </selectedElements>
 </jardesc>

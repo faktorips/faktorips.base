@@ -24,6 +24,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.faktorips.runtime.internal.toc.AbstractTocEntryFactory;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
@@ -40,7 +41,7 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
     @Test
     public void testCreateFromXml() {
         Element element = getTestDocument().getDocumentElement();
-        ProductCmptTocEntry entry = (ProductCmptTocEntry)TocEntryObject.createFromXml(element);
+        ProductCmptTocEntry entry = new AbstractTocEntryFactory.ProductCmptTocEntryFactory().createFromXml(element);
         assertEquals("motor.MotorPlus", entry.getIpsObjectId());
         assertEquals("MotorPlus", entry.getKindId());
         assertEquals("2005-01", entry.getVersionId());
@@ -63,7 +64,8 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
                 "org/samples/MotorPolice.ipsproduct", "org.samples.MotorPolicyPk", "org.samples.MotorPolicyPkAnpStufe",
                 new DateTime(2010, 1, 18));
         Element element = entry.toXml(newDocument());
-        entry = (ProductCmptTocEntry)TocEntryObject.createFromXml(element);
+        AbstractTocEntryFactory.ProductCmptTocEntryFactory productCmptTocEntryFactory = new AbstractTocEntryFactory.ProductCmptTocEntryFactory();
+        entry = productCmptTocEntryFactory.createFromXml(element);
         assertEquals("MotorPolicy", entry.getIpsObjectId());
         assertEquals("MotorProduct", entry.getKindId());
         assertEquals("2005-01", entry.getVersionId());
@@ -83,7 +85,7 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
         entry.setGenerationEntries(Arrays.asList(genEntry0, genEntry1));
 
         element = entry.toXml(newDocument());
-        entry = (ProductCmptTocEntry)TocEntryObject.createFromXml(element);
+        entry = productCmptTocEntryFactory.createFromXml(element);
         assertEquals(2, entry.getGenerationEntries().size());
         assertEquals(new DateTime(2006, 1, 1), entry.getGenerationEntries().get(0).getValidFrom());
         assertEquals("class", entry.getGenerationEntries().get(0).getImplementationClassName());

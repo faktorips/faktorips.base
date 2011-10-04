@@ -14,12 +14,15 @@
 package org.faktorips.runtime.internal.toc;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 
+import org.faktorips.runtime.IRuntimeObject;
 import org.w3c.dom.Element;
 
 /**
@@ -73,11 +76,24 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      */
     protected Map<String, EnumXmlAdapterTocEntry> enumXmlAdapterTocEntryMap;
 
+    protected Map<Class<? extends IRuntimeObject>, Map<String, TypedTocEntryObject<?>>> otherTocEntryMaps;
+
     /**
      * Creats a new toc.
      */
     public ReadonlyTableOfContents() {
-        super();
+        super(ReadonlyTableOfContents.class.getClassLoader());
+    }
+
+    /**
+     * Creats a new toc that uses the given {@link ClassLoader} to find {@link ITocEntryFactory}
+     * implementations via {@link ServiceLoader}.
+     * 
+     * @param classLoader the {@link ClassLoader} used to find {@link ITocEntryFactory}
+     *            implementations
+     */
+    public ReadonlyTableOfContents(ClassLoader classLoader) {
+        super(classLoader);
     }
 
     @Override
@@ -101,6 +117,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         modelTypeNameTocEntryMap = new HashMap<String, ModelTypeTocEntry>(tocSize / 4);
         enumContentImplClassTocEntryMap = new HashMap<String, EnumContentTocEntry>(tocSize / 4);
         enumXmlAdapterTocEntryMap = new HashMap<String, EnumXmlAdapterTocEntry>(tocSize / 4);
+        otherTocEntryMaps = new HashMap<Class<? extends IRuntimeObject>, Map<String, TypedTocEntryObject<?>>>();
     }
 
     @Override
@@ -147,7 +164,22 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
             enumXmlAdapterTocEntryMap.put(entry.getIpsObjectId(), (EnumXmlAdapterTocEntry)entry);
             return;
         }
+        if (entry instanceof TypedTocEntryObject<?>) {
+            putTypedTocEntryToMap((TypedTocEntryObject<?>)entry);
+            return;
+        }
+
         throw new IllegalArgumentException("Unknown entry type " + entry);
+    }
+
+    private <T extends IRuntimeObject> void putTypedTocEntryToMap(TypedTocEntryObject<T> tocEntry) {
+        Map<String, TypedTocEntryObject<?>> otherTocEntryMap = otherTocEntryMaps.get(tocEntry.getRuntimeObjectClass());
+        if (otherTocEntryMap == null) {
+            otherTocEntryMap = new HashMap<String, TypedTocEntryObject<?>>();
+            otherTocEntryMaps.put(tocEntry.getRuntimeObjectClass(), otherTocEntryMap);
+        }
+        otherTocEntryMap.put(tocEntry.getIpsObjectQualifiedName(), tocEntry);
+
     }
 
     @Override
@@ -256,7 +288,37 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         results.addAll(modelTypeNameTocEntryMap.values());
         results.addAll(enumContentImplClassTocEntryMap.values());
         results.addAll(enumXmlAdapterTocEntryMap.values());
+        for (Map<String, TypedTocEntryObject<?>> otherTocEntryMap : otherTocEntryMaps.values()) {
+            results.addAll(otherTocEntryMap.values());
+        }
         return results;
+    }
+
+    public <T extends IRuntimeObject> TypedTocEntryObject<T> getTypedTocEntry(Class<T> type,
+            String ipsObjectQualifiedName) {
+        Map<String, TypedTocEntryObject<?>> otherTocEntryMap = otherTocEntryMaps.get(type);
+        if (otherTocEntryMap != null) {
+            @SuppressWarnings("unchecked")
+            TypedTocEntryObject<T> typedTocEntryObject = (TypedTocEntryObject<T>)otherTocEntryMap
+                    .get(ipsObjectQualifiedName);
+            return typedTocEntryObject;
+        }
+        return null;
+    }
+
+    @Override
+    public <T extends IRuntimeObject> List<TypedTocEntryObject<T>> getTypedTocEntries(Class<T> type) {
+        Map<String, TypedTocEntryObject<?>> otherTocEntryMap = otherTocEntryMaps.get(type);
+        ArrayList<TypedTocEntryObject<T>> list = new ArrayList<TypedTocEntryObject<T>>();
+        if (otherTocEntryMap != null) {
+            Collection<TypedTocEntryObject<?>> values = otherTocEntryMap.values();
+            for (TypedTocEntryObject<?> typedTocEntryObject : values) {
+                @SuppressWarnings("unchecked")
+                TypedTocEntryObject<T> tocEntryObject = (TypedTocEntryObject<T>)typedTocEntryObject;
+                list.add(tocEntryObject);
+            }
+        }
+        return list;
     }
 
 }

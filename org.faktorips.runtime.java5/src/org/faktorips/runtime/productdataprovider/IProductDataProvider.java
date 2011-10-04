@@ -15,12 +15,14 @@ package org.faktorips.runtime.productdataprovider;
 
 import java.io.InputStream;
 
+import org.faktorips.runtime.IRuntimeObject;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
+import org.faktorips.runtime.internal.toc.TypedTocEntryObject;
 import org.w3c.dom.Element;
 
 /**
@@ -115,5 +117,18 @@ public interface IProductDataProvider {
      * @return true if version is compatible
      */
     public boolean isCompatibleToBaseVersion();
+
+    /**
+     * Getting the data element for the given tocEntry. If the toc has been modified this method
+     * throws a {@link DataModifiedException}. To update the modification time you have to reload
+     * the toc.
+     * 
+     * @param tocEntry The toc entry for the runtime object of class T you want to load
+     * @param <T> the class of the runtime object you want to load
+     * @return the xml element of the requested object
+     * @throws DataModifiedException when toc data was modified
+     */
+    public <T extends IRuntimeObject> Element getTocEntryData(TypedTocEntryObject<T> tocEntry)
+            throws DataModifiedException;
 
 }

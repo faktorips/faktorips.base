@@ -19,5 +19,6 @@
 	<TableContent ipsObjectId="motor.RateTable" ipsObjectQualifiedName="motor.RateTable" implementationClass="org.faktorips.runtime.testrepository.motor.RateTable" xmlResource="org/faktorips/runtime/testrepository/motor/RateTable.xml"/> 
 	<TableContent ipsObjectId="motor.RateTableAlternate" ipsObjectQualifiedName="motor.RateTableAlternate" implementationClass="org.faktorips.runtime.testrepository.motor.RateTable" xmlResource="org/faktorips/runtime/testrepository/motor/RateTable.xml"/> 
 	<TestCase ipsObjectId="test/CalculationTest1.ipstestcase" ipsObjectQualifiedName="test.CalculationTest1" implementationClass="org.faktorips.runtime.testrepository.test.TestPremiumCalculation" xmlResource="org/faktorips/runtime/testrepository/test/CalculationTest1.xml"/> 
-	<FormulaTest ipsObjectId="motor/MotorBasic.ipsproduct" ipsObjectQualifiedName="motor.MotorBasic" implementationClass="org.faktorips.runtime.test.MyFormulaTestCase" xmlResource=""/> 
+	<FormulaTest ipsObjectId="motor/MotorBasic.ipsproduct" ipsObjectQualifiedName="motor.MotorBasic" implementationClass="org.faktorips.runtime.test.MyFormulaTestCase" xmlResource=""/>
+	<DummyRuntimeObject ipsObjectId="" ipsObjectQualifiedName="dummy.DummyRuntimeObject" implementationClass="" xmlResource=""/>
 </FaktorIps-TableOfContents>

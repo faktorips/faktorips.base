@@ -27,17 +27,6 @@ public class FormulaTestTocEntry extends TestCaseTocEntry {
     private final String kindId;
     private final String versionId;
 
-    public static FormulaTestTocEntry createFromXml(Element entryElement) {
-        String ipsObjectId = entryElement.getAttribute(PROPERTY_IPS_OBJECT_ID);
-        String implementationClassName = entryElement.getAttribute(PROPERTY_IMPLEMENTATION_CLASS);
-
-        String ipsObjectName = entryElement.getAttribute(PROPERTY_IPS_OBJECT_QNAME);
-        String kindId = entryElement.getAttribute(ProductCmptTocEntry.PROPERTY_KIND_ID);
-        String versionId = entryElement.getAttribute(ProductCmptTocEntry.PROPERTY_VERSION_ID);
-
-        return new FormulaTestTocEntry(ipsObjectId, ipsObjectName, kindId, versionId, implementationClassName);
-    }
-
     public FormulaTestTocEntry(String ipsObjectId, String ipsObjectQualifiedName, String kindId, String versionId,
             String implementationClassName) {
         super(ipsObjectId, ipsObjectQualifiedName, "", implementationClassName);

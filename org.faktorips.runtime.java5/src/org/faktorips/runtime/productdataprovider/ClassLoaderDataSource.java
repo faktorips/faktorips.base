@@ -35,7 +35,7 @@ import org.xml.sax.SAXException;
  */
 public class ClassLoaderDataSource {
 
-    private ClassLoader classLoader;
+    private final ClassLoader classLoader;
 
     public ClassLoaderDataSource(ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -63,7 +63,7 @@ public class ClassLoaderDataSource {
     }
 
     public InputStream getResourceAsStream(String resourceName) {
-        return classLoader.getResourceAsStream(resourceName);
+        return getClassLoader().getResourceAsStream(resourceName);
     }
 
     public String getLastModificationStamp(String resourcePath) {
@@ -93,11 +93,15 @@ public class ClassLoaderDataSource {
     }
 
     private URL getResourceUrl(String resourcePath) {
-        URL url = classLoader.getResource(resourcePath);
+        URL url = getClassLoader().getResource(resourcePath);
         if (url == null) {
             throw new IllegalArgumentException("Cannot find resource '" + resourcePath + "'");
         }
         return url;
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 
 }

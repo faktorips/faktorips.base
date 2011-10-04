@@ -24,8 +24,10 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.faktorips.runtime.ICacheFactory;
+import org.faktorips.runtime.IClRepositoryObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IRuntimeObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.productvariant.ProductVariantRuntimeHelper;
@@ -34,6 +36,7 @@ import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
+import org.faktorips.runtime.internal.toc.TypedTocEntryObject;
 import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.w3c.dom.Element;
@@ -308,4 +311,23 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
      */
     protected abstract InputStream getXmlAsStream(TableContentTocEntry tocEntry);
 
+    @Override
+    protected <T extends IRuntimeObject> T createByType(TypedTocEntryObject<T> tocEntry) {
+        T runtimeObject = tocEntry.createRuntimeObject(this);
+        if (runtimeObject instanceof IClRepositoryObject) {
+            initClRepositoryObject(tocEntry, (IClRepositoryObject)runtimeObject);
+        }
+        return runtimeObject;
+    }
+
+    protected <T extends IRuntimeObject> void initClRepositoryObject(TypedTocEntryObject<T> tocEntry,
+            IClRepositoryObject runtimeObject) {
+        Element docElement = getDocumentElement(tocEntry);
+        runtimeObject.initFromXml(docElement);
+    }
+
+    /**
+     * This method returns the xml element of the product component identified by the tocEntry
+     */
+    protected abstract <T extends IRuntimeObject> Element getDocumentElement(TypedTocEntryObject<T> tocEntry);
 }

@@ -13,7 +13,6 @@
 
 package org.faktorips.runtime.internal.toc;
 
-import org.w3c.dom.Element;
 
 /**
  * A {@link TocEntryObject} representing a enum xml adapter element
@@ -23,13 +22,6 @@ import org.w3c.dom.Element;
 public class EnumXmlAdapterTocEntry extends TocEntryObject {
 
     public static final String XML_TAG = "EnumXmlAdapter";
-
-    public static EnumXmlAdapterTocEntry createFromXml(Element entryElement) {
-        String ipsObjectId = entryElement.getAttribute(PROPERTY_IPS_OBJECT_ID);
-        String implementationClassName = entryElement.getAttribute(PROPERTY_IMPLEMENTATION_CLASS);
-        String qualifiedName = entryElement.getAttribute(PROPERTY_IPS_OBJECT_QNAME);
-        return new EnumXmlAdapterTocEntry(ipsObjectId, qualifiedName, implementationClassName);
-    }
 
     public EnumXmlAdapterTocEntry(String ipsObjectId, String qualifiedName, String implementationClassName) {
         super(ipsObjectId, qualifiedName, "", implementationClassName);
