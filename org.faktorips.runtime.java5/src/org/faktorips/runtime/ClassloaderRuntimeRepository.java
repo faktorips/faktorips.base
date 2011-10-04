@@ -29,6 +29,7 @@ import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntry;
+import org.faktorips.runtime.internal.toc.TypedTocEntryObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -249,7 +250,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
         }
         try {
             Element tocElement = doc.getDocumentElement();
-            ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
+            ReadonlyTableOfContents toc = new ReadonlyTableOfContents(getClassLoader());
             toc.initFromXml(tocElement);
             return toc;
         } catch (Exception e) {
@@ -361,6 +362,11 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
                     + tocEntry);
         }
         return is;
+    }
+
+    @Override
+    protected <T extends IRuntimeObject> Element getDocumentElement(TypedTocEntryObject<T> tocEntry) {
+        return getDocumentElement((TocEntry)tocEntry);
     }
 
 }

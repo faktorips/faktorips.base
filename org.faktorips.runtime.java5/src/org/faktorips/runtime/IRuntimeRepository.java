@@ -347,6 +347,12 @@ public interface IRuntimeRepository {
     public IModelType getModelType(Class<?> modelObjectClass);
 
     /**
+     * Returns the <code>IModelType</code> containing the meta information for the model object
+     * class with the given qualified name.
+     */
+    public IModelType getModelType(String qualifiedName);
+
+    /**
      * Returns the <code>IModelType</code> containing the meta information for the given model
      * object. This is a convenience method calling <code>getModelType</code> with the model
      * object's class.
@@ -354,11 +360,11 @@ public interface IRuntimeRepository {
     public IModelType getModelType(IModelObject modelObject);
 
     /**
-     * Returns the <code>IModelType</code> containing the meta information for the given model
-     * object. This is a convenience method calling <code>getModelType</code> with the model
-     * object's class.
+     * Returns the <code>IModelType</code> containing the meta information for the given product
+     * component. This is a convenience method calling <code>getModelType</code> with the product
+     * component class.
      */
-    public IModelType getModelType(IProductComponent modelObject);
+    public IModelType getModelType(IProductComponent productComponent);
 
     /**
      * Returns a set containing the Java Class names of the implementation classes for all model
@@ -390,5 +396,17 @@ public interface IRuntimeRepository {
      * Returns the class loader that is used to load Java classes by this repository.
      */
     public ClassLoader getClassLoader();
+
+    /**
+     * Returns a {@link IRuntimeObject} of type {@code T}, identified by it's qualified name or
+     * {@code null} if no such object exists in this repository or it's referenced repositories. It
+     * is up to extensions to define which types can be found in the repository. If there are no
+     * objects of the given type, {@code null} is returned.
+     * 
+     * @param type a class implementing {@link IRuntimeObject}
+     * @param qName the qualified name of the object
+     * @return the object identified by qName or {@code null}
+     */
+    public <T extends IRuntimeObject> T getByType(Class<T> type, String qName);
 
 }

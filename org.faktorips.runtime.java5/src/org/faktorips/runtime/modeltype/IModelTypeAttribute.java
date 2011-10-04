@@ -13,6 +13,8 @@
 
 package org.faktorips.runtime.modeltype;
 
+import org.faktorips.runtime.IModelObject;
+
 /**
  * 
  * @author Daniel Hohenberger
@@ -106,5 +108,31 @@ public interface IModelTypeAttribute extends IModelElement {
             return null;
         }
     }
+
+    /**
+     * Returns the value of the given model object's attribute identified by this model type
+     * attribute.
+     * 
+     * @param modelObject a model object corresponding to the {@link IModelType} this attribute
+     *            belongs to
+     * @return the value of the given model object's attribute identified by this model type
+     *         attribute
+     * @throws IllegalArgumentException if the model object does not have an attribute fitting this
+     *             model type attribute or that attribute is not accessible for any reason
+     */
+    public Object getValue(IModelObject modelObject);
+
+    /**
+     * Sets the given model object's attribute identified by this model type attribute to the given
+     * value. This only works for attributes of type {@link AttributeType#CHANGEABLE}.
+     * 
+     * @param modelObject a model object corresponding to the {@link IModelType} this attribute
+     *            belongs to
+     * @param value an object of this model type attribute's datatype
+     * @throws IllegalArgumentException if the model object does not have a changeable attribute
+     *             fitting this model type attribute or that attribute is not accessible for any
+     *             reason or the value does not fit the attribute's datatype.
+     */
+    public void setValue(IModelObject modelObject, Object value);
 
 }

@@ -23,7 +23,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.faktorips.runtime.internal.AbstractRuntimeRepository;
+import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.modeltype.IModelElement;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
@@ -45,7 +46,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
     private String className;
     private String superTypeName;
 
-    public ModelType(AbstractRuntimeRepository repository) {
+    public ModelType(IRuntimeRepository repository) {
         super(repository);
     }
 
@@ -65,6 +66,20 @@ public class ModelType extends AbstractModelElement implements IModelType {
         AssociationsCollector asscCollector = new AssociationsCollector();
         asscCollector.visitHierarchy(this);
         return asscCollector.result;
+    }
+
+    public IModelTypeAssociation getAssociation(String name) throws IllegalArgumentException {
+        AssociationFinder finder = new AssociationFinder(name);
+        finder.visitHierarchy(this);
+        if (finder.association == null) {
+            throw new IllegalArgumentException("The type " + this
+                    + "(or one of it's supertypes) hasn't got an association " + name);
+        }
+        return finder.association;
+    }
+
+    public List<IModelObject> getTargetObjects(IModelObject source, String associationName) {
+        return getAssociation(associationName).getTargetObjects(source);
     }
 
     public IModelTypeAttribute getDeclaredAttribute(int index) throws IndexOutOfBoundsException {
@@ -97,6 +112,14 @@ public class ModelType extends AbstractModelElement implements IModelType {
         AttributeCollector attrCollector = new AttributeCollector();
         attrCollector.visitHierarchy(this);
         return attrCollector.result;
+    }
+
+    public Object getAttributeValue(IModelObject source, String attributeName) {
+        return getAttribute(attributeName).getValue(source);
+    }
+
+    public void setAttributeValue(IModelObject source, String attributeName, Object value) {
+        getAttribute(attributeName).setValue(source, value);
     }
 
     public Class<?> getJavaClass() throws ClassNotFoundException {
@@ -237,6 +260,24 @@ public class ModelType extends AbstractModelElement implements IModelType {
         public boolean visitType(IModelType type) {
             result.addAll(type.getDeclaredAssociations());
             return true;
+        }
+
+    }
+
+    static class AssociationFinder extends TypeHierarchyVisitor {
+
+        private String associationName;
+        private IModelTypeAssociation association = null;
+
+        public AssociationFinder(String attrName) {
+            super();
+            this.associationName = attrName;
+        }
+
+        @Override
+        public boolean visitType(IModelType type) {
+            association = ((ModelType)type).associationsByName.get(associationName);
+            return association == null;
         }
 
     }

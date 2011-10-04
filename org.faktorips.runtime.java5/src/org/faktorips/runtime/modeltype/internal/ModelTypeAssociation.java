@@ -13,13 +13,20 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.internal.StringUtils;
 import org.faktorips.runtime.modeltype.IModelElement;
 import org.faktorips.runtime.modeltype.IModelType;
@@ -44,6 +51,8 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     private boolean isSubsetOfADerivedUnion = false;
     private Boolean isTargetRolePluralRequired = false;
     private String inverseAssociation;
+
+    private String getterName;
 
     public ModelTypeAssociation(ModelType modelType) {
         super(modelType.getRepository());
@@ -81,6 +90,47 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
             return getRepository().getModelType(targetClass);
         }
         return null;
+    }
+
+    public List<IModelObject> getTargetObjects(IModelObject source) {
+        List<IModelObject> targets = new ArrayList<IModelObject>();
+        try {
+            Object object = getGetter(source).invoke(source);
+            if (object instanceof Iterable<?>) {
+                for (Object target : (Iterable<?>)object) {
+                    targets.add((IModelObject)target);
+                }
+            } else if (object instanceof IModelObject) {
+                targets.add((IModelObject)object);
+            }
+        } catch (IntrospectionException e) {
+            handleGetterError(source, e);
+        } catch (IllegalArgumentException e) {
+            handleGetterError(source, e);
+        } catch (IllegalAccessException e) {
+            handleGetterError(source, e);
+        } catch (InvocationTargetException e) {
+            handleGetterError(source, e);
+        }
+        return targets;
+    }
+
+    private Method getGetter(IModelObject source) throws IntrospectionException {
+        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(getUsedName(), source.getClass(),
+                getGetterName(), null);
+        return propertyDescriptor.getReadMethod();
+    }
+
+    private String getGetterName() {
+        if (getterName == null) {
+            getterName = "get" + getUsedName().substring(0, 1).toUpperCase() + getUsedName().substring(1);
+        }
+        return getterName;
+    }
+
+    private void handleGetterError(IModelObject source, Exception e) {
+        throw new IllegalArgumentException(String.format("Could not get target %s on source object %s.", getUsedName(),
+                source), e);
     }
 
     public boolean isProductRelevant() {

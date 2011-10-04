@@ -13,7 +13,10 @@
 
 package org.faktorips.runtime.modeltype;
 
+import java.util.List;
 import java.util.Locale;
+
+import org.faktorips.runtime.IModelObject;
 
 /**
  * 
@@ -122,5 +125,18 @@ public interface IModelTypeAssociation extends IModelElement {
      * Returns the association's plural name if no plural label for the given locale exists.
      */
     public String getLabelForPlural(Locale locale);
+
+    /**
+     * Returns a list of the target(s) of the given model object's association identified by this
+     * model type association.
+     * 
+     * @param source a model object corresponding to the {@link IModelType} this association belongs
+     *            to
+     * @return a list of the target(s) of the given model object's association identified by this
+     *         model type association
+     * @throws IllegalArgumentException if the model object does not have an association fitting
+     *             this model type association or that association is not accessible for any reason
+     */
+    public List<IModelObject> getTargetObjects(IModelObject source);
 
 }

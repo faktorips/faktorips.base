@@ -15,6 +15,9 @@ package org.faktorips.runtime.modeltype;
 
 import java.util.List;
 
+import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.modeltype.IModelTypeAttribute.AttributeType;
+
 /**
  * 
  * @author Daniel Hohenberger
@@ -75,7 +78,7 @@ public interface IModelType extends IModelElement {
 
     /**
      * Returns the attribute with the given <code>name</code> declared in this type or one of it's
-     * super type.
+     * super types.
      * 
      * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists.
      */
@@ -107,5 +110,54 @@ public interface IModelType extends IModelElement {
      * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
      */
     public IModelTypeAssociation getDeclaredAssociation(String name);
+
+    /**
+     * Returns a list of the target(s) of the given model object's association identified by the
+     * given association name.
+     * 
+     * @param source a model object corresponding to this model type
+     * @param associationName the name of the association
+     * @return a list of the target(s) of the given model object's association identified by the
+     *         given association name
+     * @throws IllegalArgumentException if the model does not fit this model type, has no
+     *             association by the given name or that association is not accessible for any
+     *             reason
+     */
+    public List<IModelObject> getTargetObjects(IModelObject source, String associationName);
+
+    /**
+     * Returns the value of the given model object's attribute identified by the given attribute
+     * name.
+     * 
+     * @see IModelTypeAttribute#getValue(IModelObject)
+     * @param modelObject a model object corresponding to this model type
+     * @param attributeName the name of the attribute
+     * @return the value of the given model object's attribute identified by the given attribute
+     *         name
+     * @throws IllegalArgumentException if the model object does not fit this model type, has no
+     *             attribute by the given name or that attribute is not accessible for any reason
+     */
+    public Object getAttributeValue(IModelObject modelObject, String attributeName);
+
+    /**
+     * Sets the given model object's attribute identified by the given name to the given value. This
+     * only works for attributes of type {@link AttributeType#CHANGEABLE}.
+     * 
+     * @see IModelTypeAttribute#setValue(IModelObject, Object)
+     * @param modelObject a model object corresponding to this model type
+     * @param value an object of the datatype for the {@link IModelTypeAttribute} by the given name
+     * @throws IllegalArgumentException if the model object does not fit this model type, has no
+     *             changeable attribute by the given name or that attribute is not accessible for
+     *             any reason or the value does not fit the attribute's datatype.
+     */
+    public void setAttributeValue(IModelObject modelObject, String attributeName, Object value);
+
+    /**
+     * Returns the association with the given <code>name</code> declared in this type or one of it's
+     * super types.
+     * 
+     * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
+     */
+    IModelTypeAssociation getAssociation(String name) throws IllegalArgumentException;
 
 }

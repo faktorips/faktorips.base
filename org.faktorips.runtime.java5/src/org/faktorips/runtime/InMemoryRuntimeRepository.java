@@ -63,6 +63,9 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
 
     private List<XmlAdapter<?, ?>> enumXmlAdapters = new LinkedList<XmlAdapter<?, ?>>();
 
+    /** Contains all maps for all other runtime objects with their qualified name as key. */
+    private Map<Class<?>, Map<String, IRuntimeObject>> otherRuntimeObjectsByType = new HashMap<Class<?>, Map<String, IRuntimeObject>>();
+
     public InMemoryRuntimeRepository() {
         super("InMemoryRuntimeRepository");
     }
@@ -389,6 +392,29 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     @Override
     protected List<XmlAdapter<?, ?>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository) {
         return enumXmlAdapters;
+    }
+
+    /**
+     * Puts the runtimeObject into the repository.
+     */
+    public <T extends IRuntimeObject> void putByType(Class<T> type, String ipsObjectQualifiedName, T runtimeObject) {
+        Map<String, IRuntimeObject> otherRuntimeObjects = otherRuntimeObjectsByType.get(type);
+        if (otherRuntimeObjects == null) {
+            otherRuntimeObjects = new HashMap<String, IRuntimeObject>();
+            otherRuntimeObjectsByType.put(type, otherRuntimeObjects);
+        }
+        otherRuntimeObjects.put(ipsObjectQualifiedName, runtimeObject);
+    }
+
+    @Override
+    protected <T extends IRuntimeObject> T getByTypeInternal(Class<T> type, String id) {
+        Map<String, IRuntimeObject> otherRuntimeObjects = otherRuntimeObjectsByType.get(type);
+        if (otherRuntimeObjects != null) {
+            @SuppressWarnings("unchecked")
+            T runtimeObject = (T)otherRuntimeObjects.get(id);
+            return runtimeObject;
+        }
+        return null;
     }
 
 }

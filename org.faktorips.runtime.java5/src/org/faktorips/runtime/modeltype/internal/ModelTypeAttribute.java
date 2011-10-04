@@ -13,9 +13,16 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 
@@ -36,6 +43,8 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
     private AttributeType attributeType = AttributeType.CHANGEABLE;
 
     private boolean isProductRelevant = false;
+
+    private String getterName;
 
     public ModelTypeAttribute(ModelType modelType) {
         super(modelType.getRepository());
@@ -155,6 +164,67 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
         }
         sb.append(')');
         return sb.toString();
+    }
+
+    public Object getValue(IModelObject source) {
+        try {
+            if (AttributeType.CONSTANT == attributeType) {
+                Field field = source.getClass().getField(getName().toUpperCase());
+                return field.get(source);
+            }
+            return getGetter(source).invoke(source);
+        } catch (IntrospectionException e) {
+            handleGetterError(source, e);
+        } catch (IllegalArgumentException e) {
+            handleGetterError(source, e);
+        } catch (IllegalAccessException e) {
+            handleGetterError(source, e);
+        } catch (InvocationTargetException e) {
+            handleGetterError(source, e);
+        } catch (SecurityException e) {
+            handleGetterError(source, e);
+        } catch (NoSuchFieldException e) {
+            handleGetterError(source, e);
+        }
+        return null;
+    }
+
+    private Method getGetter(IModelObject source) throws IntrospectionException {
+        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(getName(), source.getClass(), getGetterName(),
+                null);
+        return propertyDescriptor.getReadMethod();
+    }
+
+    private String getGetterName() {
+        if (getterName == null) {
+            getterName = "get" + getName().substring(0, 1).toUpperCase() + getName().substring(1);
+        }
+        return getterName;
+    }
+
+    public void setValue(IModelObject source, Object value) {
+        try {
+            PropertyDescriptor propertyDescriptor = new PropertyDescriptor(getName(), source.getClass());
+            propertyDescriptor.getWriteMethod().invoke(source, value);
+        } catch (IntrospectionException e) {
+            handleSetterError(source, value, e);
+        } catch (IllegalArgumentException e) {
+            handleSetterError(source, value, e);
+        } catch (IllegalAccessException e) {
+            handleSetterError(source, value, e);
+        } catch (InvocationTargetException e) {
+            handleSetterError(source, value, e);
+        }
+    }
+
+    private void handleGetterError(IModelObject source, Exception e) {
+        throw new IllegalArgumentException(String.format("Could not get attribute %s on source object %s.", getName(),
+                source), e);
+    }
+
+    private void handleSetterError(IModelObject source, Object value, Exception e) {
+        throw new IllegalArgumentException(String.format(
+                "Could not write attribute %s on source object %s to value %s.", getName(), source, value), e);
     }
 
 }
