@@ -19,8 +19,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.Set;
+
+import javax.imageio.spi.ServiceRegistry;
 
 import org.faktorips.runtime.IRuntimeObject;
 import org.w3c.dom.Element;
@@ -87,7 +88,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
 
     /**
      * Creats a new toc that uses the given {@link ClassLoader} to find {@link ITocEntryFactory}
-     * implementations via {@link ServiceLoader}.
+     * implementations via {@link ServiceRegistry}.
      * 
      * @param classLoader the {@link ClassLoader} used to find {@link ITocEntryFactory}
      *            implementations

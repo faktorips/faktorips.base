@@ -14,10 +14,12 @@
 package org.faktorips.runtime.internal.toc;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.Set;
+
+import javax.imageio.spi.ServiceRegistry;
 
 import org.faktorips.runtime.IRuntimeObject;
 import org.w3c.dom.Element;
@@ -50,9 +52,10 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
                         tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
                     }
                     @SuppressWarnings("rawtypes")
-                    ServiceLoader<ITocEntryFactory> tocEntryFactoryLoader = ServiceLoader.load(ITocEntryFactory.class,
-                            classLoader);
-                    for (ITocEntryFactory<?> tocEntryFactory : tocEntryFactoryLoader) {
+                    Iterator<ITocEntryFactory> tocEntryFactories = ServiceRegistry.lookupProviders(
+                            ITocEntryFactory.class, classLoader);
+                    for (; tocEntryFactories.hasNext();) {
+                        ITocEntryFactory<?> tocEntryFactory = tocEntryFactories.next();
                         tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
                     }
                 }
@@ -64,7 +67,7 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
 
     /**
      * Creats a new toc that uses the given {@link ClassLoader} to find {@link ITocEntryFactory}
-     * implementations via {@link ServiceLoader}.
+     * implementations via {@link ServiceRegistry}.
      * 
      * @param classLoader the {@link ClassLoader} used to find {@link ITocEntryFactory}
      *            implementations
