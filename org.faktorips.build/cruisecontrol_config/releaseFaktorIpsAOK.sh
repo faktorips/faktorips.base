@@ -140,3 +140,11 @@ if [ ! STORE_LOG = "true" ] ; then
   echo "logfile deleted"
 fi
 
+# TODO
+#mkdir runtime
+#cd runtime
+#cvs -d /usr/local/cvsroot co -r v3_5_0_rfinal org.faktorips.runtime.java5
+#zip -r org.faktorips.runtime.java5_3.5.0.rfinal.zip org.faktorips.runtime.java5 -x \*CVS\*
+#mv org.faktorips.runtime.java5_3.5.0.rfinal.zip /var/www/update.faktorzehn.org/faktorips/aok/downloads/faktorips-3.5/
+#cd ..
+#rm -r runtime
