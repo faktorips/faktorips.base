@@ -194,6 +194,9 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
         IComputable<String, T> cache = (IComputable<String, T>)otherRuntimeObjectsByTypeCache.get(type);
         if (cache == null) {
             cache = initCache(type);
+            @SuppressWarnings("unchecked")
+            IComputable<String, IRuntimeObject> cache2 = (IComputable<String, IRuntimeObject>)cache;
+            otherRuntimeObjectsByTypeCache.put(type, cache2);
         }
         return cache;
     }
