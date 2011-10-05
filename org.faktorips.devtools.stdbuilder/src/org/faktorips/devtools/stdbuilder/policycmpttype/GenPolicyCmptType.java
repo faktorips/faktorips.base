@@ -159,6 +159,9 @@ public class GenPolicyCmptType extends GenType {
     }
 
     public GenPolicyCmptTypeAttribute getGenerator(IPolicyCmptTypeAttribute a) throws CoreException {
+        if (!a.getType().equals(getType())) {
+            return null;
+        }
         GenPolicyCmptTypeAttribute generator = (GenPolicyCmptTypeAttribute)getGeneratorsByPart().get(a);
         if (generator == null && a.isValid(getPolicyCmptType().getIpsProject())) {
             generator = createGenerator(a);
