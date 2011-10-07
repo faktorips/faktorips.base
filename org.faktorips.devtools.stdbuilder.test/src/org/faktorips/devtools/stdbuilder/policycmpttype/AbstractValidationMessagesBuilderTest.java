@@ -27,10 +27,12 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 
 public abstract class AbstractValidationMessagesBuilderTest {
+
+    private static final String TEST_VALIDATION_MESSAGES = "test.validation-messages";
 
     protected static final String ROOT_FOLDER = "rootFolder";
     protected static final String TEST_PACK = "test.pack";
@@ -55,6 +57,7 @@ public abstract class AbstractValidationMessagesBuilderTest {
         IIpsSrcFolderEntry ipsSrcFolderEntry = mock(IIpsSrcFolderEntry.class);
         when(ipsSrcFolderEntry.getOutputFolderForDerivedJavaFiles()).thenReturn(derivedFolder);
         when(ipsSrcFolderEntry.getBasePackageNameForDerivedJavaClasses()).thenReturn(TEST_PACK);
+        when(ipsSrcFolderEntry.getValidationMessagesBundle()).thenReturn(TEST_VALIDATION_MESSAGES);
 
         IIpsPackageFragmentRoot root = mock(IIpsPackageFragmentRoot.class);
         when(root.getIpsObjectPathEntry()).thenReturn(ipsSrcFolderEntry);

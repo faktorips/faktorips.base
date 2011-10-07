@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
@@ -300,8 +301,86 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
+    public void testGetGeneratedJavaElementsForPublishedInterfaceGivenPublishedAttributeValueSetEnum() {
+        publishedAttribute.setValueSetType(ValueSetType.ENUM);
+
+        genPublishedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                publishedAttribute);
+        expectValueSetConstant(1, javaInterface, genPublishedAttribute);
+        expectGetValueSetMethod(javaInterface, genPublishedAttribute);
+    }
+
+    @Test
+    public void testGetGeneratedJavaElementsForPublishedInterfaceGivenPublicAttributeValueSetEnum() {
+        publicAttribute.setValueSetType(ValueSetType.ENUM);
+
+        genPublicAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                publicAttribute);
+        assertTrue(generatedJavaElements.isEmpty());
+    }
+
+    @Test
+    public void testGetGeneratedJavaElementsForImplementationGivenPublishedAttributeValueSetEnum() {
+        publishedAttribute.setValueSetType(ValueSetType.ENUM);
+
+        genPublishedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+                publishedAttribute);
+        expectGetValueSetMethod(javaClass, genPublishedAttribute);
+    }
+
+    @Test
+    public void testGetGeneratedJavaElementsForImplementationGivenPublicAttributeValueSetEnum() {
+        publicAttribute.setValueSetType(ValueSetType.ENUM);
+
+        genPublicAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, publicAttribute);
+        expectValueSetConstant(1, javaClass, genPublicAttribute);
+        expectGetValueSetMethod(javaClass, genPublicAttribute);
+    }
+
+    @Test
+    public void testGetGeneratedJavaElementsForPublishedInterfaceGivenPublishedAttributeValueSetRange() {
+        publishedAttribute.setValueSetType(ValueSetType.RANGE);
+
+        genPublishedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                publishedAttribute);
+        expectValueSetConstant(1, javaInterface, genPublishedAttribute);
+        expectGetValueSetMethod(javaInterface, genPublishedAttribute);
+    }
+
+    @Test
+    public void testGetGeneratedJavaElementsForPublishedInterfaceGivenPublicAttributeValueSetRange() {
+        publicAttribute.setValueSetType(ValueSetType.RANGE);
+
+        genPublicAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                publicAttribute);
+        assertTrue(generatedJavaElements.isEmpty());
+    }
+
+    @Test
+    public void testGetGeneratedJavaElementsForImplementationGivenPublishedAttributeValueSetRange() {
+        publishedAttribute.setValueSetType(ValueSetType.RANGE);
+
+        genPublishedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+                publishedAttribute);
+        expectGetValueSetMethod(javaClass, genPublishedAttribute);
+    }
+
+    @Test
+    public void testGetGeneratedJavaElementsForImplementationGivenPublicAttributeValueSetRange() {
+        publicAttribute.setValueSetType(ValueSetType.RANGE);
+
+        genPublicAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, publicAttribute);
+        expectValueSetConstant(1, javaClass, genPublicAttribute);
+        expectGetValueSetMethod(javaClass, genPublicAttribute);
+    }
+
     private void expectValueSetMemberVariable(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {
         expectField(index, javaType, genChangeableAttribute.getFieldNameSetOfAllowedValues());
+    }
+
+    private void expectValueSetConstant(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {
+        expectField(index, javaType, genChangeableAttribute.getConstantName(genChangeableAttribute.getValueSet()));
     }
 
     private void expectDefaultMemberVariable(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {

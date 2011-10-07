@@ -48,7 +48,25 @@ import org.w3c.dom.Element;
  */
 public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFolderEntry {
 
-    private final static String DEFAULT_TOC_PATH = ClassloaderRuntimeRepository.TABLE_OF_CONTENTS_FILE;
+    private static final String PROPERTY_TYPE = "type"; //$NON-NLS-1$
+
+    private static final String PROPERTY_SOURCE_FOLDER = "sourceFolder"; //$NON-NLS-1$
+
+    private static final String PROPERTY_OUTPUT_FOLDER_MERGABLE = "outputFolderMergable"; //$NON-NLS-1$
+
+    private static final String PROPERTY_BASE_PACKAGE_MERGABLE = "basePackageMergable"; //$NON-NLS-1$
+
+    private static final String PROPERTY_BASE_PACKAGE_DERIVED = "basePackageDerived"; //$NON-NLS-1$
+
+    private static final String PROPERTY_OUTPUT_FOLDER_DERIVED = "outputFolderDerived"; //$NON-NLS-1$
+
+    private static final String PROPERTY_TOC_PATH = "tocPath"; //$NON-NLS-1$
+
+    private static final String PROPERTY_VALIDATION_MESSAGES_BUNDLE = "validationMessagesBundle"; //$NON-NLS-1$
+
+    public final static String DEFAULT_TOC_PATH = ClassloaderRuntimeRepository.TABLE_OF_CONTENTS_FILE;
+
+    public static final String DEFAUTL_VALIDATION_MESSAGES_BUNDLE = "validation-messages"; //$NON-NLS-1$
 
     /**
      * Returns a description of the xml format.
@@ -66,6 +84,10 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
                 + "                                      The partial path of the resource containing the runtime repository table of content (toc)." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "                                      The full path is derived from the basePackageMergeable by adding this partial path." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "                                      The file is not part of the published interface so it is places in the internal package." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    validationMessagesBundle=\"motor.validation-messages\" " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "                                      The partial name of the resource bundle containing the validation messages." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "                                      The full resource bundle name is derived from basePackageDerived adding this parial name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "                                      For getting the name of the resulting property file, the resource bundle algorithm adds the locale and '.properties' to the bundle name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    outputFolderDerived=\"\"          Folder within the project where the generator puts java source files that will be overridden during each build cycle and delete and " + //$NON-NLS-1$
                 "regenerated during a clean build cycle." //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR
@@ -75,16 +97,18 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
                 + " </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    /** the folder containig the ips objects */
+    /** the folder containing the IPS objects */
     private IFolder sourceFolder;
 
-    /** the output folder containing the generated but mergable Java files. */
+    /** the output folder containing the generated but mergeable Java files. */
     private IFolder outputFolderMergable;
 
-    /** the name of the base package containing the generated but mergable Java files. */
-    private String basePackageMergable = ""; //$NON-NLS-1$
+    /** the name of the base package containing the generated but mergeable Java files. */
+    private String basePackageMergable = StringUtils.EMPTY;
 
     private String tocPath = DEFAULT_TOC_PATH;
+
+    private String validationMessagesBundle = DEFAUTL_VALIDATION_MESSAGES_BUNDLE;
 
     /** the output folder containing the Java files that are generated and derived. */
     private IFolder outputFolderDerived;
@@ -93,7 +117,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
      * the name of the base package containing the Java files where the developer adds it's own
      * code.
      */
-    private String basePackageDerived = ""; //$NON-NLS-1$
+    private String basePackageDerived = StringUtils.EMPTY;
 
     private IIpsPackageFragmentRoot root;
 
@@ -249,34 +273,42 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
 
     @Override
     public void initFromXml(Element element, IProject project) {
-        String sourceFolderPath = element.getAttribute("sourceFolder"); //$NON-NLS-1$
+        String sourceFolderPath = element.getAttribute(PROPERTY_SOURCE_FOLDER);
         setSourceFolder(project.getFolder(new Path(sourceFolderPath)));
-        String outputFolderPathMergable = element.getAttribute("outputFolderMergable"); //$NON-NLS-1$
-        outputFolderMergable = outputFolderPathMergable.equals("") ? null : project.getFolder(new Path( //$NON-NLS-1$
+        String outputFolderPathMergable = element.getAttribute(PROPERTY_OUTPUT_FOLDER_MERGABLE);
+        outputFolderMergable = outputFolderPathMergable.equals(StringUtils.EMPTY) ? null : project.getFolder(new Path(
                 outputFolderPathMergable));
-        basePackageMergable = element.getAttribute("basePackageMergable"); //$NON-NLS-1$
-        tocPath = element.getAttribute("tocPath"); //$NON-NLS-1$
+        basePackageMergable = element.getAttribute(PROPERTY_BASE_PACKAGE_MERGABLE);
+        tocPath = element.getAttribute(PROPERTY_TOC_PATH);
         if (StringUtils.isEmpty(tocPath)) {
             tocPath = DEFAULT_TOC_PATH;
         }
-        String outputFolderPathDerived = element.getAttribute("outputFolderDerived"); //$NON-NLS-1$
-        outputFolderDerived = outputFolderPathDerived.equals("") ? null : project.getFolder(new Path( //$NON-NLS-1$
+        validationMessagesBundle = element.getAttribute(PROPERTY_VALIDATION_MESSAGES_BUNDLE);
+        if (StringUtils.isEmpty(validationMessagesBundle)) {
+            validationMessagesBundle = DEFAUTL_VALIDATION_MESSAGES_BUNDLE;
+        }
+        String outputFolderPathDerived = element.getAttribute(PROPERTY_OUTPUT_FOLDER_DERIVED);
+        outputFolderDerived = outputFolderPathDerived.equals(StringUtils.EMPTY) ? null : project.getFolder(new Path(
                 outputFolderPathDerived));
-        basePackageDerived = element.getAttribute("basePackageDerived"); //$NON-NLS-1$
+        basePackageDerived = element.getAttribute(PROPERTY_BASE_PACKAGE_DERIVED);
     }
 
     @Override
     public Element toXml(Document doc) {
         Element element = doc.createElement(IpsObjectPathEntry.XML_ELEMENT);
-        element.setAttribute("type", TYPE_SRC_FOLDER); //$NON-NLS-1$
-        element.setAttribute("sourceFolder", sourceFolder.getProjectRelativePath().toString()); //$NON-NLS-1$
-        element.setAttribute("outputFolderMergable", outputFolderMergable == null ? "" : outputFolderMergable //$NON-NLS-1$ //$NON-NLS-2$
-                .getProjectRelativePath().toString());
-        element.setAttribute("basePackageMergable", basePackageMergable == null ? "" : basePackageMergable); //$NON-NLS-1$ //$NON-NLS-2$
-        element.setAttribute("tocPath", tocPath == null ? "" : tocPath); //$NON-NLS-1$ //$NON-NLS-2$
-        element.setAttribute("outputFolderDerived", outputFolderDerived == null ? "" : outputFolderDerived //$NON-NLS-1$ //$NON-NLS-2$
-                .getProjectRelativePath().toString());
-        element.setAttribute("basePackageDerived", basePackageDerived == null ? "" : basePackageDerived); //$NON-NLS-1$ //$NON-NLS-2$
+        element.setAttribute(PROPERTY_TYPE, TYPE_SRC_FOLDER);
+        element.setAttribute(PROPERTY_SOURCE_FOLDER, sourceFolder.getProjectRelativePath().toString());
+        element.setAttribute(PROPERTY_OUTPUT_FOLDER_MERGABLE, outputFolderMergable == null ? StringUtils.EMPTY
+                : outputFolderMergable.getProjectRelativePath().toString());
+        element.setAttribute(PROPERTY_BASE_PACKAGE_MERGABLE, basePackageMergable == null ? StringUtils.EMPTY
+                : basePackageMergable);
+        element.setAttribute(PROPERTY_TOC_PATH, tocPath == null ? "" : tocPath); //$NON-NLS-1$ 
+        element.setAttribute(PROPERTY_VALIDATION_MESSAGES_BUNDLE, validationMessagesBundle == null ? StringUtils.EMPTY
+                : validationMessagesBundle);
+        element.setAttribute(PROPERTY_OUTPUT_FOLDER_DERIVED, outputFolderDerived == null ? StringUtils.EMPTY
+                : outputFolderDerived.getProjectRelativePath().toString());
+        element.setAttribute(PROPERTY_BASE_PACKAGE_DERIVED, basePackageDerived == null ? StringUtils.EMPTY
+                : basePackageDerived);
         return element;
     }
 
@@ -350,6 +382,16 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
             return tocPath.toString();
         }
         return path + IPath.SEPARATOR + tocPath;
+    }
+
+    @Override
+    public void setValidationMessagesBundle(String validationMessagesBundle) {
+        this.validationMessagesBundle = validationMessagesBundle;
+    }
+
+    @Override
+    public String getValidationMessagesBundle() {
+        return validationMessagesBundle;
     }
 
     /**

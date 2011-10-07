@@ -14,9 +14,12 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.junit.Test;
 
 public class GenPolicyCmptTypeTest extends PolicyCmptTypeBuilderTest {
@@ -34,6 +37,15 @@ public class GenPolicyCmptTypeTest extends PolicyCmptTypeBuilderTest {
         genPolicyCmptType.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, policyCmptType);
         expectCreatePolicyCmptMethod(genPolicyCmptType.findGeneratedJavaTypeForProductCmptType(false));
         assertEquals(1, generatedJavaElements.size());
+    }
+
+    @Test
+    public void testname() throws Exception {
+        PolicyCmptType policyCmptType2 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "test2");
+        IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)policyCmptType2.newAttribute();
+        genPolicyCmptType.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                policyCmptType);
+        assertNull(genPolicyCmptType.getGenerator(attribute));
     }
 
     private void expectCreatePolicyCmptMethod(IType javaType) {

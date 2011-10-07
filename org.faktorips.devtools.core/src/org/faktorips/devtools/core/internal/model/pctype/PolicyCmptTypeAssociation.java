@@ -157,6 +157,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     @Override
     public IProductCmptTypeAssociation findDefaultMatchingProductCmptTypeAssociation(IIpsProject ipsProject)
             throws CoreException {
+        if (getAssociationType().isCompositionDetailToMaster()) {
+            return null;
+        }
         IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(ipsProject);
         if (productCmptType == null) {
             return null;

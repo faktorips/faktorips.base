@@ -564,13 +564,19 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         }
 
         super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsElement);
+        if (!isPublished() && getValueSet().isEnum() || getValueSet().isRange()) {
+            addValueSetConstantToGeneratedJavaElements(javaElements, generatedJavaType);
+        }
 
         addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
         addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
 
-        if (isProductRelevant()) {
+        if (!getValueSet().isUnrestricted() || isProductRelevant()) {
             addGetValueSetMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        }
+
+        if (isProductRelevant()) {
             IType javaTypeProductCmptTypeGen = null;
             try {
                 javaTypeProductCmptTypeGen = findGeneratedJavaTypeForProductCmptTypeGen(false);
@@ -598,8 +604,14 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
 
         if (isPublished()) {
             super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsElement);
+            if (getValueSet().isEnum() || getValueSet().isRange()) {
+                addValueSetConstantToGeneratedJavaElements(javaElements, generatedJavaType);
+            }
             addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
             addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+            if (getValueSet().isEnum() || getValueSet().isRange()) {
+                addGetValueSetMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+            }
 
             if (isProductRelevant()) {
                 addGetValueSetMethodToGeneratedJavaElements(javaElements, generatedJavaType);
@@ -641,6 +653,11 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
             return null;
         }
         return productCmptTypeBuilder.getGeneratedJavaTypes(productCmptType).get(0);
+    }
+
+    private void addValueSetConstantToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
+        IField field = generatedJavaType.getField(getConstantName(getValueSet()));
+        javaElements.add(field);
     }
 
     private void addDefaultValueMemberVarToGeneratedJavaElements(List<IJavaElement> javaElements,

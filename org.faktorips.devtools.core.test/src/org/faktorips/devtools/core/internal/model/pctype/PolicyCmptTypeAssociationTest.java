@@ -1028,4 +1028,38 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals(produktToTarif, versPersonToTarifvereinbarung.findMatchingProductCmptTypeAssociation(ipsProject));
     }
 
+    /**
+     * FIPS-710
+     * 
+     */
+    @Test
+    public void shouldFindNoMatchingProductCmptTypeAssociationForDetailToMaster() throws Exception {
+        PolicyCmptType police = newPolicyAndProductCmptType(ipsProject, "Police", "Produkt");
+        IProductCmptType produkt = police.findProductCmptType(ipsProject);
+
+        PolicyCmptType tarifvereinbarung = newPolicyAndProductCmptType(ipsProject, "Tarifvereinbarung", "Tarif");
+        IProductCmptType tarif = tarifvereinbarung.findProductCmptType(ipsProject);
+
+        IPolicyCmptTypeAssociation policeToTarifver = police.newPolicyCmptTypeAssociation();
+        policeToTarifver.setTarget(tarifvereinbarung.getQualifiedName());
+        policeToTarifver.setTargetRolePlural("tarifVer");
+        policeToTarifver.setTargetRolePlural("tarifVers");
+        policeToTarifver.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+
+        IPolicyCmptTypeAssociation tarifverToPolice = policeToTarifver.newInverseAssociation();
+        tarifverToPolice.setTargetRoleSingular("police");
+        tarifverToPolice.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+
+        IProductCmptTypeAssociation produktToTarif = produkt.newProductCmptTypeAssociation();
+        produktToTarif.setTarget(tarif.getQualifiedName());
+        produktToTarif.setTargetRoleSingular("tarif");
+        produktToTarif.setTargetRolePlural("tarifs");
+
+        IProductCmptTypeAssociation tarifToProdukt = tarif.newProductCmptTypeAssociation();
+        tarifToProdukt.setTarget(produkt.getQualifiedName());
+        tarifToProdukt.setTargetRoleSingular("produkt");
+        tarifToProdukt.setTargetRolePlural("produkts");
+
+        assertNull(tarifverToPolice.findMatchingProductCmptTypeAssociation(ipsProject));
+    }
 }

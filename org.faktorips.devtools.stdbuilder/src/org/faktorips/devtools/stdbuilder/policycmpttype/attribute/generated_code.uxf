@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><umlet_diagram><help_text>// Uncomment the following line to change the fontsize:
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.3">
+  <help_text>// Uncomment the following line to change the fontsize:
 // fontsize=14
 
 
@@ -20,68 +22,537 @@
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// This text will be stored with each diagram;  use it for notes.</help_text><zoom_level>10</zoom_level><element><type>com.umlet.element.base.Package</type><coordinates><x>20</x><y>60</y><w>480</w><h>150</h></coordinates><panel_attributes>Constant &amp; Published</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>270</x><y>100</y><w>210</w><h>90</h></coordinates><panel_attributes>Policy</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>100</y><w>210</w><h>90</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
+// This text will be stored with each diagram;  use it for notes.</help_text>
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>0</x>
+      <y>50</y>
+      <w>480</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>Constant &amp; Published</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>250</x>
+      <y>90</y>
+      <w>210</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Policy</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>20</x>
+      <y>90</y>
+      <w>210</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
 /IPolicy/
 --
 _+ PROPERTY_PRICE : String_
-_+ PRICE : Integer_</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.custom.Text</type><coordinates><x>220</x><y>10</y><w>630</w><h>30</h></coordinates><panel_attributes>Generated java source code for an attribute "price" of datatype "Integer" in PolicyCmptType Policy.</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>530</x><y>60</y><w>480</w><h>150</h></coordinates><panel_attributes>Constant &amp; Public</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>780</x><y>100</y><w>210</w><h>90</h></coordinates><panel_attributes>Policy
+_+ PRICE : Integer_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Text</type>
+    <coordinates>
+      <x>200</x>
+      <y>0</y>
+      <w>630</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>Generated java source code for an attribute "price" of datatype "Integer" in PolicyCmptType Policy.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>510</x>
+      <y>50</y>
+      <w>480</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>Constant &amp; Public</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>760</x>
+      <y>90</y>
+      <w>210</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Policy
 --
 _+ PROPERTY_PRICE : String_
-_+ PRICE : Integer_</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>550</x><y>100</y><w>210</w><h>90</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
-/IPolicy/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>20</x><y>240</y><w>480</w><h>180</h></coordinates><panel_attributes>Changeable &amp; Published</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>270</x><y>280</y><w>210</w><h>120</h></coordinates><panel_attributes>Policy
+_+ PRICE : Integer_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>530</x>
+      <y>90</y>
+      <w>210</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+/IPolicy/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>0</x>
+      <y>230</y>
+      <w>480</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>Changeable &amp; Published</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>250</x>
+      <y>270</y>
+      <w>210</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Policy
 --
 - price : Integer
  
 --
 + getPrice() : Integer
-+ setPrice(Integer) : void</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>280</y><w>210</w><h>120</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
++ setPrice(Integer) : void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>20</x>
+      <y>270</y>
+      <w>210</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
 /IPolicy/
 --
 _+ PROPERTY_PRICE : String_
  
 --
 /+ getPrice() : Integer/
-/+ setPrice(Integer) : void/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>530</x><y>240</y><w>480</w><h>180</h></coordinates><panel_attributes>Changeable &amp; Public</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>550</x><y>280</y><w>210</w><h>120</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
-/IPolicy/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>780</x><y>490</y><w>210</w><h>110</h></coordinates><panel_attributes>Policy
+/+ setPrice(Integer) : void/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>510</x>
+      <y>230</y>
+      <w>480</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>Changeable &amp; Public</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>530</x>
+      <y>270</y>
+      <w>210</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+/IPolicy/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>760</x>
+      <y>480</y>
+      <w>210</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>Policy
 --
 _+ PROPERTY_PRICE : String_
 - price : Integer
  
 --
-+ getPrice() : Integer</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>20</x><y>450</y><w>480</w><h>170</h></coordinates><panel_attributes>Derived (Cached) &amp; Published</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>530</x><y>450</y><w>480</w><h>170</h></coordinates><panel_attributes>Derived (Cached) &amp; Public</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>490</y><w>210</w><h>110</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
++ getPrice() : Integer</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>0</x>
+      <y>440</y>
+      <w>480</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>Derived (Cached) &amp; Published</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>510</x>
+      <y>440</y>
+      <w>480</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>Derived (Cached) &amp; Public</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>20</x>
+      <y>480</y>
+      <w>210</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
 /IPolicy/
 --
 _+ PROPERTY_PRICE : String_
  
 --
-/+ getPrice() : Integer/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>270</x><y>490</y><w>210</w><h>110</h></coordinates><panel_attributes>Policy
+/+ getPrice() : Integer/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>250</x>
+      <y>480</y>
+      <w>210</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>Policy
 --
 - price : Integer
  
 --
-+ getPrice() : Integer</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>550</x><y>490</y><w>210</w><h>110</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
-/IPolicy/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>780</x><y>280</y><w>210</w><h>120</h></coordinates><panel_attributes>Policy
++ getPrice() : Integer</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>530</x>
+      <y>480</y>
+      <w>210</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+/IPolicy/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>760</x>
+      <y>270</y>
+      <w>210</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Policy
 --
 _+ PROPERTY_PRICE : String_
 - price : Integer
  
 --
 + getPrice() : Integer
-+ setPrice(Integer) : void</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>20</x><y>650</y><w>480</w><h>170</h></coordinates><panel_attributes>Derived &amp; Published</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>530</x><y>650</y><w>480</w><h>170</h></coordinates><panel_attributes>Derived &amp; Public</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>40</x><y>690</y><w>210</w><h>110</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
++ setPrice(Integer) : void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>0</x>
+      <y>640</y>
+      <w>480</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>Derived &amp; Published</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>510</x>
+      <y>640</y>
+      <w>480</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>Derived &amp; Public</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>20</x>
+      <y>680</y>
+      <w>210</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
 /IPolicy/
 --
 _+ PROPERTY_PRICE : String_
  
 --
-/+ getPrice() : Integer/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>270</x><y>690</y><w>210</w><h>110</h></coordinates><panel_attributes>Policy
+/+ getPrice() : Integer/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>250</x>
+      <y>680</y>
+      <w>210</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>Policy
 --
  
  
 --
-+ getPrice() : Integer</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>550</x><y>690</y><w>210</w><h>110</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
-/IPolicy/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>780</x><y>690</y><w>210</w><h>110</h></coordinates><panel_attributes>Policy
++ getPrice() : Integer</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>530</x>
+      <y>680</y>
+      <w>210</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+/IPolicy/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>760</x>
+      <y>680</y>
+      <w>210</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>Policy
 --
 _+ PROPERTY_PRICE : String_
  
 --
-+ getPrice() : Integer</panel_attributes><additional_attributes/></element></umlet_diagram>
++ getPrice() : Integer</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Text</type>
+    <coordinates>
+      <x>800</x>
+      <y>850</y>
+      <w>210</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>Value Set Enum
+(only for changeable attributes)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>0</x>
+      <y>910</y>
+      <w>940</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>Changeable &amp; Published</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>480</x>
+      <y>950</y>
+      <w>440</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>Policy
+--
+ 
+ 
+--
++ getAllowedValuesForPrice(IValidationContext) : OrderedValueSet</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>20</x>
+      <y>950</y>
+      <w>440</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+/IPolicy/
+--
+_+ MAX_ALLOWED_VALUES_FOR_PRICE : OrderedValueSet_
+ 
+--
++ getAllowedValuesForPrice(IValidationContext) : OrderedValueSet</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1450</x>
+      <y>950</y>
+      <w>440</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>Policy
+--
+_+ MAX_ALLOWED_VALUES_FOR_PRICE : OrderedValueSet_
+ 
+--
++ getAllowedValuesForPrice(IValidationContext) : OrderedValueSet</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>990</x>
+      <y>950</y>
+      <w>440</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+/IPolicy/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>970</x>
+      <y>910</y>
+      <w>940</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>Changeable &amp; Public</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Text</type>
+    <coordinates>
+      <x>800</x>
+      <y>1100</y>
+      <w>210</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>Value Set Range
+(only for changeable attributes)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>0</x>
+      <y>1160</y>
+      <w>940</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>Changeable &amp; Published</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>970</x>
+      <y>1160</y>
+      <w>940</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>Changeable &amp; Public</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>20</x>
+      <y>1200</y>
+      <w>440</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+/IPolicy/
+--
+_+ MAX_ALLOWED_RANGE_FOR_PRICE : DependsOnDatatype_
+ 
+--
++ getRangeForPrice(IValidationContext) : DependsOnDatatype</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>480</x>
+      <y>1200</y>
+      <w>440</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>Policy
+--
+ 
+ 
+--
++ getRangeForPrice(IValidationContext) : OrderedValueSet</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>990</x>
+      <y>1200</y>
+      <w>440</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+/IPolicy/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1450</x>
+      <y>1200</y>
+      <w>440</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>Policy
+--
+_+ MAX_ALLOWED_RANGE_FOR_PRICE : DependsOnDatatype_
+ 
+--
++ getRangeForPrice(IValidationContext) : DependsOnDatatype</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

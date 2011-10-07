@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Development Tools
 Bundle-SymbolicName: org.faktorips.devtools.core; singleton:=true
-Bundle-Version: 3.5.0.rfinal
+Bundle-Version: 3.5.2.rfinal
 Bundle-Activator: org.faktorips.devtools.core.IpsPlugin
 Bundle-Vendor: Faktor Zehn AG
 Bundle-Localization: plugin

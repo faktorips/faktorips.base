@@ -168,7 +168,7 @@ public class GenValidationRule extends GenTypePart {
                     .getValidatedAttributeAt(0));
             body.append('!');
 
-            GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = (getGenType()).getGenerator(attr);
+            GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = getAttributeGenerator(attr);
             if (!attr.getValueSet().isUnrestricted()) {
                 body.append(genPolicyCmptTypeAttribute.getMethodNameGetSetOfAllowedValues());
             }
@@ -234,6 +234,10 @@ public class GenValidationRule extends GenTypePart {
                 getMethodNameExecRule(), new String[] { "ml", parameterValidationContext }, new String[] {
                         MessageList.class.getName(), IValidationContext.class.getName() }, body, javaDoc,
                 javaDocAnnotation);
+    }
+
+    private GenPolicyCmptTypeAttribute getAttributeGenerator(IPolicyCmptTypeAttribute attr) throws CoreException {
+        return getBuilderSet().getGenerator(attr.getPolicyCmptType()).getGenerator(attr);
     }
 
     /**
@@ -358,7 +362,7 @@ public class GenValidationRule extends GenTypePart {
             for (int j = 0; j < validatedAttributes.length; j++) {
                 IPolicyCmptTypeAttribute attr = ((IPolicyCmptType)getIpsPart().getIpsObject())
                         .findPolicyCmptTypeAttribute(validatedAttributes[j], ipsProject);
-                String propertyConstName = (getGenType()).getGenerator(attr).getStaticConstantPropertyName();
+                String propertyConstName = getAttributeGenerator(attr).getStaticConstantPropertyName();
                 code.append(" new ");
                 code.appendClassName(ObjectProperty.class);
                 code.append("(this, ");
