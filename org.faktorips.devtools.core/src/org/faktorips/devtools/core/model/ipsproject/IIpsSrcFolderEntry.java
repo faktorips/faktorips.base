@@ -143,4 +143,14 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
      */
     public void setSpecificBasePackageNameForDerivedJavaClasses(String name);
 
+    /**
+     * @param validationMessagesBundle The validationMessagesBundle to set.
+     */
+    public void setValidationMessagesBundle(String validationMessagesBundle);
+
+    /**
+     * @return Returns the validationMessagesBundle.
+     */
+    public String getValidationMessagesBundle();
+
 }

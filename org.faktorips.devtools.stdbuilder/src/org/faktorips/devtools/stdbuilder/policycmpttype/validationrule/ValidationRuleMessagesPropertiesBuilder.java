@@ -40,9 +40,8 @@ import org.faktorips.util.LocalizedStringsSet;
 
 public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBuilder {
 
+    // translated by LocalizedTextHelper
     private static final String MESSAGES_COMMENT = "MESSAGES_COMMENT";
-
-    static final String MESSAGES_BASENAME = "validation-messages";
 
     static final String MESSAGES_PREFIX = ".properties";
 
@@ -130,21 +129,21 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
         IFolder derivedFolder = entry.getOutputFolderForDerivedJavaFiles();
 
         IPath path = QNameUtil.toPath(getResourceBundlePackage(entry)).append(
-                getMessagesFileName(supportedLanguage.getLocale(), supportedLanguage.isDefaultLanguage()));
+                getMessagesFileName(entry, supportedLanguage.getLocale(), supportedLanguage.isDefaultLanguage()));
         IFile messagesFile = derivedFolder.getFile(path);
         return messagesFile;
     }
 
-    protected String getMessagesFileName(Locale locale, boolean isDefaultLocale) {
+    protected String getMessagesFileName(IIpsSrcFolderEntry entry, Locale locale, boolean isDefaultLocale) {
         if (isDefaultLocale) {
-            return MESSAGES_BASENAME + MESSAGES_PREFIX;
+            return entry.getValidationMessagesBundle().replace('.', '/') + MESSAGES_PREFIX;
         } else {
-            return MESSAGES_BASENAME + "_" + locale.getLanguage() + MESSAGES_PREFIX;
+            return entry.getValidationMessagesBundle().replace('.', '/') + "_" + locale.toString() + MESSAGES_PREFIX;
         }
     }
 
     protected String getResourceBundleBaseName(IIpsSrcFolderEntry entry) {
-        String baseName = getResourceBundlePackage(entry) + "." + MESSAGES_BASENAME;
+        String baseName = getResourceBundlePackage(entry) + "." + entry.getValidationMessagesBundle();
         return baseName;
     }
 

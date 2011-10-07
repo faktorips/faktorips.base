@@ -57,6 +57,8 @@ import org.junit.Test;
 
 public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidationMessagesBuilderTest {
 
+    private static final String TEST_VALIDATION_MESSAGES = "test.validation-messages";
+
     @Test
     public void testIsBuilderFor() throws Exception {
         IIpsArtefactBuilderSet builderSet = mockBuilderSet();
@@ -220,7 +222,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
         IFile file = mock(IFile.class);
 
-        IPath path = new Path(ROOT_FOLDER + "/" + ValidationRuleMessagesPropertiesBuilder.MESSAGES_BASENAME
+        IPath path = new Path(ROOT_FOLDER + "/" + TEST_VALIDATION_MESSAGES.replace('.', '/')
                 + ValidationRuleMessagesPropertiesBuilder.MESSAGES_PREFIX);
 
         IFolder derivedFolder = mock(IFolder.class);
@@ -229,6 +231,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         IIpsSrcFolderEntry ipsSrcFolderEntry = mock(IIpsSrcFolderEntry.class);
         when(ipsSrcFolderEntry.getOutputFolderForDerivedJavaFiles()).thenReturn(derivedFolder);
         when(ipsSrcFolderEntry.getBasePackageNameForDerivedJavaClasses()).thenReturn(TEST_PACK);
+        when(ipsSrcFolderEntry.getValidationMessagesBundle()).thenReturn(TEST_VALIDATION_MESSAGES);
 
         IIpsPackageFragmentRoot root = mock(IIpsPackageFragmentRoot.class);
         when(root.getIpsObjectPathEntry()).thenReturn(ipsSrcFolderEntry);
@@ -248,7 +251,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
         IFile file = mock(IFile.class);
 
-        IPath path = new Path(ROOT_FOLDER + "/" + ValidationRuleMessagesPropertiesBuilder.MESSAGES_BASENAME + "_"
+        IPath path = new Path(ROOT_FOLDER + "/" + TEST_VALIDATION_MESSAGES.replace('.', '/') + "_"
                 + locale.getLanguage() + ValidationRuleMessagesPropertiesBuilder.MESSAGES_PREFIX);
 
         IFolder derivedFolder = mock(IFolder.class);
@@ -257,6 +260,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         IIpsSrcFolderEntry ipsSrcFolderEntry = mock(IIpsSrcFolderEntry.class);
         when(ipsSrcFolderEntry.getOutputFolderForDerivedJavaFiles()).thenReturn(derivedFolder);
         when(ipsSrcFolderEntry.getBasePackageNameForDerivedJavaClasses()).thenReturn(TEST_PACK);
+        when(ipsSrcFolderEntry.getValidationMessagesBundle()).thenReturn(TEST_VALIDATION_MESSAGES);
 
         IIpsPackageFragmentRoot root = mock(IIpsPackageFragmentRoot.class);
         when(root.getIpsObjectPathEntry()).thenReturn(ipsSrcFolderEntry);
