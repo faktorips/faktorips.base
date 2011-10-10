@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.FormulaSignatureFinder;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -81,6 +82,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     private final IpsObjectPartCollection<ITableStructureUsage> tableStructureUsages;
     private final IpsObjectPartCollection<IProductCmptTypeMethod> methods;
     private final IpsObjectPartCollection<IProductCmptTypeAssociation> associations;
+    private final IpsObjectPartCollection<IProductCmptCategory> categories;
 
     public ProductCmptType(IIpsSrcFile file) {
         super(file);
@@ -92,6 +94,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 IProductCmptTypeMethod.class, Method.XML_ELEMENT_NAME);
         associations = new IpsObjectPartCollection<IProductCmptTypeAssociation>(this, ProductCmptTypeAssociation.class,
                 IProductCmptTypeAssociation.class, ProductCmptTypeAssociation.TAG_NAME);
+        categories = new IpsObjectPartCollection<IProductCmptCategory>(this, ProductCmptCategory.class,
+                IProductCmptCategory.class, ProductCmptCategory.TAG_NAME);
     }
 
     @Override
@@ -611,6 +615,41 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return Messages.ProductCmptType_caption;
     }
 
+    @Override
+    public IProductCmptCategory newProductCmptCategory() {
+        return categories.newPart();
+    }
+
+    @Override
+    public List<IProductCmptCategory> getProductCmptCategories() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<IProductCmptCategory> findAllProductCmptCategories(IIpsProject ipsProject) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IProductCmptCategory getProductCmptCategory(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IProductCmptCategory findProductCmptCategory(String name, IIpsProject ipsProject) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int[] moveProductCmptCategories(int[] indexes, boolean up) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     private static class TableStructureUsageFinder extends TypeHierarchyVisitor<IProductCmptType> {
 
         private String tsuName;
@@ -817,4 +856,5 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
     }
+
 }

@@ -341,8 +341,9 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns the product definition property with the given name and type. If no such property is
      * found in the type itself, the supertype hierarchy is searched.
      */
-    public IProductCmptProperty findProductCmptProperty(ProductCmptPropertyType type, String propName, IIpsProject ipsProject)
-            throws CoreException;
+    public IProductCmptProperty findProductCmptProperty(ProductCmptPropertyType type,
+            String propName,
+            IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the product definition property with the given name. If no such property is found in
@@ -372,5 +373,67 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @see #searchMetaObjectSrcFiles(boolean)
      */
     public Collection<IIpsSrcFile> searchProductComponents(boolean includeSubtypes) throws CoreException;
+
+    /**
+     * Creates and returns a new {@link IProductCmptCategory} that belongs to this type.
+     */
+    public IProductCmptCategory newProductCmptCategory();
+
+    /**
+     * Returns an unmodifiable view on the list of {@link IProductCmptCategory}s belonging to this
+     * type.
+     * <p>
+     * The returned list does <strong>not</strong> include categories defined in the supertype
+     * hierarchy. To achieve this, use {@link #findAllProductCmptCategories(IIpsProject)}.
+     */
+    public List<IProductCmptCategory> getProductCmptCategories();
+
+    /**
+     * Returns an unmodifiable view on the list of {@link IProductCmptCategory}s belonging to this
+     * type.
+     * <p>
+     * In contrast to {@link #getProductCmptCategories()}, the list returned by this method also
+     * includes categories defined in the supertype hierarchy.
+     * 
+     * @param ipsProject The project which IPS object path is used for the search
+     */
+    public List<IProductCmptCategory> findAllProductCmptCategories(IIpsProject ipsProject);
+
+    /**
+     * Returns the {@link IProductCmptCategory} identified by the given name or null if no such
+     * category is found in this type.
+     * <p>
+     * This method does <strong>not</strong> consider categories defined in the supertype hierarchy.
+     * 
+     * @param name The name identifying the {@link IProductCmptCategory} to be retrieved
+     */
+    public IProductCmptCategory getProductCmptCategory(String name);
+
+    /**
+     * Returns the {@link IProductCmptCategory} identified by the given name or null if no such
+     * category is found in this type's hierarchy.
+     * <p>
+     * This method considers the supertype hierarchy.
+     * 
+     * @param name The name identifying the {@link IProductCmptCategory} to be retrieved
+     * @param ipsProject The project which IPS object path is used for the search
+     */
+    public IProductCmptCategory findProductCmptCategory(String name, IIpsProject ipsProject);
+
+    /**
+     * Moves the {@link IProductCmptCategory}s identified by the indexes up or down by one position
+     * and returns the new indexes of the moved {@link IProductCmptCategory}s.
+     * <p>
+     * If one of the indexes is 0 (the first object), no object is moved up. If one of the indexes
+     * is the number of objects - 1 (the last object) no object is moved down.
+     * 
+     * @param indexes The indexes identifying the {@link IProductCmptCategory}s
+     * @param up Flag indicating whether to move up or down
+     * 
+     * @throws NullPointerException If indexes is null
+     * @throws IndexOutOfBoundsException If one of the indexes does not identify a
+     *             {@link IProductCmptCategory}s
+     */
+    public int[] moveProductCmptCategories(int[] indexes, boolean up);
 
 }

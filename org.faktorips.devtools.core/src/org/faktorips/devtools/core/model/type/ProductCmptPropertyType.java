@@ -51,6 +51,7 @@ public enum ProductCmptPropertyType {
      * An {@link IPropertyValue} with this type can be safely casted to {@link IAttributeValue}.
      * 
      */
+    // TODO AW 10-10-2011: Should be renamed to ATTRIBUTE
     VALUE(Messages.ProductCmptPropertyType_productAttribute) {
 
         @Override
@@ -142,6 +143,7 @@ public enum ProductCmptPropertyType {
      * <p>
      * An {@link IPropertyValue} with this type can be safely casted to {@link IConfigElement}.
      */
+    // TODO AW 10-10-2011: Should be renamed to CONFIG_ELEMENT
     DEFAULT_VALUE_AND_VALUESET(Messages.ProductCmptPropertyType_defaultValueAndValueSet) {
 
         @Override
