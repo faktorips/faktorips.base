@@ -564,7 +564,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         }
 
         super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsElement);
-        if (!isPublished() && getValueSet().isEnum() || getValueSet().isRange()) {
+        if (!isPublished() && !getValueSet().isUnrestricted() && !isProductRelevant()) {
             addValueSetConstantToGeneratedJavaElements(javaElements, generatedJavaType);
         }
 
@@ -604,17 +604,16 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
 
         if (isPublished()) {
             super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsElement);
-            if (getValueSet().isEnum() || getValueSet().isRange()) {
+            if (!getValueSet().isUnrestricted() && !isProductRelevant()) {
                 addValueSetConstantToGeneratedJavaElements(javaElements, generatedJavaType);
             }
             addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
             addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-            if (getValueSet().isEnum() || getValueSet().isRange()) {
+            if (!getValueSet().isUnrestricted() || isProductRelevant()) {
                 addGetValueSetMethodToGeneratedJavaElements(javaElements, generatedJavaType);
             }
 
             if (isProductRelevant()) {
-                addGetValueSetMethodToGeneratedJavaElements(javaElements, generatedJavaType);
                 IType javaTypeProductCmptTypeGen = null;
                 try {
                     javaTypeProductCmptTypeGen = findGeneratedJavaTypeForProductCmptTypeGen(true);
