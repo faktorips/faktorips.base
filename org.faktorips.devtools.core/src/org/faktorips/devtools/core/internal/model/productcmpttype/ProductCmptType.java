@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -95,7 +96,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         associations = new IpsObjectPartCollection<IProductCmptTypeAssociation>(this, ProductCmptTypeAssociation.class,
                 IProductCmptTypeAssociation.class, ProductCmptTypeAssociation.TAG_NAME);
         categories = new IpsObjectPartCollection<IProductCmptCategory>(this, ProductCmptCategory.class,
-                IProductCmptCategory.class, ProductCmptCategory.TAG_NAME);
+                IProductCmptCategory.class, ProductCmptCategory.XML_TAG_NAME);
     }
 
     @Override
@@ -621,33 +622,102 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public List<IProductCmptCategory> getProductCmptCategories() {
-        // TODO Auto-generated method stub
-        return null;
+    public IProductCmptCategory newProductCmptCategory(String name) {
+        IProductCmptCategory category = newProductCmptCategory();
+        category.setName(name);
+        return category;
     }
 
     @Override
-    public List<IProductCmptCategory> findAllProductCmptCategories(IIpsProject ipsProject) {
-        // TODO Auto-generated method stub
-        return null;
+    public List<IProductCmptCategory> getProductCmptCategories() {
+        List<IProductCmptCategory> notInheritedCategories = new ArrayList<IProductCmptCategory>(categories.size());
+        for (IProductCmptCategory category : categories) {
+            if (!category.isInherited()) {
+                notInheritedCategories.add(category);
+            }
+        }
+        return notInheritedCategories;
+    }
+
+    @Override
+    public List<IProductCmptCategory> getProductCmptCategoriesIncludeSupertypeCopies() {
+        return Collections.unmodifiableList(categories.asList());
+    }
+
+    @Override
+    public List<IProductCmptCategory> findAllProductCmptCategories(IIpsProject ipsProject) throws CoreException {
+        // Collect all categories from the supertype hierarchy
+        final Map<IProductCmptType, List<IProductCmptCategory>> typesToCategories = new LinkedHashMap<IProductCmptType, List<IProductCmptCategory>>();
+        TypeHierarchyVisitor<IProductCmptType> visitor = new TypeHierarchyVisitor<IProductCmptType>(ipsProject) {
+            @Override
+            protected boolean visit(IProductCmptType currentType) throws CoreException {
+                typesToCategories.put(currentType, currentType.getProductCmptCategories());
+                return true;
+            }
+        };
+        visitor.start(this);
+        // Sort so that categories that are farther up in the hierarchy are listed at the top
+        List<IProductCmptCategory> sortedCategories = new ArrayList<IProductCmptCategory>();
+        for (int i = visitor.getVisited().size() - 1; i >= 0; i--) {
+            IType type = visitor.getVisited().get(i);
+            sortedCategories.addAll(typesToCategories.get(type));
+        }
+        return Collections.unmodifiableList(sortedCategories);
     }
 
     @Override
     public IProductCmptCategory getProductCmptCategory(String name) {
-        // TODO Auto-generated method stub
+        IProductCmptCategory category = getProductCmptCategoryIncludeSupertypeCopies(name);
+        if (category != null && !category.isInherited()) {
+            return category;
+        }
         return null;
     }
 
     @Override
-    public IProductCmptCategory findProductCmptCategory(String name, IIpsProject ipsProject) {
-        // TODO Auto-generated method stub
+    public IProductCmptCategory getProductCmptCategoryIncludeSupertypeCopies(String name) {
+        for (IProductCmptCategory category : categories) {
+            if (category.getName().equals(name)) {
+                return category;
+            }
+        }
         return null;
+    }
+
+    @Override
+    public IProductCmptCategory findProductCmptCategory(final String name, IIpsProject ipsProject) throws CoreException {
+        class ProductCmptCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {
+
+            private final String categoryName;
+
+            private IProductCmptCategory category;
+
+            private ProductCmptCategoryFinder(IIpsProject ipsProject, String categoryName) {
+                super(ipsProject);
+                this.categoryName = categoryName;
+            }
+
+            @Override
+            protected boolean visit(IProductCmptType currentType) throws CoreException {
+                if (currentType.getProductCmptCategory(categoryName) != null
+                        && !currentType.getProductCmptCategory(categoryName).isInherited()) {
+                    category = currentType.getProductCmptCategory(categoryName);
+                    return false;
+                }
+                return true;
+            }
+
+        }
+
+        ProductCmptCategoryFinder visitor = new ProductCmptCategoryFinder(ipsProject, name);
+        visitor.start(this);
+
+        return visitor.category;
     }
 
     @Override
     public int[] moveProductCmptCategories(int[] indexes, boolean up) {
-        // TODO Auto-generated method stub
-        return null;
+        return categories.moveParts(indexes, up);
     }
 
     private static class TableStructureUsageFinder extends TypeHierarchyVisitor<IProductCmptType> {

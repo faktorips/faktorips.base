@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model.productcmpttype;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -43,6 +44,22 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  */
 public interface IProductCmptCategory extends IIpsObjectPart {
 
+    public final static String XML_TAG_NAME = "Category"; //$NON-NLS-1$
+
+    public final static String PROPERTY_INHERITED = "inherited"; //$NON-NLS-1$
+
+    public final static String PROPERTY_DEFAULT_FOR_METHODS = "defaultForMethods"; //$NON-NLS-1$
+
+    public final static String PROPERTY_DEFAULT_FOR_VALIDATION_RULES = "defaultForValidationRules"; //$NON-NLS-1$
+
+    public final static String PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES = "defaultForTableStructureUsages"; //$NON-NLS-1$
+
+    public final static String PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = "defaultForPolicyCmptTypeAttributes"; //$NON-NLS-1$
+
+    public final static String PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = "defaultForProductCmptTypeAttributes"; //$NON-NLS-1$
+
+    public final static String PROPERTY_SIDE = "side"; //$NON-NLS-1$
+
     /**
      * Returns the {@link IProductCmptType} this category belongs to.
      */
@@ -59,7 +76,7 @@ public interface IProductCmptCategory extends IIpsObjectPart {
      * Returns an unmodifiable view on the list of {@link IProductCmptProperty} currently assigned
      * to this category.
      * <p>
-     * If this category is inherited, this method does <strong>not</strong> return
+     * If this category is <em>inherited</em>, this method does <strong>not</strong> return
      * {@link IProductCmptProperty}s assigned by the supertype hierarchy. The method
      * {@link #findAllAssignedProductCmptProperties(IIpsProject)} can be used to retrieve all
      * assigned {@link IProductCmptProperty}s.
@@ -67,38 +84,45 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public List<IProductCmptProperty> getAssignedProductCmptProperties();
 
     /**
-     * Returns the {@link IProductCmptProperty} identified by the indicated name or null if no such
-     * property is assigned to this category.
+     * Returns whether the indicated {@link IProductCmptProperty} is assigned to this category.
      * <p>
      * This method does <strong>not</strong> consider {@link IProductCmptProperty}s assigned by the
      * supertype hierarchy. To achieve this, use
-     * {@link #findAssignedProductCmptProperty(String, IIpsProject)}.
+     * {@link #findIsAssignedProductCmptProperty(IProductCmptProperty, IIpsProject)}.
      * 
-     * @param name The name identifying the {@link IProductCmptProperty} to retrieve
+     * @param productCmptProperty The property to check for assignment
      */
-    public IProductCmptProperty getAssignedProductCmptProperty(String name);
+    public boolean isAssignedProductCmptProperty(IProductCmptProperty productCmptProperty);
 
     /**
      * Returns an unmodifiable view on the list of {@link IProductCmptProperty} currently assigned
      * to this category.
      * <p>
      * In contrast to {@link #getAssignedProductCmptProperties()}, the list returned by this method
-     * also includes {@link IProductCmptProperty}s assigned by the supertype hierarchy.
+     * <strong>does</strong> include {@link IProductCmptProperty}s assigned by the supertype
+     * hierarchy.
+     * <p>
+     * The properties are sorted in such a way that assignments of supertypes are positioned at the
+     * top of the list.
      * 
      * @param ipsProject The project which IPS object path is used for the search
+     * 
+     * @throws CoreException If an error occurs while searching the supertype hierarchy
      */
-    public List<IProductCmptProperty> findAllAssignedProductCmptProperties(IIpsProject ipsProject);
+    public List<IProductCmptProperty> findAllAssignedProductCmptProperties(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the {@link IProductCmptProperty} identified by the indicated name or null if no such
-     * property is assigned to this category.
+     * Returns whether the indicated {@link IProductCmptProperty} is assigned to this category.
      * <p>
-     * This method considers the supertype hierarchy.
+     * This method <strong>does</strong> consider the supertype hierarchy.
      * 
-     * @param name The name identifying the {@link IProductCmptProperty} to retrieve
+     * @param property The property to check for assignment
      * @param ipsProject The project which IPS object path is used for the search
+     * 
+     * @throws CoreException If an error occurs while searching the supertype hierarchy
      */
-    public IProductCmptProperty findAssignedProductCmptProperty(String name, IIpsProject ipsProject);
+    public boolean findIsAssignedProductCmptProperty(IProductCmptProperty property, IIpsProject ipsProject)
+            throws CoreException;
 
     /**
      * Assigns the given {@link IProductCmptProperty} to this category.
@@ -109,6 +133,8 @@ public interface IProductCmptCategory extends IIpsObjectPart {
      * @param productCmptProperty The {@link IProductCmptProperty} to assign to this category
      * 
      * @throws NullPointerException If the parameter is null
+     * @throws IllegalArgumentException If the given {@link IProductCmptProperty} does not belong to
+     *             the {@link IProductCmptType} this category belongs to
      */
     public boolean assignProductCmptProperty(IProductCmptProperty productCmptProperty);
 
@@ -206,6 +232,8 @@ public interface IProductCmptCategory extends IIpsObjectPart {
      * Sets the {@link Side} this category is positioned at.
      * 
      * @param side The {@link Side} to position this category at
+     * 
+     * @throws NullPointerException If the parameter is null
      */
     public void setSide(Side side);
 
@@ -228,8 +256,10 @@ public interface IProductCmptCategory extends IIpsObjectPart {
      * Defines the side at which this category is positioned.
      */
     public static enum Side {
+
         LEFT,
         RIGHT;
+
     }
 
 }

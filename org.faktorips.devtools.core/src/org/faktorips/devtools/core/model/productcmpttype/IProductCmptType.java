@@ -380,30 +380,63 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public IProductCmptCategory newProductCmptCategory();
 
     /**
-     * Returns an unmodifiable view on the list of {@link IProductCmptCategory}s belonging to this
-     * type.
+     * Creates and returns a new {@link IProductCmptCategory} with the provided name, belonging to
+     * this type.
+     * 
+     * @param name The name of the category to create
+     */
+    public IProductCmptCategory newProductCmptCategory(String name);
+
+    /**
+     * Returns a list (defensive copy) containing the {@link IProductCmptCategory}s belonging to
+     * this type.
      * <p>
      * The returned list does <strong>not</strong> include categories defined in the supertype
-     * hierarchy. To achieve this, use {@link #findAllProductCmptCategories(IIpsProject)}.
+     * hierarchy. To include categories defined in the supertype hierarchy, use
+     * {@link #findAllProductCmptCategories(IIpsProject)}.
+     * <p>
+     * This operation does <strong>not</strong> include categories marked as <em>inherited</em>, use
+     * {@link #getProductCmptCategoriesIncludeSupertypeCopies()} to include them.
      */
     public List<IProductCmptCategory> getProductCmptCategories();
 
     /**
-     * Returns an unmodifiable view on the list of {@link IProductCmptCategory}s belonging to this
-     * type.
+     * Returns an unmodifiable view on the list containing the {@link IProductCmptCategory}s
+     * belonging to this type.
      * <p>
-     * In contrast to {@link #getProductCmptCategories()}, the list returned by this method also
-     * includes categories defined in the supertype hierarchy.
+     * The returned list does <strong>not</strong> include categories defined in the supertype
+     * hierarchy. To include categories defined in the supertype hierarchy, use
+     * {@link #findAllProductCmptCategories(IIpsProject)}.
+     * <p>
+     * This operation <strong>does</strong> include categories marked as <em>inherited</em>, use
+     * {@link #getProductCmptCategories()} if this is not desired.
+     */
+    public List<IProductCmptCategory> getProductCmptCategoriesIncludeSupertypeCopies();
+
+    /**
+     * Returns a list (defensive copy) containing the {@link IProductCmptCategory}s belonging to
+     * this type.
+     * <p>
+     * In contrast to {@link #getProductCmptCategories()}, the list returned by this method
+     * <strong>does</strong> include categories defined in the supertype hierarchy.
+     * <p>
+     * Categories that are marked as <em>inherited</em> are <strong>not</strong> included.
+     * <p>
+     * Categories originating from supertypes are located at the top of the list.
      * 
      * @param ipsProject The project which IPS object path is used for the search
+     * 
+     * @throws CoreException If an error occurs while searching the supertype hierarchy
      */
-    public List<IProductCmptCategory> findAllProductCmptCategories(IIpsProject ipsProject);
+    public List<IProductCmptCategory> findAllProductCmptCategories(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the {@link IProductCmptCategory} identified by the given name or null if no such
-     * category is found in this type.
+     * category is found.
      * <p>
      * This method does <strong>not</strong> consider categories defined in the supertype hierarchy.
+     * <p>
+     * This method does <strong>not</strong> consider categories marked as <em>inherited</em>.
      * 
      * @param name The name identifying the {@link IProductCmptCategory} to be retrieved
      */
@@ -411,14 +444,30 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
 
     /**
      * Returns the {@link IProductCmptCategory} identified by the given name or null if no such
+     * category is found.
+     * <p>
+     * This method does <strong>not</strong> consider categories defined in the supertype hierarchy.
+     * <p>
+     * This method <strong>does</strong> consider categories marked as <em>inherited</em>.
+     * 
+     * @param name The name identifying the {@link IProductCmptCategory} to be retrieved
+     */
+    public IProductCmptCategory getProductCmptCategoryIncludeSupertypeCopies(String name);
+
+    /**
+     * Returns the {@link IProductCmptCategory} identified by the given name or null if no such
      * category is found in this type's hierarchy.
      * <p>
-     * This method considers the supertype hierarchy.
+     * This method <strong>does</strong> consider the supertype hierarchy.
+     * <p>
+     * This method does <strong>not</strong> consider categories marked as <em>inherited</em>.
      * 
      * @param name The name identifying the {@link IProductCmptCategory} to be retrieved
      * @param ipsProject The project which IPS object path is used for the search
+     * 
+     * @throws CoreException If an error occurs while searching the supertype hierarchy
      */
-    public IProductCmptCategory findProductCmptCategory(String name, IIpsProject ipsProject);
+    public IProductCmptCategory findProductCmptCategory(String name, IIpsProject ipsProject) throws CoreException;
 
     /**
      * Moves the {@link IProductCmptCategory}s identified by the indexes up or down by one position

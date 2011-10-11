@@ -665,6 +665,12 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
     }
 
     @Test
+    public void testNewProductCmptCategoryWithName() {
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
+        assertEquals("foo", category.getName());
+    }
+
+    @Test
     public void testNewProductCmptTypeMethod() {
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         assertNotNull(method);
@@ -1190,4 +1196,104 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         assertTrue(resultList.contains(productCmptProj2.getIpsSrcFile()));
         assertFalse(resultList.contains(productCmpt3.getIpsSrcFile()));
     }
+
+    @Test
+    public void testGetProductCmptCategory() {
+        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("foo");
+        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("bar");
+        category2.setInherited(true);
+
+        assertEquals(category1, productCmptType.getProductCmptCategory("foo"));
+        assertNull(productCmptType.getProductCmptCategory("bar"));
+    }
+
+    @Test
+    public void testGetProductCmptCategoryIncludeSupertypeCopies() {
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
+        IProductCmptCategory inheritedCategory = productCmptType.newProductCmptCategory("bar");
+        inheritedCategory.setInherited(true);
+
+        assertEquals(category, productCmptType.getProductCmptCategoryIncludeSupertypeCopies("foo"));
+        assertEquals(inheritedCategory, productCmptType.getProductCmptCategoryIncludeSupertypeCopies("bar"));
+    }
+
+    @Test
+    public void testGetProductCmptCategories() {
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
+        IProductCmptCategory inheritedCategory = productCmptType.newProductCmptCategory("bar");
+        inheritedCategory.setInherited(true);
+
+        assertEquals(category, productCmptType.getProductCmptCategories().get(0));
+        assertFalse(productCmptType.getProductCmptCategories().contains(inheritedCategory));
+        assertEquals(1, productCmptType.getProductCmptCategories().size());
+    }
+
+    @Test
+    public void testGetProductCmptCategoriesIncludeSupertypeCopies() {
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
+        IProductCmptCategory inheritedCategory = productCmptType.newProductCmptCategory("bar");
+        inheritedCategory.setInherited(true);
+
+        assertEquals(category, productCmptType.getProductCmptCategoriesIncludeSupertypeCopies().get(0));
+        assertEquals(inheritedCategory, productCmptType.getProductCmptCategoriesIncludeSupertypeCopies().get(1));
+        assertEquals(2, productCmptType.getProductCmptCategoriesIncludeSupertypeCopies().size());
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testGetProductCmptCategoriesIncludeSupertypeCopiesUnmodifiable() {
+        productCmptType.newProductCmptCategory("foo");
+        productCmptType.getProductCmptCategoriesIncludeSupertypeCopies().remove(0);
+    }
+
+    @Test
+    public void testFindAllProductCmptCategories() throws CoreException {
+        IProductCmptType superSuperProductCmptType = newProductCmptType(ipsProject, "SuperSuperProductCmptType");
+        superProductCmptType.setSupertype(superSuperProductCmptType.getQualifiedName());
+
+        IProductCmptCategory superSuperCategory = superSuperProductCmptType.newProductCmptCategory();
+        IProductCmptCategory superCategory = superProductCmptType.newProductCmptCategory();
+        IProductCmptCategory category = productCmptType.newProductCmptCategory();
+        IProductCmptCategory inheritedCategory = productCmptType.newProductCmptCategory();
+        inheritedCategory.setInherited(true);
+
+        List<IProductCmptCategory> allCategories = productCmptType.findAllProductCmptCategories(ipsProject);
+        assertEquals(superSuperCategory, allCategories.get(0));
+        assertEquals(superCategory, allCategories.get(1));
+        assertEquals(category, allCategories.get(2));
+        assertFalse(allCategories.contains(inheritedCategory));
+        assertEquals(3, allCategories.size());
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testFindAllProductCmptCategoriesUnmodifiable() throws CoreException {
+        productCmptType.newProductCmptCategory();
+        productCmptType.findAllProductCmptCategories(ipsProject).remove(0);
+    }
+
+    @Test
+    public void testFindProductCmptCategory() throws CoreException {
+        IProductCmptCategory superCategory = superProductCmptType.newProductCmptCategory("foo");
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
+        category.setInherited(true);
+
+        assertEquals(superCategory, productCmptType.findProductCmptCategory("foo", ipsProject));
+    }
+
+    @Test
+    public void testMoveProductCmptCategories() {
+        IProductCmptCategory category1 = productCmptType.newProductCmptCategory();
+        IProductCmptCategory category2 = productCmptType.newProductCmptCategory();
+        IProductCmptCategory category3 = productCmptType.newProductCmptCategory();
+
+        productCmptType.moveProductCmptCategories(new int[] { 1, 2 }, true);
+        List<IProductCmptCategory> categories = productCmptType.getProductCmptCategories();
+        assertEquals(category2, categories.get(0));
+        assertEquals(category3, categories.get(1));
+        assertEquals(category1, categories.get(2));
+
+        assertTrue(lastEvent.isAffected(category1));
+        assertTrue(lastEvent.isAffected(category2));
+        assertTrue(lastEvent.isAffected(category3));
+    }
+
 }

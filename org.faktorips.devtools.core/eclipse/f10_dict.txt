@@ -1,7 +1,8 @@
 checkbox
 supertype
-valueset
+supertypes
 subtype
+valueset
 cancelable
 mockito
 classloader
