@@ -382,7 +382,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IProductCmptTypeMethod getFormulaSignature(String formulaName) throws CoreException {
+    public IProductCmptTypeMethod getFormulaSignature(String formulaName) {
         if (StringUtils.isEmpty(formulaName)) {
             return null;
         }

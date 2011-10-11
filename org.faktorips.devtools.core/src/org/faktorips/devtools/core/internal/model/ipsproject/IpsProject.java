@@ -1770,10 +1770,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
         IProductCmptNamingStrategy strategyI = null;
         IProductCmptNamingStrategy strategyJ = null;
         for (IIpsSrcFile productCmptToCheck : cmptsToCheck) {
-            ArgumentCheck.equals(productCmptToCheck.getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE);
+            ArgumentCheck.equals(productCmptToCheck.getIpsObjectType(), IpsObjectType.PRODUCT_CMPT);
             strategyI = productCmptToCheck.getIpsProject().getProductCmptNamingStrategy();
             for (IIpsSrcFile element : baseCheck) {
-                ArgumentCheck.equals(element.getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE);
+                ArgumentCheck.equals(element.getIpsObjectType(), IpsObjectType.PRODUCT_CMPT);
                 IIpsSrcFile productCmptToCheckB = element;
                 if (!productCmptToCheck.getQualifiedNameType().equals((productCmptToCheckB.getQualifiedNameType()))) {
                     strategyJ = productCmptToCheckB.getIpsProject().getProductCmptNamingStrategy();

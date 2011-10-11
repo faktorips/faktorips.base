@@ -20,10 +20,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
@@ -37,9 +45,11 @@ import org.w3c.dom.Element;
  * 
  * @author Alexander Weickmann
  */
-public final class ProductCmptCategory extends AtomicIpsObjectPart implements IProductCmptCategory {
+public final class ProductCmptCategory extends BaseIpsObjectPart implements IProductCmptCategory {
 
-    private final List<IProductCmptProperty> assignedProperties = new ArrayList<IProductCmptProperty>(5);
+    private final IpsObjectPartCollection<IProductCmptPropertyReference> propertyReferences = new IpsObjectPartCollection<IProductCmptPropertyReference>(
+            this, ProductCmptPropertyReference.class, IProductCmptPropertyReference.class,
+            IProductCmptPropertyReference.XML_TAG_NAME);
 
     private boolean inherited;
 
@@ -66,14 +76,35 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
     }
 
     @Override
-    public List<IProductCmptProperty> getAssignedProductCmptProperties() {
-        return Collections.unmodifiableList(assignedProperties);
+    public List<IProductCmptProperty> findAssignedProductCmptProperties(IIpsProject ipsProject) throws CoreException {
+        List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>(propertyReferences.size());
+        IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);
+        for (IProductCmptPropertyReference reference : propertyReferences) {
+            switch (reference.getProductCmptPropertyType()) {
+                case VALUE:
+                    properties.add(getProductCmptType().getProductCmptTypeAttribute(reference.getName()));
+                    break;
+                case TABLE_CONTENT_USAGE:
+                    properties.add(getProductCmptType().getTableStructureUsage(reference.getName()));
+                    break;
+                case FORMULA:
+                    properties.add(getProductCmptType().getFormulaSignature(reference.getName()));
+                    break;
+                case DEFAULT_VALUE_AND_VALUESET:
+                    properties.add(policyCmptType.getPolicyCmptTypeAttribute(reference.getName()));
+                    break;
+                case VALIDATION_RULE_CONFIG:
+                    properties.add(policyCmptType.getValidationRule(reference.getName()));
+                    break;
+            }
+        }
+        return properties;
     }
 
     @Override
     public boolean isAssignedProductCmptProperty(IProductCmptProperty property) {
-        for (IProductCmptProperty assignedProperty : assignedProperties) {
-            if (assignedProperty.equals(property)) {
+        for (IProductCmptPropertyReference propertyReference : propertyReferences) {
+            if (propertyReference.isIdentifyingProperty(property)) {
                 return true;
             }
         }
@@ -82,13 +113,17 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
 
     @Override
     public List<IProductCmptProperty> findAllAssignedProductCmptProperties(IIpsProject ipsProject) throws CoreException {
+        if (!isInherited()) {
+            return findAssignedProductCmptProperties(ipsProject);
+        }
+
         // Collect all assigned properties from the supertype hierarchy
         final Map<IProductCmptType, List<IProductCmptProperty>> typesToAssignedProperties = new LinkedHashMap<IProductCmptType, List<IProductCmptProperty>>();
         TypeHierarchyVisitor<IProductCmptType> visitor = new TypeHierarchyVisitor<IProductCmptType>(ipsProject) {
             @Override
             protected boolean visit(IProductCmptType currentType) throws CoreException {
                 IProductCmptCategory category = currentType.getProductCmptCategoryIncludeSupertypeCopies(getName());
-                typesToAssignedProperties.put(currentType, category.getAssignedProductCmptProperties());
+                typesToAssignedProperties.put(currentType, category.findAssignedProductCmptProperties(ipsProject));
                 return true;
             }
         };
@@ -103,29 +138,95 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
     }
 
     @Override
-    public boolean findIsAssignedProductCmptProperty(IProductCmptProperty property, IIpsProject ipsProject)
+    public boolean findIsAssignedProductCmptProperty(final IProductCmptProperty property, IIpsProject ipsProject)
             throws CoreException {
 
-        for (IProductCmptProperty assignedProperty : findAllAssignedProductCmptProperties(ipsProject)) {
-            if (assignedProperty.equals(property)) {
+        if (!isInherited()) {
+            return isAssignedProductCmptProperty(property);
+        }
+
+        class ProductCmptPropertyFinder extends TypeHierarchyVisitor<IProductCmptType> {
+
+            public ProductCmptPropertyFinder(IIpsProject ipsProject) {
+                super(ipsProject);
+            }
+
+            private boolean assigned;
+
+            @Override
+            protected boolean visit(IProductCmptType currentType) throws CoreException {
+                IProductCmptCategory category = currentType.getProductCmptCategoryIncludeSupertypeCopies(getName());
+                if (category != null && category.isAssignedProductCmptProperty(property)) {
+                    assigned = true;
+                    return false;
+                }
                 return true;
             }
+
+        }
+
+        ProductCmptPropertyFinder finder = new ProductCmptPropertyFinder(ipsProject);
+        finder.start(getProductCmptType());
+        return finder.assigned;
+    }
+
+    @Override
+    public boolean assignProductCmptProperty(IProductCmptTypeAttribute productCmptTypeAttribute) {
+        ArgumentCheck.equals(productCmptTypeAttribute.getProductCmptType(), getProductCmptType());
+        return assignProductCmptPropertyInternal(productCmptTypeAttribute);
+    }
+
+    @Override
+    public boolean assignProductCmptProperty(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
+        ArgumentCheck.equals(policyCmptTypeAttribute.getPolicyCmptType().getQualifiedName(), getProductCmptType()
+                .getPolicyCmptType());
+        ArgumentCheck.isTrue(policyCmptTypeAttribute.isProductRelevant());
+        return assignProductCmptPropertyInternal(policyCmptTypeAttribute);
+    }
+
+    @Override
+    public boolean assignProductCmptProperty(IProductCmptTypeMethod productCmptTypeMethod) {
+        ArgumentCheck.equals(productCmptTypeMethod.getProductCmptType(), getProductCmptType());
+        ArgumentCheck.isTrue(productCmptTypeMethod.isFormulaSignatureDefinition());
+        return assignProductCmptPropertyInternal(productCmptTypeMethod);
+    }
+
+    @Override
+    public boolean assignProductCmptProperty(ITableStructureUsage tableStructureUsage) {
+        ArgumentCheck.equals(tableStructureUsage.getProductCmptType(), getProductCmptType());
+        return assignProductCmptPropertyInternal(tableStructureUsage);
+    }
+
+    @Override
+    public boolean assignProductCmptProperty(IValidationRule validationRule) {
+        ArgumentCheck.equals(validationRule.getType().getQualifiedName(), getProductCmptType().getPolicyCmptType());
+        return assignProductCmptPropertyInternal(validationRule);
+    }
+
+    private boolean assignProductCmptPropertyInternal(IProductCmptProperty productCmptProperty) {
+        if (!isAssignedProductCmptProperty(productCmptProperty)) {
+            newProductCmptPropertyReference(productCmptProperty);
+            return true;
         }
         return false;
     }
 
-    @Override
-    public boolean assignProductCmptProperty(IProductCmptProperty productCmptProperty) {
-        ArgumentCheck.isTrue(productCmptProperty.getType().equals(getProductCmptType()));
-        if (assignedProperties.contains(productCmptProperty)) {
-            return false;
-        }
-        return assignedProperties.add(productCmptProperty);
+    private IProductCmptPropertyReference newProductCmptPropertyReference(IProductCmptProperty productCmptProperty) {
+        IProductCmptPropertyReference reference = propertyReferences.newPart();
+        reference.setName(productCmptProperty.getPropertyName());
+        reference.setProductCmptPropertyType(productCmptProperty.getProductCmptPropertyType());
+        return reference;
     }
 
     @Override
     public boolean removeProductCmptProperty(IProductCmptProperty productCmptProperty) {
-        return assignedProperties.remove(productCmptProperty);
+        for (IProductCmptPropertyReference reference : propertyReferences) {
+            if (reference.isIdentifyingProperty(productCmptProperty)) {
+                reference.delete();
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

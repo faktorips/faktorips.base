@@ -303,7 +303,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * such method is found in <strong>this</strong> type. The type hierarchy is not searched.
      * Returns <code>null</code> if formulaName is <code>null</code>.
      */
-    public IProductCmptTypeMethod getFormulaSignature(String formulaName) throws CoreException;
+    public IProductCmptTypeMethod getFormulaSignature(String formulaName);
 
     /**
      * Returns all method signatures of this product component type neglecting the type hierarchy.

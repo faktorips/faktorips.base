@@ -115,7 +115,7 @@ public class ArgumentCheck {
      * @throws IllegalArgumentException if arg1.equals(arg2) returns falls.
      */
     public final static void equals(Object arg1, Object arg2) {
-        if (arg1.equals(arg2)) {
+        if (!arg1.equals(arg2)) {
             throw new IllegalArgumentException();
         }
     }
@@ -126,7 +126,7 @@ public class ArgumentCheck {
      * @throws IllegalArgumentException if arg1.equals(arg2) returns falls.
      */
     public final static void equals(Object arg1, Object arg2, Object context) {
-        if (arg1.equals(arg2)) {
+        if (!arg1.equals(arg2)) {
             throw new IllegalArgumentException(context.toString());
         }
     }
