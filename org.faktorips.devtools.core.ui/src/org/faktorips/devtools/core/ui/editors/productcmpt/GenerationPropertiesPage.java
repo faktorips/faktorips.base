@@ -30,10 +30,13 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
+import org.faktorips.devtools.core.ui.IExtensionPropertySectionFactory.Position;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.modeldescription.ModelDescriptionView;
 
 /**
@@ -197,21 +200,27 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
         IProductCmptGeneration generation = getActiveGeneration();
 
+        ExtensionPropertyControlFactory extFactory = new ExtensionPropertyControlFactory(generation.getClass());
+
         Composite left = createGridComposite(toolkit, root, 1, true, GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL);
         productAttributesSection = new AttributeValuesSection(generation, left, toolkit);
         formulasSection = new FormulasSection(generation, left, toolkit);
         validationRuleSection = new ValidationRuleConfigSection(generation, left, toolkit);
 
+        productAttributesSection.setFocusSuccessor(formulasSection);
+        formulasSection.setFocusSuccessor(validationRuleSection);
+        IpsSection lastFocussedSection = extFactory.createSections(left, toolkit, generation, Position.LEFT,
+                validationRuleSection);
+
         Composite right = createGridComposite(toolkit, root, 1, true, GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL);
         defaultsAndRangesSection = new DefaultsAndRangesSection(generation, right, toolkit);
         linksSection = new LinksSection(generation, right, toolkit, getEditorSite());
-
-        productAttributesSection.setFocusSuccessor(formulasSection);
-        formulasSection.setFocusSuccessor(validationRuleSection);
-        validationRuleSection.setFocusSuccessor(defaultsAndRangesSection);
-        defaultsAndRangesSection.setFocusSuccessor(linksSection);
+        lastFocussedSection.setFocusSuccessor(defaultsAndRangesSection);
+        lastFocussedSection = extFactory.createSections(left, toolkit, generation, Position.RIGHT,
+                defaultsAndRangesSection);
+        lastFocussedSection.setFocusSuccessor(linksSection);
 
         // searches for Composites that implement the ISelectionProviderActivation interface and
         // registers them with the selection provider dispatcher of the IpsObjectEditor

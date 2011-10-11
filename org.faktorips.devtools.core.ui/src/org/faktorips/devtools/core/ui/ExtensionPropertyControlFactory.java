@@ -21,9 +21,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.ui.IExtensionPropertySectionFactory.Position;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
  * Factory to create controls for the extension properties of a type.
@@ -121,6 +123,27 @@ public class ExtensionPropertyControlFactory {
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
+    }
+
+    public IpsSection createSections(Composite parent,
+            UIToolkit toolkit,
+            IIpsObjectPartContainer ipsObjectPart,
+            Position position,
+            IpsSection lastFocussedSection) {
+        for (ExtPropControlData extPropControlData : extPropData) {
+            try {
+                IExtensionPropertySectionFactory sectionFactory = IpsUIPlugin.getDefault()
+                        .getExtensionPropertySectionFactory(extPropControlData.extProperty.getPropertyId());
+                if (sectionFactory != null && sectionFactory.getPosition() == position) {
+                    IpsSection newSection = sectionFactory.newSection(ipsObjectPart, parent, toolkit);
+                    lastFocussedSection.setFocusSuccessor(newSection);
+                    lastFocussedSection = newSection;
+                }
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
+        return lastFocussedSection;
     }
 
     /**

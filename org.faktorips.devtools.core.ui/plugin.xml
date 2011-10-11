@@ -8,6 +8,7 @@
    
    <extension-point id="adapterprovider" name="Adapter Provider" schema="schema/adapterprovider.exsd" />
    <extension-point id="valueDatatypeControlFactory" name="valueDatatypeControlFactory" schema="schema/valueDatatypeControlFactory.exsd"/>
+   <extension-point id="extensionPropertySectionFactory" name="Extension Property Section Factory" schema="schema/extensionPropertySectionFactory.exsd"/>
    
 <!-- 
     Product Definition Perspective

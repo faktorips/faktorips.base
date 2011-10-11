@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.faktorips.devtools.core.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.faktorips.devtools.core.ui" id="extensionPropertySectionFactory" name="Extension Property Section Factory"/>
+      </appInfo>
+      <documentation>
+         Some extension properties contain data that can not be displayed in a simple EditField as defined in the extension point extensionPropertyEditFieldFactory. This extension point allows the definition of factories that create whole sections for extension properties which may be incorporated in appropriate parts of the UI, e.g. the product component generation editor (which is up to October 2011 the only editor that supports these sections).
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="SectionFactory"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="SectionFactory">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The class implementing a factory that creates sections to display the extension property&apos;s contents.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.ui.IExtensionPropertySectionFactory"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="propertyId" type="string">
+            <annotation>
+               <documentation>
+                  The id of the property for which this factory creates a UI section. The id has to include the namespace and the simple identifier. E.g. if there exists an extension property &quot;foo&quot; in the plugin with the plugin ID &quot;FooPlugin&quot; then the id to specify in this field would be &quot;FooPlugin.foo&quot;
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         [Enter the first release in which this extension point appears.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         [Enter extension point usage example here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiinfo"/>
+      </appInfo>
+      <documentation>
+         [Enter API information here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
+
+
+</schema>

@@ -128,6 +128,12 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     public final static String EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY = "extensionPropertyEditFieldFactory"; //$NON-NLS-1$
 
     /**
+     * The simple extension point id of the extension point <tt>extensionPropertySectionFactory</tt>
+     * .
+     */
+    public final static String EXTENSION_POINT_ID_EXTENSION_PROPERTY_SECTION_FACTORY = "extensionPropertySectionFactory"; //$NON-NLS-1$
+
+    /**
      * The extension point id of the extension point <tt>adapterprovider</tt>.
      */
     public final static String EXTENSION_POINT_ID_ADAPTER_PROVIDER = "adapterprovider"; //$NON-NLS-1$
@@ -175,6 +181,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     private IpsProblemMarkerManager ipsProblemMarkerManager;
 
     private Map<String, IExtensionPropertyEditFieldFactory> extensionPropertyEditFieldFactoryMap;
+
+    private Map<String, IExtensionPropertySectionFactory> extensionPropertySectionFactoriesMap;
 
     private static IExtensionRegistry registry;
 
@@ -606,6 +614,42 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             factory = new DefaultExtensionPropertyEditFieldFactory();
             extensionPropertyEditFieldFactoryMap.put(propertyId, factory);
         }
+        return factory;
+    }
+
+    /**
+     * Returns the registered {@link IExtensionPropertyEditFieldFactory} for the provided
+     * propertyId. If no factory is explicitly registered for the provided {@code propertyId},
+     * {@code null} will be associated with the propertyId and returned.
+     * 
+     * @param propertyId the id that identifies an extension property for which the section factory
+     *            will be returned.
+     */
+    public IExtensionPropertySectionFactory getExtensionPropertySectionFactory(String propertyId) throws CoreException {
+
+        if (extensionPropertySectionFactoriesMap == null) {
+            extensionPropertySectionFactoriesMap = new HashMap<String, IExtensionPropertySectionFactory>();
+            ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsUIPlugin.PLUGIN_ID);
+            IExtension[] extensions = extensionPoints
+                    .getExtension(EXTENSION_POINT_ID_EXTENSION_PROPERTY_SECTION_FACTORY);
+            for (IExtension extension : extensions) {
+                for (IConfigurationElement configElement : extension.getConfigurationElements()) {
+                    String configElPropertyId = configElement.getAttribute("propertyId"); //$NON-NLS-1$
+                    if (StringUtils.isBlank(configElPropertyId)) {
+                        throw new CoreException(new IpsStatus(IStatus.ERROR,
+                                "A problem occured while trying to load the extension: " //$NON-NLS-1$
+                                        + extension.getExtensionPointUniqueIdentifier()
+                                        + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
+                    }
+                    IExtensionPropertySectionFactory factory = ExtensionPoints.createExecutableExtension(extension,
+                            configElement, CONFIG_PROPERTY_CLASS, IExtensionPropertySectionFactory.class);
+                    if (factory != null) {
+                        extensionPropertySectionFactoriesMap.put(configElPropertyId, factory);
+                    }
+                }
+            }
+        }
+        IExtensionPropertySectionFactory factory = extensionPropertySectionFactoriesMap.get(propertyId);
         return factory;
     }
 
