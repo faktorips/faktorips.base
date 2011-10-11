@@ -37,8 +37,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.stdbuilder.policycmpttype.AbstractValidationMessagesBuilderTest;
 import org.faktorips.devtools.stdbuilder.policycmpttype.MessagesProperties;
 import org.junit.Test;
@@ -301,6 +301,13 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         when(validationRule.getMessageText()).thenReturn(text);
         result = validationRuleMessagesGenerator.getMessageText(validationRule);
         assertEquals("{0} Abc 123 alles klar {1} usw. blabla {1} asd {0} soso", result);
+
+        // parameter with underscore
+        text.add(new LocalizedString(locale, "{abc_xyz} asdfsdaf"));
+        when(validationRule.getMessageText()).thenReturn(text);
+        result = validationRuleMessagesGenerator.getMessageText(validationRule);
+        assertEquals("{0} asdfsdaf", result);
+
     }
 
 }

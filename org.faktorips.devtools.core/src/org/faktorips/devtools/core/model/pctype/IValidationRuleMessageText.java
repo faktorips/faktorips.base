@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.IInternationalString;
 public interface IValidationRuleMessageText extends IInternationalString {
 
     // matching a text that follows '{' and is followed by '}' or ','
-    public static final Pattern REPLACEMENT_PARAMETER_REGEXT = Pattern.compile("(?<=(\\{))[\\p{L}0-9]+(?=([,\\}]))"); //$NON-NLS-1$
+    public static final Pattern REPLACEMENT_PARAMETER_REGEXT = Pattern.compile("(?<=(\\{))[\\p{L}0-9_$]+(?=([,\\}]))"); //$NON-NLS-1$
 
     /**
      * Extracting the replacement parameters from messageText. The replacement parameters are
