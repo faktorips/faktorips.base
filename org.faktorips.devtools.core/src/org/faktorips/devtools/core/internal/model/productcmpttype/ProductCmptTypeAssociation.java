@@ -235,6 +235,11 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         if (policyCmptType == null) {
             return null;
         }
+        // check if the policy component type is configured by this product component type.
+        // (FIPS-714)
+        if (!policyCmptType.getProductCmptType().equals(getProductCmptType().getQualifiedName())) {
+            return null;
+        }
         IProductCmptType targetType = findTargetProductCmptType(ipsProject);
         if (targetType == null) {
             return null;
