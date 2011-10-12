@@ -15,8 +15,26 @@ package org.faktorips.runtime.internal.toc;
 
 import org.w3c.dom.Element;
 
+/**
+ * A ITocEntryFactory implementation is used to load {@link TocEntryObject}s of a given type
+ * identified by their XML tag.
+ * 
+ * @author schwering
+ */
 public interface ITocEntryFactory<T extends TocEntryObject> {
+
+    /**
+     * Creates a {@link TocEntryObject} from it's XML representation.
+     * 
+     * @param entryElement the XML element representing the {@link TocEntryObject}
+     * @return a {@link TocEntryObject}
+     */
     T createFromXml(Element entryElement);
 
+    /**
+     * Returns the XML tag identifying a {@link TocEntryObject} this factory can create.
+     * 
+     * @return the XML tag identifying a {@link TocEntryObject} this factory can create
+     */
     String getXmlTag();
 }

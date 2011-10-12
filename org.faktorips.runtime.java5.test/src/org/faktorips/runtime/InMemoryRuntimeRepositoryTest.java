@@ -558,17 +558,17 @@ public class InMemoryRuntimeRepositoryTest {
         }
         MyRuntimeObject myRuntimeObject = new MyRuntimeObject();
         String ipsObjectQualifiedName = "MyRuntimeObjectId";
-        repository.putByType(MyRuntimeObject.class, ipsObjectQualifiedName, myRuntimeObject);
-        assertEquals(myRuntimeObject, repository.getByType(MyRuntimeObject.class, ipsObjectQualifiedName));
+        repository.putCustomRuntimeObject(MyRuntimeObject.class, ipsObjectQualifiedName, myRuntimeObject);
+        assertEquals(myRuntimeObject, repository.getCustomRuntimeObject(MyRuntimeObject.class, ipsObjectQualifiedName));
     }
 
     @Test
     public void testGetByType() {
-        repository.putByType(DummyRuntimeObject.class, "dummy.DummyRuntimeObject", new DummyRuntimeObject());
-        DummyRuntimeObject dummyRuntimeObject = repository.getByType(DummyRuntimeObject.class,
+        repository.putCustomRuntimeObject(DummyRuntimeObject.class, "dummy.DummyRuntimeObject", new DummyRuntimeObject());
+        DummyRuntimeObject dummyRuntimeObject = repository.getCustomRuntimeObject(DummyRuntimeObject.class,
                 "dummy.DummyRuntimeObject");
         assertNotNull(dummyRuntimeObject);
-        dummyRuntimeObject = repository.getByType(DummyRuntimeObject.class, "dummy.DummyRuntimeObject2");
+        dummyRuntimeObject = repository.getCustomRuntimeObject(DummyRuntimeObject.class, "dummy.DummyRuntimeObject2");
         assertNull(dummyRuntimeObject);
         class NoClass implements IRuntimeObject {
 
@@ -582,7 +582,7 @@ public class InMemoryRuntimeRepositoryTest {
                 return null;
             }
         }
-        NoClass noClassObject = repository.getByType(NoClass.class, "dummy.DummyRuntimeObject");
+        NoClass noClassObject = repository.getCustomRuntimeObject(NoClass.class, "dummy.DummyRuntimeObject");
         assertNull(noClassObject);
     }
 

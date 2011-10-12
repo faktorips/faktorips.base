@@ -25,7 +25,6 @@ import org.faktorips.runtime.GenerationId;
 import org.faktorips.runtime.ICacheFactory;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
-import org.faktorips.runtime.IRuntimeObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.caching.AbstractComputable;
@@ -63,7 +62,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
     private volatile IComputable<String, ITable> tableCacheByQName;
     private volatile IComputable<Class<?>, List<?>> enumValuesCacheByClass;
     private List<XmlAdapter<?, ?>> enumXmlAdapters;
-    private volatile Map<Class<? extends IRuntimeObject>, IComputable<String, IRuntimeObject>> otherRuntimeObjectsByTypeCache = new HashMap<Class<? extends IRuntimeObject>, IComputable<String, IRuntimeObject>>();
+    private volatile Map<Class<?>, IComputable<String, Object>> customRuntimeObjectsByTypeCache = new HashMap<Class<?>, IComputable<String, Object>>();
 
     public AbstractCachingRuntimeRepository(String name, ICacheFactory cacheFactory, ClassLoader cl) {
         super(name);
@@ -180,7 +179,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
     protected abstract List<XmlAdapter<?, ?>> getNotCachedEnumXmlAdapter(IRuntimeRepository repository);
 
     @Override
-    protected <T extends IRuntimeObject> T getByTypeInternal(Class<T> type, String ipsObjectQualifiedName) {
+    protected <T> T getCustomRuntimeObjectInternal(Class<T> type, String ipsObjectQualifiedName) {
         try {
             IComputable<String, T> cache = getCache(type);
             return cache.compute(ipsObjectQualifiedName);
@@ -189,28 +188,28 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
         }
     }
 
-    private <T extends IRuntimeObject> IComputable<String, T> getCache(Class<T> type) {
+    private <T> IComputable<String, T> getCache(Class<T> type) {
         @SuppressWarnings("unchecked")
-        IComputable<String, T> cache = (IComputable<String, T>)otherRuntimeObjectsByTypeCache.get(type);
+        IComputable<String, T> cache = (IComputable<String, T>)customRuntimeObjectsByTypeCache.get(type);
         if (cache == null) {
             cache = initCache(type);
             @SuppressWarnings("unchecked")
-            IComputable<String, IRuntimeObject> cache2 = (IComputable<String, IRuntimeObject>)cache;
-            otherRuntimeObjectsByTypeCache.put(type, cache2);
+            IComputable<String, Object> cache2 = (IComputable<String, Object>)cache;
+            customRuntimeObjectsByTypeCache.put(type, cache2);
         }
         return cache;
     }
 
-    private <T extends IRuntimeObject> IComputable<String, T> initCache(final Class<T> type) {
-        IComputable<String, T> productCmptComputer = new AbstractComputable<String, T>(type) {
+    private <T> IComputable<String, T> initCache(final Class<T> type) {
+        IComputable<String, T> computer = new AbstractComputable<String, T>(type) {
             public T compute(String key) throws InterruptedException {
-                return getNotCachedByType(type, key);
+                return getNotCachedCustomObject(type, key);
             }
         };
-        IComputable<String, T> cache = cacheFactory.createCache(productCmptComputer);
+        IComputable<String, T> cache = cacheFactory.createCache(computer);
         return cache;
     }
 
-    protected abstract <T extends IRuntimeObject> T getNotCachedByType(Class<T> type, String ipsObjectQualifiedName);
+    protected abstract <T> T getNotCachedCustomObject(Class<T> type, String ipsObjectQualifiedName);
 
 }

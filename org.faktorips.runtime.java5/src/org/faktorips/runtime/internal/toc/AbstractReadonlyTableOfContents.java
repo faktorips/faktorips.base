@@ -191,6 +191,6 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
         return buf.toString();
     }
 
-    public abstract <T extends IRuntimeObject> List<TypedTocEntryObject<T>> getTypedTocEntries(Class<T> type);
+    public abstract <T extends IRuntimeObject> List<CustomTocEntryObject<T>> getTypedTocEntries(Class<T> type);
 
 }

@@ -33,7 +33,7 @@ import org.faktorips.runtime.internal.toc.ProductCmptTypeTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
-import org.faktorips.runtime.internal.toc.TypedTocEntryObject;
+import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -220,8 +220,8 @@ public class TableOfContent {
             return IpsObjectType.PRODUCT_CMPT_TYPE;
         } else if (entry instanceof EnumXmlAdapterTocEntry) {
             return IpsObjectType.ENUM_TYPE;
-        } else if (entry instanceof TypedTocEntryObject<?>) {
-            return IpsObjectType.getTypeForName(((TypedTocEntryObject<?>)entry).getIpsObjectTypeId());
+        } else if (entry instanceof CustomTocEntryObject<?>) {
+            return IpsObjectType.getTypeForName(((CustomTocEntryObject<?>)entry).getIpsObjectTypeId());
         } else {
             return null;
         }

@@ -40,7 +40,6 @@ import org.faktorips.runtime.IEnumValueLookupService;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
-import org.faktorips.runtime.IRuntimeObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.ProductCmptGenerationNotFoundException;
@@ -850,13 +849,13 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return null;
     }
 
-    public <T extends IRuntimeObject> T getByType(Class<T> type, String ipsObjectQualifiedName) {
-        T pc = getByTypeInternal(type, ipsObjectQualifiedName);
+    public <T> T getCustomRuntimeObject(Class<T> type, String ipsObjectQualifiedName) {
+        T pc = getCustomRuntimeObjectInternal(type, ipsObjectQualifiedName);
         if (pc != null) {
             return pc;
         }
         for (IRuntimeRepository repository : repositories) {
-            pc = repository.getByType(type, ipsObjectQualifiedName);
+            pc = repository.getCustomRuntimeObject(type, ipsObjectQualifiedName);
             if (pc != null) {
                 return pc;
             }
@@ -865,9 +864,9 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Same as getByType(Class<T> type, String id) but searches only in this repository and not the
-     * ones this repository depends on.
+     * Same as getCustomRuntimeObject(Class<T> type, String id) but searches only in this repository
+     * and not the ones this repository depends on.
      */
-    protected abstract <T extends IRuntimeObject> T getByTypeInternal(Class<T> type, String ipsObjectQualifiedName);
+    protected abstract <T> T getCustomRuntimeObjectInternal(Class<T> type, String ipsObjectQualifiedName);
 
 }

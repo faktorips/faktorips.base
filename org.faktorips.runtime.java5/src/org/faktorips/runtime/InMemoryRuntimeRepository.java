@@ -64,7 +64,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     private List<XmlAdapter<?, ?>> enumXmlAdapters = new LinkedList<XmlAdapter<?, ?>>();
 
     /** Contains all maps for all other runtime objects with their qualified name as key. */
-    private Map<Class<?>, Map<String, IRuntimeObject>> otherRuntimeObjectsByType = new HashMap<Class<?>, Map<String, IRuntimeObject>>();
+    private Map<Class<?>, Map<String, IRuntimeObject>> customRuntimeObjectsByType = new HashMap<Class<?>, Map<String, IRuntimeObject>>();
 
     public InMemoryRuntimeRepository() {
         super("InMemoryRuntimeRepository");
@@ -397,18 +397,18 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * Puts the runtimeObject into the repository.
      */
-    public <T extends IRuntimeObject> void putByType(Class<T> type, String ipsObjectQualifiedName, T runtimeObject) {
-        Map<String, IRuntimeObject> otherRuntimeObjects = otherRuntimeObjectsByType.get(type);
-        if (otherRuntimeObjects == null) {
-            otherRuntimeObjects = new HashMap<String, IRuntimeObject>();
-            otherRuntimeObjectsByType.put(type, otherRuntimeObjects);
+    public <T extends IRuntimeObject> void putCustomRuntimeObject(Class<T> type, String ipsObjectQualifiedName, T runtimeObject) {
+        Map<String, IRuntimeObject> customRuntimeObjects = customRuntimeObjectsByType.get(type);
+        if (customRuntimeObjects == null) {
+            customRuntimeObjects = new HashMap<String, IRuntimeObject>();
+            customRuntimeObjectsByType.put(type, customRuntimeObjects);
         }
-        otherRuntimeObjects.put(ipsObjectQualifiedName, runtimeObject);
+        customRuntimeObjects.put(ipsObjectQualifiedName, runtimeObject);
     }
 
     @Override
-    protected <T extends IRuntimeObject> T getByTypeInternal(Class<T> type, String id) {
-        Map<String, IRuntimeObject> otherRuntimeObjects = otherRuntimeObjectsByType.get(type);
+    protected <T> T getCustomRuntimeObjectInternal(Class<T> type, String id) {
+        Map<String, IRuntimeObject> otherRuntimeObjects = customRuntimeObjectsByType.get(type);
         if (otherRuntimeObjects != null) {
             @SuppressWarnings("unchecked")
             T runtimeObject = (T)otherRuntimeObjects.get(id);

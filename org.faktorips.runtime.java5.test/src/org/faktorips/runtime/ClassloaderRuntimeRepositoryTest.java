@@ -316,10 +316,10 @@ public class ClassloaderRuntimeRepositoryTest {
 
     @Test
     public void testGetByType() {
-        DummyRuntimeObject dummyRuntimeObject = repository.getByType(DummyRuntimeObject.class,
+        DummyRuntimeObject dummyRuntimeObject = repository.getCustomRuntimeObject(DummyRuntimeObject.class,
                 "dummy.DummyRuntimeObject");
         assertNotNull(dummyRuntimeObject);
-        dummyRuntimeObject = repository.getByType(DummyRuntimeObject.class, "dummy.DummyRuntimeObject2");
+        dummyRuntimeObject = repository.getCustomRuntimeObject(DummyRuntimeObject.class, "dummy.DummyRuntimeObject2");
         assertNull(dummyRuntimeObject);
         class NoClass implements IRuntimeObject {
 
@@ -333,7 +333,7 @@ public class ClassloaderRuntimeRepositoryTest {
                 return null;
             }
         }
-        NoClass noClassObject = repository.getByType(NoClass.class, "dummy.DummyRuntimeObject");
+        NoClass noClassObject = repository.getCustomRuntimeObject(NoClass.class, "dummy.DummyRuntimeObject");
         assertNull(noClassObject);
     }
 }

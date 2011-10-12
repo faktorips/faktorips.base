@@ -20,6 +20,8 @@ import java.util.Set;
 import javax.xml.bind.JAXBContext;
 
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
+import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
+import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
@@ -347,12 +349,6 @@ public interface IRuntimeRepository {
     public IModelType getModelType(Class<?> modelObjectClass);
 
     /**
-     * Returns the <code>IModelType</code> containing the meta information for the model object
-     * class with the given qualified name.
-     */
-    public IModelType getModelType(String qualifiedName);
-
-    /**
      * Returns the <code>IModelType</code> containing the meta information for the given model
      * object. This is a convenience method calling <code>getModelType</code> with the model
      * object's class.
@@ -398,15 +394,18 @@ public interface IRuntimeRepository {
     public ClassLoader getClassLoader();
 
     /**
-     * Returns a {@link IRuntimeObject} of type {@code T}, identified by it's qualified name or
-     * {@code null} if no such object exists in this repository or it's referenced repositories. It
-     * is up to extensions to define which types can be found in the repository. If there are no
-     * objects of the given type, {@code null} is returned.
+     * Returns a object of type {@code T}, identified by it's qualified name, or {@code null} if no
+     * such object exists in this repository or it's referenced repositories. It is up to extensions
+     * to define which types can be found in the repository (e.g. a
+     * {@link AbstractTocBasedRuntimeRepository} could define {@link CustomTocEntryObject}s for new
+     * types. If there are no objects of the given type, {@code null} is returned. If the
+     * {@link IRuntimeRepository} implementation does not allow custom types, {@code null} is
+     * returned.
      * 
-     * @param type a class implementing {@link IRuntimeObject}
+     * @param type a class supported by the {@link IRuntimeRepository} implementation
      * @param qName the qualified name of the object
      * @return the object identified by qName or {@code null}
      */
-    public <T extends IRuntimeObject> T getByType(Class<T> type, String qName);
+    public <T> T getCustomRuntimeObject(Class<T> type, String qName);
 
 }

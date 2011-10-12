@@ -15,7 +15,6 @@ package org.faktorips.runtime.productdataprovider;
 
 import java.io.InputStream;
 
-import org.faktorips.runtime.IRuntimeObject;
 import org.faktorips.runtime.IVersionChecker;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
@@ -25,7 +24,7 @@ import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
-import org.faktorips.runtime.internal.toc.TypedTocEntryObject;
+import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -153,8 +152,7 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         }
     }
 
-    public <T extends IRuntimeObject> Element getTocEntryData(TypedTocEntryObject<T> tocEntry)
-            throws DataModifiedException {
+    public <T> Element getTocEntryData(CustomTocEntryObject<T> tocEntry) throws DataModifiedException {
         return getDocumentElement(tocEntry);
     }
 

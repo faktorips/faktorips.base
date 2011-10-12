@@ -19,7 +19,7 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.RuntimeObject;
 import org.faktorips.runtime.internal.toc.ITocEntryFactory;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
-import org.faktorips.runtime.internal.toc.TypedTocEntryObject;
+import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.w3c.dom.Element;
 
 public class MyDummyTocEntryFactory implements ITocEntryFactory<MyDummyTypedTocEntryObject> {
@@ -35,7 +35,7 @@ public class MyDummyTocEntryFactory implements ITocEntryFactory<MyDummyTypedTocE
         return MyDummyTypedTocEntryObject.DUMMY_RUNTIME_OBJECT;
     }
 
-    public static class MyDummyTypedTocEntryObject extends TypedTocEntryObject<MyDummyRuntimeObject> {
+    public static class MyDummyTypedTocEntryObject extends CustomTocEntryObject<MyDummyRuntimeObject> {
 
         static final String DUMMY_RUNTIME_OBJECT = "MyDummyRuntimeObject";
 

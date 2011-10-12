@@ -15,14 +15,13 @@ package org.faktorips.runtime.productdataprovider;
 
 import java.io.InputStream;
 
-import org.faktorips.runtime.IRuntimeObject;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
-import org.faktorips.runtime.internal.toc.TypedTocEntryObject;
+import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.w3c.dom.Element;
 
 /**
@@ -128,7 +127,6 @@ public interface IProductDataProvider {
      * @return the xml element of the requested object
      * @throws DataModifiedException when toc data was modified
      */
-    public <T extends IRuntimeObject> Element getTocEntryData(TypedTocEntryObject<T> tocEntry)
-            throws DataModifiedException;
+    public <T> Element getTocEntryData(CustomTocEntryObject<T> tocEntry) throws DataModifiedException;
 
 }

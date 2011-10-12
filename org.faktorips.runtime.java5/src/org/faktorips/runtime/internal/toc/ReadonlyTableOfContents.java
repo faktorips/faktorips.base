@@ -77,7 +77,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      */
     protected Map<String, EnumXmlAdapterTocEntry> enumXmlAdapterTocEntryMap;
 
-    protected Map<Class<? extends IRuntimeObject>, Map<String, TypedTocEntryObject<?>>> otherTocEntryMaps;
+    protected Map<Class<?>, Map<String, CustomTocEntryObject<?>>> otherTocEntryMaps;
 
     /**
      * Creats a new toc.
@@ -118,7 +118,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         modelTypeNameTocEntryMap = new HashMap<String, ModelTypeTocEntry>(tocSize / 4);
         enumContentImplClassTocEntryMap = new HashMap<String, EnumContentTocEntry>(tocSize / 4);
         enumXmlAdapterTocEntryMap = new HashMap<String, EnumXmlAdapterTocEntry>(tocSize / 4);
-        otherTocEntryMaps = new HashMap<Class<? extends IRuntimeObject>, Map<String, TypedTocEntryObject<?>>>();
+        otherTocEntryMaps = new HashMap<Class<?>, Map<String, CustomTocEntryObject<?>>>();
     }
 
     @Override
@@ -165,18 +165,18 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
             enumXmlAdapterTocEntryMap.put(entry.getIpsObjectId(), (EnumXmlAdapterTocEntry)entry);
             return;
         }
-        if (entry instanceof TypedTocEntryObject<?>) {
-            putTypedTocEntryToMap((TypedTocEntryObject<?>)entry);
+        if (entry instanceof CustomTocEntryObject<?>) {
+            putTypedTocEntryToMap((CustomTocEntryObject<?>)entry);
             return;
         }
 
         throw new IllegalArgumentException("Unknown entry type " + entry);
     }
 
-    private <T extends IRuntimeObject> void putTypedTocEntryToMap(TypedTocEntryObject<T> tocEntry) {
-        Map<String, TypedTocEntryObject<?>> otherTocEntryMap = otherTocEntryMaps.get(tocEntry.getRuntimeObjectClass());
+    private <T> void putTypedTocEntryToMap(CustomTocEntryObject<T> tocEntry) {
+        Map<String, CustomTocEntryObject<?>> otherTocEntryMap = otherTocEntryMaps.get(tocEntry.getRuntimeObjectClass());
         if (otherTocEntryMap == null) {
-            otherTocEntryMap = new HashMap<String, TypedTocEntryObject<?>>();
+            otherTocEntryMap = new HashMap<String, CustomTocEntryObject<?>>();
             otherTocEntryMaps.put(tocEntry.getRuntimeObjectClass(), otherTocEntryMap);
         }
         otherTocEntryMap.put(tocEntry.getIpsObjectQualifiedName(), tocEntry);
@@ -289,18 +289,17 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         results.addAll(modelTypeNameTocEntryMap.values());
         results.addAll(enumContentImplClassTocEntryMap.values());
         results.addAll(enumXmlAdapterTocEntryMap.values());
-        for (Map<String, TypedTocEntryObject<?>> otherTocEntryMap : otherTocEntryMaps.values()) {
+        for (Map<String, CustomTocEntryObject<?>> otherTocEntryMap : otherTocEntryMaps.values()) {
             results.addAll(otherTocEntryMap.values());
         }
         return results;
     }
 
-    public <T extends IRuntimeObject> TypedTocEntryObject<T> getTypedTocEntry(Class<T> type,
-            String ipsObjectQualifiedName) {
-        Map<String, TypedTocEntryObject<?>> otherTocEntryMap = otherTocEntryMaps.get(type);
+    public <T> CustomTocEntryObject<T> getCustomTocEntry(Class<T> type, String ipsObjectQualifiedName) {
+        Map<String, CustomTocEntryObject<?>> otherTocEntryMap = otherTocEntryMaps.get(type);
         if (otherTocEntryMap != null) {
             @SuppressWarnings("unchecked")
-            TypedTocEntryObject<T> typedTocEntryObject = (TypedTocEntryObject<T>)otherTocEntryMap
+            CustomTocEntryObject<T> typedTocEntryObject = (CustomTocEntryObject<T>)otherTocEntryMap
                     .get(ipsObjectQualifiedName);
             return typedTocEntryObject;
         }
@@ -308,14 +307,14 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
     }
 
     @Override
-    public <T extends IRuntimeObject> List<TypedTocEntryObject<T>> getTypedTocEntries(Class<T> type) {
-        Map<String, TypedTocEntryObject<?>> otherTocEntryMap = otherTocEntryMaps.get(type);
-        ArrayList<TypedTocEntryObject<T>> list = new ArrayList<TypedTocEntryObject<T>>();
+    public <T extends IRuntimeObject> List<CustomTocEntryObject<T>> getTypedTocEntries(Class<T> type) {
+        Map<String, CustomTocEntryObject<?>> otherTocEntryMap = otherTocEntryMaps.get(type);
+        ArrayList<CustomTocEntryObject<T>> list = new ArrayList<CustomTocEntryObject<T>>();
         if (otherTocEntryMap != null) {
-            Collection<TypedTocEntryObject<?>> values = otherTocEntryMap.values();
-            for (TypedTocEntryObject<?> typedTocEntryObject : values) {
+            Collection<CustomTocEntryObject<?>> values = otherTocEntryMap.values();
+            for (CustomTocEntryObject<?> typedTocEntryObject : values) {
                 @SuppressWarnings("unchecked")
-                TypedTocEntryObject<T> tocEntryObject = (TypedTocEntryObject<T>)typedTocEntryObject;
+                CustomTocEntryObject<T> tocEntryObject = (CustomTocEntryObject<T>)typedTocEntryObject;
                 list.add(tocEntryObject);
             }
         }

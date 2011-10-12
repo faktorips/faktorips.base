@@ -42,7 +42,7 @@ import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
-import org.faktorips.runtime.internal.toc.TypedTocEntryObject;
+import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -71,7 +71,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
         @SuppressWarnings("unchecked")
-        TypedTocEntryObject<IProductComponent> entry2 = mock(TypedTocEntryObject.class);
+        CustomTocEntryObject<IProductComponent> entry2 = mock(CustomTocEntryObject.class);
         when(entry2.getIpsObjectTypeId()).thenReturn(IpsObjectType.PRODUCT_CMPT.getId());
         when(entry2.getIpsObjectQualifiedName()).thenReturn("Other");
         toc.addOrReplaceTocEntry(entry2);
@@ -111,7 +111,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
     @Test
     public void testAddOrReplaceTypedTocEntry() {
         @SuppressWarnings("unchecked")
-        TypedTocEntryObject<IProductComponent> entry0 = mock(TypedTocEntryObject.class);
+        CustomTocEntryObject<IProductComponent> entry0 = mock(CustomTocEntryObject.class);
         when(entry0.getIpsObjectTypeId()).thenReturn(IpsObjectType.PRODUCT_CMPT.getId());
         when(entry0.getIpsObjectQualifiedName()).thenReturn("qualifiedName");
         boolean changed = toc.addOrReplaceTocEntry(entry0);
@@ -296,7 +296,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         assertEquals(1, tableEntries.size());
         Set<EnumXmlAdapterTocEntry> xmlAdapterEntries = readOnlyToc.getEnumXmlAdapterTocEntries();
         assertEquals(1, xmlAdapterEntries.size());
-        List<TypedTocEntryObject<MyDummyRuntimeObject>> typedTocEntries = readOnlyToc
+        List<CustomTocEntryObject<MyDummyRuntimeObject>> typedTocEntries = readOnlyToc
                 .getTypedTocEntries(MyDummyRuntimeObject.class);
         assertEquals(1, typedTocEntries.size());
     }

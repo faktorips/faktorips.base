@@ -29,7 +29,7 @@ import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntry;
-import org.faktorips.runtime.internal.toc.TypedTocEntryObject;
+import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -365,7 +365,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
     }
 
     @Override
-    protected <T extends IRuntimeObject> Element getDocumentElement(TypedTocEntryObject<T> tocEntry) {
+    protected <T> Element getDocumentElement(CustomTocEntryObject<T> tocEntry) {
         return getDocumentElement((TocEntry)tocEntry);
     }
 
