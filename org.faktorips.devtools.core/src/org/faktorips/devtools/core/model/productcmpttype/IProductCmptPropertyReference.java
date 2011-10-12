@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.core.model.productcmpttype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
@@ -27,23 +29,13 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
  */
 public interface IProductCmptPropertyReference extends IIpsObjectPart {
 
-    public final static String XML_TAG_NAME = "ProductCmptPropertyReference"; //$NON-NLS-1$
-
     public final static String PROPERTY_PROPERTY_TYPE = "propertyType"; //$NON-NLS-1$
 
     /**
-     * Sets the name of the referenced property.
-     * 
-     * @param name The name identifying the referenced property
+     * Returns the name of the referenced property.
      */
-    public void setName(String name);
-
-    /**
-     * Sets the {@link ProductCmptPropertyType} of the referenced property.
-     * 
-     * @param propertyType The {@link ProductCmptPropertyType} of the referenced property
-     */
-    public void setProductCmptPropertyType(ProductCmptPropertyType propertyType);
+    @Override
+    public String getName();
 
     /**
      * Returns the {@link ProductCmptPropertyType} of the referenced property.
@@ -56,5 +48,15 @@ public interface IProductCmptPropertyReference extends IIpsObjectPart {
      * @param property The property to check whether this is a corresponding reference
      */
     public boolean isIdentifyingProperty(IProductCmptProperty property);
+
+    /**
+     * Returns the {@link IProductCmptProperty} identified by this reference or null if the
+     * referenced property cannot be found.
+     * 
+     * @param ipsProject The project which IPS object path is used for the search
+     * 
+     * @throws CoreException If an error occurs during the search
+     */
+    public IProductCmptProperty findReferencedProductCmptProperty(IIpsProject ipsProject) throws CoreException;
 
 }

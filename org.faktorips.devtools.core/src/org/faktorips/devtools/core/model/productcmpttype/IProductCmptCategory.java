@@ -32,9 +32,9 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  * <em>tables and formulas</em> section.
  * <p>
  * A category can be marked to be the <em>default category</em> for each type of
- * {@link IProductCmptProperty}. New parts of that property type are then automatically assigned to
- * the corresponding default category. Of course, the parts can still be moved to other categories
- * by the user.
+ * {@link IProductCmptProperty}. New parts of that property type will then automatically be
+ * referenced by the corresponding default category. Of course, the parts can still be moved to
+ * other categories by the user.
  * <p>
  * Furthermore, a category can be marked to be inherited from the supertype. In this case, a
  * category with the same name must be found in the supertype.
@@ -59,7 +59,7 @@ public interface IProductCmptCategory extends IIpsObjectPart {
 
     public final static String PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = "defaultForProductCmptTypeAttributes"; //$NON-NLS-1$
 
-    public final static String PROPERTY_SIDE = "side"; //$NON-NLS-1$
+    public final static String PROPERTY_POSITION = "position"; //$NON-NLS-1$
 
     /**
      * Returns the {@link IProductCmptType} this category belongs to.
@@ -74,84 +74,81 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public void setName(String name);
 
     /**
-     * Returns a list containing the {@link IProductCmptProperty} currently assigned to this
+     * Returns a list containing the {@link IProductCmptProperty} currently referenced by this
      * category.
      * <p>
      * If this category is <em>inherited</em>, this method does <strong>not</strong> return
-     * {@link IProductCmptProperty}s assigned by the supertype hierarchy. The method
-     * {@link #findAllAssignedProductCmptProperties(IIpsProject)} can be used to retrieve all
-     * assigned {@link IProductCmptProperty}s.
+     * {@link IProductCmptProperty}s referenced by the supertype hierarchy. The method
+     * {@link #findAllReferencedProductCmptProperties(IIpsProject)} can be used to retrieve all
+     * referenced {@link IProductCmptProperty}s.
      * 
      * @param ipsProject The project which IPS object path is used for the search
      * 
      * @throws CoreException If an error occurs during the search
      */
-    public List<IProductCmptProperty> findAssignedProductCmptProperties(IIpsProject ipsProject) throws CoreException;
+    public List<IProductCmptProperty> findReferencedProductCmptProperties(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns whether the indicated {@link IProductCmptProperty} is assigned to this category.
+     * Returns whether the indicated {@link IProductCmptProperty} is referenced by this category.
      * <p>
-     * This method does <strong>not</strong> consider {@link IProductCmptProperty}s assigned by the
-     * supertype hierarchy. To achieve this, use
-     * {@link #findIsAssignedProductCmptProperty(IProductCmptProperty, IIpsProject)}.
+     * This method does <strong>not</strong> consider {@link IProductCmptProperty}s referenced by
+     * the supertype hierarchy. To achieve this, use
+     * {@link #findIsReferencedProductCmptProperty(IProductCmptProperty, IIpsProject)}.
      * 
-     * @param productCmptProperty The property to check for assignment
+     * @param productCmptProperty The property to check for reference
      */
-    public boolean isAssignedProductCmptProperty(IProductCmptProperty productCmptProperty);
+    public boolean isReferencedProductCmptProperty(IProductCmptProperty productCmptProperty);
 
     /**
-     * Returns a list containing the {@link IProductCmptProperty} currently assigned to this
+     * Returns a list containing the {@link IProductCmptProperty} currently referenced by this
      * category.
      * <p>
-     * In contrast to {@link #findAssignedProductCmptProperties(IIpsProject)}, the list returned by
-     * this method <strong>does</strong> include {@link IProductCmptProperty}s assigned by the
+     * In contrast to {@link #findReferencedProductCmptProperties(IIpsProject)}, the list returned
+     * by this method <strong>does</strong> include {@link IProductCmptProperty}s referenced by the
      * supertype hierarchy if this category is marked as <em>inherited</em>.
      * <p>
-     * The properties are sorted in such a way that assignments of supertypes are positioned at the
+     * The properties are sorted in such a way that references of supertypes are positioned at the
      * top of the list.
      * 
      * @param ipsProject The project which IPS object path is used for the search
      * 
      * @throws CoreException If an error occurs while searching the supertype hierarchy
      */
-    public List<IProductCmptProperty> findAllAssignedProductCmptProperties(IIpsProject ipsProject) throws CoreException;
+    public List<IProductCmptProperty> findAllReferencedProductCmptProperties(IIpsProject ipsProject)
+            throws CoreException;
 
     /**
-     * Returns whether the indicated {@link IProductCmptProperty} is assigned to this category.
+     * Returns whether the indicated {@link IProductCmptProperty} is referenced by this category.
      * <p>
      * This method <strong>does</strong> consider the supertype hierarchy if this category is marked
      * as <em>inherited</em>.
      * 
-     * @param property The property to check for assignment
+     * @param property The property to check for reference
      * @param ipsProject The project which IPS object path is used for the search
      * 
      * @throws CoreException If an error occurs while searching the supertype hierarchy
      */
-    public boolean findIsAssignedProductCmptProperty(IProductCmptProperty property, IIpsProject ipsProject)
+    public boolean findIsReferencedProductCmptProperty(IProductCmptProperty property, IIpsProject ipsProject)
             throws CoreException;
 
     /**
-     * Assigns the given {@link IProductCmptTypeAttribute} to this category.
-     * <p>
-     * Returns false if the {@link IProductCmptTypeAttribute} is already assigned to this category,
-     * true otherwise.
+     * Creates a reference to the given {@link IProductCmptTypeAttribute} in this category and
+     * returns it.
      * 
-     * @param productCmptTypeAttribute The {@link IProductCmptTypeAttribute} to assign to this
+     * @param productCmptTypeAttribute The {@link IProductCmptTypeAttribute} to reference in this
      *            category
      * 
      * @throws NullPointerException If the parameter is null
      * @throws IllegalArgumentException If the given {@link IProductCmptTypeAttribute} does not
      *             belong to the {@link IProductCmptType} this category belongs to
      */
-    public boolean assignProductCmptProperty(IProductCmptTypeAttribute productCmptTypeAttribute);
+    public IProductCmptPropertyDirectReference newProductCmptPropertyReference(IProductCmptTypeAttribute productCmptTypeAttribute);
 
     /**
-     * Assigns the given {@link IPolicyCmptTypeAttribute} to this category.
-     * <p>
-     * Returns false if the {@link IPolicyCmptTypeAttribute} is already assigned to this category,
-     * true otherwise.
+     * Creates a reference to the given {@link IPolicyCmptTypeAttribute} in this category and
+     * returns it.
      * 
-     * @param policyCmptTypeAttribute The {@link IPolicyCmptTypeAttribute} to assign to this
+     * @param policyCmptTypeAttribute The {@link IPolicyCmptTypeAttribute} to reference in this
      *            category
      * 
      * @throws NullPointerException If the parameter is null
@@ -159,70 +156,67 @@ public interface IProductCmptCategory extends IIpsObjectPart {
      *             <ol>
      *             <li>the given {@link IPolicyCmptTypeAttribute} does not belong to the
      *             {@link IPolicyCmptType} the {@link IProductCmptType} this category belongs to
-     *             configures <li>the given {@link IPolicyCmptTypeAttribute} is not <em>product
+     *             configures
+     *             <li>the given {@link IPolicyCmptTypeAttribute} is not <em>product
      *             relevant</em>
      *             </ol>
      */
-    public boolean assignProductCmptProperty(IPolicyCmptTypeAttribute policyCmptTypeAttribute);
+    public IProductCmptPropertyExternalReference newProductCmptPropertyReference(IPolicyCmptTypeAttribute policyCmptTypeAttribute);
 
     /**
-     * Assigns the given {@link IProductCmptTypeMethod} to this category.
-     * <p>
-     * Returns false if the {@link IProductCmptTypeMethod} is already assigned to this category,
-     * true otherwise.
+     * Creates a reference to the given {@link IProductCmptTypeMethod} in this category and returns
+     * it.
      * 
-     * @param productCmptTypeMethod The {@link IProductCmptTypeMethod} to assign to this category
+     * @param productCmptTypeMethod The {@link IProductCmptTypeMethod} to reference in this category
      * 
      * @throws NullPointerException If the parameter is null
      * @throws IllegalArgumentException If
      *             <ol>
      *             <li>the given {@link IProductCmptTypeMethod} does not belong to the
-     *             {@link IProductCmptType} this category belongs to <li>the given
-     *             {@link IProductCmptTypeMethod} is no <em>formula signature definition</em>
+     *             {@link IProductCmptType} this category belongs to
+     *             <li>the given {@link IProductCmptTypeMethod} is no
+     *             <em>formula signature definition</em>
      *             </ol>
      */
-    public boolean assignProductCmptProperty(IProductCmptTypeMethod productCmptTypeMethod);
+    public IProductCmptPropertyDirectReference newProductCmptPropertyReference(IProductCmptTypeMethod productCmptTypeMethod);
 
     /**
-     * Assigns the given {@link ITableStructureUsage} to this category.
-     * <p>
-     * Returns false if the {@link ITableStructureUsage} is already assigned to this category, true
-     * otherwise.
+     * Creates a reference to the given {@link ITableStructureUsage} in this category and returns
+     * it.
      * 
-     * @param tableStructureUsage The {@link ITableStructureUsage} to assign to this category
+     * @param tableStructureUsage The {@link ITableStructureUsage} to reference in this category
      * 
      * @throws NullPointerException If the parameter is null
      * @throws IllegalArgumentException If the given {@link ITableStructureUsage} does not belong to
      *             the {@link IProductCmptType} this category belongs to
      */
-    public boolean assignProductCmptProperty(ITableStructureUsage tableStructureUsage);
+    public IProductCmptPropertyDirectReference newProductCmptPropertyReference(ITableStructureUsage tableStructureUsage);
 
     /**
-     * Assigns the given {@link IValidationRule} to this category.
-     * <p>
-     * Returns false if the {@link IValidationRule} is already assigned to this category, true
-     * otherwise.
+     * Creates a reference to the given {@link IValidationRule} in this category and returns it.
      * 
-     * @param validationRule The {@link IValidationRule} to assign to this category
+     * @param validationRule The {@link IValidationRule} to reference in this category
      * 
      * @throws NullPointerException If the parameter is null
      * @throws IllegalArgumentException If the given {@link IValidationRule} does not belong to the
      *             {@link IPolicyCmptType} the {@link IProductCmptType} this category belongs to
      *             configures
      */
-    public boolean assignProductCmptProperty(IValidationRule validationRule);
+    public IProductCmptPropertyExternalReference newProductCmptPropertyReference(IValidationRule validationRule);
 
     /**
-     * Removes the indicated {@link IProductCmptProperty} from this category.
+     * Deletes the first {@link IProductCmptPropertyReference} that references the indicated
+     * {@link IProductCmptProperty} from this category.
      * <p>
-     * Returns false if the {@link IProductCmptProperty} is actually not assigned to this category,
-     * true otherwise.
+     * Returns false if the {@link IProductCmptProperty} is not referenced by this category, true
+     * otherwise.
      * 
-     * @param productCmptProperty The {@link IProductCmptProperty} to remove from this category
+     * @param productCmptProperty The {@link IProductCmptProperty} to no longer reference from this
+     *            category
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public boolean removeProductCmptProperty(IProductCmptProperty productCmptProperty);
+    public boolean deleteProductCmptPropertyReference(IProductCmptProperty productCmptProperty);
 
     /**
      * Returns whether this category is inherited from the supertype hierarchy.
@@ -303,33 +297,33 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public void setDefaultForValidationRules(boolean defaultForValidationRules);
 
     /**
-     * Sets the {@link Side} this category is positioned at.
+     * Sets the {@link Position} of this category.
      * 
-     * @param side The {@link Side} to position this category at
+     * @param side The {@link Position} to set this category to
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public void setSide(Side side);
+    public void setPosition(Position side);
 
     /**
-     * Returns the {@link Side} at which this category is positioned.
+     * Returns the {@link Position} of this category.
      */
-    public Side getSide();
+    public Position getPosition();
 
     /**
-     * Returns whether this category is positioned at the left side.
+     * Returns whether this category is positioned at the left.
      */
-    public boolean isAtLeftSide();
+    public boolean isAtLeftPosition();
 
     /**
-     * Returns whether this category is positioned at the right side.
+     * Returns whether this category is positioned at the right.
      */
-    public boolean isAtRightSide();
+    public boolean isAtRightPosition();
 
     /**
-     * Defines the side at which this category is positioned.
+     * Defines the position of this category.
      */
-    public static enum Side {
+    public static enum Position {
 
         LEFT,
         RIGHT;

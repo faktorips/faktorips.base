@@ -16,68 +16,29 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 /**
- * Implementation of {@link IProductCmptPropertyReference}, please see the interface for more
- * details.
- * 
  * @author Alexander Weickmann
  */
-public final class ProductCmptPropertyReference extends AtomicIpsObjectPart implements IProductCmptPropertyReference {
+public abstract class ProductCmptPropertyReference extends AtomicIpsObjectPart implements IProductCmptPropertyReference {
 
-    private ProductCmptPropertyType propertyType;
-
-    public ProductCmptPropertyReference(IProductCmptCategory parentCategory, String id) {
+    protected ProductCmptPropertyReference(IProductCmptCategory parentCategory, String id) {
         super(parentCategory, id);
     }
 
-    @Override
-    public void setName(String name) {
-        String oldValue = this.name;
-        this.name = name;
-        valueChanged(oldValue, name);
+    /**
+     * Returns the {@link IProductCmptType} this reference belongs to.
+     */
+    protected final IProductCmptType getProductCmptType() {
+        return getProductCmptCategory().getProductCmptType();
     }
 
-    @Override
-    public void setProductCmptPropertyType(ProductCmptPropertyType propertyType) {
-        ProductCmptPropertyType oldValue = this.propertyType;
-        this.propertyType = propertyType;
-        valueChanged(oldValue, propertyType);
-    }
-
-    @Override
-    public ProductCmptPropertyType getProductCmptPropertyType() {
-        return propertyType;
-    }
-
-    @Override
-    public boolean isIdentifyingProperty(IProductCmptProperty property) {
-        return getName().equals(property.getName()) && propertyType == property.getProductCmptPropertyType();
-    }
-
-    @Override
-    protected void initFromXml(Element element, String id) {
-        name = element.getAttribute(PROPERTY_NAME);
-        propertyType = ProductCmptPropertyType.valueOf(element.getAttribute(PROPERTY_PROPERTY_TYPE).toUpperCase());
-
-        super.initFromXml(element, id);
-    }
-
-    @Override
-    protected void propertiesToXml(Element element) {
-        super.propertiesToXml(element);
-
-        element.setAttribute(PROPERTY_NAME, name);
-        element.setAttribute(PROPERTY_PROPERTY_TYPE, propertyType.toString().toLowerCase());
-    }
-
-    @Override
-    protected Element createElement(Document doc) {
-        return doc.createElement(XML_TAG_NAME);
+    /**
+     * Returns the {@link IProductCmptCategory} this reference belongs to.
+     */
+    protected final IProductCmptCategory getProductCmptCategory() {
+        return (IProductCmptCategory)getParent();
     }
 
 }

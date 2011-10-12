@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -30,7 +31,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Side;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
@@ -109,7 +110,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         assertFalse(category.isDefaultForProductCmptTypeAttributes());
         assertFalse(category.isDefaultForTableStructureUsages());
         assertFalse(category.isDefaultForValidationRules());
-        assertTrue(category.isAtLeftSide());
+        assertTrue(category.isAtLeftPosition());
     }
 
     @Test
@@ -124,128 +125,115 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void shouldAllowToAssignProductCmptTypeAttribute() {
+    public void shouldAllowToReferenceProductCmptTypeAttribute() {
         IProductCmptTypeAttribute attributeProperty = createProductCmptTypeAttributeProperty(productType,
                 "attributeProperty");
-        boolean added = category.assignProductCmptProperty(attributeProperty);
 
-        assertTrue(added);
-        assertTrue(category.isAssignedProductCmptProperty(attributeProperty));
+        assertNotNull(category.newProductCmptPropertyReference(attributeProperty));
+        assertTrue(category.isReferencedProductCmptProperty(attributeProperty));
     }
 
     @Test
-    public void shouldAllowToAssignPolicyCmptTypeAttribute() throws CoreException {
+    public void shouldAllowToReferencePolicyCmptTypeAttribute() throws CoreException {
         IPolicyCmptTypeAttribute attributeProperty = createPolicyCmptTypeAttributeProperty(productType,
                 "attributeProperty");
-        boolean added = category.assignProductCmptProperty(attributeProperty);
 
-        assertTrue(added);
-        assertTrue(category.isAssignedProductCmptProperty(attributeProperty));
+        assertNotNull(category.newProductCmptPropertyReference(attributeProperty));
+        assertTrue(category.isReferencedProductCmptProperty(attributeProperty));
     }
 
     @Test
-    public void shouldAllowToAssignProductCmptTypeMethod() {
+    public void shouldAllowToReferenceProductCmptTypeMethod() {
         IProductCmptTypeMethod methodProperty = createProductCmptTypeMethodProperty(productType, "methodProperty");
-        boolean added = category.assignProductCmptProperty(methodProperty);
 
-        assertTrue(added);
-        assertTrue(category.isAssignedProductCmptProperty(methodProperty));
+        assertNotNull(category.newProductCmptPropertyReference(methodProperty));
+        assertTrue(category.isReferencedProductCmptProperty(methodProperty));
     }
 
     @Test
-    public void shouldAllowToAssignTableStructureUsage() {
+    public void shouldAllowToReferenceTableStructureUsage() {
         ITableStructureUsage tableStructureProperty = createTableStructureUsageProperty(productType,
                 "tableStructureProperty");
-        boolean added = category.assignProductCmptProperty(tableStructureProperty);
 
-        assertTrue(added);
-        assertTrue(category.isAssignedProductCmptProperty(tableStructureProperty));
+        assertNotNull(category.newProductCmptPropertyReference(tableStructureProperty));
+        assertTrue(category.isReferencedProductCmptProperty(tableStructureProperty));
     }
 
     @Test
-    public void shouldAllowToAssignValidationRule() throws CoreException {
+    public void shouldAllowToReferenceValidationRule() throws CoreException {
         IValidationRule validationRuleProperty = createValidationRuleProperty(productType, "validationRuleProperty");
-        boolean added = category.assignProductCmptProperty(validationRuleProperty);
 
-        assertTrue(added);
-        assertTrue(category.isAssignedProductCmptProperty(validationRuleProperty));
+        assertNotNull(category.newProductCmptPropertyReference(validationRuleProperty));
+        assertTrue(category.isReferencedProductCmptProperty(validationRuleProperty));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenAssigningProductCmptTypeAttributeFromForeignProductCmptType() {
-        category.assignProductCmptProperty(superProperty);
+    public void shouldThrowIllegalArgumentExceptionWhenReferencingProductCmptTypeAttributeFromForeignProductCmptType() {
+        category.newProductCmptPropertyReference(superProperty);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenAssigningPolicyCmptTypeAttributeFromForeignPolicyCmptType()
+    public void shouldThrowIllegalArgumentExceptionWhenReferencingPolicyCmptTypeAttributeFromForeignPolicyCmptType()
             throws CoreException {
 
         IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "ForeignPolicy");
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setProductRelevant(true);
-        category.assignProductCmptProperty(attribute);
+        category.newProductCmptPropertyReference(attribute);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenAssigningPolicyCmptTypeAttributeThatIsNotProductRelevant()
+    public void shouldThrowIllegalArgumentExceptionWhenReferencingPolicyCmptTypeAttributeThatIsNotProductRelevant()
             throws CoreException {
 
         IPolicyCmptTypeAttribute attributeProperty = createPolicyCmptTypeAttributeProperty(productType,
                 "attributeProperty");
         attributeProperty.setProductRelevant(false);
-        category.assignProductCmptProperty(attributeProperty);
+        category.newProductCmptPropertyReference(attributeProperty);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenAssigningProductCmptTypeMethodFromForeignProductCmptType() {
+    public void shouldThrowIllegalArgumentExceptionWhenReferencingProductCmptTypeMethodFromForeignProductCmptType() {
         IProductCmptTypeMethod methodProperty = createProductCmptTypeMethodProperty(superProductType, "methodProperty");
-        category.assignProductCmptProperty(methodProperty);
+        category.newProductCmptPropertyReference(methodProperty);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenAssigningProductCmptTypeMethodThatIsNoFormulaSignatureDefinition() {
+    public void shouldThrowIllegalArgumentExceptionWhenReferencingProductCmptTypeMethodThatIsNoFormulaSignatureDefinition() {
         IProductCmptTypeMethod methodProperty = createProductCmptTypeMethodProperty(productType, "methodProperty");
         methodProperty.setFormulaSignatureDefinition(false);
-        category.assignProductCmptProperty(methodProperty);
+        category.newProductCmptPropertyReference(methodProperty);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenAssigningValidationRuleFromForeignPolicyCmptType()
+    public void shouldThrowIllegalArgumentExceptionWhenReferencingValidationRuleFromForeignPolicyCmptType()
             throws CoreException {
 
         IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "ForeignPolicy");
         IValidationRule validationRule = policyCmptType.newRule();
-        category.assignProductCmptProperty(validationRule);
+        category.newProductCmptPropertyReference(validationRule);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenAssigningTableStructureUsageFromForeignProductCmptType() {
+    public void shouldThrowIllegalArgumentExceptionWhenReferencingTableStructureUsageFromForeignProductCmptType() {
         ITableStructureUsage tableStructureProperty = createTableStructureUsageProperty(superProductType,
                 "tableStructureProperty");
-        category.assignProductCmptProperty(tableStructureProperty);
+        category.newProductCmptPropertyReference(tableStructureProperty);
     }
 
     @Test
-    public void shouldAllowToRemoveProductCmptProperty() {
-        category.assignProductCmptProperty(property);
-        boolean removed = category.removeProductCmptProperty(property);
+    public void shouldAllowToDeleteProductCmptPropertyReference() {
+        category.newProductCmptPropertyReference(property);
+        boolean removed = category.deleteProductCmptPropertyReference(property);
 
         assertTrue(removed);
-        assertFalse(category.isAssignedProductCmptProperty(property));
+        assertFalse(category.isReferencedProductCmptProperty(property));
     }
 
     @Test
-    public void shouldReturnFalseWhenRemovingNotAssignedProductCmptProperty() {
-        boolean removed = category.removeProductCmptProperty(property);
+    public void shouldReturnFalseWhenDeletingNotReferencedProductCmptProperty() {
+        boolean removed = category.deleteProductCmptPropertyReference(property);
         assertFalse(removed);
-    }
-
-    @Test
-    public void shouldReturnFalseWhenAssigningAlreadyAssignedProductCmptProperty() {
-        category.assignProductCmptProperty(property);
-        boolean added = category.assignProductCmptProperty(property);
-
-        assertFalse(added);
     }
 
     @Test
@@ -298,42 +286,42 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void shouldAllowToSetSide() {
-        category.setSide(Side.LEFT);
-        assertEquals(Side.LEFT, category.getSide());
-        assertTrue(category.isAtLeftSide());
+    public void shouldAllowToSetPosition() {
+        category.setPosition(Position.LEFT);
+        assertEquals(Position.LEFT, category.getPosition());
+        assertTrue(category.isAtLeftPosition());
 
-        category.setSide(Side.RIGHT);
-        assertEquals(Side.RIGHT, category.getSide());
-        assertTrue(category.isAtRightSide());
+        category.setPosition(Position.RIGHT);
+        assertEquals(Position.RIGHT, category.getPosition());
+        assertTrue(category.isAtRightPosition());
     }
 
     @Test(expected = NullPointerException.class)
-    public void shouldThrowNullPointerExceptionWhenSettingNullAsSide() {
-        category.setSide(null);
+    public void shouldThrowNullPointerExceptionWhenSettingNullAsPosition() {
+        category.setPosition(null);
     }
 
     @Test
-    public void shouldAllowToRetrieveAllAssignedProductCmptProperties() throws CoreException {
+    public void shouldAllowToRetrieveAllReferencedProductCmptProperties() throws CoreException {
         IProductCmptTypeAttribute property2 = createProductCmptTypeAttributeProperty(productType, "property2");
-        category.assignProductCmptProperty(property);
-        category.assignProductCmptProperty(property2);
+        category.newProductCmptPropertyReference(property);
+        category.newProductCmptPropertyReference(property2);
 
-        List<IProductCmptProperty> assignedProperties = category.findAssignedProductCmptProperties(ipsProject);
+        List<IProductCmptProperty> assignedProperties = category.findReferencedProductCmptProperties(ipsProject);
         assertEquals(property, assignedProperties.get(0));
         assertEquals(property2, assignedProperties.get(1));
         assertEquals(2, assignedProperties.size());
     }
 
     @Test
-    public void shouldAllowToRetrieveAllAssignedProductCmptPropertiesIncludingTheSupertypeHierarchy()
+    public void shouldAllowToRetrieveAllReferencedProductCmptPropertiesIncludingTheSupertypeHierarchy()
             throws CoreException {
 
-        superSuperCategory.assignProductCmptProperty(superSuperProperty);
-        superCategory.assignProductCmptProperty(superProperty);
-        category.assignProductCmptProperty(property);
+        superSuperCategory.newProductCmptPropertyReference(superSuperProperty);
+        superCategory.newProductCmptPropertyReference(superProperty);
+        category.newProductCmptPropertyReference(property);
 
-        List<IProductCmptProperty> allProperties = category.findAllAssignedProductCmptProperties(ipsProject);
+        List<IProductCmptProperty> allProperties = category.findAllReferencedProductCmptProperties(ipsProject);
         assertEquals(superSuperProperty, allProperties.get(0));
         assertEquals(superProperty, allProperties.get(1));
         assertEquals(property, allProperties.get(2));
@@ -341,52 +329,52 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void shouldNotRetrieveAssignedProductCmptPropertiesFromSupertypeHierarchyIfNotInherited()
+    public void shouldNotRetrieveReferencedProductCmptPropertiesFromSupertypeHierarchyIfNotInherited()
             throws CoreException {
 
-        superCategory.assignProductCmptProperty(superProperty);
-        category.assignProductCmptProperty(property);
+        superCategory.newProductCmptPropertyReference(superProperty);
+        category.newProductCmptPropertyReference(property);
 
         category.setInherited(false);
 
-        List<IProductCmptProperty> allProperties = category.findAllAssignedProductCmptProperties(ipsProject);
+        List<IProductCmptProperty> allProperties = category.findAllReferencedProductCmptProperties(ipsProject);
         assertEquals(property, allProperties.get(0));
         assertEquals(1, allProperties.size());
     }
 
     @Test
-    public void shouldInformAboutPropertyAssignment() {
+    public void shouldInformAboutPropertyReference() {
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute();
-        category.assignProductCmptProperty(property);
-        superCategory.assignProductCmptProperty(superProperty);
+        category.newProductCmptPropertyReference(property);
+        superCategory.newProductCmptPropertyReference(superProperty);
 
-        assertTrue(category.isAssignedProductCmptProperty(property));
-        assertFalse(category.isAssignedProductCmptProperty(property2));
-        assertFalse(category.isAssignedProductCmptProperty(superProperty));
+        assertTrue(category.isReferencedProductCmptProperty(property));
+        assertFalse(category.isReferencedProductCmptProperty(property2));
+        assertFalse(category.isReferencedProductCmptProperty(superProperty));
     }
 
     @Test
-    public void shouldInformAboutPropertyAssignmentsMadeInSupertypeHierarchy() throws CoreException {
+    public void shouldInformAboutPropertyReferencesMadeInSupertypeHierarchy() throws CoreException {
         IProductCmptProperty superSuperPropertyNotAssigned = createProductCmptTypeAttributeProperty(
                 superSuperProductType, "superSuperPropertyNotAssigned");
 
-        superSuperCategory.assignProductCmptProperty(superSuperProperty);
-        superCategory.assignProductCmptProperty(superProperty);
-        category.assignProductCmptProperty(property);
+        superSuperCategory.newProductCmptPropertyReference(superSuperProperty);
+        superCategory.newProductCmptPropertyReference(superProperty);
+        category.newProductCmptPropertyReference(property);
 
-        assertTrue(category.findIsAssignedProductCmptProperty(superSuperProperty, ipsProject));
-        assertTrue(category.findIsAssignedProductCmptProperty(superProperty, ipsProject));
-        assertTrue(category.findIsAssignedProductCmptProperty(property, ipsProject));
-        assertFalse(category.findIsAssignedProductCmptProperty(superSuperPropertyNotAssigned, ipsProject));
+        assertTrue(category.findIsReferencedProductCmptProperty(superSuperProperty, ipsProject));
+        assertTrue(category.findIsReferencedProductCmptProperty(superProperty, ipsProject));
+        assertTrue(category.findIsReferencedProductCmptProperty(property, ipsProject));
+        assertFalse(category.findIsReferencedProductCmptProperty(superSuperPropertyNotAssigned, ipsProject));
     }
 
     @Test
-    public void shouldNotInformAboutPropertyAssignmentsMadeInSupertypeHierarchyIfNotInherited() throws CoreException {
-        superCategory.assignProductCmptProperty(superProperty);
-        category.assignProductCmptProperty(property);
+    public void shouldNotInformAboutPropertyReferencesMadeInSupertypeHierarchyIfNotInherited() throws CoreException {
+        superCategory.newProductCmptPropertyReference(superProperty);
+        category.newProductCmptPropertyReference(property);
         category.setInherited(false);
 
-        assertFalse(category.findIsAssignedProductCmptProperty(superProperty, ipsProject));
+        assertFalse(category.findIsReferencedProductCmptProperty(superProperty, ipsProject));
     }
 
     @Test
@@ -406,7 +394,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         category.setDefaultForProductCmptTypeAttributes(true);
         category.setDefaultForTableStructureUsages(true);
         category.setDefaultForValidationRules(true);
-        category.setSide(Side.RIGHT);
+        category.setPosition(Position.RIGHT);
 
         IProductCmptTypeAttribute productAttribute = createProductCmptTypeAttributeProperty(productType,
                 "productAttribute");
@@ -414,11 +402,11 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptTypeMethod formula = createProductCmptTypeMethodProperty(productType, "formula");
         IValidationRule validationRule = createValidationRuleProperty(productType, "validationRule");
         ITableStructureUsage structureUsage = createTableStructureUsageProperty(productType, "tableStructureUsaage");
-        category.assignProductCmptProperty(productAttribute);
-        category.assignProductCmptProperty(policyAttribute);
-        category.assignProductCmptProperty(formula);
-        category.assignProductCmptProperty(validationRule);
-        category.assignProductCmptProperty(structureUsage);
+        category.newProductCmptPropertyReference(productAttribute);
+        category.newProductCmptPropertyReference(policyAttribute);
+        category.newProductCmptPropertyReference(formula);
+        category.newProductCmptPropertyReference(validationRule);
+        category.newProductCmptPropertyReference(structureUsage);
 
         Element xmlElement = category.toXml(createXmlDocument(IProductCmptCategory.XML_TAG_NAME));
         IProductCmptCategory loadedCategory = productType.newProductCmptCategory();
@@ -430,9 +418,9 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         assertTrue(loadedCategory.isDefaultForProductCmptTypeAttributes());
         assertTrue(loadedCategory.isDefaultForTableStructureUsages());
         assertTrue(loadedCategory.isDefaultForValidationRules());
-        assertEquals(Side.RIGHT, loadedCategory.getSide());
+        assertEquals(Position.RIGHT, loadedCategory.getPosition());
 
-        List<IProductCmptProperty> assignedProperties = loadedCategory.findAssignedProductCmptProperties(ipsProject);
+        List<IProductCmptProperty> assignedProperties = loadedCategory.findReferencedProductCmptProperties(ipsProject);
         assertEquals(productAttribute, assignedProperties.get(0));
         assertEquals(policyAttribute, assignedProperties.get(1));
         assertEquals(formula, assignedProperties.get(2));

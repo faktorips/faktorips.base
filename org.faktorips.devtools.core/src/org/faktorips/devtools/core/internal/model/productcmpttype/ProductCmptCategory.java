@@ -20,13 +20,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyDirectReference;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyExternalReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -45,11 +47,13 @@ import org.w3c.dom.Element;
  * 
  * @author Alexander Weickmann
  */
-public final class ProductCmptCategory extends BaseIpsObjectPart implements IProductCmptCategory {
+public final class ProductCmptCategory extends IpsObjectPart implements IProductCmptCategory {
 
-    private final IpsObjectPartCollection<IProductCmptPropertyReference> propertyReferences = new IpsObjectPartCollection<IProductCmptPropertyReference>(
-            this, ProductCmptPropertyReference.class, IProductCmptPropertyReference.class,
-            IProductCmptPropertyReference.XML_TAG_NAME);
+    /*
+     * Cannot use IpsObjectPartCollection as there are multiple implementations that need to be
+     * stored in one collection in order to preserve the insert ordering.
+     */
+    private final List<IProductCmptPropertyReference> propertyReferences = new ArrayList<IProductCmptPropertyReference>();
 
     private boolean inherited;
 
@@ -63,11 +67,11 @@ public final class ProductCmptCategory extends BaseIpsObjectPart implements IPro
 
     private boolean defaultForProductCmptTypeAttributes;
 
-    private Side side;
+    private Position position;
 
     public ProductCmptCategory(IProductCmptType parent, String id) {
         super(parent, id);
-        side = Side.LEFT;
+        position = Position.LEFT;
     }
 
     @Override
@@ -76,35 +80,18 @@ public final class ProductCmptCategory extends BaseIpsObjectPart implements IPro
     }
 
     @Override
-    public List<IProductCmptProperty> findAssignedProductCmptProperties(IIpsProject ipsProject) throws CoreException {
+    public List<IProductCmptProperty> findReferencedProductCmptProperties(IIpsProject ipsProject) throws CoreException {
         List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>(propertyReferences.size());
-        IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);
         for (IProductCmptPropertyReference reference : propertyReferences) {
-            switch (reference.getProductCmptPropertyType()) {
-                case VALUE:
-                    properties.add(getProductCmptType().getProductCmptTypeAttribute(reference.getName()));
-                    break;
-                case TABLE_CONTENT_USAGE:
-                    properties.add(getProductCmptType().getTableStructureUsage(reference.getName()));
-                    break;
-                case FORMULA:
-                    properties.add(getProductCmptType().getFormulaSignature(reference.getName()));
-                    break;
-                case DEFAULT_VALUE_AND_VALUESET:
-                    properties.add(policyCmptType.getPolicyCmptTypeAttribute(reference.getName()));
-                    break;
-                case VALIDATION_RULE_CONFIG:
-                    properties.add(policyCmptType.getValidationRule(reference.getName()));
-                    break;
-            }
+            properties.add(reference.findReferencedProductCmptProperty(ipsProject));
         }
         return properties;
     }
 
     @Override
-    public boolean isAssignedProductCmptProperty(IProductCmptProperty property) {
-        for (IProductCmptPropertyReference propertyReference : propertyReferences) {
-            if (propertyReference.isIdentifyingProperty(property)) {
+    public boolean isReferencedProductCmptProperty(IProductCmptProperty property) {
+        for (IProductCmptPropertyReference reference : propertyReferences) {
+            if (reference.isIdentifyingProperty(property)) {
                 return true;
             }
         }
@@ -112,9 +99,11 @@ public final class ProductCmptCategory extends BaseIpsObjectPart implements IPro
     }
 
     @Override
-    public List<IProductCmptProperty> findAllAssignedProductCmptProperties(IIpsProject ipsProject) throws CoreException {
+    public List<IProductCmptProperty> findAllReferencedProductCmptProperties(IIpsProject ipsProject)
+            throws CoreException {
+
         if (!isInherited()) {
-            return findAssignedProductCmptProperties(ipsProject);
+            return findReferencedProductCmptProperties(ipsProject);
         }
 
         // Collect all assigned properties from the supertype hierarchy
@@ -123,7 +112,7 @@ public final class ProductCmptCategory extends BaseIpsObjectPart implements IPro
             @Override
             protected boolean visit(IProductCmptType currentType) throws CoreException {
                 IProductCmptCategory category = currentType.getProductCmptCategoryIncludeSupertypeCopies(getName());
-                typesToAssignedProperties.put(currentType, category.findAssignedProductCmptProperties(ipsProject));
+                typesToAssignedProperties.put(currentType, category.findReferencedProductCmptProperties(ipsProject));
                 return true;
             }
         };
@@ -138,11 +127,11 @@ public final class ProductCmptCategory extends BaseIpsObjectPart implements IPro
     }
 
     @Override
-    public boolean findIsAssignedProductCmptProperty(final IProductCmptProperty property, IIpsProject ipsProject)
+    public boolean findIsReferencedProductCmptProperty(final IProductCmptProperty property, IIpsProject ipsProject)
             throws CoreException {
 
         if (!isInherited()) {
-            return isAssignedProductCmptProperty(property);
+            return isReferencedProductCmptProperty(property);
         }
 
         class ProductCmptPropertyFinder extends TypeHierarchyVisitor<IProductCmptType> {
@@ -151,13 +140,13 @@ public final class ProductCmptCategory extends BaseIpsObjectPart implements IPro
                 super(ipsProject);
             }
 
-            private boolean assigned;
+            private boolean referenced;
 
             @Override
             protected boolean visit(IProductCmptType currentType) throws CoreException {
                 IProductCmptCategory category = currentType.getProductCmptCategoryIncludeSupertypeCopies(getName());
-                if (category != null && category.isAssignedProductCmptProperty(property)) {
-                    assigned = true;
+                if (category != null && category.isReferencedProductCmptProperty(property)) {
+                    referenced = true;
                     return false;
                 }
                 return true;
@@ -167,59 +156,57 @@ public final class ProductCmptCategory extends BaseIpsObjectPart implements IPro
 
         ProductCmptPropertyFinder finder = new ProductCmptPropertyFinder(ipsProject);
         finder.start(getProductCmptType());
-        return finder.assigned;
+        return finder.referenced;
     }
 
     @Override
-    public boolean assignProductCmptProperty(IProductCmptTypeAttribute productCmptTypeAttribute) {
+    public IProductCmptPropertyDirectReference newProductCmptPropertyReference(IProductCmptTypeAttribute productCmptTypeAttribute) {
         ArgumentCheck.equals(productCmptTypeAttribute.getProductCmptType(), getProductCmptType());
-        return assignProductCmptPropertyInternal(productCmptTypeAttribute);
+        return newProductCmptPropertyDirectReference(productCmptTypeAttribute);
     }
 
     @Override
-    public boolean assignProductCmptProperty(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
+    public IProductCmptPropertyExternalReference newProductCmptPropertyReference(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
         ArgumentCheck.equals(policyCmptTypeAttribute.getPolicyCmptType().getQualifiedName(), getProductCmptType()
                 .getPolicyCmptType());
         ArgumentCheck.isTrue(policyCmptTypeAttribute.isProductRelevant());
-        return assignProductCmptPropertyInternal(policyCmptTypeAttribute);
+        return newProductCmptPropertyExternalReference(policyCmptTypeAttribute);
     }
 
     @Override
-    public boolean assignProductCmptProperty(IProductCmptTypeMethod productCmptTypeMethod) {
+    public IProductCmptPropertyDirectReference newProductCmptPropertyReference(IProductCmptTypeMethod productCmptTypeMethod) {
         ArgumentCheck.equals(productCmptTypeMethod.getProductCmptType(), getProductCmptType());
         ArgumentCheck.isTrue(productCmptTypeMethod.isFormulaSignatureDefinition());
-        return assignProductCmptPropertyInternal(productCmptTypeMethod);
+        return newProductCmptPropertyDirectReference(productCmptTypeMethod);
     }
 
     @Override
-    public boolean assignProductCmptProperty(ITableStructureUsage tableStructureUsage) {
+    public IProductCmptPropertyDirectReference newProductCmptPropertyReference(ITableStructureUsage tableStructureUsage) {
         ArgumentCheck.equals(tableStructureUsage.getProductCmptType(), getProductCmptType());
-        return assignProductCmptPropertyInternal(tableStructureUsage);
+        return newProductCmptPropertyDirectReference(tableStructureUsage);
     }
 
     @Override
-    public boolean assignProductCmptProperty(IValidationRule validationRule) {
+    public IProductCmptPropertyExternalReference newProductCmptPropertyReference(IValidationRule validationRule) {
         ArgumentCheck.equals(validationRule.getType().getQualifiedName(), getProductCmptType().getPolicyCmptType());
-        return assignProductCmptPropertyInternal(validationRule);
+        return newProductCmptPropertyExternalReference(validationRule);
     }
 
-    private boolean assignProductCmptPropertyInternal(IProductCmptProperty productCmptProperty) {
-        if (!isAssignedProductCmptProperty(productCmptProperty)) {
-            newProductCmptPropertyReference(productCmptProperty);
-            return true;
-        }
-        return false;
-    }
-
-    private IProductCmptPropertyReference newProductCmptPropertyReference(IProductCmptProperty productCmptProperty) {
-        IProductCmptPropertyReference reference = propertyReferences.newPart();
+    private IProductCmptPropertyExternalReference newProductCmptPropertyExternalReference(IProductCmptProperty productCmptProperty) {
+        IProductCmptPropertyExternalReference reference = (IProductCmptPropertyExternalReference)newPart(ProductCmptPropertyExternalReference.class);
         reference.setName(productCmptProperty.getPropertyName());
         reference.setProductCmptPropertyType(productCmptProperty.getProductCmptPropertyType());
         return reference;
     }
 
+    private IProductCmptPropertyDirectReference newProductCmptPropertyDirectReference(IProductCmptProperty productCmptProperty) {
+        IProductCmptPropertyDirectReference reference = (IProductCmptPropertyDirectReference)newPart(ProductCmptPropertyDirectReference.class);
+        ((ProductCmptPropertyDirectReference)reference).setProductCmptProperty(productCmptProperty);
+        return reference;
+    }
+
     @Override
-    public boolean removeProductCmptProperty(IProductCmptProperty productCmptProperty) {
+    public boolean deleteProductCmptPropertyReference(IProductCmptProperty productCmptProperty) {
         for (IProductCmptPropertyReference reference : propertyReferences) {
             if (reference.isIdentifyingProperty(productCmptProperty)) {
                 reference.delete();
@@ -309,27 +296,27 @@ public final class ProductCmptCategory extends BaseIpsObjectPart implements IPro
     }
 
     @Override
-    public void setSide(Side side) {
+    public void setPosition(Position side) {
         ArgumentCheck.notNull(side);
 
-        Side oldValue = this.side;
-        this.side = side;
+        Position oldValue = this.position;
+        this.position = side;
         valueChanged(oldValue, side);
     }
 
     @Override
-    public Side getSide() {
-        return side;
+    public Position getPosition() {
+        return position;
     }
 
     @Override
-    public boolean isAtLeftSide() {
-        return side == Side.LEFT;
+    public boolean isAtLeftPosition() {
+        return position == Position.LEFT;
     }
 
     @Override
-    public boolean isAtRightSide() {
-        return side == Side.RIGHT;
+    public boolean isAtRightPosition() {
+        return position == Position.RIGHT;
     }
 
     @Override
@@ -349,7 +336,7 @@ public final class ProductCmptCategory extends BaseIpsObjectPart implements IPro
         defaultForTableStructureUsages = Boolean.parseBoolean(element
                 .getAttribute(PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES));
         defaultForValidationRules = Boolean.parseBoolean(element.getAttribute(PROPERTY_DEFAULT_FOR_VALIDATION_RULES));
-        side = Side.valueOf(element.getAttribute(PROPERTY_SIDE).toUpperCase());
+        position = Position.valueOf(element.getAttribute(PROPERTY_POSITION).toUpperCase());
 
         super.initPropertiesFromXml(element, id);
     }
@@ -368,12 +355,67 @@ public final class ProductCmptCategory extends BaseIpsObjectPart implements IPro
         element.setAttribute(PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES,
                 Boolean.toString(defaultForTableStructureUsages));
         element.setAttribute(PROPERTY_DEFAULT_FOR_VALIDATION_RULES, Boolean.toString(defaultForValidationRules));
-        element.setAttribute(PROPERTY_SIDE, side.toString().toLowerCase());
+        element.setAttribute(PROPERTY_POSITION, position.toString().toLowerCase());
     }
 
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(XML_TAG_NAME);
+    }
+
+    @Override
+    protected IIpsElement[] getChildrenThis() {
+        IIpsElement[] children = new IIpsElement[propertyReferences.size()];
+        for (int i = 0; i < children.length; i++) {
+            children[i] = propertyReferences.get(i);
+        }
+        return children;
+    }
+
+    @Override
+    protected void reinitPartCollectionsThis() {
+        propertyReferences.clear();
+    }
+
+    @Override
+    protected boolean addPartThis(IIpsObjectPart part) {
+        if (part instanceof IProductCmptPropertyReference) {
+            propertyReferences.add((IProductCmptPropertyReference)part);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean removePartThis(IIpsObjectPart part) {
+        if (part instanceof IProductCmptPropertyReference) {
+            return propertyReferences.remove(part);
+        }
+        return false;
+    }
+
+    @Override
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+        String nodeName = xmlTag.getNodeName();
+        if (nodeName.equals(IProductCmptPropertyDirectReference.XML_TAG_NAME)) {
+            return newPart(ProductCmptPropertyDirectReference.class);
+        } else if (nodeName.equals(IProductCmptPropertyExternalReference.XML_TAG_NAME)) {
+            return newPart(ProductCmptPropertyExternalReference.class);
+        }
+        return null;
+    }
+
+    @Override
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+        IProductCmptPropertyReference reference = null;
+        if (partType == ProductCmptPropertyDirectReference.class) {
+            reference = new ProductCmptPropertyDirectReference(this, getNextPartId());
+            propertyReferences.add(reference);
+        } else if (partType == ProductCmptPropertyExternalReference.class) {
+            reference = new ProductCmptPropertyExternalReference(this, getNextPartId());
+            propertyReferences.add(reference);
+        }
+        return reference;
     }
 
 }
