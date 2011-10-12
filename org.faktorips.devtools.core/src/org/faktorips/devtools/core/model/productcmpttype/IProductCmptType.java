@@ -471,17 +471,17 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
 
     /**
      * Moves the {@link IProductCmptCategory}s identified by the indexes up or down by one position
-     * and returns the new indexes of the moved {@link IProductCmptCategory}s.
+     * and returns the new indexes of the moved objects.
      * <p>
      * If one of the indexes is 0 (the first object), no object is moved up. If one of the indexes
      * is the number of objects - 1 (the last object) no object is moved down.
      * 
-     * @param indexes The indexes identifying the {@link IProductCmptCategory}s
+     * @param indexes The indexes identifying the {@link IProductCmptCategory}s to be moved
      * @param up Flag indicating whether to move up or down
      * 
      * @throws NullPointerException If indexes is null
-     * @throws IndexOutOfBoundsException If one of the indexes does not identify a
-     *             {@link IProductCmptCategory}s
+     * @throws IndexOutOfBoundsException If one of the indexes does not identify an
+     *             {@link IProductCmptCategory}
      */
     public int[] moveProductCmptCategories(int[] indexes, boolean up);
 

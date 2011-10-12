@@ -21,6 +21,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -34,7 +36,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
-public class ProductCmptPropertyExternalReferenceTest extends AbstractIpsPluginTest {
+public class ProductCmptPropertyExternalReferenceTest extends AbstractIpsPluginTest implements ContentsChangeListener {
+
+    private ContentChangeEvent lastEvent;
+
+    private IIpsProject ipsProject;
 
     private IPolicyCmptType policyType;
 
@@ -48,8 +54,12 @@ public class ProductCmptPropertyExternalReferenceTest extends AbstractIpsPluginT
 
     @Override
     @Before
-    public void setUp() throws CoreException {
-        IIpsProject ipsProject = newIpsProject();
+    public void setUp() throws Exception {
+        super.setUp();
+
+        ipsProject = newIpsProject();
+        ipsProject.getIpsModel().addChangeListener(this);
+
         policyType = newPolicyAndProductCmptType(ipsProject, "PolicyCmptType", "ProductCmptType");
         productType = policyType.findProductCmptType(ipsProject);
         category = productType.newProductCmptCategory();
@@ -59,25 +69,34 @@ public class ProductCmptPropertyExternalReferenceTest extends AbstractIpsPluginT
         attributeReference = category.newProductCmptPropertyReference(attributeProperty);
     }
 
+    @Override
+    protected void tearDownExtension() throws Exception {
+        ipsProject.getIpsModel().removeChangeListener(this);
+    }
+
     @Test
     public void shouldAllowToSetName() {
         attributeReference.setName("foo");
+
         assertEquals("foo", attributeReference.getName());
-        attributeReference.setName("bar");
-        assertEquals("bar", attributeReference.getName());
+        assertPropertyChangedEvent();
     }
 
     @Test
     public void shouldAllowToSetPropertyTypeToPolicyCmptTypeAttribute() {
         attributeReference.setProductCmptPropertyType(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE);
+
         assertEquals(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE,
                 attributeReference.getProductCmptPropertyType());
+        assertPropertyChangedEvent();
     }
 
     @Test
     public void shouldAllowToSetPropertyTypeToValidationRule() {
         attributeReference.setProductCmptPropertyType(ProductCmptPropertyType.VALIDATION_RULE);
+
         assertEquals(ProductCmptPropertyType.VALIDATION_RULE, attributeReference.getProductCmptPropertyType());
+        assertPropertyChangedEvent();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -146,6 +165,16 @@ public class ProductCmptPropertyExternalReferenceTest extends AbstractIpsPluginT
 
         assertEquals(property.getName(), loadedReference.getName());
         assertEquals(propertyType, loadedReference.getProductCmptPropertyType());
+    }
+
+    @Override
+    public void contentsChanged(ContentChangeEvent event) {
+        lastEvent = event;
+    }
+
+    private void assertPropertyChangedEvent() {
+        assertEquals(attributeReference, lastEvent.getPart());
+        assertEquals(ContentChangeEvent.TYPE_PROPERTY_CHANGED, lastEvent.getEventType());
     }
 
 }

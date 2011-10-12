@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -327,6 +328,15 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    public int[] moveProductCmptPropertyReferences(int[] indexes, boolean up) {
+        ListElementMover<IProductCmptPropertyReference> mover = new ListElementMover<IProductCmptPropertyReference>(
+                propertyReferences);
+        int[] newIndexes = mover.move(indexes, up);
+        partsMoved(propertyReferences.toArray(new IIpsObjectPart[propertyReferences.size()]));
+        return newIndexes;
     }
 
     @Override

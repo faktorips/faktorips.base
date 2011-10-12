@@ -26,12 +26,15 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
@@ -42,9 +45,11 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
+public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements ContentsChangeListener {
 
     private static final String CATEGORY_NAME = "foo";
+
+    private ContentChangeEvent lastEvent;
 
     private IIpsProject ipsProject;
 
@@ -68,10 +73,19 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
     @Override
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() throws Exception {
+        super.setUp();
+
+        lastEvent = null;
         ipsProject = newIpsProject();
+        ipsProject.getIpsModel().addChangeListener(this);
 
         createTypeHierarchy();
+    }
+
+    @Override
+    protected void tearDownExtension() throws Exception {
+        ipsProject.getIpsModel().removeChangeListener(this);
     }
 
     private void createTypeHierarchy() throws CoreException {
@@ -121,7 +135,9 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     @Test
     public void shouldAllowToSetName() {
         category.setName("bar");
+
         assertEquals("bar", category.getName());
+        assertPropertyChangedEvent();
     }
 
     @Test
@@ -258,62 +274,95 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
     @Test
     public void shouldAllowToSetInheritedProperty() {
-        IProductCmptCategory category = productType.newProductCmptCategory();
-        category.setInherited(true);
-        assertTrue(category.isInherited());
         category.setInherited(false);
         assertFalse(category.isInherited());
+        assertPropertyChangedEvent();
+
+        resetContentChangedEvent();
+
+        category.setInherited(true);
+        assertTrue(category.isInherited());
+        assertPropertyChangedEvent();
     }
 
     @Test
     public void shouldAllowToBeMarkedAsDefaultForMethods() {
         category.setDefaultForMethods(true);
         assertTrue(category.isDefaultForMethods());
+        assertPropertyChangedEvent();
+
+        resetContentChangedEvent();
+
         category.setDefaultForMethods(false);
         assertFalse(category.isDefaultForMethods());
+        assertPropertyChangedEvent();
     }
 
     @Test
     public void shouldAllowToBeMarkedAsDefaultForPolicyCmptTypeAttributes() {
         category.setDefaultForPolicyCmptTypeAttributes(true);
         assertTrue(category.isDefaultForPolicyCmptTypeAttributes());
+        assertPropertyChangedEvent();
+
+        resetContentChangedEvent();
+
         category.setDefaultForPolicyCmptTypeAttributes(false);
         assertFalse(category.isDefaultForPolicyCmptTypeAttributes());
+        assertPropertyChangedEvent();
     }
 
     @Test
     public void shouldAllowToBeMarkedAsDefaultForProductCmptTypeAttributes() {
         category.setDefaultForProductCmptTypeAttributes(true);
         assertTrue(category.isDefaultForProductCmptTypeAttributes());
+        assertPropertyChangedEvent();
+
+        resetContentChangedEvent();
+
         category.setDefaultForProductCmptTypeAttributes(false);
         assertFalse(category.isDefaultForProductCmptTypeAttributes());
+        assertPropertyChangedEvent();
     }
 
     @Test
     public void shouldAllowToBeMarkedAsDefaultForTableStructureUsages() {
         category.setDefaultForTableStructureUsages(true);
         assertTrue(category.isDefaultForTableStructureUsages());
+        assertPropertyChangedEvent();
+
+        resetContentChangedEvent();
+
         category.setDefaultForTableStructureUsages(false);
         assertFalse(category.isDefaultForTableStructureUsages());
+        assertPropertyChangedEvent();
     }
 
     @Test
     public void shouldAllowToBeMarkedAsDefaultForValidationRules() {
         category.setDefaultForValidationRules(true);
         assertTrue(category.isDefaultForValidationRules());
+        assertPropertyChangedEvent();
+
+        resetContentChangedEvent();
+
         category.setDefaultForValidationRules(false);
         assertFalse(category.isDefaultForValidationRules());
+        assertPropertyChangedEvent();
     }
 
     @Test
     public void shouldAllowToSetPosition() {
-        category.setPosition(Position.LEFT);
-        assertEquals(Position.LEFT, category.getPosition());
-        assertTrue(category.isAtLeftPosition());
-
         category.setPosition(Position.RIGHT);
         assertEquals(Position.RIGHT, category.getPosition());
         assertTrue(category.isAtRightPosition());
+        assertPropertyChangedEvent();
+
+        resetContentChangedEvent();
+
+        category.setPosition(Position.LEFT);
+        assertEquals(Position.LEFT, category.getPosition());
+        assertTrue(category.isAtLeftPosition());
+        assertPropertyChangedEvent();
     }
 
     @Test(expected = NullPointerException.class)
@@ -449,6 +498,32 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         assertEquals(5, assignedProperties.size());
     }
 
+    @Test
+    public void shouldAllowToMoveReferences() throws CoreException {
+        IProductCmptTypeAttribute property1 = createProductCmptTypeAttributeProperty(productType, "property1");
+        IProductCmptTypeAttribute property2 = createProductCmptTypeAttributeProperty(productType, "property2");
+        IProductCmptTypeAttribute property3 = createProductCmptTypeAttributeProperty(productType, "property3");
+
+        IProductCmptPropertyReference reference1 = category.newProductCmptPropertyReference(property1);
+        IProductCmptPropertyReference reference2 = category.newProductCmptPropertyReference(property2);
+        IProductCmptPropertyReference reference3 = category.newProductCmptPropertyReference(property3);
+
+        category.moveProductCmptPropertyReferences(new int[] { 1, 2 }, true);
+        List<IProductCmptProperty> references = category.findReferencedProductCmptProperties(ipsProject);
+        assertEquals(property2, references.get(0));
+        assertEquals(property3, references.get(1));
+        assertEquals(property1, references.get(2));
+
+        assertTrue(lastEvent.isAffected(reference1));
+        assertTrue(lastEvent.isAffected(reference2));
+        assertTrue(lastEvent.isAffected(reference3));
+    }
+
+    @Override
+    public void contentsChanged(ContentChangeEvent event) {
+        lastEvent = event;
+    }
+
     private IProductCmptTypeAttribute createProductCmptTypeAttributeProperty(IProductCmptType type, String name) {
         return type.newProductCmptTypeAttribute(name);
     }
@@ -482,6 +557,15 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         attribute.setName(name);
         attribute.setProductRelevant(true);
         return attribute;
+    }
+
+    private void resetContentChangedEvent() {
+        lastEvent = null;
+    }
+
+    private void assertPropertyChangedEvent() {
+        assertEquals(category, lastEvent.getPart());
+        assertEquals(ContentChangeEvent.TYPE_PROPERTY_CHANGED, lastEvent.getEventType());
     }
 
 }

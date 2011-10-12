@@ -329,6 +329,22 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public int getNumberOfProductCmptPropertyReferences();
 
     /**
+     * Moves the {@link IProductCmptPropertyReference}s identified by the indexes up or down by one
+     * position and returns the new indexes of the moved objects.
+     * <p>
+     * If one of the indexes is 0 (the first object), no object is moved up. If one of the indexes
+     * is the number of objects - 1 (the last object) no object is moved down.
+     * 
+     * @param indexes The indexes identifying the {@link IProductCmptPropertyReference}s to be moved
+     * @param up Flag indicating whether to move up or down
+     * 
+     * @throws NullPointerException If indexes is null
+     * @throws IndexOutOfBoundsException If one of the indexes does not identify an
+     *             {@link IProductCmptPropertyReference}
+     */
+    public int[] moveProductCmptPropertyReferences(int[] indexes, boolean up);
+
+    /**
      * Defines the position of this category.
      */
     public static enum Position {

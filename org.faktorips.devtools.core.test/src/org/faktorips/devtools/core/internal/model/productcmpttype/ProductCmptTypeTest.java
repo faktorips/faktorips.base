@@ -73,7 +73,7 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptTypeTest extends AbstractDependencyTest implements ContentsChangeListener {
 
-    private ContentChangeEvent lastEvent = null;
+    private ContentChangeEvent lastEvent;
     private IIpsProject ipsProject;
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
@@ -435,8 +435,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         assertEquals(policyCmptTypeAttr, propertyMap.get(policyCmptTypeAttr.getPropertyName()));
 
         // test with specific property types
-        propertyMap = ((ProductCmptType)productCmptType).getProductCpmtPropertyMap(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE,
-                ipsProject);
+        propertyMap = ((ProductCmptType)productCmptType).getProductCpmtPropertyMap(
+                ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(supertypeAttr, propertyMap.get(supertypeAttr.getPropertyName()));
         assertEquals(typeAttribute, propertyMap.get(typeAttribute.getPropertyName()));
@@ -447,8 +447,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         assertEquals(supertypeTsu, propertyMap.get(supertypeTsu.getPropertyName()));
         assertEquals(typeTsu, propertyMap.get(typeTsu.getPropertyName()));
 
-        propertyMap = ((ProductCmptType)productCmptType).getProductCpmtPropertyMap(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION,
-                ipsProject);
+        propertyMap = ((ProductCmptType)productCmptType).getProductCpmtPropertyMap(
+                ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(supertypeSignature, propertyMap.get(supertypeSignature.getPropertyName()));
         assertEquals(typeSignature, propertyMap.get(typeSignature.getPropertyName()));
@@ -508,12 +508,12 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         policyCmptTypeAttr.setName("policyAttr");
         policyCmptTypeAttr.setProductRelevant(true);
 
-        assertEquals(typeAttribute, productCmptType.findProductCmptProperty(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE,
+        assertEquals(typeAttribute, productCmptType.findProductCmptProperty(
+                ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, typeAttribute.getName(), ipsProject));
+        assertEquals(supertypeAttr, productCmptType.findProductCmptProperty(
+                ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, supertypeAttr.getName(), ipsProject));
+        assertNull(productCmptType.findProductCmptProperty(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION,
                 typeAttribute.getName(), ipsProject));
-        assertEquals(supertypeAttr, productCmptType.findProductCmptProperty(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE,
-                supertypeAttr.getName(), ipsProject));
-        assertNull(productCmptType.findProductCmptProperty(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, typeAttribute.getName(),
-                ipsProject));
 
         assertEquals(
                 typeTsu,
@@ -523,15 +523,13 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
                 supertypeTsu,
                 productCmptType.findProductCmptProperty(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE,
                         supertypeTsu.getRoleName(), ipsProject));
-        assertNull(productCmptType.findProductCmptProperty(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, typeTsu.getRoleName(),
-                ipsProject));
+        assertNull(productCmptType.findProductCmptProperty(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE,
+                typeTsu.getRoleName(), ipsProject));
 
-        assertEquals(typeSignature, productCmptType.findProductCmptProperty(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION,
-                typeSignature.getFormulaName(), ipsProject));
-        assertEquals(
-                supertypeSignature,
-                productCmptType.findProductCmptProperty(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION,
-                        supertypeSignature.getFormulaName(), ipsProject));
+        assertEquals(typeSignature, productCmptType.findProductCmptProperty(
+                ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, typeSignature.getFormulaName(), ipsProject));
+        assertEquals(supertypeSignature, productCmptType.findProductCmptProperty(
+                ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, supertypeSignature.getFormulaName(), ipsProject));
         assertNull(productCmptType.findProductCmptProperty(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE,
                 typeSignature.getFormulaName(), ipsProject));
 
@@ -539,8 +537,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
                 ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, policyCmptTypeAttr.getName(), ipsProject));
         assertEquals(policyCmptSupertypeAttr, productCmptType.findProductCmptProperty(
                 ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, policyCmptSupertypeAttr.getName(), ipsProject));
-        assertNull(productCmptType.findProductCmptProperty(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, policyCmptTypeAttr.getName(),
-                ipsProject));
+        assertNull(productCmptType.findProductCmptProperty(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE,
+                policyCmptTypeAttr.getName(), ipsProject));
 
         productCmptType.setPolicyCmptType("");
         assertNull(productCmptType.findProductCmptProperty(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE,

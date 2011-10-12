@@ -46,7 +46,9 @@ public class ProductCmptPropertyDirectReferenceTest extends AbstractIpsPluginTes
 
     @Override
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() throws Exception {
+        super.setUp();
+
         IIpsProject ipsProject = newIpsProject();
         type = newProductCmptType(ipsProject, "ProductCmptType");
         category = type.newProductCmptCategory();
