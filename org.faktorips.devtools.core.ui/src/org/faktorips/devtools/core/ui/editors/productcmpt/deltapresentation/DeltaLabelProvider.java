@@ -60,15 +60,15 @@ public class DeltaLabelProvider extends LabelProvider {
     }
 
     private Image getBaseImage(ProductCmptPropertyType propertyType) {
-        if (propertyType == ProductCmptPropertyType.VALUE) {
+        if (propertyType == ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE) {
             return getImageForName("ProductAttribute.gif"); //$NON-NLS-1$
-        } else if (propertyType == ProductCmptPropertyType.TABLE_CONTENT_USAGE) {
+        } else if (propertyType == ProductCmptPropertyType.TABLE_STRUCTURE_USAGE) {
             return getImageForName("TableContentsUsage.gif"); //$NON-NLS-1$
-        } else if (propertyType == ProductCmptPropertyType.FORMULA) {
+        } else if (propertyType == ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION) {
             return getImageForName("Formula.gif"); //$NON-NLS-1$
-        } else if (propertyType == ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET) {
+        } else if (propertyType == ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE) {
             return getImageForName("PolicyAttribute.gif"); //$NON-NLS-1$
-        } else if (propertyType == ProductCmptPropertyType.VALIDATION_RULE_CONFIG) {
+        } else if (propertyType == ProductCmptPropertyType.VALIDATION_RULE) {
             return getImageForName("ValidationRuleDef.gif"); //$NON-NLS-1$
         } else {
             return null;

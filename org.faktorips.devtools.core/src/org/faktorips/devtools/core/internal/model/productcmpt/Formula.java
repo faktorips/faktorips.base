@@ -110,7 +110,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
 
     @Override
     public ProductCmptPropertyType getPropertyType() {
-        return ProductCmptPropertyType.FORMULA;
+        return ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION;
     }
 
     @Override

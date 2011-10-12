@@ -132,7 +132,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         entries = ((IPropertyValueContainerToTypeDelta)delta.getChildren().get(0)).getEntries();
         assertEquals(2, entries.length);
         assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
-        assertEquals(ProductCmptPropertyType.VALUE, ((IDeltaEntryForProperty)entries[0]).getPropertyType());
+        assertEquals(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, ((IDeltaEntryForProperty)entries[0]).getPropertyType());
         assertEquals("a_super", ((IDeltaEntryForProperty)entries[0]).getPropertyName());
         assertEquals("a1", ((IDeltaEntryForProperty)entries[1]).getPropertyName());
 
@@ -163,7 +163,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[1].getDeltaType());
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[2].getDeltaType());
-        assertEquals(ProductCmptPropertyType.VALUE, ((IDeltaEntryForProperty)entries[0]).getPropertyType());
+        assertEquals(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, ((IDeltaEntryForProperty)entries[0]).getPropertyType());
 
         delta.fixAllDifferencesToModel();
         delta = productCmpt.computeDeltaToModel(ipsProject);
@@ -191,7 +191,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         entries = delta.getEntries();
         assertEquals(2, entries.length);
         assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
-        assertEquals(ProductCmptPropertyType.VALUE, ((IDeltaEntryForProperty)entries[0]).getPropertyType());
+        assertEquals(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, ((IDeltaEntryForProperty)entries[0]).getPropertyType());
         assertEquals("a_super", ((IDeltaEntryForProperty)entries[0]).getPropertyName());
         assertEquals("a1", ((IDeltaEntryForProperty)entries[1]).getPropertyName());
 
@@ -226,7 +226,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[1].getDeltaType());
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[2].getDeltaType());
-        assertEquals(ProductCmptPropertyType.VALUE, ((IDeltaEntryForProperty)entries[0]).getPropertyType());
+        assertEquals(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, ((IDeltaEntryForProperty)entries[0]).getPropertyType());
 
         delta.fixAllDifferencesToModel();
         delta = productCmpt.computeDeltaToModel(ipsProject);
@@ -298,7 +298,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         IDeltaEntryForProperty entry = (IDeltaEntryForProperty)generationDelta.getEntries()[0];
         assertEquals("premium", entry.getPropertyName());
         assertEquals(DeltaType.PROPERTY_TYPE_MISMATCH, entry.getDeltaType());
-        assertEquals(ProductCmptPropertyType.VALUE, entry.getPropertyType());
+        assertEquals(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, entry.getPropertyType());
 
         delta.fixAllDifferencesToModel();
         assertNull(((IProductCmptGeneration)productCmpt.getFirstGeneration()).getAttributeValue("premium"));
@@ -335,7 +335,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         assertEquals(1, genDelta.getEntries().length);
         IDeltaEntryForProperty entry = (IDeltaEntryForProperty)genDelta.getEntries()[0];
         assertEquals(DeltaType.VALUE_SET_MISMATCH, entry.getDeltaType());
-        assertEquals(ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET, entry.getPropertyType());
+        assertEquals(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, entry.getPropertyType());
         delta.fixAllDifferencesToModel();
         IValueSet valueSet = ((IProductCmptGeneration)productCmpt.getFirstGeneration()).getConfigElement("a1")
                 .getValueSet();

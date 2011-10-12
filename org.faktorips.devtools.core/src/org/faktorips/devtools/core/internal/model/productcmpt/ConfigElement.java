@@ -91,7 +91,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     @Override
     public ProductCmptPropertyType getPropertyType() {
-        return ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET;
+        return ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE;
     }
 
     @Override

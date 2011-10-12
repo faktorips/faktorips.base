@@ -79,13 +79,13 @@ public final class ProductCmptPropertyDirectReference extends ProductCmptPropert
     private IProductCmptProperty findReferencedProductCmptProperty(String name, ProductCmptPropertyType propertyType) {
         IProductCmptProperty productCmptProperty = null;
         switch (propertyType) {
-            case VALUE:
+            case PRODUCT_CMPT_TYPE_ATTRIBUTE:
                 productCmptProperty = getProductCmptType().getProductCmptTypeAttribute(name);
                 break;
-            case TABLE_CONTENT_USAGE:
+            case TABLE_STRUCTURE_USAGE:
                 productCmptProperty = getProductCmptType().getTableStructureUsage(name);
                 break;
-            case FORMULA:
+            case FORMULA_SIGNATURE_DEFINITION:
                 productCmptProperty = getProductCmptType().getFormulaSignature(name);
                 break;
             default:

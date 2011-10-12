@@ -91,7 +91,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     @Override
     public ProductCmptPropertyType getProductCmptPropertyType() {
-        return ProductCmptPropertyType.VALUE;
+        return ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE;
     }
 
     @Override

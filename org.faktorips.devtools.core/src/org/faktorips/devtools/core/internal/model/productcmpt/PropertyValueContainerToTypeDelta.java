@@ -136,7 +136,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
                     ValueWithoutPropertyEntry deltaEntry = new ValueWithoutPropertyEntry(value);
                     addEntry(deltaEntry);
                 }
-                if (ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(propertyType)) {
+                if (ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE.equals(propertyType)) {
                     checkForValueSetMismatch((IPolicyCmptTypeAttribute)property, (IConfigElement)value);
                 }
             }

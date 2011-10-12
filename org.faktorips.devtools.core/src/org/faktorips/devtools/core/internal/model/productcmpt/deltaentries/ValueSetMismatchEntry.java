@@ -37,7 +37,7 @@ public class ValueSetMismatchEntry extends AbstractDeltaEntryForProperty {
 
     @Override
     public ProductCmptPropertyType getPropertyType() {
-        return ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET;
+        return ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE;
     }
 
     @Override

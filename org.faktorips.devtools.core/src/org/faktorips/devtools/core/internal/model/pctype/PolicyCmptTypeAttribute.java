@@ -443,7 +443,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     public ProductCmptPropertyType getProductCmptPropertyType() {
-        return ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET;
+        return ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE;
     }
 
     @Override

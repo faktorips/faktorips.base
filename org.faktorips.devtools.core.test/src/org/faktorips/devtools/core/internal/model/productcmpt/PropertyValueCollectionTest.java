@@ -63,7 +63,7 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
     }
 
     protected void assertAttributesSize(int size) {
-        assertEquals(size, valueContainer.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());
+        assertEquals(size, valueContainer.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass()).size());
     }
 
     protected void assertSize(int size) {
@@ -103,19 +103,19 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         part4.setAttribute("AV4");
         valueContainer.addPropertyValue(part4);
         assertEquals(4, valueContainer.getAllPropertyValues().size());
-        assertEquals(4, valueContainer.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());
+        assertEquals(4, valueContainer.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass()).size());
         assertEquals(0, valueContainer
-                .getPropertyValues(ProductCmptPropertyType.VALIDATION_RULE_CONFIG.getValueClass()).size());
-        assertEquals(0, valueContainer.getPropertyValues(ProductCmptPropertyType.TABLE_CONTENT_USAGE.getValueClass())
+                .getPropertyValues(ProductCmptPropertyType.VALIDATION_RULE.getValueClass()).size());
+        assertEquals(0, valueContainer.getPropertyValues(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.getValueClass())
                 .size());
 
         ValidationRuleConfig config = new ValidationRuleConfig(parent, "ID4", "Rule");
         valueContainer.addPropertyValue(config);
         assertEquals(5, valueContainer.getAllPropertyValues().size());
-        assertEquals(4, valueContainer.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());
+        assertEquals(4, valueContainer.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass()).size());
         assertEquals(1, valueContainer
-                .getPropertyValues(ProductCmptPropertyType.VALIDATION_RULE_CONFIG.getValueClass()).size());
-        assertEquals(0, valueContainer.getPropertyValues(ProductCmptPropertyType.TABLE_CONTENT_USAGE.getValueClass())
+                .getPropertyValues(ProductCmptPropertyType.VALIDATION_RULE.getValueClass()).size());
+        assertEquals(0, valueContainer.getPropertyValues(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.getValueClass())
                 .size());
     }
 
@@ -123,7 +123,7 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
     public void testGetPropertyValue() {
         IProductCmptProperty property = mock(IProductCmptProperty.class);
         when(property.getPropertyName()).thenReturn("AV1");
-        when(property.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.VALUE);
+        when(property.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
 
         IPropertyValue value = valueContainer.getPropertyValue(property);
         assertNotNull(value);
@@ -132,7 +132,7 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
 
         ProductCmptTypeAttribute illegalTypeAttr = mock(ProductCmptTypeAttribute.class);
         when(illegalTypeAttr.getPropertyName()).thenReturn("AVIllegal");
-        when(illegalTypeAttr.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.VALUE);
+        when(illegalTypeAttr.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
         value = valueContainer.getPropertyValue(illegalTypeAttr);
         assertNull(value);
     }
@@ -141,7 +141,7 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
     public void testNewPropertyValueAttribute() {
         IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
         when(attribute.getPropertyName()).thenReturn("AV5");
-        when(attribute.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.VALUE);
+        when(attribute.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
 
         IAttributeValue value = valueContainer.newPropertyValue(parent, attribute, "ID5", IAttributeValue.class);
         assertNotNull(value);
@@ -156,7 +156,7 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
     public void testNewPropertyValueFormula() {
         IProductCmptProperty property = mock(IProductCmptProperty.class);
         when(property.getPropertyName()).thenReturn("Method1");
-        when(property.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.FORMULA);
+        when(property.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION);
 
         assertSize(3);
         IFormula formula = valueContainer.newPropertyValue(parent, property, "MethodID1", IFormula.class);

@@ -61,7 +61,7 @@ public class ProductCmptPropertyDirectReferenceTest extends AbstractIpsPluginTes
 
     @Test
     public void shouldRetrievePropertyTypeFromReferencedProperty() {
-        assertEquals(ProductCmptPropertyType.VALUE, attributeReference.getProductCmptPropertyType());
+        assertEquals(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, attributeReference.getProductCmptPropertyType());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class ProductCmptPropertyDirectReferenceTest extends AbstractIpsPluginTes
 
     @Test
     public void shouldBePersistedToXmlReferencingAttribute() throws ParserConfigurationException {
-        shouldBePersistedToXml(attributeReference, attributeProperty, ProductCmptPropertyType.VALUE);
+        shouldBePersistedToXml(attributeReference, attributeProperty, ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class ProductCmptPropertyDirectReferenceTest extends AbstractIpsPluginTes
         methodProperty.isFormulaSignatureDefinition();
         IProductCmptPropertyDirectReference methodReference = category.newProductCmptPropertyReference(methodProperty);
 
-        shouldBePersistedToXml(methodReference, methodProperty, ProductCmptPropertyType.FORMULA);
+        shouldBePersistedToXml(methodReference, methodProperty, ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION);
     }
 
     @Test
@@ -102,7 +102,7 @@ public class ProductCmptPropertyDirectReferenceTest extends AbstractIpsPluginTes
         tsuProperty.setRoleName("tsuProperty");
         IProductCmptPropertyDirectReference tsuReference = category.newProductCmptPropertyReference(tsuProperty);
 
-        shouldBePersistedToXml(tsuReference, tsuProperty, ProductCmptPropertyType.TABLE_CONTENT_USAGE);
+        shouldBePersistedToXml(tsuReference, tsuProperty, ProductCmptPropertyType.TABLE_STRUCTURE_USAGE);
     }
 
     private void shouldBePersistedToXml(IProductCmptPropertyDirectReference reference,

@@ -83,7 +83,7 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
 
     @Override
     public ProductCmptPropertyType getPropertyType() {
-        return ProductCmptPropertyType.TABLE_CONTENT_USAGE;
+        return ProductCmptPropertyType.TABLE_STRUCTURE_USAGE;
     }
 
     @Override

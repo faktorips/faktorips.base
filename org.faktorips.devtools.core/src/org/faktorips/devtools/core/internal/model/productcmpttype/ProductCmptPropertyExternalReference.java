@@ -63,10 +63,10 @@ public final class ProductCmptPropertyExternalReference extends ProductCmptPrope
 
         IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);
         switch (propertyType) {
-            case DEFAULT_VALUE_AND_VALUESET:
+            case POLICY_CMPT_TYPE_ATTRIBUTE:
                 referencedProperty = policyCmptType.getPolicyCmptTypeAttribute(name);
                 break;
-            case VALIDATION_RULE_CONFIG:
+            case VALIDATION_RULE:
                 referencedProperty = policyCmptType.getValidationRule(name);
                 break;
             default:

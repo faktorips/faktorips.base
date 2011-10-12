@@ -605,20 +605,20 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testNewPropertyValue() {
-        assertEquals(0, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());
+        assertEquals(0, productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass()).size());
         productCmpt.newPropertyValue(attr);
-        assertEquals(1, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());
+        assertEquals(1, productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass()).size());
         productCmpt.newPropertyValue(attr2);
-        assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());
+        assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass()).size());
 
         productCmpt.newPropertyValue(new ValidationRule(mock(IPolicyCmptType.class), ""));
-        assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());
+        assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass()).size());
         productCmpt.newPropertyValue(new PolicyCmptTypeAttribute(policyCmptType, "pcTypeAttribute"));
-        assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());
+        assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass()).size());
         productCmpt.newPropertyValue(new TableStructureUsage());
-        assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());
+        assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass()).size());
         productCmpt.newPropertyValue(new ProductCmptTypeMethod(type, "Method"));
-        assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());
+        assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass()).size());
     }
 
     @Test

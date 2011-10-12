@@ -62,11 +62,11 @@ public class ProductCmptPropertyExternalReferenceTest extends AbstractIpsPluginT
 
     @Test
     public void shouldAllowToSetPropertyType() {
-        attributeReference.setProductCmptPropertyType(ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET);
-        assertEquals(ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET,
+        attributeReference.setProductCmptPropertyType(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE);
+        assertEquals(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE,
                 attributeReference.getProductCmptPropertyType());
-        attributeReference.setProductCmptPropertyType(ProductCmptPropertyType.VALIDATION_RULE_CONFIG);
-        assertEquals(ProductCmptPropertyType.VALIDATION_RULE_CONFIG, attributeReference.getProductCmptPropertyType());
+        attributeReference.setProductCmptPropertyType(ProductCmptPropertyType.VALIDATION_RULE);
+        assertEquals(ProductCmptPropertyType.VALIDATION_RULE, attributeReference.getProductCmptPropertyType());
     }
 
     // @Test(expected = IllegalArgumentException.class)

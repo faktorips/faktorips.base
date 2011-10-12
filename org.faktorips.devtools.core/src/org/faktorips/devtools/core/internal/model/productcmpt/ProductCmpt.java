@@ -325,7 +325,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public IPropertyValue newPropertyValue(IProductCmptProperty property) {
-        if (property.getProductCmptPropertyType() == ProductCmptPropertyType.VALUE) {
+        if (property.getProductCmptPropertyType() == ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE) {
             IPropertyValue newPropertyValue = propertyValueCollection.newPropertyValue(this, property, getNextPartId());
             objectHasChanged();
             return newPropertyValue;

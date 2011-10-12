@@ -210,26 +210,26 @@ public class ProductCmptType extends Type implements IProductCmptType {
     public IProductCmptProperty findProductCmptProperty(ProductCmptPropertyType type,
             String propName,
             IIpsProject ipsProject) throws CoreException {
-        if (ProductCmptPropertyType.VALUE == type) {
+        if (ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE == type) {
             return findProductCmptTypeAttribute(propName, ipsProject);
         }
-        if (ProductCmptPropertyType.FORMULA == type) {
+        if (ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION == type) {
             return findFormulaSignature(propName, ipsProject);
         }
-        if (ProductCmptPropertyType.TABLE_CONTENT_USAGE == type) {
+        if (ProductCmptPropertyType.TABLE_STRUCTURE_USAGE == type) {
             return findTableStructureUsage(propName, ipsProject);
         }
         IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProject);
         if (policyCmptType == null) {
             return null;
         }
-        if (ProductCmptPropertyType.VALIDATION_RULE_CONFIG == type) {
+        if (ProductCmptPropertyType.VALIDATION_RULE == type) {
             IValidationRule rule = policyCmptType.findValidationRule(propName, ipsProject);
             if (rule != null && rule.isConfigurableByProductComponent()) {
                 return rule;
             }
         }
-        if (ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET == type) {
+        if (ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE == type) {
             IPolicyCmptTypeAttribute attr = policyCmptType.findPolicyCmptTypeAttribute(propName, ipsProject);
             if (attr != null && attr.isProductRelevant()) {
                 return attr;
@@ -760,13 +760,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             ProductCmptType currType = (ProductCmptType)currentType;
-            if (propertyType == null || ProductCmptPropertyType.VALUE.equals(propertyType)) {
+            if (propertyType == null || ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.equals(propertyType)) {
                 myAttributes.addAll(0, currType.attributes.asList());
             }
-            if (propertyType == null || ProductCmptPropertyType.TABLE_CONTENT_USAGE.equals(propertyType)) {
+            if (propertyType == null || ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.equals(propertyType)) {
                 myTableStructureUsages.addAll(0, currType.tableStructureUsages.asList());
             }
-            if (propertyType == null || ProductCmptPropertyType.FORMULA.equals(propertyType)) {
+            if (propertyType == null || ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION.equals(propertyType)) {
                 List<IProductCmptTypeMethod> methodsToAdd = new ArrayList<IProductCmptTypeMethod>();
                 for (IProductCmptTypeMethod method : currType.methods) {
                     if (method.isFormulaSignatureDefinition()) {
@@ -779,7 +779,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             if (policyCmptType == null || visitedPolicyCmptTypes.contains(policyCmptType)) {
                 return true;
             }
-            if (propertyType == null || ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(propertyType)) {
+            if (propertyType == null || ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE.equals(propertyType)) {
                 visitedPolicyCmptTypes.add(policyCmptType);
                 List<IPolicyCmptTypeAttribute> attrsToAdd = new ArrayList<IPolicyCmptTypeAttribute>();
                 List<IPolicyCmptTypeAttribute> polAttrs = policyCmptType.getPolicyCmptTypeAttributes();
@@ -790,7 +790,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 }
                 myPolicyCmptTypeAttributes.addAll(0, attrsToAdd);
             }
-            if (propertyType == null || ProductCmptPropertyType.VALIDATION_RULE_CONFIG.equals(propertyType)) {
+            if (propertyType == null || ProductCmptPropertyType.VALIDATION_RULE.equals(propertyType)) {
                 visitedPolicyCmptTypes.add(policyCmptType);
                 List<IValidationRule> rulesToAdd = new ArrayList<IValidationRule>();
                 List<IValidationRule> rules = policyCmptType.getValidationRules();

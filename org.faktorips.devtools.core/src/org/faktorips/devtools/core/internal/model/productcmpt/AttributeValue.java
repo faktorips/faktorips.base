@@ -110,7 +110,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public ProductCmptPropertyType getPropertyType() {
-        return ProductCmptPropertyType.VALUE;
+        return ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE;
     }
 
     @Override

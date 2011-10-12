@@ -94,7 +94,7 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
         IValidationRule rule = mock(IValidationRule.class);
         when(rule.getPropertyName()).thenReturn("newRule");
         when(rule.isActivatedByDefault()).thenReturn(false);
-        when(rule.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.VALIDATION_RULE_CONFIG);
+        when(rule.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.VALIDATION_RULE);
 
         IValidationRuleConfig config = generation.newValidationRuleConfig(rule);
         IValidationRule foundRule = config.findValidationRule(ipsProject);

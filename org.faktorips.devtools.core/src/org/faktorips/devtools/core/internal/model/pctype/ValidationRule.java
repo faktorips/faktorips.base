@@ -478,7 +478,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
 
     @Override
     public ProductCmptPropertyType getProductCmptPropertyType() {
-        return ProductCmptPropertyType.VALIDATION_RULE_CONFIG;
+        return ProductCmptPropertyType.VALIDATION_RULE;
     }
 
     @Override
