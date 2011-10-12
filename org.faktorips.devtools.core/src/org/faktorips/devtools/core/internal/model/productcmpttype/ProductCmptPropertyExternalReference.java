@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyExternalReference;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -47,6 +48,9 @@ public final class ProductCmptPropertyExternalReference extends ProductCmptPrope
 
     @Override
     public void setProductCmptPropertyType(ProductCmptPropertyType propertyType) {
+        ArgumentCheck.isTrue(propertyType.equals(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE)
+                || propertyType.equals(ProductCmptPropertyType.VALIDATION_RULE));
+
         ProductCmptPropertyType oldValue = this.propertyType;
         this.propertyType = propertyType;
         valueChanged(oldValue, propertyType);
@@ -77,7 +81,7 @@ public final class ProductCmptPropertyExternalReference extends ProductCmptPrope
     }
 
     @Override
-    public boolean isIdentifyingProperty(IProductCmptProperty property) {
+    public boolean isReferencingProperty(IProductCmptProperty property) {
         return getName().equals(property.getName()) && propertyType == property.getProductCmptPropertyType();
     }
 

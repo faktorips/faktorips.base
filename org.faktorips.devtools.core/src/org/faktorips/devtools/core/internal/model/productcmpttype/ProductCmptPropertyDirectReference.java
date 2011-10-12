@@ -57,7 +57,7 @@ public final class ProductCmptPropertyDirectReference extends ProductCmptPropert
     }
 
     @Override
-    public boolean isIdentifyingProperty(IProductCmptProperty property) {
+    public boolean isReferencingProperty(IProductCmptProperty property) {
         return productCmptProperty.equals(property);
     }
 

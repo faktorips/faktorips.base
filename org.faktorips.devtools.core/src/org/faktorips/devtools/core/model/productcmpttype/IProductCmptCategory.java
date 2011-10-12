@@ -321,6 +321,14 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public boolean isAtRightPosition();
 
     /**
+     * Returns how many references to {@link IProductCmptProperty}s are contained in this category.
+     * <p>
+     * This method does <strong>not</strong> consider the number of references from the supertype
+     * hierarchy.
+     */
+    public int getNumberOfProductCmptPropertyReferences();
+
+    /**
      * Defines the position of this category.
      */
     public static enum Position {

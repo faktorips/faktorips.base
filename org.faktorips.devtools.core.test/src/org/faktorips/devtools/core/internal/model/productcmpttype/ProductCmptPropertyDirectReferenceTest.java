@@ -61,28 +61,30 @@ public class ProductCmptPropertyDirectReferenceTest extends AbstractIpsPluginTes
 
     @Test
     public void shouldRetrievePropertyTypeFromReferencedProperty() {
-        assertEquals(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, attributeReference.getProductCmptPropertyType());
+        assertEquals(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE,
+                attributeReference.getProductCmptPropertyType());
     }
 
     @Test
-    public void shouldIdentifyTheReferencedProperty() {
+    public void shouldIdentifyReferencedProperty() {
         IProductCmptTypeMethod methodProperty = type.newProductCmptTypeMethod();
         methodProperty.setName("method");
         methodProperty.setFormulaSignatureDefinition(true);
 
-        assertTrue(attributeReference.isIdentifyingProperty(attributeProperty));
-        assertFalse(attributeReference.isIdentifyingProperty(methodProperty));
+        assertTrue(attributeReference.isReferencingProperty(attributeProperty));
+        assertFalse(attributeReference.isReferencingProperty(methodProperty));
     }
 
     @Test
-    public void shouldFindTheReferencedProperty() throws CoreException {
+    public void shouldFindReferencedProperty() throws CoreException {
         assertEquals(attributeProperty,
                 attributeReference.findReferencedProductCmptProperty(attributeReference.getIpsProject()));
     }
 
     @Test
     public void shouldBePersistedToXmlReferencingAttribute() throws ParserConfigurationException {
-        shouldBePersistedToXml(attributeReference, attributeProperty, ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
+        shouldBePersistedToXml(attributeReference, attributeProperty,
+                ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
     }
 
     @Test

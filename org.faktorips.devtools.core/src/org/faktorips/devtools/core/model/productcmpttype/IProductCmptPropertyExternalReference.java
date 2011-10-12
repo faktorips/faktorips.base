@@ -42,6 +42,13 @@ public interface IProductCmptPropertyExternalReference extends IProductCmptPrope
      * Sets the {@link ProductCmptPropertyType} of the referenced property.
      * 
      * @param propertyType The {@link ProductCmptPropertyType} of the referenced property
+     * 
+     * @throws IllegalArgumentException If the given property type is any of:
+     *             <ul>
+     *             <li>{@link ProductCmptPropertyType#FORMULA_SIGNATURE_DEFINITION}
+     *             <li>{@link ProductCmptPropertyType#TABLE_STRUCTURE_USAGE}
+     *             <li>{@link ProductCmptPropertyType#PRODUCT_CMPT_TYPE_ATTRIBUTE}
+     *             </ul>
      */
     public void setProductCmptPropertyType(ProductCmptPropertyType propertyType);
 

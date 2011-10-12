@@ -91,7 +91,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
     @Override
     public boolean isReferencedProductCmptProperty(IProductCmptProperty property) {
         for (IProductCmptPropertyReference reference : propertyReferences) {
-            if (reference.isIdentifyingProperty(property)) {
+            if (reference.isReferencingProperty(property)) {
                 return true;
             }
         }
@@ -208,7 +208,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
     @Override
     public boolean deleteProductCmptPropertyReference(IProductCmptProperty productCmptProperty) {
         for (IProductCmptPropertyReference reference : propertyReferences) {
-            if (reference.isIdentifyingProperty(productCmptProperty)) {
+            if (reference.isReferencingProperty(productCmptProperty)) {
                 reference.delete();
                 return true;
             }
@@ -317,6 +317,11 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
     @Override
     public boolean isAtRightPosition() {
         return position == Position.RIGHT;
+    }
+
+    @Override
+    public int getNumberOfProductCmptPropertyReferences() {
+        return propertyReferences.size();
     }
 
     @Override

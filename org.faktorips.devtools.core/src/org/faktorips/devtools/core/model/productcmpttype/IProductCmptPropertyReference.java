@@ -47,7 +47,7 @@ public interface IProductCmptPropertyReference extends IIpsObjectPart {
      * 
      * @param property The property to check whether this is a corresponding reference
      */
-    public boolean isIdentifyingProperty(IProductCmptProperty property);
+    public boolean isReferencingProperty(IProductCmptProperty property);
 
     /**
      * Returns the {@link IProductCmptProperty} identified by this reference or null if the

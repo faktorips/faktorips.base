@@ -231,9 +231,29 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void shouldOnlyDeleteOneReferencePerDeleteCall() {
+        category.newProductCmptPropertyReference(property);
+        category.newProductCmptPropertyReference(property);
+
+        category.deleteProductCmptPropertyReference(property);
+
+        assertTrue(category.isReferencedProductCmptProperty(property));
+        assertEquals(1, category.getNumberOfProductCmptPropertyReferences());
+    }
+
+    @Test
     public void shouldReturnFalseWhenDeletingNotReferencedProductCmptProperty() {
         boolean removed = category.deleteProductCmptPropertyReference(property);
         assertFalse(removed);
+    }
+
+    @Test
+    public void shouldReturnTheCorrectNumberOfProductCmptPropertyReferences() {
+        category.newProductCmptPropertyReference(property);
+        category.newProductCmptPropertyReference(property);
+        category.newProductCmptPropertyReference(property);
+
+        assertEquals(3, category.getNumberOfProductCmptPropertyReferences());
     }
 
     @Test
