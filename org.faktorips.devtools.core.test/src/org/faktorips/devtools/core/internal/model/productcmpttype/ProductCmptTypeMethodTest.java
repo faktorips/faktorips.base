@@ -34,9 +34,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
-/**
- *
- */
 public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
 
     private IProductCmptType pcType;
@@ -136,9 +133,6 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertTrue(method.isOverloadsFormula());
     }
 
-    /*
-     * Class under test for Element toXml(Document)
-     */
     @Test
     public void testToXmlDocument() {
         method = pcType.newProductCmptTypeMethod(); // => id=1, because it's the second method
@@ -217,7 +211,6 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
 
     @Test
     public void testOverloadsFormula() throws CoreException {
-
         IProductCmptType bType = newProductCmptType(ipsProject, "BType");
         IProductCmptTypeMethod bMethod = bType.newProductCmptTypeMethod();
         bMethod.setName("calculate");
@@ -267,6 +260,6 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         msgList = bMethod.validate(ipsProject);
         msg = msgList.getMessageByCode(IProductCmptTypeMethod.MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY);
         assertNotNull(msg);
-
     }
+
 }
