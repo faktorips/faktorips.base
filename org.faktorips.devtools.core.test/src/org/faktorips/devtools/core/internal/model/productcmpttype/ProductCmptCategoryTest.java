@@ -43,7 +43,6 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -205,13 +204,6 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentExceptionWhenReferencingProductCmptTypeMethodFromForeignProductCmptType() {
         IProductCmptTypeMethod methodProperty = createProductCmptTypeMethodProperty(superProductType, "methodProperty");
-        category.newProductCmptPropertyReference(methodProperty);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenReferencingProductCmptTypeMethodThatIsNoFormulaSignatureDefinition() {
-        IProductCmptTypeMethod methodProperty = createProductCmptTypeMethodProperty(productType, "methodProperty");
-        methodProperty.setFormulaSignatureDefinition(false);
         category.newProductCmptPropertyReference(methodProperty);
     }
 
@@ -558,7 +550,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
         category.setName("");
 
         MessageList validationMessageList = category.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList, IProductCmptCategory.MSGCODE_NAME_IS_EMPTY,
+        assertOneValidationMessage(validationMessageList, IProductCmptCategory.MSGCODE_NAME_IS_EMPTY, category,
                 IProductCmptCategory.PROPERTY_NAME, Message.ERROR);
     }
 
@@ -568,8 +560,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
 
         MessageList validationMessageList = category.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
-                IProductCmptCategory.MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY, IProductCmptCategory.PROPERTY_NAME,
-                Message.ERROR);
+                IProductCmptCategory.MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY, category,
+                IProductCmptCategory.PROPERTY_NAME, Message.ERROR);
     }
 
     @Test
@@ -579,8 +571,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
 
         MessageList validationMessageList = category.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
-                IProductCmptCategory.MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY, IProductCmptCategory.PROPERTY_NAME,
-                Message.ERROR);
+                IProductCmptCategory.MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY, category,
+                IProductCmptCategory.PROPERTY_NAME, Message.ERROR);
     }
 
     @Test
@@ -599,7 +591,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
 
         MessageList validationMessageList = category.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
-                IProductCmptCategory.MSGCODE_INHERITED_BUT_NOT_FOUND_IN_SUPERTYPE_HIERARCHY,
+                IProductCmptCategory.MSGCODE_INHERITED_BUT_NOT_FOUND_IN_SUPERTYPE_HIERARCHY, category,
                 IProductCmptCategory.PROPERTY_INHERITED, Message.ERROR);
     }
 
@@ -610,7 +602,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
 
         MessageList validationMessageList = category.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
-                IProductCmptCategory.MSGCODE_INHERITED_BUT_NOT_FOUND_IN_SUPERTYPE_HIERARCHY,
+                IProductCmptCategory.MSGCODE_INHERITED_BUT_NOT_FOUND_IN_SUPERTYPE_HIERARCHY, category,
                 IProductCmptCategory.PROPERTY_INHERITED, Message.ERROR);
     }
 
@@ -621,7 +613,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
 
         MessageList validationMessageList = category.validate(ipsProject);
         assertOneValidationMessage(validationMessageList, IProductCmptCategory.MSGCODE_INHERITED_BUT_NO_SUPERTYPE,
-                IProductCmptCategory.PROPERTY_INHERITED, Message.ERROR);
+                category, IProductCmptCategory.PROPERTY_INHERITED, Message.ERROR);
     }
 
     @Test
@@ -634,7 +626,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
 
         MessageList validationMessageList = category.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
-                IProductCmptCategory.MSGCODE_DUPLICATE_DEFAULTS_FOR_FORMULA_SIGNATURE_DEFINITIONS,
+                IProductCmptCategory.MSGCODE_DUPLICATE_DEFAULTS_FOR_FORMULA_SIGNATURE_DEFINITIONS, category,
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS, Message.WARNING);
     }
 
@@ -648,7 +640,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
 
         MessageList validationMessageList = category.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
-                IProductCmptCategory.MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES,
+                IProductCmptCategory.MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES, category,
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_VALIDATION_RULES, Message.WARNING);
     }
 
@@ -662,7 +654,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
 
         MessageList validationMessageList = category.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
-                IProductCmptCategory.MSGCODE_DUPLICATE_DEFAULTS_FOR_TABLE_STRUCTURE_USAGES,
+                IProductCmptCategory.MSGCODE_DUPLICATE_DEFAULTS_FOR_TABLE_STRUCTURE_USAGES, category,
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES, Message.WARNING);
     }
 
@@ -676,7 +668,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
 
         MessageList validationMessageList = category.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
-                IProductCmptCategory.MSGCODE_DUPLICATE_DEFAULTS_FOR_POLICY_CMPT_TYPE_ATTRIBUTES,
+                IProductCmptCategory.MSGCODE_DUPLICATE_DEFAULTS_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, category,
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, Message.WARNING);
     }
 
@@ -741,13 +733,6 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
     private void assertPropertyChangedEvent() {
         assertEquals(category, lastEvent.getPart());
         assertEquals(ContentChangeEvent.TYPE_PROPERTY_CHANGED, lastEvent.getEventType());
-    }
-
-    private void assertOneValidationMessage(MessageList list, String code, String property, int severity) {
-        Message expectedMessage = list.getFirstMessage(severity);
-        assertEquals(code, expectedMessage.getCode());
-        assertEquals(new ObjectProperty(category, property), expectedMessage.getInvalidObjectProperties()[0]);
-        assertEquals(1, list.size());
     }
 
 }

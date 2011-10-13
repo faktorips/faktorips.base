@@ -450,6 +450,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 getQualifiedName(), ipsProject, this));
 
         validateIconPath(list, ipsProject);
+        validateDefaultCategoryForFormulaSignatureDefinition(list, ipsProject);
+        validateDefaultCategoryForPolicyCmptTypeAttribute(list, ipsProject);
+        validateDefaultCategoryForProductCmptTypeAttribute(list, ipsProject);
+        validateDefaultCategoryForTableStructureUsages(list, ipsProject);
+        validateDefaultCategoryForValidationRules(list, ipsProject);
     }
 
     // TODO pk: write test case
@@ -542,6 +547,81 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (msg != null) {
             list.add(msg);
         }
+    }
+
+    private void validateDefaultCategoryForFormulaSignatureDefinition(MessageList list, IIpsProject ipsProject)
+            throws CoreException {
+
+        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
+            @Override
+            protected boolean isDefault(IProductCmptCategory category) {
+                return category.isDefaultForFormulaSignatureDefinitions();
+            }
+        };
+        defaultCategoryFinder.start(this);
+        String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForFormulaSignatureDefinitions, getName());
+        defaultCategoryFinder.addValidationErrorIfNoDefaultCategoryFound(list,
+                MSGCODE_NO_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS, text);
+    }
+
+    private void validateDefaultCategoryForPolicyCmptTypeAttribute(MessageList list, IIpsProject ipsProject)
+            throws CoreException {
+
+        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
+            @Override
+            protected boolean isDefault(IProductCmptCategory category) {
+                return category.isDefaultForPolicyCmptTypeAttributes();
+            }
+        };
+        defaultCategoryFinder.start(this);
+        String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForPolicyCmptTypeAttributes, getName());
+        defaultCategoryFinder.addValidationErrorIfNoDefaultCategoryFound(list,
+                MSGCODE_NO_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, text);
+    }
+
+    private void validateDefaultCategoryForProductCmptTypeAttribute(MessageList list, IIpsProject ipsProject)
+            throws CoreException {
+
+        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
+            @Override
+            protected boolean isDefault(IProductCmptCategory category) {
+                return category.isDefaultForProductCmptTypeAttributes();
+            }
+        };
+        defaultCategoryFinder.start(this);
+        String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForProductCmptTypeAttributes, getName());
+        defaultCategoryFinder.addValidationErrorIfNoDefaultCategoryFound(list,
+                MSGCODE_NO_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, text);
+    }
+
+    private void validateDefaultCategoryForTableStructureUsages(MessageList list, IIpsProject ipsProject)
+            throws CoreException {
+
+        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
+            @Override
+            protected boolean isDefault(IProductCmptCategory category) {
+                return category.isDefaultForTableStructureUsages();
+            }
+        };
+        defaultCategoryFinder.start(this);
+        String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForTableStructureUsages, getName());
+        defaultCategoryFinder.addValidationErrorIfNoDefaultCategoryFound(list,
+                MSGCODE_NO_DEFAULT_FOR_TABLE_STRUCTURE_USAGES, text);
+    }
+
+    private void validateDefaultCategoryForValidationRules(MessageList list, IIpsProject ipsProject)
+            throws CoreException {
+
+        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
+            @Override
+            protected boolean isDefault(IProductCmptCategory category) {
+                return category.isDefaultForValidationRules();
+            }
+        };
+        defaultCategoryFinder.start(this);
+        String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForValidationRules, getName());
+        defaultCategoryFinder.addValidationErrorIfNoDefaultCategoryFound(list, MSGCODE_NO_DEFAULT_FOR_VALIDATION_RULES,
+                text);
     }
 
     @Override
@@ -718,6 +798,36 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public int[] moveProductCmptCategories(int[] indexes, boolean up) {
         return categories.moveParts(indexes, up);
+    }
+
+    private abstract class DefaultCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {
+
+        private boolean defaultCategoryFound;
+
+        protected DefaultCategoryFinder(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            for (IProductCmptCategory category : currentType.getProductCmptCategories()) {
+                if (isDefault(category)) {
+                    defaultCategoryFound = true;
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        protected abstract boolean isDefault(IProductCmptCategory category);
+
+        private void addValidationErrorIfNoDefaultCategoryFound(MessageList list, String code, String text) {
+            if (!defaultCategoryFound) {
+                Message msg = new Message(code, text, Message.ERROR, ProductCmptType.this);
+                list.add(msg);
+            }
+        }
+
     }
 
     private static class TableStructureUsageFinder extends TypeHierarchyVisitor<IProductCmptType> {

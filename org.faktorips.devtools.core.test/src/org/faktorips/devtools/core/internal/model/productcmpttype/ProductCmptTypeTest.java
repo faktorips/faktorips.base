@@ -62,6 +62,7 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.memento.Memento;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -1017,6 +1018,74 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         msgList = aConfig.validate(ipsProject);
         assertNull(msgList
                 .getMessageByCode(IProductCmptType.MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT));
+    }
+
+    @Test
+    public void testValidateNoDefaultCategoryForFormulaSignatureDefinitionsExists() throws CoreException {
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
+        category.setDefaultForPolicyCmptTypeAttributes(true);
+        category.setDefaultForProductCmptTypeAttributes(true);
+        category.setDefaultForTableStructureUsages(true);
+        category.setDefaultForValidationRules(true);
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptType.MSGCODE_NO_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS, productCmptType, null,
+                Message.ERROR);
+    }
+
+    @Test
+    public void testValidateNoDefaultCategoryForPolicyCmptTypeAttributesExists() throws CoreException {
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
+        category.setDefaultForFormulaSignatureDefinitions(true);
+        category.setDefaultForProductCmptTypeAttributes(true);
+        category.setDefaultForTableStructureUsages(true);
+        category.setDefaultForValidationRules(true);
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptType.MSGCODE_NO_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, productCmptType, null,
+                Message.ERROR);
+    }
+
+    @Test
+    public void testValidateNoDefaultCategoryForProductCmptTypeAttributesExists() throws CoreException {
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
+        category.setDefaultForFormulaSignatureDefinitions(true);
+        category.setDefaultForPolicyCmptTypeAttributes(true);
+        category.setDefaultForTableStructureUsages(true);
+        category.setDefaultForValidationRules(true);
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptType.MSGCODE_NO_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, productCmptType, null,
+                Message.ERROR);
+    }
+
+    @Test
+    public void testValidateNoDefaultCategoryForTableStructureUsagesExists() throws CoreException {
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
+        category.setDefaultForFormulaSignatureDefinitions(true);
+        category.setDefaultForPolicyCmptTypeAttributes(true);
+        category.setDefaultForProductCmptTypeAttributes(true);
+        category.setDefaultForValidationRules(true);
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptType.MSGCODE_NO_DEFAULT_FOR_TABLE_STRUCTURE_USAGES, productCmptType, null, Message.ERROR);
+    }
+
+    @Test
+    public void testValidateNoDefaultCategoryForValidationRulesExists() throws CoreException {
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
+        category.setDefaultForFormulaSignatureDefinitions(true);
+        category.setDefaultForPolicyCmptTypeAttributes(true);
+        category.setDefaultForProductCmptTypeAttributes(true);
+        category.setDefaultForTableStructureUsages(true);
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList, IProductCmptType.MSGCODE_NO_DEFAULT_FOR_VALIDATION_RULES,
+                productCmptType, null, Message.ERROR);
     }
 
     @Test

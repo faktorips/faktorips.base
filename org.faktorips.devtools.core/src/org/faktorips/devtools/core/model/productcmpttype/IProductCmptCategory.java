@@ -190,13 +190,8 @@ public interface IProductCmptCategory extends IIpsObjectPart {
      * @param productCmptTypeMethod The {@link IProductCmptTypeMethod} to reference in this category
      * 
      * @throws NullPointerException If the parameter is null
-     * @throws IllegalArgumentException If
-     *             <ol>
-     *             <li>the given {@link IProductCmptTypeMethod} does not belong to the
-     *             {@link IProductCmptType} this category belongs to
-     *             <li>the given {@link IProductCmptTypeMethod} is no
-     *             <em>formula signature definition</em>
-     *             </ol>
+     * @throws IllegalArgumentException If the given {@link IProductCmptTypeMethod} does not belong
+     *             to the {@link IProductCmptType} this category belongs to
      */
     public IProductCmptPropertyDirectReference newProductCmptPropertyReference(IProductCmptTypeMethod productCmptTypeMethod);
 
@@ -308,15 +303,17 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public void setDefaultForTableStructureUsages(boolean defaultForTableStructureUsages);
 
     /**
-     * Returns whether this category is the default category for {@link IValidationRule}s.
+     * Returns whether this category is the default category for product relevant
+     * {@link IValidationRule}s.
      */
     public boolean isDefaultForValidationRules();
 
     /**
-     * Sets whether this category is the default category for {@link IValidationRule}s.
+     * Sets whether this category is the default category for product relevant
+     * {@link IValidationRule}s.
      * 
      * @param defaultForValidationRules Flag indicating whether this category shall be the default
-     *            category for {@link IValidationRule}s
+     *            category for product relevant {@link IValidationRule}s
      */
     public void setDefaultForValidationRules(boolean defaultForValidationRules);
 

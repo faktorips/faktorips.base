@@ -120,6 +120,7 @@ import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.junit.After;
 import org.junit.Before;
 import org.w3c.dom.Document;
@@ -1316,6 +1317,18 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected final void performFullBuild(IIpsProject ipsProject) throws CoreException {
         clearOutputFolders(ipsProject); // To avoid code merging problems
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+    }
+
+    protected final void assertOneValidationMessage(MessageList list,
+            String code,
+            Object invalidObject,
+            String property,
+            int severity) {
+
+        Message expectedMessage = list.getFirstMessage(severity);
+        assertEquals(code, expectedMessage.getCode());
+        assertEquals(new ObjectProperty(invalidObject, property), expectedMessage.getInvalidObjectProperties()[0]);
+        assertEquals(1, list.size());
     }
 
     private void clearOutputFolders(IIpsProject ipsProject) throws CoreException {

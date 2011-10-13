@@ -22,6 +22,8 @@ import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
@@ -117,6 +119,40 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * from a super type, but the product component type is not.
      */
     public final static String MSGCODE_MUST_HAVE_SUPERTYPE = MSGCODE_PREFIX + "MustHaveSupertype"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that no default {@link IProductCmptCategory} for
+     * {@link IProductCmptTypeMethod}s marked as formula signature definition exists.
+     */
+    public final static String MSGCODE_NO_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
+            + "NoDefaultForFormulaSignatureDefinitions"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that no default {@link IProductCmptCategory} for product
+     * relevant {@link IValidationRule}s exists.
+     */
+    public final static String MSGCODE_NO_DEFAULT_FOR_VALIDATION_RULES = MSGCODE_PREFIX + "NoDefaultForValidationRules"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that no default {@link IProductCmptCategory} for
+     * {@link ITableStructureUsage}s exists.
+     */
+    public final static String MSGCODE_NO_DEFAULT_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
+            + "NoDefaultForTableStructureUsages"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that no default {@link IProductCmptCategory} for product
+     * relevant {@link IPolicyCmptTypeAttribute}s exists.
+     */
+    public final static String MSGCODE_NO_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
+            + "NoDefaultForPolicyCmptTypeAttributes"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that no default {@link IProductCmptCategory} for
+     * {@link IProductCmptTypeAttribute}s exists.
+     */
+    public final static String MSGCODE_NO_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
+            + "NoDefaultForProductCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this product component type refers to. Returns

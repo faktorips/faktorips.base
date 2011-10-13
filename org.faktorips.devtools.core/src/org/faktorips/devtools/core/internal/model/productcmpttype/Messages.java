@@ -65,6 +65,11 @@ public class Messages extends NLS {
     public static String ProductCmptCategory_DuplicateDefaultsForTableStructureUsages;
     public static String ProductCmptCategory_DuplicateDefaultsForPolicyCmptTypeAttributes;
     public static String ProductCmptCategory_DuplicateDefaultsForProductCmptTypeAttributes;
+    public static String ProductCmptCategory_NoDefaultForFormulaSignatureDefinitions;
+    public static String ProductCmptCategory_NoDefaultForValidationRules;
+    public static String ProductCmptCategory_NoDefaultForTableStructureUsages;
+    public static String ProductCmptCategory_NoDefaultForPolicyCmptTypeAttributes;
+    public static String ProductCmptCategory_NoDefaultForProductCmptTypeAttributes;
 
     public static String ProductCmptPropertyExternalReference_msgReferencedPropertyCouldNotBeFound;
 

@@ -180,7 +180,6 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
     @Override
     public IProductCmptPropertyDirectReference newProductCmptPropertyReference(IProductCmptTypeMethod productCmptTypeMethod) {
         ArgumentCheck.equals(productCmptTypeMethod.getProductCmptType(), getProductCmptType());
-        ArgumentCheck.isTrue(productCmptTypeMethod.isFormulaSignatureDefinition());
         return newProductCmptPropertyDirectReference(productCmptTypeMethod);
     }
 
