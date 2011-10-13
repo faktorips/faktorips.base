@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.w3c.dom.Element;
 
 /**
  * @author Alexander Weickmann
@@ -39,6 +40,14 @@ public abstract class ProductCmptPropertyReference extends AtomicIpsObjectPart i
      */
     protected final IProductCmptCategory getProductCmptCategory() {
         return (IProductCmptCategory)getParent();
+    }
+
+    @Override
+    protected final void propertiesToXml(Element element) {
+        super.propertiesToXml(element);
+
+        element.setAttribute(PROPERTY_NAME, getName());
+        element.setAttribute(PROPERTY_PROPERTY_TYPE, getProductCmptPropertyType().getId());
     }
 
 }

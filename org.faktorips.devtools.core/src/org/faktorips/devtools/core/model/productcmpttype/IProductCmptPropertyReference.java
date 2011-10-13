@@ -60,8 +60,8 @@ public interface IProductCmptPropertyReference extends IIpsObjectPart {
     public IProductCmptProperty findReferencedProductCmptProperty(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns whether this reference identifies an {@link IProductCmptProperty} that is not stored
-     * in the {@link IProductCmptType} this reference belongs to.
+     * Returns whether this reference identifies an {@link IProductCmptProperty} that is not
+     * directly stored in the {@link IProductCmptType} this reference belongs to.
      */
     public boolean isExternalReference();
 

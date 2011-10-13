@@ -334,4 +334,19 @@ public enum ProductCmptPropertyType {
         return propertyValue;
     }
 
+    /**
+     * Returns the property type corresponding to the provided id or null if no corresponding
+     * property type can be found.
+     * 
+     * @param id The id whose corresponding property type to search for
+     */
+    public static ProductCmptPropertyType getValueById(String id) {
+        for (ProductCmptPropertyType propertyType : values()) {
+            if (propertyType.getId().equals(id)) {
+                return propertyType;
+            }
+        }
+        return null;
+    }
+
 }

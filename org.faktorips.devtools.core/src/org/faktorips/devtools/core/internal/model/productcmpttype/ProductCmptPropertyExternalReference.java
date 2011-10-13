@@ -113,17 +113,9 @@ public final class ProductCmptPropertyExternalReference extends ProductCmptPrope
     @Override
     protected void initFromXml(Element element, String id) {
         name = element.getAttribute(PROPERTY_NAME);
-        propertyType = ProductCmptPropertyType.valueOf(element.getAttribute(PROPERTY_PROPERTY_TYPE).toUpperCase());
+        propertyType = ProductCmptPropertyType.getValueById(element.getAttribute(PROPERTY_PROPERTY_TYPE));
 
         super.initFromXml(element, id);
-    }
-
-    @Override
-    protected void propertiesToXml(Element element) {
-        super.propertiesToXml(element);
-
-        element.setAttribute(PROPERTY_NAME, name);
-        element.setAttribute(PROPERTY_PROPERTY_TYPE, propertyType.toString().toLowerCase());
     }
 
     @Override

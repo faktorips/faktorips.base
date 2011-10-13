@@ -77,8 +77,8 @@ public final class ProductCmptPropertyDirectReference extends ProductCmptPropert
     @Override
     public void initFromXml(Element element) {
         String name = element.getAttribute(PROPERTY_NAME);
-        ProductCmptPropertyType propertyType = ProductCmptPropertyType.valueOf(element.getAttribute(
-                PROPERTY_PROPERTY_TYPE).toUpperCase());
+        ProductCmptPropertyType propertyType = ProductCmptPropertyType.getValueById(element
+                .getAttribute(PROPERTY_PROPERTY_TYPE));
         productCmptProperty = findReferencedProductCmptProperty(name, propertyType);
 
         super.initFromXml(element);
@@ -100,14 +100,6 @@ public final class ProductCmptPropertyDirectReference extends ProductCmptPropert
                 break;
         }
         return productCmptProperty;
-    }
-
-    @Override
-    protected void propertiesToXml(Element element) {
-        super.propertiesToXml(element);
-
-        element.setAttribute(PROPERTY_NAME, getName());
-        element.setAttribute(PROPERTY_PROPERTY_TYPE, getProductCmptPropertyType().toString().toLowerCase());
     }
 
     @Override
