@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -39,7 +40,9 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.util.ListElementMover;
+import org.faktorips.runtime.internal.StringUtils;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -59,7 +62,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
 
     private boolean inherited;
 
-    private boolean defaultForMethods;
+    private boolean defaultForFormulaSignatureDefinitions;
 
     private boolean defaultForValidationRules;
 
@@ -171,7 +174,6 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
     public IProductCmptPropertyExternalReference newProductCmptPropertyReference(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
         ArgumentCheck.equals(policyCmptTypeAttribute.getPolicyCmptType().getQualifiedName(), getProductCmptType()
                 .getPolicyCmptType());
-        ArgumentCheck.isTrue(policyCmptTypeAttribute.isProductRelevant());
         return newProductCmptPropertyExternalReference(policyCmptTypeAttribute);
     }
 
@@ -238,15 +240,15 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
     }
 
     @Override
-    public boolean isDefaultForMethods() {
-        return defaultForMethods;
+    public boolean isDefaultForFormulaSignatureDefinitions() {
+        return defaultForFormulaSignatureDefinitions;
     }
 
     @Override
-    public void setDefaultForMethods(boolean defaultForMethods) {
-        boolean oldValue = this.defaultForMethods;
-        this.defaultForMethods = defaultForMethods;
-        valueChanged(oldValue, defaultForMethods);
+    public void setDefaultForFormulaSignatureDefinitions(boolean defaultForFormulaSignatureDefinitions) {
+        boolean oldValue = this.defaultForFormulaSignatureDefinitions;
+        this.defaultForFormulaSignatureDefinitions = defaultForFormulaSignatureDefinitions;
+        valueChanged(oldValue, defaultForFormulaSignatureDefinitions);
     }
 
     @Override
@@ -328,7 +330,193 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
 
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-        // TODO Auto-generated method stub
+        if (!validateNameIsEmpty(list)) {
+            return;
+        }
+        validateNameAlreadyUsedInTypeHierarchy(list, ipsProject);
+        if (!validateInheritedButNoSupertype(list)) {
+            return;
+        }
+        validateInheritedButNotFoundInSupertypeHierarchy(list, ipsProject);
+        validateDuplicateDefaultsForFormulaSignatureDefinitions(list, ipsProject);
+        validateDuplicateDefaultsForPolicyCmptTypeAttributes(list, ipsProject);
+        validateDuplicateDefaultsForProductCmptTypeAttributes(list, ipsProject);
+        validateDuplicateDefaultsForTableStructureUsages(list, ipsProject);
+        validateDuplicateDefaultsForValidationRules(list, ipsProject);
+    }
+
+    private boolean validateNameIsEmpty(MessageList list) {
+        if (StringUtils.isEmpty(name)) {
+            addValidationError(list, MSGCODE_NAME_IS_EMPTY, Messages.ProductCmptCategory_msgNameIsEmpty, PROPERTY_NAME);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateNameAlreadyUsedInTypeHierarchy(MessageList list, IIpsProject ipsProject)
+            throws CoreException {
+
+        boolean valid = !isNameAlreadyUsedInThisType();
+        if (valid) {
+            valid = !isNameAlreadyUsedInSupertypeHierarchy(ipsProject);
+        }
+
+        if (!valid) {
+            String text = NLS.bind(Messages.ProductCmptCategory_msgNameAlreadyUsedInTypeHierarchy, name,
+                    getProductCmptType().getName());
+            addValidationError(list, MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY, text, PROPERTY_NAME);
+        }
+
+        return valid;
+    }
+
+    private boolean isNameAlreadyUsedInThisType() {
+        for (IProductCmptCategory category : getProductCmptType().getProductCmptCategories()) {
+            if (category == this) {
+                continue;
+            }
+            if (category.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isNameAlreadyUsedInSupertypeHierarchy(IIpsProject ipsProject) throws CoreException {
+        if (!inherited && getProductCmptType().hasSupertype()) {
+            IProductCmptType superProductCmptType = getProductCmptType().findSuperProductCmptType(ipsProject);
+            if (superProductCmptType != null) {
+                if (superProductCmptType.findProductCmptCategory(name, ipsProject) != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean validateInheritedButNoSupertype(MessageList list) {
+        if (!getProductCmptType().hasSupertype()) {
+            String text = NLS.bind(Messages.ProductCmptCategory_msgInheritedButNoSupertype, name, getProductCmptType()
+                    .getName());
+            addValidationError(list, MSGCODE_INHERITED_BUT_NO_SUPERTYPE, text, PROPERTY_INHERITED);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateInheritedButNotFoundInSupertypeHierarchy(MessageList list, IIpsProject ipsProject)
+            throws CoreException {
+
+        if (inherited && getProductCmptType().findProductCmptCategory(name, ipsProject) == null) {
+            IProductCmptType superProductCmptType = getProductCmptType().findSuperProductCmptType(ipsProject);
+            if (superProductCmptType == null || superProductCmptType.findProductCmptCategory(name, ipsProject) == null) {
+                String text = NLS.bind(Messages.ProductCmptCategory_msgInheritedButNotFoundInSupertypeHierarchy, name);
+                addValidationError(list, MSGCODE_INHERITED_BUT_NOT_FOUND_IN_SUPERTYPE_HIERARCHY, text,
+                        PROPERTY_INHERITED);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void validateDuplicateDefaultsForFormulaSignatureDefinitions(MessageList list, IIpsProject ipsProject)
+            throws CoreException {
+
+        if (!defaultForFormulaSignatureDefinitions) {
+            return;
+        }
+
+        DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(ipsProject) {
+            @Override
+            protected boolean isDefault(IProductCmptCategory category) {
+                return category.isDefaultForFormulaSignatureDefinitions();
+            }
+        };
+        duplicateFinder.start(getProductCmptType());
+        duplicateFinder.addValidationWarningIfDuplicateFound(list,
+                MSGCODE_DUPLICATE_DEFAULTS_FOR_FORMULA_SIGNATURE_DEFINITIONS,
+                Messages.ProductCmptCategory_DuplicateDefaultsForFormulaSignatureDefinitions,
+                PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS);
+    }
+
+    private void validateDuplicateDefaultsForValidationRules(MessageList list, IIpsProject ipsProject)
+            throws CoreException {
+
+        if (!defaultForValidationRules) {
+            return;
+        }
+
+        DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(ipsProject) {
+            @Override
+            protected boolean isDefault(IProductCmptCategory category) {
+                return category.isDefaultForValidationRules();
+            }
+        };
+        duplicateFinder.start(getProductCmptType());
+        duplicateFinder
+                .addValidationWarningIfDuplicateFound(list, MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES,
+                        Messages.ProductCmptCategory_DuplicateDefaultsForValidationRules,
+                        PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
+    }
+
+    private void validateDuplicateDefaultsForTableStructureUsages(MessageList list, IIpsProject ipsProject)
+            throws CoreException {
+
+        if (!defaultForTableStructureUsages) {
+            return;
+        }
+
+        DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(ipsProject) {
+            @Override
+            protected boolean isDefault(IProductCmptCategory category) {
+                return category.isDefaultForTableStructureUsages();
+            }
+        };
+        duplicateFinder.start(getProductCmptType());
+        duplicateFinder.addValidationWarningIfDuplicateFound(list,
+                MSGCODE_DUPLICATE_DEFAULTS_FOR_TABLE_STRUCTURE_USAGES,
+                Messages.ProductCmptCategory_DuplicateDefaultsForTableStructureUsages,
+                PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES);
+    }
+
+    private void validateDuplicateDefaultsForPolicyCmptTypeAttributes(MessageList list, IIpsProject ipsProject)
+            throws CoreException {
+
+        if (!defaultForPolicyCmptTypeAttributes) {
+            return;
+        }
+
+        DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(ipsProject) {
+            @Override
+            protected boolean isDefault(IProductCmptCategory category) {
+                return category.isDefaultForPolicyCmptTypeAttributes();
+            }
+        };
+        duplicateFinder.start(getProductCmptType());
+        duplicateFinder.addValidationWarningIfDuplicateFound(list,
+                MSGCODE_DUPLICATE_DEFAULTS_FOR_POLICY_CMPT_TYPE_ATTRIBUTES,
+                Messages.ProductCmptCategory_DuplicateDefaultsForPolicyCmptTypeAttributes,
+                PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES);
+    }
+
+    private void validateDuplicateDefaultsForProductCmptTypeAttributes(MessageList list, IIpsProject ipsProject)
+            throws CoreException {
+
+        if (!defaultForProductCmptTypeAttributes) {
+            return;
+        }
+
+        DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(ipsProject) {
+            @Override
+            protected boolean isDefault(IProductCmptCategory category) {
+                return category.isDefaultForProductCmptTypeAttributes();
+            }
+        };
+        duplicateFinder.start(getProductCmptType());
+        duplicateFinder.addValidationWarningIfDuplicateFound(list,
+                MSGCODE_DUPLICATE_DEFAULTS_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES,
+                Messages.ProductCmptCategory_DuplicateDefaultsForProductCmptTypeAttributes,
+                PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES);
     }
 
     @Override
@@ -344,7 +532,8 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
     protected void initPropertiesFromXml(Element element, String id) {
         name = element.getAttribute(PROPERTY_NAME);
         inherited = Boolean.parseBoolean(element.getAttribute(PROPERTY_INHERITED));
-        defaultForMethods = Boolean.parseBoolean(element.getAttribute(PROPERTY_DEFAULT_FOR_METHODS));
+        defaultForFormulaSignatureDefinitions = Boolean.parseBoolean(element
+                .getAttribute(PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS));
         defaultForPolicyCmptTypeAttributes = Boolean.parseBoolean(element
                 .getAttribute(PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES));
         defaultForProductCmptTypeAttributes = Boolean.parseBoolean(element
@@ -363,7 +552,8 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
 
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_INHERITED, Boolean.toString(inherited));
-        element.setAttribute(PROPERTY_DEFAULT_FOR_METHODS, Boolean.toString(defaultForMethods));
+        element.setAttribute(PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS,
+                Boolean.toString(defaultForFormulaSignatureDefinitions));
         element.setAttribute(PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES,
                 Boolean.toString(defaultForPolicyCmptTypeAttributes));
         element.setAttribute(PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES,
@@ -445,7 +635,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
                     try {
                         referencedProperty = reference.findReferencedProductCmptProperty(getIpsProject());
                     } catch (CoreException e) {
-                        // Property is not found due to exception, log the exception and continue.
+                        // Property is not found due to exception, log the exception and continue
                         IpsPlugin.log(e);
                         continue;
                     }
@@ -457,6 +647,51 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
             Element newPartElement = part.toXml(doc);
             element.appendChild(newPartElement);
         }
+    }
+
+    private void addValidationError(MessageList list, String code, String text, String invalidProperty) {
+        addValidationMessage(list, code, text, invalidProperty, Message.ERROR);
+    }
+
+    private void addValidationWarning(MessageList list, String code, String text, String invalidProperty) {
+        addValidationMessage(list, code, text, invalidProperty, Message.WARNING);
+    }
+
+    private void addValidationMessage(MessageList list, String code, String text, String invalidProperty, int severity) {
+        list.add(new Message(code, text, severity, this, invalidProperty));
+    }
+
+    private abstract class DuplicateDefaultFinder extends TypeHierarchyVisitor<IProductCmptType> {
+
+        private boolean duplicateDefaultFound;
+
+        protected DuplicateDefaultFinder(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            for (IProductCmptCategory category : currentType.getProductCmptCategories()) {
+                if (isDefault(category) && !category.getName().equals(name)) {
+                    duplicateDefaultFound = true;
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        protected abstract boolean isDefault(IProductCmptCategory category);
+
+        private void addValidationWarningIfDuplicateFound(MessageList list,
+                String code,
+                String text,
+                String invalidProperty) {
+
+            if (duplicateDefaultFound) {
+                addValidationWarning(list, code, text, invalidProperty);
+            }
+        }
+
     }
 
 }

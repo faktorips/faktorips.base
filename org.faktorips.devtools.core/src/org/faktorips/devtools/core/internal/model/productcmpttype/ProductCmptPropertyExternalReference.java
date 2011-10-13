@@ -93,12 +93,14 @@ public final class ProductCmptPropertyExternalReference extends ProductCmptPrope
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         IProductCmptProperty referencedProperty = findReferencedProductCmptProperty(ipsProject);
+        validateReferencedPropertyCouldNotBeFound(list, referencedProperty);
+    }
+
+    private void validateReferencedPropertyCouldNotBeFound(MessageList list, IProductCmptProperty referencedProperty) {
         if (referencedProperty == null) {
             String text = NLS.bind(Messages.ProductCmptPropertyExternalReference_msgReferencedPropertyCouldNotBeFound,
                     getProductCmptPropertyType().getName(), getName());
-            Message msg = new Message(
-                    IProductCmptPropertyExternalReference.MSGCODE_REFERENCED_PROPERTY_COULD_NOT_BE_FOUND, text,
-                    Message.ERROR);
+            Message msg = new Message(MSGCODE_REFERENCED_PROPERTY_COULD_NOT_BE_FOUND, text, Message.ERROR);
             list.add(msg);
         }
     }

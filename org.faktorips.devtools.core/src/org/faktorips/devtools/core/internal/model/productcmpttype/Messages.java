@@ -56,6 +56,16 @@ public class Messages extends NLS {
     public static String TableStructureUsage_msgSameRoleName;
     public static String TableStructureUsage_msgTableStructureNotExists;
 
+    public static String ProductCmptCategory_msgNameIsEmpty;
+    public static String ProductCmptCategory_msgNameAlreadyUsedInTypeHierarchy;
+    public static String ProductCmptCategory_msgInheritedButNotFoundInSupertypeHierarchy;
+    public static String ProductCmptCategory_msgInheritedButNoSupertype;
+    public static String ProductCmptCategory_DuplicateDefaultsForFormulaSignatureDefinitions;
+    public static String ProductCmptCategory_DuplicateDefaultsForValidationRules;
+    public static String ProductCmptCategory_DuplicateDefaultsForTableStructureUsages;
+    public static String ProductCmptCategory_DuplicateDefaultsForPolicyCmptTypeAttributes;
+    public static String ProductCmptCategory_DuplicateDefaultsForProductCmptTypeAttributes;
+
     public static String ProductCmptPropertyExternalReference_msgReferencedPropertyCouldNotBeFound;
 
 }

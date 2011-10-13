@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
 /**
@@ -49,7 +48,7 @@ public interface IProductCmptCategory extends IIpsObjectPart {
 
     public final static String PROPERTY_INHERITED = "inherited"; //$NON-NLS-1$
 
-    public final static String PROPERTY_DEFAULT_FOR_METHODS = "defaultForMethods"; //$NON-NLS-1$
+    public final static String PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS = "defaultForMethods"; //$NON-NLS-1$
 
     public final static String PROPERTY_DEFAULT_FOR_VALIDATION_RULES = "defaultForValidationRules"; //$NON-NLS-1$
 
@@ -60,6 +59,32 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public final static String PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = "defaultForProductCmptTypeAttributes"; //$NON-NLS-1$
 
     public final static String PROPERTY_POSITION = "position"; //$NON-NLS-1$
+
+    public final static String MSGCODE_PREFIX = "ProductCmptCategory-"; //$NON-NLS-1$
+
+    public final static String MSGCODE_NAME_IS_EMPTY = MSGCODE_PREFIX + "NameIsEmpty"; //$NON-NLS-1$
+
+    public final static String MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY = "NameAlreadyUsedInTypeHierarchy"; //$NON-NLS-1$
+
+    public final static String MSGCODE_INHERITED_BUT_NOT_FOUND_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
+            + "InheritedButNotFoundInSupertypeHierarchy"; //$NON-NLS-1$
+
+    public final static String MSGCODE_INHERITED_BUT_NO_SUPERTYPE = MSGCODE_PREFIX + "InheritedButNoSupertype"; //$NON-NLS-1$
+
+    public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
+            + "DuplicateDefaultsForFormulaSignatureDefinitions"; //$NON-NLS-1$
+
+    public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES = MSGCODE_PREFIX
+            + "DuplicateDefaultsForValidationRules"; //$NON-NLS-1$
+
+    public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
+            + "DuplicateDefaultsForTableStructureUsages"; //$NON-NLS-1$
+
+    public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
+            + "DuplicateDefaultsForPolicyCmptTypeAttributes"; //$NON-NLS-1$
+
+    public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
+            + "DuplicateDefaultsForProductCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
      * Returns the {@link IProductCmptType} this category belongs to.
@@ -152,14 +177,9 @@ public interface IProductCmptCategory extends IIpsObjectPart {
      *            category
      * 
      * @throws NullPointerException If the parameter is null
-     * @throws IllegalArgumentException If
-     *             <ol>
-     *             <li>the given {@link IPolicyCmptTypeAttribute} does not belong to the
-     *             {@link IPolicyCmptType} the {@link IProductCmptType} this category belongs to
-     *             configures
-     *             <li>the given {@link IPolicyCmptTypeAttribute} is not <em>product
-     *             relevant</em>
-     *             </ol>
+     * @throws IllegalArgumentException If the given {@link IPolicyCmptTypeAttribute} does not
+     *             belong to the {@link IPolicyCmptType} the {@link IProductCmptType} this category
+     *             belongs to configures
      */
     public IProductCmptPropertyExternalReference newProductCmptPropertyReference(IPolicyCmptTypeAttribute policyCmptTypeAttribute);
 
@@ -232,28 +252,32 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public void setInherited(boolean inherited);
 
     /**
-     * Returns whether this category is the default category for {@link IMethod}s.
+     * Returns whether this category is the default category for {@link IProductCmptTypeMethod}s
+     * defining formula signatures.
      */
-    public boolean isDefaultForMethods();
+    public boolean isDefaultForFormulaSignatureDefinitions();
 
     /**
-     * Sets whether this category is the default category for {@link IMethod}s.
+     * Sets whether this category is the default category for {@link IProductCmptTypeMethod}s.
      * 
-     * @param defaultForMethods Flag indicating whether this category shall be the default category
-     *            for {@link IMethod}s
+     * @param defaultForFormulaSignatureDefinitions Flag indicating whether this category shall be
+     *            the default category for {@link IProductCmptTypeMethod}s defining formula
+     *            signatures
      */
-    public void setDefaultForMethods(boolean defaultForMethods);
+    public void setDefaultForFormulaSignatureDefinitions(boolean defaultForFormulaSignatureDefinitions);
 
     /**
-     * Returns whether this category is the default category for {@link IPolicyCmptTypeAttribute}s.
+     * Returns whether this category is the default category for product relevant
+     * {@link IPolicyCmptTypeAttribute}s.
      */
     public boolean isDefaultForPolicyCmptTypeAttributes();
 
     /**
-     * Sets whether this category is the default category for {@link IPolicyCmptTypeAttribute}s.
+     * Sets whether this category is the default category for product relevant
+     * {@link IPolicyCmptTypeAttribute}s.
      * 
      * @param defaultForPolicyCmptTypeAttributes Flag indicating whether this category shall be the
-     *            default category for {@link IPolicyCmptTypeAttribute}s
+     *            default category for product relevant {@link IPolicyCmptTypeAttribute}s
      */
     public void setDefaultForPolicyCmptTypeAttributes(boolean defaultForPolicyCmptTypeAttributes);
 

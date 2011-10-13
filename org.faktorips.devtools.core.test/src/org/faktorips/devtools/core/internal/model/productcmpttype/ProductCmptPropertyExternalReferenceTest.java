@@ -169,9 +169,23 @@ public class ProductCmptPropertyExternalReferenceTest extends AbstractIpsPluginT
     @Test
     public void shouldGenerateValidationErrorIfReferencedPropertyCannotBeFoundBecausePolicyCmptTypeIsNotFound()
             throws CoreException {
+
         IProductCmptPropertyReference reference = category.newProductCmptPropertyReference(attributeProperty);
 
         productType.setPolicyCmptType("");
+        MessageList validationMessageList = reference.validate(reference.getIpsProject());
+
+        assertEquals(IProductCmptPropertyExternalReference.MSGCODE_REFERENCED_PROPERTY_COULD_NOT_BE_FOUND,
+                validationMessageList.getFirstMessage(Message.ERROR).getCode());
+        assertEquals(1, validationMessageList.size());
+    }
+
+    public void shouldGenerateValidationErrorIfReferencedPolicyCmptTypeAttributeIsNotProductRelevant()
+            throws CoreException {
+
+        attributeProperty.setProductRelevant(false);
+        IProductCmptPropertyReference reference = category.newProductCmptPropertyReference(attributeProperty);
+
         MessageList validationMessageList = reference.validate(reference.getIpsProject());
 
         assertEquals(IProductCmptPropertyExternalReference.MSGCODE_REFERENCED_PROPERTY_COULD_NOT_BE_FOUND,

@@ -41,6 +41,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -120,7 +123,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
         IProductCmptCategory category = productType.newProductCmptCategory();
         assertEquals("", category.getName());
         assertFalse(category.isInherited());
-        assertFalse(category.isDefaultForMethods());
+        assertFalse(category.isDefaultForFormulaSignatureDefinitions());
         assertFalse(category.isDefaultForPolicyCmptTypeAttributes());
         assertFalse(category.isDefaultForProductCmptTypeAttributes());
         assertFalse(category.isDefaultForTableStructureUsages());
@@ -197,16 +200,6 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setProductRelevant(true);
         category.newProductCmptPropertyReference(attribute);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenReferencingPolicyCmptTypeAttributeThatIsNotProductRelevant()
-            throws CoreException {
-
-        IPolicyCmptTypeAttribute attributeProperty = createPolicyCmptTypeAttributeProperty(productType,
-                "attributeProperty");
-        attributeProperty.setProductRelevant(false);
-        category.newProductCmptPropertyReference(attributeProperty);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -288,14 +281,14 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
 
     @Test
     public void shouldAllowToBeMarkedAsDefaultForMethods() {
-        category.setDefaultForMethods(true);
-        assertTrue(category.isDefaultForMethods());
+        category.setDefaultForFormulaSignatureDefinitions(true);
+        assertTrue(category.isDefaultForFormulaSignatureDefinitions());
         assertPropertyChangedEvent();
 
         resetContentChangedEvent();
 
-        category.setDefaultForMethods(false);
-        assertFalse(category.isDefaultForMethods());
+        category.setDefaultForFormulaSignatureDefinitions(false);
+        assertFalse(category.isDefaultForFormulaSignatureDefinitions());
         assertPropertyChangedEvent();
     }
 
@@ -459,7 +452,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
 
     @Test
     public void shouldBePersistedToXml() throws ParserConfigurationException, CoreException {
-        category.setDefaultForMethods(true);
+        category.setDefaultForFormulaSignatureDefinitions(true);
         category.setDefaultForPolicyCmptTypeAttributes(true);
         category.setDefaultForProductCmptTypeAttributes(true);
         category.setDefaultForTableStructureUsages(true);
@@ -483,7 +476,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
         loadedCategory.initFromXml(xmlElement);
 
         assertEquals(CATEGORY_NAME, loadedCategory.getName());
-        assertTrue(loadedCategory.isDefaultForMethods());
+        assertTrue(loadedCategory.isDefaultForFormulaSignatureDefinitions());
         assertTrue(loadedCategory.isDefaultForPolicyCmptTypeAttributes());
         assertTrue(loadedCategory.isDefaultForProductCmptTypeAttributes());
         assertTrue(loadedCategory.isDefaultForTableStructureUsages());
@@ -560,6 +553,147 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
         assertEquals(1, children.length);
     }
 
+    @Test
+    public void shouldGenerateValidationErrorIfNameIsEmpty() throws CoreException {
+        category.setName("");
+
+        MessageList validationMessageList = category.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList, IProductCmptCategory.MSGCODE_NAME_IS_EMPTY,
+                IProductCmptCategory.PROPERTY_NAME, Message.ERROR);
+    }
+
+    @Test
+    public void shouldGenerateValidationErrorIfNameIsUsedTwice() throws CoreException {
+        productType.newProductCmptCategory(CATEGORY_NAME);
+
+        MessageList validationMessageList = category.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptCategory.MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY, IProductCmptCategory.PROPERTY_NAME,
+                Message.ERROR);
+    }
+
+    @Test
+    public void shouldGenerateValidationErrorIfNameIsUsedTwiceInSupertypeHierarchy() throws CoreException {
+        superProductType.newProductCmptCategory(CATEGORY_NAME);
+        category.setInherited(false);
+
+        MessageList validationMessageList = category.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptCategory.MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY, IProductCmptCategory.PROPERTY_NAME,
+                Message.ERROR);
+    }
+
+    @Test
+    public void shouldNotGenerateValidationErrorIfNameIsAlreadyUsedInSupertypeHierarchyButCategoryIsInherited()
+            throws CoreException {
+
+        superProductType.newProductCmptCategory(CATEGORY_NAME);
+        assertTrue(category.isValid(ipsProject));
+    }
+
+    @Test
+    public void shouldGenerateValidationErrorIfInheritedButNotFoundInSupertypeHierarchy() throws CoreException {
+        category.setInherited(true);
+        superCategory.delete();
+        superSuperCategory.delete();
+
+        MessageList validationMessageList = category.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptCategory.MSGCODE_INHERITED_BUT_NOT_FOUND_IN_SUPERTYPE_HIERARCHY,
+                IProductCmptCategory.PROPERTY_INHERITED, Message.ERROR);
+    }
+
+    @Test
+    public void shouldGenerateValidationErrorIfInheritedButSupertypeNotFound() throws CoreException {
+        category.setInherited(true);
+        productType.setSupertype("foo");
+
+        MessageList validationMessageList = category.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptCategory.MSGCODE_INHERITED_BUT_NOT_FOUND_IN_SUPERTYPE_HIERARCHY,
+                IProductCmptCategory.PROPERTY_INHERITED, Message.ERROR);
+    }
+
+    @Test
+    public void shouldGenerateValidationErrorIfInheritedButNoSupertype() throws CoreException {
+        category.setInherited(true);
+        productType.setSupertype("");
+
+        MessageList validationMessageList = category.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList, IProductCmptCategory.MSGCODE_INHERITED_BUT_NO_SUPERTYPE,
+                IProductCmptCategory.PROPERTY_INHERITED, Message.ERROR);
+    }
+
+    @Test
+    public void shouldGenerateValidationWarningIfDuplicateCategoriesAreMarkedAsDefaultForFormulaSignatureDefinitions()
+            throws CoreException {
+
+        category.setDefaultForFormulaSignatureDefinitions(true);
+        IProductCmptCategory category2 = superProductType.newProductCmptCategory("bar");
+        category2.setDefaultForFormulaSignatureDefinitions(true);
+
+        MessageList validationMessageList = category.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptCategory.MSGCODE_DUPLICATE_DEFAULTS_FOR_FORMULA_SIGNATURE_DEFINITIONS,
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS, Message.WARNING);
+    }
+
+    @Test
+    public void shouldGenerateValidationWarningIfDuplicateCategoriesAreMarkedAsDefaultForValidationRules()
+            throws CoreException {
+
+        category.setDefaultForValidationRules(true);
+        IProductCmptCategory category2 = superProductType.newProductCmptCategory("bar");
+        category2.setDefaultForValidationRules(true);
+
+        MessageList validationMessageList = category.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptCategory.MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES,
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_VALIDATION_RULES, Message.WARNING);
+    }
+
+    @Test
+    public void shouldGenerateValidationWarningIfDuplicateCategoriesAreMarkedAsDefaultForTableStructureUsages()
+            throws CoreException {
+
+        category.setDefaultForTableStructureUsages(true);
+        IProductCmptCategory category2 = superProductType.newProductCmptCategory("bar");
+        category2.setDefaultForTableStructureUsages(true);
+
+        MessageList validationMessageList = category.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptCategory.MSGCODE_DUPLICATE_DEFAULTS_FOR_TABLE_STRUCTURE_USAGES,
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES, Message.WARNING);
+    }
+
+    @Test
+    public void shouldGenerateValidationWarningIfDuplicateCategoriesAreMarkedAsDefaultForPolicyCmptTypeAttributes()
+            throws CoreException {
+
+        category.setDefaultForPolicyCmptTypeAttributes(true);
+        IProductCmptCategory category2 = superProductType.newProductCmptCategory("bar");
+        category2.setDefaultForPolicyCmptTypeAttributes(true);
+
+        MessageList validationMessageList = category.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptCategory.MSGCODE_DUPLICATE_DEFAULTS_FOR_POLICY_CMPT_TYPE_ATTRIBUTES,
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, Message.WARNING);
+    }
+
+    @Test
+    public void shouldGenerateValidationWarningIfDuplicateCategoriesAreMarkedAsDefaultForProductCmptTypeAttributes()
+            throws CoreException {
+
+        category.setDefaultForProductCmptTypeAttributes(true);
+        IProductCmptCategory category2 = superProductType.newProductCmptCategory("bar");
+        category2.setDefaultForProductCmptTypeAttributes(true);
+
+        MessageList validationMessageList = category.validate(ipsProject);
+        assertEquals(IProductCmptCategory.MSGCODE_DUPLICATE_DEFAULTS_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES,
+                validationMessageList.getFirstMessage(Message.WARNING).getCode());
+        assertEquals(1, validationMessageList.size());
+    }
+
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         lastEvent = event;
@@ -607,6 +741,13 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
     private void assertPropertyChangedEvent() {
         assertEquals(category, lastEvent.getPart());
         assertEquals(ContentChangeEvent.TYPE_PROPERTY_CHANGED, lastEvent.getEventType());
+    }
+
+    private void assertOneValidationMessage(MessageList list, String code, String property, int severity) {
+        Message expectedMessage = list.getFirstMessage(severity);
+        assertEquals(code, expectedMessage.getCode());
+        assertEquals(new ObjectProperty(category, property), expectedMessage.getInvalidObjectProperties()[0]);
+        assertEquals(1, list.size());
     }
 
 }
