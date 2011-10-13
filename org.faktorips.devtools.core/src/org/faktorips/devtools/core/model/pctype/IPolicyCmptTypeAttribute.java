@@ -43,40 +43,40 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      * Validation message code to indicate that an attribute can't be product relevant if the type
      * is configurable by product.
      */
-    public final static String MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT = MSGCODE_PREFIX
+    public final static String MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT = IAttribute.MSGCODE_PREFIX
             + "AttributeCantBeProductRelevantIfTypeIsNot"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute is marked overwriting an attribute in
      * the super type hierarchy, but there is no such attribute.
      */
-    public final static String MSGCODE_NOTHING_TO_OVERWRITE = MSGCODE_PREFIX + "NothingToOverwrite"; //$NON-NLS-1$
+    public final static String MSGCODE_NOTHING_TO_OVERWRITE = IAttribute.MSGCODE_PREFIX + "NothingToOverwrite"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the computation method has a different data type.
      */
-    public final static String MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE = MSGCODE_PREFIX
+    public final static String MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE = IAttribute.MSGCODE_PREFIX
             + "CompuationMethodHasWrongDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the computation method must be specified but it is
      * not.
      */
-    public final static String MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED = MSGCODE_PREFIX
+    public final static String MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED = IAttribute.MSGCODE_PREFIX
             + "ComputationMethodNotSpecified"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the computation method is specified but does not
      * exist.
      */
-    public final static String MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST = MSGCODE_PREFIX
+    public final static String MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST = IAttribute.MSGCODE_PREFIX
             + "ComputationMethodDoesNotExist"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute overwrites another but has a different
      * attribute type (which is not allowed).
      */
-    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE = MSGCODE_PREFIX
+    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE = IAttribute.MSGCODE_PREFIX
             + "ComputationMethodDoesNotExist"; //$NON-NLS-1$
 
     /**

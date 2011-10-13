@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -431,6 +432,31 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
             propertyReferences.add(reference);
         }
         return reference;
+    }
+
+    @Override
+    protected void partsToXml(Document doc, Element element) {
+        for (IIpsElement child : getChildren()) {
+            IIpsObjectPart part = (IIpsObjectPart)child;
+            if (child instanceof IProductCmptPropertyReference) {
+                IProductCmptPropertyReference reference = (IProductCmptPropertyReference)part;
+                if (!reference.isExternalReference()) {
+                    IProductCmptProperty referencedProperty = null;
+                    try {
+                        referencedProperty = reference.findReferencedProductCmptProperty(getIpsProject());
+                    } catch (CoreException e) {
+                        // Property is not found due to exception, log the exception and continue.
+                        IpsPlugin.log(e);
+                        continue;
+                    }
+                    if (referencedProperty == null) {
+                        continue;
+                    }
+                }
+            }
+            Element newPartElement = part.toXml(doc);
+            element.appendChild(newPartElement);
+        }
     }
 
 }

@@ -56,4 +56,6 @@ public class Messages extends NLS {
     public static String TableStructureUsage_msgSameRoleName;
     public static String TableStructureUsage_msgTableStructureNotExists;
 
+    public static String ProductCmptPropertyExternalReference_msgReferencedPropertyCouldNotBeFound;
+
 }

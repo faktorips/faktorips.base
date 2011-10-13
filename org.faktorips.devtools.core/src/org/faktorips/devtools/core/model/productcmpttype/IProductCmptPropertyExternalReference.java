@@ -31,6 +31,10 @@ public interface IProductCmptPropertyExternalReference extends IProductCmptPrope
 
     public final static String XML_TAG_NAME = "ProductCmptPropertyExternalReference"; //$NON-NLS-1$
 
+    public final static String MSGCODE_PREFIX = "ProductCmptPropertyExternalReference-"; //$NON-NLS-1$
+
+    public final static String MSGCODE_REFERENCED_PROPERTY_COULD_NOT_BE_FOUND = "ReferencedPropertyCouldNotBeFound"; //$NON-NLS-1$
+
     /**
      * Sets the name of the referenced property.
      * 

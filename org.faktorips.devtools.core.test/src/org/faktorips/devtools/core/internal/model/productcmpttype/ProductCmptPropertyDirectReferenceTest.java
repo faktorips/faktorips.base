@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -84,6 +85,12 @@ public class ProductCmptPropertyDirectReferenceTest extends AbstractIpsPluginTes
     }
 
     @Test
+    public void shouldNotFindReferencedPropertyIfThePropertyHasBeenDeleted() throws CoreException {
+        attributeProperty.delete();
+        assertNull(attributeReference.findReferencedProductCmptProperty(attributeReference.getIpsProject()));
+    }
+
+    @Test
     public void shouldBePersistedToXmlReferencingAttribute() throws ParserConfigurationException {
         shouldBePersistedToXml(attributeReference, attributeProperty,
                 ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
@@ -121,6 +128,11 @@ public class ProductCmptPropertyDirectReferenceTest extends AbstractIpsPluginTes
 
         assertEquals(property.getName(), loadedReference.getName());
         assertEquals(propertyType, loadedReference.getProductCmptPropertyType());
+    }
+
+    @Test
+    public void shouldReturnFalseForIsExternalReferenceQuery() {
+        assertFalse(attributeReference.isExternalReference());
     }
 
 }

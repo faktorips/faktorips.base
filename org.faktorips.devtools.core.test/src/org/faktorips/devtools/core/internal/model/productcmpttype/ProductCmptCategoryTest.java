@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -499,6 +500,37 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
     }
 
     @Test
+    public void shouldNotPersistDirectPropertiesThatCannotBeFoundToXml() throws ParserConfigurationException {
+        IProductCmptTypeAttribute productAttribute = createProductCmptTypeAttributeProperty(productType,
+                "productAttribute");
+        category.newProductCmptPropertyReference(productAttribute);
+
+        productAttribute.delete();
+
+        Element xmlElement = category.toXml(createXmlDocument(IProductCmptCategory.XML_TAG_NAME));
+        IProductCmptCategory loadedCategory = productType.newProductCmptCategory();
+        loadedCategory.initFromXml(xmlElement);
+
+        assertEquals(0, loadedCategory.getNumberOfProductCmptPropertyReferences());
+    }
+
+    @Test
+    public void shouldPersistExternalPropertiesThatCannotBeFoundToXml() throws ParserConfigurationException,
+            CoreException {
+
+        IPolicyCmptTypeAttribute policyAttribute = createPolicyCmptTypeAttributeProperty(productType, "policyAttribute");
+        category.newProductCmptPropertyReference(policyAttribute);
+
+        policyAttribute.delete();
+
+        Element xmlElement = category.toXml(createXmlDocument(IProductCmptCategory.XML_TAG_NAME));
+        IProductCmptCategory loadedCategory = productType.newProductCmptCategory();
+        loadedCategory.initFromXml(xmlElement);
+
+        assertEquals(1, loadedCategory.getNumberOfProductCmptPropertyReferences());
+    }
+
+    @Test
     public void shouldAllowToMoveReferences() throws CoreException {
         IProductCmptTypeAttribute property1 = createProductCmptTypeAttributeProperty(productType, "property1");
         IProductCmptTypeAttribute property2 = createProductCmptTypeAttributeProperty(productType, "property2");
@@ -517,6 +549,15 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
         assertTrue(lastEvent.isAffected(reference1));
         assertTrue(lastEvent.isAffected(reference2));
         assertTrue(lastEvent.isAffected(reference3));
+    }
+
+    @Test
+    public void shouldReturnReferencesAsChildren() throws CoreException {
+        IProductCmptPropertyReference reference = category.newProductCmptPropertyReference(property);
+
+        IIpsElement[] children = category.getChildren();
+        assertEquals(reference, children[0]);
+        assertEquals(1, children.length);
     }
 
     @Override

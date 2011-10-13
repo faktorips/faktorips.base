@@ -29,9 +29,12 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyExternalReference;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -131,24 +134,49 @@ public class ProductCmptPropertyExternalReferenceTest extends AbstractIpsPluginT
 
     @Test
     public void shouldBePersistedToXmlReferencingPolicyCmptTypeAttribute() throws ParserConfigurationException {
-        IPolicyCmptTypeAttribute attributeProperty = policyType.newPolicyCmptTypeAttribute();
-        attributeProperty.setName("validationRuleProperty");
-        attributeProperty.setProductRelevant(true);
+        IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyType.newPolicyCmptTypeAttribute();
+        policyCmptTypeAttribute.setName("policyCmptTypeAttribute");
+        policyCmptTypeAttribute.setProductRelevant(true);
         IProductCmptPropertyExternalReference attributeReference = category
-                .newProductCmptPropertyReference(attributeProperty);
+                .newProductCmptPropertyReference(policyCmptTypeAttribute);
 
-        shouldBePersistedToXml(attributeReference, attributeProperty,
+        shouldBePersistedToXml(attributeReference, policyCmptTypeAttribute,
                 ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE);
     }
 
     @Test
     public void shouldBePersistedToXmlReferencingValidationRule() throws ParserConfigurationException {
-        IValidationRule validationRuleProperty = policyType.newRule();
-        validationRuleProperty.setName("validationRuleProperty");
+        IValidationRule validationRule = policyType.newRule();
+        validationRule.setName("validationRule");
         IProductCmptPropertyExternalReference validationRuleReference = category
-                .newProductCmptPropertyReference(validationRuleProperty);
+                .newProductCmptPropertyReference(validationRule);
 
-        shouldBePersistedToXml(validationRuleReference, validationRuleProperty, ProductCmptPropertyType.VALIDATION_RULE);
+        shouldBePersistedToXml(validationRuleReference, validationRule, ProductCmptPropertyType.VALIDATION_RULE);
+    }
+
+    @Test
+    public void shouldGenerateValidationErrorIfReferencedPropertyIsDeleted() throws CoreException {
+        IProductCmptPropertyReference reference = category.newProductCmptPropertyReference(attributeProperty);
+
+        attributeProperty.delete();
+        MessageList validationMessageList = reference.validate(reference.getIpsProject());
+
+        assertEquals(IProductCmptPropertyExternalReference.MSGCODE_REFERENCED_PROPERTY_COULD_NOT_BE_FOUND,
+                validationMessageList.getFirstMessage(Message.ERROR).getCode());
+        assertEquals(1, validationMessageList.size());
+    }
+
+    @Test
+    public void shouldGenerateValidationErrorIfReferencedPropertyCannotBeFoundBecausePolicyCmptTypeIsNotFound()
+            throws CoreException {
+        IProductCmptPropertyReference reference = category.newProductCmptPropertyReference(attributeProperty);
+
+        productType.setPolicyCmptType("");
+        MessageList validationMessageList = reference.validate(reference.getIpsProject());
+
+        assertEquals(IProductCmptPropertyExternalReference.MSGCODE_REFERENCED_PROPERTY_COULD_NOT_BE_FOUND,
+                validationMessageList.getFirstMessage(Message.ERROR).getCode());
+        assertEquals(1, validationMessageList.size());
     }
 
     private void shouldBePersistedToXml(IProductCmptPropertyExternalReference reference,
@@ -165,6 +193,11 @@ public class ProductCmptPropertyExternalReferenceTest extends AbstractIpsPluginT
 
         assertEquals(property.getName(), loadedReference.getName());
         assertEquals(propertyType, loadedReference.getProductCmptPropertyType());
+    }
+
+    @Test
+    public void shouldReturnTrueForExternalReferenceQuery() {
+        assertTrue(attributeReference.isExternalReference());
     }
 
     @Override

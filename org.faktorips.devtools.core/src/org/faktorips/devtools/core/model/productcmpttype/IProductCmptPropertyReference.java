@@ -51,12 +51,18 @@ public interface IProductCmptPropertyReference extends IIpsObjectPart {
 
     /**
      * Returns the {@link IProductCmptProperty} identified by this reference or null if the
-     * referenced property cannot be found.
+     * referenced property is deleted or cannot be found.
      * 
      * @param ipsProject The project which IPS object path is used for the search
      * 
      * @throws CoreException If an error occurs during the search
      */
     public IProductCmptProperty findReferencedProductCmptProperty(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns whether this reference identifies an {@link IProductCmptProperty} that is not stored
+     * in the {@link IProductCmptType} this reference belongs to.
+     */
+    public boolean isExternalReference();
 
 }

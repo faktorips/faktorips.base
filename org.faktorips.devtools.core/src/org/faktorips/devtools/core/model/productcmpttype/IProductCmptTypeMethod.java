@@ -34,22 +34,22 @@ public interface IProductCmptTypeMethod extends IMethod, IProductCmptProperty {
      * Validation message code to indicate that the data type of a formula signature definition is
      * void or a none value data type.
      */
-    public final static String MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES = MSGCODE_PREFIX
+    public final static String MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES = IMethod.MSGCODE_PREFIX
             + "DatatypeMustBeAValueDatatypeForFormulaSignature"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a method is marked as formula signature but the
      * formula name is missing.
      */
-    public final static String MSGCODE_FORMULA_NAME_IS_EMPTY = MSGCODE_PREFIX + "FormulaNameIsEmpty"; //$NON-NLS-1$
+    public final static String MSGCODE_FORMULA_NAME_IS_EMPTY = IMethod.MSGCODE_PREFIX + "FormulaNameIsEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a method is marked as formula signature but the
      * formula name is missing.
      */
-    public final static String MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT = MSGCODE_PREFIX + "FormulaMustntBeAbstract"; //$NON-NLS-1$
+    public final static String MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT = IMethod.MSGCODE_PREFIX + "FormulaMustntBeAbstract"; //$NON-NLS-1$
 
-    public final static String MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY = MSGCODE_PREFIX
+    public final static String MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY = IMethod.MSGCODE_PREFIX
             + "NoFormulaWithSameNameInTypeHierarchy"; //$NON-NLS-1$
 
     /**

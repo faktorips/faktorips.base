@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
@@ -21,6 +22,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyExt
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -66,15 +69,17 @@ public final class ProductCmptPropertyExternalReference extends ProductCmptPrope
         IProductCmptProperty referencedProperty = null;
 
         IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);
-        switch (propertyType) {
-            case POLICY_CMPT_TYPE_ATTRIBUTE:
-                referencedProperty = policyCmptType.getPolicyCmptTypeAttribute(name);
-                break;
-            case VALIDATION_RULE:
-                referencedProperty = policyCmptType.getValidationRule(name);
-                break;
-            default:
-                break;
+        if (policyCmptType != null) {
+            switch (propertyType) {
+                case POLICY_CMPT_TYPE_ATTRIBUTE:
+                    referencedProperty = policyCmptType.getPolicyCmptTypeAttribute(name);
+                    break;
+                case VALIDATION_RULE:
+                    referencedProperty = policyCmptType.getValidationRule(name);
+                    break;
+                default:
+                    break;
+            }
         }
 
         return referencedProperty;
@@ -83,6 +88,24 @@ public final class ProductCmptPropertyExternalReference extends ProductCmptPrope
     @Override
     public boolean isReferencingProperty(IProductCmptProperty property) {
         return getName().equals(property.getName()) && propertyType == property.getProductCmptPropertyType();
+    }
+
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        IProductCmptProperty referencedProperty = findReferencedProductCmptProperty(ipsProject);
+        if (referencedProperty == null) {
+            String text = NLS.bind(Messages.ProductCmptPropertyExternalReference_msgReferencedPropertyCouldNotBeFound,
+                    getProductCmptPropertyType().getName(), getName());
+            Message msg = new Message(
+                    IProductCmptPropertyExternalReference.MSGCODE_REFERENCED_PROPERTY_COULD_NOT_BE_FOUND, text,
+                    Message.ERROR);
+            list.add(msg);
+        }
+    }
+
+    @Override
+    public boolean isExternalReference() {
+        return true;
     }
 
     @Override

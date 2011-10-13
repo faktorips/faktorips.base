@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model.type;
 
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -32,7 +33,7 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
  * @author Jan Ortmann
  * @author Stefan Widmaier
  */
-public interface IProductCmptProperty extends IDescribedElement, ILabeledElement {
+public interface IProductCmptProperty extends IIpsObjectPart, IDescribedElement, ILabeledElement {
 
     /**
      * Returns the type of the property. The different types of product definition properties are

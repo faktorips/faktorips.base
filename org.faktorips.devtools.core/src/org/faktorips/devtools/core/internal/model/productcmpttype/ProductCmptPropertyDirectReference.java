@@ -63,7 +63,15 @@ public final class ProductCmptPropertyDirectReference extends ProductCmptPropert
 
     @Override
     public IProductCmptProperty findReferencedProductCmptProperty(IIpsProject ipsProject) throws CoreException {
+        if (productCmptProperty.isDeleted()) {
+            productCmptProperty = null;
+        }
         return productCmptProperty;
+    }
+
+    @Override
+    public boolean isExternalReference() {
+        return false;
     }
 
     @Override

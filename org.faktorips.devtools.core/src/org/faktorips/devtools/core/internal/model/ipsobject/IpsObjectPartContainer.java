@@ -356,7 +356,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      * @param element the element to which the part elements should be added.
      */
-    private void partsToXml(Document doc, Element element) {
+    protected void partsToXml(Document doc, Element element) {
         IIpsElement[] children = getChildren();
         for (IIpsElement element2 : children) {
             IIpsObjectPart part = (IIpsObjectPart)element2;
