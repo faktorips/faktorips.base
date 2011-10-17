@@ -554,9 +554,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         if (findDefaultCategoryForFormulaSignatureDefinitions(ipsProject) == null) {
             String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForFormulaSignatureDefinitions, getName());
-            Message msg = new Message(MSGCODE_NO_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS, text, Message.ERROR,
-                    ProductCmptType.this);
-            list.add(msg);
+            list.newError(MSGCODE_NO_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS, text, ProductCmptType.this, null);
         }
     }
 
@@ -565,9 +563,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         if (findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject) == null) {
             String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForPolicyCmptTypeAttributes, getName());
-            Message msg = new Message(MSGCODE_NO_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, text, Message.ERROR,
-                    ProductCmptType.this);
-            list.add(msg);
+            list.newError(MSGCODE_NO_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this, null);
         }
     }
 
@@ -576,9 +572,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         if (findDefaultCategoryForProductCmptTypeAttributes(ipsProject) == null) {
             String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForProductCmptTypeAttributes, getName());
-            Message msg = new Message(MSGCODE_NO_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, text, Message.ERROR,
-                    ProductCmptType.this);
-            list.add(msg);
+            list.newError(MSGCODE_NO_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this, null);
         }
     }
 
@@ -587,9 +581,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         if (findDefaultCategoryForTableStructureUsages(ipsProject) == null) {
             String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForTableStructureUsages, getName());
-            Message msg = new Message(MSGCODE_NO_DEFAULT_FOR_TABLE_STRUCTURE_USAGES, text, Message.ERROR,
-                    ProductCmptType.this);
-            list.add(msg);
+            list.newError(MSGCODE_NO_DEFAULT_FOR_TABLE_STRUCTURE_USAGES, text, ProductCmptType.this, null);
         }
     }
 
@@ -598,9 +590,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         if (findDefaultCategoryForValidationRules(ipsProject) == null) {
             String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForValidationRules, getName());
-            Message msg = new Message(MSGCODE_NO_DEFAULT_FOR_VALIDATION_RULES, text, Message.ERROR,
-                    ProductCmptType.this);
-            list.add(msg);
+            list.newError(MSGCODE_NO_DEFAULT_FOR_VALIDATION_RULES, text, ProductCmptType.this, null);
         }
     }
 

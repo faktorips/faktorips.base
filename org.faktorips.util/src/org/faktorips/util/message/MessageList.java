@@ -66,6 +66,30 @@ public class MessageList implements Iterable<Message> {
     }
 
     /**
+     * Creates a new message with severity {@link Message#ERROR} with the given code, text and
+     * object properties and adds the message to the list.
+     */
+    public void newError(String code, String text, Object invalidObject, String invalidProperty) {
+        add(Message.newError(code, text, invalidObject, invalidProperty));
+    }
+
+    /**
+     * Creates a new message with severity {@link Message#WARNING} with the given code, text and
+     * object properties and adds the message to the list.
+     */
+    public void newWarning(String code, String text, Object invalidObject, String invalidProperty) {
+        add(Message.newWarning(code, text, invalidObject, invalidProperty));
+    }
+
+    /**
+     * Creates a new message with severity {@link Message#INFO} with the given code, text and object
+     * properties and adds the message to the list.
+     */
+    public void newInfo(String code, String text, Object invalidObject, String invalidProperty) {
+        add(Message.newInfo(code, text, invalidObject, invalidProperty));
+    }
+
+    /**
      * Adds the message to the list. <code>null</code> will be ignored as a parameter value.
      */
     public void add(Message msg) {

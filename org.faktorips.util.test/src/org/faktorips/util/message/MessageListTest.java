@@ -283,4 +283,37 @@ public class MessageListTest {
         assertEquals(0, result.size());
     }
 
+    @Test
+    public void testNewError() {
+        MessageList list = new MessageList();
+        list.newError("code", "text", this, "foo");
+
+        assertEquals("code", list.getFirstMessage(Message.ERROR).getCode());
+        assertEquals("text", list.getFirstMessage(Message.ERROR).getText());
+        assertEquals(new ObjectProperty(this, "foo"),
+                list.getFirstMessage(Message.ERROR).getInvalidObjectProperties()[0]);
+    }
+
+    @Test
+    public void testNewWarning() {
+        MessageList list = new MessageList();
+        list.newWarning("code", "text", this, "foo");
+
+        assertEquals("code", list.getFirstMessage(Message.WARNING).getCode());
+        assertEquals("text", list.getFirstMessage(Message.WARNING).getText());
+        assertEquals(new ObjectProperty(this, "foo"), list.getFirstMessage(Message.WARNING)
+                .getInvalidObjectProperties()[0]);
+    }
+
+    @Test
+    public void testNewInfo() {
+        MessageList list = new MessageList();
+        list.newInfo("code", "text", this, "foo");
+
+        assertEquals("code", list.getFirstMessage(Message.INFO).getCode());
+        assertEquals("text", list.getFirstMessage(Message.INFO).getText());
+        assertEquals(new ObjectProperty(this, "foo"),
+                list.getFirstMessage(Message.INFO).getInvalidObjectProperties()[0]);
+    }
+
 }

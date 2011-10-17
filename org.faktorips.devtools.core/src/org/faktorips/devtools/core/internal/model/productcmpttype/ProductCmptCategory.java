@@ -44,7 +44,6 @@ import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.runtime.internal.StringUtils;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -399,7 +398,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
 
     private boolean validateNameIsEmpty(MessageList list) {
         if (StringUtils.isEmpty(name)) {
-            addValidationError(list, MSGCODE_NAME_IS_EMPTY, Messages.ProductCmptCategory_msgNameIsEmpty, PROPERTY_NAME);
+            list.newError(MSGCODE_NAME_IS_EMPTY, Messages.ProductCmptCategory_msgNameIsEmpty, this, PROPERTY_NAME);
             return false;
         }
         return true;
@@ -416,7 +415,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
         if (!valid) {
             String text = NLS.bind(Messages.ProductCmptCategory_msgNameAlreadyUsedInTypeHierarchy, name,
                     getProductCmptType().getName());
-            addValidationError(list, MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY, text, PROPERTY_NAME);
+            list.newError(MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY, text, this, PROPERTY_NAME);
         }
 
         return valid;
@@ -450,7 +449,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
         if (inherited && !getProductCmptType().hasSupertype()) {
             String text = NLS.bind(Messages.ProductCmptCategory_msgInheritedButNoSupertype, name, getProductCmptType()
                     .getName());
-            addValidationError(list, MSGCODE_INHERITED_BUT_NO_SUPERTYPE, text, PROPERTY_INHERITED);
+            list.newError(MSGCODE_INHERITED_BUT_NO_SUPERTYPE, text, this, PROPERTY_INHERITED);
             return false;
         }
         return true;
@@ -463,8 +462,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
             IProductCmptType superProductCmptType = getProductCmptType().findSuperProductCmptType(ipsProject);
             if (superProductCmptType == null || superProductCmptType.findProductCmptCategory(name, ipsProject) == null) {
                 String text = NLS.bind(Messages.ProductCmptCategory_msgInheritedButNotFoundInSupertypeHierarchy, name);
-                addValidationError(list, MSGCODE_INHERITED_BUT_NOT_FOUND_IN_SUPERTYPE_HIERARCHY, text,
-                        PROPERTY_INHERITED);
+                list.newError(MSGCODE_INHERITED_BUT_NOT_FOUND_IN_SUPERTYPE_HIERARCHY, text, this, PROPERTY_INHERITED);
                 return false;
             }
         }
@@ -702,20 +700,6 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
         }
     }
 
-    // TODO AW 14-10-2011: Move to MessageList
-    private void addValidationError(MessageList list, String code, String text, String invalidProperty) {
-        addValidationMessage(list, code, text, invalidProperty, Message.ERROR);
-    }
-
-    // TODO AW 14-10-2011: Move to MessageList
-    private void addValidationWarning(MessageList list, String code, String text, String invalidProperty) {
-        addValidationMessage(list, code, text, invalidProperty, Message.WARNING);
-    }
-
-    private void addValidationMessage(MessageList list, String code, String text, String invalidProperty, int severity) {
-        list.add(new Message(code, text, severity, this, invalidProperty));
-    }
-
     private abstract class TemporaryReferenceManager {
 
         private final Map<String, IProductCmptPropertyReference> cachedTemporaryReferences = new HashMap<String, IProductCmptPropertyReference>();
@@ -813,7 +797,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
                 String invalidProperty) {
 
             if (duplicateDefaultFound) {
-                addValidationWarning(list, code, text, invalidProperty);
+                list.newWarning(code, text, ProductCmptCategory.this, invalidProperty);
             }
         }
 

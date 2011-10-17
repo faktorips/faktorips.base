@@ -82,6 +82,19 @@ public class Message {
     }
 
     /**
+     * Constructs and returns a new information message.
+     * 
+     * @param code The code that identifies the message.
+     * @param text The human readable text of the message.
+     * @param invalidObject The invalid object
+     * @param invalidProperty The name of the invalid property (which is a property of the
+     *            invalidObject)
+     */
+    public final static Message newInfo(String code, String text, Object invalidObject, String invalidProperty) {
+        return new Message(code, text, INFO, invalidObject, invalidProperty);
+    }
+
+    /**
      * Constructs and returns a new warning message.
      * 
      * @param code The code that identifies the message.
@@ -100,6 +113,20 @@ public class Message {
      */
     public final static Message newWarning(String code, String text, Object invalidObject) {
         return new Message(code, text, WARNING, new ObjectProperty[] { new ObjectProperty(invalidObject, null) });
+    }
+
+    /**
+     * Constructs and returns a new warning message.
+     * 
+     * @param code The code that identifies the message.
+     * @param text The human readable text of the message.
+     * @param invalidObject The invalid object
+     * @param invalidProperty The name of the invalid property (which is a property of the
+     *            invalidObject)
+     */
+    public final static Message newWarning(String code, String text, Object invalidObject, String invalidProperty) {
+        return new Message(code, text, WARNING, new ObjectProperty[] { new ObjectProperty(invalidObject,
+                invalidProperty) });
     }
 
     /**
