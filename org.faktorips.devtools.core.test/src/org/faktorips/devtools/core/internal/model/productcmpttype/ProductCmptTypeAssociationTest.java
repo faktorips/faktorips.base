@@ -68,6 +68,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
 
         IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "Policy");
         productType.setPolicyCmptType(policyType.getQualifiedName());
+        policyType.setProductCmptType(productType.getQualifiedName());
 
         IPolicyCmptTypeAssociation policyTypeAssociation = policyType.newPolicyCmptTypeAssociation();
         policyTypeAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -132,6 +133,35 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         produktToTarif.setMatchingAssociationSource(versPerson.getQualifiedName());
         produktToTarif.setMatchingAssociationName(versPersonToTarifvereinbarung.getName());
         assertEquals(versPersonToTarifvereinbarung, produktToTarif.findMatchingPolicyCmptTypeAssociation(ipsProject));
+    }
+
+    /**
+     * Test for FIPS-714
+     */
+    @Test
+    public void shouldNotFindMatchingAssociationForDifferingHierarchy() throws Exception {
+        PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "MyProduct");
+        IProductCmptType product = policy.findProductCmptType(ipsProject);
+        ProductCmptType subProduct = newProductCmptType(ipsProject, "SubProduct");
+        subProduct.setSupertype(product.getQualifiedName());
+        subProduct.setPolicyCmptType(policy.getQualifiedName());
+
+        PolicyCmptType cover = newPolicyAndProductCmptType(ipsProject, "Coverage", "MyCoverageType");
+        IProductCmptType coverType = cover.findProductCmptType(ipsProject);
+
+        IPolicyCmptTypeAssociation policyToCover = policy.newPolicyCmptTypeAssociation();
+        policyToCover.setTarget(cover.getQualifiedName());
+
+        IProductCmptTypeAssociation productToCoverType = product.newProductCmptTypeAssociation();
+        productToCoverType.setTarget(coverType.getQualifiedName());
+
+        assertEquals(policyToCover, productToCoverType.findDefaultPolicyCmptTypeAssociation(ipsProject));
+        assertEquals(productToCoverType, policyToCover.findDefaultMatchingProductCmptTypeAssociation(ipsProject));
+
+        IProductCmptTypeAssociation subProductToCoverType = subProduct.newProductCmptTypeAssociation();
+        subProductToCoverType.setTarget(coverType.getQualifiedName());
+
+        assertNull(subProductToCoverType.findDefaultPolicyCmptTypeAssociation(ipsProject));
     }
 
     /**
