@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
@@ -56,9 +58,19 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
 
     /*
      * Cannot use IpsObjectPartCollection as there are multiple implementations that need to be
-     * stored in one collection in order to preserve the insert ordering.
+     * stored in one collection in order to preserve the ordering of insertion.
      */
     private final List<IProductCmptPropertyReference> propertyReferences = new ArrayList<IProductCmptPropertyReference>();
+
+    private final TemporaryReferenceManager temporaryProductCmptTypeAttributes;
+
+    private final TemporaryReferenceManager temporaryPolicyCmptTypeAttributes;
+
+    private final TemporaryReferenceManager temporaryValidationRules;
+
+    private final TemporaryReferenceManager temporaryTableStructureUsages;
+
+    private final TemporaryReferenceManager temporaryFormulaSignatureDefinitions;
 
     private boolean inherited;
 
@@ -74,8 +86,75 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
 
     private Position position;
 
-    public ProductCmptCategory(IProductCmptType parent, String id) {
+    public ProductCmptCategory(final IProductCmptType parent, String id) {
         super(parent, id);
+
+        temporaryFormulaSignatureDefinitions = new TemporaryReferenceManager(false) {
+            @Override
+            protected boolean isDefaultCategory() {
+                return defaultForFormulaSignatureDefinitions;
+            }
+
+            @Override
+            protected List<? extends IProductCmptProperty> findTemporaryReferenceCandidateProperties(IIpsProject ipsProject) {
+                return parent.getFormulaSignatures();
+            }
+        };
+
+        temporaryPolicyCmptTypeAttributes = new TemporaryReferenceManager(true) {
+            @Override
+            protected boolean isDefaultCategory() {
+                return defaultForPolicyCmptTypeAttributes;
+            }
+
+            @Override
+            protected List<? extends IProductCmptProperty> findTemporaryReferenceCandidateProperties(IIpsProject ipsProject)
+                    throws CoreException {
+
+                IPolicyCmptType policyCmptType = parent.findPolicyCmptType(ipsProject);
+                return policyCmptType.getProductRelevantPolicyCmptTypeAttributes();
+            }
+        };
+
+        temporaryProductCmptTypeAttributes = new TemporaryReferenceManager(false) {
+            @Override
+            protected boolean isDefaultCategory() {
+                return defaultForProductCmptTypeAttributes;
+            }
+
+            @Override
+            protected List<? extends IProductCmptProperty> findTemporaryReferenceCandidateProperties(IIpsProject ipsProject) {
+                return parent.getProductCmptTypeAttributes();
+            }
+        };
+
+        temporaryTableStructureUsages = new TemporaryReferenceManager(false) {
+            @Override
+            protected boolean isDefaultCategory() {
+                return defaultForTableStructureUsages;
+            }
+
+            @Override
+            protected List<? extends IProductCmptProperty> findTemporaryReferenceCandidateProperties(IIpsProject ipsProject) {
+                return parent.getTableStructureUsages();
+            }
+        };
+
+        temporaryValidationRules = new TemporaryReferenceManager(true) {
+            @Override
+            protected boolean isDefaultCategory() {
+                return defaultForValidationRules;
+            }
+
+            @Override
+            protected List<? extends IProductCmptProperty> findTemporaryReferenceCandidateProperties(IIpsProject ipsProject)
+                    throws CoreException {
+
+                IPolicyCmptType policyCmptType = parent.findPolicyCmptType(ipsProject);
+                return policyCmptType.getConfigurableValidationRules();
+            }
+        };
+
         position = Position.LEFT;
     }
 
@@ -85,83 +164,57 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
     }
 
     @Override
-    public List<IProductCmptProperty> findReferencedProductCmptProperties(IIpsProject ipsProject) throws CoreException {
-        List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>(propertyReferences.size());
-        for (IProductCmptPropertyReference reference : propertyReferences) {
-            properties.add(reference.findReferencedProductCmptProperty(ipsProject));
-        }
-        return properties;
+    public List<IProductCmptPropertyReference> findProductCmptPropertyReferences(IIpsProject ipsProject)
+            throws CoreException {
+
+        List<IProductCmptPropertyReference> references = new ArrayList<IProductCmptPropertyReference>(
+                propertyReferences.size());
+        references.addAll(propertyReferences);
+        references.addAll(temporaryFormulaSignatureDefinitions.findTemporaryReferences(ipsProject));
+        references.addAll(temporaryPolicyCmptTypeAttributes.findTemporaryReferences(ipsProject));
+        references.addAll(temporaryProductCmptTypeAttributes.findTemporaryReferences(ipsProject));
+        references.addAll(temporaryTableStructureUsages.findTemporaryReferences(ipsProject));
+        references.addAll(temporaryValidationRules.findTemporaryReferences(ipsProject));
+        return references;
     }
 
     @Override
-    public boolean isReferencedProductCmptProperty(IProductCmptProperty property) {
-        for (IProductCmptPropertyReference reference : propertyReferences) {
-            if (reference.isReferencingProperty(property)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public List<IProductCmptProperty> findAllReferencedProductCmptProperties(IIpsProject ipsProject)
+    public List<IProductCmptPropertyReference> findAllProductCmptPropertyReferences(IIpsProject ipsProject)
             throws CoreException {
 
         if (!isInherited()) {
-            return findReferencedProductCmptProperties(ipsProject);
+            return findProductCmptPropertyReferences(ipsProject);
         }
 
-        // Collect all assigned properties from the supertype hierarchy
-        final Map<IProductCmptType, List<IProductCmptProperty>> typesToAssignedProperties = new LinkedHashMap<IProductCmptType, List<IProductCmptProperty>>();
+        // Collect all references from the supertype hierarchy
+        final Map<IProductCmptType, List<IProductCmptPropertyReference>> typesToReferences = new LinkedHashMap<IProductCmptType, List<IProductCmptPropertyReference>>();
         TypeHierarchyVisitor<IProductCmptType> visitor = new TypeHierarchyVisitor<IProductCmptType>(ipsProject) {
             @Override
             protected boolean visit(IProductCmptType currentType) throws CoreException {
                 IProductCmptCategory category = currentType.getProductCmptCategoryIncludeSupertypeCopies(getName());
-                typesToAssignedProperties.put(currentType, category.findReferencedProductCmptProperties(ipsProject));
+                typesToReferences.put(currentType, category.findProductCmptPropertyReferences(ipsProject));
                 return true;
             }
         };
         visitor.start(getProductCmptType());
-        // Sort so that properties that are farther up in the hierarchy are listed at the top
-        List<IProductCmptProperty> sortedAssignedProperties = new ArrayList<IProductCmptProperty>();
+
+        // Sort so that references that are farther up in the hierarchy are listed at the top
+        List<IProductCmptPropertyReference> sortedReferences = new ArrayList<IProductCmptPropertyReference>();
         for (int i = visitor.getVisited().size() - 1; i >= 0; i--) {
             IType type = visitor.getVisited().get(i);
-            sortedAssignedProperties.addAll(typesToAssignedProperties.get(type));
+            sortedReferences.addAll(typesToReferences.get(type));
         }
-        return Collections.unmodifiableList(sortedAssignedProperties);
+        return Collections.unmodifiableList(sortedReferences);
     }
 
     @Override
-    public boolean findIsReferencedProductCmptProperty(final IProductCmptProperty property, IIpsProject ipsProject)
-            throws CoreException {
-
-        if (!isInherited()) {
-            return isReferencedProductCmptProperty(property);
-        }
-
-        class ProductCmptPropertyFinder extends TypeHierarchyVisitor<IProductCmptType> {
-
-            public ProductCmptPropertyFinder(IIpsProject ipsProject) {
-                super(ipsProject);
-            }
-
-            private boolean referenced;
-
-            @Override
-            protected boolean visit(IProductCmptType currentType) throws CoreException {
-                IProductCmptCategory category = currentType.getProductCmptCategoryIncludeSupertypeCopies(getName());
-                if (category != null && category.isReferencedProductCmptProperty(property)) {
-                    referenced = true;
-                    return false;
-                }
+    public boolean isReferencedAndPersistedProductCmptProperty(IProductCmptProperty productCmptProperty) {
+        for (IProductCmptPropertyReference reference : propertyReferences) {
+            if (reference.isReferencingProperty(productCmptProperty)) {
                 return true;
             }
-
         }
-
-        ProductCmptPropertyFinder finder = new ProductCmptPropertyFinder(ipsProject);
-        finder.start(getProductCmptType());
-        return finder.referenced;
+        return false;
     }
 
     @Override
@@ -394,7 +447,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
     }
 
     private boolean validateInheritedButNoSupertype(MessageList list) {
-        if (!getProductCmptType().hasSupertype()) {
+        if (inherited && !getProductCmptType().hasSupertype()) {
             String text = NLS.bind(Messages.ProductCmptCategory_msgInheritedButNoSupertype, name, getProductCmptType()
                     .getName());
             addValidationError(list, MSGCODE_INHERITED_BUT_NO_SUPERTYPE, text, PROPERTY_INHERITED);
@@ -432,7 +485,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
             }
         };
         duplicateFinder.start(getProductCmptType());
-        duplicateFinder.addValidationWarningIfDuplicateFound(list,
+        duplicateFinder.addValidationMessageIfDuplicateFound(list,
                 MSGCODE_DUPLICATE_DEFAULTS_FOR_FORMULA_SIGNATURE_DEFINITIONS,
                 Messages.ProductCmptCategory_DuplicateDefaultsForFormulaSignatureDefinitions,
                 PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS);
@@ -453,7 +506,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
         };
         duplicateFinder.start(getProductCmptType());
         duplicateFinder
-                .addValidationWarningIfDuplicateFound(list, MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES,
+                .addValidationMessageIfDuplicateFound(list, MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES,
                         Messages.ProductCmptCategory_DuplicateDefaultsForValidationRules,
                         PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
     }
@@ -472,7 +525,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
             }
         };
         duplicateFinder.start(getProductCmptType());
-        duplicateFinder.addValidationWarningIfDuplicateFound(list,
+        duplicateFinder.addValidationMessageIfDuplicateFound(list,
                 MSGCODE_DUPLICATE_DEFAULTS_FOR_TABLE_STRUCTURE_USAGES,
                 Messages.ProductCmptCategory_DuplicateDefaultsForTableStructureUsages,
                 PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES);
@@ -492,7 +545,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
             }
         };
         duplicateFinder.start(getProductCmptType());
-        duplicateFinder.addValidationWarningIfDuplicateFound(list,
+        duplicateFinder.addValidationMessageIfDuplicateFound(list,
                 MSGCODE_DUPLICATE_DEFAULTS_FOR_POLICY_CMPT_TYPE_ATTRIBUTES,
                 Messages.ProductCmptCategory_DuplicateDefaultsForPolicyCmptTypeAttributes,
                 PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES);
@@ -512,7 +565,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
             }
         };
         duplicateFinder.start(getProductCmptType());
-        duplicateFinder.addValidationWarningIfDuplicateFound(list,
+        duplicateFinder.addValidationMessageIfDuplicateFound(list,
                 MSGCODE_DUPLICATE_DEFAULTS_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES,
                 Messages.ProductCmptCategory_DuplicateDefaultsForProductCmptTypeAttributes,
                 PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES);
@@ -623,6 +676,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
         return reference;
     }
 
+    // Overridden so obsolete direct references are not persisted to XML
     @Override
     protected void partsToXml(Document doc, Element element) {
         for (IIpsElement child : getChildren()) {
@@ -648,16 +702,88 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
         }
     }
 
+    // TODO AW 14-10-2011: Move to MessageList
     private void addValidationError(MessageList list, String code, String text, String invalidProperty) {
         addValidationMessage(list, code, text, invalidProperty, Message.ERROR);
     }
 
+    // TODO AW 14-10-2011: Move to MessageList
     private void addValidationWarning(MessageList list, String code, String text, String invalidProperty) {
         addValidationMessage(list, code, text, invalidProperty, Message.WARNING);
     }
 
     private void addValidationMessage(MessageList list, String code, String text, String invalidProperty, int severity) {
         list.add(new Message(code, text, severity, this, invalidProperty));
+    }
+
+    private abstract class TemporaryReferenceManager {
+
+        private final Map<String, IProductCmptPropertyReference> cachedTemporaryReferences = new HashMap<String, IProductCmptPropertyReference>();
+
+        private final boolean externalReference;
+
+        private TemporaryReferenceManager(boolean externalReference) {
+            this.externalReference = externalReference;
+        }
+
+        protected abstract boolean isDefaultCategory();
+
+        protected abstract List<? extends IProductCmptProperty> findTemporaryReferenceCandidateProperties(IIpsProject ipsProject)
+                throws CoreException;
+
+        private List<IProductCmptPropertyReference> findTemporaryReferences(IIpsProject ipsProject)
+                throws CoreException {
+
+            if (!isDefaultCategory()) {
+                return Collections.emptyList();
+            }
+
+            List<IProductCmptPropertyReference> temporaryReferences = new ArrayList<IProductCmptPropertyReference>();
+            Map<String, IProductCmptPropertyReference> foundTemporaryReferences = new HashMap<String, IProductCmptPropertyReference>();
+
+            // Check all candidates for temporary references
+            for (IProductCmptProperty property : findTemporaryReferenceCandidateProperties(ipsProject)) {
+                // Don't create a temporary reference for properties having a persistent reference
+                if (getProductCmptType().existsPersistedProductCmptPropertyReference(property)) {
+                    continue;
+                }
+                // Check cached temporary references, create new temporary reference if none exists
+                IProductCmptPropertyReference temporaryReference = cachedTemporaryReferences.get(property
+                        .getPropertyName());
+                if (temporaryReference == null) {
+                    temporaryReference = externalReference ? createTemporaryExternalReference(property)
+                            : createTemporaryDirectReference(property);
+                    cachedTemporaryReferences.put(property.getPropertyName(), temporaryReference);
+                }
+                temporaryReferences.add(temporaryReference);
+                foundTemporaryReferences.put(property.getPropertyName(), temporaryReference);
+            }
+
+            // Check for obsolete references in cache and remove them
+            for (String propertyName : cachedTemporaryReferences.keySet()) {
+                if (!foundTemporaryReferences.containsKey(propertyName)) {
+                    cachedTemporaryReferences.remove(propertyName);
+                }
+            }
+
+            return temporaryReferences;
+        }
+
+        private IProductCmptPropertyDirectReference createTemporaryDirectReference(IProductCmptProperty property) {
+            ProductCmptPropertyDirectReference temporaryDirectReference = new ProductCmptPropertyDirectReference(
+                    ProductCmptCategory.this, getNextPartId());
+            temporaryDirectReference.setProductCmptProperty(property);
+            return temporaryDirectReference;
+        }
+
+        private IProductCmptPropertyExternalReference createTemporaryExternalReference(IProductCmptProperty property) {
+            IProductCmptPropertyExternalReference temporaryExternalReference = new ProductCmptPropertyExternalReference(
+                    ProductCmptCategory.this, getNextPartId());
+            temporaryExternalReference.setName(property.getName());
+            temporaryExternalReference.setProductCmptPropertyType(property.getProductCmptPropertyType());
+            return temporaryExternalReference;
+        }
+
     }
 
     private abstract class DuplicateDefaultFinder extends TypeHierarchyVisitor<IProductCmptType> {
@@ -681,7 +807,7 @@ public final class ProductCmptCategory extends IpsObjectPart implements IProduct
 
         protected abstract boolean isDefault(IProductCmptCategory category);
 
-        private void addValidationWarningIfDuplicateFound(MessageList list,
+        private void addValidationMessageIfDuplicateFound(MessageList list,
                 String code,
                 String text,
                 String invalidProperty) {

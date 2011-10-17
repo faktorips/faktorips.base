@@ -313,6 +313,16 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
     }
 
     @Test
+    public void testGetProductRelevantPolicyCmptTypeAttributes() {
+        policyCmptType.newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute productRelevant = policyCmptType.newPolicyCmptTypeAttribute();
+        productRelevant.setProductRelevant(true);
+
+        assertEquals(productRelevant, policyCmptType.getProductRelevantPolicyCmptTypeAttributes().get(0));
+        assertEquals(1, policyCmptType.getProductRelevantPolicyCmptTypeAttributes().size());
+    }
+
+    @Test
     public void testGetAttribute() {
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
@@ -375,7 +385,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
     }
 
     @Test
-    public void testGetRules() {
+    public void testGetValidationRules() {
         assertEquals(0, policyCmptType.getValidationRules().size());
         IValidationRule r1 = policyCmptType.newRule();
         IValidationRule r2 = policyCmptType.newRule();
@@ -385,6 +395,17 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         // make sure a defensive copy is returned.
         policyCmptType.getValidationRules().clear();
         assertNotNull(policyCmptType.getValidationRules().get(0));
+    }
+
+    @Test
+    public void testGetConfigurableValidationRules() {
+        policyCmptType.setConfigurableByProductCmptType(true);
+        policyCmptType.newRule();
+        IValidationRule configurable = policyCmptType.newRule();
+        configurable.setConfigurableByProductComponent(true);
+
+        assertEquals(configurable, policyCmptType.getConfigurableValidationRules().get(0));
+        assertEquals(1, policyCmptType.getConfigurableValidationRules().size());
     }
 
     @Test

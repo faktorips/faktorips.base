@@ -197,6 +197,18 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
+    public java.util.List<IPolicyCmptTypeAttribute> getProductRelevantPolicyCmptTypeAttributes() {
+        List<IPolicyCmptTypeAttribute> productRelevantAttributes = new ArrayList<IPolicyCmptTypeAttribute>(
+                attributes.size());
+        for (IPolicyCmptTypeAttribute attribute : attributes) {
+            if (attribute.isProductRelevant()) {
+                productRelevantAttributes.add(attribute);
+            }
+        }
+        return productRelevantAttributes;
+    }
+
+    @Override
     public IPolicyCmptTypeAttribute getPolicyCmptTypeAttribute(String name) {
         return (IPolicyCmptTypeAttribute)getAttribute(name);
     }
@@ -237,6 +249,17 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     @Override
     public List<IValidationRule> getValidationRules() {
         return rules.asList();
+    }
+
+    @Override
+    public List<IValidationRule> getConfigurableValidationRules() {
+        List<IValidationRule> configurableRules = new ArrayList<IValidationRule>(rules.size());
+        for (IValidationRule rule : rules) {
+            if (rule.isConfigurableByProductComponent()) {
+                configurableRules.add(rule);
+            }
+        }
+        return configurableRules;
     }
 
     @Override
@@ -445,8 +468,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
         if (!isConfigurableByProductCmptType()) {
             /*
-             * Adding dependency for explicitly specified matching associations for differing
-             * policy and product structure. @see FIPS-563
+             * Adding dependency for explicitly specified matching associations for differing policy
+             * and product structure. @see FIPS-563
              */
             for (IPolicyCmptTypeAssociation association : getPolicyCmptTypeAssociations()) {
                 if (association.isConstrainedByProductStructure(getIpsProject())) {

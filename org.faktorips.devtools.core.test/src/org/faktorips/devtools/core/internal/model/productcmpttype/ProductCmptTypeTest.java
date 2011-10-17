@@ -1141,7 +1141,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
     @Test
     public void testFindOverrideMethodCandidates() throws Exception {
-
         IProductCmptType aType = newProductCmptType(ipsProject, "AType");
 
         IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();
@@ -1361,6 +1360,17 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         assertTrue(lastEvent.isAffected(category1));
         assertTrue(lastEvent.isAffected(category2));
         assertTrue(lastEvent.isAffected(category3));
+    }
+
+    @Test
+    public void testExistsPersistedProductCmptPropertyReference() {
+        IProductCmptCategory category = productCmptType.newProductCmptCategory();
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
+
+        assertFalse(productCmptType.existsPersistedProductCmptPropertyReference(attribute));
+
+        category.newProductCmptPropertyReference(attribute);
+        assertTrue(productCmptType.existsPersistedProductCmptPropertyReference(attribute));
     }
 
 }

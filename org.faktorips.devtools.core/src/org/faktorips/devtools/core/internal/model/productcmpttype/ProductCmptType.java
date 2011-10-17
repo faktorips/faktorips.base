@@ -765,6 +765,16 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
+    public boolean existsPersistedProductCmptPropertyReference(IProductCmptProperty property) {
+        for (IProductCmptCategory category : categories) {
+            if (category.isReferencedAndPersistedProductCmptProperty(property)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public IProductCmptCategory findProductCmptCategory(final String name, IIpsProject ipsProject) throws CoreException {
         class ProductCmptCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {
 

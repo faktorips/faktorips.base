@@ -40,7 +40,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
@@ -58,21 +57,9 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
 
     private IProductCmptType productType;
 
-    private IProductCmptType superProductType;
-
-    private IProductCmptType superSuperProductType;
-
     private IProductCmptTypeAttribute property;
 
-    private IProductCmptTypeAttribute superProperty;
-
-    private IProductCmptTypeAttribute superSuperProperty;
-
     private IProductCmptCategory category;
-
-    private IProductCmptCategory superCategory;
-
-    private IProductCmptCategory superSuperCategory;
 
     @Override
     @Before
@@ -83,38 +70,15 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
         ipsProject = newIpsProject();
         ipsProject.getIpsModel().addChangeListener(this);
 
-        createTypeHierarchy();
+        IPolicyCmptType policyType = newPolicyAndProductCmptType(ipsProject, "PolicyType", "ProductType");
+        productType = policyType.findProductCmptType(ipsProject);
+        category = productType.newProductCmptCategory(CATEGORY_NAME);
+        property = createProductCmptTypeAttributeProperty(productType, "property");
     }
 
     @Override
     protected void tearDownExtension() throws Exception {
         ipsProject.getIpsModel().removeChangeListener(this);
-    }
-
-    private void createTypeHierarchy() throws CoreException {
-        IPolicyCmptType superSuperPolicyType = newPolicyAndProductCmptType(ipsProject, "SuperSuperPolicyType",
-                "SuperSuperProductType");
-        IPolicyCmptType superPolicyType = newPolicyAndProductCmptType(ipsProject, "SuperPolicyType", "SuperProductType");
-        IPolicyCmptType policyType = newPolicyAndProductCmptType(ipsProject, "PolicyType", "ProductType");
-
-        superSuperProductType = superSuperPolicyType.findProductCmptType(ipsProject);
-        superProductType = superPolicyType.findProductCmptType(ipsProject);
-        productType = policyType.findProductCmptType(ipsProject);
-
-        superPolicyType.setSupertype(superSuperPolicyType.getQualifiedName());
-        policyType.setSupertype(superPolicyType.getQualifiedName());
-        superProductType.setSupertype(superSuperProductType.getQualifiedName());
-        productType.setSupertype(superProductType.getQualifiedName());
-
-        superSuperCategory = superSuperProductType.newProductCmptCategory(CATEGORY_NAME);
-        superCategory = superProductType.newProductCmptCategory(CATEGORY_NAME);
-        superCategory.setInherited(true);
-        category = productType.newProductCmptCategory(CATEGORY_NAME);
-        category.setInherited(true);
-
-        superSuperProperty = createProductCmptTypeAttributeProperty(superSuperProductType, "superSuperProperty");
-        superProperty = createProductCmptTypeAttributeProperty(superProductType, "superProperty");
-        property = createProductCmptTypeAttributeProperty(productType, "property");
     }
 
     @Test
@@ -149,7 +113,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
                 "attributeProperty");
 
         assertNotNull(category.newProductCmptPropertyReference(attributeProperty));
-        assertTrue(category.isReferencedProductCmptProperty(attributeProperty));
+        assertTrue(category.isReferencedAndPersistedProductCmptProperty(attributeProperty));
     }
 
     @Test
@@ -158,15 +122,15 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
                 "attributeProperty");
 
         assertNotNull(category.newProductCmptPropertyReference(attributeProperty));
-        assertTrue(category.isReferencedProductCmptProperty(attributeProperty));
+        assertTrue(category.isReferencedAndPersistedProductCmptProperty(attributeProperty));
     }
 
     @Test
     public void shouldAllowToReferenceProductCmptTypeMethod() {
-        IProductCmptTypeMethod methodProperty = createProductCmptTypeMethodProperty(productType, "methodProperty");
+        IProductCmptTypeMethod methodProperty = createFormulaSignatureDefinitionProperty(productType, "methodProperty");
 
         assertNotNull(category.newProductCmptPropertyReference(methodProperty));
-        assertTrue(category.isReferencedProductCmptProperty(methodProperty));
+        assertTrue(category.isReferencedAndPersistedProductCmptProperty(methodProperty));
     }
 
     @Test
@@ -175,7 +139,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
                 "tableStructureProperty");
 
         assertNotNull(category.newProductCmptPropertyReference(tableStructureProperty));
-        assertTrue(category.isReferencedProductCmptProperty(tableStructureProperty));
+        assertTrue(category.isReferencedAndPersistedProductCmptProperty(tableStructureProperty));
     }
 
     @Test
@@ -183,12 +147,17 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
         IValidationRule validationRuleProperty = createValidationRuleProperty(productType, "validationRuleProperty");
 
         assertNotNull(category.newProductCmptPropertyReference(validationRuleProperty));
-        assertTrue(category.isReferencedProductCmptProperty(validationRuleProperty));
+        assertTrue(category.isReferencedAndPersistedProductCmptProperty(validationRuleProperty));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenReferencingProductCmptTypeAttributeFromForeignProductCmptType() {
-        category.newProductCmptPropertyReference(superProperty);
+    public void shouldThrowIllegalArgumentExceptionWhenReferencingProductCmptTypeAttributeFromForeignProductCmptType()
+            throws CoreException {
+
+        IProductCmptType otherProductCmptType = newProductCmptType(ipsProject, "OtherProductCmptType");
+        IProductCmptTypeAttribute foreignAttributeProperty = createProductCmptTypeAttributeProperty(
+                otherProductCmptType, "foreignAttribute");
+        category.newProductCmptPropertyReference(foreignAttributeProperty);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -202,9 +171,13 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenReferencingProductCmptTypeMethodFromForeignProductCmptType() {
-        IProductCmptTypeMethod methodProperty = createProductCmptTypeMethodProperty(superProductType, "methodProperty");
-        category.newProductCmptPropertyReference(methodProperty);
+    public void shouldThrowIllegalArgumentExceptionWhenReferencingProductCmptTypeMethodFromForeignProductCmptType()
+            throws CoreException {
+
+        IProductCmptType otherProductCmptType = newProductCmptType(ipsProject, "OtherProductCmptType");
+        IProductCmptTypeMethod foreignMethodProperty = createFormulaSignatureDefinitionProperty(otherProductCmptType,
+                "foreignMethod");
+        category.newProductCmptPropertyReference(foreignMethodProperty);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -212,15 +185,17 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
             throws CoreException {
 
         IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "ForeignPolicy");
-        IValidationRule validationRule = policyCmptType.newRule();
-        category.newProductCmptPropertyReference(validationRule);
+        IValidationRule foreignValidationRule = policyCmptType.newRule();
+        category.newProductCmptPropertyReference(foreignValidationRule);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentExceptionWhenReferencingTableStructureUsageFromForeignProductCmptType() {
-        ITableStructureUsage tableStructureProperty = createTableStructureUsageProperty(superProductType,
-                "tableStructureProperty");
-        category.newProductCmptPropertyReference(tableStructureProperty);
+    public void shouldThrowIllegalArgumentExceptionWhenReferencingTableStructureUsageFromForeignProductCmptType()
+            throws CoreException {
+
+        IProductCmptType otherProductCmptType = newProductCmptType(ipsProject, "OtherProductCmptType");
+        ITableStructureUsage foreignTsuProperty = createTableStructureUsageProperty(otherProductCmptType, "foreignTsu");
+        category.newProductCmptPropertyReference(foreignTsuProperty);
     }
 
     @Test
@@ -229,7 +204,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
         boolean removed = category.deleteProductCmptPropertyReference(property);
 
         assertTrue(removed);
-        assertFalse(category.isReferencedProductCmptProperty(property));
+        assertFalse(category.isReferencedAndPersistedProductCmptProperty(property));
     }
 
     @Test
@@ -239,7 +214,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
 
         category.deleteProductCmptPropertyReference(property);
 
-        assertTrue(category.isReferencedProductCmptProperty(property));
+        assertTrue(category.isReferencedAndPersistedProductCmptProperty(property));
         assertEquals(1, category.getNumberOfProductCmptPropertyReferences());
     }
 
@@ -260,14 +235,14 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
 
     @Test
     public void shouldAllowToSetInheritedProperty() {
-        category.setInherited(false);
-        assertFalse(category.isInherited());
+        category.setInherited(true);
+        assertTrue(category.isInherited());
         assertPropertyChangedEvent();
 
         resetContentChangedEvent();
 
-        category.setInherited(true);
-        assertTrue(category.isInherited());
+        category.setInherited(false);
+        assertFalse(category.isInherited());
         assertPropertyChangedEvent();
     }
 
@@ -357,79 +332,264 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
     }
 
     @Test
-    public void shouldAllowToRetrieveAllReferencedProductCmptProperties() throws CoreException {
-        IProductCmptTypeAttribute property2 = createProductCmptTypeAttributeProperty(productType, "property2");
-        category.newProductCmptPropertyReference(property);
-        category.newProductCmptPropertyReference(property2);
+    public void shouldCreateTemporaryReferencesForNotAssignedProductCmptTypeAttributesIfIsCorrespondingDefaultCategory()
+            throws CoreException {
 
-        List<IProductCmptProperty> assignedProperties = category.findReferencedProductCmptProperties(ipsProject);
-        assertEquals(property, assignedProperties.get(0));
-        assertEquals(property2, assignedProperties.get(1));
-        assertEquals(2, assignedProperties.size());
+        category.newProductCmptPropertyReference(property);
+
+        IProductCmptCategory productAttributeCategory = createDefaultCategoryForProductCmptTypeAttributes();
+        IProductCmptTypeAttribute attribute1 = createProductCmptTypeAttributeProperty(productType, "attribute1");
+        IProductCmptTypeAttribute attribute2 = createProductCmptTypeAttributeProperty(productType, "attribute2");
+        IProductCmptTypeAttribute attribute3 = createProductCmptTypeAttributeProperty(productType, "attribute3");
+
+        List<IProductCmptPropertyReference> references = productAttributeCategory
+                .findProductCmptPropertyReferences(ipsProject);
+        assertEquals(attribute1, references.get(0).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(attribute2, references.get(1).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(attribute3, references.get(2).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(3, references.size());
     }
 
     @Test
-    public void shouldAllowToRetrieveAllReferencedProductCmptPropertiesIncludingTheSupertypeHierarchy()
+    public void shouldNotCreateNewTemporaryReferenceObjectForUnchangedProductCmptTypeAttributes() throws CoreException {
+        IProductCmptCategory productAttributeCategory = createDefaultCategoryForProductCmptTypeAttributes();
+        createProductCmptTypeAttributeProperty(productType, "attribute");
+
+        List<IProductCmptPropertyReference> references1 = productAttributeCategory
+                .findProductCmptPropertyReferences(ipsProject);
+        List<IProductCmptPropertyReference> references2 = productAttributeCategory
+                .findProductCmptPropertyReferences(ipsProject);
+        assertEquals(references1, references2);
+    }
+
+    @Test
+    public void shouldCreateTemporaryReferencesForNotAssignedFormulaSignatureDefinitionsIfIsCorrespondingDefaultCategory()
             throws CoreException {
 
-        superSuperCategory.newProductCmptPropertyReference(superSuperProperty);
-        superCategory.newProductCmptPropertyReference(superProperty);
-        category.newProductCmptPropertyReference(property);
+        IProductCmptTypeMethod formulaProperty = createFormulaSignatureDefinitionProperty(productType,
+                "formulaProperty");
+        category.newProductCmptPropertyReference(formulaProperty);
 
-        List<IProductCmptProperty> allProperties = category.findAllReferencedProductCmptProperties(ipsProject);
-        assertEquals(superSuperProperty, allProperties.get(0));
-        assertEquals(superProperty, allProperties.get(1));
-        assertEquals(property, allProperties.get(2));
-        assertEquals(3, allProperties.size());
+        IProductCmptCategory formulaCategory = createDefaultCategoryForFormulaSignatureDefinitions();
+        IProductCmptTypeMethod formula1 = createFormulaSignatureDefinitionProperty(productType, "formula1");
+        IProductCmptTypeMethod formula2 = createFormulaSignatureDefinitionProperty(productType, "formula2");
+        IProductCmptTypeMethod formula3 = createFormulaSignatureDefinitionProperty(productType, "formula3");
+
+        List<IProductCmptPropertyReference> references = formulaCategory.findProductCmptPropertyReferences(ipsProject);
+        assertEquals(formula1, references.get(0).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(formula2, references.get(1).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(formula3, references.get(2).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(3, references.size());
+    }
+
+    @Test
+    public void shouldNotCreateTemporaryReferencesForNotAssignedProductCmptTypeMethodsThatAreNoFormulaSignatureDefinitions()
+            throws CoreException {
+
+        IProductCmptTypeMethod notAFormulaMethod = createFormulaSignatureDefinitionProperty(productType, "notAFormula");
+        notAFormulaMethod.setFormulaSignatureDefinition(false);
+        IProductCmptCategory formulaCategory = createDefaultCategoryForFormulaSignatureDefinitions();
+
+        List<IProductCmptPropertyReference> references = formulaCategory.findProductCmptPropertyReferences(ipsProject);
+        assertTrue(references.isEmpty());
+    }
+
+    @Test
+    public void shouldNotCreateNewTemporaryReferenceObjectForUnchangedFormulaSignatureDefinitions()
+            throws CoreException {
+
+        IProductCmptCategory formulaCategory = createDefaultCategoryForFormulaSignatureDefinitions();
+        createFormulaSignatureDefinitionProperty(productType, "formula");
+
+        List<IProductCmptPropertyReference> references1 = formulaCategory.findProductCmptPropertyReferences(ipsProject);
+        List<IProductCmptPropertyReference> references2 = formulaCategory.findProductCmptPropertyReferences(ipsProject);
+        assertEquals(references1, references2);
+    }
+
+    @Test
+    public void shouldCreateTemporaryReferencesForNotAssignedTableStructureUsagesIfIsCorrespondingDefaultCategory()
+            throws CoreException {
+
+        ITableStructureUsage tsuProperty = createTableStructureUsageProperty(productType, "tsuProperty");
+        category.newProductCmptPropertyReference(tsuProperty);
+
+        IProductCmptCategory tsuCategory = createDefaultCategoryForTableStructureUsages();
+        ITableStructureUsage tsu1 = createTableStructureUsageProperty(productType, "tsu1");
+        ITableStructureUsage tsu2 = createTableStructureUsageProperty(productType, "tsu2");
+        ITableStructureUsage tsu3 = createTableStructureUsageProperty(productType, "tsu3");
+
+        List<IProductCmptPropertyReference> references = tsuCategory.findProductCmptPropertyReferences(ipsProject);
+        assertEquals(tsu1, references.get(0).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(tsu2, references.get(1).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(tsu3, references.get(2).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(3, references.size());
+    }
+
+    @Test
+    public void shouldNotCreateNewTemporaryReferenceObjectForUnchangedTableStructureUsages() throws CoreException {
+        IProductCmptCategory tsuCategory = createDefaultCategoryForTableStructureUsages();
+        createTableStructureUsageProperty(productType, "tsu");
+
+        List<IProductCmptPropertyReference> references1 = tsuCategory.findProductCmptPropertyReferences(ipsProject);
+        List<IProductCmptPropertyReference> references2 = tsuCategory.findProductCmptPropertyReferences(ipsProject);
+        assertEquals(references1, references2);
+    }
+
+    @Test
+    public void shouldCreateTemporaryReferencesForNotAssignedPolicyCmptTypeAttributesIfIsCorrespondingDefaultCategory()
+            throws CoreException {
+
+        IPolicyCmptTypeAttribute attributeProperty = createPolicyCmptTypeAttributeProperty(productType,
+                "attributeProperty");
+        category.newProductCmptPropertyReference(attributeProperty);
+
+        IProductCmptCategory policyAttributeCategory = createDefaultCategoryForPolicyCmptTypeAttributes();
+        IPolicyCmptTypeAttribute attribute1 = createPolicyCmptTypeAttributeProperty(productType, "attribute1");
+        IPolicyCmptTypeAttribute attribute2 = createPolicyCmptTypeAttributeProperty(productType, "attribute2");
+        IPolicyCmptTypeAttribute attribute3 = createPolicyCmptTypeAttributeProperty(productType, "attribute3");
+
+        List<IProductCmptPropertyReference> references = policyAttributeCategory
+                .findProductCmptPropertyReferences(ipsProject);
+        assertEquals(attribute1, references.get(0).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(attribute2, references.get(1).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(attribute3, references.get(2).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(3, references.size());
+    }
+
+    @Test
+    public void shouldNotCreateTemporaryReferencesForNotAssignedPolicyCmptTypeAttributesThatAreNotProductRelevant()
+            throws CoreException {
+
+        IPolicyCmptTypeAttribute notAProductRelevantPolicyAttribute = createPolicyCmptTypeAttributeProperty(
+                productType, "notAProductRelevantPolicyAttribute");
+        notAProductRelevantPolicyAttribute.setProductRelevant(false);
+        IProductCmptCategory policyAttributeCategory = createDefaultCategoryForPolicyCmptTypeAttributes();
+
+        List<IProductCmptPropertyReference> references = policyAttributeCategory
+                .findProductCmptPropertyReferences(ipsProject);
+        assertTrue(references.isEmpty());
+    }
+
+    @Test
+    public void shouldNotCreateNewTemporaryReferenceObjectForUnchangedPolicyCmptTypeAttributes() throws CoreException {
+        IProductCmptCategory policyAttributeCategory = createDefaultCategoryForPolicyCmptTypeAttributes();
+        createPolicyCmptTypeAttributeProperty(productType, "attribute");
+
+        List<IProductCmptPropertyReference> references1 = policyAttributeCategory
+                .findProductCmptPropertyReferences(ipsProject);
+        List<IProductCmptPropertyReference> references2 = policyAttributeCategory
+                .findProductCmptPropertyReferences(ipsProject);
+        assertEquals(references1, references2);
+    }
+
+    @Test
+    public void shouldCreateTemporaryReferencesForNotAssignedValidationRulesIfIsCorrespondingDefaultCategory()
+            throws CoreException {
+
+        IValidationRule ruleProperty = createValidationRuleProperty(productType, "ruleProperty");
+        category.newProductCmptPropertyReference(ruleProperty);
+
+        IProductCmptCategory ruleCategory = createDefaultCategoryForValidationRules();
+        IValidationRule rule1 = createValidationRuleProperty(productType, "rule1");
+        IValidationRule rule2 = createValidationRuleProperty(productType, "rule2");
+        IValidationRule rule3 = createValidationRuleProperty(productType, "rule3");
+
+        List<IProductCmptPropertyReference> references = ruleCategory.findProductCmptPropertyReferences(ipsProject);
+        assertEquals(rule1, references.get(0).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(rule2, references.get(1).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(rule3, references.get(2).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(3, references.size());
+    }
+
+    @Test
+    public void shouldNotCreateTemporaryReferencesForNotAssignedValidationRulesThatAreNotProductRelevant()
+            throws CoreException {
+
+        IValidationRule notAProductRelevantValidationRule = createValidationRuleProperty(productType,
+                "notAProductRelevantValidationRule");
+        notAProductRelevantValidationRule.setConfigurableByProductComponent(false);
+        IProductCmptCategory ruleCategory = createDefaultCategoryForValidationRules();
+
+        List<IProductCmptPropertyReference> references = ruleCategory.findProductCmptPropertyReferences(ipsProject);
+        assertTrue(references.isEmpty());
+    }
+
+    @Test
+    public void shouldNotCreateNewTemporaryReferenceObjectForUnchangedValidationRules() throws CoreException {
+        IProductCmptCategory ruleCategory = createDefaultCategoryForValidationRules();
+        createValidationRuleProperty(productType, "rule");
+
+        List<IProductCmptPropertyReference> references1 = ruleCategory.findProductCmptPropertyReferences(ipsProject);
+        List<IProductCmptPropertyReference> references2 = ruleCategory.findProductCmptPropertyReferences(ipsProject);
+        assertEquals(references1, references2);
+    }
+
+    @Test
+    public void shouldRetrieveProductCmptPropertyReferences() throws CoreException {
+        IProductCmptTypeAttribute property2 = createProductCmptTypeAttributeProperty(productType, "property2");
+        IProductCmptPropertyReference reference1 = category.newProductCmptPropertyReference(property);
+        IProductCmptPropertyReference reference2 = category.newProductCmptPropertyReference(property2);
+
+        List<IProductCmptPropertyReference> references = category.findProductCmptPropertyReferences(ipsProject);
+        assertEquals(reference1, references.get(0));
+        assertEquals(reference2, references.get(1));
+        assertEquals(2, references.size());
+    }
+
+    @Test
+    public void shouldRetrieveProductCmptPropertyReferencesIncludingTheSupertypeHierarchy() throws CoreException {
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
+        IProductCmptType superSuperProductType = createSuperProductType(superProductType, "SuperSuper");
+
+        IProductCmptCategory superSuperCategory = superSuperProductType.newProductCmptCategory(CATEGORY_NAME);
+        IProductCmptCategory superCategory = superProductType.newProductCmptCategory(CATEGORY_NAME);
+        superSuperCategory.setInherited(true);
+        superCategory.setInherited(true);
+        category.setInherited(true);
+
+        IProductCmptTypeAttribute superSuperProperty = superSuperProductType
+                .newProductCmptTypeAttribute("superSuperProperty");
+        IProductCmptTypeAttribute superProperty = superProductType.newProductCmptTypeAttribute("superProperty");
+
+        IProductCmptPropertyReference superSuperReference = superSuperCategory
+                .newProductCmptPropertyReference(superSuperProperty);
+        IProductCmptPropertyReference superReference = superCategory.newProductCmptPropertyReference(superProperty);
+        IProductCmptPropertyReference reference = category.newProductCmptPropertyReference(property);
+
+        List<IProductCmptPropertyReference> allReferences = category.findAllProductCmptPropertyReferences(ipsProject);
+        assertEquals(superSuperReference, allReferences.get(0));
+        assertEquals(superReference, allReferences.get(1));
+        assertEquals(reference, allReferences.get(2));
+        assertEquals(3, allReferences.size());
     }
 
     @Test
     public void shouldNotRetrieveReferencedProductCmptPropertiesFromSupertypeHierarchyIfNotInherited()
             throws CoreException {
 
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
+        IProductCmptCategory superCategory = superProductType.newProductCmptCategory(CATEGORY_NAME);
+        IProductCmptTypeAttribute superProperty = superProductType.newProductCmptTypeAttribute("superProperty");
+
         superCategory.newProductCmptPropertyReference(superProperty);
-        category.newProductCmptPropertyReference(property);
+        IProductCmptPropertyReference reference = category.newProductCmptPropertyReference(property);
 
         category.setInherited(false);
 
-        List<IProductCmptProperty> allProperties = category.findAllReferencedProductCmptProperties(ipsProject);
-        assertEquals(property, allProperties.get(0));
-        assertEquals(1, allProperties.size());
+        List<IProductCmptPropertyReference> allReferences = category.findAllProductCmptPropertyReferences(ipsProject);
+        assertEquals(reference, allReferences.get(0));
+        assertEquals(1, allReferences.size());
     }
 
     @Test
-    public void shouldInformAboutPropertyReference() {
-        IProductCmptProperty property2 = productType.newProductCmptTypeAttribute();
-        category.newProductCmptPropertyReference(property);
-        superCategory.newProductCmptPropertyReference(superProperty);
-
-        assertTrue(category.isReferencedProductCmptProperty(property));
-        assertFalse(category.isReferencedProductCmptProperty(property2));
-        assertFalse(category.isReferencedProductCmptProperty(superProperty));
-    }
-
-    @Test
-    public void shouldInformAboutPropertyReferencesMadeInSupertypeHierarchy() throws CoreException {
-        IProductCmptProperty superSuperPropertyNotAssigned = createProductCmptTypeAttributeProperty(
-                superSuperProductType, "superSuperPropertyNotAssigned");
-
-        superSuperCategory.newProductCmptPropertyReference(superSuperProperty);
-        superCategory.newProductCmptPropertyReference(superProperty);
-        category.newProductCmptPropertyReference(property);
-
-        assertTrue(category.findIsReferencedProductCmptProperty(superSuperProperty, ipsProject));
-        assertTrue(category.findIsReferencedProductCmptProperty(superProperty, ipsProject));
-        assertTrue(category.findIsReferencedProductCmptProperty(property, ipsProject));
-        assertFalse(category.findIsReferencedProductCmptProperty(superSuperPropertyNotAssigned, ipsProject));
-    }
-
-    @Test
-    public void shouldNotInformAboutPropertyReferencesMadeInSupertypeHierarchyIfNotInherited() throws CoreException {
-        superCategory.newProductCmptPropertyReference(superProperty);
-        category.newProductCmptPropertyReference(property);
+    public void shouldReturnWhetherAGivenPropertyIsReferencedByAndPersistedInThisCategory() {
+        IProductCmptTypeAttribute attribute = createProductCmptTypeAttributeProperty(productType, "attributeProperty");
         category.setInherited(false);
+        category.setDefaultForProductCmptTypeAttributes(true);
 
-        assertFalse(category.findIsReferencedProductCmptProperty(superProperty, ipsProject));
+        assertFalse(category.isReferencedAndPersistedProductCmptProperty(attribute));
+        category.newProductCmptPropertyReference(attribute);
+        assertTrue(category.isReferencedAndPersistedProductCmptProperty(attribute));
     }
 
     @Test
@@ -444,6 +604,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
 
     @Test
     public void shouldBePersistedToXml() throws ParserConfigurationException, CoreException {
+        property.delete();
+
         category.setDefaultForFormulaSignatureDefinitions(true);
         category.setDefaultForPolicyCmptTypeAttributes(true);
         category.setDefaultForProductCmptTypeAttributes(true);
@@ -454,7 +616,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
         IProductCmptTypeAttribute productAttribute = createProductCmptTypeAttributeProperty(productType,
                 "productAttribute");
         IPolicyCmptTypeAttribute policyAttribute = createPolicyCmptTypeAttributeProperty(productType, "policyAttribute");
-        IProductCmptTypeMethod formula = createProductCmptTypeMethodProperty(productType, "formula");
+        IProductCmptTypeMethod formula = createFormulaSignatureDefinitionProperty(productType, "formula");
         IValidationRule validationRule = createValidationRuleProperty(productType, "validationRule");
         ITableStructureUsage structureUsage = createTableStructureUsageProperty(productType, "tableStructureUsaage");
         category.newProductCmptPropertyReference(productAttribute);
@@ -475,13 +637,13 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
         assertTrue(loadedCategory.isDefaultForValidationRules());
         assertEquals(Position.RIGHT, loadedCategory.getPosition());
 
-        List<IProductCmptProperty> assignedProperties = loadedCategory.findReferencedProductCmptProperties(ipsProject);
-        assertEquals(productAttribute, assignedProperties.get(0));
-        assertEquals(policyAttribute, assignedProperties.get(1));
-        assertEquals(formula, assignedProperties.get(2));
-        assertEquals(validationRule, assignedProperties.get(3));
-        assertEquals(structureUsage, assignedProperties.get(4));
-        assertEquals(5, assignedProperties.size());
+        List<IProductCmptPropertyReference> references = loadedCategory.findProductCmptPropertyReferences(ipsProject);
+        assertEquals(productAttribute, references.get(0).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(policyAttribute, references.get(1).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(formula, references.get(2).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(validationRule, references.get(3).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(structureUsage, references.get(4).findReferencedProductCmptProperty(ipsProject));
+        assertEquals(5, references.size());
     }
 
     @Test
@@ -526,10 +688,10 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
         IProductCmptPropertyReference reference3 = category.newProductCmptPropertyReference(property3);
 
         category.moveProductCmptPropertyReferences(new int[] { 1, 2 }, true);
-        List<IProductCmptProperty> references = category.findReferencedProductCmptProperties(ipsProject);
-        assertEquals(property2, references.get(0));
-        assertEquals(property3, references.get(1));
-        assertEquals(property1, references.get(2));
+        List<IProductCmptPropertyReference> references = category.findProductCmptPropertyReferences(ipsProject);
+        assertEquals(reference2, references.get(0));
+        assertEquals(reference3, references.get(1));
+        assertEquals(reference1, references.get(2));
 
         assertTrue(lastEvent.isAffected(reference1));
         assertTrue(lastEvent.isAffected(reference2));
@@ -565,9 +727,9 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
     }
 
     @Test
-    public void shouldGenerateValidationErrorIfNameIsUsedTwiceInSupertypeHierarchy() throws CoreException {
+    public void shouldGenerateValidationErrorIfNameIsUsedTwiceInTypeHierarchy() throws CoreException {
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
         superProductType.newProductCmptCategory(CATEGORY_NAME);
-        category.setInherited(false);
 
         MessageList validationMessageList = category.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
@@ -579,15 +741,17 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
     public void shouldNotGenerateValidationErrorIfNameIsAlreadyUsedInSupertypeHierarchyButCategoryIsInherited()
             throws CoreException {
 
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
         superProductType.newProductCmptCategory(CATEGORY_NAME);
+        category.setInherited(true);
+
         assertTrue(category.isValid(ipsProject));
     }
 
     @Test
     public void shouldGenerateValidationErrorIfInheritedButNotFoundInSupertypeHierarchy() throws CoreException {
+        createSuperProductType(productType, "Super");
         category.setInherited(true);
-        superCategory.delete();
-        superSuperCategory.delete();
 
         MessageList validationMessageList = category.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
@@ -620,8 +784,10 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
     public void shouldGenerateValidationWarningIfDuplicateCategoriesAreMarkedAsDefaultForFormulaSignatureDefinitions()
             throws CoreException {
 
-        category.setDefaultForFormulaSignatureDefinitions(true);
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
         IProductCmptCategory category2 = superProductType.newProductCmptCategory("bar");
+
+        category.setDefaultForFormulaSignatureDefinitions(true);
         category2.setDefaultForFormulaSignatureDefinitions(true);
 
         MessageList validationMessageList = category.validate(ipsProject);
@@ -634,8 +800,10 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
     public void shouldGenerateValidationWarningIfDuplicateCategoriesAreMarkedAsDefaultForValidationRules()
             throws CoreException {
 
-        category.setDefaultForValidationRules(true);
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
         IProductCmptCategory category2 = superProductType.newProductCmptCategory("bar");
+
+        category.setDefaultForValidationRules(true);
         category2.setDefaultForValidationRules(true);
 
         MessageList validationMessageList = category.validate(ipsProject);
@@ -648,8 +816,10 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
     public void shouldGenerateValidationWarningIfDuplicateCategoriesAreMarkedAsDefaultForTableStructureUsages()
             throws CoreException {
 
-        category.setDefaultForTableStructureUsages(true);
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
         IProductCmptCategory category2 = superProductType.newProductCmptCategory("bar");
+
+        category.setDefaultForTableStructureUsages(true);
         category2.setDefaultForTableStructureUsages(true);
 
         MessageList validationMessageList = category.validate(ipsProject);
@@ -662,8 +832,10 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
     public void shouldGenerateValidationWarningIfDuplicateCategoriesAreMarkedAsDefaultForPolicyCmptTypeAttributes()
             throws CoreException {
 
-        category.setDefaultForPolicyCmptTypeAttributes(true);
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
         IProductCmptCategory category2 = superProductType.newProductCmptCategory("bar");
+
+        category.setDefaultForPolicyCmptTypeAttributes(true);
         category2.setDefaultForPolicyCmptTypeAttributes(true);
 
         MessageList validationMessageList = category.validate(ipsProject);
@@ -676,8 +848,10 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
     public void shouldGenerateValidationWarningIfDuplicateCategoriesAreMarkedAsDefaultForProductCmptTypeAttributes()
             throws CoreException {
 
-        category.setDefaultForProductCmptTypeAttributes(true);
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
         IProductCmptCategory category2 = superProductType.newProductCmptCategory("bar");
+
+        category.setDefaultForProductCmptTypeAttributes(true);
         category2.setDefaultForProductCmptTypeAttributes(true);
 
         MessageList validationMessageList = category.validate(ipsProject);
@@ -695,7 +869,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
         return type.newProductCmptTypeAttribute(name);
     }
 
-    private IProductCmptTypeMethod createProductCmptTypeMethodProperty(IProductCmptType type, String name) {
+    private IProductCmptTypeMethod createFormulaSignatureDefinitionProperty(IProductCmptType type, String name) {
         IProductCmptTypeMethod method = type.newProductCmptTypeMethod();
         method.setName(name);
         method.setFormulaName(name);
@@ -712,6 +886,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
     private IValidationRule createValidationRuleProperty(IProductCmptType type, String name) throws CoreException {
         IPolicyCmptType policyCmptType = type.findPolicyCmptType(type.getIpsProject());
         IValidationRule rule = policyCmptType.newRule();
+        rule.setConfigurableByProductComponent(true);
         rule.setName(name);
         return rule;
     }
@@ -733,6 +908,45 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest implements Co
     private void assertPropertyChangedEvent() {
         assertEquals(category, lastEvent.getPart());
         assertEquals(ContentChangeEvent.TYPE_PROPERTY_CHANGED, lastEvent.getEventType());
+    }
+
+    private IProductCmptType createSuperProductType(IProductCmptType productType, String prefix) throws CoreException {
+        IPolicyCmptType superPolicyType = newPolicyAndProductCmptType(ipsProject, prefix + "PolicyType", prefix
+                + "ProductType");
+        IProductCmptType superProductType = superPolicyType.findProductCmptType(ipsProject);
+        productType.setSupertype(superProductType.getQualifiedName());
+        productType.findPolicyCmptType(ipsProject).setSupertype(superPolicyType.getQualifiedName());
+        return superProductType;
+    }
+
+    private IProductCmptCategory createDefaultCategoryForFormulaSignatureDefinitions() {
+        IProductCmptCategory formulaCategory = productType.newProductCmptCategory("formulas");
+        formulaCategory.setDefaultForFormulaSignatureDefinitions(true);
+        return formulaCategory;
+    }
+
+    private IProductCmptCategory createDefaultCategoryForValidationRules() {
+        IProductCmptCategory rulesCategory = productType.newProductCmptCategory("rules");
+        rulesCategory.setDefaultForValidationRules(true);
+        return rulesCategory;
+    }
+
+    private IProductCmptCategory createDefaultCategoryForPolicyCmptTypeAttributes() {
+        IProductCmptCategory policyAttributesCategory = productType.newProductCmptCategory("policyAttributes");
+        policyAttributesCategory.setDefaultForPolicyCmptTypeAttributes(true);
+        return policyAttributesCategory;
+    }
+
+    private IProductCmptCategory createDefaultCategoryForProductCmptTypeAttributes() {
+        IProductCmptCategory productAttributesCategory = productType.newProductCmptCategory("productAttributes");
+        productAttributesCategory.setDefaultForProductCmptTypeAttributes(true);
+        return productAttributesCategory;
+    }
+
+    private IProductCmptCategory createDefaultCategoryForTableStructureUsages() {
+        IProductCmptCategory tsusCategory = productType.newProductCmptCategory("tsus");
+        tsusCategory.setDefaultForTableStructureUsages(true);
+        return tsusCategory;
     }
 
 }

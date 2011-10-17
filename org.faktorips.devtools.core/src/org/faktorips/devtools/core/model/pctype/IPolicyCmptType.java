@@ -196,6 +196,12 @@ public interface IPolicyCmptType extends IType {
     public List<IPolicyCmptTypeAttribute> getPolicyCmptTypeAttributes();
 
     /**
+     * Returns a list (defensive copy) containing the {@link IPolicyCmptTypeAttribute}s of this type
+     * marked as product relevant.
+     */
+    public List<IPolicyCmptTypeAttribute> getProductRelevantPolicyCmptTypeAttributes();
+
+    /**
      * Returns the attribute with the given name defined in <strong>this</strong> type (This method
      * does not search the super type hierarchy.) If more than one attribute with the name exist,
      * the first attribute with the name is returned. Returns <code>null</code> if no attribute with
@@ -260,6 +266,12 @@ public interface IPolicyCmptType extends IType {
      * Returns the type's validation rules.
      */
     public List<IValidationRule> getValidationRules();
+
+    /**
+     * Returns a list (defensive copy) containing the {@link IValidationRule}s of this type marked
+     * as configurable by product component.
+     */
+    public List<IValidationRule> getConfigurableValidationRules();
 
     /**
      * Returns this type's validation rule with the given name or <code>null</code> if no rule

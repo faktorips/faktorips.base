@@ -521,4 +521,19 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      */
     public int[] moveProductCmptCategories(int[] indexes, boolean up);
 
+    /**
+     * Returns whether the given {@link IProductCmptProperty} is a persisted reference in any
+     * {@link IProductCmptCategory} of this type.
+     * <p>
+     * Default categories hold temporary references to properties that have not been explicitly
+     * assigned to a specific category yet.
+     * <p>
+     * This method will always return false, if the provided property does not directly belong to
+     * this product component type or the configured policy component type.
+     * 
+     * @param property The {@link IProductCmptProperty} to check whether a persisted reference
+     *            exists for
+     */
+    public boolean existsPersistedProductCmptPropertyReference(IProductCmptProperty property);
+
 }

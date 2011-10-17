@@ -62,27 +62,67 @@ public interface IProductCmptCategory extends IIpsObjectPart {
 
     public final static String MSGCODE_PREFIX = "ProductCmptCategory-"; //$NON-NLS-1$
 
+    /**
+     * Validation message code to indicate that no name has been specified for this category.
+     */
     public final static String MSGCODE_NAME_IS_EMPTY = MSGCODE_PREFIX + "NameIsEmpty"; //$NON-NLS-1$
 
+    /**
+     * Validation message code to indicate that the name given to this category is already used for
+     * another category in the scope of the product component type's hierarchy.
+     */
     public final static String MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY = "NameAlreadyUsedInTypeHierarchy"; //$NON-NLS-1$
 
+    /**
+     * Validation message code to indicate that this category is inherited but no category with the
+     * same name has been found in the supertype hierarchy of the product component type.
+     */
     public final static String MSGCODE_INHERITED_BUT_NOT_FOUND_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
             + "InheritedButNotFoundInSupertypeHierarchy"; //$NON-NLS-1$
 
+    /**
+     * Validation message code to indicate that this category is inherited but the product component
+     * type does not specify a super type.
+     */
     public final static String MSGCODE_INHERITED_BUT_NO_SUPERTYPE = MSGCODE_PREFIX + "InheritedButNoSupertype"; //$NON-NLS-1$
 
+    /**
+     * Validation message code to indicate that at least one other category within the product
+     * component type's supertype hierarchy is marked to be the default category for formula
+     * signature definitions.
+     */
     public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
             + "DuplicateDefaultsForFormulaSignatureDefinitions"; //$NON-NLS-1$
 
+    /**
+     * Validation message code to indicate that at least one other category within the product
+     * component type's supertype hierarchy is marked to be the default category for product
+     * relevant validation rules.
+     */
     public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES = MSGCODE_PREFIX
             + "DuplicateDefaultsForValidationRules"; //$NON-NLS-1$
 
+    /**
+     * Validation message code to indicate that at least one other category within the product
+     * component type's supertype hierarchy is marked to be the default category for table structure
+     * usages.
+     */
     public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
             + "DuplicateDefaultsForTableStructureUsages"; //$NON-NLS-1$
 
+    /**
+     * Validation message code to indicate that at least one other category within the product
+     * component type's supertype hierarchy is marked to be the default category for product
+     * relevant policy component attributes.
+     */
     public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "DuplicateDefaultsForPolicyCmptTypeAttributes"; //$NON-NLS-1$
 
+    /**
+     * Validation message code to indicate that at least one other category within the product
+     * component type's supertype hierarchy is marked to be the default category for product
+     * component type attributes.
+     */
     public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "DuplicateDefaultsForProductCmptTypeAttributes"; //$NON-NLS-1$
 
@@ -99,62 +139,43 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public void setName(String name);
 
     /**
-     * Returns a list containing the {@link IProductCmptProperty} currently referenced by this
-     * category.
+     * Returns the list of {@link IProductCmptPropertyReference}s of this category (defensive copy).
      * <p>
      * If this category is <em>inherited</em>, this method does <strong>not</strong> return
-     * {@link IProductCmptProperty}s referenced by the supertype hierarchy. The method
-     * {@link #findAllReferencedProductCmptProperties(IIpsProject)} can be used to retrieve all
-     * referenced {@link IProductCmptProperty}s.
+     * references of the supertype hierarchy. The method
+     * {@link #findAllProductCmptPropertyReferences(IIpsProject)} can be used to achieve this.
      * 
-     * @param ipsProject The project which IPS object path is used for the search
+     * @param ipsProject The {@link IIpsProject} to use for the search
      * 
      * @throws CoreException If an error occurs during the search
      */
-    public List<IProductCmptProperty> findReferencedProductCmptProperties(IIpsProject ipsProject) throws CoreException;
-
-    /**
-     * Returns whether the indicated {@link IProductCmptProperty} is referenced by this category.
-     * <p>
-     * This method does <strong>not</strong> consider {@link IProductCmptProperty}s referenced by
-     * the supertype hierarchy. To achieve this, use
-     * {@link #findIsReferencedProductCmptProperty(IProductCmptProperty, IIpsProject)}.
-     * 
-     * @param productCmptProperty The property to check for reference
-     */
-    public boolean isReferencedProductCmptProperty(IProductCmptProperty productCmptProperty);
-
-    /**
-     * Returns a list containing the {@link IProductCmptProperty} currently referenced by this
-     * category.
-     * <p>
-     * In contrast to {@link #findReferencedProductCmptProperties(IIpsProject)}, the list returned
-     * by this method <strong>does</strong> include {@link IProductCmptProperty}s referenced by the
-     * supertype hierarchy if this category is marked as <em>inherited</em>.
-     * <p>
-     * The properties are sorted in such a way that references of supertypes are positioned at the
-     * top of the list.
-     * 
-     * @param ipsProject The project which IPS object path is used for the search
-     * 
-     * @throws CoreException If an error occurs while searching the supertype hierarchy
-     */
-    public List<IProductCmptProperty> findAllReferencedProductCmptProperties(IIpsProject ipsProject)
+    public List<IProductCmptPropertyReference> findProductCmptPropertyReferences(IIpsProject ipsProject)
             throws CoreException;
 
     /**
-     * Returns whether the indicated {@link IProductCmptProperty} is referenced by this category.
+     * Returns the list of {@link IProductCmptPropertyReference}s of this category.
      * <p>
-     * This method <strong>does</strong> consider the supertype hierarchy if this category is marked
-     * as <em>inherited</em>.
+     * If this category is <em>inherited</em>, this method <strong>does</strong> return references
+     * of the supertype hierarchy.
      * 
-     * @param property The property to check for reference
-     * @param ipsProject The project which IPS object path is used for the search
+     * @param ipsProject The {@link IIpsProject} to use for the search
      * 
-     * @throws CoreException If an error occurs while searching the supertype hierarchy
+     * @throws CoreException If an error occurs during the search
      */
-    public boolean findIsReferencedProductCmptProperty(IProductCmptProperty property, IIpsProject ipsProject)
+    public List<IProductCmptPropertyReference> findAllProductCmptPropertyReferences(IIpsProject ipsProject)
             throws CoreException;
+
+    /**
+     * Returns whether the indicated {@link IProductCmptProperty} is referenced by this category
+     * <strong>and</strong> is a persisted reference in this category.
+     * <p>
+     * This method does <strong>not</strong> consider properties persisted in the supertype
+     * hierarchy.
+     * 
+     * @param productCmptProperty The {@link IProductCmptProperty} to check for persistence in this
+     *            category
+     */
+    public boolean isReferencedAndPersistedProductCmptProperty(IProductCmptProperty productCmptProperty);
 
     /**
      * Creates a reference to the given {@link IProductCmptTypeAttribute} in this category and
@@ -220,14 +241,14 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public IProductCmptPropertyExternalReference newProductCmptPropertyReference(IValidationRule validationRule);
 
     /**
-     * Deletes the first {@link IProductCmptPropertyReference} that references the indicated
+     * Deletes the first persistent {@link IProductCmptPropertyReference} to the indicated
      * {@link IProductCmptProperty} from this category.
      * <p>
-     * Returns false if the {@link IProductCmptProperty} is not referenced by this category, true
-     * otherwise.
+     * Returns false if the {@link IProductCmptProperty} was not persistently referenced by this
+     * category, true otherwise.
      * 
-     * @param productCmptProperty The {@link IProductCmptProperty} to no longer reference from this
-     *            category
+     * @param productCmptProperty The {@link IProductCmptProperty} to no longer persistently
+     *            reference from this category
      * 
      * @throws NullPointerException If the parameter is null
      */
