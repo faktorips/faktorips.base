@@ -61,7 +61,7 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        IIpsProject proj = newIpsProject("TestProject", new ArrayList<Locale>());
+        IIpsProject proj = newIpsProject(new ArrayList<Locale>());
         root = proj.getIpsPackageFragmentRoots()[0];
         product = newProductCmpt(root, "TestProductCmpt");
         IProductCmpt productReferenced = newProductCmpt(root, "TestProductCmptReferenced");

@@ -43,7 +43,7 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
         super.setUp();
         // we use the ProductCmptImpl to test the TimedIpsObject class
         // because TimedIpsObject is abstract.
-        IIpsProject project = newIpsProject("TestProject", new ArrayList<Locale>());
+        IIpsProject project = newIpsProject(new ArrayList<Locale>());
         timedObject = newProductCmpt(project, "Product");
         ((ProductCmpt)timedObject).setRuntimeId("abc");
     }

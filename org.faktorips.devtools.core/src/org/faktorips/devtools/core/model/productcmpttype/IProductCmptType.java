@@ -506,6 +506,70 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public IProductCmptCategory findProductCmptCategory(String name, IIpsProject ipsProject) throws CoreException;
 
     /**
+     * Returns the first {@link IProductCmptCategory} marked as default for
+     * {@link IProductCmptTypeMethod}s marked as formula signature definition or null if no such
+     * category is found.
+     * <p>
+     * This method does <strong>not</strong> consider categories marked as <em>inherited</em>.
+     * 
+     * @param ipsProject The project which IPS object path is used for the search
+     * 
+     * @throws CoreException If an error occurs during the search
+     */
+    public IProductCmptCategory findDefaultCategoryForFormulaSignatureDefinitions(IIpsProject ipsProject)
+            throws CoreException;
+
+    /**
+     * Returns the first {@link IProductCmptCategory} marked as default for product relevant
+     * {@link IValidationRule}s or null if no such category is found.
+     * <p>
+     * This method does <strong>not</strong> consider categories marked as <em>inherited</em>.
+     * 
+     * @param ipsProject The project which IPS object path is used for the search
+     * 
+     * @throws CoreException If an error occurs during the search
+     */
+    public IProductCmptCategory findDefaultCategoryForValidationRules(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns the first {@link IProductCmptCategory} marked as default for
+     * {@link ITableStructureUsage}s or null if no such category is found.
+     * <p>
+     * This method does <strong>not</strong> consider categories marked as <em>inherited</em>.
+     * 
+     * @param ipsProject The project which IPS object path is used for the search
+     * 
+     * @throws CoreException If an error occurs during the search
+     */
+    public IProductCmptCategory findDefaultCategoryForTableStructureUsages(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns the first {@link IProductCmptCategory} marked as default for product relevant
+     * {@link IPolicyCmptTypeAttribute}s or null if no such category is found.
+     * <p>
+     * This method does <strong>not</strong> consider categories marked as <em>inherited</em>.
+     * 
+     * @param ipsProject The project which IPS object path is used for the search
+     * 
+     * @throws CoreException If an error occurs during the search
+     */
+    public IProductCmptCategory findDefaultCategoryForPolicyCmptTypeAttributes(IIpsProject ipsProject)
+            throws CoreException;
+
+    /**
+     * Returns the first {@link IProductCmptCategory} marked as default for
+     * {@link IProductCmptTypeAttribute}s or null if no such category is found.
+     * <p>
+     * This method does <strong>not</strong> consider categories marked as <em>inherited</em>.
+     * 
+     * @param ipsProject The project which IPS object path is used for the search
+     * 
+     * @throws CoreException If an error occurs during the search
+     */
+    public IProductCmptCategory findDefaultCategoryForProductCmptTypeAttributes(IIpsProject ipsProject)
+            throws CoreException;
+
+    /**
      * Moves the {@link IProductCmptCategory}s identified by the indexes up or down by one position
      * and returns the new indexes of the moved objects.
      * <p>

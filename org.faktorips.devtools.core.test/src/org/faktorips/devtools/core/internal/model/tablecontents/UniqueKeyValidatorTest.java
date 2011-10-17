@@ -50,7 +50,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject", new ArrayList<Locale>());
+        project = newIpsProject(new ArrayList<Locale>());
         table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "Tc");
     }
 

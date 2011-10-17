@@ -198,13 +198,12 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
 
         // Create a policy component type and a product component type.
         policyCmptType = newPolicyCmptType(ipsProject, QUALIFIED_POLICY_CMPT_TYPE_NAME);
-        productCmptType = newProductCmptType(ipsProject, QUALIFIED_PRODUCT_CMPT_TYPE_NAME);
+        productCmptType = newProductCmptType(superProductCmptType, QUALIFIED_PRODUCT_CMPT_TYPE_NAME);
         policyCmptType.setConfigurableByProductCmptType(true);
         policyCmptType.setProductCmptType(QUALIFIED_PRODUCT_CMPT_TYPE_NAME);
         productCmptType.setConfigurationForPolicyCmptType(true);
         productCmptType.setPolicyCmptType(QUALIFIED_POLICY_CMPT_TYPE_NAME);
         policyCmptType.setSupertype(QUALIFIED_SUPER_POLICY_CMPT_TYPE_NAME);
-        productCmptType.setSupertype(QUALIFIED_SUPER_PRODUCT_CMPT_TYPE_NAME);
 
         // Create a policy component type attribute.
         policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();

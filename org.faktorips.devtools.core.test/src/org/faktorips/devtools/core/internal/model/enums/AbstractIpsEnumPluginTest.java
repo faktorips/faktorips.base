@@ -76,7 +76,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        ipsProject = newIpsProject("EnumTestProject");
+        ipsProject = newIpsProject();
         contentsChangeCounter = new ContentsChangeCounter();
         getIpsModel().addChangeListener(contentsChangeCounter);
         createGenderEnum();

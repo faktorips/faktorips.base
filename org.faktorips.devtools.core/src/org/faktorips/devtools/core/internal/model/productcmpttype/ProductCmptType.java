@@ -552,76 +552,56 @@ public class ProductCmptType extends Type implements IProductCmptType {
     private void validateDefaultCategoryForFormulaSignatureDefinition(MessageList list, IIpsProject ipsProject)
             throws CoreException {
 
-        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
-            @Override
-            protected boolean isDefault(IProductCmptCategory category) {
-                return category.isDefaultForFormulaSignatureDefinitions();
-            }
-        };
-        defaultCategoryFinder.start(this);
-        String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForFormulaSignatureDefinitions, getName());
-        defaultCategoryFinder.addValidationErrorIfNoDefaultCategoryFound(list,
-                MSGCODE_NO_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS, text);
+        if (findDefaultCategoryForFormulaSignatureDefinitions(ipsProject) == null) {
+            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForFormulaSignatureDefinitions, getName());
+            Message msg = new Message(MSGCODE_NO_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS, text, Message.ERROR,
+                    ProductCmptType.this);
+            list.add(msg);
+        }
     }
 
     private void validateDefaultCategoryForPolicyCmptTypeAttribute(MessageList list, IIpsProject ipsProject)
             throws CoreException {
 
-        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
-            @Override
-            protected boolean isDefault(IProductCmptCategory category) {
-                return category.isDefaultForPolicyCmptTypeAttributes();
-            }
-        };
-        defaultCategoryFinder.start(this);
-        String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForPolicyCmptTypeAttributes, getName());
-        defaultCategoryFinder.addValidationErrorIfNoDefaultCategoryFound(list,
-                MSGCODE_NO_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, text);
+        if (findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject) == null) {
+            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForPolicyCmptTypeAttributes, getName());
+            Message msg = new Message(MSGCODE_NO_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, text, Message.ERROR,
+                    ProductCmptType.this);
+            list.add(msg);
+        }
     }
 
     private void validateDefaultCategoryForProductCmptTypeAttribute(MessageList list, IIpsProject ipsProject)
             throws CoreException {
 
-        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
-            @Override
-            protected boolean isDefault(IProductCmptCategory category) {
-                return category.isDefaultForProductCmptTypeAttributes();
-            }
-        };
-        defaultCategoryFinder.start(this);
-        String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForProductCmptTypeAttributes, getName());
-        defaultCategoryFinder.addValidationErrorIfNoDefaultCategoryFound(list,
-                MSGCODE_NO_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, text);
+        if (findDefaultCategoryForProductCmptTypeAttributes(ipsProject) == null) {
+            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForProductCmptTypeAttributes, getName());
+            Message msg = new Message(MSGCODE_NO_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, text, Message.ERROR,
+                    ProductCmptType.this);
+            list.add(msg);
+        }
     }
 
     private void validateDefaultCategoryForTableStructureUsages(MessageList list, IIpsProject ipsProject)
             throws CoreException {
 
-        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
-            @Override
-            protected boolean isDefault(IProductCmptCategory category) {
-                return category.isDefaultForTableStructureUsages();
-            }
-        };
-        defaultCategoryFinder.start(this);
-        String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForTableStructureUsages, getName());
-        defaultCategoryFinder.addValidationErrorIfNoDefaultCategoryFound(list,
-                MSGCODE_NO_DEFAULT_FOR_TABLE_STRUCTURE_USAGES, text);
+        if (findDefaultCategoryForTableStructureUsages(ipsProject) == null) {
+            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForTableStructureUsages, getName());
+            Message msg = new Message(MSGCODE_NO_DEFAULT_FOR_TABLE_STRUCTURE_USAGES, text, Message.ERROR,
+                    ProductCmptType.this);
+            list.add(msg);
+        }
     }
 
     private void validateDefaultCategoryForValidationRules(MessageList list, IIpsProject ipsProject)
             throws CoreException {
 
-        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
-            @Override
-            protected boolean isDefault(IProductCmptCategory category) {
-                return category.isDefaultForValidationRules();
-            }
-        };
-        defaultCategoryFinder.start(this);
-        String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForValidationRules, getName());
-        defaultCategoryFinder.addValidationErrorIfNoDefaultCategoryFound(list, MSGCODE_NO_DEFAULT_FOR_VALIDATION_RULES,
-                text);
+        if (findDefaultCategoryForValidationRules(ipsProject) == null) {
+            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForValidationRules, getName());
+            Message msg = new Message(MSGCODE_NO_DEFAULT_FOR_VALIDATION_RULES, text, Message.ERROR,
+                    ProductCmptType.this);
+            list.add(msg);
+        }
     }
 
     @Override
@@ -775,6 +755,72 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
+    public IProductCmptCategory findDefaultCategoryForFormulaSignatureDefinitions(IIpsProject ipsProject)
+            throws CoreException {
+
+        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
+            @Override
+            protected boolean isDefault(IProductCmptCategory category) {
+                return category.isDefaultForFormulaSignatureDefinitions();
+            }
+        };
+        defaultCategoryFinder.start(this);
+        return defaultCategoryFinder.defaultCategory;
+    }
+
+    @Override
+    public IProductCmptCategory findDefaultCategoryForPolicyCmptTypeAttributes(IIpsProject ipsProject)
+            throws CoreException {
+
+        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
+            @Override
+            protected boolean isDefault(IProductCmptCategory category) {
+                return category.isDefaultForPolicyCmptTypeAttributes();
+            }
+        };
+        defaultCategoryFinder.start(this);
+        return defaultCategoryFinder.defaultCategory;
+    }
+
+    @Override
+    public IProductCmptCategory findDefaultCategoryForProductCmptTypeAttributes(IIpsProject ipsProject)
+            throws CoreException {
+
+        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
+            @Override
+            protected boolean isDefault(IProductCmptCategory category) {
+                return category.isDefaultForProductCmptTypeAttributes();
+            }
+        };
+        defaultCategoryFinder.start(this);
+        return defaultCategoryFinder.defaultCategory;
+    }
+
+    @Override
+    public IProductCmptCategory findDefaultCategoryForTableStructureUsages(IIpsProject ipsProject) throws CoreException {
+        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
+            @Override
+            protected boolean isDefault(IProductCmptCategory category) {
+                return category.isDefaultForTableStructureUsages();
+            }
+        };
+        defaultCategoryFinder.start(this);
+        return defaultCategoryFinder.defaultCategory;
+    }
+
+    @Override
+    public IProductCmptCategory findDefaultCategoryForValidationRules(IIpsProject ipsProject) throws CoreException {
+        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
+            @Override
+            protected boolean isDefault(IProductCmptCategory category) {
+                return category.isDefaultForValidationRules();
+            }
+        };
+        defaultCategoryFinder.start(this);
+        return defaultCategoryFinder.defaultCategory;
+    }
+
+    @Override
     public IProductCmptCategory findProductCmptCategory(final String name, IIpsProject ipsProject) throws CoreException {
         class ProductCmptCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {
 
@@ -812,7 +858,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private abstract class DefaultCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {
 
-        private boolean defaultCategoryFound;
+        private IProductCmptCategory defaultCategory;
 
         protected DefaultCategoryFinder(IIpsProject ipsProject) {
             super(ipsProject);
@@ -822,7 +868,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             for (IProductCmptCategory category : currentType.getProductCmptCategories()) {
                 if (isDefault(category)) {
-                    defaultCategoryFound = true;
+                    defaultCategory = category;
                     return false;
                 }
             }
@@ -830,13 +876,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         protected abstract boolean isDefault(IProductCmptCategory category);
-
-        private void addValidationErrorIfNoDefaultCategoryFound(MessageList list, String code, String text) {
-            if (!defaultCategoryFound) {
-                Message msg = new Message(code, text, Message.ERROR, ProductCmptType.this);
-                list.add(msg);
-            }
-        }
 
     }
 

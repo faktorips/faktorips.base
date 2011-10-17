@@ -55,7 +55,7 @@ public class SearchResultContentProviderTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         provider = new SearchResultContentProvider(null);
-        proj = newIpsProject("TestProjekt", new ArrayList<Locale>());
+        proj = newIpsProject(new ArrayList<Locale>());
         root = proj.getIpsPackageFragmentRoots()[0];
         pcType = newPolicyCmptType(root, "TestPCType");
         pcType2 = newPolicyCmptType(root, "TestPCType2");

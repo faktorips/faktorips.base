@@ -109,6 +109,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -137,6 +138,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected static final String OUTPUT_FOLDER_NAME_MERGABLE = "src"; //$NON-NLS-1$
     protected static final String BASE_PACKAGE_NAME_DERIVED = "org.faktorips.sample.model"; //$NON-NLS-1$
     protected static final String BASE_PACKAGE_NAME_MERGABLE = "org.faktorips.sample.model"; //$NON-NLS-1$
+
+    protected static final String DEFAULT_CATEGORY_NAME_VALIDATION_RULES = "validationRules";
+    protected static final String DEFAULT_CATEGORY_NAME_TABLE_STRUCTURE_USAGES = "tables";
+    protected static final String DEFAULT_CATEGORY_NAME_PRODUCT_CMPT_TYPE_ATTRIBUTES = "productAttributes";
+    protected static final String DEFAULT_CATEGORY_NAME_POLICY_CMPT_TYPE_ATTRIBUTES = "policyAttributes";
+    protected static final String DEFAULT_CATEGORY_NAME_FORMULA_SIGNATURE_DEFINITIONS = "formulas";
 
     public AbstractIpsPluginTest() {
         super();
@@ -260,14 +267,14 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * in the list will be used as default language.
      */
     protected IIpsProject newIpsProject(List<Locale> supportedLocales) throws CoreException {
-        return newIpsProject("TestProject", supportedLocales);
+        return newIpsProject(UUID.randomUUID().toString(), supportedLocales);
     }
 
     /**
      * Creates a new IPS project with the given name and multi-language support for the given
      * locales. The first locale in the list will be used as default language.
      */
-    protected IIpsProject newIpsProject(final String name, List<Locale> supportedLocales) throws CoreException {
+    private IIpsProject newIpsProject(final String name, List<Locale> supportedLocales) throws CoreException {
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             @Override
             public void run(IProgressMonitor monitor) throws CoreException {
@@ -666,35 +673,105 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     /**
      * Creates a new product component type in the project's first package fragment root. If the
-     * qualifiedName includes a package name, the package is created if it does not already exists.
+     * qualifiedName includes a package name, the package is created if it does not already exist.
      */
     protected ProductCmptType newProductCmptType(IProductCmptType supertype, String qualifiedName) throws CoreException {
-        ProductCmptType newType = newProductCmptType(supertype.getIpsProject(), qualifiedName);
+        ProductCmptType newType = (ProductCmptType)newIpsObject(supertype.getIpsProject(),
+                IpsObjectType.PRODUCT_CMPT_TYPE, qualifiedName);
         newType.setSupertype(supertype.getQualifiedName());
         newType.setConfigurationForPolicyCmptType(supertype.isConfigurationForPolicyCmptType());
+        createDefaultCategoriesForProductCmptTypeAsNecessary(newType);
         return newType;
     }
 
     /**
      * Creates a new product component type in the project's first package fragment root. If the
-     * qualifiedName includes a package name, the package is created if it does not already exists.
+     * qualifiedName includes a package name, the package is created if it does not already exist.
      */
     protected ProductCmptType newProductCmptType(IIpsProject ipsProject, String qualifiedName) throws CoreException {
-        return (ProductCmptType)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, qualifiedName);
+        ProductCmptType productCmptType = (ProductCmptType)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE,
+                qualifiedName);
+        createDefaultCategoriesForProductCmptTypeAsNecessary(productCmptType);
+        return productCmptType;
     }
 
     /**
      * Creates a new product component type in the indicated package fragment root. If the
-     * qualifiedName includes a package name, the package is created if it does not already exists.
+     * qualifiedName includes a package name, the package is created if it does not already exist.
      */
     protected ProductCmptType newProductCmptType(final IIpsPackageFragmentRoot root, final String qualifiedName)
             throws CoreException {
-        return (ProductCmptType)newIpsObject(root, IpsObjectType.PRODUCT_CMPT_TYPE, qualifiedName);
+
+        ProductCmptType productCmptType = (ProductCmptType)newIpsObject(root, IpsObjectType.PRODUCT_CMPT_TYPE,
+                qualifiedName);
+        createDefaultCategoriesForProductCmptTypeAsNecessary(productCmptType);
+        return productCmptType;
+    }
+
+    private void createDefaultCategoriesForProductCmptTypeAsNecessary(IProductCmptType productCmptType)
+            throws CoreException {
+
+        boolean defaultFormulasFound = false;
+        boolean defaultPolicyAttributesFound = false;
+        boolean defaultProductAttributesFound = false;
+        boolean defaultTablesFound = false;
+        boolean defaultValidationRulesFound = false;
+
+        for (IProductCmptCategory category : productCmptType.findAllProductCmptCategories(productCmptType
+                .getIpsProject())) {
+            if (category.isDefaultForFormulaSignatureDefinitions()) {
+                defaultFormulasFound = true;
+            }
+            if (category.isDefaultForPolicyCmptTypeAttributes()) {
+                defaultPolicyAttributesFound = true;
+            }
+            if (category.isDefaultForProductCmptTypeAttributes()) {
+                defaultProductAttributesFound = true;
+            }
+            if (category.isDefaultForTableStructureUsages()) {
+                defaultTablesFound = true;
+            }
+            if (category.isDefaultForValidationRules()) {
+                defaultValidationRulesFound = true;
+            }
+            if (defaultFormulasFound && defaultPolicyAttributesFound && defaultProductAttributesFound
+                    && defaultTablesFound && defaultValidationRulesFound) {
+                break;
+            }
+        }
+
+        if (!defaultFormulasFound) {
+            IProductCmptCategory defaultCategory = productCmptType
+                    .newProductCmptCategory(DEFAULT_CATEGORY_NAME_FORMULA_SIGNATURE_DEFINITIONS);
+            defaultCategory.setDefaultForFormulaSignatureDefinitions(true);
+        }
+        if (!defaultPolicyAttributesFound) {
+            IProductCmptCategory defaultCategory = productCmptType
+                    .newProductCmptCategory(DEFAULT_CATEGORY_NAME_POLICY_CMPT_TYPE_ATTRIBUTES);
+            defaultCategory.setDefaultForPolicyCmptTypeAttributes(true);
+        }
+        if (!defaultProductAttributesFound) {
+            IProductCmptCategory defaultCategory = productCmptType
+                    .newProductCmptCategory(DEFAULT_CATEGORY_NAME_PRODUCT_CMPT_TYPE_ATTRIBUTES);
+            defaultCategory.setDefaultForProductCmptTypeAttributes(true);
+        }
+        if (!defaultTablesFound) {
+            IProductCmptCategory defaultCategory = productCmptType
+                    .newProductCmptCategory(DEFAULT_CATEGORY_NAME_TABLE_STRUCTURE_USAGES);
+            defaultCategory.setDefaultForTableStructureUsages(true);
+        }
+        if (!defaultValidationRulesFound) {
+            IProductCmptCategory defaultCategory = productCmptType
+                    .newProductCmptCategory(DEFAULT_CATEGORY_NAME_VALIDATION_RULES);
+            defaultCategory.setDefaultForValidationRules(true);
+        }
+
+        productCmptType.getIpsSrcFile().save(true, null);
     }
 
     /**
      * Creates a new product component type in the indicated package fragment root. If the
-     * qualifiedName includes a package name, the package is created if it does not already exists.
+     * qualifiedName includes a package name, the package is created if it does not already exist.
      */
     protected PolicyCmptType newPolicyAndProductCmptType(IIpsProject ipsProject,
             String policyCmptTypeName,
@@ -1326,9 +1403,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             int severity) {
 
         Message expectedMessage = list.getFirstMessage(severity);
+        assertEquals(1, list.size());
         assertEquals(code, expectedMessage.getCode());
         assertEquals(new ObjectProperty(invalidObject, property), expectedMessage.getInvalidObjectProperties()[0]);
-        assertEquals(1, list.size());
     }
 
     private void clearOutputFolders(IIpsProject ipsProject) throws CoreException {

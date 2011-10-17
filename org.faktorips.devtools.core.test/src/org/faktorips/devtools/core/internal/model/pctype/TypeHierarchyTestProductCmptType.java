@@ -53,7 +53,7 @@ public class TypeHierarchyTestProductCmptType extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        pdProject = this.newIpsProject("TestProject");
+        pdProject = newIpsProject();
         pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
         pdFolder = pdRootFolder.createPackageFragment("products.folder", true, null);
         pdSrcFile = pdFolder.createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE, "TestProduct", true, null);
@@ -86,11 +86,11 @@ public class TypeHierarchyTestProductCmptType extends AbstractIpsPluginTest {
         assertEquals(0, hierarchy.getSubtypes(pcType).size());
 
         // test if it works if the subtypes are in different projects
-        IIpsProject project2 = newIpsProject("Project2");
+        IIpsProject project2 = newIpsProject();
         IProductCmptType newSubType = newProductCmptType(project2, "NewSubType");
         newSubType.setSupertype(pcType.getQualifiedName());
 
-        IIpsProject project3 = newIpsProject("Project3");
+        IIpsProject project3 = newIpsProject();
         IProductCmptType newSubSubType = newProductCmptType(project3, "NewSubSubType");
         newSubSubType.setSupertype(newSubType.getQualifiedName());
 

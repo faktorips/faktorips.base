@@ -43,7 +43,7 @@ public class NoVersionIdProductCmptNamingStrategyTest extends AbstractIpsPluginT
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject");
+        project = newIpsProject();
         prefix = project.getRuntimeIdPrefix();
         strategy.setIpsProject(project);
     }

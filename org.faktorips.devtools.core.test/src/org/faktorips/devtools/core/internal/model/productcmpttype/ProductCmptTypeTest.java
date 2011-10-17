@@ -1022,11 +1022,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
     @Test
     public void testValidateNoDefaultCategoryForFormulaSignatureDefinitionsExists() throws CoreException {
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
-        category.setDefaultForPolicyCmptTypeAttributes(true);
-        category.setDefaultForProductCmptTypeAttributes(true);
-        category.setDefaultForTableStructureUsages(true);
-        category.setDefaultForValidationRules(true);
+        productCmptType.findDefaultCategoryForFormulaSignatureDefinitions(ipsProject).delete();
+        productCmptType.setSupertype("");
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
@@ -1036,11 +1033,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
     @Test
     public void testValidateNoDefaultCategoryForPolicyCmptTypeAttributesExists() throws CoreException {
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
-        category.setDefaultForFormulaSignatureDefinitions(true);
-        category.setDefaultForProductCmptTypeAttributes(true);
-        category.setDefaultForTableStructureUsages(true);
-        category.setDefaultForValidationRules(true);
+        productCmptType.findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject).delete();
+        productCmptType.setSupertype("");
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
@@ -1050,11 +1044,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
     @Test
     public void testValidateNoDefaultCategoryForProductCmptTypeAttributesExists() throws CoreException {
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
-        category.setDefaultForFormulaSignatureDefinitions(true);
-        category.setDefaultForPolicyCmptTypeAttributes(true);
-        category.setDefaultForTableStructureUsages(true);
-        category.setDefaultForValidationRules(true);
+        productCmptType.findDefaultCategoryForProductCmptTypeAttributes(ipsProject).delete();
+        productCmptType.setSupertype("");
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
@@ -1064,11 +1055,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
     @Test
     public void testValidateNoDefaultCategoryForTableStructureUsagesExists() throws CoreException {
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
-        category.setDefaultForFormulaSignatureDefinitions(true);
-        category.setDefaultForPolicyCmptTypeAttributes(true);
-        category.setDefaultForProductCmptTypeAttributes(true);
-        category.setDefaultForValidationRules(true);
+        productCmptType.findDefaultCategoryForTableStructureUsages(ipsProject).delete();
+        productCmptType.setSupertype("");
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
@@ -1077,11 +1065,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
     @Test
     public void testValidateNoDefaultCategoryForValidationRulesExists() throws CoreException {
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
-        category.setDefaultForFormulaSignatureDefinitions(true);
-        category.setDefaultForPolicyCmptTypeAttributes(true);
-        category.setDefaultForProductCmptTypeAttributes(true);
-        category.setDefaultForTableStructureUsages(true);
+        productCmptType.findDefaultCategoryForValidationRules(ipsProject).delete();
+        productCmptType.setSupertype("");
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList, IProductCmptType.MSGCODE_NO_DEFAULT_FOR_VALIDATION_RULES,
@@ -1285,6 +1270,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
     @Test
     public void testGetProductCmptCategories() {
+        deleteAllProductCmptCategories(productCmptType);
+
         IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
         IProductCmptCategory inheritedCategory = productCmptType.newProductCmptCategory("bar");
         inheritedCategory.setInherited(true);
@@ -1296,6 +1283,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
     @Test
     public void testGetProductCmptCategoriesIncludeSupertypeCopies() {
+        deleteAllProductCmptCategories(productCmptType);
+
         IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
         IProductCmptCategory inheritedCategory = productCmptType.newProductCmptCategory("bar");
         inheritedCategory.setInherited(true);
@@ -1315,6 +1304,10 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
     public void testFindAllProductCmptCategories() throws CoreException {
         IProductCmptType superSuperProductCmptType = newProductCmptType(ipsProject, "SuperSuperProductCmptType");
         superProductCmptType.setSupertype(superSuperProductCmptType.getQualifiedName());
+
+        deleteAllProductCmptCategories(superSuperProductCmptType);
+        deleteAllProductCmptCategories(superProductCmptType);
+        deleteAllProductCmptCategories(productCmptType);
 
         IProductCmptCategory superSuperCategory = superSuperProductCmptType.newProductCmptCategory();
         IProductCmptCategory superCategory = superProductCmptType.newProductCmptCategory();
@@ -1347,6 +1340,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
     @Test
     public void testMoveProductCmptCategories() {
+        deleteAllProductCmptCategories(productCmptType);
+
         IProductCmptCategory category1 = productCmptType.newProductCmptCategory();
         IProductCmptCategory category2 = productCmptType.newProductCmptCategory();
         IProductCmptCategory category3 = productCmptType.newProductCmptCategory();
@@ -1371,6 +1366,60 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
         category.newProductCmptPropertyReference(attribute);
         assertTrue(productCmptType.existsPersistedProductCmptPropertyReference(attribute));
+    }
+
+    @Test
+    public void testFindDefaultCategoryForFormulaSignatureDefinitions() throws CoreException {
+        deleteAllProductCmptCategories(productCmptType);
+        deleteAllProductCmptCategories(superProductCmptType);
+
+        assertEquals(
+                superSuperProductCmptType.getProductCmptCategory(DEFAULT_CATEGORY_NAME_FORMULA_SIGNATURE_DEFINITIONS),
+                productCmptType.findDefaultCategoryForFormulaSignatureDefinitions(ipsProject));
+    }
+
+    @Test
+    public void testFindDefaultCategoryForPolicyCmptTypeAttributes() throws CoreException {
+        deleteAllProductCmptCategories(productCmptType);
+        deleteAllProductCmptCategories(superProductCmptType);
+
+        assertEquals(
+                superSuperProductCmptType.getProductCmptCategory(DEFAULT_CATEGORY_NAME_POLICY_CMPT_TYPE_ATTRIBUTES),
+                productCmptType.findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject));
+    }
+
+    @Test
+    public void testFindDefaultCategoryForProductCmptTypeAttributes() throws CoreException {
+        deleteAllProductCmptCategories(productCmptType);
+        deleteAllProductCmptCategories(superProductCmptType);
+
+        assertEquals(
+                superSuperProductCmptType.getProductCmptCategory(DEFAULT_CATEGORY_NAME_PRODUCT_CMPT_TYPE_ATTRIBUTES),
+                productCmptType.findDefaultCategoryForProductCmptTypeAttributes(ipsProject));
+    }
+
+    @Test
+    public void testFindDefaultCategoryForTableStructureUsages() throws CoreException {
+        deleteAllProductCmptCategories(productCmptType);
+        deleteAllProductCmptCategories(superProductCmptType);
+
+        assertEquals(superSuperProductCmptType.getProductCmptCategory(DEFAULT_CATEGORY_NAME_TABLE_STRUCTURE_USAGES),
+                productCmptType.findDefaultCategoryForTableStructureUsages(ipsProject));
+    }
+
+    @Test
+    public void testFindDefaultCategoryForValidationRules() throws CoreException {
+        deleteAllProductCmptCategories(productCmptType);
+        deleteAllProductCmptCategories(superProductCmptType);
+
+        assertEquals(superSuperProductCmptType.getProductCmptCategory(DEFAULT_CATEGORY_NAME_VALIDATION_RULES),
+                productCmptType.findDefaultCategoryForValidationRules(ipsProject));
+    }
+
+    private void deleteAllProductCmptCategories(IProductCmptType productCmptType) {
+        for (IProductCmptCategory category : productCmptType.getProductCmptCategories()) {
+            category.delete();
+        }
     }
 
 }

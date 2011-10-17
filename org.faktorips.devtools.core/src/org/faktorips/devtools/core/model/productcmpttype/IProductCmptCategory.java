@@ -268,13 +268,17 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public void setInherited(boolean inherited);
 
     /**
-     * Returns whether this category is the default category for {@link IProductCmptTypeMethod}s
-     * defining formula signatures.
+     * Returns whether this category is marked as default category for
+     * {@link IProductCmptTypeMethod}s defining formula signatures.
+     * <p>
+     * <strong>Attention:</strong> If this category is <em>inherited</em>, the value returned by
+     * this operation is of no relevance. Instead, the property depends on the configuration of the
+     * original category defined in the supertype hierarchy.
      */
     public boolean isDefaultForFormulaSignatureDefinitions();
 
     /**
-     * Sets whether this category is the default category for {@link IProductCmptTypeMethod}s.
+     * Sets whether this category is marked as default category for {@link IProductCmptTypeMethod}s.
      * 
      * @param defaultForFormulaSignatureDefinitions Flag indicating whether this category shall be
      *            the default category for {@link IProductCmptTypeMethod}s defining formula
@@ -283,8 +287,12 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public void setDefaultForFormulaSignatureDefinitions(boolean defaultForFormulaSignatureDefinitions);
 
     /**
-     * Returns whether this category is the default category for product relevant
+     * Returns whether this category is marked as default category for product relevant
      * {@link IPolicyCmptTypeAttribute}s.
+     * <p>
+     * <strong>Attention:</strong> If this category is <em>inherited</em>, the value returned by
+     * this operation is of no relevance. Instead, the property depends on the configuration of the
+     * original category defined in the supertype hierarchy.
      */
     public boolean isDefaultForPolicyCmptTypeAttributes();
 
@@ -298,7 +306,12 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public void setDefaultForPolicyCmptTypeAttributes(boolean defaultForPolicyCmptTypeAttributes);
 
     /**
-     * Returns whether this category is the default category for {@link IProductCmptTypeAttribute}s.
+     * Returns whether this category is marked as default category for
+     * {@link IProductCmptTypeAttribute}s.
+     * <p>
+     * <strong>Attention:</strong> If this category is <em>inherited</em>, the value returned by
+     * this operation is of no relevance. Instead, the property depends on the configuration of the
+     * original category defined in the supertype hierarchy.
      */
     public boolean isDefaultForProductCmptTypeAttributes();
 
@@ -311,7 +324,12 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public void setDefaultForProductCmptTypeAttributes(boolean defaultForProductCmptTypeAttributes);
 
     /**
-     * Returns whether this category is the default category for {@link ITableStructureUsage}s.
+     * Returns whether this category is marked as default category for {@link ITableStructureUsage}
+     * s.
+     * <p>
+     * <strong>Attention:</strong> If this category is <em>inherited</em>, the value returned by
+     * this operation is of no relevance. Instead, the property depends on the configuration of the
+     * original category defined in the supertype hierarchy.
      */
     public boolean isDefaultForTableStructureUsages();
 
@@ -324,8 +342,12 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public void setDefaultForTableStructureUsages(boolean defaultForTableStructureUsages);
 
     /**
-     * Returns whether this category is the default category for product relevant
+     * Returns whether this category is marked as default category for product relevant
      * {@link IValidationRule}s.
+     * <p>
+     * <strong>Attention:</strong> If this category is <em>inherited</em>, the value returned by
+     * this operation is of no relevance. Instead, the property depends on the configuration of the
+     * original category defined in the supertype hierarchy.
      */
     public boolean isDefaultForValidationRules();
 
