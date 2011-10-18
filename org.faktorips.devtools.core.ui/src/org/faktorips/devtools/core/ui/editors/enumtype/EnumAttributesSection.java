@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
@@ -234,7 +235,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             try {
                 IEnumType enumType = (IEnumType)getIpsObject();
                 boolean superEnumTypeExists = enumType.hasExistingSuperEnumType(enumType.getIpsProject());
-                inheritButton.setEnabled(superEnumTypeExists);
+                inheritButton.setEnabled(superEnumTypeExists && IpsUIPlugin.isEditable(enumType.getIpsSrcFile()));
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
