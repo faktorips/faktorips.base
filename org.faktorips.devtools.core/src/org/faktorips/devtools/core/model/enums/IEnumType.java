@@ -148,6 +148,13 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass {
      */
     public final static String MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE = MSGCODE_PREFIX + "EnumTypeEnumValuesObsolete"; //$NON-NLS-1$
 
+    /**
+     * Validation message code to indicate that the specified <tt>IEnumContent</tt> is already used
+     * by another <tt>IEnumType</tt>.
+     */
+    public final static String MSGCODE_ENUM_TYPE_ENUM_CONTENT_ALREADY_USED = MSGCODE_PREFIX
+            + "EnumTypeEnumContentAlreadyUsed"; //$NON-NLS-1$
+
     /** Returns the qualified name a referencing <tt>IEnumContent</tt> needs to have. */
     public String getEnumContentName();
 

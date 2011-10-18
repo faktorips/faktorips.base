@@ -68,6 +68,7 @@ public class Messages extends NLS {
     public static String EnumType_NoUsedAsNameInFaktorIpsUiAttribute;
     public static String EnumType_EnumValuesObsolete;
     public static String EnumType_MultipleLiteralNameAttributes;
+    public static String EnumType_EnumContentAlreadyUsedByAnotherEnumType;
 
     public static String EnumContent_ReferencedEnumAttributesCountInvalid;
     public static String EnumContent_ReferencedEnumAttributeNamesInvalid;

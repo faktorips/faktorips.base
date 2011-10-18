@@ -468,6 +468,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         validateLiteralNameAttribute(list);
         validateIdentifierAttribute(list, ipsProject);
         validateUsedAsNameInFaktorIpsUiAttribute(list, ipsProject);
+        validateEnumContentAlreadyUsed(list, ipsProject);
 
         EnumTypeValidations.validateEnumContentName(list, this, isAbstract(), !isContainingValues(),
                 enumContentPackageFragment);
@@ -606,6 +607,23 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             String text = Messages.EnumType_NoUsedAsNameInFaktorIpsUiAttribute;
             Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE, text,
                     Message.ERROR, new ObjectProperty[] { new ObjectProperty(this, null) });
+            validationMessageList.add(message);
+        }
+    }
+
+    /**
+     * Validates whether the <tt>IEnumContent</tt> specified by this <tt>IEnumType</tt> is already
+     * used by another <tt>IEnumType</tt>.
+     */
+    private void validateEnumContentAlreadyUsed(MessageList validationMessageList, IIpsProject ipsProject)
+            throws CoreException {
+
+        IEnumContent enumContent = findEnumContent(ipsProject);
+        if (enumContent != null && !enumContent.getEnumType().equals(getQualifiedName())) {
+            String text = NLS.bind(Messages.EnumType_EnumContentAlreadyUsedByAnotherEnumType,
+                    enumContentPackageFragment, enumContent.getEnumType());
+            Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_ALREADY_USED, text, Message.ERROR,
+                    this, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
             validationMessageList.add(message);
         }
     }
