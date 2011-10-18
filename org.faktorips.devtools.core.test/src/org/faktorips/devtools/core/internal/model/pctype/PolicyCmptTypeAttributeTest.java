@@ -57,6 +57,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+
         ipsProject = this.newIpsProject();
         ipsRootFolder = ipsProject.getIpsPackageFragmentRoots()[0];
         ipsFolder = ipsRootFolder.createPackageFragment("products.folder", true, null);
@@ -355,4 +356,12 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         ml = attribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
     }
+
+    @Test
+    public void testSetCategory() {
+        attribute.setCategory("foo");
+        assertEquals("foo", attribute.getCategory());
+        assertPropertyChangedEvent(attribute, IPolicyCmptTypeAttribute.PROPERTY_CATEGORY, "", "foo");
+    }
+
 }

@@ -25,7 +25,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
  * @author Joerg Ortmann
  */
 public class ProductCmptEditorInput extends FileEditorInput {
-    private boolean ignoreWorkingDateMissmatch;
+
+    private boolean ignoreWorkingDateMismatch;
 
     /**
      * Creates a product cmpt editor input with a given generation.<br>
@@ -38,14 +39,15 @@ public class ProductCmptEditorInput extends FileEditorInput {
 
     private ProductCmptEditorInput(IFile file, boolean ignoreWorkingDateMissmatch) {
         super(file);
-        this.ignoreWorkingDateMissmatch = ignoreWorkingDateMissmatch;
+        this.ignoreWorkingDateMismatch = ignoreWorkingDateMissmatch;
     }
 
     /**
      * Returns <code>true</code> if a mismatch of the working date should be ignored by the editor
      * (e.g. no mismatch dialog will be shown).
      */
-    public boolean isIgnoreWorkingDateMissmatch() {
-        return ignoreWorkingDateMissmatch;
+    public boolean isIgnoreWorkingDateMismatch() {
+        return ignoreWorkingDateMismatch;
     }
+
 }

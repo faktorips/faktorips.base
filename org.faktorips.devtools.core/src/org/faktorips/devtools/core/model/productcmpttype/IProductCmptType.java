@@ -124,35 +124,36 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Validation message code to indicate that no default {@link IProductCmptCategory} for
      * {@link IProductCmptTypeMethod}s marked as formula signature definition exists.
      */
-    public final static String MSGCODE_NO_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
-            + "NoDefaultForFormulaSignatureDefinitions"; //$NON-NLS-1$
+    public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
+            + "NoDefaultCategoryForFormulaSignatureDefinitions"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that no default {@link IProductCmptCategory} for product
      * relevant {@link IValidationRule}s exists.
      */
-    public final static String MSGCODE_NO_DEFAULT_FOR_VALIDATION_RULES = MSGCODE_PREFIX + "NoDefaultForValidationRules"; //$NON-NLS-1$
+    public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES = MSGCODE_PREFIX
+            + "NoDefaultCategoryForValidationRules"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that no default {@link IProductCmptCategory} for
      * {@link ITableStructureUsage}s exists.
      */
-    public final static String MSGCODE_NO_DEFAULT_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
-            + "NoDefaultForTableStructureUsages"; //$NON-NLS-1$
+    public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
+            + "NoDefaultCategoryForTableStructureUsages"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that no default {@link IProductCmptCategory} for product
      * relevant {@link IPolicyCmptTypeAttribute}s exists.
      */
-    public final static String MSGCODE_NO_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
-            + "NoDefaultForPolicyCmptTypeAttributes"; //$NON-NLS-1$
+    public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
+            + "NoDefaultCategoryForPolicyCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that no default {@link IProductCmptCategory} for
      * {@link IProductCmptTypeAttribute}s exists.
      */
-    public final static String MSGCODE_NO_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
-            + "NoDefaultForProductCmptTypeAttributes"; //$NON-NLS-1$
+    public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
+            + "NoDefaultCategoryForProductCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this product component type refers to. Returns
@@ -205,7 +206,20 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Returns all not derived associations from this type and its super types.
      */
+    // TODO AW 18-10-2011: Finder missing IPS project
     public List<IAssociation> findAllNotDerivedAssociations() throws CoreException;
+
+    /**
+     * Returns a list (defensive copy) containing all {@link IProductCmptProperty}s belonging to
+     * this type.
+     * <p>
+     * {@link IProductCmptProperty}s from the supertype hierarchy are also included.
+     * 
+     * @param ipsProject The project which IPS object path is used for the search
+     * 
+     * @throws CoreException If an error occurs during the search
+     */
+    public List<IProductCmptProperty> findAllProductCmptProperties(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the type's attributes.
@@ -427,52 +441,28 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns a list (defensive copy) containing the {@link IProductCmptCategory}s belonging to
      * this type.
      * <p>
-     * The returned list does <strong>not</strong> include categories defined in the supertype
-     * hierarchy. To include categories defined in the supertype hierarchy, use
-     * {@link #findAllProductCmptCategories(IIpsProject)}.
-     * <p>
-     * This operation does <strong>not</strong> include categories marked as <em>inherited</em>, use
-     * {@link #getProductCmptCategoriesIncludeSupertypeCopies()} to include them.
+     * This method does <strong>not</strong> consider categories defined in the supertype hierarchy.
      */
     public List<IProductCmptCategory> getProductCmptCategories();
-
-    /**
-     * Returns an unmodifiable view on the list containing the {@link IProductCmptCategory}s
-     * belonging to this type.
-     * <p>
-     * The returned list does <strong>not</strong> include categories defined in the supertype
-     * hierarchy. To include categories defined in the supertype hierarchy, use
-     * {@link #findAllProductCmptCategories(IIpsProject)}.
-     * <p>
-     * This operation <strong>does</strong> include categories marked as <em>inherited</em>, use
-     * {@link #getProductCmptCategories()} if this is not desired.
-     */
-    public List<IProductCmptCategory> getProductCmptCategoriesIncludeSupertypeCopies();
 
     /**
      * Returns a list (defensive copy) containing the {@link IProductCmptCategory}s belonging to
      * this type.
      * <p>
-     * In contrast to {@link #getProductCmptCategories()}, the list returned by this method
-     * <strong>does</strong> include categories defined in the supertype hierarchy.
-     * <p>
-     * Categories that are marked as <em>inherited</em> are <strong>not</strong> included.
-     * <p>
-     * Categories originating from supertypes are located at the top of the list.
+     * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
+     * Categories from supertypes are located at the top of the list.
      * 
      * @param ipsProject The project which IPS object path is used for the search
      * 
      * @throws CoreException If an error occurs while searching the supertype hierarchy
      */
-    public List<IProductCmptCategory> findAllProductCmptCategories(IIpsProject ipsProject) throws CoreException;
+    public List<IProductCmptCategory> findProductCmptCategories(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the {@link IProductCmptCategory} identified by the given name or null if no such
      * category is found.
      * <p>
      * This method does <strong>not</strong> consider categories defined in the supertype hierarchy.
-     * <p>
-     * This method does <strong>not</strong> consider categories marked as <em>inherited</em>.
      * 
      * @param name The name identifying the {@link IProductCmptCategory} to be retrieved
      */
@@ -482,26 +472,12 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns the {@link IProductCmptCategory} identified by the given name or null if no such
      * category is found.
      * <p>
-     * This method does <strong>not</strong> consider categories defined in the supertype hierarchy.
-     * <p>
-     * This method <strong>does</strong> consider categories marked as <em>inherited</em>.
-     * 
-     * @param name The name identifying the {@link IProductCmptCategory} to be retrieved
-     */
-    public IProductCmptCategory getProductCmptCategoryIncludeSupertypeCopies(String name);
-
-    /**
-     * Returns the {@link IProductCmptCategory} identified by the given name or null if no such
-     * category is found in this type's hierarchy.
-     * <p>
-     * This method <strong>does</strong> consider the supertype hierarchy.
-     * <p>
-     * This method does <strong>not</strong> consider categories marked as <em>inherited</em>.
+     * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
      * @param name The name identifying the {@link IProductCmptCategory} to be retrieved
      * @param ipsProject The project which IPS object path is used for the search
      * 
-     * @throws CoreException If an error occurs while searching the supertype hierarchy
+     * @throws CoreException If an error occurs during the search
      */
     public IProductCmptCategory findProductCmptCategory(String name, IIpsProject ipsProject) throws CoreException;
 
@@ -510,7 +486,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * {@link IProductCmptTypeMethod}s marked as formula signature definition or null if no such
      * category is found.
      * <p>
-     * This method does <strong>not</strong> consider categories marked as <em>inherited</em>.
+     * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
      * @param ipsProject The project which IPS object path is used for the search
      * 
@@ -523,7 +499,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns the first {@link IProductCmptCategory} marked as default for product relevant
      * {@link IValidationRule}s or null if no such category is found.
      * <p>
-     * This method does <strong>not</strong> consider categories marked as <em>inherited</em>.
+     * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
      * @param ipsProject The project which IPS object path is used for the search
      * 
@@ -535,7 +511,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns the first {@link IProductCmptCategory} marked as default for
      * {@link ITableStructureUsage}s or null if no such category is found.
      * <p>
-     * This method does <strong>not</strong> consider categories marked as <em>inherited</em>.
+     * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
      * @param ipsProject The project which IPS object path is used for the search
      * 
@@ -547,7 +523,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns the first {@link IProductCmptCategory} marked as default for product relevant
      * {@link IPolicyCmptTypeAttribute}s or null if no such category is found.
      * <p>
-     * This method does <strong>not</strong> consider categories marked as <em>inherited</em>.
+     * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
      * @param ipsProject The project which IPS object path is used for the search
      * 
@@ -560,7 +536,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns the first {@link IProductCmptCategory} marked as default for
      * {@link IProductCmptTypeAttribute}s or null if no such category is found.
      * <p>
-     * This method does <strong>not</strong> consider categories marked as <em>inherited</em>.
+     * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
      * @param ipsProject The project which IPS object path is used for the search
      * 
@@ -584,20 +560,5 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      *             {@link IProductCmptCategory}
      */
     public int[] moveProductCmptCategories(int[] indexes, boolean up);
-
-    /**
-     * Returns whether the given {@link IProductCmptProperty} is a persisted reference in any
-     * {@link IProductCmptCategory} of this type.
-     * <p>
-     * Default categories hold temporary references to properties that have not been explicitly
-     * assigned to a specific category yet.
-     * <p>
-     * This method will always return false, if the provided property does not directly belong to
-     * this product component type or the configured policy component type.
-     * 
-     * @param property The {@link IProductCmptProperty} to check whether a persisted reference
-     *            exists for
-     */
-    public boolean existsPersistedProductCmptPropertyReference(IProductCmptProperty property);
 
 }

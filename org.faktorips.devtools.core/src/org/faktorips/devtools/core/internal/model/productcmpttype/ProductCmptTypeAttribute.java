@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCategoryHelper;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
@@ -42,12 +43,15 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
+    private final IpsObjectPartCategoryHelper categoryHelper;
+
     private IValueSet valueSet;
 
     private boolean changingOverTime = true;
 
     public ProductCmptTypeAttribute(IProductCmptType parent, String id) {
         super(parent, id);
+        categoryHelper = new IpsObjectPartCategoryHelper(this);
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }
 
@@ -206,6 +210,16 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void reinitPartCollectionsThis() {
         // Nothing to do
+    }
+
+    @Override
+    public String getCategory() {
+        return categoryHelper.getCategory();
+    }
+
+    @Override
+    public void setCategory(String category) {
+        categoryHelper.setCategory(category);
     }
 
 }

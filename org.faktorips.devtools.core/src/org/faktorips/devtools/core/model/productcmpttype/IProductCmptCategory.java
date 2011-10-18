@@ -46,8 +46,6 @@ public interface IProductCmptCategory extends IIpsObjectPart {
 
     public final static String XML_TAG_NAME = "Category"; //$NON-NLS-1$
 
-    public final static String PROPERTY_INHERITED = "inherited"; //$NON-NLS-1$
-
     public final static String PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS = "defaultForMethods"; //$NON-NLS-1$
 
     public final static String PROPERTY_DEFAULT_FOR_VALIDATION_RULES = "defaultForValidationRules"; //$NON-NLS-1$
@@ -72,19 +70,6 @@ public interface IProductCmptCategory extends IIpsObjectPart {
      * another category in the scope of the product component type's hierarchy.
      */
     public final static String MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY = "NameAlreadyUsedInTypeHierarchy"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that this category is inherited but no category with the
-     * same name has been found in the supertype hierarchy of the product component type.
-     */
-    public final static String MSGCODE_INHERITED_BUT_NOT_FOUND_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
-            + "InheritedButNotFoundInSupertypeHierarchy"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that this category is inherited but the product component
-     * type does not specify a super type.
-     */
-    public final static String MSGCODE_INHERITED_BUT_NO_SUPERTYPE = MSGCODE_PREFIX + "InheritedButNoSupertype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that at least one other category within the product
@@ -139,141 +124,22 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public void setName(String name);
 
     /**
-     * Returns the list of {@link IProductCmptPropertyReference}s of this category (defensive copy).
+     * Returns the list of {@link IProductCmptProperty}s assigned to this category (defensive copy).
      * <p>
-     * If this category is <em>inherited</em>, this method does <strong>not</strong> return
-     * references of the supertype hierarchy. The method
-     * {@link #findAllProductCmptPropertyReferences(IIpsProject)} can be used to achieve this.
+     * This method <strong>does</strong> consider references of the supertype hierarchy.
      * 
+     * @param contextType The {@link IProductCmptType} to start the search from; properties assigned
+     *            by {@link IProductCmptType}s below the context type are not returned
      * @param ipsProject The {@link IIpsProject} to use for the search
      * 
      * @throws CoreException If an error occurs during the search
      */
-    public List<IProductCmptPropertyReference> findProductCmptPropertyReferences(IIpsProject ipsProject)
+    public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType, IIpsProject ipsProject)
             throws CoreException;
-
-    /**
-     * Returns the list of {@link IProductCmptPropertyReference}s of this category.
-     * <p>
-     * If this category is <em>inherited</em>, this method <strong>does</strong> return references
-     * of the supertype hierarchy.
-     * 
-     * @param ipsProject The {@link IIpsProject} to use for the search
-     * 
-     * @throws CoreException If an error occurs during the search
-     */
-    public List<IProductCmptPropertyReference> findAllProductCmptPropertyReferences(IIpsProject ipsProject)
-            throws CoreException;
-
-    /**
-     * Returns whether the indicated {@link IProductCmptProperty} is referenced by this category
-     * <strong>and</strong> is a persisted reference in this category.
-     * <p>
-     * This method does <strong>not</strong> consider properties persisted in the supertype
-     * hierarchy.
-     * 
-     * @param productCmptProperty The {@link IProductCmptProperty} to check for persistence in this
-     *            category
-     */
-    public boolean isReferencedAndPersistedProductCmptProperty(IProductCmptProperty productCmptProperty);
-
-    /**
-     * Creates a reference to the given {@link IProductCmptTypeAttribute} in this category and
-     * returns it.
-     * 
-     * @param productCmptTypeAttribute The {@link IProductCmptTypeAttribute} to reference in this
-     *            category
-     * 
-     * @throws NullPointerException If the parameter is null
-     * @throws IllegalArgumentException If the given {@link IProductCmptTypeAttribute} does not
-     *             belong to the {@link IProductCmptType} this category belongs to
-     */
-    public IProductCmptPropertyDirectReference newProductCmptPropertyReference(IProductCmptTypeAttribute productCmptTypeAttribute);
-
-    /**
-     * Creates a reference to the given {@link IPolicyCmptTypeAttribute} in this category and
-     * returns it.
-     * 
-     * @param policyCmptTypeAttribute The {@link IPolicyCmptTypeAttribute} to reference in this
-     *            category
-     * 
-     * @throws NullPointerException If the parameter is null
-     * @throws IllegalArgumentException If the given {@link IPolicyCmptTypeAttribute} does not
-     *             belong to the {@link IPolicyCmptType} the {@link IProductCmptType} this category
-     *             belongs to configures
-     */
-    public IProductCmptPropertyExternalReference newProductCmptPropertyReference(IPolicyCmptTypeAttribute policyCmptTypeAttribute);
-
-    /**
-     * Creates a reference to the given {@link IProductCmptTypeMethod} in this category and returns
-     * it.
-     * 
-     * @param productCmptTypeMethod The {@link IProductCmptTypeMethod} to reference in this category
-     * 
-     * @throws NullPointerException If the parameter is null
-     * @throws IllegalArgumentException If the given {@link IProductCmptTypeMethod} does not belong
-     *             to the {@link IProductCmptType} this category belongs to
-     */
-    public IProductCmptPropertyDirectReference newProductCmptPropertyReference(IProductCmptTypeMethod productCmptTypeMethod);
-
-    /**
-     * Creates a reference to the given {@link ITableStructureUsage} in this category and returns
-     * it.
-     * 
-     * @param tableStructureUsage The {@link ITableStructureUsage} to reference in this category
-     * 
-     * @throws NullPointerException If the parameter is null
-     * @throws IllegalArgumentException If the given {@link ITableStructureUsage} does not belong to
-     *             the {@link IProductCmptType} this category belongs to
-     */
-    public IProductCmptPropertyDirectReference newProductCmptPropertyReference(ITableStructureUsage tableStructureUsage);
-
-    /**
-     * Creates a reference to the given {@link IValidationRule} in this category and returns it.
-     * 
-     * @param validationRule The {@link IValidationRule} to reference in this category
-     * 
-     * @throws NullPointerException If the parameter is null
-     * @throws IllegalArgumentException If the given {@link IValidationRule} does not belong to the
-     *             {@link IPolicyCmptType} the {@link IProductCmptType} this category belongs to
-     *             configures
-     */
-    public IProductCmptPropertyExternalReference newProductCmptPropertyReference(IValidationRule validationRule);
-
-    /**
-     * Deletes the first persistent {@link IProductCmptPropertyReference} to the indicated
-     * {@link IProductCmptProperty} from this category.
-     * <p>
-     * Returns false if the {@link IProductCmptProperty} was not persistently referenced by this
-     * category, true otherwise.
-     * 
-     * @param productCmptProperty The {@link IProductCmptProperty} to no longer persistently
-     *            reference from this category
-     * 
-     * @throws NullPointerException If the parameter is null
-     */
-    public boolean deleteProductCmptPropertyReference(IProductCmptProperty productCmptProperty);
-
-    /**
-     * Returns whether this category is inherited from the supertype hierarchy.
-     */
-    public boolean isInherited();
-
-    /**
-     * Sets whether this category is inherited from the supertype hierarchy.
-     * 
-     * @param inherited Flag indicating whether this category is inherited from the supertype
-     *            hierarchy
-     */
-    public void setInherited(boolean inherited);
 
     /**
      * Returns whether this category is marked as default category for
      * {@link IProductCmptTypeMethod}s defining formula signatures.
-     * <p>
-     * <strong>Attention:</strong> If this category is <em>inherited</em>, the value returned by
-     * this operation is of no relevance. Instead, the property depends on the configuration of the
-     * original category defined in the supertype hierarchy.
      */
     public boolean isDefaultForFormulaSignatureDefinitions();
 
@@ -289,10 +155,6 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     /**
      * Returns whether this category is marked as default category for product relevant
      * {@link IPolicyCmptTypeAttribute}s.
-     * <p>
-     * <strong>Attention:</strong> If this category is <em>inherited</em>, the value returned by
-     * this operation is of no relevance. Instead, the property depends on the configuration of the
-     * original category defined in the supertype hierarchy.
      */
     public boolean isDefaultForPolicyCmptTypeAttributes();
 
@@ -308,10 +170,6 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     /**
      * Returns whether this category is marked as default category for
      * {@link IProductCmptTypeAttribute}s.
-     * <p>
-     * <strong>Attention:</strong> If this category is <em>inherited</em>, the value returned by
-     * this operation is of no relevance. Instead, the property depends on the configuration of the
-     * original category defined in the supertype hierarchy.
      */
     public boolean isDefaultForProductCmptTypeAttributes();
 
@@ -326,10 +184,6 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     /**
      * Returns whether this category is marked as default category for {@link ITableStructureUsage}
      * s.
-     * <p>
-     * <strong>Attention:</strong> If this category is <em>inherited</em>, the value returned by
-     * this operation is of no relevance. Instead, the property depends on the configuration of the
-     * original category defined in the supertype hierarchy.
      */
     public boolean isDefaultForTableStructureUsages();
 
@@ -344,10 +198,6 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     /**
      * Returns whether this category is marked as default category for product relevant
      * {@link IValidationRule}s.
-     * <p>
-     * <strong>Attention:</strong> If this category is <em>inherited</em>, the value returned by
-     * this operation is of no relevance. Instead, the property depends on the configuration of the
-     * original category defined in the supertype hierarchy.
      */
     public boolean isDefaultForValidationRules();
 
@@ -385,28 +235,21 @@ public interface IProductCmptCategory extends IIpsObjectPart {
     public boolean isAtRightPosition();
 
     /**
-     * Returns how many references to {@link IProductCmptProperty}s are contained in this category.
+     * Moves the given {@link IProductCmptProperty}s up or down by one position.
      * <p>
-     * This method does <strong>not</strong> consider the number of references from the supertype
-     * hierarchy.
-     */
-    public int getNumberOfProductCmptPropertyReferences();
-
-    /**
-     * Moves the {@link IProductCmptPropertyReference}s identified by the indexes up or down by one
-     * position and returns the new indexes of the moved objects.
-     * <p>
-     * If one of the indexes is 0 (the first object), no object is moved up. If one of the indexes
-     * is the number of objects - 1 (the last object) no object is moved down.
+     * If one of the properties is the first object, no property is moved up. If one of the
+     * properties is the last object, no property is moved down. Returns true if a move was actually
+     * performed.
      * 
-     * @param indexes The indexes identifying the {@link IProductCmptPropertyReference}s to be moved
+     * @param properties The {@link IProductCmptCategory} to be moved
      * @param up Flag indicating whether to move up or down
      * 
-     * @throws NullPointerException If indexes is null
-     * @throws IndexOutOfBoundsException If one of the indexes does not identify an
-     *             {@link IProductCmptPropertyReference}
+     * @throws NullPointerException If the properties array is null
+     * @throws IllegalArgumentException If one of the provided {@link IProductCmptProperty}s does
+     *             not belong to the {@link IProductCmptType} of this category (or it's configured
+     *             {@link IPolicyCmptType}
      */
-    public int[] moveProductCmptPropertyReferences(int[] indexes, boolean up);
+    public boolean moveProductCmptProperties(IProductCmptProperty[] properties, boolean up);
 
     /**
      * Defines the position of this category.

@@ -56,7 +56,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         rule = pcType.newRule();
         ipsSrcFile.save(true, null);
         assertFalse(ipsSrcFile.isDirty());
-
     }
 
     @Test
@@ -290,4 +289,12 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         pcType.setConfigurableByProductCmptType(false);
         assertFalse("Rule isn't supposed to be configurable", rule.isConfigurableByProductComponent());
     }
+
+    @Test
+    public void testSetCategory() {
+        rule.setCategory("foo");
+        assertEquals("foo", rule.getCategory());
+        assertPropertyChangedEvent(rule, IPolicyCmptTypeAttribute.PROPERTY_CATEGORY, "", "foo");
+    }
+
 }

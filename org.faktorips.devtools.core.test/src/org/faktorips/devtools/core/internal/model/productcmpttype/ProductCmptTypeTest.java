@@ -33,8 +33,6 @@ import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
@@ -49,6 +47,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -72,9 +71,8 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptTypeTest extends AbstractDependencyTest implements ContentsChangeListener {
+public class ProductCmptTypeTest extends AbstractDependencyTest {
 
-    private ContentChangeEvent lastEvent;
     private IIpsProject ipsProject;
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
@@ -85,6 +83,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
     @Before
     public void setUp() throws Exception {
         super.setUp();
+
         ipsProject = newIpsProject();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
@@ -92,12 +91,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         productCmptType.setSupertype(superProductCmptType.getQualifiedName());
         superSuperProductCmptType = newProductCmptType(ipsProject, "SuperSuperProduct");
         superProductCmptType.setSupertype(superSuperProductCmptType.getQualifiedName());
-        ipsProject.getIpsModel().addChangeListener(this);
-    }
-
-    @Override
-    protected void tearDownExtension() throws Exception {
-        ipsProject.getIpsModel().removeChangeListener(this);
     }
 
     @Test
@@ -423,7 +416,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         // relevant!
 
         // test property type = null
-        Map<String, IProductCmptProperty> propertyMap = ((ProductCmptType)productCmptType).getProductCpmtPropertyMap(
+        Map<String, IProductCmptProperty> propertyMap = ((ProductCmptType)productCmptType).findProductCmptPropertyMap(
                 null, ipsProject);
         assertEquals(8, propertyMap.size());
         assertEquals(supertypeAttr, propertyMap.get(supertypeAttr.getPropertyName()));
@@ -436,25 +429,25 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         assertEquals(policyCmptTypeAttr, propertyMap.get(policyCmptTypeAttr.getPropertyName()));
 
         // test with specific property types
-        propertyMap = ((ProductCmptType)productCmptType).getProductCpmtPropertyMap(
+        propertyMap = ((ProductCmptType)productCmptType).findProductCmptPropertyMap(
                 ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(supertypeAttr, propertyMap.get(supertypeAttr.getPropertyName()));
         assertEquals(typeAttribute, propertyMap.get(typeAttribute.getPropertyName()));
 
-        propertyMap = ((ProductCmptType)productCmptType).getProductCpmtPropertyMap(
+        propertyMap = ((ProductCmptType)productCmptType).findProductCmptPropertyMap(
                 ProductCmptPropertyType.TABLE_STRUCTURE_USAGE, ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(supertypeTsu, propertyMap.get(supertypeTsu.getPropertyName()));
         assertEquals(typeTsu, propertyMap.get(typeTsu.getPropertyName()));
 
-        propertyMap = ((ProductCmptType)productCmptType).getProductCpmtPropertyMap(
+        propertyMap = ((ProductCmptType)productCmptType).findProductCmptPropertyMap(
                 ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(supertypeSignature, propertyMap.get(supertypeSignature.getPropertyName()));
         assertEquals(typeSignature, propertyMap.get(typeSignature.getPropertyName()));
 
-        propertyMap = ((ProductCmptType)productCmptType).getProductCpmtPropertyMap(
+        propertyMap = ((ProductCmptType)productCmptType).findProductCmptPropertyMap(
                 ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(policyCmptSupertypeAttr, propertyMap.get(policyCmptSupertypeAttr.getPropertyName()));
@@ -465,7 +458,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         // policy component type aren't considered twice.
         IProductCmptType subtype = newProductCmptType(productCmptType, "Subtype");
         subtype.setPolicyCmptType(policyCmptType.getQualifiedName());
-        propertyMap = ((ProductCmptType)subtype).getProductCpmtPropertyMap(
+        propertyMap = ((ProductCmptType)subtype).findProductCmptPropertyMap(
                 ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(policyCmptSupertypeAttr, propertyMap.get(policyCmptSupertypeAttr.getPropertyName()));
@@ -765,7 +758,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         assertEquals(a1, productCmptType.getProductCmptTypeAttributes().get(0));
         assertEquals(productCmptType, a1.getProductCmptType());
 
-        assertEquals(a1, lastEvent.getPart());
+        assertEquals(a1, lastContentChangeEvent.getPart());
     }
 
     @Test
@@ -919,9 +912,9 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         assertEquals(a3, attributes.get(1));
         assertEquals(a1, attributes.get(2));
 
-        assertTrue(lastEvent.isAffected(a1));
-        assertTrue(lastEvent.isAffected(a2));
-        assertTrue(lastEvent.isAffected(a3));
+        assertTrue(lastContentChangeEvent.isAffected(a1));
+        assertTrue(lastContentChangeEvent.isAffected(a2));
+        assertTrue(lastContentChangeEvent.isAffected(a3));
     }
 
     @Test
@@ -1027,7 +1020,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
-                IProductCmptType.MSGCODE_NO_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS, productCmptType, null,
+                IProductCmptType.MSGCODE_NO_DEFAULT_CATEGORY_FOR_FORMULA_SIGNATURE_DEFINITIONS, productCmptType, null,
                 Message.ERROR);
     }
 
@@ -1038,7 +1031,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
-                IProductCmptType.MSGCODE_NO_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, productCmptType, null,
+                IProductCmptType.MSGCODE_NO_DEFAULT_CATEGORY_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, productCmptType, null,
                 Message.ERROR);
     }
 
@@ -1049,7 +1042,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
-                IProductCmptType.MSGCODE_NO_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, productCmptType, null,
+                IProductCmptType.MSGCODE_NO_DEFAULT_CATEGORY_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, productCmptType, null,
                 Message.ERROR);
     }
 
@@ -1060,7 +1053,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
-                IProductCmptType.MSGCODE_NO_DEFAULT_FOR_TABLE_STRUCTURE_USAGES, productCmptType, null, Message.ERROR);
+                IProductCmptType.MSGCODE_NO_DEFAULT_CATEGORY_FOR_TABLE_STRUCTURE_USAGES, productCmptType, null,
+                Message.ERROR);
     }
 
     @Test
@@ -1069,8 +1063,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         productCmptType.setSupertype("");
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList, IProductCmptType.MSGCODE_NO_DEFAULT_FOR_VALIDATION_RULES,
-                productCmptType, null, Message.ERROR);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptType.MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES, productCmptType, null, Message.ERROR);
     }
 
     @Test
@@ -1168,9 +1162,37 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         assertEquals(1, methods.size());
     }
 
-    @Override
-    public void contentsChanged(ContentChangeEvent event) {
-        lastEvent = event;
+    @Test
+    public void testFindAllProductCmptProperties() throws CoreException {
+        IProductCmptTypeAttribute productAttribute = productCmptType.newProductCmptTypeAttribute();
+
+        IProductCmptTypeMethod productMethod = productCmptType.newProductCmptTypeMethod();
+
+        ITableStructureUsage tsu = productCmptType.newTableStructureUsage();
+
+        IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute();
+        policyAttribute.setProductRelevant(true);
+
+        IValidationRule validationRule = policyCmptType.newRule();
+        validationRule.setConfigurableByProductComponent(true);
+
+        List<IProductCmptProperty> properties = productCmptType.findAllProductCmptProperties(ipsProject);
+        assertTrue(properties.contains(productAttribute));
+        assertTrue(properties.contains(productMethod));
+        assertTrue(properties.contains(tsu));
+        assertTrue(properties.contains(policyAttribute));
+        assertTrue(properties.contains(validationRule));
+        assertEquals(5, properties.size());
+    }
+
+    @Test
+    public void testFindAllProductCmptPropertiesIgnoreNotProductRelevantProperties() throws CoreException {
+        productCmptType.newProductCmptTypeMethod().setFormulaSignatureDefinition(false);
+        policyCmptType.newPolicyCmptTypeAttribute();
+        policyCmptType.newRule();
+
+        List<IProductCmptProperty> properties = productCmptType.findAllProductCmptProperties(ipsProject);
+        assertTrue(properties.isEmpty());
     }
 
     @Test
@@ -1252,90 +1274,45 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
     public void testGetProductCmptCategory() {
         IProductCmptCategory category1 = productCmptType.newProductCmptCategory("foo");
         IProductCmptCategory category2 = productCmptType.newProductCmptCategory("bar");
-        category2.setInherited(true);
 
         assertEquals(category1, productCmptType.getProductCmptCategory("foo"));
-        assertNull(productCmptType.getProductCmptCategory("bar"));
-    }
-
-    @Test
-    public void testGetProductCmptCategoryIncludeSupertypeCopies() {
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
-        IProductCmptCategory inheritedCategory = productCmptType.newProductCmptCategory("bar");
-        inheritedCategory.setInherited(true);
-
-        assertEquals(category, productCmptType.getProductCmptCategoryIncludeSupertypeCopies("foo"));
-        assertEquals(inheritedCategory, productCmptType.getProductCmptCategoryIncludeSupertypeCopies("bar"));
+        assertEquals(category2, productCmptType.getProductCmptCategory("bar"));
     }
 
     @Test
     public void testGetProductCmptCategories() {
         deleteAllProductCmptCategories(productCmptType);
 
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
-        IProductCmptCategory inheritedCategory = productCmptType.newProductCmptCategory("bar");
-        inheritedCategory.setInherited(true);
+        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("foo");
+        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("bar");
 
-        assertEquals(category, productCmptType.getProductCmptCategories().get(0));
-        assertFalse(productCmptType.getProductCmptCategories().contains(inheritedCategory));
-        assertEquals(1, productCmptType.getProductCmptCategories().size());
+        assertEquals(category1, productCmptType.getProductCmptCategories().get(0));
+        assertEquals(category2, productCmptType.getProductCmptCategories().get(1));
+        assertEquals(2, productCmptType.getProductCmptCategories().size());
     }
 
     @Test
-    public void testGetProductCmptCategoriesIncludeSupertypeCopies() {
-        deleteAllProductCmptCategories(productCmptType);
-
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
-        IProductCmptCategory inheritedCategory = productCmptType.newProductCmptCategory("bar");
-        inheritedCategory.setInherited(true);
-
-        assertEquals(category, productCmptType.getProductCmptCategoriesIncludeSupertypeCopies().get(0));
-        assertEquals(inheritedCategory, productCmptType.getProductCmptCategoriesIncludeSupertypeCopies().get(1));
-        assertEquals(2, productCmptType.getProductCmptCategoriesIncludeSupertypeCopies().size());
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void testGetProductCmptCategoriesIncludeSupertypeCopiesUnmodifiable() {
-        productCmptType.newProductCmptCategory("foo");
-        productCmptType.getProductCmptCategoriesIncludeSupertypeCopies().remove(0);
-    }
-
-    @Test
-    public void testFindAllProductCmptCategories() throws CoreException {
-        IProductCmptType superSuperProductCmptType = newProductCmptType(ipsProject, "SuperSuperProductCmptType");
-        superProductCmptType.setSupertype(superSuperProductCmptType.getQualifiedName());
-
+    public void testFindProductCmptCategories() throws CoreException {
         deleteAllProductCmptCategories(superSuperProductCmptType);
         deleteAllProductCmptCategories(superProductCmptType);
         deleteAllProductCmptCategories(productCmptType);
 
-        IProductCmptCategory superSuperCategory = superSuperProductCmptType.newProductCmptCategory();
-        IProductCmptCategory superCategory = superProductCmptType.newProductCmptCategory();
-        IProductCmptCategory category = productCmptType.newProductCmptCategory();
-        IProductCmptCategory inheritedCategory = productCmptType.newProductCmptCategory();
-        inheritedCategory.setInherited(true);
+        IProductCmptCategory superSuperCategory = superSuperProductCmptType
+                .newProductCmptCategory("superSuperCategory");
+        IProductCmptCategory superCategory = superProductCmptType.newProductCmptCategory("superCategory");
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("category");
 
-        List<IProductCmptCategory> allCategories = productCmptType.findAllProductCmptCategories(ipsProject);
-        assertEquals(superSuperCategory, allCategories.get(0));
-        assertEquals(superCategory, allCategories.get(1));
-        assertEquals(category, allCategories.get(2));
-        assertFalse(allCategories.contains(inheritedCategory));
-        assertEquals(3, allCategories.size());
+        List<IProductCmptCategory> categories = productCmptType.findProductCmptCategories(ipsProject);
+        assertEquals(superSuperCategory, categories.get(0));
+        assertEquals(superCategory, categories.get(1));
+        assertEquals(category, categories.get(2));
+        assertEquals(3, categories.size());
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testFindAllProductCmptCategoriesUnmodifiable() throws CoreException {
+    public void testFindProductCmptCategoriesUnmodifiable() throws CoreException {
         productCmptType.newProductCmptCategory();
-        productCmptType.findAllProductCmptCategories(ipsProject).remove(0);
-    }
-
-    @Test
-    public void testFindProductCmptCategory() throws CoreException {
-        IProductCmptCategory superCategory = superProductCmptType.newProductCmptCategory("foo");
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
-        category.setInherited(true);
-
-        assertEquals(superCategory, productCmptType.findProductCmptCategory("foo", ipsProject));
+        productCmptType.findProductCmptCategories(ipsProject).remove(0);
     }
 
     @Test
@@ -1352,20 +1329,9 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         assertEquals(category3, categories.get(1));
         assertEquals(category1, categories.get(2));
 
-        assertTrue(lastEvent.isAffected(category1));
-        assertTrue(lastEvent.isAffected(category2));
-        assertTrue(lastEvent.isAffected(category3));
-    }
-
-    @Test
-    public void testExistsPersistedProductCmptPropertyReference() {
-        IProductCmptCategory category = productCmptType.newProductCmptCategory();
-        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
-
-        assertFalse(productCmptType.existsPersistedProductCmptPropertyReference(attribute));
-
-        category.newProductCmptPropertyReference(attribute);
-        assertTrue(productCmptType.existsPersistedProductCmptPropertyReference(attribute));
+        assertTrue(lastContentChangeEvent.isAffected(category1));
+        assertTrue(lastContentChangeEvent.isAffected(category2));
+        assertTrue(lastContentChangeEvent.isAffected(category3));
     }
 
     @Test

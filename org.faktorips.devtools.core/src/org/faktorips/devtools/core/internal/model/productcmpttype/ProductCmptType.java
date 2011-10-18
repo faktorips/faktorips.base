@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.FormulaSignatureFinder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -84,6 +85,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     private final IpsObjectPartCollection<IProductCmptTypeMethod> methods;
     private final IpsObjectPartCollection<IProductCmptTypeAssociation> associations;
     private final IpsObjectPartCollection<IProductCmptCategory> categories;
+    private final IpsObjectPartCollection<IProductCmptPropertyReference> propertyReferences;
 
     public ProductCmptType(IIpsSrcFile file) {
         super(file);
@@ -96,7 +98,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
         associations = new IpsObjectPartCollection<IProductCmptTypeAssociation>(this, ProductCmptTypeAssociation.class,
                 IProductCmptTypeAssociation.class, ProductCmptTypeAssociation.TAG_NAME);
         categories = new IpsObjectPartCollection<IProductCmptCategory>(this, ProductCmptCategory.class,
-                IProductCmptCategory.class, ProductCmptCategory.XML_TAG_NAME);
+                IProductCmptCategory.class, IProductCmptCategory.XML_TAG_NAME);
+        propertyReferences = new IpsObjectPartCollection<IProductCmptPropertyReference>(this,
+                ProductCmptPropertyReference.class, IProductCmptPropertyReference.class,
+                IProductCmptPropertyReference.XML_TAG_NAME);
     }
 
     @Override
@@ -187,7 +192,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * @param propertyType The type of properties that should be included in the map.
      *            <code>null</code> indicates that all properties should be included in the map.
      */
-    public LinkedHashMap<String, IProductCmptProperty> getProductCpmtPropertyMap(ProductCmptPropertyType propertyType,
+    public LinkedHashMap<String, IProductCmptProperty> findProductCmptPropertyMap(ProductCmptPropertyType propertyType,
             IIpsProject ipsProject) throws CoreException {
 
         ProductCmptPropertyCollector collector = new ProductCmptPropertyCollector(propertyType, ipsProject);
@@ -244,6 +249,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
         NotDerivedAssociationCollector collector = new NotDerivedAssociationCollector(getIpsProject());
         collector.start(this);
         return collector.associations;
+    }
+
+    @Override
+    public List<IProductCmptProperty> findAllProductCmptProperties(IIpsProject ipsProject) throws CoreException {
+        ProductCmptPropertyCollector collector = new ProductCmptPropertyCollector(null, ipsProject);
+        collector.start(this);
+        return collector.getProperties();
     }
 
     @Override
@@ -554,7 +566,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         if (findDefaultCategoryForFormulaSignatureDefinitions(ipsProject) == null) {
             String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForFormulaSignatureDefinitions, getName());
-            list.newError(MSGCODE_NO_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS, text, ProductCmptType.this, null);
+            list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_FORMULA_SIGNATURE_DEFINITIONS, text, ProductCmptType.this,
+                    null);
         }
     }
 
@@ -563,7 +576,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         if (findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject) == null) {
             String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForPolicyCmptTypeAttributes, getName());
-            list.newError(MSGCODE_NO_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this, null);
+            list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this, null);
         }
     }
 
@@ -572,7 +585,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         if (findDefaultCategoryForProductCmptTypeAttributes(ipsProject) == null) {
             String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForProductCmptTypeAttributes, getName());
-            list.newError(MSGCODE_NO_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this, null);
+            list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this,
+                    null);
         }
     }
 
@@ -581,7 +595,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         if (findDefaultCategoryForTableStructureUsages(ipsProject) == null) {
             String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForTableStructureUsages, getName());
-            list.newError(MSGCODE_NO_DEFAULT_FOR_TABLE_STRUCTURE_USAGES, text, ProductCmptType.this, null);
+            list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_TABLE_STRUCTURE_USAGES, text, ProductCmptType.this, null);
         }
     }
 
@@ -590,7 +604,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         if (findDefaultCategoryForValidationRules(ipsProject) == null) {
             String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForValidationRules, getName());
-            list.newError(MSGCODE_NO_DEFAULT_FOR_VALIDATION_RULES, text, ProductCmptType.this, null);
+            list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES, text, ProductCmptType.this, null);
         }
     }
 
@@ -680,68 +694,40 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public List<IProductCmptCategory> getProductCmptCategories() {
-        List<IProductCmptCategory> notInheritedCategories = new ArrayList<IProductCmptCategory>(categories.size());
-        for (IProductCmptCategory category : categories) {
-            if (!category.isInherited()) {
-                notInheritedCategories.add(category);
-            }
-        }
-        return notInheritedCategories;
-    }
-
-    @Override
-    public List<IProductCmptCategory> getProductCmptCategoriesIncludeSupertypeCopies() {
         return Collections.unmodifiableList(categories.asList());
     }
 
     @Override
-    public List<IProductCmptCategory> findAllProductCmptCategories(IIpsProject ipsProject) throws CoreException {
+    public List<IProductCmptCategory> findProductCmptCategories(IIpsProject ipsProject) throws CoreException {
         // Collect all categories from the supertype hierarchy
-        final Map<IProductCmptType, List<IProductCmptCategory>> typesToCategories = new LinkedHashMap<IProductCmptType, List<IProductCmptCategory>>();
+        final Map<IProductCmptType, List<IProductCmptCategory>> typesToOriginalCategories = new LinkedHashMap<IProductCmptType, List<IProductCmptCategory>>();
         TypeHierarchyVisitor<IProductCmptType> visitor = new TypeHierarchyVisitor<IProductCmptType>(ipsProject) {
             @Override
             protected boolean visit(IProductCmptType currentType) throws CoreException {
-                typesToCategories.put(currentType, currentType.getProductCmptCategories());
+                typesToOriginalCategories.put(currentType, currentType.getProductCmptCategories());
                 return true;
             }
         };
         visitor.start(this);
-        // Sort so that categories that are farther up in the hierarchy are listed at the top
+
+        // Sort so categories originating from farther up in the hierarchy are listed at the top
         List<IProductCmptCategory> sortedCategories = new ArrayList<IProductCmptCategory>();
         for (int i = visitor.getVisited().size() - 1; i >= 0; i--) {
             IType type = visitor.getVisited().get(i);
-            sortedCategories.addAll(typesToCategories.get(type));
+            sortedCategories.addAll(typesToOriginalCategories.get(type));
         }
+
         return Collections.unmodifiableList(sortedCategories);
     }
 
     @Override
     public IProductCmptCategory getProductCmptCategory(String name) {
-        IProductCmptCategory category = getProductCmptCategoryIncludeSupertypeCopies(name);
-        if (category != null && !category.isInherited()) {
-            return category;
-        }
-        return null;
-    }
-
-    @Override
-    public IProductCmptCategory getProductCmptCategoryIncludeSupertypeCopies(String name) {
         for (IProductCmptCategory category : categories) {
             if (category.getName().equals(name)) {
                 return category;
             }
         }
         return null;
-    }
-
-    @Override
-    public boolean existsPersistedProductCmptPropertyReference(IProductCmptProperty property) {
-        for (IProductCmptCategory category : categories) {
-            if (category.isReferencedAndPersistedProductCmptProperty(property)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -825,8 +811,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
             @Override
             protected boolean visit(IProductCmptType currentType) throws CoreException {
-                if (currentType.getProductCmptCategory(categoryName) != null
-                        && !currentType.getProductCmptCategory(categoryName).isInherited()) {
+                if (currentType.getProductCmptCategory(categoryName) != null) {
                     category = currentType.getProductCmptCategory(categoryName);
                     return false;
                 }
@@ -844,6 +829,20 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public int[] moveProductCmptCategories(int[] indexes, boolean up) {
         return categories.moveParts(indexes, up);
+    }
+
+    boolean moveProductCmptPropertyReferences(IProductCmptProperty[] properties, boolean up) {
+        int[] indexes = new int[0]; // TODO AW
+        int[] newIndexes = propertyReferences.moveParts(indexes, up);
+        return !Arrays.equals(indexes, newIndexes);
+    }
+
+    // TODO AW
+    private IProductCmptPropertyReference newProductCmptPropertyReference(IProductCmptProperty productCmptProperty) {
+        IProductCmptPropertyReference reference = propertyReferences.newPart();
+        reference.setName(productCmptProperty.getPropertyName());
+        reference.setProductCmptPropertyType(productCmptProperty.getProductCmptPropertyType());
+        return reference;
     }
 
     private abstract class DefaultCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {

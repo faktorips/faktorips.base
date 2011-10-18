@@ -24,6 +24,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
@@ -36,8 +37,10 @@ import org.w3c.dom.Element;
 
 public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
 
-    private IProductCmptType pcType;
+    private IProductCmptType type;
+
     private IProductCmptTypeMethod method;
+
     private IIpsProject ipsProject;
 
     @Override
@@ -45,8 +48,8 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
-        pcType = newProductCmptType(ipsProject, "Type");
-        method = pcType.newProductCmptTypeMethod();
+        type = newProductCmptType(ipsProject, "Type");
+        method = type.newProductCmptTypeMethod();
     }
 
     @Test
@@ -103,7 +106,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
                 .getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
 
         method.setFormulaSignatureDefinition(false);
-        method.setDatatype(pcType.getQualifiedName());
+        method.setDatatype(type.getQualifiedName());
         result = method.validate(method.getIpsProject());
         assertNull(result
                 .getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
@@ -135,7 +138,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXmlDocument() {
-        method = pcType.newProductCmptTypeMethod(); // => id=1, because it's the second method
+        method = type.newProductCmptTypeMethod(); // => id=1, because it's the second method
         method.setName("getAge");
         method.setModifier(Modifier.PUBLIC);
         method.setDatatype("Decimal");
@@ -152,7 +155,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
 
         Element element = method.toXml(newDocument());
 
-        IProductCmptTypeMethod copy = pcType.newProductCmptTypeMethod();
+        IProductCmptTypeMethod copy = type.newProductCmptTypeMethod();
         copy.initFromXml(element);
         assertTrue(copy.isFormulaSignatureDefinition());
         assertEquals("Premium", copy.getFormulaName());
@@ -260,6 +263,13 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         msgList = bMethod.validate(ipsProject);
         msg = msgList.getMessageByCode(IProductCmptTypeMethod.MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY);
         assertNotNull(msg);
+    }
+
+    @Test
+    public void testSetCategory() {
+        method.setCategory("foo");
+        assertEquals("foo", method.getCategory());
+        assertPropertyChangedEvent(method, IPolicyCmptTypeAttribute.PROPERTY_CATEGORY, "", "foo");
     }
 
 }

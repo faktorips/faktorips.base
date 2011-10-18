@@ -22,6 +22,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCategoryHelper;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -46,6 +47,8 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
 
     final static String TAG_NAME_TABLE_STRUCTURE = "TableStructure"; //$NON-NLS-1$
 
+    private final IpsObjectPartCategoryHelper categoryHelper;
+
     private boolean mandatoryTableContent = false;
 
     /** Contains the related table structures identified by the full qualified name */
@@ -53,6 +56,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
 
     public TableStructureUsage(IProductCmptType pcType, String id) {
         super(pcType, id);
+        categoryHelper = new IpsObjectPartCategoryHelper(this);
     }
 
     @Override
@@ -64,7 +68,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
      * Constructor for testing purposes.
      */
     public TableStructureUsage() {
-        // Default constructor provided for testing purposes.
+        categoryHelper = new IpsObjectPartCategoryHelper(this);
     }
 
     @Override
@@ -300,6 +304,26 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         return ProductCmptPropertyType.TABLE_STRUCTURE_USAGE;
     }
 
+    @Override
+    public boolean isChangingOverTime() {
+        return true;
+    }
+
+    @Override
+    public String getPropertyDatatype() {
+        return ""; //$NON-NLS-1$
+    }
+
+    @Override
+    public String getCategory() {
+        return categoryHelper.getCategory();
+    }
+
+    @Override
+    public void setCategory(String category) {
+        categoryHelper.setCategory(category);
+    }
+
     public class TableStructureReference extends AtomicIpsObjectPart {
 
         private String tableStructure = ""; //$NON-NLS-1$
@@ -350,16 +374,6 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
             }
         }
 
-    }
-
-    @Override
-    public boolean isChangingOverTime() {
-        return true;
-    }
-
-    @Override
-    public String getPropertyDatatype() {
-        return ""; //$NON-NLS-1$
     }
 
 }

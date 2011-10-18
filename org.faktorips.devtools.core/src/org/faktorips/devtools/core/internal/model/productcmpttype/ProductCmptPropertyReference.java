@@ -16,30 +16,55 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
+ * Implementation of {@link IProductCmptPropertyReference}, please see the interface for more
+ * details.
+ * 
  * @author Alexander Weickmann
  */
-public abstract class ProductCmptPropertyReference extends AtomicIpsObjectPart implements IProductCmptPropertyReference {
+public final class ProductCmptPropertyReference extends AtomicIpsObjectPart implements IProductCmptPropertyReference {
 
-    protected ProductCmptPropertyReference(IProductCmptCategory parentCategory, String id) {
+    private ProductCmptPropertyType propertyType;
+
+    public ProductCmptPropertyReference(IProductCmptCategory parentCategory, String id) {
         super(parentCategory, id);
     }
 
-    /**
-     * Returns the {@link IProductCmptType} this reference belongs to.
-     */
-    protected final IProductCmptType getProductCmptType() {
-        return getProductCmptCategory().getProductCmptType();
+    @Override
+    public void setName(String name) {
+        String oldValue = this.name;
+        this.name = name;
+        valueChanged(oldValue, name, PROPERTY_NAME);
     }
 
-    /**
-     * Returns the {@link IProductCmptCategory} this reference belongs to.
-     */
-    protected final IProductCmptCategory getProductCmptCategory() {
-        return (IProductCmptCategory)getParent();
+    @Override
+    public void setProductCmptPropertyType(ProductCmptPropertyType propertyType) {
+        ProductCmptPropertyType oldValue = this.propertyType;
+        this.propertyType = propertyType;
+        valueChanged(oldValue, propertyType, PROPERTY_PROPERTY_TYPE);
+    }
+
+    @Override
+    public ProductCmptPropertyType getProductCmptPropertyType() {
+        return propertyType;
+    }
+
+    @Override
+    public boolean isReferencingProperty(IProductCmptProperty property) {
+        return getName().equals(property.getName()) && propertyType == property.getProductCmptPropertyType();
+    }
+
+    @Override
+    protected void initFromXml(Element element, String id) {
+        name = element.getAttribute(PROPERTY_NAME);
+        propertyType = ProductCmptPropertyType.getValueById(element.getAttribute(PROPERTY_PROPERTY_TYPE));
+
+        super.initFromXml(element, id);
     }
 
     @Override
@@ -48,6 +73,11 @@ public abstract class ProductCmptPropertyReference extends AtomicIpsObjectPart i
 
         element.setAttribute(PROPERTY_NAME, getName());
         element.setAttribute(PROPERTY_PROPERTY_TYPE, getProductCmptPropertyType().getId());
+    }
+
+    @Override
+    protected Element createElement(Document doc) {
+        return doc.createElement(XML_TAG_NAME);
     }
 
 }

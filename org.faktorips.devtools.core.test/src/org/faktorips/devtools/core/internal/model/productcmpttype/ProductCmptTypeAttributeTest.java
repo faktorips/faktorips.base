@@ -23,6 +23,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -100,6 +101,13 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         IProductCmptTypeAttribute a = productCmptType.newProductCmptTypeAttribute();
         Element el = a.toXml(newDocument());
         XmlUtil.nodeToString(el, "UTF-8");
+    }
+
+    @Test
+    public void testSetCategory() {
+        productAttribute.setCategory("foo");
+        assertEquals("foo", productAttribute.getCategory());
+        assertPropertyChangedEvent(productAttribute, IPolicyCmptTypeAttribute.PROPERTY_CATEGORY, "", "foo");
     }
 
 }

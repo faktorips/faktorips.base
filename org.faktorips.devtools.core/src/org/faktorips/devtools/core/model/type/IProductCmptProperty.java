@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.type;
 
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.ipsobject.ICategorisableElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
@@ -33,7 +34,7 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
  * @author Jan Ortmann
  * @author Stefan Widmaier
  */
-public interface IProductCmptProperty extends IIpsObjectPart, IDescribedElement, ILabeledElement {
+public interface IProductCmptProperty extends IIpsObjectPart, IDescribedElement, ILabeledElement, ICategorisableElement {
 
     /**
      * Returns the type of the property. The different types of product definition properties are
@@ -53,23 +54,18 @@ public interface IProductCmptProperty extends IIpsObjectPart, IDescribedElement,
     public String getPropertyName();
 
     /**
-     * Returns whether or not this property could changes over time.
-     * 
-     * @return <code>true</code> if every {@link IProductCmptGeneration} may specify a different
-     *         value for this property, <code>false</code> if the value is the same for all
-     *         generations.
+     * Returns <code>true</code> if every {@link IProductCmptGeneration} may specify a different
+     * value for this property, <code>false</code> if the value is the same for all generations.
      */
     public boolean isChangingOverTime();
 
     /**
-     * @return this property's data type
+     * Returns this property's data type.
      */
     public String getPropertyDatatype();
 
     /**
-     * Returning the product component type this property belongs to.
-     * 
-     * @return the property component type which is the parent of this object.
+     * Returns the product component type this property belongs to.
      */
     public IType getType();
 

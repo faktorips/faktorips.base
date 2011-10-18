@@ -13,9 +13,7 @@
 
 package org.faktorips.devtools.core.model.productcmpttype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
@@ -28,6 +26,8 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
  * @author Alexander Weickmann
  */
 public interface IProductCmptPropertyReference extends IIpsObjectPart {
+
+    public final static String XML_TAG_NAME = "ProductCmptPropertyReference"; //$NON-NLS-1$
 
     public final static String PROPERTY_PROPERTY_TYPE = "propertyType"; //$NON-NLS-1$
 
@@ -43,26 +43,24 @@ public interface IProductCmptPropertyReference extends IIpsObjectPart {
     public ProductCmptPropertyType getProductCmptPropertyType();
 
     /**
+     * Sets the name of the referenced property.
+     * 
+     * @param name The name identifying the referenced property
+     */
+    public void setName(String name);
+
+    /**
+     * Sets the {@link ProductCmptPropertyType} of the referenced property.
+     * 
+     * @param propertyType The {@link ProductCmptPropertyType} of the referenced property
+     */
+    public void setProductCmptPropertyType(ProductCmptPropertyType propertyType);
+
+    /**
      * Returns whether the given {@link IProductCmptProperty} is identified by this reference.
      * 
      * @param property The property to check whether this is a corresponding reference
      */
     public boolean isReferencingProperty(IProductCmptProperty property);
-
-    /**
-     * Returns the {@link IProductCmptProperty} identified by this reference or null if the
-     * referenced property is deleted or cannot be found.
-     * 
-     * @param ipsProject The project which IPS object path is used for the search
-     * 
-     * @throws CoreException If an error occurs during the search
-     */
-    public IProductCmptProperty findReferencedProductCmptProperty(IIpsProject ipsProject) throws CoreException;
-
-    /**
-     * Returns whether this reference identifies an {@link IProductCmptProperty} that is not
-     * directly stored in the {@link IProductCmptType} this reference belongs to.
-     */
-    public boolean isExternalReference();
 
 }

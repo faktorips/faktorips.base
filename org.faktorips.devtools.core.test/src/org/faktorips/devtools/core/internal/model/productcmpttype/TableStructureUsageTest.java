@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -36,8 +37,11 @@ import org.w3c.dom.Element;
  * @author Joerg Ortmann
  */
 public class TableStructureUsageTest extends AbstractIpsPluginTest {
+
     private IIpsProject project;
-    private IProductCmptType pcType;
+
+    private IProductCmptType type;
+
     private ITableStructureUsage tableStructureUsage;
 
     @Override
@@ -47,9 +51,9 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
 
         project = this.newIpsProject();
 
-        pcType = newProductCmptType(project, "test.Product");
-        tableStructureUsage = pcType.newTableStructureUsage();
-        pcType.getIpsSrcFile().save(true, null);
+        type = newProductCmptType(project, "test.Product");
+        tableStructureUsage = type.newTableStructureUsage();
+        type.getIpsSrcFile().save(true, null);
 
         newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "test.TableStructure1");
     }
@@ -69,8 +73,8 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     @Test
     public void testRemove() {
         tableStructureUsage.delete();
-        assertEquals(0, pcType.getTableStructureUsages().size());
-        assertTrue(pcType.getIpsSrcFile().isDirty());
+        assertEquals(0, type.getTableStructureUsages().size());
+        assertTrue(type.getIpsSrcFile().isDirty());
     }
 
     @Test
@@ -111,28 +115,28 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     public void testSetRoleName() {
         tableStructureUsage.setRoleName("role100");
         assertEquals("role100", tableStructureUsage.getRoleName());
-        assertTrue(pcType.getIpsSrcFile().isDirty());
+        assertTrue(type.getIpsSrcFile().isDirty());
     }
 
     @Test
     public void testSetIsMandatoryTableContent() {
         tableStructureUsage.setMandatoryTableContent(false);
         assertFalse(tableStructureUsage.isMandatoryTableContent());
-        assertFalse(pcType.getIpsSrcFile().isDirty());
+        assertFalse(type.getIpsSrcFile().isDirty());
         tableStructureUsage.setMandatoryTableContent(true);
         assertTrue(tableStructureUsage.isMandatoryTableContent());
-        assertTrue(pcType.getIpsSrcFile().isDirty());
+        assertTrue(type.getIpsSrcFile().isDirty());
     }
 
     @Test
     public void testAddRemoveTableStructure() {
         assertEquals(0, tableStructureUsage.getTableStructures().length);
         tableStructureUsage.removeTableStructure("tableStructureA");
-        assertFalse(pcType.getIpsSrcFile().isDirty());
+        assertFalse(type.getIpsSrcFile().isDirty());
 
         tableStructureUsage.addTableStructure("tableStructureA");
         tableStructureUsage.addTableStructure("tableStructureB");
-        assertTrue(pcType.getIpsSrcFile().isDirty());
+        assertTrue(type.getIpsSrcFile().isDirty());
         assertEquals(2, tableStructureUsage.getTableStructures().length);
         tableStructureUsage.removeTableStructure("tableStructureC");
         assertEquals(2, tableStructureUsage.getTableStructures().length);
@@ -190,7 +194,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
 
-        tableStructureUsage = pcType.newTableStructureUsage();
+        tableStructureUsage = type.newTableStructureUsage();
         tableStructureUsage.setRoleName("role1");
         ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
@@ -218,6 +222,13 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         bStructureUsage.setRoleName("otherName");
         ml = aStructureUsage.validate(aStructureUsage.getIpsProject());
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
-
     }
+
+    @Test
+    public void testSetCategory() {
+        tableStructureUsage.setCategory("foo");
+        assertEquals("foo", tableStructureUsage.getCategory());
+        assertPropertyChangedEvent(tableStructureUsage, IPolicyCmptTypeAttribute.PROPERTY_CATEGORY, "", "foo");
+    }
+
 }

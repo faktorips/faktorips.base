@@ -132,7 +132,7 @@ import org.w3c.dom.Document;
  * 
  * @author Jan Ortmann
  */
-public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
+public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase implements ContentsChangeListener {
 
     protected static final String OUTPUT_FOLDER_NAME_DERIVED = "extension"; //$NON-NLS-1$
     protected static final String OUTPUT_FOLDER_NAME_MERGABLE = "src"; //$NON-NLS-1$
@@ -144,6 +144,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected static final String DEFAULT_CATEGORY_NAME_PRODUCT_CMPT_TYPE_ATTRIBUTES = "productAttributes";
     protected static final String DEFAULT_CATEGORY_NAME_POLICY_CMPT_TYPE_ATTRIBUTES = "policyAttributes";
     protected static final String DEFAULT_CATEGORY_NAME_FORMULA_SIGNATURE_DEFINITIONS = "formulas";
+
+    protected ContentChangeEvent lastContentChangeEvent;
 
     public AbstractIpsPluginTest() {
         super();
@@ -164,12 +166,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out.println("AbstractIpsPlugin.setUp(): Start deleting projects.");
                 }
-                // waitForIndexer();
-                // IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-                // for (IProject project : projects) {
-                // project.close(null);
-                // project.delete(true, true, null);
-                // }
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out.println("AbstractIpsPlugin.setUp(): Projects deleted.");
                 }
@@ -179,6 +175,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
 
+        getIpsModel().addChangeListener(this);
     }
 
     @After
@@ -186,9 +183,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (IProject project : projects) {
-            // project.close(null);
             project.delete(true, true, null);
         }
+        getIpsModel().removeChangeListener(this);
         tearDownExtension();
     }
 
@@ -717,8 +714,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         boolean defaultTablesFound = false;
         boolean defaultValidationRulesFound = false;
 
-        for (IProductCmptCategory category : productCmptType.findAllProductCmptCategories(productCmptType
-                .getIpsProject())) {
+        for (IProductCmptCategory category : productCmptType.findProductCmptCategories(productCmptType.getIpsProject())) {
             if (category.isDefaultForFormulaSignatureDefinitions()) {
                 defaultFormulasFound = true;
             }
@@ -1183,25 +1179,21 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected void testPropertyAccessReadWrite(Class<?> clazz, String propertyName, Object object, Object testValueToSet) {
         testPropertyAccessReadWrite(clazz, propertyName);
         PropertyDescriptor prop = BeanUtil.getPropertyDescriptor(clazz, propertyName);
-        ModelChangeListener listener = new ModelChangeListener();
         boolean writeOk = false;
         try {
-            getIpsModel().addChangeListener(listener);
             prop.getWriteMethod().invoke(object, new Object[] { testValueToSet });
             writeOk = true;
             Object retValue = prop.getReadMethod().invoke(object, new Object[0]);
             assertEquals("Getter method for property " + propertyName + " of class " + clazz.getName()
                     + " does not return the expected value", testValueToSet, retValue);
             assertNotNull("Setter method for property " + propertyName + " of class " + clazz.getName()
-                    + " hasn't triggered a change event", listener.lastEvent);
+                    + " hasn't triggered a change event", lastContentChangeEvent);
         } catch (Exception e) {
             if (writeOk) {
                 fail("An exception occured while reading property " + propertyName + " of class " + clazz.getName());
             } else {
                 fail("An exception occured while setting property " + propertyName + " of class " + clazz.getName());
             }
-        } finally {
-            getIpsModel().removeChangeListener(listener);
         }
     }
 
@@ -1431,15 +1423,22 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         }
     }
 
-    class ModelChangeListener implements ContentsChangeListener {
+    @Override
+    public final void contentsChanged(ContentChangeEvent event) {
+        lastContentChangeEvent = event;
+    }
 
-        ContentChangeEvent lastEvent;
+    protected final void assertPropertyChangedEvent(IIpsObjectPart part,
+            String property,
+            Object oldValue,
+            Object newValue) {
 
-        @Override
-        public void contentsChanged(ContentChangeEvent event) {
-            lastEvent = event;
-        }
-
+        assertEquals(part, lastContentChangeEvent.getPart());
+        assertEquals(ContentChangeEvent.TYPE_PROPERTY_CHANGED, lastContentChangeEvent.getEventType());
+        assertNotNull(lastContentChangeEvent.getPropertyChangeEvent());
+        assertEquals(property, lastContentChangeEvent.getPropertyChangeEvent().getPropertyName());
+        assertEquals(oldValue, lastContentChangeEvent.getPropertyChangeEvent().getOldValue());
+        assertEquals(newValue, lastContentChangeEvent.getPropertyChangeEvent().getNewValue());
     }
 
     private static class TestBuilder extends AbstractArtefactBuilder {

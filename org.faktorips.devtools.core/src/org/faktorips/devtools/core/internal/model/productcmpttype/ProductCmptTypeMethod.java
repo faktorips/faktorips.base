@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCategoryHelper;
 import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -34,12 +35,17 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMethod {
 
+    private final IpsObjectPartCategoryHelper categoryHelper;
+
     private boolean formulaSignatureDefinition = true;
+
     private String formulaName = ""; //$NON-NLS-1$
+
     private boolean overloadsFormula = false;
 
     public ProductCmptTypeMethod(IProductCmptType parent, String id) {
         super(parent, id);
+        categoryHelper = new IpsObjectPartCategoryHelper(this);
     }
 
     @Override
@@ -176,9 +182,29 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         }
     }
 
+    @Override
+    public boolean isChangingOverTime() {
+        return true;
+    }
+
+    @Override
+    public String getPropertyDatatype() {
+        return getDatatype();
+    }
+
+    @Override
+    public String getCategory() {
+        return categoryHelper.getCategory();
+    }
+
+    @Override
+    public void setCategory(String category) {
+        categoryHelper.setCategory(category);
+    }
+
     /**
-     * Looks for a formula in the supertype hierarchy with the same name than the formula name of
-     * this formula. It stops looking when the first formula method is found that meets this
+     * Searches for a formula in the supertype hierarchy with the same name than the formula name of
+     * this formula. Stops searching when the first formula method is found that meets this
      * condition or if the super type hierarchy ends.
      */
     private class FormulaNameFinder extends TypeHierarchyVisitor<IProductCmptType> {
@@ -202,16 +228,6 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
             return method == null;
         }
 
-    }
-
-    @Override
-    public boolean isChangingOverTime() {
-        return true;
-    }
-
-    @Override
-    public String getPropertyDatatype() {
-        return getDatatype();
     }
 
 }

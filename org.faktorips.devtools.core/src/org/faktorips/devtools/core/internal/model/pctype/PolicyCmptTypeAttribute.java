@@ -24,6 +24,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCategoryHelper;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
@@ -56,12 +57,18 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
-    // member variables.
-    private boolean productRelevant = false;
+    private final IpsObjectPartCategoryHelper categoryHelper;
+
+    private boolean productRelevant;
+
     private AttributeType attributeType = AttributeType.CHANGEABLE;
+
     private IValueSet valueSet;
-    private boolean overwrites = false;
+
+    private boolean overwrites;
+
     private String computationMethodSignature = ""; //$NON-NLS-1$
+
     private IIpsObjectPart persistenceAttributeInfo;
 
     /**
@@ -72,6 +79,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      */
     public PolicyCmptTypeAttribute(IPolicyCmptType pcType, String id) {
         super(pcType, id);
+        categoryHelper = new IpsObjectPartCategoryHelper(this);
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
         if (pcType.getIpsProject().isPersistenceSupportEnabled()) {
             persistenceAttributeInfo = newPart(PersistentAttributeInfo.class);
@@ -454,6 +462,16 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     public boolean isChangingOverTime() {
         return true;
+    }
+
+    @Override
+    public String getCategory() {
+        return categoryHelper.getCategory();
+    }
+
+    @Override
+    public void setCategory(String category) {
+        categoryHelper.setCategory(category);
     }
 
 }

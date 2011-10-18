@@ -84,7 +84,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     private void createEntriesForProperties() throws CoreException {
         for (ProductCmptPropertyType propertyType : ProductCmptPropertyType.values()) {
             LinkedHashMap<String, IProductCmptProperty> propertiesMap = ((ProductCmptType)productCmptType)
-                    .getProductCpmtPropertyMap(propertyType, getIpsProject());
+                    .findProductCmptPropertyMap(propertyType, getIpsProject());
             checkForMissingPropertyValues(propertiesMap);
             checkForInconsistentPropertyValues(propertiesMap, propertyType);
         }

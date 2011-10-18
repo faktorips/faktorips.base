@@ -28,14 +28,15 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.InternationalStringXmlHelper;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCategoryHelper;
 import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -58,6 +59,8 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
 
     public final static String XML_TAG_MSG_TXT = "MessageText"; //$NON-NLS-1$
 
+    private final IpsObjectPartCategoryHelper categoryHelper;
+
     private final ValidationRuleMessageText msgText;
 
     private String msgCode = ""; //$NON-NLS-1$
@@ -74,6 +77,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     private boolean validatedAttrSpecifiedInSrc = false;
 
     private boolean configurableByProductComponent = false;
+
     private boolean activatedByDefault = true;
 
     /**
@@ -92,8 +96,8 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
      */
     public ValidationRule(IPolicyCmptType pcType, String id) {
         super(pcType, id);
+        categoryHelper = new IpsObjectPartCategoryHelper(this);
         msgText = new ValidationRuleMessageText(new Observer() {
-
             @Override
             public void update(Observable o, Object arg) {
                 objectHasChanged();
@@ -494,6 +498,16 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     @Override
     public String getPropertyDatatype() {
         return ValueDatatype.BOOLEAN.getName();
+    }
+
+    @Override
+    public String getCategory() {
+        return categoryHelper.getCategory();
+    }
+
+    @Override
+    public void setCategory(String category) {
+        categoryHelper.setCategory(category);
     }
 
 }

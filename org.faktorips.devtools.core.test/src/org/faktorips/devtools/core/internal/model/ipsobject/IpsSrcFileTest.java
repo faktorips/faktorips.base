@@ -30,8 +30,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -47,8 +45,7 @@ import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 
-public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificationStatusChangeListener,
-        ContentsChangeListener {
+public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificationStatusChangeListener {
 
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot ipsRootFolder;
@@ -58,7 +55,6 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     private IIpsSrcFile unparsableFile; // file with unparsable contents
 
     private ModificationStatusChangedEvent lastModStatusEvent;
-    private ContentChangeEvent lastContentChangedEvent;
 
     private PrintStream errorStream;
 
@@ -84,7 +80,6 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
                 null);
 
         parsableFile.getIpsModel().addModifcationStatusChangeListener(this);
-        parsableFile.getIpsModel().addChangeListener(this);
     }
 
     @Override
@@ -93,7 +88,6 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
             System.setErr(errorStream);
         }
         parsableFile.getIpsModel().removeModificationStatusChangeListener(this);
-        parsableFile.getIpsModel().removeChangeListener(this);
     }
 
     @Test
@@ -107,10 +101,10 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertTrue(parsableFile.isDirty());
 
         lastModStatusEvent = null;
-        lastContentChangedEvent = null;
+        lastContentChangeEvent = null;
         parsableFile.save(true, null);
         assertFalse(parsableFile.isDirty());
-        assertNull(lastContentChangedEvent);
+        assertNull(lastContentChangeEvent);
         assertEquals(parsableFile, lastModStatusEvent.getIpsSrcFile());
     }
 
@@ -242,11 +236,6 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     @Override
     public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
         lastModStatusEvent = event;
-    }
-
-    @Override
-    public void contentsChanged(ContentChangeEvent event) {
-        lastContentChangedEvent = event;
     }
 
 }

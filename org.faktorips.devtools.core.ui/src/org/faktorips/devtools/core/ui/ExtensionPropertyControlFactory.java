@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
@@ -125,25 +126,25 @@ public class ExtensionPropertyControlFactory {
         }
     }
 
-    public IpsSection createSections(Composite parent,
+    public List<IpsSection> createSections(Composite parent,
             UIToolkit toolkit,
             IIpsObjectPartContainer ipsObjectPart,
-            Position position,
-            IpsSection lastFocussedSection) {
+            Position position) {
+
+        List<IpsSection> sections = new ArrayList<IpsSection>(extPropData.length);
         for (ExtPropControlData extPropControlData : extPropData) {
             try {
                 IExtensionPropertySectionFactory sectionFactory = IpsUIPlugin.getDefault()
                         .getExtensionPropertySectionFactory(extPropControlData.extProperty.getPropertyId());
                 if (sectionFactory != null && sectionFactory.getPosition() == position) {
                     IpsSection newSection = sectionFactory.newSection(ipsObjectPart, parent, toolkit);
-                    lastFocussedSection.setFocusSuccessor(newSection);
-                    lastFocussedSection = newSection;
+                    sections.add(newSection);
                 }
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
         }
-        return lastFocussedSection;
+        return sections;
     }
 
     /**

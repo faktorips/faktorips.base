@@ -67,23 +67,19 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 
     private GenerationPropertiesPage generationPropertiesPage;
 
-    private boolean ignoreHandlingOfWorkingDateMissmatch = false;
-    private boolean isHandlingWorkingDateMismatch = false;
+    private boolean ignoreHandlingOfWorkingDateMismatch;
 
-    /**
-     * Creates a new editor for product components.
-     */
-    public ProductCmptEditor() {
-        super();
-    }
+    private boolean isHandlingWorkingDateMismatch;
 
     @Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         super.init(site, input);
-        // if the editor was opened by using the generation
-        // then no generation mismatch dialog should be displayed
+        /*
+         * No generation mismatch dialog should be displayed if the editor was opened by using the
+         * generation.
+         */
         if (input instanceof ProductCmptEditorInput) {
-            ignoreHandlingOfWorkingDateMissmatch = ((ProductCmptEditorInput)input).isIgnoreWorkingDateMissmatch();
+            ignoreHandlingOfWorkingDateMismatch = ((ProductCmptEditorInput)input).isIgnoreWorkingDateMismatch();
         }
     }
 
@@ -200,10 +196,10 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             return;
         }
 
-        if (ignoreHandlingOfWorkingDateMissmatch) {
+        if (ignoreHandlingOfWorkingDateMismatch) {
             return;
         }
-        ignoreHandlingOfWorkingDateMissmatch = true;
+        ignoreHandlingOfWorkingDateMismatch = true;
 
         IProductCmpt prod = getProductCmpt();
         GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
@@ -451,7 +447,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
      * Set if a mismatch of a working date will be handled or ignored.
      */
     public void setIgnoreHandlingOfWorkingDateMissmatch(boolean ignoreHandlingOfWorkingDateMissmatch) {
-        this.ignoreHandlingOfWorkingDateMissmatch = ignoreHandlingOfWorkingDateMissmatch;
+        this.ignoreHandlingOfWorkingDateMismatch = ignoreHandlingOfWorkingDateMissmatch;
     }
 
 }

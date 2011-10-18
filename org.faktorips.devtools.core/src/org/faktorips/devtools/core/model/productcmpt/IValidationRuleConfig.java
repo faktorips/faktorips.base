@@ -19,6 +19,8 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 
 public interface IValidationRuleConfig extends IPropertyValue {
 
+    public static final String PROPERTY_ACTIVE = "active"; //$NON-NLS-1$
+
     /**
      * Returns whether the configured {@link IValidationRule} is active.
      * 

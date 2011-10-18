@@ -35,7 +35,6 @@ import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -72,12 +71,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
-public class PolicyCmptTypeTest extends AbstractDependencyTest implements ContentsChangeListener {
+public class PolicyCmptTypeTest extends AbstractDependencyTest {
 
     private IIpsPackageFragment pack;
     private IIpsSrcFile sourceFile;
     private PolicyCmptType policyCmptType;
-    private ContentChangeEvent lastEvent;
     private IIpsProject ipsProject;
 
     @Override
@@ -277,14 +275,13 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
     @Test
     public void testNewAttribute() {
-        sourceFile.getIpsModel().addChangeListener(this);
         IPolicyCmptTypeAttribute a = policyCmptType.newPolicyCmptTypeAttribute();
         assertSame(policyCmptType, a.getIpsObject());
         assertEquals(1, policyCmptType.getNumOfAttributes());
         assertTrue(sourceFile.isDirty());
-        assertEquals(sourceFile, lastEvent.getIpsSrcFile());
-        assertEquals(a, lastEvent.getPart());
-        assertEquals(ContentChangeEvent.TYPE_PART_ADDED, lastEvent.getEventType());
+        assertEquals(sourceFile, lastContentChangeEvent.getIpsSrcFile());
+        assertEquals(a, lastContentChangeEvent.getPart());
+        assertEquals(ContentChangeEvent.TYPE_PART_ADDED, lastContentChangeEvent.getEventType());
         String aId = a.getId();
         assertNotNull(aId);
 
@@ -339,14 +336,13 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
     @Test
     public void testNewMethod() {
-        sourceFile.getIpsModel().addChangeListener(this);
         IMethod m = policyCmptType.newMethod();
         String mId = m.getId();
         assertNotNull(mId);
         assertSame(policyCmptType, m.getIpsObject());
         assertEquals(1, policyCmptType.getNumOfMethods());
         assertTrue(sourceFile.isDirty());
-        assertEquals(sourceFile, lastEvent.getIpsSrcFile());
+        assertEquals(sourceFile, lastContentChangeEvent.getIpsSrcFile());
 
         IMethod m2 = policyCmptType.newMethod();
         String m2Id = m2.getId();
@@ -369,14 +365,13 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
     @Test
     public void testNewRule() {
-        sourceFile.getIpsModel().addChangeListener(this);
         IValidationRule r = policyCmptType.newRule();
         String rId = r.getId();
         assertNotNull(rId);
         assertSame(policyCmptType, r.getIpsObject());
         assertEquals(1, policyCmptType.getNumOfRules());
         assertTrue(sourceFile.isDirty());
-        assertEquals(sourceFile, lastEvent.getIpsSrcFile());
+        assertEquals(sourceFile, lastContentChangeEvent.getIpsSrcFile());
 
         IValidationRule r2 = policyCmptType.newRule();
         String r2Id = r2.getId();
@@ -410,14 +405,13 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
     @Test
     public void testNewRelation() {
-        sourceFile.getIpsModel().addChangeListener(this);
         IPolicyCmptTypeAssociation r = policyCmptType.newPolicyCmptTypeAssociation();
         String rId = r.getId();
         assertNotNull(rId);
         assertSame(policyCmptType, r.getIpsObject());
         assertEquals(1, policyCmptType.getNumOfAssociations());
         assertTrue(sourceFile.isDirty());
-        assertEquals(sourceFile, lastEvent.getIpsSrcFile());
+        assertEquals(sourceFile, lastContentChangeEvent.getIpsSrcFile());
 
         IPolicyCmptTypeAssociation r2 = policyCmptType.newPolicyCmptTypeAssociation();
         String r2Id = r2.getId();
@@ -718,11 +712,6 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
     public void testSetProductCmptType() {
         super.testPropertyAccessReadWrite(IPolicyCmptType.class, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
                 policyCmptType, "NewProduct");
-    }
-
-    @Override
-    public void contentsChanged(ContentChangeEvent event) {
-        lastEvent = event;
     }
 
     @Test
