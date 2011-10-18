@@ -670,6 +670,10 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
                     return;
                 }
 
+                if (!IpsUIPlugin.isEditable(enumValueContainer.getIpsSrcFile())) {
+                    return;
+                }
+
                 /*
                  * Return if the default provider control is not a text control and therefore not
                  * valid.

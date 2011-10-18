@@ -620,6 +620,21 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
+    public void testValidateEnumContentAlreadyUsed() throws CoreException {
+        paymentMode.setEnumContentName(ENUMCONTENTS_NAME);
+        assertTrue(paymentMode.isValid());
+
+        paymentMode.setContainingValues(false);
+        paymentMode.deleteEnumValues(paymentMode.getEnumValues());
+        paymentMode.deleteEnumAttributeWithValues(paymentMode.getEnumLiteralNameAttribute());
+
+        MessageList validationMessageList = paymentMode.validate(ipsProject);
+        assertEquals(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_ALREADY_USED,
+                validationMessageList.getFirstMessage(Message.ERROR).getCode());
+        assertEquals(1, validationMessageList.size());
+    }
+
+    @Test
     public void testFindSuperEnumType() throws CoreException {
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
