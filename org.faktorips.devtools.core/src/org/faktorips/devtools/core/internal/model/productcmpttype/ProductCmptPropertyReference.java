@@ -84,15 +84,17 @@ public final class ProductCmptPropertyReference extends AtomicIpsObjectPart impl
         // If not found, search the property in the policy component type (more expensive)
         if (property == null) {
             IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);
-            switch (propertyType) {
-                case POLICY_CMPT_TYPE_ATTRIBUTE:
-                    property = policyCmptType.getPolicyCmptTypeAttribute(name);
-                    break;
-                case VALIDATION_RULE:
-                    property = policyCmptType.getValidationRule(name);
-                    break;
-                default:
-                    break;
+            if (policyCmptType != null) {
+                switch (propertyType) {
+                    case POLICY_CMPT_TYPE_ATTRIBUTE:
+                        property = policyCmptType.getPolicyCmptTypeAttribute(name);
+                        break;
+                    case VALIDATION_RULE:
+                        property = policyCmptType.getValidationRule(name);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 

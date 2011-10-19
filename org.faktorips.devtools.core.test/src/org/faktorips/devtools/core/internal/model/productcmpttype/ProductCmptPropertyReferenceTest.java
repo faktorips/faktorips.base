@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -134,6 +135,20 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         assertEquals(formula, formulaReference.findProductCmptProperty(ipsProject));
         assertEquals(tsu, tsuReference.findProductCmptProperty(ipsProject));
         assertEquals(productAttribute, productAttributeReference.findProductCmptProperty(ipsProject));
+    }
+
+    @Test
+    public void testFindProductCmptPropertyPolicyCmptTypeNotFound() throws CoreException {
+        IPolicyCmptTypeAttribute policyAttribute = policyType.newPolicyCmptTypeAttribute("policyAttribute");
+
+        IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(productType, "id1");
+        policyAttributeReference.setName(policyAttribute.getName());
+        policyAttributeReference.setProductCmptPropertyType(policyAttribute.getProductCmptPropertyType());
+
+        policyType.delete();
+
+        // Null should be returned, but no exception may be thrown
+        assertNull(policyAttributeReference.findProductCmptProperty(ipsProject));
     }
 
     @Test
