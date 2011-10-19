@@ -297,6 +297,12 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
+    public void testNewPolicyCmptTypeAttributeWithName() {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("foo");
+        assertEquals("foo", attribute.getName());
+    }
+
+    @Test
     public void testGetAttributes() {
         assertEquals(0, policyCmptType.getPolicyCmptTypeAttributes().size());
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();

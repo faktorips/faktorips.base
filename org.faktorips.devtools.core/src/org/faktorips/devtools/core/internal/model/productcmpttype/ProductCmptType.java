@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -249,13 +250,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         NotDerivedAssociationCollector collector = new NotDerivedAssociationCollector(getIpsProject());
         collector.start(this);
         return collector.associations;
-    }
-
-    @Override
-    public List<IProductCmptProperty> findAllProductCmptProperties(IIpsProject ipsProject) throws CoreException {
-        ProductCmptPropertyCollector collector = new ProductCmptPropertyCollector(null, ipsProject);
-        collector.start(this);
-        return collector.getProperties();
     }
 
     @Override
@@ -831,13 +825,98 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return categories.moveParts(indexes, up);
     }
 
-    boolean moveProductCmptPropertyReferences(IProductCmptProperty[] properties, boolean up) {
-        int[] indexes = new int[0]; // TODO AW
+    boolean moveProductCmptPropertyReferences(List<IProductCmptProperty> properties, boolean up) throws CoreException {
+        createReferencesForNotReferencedProperties();
+
+        int[] indexes = new int[properties.size()];
+        for (int entry = 0; entry < properties.size(); entry++) {
+            int index = getReferencedPropertyIndex(properties.get(entry));
+            if (index != -1) {
+                indexes[entry] = index;
+            }
+        }
+
         int[] newIndexes = propertyReferences.moveParts(indexes, up);
         return !Arrays.equals(indexes, newIndexes);
     }
 
-    // TODO AW
+    List<IProductCmptProperty> findProductCmptPropertiesInReferencedOrder(final IIpsProject ipsProject)
+            throws CoreException {
+
+        List<IProductCmptProperty> properties = findProductCmptProperties(ipsProject);
+        Collections.sort(properties, new Comparator<IProductCmptProperty>() {
+            @Override
+            public int compare(IProductCmptProperty o1, IProductCmptProperty o2) {
+                IProductCmptType productCmptType1;
+                IProductCmptType productCmptType2;
+                try {
+                    productCmptType1 = o1.findProductCmptType(ipsProject);
+                    productCmptType2 = o2.findProductCmptType(ipsProject);
+                } catch (CoreException e) {
+                    // Consider elements equal if the product component types cannot be found
+                    return 0;
+                }
+
+                if (productCmptType1.equals(productCmptType2)) {
+                    int index1 = ((ProductCmptType)productCmptType1).getReferencedPropertyIndex(o1);
+                    int index2 = ((ProductCmptType)productCmptType2).getReferencedPropertyIndex(o2);
+                    if (index1 == -1 || index2 == -1) {
+                        return 0;
+                    }
+                    if (index1 == index2) {
+                        return 0;
+                    } else if (index1 < index2) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                }
+                try {
+                    if (productCmptType1.isSubtypeOf(productCmptType2, ipsProject)) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                } catch (CoreException e) {
+                    // Consider elements equal if it the subtype relationship cannot be determined
+                    return 0;
+                }
+            }
+        });
+        return properties;
+    }
+
+    private int getReferencedPropertyIndex(IProductCmptProperty property) {
+        for (int i = 0; i < propertyReferences.size(); i++) {
+            if (propertyReferences.getPart(i).isReferencingProperty(property)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void createReferencesForNotReferencedProperties() throws CoreException {
+        List<IProductCmptPropertyReference> references = propertyReferences.asList();
+        for (IProductCmptProperty property : findProductCmptProperties(getIpsProject())) {
+            // Do not create references for properties originating from supertypes
+            String typeQualifiedName = property.getType().getQualifiedName();
+            if (!typeQualifiedName.equals(getQualifiedName()) && !typeQualifiedName.equals(policyCmptType)) {
+                continue;
+            }
+
+            boolean referenceFound = false;
+            for (IProductCmptPropertyReference reference : references) {
+                if (reference.isReferencingProperty(property)) {
+                    referenceFound = true;
+                    break;
+                }
+            }
+            if (!referenceFound) {
+                newProductCmptPropertyReference(property);
+            }
+        }
+    }
+
     private IProductCmptPropertyReference newProductCmptPropertyReference(IProductCmptProperty productCmptProperty) {
         IProductCmptPropertyReference reference = propertyReferences.newPart();
         reference.setName(productCmptProperty.getPropertyName());

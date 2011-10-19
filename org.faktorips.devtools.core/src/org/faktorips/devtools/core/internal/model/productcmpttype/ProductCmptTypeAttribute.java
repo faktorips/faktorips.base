@@ -224,4 +224,9 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         categoryHelper.setCategory(category);
     }
 
+    @Override
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+        return getProductCmptType();
+    }
+
 }

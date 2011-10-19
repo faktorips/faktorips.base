@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -510,6 +511,11 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     @Override
     public void setCategory(String category) {
         categoryHelper.setCategory(category);
+    }
+
+    @Override
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+        return getPolicyCmptType().findProductCmptType(ipsProject);
     }
 
 }

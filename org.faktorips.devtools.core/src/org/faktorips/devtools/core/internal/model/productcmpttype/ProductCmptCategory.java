@@ -64,7 +64,8 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
             throws CoreException {
 
         List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
-        for (IProductCmptProperty property : contextType.findAllProductCmptProperties(ipsProject)) {
+        for (IProductCmptProperty property : ((ProductCmptType)contextType)
+                .findProductCmptPropertiesInReferencedOrder(ipsProject)) {
             if (property.getCategory().equals(name)) {
                 properties.add(property);
             }
@@ -327,9 +328,15 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
     }
 
     @Override
-    public boolean moveProductCmptProperties(IProductCmptProperty[] properties, boolean up) {
-        // TODO AW
-        return false;
+    public boolean moveProductCmptProperties(List<IProductCmptProperty> properties, boolean up) throws CoreException {
+        if (properties.isEmpty()) {
+            return false;
+        }
+        IProductCmptType productCmptType = properties.get(0).findProductCmptType(getIpsProject());
+        for (IProductCmptProperty property : properties) {
+            ArgumentCheck.equals(productCmptType, property.findProductCmptType(getIpsProject()));
+        }
+        return ((ProductCmptType)productCmptType).moveProductCmptPropertyReferences(properties, up);
     }
 
     @Override

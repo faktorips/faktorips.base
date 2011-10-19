@@ -326,6 +326,11 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         categoryHelper.setCategory(category);
     }
 
+    @Override
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+        return getProductCmptType();
+    }
+
     public class TableStructureReference extends AtomicIpsObjectPart {
 
         private String tableStructure = ""; //$NON-NLS-1$

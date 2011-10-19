@@ -225,6 +225,13 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
+    public IPolicyCmptTypeAttribute newPolicyCmptTypeAttribute(String name) {
+        IPolicyCmptTypeAttribute attribute = newPolicyCmptTypeAttribute();
+        attribute.setName(name);
+        return attribute;
+    }
+
+    @Override
     public boolean isAggregateRoot() throws CoreException {
         IsAggregrateRootVisitor visitor = new IsAggregrateRootVisitor(getIpsProject());
         visitor.start(this);

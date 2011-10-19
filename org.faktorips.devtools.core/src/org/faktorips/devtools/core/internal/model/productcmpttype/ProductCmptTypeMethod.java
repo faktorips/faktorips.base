@@ -204,6 +204,11 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         categoryHelper.setCategory(category);
     }
 
+    @Override
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+        return getProductCmptType();
+    }
+
     /**
      * Searches for a formula in the supertype hierarchy with the same name than the formula name of
      * this formula. Stops searching when the first formula method is found that meets this

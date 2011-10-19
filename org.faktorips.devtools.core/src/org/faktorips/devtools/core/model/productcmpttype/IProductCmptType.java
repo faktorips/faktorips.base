@@ -210,18 +210,6 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public List<IAssociation> findAllNotDerivedAssociations() throws CoreException;
 
     /**
-     * Returns a list (defensive copy) containing all {@link IProductCmptProperty}s belonging to
-     * this type.
-     * <p>
-     * {@link IProductCmptProperty}s from the supertype hierarchy are also included.
-     * 
-     * @param ipsProject The project which IPS object path is used for the search
-     * 
-     * @throws CoreException If an error occurs during the search
-     */
-    public List<IProductCmptProperty> findAllProductCmptProperties(IIpsProject ipsProject) throws CoreException;
-
-    /**
      * Returns the type's attributes.
      */
     public List<IProductCmptTypeAttribute> getProductCmptTypeAttributes();

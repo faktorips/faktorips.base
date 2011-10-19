@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -245,11 +244,13 @@ public interface IProductCmptCategory extends IIpsObjectPart {
      * @param up Flag indicating whether to move up or down
      * 
      * @throws NullPointerException If the properties array is null
-     * @throws IllegalArgumentException If one of the provided {@link IProductCmptProperty}s does
-     *             not belong to the {@link IProductCmptType} of this category (or it's configured
-     *             {@link IPolicyCmptType}
+     * @throws IllegalArgumentException If not all provided properties belong to the same product
+     *             component type or it's configured policy component type
+     * 
+     * @throws CoreException If an error occurs while searching the supertype hierarchy or while
+     *             searching for policy component types
      */
-    public boolean moveProductCmptProperties(IProductCmptProperty[] properties, boolean up);
+    public boolean moveProductCmptProperties(List<IProductCmptProperty> properties, boolean up) throws CoreException;
 
     /**
      * Defines the position of this category.

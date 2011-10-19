@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -43,8 +42,6 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
 
     private IProductCmptType productType;
 
-    private IProductCmptCategory category;
-
     private IPolicyCmptTypeAttribute attributeProperty;
 
     private ProductCmptPropertyReference attributeReference;
@@ -58,12 +55,11 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
 
         policyType = newPolicyAndProductCmptType(ipsProject, "PolicyCmptType", "ProductCmptType");
         productType = policyType.findProductCmptType(ipsProject);
-        category = productType.newProductCmptCategory();
         attributeProperty = policyType.newPolicyCmptTypeAttribute();
         attributeProperty.setName("attribute");
         attributeProperty.setProductRelevant(true);
 
-        attributeReference = new ProductCmptPropertyReference(category, "id");
+        attributeReference = new ProductCmptPropertyReference(productType, "id");
         attributeReference.setName(attributeProperty.getName());
         attributeReference.setProductCmptPropertyType(attributeProperty.getProductCmptPropertyType());
     }
@@ -103,7 +99,7 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         otherProperty.setProductRelevant(true);
 
         Element xmlElement = attributeReference.toXml(createXmlDocument(IProductCmptPropertyReference.XML_TAG_NAME));
-        IProductCmptPropertyReference loadedReference = new ProductCmptPropertyReference(category, "blub");
+        IProductCmptPropertyReference loadedReference = new ProductCmptPropertyReference(productType, "blub");
         loadedReference.initFromXml(xmlElement);
 
         assertEquals(attributeProperty.getName(), loadedReference.getName());

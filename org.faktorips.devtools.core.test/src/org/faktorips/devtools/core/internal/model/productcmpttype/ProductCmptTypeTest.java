@@ -1163,7 +1163,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindAllProductCmptProperties() throws CoreException {
+    public void testFindProductCmptProperties() throws CoreException {
         IProductCmptTypeAttribute productAttribute = productCmptType.newProductCmptTypeAttribute();
 
         IProductCmptTypeMethod productMethod = productCmptType.newProductCmptTypeMethod();
@@ -1176,7 +1176,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IValidationRule validationRule = policyCmptType.newRule();
         validationRule.setConfigurableByProductComponent(true);
 
-        List<IProductCmptProperty> properties = productCmptType.findAllProductCmptProperties(ipsProject);
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptProperties(ipsProject);
         assertTrue(properties.contains(productAttribute));
         assertTrue(properties.contains(productMethod));
         assertTrue(properties.contains(tsu));
@@ -1186,12 +1186,12 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindAllProductCmptPropertiesIgnoreNotProductRelevantProperties() throws CoreException {
+    public void testFindProductCmptPropertiesIgnoreNonProductRelevantProperties() throws CoreException {
         productCmptType.newProductCmptTypeMethod().setFormulaSignatureDefinition(false);
         policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptType.newRule();
 
-        List<IProductCmptProperty> properties = productCmptType.findAllProductCmptProperties(ipsProject);
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptProperties(ipsProject);
         assertTrue(properties.isEmpty());
     }
 

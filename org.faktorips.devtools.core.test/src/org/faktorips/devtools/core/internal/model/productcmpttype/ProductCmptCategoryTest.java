@@ -19,6 +19,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -327,6 +329,90 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         assertEquals(superProperty, productTypeProperties.get(1));
         assertEquals(property, productTypeProperties.get(2));
         assertEquals(3, productTypeProperties.size());
+    }
+
+    @Test
+    public void testMoveProductCmptProperties() throws CoreException {
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
+
+        IProductCmptProperty superProperty1 = superProductType.newProductCmptTypeAttribute("s1");
+        superProperty1.setCategory(CATEGORY_NAME);
+        IProductCmptProperty superProperty2 = superProductType.newProductCmptTypeAttribute("s2");
+        superProperty2.setCategory(CATEGORY_NAME);
+
+        IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("a1");
+        property1.setCategory(CATEGORY_NAME);
+        IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("a2");
+        property2.setCategory(CATEGORY_NAME);
+        IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("a3");
+        property3.setCategory(CATEGORY_NAME);
+
+        boolean moved1 = category.moveProductCmptProperties(Arrays.asList(superProperty2), true);
+        boolean moved2 = category.moveProductCmptProperties(Arrays.asList(property3, property2), true);
+        List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, ipsProject);
+
+        assertTrue(moved1);
+        assertTrue(moved2);
+        assertEquals(superProperty2, properties.get(0));
+        assertEquals(superProperty1, properties.get(1));
+        assertEquals(property2, properties.get(2));
+        assertEquals(property3, properties.get(3));
+        assertEquals(property1, properties.get(4));
+    }
+
+    @Test
+    public void testMoveProductCmptPropertiesEmptyPropertyListGiven() throws CoreException {
+        assertFalse(category.moveProductCmptProperties(new ArrayList<IProductCmptProperty>(0), true));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMoveProductCmptPropertiesDifferentProductCmptTypes() throws CoreException {
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
+        IProductCmptProperty property1 = superProductType.newProductCmptTypeAttribute("p1");
+        IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("p2");
+
+        category.moveProductCmptProperties(Arrays.asList(property1, property2), true);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMoveProductCmptPropertiesDifferentPolicyCmptTypes() throws CoreException {
+        IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
+        IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
+
+        IProductCmptProperty property1 = policyType1.newPolicyCmptTypeAttribute("p1");
+        IProductCmptProperty property2 = policyType2.newPolicyCmptTypeAttribute("p2");
+
+        category.moveProductCmptProperties(Arrays.asList(property1, property2), true);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMoveProductCmptPropertiesDifferentPolicyAndProductCmptTypes() throws CoreException {
+        IPolicyCmptType policyType = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
+
+        IProductCmptProperty property1 = policyType.newPolicyCmptTypeAttribute("p1");
+        IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("p2");
+
+        category.moveProductCmptProperties(Arrays.asList(property1, property2), true);
+    }
+
+    @Test
+    public void testMoveProductCmptPropertiesDontMoveIfElementAtLimit() throws CoreException {
+        IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("p1");
+        property1.setCategory(CATEGORY_NAME);
+        IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("p2");
+        property2.setCategory(CATEGORY_NAME);
+        IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("p3");
+        property3.setCategory(CATEGORY_NAME);
+
+        assertFalse(category.moveProductCmptProperties(Arrays.asList(property1, property2), true));
+        assertEquals(property1, category.findProductCmptProperties(productType, ipsProject).get(0));
+        assertEquals(property2, category.findProductCmptProperties(productType, ipsProject).get(1));
+        assertEquals(property3, category.findProductCmptProperties(productType, ipsProject).get(2));
+
+        assertFalse(category.moveProductCmptProperties(Arrays.asList(property2, property3), false));
+        assertEquals(property1, category.findProductCmptProperties(productType, ipsProject).get(0));
+        assertEquals(property2, category.findProductCmptProperties(productType, ipsProject).get(1));
+        assertEquals(property3, category.findProductCmptProperties(productType, ipsProject).get(2));
     }
 
     private IProductCmptType createSuperProductType(IProductCmptType productType, String prefix) throws CoreException {

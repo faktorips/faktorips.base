@@ -476,4 +476,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         categoryHelper.setCategory(category);
     }
 
+    @Override
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+        return getPolicyCmptType().findProductCmptType(ipsProject);
+    }
+
 }

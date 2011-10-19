@@ -14,8 +14,8 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.w3c.dom.Document;
@@ -31,8 +31,8 @@ public final class ProductCmptPropertyReference extends AtomicIpsObjectPart impl
 
     private ProductCmptPropertyType propertyType;
 
-    public ProductCmptPropertyReference(IProductCmptCategory parentCategory, String id) {
-        super(parentCategory, id);
+    public ProductCmptPropertyReference(IProductCmptType parentProductCmptType, String id) {
+        super(parentProductCmptType, id);
     }
 
     @Override

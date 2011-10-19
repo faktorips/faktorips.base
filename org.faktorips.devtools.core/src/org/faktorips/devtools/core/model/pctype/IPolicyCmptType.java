@@ -225,6 +225,13 @@ public interface IPolicyCmptType extends IType {
     public IPolicyCmptTypeAttribute newPolicyCmptTypeAttribute();
 
     /**
+     * Creates and returns a new {@link IPolicyCmptTypeAttribute} with the given name.
+     * 
+     * @param name The name of the attribute to create
+     */
+    public IPolicyCmptTypeAttribute newPolicyCmptTypeAttribute(String name);
+
+    /**
      * Returns the number of attributes.
      */
     @Override
