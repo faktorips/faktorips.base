@@ -193,7 +193,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * @param propertyType The type of properties that should be included in the map.
      *            <code>null</code> indicates that all properties should be included in the map.
      */
-    public LinkedHashMap<String, IProductCmptProperty> findProductCmptPropertyMap(ProductCmptPropertyType propertyType,
+    public Map<String, IProductCmptProperty> findProductCmptPropertyMap(ProductCmptPropertyType propertyType,
             IIpsProject ipsProject) throws CoreException {
 
         ProductCmptPropertyCollector collector = new ProductCmptPropertyCollector(propertyType, ipsProject);
@@ -967,15 +967,17 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private static class ProductCmptPropertyCollector extends TypeHierarchyVisitor<IProductCmptType> {
 
-        // if set, indicates the type of properties that are collected
-        // if null, all properties are collected
+        /**
+         * Indicates the type of the properties that are collected (if null, all properties are
+         * collected).
+         */
         private ProductCmptPropertyType propertyType;
 
-        private List<IProductCmptTypeAttribute> myAttributes = new ArrayList<IProductCmptTypeAttribute>();
-        private List<ITableStructureUsage> myTableStructureUsages = new ArrayList<ITableStructureUsage>();
-        private List<IProductCmptTypeMethod> myFormulaSignatures = new ArrayList<IProductCmptTypeMethod>();
-        private List<IPolicyCmptTypeAttribute> myPolicyCmptTypeAttributes = new ArrayList<IPolicyCmptTypeAttribute>();
-        private List<IValidationRule> myValidationRules = new ArrayList<IValidationRule>();
+        private List<IProductCmptProperty> attributes = new ArrayList<IProductCmptProperty>();
+        private List<IProductCmptProperty> tableStructureUsages = new ArrayList<IProductCmptProperty>();
+        private List<IProductCmptProperty> formulaSignatureDefinitions = new ArrayList<IProductCmptProperty>();
+        private List<IProductCmptProperty> policyCmptTypeAttributes = new ArrayList<IProductCmptProperty>();
+        private List<IProductCmptProperty> validationRules = new ArrayList<IProductCmptProperty>();
 
         private Set<IPolicyCmptType> visitedPolicyCmptTypes = new HashSet<IPolicyCmptType>();
 
@@ -986,83 +988,88 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
-            ProductCmptType currType = (ProductCmptType)currentType;
-            if (propertyType == null || ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.equals(propertyType)) {
-                myAttributes.addAll(0, currType.attributes.asList());
-            }
-            if (propertyType == null || ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.equals(propertyType)) {
-                myTableStructureUsages.addAll(0, currType.tableStructureUsages.asList());
-            }
-            if (propertyType == null || ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION.equals(propertyType)) {
-                List<IProductCmptTypeMethod> methodsToAdd = new ArrayList<IProductCmptTypeMethod>();
-                for (IProductCmptTypeMethod method : currType.methods) {
-                    if (method.isFormulaSignatureDefinition()) {
-                        methodsToAdd.add(method);
-                    }
-                }
-                myFormulaSignatures.addAll(0, methodsToAdd);
-            }
+            collectProductCmptTypeAttributes(currentType);
+            collectTableStructureUsages(currentType);
+            collectFormulaSignatureDefinitions(currentType);
+
             IPolicyCmptType policyCmptType = currentType.findPolicyCmptType(ipsProject);
             if (policyCmptType == null || visitedPolicyCmptTypes.contains(policyCmptType)) {
                 return true;
             }
-            if (propertyType == null || ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE.equals(propertyType)) {
-                visitedPolicyCmptTypes.add(policyCmptType);
-                List<IPolicyCmptTypeAttribute> attrsToAdd = new ArrayList<IPolicyCmptTypeAttribute>();
-                List<IPolicyCmptTypeAttribute> polAttrs = policyCmptType.getPolicyCmptTypeAttributes();
-                for (IPolicyCmptTypeAttribute attr : polAttrs) {
-                    if (attr.isProductRelevant() && attr.isChangeable()) {
-                        attrsToAdd.add(attr);
-                    }
-                }
-                myPolicyCmptTypeAttributes.addAll(0, attrsToAdd);
-            }
-            if (propertyType == null || ProductCmptPropertyType.VALIDATION_RULE.equals(propertyType)) {
-                visitedPolicyCmptTypes.add(policyCmptType);
-                List<IValidationRule> rulesToAdd = new ArrayList<IValidationRule>();
-                List<IValidationRule> rules = policyCmptType.getValidationRules();
-                for (IValidationRule rule : rules) {
-                    if (rule.isConfigurableByProductComponent()) {
-                        rulesToAdd.add(rule);
-                    }
-                }
-                myValidationRules.addAll(0, rulesToAdd);
-            }
+
+            collectPolicyCmptTypeAttributes(policyCmptType);
+            collectValidationRules(policyCmptType);
+
             return true;
         }
 
-        public List<IProductCmptProperty> getProperties() {
-            List<IProductCmptProperty> props = new ArrayList<IProductCmptProperty>();
-            props.addAll(myAttributes);
-            props.addAll(myTableStructureUsages);
-            props.addAll(myFormulaSignatures);
-            props.addAll(myPolicyCmptTypeAttributes);
-            props.addAll(myValidationRules);
-            return props;
+        private void collectValidationRules(IPolicyCmptType policyCmptType) {
+            if (propertyType == null || ProductCmptPropertyType.VALIDATION_RULE.equals(propertyType)) {
+                visitedPolicyCmptTypes.add(policyCmptType);
+                validationRules.addAll(0,
+                        policyCmptType.getProductCmptProperties(ProductCmptPropertyType.VALIDATION_RULE));
+            }
         }
 
-        public LinkedHashMap<String, IProductCmptProperty> getPropertyMap() {
-            LinkedHashMap<String, IProductCmptProperty> propertyMap = new LinkedHashMap<String, IProductCmptProperty>(
-                    size());
-            add(propertyMap, myAttributes);
-            add(propertyMap, myTableStructureUsages);
-            add(propertyMap, myFormulaSignatures);
-            add(propertyMap, myPolicyCmptTypeAttributes);
-            add(propertyMap, myValidationRules);
+        private void collectPolicyCmptTypeAttributes(IPolicyCmptType policyCmptType) {
+            if (propertyType == null || ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE.equals(propertyType)) {
+                visitedPolicyCmptTypes.add(policyCmptType);
+                policyCmptTypeAttributes.addAll(0,
+                        policyCmptType.getProductCmptProperties(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE));
+            }
+        }
+
+        private void collectFormulaSignatureDefinitions(IProductCmptType currentType) {
+            if (propertyType == null || ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION.equals(propertyType)) {
+                formulaSignatureDefinitions.addAll(0, currentType.getFormulaSignatures());
+            }
+        }
+
+        private void collectTableStructureUsages(IProductCmptType currentType) {
+            if (propertyType == null || ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.equals(propertyType)) {
+                tableStructureUsages.addAll(0, currentType.getTableStructureUsages());
+            }
+        }
+
+        private void collectProductCmptTypeAttributes(IProductCmptType currentType) {
+            if (propertyType == null || ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.equals(propertyType)) {
+                attributes.addAll(0, currentType.getProductCmptTypeAttributes());
+            }
+        }
+
+        public List<IProductCmptProperty> getProperties() {
+            List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>(size());
+            properties.addAll(attributes);
+            properties.addAll(tableStructureUsages);
+            properties.addAll(formulaSignatureDefinitions);
+            properties.addAll(policyCmptTypeAttributes);
+            properties.addAll(validationRules);
+            return properties;
+        }
+
+        public Map<String, IProductCmptProperty> getPropertyMap() {
+            Map<String, IProductCmptProperty> propertyMap = new LinkedHashMap<String, IProductCmptProperty>(size());
+            add(propertyMap, attributes);
+            add(propertyMap, tableStructureUsages);
+            add(propertyMap, formulaSignatureDefinitions);
+            add(propertyMap, policyCmptTypeAttributes);
+            add(propertyMap, validationRules);
             return propertyMap;
         }
 
         private void add(Map<String, IProductCmptProperty> propertyMap,
                 List<? extends IProductCmptProperty> propertyList) {
+
             for (IProductCmptProperty property : propertyList) {
                 propertyMap.put(property.getPropertyName(), property);
             }
         }
 
         private int size() {
-            return myAttributes.size() + myTableStructureUsages.size() + myFormulaSignatures.size()
-                    + myPolicyCmptTypeAttributes.size() + myValidationRules.size();
+            return attributes.size() + tableStructureUsages.size() + formulaSignatureDefinitions.size()
+                    + policyCmptTypeAttributes.size() + validationRules.size();
         }
+
     }
 
     private static class ProductCmptTypeDuplicatePropertyNameValidator extends DuplicatePropertyNameValidator {

@@ -14,8 +14,8 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractFixDifferencesComposite;
@@ -56,8 +56,10 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
 
     public PropertyValueContainerToTypeDelta(IPropertyValueContainer propertyValueContainer, IIpsProject ipsProject)
             throws CoreException {
+
         ArgumentCheck.notNull(propertyValueContainer);
         ArgumentCheck.notNull(ipsProject);
+
         this.propertyValueContainer = propertyValueContainer;
         this.ipsProject = ipsProject;
         productCmptType = propertyValueContainer.findProductCmptType(ipsProject);
@@ -83,14 +85,14 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
 
     private void createEntriesForProperties() throws CoreException {
         for (ProductCmptPropertyType propertyType : ProductCmptPropertyType.values()) {
-            LinkedHashMap<String, IProductCmptProperty> propertiesMap = ((ProductCmptType)productCmptType)
+            Map<String, IProductCmptProperty> propertiesMap = ((ProductCmptType)productCmptType)
                     .findProductCmptPropertyMap(propertyType, getIpsProject());
             checkForMissingPropertyValues(propertiesMap);
             checkForInconsistentPropertyValues(propertiesMap, propertyType);
         }
     }
 
-    private void checkForMissingPropertyValues(LinkedHashMap<String, IProductCmptProperty> propertiesMap) {
+    private void checkForMissingPropertyValues(Map<String, IProductCmptProperty> propertiesMap) {
         for (IProductCmptProperty property : propertiesMap.values()) {
             if (isRelevantProperty(property) && propertyValueContainer.getPropertyValue(property) == null) {
                 // no value found for the property with the given type, but we might have a type
@@ -110,8 +112,9 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         return property.isChangingOverTime() == propertyValueContainer.isChangingOverTimeContainer();
     }
 
-    private void checkForInconsistentPropertyValues(LinkedHashMap<String, IProductCmptProperty> propertiesMap,
+    private void checkForInconsistentPropertyValues(Map<String, IProductCmptProperty> propertiesMap,
             ProductCmptPropertyType propertyType) throws CoreException {
+
         List<? extends IPropertyValue> values = propertyValueContainer.getPropertyValues(propertyType.getValueClass());
         for (IPropertyValue value : values) {
             IProductCmptProperty property = propertiesMap.get(value.getPropertyName());

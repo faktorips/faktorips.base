@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.model.productcmpttype;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
 /**
@@ -22,7 +21,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  * 
  * @author Jan Ortmann
  */
-public interface ITableStructureUsage extends IIpsObjectPart, IProductCmptProperty {
+public interface ITableStructureUsage extends IProductCmptProperty {
 
     public final static String PROPERTY_ROLENAME = "roleName"; //$NON-NLS-1$
 

@@ -19,8 +19,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.pctype.PersistentTypeInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypeHierarchy;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
 /**
  * The policy component type represents a Java class that is part of a policy class model.
@@ -196,10 +198,15 @@ public interface IPolicyCmptType extends IType {
     public List<IPolicyCmptTypeAttribute> getPolicyCmptTypeAttributes();
 
     /**
-     * Returns a list (defensive copy) containing the {@link IPolicyCmptTypeAttribute}s of this type
-     * marked as product relevant.
+     * Returns a list containing the {@link IProductCmptProperty}s belonging to this type.
+     * 
+     * @param propertyType The type of the properties to be retrieved or null to retrieve all
+     *            properties regardless of their type
+     * 
+     * @throws IllegalArgumentException If the indicated property type identified properties that do
+     *             not belong to policy component types
      */
-    public List<IPolicyCmptTypeAttribute> getProductRelevantPolicyCmptTypeAttributes();
+    public List<IProductCmptProperty> getProductCmptProperties(ProductCmptPropertyType propertyType);
 
     /**
      * Returns the attribute with the given name defined in <strong>this</strong> type (This method
@@ -273,12 +280,6 @@ public interface IPolicyCmptType extends IType {
      * Returns the type's validation rules.
      */
     public List<IValidationRule> getValidationRules();
-
-    /**
-     * Returns a list (defensive copy) containing the {@link IValidationRule}s of this type marked
-     * as configurable by product component.
-     */
-    public List<IValidationRule> getConfigurableValidationRules();
 
     /**
      * Returns this type's validation rule with the given name or <code>null</code> if no rule

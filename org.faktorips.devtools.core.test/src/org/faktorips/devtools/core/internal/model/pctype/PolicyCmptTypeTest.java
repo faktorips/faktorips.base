@@ -63,8 +63,10 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypeHierarchy;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
@@ -316,13 +318,33 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testGetProductRelevantPolicyCmptTypeAttributes() {
-        policyCmptType.newPolicyCmptTypeAttribute();
-        IPolicyCmptTypeAttribute productRelevant = policyCmptType.newPolicyCmptTypeAttribute();
-        productRelevant.setProductRelevant(true);
+    public void testGetProductCmptProperties() {
+        policyCmptType.setConfigurableByProductCmptType(true);
 
-        assertEquals(productRelevant, policyCmptType.getProductRelevantPolicyCmptTypeAttributes().get(0));
-        assertEquals(1, policyCmptType.getProductRelevantPolicyCmptTypeAttributes().size());
+        policyCmptType.newPolicyCmptTypeAttribute("noAttributeProperty");
+        IPolicyCmptTypeAttribute attributeProperty = policyCmptType.newPolicyCmptTypeAttribute("attributeProeprty");
+        attributeProperty.setProductRelevant(true);
+        attributeProperty.setAttributeType(AttributeType.CHANGEABLE);
+
+        IValidationRule noRuleProperty = policyCmptType.newRule();
+        noRuleProperty.setConfigurableByProductComponent(false);
+        IValidationRule ruleProperty = policyCmptType.newRule();
+        ruleProperty.setConfigurableByProductComponent(true);
+
+        List<IProductCmptProperty> allProperties = policyCmptType.getProductCmptProperties(null);
+        assertTrue(allProperties.contains(attributeProperty));
+        assertTrue(allProperties.contains(ruleProperty));
+        assertEquals(2, allProperties.size());
+
+        List<IProductCmptProperty> attributeProperties = policyCmptType
+                .getProductCmptProperties(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE);
+        assertTrue(attributeProperties.contains(attributeProperty));
+        assertEquals(1, attributeProperties.size());
+
+        List<IProductCmptProperty> ruleProperties = policyCmptType
+                .getProductCmptProperties(ProductCmptPropertyType.VALIDATION_RULE);
+        assertTrue(ruleProperties.contains(ruleProperty));
+        assertEquals(1, ruleProperties.size());
     }
 
     @Test
@@ -396,17 +418,6 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         // make sure a defensive copy is returned.
         policyCmptType.getValidationRules().clear();
         assertNotNull(policyCmptType.getValidationRules().get(0));
-    }
-
-    @Test
-    public void testGetConfigurableValidationRules() {
-        policyCmptType.setConfigurableByProductCmptType(true);
-        policyCmptType.newRule();
-        IValidationRule configurable = policyCmptType.newRule();
-        configurable.setConfigurableByProductComponent(true);
-
-        assertEquals(configurable, policyCmptType.getConfigurableValidationRules().get(0));
-        assertEquals(1, policyCmptType.getConfigurableValidationRules().size());
     }
 
     @Test

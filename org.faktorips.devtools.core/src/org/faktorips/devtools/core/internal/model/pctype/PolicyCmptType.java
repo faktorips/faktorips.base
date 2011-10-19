@@ -54,8 +54,10 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypeHierarchy;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.ArgumentCheck;
@@ -197,15 +199,31 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    public java.util.List<IPolicyCmptTypeAttribute> getProductRelevantPolicyCmptTypeAttributes() {
-        List<IPolicyCmptTypeAttribute> productRelevantAttributes = new ArrayList<IPolicyCmptTypeAttribute>(
-                attributes.size());
-        for (IPolicyCmptTypeAttribute attribute : attributes) {
-            if (attribute.isProductRelevant()) {
-                productRelevantAttributes.add(attribute);
+    public List<IProductCmptProperty> getProductCmptProperties(ProductCmptPropertyType propertyType) {
+        List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
+        if (propertyType == null || propertyType.equals(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE)) {
+            collectAttributeProductCmptProperties(properties);
+        }
+        if (propertyType == null || propertyType.equals(ProductCmptPropertyType.VALIDATION_RULE)) {
+            collectValidationRuleProductCmptProperties(properties);
+        }
+        return properties;
+    }
+
+    private void collectAttributeProductCmptProperties(List<IProductCmptProperty> properties) {
+        for (IPolicyCmptTypeAttribute attribute : getPolicyCmptTypeAttributes()) {
+            if (attribute.isProductRelevant() && attribute.isChangeable()) {
+                properties.add(attribute);
             }
         }
-        return productRelevantAttributes;
+    }
+
+    private void collectValidationRuleProductCmptProperties(List<IProductCmptProperty> properties) {
+        for (IValidationRule validationRule : getValidationRules()) {
+            if (validationRule.isConfigurableByProductComponent()) {
+                properties.add(validationRule);
+            }
+        }
     }
 
     @Override
@@ -256,17 +274,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     @Override
     public List<IValidationRule> getValidationRules() {
         return rules.asList();
-    }
-
-    @Override
-    public List<IValidationRule> getConfigurableValidationRules() {
-        List<IValidationRule> configurableRules = new ArrayList<IValidationRule>(rules.size());
-        for (IValidationRule rule : rules) {
-            if (rule.isConfigurableByProductComponent()) {
-                configurableRules.add(rule);
-            }
-        }
-        return configurableRules;
     }
 
     @Override
