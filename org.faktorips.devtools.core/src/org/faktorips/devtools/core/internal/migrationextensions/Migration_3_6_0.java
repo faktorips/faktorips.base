@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
 
@@ -30,6 +31,10 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOper
  * Searches for all {@link IProductCmptType}s that have no supertype. For each such
  * {@link IProductCmptType}, default {@link IProductCmptCategory}s are created. The categories that
  * are created correspond to the UI sections as they are set up prior to version 3.6.0.
+ * <p>
+ * Furthermore, all IPS objects that are able to contain {@link IProductCmptProperty}s are marked
+ * dirty so they are saved. This is necessary as a new feature called 'category' was added to these
+ * properties.
  * 
  * @author Alexander Weickmann
  */
@@ -41,15 +46,23 @@ public class Migration_3_6_0 extends DefaultMigration {
 
     @Override
     protected void migrate(IIpsSrcFile srcFile) throws CoreException {
-        if (!srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE)) {
+        IpsObjectType srcFileObjectType = srcFile.getIpsObjectType();
+        if (!srcFileObjectType.equals(IpsObjectType.PRODUCT_CMPT_TYPE)
+                && !srcFileObjectType.equals(IpsObjectType.POLICY_CMPT_TYPE)) {
             return;
         }
 
-        IProductCmptType productCmptType = (IProductCmptType)srcFile.getIpsObject();
-        if (productCmptType.hasSupertype()) {
-            return;
+        if (srcFileObjectType.equals(IpsObjectType.PRODUCT_CMPT_TYPE)) {
+            IProductCmptType productCmptType = (IProductCmptType)srcFile.getIpsObject();
+            if (!productCmptType.hasSupertype()) {
+                createDefaultCategories(productCmptType);
+            }
         }
 
+        srcFile.markAsDirty();
+    }
+
+    private void createDefaultCategories(IProductCmptType productCmptType) {
         IProductCmptCategory attributes = productCmptType
                 .newProductCmptCategory(Messages.Migration_3_6_0_nameDefaultCategoryAttributes);
         attributes.setDefaultForProductCmptTypeAttributes(true);
@@ -78,7 +91,9 @@ public class Migration_3_6_0 extends DefaultMigration {
                 + "signature definitions and table structure usages) are now all assigned to " //$NON-NLS-1$
                 + "categories in the corresponding product component type. For all product component " //$NON-NLS-1$
                 + "types without a superclass, the default categories are created. The default" //$NON-NLS-1$
-                + " categories correspond to the sorting as it is prior to version 3.6.0."; //$NON-NLS-1$
+                + " categories correspond to the sorting as it is prior to version 3.6.0.\n\n" //$NON-NLS-1$
+                + "Furthermore, the XML of all product component types and policy component types" //$NON-NLS-1$
+                + " is updated as all product component properties now feature a new 'category' attribute."; //$NON-NLS-1$
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {
