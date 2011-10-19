@@ -314,6 +314,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
         computationMethodSignature = element.getAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE);
+        categoryHelper.initPropertiesFromXml(element);
     }
 
     @Override
@@ -323,6 +324,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         element.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant); //$NON-NLS-1$
         element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
         element.setAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE, "" + computationMethodSignature); //$NON-NLS-1$
+        categoryHelper.propertiesToXml(element);
     }
 
     @Override

@@ -120,6 +120,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
                 .booleanValue();
         formulaName = element.getAttribute(PROPERTY_FORMULA_NAME);
         overloadsFormula = Boolean.valueOf(element.getAttribute(PROPERTY_OVERLOADS_FORMULA)).booleanValue();
+        categoryHelper.initPropertiesFromXml(element);
     }
 
     @Override
@@ -128,6 +129,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         element.setAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION, "" + formulaSignatureDefinition); //$NON-NLS-1$
         element.setAttribute(PROPERTY_FORMULA_NAME, formulaName);
         element.setAttribute(PROPERTY_OVERLOADS_FORMULA, String.valueOf(overloadsFormula));
+        categoryHelper.propertiesToXml(element);
     }
 
     @Override

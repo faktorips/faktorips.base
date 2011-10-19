@@ -367,6 +367,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
             }
         }
         functions.trimToSize();
+        categoryHelper.initPropertiesFromXml(element);
     }
 
     @Override
@@ -395,6 +396,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
             newElement.appendChild(attrElement);
         }
         InternationalStringXmlHelper.toXml(msgText, newElement, XML_TAG_MSG_TXT);
+        categoryHelper.propertiesToXml(newElement);
     }
 
     @Override

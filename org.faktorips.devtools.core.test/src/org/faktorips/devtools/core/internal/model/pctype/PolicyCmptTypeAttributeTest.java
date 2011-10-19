@@ -244,6 +244,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setDefaultValue("18");
         attribute.setOverwrite(false);
         attribute.setValueSetType(ValueSetType.RANGE);
+        attribute.setCategory("foo");
         RangeValueSet set = (RangeValueSet)attribute.getValueSet();
         set.setLowerBound("unten");
         set.setUpperBound("oben");
@@ -263,6 +264,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertEquals("unten", ((IRangeValueSet)copy.getValueSet()).getLowerBound());
         assertEquals("oben", ((IRangeValueSet)copy.getValueSet()).getUpperBound());
         assertEquals("step", ((IRangeValueSet)copy.getValueSet()).getStep());
+        assertEquals("foo", copy.getCategory());
 
         // Nun ein Attribut mit GenericEnumvalueset testen.
         attribute.setName("age");

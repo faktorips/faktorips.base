@@ -70,12 +70,14 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
             // compatibility to not yet migrated files
             changingOverTime = true;
         }
+        categoryHelper.initPropertiesFromXml(element);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(changingOverTime));
+        categoryHelper.propertiesToXml(element);
     }
 
     @Override

@@ -99,6 +99,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         tableStructureUsage.setMandatoryTableContent(true);
         tableStructureUsage.addTableStructure("tableStructureA");
         tableStructureUsage.addTableStructure("tableStructureB");
+        tableStructureUsage.setCategory("foo");
         Element element = tableStructureUsage.toXml(this.newDocument());
 
         ITableStructureUsage copy = new TableStructureUsage();
@@ -109,6 +110,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         assertEquals(2, copy.getTableStructures().length);
         assertEquals("tableStructureA", copy.getTableStructures()[0]);
         assertEquals("tableStructureB", copy.getTableStructures()[1]);
+        assertEquals("foo", copy.getCategory());
     }
 
     @Test

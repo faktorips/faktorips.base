@@ -20,7 +20,6 @@ import javax.xml.transform.TransformerException;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -69,20 +68,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitFromXml() {
-        IProductCmptTypeAttribute attr = productCmptType.newProductCmptTypeAttribute();
-        Element rootEl = getTestDocument().getDocumentElement();
-
-        // product attribute
-        attr.setModifier(Modifier.PUBLISHED);
-        attr.initFromXml(XmlUtil.getElement(rootEl, ProductCmptTypeAttribute.TAG_NAME, 0));
-        assertEquals("rate", attr.getName());
-        assertEquals(Modifier.PUBLIC, attr.getModifier());
-        assertEquals("Integer", attr.getDatatype());
-    }
-
-    @Test
-    public void testToXml_ProductAttribute() {
+    public void testXml() {
+        productAttribute.setCategory("foo");
         Element el = productAttribute.toXml(newDocument());
 
         IProductCmptTypeAttribute a = productCmptType.newProductCmptTypeAttribute();
@@ -90,6 +77,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertEquals(productAttribute.getName(), a.getName());
         assertEquals(productAttribute.getModifier(), a.getModifier());
         assertEquals(productAttribute.getDatatype(), a.getDatatype());
+        assertEquals(productAttribute.getCategory(), a.getCategory());
     }
 
     /**

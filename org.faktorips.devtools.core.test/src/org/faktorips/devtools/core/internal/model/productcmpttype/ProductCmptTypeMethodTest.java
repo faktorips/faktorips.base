@@ -152,6 +152,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         param1.setName("p1");
         param1.setDatatype("Money");
         method.setOverloadsFormula(true);
+        method.setCategory("foo");
 
         Element element = method.toXml(newDocument());
 
@@ -171,6 +172,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertEquals("p1", copyParams[1].getName());
         assertEquals("Money", copyParams[1].getDatatype());
         assertTrue(copy.isOverloadsFormula());
+        assertEquals("foo", copy.getCategory());
     }
 
     @Test

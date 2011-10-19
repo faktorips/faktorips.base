@@ -145,6 +145,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         rule.setBusinessFunctions(new String[] { "NewOffer", "Renewal" });
         rule.addValidatedAttribute("a");
         rule.setCheckValueAgainstValueSetRule(true);
+        rule.setCategory("foo");
 
         Element element = rule.toXml(newDocument());
 
@@ -163,6 +164,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         String[] validationAttributes = copy.getValidatedAttributes();
         assertEquals("a", validationAttributes[0]);
         assertTrue(copy.isCheckValueAgainstValueSetRule());
+        assertEquals("foo", copy.getCategory());
     }
 
     @Test
