@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.beans.PropertyChangeEvent;
 import java.util.Arrays;
@@ -38,8 +39,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
@@ -48,6 +47,7 @@ import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -89,8 +89,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     private ILabel germanLabel;
 
-    private ContentChangeEvent lastEvent;
-
     @Override
     @Before
     public void setUp() throws Exception {
@@ -119,18 +117,12 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     @Test
     public void testSetDescription() throws CoreException {
         IPolicyCmptType policyContainer = newPolicyCmptType(ipsProject, "TestPolicy");
-        container.getIpsModel().addChangeListener(new ContentsChangeListener() {
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                lastEvent = event;
-            }
-        });
 
         policyContainer.setDescription("new description");
         assertEquals("new description", policyContainer.getDescriptionText(Locale.GERMAN));
         assertEquals("", policyContainer.getDescription(Locale.US).getText());
         assertTrue(policyContainer.getIpsSrcFile().isDirty());
-        assertEquals(policyContainer.getIpsSrcFile(), lastEvent.getIpsSrcFile());
+        assertEquals(policyContainer.getIpsSrcFile(), lastContentChangeEvent.getIpsSrcFile());
 
         try {
             container.setDescription(null);
@@ -821,8 +813,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     private static class TestIpsObjectPartContainer extends IpsObjectPartContainer implements IDescribedElement,
             ILabeledElement {
 
-        private String name;
-
         private int numOfUpdateSrcFileCalls;
 
         private Element xml;
@@ -910,7 +900,10 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         @Override
         public IIpsObject getIpsObject() {
-            return mock(IIpsObject.class);
+            IIpsObject ipsObject = mock(IIpsObject.class);
+            IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+            when(ipsObject.getIpsSrcFile()).thenReturn(ipsSrcFile);
+            return ipsObject;
         }
 
         @Override
