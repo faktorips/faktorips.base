@@ -21,6 +21,7 @@ import static org.mockito.Mockito.verify;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -28,6 +29,9 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,6 +94,46 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
 
         assertTrue(attributeReference.isReferencingProperty(attributeProperty));
         assertFalse(attributeReference.isReferencingProperty(validationRuleProperty));
+    }
+
+    @Test
+    public void testFindProductCmptProperty() throws CoreException {
+        IPolicyCmptTypeAttribute policyAttribute = policyType.newPolicyCmptTypeAttribute("policyAttribute");
+        IValidationRule validationRule = policyType.newRule();
+        validationRule.setName("validationRule");
+        IProductCmptTypeMethod formula = productType.newProductCmptTypeMethod();
+        formula.setName("formula");
+        formula.setFormulaName("formula");
+        formula.setFormulaSignatureDefinition(true);
+        ITableStructureUsage tsu = productType.newTableStructureUsage();
+        tsu.setRoleName("tsu");
+        IProductCmptTypeAttribute productAttribute = productType.newProductCmptTypeAttribute("productAttribute");
+
+        IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(productType, "id1");
+        policyAttributeReference.setName(policyAttribute.getName());
+        policyAttributeReference.setProductCmptPropertyType(policyAttribute.getProductCmptPropertyType());
+
+        IProductCmptPropertyReference validationRuleReference = new ProductCmptPropertyReference(productType, "id2");
+        validationRuleReference.setName(validationRule.getName());
+        validationRuleReference.setProductCmptPropertyType(validationRule.getProductCmptPropertyType());
+
+        IProductCmptPropertyReference formulaReference = new ProductCmptPropertyReference(productType, "id3");
+        formulaReference.setName(formula.getName());
+        formulaReference.setProductCmptPropertyType(formula.getProductCmptPropertyType());
+
+        IProductCmptPropertyReference tsuReference = new ProductCmptPropertyReference(productType, "id4");
+        tsuReference.setName(tsu.getName());
+        tsuReference.setProductCmptPropertyType(tsu.getProductCmptPropertyType());
+
+        IProductCmptPropertyReference productAttributeReference = new ProductCmptPropertyReference(productType, "id5");
+        productAttributeReference.setName(productAttribute.getName());
+        productAttributeReference.setProductCmptPropertyType(productAttribute.getProductCmptPropertyType());
+
+        assertEquals(policyAttribute, policyAttributeReference.findProductCmptProperty(ipsProject));
+        assertEquals(validationRule, validationRuleReference.findProductCmptProperty(ipsProject));
+        assertEquals(formula, formulaReference.findProductCmptProperty(ipsProject));
+        assertEquals(tsu, tsuReference.findProductCmptProperty(ipsProject));
+        assertEquals(productAttribute, productAttributeReference.findProductCmptProperty(ipsProject));
     }
 
     @Test

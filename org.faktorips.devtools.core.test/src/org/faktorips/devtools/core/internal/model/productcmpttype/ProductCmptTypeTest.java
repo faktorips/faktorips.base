@@ -75,7 +75,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     private IIpsProject ipsProject;
     private IPolicyCmptType policyCmptType;
-    private IProductCmptType productCmptType;
+    private ProductCmptType productCmptType;
     private IProductCmptType superProductCmptType;
     private IProductCmptType superSuperProductCmptType;
 
@@ -86,7 +86,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         ipsProject = newIpsProject();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
-        productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        productCmptType = (ProductCmptType)policyCmptType.findProductCmptType(ipsProject);
         superProductCmptType = newProductCmptType(ipsProject, "SuperProduct");
         productCmptType.setSupertype(superProductCmptType.getQualifiedName());
         superSuperProductCmptType = newProductCmptType(ipsProject, "SuperSuperProduct");
@@ -416,8 +416,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         // relevant!
 
         // test property type = null
-        Map<String, IProductCmptProperty> propertyMap = ((ProductCmptType)productCmptType).findProductCmptPropertyMap(
-                null, ipsProject);
+        Map<String, IProductCmptProperty> propertyMap = productCmptType.findProductCmptPropertyMap(null, ipsProject);
         assertEquals(8, propertyMap.size());
         assertEquals(supertypeAttr, propertyMap.get(supertypeAttr.getPropertyName()));
         assertEquals(typeAttribute, propertyMap.get(typeAttribute.getPropertyName()));
@@ -429,26 +428,26 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(policyCmptTypeAttr, propertyMap.get(policyCmptTypeAttr.getPropertyName()));
 
         // test with specific property types
-        propertyMap = ((ProductCmptType)productCmptType).findProductCmptPropertyMap(
-                ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, ipsProject);
+        propertyMap = productCmptType.findProductCmptPropertyMap(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE,
+                ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(supertypeAttr, propertyMap.get(supertypeAttr.getPropertyName()));
         assertEquals(typeAttribute, propertyMap.get(typeAttribute.getPropertyName()));
 
-        propertyMap = ((ProductCmptType)productCmptType).findProductCmptPropertyMap(
-                ProductCmptPropertyType.TABLE_STRUCTURE_USAGE, ipsProject);
+        propertyMap = productCmptType.findProductCmptPropertyMap(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE,
+                ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(supertypeTsu, propertyMap.get(supertypeTsu.getPropertyName()));
         assertEquals(typeTsu, propertyMap.get(typeTsu.getPropertyName()));
 
-        propertyMap = ((ProductCmptType)productCmptType).findProductCmptPropertyMap(
-                ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, ipsProject);
+        propertyMap = productCmptType.findProductCmptPropertyMap(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION,
+                ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(supertypeSignature, propertyMap.get(supertypeSignature.getPropertyName()));
         assertEquals(typeSignature, propertyMap.get(typeSignature.getPropertyName()));
 
-        propertyMap = ((ProductCmptType)productCmptType).findProductCmptPropertyMap(
-                ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, ipsProject);
+        propertyMap = productCmptType.findProductCmptPropertyMap(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE,
+                ipsProject);
         assertEquals(2, propertyMap.size());
         assertEquals(policyCmptSupertypeAttr, propertyMap.get(policyCmptSupertypeAttr.getPropertyName()));
         assertEquals(policyCmptTypeAttr, propertyMap.get(policyCmptTypeAttr.getPropertyName()));
@@ -952,6 +951,46 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(1, productCmptType.getNumOfAssociations());
         assertEquals(1, productCmptType.getNumOfTableStructureUsages());
         assertEquals(1, productCmptType.getNumOfMethods());
+    }
+
+    @Test
+    public void testSavePropertyReferencesToXml() throws CoreException {
+        IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("p1");
+        IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("p2");
+        IProductCmptProperty property3 = productCmptType.newProductCmptTypeAttribute("p3");
+        productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property2), true);
+
+        Element xmlElement = productCmptType.toXml(newDocument());
+        productCmptType = newProductCmptType(ipsProject, "Copy");
+        productCmptType.initFromXml(xmlElement);
+
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInReferencedOrder(ipsProject);
+        assertEquals(property2.getName(), properties.get(0).getName());
+        assertEquals(property1.getName(), properties.get(1).getName());
+        assertEquals(property3.getName(), properties.get(2).getName());
+    }
+
+    @Test
+    public void testDoNotSaveObsoletePropertyReferencesToXml() throws CoreException {
+        IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("p1");
+        IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("p2");
+        IProductCmptProperty property3 = productCmptType.newProductCmptTypeAttribute("p3");
+        productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property3, property2), true);
+
+        // Make reference obsolete by deleting the property
+        property2.delete();
+
+        Element xmlElement = productCmptType.toXml(newDocument());
+        productCmptType = newProductCmptType(ipsProject, "Copy");
+        productCmptType.initFromXml(xmlElement);
+
+        // Re-create the property to test whether it is listed at the end again
+        property2 = productCmptType.newProductCmptTypeAttribute("p2");
+
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInReferencedOrder(ipsProject);
+        assertEquals(property3.getName(), properties.get(0).getName());
+        assertEquals(property1.getName(), properties.get(1).getName());
+        assertEquals(property2.getName(), properties.get(2).getName());
     }
 
     @Test

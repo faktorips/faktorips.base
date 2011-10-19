@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -826,8 +827,49 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     boolean moveProductCmptPropertyReferences(List<IProductCmptProperty> properties, boolean up) throws CoreException {
-        createReferencesForNotReferencedProperties();
+        createProductCmptPropertyReferencesForNotReferencedProperties();
+        return moveProductCmptPropertyReferencesInternal(properties, up);
+    }
 
+    private int getReferencedPropertyIndex(IProductCmptProperty property) {
+        for (int i = 0; i < propertyReferences.size(); i++) {
+            if (propertyReferences.getPart(i).isReferencingProperty(property)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void createProductCmptPropertyReferencesForNotReferencedProperties() throws CoreException {
+        List<IProductCmptPropertyReference> references = propertyReferences.asList();
+        for (IProductCmptProperty property : findProductCmptProperties(getIpsProject())) {
+            // Do not create references for properties originating from supertypes
+            String typeQualifiedName = property.getType().getQualifiedName();
+            if (!typeQualifiedName.equals(getQualifiedName()) && !typeQualifiedName.equals(policyCmptType)) {
+                continue;
+            }
+
+            boolean referenceFound = false;
+            for (IProductCmptPropertyReference reference : references) {
+                if (reference.isReferencingProperty(property)) {
+                    referenceFound = true;
+                    break;
+                }
+            }
+            if (!referenceFound) {
+                newProductCmptPropertyReference(property);
+            }
+        }
+    }
+
+    private IProductCmptPropertyReference newProductCmptPropertyReference(IProductCmptProperty productCmptProperty) {
+        IProductCmptPropertyReference reference = propertyReferences.newPart();
+        reference.setName(productCmptProperty.getPropertyName());
+        reference.setProductCmptPropertyType(productCmptProperty.getProductCmptPropertyType());
+        return reference;
+    }
+
+    private boolean moveProductCmptPropertyReferencesInternal(List<IProductCmptProperty> properties, boolean up) {
         int[] indexes = new int[properties.size()];
         for (int entry = 0; entry < properties.size(); entry++) {
             int index = getReferencedPropertyIndex(properties.get(entry));
@@ -835,7 +877,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 indexes[entry] = index;
             }
         }
-
         int[] newIndexes = propertyReferences.moveParts(indexes, up);
         return !Arrays.equals(indexes, newIndexes);
     }
@@ -886,42 +927,21 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return properties;
     }
 
-    private int getReferencedPropertyIndex(IProductCmptProperty property) {
-        for (int i = 0; i < propertyReferences.size(); i++) {
-            if (propertyReferences.getPart(i).isReferencingProperty(property)) {
-                return i;
+    @Override
+    protected boolean isPartSavedToXml(IIpsObjectPart part) {
+        if (part instanceof IProductCmptPropertyReference) {
+            IProductCmptPropertyReference reference = (IProductCmptPropertyReference)part;
+            try {
+                return reference.findProductCmptProperty(getIpsProject()) != null;
+            } catch (CoreException e) {
+                /*
+                 * If an error occurs during the search for the property, the property is not found
+                 * and we consider it obsolete.
+                 */
+                return false;
             }
         }
-        return -1;
-    }
-
-    private void createReferencesForNotReferencedProperties() throws CoreException {
-        List<IProductCmptPropertyReference> references = propertyReferences.asList();
-        for (IProductCmptProperty property : findProductCmptProperties(getIpsProject())) {
-            // Do not create references for properties originating from supertypes
-            String typeQualifiedName = property.getType().getQualifiedName();
-            if (!typeQualifiedName.equals(getQualifiedName()) && !typeQualifiedName.equals(policyCmptType)) {
-                continue;
-            }
-
-            boolean referenceFound = false;
-            for (IProductCmptPropertyReference reference : references) {
-                if (reference.isReferencingProperty(property)) {
-                    referenceFound = true;
-                    break;
-                }
-            }
-            if (!referenceFound) {
-                newProductCmptPropertyReference(property);
-            }
-        }
-    }
-
-    private IProductCmptPropertyReference newProductCmptPropertyReference(IProductCmptProperty productCmptProperty) {
-        IProductCmptPropertyReference reference = propertyReferences.newPart();
-        reference.setName(productCmptProperty.getPropertyName());
-        reference.setProductCmptPropertyType(productCmptProperty.getProductCmptPropertyType());
-        return reference;
+        return true;
     }
 
     private abstract class DefaultCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {

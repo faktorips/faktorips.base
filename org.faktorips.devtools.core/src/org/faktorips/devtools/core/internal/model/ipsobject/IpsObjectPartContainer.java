@@ -356,13 +356,27 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      * @param element the element to which the part elements should be added.
      */
-    protected void partsToXml(Document doc, Element element) {
+    private void partsToXml(Document doc, Element element) {
         IIpsElement[] children = getChildren();
         for (IIpsElement element2 : children) {
             IIpsObjectPart part = (IIpsObjectPart)element2;
-            Element newPartElement = part.toXml(doc);
-            element.appendChild(newPartElement);
+            if (isPartSavedToXml(part)) {
+                Element newPartElement = part.toXml(doc);
+                element.appendChild(newPartElement);
+            }
         }
+    }
+
+    /**
+     * Intended to be overridden by subclasses to return whether the given object part should be
+     * persisted to XML.
+     * <p>
+     * The default implementation always returns true.
+     * 
+     * @param part The object part in question to save
+     */
+    protected boolean isPartSavedToXml(IIpsObjectPart part) {
+        return true;
     }
 
     /**

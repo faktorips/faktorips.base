@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.core.model.productcmpttype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
@@ -62,5 +64,14 @@ public interface IProductCmptPropertyReference extends IIpsObjectPart {
      * @param property The property to check whether this is a corresponding reference
      */
     public boolean isReferencingProperty(IProductCmptProperty property);
+
+    /**
+     * Returns the referenced {@link IProductCmptProperty} or null no such property is found.
+     * 
+     * @param ipsProject The IPS project whose IPS object path to use for the search
+     * 
+     * @throws CoreException If an error occurs during the search
+     */
+    public IProductCmptProperty findProductCmptProperty(IIpsProject ipsProject) throws CoreException;
 
 }
