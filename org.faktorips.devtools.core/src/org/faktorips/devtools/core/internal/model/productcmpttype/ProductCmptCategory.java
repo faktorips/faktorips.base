@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.runtime.internal.StringUtils;
 import org.faktorips.util.ArgumentCheck;
@@ -66,11 +67,34 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
         List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
         for (IProductCmptProperty property : ((ProductCmptType)contextType)
                 .findProductCmptPropertiesInReferencedOrder(ipsProject)) {
-            if (property.getCategory().equals(name)) {
+            if (property.getCategory().equals(name)
+                    || (property.getCategory().isEmpty() && isDefaultFor(property.getProductCmptPropertyType()))) {
                 properties.add(property);
             }
         }
         return properties;
+    }
+
+    private boolean isDefaultFor(ProductCmptPropertyType propertyType) {
+        boolean isDefault = false;
+        switch (propertyType) {
+            case POLICY_CMPT_TYPE_ATTRIBUTE:
+                isDefault = isDefaultForPolicyCmptTypeAttributes();
+                break;
+            case PRODUCT_CMPT_TYPE_ATTRIBUTE:
+                isDefault = isDefaultForProductCmptTypeAttributes();
+                break;
+            case VALIDATION_RULE:
+                isDefault = isDefaultForValidationRules();
+                break;
+            case FORMULA_SIGNATURE_DEFINITION:
+                isDefault = isDefaultForFormulaSignatureDefinitions();
+                break;
+            case TABLE_STRUCTURE_USAGE:
+                isDefault = isDefaultForTableStructureUsages();
+                break;
+        }
+        return isDefault;
     }
 
     @Override

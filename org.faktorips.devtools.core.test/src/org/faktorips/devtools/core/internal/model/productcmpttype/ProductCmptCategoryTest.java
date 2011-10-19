@@ -332,6 +332,15 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testFindProductCmptPropertiesDefaultCategory() throws CoreException {
+        IProductCmptCategory defaultAttributeCategory = productType
+                .findDefaultCategoryForProductCmptTypeAttributes(ipsProject);
+        IProductCmptProperty attribute = productType.newProductCmptTypeAttribute("foo");
+
+        assertEquals(attribute, defaultAttributeCategory.findProductCmptProperties(productType, ipsProject).get(0));
+    }
+
+    @Test
     public void testMoveProductCmptProperties() throws CoreException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
 
