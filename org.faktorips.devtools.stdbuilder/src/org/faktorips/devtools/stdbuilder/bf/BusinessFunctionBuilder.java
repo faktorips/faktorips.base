@@ -70,7 +70,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     protected void generateCodeForJavatype() throws CoreException {
         TypeSection mainSection = getMainTypeSection();
         mainSection.setUnqualifiedName(getBusinessFunction().getName());
-        mainSection.setClassModifier(Modifier.PUBLIC | Modifier.FINAL);
+        mainSection.setClassModifier(Modifier.PUBLIC);
         mainSection.setClass(true);
         String description = getDescriptionInGeneratorLanguage(getBusinessFunction());
         mainSection.getJavaDocForTypeBuilder().javaDoc(description, ANNOTATION_GENERATED);
@@ -481,10 +481,15 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
             body.append("return ");
             body.append(parameter.getName());
             body.append(';');
-            methodBuilder.method(Modifier.PUBLIC, javaClassName, StringUtils.capitalize(parameter.getName()),
+
+            methodBuilder.method(Modifier.PUBLIC, javaClassName, getMethodNameForGetterParameterValue(parameter),
                     new String[0], new String[0], body, "Returns the value of the parameter " + parameter.getName()
                             + ".", ANNOTATION_GENERATED);
         }
+    }
+
+    private String getMethodNameForGetterParameterValue(IParameterBFE parameter) {
+        return "get" + StringUtils.capitalize(parameter.getName());
     }
 
     private String getMethodNameCreateCallBusinessFunction(IActionBFE action) {
