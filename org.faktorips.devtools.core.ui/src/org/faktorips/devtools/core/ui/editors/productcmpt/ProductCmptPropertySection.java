@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -83,13 +84,16 @@ public class ProductCmptPropertySection extends IpsSection {
      */
     private CompositeUIController uiMasterController;
 
-    public ProductCmptPropertySection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit,
-            List<IPropertyValue> propertyValues) {
+    public ProductCmptPropertySection(IProductCmptCategory category, IProductCmptGeneration generation,
+            Composite parent, UIToolkit toolkit, List<IPropertyValue> propertyValues) {
 
-        super(parent, GridData.FILL_BOTH | GridData.GRAB_VERTICAL, SWT.NONE, toolkit);
+        super(parent, GridData.FILL_BOTH, SWT.NONE, toolkit);
+
         this.generation = generation;
         this.propertyValues = propertyValues;
+
         initControls();
+        setText(category.getName());
     }
 
     @Override

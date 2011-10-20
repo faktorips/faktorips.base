@@ -195,7 +195,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
                 }
             }
             Composite parent = category.isAtLeftPosition() ? left : right;
-            IpsSection section = new ProductCmptPropertySection(generation, parent, toolkit, propertyValues);
+            IpsSection section = new ProductCmptPropertySection(category, generation, parent, toolkit, propertyValues);
             if (category.isAtLeftPosition()) {
                 leftSections.add(section);
             } else {
@@ -218,11 +218,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         for (int i = 0; i < rightSections.size() - 1; i++) {
             rightSections.get(i).setFocusSuccessor(rightSections.get(i + 1));
         }
-        leftSections.get(leftSections.size() - 1).setFocusSuccessor(rightSections.get(0));
         if (!leftSections.isEmpty()) {
-            rightSections.get(rightSections.size() - 1).setFocusSuccessor(leftSections.get(0));
-        } else {
-            rightSections.get(rightSections.size() - 1).setFocusSuccessor(rightSections.get(0));
+            leftSections.get(leftSections.size() - 1).setFocusSuccessor(rightSections.get(0));
         }
 
         /*
