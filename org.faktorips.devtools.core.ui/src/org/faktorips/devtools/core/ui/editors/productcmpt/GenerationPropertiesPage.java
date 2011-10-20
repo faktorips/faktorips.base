@@ -25,7 +25,6 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PartInitException;
@@ -96,7 +95,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
          */
         stack = new StackLayout();
         formBody.setLayout(stack);
-        Composite root = new Composite(formBody, SWT.NONE);
+        Composite root = toolkit.createGridComposite(formBody, 2, true, true);
         stack.topControl = root;
 
         buildContent(toolkit, root);
@@ -146,13 +145,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
      * @param root The parent for the new controls
      */
     private void buildContent(UIToolkit toolkit, Composite root) {
-        GridLayout layout = new GridLayout(2, true);
-        layout.verticalSpacing = VERTICAL_SECTION_SPACE;
-        layout.horizontalSpacing = HORIZONTAL_SECTION_SPACE;
-
-        root.setLayout(layout);
-        root.setBackground(pageRoot.getBackground());
-
         IProductCmptGeneration generation = getActiveGeneration();
 
         ExtensionPropertyControlFactory extFactory = new ExtensionPropertyControlFactory(generation.getClass());

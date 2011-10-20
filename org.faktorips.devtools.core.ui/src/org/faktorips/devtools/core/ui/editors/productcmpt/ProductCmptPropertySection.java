@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.datatype.ValueDatatype;
@@ -87,7 +88,7 @@ public class ProductCmptPropertySection extends IpsSection {
     public ProductCmptPropertySection(IProductCmptCategory category, IProductCmptGeneration generation,
             Composite parent, UIToolkit toolkit, List<IPropertyValue> propertyValues) {
 
-        super(parent, GridData.FILL_BOTH, SWT.NONE, toolkit);
+        super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
 
         this.generation = generation;
         this.propertyValues = propertyValues;
@@ -104,7 +105,7 @@ public class ProductCmptPropertySection extends IpsSection {
         client.setLayout(layout);
 
         rootPane = toolkit.createLabelEditColumnComposite(client);
-        rootPane.setLayoutData(new GridData(GridData.FILL_BOTH));
+        rootPane.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL));
         GridLayout workAreaLayout = (GridLayout)rootPane.getLayout();
         workAreaLayout.marginHeight = 5;
         workAreaLayout.marginWidth = 5;
