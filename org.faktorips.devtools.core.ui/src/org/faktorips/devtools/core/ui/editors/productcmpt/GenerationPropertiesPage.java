@@ -57,8 +57,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     private final List<IpsSection> rightSections = new ArrayList<IpsSection>(4);
 
-    private LinksSection linksSection;
-
     /**
      * Layout for this page (see pageRoot) - if the content-structure for this page changes, the
      * current set top level composite is disposed and a completely new one is created. This is to
@@ -196,7 +194,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     }
 
     private void createLinksSection(Composite right) {
-        linksSection = new LinksSection(getActiveGeneration(), right, toolkit, getEditorSite());
+        IpsSection linksSection = new LinksSection(getActiveGeneration(), right, toolkit, getEditorSite());
         rightSections.add(linksSection);
     }
 

@@ -86,9 +86,10 @@ public class ProductCmptPropertySection extends IpsSection {
     private CompositeUIController uiMasterController;
 
     public ProductCmptPropertySection(IProductCmptCategory category, IProductCmptGeneration generation,
-            Composite parent, UIToolkit toolkit, List<IPropertyValue> propertyValues) {
+            List<IPropertyValue> propertyValues, Composite parent, UIToolkit toolkit) {
 
-        super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+        super(parent, ExpandableComposite.TITLE_BAR, category.isAtLeftPosition() ? GridData.FILL_BOTH
+                : GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL, toolkit);
 
         this.generation = generation;
         this.propertyValues = propertyValues;
