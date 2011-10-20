@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.datatype.ValueDatatype;
@@ -55,7 +54,9 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.FormulaEditControl;
 import org.faktorips.devtools.core.ui.controls.TableContentsUsageRefControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -88,12 +89,21 @@ public class ProductCmptPropertySection extends IpsSection {
     public ProductCmptPropertySection(IProductCmptCategory category, IProductCmptGeneration generation,
             List<IPropertyValue> propertyValues, Composite parent, UIToolkit toolkit) {
 
-        super(parent, ExpandableComposite.TITLE_BAR, category.isAtLeftPosition() ? GridData.FILL_BOTH
-                : GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL, toolkit);
+        super(category.getId(), parent, category.isAtLeftPosition() ? GridData.FILL_BOTH : GridData.FILL_HORIZONTAL
+                | GridData.VERTICAL_ALIGN_FILL, toolkit);
 
         this.generation = generation;
         this.propertyValues = propertyValues;
 
+        /*
+         * The following call is necessary in addition to the above layout data constants because of
+         * the relayoutSection(boolean) method.
+         */
+        if (category.isAtRightPosition()) {
+            setGrabVerticalSpace(false);
+        }
+
+        setInitCollapsedIfNoContent(true);
         initControls();
         setText(category.getName());
     }
@@ -138,7 +148,7 @@ public class ProductCmptPropertySection extends IpsSection {
         Control label = createLabel(propertyValue);
 
         // TODO AW
-        if (propertyValue instanceof IConfigElement || propertyValue instanceof IValidationRuleConfig) {
+        if (propertyValue instanceof IConfigElement) {
             return;
         }
 
@@ -240,7 +250,7 @@ public class ProductCmptPropertySection extends IpsSection {
                 editField = createEditField((IPolicyCmptTypeAttribute)property);
                 break;
             case VALIDATION_RULE:
-                editField = createEditField((IValidationRule)property);
+                editField = createEditField((IValidationRule)property, (IValidationRuleConfig)propertyValue);
                 break;
         }
         return editField;
@@ -262,9 +272,10 @@ public class ProductCmptPropertySection extends IpsSection {
         return new TextButtonField(formulaEditControl);
     }
 
-    // TODO AW
-    private EditField<?> createEditField(IValidationRule validationRule) {
-        return null;
+    private EditField<?> createEditField(IValidationRule validationRule, IValidationRuleConfig validationRuleConfig) {
+        Checkbox checkbox = getToolkit().createCheckbox(rootPane);
+        checkbox.setChecked(validationRuleConfig.isActive());
+        return new CheckboxField(checkbox);
     }
 
     // TODO AW
@@ -283,6 +294,11 @@ public class ProductCmptPropertySection extends IpsSection {
         if (uiMasterController != null) {
             uiMasterController.updateUI();
         }
+    }
+
+    @Override
+    protected boolean hasContentToDisplay() {
+        return !propertyValues.isEmpty();
     }
 
 }
