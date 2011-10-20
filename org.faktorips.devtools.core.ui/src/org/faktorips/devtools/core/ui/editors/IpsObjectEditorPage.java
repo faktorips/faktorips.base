@@ -89,16 +89,14 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     @Override
     protected void createFormContent(IManagedForm managedForm) {
         super.createFormContent(managedForm);
-
-        ScrolledForm form = managedForm.getForm();
         if (getIpsObject() == null) {
-            // No valid IPS source file, create nothing.
+            // No valid IPS source file, create nothing
             return;
         }
 
+        ScrolledForm form = managedForm.getForm();
         form.setText(getIpsObjectEditor().getUniformPageTitle());
-        FormToolkit toolkit = managedForm.getToolkit();
-        createPageContent(form.getBody(), new UIToolkit(toolkit));
+        createPageContent(form.getBody(), new UIToolkit(managedForm.getToolkit()));
         form.setExpandHorizontal(true);
         form.setExpandVertical(true);
         form.reflow(true);
@@ -106,6 +104,10 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         registerSelectionProviderActivation(getPartControl());
     }
 
+    /**
+     * Searches for composites that implement the {@link ISelectionProviderActivation} interface and
+     * registers them with the selection provider dispatcher of the {@link IpsObjectEditor}.
+     */
     protected final void registerSelectionProviderActivation(Control container) {
         if (container instanceof ISelectionProviderActivation) {
             getIpsObjectEditor().getSelectionProviderDispatcher().addSelectionProviderActivation(
@@ -116,8 +118,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
             return;
         }
 
-        Control[] childs = ((Composite)container).getChildren();
-        for (Control child : childs) {
+        for (Control child : ((Composite)container).getChildren()) {
             if (child instanceof Composite) {
                 registerSelectionProviderActivation(child);
             }

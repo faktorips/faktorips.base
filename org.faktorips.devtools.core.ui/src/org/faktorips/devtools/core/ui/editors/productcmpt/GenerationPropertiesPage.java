@@ -15,12 +15,11 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.SWT;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.StackLayout;
@@ -28,7 +27,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -89,37 +87,164 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         pageRoot = formBody;
         this.toolkit = toolkit;
 
-        /*
-         * Create a stack for easy update of the view by disposing the old top of the stack and
-         * putting a new one.
-         */
-        stack = new StackLayout();
-        formBody.setLayout(stack);
-        Composite root = toolkit.createGridComposite(formBody, 2, true, true);
-        stack.topControl = root;
-
-        buildContent(toolkit, root);
-
-        createNavigationButtons();
+        createStack();
+        createPageContent();
+        createToolbar();
     }
 
-    private void createNavigationButtons() {
-        gotoPreviousGenerationAction = new GotoGenerationAction(this, "ArrowLeft.gif") { //$NON-NLS-1$
+    /**
+     * Create a stack for easy update of the view by disposing the old top of the stack and putting
+     * a new one.
+     */
+    private void createStack() {
+        stack = new StackLayout();
+        pageRoot.setLayout(stack);
+        createAndSetStackTopControl();
+    }
+
+    private void createAndSetStackTopControl() {
+        stack.topControl = toolkit.createGridComposite(pageRoot, 2, true, true);
+    }
+
+    private void createPageContent() {
+        Composite left = createColumnComposite();
+        Composite right = createColumnComposite();
+
+        createSections(left, right);
+
+        setFocusSuccessors();
+        registerSelectionProviderActivation(stack.topControl);
+
+        layout();
+    }
+
+    private Composite createColumnComposite() {
+        return createGridComposite(toolkit, (Composite)stack.topControl, 1, true, GridData.FILL_BOTH
+                | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
+    }
+
+    private void createSections(Composite left, Composite right) {
+        createCategorySections(left, right);
+        createExtensionFactorySections(left);
+        createLinksSection(right);
+    }
+
+    private void createCategorySections(Composite left, Composite right) {
+        // Determine categories
+        IProductCmptType productCmptType = null;
+        List<IProductCmptCategory> categories = new ArrayList<IProductCmptCategory>(4);
+        try {
+            productCmptType = getActiveGeneration().findProductCmptType(getActiveGeneration().getIpsProject());
+            if (productCmptType != null) {
+                categories.addAll(productCmptType.findProductCmptCategories(productCmptType.getIpsProject()));
+            }
+        } catch (CoreException e) {
+            /*
+             * If this kind of exception occurs, the categories could not be determined. Recover by
+             * not creating any sections for categories and log exception.
+             */
+            IpsPlugin.log(e);
+            return;
+        }
+
+        // Create a section for each category
+        List<IPropertyValue> allPropertyValues = new ArrayList<IPropertyValue>();
+        allPropertyValues.addAll(getActiveGeneration().getAllPropertyValues());
+        allPropertyValues.addAll(getActiveGeneration().getProductCmpt().getAllPropertyValues());
+        for (IProductCmptCategory category : categories) {
+            // Determine the properties assigned to this category
+            List<IProductCmptProperty> categoryProperties = new ArrayList<IProductCmptProperty>();
+            try {
+                categoryProperties = category.findProductCmptProperties(productCmptType, getActiveGeneration()
+                        .getIpsProject());
+            } catch (CoreException e) {
+                /*
+                 * If this kind of exception occurs, the properties assigned to the category could
+                 * not be determined. Recover by not displaying any properties for this category.
+                 * Instead, log the exception and continue to the next category.
+                 */
+                IpsPlugin.log(e);
+                continue;
+            }
+
+            // Find the property values corresponding to the category's properties
+            // TODO AW 20-10-2011: Can we solve this in a more elegant way?
+            List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
+            for (IProductCmptProperty property : categoryProperties) {
+                for (IPropertyValue propertyValue : allPropertyValues) {
+                    if (property.getProductCmptPropertyType().equals(propertyValue.getPropertyType())
+                            && property.getPropertyName().equals(propertyValue.getPropertyName())) {
+                        propertyValues.add(propertyValue);
+                    }
+                }
+            }
+
+            // Create a new section for this category and attach it to the page
+            List<IpsSection> sections = category.isAtLeftPosition() ? leftSections : rightSections;
+            Composite parent = category.isAtLeftPosition() ? left : right;
+            IpsSection section = new ProductCmptPropertySection(category, getActiveGeneration(), propertyValues,
+                    parent, toolkit);
+            sections.add(section);
+        }
+    }
+
+    private void createExtensionFactorySections(Composite left) {
+        ExtensionPropertyControlFactory extFactory = new ExtensionPropertyControlFactory(getActiveGeneration()
+                .getClass());
+        leftSections.addAll(extFactory.createSections(left, toolkit, getActiveGeneration(), Position.LEFT));
+        rightSections.addAll(extFactory.createSections(left, toolkit, getActiveGeneration(), Position.RIGHT));
+    }
+
+    private void createLinksSection(Composite right) {
+        linksSection = new LinksSection(getActiveGeneration(), right, toolkit, getEditorSite());
+        rightSections.add(linksSection);
+    }
+
+    private void setFocusSuccessors() {
+        for (int i = 0; i < leftSections.size() - 1; i++) {
+            leftSections.get(i).setFocusSuccessor(leftSections.get(i + 1));
+        }
+        for (int i = 0; i < rightSections.size() - 1; i++) {
+            rightSections.get(i).setFocusSuccessor(rightSections.get(i + 1));
+        }
+        if (!leftSections.isEmpty()) {
+            leftSections.get(leftSections.size() - 1).setFocusSuccessor(rightSections.get(0));
+        }
+    }
+
+    private void createToolbar() {
+        gotoPreviousGenerationAction = createGotoPreviousGenerationAction();
+        gotoNextGenerationAction = createGotoNextGenerationAction();
+        Action openModelDescription = createOpenModelDescriptionAction();
+
+        IToolBarManager toolbarManager = getManagedForm().getForm().getToolBarManager();
+        toolbarManager.add(gotoPreviousGenerationAction);
+        toolbarManager.add(gotoNextGenerationAction);
+        toolbarManager.add(openModelDescription);
+        getManagedForm().getForm().updateToolBar();
+    }
+
+    private GotoGenerationAction createGotoPreviousGenerationAction() {
+        return new GotoGenerationAction(this, "ArrowLeft.gif") { //$NON-NLS-1$
             @Override
             protected IIpsObjectGeneration getGeneration() {
                 return generationPropertiesPage.getActiveGeneration().getPreviousByValidDate();
             }
         };
+    }
 
-        gotoNextGenerationAction = new GotoGenerationAction(this, "ArrowRight.gif") { //$NON-NLS-1$
+    private GotoGenerationAction createGotoNextGenerationAction() {
+        return new GotoGenerationAction(this, "ArrowRight.gif") { //$NON-NLS-1$
             @Override
             protected IIpsObjectGeneration getGeneration() {
                 return generationPropertiesPage.getActiveGeneration().getNextByValidDate();
             }
         };
+    }
 
-        Action openModelDescription = new Action(Messages.GenerationPropertiesPage_openModelDescView, IpsUIPlugin
-                .getImageHandling().createImageDescriptor("ModelDescription.gif")) { //$NON-NLS-1$
+    private Action createOpenModelDescriptionAction() {
+        return new Action(Messages.GenerationPropertiesPage_openModelDescView, IpsUIPlugin.getImageHandling()
+                .createImageDescriptor("ModelDescription.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
                 try {
@@ -130,104 +255,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
                 }
             }
         };
-
-        ScrolledForm form = getManagedForm().getForm();
-        form.getToolBarManager().add(gotoPreviousGenerationAction);
-        form.getToolBarManager().add(gotoNextGenerationAction);
-        form.getToolBarManager().add(openModelDescription);
-        form.updateToolBar();
-    }
-
-    /**
-     * Creates the page content by building the different sections.
-     * 
-     * @param toolkit The toolkit to use for control creation
-     * @param root The parent for the new controls
-     */
-    private void buildContent(UIToolkit toolkit, Composite root) {
-        IProductCmptGeneration generation = getActiveGeneration();
-
-        ExtensionPropertyControlFactory extFactory = new ExtensionPropertyControlFactory(generation.getClass());
-
-        // Create left and right composite
-        Composite left = createGridComposite(toolkit, root, 1, true, GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL
-                | GridData.GRAB_VERTICAL);
-        Composite right = createGridComposite(toolkit, root, 1, true, GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL
-                | GridData.GRAB_VERTICAL);
-
-        // Determine categories
-        IProductCmptType productCmptType = null;
-        List<IProductCmptCategory> categories = new ArrayList<IProductCmptCategory>(4);
-        try {
-            productCmptType = generation.findProductCmptType(generation.getIpsProject());
-            categories.addAll(productCmptType.findProductCmptCategories(productCmptType.getIpsProject()));
-        } catch (CoreException e) {
-            // TODO AW
-        }
-
-        // Create a section for each category
-        List<IPropertyValue> allPropertyValues = new ArrayList<IPropertyValue>(generation.getAllPropertyValues().size()
-                + generation.getProductCmpt().getAllPropertyValues().size());
-        allPropertyValues.addAll(generation.getAllPropertyValues());
-        allPropertyValues.addAll(generation.getProductCmpt().getAllPropertyValues());
-        for (IProductCmptCategory category : categories) {
-            List<IProductCmptProperty> categoryProperties = new ArrayList<IProductCmptProperty>();
-            try {
-                categoryProperties = category.findProductCmptProperties(productCmptType, generation.getIpsProject());
-            } catch (CoreException e) {
-                // TODO AW
-            }
-            List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
-            for (IProductCmptProperty property : categoryProperties) {
-                for (IPropertyValue propertyValue : allPropertyValues) {
-                    if (property.getProductCmptPropertyType().equals(propertyValue.getPropertyType())
-                            && property.getPropertyName().equals(propertyValue.getPropertyName())) {
-                        propertyValues.add(propertyValue);
-                    }
-                }
-            }
-            Composite parent = category.isAtLeftPosition() ? left : right;
-            IpsSection section = new ProductCmptPropertySection(category, generation, parent, toolkit, propertyValues);
-            if (category.isAtLeftPosition()) {
-                leftSections.add(section);
-            } else {
-                rightSections.add(section);
-            }
-        }
-
-        // Create sections of extension factory
-        leftSections.addAll(extFactory.createSections(left, toolkit, generation, Position.LEFT));
-        rightSections.addAll(extFactory.createSections(left, toolkit, generation, Position.RIGHT));
-
-        // Create links section
-        linksSection = new LinksSection(generation, right, toolkit, getEditorSite());
-        rightSections.add(linksSection);
-
-        // Set focus successors
-        for (int i = 0; i < leftSections.size() - 1; i++) {
-            leftSections.get(i).setFocusSuccessor(leftSections.get(i + 1));
-        }
-        for (int i = 0; i < rightSections.size() - 1; i++) {
-            rightSections.get(i).setFocusSuccessor(rightSections.get(i + 1));
-        }
-        if (!leftSections.isEmpty()) {
-            leftSections.get(leftSections.size() - 1).setFocusSuccessor(rightSections.get(0));
-        }
-
-        /*
-         * Searches for composites that implement the ISelectionProviderActivation interface and
-         * registers them with the selection provider dispatcher of the IpsObjectEditor.
-         */
-        registerSelectionProviderActivation(root);
-
-        pageRoot.layout();
-    }
-
-    /**
-     * Returns the currently active generation set in the owning editor.
-     */
-    private IProductCmptGeneration getActiveGeneration() {
-        return (IProductCmptGeneration)((ProductCmptEditor)getEditor()).getActiveGeneration();
     }
 
     @Override
@@ -246,10 +273,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     protected void rebuildInclStructuralChanges() {
         // If stack == null, the page contents are not created yet, so do nothing
         if (stack != null) {
-            stack.topControl.dispose();
-            Composite root = new Composite(pageRoot, SWT.NONE);
-            stack.topControl = root;
-            buildContent(toolkit, root);
+            updateStack();
+            createPageContent();
             updateTabname();
             resetDataChangeableState();
         }
@@ -258,22 +283,26 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         gotoNextGenerationAction.update();
     }
 
+    private void updateStack() {
+        stack.topControl.dispose();
+        createAndSetStackTopControl();
+    }
+
     private String getTabname(IIpsObjectGeneration generation) {
-        DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
-        String validRange = format.format(generation.getValidFrom().getTime());
-
-        GregorianCalendar date = generation.getValidTo();
-        String validToString;
-        if (date == null) {
-            validToString = Messages.ProductAttributesSection_valueGenerationValidToUnlimited;
-        } else {
-            validToString = IpsPlugin.getDefault().getIpsPreferences().getDateFormat().format(date.getTime());
-        }
-
-        validRange += " - " + validToString; //$NON-NLS-1$
+        DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
         String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
                 .getGenerationConceptNameSingular();
+        String validRange = dateFormat.format(generation.getValidFrom().getTime())
+                + " - " + getValidToString(generation); //$NON-NLS-1$
         return generationConceptName + ' ' + validRange;
+    }
+
+    private String getValidToString(IIpsObjectGeneration generation) {
+        if (generation.getValidTo() == null) {
+            return Messages.ProductAttributesSection_valueGenerationValidToUnlimited;
+        } else {
+            return IpsPlugin.getDefault().getIpsPreferences().getDateFormat().format(generation.getValidTo().getTime());
+        }
     }
 
     private void updateTabname() {
@@ -295,6 +324,14 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     @Override
     protected boolean computeDataChangeableState() {
         return ((ProductCmptEditor)getIpsObjectEditor()).isActiveGenerationEditable();
+    }
+
+    private void layout() {
+        pageRoot.layout();
+    }
+
+    private IProductCmptGeneration getActiveGeneration() {
+        return (IProductCmptGeneration)((ProductCmptEditor)getEditor()).getActiveGeneration();
     }
 
     private abstract class GotoGenerationAction extends Action {
