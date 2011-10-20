@@ -169,7 +169,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         initClientComposite(clientComposite, toolkit);
         section.setClient(clientComposite);
         toolkit.getFormToolkit().paintBordersFor(clientComposite);
-        setText(getSectionTitle());
+        updateSectionTitle();
         if (collapsible) {
             initExpandedState();
             if (!hasContentToDisplay() && isInitCollapsedIfNoContent()) {
@@ -177,6 +177,14 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
             }
             addStorePreferenceExpansionListener();
             relayoutSection(isExpanded());
+        }
+    }
+
+    private void updateSectionTitle() {
+        if (isDisplayNumberOfElementsInSectionTitle()) {
+            setText(getSectionTitle() + " (" + getNumberOfElementsToDisplayInSectionTitle() + ')'); //$NON-NLS-1$
+        } else {
+            setText(getSectionTitle());
         }
     }
 
@@ -191,16 +199,24 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     }
 
     /**
-     * Returns the no-content annotation of this section. Subclasses may override to provide a
-     * custom annotation.
+     * Subclasses should override this method in order to state whether the number of elements
+     * within this section should be displayed behind the section title.
      * <p>
-     * The annotation will only be displayed if the section has no content to display and at the
-     * same time is configured to be collapsed using {@link #setInitCollapsedIfNoContent(boolean)}.
-     * 
-     * @return the annotation that is appended to the Section title.
+     * The default implementation always returns true.
      */
-    protected String getNoContentTitleAnnotation() {
-        return Messages.IpsSection_DefaultTitleAnnotation_NoContentAvailable;
+    protected boolean isDisplayNumberOfElementsInSectionTitle() {
+        return true;
+    }
+
+    /**
+     * Subclasses should override this method to provide the number of elements that shall be
+     * displayed behind the section title.
+     * <p>
+     * Note that this information is only relevant if
+     * {@link #isDisplayNumberOfElementsInSectionTitle()} returns true.
+     */
+    protected int getNumberOfElementsToDisplayInSectionTitle() {
+        return 0;
     }
 
     /**
@@ -283,34 +299,12 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         } else {
             setGrabVerticalLayoutData(false);
         }
-        updateSectionTitle();
         getParent().layout();
     }
 
     private void setGrabVerticalLayoutData(boolean expanded) {
         GridData gridData = (GridData)getLayoutData();
         gridData.grabExcessVerticalSpace = expanded;
-    }
-
-    /**
-     * Updates the sections title only if the section is configured to be initialized as collapsed
-     * using {@link #setInitCollapsedIfNoContent(boolean)}. If the section is collapsed and has no
-     * content to display the no-content annotation is appended to the default header (
-     * {@link #getNoContentTitleAnnotation()}).
-     */
-    protected void updateSectionTitle() {
-        /*
-         * SW 14.4.2011 (in accordance with GT): As annotation the number of elements contained in
-         * this section in brackets (e.g. "(15)" or "(0)") might be easier to "read". The number
-         * could also be displayed in expanded state.
-         */
-        if (isInitCollapsedIfNoContent()) {
-            String newTitle = getSectionTitle();
-            if (!isExpanded() && !hasContentToDisplay()) {
-                newTitle += getNoContentTitleAnnotation();
-            }
-            setText(newTitle);
-        }
     }
 
     /**

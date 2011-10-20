@@ -72,6 +72,8 @@ public class ProductCmptPropertySection extends IpsSection {
 
     private final List<Control> editControls = new ArrayList<Control>();
 
+    private final IProductCmptCategory category;
+
     private final IProductCmptGeneration generation;
 
     private final List<IPropertyValue> propertyValues;
@@ -92,6 +94,7 @@ public class ProductCmptPropertySection extends IpsSection {
         super(category.getId(), parent, category.isAtLeftPosition() ? GridData.FILL_BOTH : GridData.FILL_HORIZONTAL
                 | GridData.VERTICAL_ALIGN_FILL, toolkit);
 
+        this.category = category;
         this.generation = generation;
         this.propertyValues = propertyValues;
 
@@ -105,7 +108,16 @@ public class ProductCmptPropertySection extends IpsSection {
 
         setInitCollapsedIfNoContent(true);
         initControls();
-        setText(category.getName());
+    }
+
+    @Override
+    protected String getSectionTitle() {
+        return category.getName();
+    }
+
+    @Override
+    protected int getNumberOfElementsToDisplayInSectionTitle() {
+        return propertyValues.size();
     }
 
     @Override
