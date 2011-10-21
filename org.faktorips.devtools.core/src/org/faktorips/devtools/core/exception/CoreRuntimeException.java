@@ -38,11 +38,7 @@ public class CoreRuntimeException extends RuntimeException {
         super(cause);
     }
 
-    public CoreRuntimeException(Throwable cause) {
-        super(cause);
-    }
-
-    public CoreRuntimeException(String message, Throwable cause) {
+    public CoreRuntimeException(String message, CoreException cause) {
         super(message, cause);
     }
 }
