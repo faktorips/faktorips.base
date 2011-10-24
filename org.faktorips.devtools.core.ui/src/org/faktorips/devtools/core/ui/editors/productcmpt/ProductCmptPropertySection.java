@@ -13,8 +13,9 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -24,14 +25,16 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.TimedEnumDatatypeUtil;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -43,9 +46,13 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.ValueSetFilter;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
@@ -55,6 +62,7 @@ import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
+import org.faktorips.devtools.core.ui.controller.fields.PreviewTextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.FormulaEditControl;
@@ -70,8 +78,6 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  */
 public class ProductCmptPropertySection extends IpsSection {
 
-    private final List<Control> editControls = new ArrayList<Control>();
-
     private final IProductCmptCategory category;
 
     private final IProductCmptGeneration generation;
@@ -79,14 +85,14 @@ public class ProductCmptPropertySection extends IpsSection {
     private final List<IPropertyValue> propertyValues;
 
     /**
+     * Controller to handle update of UI and model automatically.
+     */
+    private final CompositeUIController uiMasterController;
+
+    /**
      * Pane which serves as parent for all controls created inside this section.
      */
     private Composite rootPane;
-
-    /**
-     * Controller to handle update of UI and model automatically.
-     */
-    private CompositeUIController uiMasterController;
 
     public ProductCmptPropertySection(IProductCmptCategory category, IProductCmptGeneration generation,
             List<IPropertyValue> propertyValues, Composite parent, UIToolkit toolkit) {
@@ -97,6 +103,8 @@ public class ProductCmptPropertySection extends IpsSection {
         this.category = category;
         this.generation = generation;
         this.propertyValues = propertyValues;
+
+        uiMasterController = new CompositeUIController();
 
         /*
          * The following call is necessary in addition to the above layout data constants because of
@@ -145,48 +153,44 @@ public class ProductCmptPropertySection extends IpsSection {
     }
 
     private void createEditControls() {
-        uiMasterController = new CompositeUIController();
-
-        // Create a label and an edit control for each property
-        for (IPropertyValue propertyValue : propertyValues) {
-            createEditControl(propertyValue);
+        // Create a label and an edit composite for each property
+        if (hasContentToDisplay()) {
+            for (IPropertyValue propertyValue : propertyValues) {
+                createLabelAndEditComposite(propertyValue);
+            }
+        } else {
+            createLabelForEmptySection();
         }
 
         rootPane.layout(true);
         rootPane.redraw();
     }
 
-    private void createEditControl(IPropertyValue propertyValue) {
-        Control label = createLabel(propertyValue);
+    private void createLabelForEmptySection() {
+        getToolkit().createLabel(rootPane, Messages.ProductCmptPropertySection_NoContentToDisplay);
+    }
 
-        // TODO AW
-        if (propertyValue instanceof IConfigElement) {
-            return;
-        }
+    private void createLabelAndEditComposite(IPropertyValue propertyValue) {
+        Control label = createLabel(propertyValue);
 
         IpsObjectUIController controller = new IpsObjectUIController(propertyValue);
         uiMasterController.add(controller);
 
         try {
             IProductCmptProperty property = propertyValue.findProperty(propertyValue.getIpsProject());
-            // Use description of property as tooltip
             if (property != null) {
+                // Use description of property as tooltip
                 label.setToolTipText(IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(property));
-            }
-            EditField<?> editField = createEditField(property, propertyValue);
-            controller.add(editField, propertyValue, getEditedPropertyName(propertyValue));
-            addFocusControl(editField.getControl());
-            editControls.add(editField.getControl());
 
-            if (propertyValue instanceof IAttributeValue) {
-                addChangeOverTimeControlDecoration(editField);
+                createEditComposite(property, propertyValue);
+            } else {
+                createEmptyComposite();
             }
 
         } catch (CoreException e) {
-            Text text = getToolkit().createText(rootPane);
-            addFocusControl(text);
-            editControls.add(text);
-            controller.add(text, propertyValue, getEditedPropertyName(propertyValue));
+            // Log exception and create an empty composite for this property value
+            IpsPlugin.log(e);
+            createEmptyComposite();
         }
     }
 
@@ -216,101 +220,393 @@ public class ProductCmptPropertySection extends IpsSection {
         return hyperlink;
     }
 
-    private String getEditedPropertyName(IPropertyValue propertyValue) {
-        if (propertyValue instanceof IAttributeValue) {
-            return IAttributeValue.PROPERTY_VALUE;
-        }
-        if (propertyValue instanceof IConfigElement) {
-            return IConfigElement.PROPERTY_VALUE;
-        }
-        if (propertyValue instanceof IFormula) {
-            return IFormula.PROPERTY_EXPRESSION;
-        }
-        if (propertyValue instanceof ITableContentUsage) {
-            return ITableContentUsage.PROPERTY_TABLE_CONTENT;
-        }
-        if (propertyValue instanceof IValidationRuleConfig) {
-            return IValidationRuleConfig.PROPERTY_ACTIVE;
-        }
-        throw new RuntimeException();
-    }
-
-    private void addChangeOverTimeControlDecoration(EditField<?> editField) {
-        ControlDecoration controlDecoration = new ControlDecoration(editField.getControl(), SWT.LEFT | SWT.TOP);
-        controlDecoration.setDescriptionText(NLS.bind(
-                Messages.AttributeValuesSection_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
-                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
-        controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
-        controlDecoration.setMarginWidth(1);
-    }
-
-    private EditField<?> createEditField(IProductCmptProperty property, IPropertyValue propertyValue)
-            throws CoreException {
-
-        EditField<?> editField = null;
+    private Composite createEditComposite(IProductCmptProperty property, IPropertyValue propertyValue) {
+        Composite editComposite = null;
         switch (property.getProductCmptPropertyType()) {
             case PRODUCT_CMPT_TYPE_ATTRIBUTE:
-                editField = createEditField((IProductCmptTypeAttribute)property);
+                editComposite = new AttributeValueEditComposite((IProductCmptTypeAttribute)property,
+                        (IAttributeValue)propertyValue);
                 break;
             case TABLE_STRUCTURE_USAGE:
-                editField = createEditField((ITableStructureUsage)property);
+                editComposite = new TableContentUsageEditComposite((ITableStructureUsage)property,
+                        (ITableContentUsage)propertyValue);
                 break;
             case FORMULA_SIGNATURE_DEFINITION:
-                editField = createEditField((IFormula)propertyValue);
+                editComposite = new FormulaEditComposite((IProductCmptTypeMethod)property, (IFormula)propertyValue);
                 break;
             case POLICY_CMPT_TYPE_ATTRIBUTE:
-                editField = createEditField((IPolicyCmptTypeAttribute)property);
+                editComposite = new ConfigElementEditComposite((IPolicyCmptTypeAttribute)property,
+                        (IConfigElement)propertyValue);
                 break;
             case VALIDATION_RULE:
-                editField = createEditField((IValidationRule)property, (IValidationRuleConfig)propertyValue);
+                editComposite = new ValidationRuleConfigEditComposite((IValidationRule)property,
+                        (IValidationRuleConfig)propertyValue);
                 break;
         }
-        return editField;
+        return editComposite;
     }
 
-    private EditField<?> createEditField(IProductCmptTypeAttribute productCmptTypeAttribute) throws CoreException {
-        ValueDatatype datatype = productCmptTypeAttribute.findDatatype(productCmptTypeAttribute.getIpsProject());
-        ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-        return controlFactory.createEditField(getToolkit(), rootPane, datatype, productCmptTypeAttribute.getValueSet(),
-                productCmptTypeAttribute.getIpsProject());
-    }
-
-    private EditField<?> createEditField(IFormula formula) throws CoreException {
-        FormulaEditControl formulaEditControl = new FormulaEditControl(rootPane, getToolkit(), formula, getShell(),
-                this);
-        FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(formula);
-        ContentAssistHandler.createHandlerForText(formulaEditControl.getTextControl(),
-                CompletionUtil.createContentAssistant(completionProcessor));
-        return new TextButtonField(formulaEditControl);
-    }
-
-    private EditField<?> createEditField(IValidationRule validationRule, IValidationRuleConfig validationRuleConfig) {
-        Checkbox checkbox = getToolkit().createCheckbox(rootPane);
-        checkbox.setChecked(validationRuleConfig.isActive());
-        return new CheckboxField(checkbox);
-    }
-
-    // TODO AW
-    private EditField<?> createEditField(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
-        return null;
-    }
-
-    private EditField<?> createEditField(ITableStructureUsage tableStructureUsage) {
-        TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(tableStructureUsage.getIpsProject(),
-                rootPane, getToolkit(), tableStructureUsage);
-        return new TextButtonField(tcuControl);
+    private void createEmptyComposite() {
+        getToolkit().createComposite(rootPane);
     }
 
     @Override
     protected void performRefresh() {
-        if (uiMasterController != null) {
-            uiMasterController.updateUI();
-        }
+        uiMasterController.updateUI();
     }
 
     @Override
     protected boolean hasContentToDisplay() {
         return !propertyValues.isEmpty();
+    }
+
+    private abstract class EditPropertyValueComposite<P extends IProductCmptProperty, V extends IPropertyValue> extends
+            Composite {
+
+        protected final P property;
+
+        protected final V propertyValue;
+
+        protected final IpsObjectUIController controller;
+
+        public EditPropertyValueComposite(P property, V propertyValue) {
+            super(rootPane, SWT.NONE);
+
+            this.property = property;
+            this.propertyValue = propertyValue;
+
+            controller = new IpsObjectUIController(propertyValue);
+            uiMasterController.add(controller);
+        }
+
+        /**
+         * Creates this composite and must be called by subclasses directly after subclass-specific
+         * data has been initialized by the subclass constructor.
+         */
+        protected final void initControls() {
+            setLayout();
+            setLayoutData();
+
+            Map<EditField<?>, String> editFieldsToEditedProperties = new LinkedHashMap<EditField<?>, String>();
+            try {
+                createEditFields(editFieldsToEditedProperties);
+            } catch (CoreException e) {
+                // Log exception and do not add any edit fields
+                IpsPlugin.log(e);
+            }
+            for (EditField<?> editField : editFieldsToEditedProperties.keySet()) {
+                controller.add(editField, propertyValue, editFieldsToEditedProperties.get(editField));
+                addFocusControl(editField.getControl());
+                addEditFieldDecorators(editField);
+            }
+        }
+
+        protected void setLayout() {
+            GridLayout clientLayout = new GridLayout(1, false);
+            clientLayout.marginHeight = 2;
+            clientLayout.marginWidth = 1;
+            setLayout(clientLayout);
+        }
+
+        private void setLayoutData() {
+            setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        }
+
+        /**
+         * Subclasses must create the edit fields that constitute this edit composite.
+         * <p>
+         * Every edit field must be added as key to the provided map with the associated value being
+         * the edited property.
+         * 
+         * @param editFieldsToEditedProperties The map to use to associate each created edit field
+         *            with the property it edits
+         * 
+         * @throws CoreException May throw this kind of exception at any time
+         */
+        protected abstract void createEditFields(Map<EditField<?>, String> editFieldsToEditedProperties)
+                throws CoreException;
+
+        /**
+         * Subclasses may override this method to add decorators to the given edit field.
+         * <p>
+         * The default implementation does nothing.
+         * 
+         * @param editField The edit field to decorate
+         */
+        protected void addEditFieldDecorators(EditField<?> editField) {
+            // Empty default implementation
+        }
+
+    }
+
+    private final class AttributeValueEditComposite extends
+            EditPropertyValueComposite<IProductCmptTypeAttribute, IAttributeValue> {
+
+        public AttributeValueEditComposite(IProductCmptTypeAttribute property, IAttributeValue propertyValue) {
+            super(property, propertyValue);
+            initControls();
+        }
+
+        @Override
+        protected void createEditFields(Map<EditField<?>, String> editFieldsToEditedProperties) throws CoreException {
+            createValueEditField(editFieldsToEditedProperties);
+        }
+
+        private void createValueEditField(Map<EditField<?>, String> editFieldsToEditedProperties) throws CoreException {
+            ValueDatatype datatype = property.findDatatype(property.getIpsProject());
+            ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
+                    datatype);
+            EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype,
+                    property.getValueSet(), property.getIpsProject());
+
+            editFieldsToEditedProperties.put(editField, IAttributeValue.PROPERTY_VALUE);
+        }
+
+        @Override
+        protected void addEditFieldDecorators(EditField<?> editField) {
+            addChangeOverTimeControlDecoration(editField);
+        }
+
+        private void addChangeOverTimeControlDecoration(EditField<?> editField) {
+            ControlDecoration controlDecoration = new ControlDecoration(editField.getControl(), SWT.LEFT | SWT.TOP);
+            controlDecoration
+                    .setDescriptionText(NLS.bind(
+                            Messages.AttributeValuesSection_attributeNotChangingOverTimeDescription, IpsPlugin
+                                    .getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                                    .getGenerationConceptNamePlural()));
+            controlDecoration.setImage(IpsUIPlugin.getImageHandling()
+                    .getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
+            controlDecoration.setMarginWidth(1);
+        }
+
+    }
+
+    private final class TableContentUsageEditComposite extends
+            EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
+
+        public TableContentUsageEditComposite(ITableStructureUsage property, ITableContentUsage propertyValue) {
+            super(property, propertyValue);
+            initControls();
+        }
+
+        @Override
+        protected void createEditFields(Map<EditField<?>, String> editFieldsToEditedProperties) {
+            createTableContentEditField(editFieldsToEditedProperties);
+        }
+
+        private void createTableContentEditField(Map<EditField<?>, String> editFieldsToEditedProperties) {
+            TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(property.getIpsProject(), this,
+                    getToolkit(), property);
+            TextButtonField editField = new TextButtonField(tcuControl);
+
+            editFieldsToEditedProperties.put(editField, ITableContentUsage.PROPERTY_TABLE_CONTENT);
+        }
+
+    }
+
+    private final class ValidationRuleConfigEditComposite extends
+            EditPropertyValueComposite<IValidationRule, IValidationRuleConfig> {
+
+        public ValidationRuleConfigEditComposite(IValidationRule property, IValidationRuleConfig propertyValue) {
+            super(property, propertyValue);
+            initControls();
+        }
+
+        @Override
+        protected void createEditFields(Map<EditField<?>, String> editFieldsToEditedProperties) {
+            createActiveEditField(editFieldsToEditedProperties);
+        }
+
+        private void createActiveEditField(Map<EditField<?>, String> editFieldsToEditedProperties) {
+            Checkbox checkbox = getToolkit().createCheckbox(this);
+            checkbox.setChecked(propertyValue.isActive());
+            CheckboxField editField = new CheckboxField(checkbox);
+
+            editFieldsToEditedProperties.put(editField, IValidationRuleConfig.PROPERTY_ACTIVE);
+        }
+
+    }
+
+    private final class FormulaEditComposite extends EditPropertyValueComposite<IProductCmptTypeMethod, IFormula> {
+
+        public FormulaEditComposite(IProductCmptTypeMethod property, IFormula propertyValue) {
+            super(property, propertyValue);
+            initControls();
+        }
+
+        @Override
+        protected void createEditFields(Map<EditField<?>, String> editFieldsToEditedProperties) throws CoreException {
+            createExpressionEditField(editFieldsToEditedProperties);
+        }
+
+        private void createExpressionEditField(Map<EditField<?>, String> editFieldsToEditedProperties)
+                throws CoreException {
+
+            FormulaEditControl formulaEditControl = new FormulaEditControl(this, getToolkit(), propertyValue,
+                    getShell(), ProductCmptPropertySection.this);
+            FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(propertyValue);
+            ContentAssistHandler.createHandlerForText(formulaEditControl.getTextControl(),
+                    CompletionUtil.createContentAssistant(completionProcessor));
+            TextButtonField editField = new TextButtonField(formulaEditControl);
+
+            editFieldsToEditedProperties.put(editField, IFormula.PROPERTY_EXPRESSION);
+        }
+
+    }
+
+    private final class ConfigElementEditComposite extends
+            EditPropertyValueComposite<IPolicyCmptTypeAttribute, IConfigElement> {
+
+        public ConfigElementEditComposite(IPolicyCmptTypeAttribute property, IConfigElement propertyValue) {
+            super(property, propertyValue);
+            initControls();
+        }
+
+        @Override
+        protected void setLayout() {
+            GridLayout clientLayout = new GridLayout(2, false);
+            clientLayout.marginHeight = 2;
+            clientLayout.marginWidth = 1;
+            setLayout(clientLayout);
+        }
+
+        @Override
+        protected void createEditFields(Map<EditField<?>, String> editFieldsToEditedProperties) {
+            createDefaultValueEditField(editFieldsToEditedProperties);
+            createValueSetEditField(editFieldsToEditedProperties);
+        }
+
+        private void createDefaultValueEditField(Map<EditField<?>, String> editFieldsToEditedProperties) {
+            getToolkit().createFormLabel(this, Messages.PolicyAttributeEditDialog_defaultValue);
+            ValueDatatype datatype = null;
+            try {
+                datatype = property.findDatatype(propertyValue.getIpsProject());
+            } catch (CoreException e) {
+                // Exception while searching for datatype, log exception and use String as default
+                IpsPlugin.log(e);
+                datatype = Datatype.STRING;
+            }
+            if (datatype == null) {
+                // No datatype found - use String as default
+                datatype = Datatype.STRING;
+            }
+
+            IValueSet sourceSet = ValueSetFilter.filterValueSet(propertyValue.getValueSet(), datatype, getGeneration()
+                    .getValidFrom(), getGeneration().getValidTo(),
+                    TimedEnumDatatypeUtil.ValidityCheck.SOME_TIME_OF_THE_PERIOD);
+            ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
+                    datatype);
+            EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, sourceSet,
+                    getGeneration().getIpsProject());
+
+            editFieldsToEditedProperties.put(editField, IConfigElement.PROPERTY_VALUE);
+        }
+
+        private void createValueSetEditField(Map<EditField<?>, String> editFieldsToEditedProperties) {
+            // TODO AW
+            if (areRangeValueEditFieldsRequired()) {
+                // createValueSetEditFieldForRange(editFieldsToEditedProperties);
+            } else {
+                // createValueSetEditFieldForOtherThanRange(editFieldsToEditedProperties);
+            }
+        }
+
+        private boolean areRangeValueEditFieldsRequired() {
+            return property.getValueSet() != null ? property.getValueSet().isRange() : propertyValue.getValueSet()
+                    .isRange();
+        }
+
+        private void createValueSetEditFieldForRange(Map<EditField<?>, String> editFieldsToEditedProperties) {
+            if (IpsPlugin.getDefault().getIpsPreferences().isRangeEditFieldsInOneRow()) {
+                createValueSetEditFieldForRangeInOneRow(editFieldsToEditedProperties);
+            } else {
+                createValueSetEditFieldForRangeInMultipleRows(editFieldsToEditedProperties);
+            }
+        }
+
+        private void createValueSetEditFieldForRangeInMultipleRows(Map<EditField<?>, String> editFieldsToEditedProperties) {
+            RangeValueSet range = (RangeValueSet)propertyValue.getValueSet();
+            ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
+                    range.getValueDatatype());
+
+            getToolkit().createFormLabel(this, Messages.PolicyAttributesSection_minimum);
+            EditField<String> lowerField = controlFactory.createEditField(getToolkit(), this, range.getValueDatatype(),
+                    range, range.getIpsProject());
+            addFocusControl(lowerField.getControl());
+
+            getToolkit().createFormLabel(this, ""); //$NON-NLS-1$
+            getToolkit().createFormLabel(this, Messages.PolicyAttributesSection_maximum);
+            EditField<String> upperField = controlFactory.createEditField(getToolkit(), this, range.getValueDatatype(),
+                    range, range.getIpsProject());
+            addFocusControl(upperField.getControl());
+
+            getToolkit().createFormLabel(this, ""); //$NON-NLS-1$
+            getToolkit().createFormLabel(this, Messages.PolicyAttributesSection_step);
+            EditField<String> stepField = controlFactory.createEditField(getToolkit(), this, range.getValueDatatype(),
+                    range, range.getIpsProject());
+            addFocusControl(stepField.getControl());
+
+            editFieldsToEditedProperties.put(upperField, IRangeValueSet.PROPERTY_UPPERBOUND);
+            editFieldsToEditedProperties.put(lowerField, IRangeValueSet.PROPERTY_LOWERBOUND);
+            editFieldsToEditedProperties.put(stepField, IRangeValueSet.PROPERTY_STEP);
+        }
+
+        private void createValueSetEditFieldForRangeInOneRow(Map<EditField<?>, String> editFieldsToEditedProperties) {
+            RangeValueSet range = (RangeValueSet)propertyValue.getValueSet();
+            ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
+                    range.getValueDatatype());
+
+            getToolkit().createFormLabel(this, Messages.DefaultsAndRangesSection_minMaxStepLabel);
+            Composite rangeComposite = getToolkit().createGridComposite(this, 3, false, false);
+
+            // Need to see borders
+            ((GridLayout)rangeComposite.getLayout()).marginWidth = 1;
+            ((GridLayout)rangeComposite.getLayout()).marginHeight = 2;
+
+            EditField<String> lowerField = controlFactory.createEditField(getToolkit(), rangeComposite,
+                    range.getValueDatatype(), range, range.getIpsProject());
+            initTextField(lowerField.getControl(), 50);
+
+            EditField<String> upperField = controlFactory.createEditField(getToolkit(), rangeComposite,
+                    range.getValueDatatype(), range, range.getIpsProject());
+            initTextField(upperField.getControl(), 50);
+
+            EditField<String> stepField = controlFactory.createEditField(getToolkit(), rangeComposite,
+                    range.getValueDatatype(), range, range.getIpsProject());
+            initTextField(stepField.getControl(), 50);
+
+            getToolkit().getFormToolkit().paintBordersFor(rangeComposite);
+
+            editFieldsToEditedProperties.put(upperField, IRangeValueSet.PROPERTY_UPPERBOUND);
+            editFieldsToEditedProperties.put(lowerField, IRangeValueSet.PROPERTY_LOWERBOUND);
+            editFieldsToEditedProperties.put(stepField, IRangeValueSet.PROPERTY_STEP);
+        }
+
+        private void createValueSetEditFieldForOtherThanRange(Map<EditField<?>, String> editFieldsToEditedProperties) {
+            getToolkit().createFormLabel(this, Messages.PolicyAttributesSection_valueSet);
+            AnyValueSetControl valueSetControl = new AnyValueSetControl(this, getToolkit(), propertyValue, getShell(),
+                    controller);
+            valueSetControl.setDataChangeable(isDataChangeable());
+            valueSetControl.setText(IpsUIPlugin.getDefault().getDatatypeFormatter()
+                    .formatValueSet(propertyValue.getValueSet()));
+            ((GridData)valueSetControl.getLayoutData()).widthHint = UIToolkit.DEFAULT_WIDTH;
+            PreviewTextButtonField editField = new PreviewTextButtonField(valueSetControl);
+
+            editFieldsToEditedProperties.put(editField, IConfigElement.PROPERTY_VALUE_SET);
+        }
+
+        private void initTextField(Control control, int widthHint) {
+            if (control.getLayoutData() instanceof GridData) {
+                GridData gd = (GridData)control.getLayoutData();
+                gd.widthHint = widthHint;
+                control.setLayoutData(gd);
+            }
+        }
+
+        private IProductCmptGeneration getGeneration() {
+            return propertyValue.getProductCmptGeneration();
+        }
+
     }
 
 }
