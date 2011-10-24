@@ -191,7 +191,7 @@ public class ProductCmptPropertySection extends IpsSection {
                  * composite.
                  */
                 ((GridData)label.getLayoutData()).verticalAlignment = SWT.TOP;
-                int topOfControlToLabelPixels = editComposite.controlHeight
+                int topOfControlToLabelPixels = editComposite.firstEditFieldHeight
                         - label.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
                 ((GridData)label.getLayoutData()).verticalIndent = ((GridLayout)editComposite.getLayout()).marginHeight
                         + topOfControlToLabelPixels + 4;
@@ -284,7 +284,7 @@ public class ProductCmptPropertySection extends IpsSection {
 
         protected final IpsObjectUIController controller;
 
-        protected int controlHeight = -1;
+        protected int firstEditFieldHeight = -1;
 
         public EditPropertyValueComposite(P property, V propertyValue) {
             super(rootPane, SWT.NONE);
@@ -312,8 +312,8 @@ public class ProductCmptPropertySection extends IpsSection {
                 IpsPlugin.log(e);
             }
             for (EditField<?> editField : editFieldsToObjectProperties.keySet()) {
-                if (controlHeight == -1) {
-                    controlHeight = editField.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+                if (firstEditFieldHeight == -1) {
+                    firstEditFieldHeight = editField.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
                 }
                 ObjectProperty objectProperty = editFieldsToObjectProperties.get(editField);
                 controller.add(editField, objectProperty.getObject(), objectProperty.getProperty());
@@ -508,7 +508,7 @@ public class ProductCmptPropertySection extends IpsSection {
         }
 
         private void createDefaultValueEditField(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
-            getToolkit().createLabel(this, Messages.PolicyAttributeEditDialog_defaultValue);
+            getToolkit().createFormLabel(this, Messages.PolicyAttributeEditDialog_defaultValue);
             ValueDatatype datatype = null;
             try {
                 datatype = property.findDatatype(propertyValue.getIpsProject());
@@ -552,7 +552,7 @@ public class ProductCmptPropertySection extends IpsSection {
             ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     range.getValueDatatype());
 
-            getToolkit().createLabel(this, Messages.DefaultsAndRangesSection_minMaxStepLabel);
+            getToolkit().createFormLabel(this, Messages.DefaultsAndRangesSection_minMaxStepLabel);
             Composite rangeComposite = getToolkit().createGridComposite(this, 3, false, false);
 
             // Need to see borders
