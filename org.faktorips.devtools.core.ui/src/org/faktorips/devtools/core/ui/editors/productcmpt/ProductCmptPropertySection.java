@@ -187,14 +187,14 @@ public class ProductCmptPropertySection extends IpsSection {
 
                 /*
                  * Vertically indent the label so it does not stick at the very top of the
-                 * composite. The magnitude of the indentation depends on the height of the edit
-                 * composite.
+                 * composite. The magnitude of the indentation depends on the height and margin of
+                 * the edit composite.
                  */
                 ((GridData)label.getLayoutData()).verticalAlignment = SWT.TOP;
-                int topOfControlToLabelPixels = editComposite.firstEditFieldHeight
-                        - label.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+                int topOfControlToLabelPixels = editComposite.firstControlHeight
+                        - label.computeSize(SWT.DEFAULT, SWT.DEFAULT).y + editComposite.getFirstControlMargin();
                 ((GridData)label.getLayoutData()).verticalIndent = ((GridLayout)editComposite.getLayout()).marginHeight
-                        + topOfControlToLabelPixels + 4;
+                        + topOfControlToLabelPixels;
             } else {
                 createEmptyComposite();
             }
@@ -284,9 +284,12 @@ public class ProductCmptPropertySection extends IpsSection {
 
         protected final IpsObjectUIController controller;
 
-        protected int firstEditFieldHeight = -1;
+        /**
+         * The height of the first control contained in this composite.
+         */
+        private int firstControlHeight = -1;
 
-        public EditPropertyValueComposite(P property, V propertyValue) {
+        protected EditPropertyValueComposite(P property, V propertyValue) {
             super(rootPane, SWT.NONE);
 
             this.property = property;
@@ -294,6 +297,18 @@ public class ProductCmptPropertySection extends IpsSection {
 
             controller = new IpsObjectUIController(propertyValue);
             uiMasterController.add(controller);
+        }
+
+        /**
+         * Returns The margin of the first control contained in this composite.
+         * <p>
+         * Subclasses should override this method if the first control they create features a
+         * margin.
+         * <p>
+         * The default implementation always returns 0.
+         */
+        protected int getFirstControlMargin() {
+            return 0;
         }
 
         /**
@@ -312,8 +327,8 @@ public class ProductCmptPropertySection extends IpsSection {
                 IpsPlugin.log(e);
             }
             for (EditField<?> editField : editFieldsToObjectProperties.keySet()) {
-                if (firstEditFieldHeight == -1) {
-                    firstEditFieldHeight = editField.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+                if (firstControlHeight == -1) {
+                    firstControlHeight = editField.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
                 }
                 ObjectProperty objectProperty = editFieldsToObjectProperties.get(editField);
                 controller.add(editField, objectProperty.getObject(), objectProperty.getProperty());
@@ -547,6 +562,11 @@ public class ProductCmptPropertySection extends IpsSection {
         private boolean areRangeValueEditFieldsRequired() {
             return property.getValueSet() != null ? property.getValueSet().isRange() : propertyValue.getValueSet()
                     .isRange();
+        }
+
+        @Override
+        protected int getFirstControlMargin() {
+            return areRangeValueEditFieldsRequired() ? 4 : 0;
         }
 
         private void createValueSetEditFieldForRange(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
