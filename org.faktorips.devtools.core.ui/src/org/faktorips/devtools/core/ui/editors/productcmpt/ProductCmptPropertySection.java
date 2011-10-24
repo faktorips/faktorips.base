@@ -68,6 +68,7 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.FormulaEditControl;
 import org.faktorips.devtools.core.ui.controls.TableContentsUsageRefControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.util.message.ObjectProperty;
 
 /**
  * Provides a generic section for all kinds of {@link IPropertyValue}s.
@@ -287,15 +288,16 @@ public class ProductCmptPropertySection extends IpsSection {
             setLayout();
             setLayoutData();
 
-            Map<EditField<?>, String> editFieldsToEditedProperties = new LinkedHashMap<EditField<?>, String>();
+            Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties = new LinkedHashMap<EditField<?>, ObjectProperty>();
             try {
-                createEditFields(editFieldsToEditedProperties);
+                createEditFields(editFieldsToObjectProperties);
             } catch (CoreException e) {
                 // Log exception and do not add any edit fields
                 IpsPlugin.log(e);
             }
-            for (EditField<?> editField : editFieldsToEditedProperties.keySet()) {
-                controller.add(editField, propertyValue, editFieldsToEditedProperties.get(editField));
+            for (EditField<?> editField : editFieldsToObjectProperties.keySet()) {
+                ObjectProperty objectProperty = editFieldsToObjectProperties.get(editField);
+                controller.add(editField, objectProperty.getObject(), objectProperty.getProperty());
                 addFocusControl(editField.getControl());
                 addEditFieldDecorators(editField);
             }
@@ -318,12 +320,12 @@ public class ProductCmptPropertySection extends IpsSection {
          * Every edit field must be added as key to the provided map with the associated value being
          * the edited property.
          * 
-         * @param editFieldsToEditedProperties The map to use to associate each created edit field
-         *            with the property it edits
+         * @param editFieldsToObjectProperties Map to associate each created edit field with the
+         *            object and the property it edits
          * 
          * @throws CoreException May throw this kind of exception at any time
          */
-        protected abstract void createEditFields(Map<EditField<?>, String> editFieldsToEditedProperties)
+        protected abstract void createEditFields(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties)
                 throws CoreException;
 
         /**
@@ -348,18 +350,23 @@ public class ProductCmptPropertySection extends IpsSection {
         }
 
         @Override
-        protected void createEditFields(Map<EditField<?>, String> editFieldsToEditedProperties) throws CoreException {
-            createValueEditField(editFieldsToEditedProperties);
+        protected void createEditFields(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties)
+                throws CoreException {
+
+            createValueEditField(editFieldsToObjectProperties);
         }
 
-        private void createValueEditField(Map<EditField<?>, String> editFieldsToEditedProperties) throws CoreException {
+        private void createValueEditField(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties)
+                throws CoreException {
+
             ValueDatatype datatype = property.findDatatype(property.getIpsProject());
             ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     datatype);
             EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype,
                     property.getValueSet(), property.getIpsProject());
 
-            editFieldsToEditedProperties.put(editField, IAttributeValue.PROPERTY_VALUE);
+            editFieldsToObjectProperties.put(editField, new ObjectProperty(propertyValue,
+                    IAttributeValue.PROPERTY_VALUE));
         }
 
         @Override
@@ -390,16 +397,17 @@ public class ProductCmptPropertySection extends IpsSection {
         }
 
         @Override
-        protected void createEditFields(Map<EditField<?>, String> editFieldsToEditedProperties) {
+        protected void createEditFields(Map<EditField<?>, ObjectProperty> editFieldsToEditedProperties) {
             createTableContentEditField(editFieldsToEditedProperties);
         }
 
-        private void createTableContentEditField(Map<EditField<?>, String> editFieldsToEditedProperties) {
+        private void createTableContentEditField(Map<EditField<?>, ObjectProperty> editFieldsToEditedProperties) {
             TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(property.getIpsProject(), this,
                     getToolkit(), property);
             TextButtonField editField = new TextButtonField(tcuControl);
 
-            editFieldsToEditedProperties.put(editField, ITableContentUsage.PROPERTY_TABLE_CONTENT);
+            editFieldsToEditedProperties.put(editField, new ObjectProperty(propertyValue,
+                    ITableContentUsage.PROPERTY_TABLE_CONTENT));
         }
 
     }
@@ -413,16 +421,17 @@ public class ProductCmptPropertySection extends IpsSection {
         }
 
         @Override
-        protected void createEditFields(Map<EditField<?>, String> editFieldsToEditedProperties) {
+        protected void createEditFields(Map<EditField<?>, ObjectProperty> editFieldsToEditedProperties) {
             createActiveEditField(editFieldsToEditedProperties);
         }
 
-        private void createActiveEditField(Map<EditField<?>, String> editFieldsToEditedProperties) {
+        private void createActiveEditField(Map<EditField<?>, ObjectProperty> editFieldsToEditedProperties) {
             Checkbox checkbox = getToolkit().createCheckbox(this);
             checkbox.setChecked(propertyValue.isActive());
             CheckboxField editField = new CheckboxField(checkbox);
 
-            editFieldsToEditedProperties.put(editField, IValidationRuleConfig.PROPERTY_ACTIVE);
+            editFieldsToEditedProperties.put(editField, new ObjectProperty(propertyValue,
+                    IValidationRuleConfig.PROPERTY_ACTIVE));
         }
 
     }
@@ -435,11 +444,13 @@ public class ProductCmptPropertySection extends IpsSection {
         }
 
         @Override
-        protected void createEditFields(Map<EditField<?>, String> editFieldsToEditedProperties) throws CoreException {
+        protected void createEditFields(Map<EditField<?>, ObjectProperty> editFieldsToEditedProperties)
+                throws CoreException {
+
             createExpressionEditField(editFieldsToEditedProperties);
         }
 
-        private void createExpressionEditField(Map<EditField<?>, String> editFieldsToEditedProperties)
+        private void createExpressionEditField(Map<EditField<?>, ObjectProperty> editFieldsToEditedProperties)
                 throws CoreException {
 
             FormulaEditControl formulaEditControl = new FormulaEditControl(this, getToolkit(), propertyValue,
@@ -449,7 +460,8 @@ public class ProductCmptPropertySection extends IpsSection {
                     CompletionUtil.createContentAssistant(completionProcessor));
             TextButtonField editField = new TextButtonField(formulaEditControl);
 
-            editFieldsToEditedProperties.put(editField, IFormula.PROPERTY_EXPRESSION);
+            editFieldsToEditedProperties
+                    .put(editField, new ObjectProperty(propertyValue, IFormula.PROPERTY_EXPRESSION));
         }
 
     }
@@ -471,12 +483,12 @@ public class ProductCmptPropertySection extends IpsSection {
         }
 
         @Override
-        protected void createEditFields(Map<EditField<?>, String> editFieldsToEditedProperties) {
-            createDefaultValueEditField(editFieldsToEditedProperties);
-            createValueSetEditField(editFieldsToEditedProperties);
+        protected void createEditFields(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
+            createDefaultValueEditField(editFieldsToObjectProperties);
+            createValueSetEditField(editFieldsToObjectProperties);
         }
 
-        private void createDefaultValueEditField(Map<EditField<?>, String> editFieldsToEditedProperties) {
+        private void createDefaultValueEditField(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
             getToolkit().createFormLabel(this, Messages.PolicyAttributeEditDialog_defaultValue);
             ValueDatatype datatype = null;
             try {
@@ -499,15 +511,15 @@ public class ProductCmptPropertySection extends IpsSection {
             EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, sourceSet,
                     getGeneration().getIpsProject());
 
-            editFieldsToEditedProperties.put(editField, IConfigElement.PROPERTY_VALUE);
+            editFieldsToObjectProperties.put(editField,
+                    new ObjectProperty(propertyValue, IConfigElement.PROPERTY_VALUE));
         }
 
-        private void createValueSetEditField(Map<EditField<?>, String> editFieldsToEditedProperties) {
-            // TODO AW
+        private void createValueSetEditField(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
             if (areRangeValueEditFieldsRequired()) {
-                // createValueSetEditFieldForRange(editFieldsToEditedProperties);
+                createValueSetEditFieldForRange(editFieldsToObjectProperties);
             } else {
-                // createValueSetEditFieldForOtherThanRange(editFieldsToEditedProperties);
+                createValueSetEditFieldForOtherThanRange(editFieldsToObjectProperties);
             }
         }
 
@@ -516,15 +528,15 @@ public class ProductCmptPropertySection extends IpsSection {
                     .isRange();
         }
 
-        private void createValueSetEditFieldForRange(Map<EditField<?>, String> editFieldsToEditedProperties) {
+        private void createValueSetEditFieldForRange(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
             if (IpsPlugin.getDefault().getIpsPreferences().isRangeEditFieldsInOneRow()) {
-                createValueSetEditFieldForRangeInOneRow(editFieldsToEditedProperties);
+                createValueSetEditFieldForRangeInOneRow(editFieldsToObjectProperties);
             } else {
-                createValueSetEditFieldForRangeInMultipleRows(editFieldsToEditedProperties);
+                createValueSetEditFieldForRangeInMultipleRows(editFieldsToObjectProperties);
             }
         }
 
-        private void createValueSetEditFieldForRangeInMultipleRows(Map<EditField<?>, String> editFieldsToEditedProperties) {
+        private void createValueSetEditFieldForRangeInMultipleRows(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
             RangeValueSet range = (RangeValueSet)propertyValue.getValueSet();
             ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     range.getValueDatatype());
@@ -546,12 +558,12 @@ public class ProductCmptPropertySection extends IpsSection {
                     range, range.getIpsProject());
             addFocusControl(stepField.getControl());
 
-            editFieldsToEditedProperties.put(upperField, IRangeValueSet.PROPERTY_UPPERBOUND);
-            editFieldsToEditedProperties.put(lowerField, IRangeValueSet.PROPERTY_LOWERBOUND);
-            editFieldsToEditedProperties.put(stepField, IRangeValueSet.PROPERTY_STEP);
+            editFieldsToObjectProperties.put(upperField, new ObjectProperty(range, IRangeValueSet.PROPERTY_UPPERBOUND));
+            editFieldsToObjectProperties.put(lowerField, new ObjectProperty(range, IRangeValueSet.PROPERTY_LOWERBOUND));
+            editFieldsToObjectProperties.put(stepField, new ObjectProperty(range, IRangeValueSet.PROPERTY_STEP));
         }
 
-        private void createValueSetEditFieldForRangeInOneRow(Map<EditField<?>, String> editFieldsToEditedProperties) {
+        private void createValueSetEditFieldForRangeInOneRow(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
             RangeValueSet range = (RangeValueSet)propertyValue.getValueSet();
             ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     range.getValueDatatype());
@@ -577,12 +589,12 @@ public class ProductCmptPropertySection extends IpsSection {
 
             getToolkit().getFormToolkit().paintBordersFor(rangeComposite);
 
-            editFieldsToEditedProperties.put(upperField, IRangeValueSet.PROPERTY_UPPERBOUND);
-            editFieldsToEditedProperties.put(lowerField, IRangeValueSet.PROPERTY_LOWERBOUND);
-            editFieldsToEditedProperties.put(stepField, IRangeValueSet.PROPERTY_STEP);
+            editFieldsToObjectProperties.put(upperField, new ObjectProperty(range, IRangeValueSet.PROPERTY_UPPERBOUND));
+            editFieldsToObjectProperties.put(lowerField, new ObjectProperty(range, IRangeValueSet.PROPERTY_LOWERBOUND));
+            editFieldsToObjectProperties.put(stepField, new ObjectProperty(range, IRangeValueSet.PROPERTY_STEP));
         }
 
-        private void createValueSetEditFieldForOtherThanRange(Map<EditField<?>, String> editFieldsToEditedProperties) {
+        private void createValueSetEditFieldForOtherThanRange(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
             getToolkit().createFormLabel(this, Messages.PolicyAttributesSection_valueSet);
             AnyValueSetControl valueSetControl = new AnyValueSetControl(this, getToolkit(), propertyValue, getShell(),
                     controller);
@@ -592,7 +604,8 @@ public class ProductCmptPropertySection extends IpsSection {
             ((GridData)valueSetControl.getLayoutData()).widthHint = UIToolkit.DEFAULT_WIDTH;
             PreviewTextButtonField editField = new PreviewTextButtonField(valueSetControl);
 
-            editFieldsToEditedProperties.put(editField, IConfigElement.PROPERTY_VALUE_SET);
+            editFieldsToObjectProperties.put(editField, new ObjectProperty(propertyValue,
+                    IConfigElement.PROPERTY_VALUE_SET));
         }
 
         private void initTextField(Control control, int widthHint) {
