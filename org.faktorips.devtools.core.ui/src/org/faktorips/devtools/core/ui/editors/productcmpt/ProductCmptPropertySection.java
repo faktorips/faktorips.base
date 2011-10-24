@@ -132,8 +132,8 @@ public class ProductCmptPropertySection extends IpsSection {
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         GridLayout layout = new GridLayout(1, true);
-        layout.marginHeight = 2;
         layout.marginWidth = 1;
+        layout.marginHeight = 2;
         client.setLayout(layout);
 
         rootPane = toolkit.createLabelEditColumnComposite(client);
@@ -143,8 +143,8 @@ public class ProductCmptPropertySection extends IpsSection {
         workAreaLayout.marginWidth = 5;
 
         /*
-         * Following line forces the paint listener to draw a light grey border around the text
-         * control. Can only be understood by looking at the FormToolkit$PaintBorder class.
+         * Following line forces the paint listener to draw a light grey border around the control.
+         * Can only be understood by looking at the FormToolkit$PaintBorder class.
          */
         rootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
         toolkit.getFormToolkit().paintBordersFor(rootPane);
@@ -324,8 +324,8 @@ public class ProductCmptPropertySection extends IpsSection {
 
         protected void setLayout() {
             GridLayout clientLayout = new GridLayout(1, false);
-            clientLayout.marginHeight = 2;
             clientLayout.marginWidth = 1;
+            clientLayout.marginHeight = 2;
             setLayout(clientLayout);
         }
 
