@@ -320,6 +320,8 @@ public class ProductCmptPropertySection extends IpsSection {
                 addFocusControl(editField.getControl());
                 addEditFieldDecorators(editField);
             }
+
+            getToolkit().getFormToolkit().paintBordersFor(this);
         }
 
         protected void setLayout() {
@@ -555,7 +557,7 @@ public class ProductCmptPropertySection extends IpsSection {
             getToolkit().createLabel(this, Messages.DefaultsAndRangesSection_minMaxStepLabel);
             Composite rangeComposite = getToolkit().createGridComposite(this, 3, false, false);
 
-            // Need to see borders
+            // Add margin so the borders of the text controls are shown
             ((GridLayout)rangeComposite.getLayout()).marginWidth = 1;
             ((GridLayout)rangeComposite.getLayout()).marginHeight = 2;
 
