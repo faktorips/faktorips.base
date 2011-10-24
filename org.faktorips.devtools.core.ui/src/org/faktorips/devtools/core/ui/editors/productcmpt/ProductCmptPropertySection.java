@@ -548,42 +548,6 @@ public class ProductCmptPropertySection extends IpsSection {
         }
 
         private void createValueSetEditFieldForRange(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
-            if (IpsPlugin.getDefault().getIpsPreferences().isRangeEditFieldsInOneRow()) {
-                createValueSetEditFieldForRangeInOneRow(editFieldsToObjectProperties);
-            } else {
-                createValueSetEditFieldForRangeInMultipleRows(editFieldsToObjectProperties);
-            }
-        }
-
-        // TODO AW nicht mehr gebraucht
-        private void createValueSetEditFieldForRangeInMultipleRows(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
-            RangeValueSet range = (RangeValueSet)propertyValue.getValueSet();
-            ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
-                    range.getValueDatatype());
-
-            getToolkit().createLabel(this, Messages.PolicyAttributesSection_minimum);
-            EditField<String> lowerField = controlFactory.createEditField(getToolkit(), this, range.getValueDatatype(),
-                    range, range.getIpsProject());
-            addFocusControl(lowerField.getControl());
-
-            getToolkit().createLabel(this, ""); //$NON-NLS-1$
-            getToolkit().createLabel(this, Messages.PolicyAttributesSection_maximum);
-            EditField<String> upperField = controlFactory.createEditField(getToolkit(), this, range.getValueDatatype(),
-                    range, range.getIpsProject());
-            addFocusControl(upperField.getControl());
-
-            getToolkit().createLabel(this, ""); //$NON-NLS-1$
-            getToolkit().createLabel(this, Messages.PolicyAttributesSection_step);
-            EditField<String> stepField = controlFactory.createEditField(getToolkit(), this, range.getValueDatatype(),
-                    range, range.getIpsProject());
-            addFocusControl(stepField.getControl());
-
-            editFieldsToObjectProperties.put(upperField, new ObjectProperty(range, IRangeValueSet.PROPERTY_UPPERBOUND));
-            editFieldsToObjectProperties.put(lowerField, new ObjectProperty(range, IRangeValueSet.PROPERTY_LOWERBOUND));
-            editFieldsToObjectProperties.put(stepField, new ObjectProperty(range, IRangeValueSet.PROPERTY_STEP));
-        }
-
-        private void createValueSetEditFieldForRangeInOneRow(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
             RangeValueSet range = (RangeValueSet)propertyValue.getValueSet();
             ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     range.getValueDatatype());

@@ -257,40 +257,22 @@ public class DefaultsAndRangesSection extends IpsSection {
 
         ValueDatatype datatype = ((RangeValueSet)range).getValueDatatype();
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-        if (!IpsPlugin.getDefault().getIpsPreferences().isRangeEditFieldsInOneRow()) {
-            toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_minimum);
-            lowerField = controlFactory.createEditField(toolkit, rootPane, datatype, range, range.getIpsProject());
-            addFocusControl(lowerField.getControl());
+        toolkit.createFormLabel(rootPane, Messages.DefaultsAndRangesSection_minMaxStepLabel);
+        Composite rangeComposite = toolkit.createGridComposite(rootPane, 3, false, false);
+        // need to see borders
+        ((GridLayout)rangeComposite.getLayout()).marginWidth = 1;
+        ((GridLayout)rangeComposite.getLayout()).marginHeight = 2;
 
-            toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
-            toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_maximum);
-            upperField = controlFactory.createEditField(toolkit, rootPane, datatype, range, range.getIpsProject());
-            addFocusControl(upperField.getControl());
+        lowerField = controlFactory.createEditField(toolkit, rangeComposite, datatype, range, range.getIpsProject());
+        initTextField(lowerField.getControl(), 50);
 
-            toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
-            toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_step);
-            stepField = controlFactory.createEditField(toolkit, rootPane, datatype, range, range.getIpsProject());
-            addFocusControl(stepField.getControl());
-        } else {
-            toolkit.createFormLabel(rootPane, Messages.DefaultsAndRangesSection_minMaxStepLabel);
-            Composite rangeComposite = toolkit.createGridComposite(rootPane, 3, false, false);
-            // need to see borders
-            ((GridLayout)rangeComposite.getLayout()).marginWidth = 1;
-            ((GridLayout)rangeComposite.getLayout()).marginHeight = 2;
+        upperField = controlFactory.createEditField(toolkit, rangeComposite, datatype, range, range.getIpsProject());
+        initTextField(upperField.getControl(), 50);
 
-            lowerField = controlFactory
-                    .createEditField(toolkit, rangeComposite, datatype, range, range.getIpsProject());
-            initTextField(lowerField.getControl(), 50);
+        stepField = controlFactory.createEditField(toolkit, rangeComposite, datatype, range, range.getIpsProject());
+        initTextField(stepField.getControl(), 50);
 
-            upperField = controlFactory
-                    .createEditField(toolkit, rangeComposite, datatype, range, range.getIpsProject());
-            initTextField(upperField.getControl(), 50);
-
-            stepField = controlFactory.createEditField(toolkit, rangeComposite, datatype, range, range.getIpsProject());
-            initTextField(stepField.getControl(), 50);
-
-            toolkit.getFormToolkit().paintBordersFor(rangeComposite);
-        }
+        toolkit.getFormToolkit().paintBordersFor(rangeComposite);
 
         editControls.add(lowerField.getControl());
         editControls.add(upperField.getControl());

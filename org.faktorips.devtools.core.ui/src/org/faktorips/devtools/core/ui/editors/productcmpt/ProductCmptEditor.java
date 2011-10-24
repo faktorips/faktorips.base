@@ -251,9 +251,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         } else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
             getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
             // refresh is done in superclass
-        } else if (event.getProperty().equals(IpsPreferences.RANGE_EDIT_FIELDS_IN_ONE_ROW)) {
-            refreshInclStructuralChanges();
-            refresh();
         }
         super.propertyChange(event);
     }

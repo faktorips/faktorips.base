@@ -48,7 +48,6 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         createEnableGeneratingField();
         createCanNavigateToModelField();
         createAdvancedTeamFunctionInProductDefExplorerField();
-        createEditRangeEditFieldsInOneRowField();
 
         createWorkingModeField();
         createSectionsInTypeEditorsField();
@@ -137,12 +136,6 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         BooleanFieldEditor field = new BooleanFieldEditor(
                 IpsPreferences.ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER,
                 Messages.FaktorIpsPreferencePage_advancedTeamFunctionsInProductDefExplorer, getFieldEditorParent());
-        addField(field);
-    }
-
-    private void createEditRangeEditFieldsInOneRowField() {
-        BooleanFieldEditor field = new BooleanFieldEditor(IpsPreferences.RANGE_EDIT_FIELDS_IN_ONE_ROW,
-                Messages.FaktorIpsPreferencePage_labeRangeEditFieldsInOneRow, getFieldEditorParent());
         addField(field);
     }
 

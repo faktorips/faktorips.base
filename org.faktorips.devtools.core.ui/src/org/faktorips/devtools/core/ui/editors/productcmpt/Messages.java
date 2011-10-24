@@ -97,12 +97,6 @@ public class Messages extends NLS {
 
     public static String PolicyAttributesSection_valueSet;
 
-    public static String PolicyAttributesSection_minimum;
-
-    public static String PolicyAttributesSection_maximum;
-
-    public static String PolicyAttributesSection_step;
-
     public static String ProductAttributesSection_attribute;
 
     public static String RelationsSection_cardinality;

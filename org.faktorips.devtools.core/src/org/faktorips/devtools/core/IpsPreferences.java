@@ -142,12 +142,6 @@ public class IpsPreferences {
     public final static String ENUM_TYPE_DISPLAY = IpsPlugin.PLUGIN_ID + ".enumTypeDisplay"; //$NON-NLS-1$
 
     /**
-     * Constant that identifies if the range edit fields (minimum, maximum and step) will be
-     * displayed in one row.
-     */
-    public final static String RANGE_EDIT_FIELDS_IN_ONE_ROW = IpsPlugin.PLUGIN_ID + ".rangeEditFieldsInOneRow"; //$NON-NLS-1$
-
-    /**
      * Constant that identifies the locale to be used for formating values of specific datatypes.
      */
     public final static String DATATYPE_FORMATTING_LOCALE = IpsPlugin.PLUGIN_ID + ".datatypeFormattingLocale"; //$NON-NLS-1$
@@ -170,7 +164,6 @@ public class IpsPreferences {
         prefStore.setDefault(ENUM_TYPE_DISPLAY, EnumTypeDisplay.NAME_AND_ID.getId());
         prefStore.setDefault(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, false);
         prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, TWO_SECTIONS_IN_TYPE_EDITOR_PAGE);
-        prefStore.setDefault(RANGE_EDIT_FIELDS_IN_ONE_ROW, true);
 
         setDefaultForDatatypeFormatting(prefStore);
 
@@ -446,22 +439,6 @@ public class IpsPreferences {
      */
     public String getSectionsInTypeEditors() {
         return prefStore.getString(SECTIONS_IN_TYPE_EDITORS);
-    }
-
-    /**
-     * Returns <code>true</code> if the range edit fields (minimum, maximum, and step) should be
-     * displayed in one row.
-     */
-    public boolean isRangeEditFieldsInOneRow() {
-        return prefStore.getBoolean(RANGE_EDIT_FIELDS_IN_ONE_ROW);
-    }
-
-    /**
-     * Sets if the range edit fields (minimum, maximum, and step) should be displayed in one row
-     * <code>true</code>.
-     */
-    public void setRangeEditFieldsInOneRow(boolean enabled) {
-        prefStore.setValue(RANGE_EDIT_FIELDS_IN_ONE_ROW, enabled);
     }
 
     /**
