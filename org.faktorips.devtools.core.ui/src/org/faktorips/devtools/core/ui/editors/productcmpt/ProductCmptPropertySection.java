@@ -183,7 +183,18 @@ public class ProductCmptPropertySection extends IpsSection {
                 // Use description of property as tooltip
                 label.setToolTipText(IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(property));
 
-                createEditComposite(property, propertyValue);
+                EditPropertyValueComposite<?, ?> editComposite = createEditComposite(property, propertyValue);
+
+                /*
+                 * Vertically indent the label so it does not stick at the very top of the
+                 * composite. The magnitude of the indentation depends on the height of the edit
+                 * composite.
+                 */
+                ((GridData)label.getLayoutData()).verticalAlignment = SWT.TOP;
+                int topOfControlToLabelPixels = editComposite.controlHeight
+                        - label.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+                ((GridData)label.getLayoutData()).verticalIndent = ((GridLayout)editComposite.getLayout()).marginHeight
+                        + topOfControlToLabelPixels + 4;
             } else {
                 createEmptyComposite();
             }
@@ -196,14 +207,15 @@ public class ProductCmptPropertySection extends IpsSection {
     }
 
     private Control createLabel(IPropertyValue propertyValue) {
-        String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(propertyValue);
         if (propertyValue instanceof ITableContentUsage) {
-            return createLabel((ITableContentUsage)propertyValue, localizedCaption);
+            return createHyperlink((ITableContentUsage)propertyValue);
         }
+        String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(propertyValue);
         return getToolkit().createLabel(rootPane, localizedCaption);
     }
 
-    private Control createLabel(final ITableContentUsage tcu, String localizedCaption) {
+    private Control createHyperlink(final ITableContentUsage tcu) {
+        String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(tcu);
         Hyperlink hyperlink = getToolkit().createHyperlink(rootPane, localizedCaption);
         hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
             @Override
@@ -221,8 +233,10 @@ public class ProductCmptPropertySection extends IpsSection {
         return hyperlink;
     }
 
-    private Composite createEditComposite(IProductCmptProperty property, IPropertyValue propertyValue) {
-        Composite editComposite = null;
+    private EditPropertyValueComposite<?, ?> createEditComposite(IProductCmptProperty property,
+            IPropertyValue propertyValue) {
+
+        EditPropertyValueComposite<?, ?> editComposite = null;
         switch (property.getProductCmptPropertyType()) {
             case PRODUCT_CMPT_TYPE_ATTRIBUTE:
                 editComposite = new AttributeValueEditComposite((IProductCmptTypeAttribute)property,
@@ -270,6 +284,8 @@ public class ProductCmptPropertySection extends IpsSection {
 
         protected final IpsObjectUIController controller;
 
+        protected int controlHeight = -1;
+
         public EditPropertyValueComposite(P property, V propertyValue) {
             super(rootPane, SWT.NONE);
 
@@ -296,6 +312,9 @@ public class ProductCmptPropertySection extends IpsSection {
                 IpsPlugin.log(e);
             }
             for (EditField<?> editField : editFieldsToObjectProperties.keySet()) {
+                if (controlHeight == -1) {
+                    controlHeight = editField.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+                }
                 ObjectProperty objectProperty = editFieldsToObjectProperties.get(editField);
                 controller.add(editField, objectProperty.getObject(), objectProperty.getProperty());
                 addFocusControl(editField.getControl());
@@ -484,12 +503,12 @@ public class ProductCmptPropertySection extends IpsSection {
 
         @Override
         protected void createEditFields(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
-            createDefaultValueEditField(editFieldsToObjectProperties);
             createValueSetEditField(editFieldsToObjectProperties);
+            createDefaultValueEditField(editFieldsToObjectProperties);
         }
 
         private void createDefaultValueEditField(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
-            getToolkit().createFormLabel(this, Messages.PolicyAttributeEditDialog_defaultValue);
+            getToolkit().createLabel(this, Messages.PolicyAttributeEditDialog_defaultValue);
             ValueDatatype datatype = null;
             try {
                 datatype = property.findDatatype(propertyValue.getIpsProject());
@@ -536,24 +555,25 @@ public class ProductCmptPropertySection extends IpsSection {
             }
         }
 
+        // TODO AW nicht mehr gebraucht
         private void createValueSetEditFieldForRangeInMultipleRows(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
             RangeValueSet range = (RangeValueSet)propertyValue.getValueSet();
             ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     range.getValueDatatype());
 
-            getToolkit().createFormLabel(this, Messages.PolicyAttributesSection_minimum);
+            getToolkit().createLabel(this, Messages.PolicyAttributesSection_minimum);
             EditField<String> lowerField = controlFactory.createEditField(getToolkit(), this, range.getValueDatatype(),
                     range, range.getIpsProject());
             addFocusControl(lowerField.getControl());
 
-            getToolkit().createFormLabel(this, ""); //$NON-NLS-1$
-            getToolkit().createFormLabel(this, Messages.PolicyAttributesSection_maximum);
+            getToolkit().createLabel(this, ""); //$NON-NLS-1$
+            getToolkit().createLabel(this, Messages.PolicyAttributesSection_maximum);
             EditField<String> upperField = controlFactory.createEditField(getToolkit(), this, range.getValueDatatype(),
                     range, range.getIpsProject());
             addFocusControl(upperField.getControl());
 
-            getToolkit().createFormLabel(this, ""); //$NON-NLS-1$
-            getToolkit().createFormLabel(this, Messages.PolicyAttributesSection_step);
+            getToolkit().createLabel(this, ""); //$NON-NLS-1$
+            getToolkit().createLabel(this, Messages.PolicyAttributesSection_step);
             EditField<String> stepField = controlFactory.createEditField(getToolkit(), this, range.getValueDatatype(),
                     range, range.getIpsProject());
             addFocusControl(stepField.getControl());
@@ -568,7 +588,7 @@ public class ProductCmptPropertySection extends IpsSection {
             ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     range.getValueDatatype());
 
-            getToolkit().createFormLabel(this, Messages.DefaultsAndRangesSection_minMaxStepLabel);
+            getToolkit().createLabel(this, Messages.DefaultsAndRangesSection_minMaxStepLabel);
             Composite rangeComposite = getToolkit().createGridComposite(this, 3, false, false);
 
             // Need to see borders
