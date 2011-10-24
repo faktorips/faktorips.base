@@ -508,7 +508,7 @@ public class ProductCmptPropertySection extends IpsSection {
         }
 
         private void createDefaultValueEditField(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
-            getToolkit().createFormLabel(this, Messages.PolicyAttributeEditDialog_defaultValue);
+            getToolkit().createLabel(this, Messages.PolicyAttributeEditDialog_defaultValue);
             ValueDatatype datatype = null;
             try {
                 datatype = property.findDatatype(propertyValue.getIpsProject());
@@ -552,7 +552,7 @@ public class ProductCmptPropertySection extends IpsSection {
             ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     range.getValueDatatype());
 
-            getToolkit().createFormLabel(this, Messages.DefaultsAndRangesSection_minMaxStepLabel);
+            getToolkit().createLabel(this, Messages.DefaultsAndRangesSection_minMaxStepLabel);
             Composite rangeComposite = getToolkit().createGridComposite(this, 3, false, false);
 
             // Need to see borders
@@ -579,7 +579,7 @@ public class ProductCmptPropertySection extends IpsSection {
         }
 
         private void createValueSetEditFieldForOtherThanRange(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
-            getToolkit().createFormLabel(this, Messages.PolicyAttributesSection_valueSet);
+            getToolkit().createLabel(this, Messages.PolicyAttributesSection_valueSet);
             AnyValueSetControl valueSetControl = new AnyValueSetControl(this, getToolkit(), propertyValue, getShell(),
                     controller);
             valueSetControl.setDataChangeable(isDataChangeable());
