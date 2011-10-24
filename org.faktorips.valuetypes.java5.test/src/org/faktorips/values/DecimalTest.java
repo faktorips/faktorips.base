@@ -47,10 +47,10 @@ public class DecimalTest {
     @Test
     public void testLongValue() {
         Decimal d = Decimal.valueOf("56");
-        assertEquals(56L, d.longValue());
+        assertEquals(56, d.longValue());
 
         d = Decimal.valueOf("65.77");
-        assertEquals(65L, d.longValue());
+        assertEquals(65, d.longValue());
     }
 
     @Test
