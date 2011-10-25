@@ -40,7 +40,10 @@ import org.faktorips.devtools.core.ui.controller.fields.PreviewTextButtonField;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
- * TODO AW
+ * Allows the user to edit the value set and the default value of a configuration element.
+ * 
+ * @see IValueSet
+ * @see IConfigElement
  * 
  * @author Alexander Weickmann
  */
@@ -70,6 +73,21 @@ public final class ConfigElementEditComposite extends
 
     private void createDefaultValueEditField(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
         getToolkit().createLabel(this, Messages.ConfigElementEditComposite_defaultValue);
+
+        ValueDatatype datatype = findDatatypeForDefaultValueEditField();
+        ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
+
+        IValueSet sourceSet = ValueSetFilter.filterValueSet(getPropertyValue().getValueSet(), datatype, getGeneration()
+                .getValidFrom(), getGeneration().getValidTo(),
+                TimedEnumDatatypeUtil.ValidityCheck.SOME_TIME_OF_THE_PERIOD);
+        EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, sourceSet,
+                getGeneration().getIpsProject());
+
+        editFieldsToObjectProperties.put(editField, new ObjectProperty(getPropertyValue(),
+                IConfigElement.PROPERTY_VALUE));
+    }
+
+    private ValueDatatype findDatatypeForDefaultValueEditField() {
         ValueDatatype datatype = null;
         try {
             datatype = getProperty().findDatatype(getPropertyValue().getIpsProject());
@@ -82,16 +100,7 @@ public final class ConfigElementEditComposite extends
             // No datatype found - use String as default
             datatype = Datatype.STRING;
         }
-
-        IValueSet sourceSet = ValueSetFilter.filterValueSet(getPropertyValue().getValueSet(), datatype, getGeneration()
-                .getValidFrom(), getGeneration().getValidTo(),
-                TimedEnumDatatypeUtil.ValidityCheck.SOME_TIME_OF_THE_PERIOD);
-        ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-        EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, sourceSet,
-                getGeneration().getIpsProject());
-
-        editFieldsToObjectProperties.put(editField, new ObjectProperty(getPropertyValue(),
-                IConfigElement.PROPERTY_VALUE));
+        return datatype;
     }
 
     private void createValueSetEditField(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
@@ -124,17 +133,9 @@ public final class ConfigElementEditComposite extends
         ((GridLayout)rangeComposite.getLayout()).marginWidth = 1;
         ((GridLayout)rangeComposite.getLayout()).marginHeight = 2;
 
-        EditField<String> lowerField = controlFactory.createEditField(getToolkit(), rangeComposite,
-                range.getValueDatatype(), range, range.getIpsProject());
-        initTextField(lowerField.getControl(), 50);
-
-        EditField<String> upperField = controlFactory.createEditField(getToolkit(), rangeComposite,
-                range.getValueDatatype(), range, range.getIpsProject());
-        initTextField(upperField.getControl(), 50);
-
-        EditField<String> stepField = controlFactory.createEditField(getToolkit(), rangeComposite,
-                range.getValueDatatype(), range, range.getIpsProject());
-        initTextField(stepField.getControl(), 50);
+        EditField<String> lowerField = createRangeEditField(controlFactory, rangeComposite, range);
+        EditField<String> upperField = createRangeEditField(controlFactory, rangeComposite, range);
+        EditField<String> stepField = createRangeEditField(controlFactory, rangeComposite, range);
 
         getToolkit().getFormToolkit().paintBordersFor(rangeComposite);
 
@@ -143,26 +144,36 @@ public final class ConfigElementEditComposite extends
         editFieldsToObjectProperties.put(stepField, new ObjectProperty(range, IRangeValueSet.PROPERTY_STEP));
     }
 
+    private EditField<String> createRangeEditField(ValueDatatypeControlFactory controlFactory,
+            Composite rangeComposite,
+            RangeValueSet range) {
+
+        EditField<String> editField = controlFactory.createEditField(getToolkit(), rangeComposite,
+                range.getValueDatatype(), range, range.getIpsProject());
+        initTextField(editField.getControl(), 50);
+        return editField;
+    }
+
+    private void initTextField(Control control, int widthHint) {
+        if (control.getLayoutData() instanceof GridData) {
+            ((GridData)control.getLayoutData()).widthHint = widthHint;
+        }
+    }
+
     private void createValueSetEditFieldForOtherThanRange(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
         getToolkit().createLabel(this, Messages.ConfigElementEditComposite_valueSet);
+
         AnyValueSetControl valueSetControl = new AnyValueSetControl(this, getToolkit(), getPropertyValue(), getShell(),
                 getController());
         valueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
         valueSetControl.setText(IpsUIPlugin.getDefault().getDatatypeFormatter()
                 .formatValueSet(getPropertyValue().getValueSet()));
         ((GridData)valueSetControl.getLayoutData()).widthHint = UIToolkit.DEFAULT_WIDTH;
+
         PreviewTextButtonField editField = new PreviewTextButtonField(valueSetControl);
 
         editFieldsToObjectProperties.put(editField, new ObjectProperty(getPropertyValue(),
                 IConfigElement.PROPERTY_VALUE_SET));
-    }
-
-    private void initTextField(Control control, int widthHint) {
-        if (control.getLayoutData() instanceof GridData) {
-            GridData gd = (GridData)control.getLayoutData();
-            gd.widthHint = widthHint;
-            control.setLayoutData(gd);
-        }
     }
 
     private IProductCmptGeneration getGeneration() {

@@ -34,7 +34,11 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
- * TODO AW
+ * Allows the user to edit the value of a product attribute.
+ * <p>
+ * For attributes that do not change over time, a decoration marker is attached to the edit control.
+ * 
+ * @see IAttributeValue
  * 
  * @author Alexander Weickmann
  */

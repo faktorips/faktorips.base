@@ -48,9 +48,9 @@ import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
- * Provides a generic section for all kinds of {@link IPropertyValue}s.
+ * Provides a generic section for all kinds of property values.
  * 
- * @since 3.6
+ * @see IPropertyValue
  * 
  * @author Alexander Weickmann
  */
@@ -197,16 +197,16 @@ public class ProductCmptPropertySection extends IpsSection {
         return getToolkit().createLabel(rootPane, localizedCaption);
     }
 
-    private Control createHyperlink(final ITableContentUsage tcu) {
-        String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(tcu);
+    private Control createHyperlink(final ITableContentUsage tableContentUsage) {
+        String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(tableContentUsage);
         Hyperlink hyperlink = getToolkit().createHyperlink(rootPane, localizedCaption);
         hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
             @Override
             public void linkActivated(HyperlinkEvent event) {
                 try {
-                    ITableContents tc = tcu.findTableContents(generation.getIpsProject());
-                    if (tc != null) {
-                        IpsUIPlugin.getDefault().openEditor(tc.getIpsSrcFile());
+                    ITableContents tableContents = tableContentUsage.findTableContents(generation.getIpsProject());
+                    if (tableContents != null) {
+                        IpsUIPlugin.getDefault().openEditor(tableContents.getIpsSrcFile());
                     }
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);

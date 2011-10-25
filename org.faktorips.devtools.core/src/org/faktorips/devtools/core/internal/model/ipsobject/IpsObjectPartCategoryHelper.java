@@ -44,6 +44,7 @@ public final class IpsObjectPartCategoryHelper {
     }
 
     public void initPropertiesFromXml(Element element) {
+        // TODO AW 25-10-2011: Handle null
         category = element.getAttribute(ICategorisableElement.PROPERTY_CATEGORY);
     }
 

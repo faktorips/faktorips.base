@@ -26,7 +26,9 @@ import org.faktorips.devtools.core.ui.controls.TableContentsUsageRefControl;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
- * TODO AW
+ * Allows the user to edit a table usage.
+ * 
+ * @see ITableContentUsage
  * 
  * @author Alexander Weickmann
  */

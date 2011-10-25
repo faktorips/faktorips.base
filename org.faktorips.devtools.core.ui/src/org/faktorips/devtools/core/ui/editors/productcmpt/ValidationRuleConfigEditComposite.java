@@ -28,7 +28,9 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
- * TODO AW
+ * Allows the user to activate / deactivate a validation rule.
+ * 
+ * @see IValidationRuleConfig
  * 
  * @author Alexander Weickmann
  */

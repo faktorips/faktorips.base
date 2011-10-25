@@ -29,7 +29,11 @@ import org.faktorips.devtools.core.ui.controls.FormulaEditControl;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
- * TODO AW
+ * Allows the user to edit a formula expression.
+ * <p>
+ * Provides content assist support.
+ * 
+ * @see IFormula
  * 
  * @author Alexander Weickmann
  */
