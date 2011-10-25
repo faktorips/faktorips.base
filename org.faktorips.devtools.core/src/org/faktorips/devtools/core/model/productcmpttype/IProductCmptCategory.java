@@ -20,6 +20,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
 /**
@@ -126,6 +128,8 @@ public interface IProductCmptCategory extends IIpsObjectPart {
      * Returns the list of {@link IProductCmptProperty}s assigned to this category (defensive copy).
      * <p>
      * This method <strong>does</strong> consider references of the supertype hierarchy.
+     * <p>
+     * The properties in the list are sorted accordingly.
      * 
      * @param contextType The {@link IProductCmptType} to start the search from; properties assigned
      *            by {@link IProductCmptType}s below the context type are not returned
@@ -135,6 +139,23 @@ public interface IProductCmptCategory extends IIpsObjectPart {
      */
     public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType, IIpsProject ipsProject)
             throws CoreException;
+
+    /**
+     * Returns a list containing the property values corresponding to the product component
+     * properties assigned to this category.
+     * <p>
+     * This method <strong>does</strong> consider property references of the supertype hierarchy.
+     * 
+     * @param contextType The product component type to start the search from; properties assigned
+     *            by product component types below the context type are not returned
+     * @param contextGeneration The product component generation to retrieve property values from
+     * @param ipsProject The IPS project to use for the search
+     * 
+     * @throws CoreException If an error occurs during the search
+     */
+    public List<IPropertyValue> findPropertyValues(IProductCmptType contextType,
+            IProductCmptGeneration contextGeneration,
+            IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns whether this category is marked as default category for

@@ -33,7 +33,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IExtensionPropertySectionFactory.Position;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -168,48 +167,20 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             Composite right) {
 
         // Find the property values that match to the category's properties
-        List<IPropertyValue> propertyValues = findPropertyValuesForCategory(category, productCmptType);
+        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
+        try {
+            propertyValues.addAll(category.findPropertyValues(productCmptType, getActiveGeneration(),
+                    getActiveGeneration().getIpsProject()));
+        } catch (CoreException e) {
+            // Recover from exception by not displaying any property values for this category
+            IpsPlugin.log(e);
+        }
 
         // Create a new section for this category and attach it to the page
         List<IpsSection> sections = category.isAtLeftPosition() ? leftSections : rightSections;
         Composite parent = category.isAtLeftPosition() ? left : right;
         IpsSection section = new ProductCmptPropertySection(category, propertyValues, parent, toolkit);
         sections.add(section);
-    }
-
-    // TODO AW 25-10-2011: This should be moved to the core model
-    private List<IPropertyValue> findPropertyValuesForCategory(IProductCmptCategory category,
-            IProductCmptType productCmptType) {
-
-        // Determine the properties assigned to this category
-        List<IProductCmptProperty> categoryProperties = new ArrayList<IProductCmptProperty>();
-        try {
-            categoryProperties = category.findProductCmptProperties(productCmptType, getActiveGeneration()
-                    .getIpsProject());
-        } catch (CoreException e) {
-            /*
-             * The properties assigned to the category could not be determined. Recover by not
-             * displaying any properties for this category.
-             */
-            IpsPlugin.log(e);
-        }
-
-        // Collect all potential property values of the category
-        List<IPropertyValue> allPropertyValues = new ArrayList<IPropertyValue>();
-        allPropertyValues.addAll(getActiveGeneration().getAllPropertyValues());
-        allPropertyValues.addAll(getActiveGeneration().getProductCmpt().getAllPropertyValues());
-
-        // Find the property values corresponding to the category's properties
-        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
-        for (IProductCmptProperty property : categoryProperties) {
-            for (IPropertyValue propertyValue : allPropertyValues) {
-                if (property.getProductCmptPropertyType().equals(propertyValue.getPropertyType())
-                        && property.getPropertyName().equals(propertyValue.getPropertyName())) {
-                    propertyValues.add(propertyValue);
-                }
-            }
-        }
-        return propertyValues;
     }
 
     private void createExtensionFactorySections(Composite left, Composite right) {

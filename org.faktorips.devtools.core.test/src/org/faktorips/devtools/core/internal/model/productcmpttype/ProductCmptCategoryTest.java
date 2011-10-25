@@ -29,9 +29,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -338,6 +343,33 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty attribute = productType.newProductCmptTypeAttribute("foo");
 
         assertEquals(attribute, defaultAttributeCategory.findProductCmptProperties(productType, ipsProject).get(0));
+    }
+
+    @Test
+    public void testFindPropertyValues() throws CoreException {
+        // Create a static attribute
+        IProductCmptTypeAttribute staticAttribute = productType.newProductCmptTypeAttribute("staticAttribute");
+        staticAttribute.setChangingOverTime(false);
+        staticAttribute.setCategory(CATEGORY_NAME);
+
+        // Create a dynamic attribute
+        IProductCmptTypeAttribute dynamicAttribute = productType.newProductCmptTypeAttribute("dynamicAttribute");
+        dynamicAttribute.setChangingOverTime(true);
+        dynamicAttribute.setCategory(CATEGORY_NAME);
+
+        // Create a product component and another generation
+        IProductCmpt productCmpt = newProductCmpt(productType, "MyProduct");
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
+
+        // Create the property values
+        IAttributeValue staticAttributeValue = (IAttributeValue)productCmpt.newPropertyValue(staticAttribute);
+        ((IProductCmptGeneration)productCmpt.getGeneration(0)).newPropertyValue(dynamicAttribute);
+        IAttributeValue dynamicAttributeValue = (IAttributeValue)generation.newPropertyValue(dynamicAttribute);
+
+        List<IPropertyValue> propertyValues = category.findPropertyValues(productType, generation, ipsProject);
+        assertEquals(staticAttributeValue, propertyValues.get(0));
+        assertEquals(dynamicAttributeValue, propertyValues.get(1));
+        assertEquals(2, propertyValues.size());
     }
 
     @Test

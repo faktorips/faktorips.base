@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -73,6 +75,29 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
             }
         }
         return properties;
+    }
+
+    @Override
+    public List<IPropertyValue> findPropertyValues(IProductCmptType contextType,
+            IProductCmptGeneration contextGeneration,
+            IIpsProject ipsProject) throws CoreException {
+
+        // Collect all potential property values
+        List<IPropertyValue> allPropertyValues = new ArrayList<IPropertyValue>();
+        allPropertyValues.addAll(contextGeneration.getAllPropertyValues());
+        allPropertyValues.addAll(contextGeneration.getProductCmpt().getAllPropertyValues());
+
+        // Find the property values corresponding to the category's properties
+        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
+        for (IProductCmptProperty property : findProductCmptProperties(contextType, ipsProject)) {
+            for (IPropertyValue propertyValue : allPropertyValues) {
+                if (property.getProductCmptPropertyType().equals(propertyValue.getPropertyType())
+                        && property.getPropertyName().equals(propertyValue.getPropertyName())) {
+                    propertyValues.add(propertyValue);
+                }
+            }
+        }
+        return propertyValues;
     }
 
     private boolean isDefaultFor(ProductCmptPropertyType propertyType) {
