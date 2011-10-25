@@ -16,10 +16,12 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.TimedEnumDatatypeUtil;
 import org.faktorips.datatype.ValueDatatype;
@@ -72,7 +74,7 @@ public final class ConfigElementEditComposite extends
     }
 
     private void createDefaultValueEditField(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
-        getToolkit().createLabel(this, Messages.ConfigElementEditComposite_defaultValue);
+        createLabelWithWidthHint(Messages.ConfigElementEditComposite_defaultValue);
 
         ValueDatatype datatype = findDatatypeForDefaultValueEditField();
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
@@ -126,7 +128,7 @@ public final class ConfigElementEditComposite extends
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                 range.getValueDatatype());
 
-        getToolkit().createLabel(this, Messages.ConfigElementEditComposite_minMaxStepLabel);
+        createLabelWithWidthHint(Messages.ConfigElementEditComposite_minMaxStepLabel);
         Composite rangeComposite = getToolkit().createGridComposite(this, 3, false, false);
 
         // Add margin so the borders of the text controls are shown
@@ -161,7 +163,7 @@ public final class ConfigElementEditComposite extends
     }
 
     private void createValueSetEditFieldForOtherThanRange(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
-        getToolkit().createLabel(this, Messages.ConfigElementEditComposite_valueSet);
+        createLabelWithWidthHint(Messages.ConfigElementEditComposite_valueSet);
 
         AnyValueSetControl valueSetControl = new AnyValueSetControl(this, getToolkit(), getPropertyValue(), getShell(),
                 getController());
@@ -174,6 +176,27 @@ public final class ConfigElementEditComposite extends
 
         editFieldsToObjectProperties.put(editField, new ObjectProperty(getPropertyValue(),
                 IConfigElement.PROPERTY_VALUE_SET));
+    }
+
+    /**
+     * Creates a label so that it's width corresponds to the width of the broadest label of this
+     * section.
+     */
+    private void createLabelWithWidthHint(String text) {
+        Label label = getToolkit().createLabel(this, text);
+
+        int width1 = getLabelWidthForText(label, Messages.ConfigElementEditComposite_defaultValue);
+        int width2 = getLabelWidthForText(label, Messages.ConfigElementEditComposite_minMaxStepLabel);
+        int width3 = getLabelWidthForText(label, Messages.ConfigElementEditComposite_valueSet);
+        int widthHint = Math.max(Math.max(width1, width2), width3);
+
+        label.setText(text);
+        ((GridData)label.getLayoutData()).widthHint = widthHint;
+    }
+
+    private int getLabelWidthForText(Label label, String text) {
+        label.setText(text);
+        return label.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
     }
 
     private IProductCmptGeneration getGeneration() {
