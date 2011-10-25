@@ -15,7 +15,6 @@ package org.faktorips.devtools.stdbuilder;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
@@ -34,9 +33,8 @@ public interface ITocEntryBuilder {
      * 
      * @param ipsObject the {@link IIpsObject} to create TOC entries for.
      * @return a list of {@link TocEntryObject}s.
-     * @throws CoreException if an error occurs when creating TOC entries
      */
-    public List<TocEntryObject> createTocEntries(IIpsObject ipsObject) throws CoreException;
+    public List<TocEntryObject> createTocEntries(IIpsObject ipsObject);
 
     /**
      * Returns the {@link IpsObjectType} this builder can create TOC entries for.
