@@ -33,8 +33,6 @@ import org.faktorips.util.message.ObjectProperty;
 /**
  * Abstract base class for composites that allow to edit property values.
  * <p>
- * Subclasses must call {@link #initControls()} right after all subclass-specific attributes have
- * <p>
  * The default layout of the composite will be a grid layout with 1 column and a
  * <em>margin-width</em> of 1, as well as a <em>margin-height</em> of 2. The parent cell will be
  * filled horizontally by the composite. To change these settings, subclasses are allowed to
@@ -43,19 +41,22 @@ import org.faktorips.util.message.ObjectProperty;
  * The methods {@link #getFirstControlHeight()} and {@link #getFirstControlMarginHeight()} are
  * intended to enable clients of this class to change the position of other UI elements. For
  * example, if a composite of this kind is used in a 2-column layout where the left column features
- * a label of the property to be edited, it might be necessary to change the vertical position of
- * the label. The height of the first control is computed automatically, subclasses must override
- * {@link #getFirstControlMarginHeight()} if the first control they create features
+ * a label of the property value to be edited, it might be necessary to change the vertical position
+ * of the label. The height of the first control is computed automatically, subclasses must override
+ * {@link #getFirstControlMarginHeight()} if the first control they create features a
  * <em>margin-height</em> other than 0.
  * <p>
  * Finally, the method {@link #createEditFields(Map)} must be implemented to create the edit fields
  * of the composite. Each edit field must be registered to the provided map, associating an
  * {@link ObjectProperty} to each edit field.
+ * <p>
+ * Subclasses must invoke {@link #initControls()} right after all subclass-specific attributes have
+ * been initialized.
+ * 
+ * @author Alexander Weickmann
  * 
  * @see IPropertyValue
  * @see EditField
- * 
- * @author Alexander Weickmann
  */
 public abstract class EditPropertyValueComposite<P extends IProductCmptProperty, V extends IPropertyValue> extends
         Composite {
