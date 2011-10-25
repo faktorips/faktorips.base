@@ -31,7 +31,6 @@ import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.DependencyType;
@@ -74,9 +73,15 @@ import org.w3c.dom.Element;
 public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     private IIpsProject ipsProject;
+
     private IPolicyCmptType policyCmptType;
+
     private ProductCmptType productCmptType;
+
+    private IPolicyCmptType superPolicyCmptType;
+
     private IProductCmptType superProductCmptType;
+
     private IProductCmptType superSuperProductCmptType;
 
     @Override
@@ -87,19 +92,16 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         ipsProject = newIpsProject();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         productCmptType = (ProductCmptType)policyCmptType.findProductCmptType(ipsProject);
-        superProductCmptType = newProductCmptType(ipsProject, "SuperProduct");
+        superPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SuperPolicy", "SuperProduct");
+        superProductCmptType = superPolicyCmptType.findProductCmptType(ipsProject);
         productCmptType.setSupertype(superProductCmptType.getQualifiedName());
+        policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
         superSuperProductCmptType = newProductCmptType(ipsProject, "SuperSuperProduct");
         superProductCmptType.setSupertype(superSuperProductCmptType.getQualifiedName());
     }
 
     @Test
     public void testValidateMustHaveSupertype() throws CoreException {
-        PolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "SuperPolicy");
-        policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
-        superPolicyCmptType.setProductCmptType(superProductCmptType.getQualifiedName());
-        superProductCmptType.setPolicyCmptType(superPolicyCmptType.getQualifiedName());
-
         productCmptType.setSupertype("");
         MessageList result = productCmptType.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SUPERTYPE));
@@ -217,11 +219,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidateTypeHierarchyMismatch() throws CoreException {
-        IPolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "SuperPolicy");
-        policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
-
-        superProductCmptType.setConfigurationForPolicyCmptType(true);
-        superProductCmptType.setPolicyCmptType(superPolicyCmptType.getQualifiedName());
         MessageList result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH));
 
@@ -254,129 +251,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProdDefProperties() throws CoreException {
-        List<IProductCmptProperty> props = productCmptType.findProductCmptProperties(ipsProject);
-        assertEquals(0, props.size());
-
-        // attributes
-        IProductCmptTypeAttribute supertypeAttr = superProductCmptType.newProductCmptTypeAttribute();
-        supertypeAttr.setName("attrInSupertype");
-        supertypeAttr.setDatatype("Money");
-
-        IProductCmptTypeAttribute typeAttribute1 = productCmptType.newProductCmptTypeAttribute("attrInType1");
-        IProductCmptTypeAttribute typeAttribute2 = productCmptType.newProductCmptTypeAttribute("attrInType2");
-
-        props = superProductCmptType.findProductCmptProperties(ipsProject);
-        assertEquals(1, props.size());
-        assertEquals(supertypeAttr, props.get(0));
-        props = productCmptType.findProductCmptProperties(ipsProject);
-        assertEquals(3, props.size());
-        assertEquals(supertypeAttr, props.get(0));
-        assertEquals(typeAttribute1, props.get(1));
-        assertEquals(typeAttribute2, props.get(2));
-
-        // table structure usages
-        ITableStructureUsage supertypeTsu = superProductCmptType.newTableStructureUsage();
-        ITableStructureUsage typeTsu1 = productCmptType.newTableStructureUsage();
-        ITableStructureUsage typeTsu2 = productCmptType.newTableStructureUsage();
-
-        props = superProductCmptType.findProductCmptProperties(ipsProject);
-        assertEquals(2, props.size());
-        assertEquals(supertypeAttr, props.get(0));
-        assertEquals(supertypeTsu, props.get(1));
-        props = productCmptType.findProductCmptProperties(ipsProject);
-        assertEquals(6, props.size());
-        assertEquals(supertypeAttr, props.get(0));
-        assertEquals(typeAttribute1, props.get(1));
-        assertEquals(typeAttribute2, props.get(2));
-        assertEquals(supertypeTsu, props.get(3));
-        assertEquals(typeTsu1, props.get(4));
-        assertEquals(typeTsu2, props.get(5));
-
-        // formula signatures
-        IProductCmptTypeMethod supertypeSignature = superProductCmptType.newProductCmptTypeMethod();
-        supertypeSignature.setFormulaSignatureDefinition(true);
-        supertypeSignature.setFormulaName("CalculatePremium");
-        IProductCmptTypeMethod typeSignature1 = productCmptType.newFormulaSignature("CalculatePremium1");
-        IProductCmptTypeMethod typeSignature2 = productCmptType.newFormulaSignature("CalculatePremium2");
-        productCmptType.newProductCmptTypeMethod().setFormulaSignatureDefinition(false);// this
-        // method is not a product def property as it is not a formula signature
-
-        props = superProductCmptType.findProductCmptProperties(ipsProject);
-        assertEquals(3, props.size());
-        assertEquals(supertypeAttr, props.get(0));
-        assertEquals(supertypeTsu, props.get(1));
-        assertEquals(supertypeSignature, props.get(2));
-
-        props = productCmptType.findProductCmptProperties(ipsProject);
-        assertEquals(9, props.size());
-        assertEquals(supertypeAttr, props.get(0));
-        assertEquals(typeAttribute1, props.get(1));
-        assertEquals(typeAttribute2, props.get(2));
-        assertEquals(supertypeTsu, props.get(3));
-        assertEquals(typeTsu1, props.get(4));
-        assertEquals(typeTsu2, props.get(5));
-        assertEquals(supertypeSignature, props.get(6));
-        assertEquals(typeSignature1, props.get(7));
-        assertEquals(typeSignature2, props.get(8));
-
-        // default values and value sets
-        IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
-        superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
-        IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype.newPolicyCmptTypeAttribute();
-        policyCmptSupertypeAttr.setProductRelevant(true);
-        IPolicyCmptTypeAttribute policyCmptTypeAttr1 = policyCmptType.newPolicyCmptTypeAttribute();
-        policyCmptTypeAttr1.setProductRelevant(true);
-        IPolicyCmptTypeAttribute policyCmptTypeAttr2 = policyCmptType.newPolicyCmptTypeAttribute();
-        policyCmptTypeAttr2.setProductRelevant(true);
-        policyCmptType.newPolicyCmptTypeAttribute().setProductRelevant(false); // this attribute is
-        // not a product def
-        // property as it is
-        // not product
-        // relevant!
-        IPolicyCmptTypeAttribute derivedAttr = policyCmptType.newPolicyCmptTypeAttribute();
-        derivedAttr.setProductRelevant(true);
-        derivedAttr.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
-
-        props = superProductCmptType.findProductCmptProperties(ipsProject);
-        assertEquals(4, props.size());
-        assertEquals(supertypeAttr, props.get(0));
-        assertEquals(supertypeTsu, props.get(1));
-        assertEquals(supertypeSignature, props.get(2));
-        assertEquals(policyCmptSupertypeAttr, props.get(3));
-
-        props = productCmptType.findProductCmptProperties(ipsProject);
-        assertEquals(12, props.size());
-        assertEquals(supertypeAttr, props.get(0));
-        assertEquals(typeAttribute1, props.get(1));
-        assertEquals(typeAttribute2, props.get(2));
-        assertEquals(supertypeTsu, props.get(3));
-        assertEquals(typeTsu1, props.get(4));
-        assertEquals(typeTsu2, props.get(5));
-        assertEquals(supertypeSignature, props.get(6));
-        assertEquals(typeSignature1, props.get(7));
-        assertEquals(typeSignature2, props.get(8));
-        assertEquals(policyCmptSupertypeAttr, props.get(9));
-        assertEquals(policyCmptTypeAttr1, props.get(10));
-        assertEquals(policyCmptTypeAttr2, props.get(11));
-    }
-
-    @Test
-    public void testFindProdDefProperties_TwoProductCmptTypesConfigureSamePolicyCmptType() throws CoreException {
-        IPolicyCmptTypeAttribute policyCmptTypeAttr1 = policyCmptType.newPolicyCmptTypeAttribute();
-        policyCmptTypeAttr1.setProductRelevant(true);
-        List<IProductCmptProperty> props = productCmptType.findProductCmptProperties(ipsProject);
-        assertEquals(1, props.size()); // make sure, setup is ok
-
-        IProductCmptType subtype = newProductCmptType(productCmptType, "Subtype");
-        subtype.setConfigurationForPolicyCmptType(true);
-        subtype.setPolicyCmptType(policyCmptType.getQualifiedName());
-        props = subtype.findProductCmptProperties(ipsProject);
-        assertEquals(1, props.size()); // attribute mustn't be inluded twice!!!
-    }
-
-    @Test
-    public void testGetProdDefPropertiesMap() throws CoreException {
+    public void testFindProductCmptPropertyMap() throws CoreException {
         // attributes
         IProductCmptTypeAttribute supertypeAttr = superProductCmptType.newProductCmptTypeAttribute();
         supertypeAttr.setName("attrInSupertype");
@@ -399,9 +274,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         // method is not a product def property as it is not a formula signature
 
         // default values and value sets
-        IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
-        superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = superPolicyCmptType
                 .newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setName("PolicySuperAttribute");
         policyCmptSupertypeAttr.setProductRelevant(true);
@@ -465,7 +338,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProdDefProperty_ByTypeAndName() throws CoreException {
+    public void testFindProductCmptProperty_ByTypeAndName() throws CoreException {
         // attributes
         IProductCmptTypeAttribute supertypeAttr = superProductCmptType.newProductCmptTypeAttribute();
         supertypeAttr.setName("attrInSupertype");
@@ -489,10 +362,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         typeSignature.setFormulaName("CalculatePremium2");
 
         // default values and value sets
-        IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
-        superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
-        policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = superPolicyCmptType
                 .newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setName("policySuperAttr");
         policyCmptSupertypeAttr.setProductRelevant(true);
@@ -539,8 +409,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProdDefProperty_ByName() throws CoreException {
-        List<IProductCmptProperty> props = productCmptType.findProductCmptProperties(ipsProject);
+    public void testFindProductCmptProperty_ByName() throws CoreException {
+        List<IProductCmptProperty> props = productCmptType.findProductCmptProperties(true, ipsProject);
         assertEquals(0, props.size());
 
         // attributes
@@ -566,10 +436,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         typeSignature.setFormulaName("CalculatePremium2");
 
         // default values and value sets
-        IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
-        superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
-        policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype
+        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = superPolicyCmptType
                 .newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setName("policySuperAttr");
         policyCmptSupertypeAttr.setProductRelevant(true);
@@ -1055,6 +922,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     @Test
     public void testValidateNoDefaultCategoryForFormulaSignatureDefinitionsExists() throws CoreException {
         productCmptType.findDefaultCategoryForFormulaSignatureDefinitions(ipsProject).delete();
+        policyCmptType.setSupertype("");
         productCmptType.setSupertype("");
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
@@ -1066,6 +934,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     @Test
     public void testValidateNoDefaultCategoryForPolicyCmptTypeAttributesExists() throws CoreException {
         productCmptType.findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject).delete();
+        policyCmptType.setSupertype("");
         productCmptType.setSupertype("");
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
@@ -1077,6 +946,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     @Test
     public void testValidateNoDefaultCategoryForProductCmptTypeAttributesExists() throws CoreException {
         productCmptType.findDefaultCategoryForProductCmptTypeAttributes(ipsProject).delete();
+        policyCmptType.setSupertype("");
         productCmptType.setSupertype("");
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
@@ -1088,6 +958,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     @Test
     public void testValidateNoDefaultCategoryForTableStructureUsagesExists() throws CoreException {
         productCmptType.findDefaultCategoryForTableStructureUsages(ipsProject).delete();
+        policyCmptType.setSupertype("");
         productCmptType.setSupertype("");
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
@@ -1099,6 +970,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     @Test
     public void testValidateNoDefaultCategoryForValidationRulesExists() throws CoreException {
         productCmptType.findDefaultCategoryForValidationRules(ipsProject).delete();
+        policyCmptType.setSupertype("");
         productCmptType.setSupertype("");
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
@@ -1203,25 +1075,52 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testFindProductCmptProperties() throws CoreException {
-        IProductCmptTypeAttribute productAttribute = productCmptType.newProductCmptTypeAttribute();
+        IProductCmptProperty productAttribute = createProductAttributeProperty(productCmptType, "productAttribute");
+        IProductCmptProperty formulaSignature = createFormulaSignatureProperty(productCmptType, "formula");
+        IProductCmptProperty tsu = createTableStructureUsageProperty(productCmptType, "tsu");
+        IProductCmptProperty policyAttribute = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
+        IProductCmptProperty validationRule = createValidationRuleProperty(policyCmptType, "validationRule");
 
-        IProductCmptTypeMethod productMethod = productCmptType.newProductCmptTypeMethod();
-
-        ITableStructureUsage tsu = productCmptType.newTableStructureUsage();
-
-        IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute();
-        policyAttribute.setProductRelevant(true);
-
-        IValidationRule validationRule = policyCmptType.newRule();
-        validationRule.setConfigurableByProductComponent(true);
-
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptProperties(ipsProject);
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptProperties(true, ipsProject);
         assertTrue(properties.contains(productAttribute));
-        assertTrue(properties.contains(productMethod));
+        assertTrue(properties.contains(formulaSignature));
         assertTrue(properties.contains(tsu));
         assertTrue(properties.contains(policyAttribute));
         assertTrue(properties.contains(validationRule));
         assertEquals(5, properties.size());
+    }
+
+    @Test
+    public void testFindProductCmptProperties_SearchSupertypeHierarchy() throws CoreException {
+        IProductCmptProperty productAttribute = createProductAttributeProperty(superProductCmptType, "productAttribute");
+        IProductCmptProperty formulaSignature = createFormulaSignatureProperty(superProductCmptType, "formula");
+        IProductCmptProperty tsu = createTableStructureUsageProperty(superProductCmptType, "tsu");
+        IProductCmptProperty policyAttribute = createPolicyAttributeProperty(superPolicyCmptType, "policyAttribute");
+        IProductCmptProperty validationRule = createValidationRuleProperty(superPolicyCmptType, "validationRule");
+
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptProperties(true, ipsProject);
+        assertTrue(properties.contains(productAttribute));
+        assertTrue(properties.contains(formulaSignature));
+        assertTrue(properties.contains(tsu));
+        assertTrue(properties.contains(policyAttribute));
+        assertTrue(properties.contains(validationRule));
+        assertEquals(5, properties.size());
+    }
+
+    @Test
+    public void testFindProductCmptProperties_DoNotSearchSupertypeHierarchy() throws CoreException {
+        createProductAttributeProperty(superProductCmptType, "productAttribute");
+        createFormulaSignatureProperty(superProductCmptType, "formula");
+        createTableStructureUsageProperty(superProductCmptType, "tsu");
+        createPolicyAttributeProperty(superPolicyCmptType, "policyAttribute");
+        createValidationRuleProperty(superPolicyCmptType, "validationRule");
+
+        IProductCmptProperty subProductAttribute = createProductAttributeProperty(productCmptType,
+                "subProductAttribute");
+
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptProperties(false, ipsProject);
+        assertTrue(properties.contains(subProductAttribute));
+        assertEquals(1, properties.size());
     }
 
     @Test
@@ -1230,8 +1129,151 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptType.newRule();
 
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptProperties(ipsProject);
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptProperties(true, ipsProject);
         assertTrue(properties.isEmpty());
+    }
+
+    // TODO AW other test
+    @Test
+    public void testFindProdDefProperties() throws CoreException {
+        List<IProductCmptProperty> props = productCmptType.findProductCmptProperties(true, ipsProject);
+        assertEquals(0, props.size());
+
+        // attributes
+        IProductCmptTypeAttribute supertypeAttr = superProductCmptType.newProductCmptTypeAttribute();
+        supertypeAttr.setName("attrInSupertype");
+        supertypeAttr.setDatatype("Money");
+
+        IProductCmptTypeAttribute typeAttribute1 = productCmptType.newProductCmptTypeAttribute("attrInType1");
+        IProductCmptTypeAttribute typeAttribute2 = productCmptType.newProductCmptTypeAttribute("attrInType2");
+
+        props = superProductCmptType.findProductCmptProperties(true, ipsProject);
+        assertEquals(1, props.size());
+        assertEquals(supertypeAttr, props.get(0));
+        props = productCmptType.findProductCmptProperties(true, ipsProject);
+        assertEquals(3, props.size());
+        assertEquals(supertypeAttr, props.get(0));
+        assertEquals(typeAttribute1, props.get(1));
+        assertEquals(typeAttribute2, props.get(2));
+
+        // table structure usages
+        ITableStructureUsage supertypeTsu = superProductCmptType.newTableStructureUsage();
+        ITableStructureUsage typeTsu1 = productCmptType.newTableStructureUsage();
+        ITableStructureUsage typeTsu2 = productCmptType.newTableStructureUsage();
+
+        props = superProductCmptType.findProductCmptProperties(true, ipsProject);
+        assertEquals(2, props.size());
+        assertEquals(supertypeAttr, props.get(0));
+        assertEquals(supertypeTsu, props.get(1));
+        props = productCmptType.findProductCmptProperties(true, ipsProject);
+        assertEquals(6, props.size());
+        assertEquals(supertypeAttr, props.get(0));
+        assertEquals(typeAttribute1, props.get(1));
+        assertEquals(typeAttribute2, props.get(2));
+        assertEquals(supertypeTsu, props.get(3));
+        assertEquals(typeTsu1, props.get(4));
+        assertEquals(typeTsu2, props.get(5));
+
+        // formula signatures
+        IProductCmptTypeMethod supertypeSignature = superProductCmptType.newProductCmptTypeMethod();
+        supertypeSignature.setFormulaSignatureDefinition(true);
+        supertypeSignature.setFormulaName("CalculatePremium");
+        IProductCmptTypeMethod typeSignature1 = productCmptType.newFormulaSignature("CalculatePremium1");
+        IProductCmptTypeMethod typeSignature2 = productCmptType.newFormulaSignature("CalculatePremium2");
+        productCmptType.newProductCmptTypeMethod().setFormulaSignatureDefinition(false);// this
+        // method is not a product def property as it is not a formula signature
+
+        props = superProductCmptType.findProductCmptProperties(true, ipsProject);
+        assertEquals(3, props.size());
+        assertEquals(supertypeAttr, props.get(0));
+        assertEquals(supertypeTsu, props.get(1));
+        assertEquals(supertypeSignature, props.get(2));
+
+        props = productCmptType.findProductCmptProperties(true, ipsProject);
+        assertEquals(9, props.size());
+        assertEquals(supertypeAttr, props.get(0));
+        assertEquals(typeAttribute1, props.get(1));
+        assertEquals(typeAttribute2, props.get(2));
+        assertEquals(supertypeTsu, props.get(3));
+        assertEquals(typeTsu1, props.get(4));
+        assertEquals(typeTsu2, props.get(5));
+        assertEquals(supertypeSignature, props.get(6));
+        assertEquals(typeSignature1, props.get(7));
+        assertEquals(typeSignature2, props.get(8));
+
+        // default values and value sets
+        IPolicyCmptTypeAttribute policyCmptSupertypeAttr = superPolicyCmptType.newPolicyCmptTypeAttribute();
+        policyCmptSupertypeAttr.setProductRelevant(true);
+        IPolicyCmptTypeAttribute policyCmptTypeAttr1 = policyCmptType.newPolicyCmptTypeAttribute();
+        policyCmptTypeAttr1.setProductRelevant(true);
+        IPolicyCmptTypeAttribute policyCmptTypeAttr2 = policyCmptType.newPolicyCmptTypeAttribute();
+        policyCmptTypeAttr2.setProductRelevant(true);
+        policyCmptType.newPolicyCmptTypeAttribute().setProductRelevant(false); // this attribute is
+        // not a product def property as it is not product relevant!
+        IPolicyCmptTypeAttribute derivedAttr = policyCmptType.newPolicyCmptTypeAttribute();
+        derivedAttr.setProductRelevant(true);
+        derivedAttr.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
+
+        props = superProductCmptType.findProductCmptProperties(true, ipsProject);
+        assertEquals(4, props.size());
+        assertEquals(supertypeAttr, props.get(0));
+        assertEquals(supertypeTsu, props.get(1));
+        assertEquals(supertypeSignature, props.get(2));
+        assertEquals(policyCmptSupertypeAttr, props.get(3));
+
+        props = productCmptType.findProductCmptProperties(true, ipsProject);
+        assertEquals(12, props.size());
+        assertEquals(supertypeAttr, props.get(0));
+        assertEquals(typeAttribute1, props.get(1));
+        assertEquals(typeAttribute2, props.get(2));
+        assertEquals(supertypeTsu, props.get(3));
+        assertEquals(typeTsu1, props.get(4));
+        assertEquals(typeTsu2, props.get(5));
+        assertEquals(supertypeSignature, props.get(6));
+        assertEquals(typeSignature1, props.get(7));
+        assertEquals(typeSignature2, props.get(8));
+        assertEquals(policyCmptSupertypeAttr, props.get(9));
+        assertEquals(policyCmptTypeAttr1, props.get(10));
+        assertEquals(policyCmptTypeAttr2, props.get(11));
+    }
+
+    @Test
+    public void testFindProductCmptProperties_TwoProductCmptTypesConfigureSamePolicyCmptType() throws CoreException {
+        IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();
+        policyCmptTypeAttribute.setProductRelevant(true);
+
+        IProductCmptType subtype = newProductCmptType(productCmptType, "Subtype");
+        subtype.setConfigurationForPolicyCmptType(true);
+        subtype.setPolicyCmptType(policyCmptType.getQualifiedName());
+        List<IProductCmptProperty> props = subtype.findProductCmptProperties(true, ipsProject);
+        assertEquals(1, props.size()); // Attribute mustn't be included twice!
+    }
+
+    private IProductCmptProperty createProductAttributeProperty(IProductCmptType productCmptType, String name) {
+        return productCmptType.newProductCmptTypeAttribute(name);
+    }
+
+    private IProductCmptProperty createFormulaSignatureProperty(IProductCmptType productCmptType, String formulaName) {
+        return productCmptType.newFormulaSignature(formulaName);
+    }
+
+    private IProductCmptProperty createTableStructureUsageProperty(IProductCmptType productCmptType, String roleName) {
+        ITableStructureUsage tsu = productCmptType.newTableStructureUsage();
+        tsu.setRoleName(roleName);
+        return tsu;
+    }
+
+    private IProductCmptProperty createPolicyAttributeProperty(IPolicyCmptType policyCmptType, String name) {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute(name);
+        attribute.setProductRelevant(true);
+        return attribute;
+    }
+
+    private IProductCmptProperty createValidationRuleProperty(IPolicyCmptType policyCmptType, String name) {
+        IValidationRule validationRule = policyCmptType.newRule();
+        validationRule.setName(name);
+        validationRule.setConfigurableByProductComponent(true);
+        return validationRule;
     }
 
     @Test

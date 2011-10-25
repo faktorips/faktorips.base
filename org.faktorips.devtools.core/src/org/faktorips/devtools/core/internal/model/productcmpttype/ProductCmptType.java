@@ -52,6 +52,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.FormulaSignatureFinder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference.SourceType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -179,27 +180,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public List<IProductCmptProperty> findProductCmptProperties(IIpsProject ipsProject) throws CoreException {
-        ProductCmptPropertyCollector collector = new ProductCmptPropertyCollector(null, ipsProject);
+    public List<IProductCmptProperty> findProductCmptProperties(boolean searchSupertypeHierarchy, IIpsProject ipsProject)
+            throws CoreException {
+
+        ProductCmptPropertyCollector collector = new ProductCmptPropertyCollector(null, searchSupertypeHierarchy,
+                ipsProject);
         collector.start(this);
         return collector.getProperties();
-    }
-
-    /**
-     * Returns a map containing the property names as keys and the properties as values. This method
-     * searches the supertype hierarchy.
-     * <p>
-     * Note this is a model internal method, it is not part of the published interface.
-     * 
-     * @param propertyType The type of properties that should be included in the map.
-     *            <code>null</code> indicates that all properties should be included in the map.
-     */
-    public Map<String, IProductCmptProperty> findProductCmptPropertyMap(ProductCmptPropertyType propertyType,
-            IIpsProject ipsProject) throws CoreException {
-
-        ProductCmptPropertyCollector collector = new ProductCmptPropertyCollector(propertyType, ipsProject);
-        collector.start(this);
-        return collector.getPropertyMap();
     }
 
     @Override
@@ -217,6 +204,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     public IProductCmptProperty findProductCmptProperty(ProductCmptPropertyType type,
             String propName,
             IIpsProject ipsProject) throws CoreException {
+
         if (ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE == type) {
             return findProductCmptTypeAttribute(propName, ipsProject);
         }
@@ -243,7 +231,23 @@ public class ProductCmptType extends Type implements IProductCmptType {
             }
         }
         return null;
+    }
 
+    /**
+     * Returns a map containing the property names as keys and the properties as values. This method
+     * searches the supertype hierarchy.
+     * <p>
+     * Note this is a model internal method, it is not part of the published interface.
+     * 
+     * @param propertyType The type of properties that should be included in the map.
+     *            <code>null</code> indicates that all properties should be included in the map.
+     */
+    public Map<String, IProductCmptProperty> findProductCmptPropertyMap(ProductCmptPropertyType propertyType,
+            IIpsProject ipsProject) throws CoreException {
+
+        ProductCmptPropertyCollector collector = new ProductCmptPropertyCollector(propertyType, true, ipsProject);
+        collector.start(this);
+        return collector.getPropertyMap();
     }
 
     @Override
@@ -842,13 +846,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private void createProductCmptPropertyReferencesForNotReferencedProperties() throws CoreException {
         List<IProductCmptPropertyReference> references = propertyReferences.asList();
-        for (IProductCmptProperty property : findProductCmptProperties(getIpsProject())) {
-            // Do not create references for properties originating from supertypes
-            String typeQualifiedName = property.getType().getQualifiedName();
-            if (!typeQualifiedName.equals(getQualifiedName()) && !typeQualifiedName.equals(policyCmptType)) {
-                continue;
-            }
-
+        for (IProductCmptProperty property : findProductCmptProperties(false, getIpsProject())) {
             boolean referenceFound = false;
             for (IProductCmptPropertyReference reference : references) {
                 if (reference.isReferencingProperty(property)) {
@@ -864,8 +862,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private IProductCmptPropertyReference newProductCmptPropertyReference(IProductCmptProperty productCmptProperty) {
         IProductCmptPropertyReference reference = propertyReferences.newPart();
-        reference.setName(productCmptProperty.getPropertyName());
-        reference.setProductCmptPropertyType(productCmptProperty.getProductCmptPropertyType());
+        reference.setReferencedPartId(productCmptProperty.getId());
+        reference.setSourceType(SourceType.getValueByProperty(productCmptProperty));
         return reference;
     }
 
@@ -884,7 +882,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     List<IProductCmptProperty> findProductCmptPropertiesInReferencedOrder(final IIpsProject ipsProject)
             throws CoreException {
 
-        List<IProductCmptProperty> properties = findProductCmptProperties(ipsProject);
+        List<IProductCmptProperty> properties = findProductCmptProperties(true, ipsProject);
         Collections.sort(properties, new Comparator<IProductCmptProperty>() {
             @Override
             public int compare(IProductCmptProperty o1, IProductCmptProperty o2) {
@@ -991,7 +989,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
          * Indicates the type of the properties that are collected (if null, all properties are
          * collected).
          */
-        private ProductCmptPropertyType propertyType;
+        private final ProductCmptPropertyType propertyType;
+
+        private final boolean searchSupertypeHierarchy;
 
         private List<IProductCmptProperty> attributes = new ArrayList<IProductCmptProperty>();
         private List<IProductCmptProperty> tableStructureUsages = new ArrayList<IProductCmptProperty>();
@@ -1001,9 +1001,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         private Set<IPolicyCmptType> visitedPolicyCmptTypes = new HashSet<IPolicyCmptType>();
 
-        public ProductCmptPropertyCollector(ProductCmptPropertyType propertyType, IIpsProject ipsProject) {
+        public ProductCmptPropertyCollector(ProductCmptPropertyType propertyType, boolean searchSupertypeHierarchy,
+                IIpsProject ipsProject) {
+
             super(ipsProject);
             this.propertyType = propertyType;
+            this.searchSupertypeHierarchy = searchSupertypeHierarchy;
         }
 
         @Override
@@ -1014,13 +1017,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
             IPolicyCmptType policyCmptType = currentType.findPolicyCmptType(ipsProject);
             if (policyCmptType == null || visitedPolicyCmptTypes.contains(policyCmptType)) {
-                return true;
+                return searchSupertypeHierarchy;
             }
 
             collectPolicyCmptTypeAttributes(policyCmptType);
             collectValidationRules(policyCmptType);
 
-            return true;
+            return searchSupertypeHierarchy;
         }
 
         private void collectValidationRules(IPolicyCmptType policyCmptType) {

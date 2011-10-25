@@ -20,20 +20,24 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.lang.reflect.Field;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference.SourceType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -65,27 +69,26 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         attributeProperty.setProductRelevant(true);
 
         attributeReference = new ProductCmptPropertyReference(productType, "id");
-        attributeReference.setName(attributeProperty.getName());
-        attributeReference.setProductCmptPropertyType(attributeProperty.getProductCmptPropertyType());
+        attributeReference.setReferencedPartId(attributeProperty.getId());
+        attributeReference.setSourceType(SourceType.POLICY);
     }
 
     @Test
-    public void testSetName() {
-        attributeReference.setName("foo");
+    public void testSetReferencedPartId() {
+        attributeReference.setReferencedPartId("foo");
 
-        assertEquals("foo", attributeReference.getName());
-        assertPropertyChangedEvent(attributeReference, IProductCmptPropertyReference.PROPERTY_NAME,
-                attributeProperty.getName(), "foo");
+        assertEquals("foo", attributeReference.getReferencedPartId());
+        assertPropertyChangedEvent(attributeReference, IProductCmptPropertyReference.PROPERTY_REFERENCED_PART_ID,
+                attributeProperty.getId(), "foo");
     }
 
     @Test
-    public void testSetPropertyType() {
-        attributeReference.setProductCmptPropertyType(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
+    public void testSetSourceType() {
+        attributeReference.setSourceType(SourceType.PRODUCT);
 
-        assertEquals(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE,
-                attributeReference.getProductCmptPropertyType());
-        assertPropertyChangedEvent(attributeReference, IProductCmptPropertyReference.PROPERTY_PROPERTY_TYPE,
-                attributeProperty.getProductCmptPropertyType(), ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
+        assertEquals(SourceType.PRODUCT, attributeReference.getSourceType());
+        assertPropertyChangedEvent(attributeReference, IProductCmptPropertyReference.PROPERTY_SOURCE_TYPE,
+                SourceType.POLICY, SourceType.PRODUCT);
     }
 
     @Test
@@ -100,8 +103,10 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
     @Test
     public void testFindProductCmptProperty() throws CoreException {
         IPolicyCmptTypeAttribute policyAttribute = policyType.newPolicyCmptTypeAttribute("policyAttribute");
+        policyAttribute.setProductRelevant(true);
         IValidationRule validationRule = policyType.newRule();
         validationRule.setName("validationRule");
+        validationRule.setConfigurableByProductComponent(true);
         IProductCmptTypeMethod formula = productType.newProductCmptTypeMethod();
         formula.setName("formula");
         formula.setFormulaName("formula");
@@ -111,24 +116,24 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         IProductCmptTypeAttribute productAttribute = productType.newProductCmptTypeAttribute("productAttribute");
 
         IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(productType, "id1");
-        policyAttributeReference.setName(policyAttribute.getName());
-        policyAttributeReference.setProductCmptPropertyType(policyAttribute.getProductCmptPropertyType());
+        policyAttributeReference.setReferencedPartId(policyAttribute.getId());
+        policyAttributeReference.setSourceType(SourceType.POLICY);
 
         IProductCmptPropertyReference validationRuleReference = new ProductCmptPropertyReference(productType, "id2");
-        validationRuleReference.setName(validationRule.getName());
-        validationRuleReference.setProductCmptPropertyType(validationRule.getProductCmptPropertyType());
+        validationRuleReference.setReferencedPartId(validationRule.getId());
+        validationRuleReference.setSourceType(SourceType.POLICY);
 
         IProductCmptPropertyReference formulaReference = new ProductCmptPropertyReference(productType, "id3");
-        formulaReference.setName(formula.getName());
-        formulaReference.setProductCmptPropertyType(formula.getProductCmptPropertyType());
+        formulaReference.setReferencedPartId(formula.getId());
+        formulaReference.setSourceType(SourceType.PRODUCT);
 
         IProductCmptPropertyReference tsuReference = new ProductCmptPropertyReference(productType, "id4");
-        tsuReference.setName(tsu.getName());
-        tsuReference.setProductCmptPropertyType(tsu.getProductCmptPropertyType());
+        tsuReference.setReferencedPartId(tsu.getId());
+        tsuReference.setSourceType(SourceType.PRODUCT);
 
         IProductCmptPropertyReference productAttributeReference = new ProductCmptPropertyReference(productType, "id5");
-        productAttributeReference.setName(productAttribute.getName());
-        productAttributeReference.setProductCmptPropertyType(productAttribute.getProductCmptPropertyType());
+        productAttributeReference.setReferencedPartId(productAttribute.getId());
+        productAttributeReference.setSourceType(SourceType.PRODUCT);
 
         assertEquals(policyAttribute, policyAttributeReference.findProductCmptProperty(ipsProject));
         assertEquals(validationRule, validationRuleReference.findProductCmptProperty(ipsProject));
@@ -140,10 +145,11 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
     @Test
     public void testFindProductCmptPropertyPolicyCmptTypeNotFound() throws CoreException {
         IPolicyCmptTypeAttribute policyAttribute = policyType.newPolicyCmptTypeAttribute("policyAttribute");
+        policyAttribute.setProductRelevant(true);
 
         IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(productType, "id1");
-        policyAttributeReference.setName(policyAttribute.getName());
-        policyAttributeReference.setProductCmptPropertyType(policyAttribute.getProductCmptPropertyType());
+        policyAttributeReference.setReferencedPartId(policyAttribute.getId());
+        policyAttributeReference.setSourceType(SourceType.POLICY);
 
         policyType.delete();
 
@@ -152,17 +158,44 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testXml() throws ParserConfigurationException {
-        IPolicyCmptTypeAttribute otherProperty = policyType.newPolicyCmptTypeAttribute();
-        otherProperty.setName("otherProperty");
-        otherProperty.setProductRelevant(true);
+    public void testFindProductCmptPropertySameIdInPolicyTypeAndProductType() throws CoreException, SecurityException,
+            IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
 
+        IPolicyCmptTypeAttribute policyAttribute = policyType.newPolicyCmptTypeAttribute("policyAttribute");
+        policyAttribute.setName("policyAttribute");
+        policyAttribute.setProductRelevant(true);
+        setId(policyAttribute, "foo");
+        IProductCmptTypeAttribute productAttribute = productType.newProductCmptTypeAttribute("productAttribute");
+        productAttribute.setName("productAttribute");
+        setId(productAttribute, "foo");
+
+        IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(productType, "id1");
+        policyAttributeReference.setReferencedPartId(policyAttribute.getId());
+        policyAttributeReference.setSourceType(SourceType.POLICY);
+        IProductCmptPropertyReference productAttributeReference = new ProductCmptPropertyReference(productType, "id1");
+        productAttributeReference.setReferencedPartId(productAttribute.getId());
+        productAttributeReference.setSourceType(SourceType.PRODUCT);
+
+        assertEquals(policyAttribute, policyAttributeReference.findProductCmptProperty(ipsProject));
+        assertEquals(productAttribute, productAttributeReference.findProductCmptProperty(ipsProject));
+    }
+
+    private void setId(IAttribute attribute, String id) throws SecurityException, NoSuchFieldException,
+            IllegalArgumentException, IllegalAccessException {
+
+        Field field = IpsObjectPart.class.getDeclaredField("id");
+        field.setAccessible(true);
+        field.set(attribute, id);
+    }
+
+    @Test
+    public void testXml() throws ParserConfigurationException {
         Element xmlElement = attributeReference.toXml(createXmlDocument(IProductCmptPropertyReference.XML_TAG_NAME));
         IProductCmptPropertyReference loadedReference = new ProductCmptPropertyReference(productType, "blub");
         loadedReference.initFromXml(xmlElement);
 
-        assertEquals(attributeProperty.getName(), loadedReference.getName());
-        assertEquals(attributeProperty.getProductCmptPropertyType(), loadedReference.getProductCmptPropertyType());
+        assertEquals(attributeProperty.getId(), loadedReference.getReferencedPartId());
+        assertEquals(SourceType.POLICY, loadedReference.getSourceType());
     }
 
     @Test

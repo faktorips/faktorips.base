@@ -17,11 +17,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
 /**
- * An object part used by {@link IProductCmptCategory}s to store references to
- * {@link IProductCmptProperty}s.
+ * An object part that references an {@link IProductCmptProperty}.
  * 
  * @since 3.6
  * 
@@ -31,32 +29,33 @@ public interface IProductCmptPropertyReference extends IIpsObjectPart {
 
     public final static String XML_TAG_NAME = "ProductCmptPropertyReference"; //$NON-NLS-1$
 
-    public final static String PROPERTY_PROPERTY_TYPE = "propertyType"; //$NON-NLS-1$
+    public final static String PROPERTY_REFERENCED_PART_ID = "referencedPartId"; //$NON-NLS-1$
+
+    public final static String PROPERTY_SOURCE_TYPE = "sourceType"; //$NON-NLS-1$
 
     /**
-     * Returns the name of the referenced property.
+     * Returns the id of the referenced part.
      */
-    @Override
-    public String getName();
+    public String getReferencedPartId();
 
     /**
-     * Returns the {@link ProductCmptPropertyType} of the referenced property.
-     */
-    public ProductCmptPropertyType getProductCmptPropertyType();
-
-    /**
-     * Sets the name of the referenced property.
+     * Sets the id of the referenced part.
      * 
-     * @param name The name identifying the referenced property
+     * @param referencedPartId The id of the referenced part
      */
-    public void setName(String name);
+    public void setReferencedPartId(String referencedPartId);
 
     /**
-     * Sets the {@link ProductCmptPropertyType} of the referenced property.
-     * 
-     * @param propertyType The {@link ProductCmptPropertyType} of the referenced property
+     * Returns the source type of the referenced part.
      */
-    public void setProductCmptPropertyType(ProductCmptPropertyType propertyType);
+    public SourceType getSourceType();
+
+    /**
+     * Sets the source type of the referenced part.
+     * 
+     * @param sourceType The source type of the referenced part
+     */
+    public void setSourceType(SourceType sourceType);
 
     /**
      * Returns whether the given {@link IProductCmptProperty} is identified by this reference.
@@ -73,5 +72,48 @@ public interface IProductCmptPropertyReference extends IIpsObjectPart {
      * @throws CoreException If an error occurs during the search
      */
     public IProductCmptProperty findProductCmptProperty(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Defines the source type of the referenced part.
+     */
+    public static enum SourceType {
+
+        POLICY("policy"), //$NON-NLS-1$
+
+        PRODUCT("product"); //$NON-NLS-1$
+
+        public static SourceType getValueByProperty(IProductCmptProperty property) {
+            switch (property.getProductCmptPropertyType()) {
+                case PRODUCT_CMPT_TYPE_ATTRIBUTE:
+                case TABLE_STRUCTURE_USAGE:
+                case FORMULA_SIGNATURE_DEFINITION:
+                    return PRODUCT;
+                case POLICY_CMPT_TYPE_ATTRIBUTE:
+                case VALIDATION_RULE:
+                    return POLICY;
+            }
+            return null;
+        }
+
+        public static SourceType getValueByIdentifier(String identifier) {
+            for (SourceType type : values()) {
+                if (type.identifier.equals(identifier)) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
+        private final String identifier;
+
+        private SourceType(String identifier) {
+            this.identifier = identifier;
+        }
+
+        public String getIdentifier() {
+            return identifier;
+        }
+
+    }
 
 }
