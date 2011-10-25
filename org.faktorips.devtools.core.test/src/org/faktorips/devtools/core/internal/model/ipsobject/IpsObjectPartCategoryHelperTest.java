@@ -69,6 +69,15 @@ public class IpsObjectPartCategoryHelperTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testInitPropertiesFromXmlNoCategoryAttribute() {
+        Element element = mock(Element.class);
+
+        categoryHelper.initPropertiesFromXml(element);
+
+        assertEquals("", categoryHelper.getCategory());
+    }
+
+    @Test
     public void testPropertiesToXml() {
         Element element = mock(Element.class);
         categoryHelper.setCategory("foo");
