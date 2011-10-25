@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.Map;
 
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -40,6 +41,13 @@ public final class ValidationRuleConfigEditComposite extends
 
         super(property, propertyValue, propertySection, parent, uiMasterController, toolkit);
         initControls();
+    }
+
+    @Override
+    protected void setLayoutData() {
+        super.setLayoutData();
+        GridData gridData = (GridData)getLayoutData();
+        gridData.horizontalSpan = 2;
     }
 
     @Override

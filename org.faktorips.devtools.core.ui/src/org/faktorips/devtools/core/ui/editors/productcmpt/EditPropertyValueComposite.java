@@ -136,7 +136,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
         setLayout(clientLayout);
     }
 
-    private void setLayoutData() {
+    protected void setLayoutData() {
         setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     }
 
