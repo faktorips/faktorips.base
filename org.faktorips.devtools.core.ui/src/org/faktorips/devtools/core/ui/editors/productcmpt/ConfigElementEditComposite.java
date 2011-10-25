@@ -117,7 +117,7 @@ public final class ConfigElementEditComposite extends
     }
 
     @Override
-    protected int getFirstControlMargin() {
+    protected int getFirstControlMarginHeight() {
         return areRangeValueEditFieldsRequired() ? 4 : 0;
     }
 
