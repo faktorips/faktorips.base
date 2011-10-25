@@ -27,7 +27,7 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
-    public static String AttributeValuesSection_attributeNotChangingOverTimeDescription;
+    public static String AttributeValueEditComposite_attributeNotChangingOverTimeDescription;
 
     public static String DefaultsAndRangesEditDialog_additionalValuesDefinedInModel;
 
@@ -35,7 +35,11 @@ public class Messages extends NLS {
 
     public static String DefaultsAndRangesEditDialog_valueNotContainedInValueSet;
 
-    public static String DefaultsAndRangesSection_minMaxStepLabel;
+    public static String ConfigElementEditComposite_minMaxStepLabel;
+
+    public static String ConfigElementEditComposite_valueSet;
+
+    public static String ConfigElementEditComposite_defaultValue;
 
     public static String FormulaTestInputValuesControl_PreconditionDialogExecuteFormula_ConfirmBuildProject;
 
@@ -69,8 +73,6 @@ public class Messages extends NLS {
 
     public static String PolicyAttributeEditDialog_properties;
 
-    public static String PolicyAttributeEditDialog_defaultValue;
-
     public static String RelationEditDialog_editRelation;
 
     public static String RelationEditDialog_properties;
@@ -91,21 +93,11 @@ public class Messages extends NLS {
 
     public static String FormulaEditDialog_availableParameters;
 
-    public static String FormulasSection_calculationFormulas;
-
-    public static String PolicyAttributesSection_defaultsAndRanges;
-
-    public static String PolicyAttributesSection_valueSet;
-
     public static String ProductAttributesSection_attribute;
 
     public static String RelationsSection_cardinality;
 
-    public static String PolicyAttributesSection_noDefaultsAndRangesDefined;
-
     public static String RelationsLabelProvider_undefined;
-
-    public static String FormulasSection_noFormulasDefined;
 
     public static String ProductCmptEditor_title_GenerationMissmatch;
 
@@ -118,10 +110,6 @@ public class Messages extends NLS {
     public static String GenerationsSection_buttonChangeEffectiveDate;
 
     public static String GenerationsSection_buttonCancel;
-
-    public static String ProductAttributesSection_valueGenerationValidToUnlimited;
-
-    public static String RulesSection_title;
 
     public static String CardinalityPanel_LabelDefaultCardinality;
 
@@ -154,6 +142,8 @@ public class Messages extends NLS {
     public static String GenerationEditDialog_msgDateToEarly;
 
     public static String GenerationEditDialog_msgDateToLate;
+
+    public static String GenerationPropertiesPage_valueGenerationValidToUnlimited;
 
     public static String GenerationPropertiesPage_openModelDescView;
 
@@ -237,15 +227,11 @@ public class Messages extends NLS {
 
     public static String LinkEditDialog_cardinalityDefault;
 
-    public static String ProductAttributesSection_msgInvalidDate;
-
     public static String RelationsSection_ContextMenu_Properties;
 
     public static String RelationsSection_ContextMenu_OpenInNewEditor;
 
     public static String ValidationRuleSection_DefaultTitle;
-
-    public static String ValidationRuleSection_NoRulesDefinedLabelText;
 
     public static String ProductCmptPropertySection_NoContentToDisplay;
 

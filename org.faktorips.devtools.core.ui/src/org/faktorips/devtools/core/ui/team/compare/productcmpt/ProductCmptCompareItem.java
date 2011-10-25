@@ -327,7 +327,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             sb.append(TAB)
                     .append(TAB)
                     .append(TAB)
-                    .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PolicyAttributeEditDialog_defaultValue)
+                    .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ConfigElementEditComposite_defaultValue)
                     .append(BLANK);
             sb.append(configElement.getValue()).append(NEWLINE);
             conditionalAppendGenerationDateAndTab(configElement.getPropertyValueContainer(), sb);

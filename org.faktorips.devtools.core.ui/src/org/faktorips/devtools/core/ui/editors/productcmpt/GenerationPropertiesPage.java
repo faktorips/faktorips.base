@@ -123,7 +123,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     private void createSections(Composite left, Composite right) {
         createCategorySections(left, right);
-        createExtensionFactorySections(left);
+        createExtensionFactorySections(left, right);
         createLinksSection(right);
     }
 
@@ -186,11 +186,11 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         }
     }
 
-    private void createExtensionFactorySections(Composite left) {
+    private void createExtensionFactorySections(Composite left, Composite right) {
         ExtensionPropertyControlFactory extFactory = new ExtensionPropertyControlFactory(getActiveGeneration()
                 .getClass());
         leftSections.addAll(extFactory.createSections(left, toolkit, getActiveGeneration(), Position.LEFT));
-        rightSections.addAll(extFactory.createSections(left, toolkit, getActiveGeneration(), Position.RIGHT));
+        rightSections.addAll(extFactory.createSections(right, toolkit, getActiveGeneration(), Position.RIGHT));
     }
 
     private void createLinksSection(Composite right) {
@@ -297,7 +297,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     private String getValidToString(IIpsObjectGeneration generation) {
         if (generation.getValidTo() == null) {
-            return Messages.ProductAttributesSection_valueGenerationValidToUnlimited;
+            return Messages.GenerationPropertiesPage_valueGenerationValidToUnlimited;
         } else {
             return IpsPlugin.getDefault().getIpsPreferences().getDateFormat().format(generation.getValidTo().getTime());
         }

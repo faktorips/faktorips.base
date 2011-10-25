@@ -57,10 +57,9 @@ public final class ConfigElementEditComposite extends
 
     @Override
     protected void setLayout() {
-        GridLayout clientLayout = new GridLayout(2, false);
-        clientLayout.marginHeight = 2;
-        clientLayout.marginWidth = 1;
-        setLayout(clientLayout);
+        super.setLayout();
+        GridLayout clientLayout = (GridLayout)getLayout();
+        clientLayout.numColumns = 2;
     }
 
     @Override
@@ -70,7 +69,7 @@ public final class ConfigElementEditComposite extends
     }
 
     private void createDefaultValueEditField(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
-        getToolkit().createLabel(this, Messages.PolicyAttributeEditDialog_defaultValue);
+        getToolkit().createLabel(this, Messages.ConfigElementEditComposite_defaultValue);
         ValueDatatype datatype = null;
         try {
             datatype = getProperty().findDatatype(getPropertyValue().getIpsProject());
@@ -118,7 +117,7 @@ public final class ConfigElementEditComposite extends
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                 range.getValueDatatype());
 
-        getToolkit().createLabel(this, Messages.DefaultsAndRangesSection_minMaxStepLabel);
+        getToolkit().createLabel(this, Messages.ConfigElementEditComposite_minMaxStepLabel);
         Composite rangeComposite = getToolkit().createGridComposite(this, 3, false, false);
 
         // Add margin so the borders of the text controls are shown
@@ -145,7 +144,7 @@ public final class ConfigElementEditComposite extends
     }
 
     private void createValueSetEditFieldForOtherThanRange(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
-        getToolkit().createLabel(this, Messages.PolicyAttributesSection_valueSet);
+        getToolkit().createLabel(this, Messages.ConfigElementEditComposite_valueSet);
         AnyValueSetControl valueSetControl = new AnyValueSetControl(this, getToolkit(), getPropertyValue(), getShell(),
                 getController());
         valueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());

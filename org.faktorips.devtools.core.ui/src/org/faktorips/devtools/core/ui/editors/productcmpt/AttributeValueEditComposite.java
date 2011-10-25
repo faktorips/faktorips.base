@@ -76,7 +76,7 @@ public final class AttributeValueEditComposite extends
     private void addNotChangingOverTimeControlDecoration(EditField<?> editField) {
         ControlDecoration controlDecoration = new ControlDecoration(editField.getControl(), SWT.LEFT | SWT.TOP);
         controlDecoration.setDescriptionText(NLS.bind(
-                Messages.AttributeValuesSection_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
+                Messages.AttributeValueEditComposite_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
                         .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
         controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
         controlDecoration.setMarginWidth(1);
