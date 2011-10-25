@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
@@ -58,8 +57,6 @@ public class ProductCmptPropertySection extends IpsSection {
 
     private final IProductCmptCategory category;
 
-    private final IProductCmptGeneration generation;
-
     private final List<IPropertyValue> propertyValues;
 
     /**
@@ -72,14 +69,13 @@ public class ProductCmptPropertySection extends IpsSection {
      */
     private Composite rootPane;
 
-    public ProductCmptPropertySection(IProductCmptCategory category, IProductCmptGeneration generation,
-            List<IPropertyValue> propertyValues, Composite parent, UIToolkit toolkit) {
+    public ProductCmptPropertySection(IProductCmptCategory category, List<IPropertyValue> propertyValues,
+            Composite parent, UIToolkit toolkit) {
 
         super(category.getId(), parent, category.isAtLeftPosition() ? GridData.FILL_BOTH : GridData.FILL_HORIZONTAL
                 | GridData.VERTICAL_ALIGN_FILL, toolkit);
 
         this.category = category;
-        this.generation = generation;
         this.propertyValues = propertyValues;
 
         uiMasterController = new CompositeUIController();
@@ -107,32 +103,41 @@ public class ProductCmptPropertySection extends IpsSection {
     }
 
     @Override
-    protected void initClientComposite(Composite client, UIToolkit toolkit) {
+    protected void initClientComposite(Composite parent, UIToolkit toolkit) {
+        setLayout(parent);
+        createRootPane(parent, toolkit);
+        paintBorders(toolkit);
+        createEditControls();
+        performRefresh();
+    }
+
+    private void setLayout(Composite parent) {
         GridLayout layout = new GridLayout(1, true);
         layout.marginWidth = 1;
         layout.marginHeight = 2;
-        client.setLayout(layout);
+        parent.setLayout(layout);
+    }
 
-        rootPane = toolkit.createLabelEditColumnComposite(client);
+    private void createRootPane(Composite parent, UIToolkit toolkit) {
+        rootPane = toolkit.createLabelEditColumnComposite(parent);
         rootPane.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL));
-        GridLayout workAreaLayout = (GridLayout)rootPane.getLayout();
-        workAreaLayout.marginHeight = 5;
-        workAreaLayout.marginWidth = 5;
+        GridLayout rootPaneLayout = (GridLayout)rootPane.getLayout();
+        rootPaneLayout.marginHeight = 5;
+        rootPaneLayout.marginWidth = 5;
+    }
 
+    private void paintBorders(UIToolkit toolkit) {
         /*
          * Following line forces the paint listener to draw a light grey border around the control.
          * Can only be understood by looking at the FormToolkit$PaintBorder class.
          */
         rootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
         toolkit.getFormToolkit().paintBordersFor(rootPane);
-
-        createEditControls();
-        uiMasterController.updateUI();
     }
 
     private void createEditControls() {
-        // Create a label and an edit composite for each property
         if (hasContentToDisplay()) {
+            // Create a label and an appropriate edit composite for each property value
             for (IPropertyValue propertyValue : propertyValues) {
                 createLabelAndEditComposite(propertyValue);
             }
@@ -149,6 +154,13 @@ public class ProductCmptPropertySection extends IpsSection {
     }
 
     private void createLabelAndEditComposite(IPropertyValue propertyValue) {
+        IProductCmptProperty property = findProperty(propertyValue);
+        Control label = createLabel(propertyValue, property);
+        EditPropertyValueComposite<?, ?> editComposite = createEditComposite(propertyValue, property);
+        verticallyAlignLabel(label, editComposite);
+    }
+
+    private IProductCmptProperty findProperty(IPropertyValue propertyValue) {
         IProductCmptProperty property = null;
         try {
             property = propertyValue.findProperty(propertyValue.getIpsProject());
@@ -156,16 +168,29 @@ public class ProductCmptPropertySection extends IpsSection {
             // Log exception, property remains null
             IpsPlugin.log(e);
         }
+        return property;
+    }
+
+    private Control createLabel(IPropertyValue propertyValue, IProductCmptProperty property) {
+        PropertyValueUIConfiguration propertyValueUI = PropertyValueUIConfiguration
+                .getValueByPropertyType(propertyValue.getPropertyType());
 
         Control label = null;
-        PropertyValueUI propertyValueUI = PropertyValueUI.getValueByPropertyType(propertyValue.getPropertyType());
         if (propertyValueUI.isLabelRequired()) {
-            label = createLabel(propertyValue);
+            label = propertyValueUI.createLabel(propertyValue, rootPane, getToolkit());
             // Use description of property as tooltip if available
             if (property != null) {
                 label.setToolTipText(IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(property));
             }
         }
+        return label;
+    }
+
+    private EditPropertyValueComposite<?, ?> createEditComposite(IPropertyValue propertyValue,
+            IProductCmptProperty property) {
+
+        PropertyValueUIConfiguration propertyValueUI = PropertyValueUIConfiguration
+                .getValueByPropertyType(propertyValue.getPropertyType());
 
         EditPropertyValueComposite<?, ?> editComposite = null;
         if (property != null) {
@@ -174,7 +199,10 @@ public class ProductCmptPropertySection extends IpsSection {
         } else {
             createEmptyComposite();
         }
+        return editComposite;
+    }
 
+    private void verticallyAlignLabel(Control label, EditPropertyValueComposite<?, ?> editComposite) {
         if (label != null && editComposite != null) {
             /*
              * Vertically indent the label so it does not stick at the very top of the composite.
@@ -187,33 +215,6 @@ public class ProductCmptPropertySection extends IpsSection {
             ((GridData)label.getLayoutData()).verticalIndent = ((GridLayout)editComposite.getLayout()).marginHeight
                     + topOfControlToLabelPixels;
         }
-    }
-
-    private Control createLabel(IPropertyValue propertyValue) {
-        if (propertyValue instanceof ITableContentUsage) {
-            return createHyperlink((ITableContentUsage)propertyValue);
-        }
-        String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(propertyValue);
-        return getToolkit().createLabel(rootPane, localizedCaption);
-    }
-
-    private Control createHyperlink(final ITableContentUsage tableContentUsage) {
-        String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(tableContentUsage);
-        Hyperlink hyperlink = getToolkit().createHyperlink(rootPane, localizedCaption);
-        hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
-            @Override
-            public void linkActivated(HyperlinkEvent event) {
-                try {
-                    ITableContents tableContents = tableContentUsage.findTableContents(generation.getIpsProject());
-                    if (tableContents != null) {
-                        IpsUIPlugin.getDefault().openEditor(tableContents.getIpsSrcFile());
-                    }
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                }
-            }
-        });
-        return hyperlink;
     }
 
     private void createEmptyComposite() {
@@ -230,7 +231,19 @@ public class ProductCmptPropertySection extends IpsSection {
         return !propertyValues.isEmpty();
     }
 
-    private static enum PropertyValueUI {
+    /**
+     * Configures the user interface for each kind of property value.
+     * <p>
+     * For each property value type, the following configurations are made:
+     * <ul>
+     * <li>Flag indicating whether a label is desired
+     * <li>Creation of the label
+     * <li>Creation of the edit composite
+     * </ul>
+     * 
+     * @see IPropertyValue
+     */
+    private static enum PropertyValueUIConfiguration {
 
         ATTRIBUTE_VALUE(true) {
             @Override
@@ -247,6 +260,31 @@ public class ProductCmptPropertySection extends IpsSection {
         },
 
         TABLE_CONTENT_USAGE(true) {
+            @Override
+            public Control createLabel(IPropertyValue propertyValue, Composite parent, UIToolkit toolkit) {
+                Hyperlink hyperlink = toolkit.createHyperlink(parent, IpsPlugin.getMultiLanguageSupport()
+                        .getLocalizedCaption(propertyValue));
+                addOpenEditorHyperlinkListener(propertyValue, hyperlink);
+                return hyperlink;
+            }
+
+            private void addOpenEditorHyperlinkListener(final IPropertyValue propertyValue, Hyperlink hyperlink) {
+                hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
+                    @Override
+                    public void linkActivated(HyperlinkEvent event) {
+                        try {
+                            ITableContents tableContents = ((ITableContentUsage)propertyValue)
+                                    .findTableContents(propertyValue.getIpsProject());
+                            if (tableContents != null) {
+                                IpsUIPlugin.getDefault().openEditor(tableContents.getIpsSrcFile());
+                            }
+                        } catch (CoreException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+            }
+
             @Override
             public EditPropertyValueComposite<?, ?> createEditComposite(IProductCmptProperty property,
                     IPropertyValue propertyValue,
@@ -302,7 +340,7 @@ public class ProductCmptPropertySection extends IpsSection {
             }
         };
 
-        public static PropertyValueUI getValueByPropertyType(ProductCmptPropertyType propertyType) {
+        public static PropertyValueUIConfiguration getValueByPropertyType(ProductCmptPropertyType propertyType) {
             switch (propertyType) {
                 case PRODUCT_CMPT_TYPE_ATTRIBUTE:
                     return ATTRIBUTE_VALUE;
@@ -320,12 +358,17 @@ public class ProductCmptPropertySection extends IpsSection {
 
         private final boolean labelRequired;
 
-        private PropertyValueUI(boolean labelRequired) {
+        private PropertyValueUIConfiguration(boolean labelRequired) {
             this.labelRequired = labelRequired;
         }
 
         public boolean isLabelRequired() {
             return labelRequired;
+        }
+
+        public Control createLabel(IPropertyValue propertyValue, Composite parent, UIToolkit toolkit) {
+            String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(propertyValue);
+            return toolkit.createLabel(parent, localizedCaption);
         }
 
         public abstract EditPropertyValueComposite<?, ?> createEditComposite(IProductCmptProperty property,

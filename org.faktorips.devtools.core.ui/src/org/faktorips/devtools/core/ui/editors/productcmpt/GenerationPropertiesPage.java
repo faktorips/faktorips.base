@@ -128,62 +128,88 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     }
 
     private void createCategorySections(Composite left, Composite right) {
-        // Determine categories
+        // Find product component type
         IProductCmptType productCmptType = null;
-        List<IProductCmptCategory> categories = new ArrayList<IProductCmptCategory>(4);
         try {
             productCmptType = getActiveGeneration().findProductCmptType(getActiveGeneration().getIpsProject());
-            if (productCmptType != null) {
-                categories.addAll(productCmptType.findProductCmptCategories(productCmptType.getIpsProject()));
-            }
         } catch (CoreException e) {
             /*
-             * If this kind of exception occurs, the categories could not be determined. Recover by
-             * not creating any sections for categories and log exception.
+             * The product component type could not be found. Recover by not creating any sections
+             * for categories and log exception.
              */
             IpsPlugin.log(e);
             return;
         }
 
+        // Determine categories
+        List<IProductCmptCategory> categories = new ArrayList<IProductCmptCategory>(4);
+        if (productCmptType != null) {
+            try {
+                categories.addAll(productCmptType.findProductCmptCategories(productCmptType.getIpsProject()));
+            } catch (CoreException e) {
+                /*
+                 * The categories could not be determined. Recover by not creating any sections for
+                 * categories and log exception.
+                 */
+                IpsPlugin.log(e);
+                return;
+            }
+        }
+
         // Create a section for each category
+        for (IProductCmptCategory category : categories) {
+            createSectionForCategory(category, productCmptType, left, right);
+        }
+    }
+
+    private void createSectionForCategory(IProductCmptCategory category,
+            IProductCmptType productCmptType,
+            Composite left,
+            Composite right) {
+
+        // Find the property values that match to the category's properties
+        List<IPropertyValue> propertyValues = findPropertyValuesForCategory(category, productCmptType);
+
+        // Create a new section for this category and attach it to the page
+        List<IpsSection> sections = category.isAtLeftPosition() ? leftSections : rightSections;
+        Composite parent = category.isAtLeftPosition() ? left : right;
+        IpsSection section = new ProductCmptPropertySection(category, propertyValues, parent, toolkit);
+        sections.add(section);
+    }
+
+    // TODO AW 25-10-2011: This should be moved to the core model
+    private List<IPropertyValue> findPropertyValuesForCategory(IProductCmptCategory category,
+            IProductCmptType productCmptType) {
+
+        // Determine the properties assigned to this category
+        List<IProductCmptProperty> categoryProperties = new ArrayList<IProductCmptProperty>();
+        try {
+            categoryProperties = category.findProductCmptProperties(productCmptType, getActiveGeneration()
+                    .getIpsProject());
+        } catch (CoreException e) {
+            /*
+             * The properties assigned to the category could not be determined. Recover by not
+             * displaying any properties for this category.
+             */
+            IpsPlugin.log(e);
+        }
+
+        // Collect all potential property values of the category
         List<IPropertyValue> allPropertyValues = new ArrayList<IPropertyValue>();
         allPropertyValues.addAll(getActiveGeneration().getAllPropertyValues());
         allPropertyValues.addAll(getActiveGeneration().getProductCmpt().getAllPropertyValues());
-        for (IProductCmptCategory category : categories) {
-            // Determine the properties assigned to this category
-            List<IProductCmptProperty> categoryProperties = new ArrayList<IProductCmptProperty>();
-            try {
-                categoryProperties = category.findProductCmptProperties(productCmptType, getActiveGeneration()
-                        .getIpsProject());
-            } catch (CoreException e) {
-                /*
-                 * If this kind of exception occurs, the properties assigned to the category could
-                 * not be determined. Recover by not displaying any properties for this category.
-                 * Instead, log the exception and continue to the next category.
-                 */
-                IpsPlugin.log(e);
-                continue;
-            }
 
-            // Find the property values corresponding to the category's properties
-            // TODO AW 20-10-2011: Can we solve this in a more elegant way?
-            List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
-            for (IProductCmptProperty property : categoryProperties) {
-                for (IPropertyValue propertyValue : allPropertyValues) {
-                    if (property.getProductCmptPropertyType().equals(propertyValue.getPropertyType())
-                            && property.getPropertyName().equals(propertyValue.getPropertyName())) {
-                        propertyValues.add(propertyValue);
-                    }
+        // Find the property values corresponding to the category's properties
+        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
+        for (IProductCmptProperty property : categoryProperties) {
+            for (IPropertyValue propertyValue : allPropertyValues) {
+                if (property.getProductCmptPropertyType().equals(propertyValue.getPropertyType())
+                        && property.getPropertyName().equals(propertyValue.getPropertyName())) {
+                    propertyValues.add(propertyValue);
                 }
             }
-
-            // Create a new section for this category and attach it to the page
-            List<IpsSection> sections = category.isAtLeftPosition() ? leftSections : rightSections;
-            Composite parent = category.isAtLeftPosition() ? left : right;
-            IpsSection section = new ProductCmptPropertySection(category, getActiveGeneration(), propertyValues,
-                    parent, toolkit);
-            sections.add(section);
         }
+        return propertyValues;
     }
 
     private void createExtensionFactorySections(Composite left, Composite right) {
