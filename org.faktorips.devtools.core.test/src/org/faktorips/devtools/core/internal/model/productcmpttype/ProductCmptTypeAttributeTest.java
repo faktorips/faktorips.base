@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import javax.xml.transform.TransformerException;
@@ -96,6 +97,11 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         productAttribute.setCategory("foo");
         assertEquals("foo", productAttribute.getCategory());
         assertPropertyChangedEvent(productAttribute, IPolicyCmptTypeAttribute.PROPERTY_CATEGORY, "", "foo");
+    }
+
+    @Test
+    public void testIsPolicyCmptTypeProperty() {
+        assertFalse(productAttribute.isPolicyCmptTypeProperty());
     }
 
 }

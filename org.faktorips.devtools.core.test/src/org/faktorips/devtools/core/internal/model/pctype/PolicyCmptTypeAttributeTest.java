@@ -366,4 +366,9 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertPropertyChangedEvent(attribute, IPolicyCmptTypeAttribute.PROPERTY_CATEGORY, "", "foo");
     }
 
+    @Test
+    public void testIsPolicyCmptTypeProperty() {
+        assertTrue(attribute.isPolicyCmptTypeProperty());
+    }
+
 }

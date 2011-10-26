@@ -52,7 +52,6 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.FormulaSignatureFinder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference.SourceType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -862,8 +861,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private IProductCmptPropertyReference newProductCmptPropertyReference(IProductCmptProperty productCmptProperty) {
         IProductCmptPropertyReference reference = propertyReferences.newPart();
-        reference.setReferencedPartId(productCmptProperty.getId());
-        reference.setSourceType(SourceType.getValueByProperty(productCmptProperty));
+        reference.setReferencedProperty(productCmptProperty);
         return reference;
     }
 

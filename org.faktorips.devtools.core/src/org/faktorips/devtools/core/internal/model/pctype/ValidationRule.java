@@ -518,4 +518,9 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         return getPolicyCmptType().findProductCmptType(ipsProject);
     }
 
+    @Override
+    public boolean isPolicyCmptTypeProperty() {
+        return true;
+    }
+
 }

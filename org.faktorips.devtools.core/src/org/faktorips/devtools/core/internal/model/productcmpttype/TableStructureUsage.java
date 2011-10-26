@@ -331,6 +331,11 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         return getProductCmptType();
     }
 
+    @Override
+    public boolean isPolicyCmptTypeProperty() {
+        return false;
+    }
+
     public class TableStructureReference extends AtomicIpsObjectPart {
 
         private String tableStructure = ""; //$NON-NLS-1$

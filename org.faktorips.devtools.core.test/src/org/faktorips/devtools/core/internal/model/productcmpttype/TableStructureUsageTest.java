@@ -233,4 +233,9 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         assertPropertyChangedEvent(tableStructureUsage, IPolicyCmptTypeAttribute.PROPERTY_CATEGORY, "", "foo");
     }
 
+    @Test
+    public void testIsPolicyCmptTypeProperty() {
+        assertFalse(tableStructureUsage.isPolicyCmptTypeProperty());
+    }
+
 }

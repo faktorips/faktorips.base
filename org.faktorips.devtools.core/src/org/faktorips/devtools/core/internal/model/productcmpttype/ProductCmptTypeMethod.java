@@ -209,6 +209,11 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         return getProductCmptType();
     }
 
+    @Override
+    public boolean isPolicyCmptTypeProperty() {
+        return false;
+    }
+
     /**
      * Searches for a formula in the supertype hierarchy with the same name than the formula name of
      * this formula. Stops searching when the first formula method is found that meets this

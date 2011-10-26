@@ -1441,6 +1441,11 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase implemen
         assertEquals(newValue, lastContentChangeEvent.getPropertyChangeEvent().getNewValue());
     }
 
+    protected final void assertWholeContentChangedEvent(IIpsSrcFile ipsSrcFile) {
+        assertEquals(ipsSrcFile, lastContentChangeEvent.getIpsSrcFile());
+        assertEquals(ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED, lastContentChangeEvent.getEventType());
+    }
+
     private static class TestBuilder extends AbstractArtefactBuilder {
 
         public TestBuilder() throws CoreException {

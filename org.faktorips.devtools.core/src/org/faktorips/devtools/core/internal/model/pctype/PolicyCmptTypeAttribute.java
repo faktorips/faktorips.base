@@ -481,4 +481,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return getPolicyCmptType().findProductCmptType(ipsProject);
     }
 
+    @Override
+    public boolean isPolicyCmptTypeProperty() {
+        return true;
+    }
+
 }

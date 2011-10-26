@@ -299,4 +299,9 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertPropertyChangedEvent(rule, IPolicyCmptTypeAttribute.PROPERTY_CATEGORY, "", "foo");
     }
 
+    @Test
+    public void testIsPolicyCmptTypeProperty() {
+        assertTrue(rule.isPolicyCmptTypeProperty());
+    }
+
 }

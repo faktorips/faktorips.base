@@ -15,8 +15,8 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -31,6 +31,10 @@ import org.w3c.dom.Element;
  */
 public final class ProductCmptPropertyReference extends AtomicIpsObjectPart implements IProductCmptPropertyReference {
 
+    private static final String XML_ATTRIBUTE_REFERENCED_PART_ID = "referencedPartId"; //$NON-NLS-1$
+
+    private static final String XML_ATTRIBUTE_SOURCE_TYPE = "sourceType"; //$NON-NLS-1$
+
     private String referencedPartId;
 
     private SourceType sourceType;
@@ -40,42 +44,41 @@ public final class ProductCmptPropertyReference extends AtomicIpsObjectPart impl
     }
 
     @Override
-    public void setReferencedPartId(String referencedPartId) {
-        String oldValue = this.referencedPartId;
-        this.referencedPartId = referencedPartId;
-        valueChanged(oldValue, referencedPartId, PROPERTY_REFERENCED_PART_ID);
+    public void setReferencedProperty(IProductCmptProperty property) {
+        setReferencedPartId(property.getId());
+        setSourceType(SourceType.getValueByProperty(property));
+        objectHasChanged(ContentChangeEvent.newWholeContentChangedEvent(getIpsSrcFile()));
     }
 
-    @Override
+    public void setReferencedPartId(String referencedPartId) {
+        this.referencedPartId = referencedPartId;
+    }
+
     public String getReferencedPartId() {
         return referencedPartId;
     }
 
-    @Override
     public void setSourceType(SourceType sourceType) {
-        SourceType oldValue = this.sourceType;
         this.sourceType = sourceType;
-        valueChanged(oldValue, sourceType, PROPERTY_SOURCE_TYPE);
     }
 
-    @Override
     public SourceType getSourceType() {
         return sourceType;
     }
 
     @Override
     public boolean isReferencingProperty(IProductCmptProperty property) {
+        if ((sourceType == SourceType.PRODUCT && property.isPolicyCmptTypeProperty())
+                || (sourceType == SourceType.POLICY && !property.isPolicyCmptTypeProperty())) {
+            return false;
+        }
         return getReferencedPartId().equals(property.getId());
     }
 
     @Override
     public IProductCmptProperty findProductCmptProperty(IIpsProject ipsProject) throws CoreException {
         for (IProductCmptProperty property : getProductCmptType().findProductCmptProperties(false, ipsProject)) {
-            if ((property.getType() instanceof IPolicyCmptType && sourceType == SourceType.PRODUCT)
-                    || property.getType() instanceof IProductCmptType && sourceType == SourceType.POLICY) {
-                continue;
-            }
-            if (referencedPartId.equals(property.getId())) {
+            if (isReferencingProperty(property)) {
                 return property;
             }
         }
@@ -84,8 +87,8 @@ public final class ProductCmptPropertyReference extends AtomicIpsObjectPart impl
 
     @Override
     protected void initFromXml(Element element, String id) {
-        referencedPartId = element.getAttribute(PROPERTY_REFERENCED_PART_ID);
-        sourceType = SourceType.getValueByIdentifier(element.getAttribute(PROPERTY_SOURCE_TYPE));
+        referencedPartId = element.getAttribute(XML_ATTRIBUTE_REFERENCED_PART_ID);
+        sourceType = SourceType.getValueByIdentifier(element.getAttribute(XML_ATTRIBUTE_SOURCE_TYPE));
 
         super.initFromXml(element, id);
     }
@@ -94,8 +97,8 @@ public final class ProductCmptPropertyReference extends AtomicIpsObjectPart impl
     protected final void propertiesToXml(Element element) {
         super.propertiesToXml(element);
 
-        element.setAttribute(PROPERTY_REFERENCED_PART_ID, referencedPartId);
-        element.setAttribute(PROPERTY_SOURCE_TYPE, sourceType.getIdentifier());
+        element.setAttribute(XML_ATTRIBUTE_REFERENCED_PART_ID, referencedPartId);
+        element.setAttribute(XML_ATTRIBUTE_SOURCE_TYPE, sourceType.identifier);
     }
 
     @Override
@@ -105,6 +108,33 @@ public final class ProductCmptPropertyReference extends AtomicIpsObjectPart impl
 
     private IProductCmptType getProductCmptType() {
         return (IProductCmptType)getParent();
+    }
+
+    public static enum SourceType {
+
+        POLICY("policy"), //$NON-NLS-1$
+
+        PRODUCT("product"); //$NON-NLS-1$
+
+        private static SourceType getValueByProperty(IProductCmptProperty property) {
+            return property.isPolicyCmptTypeProperty() ? POLICY : PRODUCT;
+        }
+
+        private static SourceType getValueByIdentifier(String identifier) {
+            for (SourceType type : values()) {
+                if (type.identifier.equals(identifier)) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
+        private final String identifier;
+
+        private SourceType(String identifier) {
+            this.identifier = identifier;
+        }
+
     }
 
 }

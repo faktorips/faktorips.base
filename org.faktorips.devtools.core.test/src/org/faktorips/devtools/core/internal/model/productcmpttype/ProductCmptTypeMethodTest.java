@@ -274,4 +274,9 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertPropertyChangedEvent(method, IPolicyCmptTypeAttribute.PROPERTY_CATEGORY, "", "foo");
     }
 
+    @Test
+    public void testIsPolicyCmptTypeProperty() {
+        assertFalse(method.isPolicyCmptTypeProperty());
+    }
+
 }

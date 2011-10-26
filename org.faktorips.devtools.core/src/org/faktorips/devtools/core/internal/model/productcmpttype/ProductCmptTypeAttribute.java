@@ -229,4 +229,9 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         return getProductCmptType();
     }
 
+    @Override
+    public boolean isPolicyCmptTypeProperty() {
+        return false;
+    }
+
 }

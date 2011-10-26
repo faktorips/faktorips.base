@@ -81,4 +81,10 @@ public interface IProductCmptProperty extends IIpsObjectPart, IDescribedElement,
      */
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
+    /**
+     * Returns whether this property's parent is a policy component type instead of a product
+     * component type.
+     */
+    public boolean isPolicyCmptTypeProperty();
+
 }
