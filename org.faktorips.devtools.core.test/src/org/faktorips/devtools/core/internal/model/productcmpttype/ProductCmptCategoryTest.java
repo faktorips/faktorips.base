@@ -452,6 +452,12 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         category.moveProductCmptProperties(Arrays.asList(property1, property2), true);
     }
 
+    /**
+     * Scenario: The first property / last property is moved up respectively down, together with
+     * another property.
+     * <p>
+     * Expected: No move should be performed and false should be returned.
+     */
     @Test
     public void testMoveProductCmptPropertiesDontMoveIfElementAtLimit() throws CoreException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("p1");

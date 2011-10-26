@@ -14,14 +14,19 @@
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -121,8 +126,91 @@ public final class CategorySection extends IpsSection {
 
         @Override
         protected boolean createButtons(Composite buttonComposite, UIToolkit toolkit) {
-            // TODO Auto-generated method stub
-            return false;
+            createMoveUpButton(buttonComposite, toolkit);
+            createMoveDownButton(buttonComposite, toolkit);
+            createChangeCategoryButton(buttonComposite, toolkit);
+            return true;
+        }
+
+        private void createMoveUpButton(Composite buttonComposite, UIToolkit toolkit) {
+            Button upButton = toolkit.createButton(buttonComposite, Messages.CategorySection_buttonUp);
+            upButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+            upButton.addSelectionListener(new SelectionListener() {
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    moveParts(true);
+                }
+
+                @Override
+                public void widgetDefaultSelected(SelectionEvent e) {
+                    // Nothing to do
+                }
+            });
+        }
+
+        private void createMoveDownButton(Composite buttonComposite, UIToolkit toolkit) {
+            Button downButton = toolkit.createButton(buttonComposite, Messages.CategorySection_buttonDown);
+            downButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+            downButton.addSelectionListener(new SelectionListener() {
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    moveParts(false);
+                }
+
+                @Override
+                public void widgetDefaultSelected(SelectionEvent e) {
+                    // Nothing to do
+                }
+            });
+        }
+
+        private void createChangeCategoryButton(Composite buttonComposite, UIToolkit toolkit) {
+            Button changeCategoryButton = toolkit.createButton(buttonComposite,
+                    Messages.CategorySection_buttonChangeCategory);
+            changeCategoryButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
+                    | GridData.VERTICAL_ALIGN_BEGINNING));
+        }
+
+        private void moveParts(boolean up) {
+            if (getTableViewer().getSelection().isEmpty()) {
+                return;
+            }
+
+            boolean moved = false;
+            try {
+                moved = category.moveProductCmptProperties(getSelectedProperties(), up);
+            } catch (CoreException e) {
+                // Recover by not moving any elements
+                IpsPlugin.log(e);
+            }
+
+            int[] newSelection = getTableViewer().getTable().getSelectionIndices();
+            if (moved) {
+                int modifier = up ? -1 : 1;
+                for (int i = 0; i < newSelection.length; i++) {
+                    newSelection[i] = newSelection[i] + modifier;
+                }
+
+                getTableViewer().refresh();
+                getTableViewer().getTable().setSelection(newSelection);
+                getTableViewer().getControl().setFocus();
+
+                refresh();
+            }
+        }
+
+        private List<IProductCmptProperty> getSelectedProperties() {
+            List<IProductCmptProperty> selectedProperties = new ArrayList<IProductCmptProperty>();
+            IStructuredSelection structuredSelection = (IStructuredSelection)getTableViewer().getSelection();
+            Iterator<?> iterator = structuredSelection.iterator();
+            while (iterator.hasNext()) {
+                selectedProperties.add((IProductCmptProperty)iterator.next());
+            }
+            return selectedProperties;
+        }
+
+        private TableViewer getTableViewer() {
+            return (TableViewer)getViewer();
         }
 
         @Override

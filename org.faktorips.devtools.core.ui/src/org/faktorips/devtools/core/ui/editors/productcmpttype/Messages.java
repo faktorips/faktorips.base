@@ -122,5 +122,8 @@ public class Messages extends NLS {
 
     public static String CategoryPage_tagPageName;
     public static String ProductCmptCategoriesSection_sectionTitle;
+    public static String CategorySection_buttonUp;
+    public static String CategorySection_buttonDown;
+    public static String CategorySection_buttonChangeCategory;
 
 }
