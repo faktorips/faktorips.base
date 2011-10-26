@@ -70,7 +70,8 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * Validation message code to indicate that the name given to this category is already used for
      * another category in the scope of the product component type's hierarchy.
      */
-    public final static String MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY = "NameAlreadyUsedInTypeHierarchy"; //$NON-NLS-1$
+    public final static String MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY = MSGCODE_PREFIX
+            + "NameAlreadyUsedInTypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that at least one other category within the product
