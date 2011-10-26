@@ -1,0 +1,94 @@
+/*******************************************************************************
+ * Copyright (c) 2005-2011 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ *******************************************************************************/
+
+package org.faktorips.devtools.core.ui.editors.productcmpttype;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.forms.IpsSection;
+
+/**
+ * TODO AW
+ * 
+ * @author Alexander Weickmann
+ */
+public final class CategoryCompositionSection extends IpsSection {
+
+    private final IProductCmptType productCmptType;
+
+    public CategoryCompositionSection(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
+        super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+        this.productCmptType = productCmptType;
+        initControls();
+    }
+
+    @Override
+    protected String getSectionTitle() {
+        return Messages.ProductCmptCategoriesSection_sectionTitle;
+    }
+
+    @Override
+    protected void initClientComposite(Composite client, UIToolkit toolkit) {
+        setLayout(client);
+        Composite left = createColumnComposite(client);
+        Composite right = createColumnComposite(client);
+        createCategorySections(left, right);
+    }
+
+    private void setLayout(Composite parent) {
+        GridLayout layout = new GridLayout(2, true);
+        layout.marginWidth = 1;
+        layout.marginHeight = 2;
+        parent.setLayout(layout);
+    }
+
+    private Composite createColumnComposite(Composite parent) {
+        return getToolkit().createGridComposite(parent, 1, true, true);
+    }
+
+    private void createCategorySections(Composite left, Composite right) {
+        // Determine categories
+        List<IProductCmptCategory> categories = new ArrayList<IProductCmptCategory>();
+        try {
+            categories.addAll(productCmptType.findProductCmptCategories(productCmptType.getIpsProject()));
+        } catch (CoreException e) {
+            // Recover by not displaying any categories
+            IpsPlugin.log(e);
+        }
+
+        // Create a section for each category
+        for (IProductCmptCategory category : categories) {
+            Composite parent = category.isAtLeftPosition() ? left : right;
+            new CategorySection(category, productCmptType, parent, getToolkit());
+        }
+    }
+
+    // TODO AW Create toolbar
+
+    @Override
+    protected void performRefresh() {
+        // TODO Auto-generated method stub
+
+    }
+
+}

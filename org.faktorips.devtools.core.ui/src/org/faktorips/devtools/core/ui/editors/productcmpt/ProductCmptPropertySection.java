@@ -231,6 +231,11 @@ public class ProductCmptPropertySection extends IpsSection {
         return !propertyValues.isEmpty();
     }
 
+    @Override
+    protected boolean isDisplayNumberOfElementsInSectionTitle() {
+        return true;
+    }
+
     /**
      * Configures the user interface for each kind of property value.
      * <p>

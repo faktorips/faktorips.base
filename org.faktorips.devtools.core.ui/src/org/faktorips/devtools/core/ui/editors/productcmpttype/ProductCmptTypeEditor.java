@@ -35,6 +35,7 @@ public class ProductCmptTypeEditor extends TypeEditor implements IModelDescripti
     @Override
     protected void addAllInOneSinglePage() throws PartInitException {
         addPage(new ProductCmptTypeStructurePage(this, false));
+        addPage(new CategoryPage(this));
         addPage(new CustomIconPage(this));
     }
 
@@ -42,6 +43,7 @@ public class ProductCmptTypeEditor extends TypeEditor implements IModelDescripti
     protected void addSplittedInMorePages() throws PartInitException {
         addPage(new ProductCmptTypeStructurePage(this, true));
         addPage(new ProductCmptTypeBehaviourPage(this));
+        addPage(new CategoryPage(this));
         addPage(new CustomIconPage(this));
     }
 
@@ -49,4 +51,5 @@ public class ProductCmptTypeEditor extends TypeEditor implements IModelDescripti
     public IPage createModelDescriptionPage() throws CoreException {
         return new ProductCmptTypeDescriptionPage((IProductCmptType)getIpsObject());
     }
+
 }

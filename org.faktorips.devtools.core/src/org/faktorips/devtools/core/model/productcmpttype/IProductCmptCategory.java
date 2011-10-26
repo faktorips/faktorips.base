@@ -16,7 +16,9 @@ package org.faktorips.devtools.core.model.productcmpttype;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -41,7 +43,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  * 
  * @author Alexander Weickmann
  */
-public interface IProductCmptCategory extends IIpsObjectPart {
+public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, IDescribedElement {
 
     public final static String XML_TAG_NAME = "Category"; //$NON-NLS-1$
 

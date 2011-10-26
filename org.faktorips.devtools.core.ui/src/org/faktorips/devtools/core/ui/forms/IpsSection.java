@@ -202,10 +202,10 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
      * Subclasses should override this method in order to state whether the number of elements
      * within this section should be displayed behind the section title.
      * <p>
-     * The default implementation always returns true.
+     * The default implementation always returns false.
      */
     protected boolean isDisplayNumberOfElementsInSectionTitle() {
-        return true;
+        return false;
     }
 
     /**

@@ -120,4 +120,7 @@ public class Messages extends NLS {
     public static String TblsStructureUsageEditDialog_title;
     public static String TblsStructureUsageEditDialog_upButton;
 
+    public static String CategoryPage_tagPageName;
+    public static String ProductCmptCategoriesSection_sectionTitle;
+
 }
