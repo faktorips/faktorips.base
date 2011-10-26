@@ -26,18 +26,16 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
 /**
  * Used to arrange {@link IProductCmptProperty} into groups that make more sense to the insurance
- * department than a technical arrangement. For example, a category called
- * <em>premium computation</em> including a <em>premium table</em> might be created. Prior to this
- * feature, the <em>premium table</em> would be automatically assigned to the
- * <em>tables and formulas</em> section.
+ * department than a technical arrangement.
+ * <p>
+ * For example, a category called <em>premium computation</em> including a <em>premium table</em>
+ * might be created. Prior to this feature, the <em>premium table</em> would be automatically
+ * assigned to the <em>tables and formulas</em> section.
  * <p>
  * A category can be marked to be the <em>default category</em> for each type of
  * {@link IProductCmptProperty}. New parts of that property type will then automatically be
  * referenced by the corresponding default category. Of course, the parts can still be moved to
  * other categories by the user.
- * <p>
- * Furthermore, a category can be marked to be inherited from the supertype. In this case, a
- * category with the same name must be found in the supertype.
  * 
  * @since 3.6
  * 
