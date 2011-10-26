@@ -318,22 +318,37 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         property.setCategory(superSuperCategory.getName());
 
         List<IProductCmptProperty> superSuperProductTypeProperties = superSuperCategory.findProductCmptProperties(
-                superSuperProductType, ipsProject);
+                superSuperProductType, true, ipsProject);
         assertEquals(superSuperProperty, superSuperProductTypeProperties.get(0));
         assertEquals(1, superSuperProductTypeProperties.size());
 
         List<IProductCmptProperty> superProductTypeProperties = superSuperCategory.findProductCmptProperties(
-                superProductType, ipsProject);
+                superProductType, true, ipsProject);
         assertEquals(superSuperProperty, superProductTypeProperties.get(0));
         assertEquals(superProperty, superProductTypeProperties.get(1));
         assertEquals(2, superProductTypeProperties.size());
 
         List<IProductCmptProperty> productTypeProperties = superSuperCategory.findProductCmptProperties(productType,
-                ipsProject);
+                true, ipsProject);
         assertEquals(superSuperProperty, productTypeProperties.get(0));
         assertEquals(superProperty, productTypeProperties.get(1));
         assertEquals(property, productTypeProperties.get(2));
         assertEquals(3, productTypeProperties.size());
+    }
+
+    @Test
+    public void testFindProductCmptPropertiesNotSearchingSupertypeHierarchy() throws CoreException {
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
+        IProductCmptCategory superCategory = superProductType.newProductCmptCategory("superCategory");
+
+        IProductCmptProperty superProperty = superProductType.newProductCmptTypeAttribute("superProperty");
+        superProperty.setCategory(superCategory.getName());
+        IProductCmptProperty property = productType.newProductCmptTypeAttribute("property");
+        property.setCategory(superCategory.getName());
+
+        List<IProductCmptProperty> properties = superCategory.findProductCmptProperties(productType, false, ipsProject);
+        assertEquals(property, properties.get(0));
+        assertEquals(1, properties.size());
     }
 
     @Test
@@ -342,7 +357,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
                 .findDefaultCategoryForProductCmptTypeAttributes(ipsProject);
         IProductCmptProperty attribute = productType.newProductCmptTypeAttribute("foo");
 
-        assertEquals(attribute, defaultAttributeCategory.findProductCmptProperties(productType, ipsProject).get(0));
+        assertEquals(attribute,
+                defaultAttributeCategory.findProductCmptProperties(productType, false, ipsProject).get(0));
     }
 
     @Test
@@ -390,7 +406,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
         boolean moved1 = category.moveProductCmptProperties(Arrays.asList(superProperty2), true);
         boolean moved2 = category.moveProductCmptProperties(Arrays.asList(property3, property2), true);
-        List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, ipsProject);
+        List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, true, ipsProject);
 
         assertTrue(moved1);
         assertTrue(moved2);
@@ -446,14 +462,14 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         property3.setCategory(CATEGORY_NAME);
 
         assertFalse(category.moveProductCmptProperties(Arrays.asList(property1, property2), true));
-        assertEquals(property1, category.findProductCmptProperties(productType, ipsProject).get(0));
-        assertEquals(property2, category.findProductCmptProperties(productType, ipsProject).get(1));
-        assertEquals(property3, category.findProductCmptProperties(productType, ipsProject).get(2));
+        assertEquals(property1, category.findProductCmptProperties(productType, false, ipsProject).get(0));
+        assertEquals(property2, category.findProductCmptProperties(productType, false, ipsProject).get(1));
+        assertEquals(property3, category.findProductCmptProperties(productType, false, ipsProject).get(2));
 
         assertFalse(category.moveProductCmptProperties(Arrays.asList(property2, property3), false));
-        assertEquals(property1, category.findProductCmptProperties(productType, ipsProject).get(0));
-        assertEquals(property2, category.findProductCmptProperties(productType, ipsProject).get(1));
-        assertEquals(property3, category.findProductCmptProperties(productType, ipsProject).get(2));
+        assertEquals(property1, category.findProductCmptProperties(productType, false, ipsProject).get(0));
+        assertEquals(property2, category.findProductCmptProperties(productType, false, ipsProject).get(1));
+        assertEquals(property3, category.findProductCmptProperties(productType, false, ipsProject).get(2));
     }
 
     private IProductCmptType createSuperProductType(IProductCmptType productType, String prefix) throws CoreException {

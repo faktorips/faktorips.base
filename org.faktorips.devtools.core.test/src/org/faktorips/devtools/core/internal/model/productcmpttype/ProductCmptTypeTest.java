@@ -831,7 +831,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         productCmptType = newProductCmptType(ipsProject, "Copy");
         productCmptType.initFromXml(xmlElement);
 
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInReferencedOrder(ipsProject);
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInReferencedOrder(false,
+                ipsProject);
         assertEquals(property2.getName(), properties.get(0).getName());
         assertEquals(property1.getName(), properties.get(1).getName());
         assertEquals(property3.getName(), properties.get(2).getName());
@@ -854,7 +855,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         // Re-create the property to test whether it is listed at the end again
         property2 = productCmptType.newProductCmptTypeAttribute("p2");
 
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInReferencedOrder(ipsProject);
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInReferencedOrder(false,
+                ipsProject);
         assertEquals(property3.getName(), properties.get(0).getName());
         assertEquals(property1.getName(), properties.get(1).getName());
         assertEquals(property2.getName(), properties.get(2).getName());

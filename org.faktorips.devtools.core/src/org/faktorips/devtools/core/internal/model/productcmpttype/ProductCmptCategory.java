@@ -63,12 +63,13 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
     }
 
     @Override
-    public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType, IIpsProject ipsProject)
-            throws CoreException {
+    public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType,
+            boolean searchSupertypeHierarchy,
+            IIpsProject ipsProject) throws CoreException {
 
         List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
-        for (IProductCmptProperty property : ((ProductCmptType)contextType)
-                .findProductCmptPropertiesInReferencedOrder(ipsProject)) {
+        for (IProductCmptProperty property : ((ProductCmptType)contextType).findProductCmptPropertiesInReferencedOrder(
+                searchSupertypeHierarchy, ipsProject)) {
             if (property.getCategory().equals(name)
                     || (property.getCategory().isEmpty() && isDefaultFor(property.getProductCmptPropertyType()))) {
                 properties.add(property);
@@ -89,7 +90,7 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
 
         // Find the property values corresponding to the category's properties
         List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
-        for (IProductCmptProperty property : findProductCmptProperties(contextType, ipsProject)) {
+        for (IProductCmptProperty property : findProductCmptProperties(contextType, true, ipsProject)) {
             for (IPropertyValue propertyValue : allPropertyValues) {
                 if (property.getProductCmptPropertyType().equals(propertyValue.getPropertyType())
                         && property.getPropertyName().equals(propertyValue.getPropertyName())) {

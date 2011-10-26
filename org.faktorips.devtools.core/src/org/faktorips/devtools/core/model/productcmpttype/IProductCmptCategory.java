@@ -133,12 +133,15 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * 
      * @param contextType The {@link IProductCmptType} to start the search from; properties assigned
      *            by {@link IProductCmptType}s below the context type are not returned
+     * @param searchSupertypeHierarchy Flag indicating whether the supertype hierarchy shall be
+     *            searched as well
      * @param ipsProject The {@link IIpsProject} to use for the search
      * 
      * @throws CoreException If an error occurs during the search
      */
-    public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType, IIpsProject ipsProject)
-            throws CoreException;
+    public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType,
+            boolean searchSupertypeHierarchy,
+            IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns a list containing the property values corresponding to the product component

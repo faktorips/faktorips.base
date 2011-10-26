@@ -96,7 +96,8 @@ public final class CategorySection extends IpsSection {
                 public Object[] getElements(Object inputElement) {
                     List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
                     try {
-                        properties.addAll(category.findProductCmptProperties(contextType, contextType.getIpsProject()));
+                        properties.addAll(category.findProductCmptProperties(contextType, false,
+                                contextType.getIpsProject()));
                     } catch (CoreException e) {
                         // Recover by not displaying any properties
                         IpsPlugin.log(e);

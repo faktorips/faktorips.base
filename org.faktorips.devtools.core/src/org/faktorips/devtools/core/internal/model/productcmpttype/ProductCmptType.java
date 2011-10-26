@@ -877,10 +877,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return !Arrays.equals(indexes, newIndexes);
     }
 
-    List<IProductCmptProperty> findProductCmptPropertiesInReferencedOrder(final IIpsProject ipsProject)
-            throws CoreException {
+    List<IProductCmptProperty> findProductCmptPropertiesInReferencedOrder(boolean searchSupertypeHierarchy,
+            final IIpsProject ipsProject) throws CoreException {
 
-        List<IProductCmptProperty> properties = findProductCmptProperties(true, ipsProject);
+        List<IProductCmptProperty> properties = findProductCmptProperties(searchSupertypeHierarchy, ipsProject);
         Collections.sort(properties, new Comparator<IProductCmptProperty>() {
             @Override
             public int compare(IProductCmptProperty o1, IProductCmptProperty o2) {
