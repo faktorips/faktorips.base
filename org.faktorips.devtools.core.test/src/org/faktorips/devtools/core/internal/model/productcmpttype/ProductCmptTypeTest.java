@@ -825,7 +825,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("p1");
         IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("p2");
         IProductCmptProperty property3 = productCmptType.newProductCmptTypeAttribute("p3");
-        productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property2), true);
+        productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property2),
+                Arrays.asList(property1, property2, property3), true);
 
         Element xmlElement = productCmptType.toXml(newDocument());
         productCmptType = newProductCmptType(ipsProject, "Copy");
@@ -843,7 +844,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("p1");
         IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("p2");
         IProductCmptProperty property3 = productCmptType.newProductCmptTypeAttribute("p3");
-        productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property3, property2), true);
+        productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property3, property2),
+                Arrays.asList(property1, property2, property3), true);
 
         // Make reference obsolete by deleting the property
         property2.delete();
@@ -1463,6 +1465,112 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         assertEquals(superSuperProductCmptType.getProductCmptCategory(DEFAULT_CATEGORY_NAME_VALIDATION_RULES),
                 productCmptType.findDefaultCategoryForValidationRules(ipsProject));
+    }
+
+    @Test
+    public void testMoveProductCmptPropertyReferences_MoveUp() throws CoreException {
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("category");
+
+        IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("property1");
+        property1.setCategory(category.getName());
+        IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("property2");
+        property2.setCategory(category.getName());
+        IProductCmptProperty property3 = productCmptType.newProductCmptTypeAttribute("property3");
+        property3.setCategory(category.getName());
+
+        assertTrue(productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property3, property2),
+                Arrays.asList(property1, property2, property3), true));
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInReferencedOrder(false,
+                ipsProject);
+        assertEquals(property2, properties.get(0));
+        assertEquals(property3, properties.get(1));
+        assertEquals(property1, properties.get(2));
+    }
+
+    @Test
+    public void testMoveProductCmptPropertyReferences_MoveDown() throws CoreException {
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("category");
+
+        IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("property1");
+        property1.setCategory(category.getName());
+        IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("property2");
+        property2.setCategory(category.getName());
+        IProductCmptProperty property3 = productCmptType.newProductCmptTypeAttribute("property3");
+        property3.setCategory(category.getName());
+
+        assertTrue(productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property1, property2),
+                Arrays.asList(property1, property2, property3), false));
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInReferencedOrder(false,
+                ipsProject);
+        assertEquals(property3, properties.get(0));
+        assertEquals(property1, properties.get(1));
+        assertEquals(property2, properties.get(2));
+    }
+
+    /**
+     * <strong>Subject:</strong><br>
+     * {@linkplain ProductCmptType#moveProductCmptPropertyReferences(List, List, boolean)}
+     * <p>
+     * <strong>Scenario:</strong><br>
+     * A reference is moved up, but in-between the logically affected properties, a property of
+     * another category is located.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The move operation should skip the in-between reference, so that only properties belonging to
+     * a category are swapped with each other, and return true.
+     */
+    @Test
+    public void testMoveProductCmptPropertyReferences_PropertyOfOtherCategoryInBetweenOnMoveUp() throws CoreException {
+        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
+        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
+
+        IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("property1");
+        property1.setCategory(category1.getName());
+        IProductCmptProperty inBetweenProperty = productCmptType.newProductCmptTypeAttribute("inBetweenProperty");
+        inBetweenProperty.setCategory(category2.getName());
+        IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("property2");
+        property2.setCategory(category1.getName());
+
+        assertTrue(productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property2),
+                Arrays.asList(property1, property2), true));
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInReferencedOrder(false,
+                ipsProject);
+        assertEquals(property2, properties.get(0));
+        assertEquals(inBetweenProperty, properties.get(1));
+        assertEquals(property1, properties.get(2));
+    }
+
+    /**
+     * <strong>Subject:</strong><br>
+     * {@linkplain ProductCmptType#moveProductCmptPropertyReferences(List, List, boolean)}
+     * <p>
+     * <strong>Scenario:</strong><br>
+     * A reference is moved down, but in-between the logically affected properties, a property of
+     * another category is located.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The move operation should skip the in-between reference, so that only properties belonging to
+     * a category are swapped with each other, and return true.
+     */
+    @Test
+    public void testMoveProductCmptPropertyReferences_PropertyOfOtherCategoryInBetweenOnMoveDown() throws CoreException {
+        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
+        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
+
+        IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("property1");
+        property1.setCategory(category1.getName());
+        IProductCmptProperty inBetweenProperty = productCmptType.newProductCmptTypeAttribute("inBetweenProperty");
+        inBetweenProperty.setCategory(category2.getName());
+        IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("property2");
+        property2.setCategory(category1.getName());
+
+        assertTrue(productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property1),
+                Arrays.asList(property1, property2), false));
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInReferencedOrder(false,
+                ipsProject);
+        assertEquals(property2, properties.get(0));
+        assertEquals(inBetweenProperty, properties.get(1));
+        assertEquals(property1, properties.get(2));
     }
 
     private void deleteAllProductCmptCategories(IProductCmptType productCmptType) {

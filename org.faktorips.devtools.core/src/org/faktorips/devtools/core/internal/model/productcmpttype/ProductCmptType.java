@@ -829,9 +829,32 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return categories.moveParts(indexes, up);
     }
 
-    boolean moveProductCmptPropertyReferences(List<IProductCmptProperty> properties, boolean up) throws CoreException {
+    /**
+     * Moves the {@link ProductCmptPropertyReference}s corresponding to the given
+     * {@link IProductCmptProperty}s up or down.
+     * <p>
+     * Returns true if a move was actually performed, false if not.
+     * 
+     * @param movedProperties the {@link ProductCmptPropertyReference}s corresponding to these
+     *            {@link IProductCmptProperty}s are moved
+     * @param contextProperties only {@link ProductCmptPropertyReference} corresponding to these
+     *            {@link IProductCmptProperty}s are swapped with each other. This is necessary to be
+     *            able to change the ordering of properties that belong to the same category without
+     *            interference from properties belonging to other categories. To achieve this,
+     *            clients must provide all move-enabled properties assigned to the category in
+     *            question
+     * @param up flag indicating whether to move up or down
+     * 
+     * @return true if the underlying list actually changed due to this move operation, false if not
+     * 
+     * @throws CoreException If an error occurs during the move
+     */
+    boolean moveProductCmptPropertyReferences(List<IProductCmptProperty> movedProperties,
+            List<IProductCmptProperty> contextProperties,
+            boolean up) throws CoreException {
+
         createProductCmptPropertyReferencesForNotReferencedProperties();
-        return moveProductCmptPropertyReferencesInternal(properties, up);
+        return moveProductCmptPropertyReferencesInternal(movedProperties, contextProperties, up);
     }
 
     private int getReferencedPropertyIndex(IProductCmptProperty property) {
@@ -865,16 +888,75 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return reference;
     }
 
-    private boolean moveProductCmptPropertyReferencesInternal(List<IProductCmptProperty> properties, boolean up) {
-        int[] indexes = new int[properties.size()];
-        for (int entry = 0; entry < properties.size(); entry++) {
-            int index = getReferencedPropertyIndex(properties.get(entry));
-            if (index != -1) {
-                indexes[entry] = index;
+    private boolean moveProductCmptPropertyReferencesInternal(List<IProductCmptProperty> movedProperties,
+            List<IProductCmptProperty> contextProperties,
+            boolean up) {
+
+        class MoveInfo {
+            int upContextIndex;
+            int downContextIndex;
+
+            MoveInfo(int upContextIndex, int downContextIndex) {
+                this.upContextIndex = upContextIndex;
+                this.downContextIndex = downContextIndex;
             }
         }
-        int[] newIndexes = propertyReferences.moveParts(indexes, up);
-        return !Arrays.equals(indexes, newIndexes);
+
+        // Compute moved indexes
+        int[] movedIndexes = new int[movedProperties.size()];
+        for (int i = 0; i < movedProperties.size(); i++) {
+            movedIndexes[i] = getReferencedPropertyIndex(movedProperties.get(i));
+        }
+        Arrays.sort(movedIndexes);
+
+        // Compute move information
+        List<MoveInfo> moveInfos = new ArrayList<MoveInfo>(movedProperties.size());
+        for (int i = 0; i < movedIndexes.length; i++) {
+            int upContextIndex = Integer.MIN_VALUE;
+            int downContextIndex = Integer.MAX_VALUE;
+            for (int j = 0; j < contextProperties.size(); j++) {
+                int contextIndex = getReferencedPropertyIndex(contextProperties.get(j));
+                if (contextIndex < movedIndexes[i] && contextIndex > upContextIndex) {
+                    upContextIndex = contextIndex;
+                } else if (contextIndex > movedIndexes[i] && contextIndex < downContextIndex) {
+                    downContextIndex = contextIndex;
+                }
+            }
+            moveInfos.add(new MoveInfo(upContextIndex, downContextIndex));
+        }
+
+        // Move each reference individually, skipping non-context indexes
+        // TODO AW
+        int[] newIndexes = new int[movedIndexes.length];
+        if (up) {
+            for (int i = 0; i < movedIndexes.length; i++) {
+                int targetIndex = up ? moveInfos.get(i).upContextIndex : moveInfos.get(i).downContextIndex;
+                IProductCmptPropertyReference movedPart = propertyReferences.getPart(movedIndexes[i]);
+                IProductCmptPropertyReference targetPart = propertyReferences.getPart(targetIndex);
+
+                propertyReferences.getBackingList().set(movedIndexes[i], targetPart);
+                propertyReferences.getBackingList().set(targetIndex, movedPart);
+
+                newIndexes[i] = targetIndex;
+            }
+        } else {
+            for (int i = movedIndexes.length - 1; i >= 0; i--) {
+                int targetIndex = up ? moveInfos.get(i).upContextIndex : moveInfos.get(i).downContextIndex;
+                IProductCmptPropertyReference movedPart = propertyReferences.getPart(movedIndexes[i]);
+                IProductCmptPropertyReference targetPart = propertyReferences.getPart(targetIndex);
+
+                propertyReferences.getBackingList().set(movedIndexes[i], targetPart);
+                propertyReferences.getBackingList().set(targetIndex, movedPart);
+
+                newIndexes[i] = targetIndex;
+            }
+        }
+
+        boolean moved = !Arrays.equals(movedIndexes, newIndexes);
+        if (moved) {
+            partsMoved((IIpsObjectPart[])movedProperties.toArray());
+        }
+        return moved;
     }
 
     List<IProductCmptProperty> findProductCmptPropertiesInReferencedOrder(boolean searchSupertypeHierarchy,

@@ -399,7 +399,8 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
             movedProperties.add(contextProperties.get(indexes[i]));
         }
 
-        boolean moved = ((ProductCmptType)contextType).moveProductCmptPropertyReferences(movedProperties, up);
+        boolean moved = ((ProductCmptType)contextType).moveProductCmptPropertyReferences(movedProperties,
+                contextProperties, up);
         if (!moved) {
             return Arrays.copyOf(indexes, indexes.length);
         }
