@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -378,15 +379,38 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
     }
 
     @Override
-    public boolean moveProductCmptProperties(List<IProductCmptProperty> properties, boolean up) throws CoreException {
-        if (properties.isEmpty()) {
-            return false;
+    public int[] moveProductCmptProperties(int[] indexes, boolean up, IProductCmptType contextType)
+            throws CoreException {
+
+        if (indexes.length == 0) {
+            return new int[0];
         }
-        IProductCmptType productCmptType = properties.get(0).findProductCmptType(getIpsProject());
-        for (IProductCmptProperty property : properties) {
-            ArgumentCheck.equals(productCmptType, property.findProductCmptType(getIpsProject()));
+
+        List<IProductCmptProperty> contextProperties = findProductCmptProperties(contextType, false,
+                contextType.getIpsProject());
+        List<IProductCmptProperty> movedProperties = new ArrayList<IProductCmptProperty>(indexes.length);
+
+        // Determine the properties to be moved while checking for upper and lower limit
+        int numberOfProperties = contextProperties.size();
+        for (int i = 0; i < indexes.length; i++) {
+            if ((indexes[i] == 0 && up) || (indexes[i] == numberOfProperties - 1 && !up)) {
+                return Arrays.copyOf(indexes, indexes.length);
+            }
+            movedProperties.add(contextProperties.get(indexes[i]));
         }
-        return ((ProductCmptType)productCmptType).moveProductCmptPropertyReferences(properties, up);
+
+        boolean moved = ((ProductCmptType)contextType).moveProductCmptPropertyReferences(movedProperties, up);
+        if (!moved) {
+            return Arrays.copyOf(indexes, indexes.length);
+        }
+
+        // Compute new indexes
+        int[] newIndexes = new int[indexes.length];
+        int modifier = up ? -1 : 1;
+        for (int i = 0; i < indexes.length; i++) {
+            newIndexes[i] = indexes[i] + modifier;
+        }
+        return newIndexes;
     }
 
     @Override

@@ -14,12 +14,11 @@
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.events.SelectionEvent;
@@ -176,37 +175,21 @@ public final class CategorySection extends IpsSection {
                 return;
             }
 
-            boolean moved = false;
+            int[] selection = getTableViewer().getTable().getSelectionIndices();
+            int[] newSelection = Arrays.copyOf(selection, selection.length);
             try {
-                moved = category.moveProductCmptProperties(getSelectedProperties(), up);
+                newSelection = category.moveProductCmptProperties(selection, up, contextType);
             } catch (CoreException e) {
-                // Recover by not moving any elements
+                // The elements could not be moved so the new selection equals the old selection
                 IpsPlugin.log(e);
+                newSelection = Arrays.copyOf(selection, selection.length);
             }
 
-            int[] newSelection = getTableViewer().getTable().getSelectionIndices();
-            if (moved) {
-                int modifier = up ? -1 : 1;
-                for (int i = 0; i < newSelection.length; i++) {
-                    newSelection[i] = newSelection[i] + modifier;
-                }
+            getTableViewer().refresh();
+            getTableViewer().getTable().setSelection(newSelection);
+            getTableViewer().getControl().setFocus();
 
-                getTableViewer().refresh();
-                getTableViewer().getTable().setSelection(newSelection);
-                getTableViewer().getControl().setFocus();
-
-                refresh();
-            }
-        }
-
-        private List<IProductCmptProperty> getSelectedProperties() {
-            List<IProductCmptProperty> selectedProperties = new ArrayList<IProductCmptProperty>();
-            IStructuredSelection structuredSelection = (IStructuredSelection)getTableViewer().getSelection();
-            Iterator<?> iterator = structuredSelection.iterator();
-            while (iterator.hasNext()) {
-                selectedProperties.add((IProductCmptProperty)iterator.next());
-            }
-            return selectedProperties;
+            refresh();
         }
 
         private TableViewer getTableViewer() {

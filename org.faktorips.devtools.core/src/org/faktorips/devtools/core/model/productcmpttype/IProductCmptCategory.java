@@ -259,23 +259,29 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
     public boolean isAtRightPosition();
 
     /**
-     * Moves the given {@link IProductCmptProperty}s up or down by one position.
+     * Moves the {@link IProductCmptProperty}s identified by the provided indexes up or down by one
+     * position.
      * <p>
-     * If one of the properties is the first object, no property is moved up. If one of the
-     * properties is the last object, no property is moved down. Returns true if a move was actually
-     * performed.
+     * If one of the indexes is 0 (the first object), no property is moved up. If one of the indexes
+     * is the number objects - 1 (the last object), no property is moved down. Returns true if a
+     * move was actually performed.
      * 
-     * @param properties The {@link IProductCmptCategory} to be moved
+     * @param indexes The indexes identifying the {@link IProductCmptCategory}s to be moved
      * @param up Flag indicating whether to move up or down
+     * @param contextType The {@link IProductCmptType} the moved properties belong to. The provided
+     *            indexes reference the properties assigned to this category by this type, other
+     *            properties are ignored
      * 
-     * @throws NullPointerException If the properties array is null
-     * @throws IllegalArgumentException If not all provided properties belong to the same product
-     *             component type or it's configured policy component type
+     * @return The new indexes of the moved properties
+     * 
+     * @throws IndexOutOfBoundsException If not all provided indexes identify properties assigned to
+     *             this category with respect to the context type
      * 
      * @throws CoreException If an error occurs while searching the supertype hierarchy or while
      *             searching for policy component types
      */
-    public boolean moveProductCmptProperties(List<IProductCmptProperty> properties, boolean up) throws CoreException;
+    public int[] moveProductCmptProperties(int[] indexes, boolean up, IProductCmptType contextType)
+            throws CoreException;
 
     /**
      * Defines the position of this category.
