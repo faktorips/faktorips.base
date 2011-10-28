@@ -21,6 +21,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.model.HierarchyVisitor;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -385,6 +386,45 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     @Override
     public String getLastResortPluralCaption() {
         return StringUtils.capitalize(association);
+    }
+
+    @Override
+    public boolean isLinkOfAssociation(IAssociation association, IIpsProject ipsProject) throws CoreException {
+        DerivedUnionVisitor hierarchyVisitor = new DerivedUnionVisitor(association, ipsProject);
+        hierarchyVisitor.start(findAssociation(ipsProject));
+        return hierarchyVisitor.found;
+    }
+
+    private static class DerivedUnionVisitor extends HierarchyVisitor<IAssociation> {
+
+        private final IAssociation association;
+
+        private boolean found;
+
+        /**
+         * @param association The association that should be found by this visitor
+         * @param ipsProject The project for searching the associations
+         */
+        public DerivedUnionVisitor(IAssociation association, IIpsProject ipsProject) {
+            super(ipsProject);
+            this.association = association;
+        }
+
+        @Override
+        protected IAssociation findSupertype(IAssociation currentAssociation, IIpsProject ipsProject)
+                throws CoreException {
+            return currentAssociation.findSubsettedDerivedUnion(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IAssociation currentAssociation) throws CoreException {
+            if (currentAssociation.equals(association)) {
+                found = true;
+                return false;
+            }
+            return true;
+        }
+
     }
 
 }

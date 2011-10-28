@@ -217,4 +217,18 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement {
      */
     public boolean is1ToMany();
 
+    /**
+     * Checks if this link is a link of the given association. This includes the search for derived
+     * union associations if the link's is a subset of a derived union.
+     * 
+     * @param association The association that should be checked
+     * @param ipsProject The project used to find the associations
+     * @return true if this link is a link instance of the given association including search for
+     *         derived unions.
+     * 
+     * @throws CoreException Throws a core exception if there occurs exception during finding other
+     *             objects
+     */
+    boolean isLinkOfAssociation(IAssociation association, IIpsProject ipsProject) throws CoreException;
+
 }
