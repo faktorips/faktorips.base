@@ -926,37 +926,33 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         // Move each reference individually, skipping non-context indexes
-        // TODO AW
         int[] newIndexes = new int[movedIndexes.length];
         if (up) {
             for (int i = 0; i < movedIndexes.length; i++) {
-                int targetIndex = up ? moveInfos.get(i).upContextIndex : moveInfos.get(i).downContextIndex;
-                IProductCmptPropertyReference movedPart = propertyReferences.getPart(movedIndexes[i]);
-                IProductCmptPropertyReference targetPart = propertyReferences.getPart(targetIndex);
-
-                propertyReferences.getBackingList().set(movedIndexes[i], targetPart);
-                propertyReferences.getBackingList().set(targetIndex, movedPart);
-
+                int targetIndex = moveInfos.get(i).upContextIndex;
+                swapProductCmptPropertyReferences(movedIndexes[i], targetIndex);
                 newIndexes[i] = targetIndex;
             }
         } else {
             for (int i = movedIndexes.length - 1; i >= 0; i--) {
-                int targetIndex = up ? moveInfos.get(i).upContextIndex : moveInfos.get(i).downContextIndex;
-                IProductCmptPropertyReference movedPart = propertyReferences.getPart(movedIndexes[i]);
-                IProductCmptPropertyReference targetPart = propertyReferences.getPart(targetIndex);
-
-                propertyReferences.getBackingList().set(movedIndexes[i], targetPart);
-                propertyReferences.getBackingList().set(targetIndex, movedPart);
-
+                int targetIndex = moveInfos.get(i).downContextIndex;
+                swapProductCmptPropertyReferences(movedIndexes[i], targetIndex);
                 newIndexes[i] = targetIndex;
             }
         }
 
         boolean moved = !Arrays.equals(movedIndexes, newIndexes);
         if (moved) {
-            partsMoved((IIpsObjectPart[])movedProperties.toArray());
+            partsMoved(propertyReferences.getParts());
         }
         return moved;
+    }
+
+    private void swapProductCmptPropertyReferences(int sourceIndex, int targetIndex) {
+        IProductCmptPropertyReference movedPart = propertyReferences.getPart(sourceIndex);
+        IProductCmptPropertyReference targetPart = propertyReferences.getPart(targetIndex);
+        propertyReferences.getBackingList().set(sourceIndex, targetPart);
+        propertyReferences.getBackingList().set(targetIndex, movedPart);
     }
 
     List<IProductCmptProperty> findProductCmptPropertiesInReferencedOrder(boolean searchSupertypeHierarchy,
