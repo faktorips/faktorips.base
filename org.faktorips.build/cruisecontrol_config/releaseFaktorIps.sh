@@ -867,6 +867,7 @@ if [ ! "$SKIPPUBLISH" = "true" ] ; then
 fi 
 
 echo $BUILDFILE
+echo $DEVTARGET_PLUGIN_PATH
 EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  -Dbuild.version=$BUILD_VERSION \
  -Dbuild.category=$BUILD_CATEGORY \
