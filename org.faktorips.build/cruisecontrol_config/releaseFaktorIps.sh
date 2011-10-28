@@ -97,6 +97,7 @@ BUILD_PROJECT_NAME=org.faktorips.build
 INTEGRATIONTEST_PROJECTS=(org.faktorips.integrationtest org.faktorips.integrationtest.java5)
 CUSTOMER_PRODUCT_PROJECT=de.qv.faktorips.feature.product
 DEVTARGET_PLUGIN_NAME=org.faktorips.devtarget.galileo
+DEVTARGET_PLUGIN_PATH=$PROJECTSROOTDIR/$DEVTARGET_PLUGIN_NAME
 
 CREATE_LIZENZ_SCRIPT=$PLUGINBUILDER_PROJECT_NAME/lizenz/createFaktorIpsLizenz.sh
 LIZENZ_PDF=$PLUGINBUILDER_PROJECT_NAME/lizenz/result/FaktorIPS_Lizenzvertrag.pdf
@@ -766,7 +767,6 @@ checkoutPluginbuilderPartsAndDevtarget()
   checkoutModule $PLUGINBUILDER_PROJECT_DIR/lizenz $_FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/lizenz $BRANCH
 
   # checkout devtarget
-  DEVTARGET_PLUGIN_PATH=$PROJECTSROOTDIR/$DEVTARGET_PLUGIN_NAME
   checkoutModule $DEVTARGET_PLUGIN_PATH $_FETCH_TAG $DEVTARGET_PLUGIN_NAME $BRANCH
   if [ "$COPY_DROPINS_FROM" ] ; then
     ADDITIONAL_DROPINS = $DEVTARGET_PLUGIN_PATH/eclipse/dropins/additionals
