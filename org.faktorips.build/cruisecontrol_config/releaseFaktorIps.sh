@@ -884,7 +884,7 @@ EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  -DnoBranch=$NOBRANCH \
  -Dcvsroot=$CVS_ROOT \
  -DminVersion3=$MIN_VERSION_3
- -Ddevtarget.jar.path=$DEVTARGET_PLUGIN_PATH/eclipse/dropins/deploy/eclipse
+ -Ddevtarget.path=$DEVTARGET_PLUGIN_PATH
  "
 echo $EXEC
 eval $EXEC

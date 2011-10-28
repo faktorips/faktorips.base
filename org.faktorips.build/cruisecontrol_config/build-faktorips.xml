@@ -485,7 +485,8 @@
     	<property name="pluginbuilder.features.uml" value="org.faktorips.uml.feature,org.faktorips.uml.feature.nls1,org.faktorips.uml.feature.source"/>
     	<property name="pluginbuilder.features.ormext" value="org.faktorips.ormext.feature,org.faktorips.ormext.feature.nls1,org.faktorips.ormext.feature.source"/>
     	<!-- devtarget additional jars --> 
-		<property name="devtarget.jar.path" value="${basedir}/org.faktorips.devtarget/eclipse/dropins/deploy/eclipse"/>
+		<property name="devtarget.path" value="${basedir}/org.faktorips.devtarget"/>
+		<property name="devtarget.jar.path" value="${devtarget.path}/eclipse/dropins/deploy/eclipse"/>
 		<property name="devtarget.aok.jar.path" value="${basedir}/de.aoksystems.omc.tools.feature/dropins/eclipse"/>
 		
 		<condition property="isMinVersion3" value="true" >
@@ -574,7 +575,8 @@
             <property name="updateSiteCategoryName" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
-            <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/> 
+            <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>
+			<property name="targetPlatformHost" value="${devtarget.path}" />
         </ant>
 		
 	    <!-- build runtime and valuetypes separately,
