@@ -286,6 +286,7 @@ parseArgs()
 	  -forceBuild)    FORCE_BUILD=true ;;
       -devtarget)     DEVTARGET_PLUGIN_NAME=$2 ; shift ;;
       -addDropins)    COPY_DROPINS_FROM=$2 ; shift ;;
+      -corePlugin)    FAKTORIPS_CORE_PLUGIN_NAME=$2 ; shift ;;
 	  -?)             showUsageAndExit ;;
 	  --?)            showUsageAndExit ;;
 	  -h)             showUsageAndExit ;;
