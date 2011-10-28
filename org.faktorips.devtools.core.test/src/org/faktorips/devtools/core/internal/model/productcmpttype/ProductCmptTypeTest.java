@@ -1549,6 +1549,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     @Test
     public void testSwapProductCmptPropertyReferencess_PropertyOfOtherCategoryInBetweenOnMoveDown()
             throws CoreException {
+
         IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
         IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
 
