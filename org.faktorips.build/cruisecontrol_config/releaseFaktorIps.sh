@@ -94,7 +94,7 @@ PLUGINBUILDER_PROJECT_NAME=org.faktorips.pluginbuilder
 BUILD_PROJECT_NAME=org.faktorips.build
 INTEGRATIONTEST_PROJECTS=(org.faktorips.integrationtest org.faktorips.integrationtest.java5)
 CUSTOMER_PRODUCT_PROJECT=de.qv.faktorips.feature.product
-DEVTARGET_PLUGIN_NAME=org.faktorips.devtarget.galileo
+DEVTARGET_PLUGIN_NAME=org.faktorips.devtarget
 
 CREATE_LIZENZ_SCRIPT=$PLUGINBUILDER_PROJECT_NAME/lizenz/createFaktorIpsLizenz.sh
 LIZENZ_PDF=$PLUGINBUILDER_PROJECT_NAME/lizenz/result/FaktorIPS_Lizenzvertrag.pdf
