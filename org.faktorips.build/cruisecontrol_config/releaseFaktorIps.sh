@@ -57,6 +57,8 @@
 #                                    default '/opt/cc/work/checkout_release'
 #           -noCvs                 : copy projects instead using cvs,
 #                                    default is use Cvs
+#           -devtarget			   : setting the project name of the target platform
+#           -addDropins            : setting a folder containing additional dropins for the target platform
 #
 # variables in the user environment:
 # ----------------------------------
@@ -94,7 +96,7 @@ PLUGINBUILDER_PROJECT_NAME=org.faktorips.pluginbuilder
 BUILD_PROJECT_NAME=org.faktorips.build
 INTEGRATIONTEST_PROJECTS=(org.faktorips.integrationtest org.faktorips.integrationtest.java5)
 CUSTOMER_PRODUCT_PROJECT=de.qv.faktorips.feature.product
-DEVTARGET_PLUGIN_NAME=org.faktorips.devtarget
+DEVTARGET_PLUGIN_NAME=org.faktorips.devtarget.galileo
 
 CREATE_LIZENZ_SCRIPT=$PLUGINBUILDER_PROJECT_NAME/lizenz/createFaktorIpsLizenz.sh
 LIZENZ_PDF=$PLUGINBUILDER_PROJECT_NAME/lizenz/result/FaktorIPS_Lizenzvertrag.pdf
@@ -291,6 +293,8 @@ parseArgs()
 	  -createBranch)  DO_CREATE_BRANCH=true ;;
 	  -branchRootTag) BRANCH_ROOT_TAG=$2 ; shift ;;
 	  -forceBuild)    FORCE_BUILD=true ;;
+      -devtarget)     DEVTARGET_PLUGIN_NAME=$2 ; shift ;;
+      -addDropins)    COPY_DROPINS_FROM=$2 ; shift ;;
 	  -?)             showUsageAndExit ;;
 	  --?)            showUsageAndExit ;;
 	  -h)             showUsageAndExit ;;
@@ -352,6 +356,8 @@ showUsageAndExit()
   echo '                         with -version [versionnumber] the name (version) of the base version'
   echo '                         used for this branch must be specified (e.g. "-version 2.2.branch")'
   echo '  -branchRootTag <tag>   optional - use the given tag as starting point for the branch otherwise HEAD will be used'
+  echo '  -devtarget			 setting the project name of the target platform'
+  echo '  -addDropins            setting a folder containing additional dropins for the target platform'
   echo '                         ' 
   echo 'e.g.: '$0' -version 2.2.0.rc1 -skipTest'
   echo '      builds the release with version 2.2.0.rc1, category 2.2 ' 
@@ -770,6 +776,11 @@ checkoutPluginbuilderPartsAndDevtarget()
   # checkout devtarget
   DEVTARGET_PLUGIN_PATH=$PROJECTSROOTDIR/$DEVTARGET_PLUGIN_NAME
   checkoutModule $DEVTARGET_PLUGIN_PATH $_FETCH_TAG $DEVTARGET_PLUGIN_NAME $BRANCH
+  if [ "$COPY_DROPINS_FROM" ] ; then
+    ADDITIONAL_DROPINS = $DEVTARGET_PLUGIN_PATH/eclipse/dropins/additionals
+    mkdir $ADDITIONAL_DROPINS
+  	cp -r $COPY_FIPS_FROM $ADDITIONAL_DROPINS/
+  fi
   
   # special case for custom build aok
   if [ "$CUSTOM_BUILD" = "aok" ] ; then
