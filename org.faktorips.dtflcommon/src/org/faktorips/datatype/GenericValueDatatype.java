@@ -370,7 +370,11 @@ public abstract class GenericValueDatatype implements ValueDatatype {
                     + Comparable.class.getName());
         }
 
-        return ((Comparable)getValue(valueA)).compareTo(valueB);
+        @SuppressWarnings("unchecked")
+        // GenericValueDatatype does not support generics.
+        Comparable<Object> value = (Comparable<Object>)getValue(valueA);
+        Object value2 = getValue(valueB);
+        return value.compareTo(value2);
     }
 
     public boolean supportsCompare() {
