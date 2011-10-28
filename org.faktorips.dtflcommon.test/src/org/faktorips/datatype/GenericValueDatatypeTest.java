@@ -19,6 +19,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
@@ -190,6 +195,29 @@ public class GenericValueDatatypeTest {
         datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         assertFalse(datatype.isNull(PaymentMode.ANNUAL.getId()));
         assertTrue(datatype.isNull(null));
+    }
+
+    @Test
+    public void shouldCompareValuesOfEqualClasses() {
+        datatype = spy(new DefaultGenericValueDatatype());
+
+        doReturn(new Integer(5)).when(datatype).getValue("5");
+        doReturn(new Integer(0)).when(datatype).getValue("0");
+        doReturn(true).when(datatype).supportsCompare();
+        int compare = datatype.compare("5", "0");
+        assertEquals(1, compare);
+
+        verify(datatype, times(2)).getValue(anyString());
+    }
+
+    @Test(expected = ClassCastException.class)
+    public void shouldNotCompareValuesOfDifferentClasses() {
+        datatype = spy(new DefaultGenericValueDatatype());
+
+        doReturn(new Integer(5)).when(datatype).getValue("5");
+        doReturn(new Double(0)).when(datatype).getValue("0");
+        doReturn(true).when(datatype).supportsCompare();
+        datatype.compare("5", "0");
     }
 
     private class InvalidType extends GenericValueDatatype {
