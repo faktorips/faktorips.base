@@ -57,8 +57,8 @@
 #                                    default '/opt/cc/work/checkout_release'
 #           -noCvs                 : copy projects instead using cvs,
 #                                    default is use Cvs
-#           -devtarget			   : setting the project name of the target platform
-#           -addDropins            : setting a folder containing additional dropins for the target platform
+#           -devtarget [name]	   : setting the project name of the target platform
+#           -addDropins [path]     : setting a folder containing additional dropins for the target platform
 #
 # variables in the user environment:
 # ----------------------------------
@@ -111,11 +111,7 @@ initEnvironment()
 {
   # environment
   
-  if [ $MAJOR_VERSION -ge 3 ] ; then
-  	MIN_VERSION_3=true
-  else
-  	MIN_VERSION_3=false
-  fi
+  MIN_VERSION_3=true
   
   export DISPLAY=:0.0
   export ANT_OPTS=-Xmx1024m
@@ -159,14 +155,9 @@ initDefaultParameter()
   MAJOR_VERSION=`echo $BUILD_VERSION | awk -F. '{print $1}'`
   MINOR_VERSION=`echo $BUILD_VERSION | awk -F. '{print $2}'`
   
-  if [ $MAJOR_VERSION -ge 3 ] ; then
 	PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/update.faktorzehn.org/faktorips/v'$MAJOR_VERSION'_'$MINOR_VERSION'/downloads'}
   	PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/update.faktorzehn.org/faktorips/v'$MAJOR_VERSION'_'$MINOR_VERSION}
   	PUBLISH_UPDATESITE_FILE=${PUBLISH_UPDATESITE_FILE:-'site_v'$MAJOR_VERSION'_'$MINOR_VERSION.xml}
-  else
-  	PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/update.faktorzehn.org/faktorips/downloads'}
-  	PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/update.faktorzehn.org/faktorips'}
-  fi
   PLUGINBUILDER_PROJECT_DIR=$PROJECTSROOTDIR/$PLUGINBUILDER_PROJECT_NAME
   RELEASE_PROPERTY_DIR=$PLUGINBUILDER_PROJECT_DIR/releases
   RELEASE_PROPERTIES=$RELEASE_PROPERTY_DIR/$BUILD_VERSION.properties
