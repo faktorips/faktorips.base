@@ -387,9 +387,6 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * <strong>Subject:</strong><br>
-     * {@linkplain ProductCmptCategory#moveProductCmptProperties(int[], boolean, IProductCmptType)}
-     * <p>
      * <strong>Scenario:</strong><br>
      * There are properties assigned to a category by a product component type and it's super type.
      * Properties assigned by each type are moved individually.
@@ -427,9 +424,6 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * <strong>Subject:</strong><br>
-     * {@linkplain ProductCmptCategory#moveProductCmptProperties(int[], boolean, IProductCmptType)}
-     * <p>
      * <strong>Scenario:</strong><br>
      * The indexes to be moved are not valid in relation to the provided context type.
      * <p>
@@ -451,9 +445,6 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * <strong>Subject:</strong><br>
-     * {@linkplain ProductCmptCategory#moveProductCmptProperties(int[], boolean, IProductCmptType)}
-     * <p>
      * <strong>Scenario:</strong><br>
      * The provided array containing the indexes which identify the properties to be moved is empty.
      * <p>
@@ -473,9 +464,6 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * <strong>Subject:</strong><br>
-     * {@linkplain ProductCmptCategory#moveProductCmptProperties(int[], boolean, IProductCmptType)}
-     * <p>
      * <strong>Scenario:</strong><br>
      * The first property is moved up, together with another property.
      * <p>
@@ -500,9 +488,6 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * <strong>Subject:</strong><br>
-     * {@linkplain ProductCmptCategory#moveProductCmptProperties(int[], boolean, IProductCmptType)}
-     * <p>
      * <strong>Scenario:</strong><br>
      * The last property is moved down, together with another property.
      * <p>
@@ -527,9 +512,6 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * <strong>Subject:</strong><br>
-     * {@linkplain ProductCmptCategory#moveProductCmptProperties(int[], boolean, IProductCmptType)}
-     * <p>
      * <strong>Scenario:</strong><br>
      * The first property is moved up. However, another property in another category exists in the
      * product component type above the category under test.
@@ -556,9 +538,6 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * <strong>Subject:</strong><br>
-     * {@linkplain ProductCmptCategory#moveProductCmptProperties(int[], boolean, IProductCmptType)}
-     * <p>
      * <strong>Scenario:</strong><br>
      * The last property is moved down. However, another property in another category exists in the
      * product component type below the category under test.
