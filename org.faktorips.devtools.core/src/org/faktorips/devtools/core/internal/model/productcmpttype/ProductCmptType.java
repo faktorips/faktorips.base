@@ -943,7 +943,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         boolean moved = !Arrays.equals(movedIndexes, newIndexes);
         if (moved) {
-            partsMoved(propertyReferences.getParts());
+            partsMoved(contextProperties.toArray(new IIpsObjectPart[contextProperties.size()]));
         }
         return moved;
     }
