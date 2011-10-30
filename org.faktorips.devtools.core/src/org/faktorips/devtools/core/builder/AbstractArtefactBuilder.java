@@ -14,18 +14,22 @@
 package org.faktorips.devtools.core.builder;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Locale;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.util.EclipseIOUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -217,6 +221,26 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
                     "A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
         }
         return getLocalizedStringSet().getString(key, getLanguageUsedInGeneratedSourceCode(), replacements);
+    }
+
+    /**
+     * This methods calls {@link IWorkspace#validateEdit(IFile[], Object)} before writing to the
+     * file if the file is marked as read only. This giving the chance to version control system to
+     * checkout the file for writing before calling writing.
+     * 
+     * 
+     * @param file The file to write to
+     * @param inputStream the content that should be written to the file
+     * @param force writing to the file with force argument @see
+     *            {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
+     * @param keepHistory setting keeping the history when writing to the file @see
+     *            {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
+     * @throws CoreException in case of an error while setting the new content to the file @see
+     *             {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
+     */
+    public void writeToFile(IFile file, InputStream inputStream, boolean force, boolean keepHistory)
+            throws CoreException {
+        EclipseIOUtil.writeToFile(file, inputStream, force, keepHistory, new NullProgressMonitor());
     }
 
 }

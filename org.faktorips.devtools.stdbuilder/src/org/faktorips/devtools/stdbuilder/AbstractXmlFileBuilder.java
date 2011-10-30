@@ -79,13 +79,14 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
         try {
             IFile copy = getXmlContentFile(ipsSrcFile);
             boolean newlyCreated = createFileIfNotThere(copy);
+            ByteArrayInputStream content = convertContentAsStream(newContent, charSet);
             if (!newlyCreated) {
                 String currentContent = getContentAsString(copy.getContents(), charSet);
                 if (!newContent.equals(currentContent)) {
-                    copy.setContents(convertContentAsStream(newContent, charSet), true, true, null);
+                    writeToFile(copy, content, true, true);
                 }
             } else {
-                copy.setContents(convertContentAsStream(newContent, charSet), true, false, null);
+                writeToFile(copy, content, true, false);
             }
         } catch (CoreException e) {
             throw new CoreException(new IpsStatus("Unable to create a content file for the file: " //$NON-NLS-1$

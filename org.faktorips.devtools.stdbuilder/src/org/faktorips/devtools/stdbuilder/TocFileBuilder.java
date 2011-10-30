@@ -290,7 +290,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             replaceTocFileIfContentHasChanged(root.getIpsProject(), tocFile, xml);
         } else {
             try {
-                tocFile.setContents(new ByteArrayInputStream(xml.getBytes(encoding)), true, true, null);
+                ByteArrayInputStream inputStream = new ByteArrayInputStream(xml.getBytes(encoding));
+                writeToFile(tocFile, inputStream, true, true);
             } catch (UnsupportedEncodingException e1) {
                 throw new CoreException(new IpsStatus(e1));
             }
@@ -316,7 +317,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         } catch (UnsupportedEncodingException e1) {
             throw new CoreException(new IpsStatus(e1));
         }
-        tocFile.setContents(is, true, true, null);
+        writeToFile(tocFile, is, true, true);
     }
 
     private TableOfContent getToc(IIpsSrcFile ipsSrcFile) throws CoreException {

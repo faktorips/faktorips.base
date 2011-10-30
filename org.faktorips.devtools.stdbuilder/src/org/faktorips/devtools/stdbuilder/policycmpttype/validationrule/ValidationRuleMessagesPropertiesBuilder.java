@@ -118,8 +118,7 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
                 String comment = NLS.bind(getLocalizedText(ipsProject, MESSAGES_COMMENT), ipsProject.getName() + "/"
                         + srcRoot.getName());
                 ValidationRuleMessagesGenerator messagesGenerator = getMessagesGenerator(srcRoot, supportedLanguage);
-                messagesGenerator.saveIfModified(comment, buildsDerivedArtefacts()
-                        && getBuilderSet().isMarkNoneMergableResourcesAsDerived());
+                messagesGenerator.saveIfModified(comment);
             }
         }
     }
@@ -163,7 +162,7 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
         IFile propertyFile = getPropertyFile(root, supportedLanguage);
         ValidationRuleMessagesGenerator messagesGenerator = messageGeneratorMap.get(propertyFile);
         if (messagesGenerator == null) {
-            messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile, supportedLanguage.getLocale());
+            messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile, supportedLanguage.getLocale(), this);
             messageGeneratorMap.put(propertyFile, messagesGenerator);
         }
         return messagesGenerator;

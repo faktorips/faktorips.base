@@ -702,7 +702,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         if (formattedContent.equals(oldJavaFileContentsStr)) {
             return;
         } else {
-            javaFile.setContents(transform(ipsSrcFile, formattedContent), true, false, null);
+            ByteArrayInputStream inputStream = transform(ipsSrcFile, formattedContent);
+            writeToFile(javaFile, inputStream, true, false);
         }
     }
 

@@ -320,7 +320,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         when(ipsProject.getSourceIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[] { root });
         builderSpy.afterBuildProcess(ipsProject, 0);
 
-        verify(generatorMock).saveIfModified(anyString(), anyBoolean());
+        verify(generatorMock).saveIfModified(anyString());
     }
 
     @Test
