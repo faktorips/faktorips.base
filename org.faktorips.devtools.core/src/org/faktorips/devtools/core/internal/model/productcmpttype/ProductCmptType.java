@@ -731,6 +731,16 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
+    public boolean hasProductCmptCategory(String name) {
+        return getProductCmptCategory(name) != null;
+    }
+
+    @Override
+    public boolean findHasProductCmptCategory(String name, IIpsProject ipsProject) throws CoreException {
+        return findProductCmptCategory(name, ipsProject) != null;
+    }
+
+    @Override
     public IProductCmptCategory findDefaultCategoryForFormulaSignatureDefinitions(IIpsProject ipsProject)
             throws CoreException {
 
@@ -901,7 +911,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         List<IProductCmptPropertyReference> references = new ArrayList<IProductCmptPropertyReference>(properties.size());
         for (IProductCmptProperty property : properties) {
             for (IProductCmptPropertyReference reference : propertyReferences) {
-                // TODO AW Careful - properties from supertypes
                 if (reference.isReferencingProperty(property)) {
                     references.add(reference);
                     break;
@@ -911,7 +920,21 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return references;
     }
 
-    List<IProductCmptProperty> findProductCmptPropertiesInReferencedOrder(boolean searchSupertypeHierarchy,
+    @Override
+    public List<IProductCmptProperty> findProductCmptPropertiesForCategory(IProductCmptCategory category,
+            boolean searchSupertypeHierarchy,
+            IIpsProject ipsProject) throws CoreException {
+
+        List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
+        for (IProductCmptProperty property : findProductCmptPropertiesInOrder(searchSupertypeHierarchy, ipsProject)) {
+            if (category.findIsContainingProperty(property, ipsProject)) {
+                properties.add(property);
+            }
+        }
+        return properties;
+    }
+
+    List<IProductCmptProperty> findProductCmptPropertiesInOrder(boolean searchSupertypeHierarchy,
             final IIpsProject ipsProject) throws CoreException {
 
         List<IProductCmptProperty> properties = findProductCmptProperties(searchSupertypeHierarchy, ipsProject);
@@ -975,9 +998,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
             } catch (CoreException e) {
                 /*
                  * If an error occurs during the search for the property, the property is not found
-                 * and we consider it obsolete.
+                 * but we cannot be sure whether it is obsolete.
                  */
-                return false;
+                return true;
             }
         }
         return true;

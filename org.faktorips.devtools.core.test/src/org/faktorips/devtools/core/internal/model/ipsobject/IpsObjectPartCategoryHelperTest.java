@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -56,6 +58,15 @@ public class IpsObjectPartCategoryHelperTest extends AbstractIpsPluginTest {
         categoryHelper.setCategory("foo");
         assertEquals("foo", categoryHelper.getCategory());
         assertPropertyChangedEvent(ipsObjectPart, ICategorisableElement.PROPERTY_CATEGORY, "", "foo");
+    }
+
+    @Test
+    public void testHasCategory() {
+        categoryHelper.setCategory("foo");
+        assertTrue(categoryHelper.hasCategory());
+
+        categoryHelper.setCategory("");
+        assertFalse(categoryHelper.hasCategory());
     }
 
     @Test

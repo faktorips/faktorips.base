@@ -68,11 +68,23 @@ public final class ProductCmptPropertyReference extends AtomicIpsObjectPart impl
 
     @Override
     public boolean isReferencingProperty(IProductCmptProperty property) {
-        if ((sourceType == SourceType.PRODUCT && property.isPolicyCmptTypeProperty())
-                || (sourceType == SourceType.POLICY && !property.isPolicyCmptTypeProperty())) {
-            return false;
-        }
+        return isEqualSourceType(property) && isEqualId(property) && isEqualProductCmptType(property);
+    }
+
+    private boolean isEqualSourceType(IProductCmptProperty property) {
+        return (sourceType == SourceType.POLICY && property.isPolicyCmptTypeProperty())
+                || (sourceType == SourceType.PRODUCT && !property.isPolicyCmptTypeProperty());
+    }
+
+    private boolean isEqualId(IProductCmptProperty property) {
         return getReferencedPartId().equals(property.getId());
+    }
+
+    private boolean isEqualProductCmptType(IProductCmptProperty property) {
+        // TODO AW 31-10-2011: Law of Demeter
+        String propertyTypeQualifiedName = property.getType().getQualifiedName();
+        return getProductCmptType().getQualifiedName().equals(propertyTypeQualifiedName)
+                || getProductCmptType().getPolicyCmptType().equals(propertyTypeQualifiedName);
     }
 
     @Override

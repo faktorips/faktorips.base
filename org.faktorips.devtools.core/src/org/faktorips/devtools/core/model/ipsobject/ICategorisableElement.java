@@ -38,4 +38,11 @@ public interface ICategorisableElement extends IIpsElement {
      */
     public void setCategory(String category);
 
+    /**
+     * Returns whether this element is assigned to a specific category.
+     * <p>
+     * This operation is a shortcut for {@code !getCategory().isEmpty()}.
+     */
+    public boolean hasCategory();
+
 }

@@ -472,6 +472,11 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
+    public boolean hasCategory() {
+        return categoryHelper.hasCategory();
+    }
+
+    @Override
     public void setCategory(String category) {
         categoryHelper.setCategory(category);
     }

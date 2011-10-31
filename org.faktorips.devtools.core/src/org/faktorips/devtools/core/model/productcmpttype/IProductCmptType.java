@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -393,6 +394,22 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public IProductCmptProperty findProductCmptProperty(String propName, IIpsProject ipsProject) throws CoreException;
 
     /**
+     * Returns a list containing the {@link IProductCmptProperty}s of the indicated
+     * {@link IProductCmptCategory} in the referenced order.
+     * 
+     * @param category The {@link IProductCmptCategory} to search the {@link IProductCmptProperty}s
+     *            for
+     * @param searchSupertypeHierarchy Flag indicating whether the supertype hierarchy shall be
+     *            included
+     * @param ipsProject The {@link IIpsProject} whose {@link IIpsObjectPath} is used for the search
+     * 
+     * @throws CoreException If an error occurs during the search
+     */
+    public List<IProductCmptProperty> findProductCmptPropertiesForCategory(IProductCmptCategory category,
+            boolean searchSupertypeHierarchy,
+            IIpsProject ipsProject) throws CoreException;
+
+    /**
      * Returns <code>true</code> if the user has configured a custom icon for enabled instances of
      * this type, <code>false</code> otherwise.
      */
@@ -458,6 +475,30 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @param name The name identifying the {@link IProductCmptCategory} to be retrieved
      */
     public IProductCmptCategory getProductCmptCategory(String name);
+
+    /**
+     * Returns whether an {@link IProductCmptCategory} with the given name exists in this
+     * {@link IProductCmptType}.
+     * 
+     * @param name The name of the {@link IProductCmptCategory} to check for existence in this type
+     * 
+     * @see #findHasProductCmptCategory(String, IIpsProject)
+     */
+    public boolean hasProductCmptCategory(String name);
+
+    /**
+     * Returns whether an {@link IProductCmptCategory} with the given name exists in this
+     * {@link IProductCmptType} or it's supertype hierarchy.
+     * 
+     * @param name The name of the {@link IProductCmptCategory} to check for existence in this type
+     *            and it's supertypes
+     * @param ipsProject The {@link IIpsProject} whose {@link IIpsObjectPath} is used for the search
+     * 
+     * @throws CoreException If an error occurs during the search
+     * 
+     * @see #hasProductCmptCategory(String)
+     */
+    public boolean findHasProductCmptCategory(String name, IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the {@link IProductCmptCategory} identified by the given name or null if no such

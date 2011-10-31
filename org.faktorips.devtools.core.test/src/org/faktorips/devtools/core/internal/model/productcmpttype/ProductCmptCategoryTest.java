@@ -91,6 +91,76 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testFindIsContainingProperty() throws CoreException {
+        IProductCmptProperty property = productType.newProductCmptTypeAttribute("foo");
+        property.setCategory(CATEGORY_NAME);
+
+        assertTrue(category.findIsContainingProperty(property, ipsProject));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * A property that has no category is checked for containment in the corresponding default
+     * category.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The operation should return true as properties that have no category are implicitly assigned
+     * to the corresponding default category.
+     */
+    @Test
+    public void testFindIsContainingProperty_DefaultCategoryContainsPropertiesThatHaveNoCategory() throws CoreException {
+        IProductCmptCategory defaultAttributeCategory = productType.newProductCmptCategory("defaultAttribute");
+        defaultAttributeCategory.setDefaultForProductCmptTypeAttributes(true);
+
+        IProductCmptProperty attributeProperty = productType.newProductCmptTypeAttribute("attribute");
+
+        assertTrue(defaultAttributeCategory.findIsContainingProperty(attributeProperty, ipsProject));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * A property is assigned to a category other than the corresponding default category, but this
+     * other category cannot be found because it does not exist.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The operation should return true as for not found categories, properties are implicitly
+     * assigned to the corresponding default category.
+     */
+    @Test
+    public void testFindIsContainingProperty_CategoryNotFound() throws CoreException {
+        IProductCmptCategory defaultAttributeCategory = productType.newProductCmptCategory("defaultAttribute");
+        defaultAttributeCategory.setDefaultForProductCmptTypeAttributes(true);
+
+        IProductCmptProperty attributeProperty = productType.newProductCmptTypeAttribute("attribute");
+        attributeProperty.setCategory("foobar");
+
+        assertTrue(defaultAttributeCategory.findIsContainingProperty(attributeProperty, ipsProject));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * A property is assigned to a category other than the corresponding default category and this
+     * other category can only be found in the {@link IProductCmptType}'s supertype hierarchy.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The operation should return false as categories defined in the supertype hierarchy must be
+     * considered.
+     */
+    @Test
+    public void testFindIsContainingProperty_CategoryDefinedInSupertype() throws CoreException {
+        IProductCmptCategory defaultAttributeCategory = productType.newProductCmptCategory("defaultAttribute");
+        defaultAttributeCategory.setDefaultForProductCmptTypeAttributes(true);
+
+        IProductCmptType superProdcutType = createSuperProductType(productType, "Super");
+        IProductCmptCategory superCategory = superProdcutType.newProductCmptCategory("superCategory");
+
+        IProductCmptProperty attributeProperty = productType.newProductCmptTypeAttribute("attribute");
+        attributeProperty.setCategory(superCategory.getName());
+
+        assertFalse(defaultAttributeCategory.findIsContainingProperty(attributeProperty, ipsProject));
+    }
+
+    @Test
     public void testSetDefaultForFormulaSignatureDefinitions() {
         category.setDefaultForFormulaSignatureDefinitions(true);
         assertTrue(category.isDefaultForFormulaSignatureDefinitions());
@@ -531,8 +601,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         testProperty.setCategory(testCategory.getName());
 
         assertArraysEquals(new int[] { 0 }, testCategory.moveProductCmptProperties(new int[] { 0 }, true, productType));
-        List<IProductCmptProperty> orderedProperties = ((ProductCmptType)productType)
-                .findProductCmptPropertiesInReferencedOrder(false, ipsProject);
+        List<IProductCmptProperty> orderedProperties = ((ProductCmptType)productType).findProductCmptPropertiesInOrder(
+                false, ipsProject);
         assertEquals(aboveProperty, orderedProperties.get(0));
         assertEquals(testProperty, orderedProperties.get(1));
     }
@@ -557,8 +627,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         belowProperty.setCategory(belowCategory.getName());
 
         assertArraysEquals(new int[] { 0 }, testCategory.moveProductCmptProperties(new int[] { 0 }, false, productType));
-        List<IProductCmptProperty> orderedProperties = ((ProductCmptType)productType)
-                .findProductCmptPropertiesInReferencedOrder(false, ipsProject);
+        List<IProductCmptProperty> orderedProperties = ((ProductCmptType)productType).findProductCmptPropertiesInOrder(
+                false, ipsProject);
         assertEquals(testProperty, orderedProperties.get(0));
         assertEquals(belowProperty, orderedProperties.get(1));
     }

@@ -63,19 +63,23 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
     }
 
     @Override
+    public boolean findIsContainingProperty(IProductCmptProperty property, IIpsProject ipsProject) throws CoreException {
+        if (name.equals(property.getCategory())) {
+            return true;
+        }
+        if (isDefaultFor(property.getProductCmptPropertyType())
+                && !getProductCmptType().findHasProductCmptCategory(property.getCategory(), ipsProject)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType,
             boolean searchSupertypeHierarchy,
             IIpsProject ipsProject) throws CoreException {
 
-        List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
-        for (IProductCmptProperty property : ((ProductCmptType)contextType).findProductCmptPropertiesInReferencedOrder(
-                searchSupertypeHierarchy, ipsProject)) {
-            if (property.getCategory().equals(name)
-                    || (property.getCategory().isEmpty() && isDefaultFor(property.getProductCmptPropertyType()))) {
-                properties.add(property);
-            }
-        }
-        return properties;
+        return contextType.findProductCmptPropertiesForCategory(this, searchSupertypeHierarchy, ipsProject);
     }
 
     @Override

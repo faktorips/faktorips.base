@@ -43,6 +43,10 @@ public final class IpsObjectPartCategoryHelper {
         return category;
     }
 
+    public boolean hasCategory() {
+        return !category.isEmpty();
+    }
+
     public void initPropertiesFromXml(Element element) {
         String categoryAttribute = element.getAttribute(ICategorisableElement.PROPERTY_CATEGORY);
         category = categoryAttribute != null ? categoryAttribute : ""; //$NON-NLS-1$

@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -224,13 +223,6 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         bStructureUsage.setRoleName("otherName");
         ml = aStructureUsage.validate(aStructureUsage.getIpsProject());
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
-    }
-
-    @Test
-    public void testSetCategory() {
-        tableStructureUsage.setCategory("foo");
-        assertEquals("foo", tableStructureUsage.getCategory());
-        assertPropertyChangedEvent(tableStructureUsage, IPolicyCmptTypeAttribute.PROPERTY_CATEGORY, "", "foo");
     }
 
     @Test

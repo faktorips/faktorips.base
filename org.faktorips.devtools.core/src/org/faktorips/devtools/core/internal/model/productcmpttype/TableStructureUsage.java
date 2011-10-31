@@ -322,6 +322,11 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     }
 
     @Override
+    public boolean hasCategory() {
+        return categoryHelper.hasCategory();
+    }
+
+    @Override
     public void setCategory(String category) {
         categoryHelper.setCategory(category);
     }

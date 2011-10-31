@@ -24,7 +24,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
@@ -265,13 +264,6 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         msgList = bMethod.validate(ipsProject);
         msg = msgList.getMessageByCode(IProductCmptTypeMethod.MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY);
         assertNotNull(msg);
-    }
-
-    @Test
-    public void testSetCategory() {
-        method.setCategory("foo");
-        assertEquals("foo", method.getCategory());
-        assertPropertyChangedEvent(method, IPolicyCmptTypeAttribute.PROPERTY_CATEGORY, "", "foo");
     }
 
     @Test

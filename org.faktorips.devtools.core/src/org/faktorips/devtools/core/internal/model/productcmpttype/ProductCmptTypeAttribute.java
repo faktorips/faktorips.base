@@ -220,6 +220,11 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
+    public boolean hasCategory() {
+        return categoryHelper.hasCategory();
+    }
+
+    @Override
     public void setCategory(String category) {
         categoryHelper.setCategory(category);
     }

@@ -509,6 +509,11 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     }
 
     @Override
+    public boolean hasCategory() {
+        return categoryHelper.hasCategory();
+    }
+
+    @Override
     public void setCategory(String category) {
         categoryHelper.setCategory(category);
     }

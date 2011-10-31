@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -160,6 +161,22 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
     public List<IPropertyValue> findPropertyValues(IProductCmptType contextType,
             IProductCmptGeneration contextGeneration,
             IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns whether this category contains the indicated property.
+     * <p>
+     * If this category is marked as default for the corresponding property type, true will be
+     * returned if the property has no category or belongs to a category that cannot be found.
+     * <p>
+     * The supertype hierarchy of this category's {@link IProductCmptType} is considered while
+     * searching for categories.
+     * 
+     * @param property The {@link IProductCmptProperty} to check for containment
+     * @param ipsProject The {@link IIpsProject} whose {@link IIpsObjectPath} to use for the search
+     * 
+     * @throws CoreException If an error occurs during the search
+     */
+    public boolean findIsContainingProperty(IProductCmptProperty property, IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns whether this category is marked as default category for

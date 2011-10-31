@@ -104,6 +104,26 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testIsReferencingProperty_PropertyWithSameIdInSupertype() throws CoreException, SecurityException,
+            IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
+
+        IProductCmptType superProductType = newProductCmptType(ipsProject, "SuperProductCmptType");
+        productType.setSupertype(superProductType.getQualifiedName());
+
+        IProductCmptTypeAttribute productAttribute = productType.newProductCmptTypeAttribute("productAttribute");
+        setId(productAttribute, "foo");
+        IProductCmptTypeAttribute superProductAttribute = superProductType
+                .newProductCmptTypeAttribute("superProductAttribute");
+        setId(superProductAttribute, "foo");
+
+        IProductCmptPropertyReference reference = new ProductCmptPropertyReference(productType, "id");
+        reference.setReferencedProperty(productAttribute);
+
+        assertTrue(reference.isReferencingProperty(productAttribute));
+        assertFalse(reference.isReferencingProperty(superProductAttribute));
+    }
+
+    @Test
     public void testFindProductCmptProperty() throws CoreException {
         IPolicyCmptTypeAttribute policyAttribute = policyType.newPolicyCmptTypeAttribute("policyAttribute");
         policyAttribute.setProductRelevant(true);

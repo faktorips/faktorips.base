@@ -360,13 +360,6 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetCategory() {
-        attribute.setCategory("foo");
-        assertEquals("foo", attribute.getCategory());
-        assertPropertyChangedEvent(attribute, IPolicyCmptTypeAttribute.PROPERTY_CATEGORY, "", "foo");
-    }
-
-    @Test
     public void testIsPolicyCmptTypeProperty() {
         assertTrue(attribute.isPolicyCmptTypeProperty());
     }
