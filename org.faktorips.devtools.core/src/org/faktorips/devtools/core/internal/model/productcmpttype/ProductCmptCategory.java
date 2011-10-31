@@ -74,37 +74,6 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
         return false;
     }
 
-    @Override
-    public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType,
-            boolean searchSupertypeHierarchy,
-            IIpsProject ipsProject) throws CoreException {
-
-        return contextType.findProductCmptPropertiesForCategory(this, searchSupertypeHierarchy, ipsProject);
-    }
-
-    @Override
-    public List<IPropertyValue> findPropertyValues(IProductCmptType contextType,
-            IProductCmptGeneration contextGeneration,
-            IIpsProject ipsProject) throws CoreException {
-
-        // Collect all potential property values
-        List<IPropertyValue> allPropertyValues = new ArrayList<IPropertyValue>();
-        allPropertyValues.addAll(contextGeneration.getAllPropertyValues());
-        allPropertyValues.addAll(contextGeneration.getProductCmpt().getAllPropertyValues());
-
-        // Find the property values corresponding to the category's properties
-        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
-        for (IProductCmptProperty property : findProductCmptProperties(contextType, true, ipsProject)) {
-            for (IPropertyValue propertyValue : allPropertyValues) {
-                if (property.getProductCmptPropertyType().equals(propertyValue.getPropertyType())
-                        && property.getPropertyName().equals(propertyValue.getPropertyName())) {
-                    propertyValues.add(propertyValue);
-                }
-            }
-        }
-        return propertyValues;
-    }
-
     private boolean isDefaultFor(ProductCmptPropertyType propertyType) {
         boolean isDefault = false;
         switch (propertyType) {
@@ -125,6 +94,39 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
                 break;
         }
         return isDefault;
+    }
+
+    @Override
+    public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType,
+            boolean searchSupertypeHierarchy,
+            IIpsProject ipsProject) throws CoreException {
+
+        return contextType.findProductCmptPropertiesForCategory(this, searchSupertypeHierarchy, ipsProject);
+    }
+
+    @Override
+    public List<IPropertyValue> findPropertyValues(IProductCmptType contextType,
+            IProductCmptGeneration contextGeneration,
+            IIpsProject ipsProject) throws CoreException {
+
+        // TODO AW 31-10-2011: Law of Demeter
+
+        // Collect all potential property values
+        List<IPropertyValue> allPropertyValues = new ArrayList<IPropertyValue>();
+        allPropertyValues.addAll(contextGeneration.getAllPropertyValues());
+        allPropertyValues.addAll(contextGeneration.getProductCmpt().getAllPropertyValues());
+
+        // Find the property values corresponding to the category's properties
+        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
+        for (IProductCmptProperty property : findProductCmptProperties(contextType, true, ipsProject)) {
+            for (IPropertyValue propertyValue : allPropertyValues) {
+                if (property.getProductCmptPropertyType().equals(propertyValue.getPropertyType())
+                        && property.getPropertyName().equals(propertyValue.getPropertyName())) {
+                    propertyValues.add(propertyValue);
+                }
+            }
+        }
+        return propertyValues;
     }
 
     @Override
@@ -243,9 +245,9 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
     private boolean validateNameAlreadyUsedInTypeHierarchy(MessageList list, IIpsProject ipsProject)
             throws CoreException {
 
-        boolean valid = !isNameAlreadyUsedInThisType();
+        boolean valid = !isCategoryNameAlreadyUsedInThisType();
         if (valid) {
-            valid = !isNameAlreadyUsedInSupertypeHierarchy(ipsProject);
+            valid = !isCategoryNameAlreadyUsedInSupertypeHierarchy(ipsProject);
         }
 
         if (!valid) {
@@ -257,19 +259,23 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
         return valid;
     }
 
-    private boolean isNameAlreadyUsedInThisType() {
+    private boolean isCategoryNameAlreadyUsedInThisType() {
+        // TODO AW 31-10-2011: Law of Demeter: create isCategoryNameUsedTwiceInThisType in
+        // ProductCmptType
         for (IProductCmptCategory category : getProductCmptType().getProductCmptCategories()) {
             if (category == this) {
                 continue;
             }
-            if (category.getName().equals(name)) {
+            if (name.equals(category.getName())) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isNameAlreadyUsedInSupertypeHierarchy(IIpsProject ipsProject) throws CoreException {
+    private boolean isCategoryNameAlreadyUsedInSupertypeHierarchy(IIpsProject ipsProject) throws CoreException {
+        // TODO AW 31-10-2011: Law of Demeter: create isCategoryNameUsedTwiceInSupertypeHierarchy in
+        // ProductCmptType
         if (getProductCmptType().hasSupertype()) {
             IProductCmptType superProductCmptType = getProductCmptType().findSuperProductCmptType(ipsProject);
             if (superProductCmptType != null) {
@@ -406,7 +412,7 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
         defaultForTableStructureUsages = Boolean.parseBoolean(element
                 .getAttribute(PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES));
         defaultForValidationRules = Boolean.parseBoolean(element.getAttribute(PROPERTY_DEFAULT_FOR_VALIDATION_RULES));
-        position = Position.valueOf(element.getAttribute(PROPERTY_POSITION).toUpperCase());
+        position = Position.getValueById(element.getAttribute(PROPERTY_POSITION));
 
         super.initPropertiesFromXml(element, id);
     }
@@ -425,7 +431,7 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
         element.setAttribute(PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES,
                 Boolean.toString(defaultForTableStructureUsages));
         element.setAttribute(PROPERTY_DEFAULT_FOR_VALIDATION_RULES, Boolean.toString(defaultForValidationRules));
-        element.setAttribute(PROPERTY_POSITION, position.toString().toLowerCase());
+        element.setAttribute(PROPERTY_POSITION, position.getId());
     }
 
     @Override
@@ -444,7 +450,7 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             for (IProductCmptCategory category : currentType.getProductCmptCategories()) {
-                if (isDefault(category) && !category.getName().equals(name)) {
+                if (isDefault(category) && !name.equals(category.getName())) {
                     duplicateDefaultFound = true;
                     return false;
                 }

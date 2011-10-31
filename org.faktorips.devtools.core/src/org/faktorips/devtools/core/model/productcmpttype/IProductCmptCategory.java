@@ -305,8 +305,35 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      */
     public static enum Position {
 
-        LEFT,
-        RIGHT;
+        LEFT("left"), //$NON-NLS-1$
+        RIGHT("right"); //$NON-NLS-1$
+
+        /**
+         * Returns the enum value corresponding to the provided id.
+         * 
+         * @param id the id of the enum value to be returned
+         */
+        public static final Position getValueById(String id) {
+            if (Position.LEFT.getId().equals(id)) {
+                return LEFT;
+            } else if (Position.RIGHT.getId().equals(id)) {
+                return RIGHT;
+            }
+            return null;
+        }
+
+        private final String id;
+
+        private Position(String id) {
+            this.id = id;
+        }
+
+        /**
+         * Returns the ID of this position.
+         */
+        public final String getId() {
+            return id;
+        }
 
     }
 
