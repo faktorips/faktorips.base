@@ -491,7 +491,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         validateDefaultCategoryForValidationRules(list, ipsProject);
     }
 
-    // TODO pk: write test case
     private void validateIfAnOverrideOfOverloadedFormulaExists(MessageList msgList, IIpsProject ipsProject)
             throws CoreException {
 
