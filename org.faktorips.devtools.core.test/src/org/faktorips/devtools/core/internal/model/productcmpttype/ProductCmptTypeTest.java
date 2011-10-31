@@ -48,6 +48,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
@@ -462,6 +463,83 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         policyCmptTypeAttr.setProductRelevant(false);
         assertNull(productCmptType.findProductCmptProperty(policyCmptTypeAttr.getName(), ipsProject));
+    }
+
+    @Test
+    public void testFindProductCmptProperty_ByReference() throws CoreException {
+        IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
+        policyAttribute.setProductRelevant(true);
+        IValidationRule validationRule = policyCmptType.newRule();
+        validationRule.setName("validationRule");
+        validationRule.setConfigurableByProductComponent(true);
+        IProductCmptTypeMethod formula = productCmptType.newProductCmptTypeMethod();
+        formula.setName("formula");
+        formula.setFormulaName("formula");
+        formula.setFormulaSignatureDefinition(true);
+        ITableStructureUsage tsu = productCmptType.newTableStructureUsage();
+        tsu.setRoleName("tsu");
+        IProductCmptTypeAttribute productAttribute = productCmptType.newProductCmptTypeAttribute("productAttribute");
+
+        IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(productCmptType,
+                "id1");
+        policyAttributeReference.setReferencedProperty(policyAttribute);
+
+        IProductCmptPropertyReference validationRuleReference = new ProductCmptPropertyReference(productCmptType, "id2");
+        validationRuleReference.setReferencedProperty(validationRule);
+
+        IProductCmptPropertyReference formulaReference = new ProductCmptPropertyReference(productCmptType, "id3");
+        formulaReference.setReferencedProperty(formula);
+
+        IProductCmptPropertyReference tsuReference = new ProductCmptPropertyReference(productCmptType, "id4");
+        tsuReference.setReferencedProperty(tsu);
+
+        IProductCmptPropertyReference productAttributeReference = new ProductCmptPropertyReference(productCmptType,
+                "id5");
+        productAttributeReference.setReferencedProperty(productAttribute);
+
+        assertEquals(policyAttribute, productCmptType.findProductCmptProperty(policyAttributeReference, ipsProject));
+        assertEquals(validationRule, productCmptType.findProductCmptProperty(validationRuleReference, ipsProject));
+        assertEquals(formula, productCmptType.findProductCmptProperty(formulaReference, ipsProject));
+        assertEquals(tsu, productCmptType.findProductCmptProperty(tsuReference, ipsProject));
+        assertEquals(productAttribute, productCmptType.findProductCmptProperty(productAttributeReference, ipsProject));
+    }
+
+    @Test
+    public void testFindProductCmptProperty_ByReferencePolicyCmptTypeNotFound() throws CoreException {
+        IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
+        policyAttribute.setProductRelevant(true);
+
+        IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(productCmptType,
+                "id1");
+        policyAttributeReference.setReferencedProperty(policyAttribute);
+
+        policyCmptType.delete();
+
+        // Null should be returned, but no exception may be thrown
+        assertNull(productCmptType.findProductCmptProperty(policyAttributeReference, ipsProject));
+    }
+
+    @Test
+    public void testFindProductCmptProperty_ByReferenceSameIdInPolicyTypeAndProductType() throws CoreException,
+            SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
+
+        IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
+        policyAttribute.setName("policyAttribute");
+        policyAttribute.setProductRelevant(true);
+        setPartId(policyAttribute, "foo");
+        IProductCmptTypeAttribute productAttribute = productCmptType.newProductCmptTypeAttribute("productAttribute");
+        productAttribute.setName("productAttribute");
+        setPartId(productAttribute, "foo");
+
+        IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(productCmptType,
+                "id1");
+        policyAttributeReference.setReferencedProperty(policyAttribute);
+        IProductCmptPropertyReference productAttributeReference = new ProductCmptPropertyReference(productCmptType,
+                "id1");
+        productAttributeReference.setReferencedProperty(productAttribute);
+
+        assertEquals(policyAttribute, productCmptType.findProductCmptProperty(policyAttributeReference, ipsProject));
+        assertEquals(productAttribute, productCmptType.findProductCmptProperty(productAttributeReference, ipsProject));
     }
 
     @Test

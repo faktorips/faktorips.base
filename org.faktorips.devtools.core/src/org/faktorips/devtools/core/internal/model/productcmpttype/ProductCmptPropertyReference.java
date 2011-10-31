@@ -87,12 +87,7 @@ public final class ProductCmptPropertyReference extends AtomicIpsObjectPart impl
 
     @Override
     public IProductCmptProperty findProductCmptProperty(IIpsProject ipsProject) throws CoreException {
-        for (IProductCmptProperty property : getProductCmptType().findProductCmptProperties(false, ipsProject)) {
-            if (isReferencingProperty(property)) {
-                return property;
-            }
-        }
-        return null;
+        return ((ProductCmptType)getProductCmptType()).findProductCmptProperty(this, ipsProject);
     }
 
     @Override
@@ -132,7 +127,7 @@ public final class ProductCmptPropertyReference extends AtomicIpsObjectPart impl
 
         private static SourceType getValueByIdentifier(String identifier) {
             for (SourceType type : values()) {
-                if (type.identifier.equals(identifier)) {
+                if (identifier.equals(type.identifier)) {
                     return type;
                 }
             }

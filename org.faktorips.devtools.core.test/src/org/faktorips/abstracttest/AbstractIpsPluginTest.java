@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,6 +81,7 @@ import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.enums.EnumContent;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
@@ -1450,6 +1452,14 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase implemen
     protected final void assertWholeContentChangedEvent(IIpsSrcFile ipsSrcFile) {
         assertEquals(ipsSrcFile, lastContentChangeEvent.getIpsSrcFile());
         assertEquals(ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED, lastContentChangeEvent.getEventType());
+    }
+
+    protected final void setPartId(IIpsObjectPart part, String id) throws SecurityException, NoSuchFieldException,
+            IllegalArgumentException, IllegalAccessException {
+
+        Field field = IpsObjectPart.class.getDeclaredField("id");
+        field.setAccessible(true);
+        field.set(part, id);
     }
 
     private static class TestBuilder extends AbstractArtefactBuilder {

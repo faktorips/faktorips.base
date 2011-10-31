@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -178,6 +179,27 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public IProductCmptType findSuperProductCmptType(IIpsProject project) throws CoreException {
         return (IProductCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, getSupertype());
+    }
+
+    /**
+     * Returns the {@link IProductCmptProperty} corresponding to the provided
+     * {@link IProductCmptPropertyReference} or null no such property is found.
+     * 
+     * @param reference the {@link IProductCmptPropertyReference} to search the corresponding
+     *            {@link IProductCmptProperty} for
+     * @param ipsProject the {@link IIpsProject} whose {@link IIpsObjectPath} is used for the search
+     * 
+     * @throws CoreException If an error occurs during the search
+     */
+    IProductCmptProperty findProductCmptProperty(IProductCmptPropertyReference reference, IIpsProject ipsProject)
+            throws CoreException {
+
+        for (IProductCmptProperty property : findProductCmptProperties(false, ipsProject)) {
+            if (reference.isReferencingProperty(property)) {
+                return property;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -841,16 +863,33 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return categories.moveParts(indexes, up);
     }
 
-    // TODO AW
     /**
-     * Moves the {@link ProductCmptPropertyReference}s corresponding to the given indices of the
-     * context properties up or down.
+     * Moves {@link IProductCmptPropertyReference}s up or down within this type.
      * <p>
-     * Returns the new indices within the context list as they are after the move was performed.
+     * The move operation is logically performed according to the provided context list.
+     * <p>
+     * <strong>Example:</strong><br>
+     * <ol>
+     * <li>property1 (in context list)<br>
+     * <li>property2 (not in context list)<br>
+     * <li>property3 (in context list)
+     * </ol>
+     * Moving property3 up results in:<br>
+     * <br>
+     * <ol>
+     * <li>property3 (in context list)<br>
+     * <li>property2 (not in context list)<br>
+     * <li>property1 (in context list)
+     * </ol>
+     * <p>
+     * The indices array identifies the properties to be moved within the context list. Therefore,
+     * the indices must be valid with respect to the context list.
+     * <p>
+     * Returns the new indices within the context list.
      * 
-     * @param movedIndices the {@link ProductCmptPropertyReference}s corresponding to these
-     *            {@link IProductCmptProperty}s are moved
-     * @param contextProperties only {@link ProductCmptPropertyReference} corresponding to these
+     * @param movedIndices the indices identifying the {@link IProductCmptProperty}s of the context
+     *            list to be moved
+     * @param contextProperties only {@link IProductCmptPropertyReference}s corresponding to these
      *            {@link IProductCmptProperty}s are swapped with each other. This is necessary to be
      *            able to change the ordering of properties that belong to the same category without
      *            interference from properties belonging to other categories. To achieve this,
@@ -858,7 +897,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      *            question
      * @param up flag indicating whether to move up or down
      * 
-     * @return true if the underlying list actually changed due to this move operation, false if not
+     * @return true the new indices within the context list
      * 
      * @throws CoreException If an error occurs during the move
      */
