@@ -24,7 +24,6 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCategoryHelper;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
@@ -57,8 +56,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
-    private final IpsObjectPartCategoryHelper categoryHelper;
-
     private boolean productRelevant;
 
     private AttributeType attributeType = AttributeType.CHANGEABLE;
@@ -79,7 +76,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      */
     public PolicyCmptTypeAttribute(IPolicyCmptType pcType, String id) {
         super(pcType, id);
-        categoryHelper = new IpsObjectPartCategoryHelper(this);
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
         if (pcType.getIpsProject().isPersistenceSupportEnabled()) {
             persistenceAttributeInfo = newPart(PersistentAttributeInfo.class);
@@ -314,7 +310,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
         computationMethodSignature = element.getAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE);
-        categoryHelper.initPropertiesFromXml(element);
     }
 
     @Override
@@ -324,7 +319,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         element.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant); //$NON-NLS-1$
         element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
         element.setAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE, "" + computationMethodSignature); //$NON-NLS-1$
-        categoryHelper.propertiesToXml(element);
     }
 
     @Override
@@ -464,21 +458,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     public boolean isChangingOverTime() {
         return true;
-    }
-
-    @Override
-    public String getCategory() {
-        return categoryHelper.getCategory();
-    }
-
-    @Override
-    public boolean hasCategory() {
-        return categoryHelper.hasCategory();
-    }
-
-    @Override
-    public void setCategory(String category) {
-        categoryHelper.setCategory(category);
     }
 
     @Override

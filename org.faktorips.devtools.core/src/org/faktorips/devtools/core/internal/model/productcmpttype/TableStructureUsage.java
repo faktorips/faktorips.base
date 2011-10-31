@@ -21,8 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCategoryHelper;
+import org.faktorips.devtools.core.internal.model.type.TypePart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -41,13 +40,11 @@ import org.w3c.dom.Element;
  * 
  * @author Joerg Ortmann
  */
-public class TableStructureUsage extends IpsObjectPart implements ITableStructureUsage {
+public class TableStructureUsage extends TypePart implements ITableStructureUsage {
 
     final static String TAG_NAME = "TableStructureUsage"; //$NON-NLS-1$
 
     final static String TAG_NAME_TABLE_STRUCTURE = "TableStructure"; //$NON-NLS-1$
-
-    private final IpsObjectPartCategoryHelper categoryHelper;
 
     private boolean mandatoryTableContent = false;
 
@@ -56,19 +53,6 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
 
     public TableStructureUsage(IProductCmptType pcType, String id) {
         super(pcType, id);
-        categoryHelper = new IpsObjectPartCategoryHelper(this);
-    }
-
-    @Override
-    public IProductCmptType getType() {
-        return (IProductCmptType)getParent();
-    }
-
-    /**
-     * Constructor for testing purposes.
-     */
-    public TableStructureUsage() {
-        categoryHelper = new IpsObjectPartCategoryHelper(this);
     }
 
     @Override
@@ -131,7 +115,6 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_ROLENAME);
         mandatoryTableContent = Boolean.valueOf(element.getAttribute(PROPERTY_MANDATORY_TABLE_CONTENT)).booleanValue();
-        categoryHelper.initPropertiesFromXml(element);
     }
 
     @Override
@@ -139,7 +122,6 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_ROLENAME, name);
         element.setAttribute(PROPERTY_MANDATORY_TABLE_CONTENT, "" + mandatoryTableContent); //$NON-NLS-1$
-        categoryHelper.propertiesToXml(element);
     }
 
     @Override
@@ -314,21 +296,6 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     @Override
     public String getPropertyDatatype() {
         return ""; //$NON-NLS-1$
-    }
-
-    @Override
-    public String getCategory() {
-        return categoryHelper.getCategory();
-    }
-
-    @Override
-    public boolean hasCategory() {
-        return categoryHelper.hasCategory();
-    }
-
-    @Override
-    public void setCategory(String category) {
-        categoryHelper.setCategory(category);
     }
 
     @Override

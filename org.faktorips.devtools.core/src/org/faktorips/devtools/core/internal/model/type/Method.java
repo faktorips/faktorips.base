@@ -63,11 +63,6 @@ public class Method extends TypePart implements IMethod {
     }
 
     @Override
-    public IType getType() {
-        return (IType)getParent();
-    }
-
-    @Override
     public void setName(String newName) {
         String oldName = name;
         name = newName;

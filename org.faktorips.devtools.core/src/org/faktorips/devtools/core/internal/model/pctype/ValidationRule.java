@@ -27,8 +27,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.InternationalStringXmlHelper;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCategoryHelper;
+import org.faktorips.devtools.core.internal.model.type.TypePart;
 import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -50,7 +49,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class ValidationRule extends AtomicIpsObjectPart implements IValidationRule {
+public class ValidationRule extends TypePart implements IValidationRule {
 
     private static final String VALIDATED_ATTRIBUTE = "ValidatedAttribute"; //$NON-NLS-1$
 
@@ -59,8 +58,6 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     public final static String TAG_NAME = "ValidationRuleDef"; //$NON-NLS-1$
 
     public final static String XML_TAG_MSG_TXT = "MessageText"; //$NON-NLS-1$
-
-    private final IpsObjectPartCategoryHelper categoryHelper;
 
     private final ValidationRuleMessageText msgText;
 
@@ -97,18 +94,12 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
      */
     public ValidationRule(IPolicyCmptType pcType, String id) {
         super(pcType, id);
-        categoryHelper = new IpsObjectPartCategoryHelper(this);
         msgText = new ValidationRuleMessageText(new Observer() {
             @Override
             public void update(Observable o, Object arg) {
                 objectHasChanged();
             }
         });
-    }
-
-    @Override
-    public IPolicyCmptType getType() {
-        return (IPolicyCmptType)getParent();
     }
 
     @Override
@@ -368,7 +359,6 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
             }
         }
         functions.trimToSize();
-        categoryHelper.initPropertiesFromXml(element);
     }
 
     @Override
@@ -397,7 +387,6 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
             newElement.appendChild(attrElement);
         }
         InternationalStringXmlHelper.toXml(msgText, newElement, XML_TAG_MSG_TXT);
-        categoryHelper.propertiesToXml(newElement);
     }
 
     @Override
@@ -501,21 +490,6 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     @Override
     public String getPropertyDatatype() {
         return ValueDatatype.BOOLEAN.getName();
-    }
-
-    @Override
-    public String getCategory() {
-        return categoryHelper.getCategory();
-    }
-
-    @Override
-    public boolean hasCategory() {
-        return categoryHelper.hasCategory();
-    }
-
-    @Override
-    public void setCategory(String category) {
-        categoryHelper.setCategory(category);
     }
 
     @Override

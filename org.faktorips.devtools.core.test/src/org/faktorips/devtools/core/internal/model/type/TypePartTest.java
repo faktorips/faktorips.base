@@ -13,7 +13,13 @@
 
 package org.faktorips.devtools.core.internal.model.type;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -31,12 +37,13 @@ public class TypePartTest extends AbstractIpsPluginTest {
 
     private IType type;
 
-    private ITypePart typePart;
+    private TypePart typePart;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
+
         IIpsProject ipsProject = newIpsProject();
         type = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Foo");
         typePart = new TestTypePart(type, "bar");
@@ -52,9 +59,53 @@ public class TypePartTest extends AbstractIpsPluginTest {
         testPropertyAccessReadWrite(TypePart.class, ITypePart.PROPERTY_MODIFIER, typePart, Modifier.PUBLIC);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testSetModifierNullPointer() {
-        typePart.setModifier(null);
+    @Test
+    public void testSetCategory() {
+        typePart.setCategory("foo");
+        assertEquals("foo", typePart.getCategory());
+        assertPropertyChangedEvent(typePart, ITypePart.PROPERTY_CATEGORY, "", "foo");
+    }
+
+    @Test
+    public void testHasCategory() {
+        typePart.setCategory("foo");
+        assertTrue(typePart.hasCategory());
+
+        typePart.setCategory("");
+        assertFalse(typePart.hasCategory());
+    }
+
+    @Test
+    public void testInitPropertiesFromXml() {
+        Element element = mock(Element.class);
+        when(element.getAttribute(ITypePart.PROPERTY_MODIFIER)).thenReturn(Modifier.PUBLIC.getId());
+        when(element.getAttribute(ITypePart.PROPERTY_CATEGORY)).thenReturn("foo");
+
+        typePart.initPropertiesFromXml(element, null);
+
+        assertEquals(Modifier.PUBLIC, typePart.getModifier());
+        assertEquals("foo", typePart.getCategory());
+    }
+
+    @Test
+    public void testInitPropertiesFromXmlNoCategoryAttribute() {
+        Element element = mock(Element.class);
+
+        typePart.initPropertiesFromXml(element, null);
+
+        assertEquals("", typePart.getCategory());
+    }
+
+    @Test
+    public void testPropertiesToXml() {
+        Element element = mock(Element.class);
+        typePart.setCategory("foo");
+        typePart.setModifier(Modifier.PUBLIC);
+
+        typePart.propertiesToXml(element);
+
+        verify(element).setAttribute(ITypePart.PROPERTY_MODIFIER, Modifier.PUBLIC.getId());
+        verify(element).setAttribute(ITypePart.PROPERTY_CATEGORY, "foo");
     }
 
     private static class TestTypePart extends TypePart {

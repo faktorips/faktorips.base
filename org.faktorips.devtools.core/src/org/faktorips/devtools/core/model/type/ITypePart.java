@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.core.model.type;
 
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 
 /**
@@ -21,9 +23,11 @@ import org.faktorips.devtools.core.model.ipsobject.Modifier;
  * 
  * @author Alexander Weickmann
  */
-public interface ITypePart extends IIpsObjectPart {
+public interface ITypePart extends IIpsObjectPart, IDescribedElement, ILabeledElement {
 
     public final static String PROPERTY_MODIFIER = "modifier"; //$NON-NLS-1$
+
+    public static final String PROPERTY_CATEGORY = "category"; //$NON-NLS-1$
 
     /**
      * Returns the {@link IType} this part belongs to.
@@ -43,5 +47,24 @@ public interface ITypePart extends IIpsObjectPart {
      * @throws NullPointerException If the parameter is null
      */
     public void setModifier(Modifier modifier);
+
+    /**
+     * Returns the category this part is assigned to.
+     */
+    public String getCategory();
+
+    /**
+     * Sets the name of the category this part is assigned to.
+     * 
+     * @param category The name of the category this part is assigned to
+     */
+    public void setCategory(String category);
+
+    /**
+     * Returns whether this part is assigned to a specific category.
+     * <p>
+     * This operation is a shortcut for {@code !getCategory().isEmpty()}.
+     */
+    public boolean hasCategory();
 
 }

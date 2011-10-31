@@ -15,10 +15,6 @@ package org.faktorips.devtools.core.model.type;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.ipsobject.ICategorisableElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -37,7 +33,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
  * @author Jan Ortmann
  * @author Stefan Widmaier
  */
-public interface IProductCmptProperty extends IIpsObjectPart, IDescribedElement, ILabeledElement, ICategorisableElement {
+public interface IProductCmptProperty extends ITypePart {
 
     /**
      * Returns the type of the property. The different types of product definition properties are
@@ -66,11 +62,6 @@ public interface IProductCmptProperty extends IIpsObjectPart, IDescribedElement,
      * Returns this property's data type.
      */
     public String getPropertyDatatype();
-
-    /**
-     * Returns the type this property belongs to.
-     */
-    public IType getType();
 
     /**
      * Returns the {@link IProductCmptType} this property belongs to.

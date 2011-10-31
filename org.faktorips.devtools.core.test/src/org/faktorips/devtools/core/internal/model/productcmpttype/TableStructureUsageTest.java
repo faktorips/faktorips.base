@@ -101,7 +101,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         tableStructureUsage.setCategory("foo");
         Element element = tableStructureUsage.toXml(this.newDocument());
 
-        ITableStructureUsage copy = new TableStructureUsage();
+        ITableStructureUsage copy = type.newTableStructureUsage();
         copy.initFromXml(element);
 
         assertEquals("roleA", copy.getRoleName());

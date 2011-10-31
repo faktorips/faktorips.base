@@ -16,7 +16,8 @@ package org.faktorips.devtools.core.model.productcmpttype;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
 /**
- * Specification of table structure usage object.<br>
+ * Specification of table structure usage object.
+ * <p>
  * Specifies a usage of several table structure for a product component type.
  * 
  * @author Jan Ortmann

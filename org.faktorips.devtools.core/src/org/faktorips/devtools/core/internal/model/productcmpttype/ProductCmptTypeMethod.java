@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCategoryHelper;
 import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -35,8 +34,6 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMethod {
 
-    private final IpsObjectPartCategoryHelper categoryHelper;
-
     private boolean formulaSignatureDefinition = true;
 
     private String formulaName = ""; //$NON-NLS-1$
@@ -45,7 +42,6 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
 
     public ProductCmptTypeMethod(IProductCmptType parent, String id) {
         super(parent, id);
-        categoryHelper = new IpsObjectPartCategoryHelper(this);
     }
 
     @Override
@@ -120,7 +116,6 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
                 .booleanValue();
         formulaName = element.getAttribute(PROPERTY_FORMULA_NAME);
         overloadsFormula = Boolean.valueOf(element.getAttribute(PROPERTY_OVERLOADS_FORMULA)).booleanValue();
-        categoryHelper.initPropertiesFromXml(element);
     }
 
     @Override
@@ -129,7 +124,6 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         element.setAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION, "" + formulaSignatureDefinition); //$NON-NLS-1$
         element.setAttribute(PROPERTY_FORMULA_NAME, formulaName);
         element.setAttribute(PROPERTY_OVERLOADS_FORMULA, String.valueOf(overloadsFormula));
-        categoryHelper.propertiesToXml(element);
     }
 
     @Override
@@ -192,21 +186,6 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     @Override
     public String getPropertyDatatype() {
         return getDatatype();
-    }
-
-    @Override
-    public String getCategory() {
-        return categoryHelper.getCategory();
-    }
-
-    @Override
-    public boolean hasCategory() {
-        return categoryHelper.hasCategory();
-    }
-
-    @Override
-    public void setCategory(String category) {
-        categoryHelper.setCategory(category);
     }
 
     @Override
