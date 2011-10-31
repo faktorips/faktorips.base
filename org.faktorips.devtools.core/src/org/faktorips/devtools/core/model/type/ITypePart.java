@@ -31,10 +31,16 @@ public interface ITypePart extends IIpsObjectPart, IDescribedElement, ILabeledEl
 
     /**
      * Returns the {@link IType} this part belongs to.
-     * <p>
-     * This method never returns null.
      */
     public IType getType();
+
+    /**
+     * Returns whether this {@link ITypePart} belongs to the {@link IType} identified by the
+     * provided qualified name.
+     * 
+     * @param typeQualifiedName The qualified name identifying the {@link IType} in question
+     */
+    public boolean isOfType(String typeQualifiedName);
 
     /**
      * Returns the part's {@link Modifier}.

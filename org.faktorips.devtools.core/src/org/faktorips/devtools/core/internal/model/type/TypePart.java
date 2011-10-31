@@ -41,6 +41,11 @@ public abstract class TypePart extends BaseIpsObjectPart implements ITypePart {
     }
 
     @Override
+    public boolean isOfType(String typeQualifiedName) {
+        return typeQualifiedName.equals(getType().getQualifiedName());
+    }
+
+    @Override
     public Modifier getModifier() {
         return modifier;
     }

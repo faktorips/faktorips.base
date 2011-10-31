@@ -81,10 +81,8 @@ public final class ProductCmptPropertyReference extends AtomicIpsObjectPart impl
     }
 
     private boolean isEqualProductCmptType(IProductCmptProperty property) {
-        // TODO AW 31-10-2011: Law of Demeter
-        String propertyTypeQualifiedName = property.getType().getQualifiedName();
-        return getProductCmptType().getQualifiedName().equals(propertyTypeQualifiedName)
-                || getProductCmptType().getPolicyCmptType().equals(propertyTypeQualifiedName);
+        return property.isOfType(getProductCmptType().getQualifiedName())
+                || property.isOfType(getProductCmptType().getPolicyCmptType());
     }
 
     @Override

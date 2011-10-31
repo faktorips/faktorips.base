@@ -55,6 +55,12 @@ public class TypePartTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testIsOfType() {
+        assertTrue(typePart.isOfType(type.getQualifiedName()));
+        assertFalse(typePart.isOfType("bar"));
+    }
+
+    @Test
     public void testSetModifier() {
         testPropertyAccessReadWrite(TypePart.class, ITypePart.PROPERTY_MODIFIER, typePart, Modifier.PUBLIC);
     }
