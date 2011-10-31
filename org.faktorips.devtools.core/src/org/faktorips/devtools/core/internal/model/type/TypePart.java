@@ -13,9 +13,12 @@
 
 package org.faktorips.devtools.core.internal.model.type;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypePart;
 import org.w3c.dom.Element;
@@ -72,6 +75,17 @@ public abstract class TypePart extends BaseIpsObjectPart implements ITypePart {
     @Override
     public boolean hasCategory() {
         return !category.isEmpty();
+    }
+
+    @Override
+    public boolean findIsBelongingToSameProductCmptType(ITypePart otherPart, IIpsProject ipsProject)
+            throws CoreException {
+
+        IProductCmptType productCmptType = findProductCmptType(ipsProject);
+        if (productCmptType == null) {
+            return false;
+        }
+        return productCmptType.equals(otherPart.findProductCmptType(ipsProject));
     }
 
     @Override

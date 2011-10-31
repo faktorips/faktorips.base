@@ -47,7 +47,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class Method extends TypePart implements IMethod {
+public abstract class Method extends TypePart implements IMethod {
 
     public final static String XML_ELEMENT_NAME = "Method"; //$NON-NLS-1$
 

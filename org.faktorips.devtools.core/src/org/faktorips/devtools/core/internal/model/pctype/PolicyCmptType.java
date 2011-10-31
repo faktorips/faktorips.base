@@ -48,6 +48,7 @@ import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceS
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeMethod;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
@@ -81,13 +82,14 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     private IpsObjectPartCollection<IValidationRule> rules;
     private IIpsObjectPart persistenceTypeInfo;
 
-    private IpsObjectPartCollection<IMethod> methods;
+    private IpsObjectPartCollection<IPolicyCmptTypeMethod> methods;
     private IpsObjectPartCollection<IPolicyCmptTypeAssociation> associations;
     private IpsObjectPartCollection<IPolicyCmptTypeAttribute> attributes;
 
     public PolicyCmptType(IIpsSrcFile file) {
         super(file);
-        methods = new IpsObjectPartCollection<IMethod>(this, Method.class, IMethod.class, Method.XML_ELEMENT_NAME);
+        methods = new IpsObjectPartCollection<IPolicyCmptTypeMethod>(this, PolicyCmptTypeMethod.class,
+                IPolicyCmptTypeMethod.class, Method.XML_ELEMENT_NAME);
         associations = new IpsObjectPartCollection<IPolicyCmptTypeAssociation>(this, PolicyCmptTypeAssociation.class,
                 IPolicyCmptTypeAssociation.class, PolicyCmptTypeAssociation.TAG_NAME);
         attributes = new IpsObjectPartCollection<IPolicyCmptTypeAttribute>(this, PolicyCmptTypeAttribute.class,
@@ -108,7 +110,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    protected IpsObjectPartCollection<IMethod> getMethodPartCollection() {
+    protected IpsObjectPartCollection<IPolicyCmptTypeMethod> getMethodPartCollection() {
         return methods;
     }
 

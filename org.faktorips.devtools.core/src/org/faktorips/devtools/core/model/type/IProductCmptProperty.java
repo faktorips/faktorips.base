@@ -13,14 +13,11 @@
 
 package org.faktorips.devtools.core.model.type;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 /**
  * An abstraction of properties (defined by a type) that are configured by product components. Such
@@ -62,15 +59,6 @@ public interface IProductCmptProperty extends ITypePart {
      * Returns this property's data type.
      */
     public String getPropertyDatatype();
-
-    /**
-     * Returns the {@link IProductCmptType} this property belongs to.
-     * 
-     * @param ipsProject The IPS project whose IPS object path is used for the search
-     * 
-     * @throws CoreException If an error occurs during the search
-     */
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns whether this property's parent is a policy component type instead of a product

@@ -744,7 +744,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public IProductCmptCategory getProductCmptCategory(String name) {
         for (IProductCmptCategory category : categories) {
-            if (category.getName().equals(name)) {
+            if (name.equals(category.getName())) {
                 return category;
             }
         }
@@ -941,7 +941,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (!Arrays.equals(movedIndices, newIndices)) {
             partsMoved(contextReferences.toArray(new IIpsObjectPart[contextReferences.size()]));
         }
-
         return newIndices;
     }
 
@@ -976,17 +975,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
             throws CoreException {
 
         List<IProductCmptProperty> properties = findProductCmptProperties(searchSupertypeHierarchy, ipsProject);
-        Collections.sort(properties, new ProductCmptPropertyComparator(ipsProject));
+        Collections.sort(properties, new ProductCmptPropertyComparator(ipsProject, propertyReferences.asList()));
         return properties;
-    }
-
-    private int getReferencedPropertyIndex(IProductCmptProperty property) {
-        for (int i = 0; i < propertyReferences.size(); i++) {
-            if (propertyReferences.getPart(i).isReferencingProperty(property)) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     @Override
@@ -1043,10 +1033,15 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private static class ProductCmptPropertyComparator implements Comparator<IProductCmptProperty> {
 
+        private final List<IProductCmptPropertyReference> propertyReferences;
+
         private final IIpsProject ipsProject;
 
-        private ProductCmptPropertyComparator(IIpsProject ipsProject) {
+        private ProductCmptPropertyComparator(IIpsProject ipsProject,
+                List<IProductCmptPropertyReference> propertyReferences) {
+
             this.ipsProject = ipsProject;
+            this.propertyReferences = new ArrayList<IProductCmptPropertyReference>(propertyReferences);
         }
 
         @Override
@@ -1062,8 +1057,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 return 0;
             }
 
+            // TODO AW 31-10-2011: Law of Demeter, method
+            // property1.findIsBelongingToSameProductCmptType(property2)
             if (productCmptType1.equals(productCmptType2)) {
-                return comparePropertyIndices(property1, property2, productCmptType1, productCmptType2);
+                return comparePropertyIndices(property1, property2);
             } else {
                 return compareSubtypeRelationship(ipsProject, productCmptType1, productCmptType2);
             }
@@ -1075,13 +1072,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
          * <p>
          * Properties whose indices are greater are sorted towards the end.
          */
-        private int comparePropertyIndices(IProductCmptProperty property1,
-                IProductCmptProperty property2,
-                IProductCmptType productCmptType1,
-                IProductCmptType productCmptType2) {
-
-            int index1 = ((ProductCmptType)productCmptType1).getReferencedPropertyIndex(property1);
-            int index2 = ((ProductCmptType)productCmptType2).getReferencedPropertyIndex(property2);
+        private int comparePropertyIndices(IProductCmptProperty property1, IProductCmptProperty property2) {
+            int index1 = getReferencedPropertyIndex(property1);
+            int index2 = getReferencedPropertyIndex(property2);
 
             if (index1 == -1 || index2 == -1) {
                 return 0;
@@ -1094,6 +1087,15 @@ public class ProductCmptType extends Type implements IProductCmptType {
             } else {
                 return 1;
             }
+        }
+
+        private int getReferencedPropertyIndex(IProductCmptProperty property) {
+            for (int i = 0; i < propertyReferences.size(); i++) {
+                if (propertyReferences.get(i).isReferencingProperty(property)) {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         /**
