@@ -973,49 +973,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return properties;
     }
 
-    List<IProductCmptProperty> findProductCmptPropertiesInOrder(boolean searchSupertypeHierarchy,
-            final IIpsProject ipsProject) throws CoreException {
+    List<IProductCmptProperty> findProductCmptPropertiesInOrder(boolean searchSupertypeHierarchy, IIpsProject ipsProject)
+            throws CoreException {
 
         List<IProductCmptProperty> properties = findProductCmptProperties(searchSupertypeHierarchy, ipsProject);
-        Collections.sort(properties, new Comparator<IProductCmptProperty>() {
-            @Override
-            public int compare(IProductCmptProperty o1, IProductCmptProperty o2) {
-                IProductCmptType productCmptType1;
-                IProductCmptType productCmptType2;
-                try {
-                    productCmptType1 = o1.findProductCmptType(ipsProject);
-                    productCmptType2 = o2.findProductCmptType(ipsProject);
-                } catch (CoreException e) {
-                    // Consider elements equal if the product component types cannot be found
-                    return 0;
-                }
-
-                if (productCmptType1.equals(productCmptType2)) {
-                    int index1 = ((ProductCmptType)productCmptType1).getReferencedPropertyIndex(o1);
-                    int index2 = ((ProductCmptType)productCmptType2).getReferencedPropertyIndex(o2);
-                    if (index1 == -1 || index2 == -1) {
-                        return 0;
-                    }
-                    if (index1 == index2) {
-                        return 0;
-                    } else if (index1 < index2) {
-                        return -1;
-                    } else {
-                        return 1;
-                    }
-                }
-                try {
-                    if (productCmptType1.isSubtypeOf(productCmptType2, ipsProject)) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-                } catch (CoreException e) {
-                    // Consider elements equal if it the subtype relationship cannot be determined
-                    return 0;
-                }
-            }
-        });
+        Collections.sort(properties, new ProductCmptPropertyComparator(ipsProject));
         return properties;
     }
 
@@ -1078,6 +1040,85 @@ public class ProductCmptType extends Type implements IProductCmptType {
         CategoryCounter counter = new CategoryCounter(ipsProject);
         counter.start(this);
         return counter.categoriesFound > 1;
+    }
+
+    private static class ProductCmptPropertyComparator implements Comparator<IProductCmptProperty> {
+
+        private final IIpsProject ipsProject;
+
+        private ProductCmptPropertyComparator(IIpsProject ipsProject) {
+            this.ipsProject = ipsProject;
+        }
+
+        @Override
+        public int compare(IProductCmptProperty property1, IProductCmptProperty property2) {
+            // Search the product component types the properties belong to
+            IProductCmptType productCmptType1;
+            IProductCmptType productCmptType2;
+            try {
+                productCmptType1 = property1.findProductCmptType(ipsProject);
+                productCmptType2 = property2.findProductCmptType(ipsProject);
+            } catch (CoreException e) {
+                // Consider elements equal if the product component types cannot be found
+                return 0;
+            }
+
+            if (productCmptType1.equals(productCmptType2)) {
+                return comparePropertyIndices(property1, property2, productCmptType1, productCmptType2);
+            } else {
+                return compareSubtypeRelationship(ipsProject, productCmptType1, productCmptType2);
+            }
+        }
+
+        /**
+         * Compares the indices of the {@link IProductCmptProperty}s in the list of
+         * {@link IProductCmptPropertyReference}.
+         * <p>
+         * Properties whose indices are greater are sorted towards the end.
+         */
+        private int comparePropertyIndices(IProductCmptProperty property1,
+                IProductCmptProperty property2,
+                IProductCmptType productCmptType1,
+                IProductCmptType productCmptType2) {
+
+            int index1 = ((ProductCmptType)productCmptType1).getReferencedPropertyIndex(property1);
+            int index2 = ((ProductCmptType)productCmptType2).getReferencedPropertyIndex(property2);
+
+            if (index1 == -1 || index2 == -1) {
+                return 0;
+            }
+
+            if (index1 == index2) {
+                return 0;
+            } else if (index1 < index2) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+
+        /**
+         * Compares the provided {@link IProductCmptType}s according to their subtype/supertype
+         * relationship.
+         * <p>
+         * Subtypes are sorted towards the end.
+         */
+        private int compareSubtypeRelationship(final IIpsProject ipsProject,
+                IProductCmptType productCmptType1,
+                IProductCmptType productCmptType2) {
+
+            try {
+                if (productCmptType1.isSubtypeOf(productCmptType2, ipsProject)) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            } catch (CoreException e) {
+                // Consider elements equal if it the subtype relationship cannot be determined
+                return 0;
+            }
+        }
+
     }
 
     private abstract class DefaultCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {

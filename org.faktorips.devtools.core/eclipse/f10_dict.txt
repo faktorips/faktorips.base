@@ -3,6 +3,7 @@ checkbox
 supertype
 supertypes
 subtype
+subtypes
 valueset
 cancelable
 mockito
