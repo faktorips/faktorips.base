@@ -31,6 +31,7 @@ import java.util.TreeSet;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
@@ -971,11 +972,24 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return properties;
     }
 
-    List<IProductCmptProperty> findProductCmptPropertiesInOrder(boolean searchSupertypeHierarchy, IIpsProject ipsProject)
-            throws CoreException {
+    /**
+     * Returns a list containing the {@link IProductCmptProperty}s belonging to this
+     * {@link IProductCmptType} or the configured {@link IPolicyCmptType} in the order they are
+     * referenced by the {@link IProductCmptCategory}s of this {@link IProductCmptType}.
+     * <p>
+     * Returns an empty list if there are no such {@link IProductCmptProperty}s.
+     * 
+     * @param searchSupertypeHierarchy flag indicating whether to include
+     *            {@link IProductCmptProperty}s defined in the supertype hierarchy
+     * @param ipsProject the {@link IIpsProject} whose {@link IIpsObjectPath} is used for the search
+     * 
+     * @throws CoreException if an error occurs during the search
+     */
+    public List<IProductCmptProperty> findProductCmptPropertiesInOrder(boolean searchSupertypeHierarchy,
+            IIpsProject ipsProject) throws CoreException {
 
         List<IProductCmptProperty> properties = findProductCmptProperties(searchSupertypeHierarchy, ipsProject);
-        Collections.sort(properties, new ProductCmptPropertyComparator(ipsProject, propertyReferences.asList()));
+        Collections.sort(properties, new ProductCmptPropertyComparator(ipsProject));
         return properties;
     }
 
@@ -1033,15 +1047,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private static class ProductCmptPropertyComparator implements Comparator<IProductCmptProperty> {
 
-        private final List<IProductCmptPropertyReference> propertyReferences;
-
         private final IIpsProject ipsProject;
 
-        private ProductCmptPropertyComparator(IIpsProject ipsProject,
-                List<IProductCmptPropertyReference> propertyReferences) {
-
+        private ProductCmptPropertyComparator(IIpsProject ipsProject) {
             this.ipsProject = ipsProject;
-            this.propertyReferences = new ArrayList<IProductCmptPropertyReference>(propertyReferences);
         }
 
         @Override
@@ -1090,11 +1099,23 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         private int getReferencedPropertyIndex(IProductCmptProperty property) {
-            for (int i = 0; i < propertyReferences.size(); i++) {
-                if (propertyReferences.get(i).isReferencingProperty(property)) {
+            IProductCmptType productCmptType = null;
+            try {
+                productCmptType = property.findProductCmptType(ipsProject);
+            } catch (CoreException e) {
+                // Return -1 to indicate that the property index could not be determined
+                IpsPlugin.log(e);
+                return -1;
+            }
+            // TODO AW 31-10-2011: Handle productCmptType null case
+
+            // TODO AW 31-10-2011: Law of Demeter: getReferencedPropertyIndex to ProductCmptType
+            for (int i = 0; i < ((ProductCmptType)productCmptType).propertyReferences.size(); i++) {
+                if (((ProductCmptType)productCmptType).propertyReferences.getPart(i).isReferencingProperty(property)) {
                     return i;
                 }
             }
+
             return -1;
         }
 

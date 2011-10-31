@@ -1257,6 +1257,23 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                         .get(0));
     }
 
+    @Test
+    public void testFindProductCmptPropertiesInOrder() throws CoreException {
+        IProductCmptProperty s1 = superProductCmptType.newProductCmptTypeAttribute("s1");
+        IProductCmptProperty s2 = superProductCmptType.newProductCmptTypeAttribute("s2");
+        IProductCmptProperty a1 = productCmptType.newProductCmptTypeAttribute("a1");
+        IProductCmptProperty a2 = productCmptType.newProductCmptTypeAttribute("a2");
+
+        ((ProductCmptType)superProductCmptType).moveProductCmptPropertyReferences(new int[] { 1 },
+                Arrays.asList(s1, s2), true);
+
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(true, ipsProject);
+        assertEquals(s2, properties.get(0));
+        assertEquals(s1, properties.get(1));
+        assertEquals(a1, properties.get(2));
+        assertEquals(a2, properties.get(3));
+    }
+
     // TODO AW other test
     @Test
     public void testFindProdDefProperties() throws CoreException {
