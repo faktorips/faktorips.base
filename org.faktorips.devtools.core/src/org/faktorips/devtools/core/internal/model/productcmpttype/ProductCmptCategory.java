@@ -62,6 +62,10 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
         return (IProductCmptType)getParent();
     }
 
+    private ProductCmptType getProductCmptTypeImpl() {
+        return (ProductCmptType)getProductCmptType();
+    }
+
     @Override
     public boolean findIsContainingProperty(IProductCmptProperty property, IIpsProject ipsProject) throws CoreException {
         if (name.equals(property.getCategory())) {
@@ -245,46 +249,13 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
     private boolean validateNameAlreadyUsedInTypeHierarchy(MessageList list, IIpsProject ipsProject)
             throws CoreException {
 
-        boolean valid = !isCategoryNameAlreadyUsedInThisType();
-        if (valid) {
-            valid = !isCategoryNameAlreadyUsedInSupertypeHierarchy(ipsProject);
-        }
-
-        if (!valid) {
+        if (getProductCmptTypeImpl().findIsCategoryNameUsedTwiceInSupertypeHierarchy(name, ipsProject)) {
             String text = NLS.bind(Messages.ProductCmptCategory_msgNameAlreadyUsedInTypeHierarchy, name,
                     getProductCmptType().getName());
             list.newError(MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY, text, this, PROPERTY_NAME);
+            return false;
         }
-
-        return valid;
-    }
-
-    private boolean isCategoryNameAlreadyUsedInThisType() {
-        // TODO AW 31-10-2011: Law of Demeter: create isCategoryNameUsedTwiceInThisType in
-        // ProductCmptType
-        for (IProductCmptCategory category : getProductCmptType().getProductCmptCategories()) {
-            if (category == this) {
-                continue;
-            }
-            if (name.equals(category.getName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isCategoryNameAlreadyUsedInSupertypeHierarchy(IIpsProject ipsProject) throws CoreException {
-        // TODO AW 31-10-2011: Law of Demeter: create isCategoryNameUsedTwiceInSupertypeHierarchy in
-        // ProductCmptType
-        if (getProductCmptType().hasSupertype()) {
-            IProductCmptType superProductCmptType = getProductCmptType().findSuperProductCmptType(ipsProject);
-            if (superProductCmptType != null) {
-                if (((ProductCmptType)superProductCmptType).findProductCmptCategory(name, ipsProject) != null) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return true;
     }
 
     private void validateDuplicateDefaultsForFormulaSignatureDefinitions(MessageList list, IIpsProject ipsProject)

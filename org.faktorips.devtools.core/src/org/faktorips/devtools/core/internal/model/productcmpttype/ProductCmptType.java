@@ -1045,6 +1045,41 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return true;
     }
 
+    /**
+     * Returns whether at least two {@link IProductCmptCategory}s with the indicated name exist in
+     * the supertype hierarchy of this {@link IProductCmptType} of in this {@link IProductCmptType}
+     * itself.
+     * 
+     * @param categoryName the category name to check
+     * @param ipsProject the {@link IIpsProject} whose {@link IIpsObjectPath} is used for the search
+     * 
+     * @throws CoreException if an error occurs while searching the supertype hierarchy
+     */
+    boolean findIsCategoryNameUsedTwiceInSupertypeHierarchy(final String categoryName, IIpsProject ipsProject)
+            throws CoreException {
+
+        class CategoryCounter extends TypeHierarchyVisitor<IProductCmptType> {
+            int categoriesFound = 0;
+
+            public CategoryCounter(IIpsProject ipsProject) {
+                super(ipsProject);
+            }
+
+            @Override
+            protected boolean visit(IProductCmptType currentType) throws CoreException {
+                for (IProductCmptCategory category : currentType.getProductCmptCategories()) {
+                    if (categoryName.equals(category.getName())) {
+                        categoriesFound++;
+                    }
+                }
+                return categoriesFound < 2;
+            }
+        }
+        CategoryCounter counter = new CategoryCounter(ipsProject);
+        counter.start(this);
+        return counter.categoriesFound > 1;
+    }
+
     private abstract class DefaultCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {
 
         private IProductCmptCategory defaultCategory;

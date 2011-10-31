@@ -1701,6 +1701,31 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(property1, properties.get(2));
     }
 
+    @Test
+    public void testFindIsCategoryNameUsedTwiceInSupertypeHierarchy() throws CoreException {
+        superProductCmptType.newProductCmptCategory("foo");
+        assertFalse(productCmptType.findIsCategoryNameUsedTwiceInSupertypeHierarchy("foo", ipsProject));
+
+        superProductCmptType.newProductCmptCategory("foo");
+        assertTrue(productCmptType.findIsCategoryNameUsedTwiceInSupertypeHierarchy("foo", ipsProject));
+    }
+
+    @Test
+    public void testFindIsCategoryNameUsedTwiceInSupertypeHierarchy_OnceInTypeAndOnceInSupertype() throws CoreException {
+        superProductCmptType.newProductCmptCategory("foo");
+        productCmptType.newProductCmptCategory("foo");
+        assertTrue(productCmptType.findIsCategoryNameUsedTwiceInSupertypeHierarchy("foo", ipsProject));
+    }
+
+    @Test
+    public void testFindIsCategoryNameUsedTwiceInSupertypeHierarchy_NoSupertype() throws CoreException {
+        productCmptType.setSupertype("");
+        productCmptType.newProductCmptCategory("foo");
+        productCmptType.newProductCmptCategory("foo");
+
+        assertTrue(productCmptType.findIsCategoryNameUsedTwiceInSupertypeHierarchy("foo", ipsProject));
+    }
+
     private void deleteAllProductCmptCategories(IProductCmptType productCmptType) {
         for (IProductCmptCategory category : productCmptType.getProductCmptCategories()) {
             category.delete();
