@@ -20,7 +20,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * A helper class that moves a given subset of list elements one position up or down in the list.
  */
-public class ListElementMover<T> extends ElementMover {
+public class ListElementMover<T> implements IElementMover {
 
     private final List<T> list;
 
@@ -84,8 +84,7 @@ public class ListElementMover<T> extends ElementMover {
         return false;
     }
 
-    @Override
-    protected void swapElements(int index1, int index2) {
+    private void swapElements(int index1, int index2) {
         T temp = list.get(index1);
         list.set(index1, list.get(index2));
         list.set(index2, temp);

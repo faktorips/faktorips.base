@@ -825,7 +825,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("p1");
         IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("p2");
         IProductCmptProperty property3 = productCmptType.newProductCmptTypeAttribute("p3");
-        productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property2),
+        productCmptType.moveProductCmptPropertyReferences(new int[] { 1 },
                 Arrays.asList(property1, property2, property3), true);
 
         Element xmlElement = productCmptType.toXml(newDocument());
@@ -844,7 +844,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("p1");
         IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("p2");
         IProductCmptProperty property3 = productCmptType.newProductCmptTypeAttribute("p3");
-        productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property3, property2),
+        productCmptType.moveProductCmptPropertyReferences(new int[] { 2, 1 },
                 Arrays.asList(property1, property2, property3), true);
 
         // Make reference obsolete by deleting the property
@@ -1468,7 +1468,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testSwapProductCmptPropertyReferencess_MoveUp() throws CoreException {
+    public void testMoveProductCmptPropertyReferences_MoveUp() throws CoreException {
         IProductCmptCategory category = productCmptType.newProductCmptCategory("category");
 
         IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("property1");
@@ -1478,8 +1478,10 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptProperty property3 = productCmptType.newProductCmptTypeAttribute("property3");
         property3.setCategory(category.getName());
 
-        assertTrue(productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property3, property2),
-                Arrays.asList(property1, property2, property3), true));
+        assertArraysEquals(
+                new int[] { 1, 0 },
+                productCmptType.moveProductCmptPropertyReferences(new int[] { 2, 1 },
+                        Arrays.asList(property1, property2, property3), true));
         List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInReferencedOrder(false,
                 ipsProject);
         assertEquals(property2, properties.get(0));
@@ -1488,7 +1490,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testSwapProductCmptPropertyReferencess_MoveDown() throws CoreException {
+    public void testMoveProductCmptPropertyReferences_MoveDown() throws CoreException {
         IProductCmptCategory category = productCmptType.newProductCmptCategory("category");
 
         IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("property1");
@@ -1498,8 +1500,10 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptProperty property3 = productCmptType.newProductCmptTypeAttribute("property3");
         property3.setCategory(category.getName());
 
-        assertTrue(productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property1, property2),
-                Arrays.asList(property1, property2, property3), false));
+        assertArraysEquals(
+                new int[] { 1, 2 },
+                productCmptType.moveProductCmptPropertyReferences(new int[] { 0, 1 },
+                        Arrays.asList(property1, property2, property3), false));
         List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInReferencedOrder(false,
                 ipsProject);
         assertEquals(property3, properties.get(0));
@@ -1517,7 +1521,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      * a category are swapped with each other, and return true.
      */
     @Test
-    public void testSwapProductCmptPropertyReferencess_PropertyOfOtherCategoryInBetweenOnMoveUp() throws CoreException {
+    public void testMoveProductCmptPropertyReferences_PropertyOfOtherCategoryInBetweenOnMoveUp() throws CoreException {
         IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
         IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
 
@@ -1528,7 +1532,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("property2");
         property2.setCategory(category1.getName());
 
-        assertTrue(productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property2),
+        assertArraysEquals(new int[] { 0 }, productCmptType.moveProductCmptPropertyReferences(new int[] { 1 },
                 Arrays.asList(property1, property2), true));
         List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInReferencedOrder(false,
                 ipsProject);
@@ -1547,9 +1551,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      * a category are swapped with each other, and return true.
      */
     @Test
-    public void testSwapProductCmptPropertyReferencess_PropertyOfOtherCategoryInBetweenOnMoveDown()
-            throws CoreException {
-
+    public void testMoveProductCmptPropertyReferences_PropertyOfOtherCategoryInBetweenOnMoveDown() throws CoreException {
         IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
         IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
 
@@ -1560,7 +1562,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("property2");
         property2.setCategory(category1.getName());
 
-        assertTrue(productCmptType.moveProductCmptPropertyReferences(Arrays.asList(property1),
+        assertArraysEquals(new int[] { 1 }, productCmptType.moveProductCmptPropertyReferences(new int[] { 0 },
                 Arrays.asList(property1, property2), false));
         List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInReferencedOrder(false,
                 ipsProject);

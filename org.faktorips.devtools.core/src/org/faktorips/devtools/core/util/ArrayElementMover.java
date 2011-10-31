@@ -19,7 +19,7 @@ import org.faktorips.util.ArgumentCheck;
  * A helper class that moves a given subset of array elements one position up or down inside the
  * array.
  */
-public class ArrayElementMover extends ElementMover {
+public class ArrayElementMover implements IElementMover {
 
     private Object[] array;
 
@@ -83,8 +83,7 @@ public class ArrayElementMover extends ElementMover {
         return false;
     }
 
-    @Override
-    protected void swapElements(int index1, int index2) {
+    private void swapElements(int index1, int index2) {
         Object temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;

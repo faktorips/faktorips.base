@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -388,30 +387,7 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
 
         List<IProductCmptProperty> contextProperties = findProductCmptProperties(contextType, false,
                 contextType.getIpsProject());
-        List<IProductCmptProperty> movedProperties = new ArrayList<IProductCmptProperty>(indexes.length);
-
-        // Determine the properties to be moved while checking for upper and lower limit
-        int numberOfProperties = contextProperties.size();
-        for (int i = 0; i < indexes.length; i++) {
-            if ((indexes[i] == 0 && up) || (indexes[i] == numberOfProperties - 1 && !up)) {
-                return Arrays.copyOf(indexes, indexes.length);
-            }
-            movedProperties.add(contextProperties.get(indexes[i]));
-        }
-
-        boolean moved = ((ProductCmptType)contextType).moveProductCmptPropertyReferences(movedProperties,
-                contextProperties, up);
-        if (!moved) {
-            return Arrays.copyOf(indexes, indexes.length);
-        }
-
-        // Compute new indexes
-        int[] newIndexes = new int[indexes.length];
-        int modifier = up ? -1 : 1;
-        for (int i = 0; i < indexes.length; i++) {
-            newIndexes[i] = indexes[i] + modifier;
-        }
-        return newIndexes;
+        return ((ProductCmptType)contextType).moveProductCmptPropertyReferences(indexes, contextProperties, up);
     }
 
     @Override
