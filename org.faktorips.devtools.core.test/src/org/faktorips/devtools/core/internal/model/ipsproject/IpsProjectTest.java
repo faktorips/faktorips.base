@@ -103,10 +103,10 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        ipsProject = (IpsProject)this.newIpsProject("TestProject");
+        ipsProject = (IpsProject)this.newIpsProject();
         root = ipsProject.getIpsPackageFragmentRoots()[0];
 
-        baseProject = (IpsProject)this.newIpsProject("BaseProject");
+        baseProject = (IpsProject)this.newIpsProject();
         IIpsProjectProperties props = baseProject.getProperties();
         props.setPredefinedDatatypesUsed(new String[] { "Integer" });
         baseProject.setProperties(props);
