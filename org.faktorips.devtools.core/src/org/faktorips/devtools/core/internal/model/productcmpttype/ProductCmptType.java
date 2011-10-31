@@ -1120,7 +1120,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     }
 
-    private abstract class DefaultCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {
+    private static abstract class DefaultCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {
 
         private IProductCmptCategory defaultCategory;
 
