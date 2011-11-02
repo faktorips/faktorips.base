@@ -454,8 +454,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public List<IProductCmptCategory> getProductCmptCategories();
 
     /**
-     * Returns a list (defensive copy) containing the {@link IProductCmptCategory}s belonging to
-     * this type.
+     * Returns a list containing the {@link IProductCmptCategory}s belonging to this type.
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * Categories from supertypes are located at the top of the list.

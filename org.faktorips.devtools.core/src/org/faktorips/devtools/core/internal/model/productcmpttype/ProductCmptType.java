@@ -215,11 +215,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IProductCmptProperty findProductCmptProperty(String propName, IIpsProject ipsProject) throws CoreException {
+    public IProductCmptProperty findProductCmptProperty(String propertyName, IIpsProject ipsProject) throws CoreException {
         for (ProductCmptPropertyType type : ProductCmptPropertyType.values()) {
-            IProductCmptProperty prop = findProductCmptProperty(type, propName, ipsProject);
-            if (prop != null) {
-                return prop;
+            IProductCmptProperty property = findProductCmptProperty(type, propertyName, ipsProject);
+            if (property != null) {
+                return property;
             }
         }
         return null;
@@ -433,7 +433,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public List<IProductCmptTypeMethod> getFormulaSignatures() {
-
         ArrayList<IProductCmptTypeMethod> result = new ArrayList<IProductCmptTypeMethod>();
         for (IMethod method2 : methods) {
             IProductCmptTypeMethod method = (IProductCmptTypeMethod)method2;
@@ -739,8 +738,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             IType type = visitor.getVisited().get(i);
             sortedCategories.addAll(typesToOriginalCategories.get(type));
         }
-
-        return Collections.unmodifiableList(sortedCategories);
+        return sortedCategories;
     }
 
     @Override
