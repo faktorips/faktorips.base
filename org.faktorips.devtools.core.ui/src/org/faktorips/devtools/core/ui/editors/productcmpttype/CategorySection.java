@@ -18,9 +18,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -30,14 +35,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-import org.faktorips.devtools.core.ui.DialogHelper;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.editors.EditDialog;
+import org.faktorips.devtools.core.ui.dialogs.DialogHelper;
 import org.faktorips.devtools.core.ui.editors.ViewerButtonComposite;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
@@ -105,19 +108,41 @@ public class CategorySection extends IpsSection {
 
         private final IProductCmptType contextType;
 
+        private Button moveUpButton;
+
+        private Button moveDownButton;
+
+        private Button changeCategoryButton;
+
         public CategoryComposite(IProductCmptCategory category, IProductCmptType contextType, Composite parent,
                 UIToolkit toolkit) {
 
             super(parent);
+
             this.category = category;
             this.contextType = contextType;
+
             initControls(toolkit);
         }
 
         @Override
-        protected Viewer createViewer(Composite parent, UIToolkit toolkit) {
-            TableViewer tableViewer = new TableViewer(parent);
+        protected ContentViewer createViewer(Composite parent, UIToolkit toolkit) {
+            TableViewer tableViewer = new TableViewer(toolkit.createTable(parent, SWT.NONE));
+
+            setLabelProvider(tableViewer);
+            setContentProvider(tableViewer);
+            addDoubleClickChangeCategoryListenerToTableViewer(tableViewer);
+
+            tableViewer.setInput(category);
+
+            return tableViewer;
+        }
+
+        private void setLabelProvider(TableViewer tableViewer) {
             tableViewer.setLabelProvider(new DefaultLabelProvider());
+        }
+
+        private void setContentProvider(ContentViewer tableViewer) {
             tableViewer.setContentProvider(new IStructuredContentProvider() {
                 @Override
                 public Object[] getElements(Object inputElement) {
@@ -142,8 +167,15 @@ public class CategorySection extends IpsSection {
                     // Nothing to do
                 }
             });
-            tableViewer.setInput(category);
-            return tableViewer;
+        }
+
+        private void addDoubleClickChangeCategoryListenerToTableViewer(TableViewer tableViewer) {
+            tableViewer.getTable().addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseDoubleClick(MouseEvent e) {
+                    openChangeCategoryDialog();
+                }
+            });
         }
 
         @Override
@@ -155,9 +187,10 @@ public class CategorySection extends IpsSection {
         }
 
         private void createMoveUpButton(Composite buttonComposite, UIToolkit toolkit) {
-            Button upButton = toolkit.createButton(buttonComposite, Messages.CategorySection_buttonUp);
-            upButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-            upButton.addSelectionListener(new SelectionListener() {
+            moveUpButton = toolkit.createButton(buttonComposite, Messages.CategorySection_buttonUp);
+            moveUpButton
+                    .setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+            moveUpButton.addSelectionListener(new SelectionListener() {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     moveParts(true);
@@ -171,9 +204,10 @@ public class CategorySection extends IpsSection {
         }
 
         private void createMoveDownButton(Composite buttonComposite, UIToolkit toolkit) {
-            Button downButton = toolkit.createButton(buttonComposite, Messages.CategorySection_buttonDown);
-            downButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-            downButton.addSelectionListener(new SelectionListener() {
+            moveDownButton = toolkit.createButton(buttonComposite, Messages.CategorySection_buttonDown);
+            moveDownButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
+                    | GridData.VERTICAL_ALIGN_BEGINNING));
+            moveDownButton.addSelectionListener(new SelectionListener() {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     moveParts(false);
@@ -187,10 +221,6 @@ public class CategorySection extends IpsSection {
         }
 
         private void moveParts(boolean up) {
-            if (getTableViewer().getSelection().isEmpty()) {
-                return;
-            }
-
             int[] selection = getTable().getSelectionIndices();
             int[] newSelection = Arrays.copyOf(selection, selection.length);
             try {
@@ -209,18 +239,13 @@ public class CategorySection extends IpsSection {
         }
 
         private void createChangeCategoryButton(Composite buttonComposite, UIToolkit toolkit) {
-            Button changeCategoryButton = toolkit.createButton(buttonComposite,
-                    Messages.CategorySection_buttonChangeCategory);
+            changeCategoryButton = toolkit.createButton(buttonComposite, Messages.CategorySection_buttonChangeCategory);
             changeCategoryButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
                     | GridData.VERTICAL_ALIGN_BEGINNING));
             changeCategoryButton.addSelectionListener(new SelectionListener() {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
-                    EditDialog editDialog = new ChangeCategoryDialog(getShell());
-                    // TODO AW 02-11-2011: Set data changeable?
-
-                    DialogHelper dialogHelper = new DialogHelper();
-                    dialogHelper.openEditDialogWithMemento(editDialog, getSelectedPart());
+                    openChangeCategoryDialog();
                 }
 
                 @Override
@@ -230,8 +255,16 @@ public class CategorySection extends IpsSection {
             });
         }
 
-        private IIpsObjectPart getSelectedPart() {
-            return (IIpsObjectPart)getSelectedObject();
+        private void openChangeCategoryDialog() {
+            Dialog dialog = new ChangeCategoryDialog(contextType, getSelectedProperty(), category, getShell());
+            // TODO AW 02-11-2011: Set dataChangeable?
+
+            DialogHelper dialogHelper = new DialogHelper();
+            dialogHelper.openEditDialogWithMemento(dialog, getSelectedProperty());
+        }
+
+        private IProductCmptProperty getSelectedProperty() {
+            return (IProductCmptProperty)getSelectedObject();
         }
 
         private Table getTable() {
@@ -244,8 +277,13 @@ public class CategorySection extends IpsSection {
 
         @Override
         protected void updateButtonEnabledStates() {
-            // TODO AW 02-11-2011: Auto-generated method stub
+            moveUpButton.setEnabled(isPropertySelected() && !isFirstElementSelected());
+            moveDownButton.setEnabled(isPropertySelected() && !isLastElementSelected());
+            changeCategoryButton.setEnabled(isPropertySelected());
+        }
 
+        private boolean isPropertySelected() {
+            return !getViewer().getSelection().isEmpty();
         }
 
     }

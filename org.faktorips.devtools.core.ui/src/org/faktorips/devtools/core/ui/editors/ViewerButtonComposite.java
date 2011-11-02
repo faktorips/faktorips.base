@@ -13,10 +13,11 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
+import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -25,7 +26,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 
 public abstract class ViewerButtonComposite extends Composite {
 
-    private Viewer viewer;
+    private ContentViewer viewer;
 
     public ViewerButtonComposite(Composite parent) {
         super(parent, SWT.NONE);
@@ -78,7 +79,7 @@ public abstract class ViewerButtonComposite extends Composite {
     /**
      * Creates and returns the (table or tree) Viewer.
      */
-    protected abstract Viewer createViewer(Composite parent, UIToolkit toolkit);
+    protected abstract ContentViewer createViewer(Composite parent, UIToolkit toolkit);
 
     /**
      * Creates the buttons.
@@ -104,6 +105,30 @@ public abstract class ViewerButtonComposite extends Composite {
         return selection.getFirstElement();
     }
 
+    /**
+     * Returns whether the first element of this composite's viewer is selected.
+     */
+    protected final boolean isFirstElementSelected() {
+        return isFirstOrLastElementSelected(true);
+    }
+
+    /**
+     * Returns whether the last element of this composite's viewer is selected.
+     */
+    protected final boolean isLastElementSelected() {
+        return isFirstOrLastElementSelected(false);
+    }
+
+    private boolean isFirstOrLastElementSelected(boolean firstElement) {
+        IStructuredContentProvider contentProvider = (IStructuredContentProvider)getViewer().getContentProvider();
+        Object[] elements = contentProvider.getElements(null);
+        if (getSelectedObject() != null && elements.length > 0
+                && elements[firstElement ? 0 : elements.length - 1] == getSelectedObject()) {
+            return true;
+        }
+        return false;
+    }
+
     public void refresh() {
         if (viewer.getInput() == null) {
             viewer.setInput(this); // if viewer's input is null, it's content provider is not asked
@@ -113,7 +138,7 @@ public abstract class ViewerButtonComposite extends Composite {
         updateButtonEnabledStates();
     }
 
-    protected Viewer getViewer() {
+    protected ContentViewer getViewer() {
         return viewer;
     }
 

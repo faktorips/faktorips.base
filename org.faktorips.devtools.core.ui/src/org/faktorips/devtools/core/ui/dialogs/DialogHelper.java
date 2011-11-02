@@ -11,8 +11,9 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui;
+package org.faktorips.devtools.core.ui.dialogs;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
@@ -30,16 +31,16 @@ public class DialogHelper {
      * {@link IIpsObjectPart} being edited to the state as it was before opening the dialog if the
      * user presses the cancel button.
      * 
-     * @param editDialog the {@link EditDialog} to open
+     * @param dialog the {@link EditDialog} to open
      * @param editedPart the {@link IIpsObjectPart} that is being edited
      */
-    public void openEditDialogWithMemento(EditDialog editDialog, IIpsObjectPart editedPart) {
+    public void openEditDialogWithMemento(Dialog dialog, IIpsObjectPart editedPart) {
         boolean dirty = editedPart.getIpsSrcFile().isDirty();
         Memento memento = editedPart.newMemento();
 
-        editDialog.open();
+        dialog.open();
 
-        if (editDialog.getReturnCode() == Window.CANCEL && editedPart.getIpsSrcFile().isMutable()) {
+        if (dialog.getReturnCode() == Window.CANCEL && editedPart.getIpsSrcFile().isMutable()) {
             editedPart.setState(memento);
             if (!dirty) {
                 editedPart.getIpsSrcFile().markAsClean();

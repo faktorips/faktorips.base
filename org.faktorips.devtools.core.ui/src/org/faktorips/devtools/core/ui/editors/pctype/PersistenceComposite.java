@@ -15,10 +15,10 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -48,8 +48,8 @@ public abstract class PersistenceComposite extends IpsPartsComposite {
      * content/label providers.
      */
     @Override
-    protected Viewer createViewer(Composite parent, UIToolkit toolkit) {
-        Viewer viewer = super.createViewer(parent, toolkit);
+    protected ContentViewer createViewer(Composite parent, UIToolkit toolkit) {
+        ContentViewer viewer = super.createViewer(parent, toolkit);
         if (viewer instanceof TableViewer) {
             TableViewer tableViewer = (TableViewer)viewer;
             ILabelProvider labelProvider = createLabelProvider();

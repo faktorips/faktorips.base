@@ -20,6 +20,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -27,7 +28,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -47,12 +47,12 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-import org.faktorips.devtools.core.ui.DialogHelper;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.dialogs.DialogHelper;
 import org.faktorips.devtools.core.ui.refactor.IpsPullUpHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
@@ -266,7 +266,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     @Override
-    protected Viewer createViewer(Composite parent, UIToolkit toolkit) {
+    protected ContentViewer createViewer(Composite parent, UIToolkit toolkit) {
         table = createTable(parent, toolkit);
         setEditDoubleClickListenerEnabled(true);
         registerOpenLinkListener();
@@ -524,45 +524,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         }
     }
 
-    /**
-     * In case this partcomposite's viewer is a {@link TableViewer} this method returns
-     * <code>true</code> if the viewers selected element is the first element in the table.
-     * <code>false</code> else.
-     * 
-     * @return <code>true</code> only if the table-viewers selected element is the first element in
-     *         the table.
-     */
-    private boolean isFirstElementSelected() {
-        return isFirstOrLastElementSelected(true);
-    }
-
-    /**
-     * In case this partcomposite's viewer is a {@link TableViewer} this method returns
-     * <code>true</code> if the viewers selected element is the last element in the table.
-     * <code>false</code> else.
-     * 
-     * @return <code>true</code> only if the table-viewers selected element is the last element in
-     *         the table.
-     */
-    private boolean isLastElementSelected() {
-        return isFirstOrLastElementSelected(false);
-    }
-
-    private boolean isFirstOrLastElementSelected(boolean firstElement) {
-        Viewer viewer = getViewer();
-        if (viewer instanceof TableViewer) {
-            IStructuredContentProvider contentProvider = (IStructuredContentProvider)((TableViewer)viewer)
-                    .getContentProvider();
-            Object selectedObject = getSelectedObject();
-            Object[] elements = contentProvider.getElements(null);
-            if (selectedObject != null && elements.length > 0
-                    && elements[firstElement ? 0 : elements.length - 1] == selectedObject) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public final IIpsObjectPart getSelectedPart() {
         return (IIpsObjectPart)getSelectedObject();
     }
@@ -602,7 +563,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     protected void editPart() {
-        if (getViewer().getSelection().isEmpty()) {
+        if (getSelection().isEmpty()) {
             return;
         }
 
@@ -621,8 +582,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     private void deletePart() {
-        TableViewer viewer = (TableViewer)getViewer();
-        if (viewer.getSelection().isEmpty()) {
+        if (getSelection().isEmpty()) {
             return;
         }
 

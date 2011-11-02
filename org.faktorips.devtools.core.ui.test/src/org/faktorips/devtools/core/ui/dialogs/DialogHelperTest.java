@@ -11,17 +11,18 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui;
+package org.faktorips.devtools.core.ui.dialogs;
 
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.ui.editors.EditDialog;
+import org.faktorips.devtools.core.ui.dialogs.DialogHelper;
 import org.faktorips.util.memento.Memento;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +33,7 @@ import org.mockito.MockitoAnnotations;
 public class DialogHelperTest {
 
     @Mock
-    private EditDialog editDialog;
+    private Dialog dialog;
 
     @Mock
     private Memento memento;
@@ -58,50 +59,50 @@ public class DialogHelperTest {
 
     @Test
     public void testOpenEditDialogWithMemento_RestoreMementoOnCancel() {
-        when(editDialog.getReturnCode()).thenReturn(Window.CANCEL);
+        when(dialog.getReturnCode()).thenReturn(Window.CANCEL);
 
-        dialogHelper.openEditDialogWithMemento(editDialog, editedPart);
+        dialogHelper.openEditDialogWithMemento(dialog, editedPart);
 
-        InOrder inOrder = inOrder(editDialog, editedPart);
-        inOrder.verify(editDialog).open();
+        InOrder inOrder = inOrder(dialog, editedPart);
+        inOrder.verify(dialog).open();
         inOrder.verify(editedPart).setState(memento);
     }
 
     @Test
     public void testOpenEditDialogWithMemento_MarkAsCleanIfWasCleanBefore() {
-        when(editDialog.getReturnCode()).thenReturn(Window.CANCEL);
+        when(dialog.getReturnCode()).thenReturn(Window.CANCEL);
         when(ipsSrcFile.isDirty()).thenReturn(false);
 
-        dialogHelper.openEditDialogWithMemento(editDialog, editedPart);
+        dialogHelper.openEditDialogWithMemento(dialog, editedPart);
 
         verify(ipsSrcFile).markAsClean();
     }
 
     @Test
     public void testOpenEditDialogWithMemento_DoNotMarkAsCleanIfWasNotCleanBefore() {
-        when(editDialog.getReturnCode()).thenReturn(Window.CANCEL);
+        when(dialog.getReturnCode()).thenReturn(Window.CANCEL);
         when(ipsSrcFile.isDirty()).thenReturn(true);
 
-        dialogHelper.openEditDialogWithMemento(editDialog, editedPart);
+        dialogHelper.openEditDialogWithMemento(dialog, editedPart);
 
         verify(ipsSrcFile, never()).markAsClean();
     }
 
     @Test
     public void testOpenEditDialogWithMemento_DoNotRestoreMementoIfSrcFileImmutable() {
-        when(editDialog.getReturnCode()).thenReturn(Window.CANCEL);
+        when(dialog.getReturnCode()).thenReturn(Window.CANCEL);
         when(ipsSrcFile.isMutable()).thenReturn(false);
 
-        dialogHelper.openEditDialogWithMemento(editDialog, editedPart);
+        dialogHelper.openEditDialogWithMemento(dialog, editedPart);
 
         verify(editedPart, never()).setState(memento);
     }
 
     @Test
     public void testOpenEditDialogWithMemento_DoNotRestoreMementoOnReturnCodeOK() {
-        when(editDialog.getReturnCode()).thenReturn(Window.OK);
+        when(dialog.getReturnCode()).thenReturn(Window.OK);
 
-        dialogHelper.openEditDialogWithMemento(editDialog, editedPart);
+        dialogHelper.openEditDialogWithMemento(dialog, editedPart);
 
         verify(editedPart, never()).setState(memento);
     }
