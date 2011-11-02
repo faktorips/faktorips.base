@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.model.pctype;
 import org.faktorips.devtools.core.model.type.IMethod;
 
 /**
- * TODO AW 31-10-2011: Document properly
+ * An {@link IMethod} that is part of an {@link IPolicyCmptType}.
  * 
  * @since 3.6
  * 
