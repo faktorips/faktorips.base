@@ -52,14 +52,14 @@ public class ColumnEditDialog extends IpsPartEditDialog {
 
     private Control createGeneralPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
+        Composite workArea = getToolkit().createLabelEditColumnComposite(c);
 
-        uiToolkit.createFormLabel(workArea, Messages.ColumnEditDialog_labelName);
-        Text nameText = uiToolkit.createText(workArea);
+        getToolkit().createFormLabel(workArea, Messages.ColumnEditDialog_labelName);
+        Text nameText = getToolkit().createText(workArea);
         nameText.setFocus();
 
-        uiToolkit.createFormLabel(workArea, Messages.ColumnEditDialog_labelDatatype);
-        DatatypeRefControl datatypeControl = uiToolkit.createDatatypeRefEdit(column.getIpsProject(), workArea);
+        getToolkit().createFormLabel(workArea, Messages.ColumnEditDialog_labelDatatype);
+        DatatypeRefControl datatypeControl = getToolkit().createDatatypeRefEdit(column.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setPrimitivesAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);

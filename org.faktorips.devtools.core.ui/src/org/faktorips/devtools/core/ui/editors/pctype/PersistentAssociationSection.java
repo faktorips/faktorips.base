@@ -124,7 +124,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
         }
 
         @Override
-        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
+        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             return new AssociationEditDialog((IPolicyCmptTypeAssociation)part, shell);
         }
 

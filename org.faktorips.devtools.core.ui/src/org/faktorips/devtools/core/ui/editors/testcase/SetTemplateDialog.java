@@ -53,11 +53,11 @@ public class SetTemplateDialog extends EditDialog {
 
     @Override
     protected Composite createWorkArea(Composite parent) {
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
+        Composite workArea = getToolkit().createLabelEditColumnComposite(parent);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        uiToolkit.createFormLabel(workArea, Messages.SetTemplateDialog_DialogTemplate_LabelTemplate);
-        template = new TestCaseTypeRefControl(testCase.getIpsProject(), workArea, uiToolkit);
+        getToolkit().createFormLabel(workArea, Messages.SetTemplateDialog_DialogTemplate_LabelTemplate);
+        template = new TestCaseTypeRefControl(testCase.getIpsProject(), workArea, getToolkit());
         template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         template.getTextControl().addModifyListener(new ModifyListener() {
             @Override

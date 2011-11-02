@@ -62,7 +62,7 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
                 Messages.ProductCmptTypeMethodEditDialog_labelOverloadsFormula);
         bindingContext.bindContent(overloadsFormula, method, IProductCmptTypeMethod.PROPERTY_OVERLOADS_FORMULA);
 
-        Composite area = uiToolkit.createLabelEditColumnComposite(group);
+        Composite area = getToolkit().createLabelEditColumnComposite(group);
         toolkit.createLabel(area, Messages.ProductCmptTypeMethodEditDialog_formulaNameLabel);
         Text formulaNameText = toolkit.createText(area);
         bindingContext.bindContent(formulaNameText, method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME);

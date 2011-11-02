@@ -29,7 +29,9 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
- * TODO AW
+ * Page that allows to edit the {@link IProductCmptCategory}s of an {@link IProductCmptType}.
+ * <p>
+ * The page provides a {@link CategorySection} for each {@link IProductCmptCategory}.
  * 
  * @author Alexander Weickmann
  */
@@ -101,7 +103,7 @@ public class CategoryPage extends IpsObjectEditorPage {
             }
         }
 
-        // TODO AW Create toolbar
+        // TODO AW 02-11-2011: Create toolbar
 
         @Override
         protected void performRefresh() {

@@ -143,10 +143,10 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     /** Creates the general tab. */
     private Control createGeneralPage(TabFolder tabFolder) {
         Composite control = createTabItemComposite(tabFolder, 1, false);
-        workArea = uiToolkit.createLabelEditColumnComposite(control);
+        workArea = getToolkit().createLabelEditColumnComposite(control);
 
         // Create extension properties on position top.
-        extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_TOP);
+        extFactory.createControls(workArea, getToolkit(), enumAttribute, IExtensionPropertyDefinition.POSITION_TOP);
 
         if (literalNameAttribute) {
             createFieldsForLiteralNameAttribute();
@@ -156,7 +156,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         }
 
         // Create extension properties on position bottom.
-        extFactory.createControls(workArea, uiToolkit, enumAttribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
+        extFactory.createControls(workArea, getToolkit(), enumAttribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
         extFactory.bind(bindingContext);
 
         // Set the focus into the name field for better usability.
@@ -168,13 +168,13 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     /** Creates the UI fields for a <tt>IEnumLiteralNameAttribute</tt>. */
     private void createFieldsForLiteralNameAttribute() {
         // Name
-        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
-        nameText = uiToolkit.createText(workArea);
+        getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
+        nameText = getToolkit().createText(workArea);
         bindingContext.bindContent(nameText, enumAttribute, IIpsElement.PROPERTY_NAME);
 
         // Default Value Provider Attribute
-        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDefaultValueProviderAttribute);
-        defaultValueProviderAttributeText = uiToolkit.createText(workArea);
+        getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDefaultValueProviderAttribute);
+        defaultValueProviderAttributeText = getToolkit().createText(workArea);
         bindingContext.bindContent(defaultValueProviderAttributeText, enumAttribute,
                 IEnumLiteralNameAttribute.PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE);
     }
@@ -182,31 +182,31 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     /** Creates the UI fields for a normal <tt>IEnumAttribute</tt>. */
     private void createFieldsForNormalAttribute() {
         // Name
-        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
-        nameText = uiToolkit.createText(workArea);
+        getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
+        nameText = getToolkit().createText(workArea);
 
         // Datatype
-        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDatatype);
-        datatypeControl = uiToolkit.createDatatypeRefEdit(enumAttribute.getIpsProject(), workArea);
+        getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDatatype);
+        datatypeControl = getToolkit().createDatatypeRefEdit(enumAttribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         filterDatatypes();
 
         // Identifier
-        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIdentifier);
-        identifierCheckbox = uiToolkit.createCheckbox(workArea);
+        getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIdentifier);
+        identifierCheckbox = getToolkit().createCheckbox(workArea);
 
         // Display name
-        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDisplayName);
-        displayNameCheckbox = uiToolkit.createCheckbox(workArea);
+        getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDisplayName);
+        displayNameCheckbox = getToolkit().createCheckbox(workArea);
 
         // Unique
-        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUnique);
-        uniqueCheckbox = uiToolkit.createCheckbox(workArea);
+        getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelUnique);
+        uniqueCheckbox = getToolkit().createCheckbox(workArea);
 
         // Inherited
-        uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIsInherited);
-        inheritedCheckbox = uiToolkit.createCheckbox(workArea);
+        getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIsInherited);
+        inheritedCheckbox = getToolkit().createCheckbox(workArea);
     }
 
     /**

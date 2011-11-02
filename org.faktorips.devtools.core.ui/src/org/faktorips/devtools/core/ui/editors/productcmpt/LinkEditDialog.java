@@ -68,11 +68,11 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
     private Control createFirstPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
 
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
+        Composite workArea = getToolkit().createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_target);
-        targetControl = new ProductCmptRefControl(link.getIpsProject(), workArea, uiToolkit);
+        getToolkit().createFormLabel(workArea, Messages.RelationEditDialog_target);
+        targetControl = new ProductCmptRefControl(link.getIpsProject(), workArea, getToolkit());
         try {
             IProductCmptTypeAssociation typeRelation = link.findAssociation(link.getIpsProject());
             if (typeRelation != null) {
@@ -95,16 +95,16 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
             cardinalityEnabled = false;
         }
 
-        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_cardinalityMin);
-        Text minCardinalityText = uiToolkit.createText(workArea);
+        getToolkit().createFormLabel(workArea, Messages.RelationEditDialog_cardinalityMin);
+        Text minCardinalityText = getToolkit().createText(workArea);
         minCardinalityText.setEnabled(cardinalityEnabled);
 
-        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_cardinalityMax);
-        Text maxCardinalityText = uiToolkit.createText(workArea);
+        getToolkit().createFormLabel(workArea, Messages.RelationEditDialog_cardinalityMax);
+        Text maxCardinalityText = getToolkit().createText(workArea);
         maxCardinalityText.setEnabled(cardinalityEnabled);
 
-        uiToolkit.createFormLabel(workArea, Messages.LinkEditDialog_cardinalityDefault);
-        Text defaultCardinalityText = uiToolkit.createText(workArea);
+        getToolkit().createFormLabel(workArea, Messages.LinkEditDialog_cardinalityDefault);
+        Text defaultCardinalityText = getToolkit().createText(workArea);
         defaultCardinalityText.setEnabled(cardinalityEnabled);
 
         // create fields
@@ -118,7 +118,7 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
         bindingContext.bindContent(maxCardinalityField, link, IProductCmptLink.PROPERTY_MAX_CARDINALITY);
         bindingContext.bindContent(defaultCardinalityField, link, IProductCmptLink.PROPERTY_DEFAULT_CARDINALITY);
 
-        extFactory.createControls(workArea, uiToolkit, link);
+        extFactory.createControls(workArea, getToolkit(), link);
         extFactory.bind(bindingContext);
 
         return c;

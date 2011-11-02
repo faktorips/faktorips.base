@@ -108,7 +108,7 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
     }
 
     private Control createTableStructureComposite(Composite cmp) {
-        Composite composite = uiToolkit.createGridComposite(cmp, 2, false, true);
+        Composite composite = getToolkit().createGridComposite(cmp, 2, false, true);
 
         createTable(composite);
         createButtons(composite);
@@ -152,12 +152,12 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
     }
 
     private void createButtons(Composite composite) {
-        Composite buttonComposite = uiToolkit.createGridComposite(composite, 1, true, false);
+        Composite buttonComposite = getToolkit().createGridComposite(composite, 1, true, false);
         buttonComposite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
-        btnAdd = uiToolkit.createButton(buttonComposite, Messages.TblsStructureUsageEditDialog_addButton);
-        btnRemove = uiToolkit.createButton(buttonComposite, Messages.TblsStructureUsageEditDialog_removeButton);
-        btnUp = uiToolkit.createButton(buttonComposite, Messages.TblsStructureUsageEditDialog_upButton);
-        btnDown = uiToolkit.createButton(buttonComposite, Messages.TblsStructureUsageEditDialog_downButton);
+        btnAdd = getToolkit().createButton(buttonComposite, Messages.TblsStructureUsageEditDialog_addButton);
+        btnRemove = getToolkit().createButton(buttonComposite, Messages.TblsStructureUsageEditDialog_removeButton);
+        btnUp = getToolkit().createButton(buttonComposite, Messages.TblsStructureUsageEditDialog_upButton);
+        btnDown = getToolkit().createButton(buttonComposite, Messages.TblsStructureUsageEditDialog_downButton);
 
         btnAdd.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         btnRemove.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -269,10 +269,10 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
 
     private void updateButtonsEnabledState() {
         if (!isDataChangeable()) {
-            uiToolkit.setDataChangeable(btnAdd, false);
-            uiToolkit.setDataChangeable(btnRemove, false);
-            uiToolkit.setDataChangeable(btnUp, false);
-            uiToolkit.setDataChangeable(btnDown, false);
+            getToolkit().setDataChangeable(btnAdd, false);
+            getToolkit().setDataChangeable(btnRemove, false);
+            getToolkit().setDataChangeable(btnUp, false);
+            getToolkit().setDataChangeable(btnDown, false);
             return;
         }
         boolean enabled = false;
@@ -288,20 +288,21 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
 
     private Control createGeneralPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
+        Composite workArea = getToolkit().createLabelEditColumnComposite(c);
 
-        uiToolkit.createFormLabel(workArea, Messages.TblsStructureUsageEditDialog_rolenameLabel);
-        Text nameText = uiToolkit.createText(workArea);
+        getToolkit().createFormLabel(workArea, Messages.TblsStructureUsageEditDialog_rolenameLabel);
+        Text nameText = getToolkit().createText(workArea);
 
-        uiToolkit.createFormLabel(workArea, Messages.TblsStructureUsageEditDialog_contentRequiredLabel);
-        Checkbox mandatoryTableContent = uiToolkit.createCheckbox(workArea);
+        getToolkit().createFormLabel(workArea, Messages.TblsStructureUsageEditDialog_contentRequiredLabel);
+        Checkbox mandatoryTableContent = getToolkit().createCheckbox(workArea);
 
         nameField = new TextField(nameText);
         mandatoryTableContentField = new CheckboxField(mandatoryTableContent);
 
-        uiToolkit.createVerticalSpacer(c, 10);
+        getToolkit().createVerticalSpacer(c, 10);
 
-        Group grp = uiToolkit.createGridGroup(c, Messages.TblsStructureUsageEditDialog_tableStructuresGroup, 1, true);
+        Group grp = getToolkit()
+                .createGridGroup(c, Messages.TblsStructureUsageEditDialog_tableStructuresGroup, 1, true);
         createTableStructureComposite(grp);
 
         return c;

@@ -64,36 +64,36 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
     private Control createGeneralPage(TabFolder folder) {
 
         Composite c = createTabItemComposite(folder, 1, false);
-        Composite workArea = uiToolkit.createGridComposite(c, 1, false, false);
+        Composite workArea = getToolkit().createGridComposite(c, 1, false, false);
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
 
-        createAdditionalControlsOnGeneralPage(workArea, uiToolkit);
+        createAdditionalControlsOnGeneralPage(workArea, getToolkit());
 
-        Group methodSignatureGroup = uiToolkit.createGroup(workArea, Messages.MethodEditDialog_signatureGroup);
-        Composite propertyPane = uiToolkit.createLabelEditColumnComposite(methodSignatureGroup);
+        Group methodSignatureGroup = getToolkit().createGroup(workArea, Messages.MethodEditDialog_signatureGroup);
+        Composite propertyPane = getToolkit().createLabelEditColumnComposite(methodSignatureGroup);
 
-        uiToolkit.createFormLabel(propertyPane, Messages.MethodEditDialog_labelAccesModifier);
-        modifierCombo = uiToolkit.createCombo(propertyPane);
+        getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelAccesModifier);
+        modifierCombo = getToolkit().createCombo(propertyPane);
         modifierCombo.setFocus();
         bindingContext.bindContent(modifierCombo, method, IMethod.PROPERTY_MODIFIER, Modifier.class);
 
-        uiToolkit.createFormLabel(propertyPane, Messages.MethodEditDialog_labelAbstract);
-        abstractCheckbox = uiToolkit.createCheckbox(propertyPane);
+        getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelAbstract);
+        abstractCheckbox = getToolkit().createCheckbox(propertyPane);
         bindingContext.bindContent(abstractCheckbox, method, IMethod.PROPERTY_ABSTRACT);
 
-        uiToolkit.createFormLabel(propertyPane, Messages.MethodEditDialog_labelType);
-        datatypeControl = uiToolkit.createDatatypeRefEdit(method.getIpsProject(), propertyPane);
+        getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelType);
+        datatypeControl = getToolkit().createDatatypeRefEdit(method.getIpsProject(), propertyPane);
         datatypeControl.setVoidAllowed(true);
         datatypeControl.setOnlyValueDatatypesAllowed(false);
         datatypeControl.setAbstractAllowed(true);
         bindingContext.bindContent(datatypeControl, method, IMethod.PROPERTY_DATATYPE);
 
-        uiToolkit.createFormLabel(propertyPane, Messages.MethodEditDialog_labelName);
-        nameText = uiToolkit.createText(propertyPane);
+        getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelName);
+        nameText = getToolkit().createText(propertyPane);
         bindingContext.bindContent(nameText, method, IIpsElement.PROPERTY_NAME);
 
         // parameters
-        parametersControl = new ParametersEditControl(methodSignatureGroup, uiToolkit, SWT.NONE,
+        parametersControl = new ParametersEditControl(methodSignatureGroup, getToolkit(), SWT.NONE,
                 Messages.MethodEditDialog_labelParameters, method.getIpsProject());
         parametersControl.setDataChangeable(isDataChangeable());
         parametersControl.initControl();

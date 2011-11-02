@@ -167,11 +167,11 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     protected abstract Composite createWorkAreaThis(Composite parent);
 
     private TabItem createLabelAndDescriptionTabItem(TabFolder folder) {
-        Composite composite = uiToolkit.createGridComposite(folder, 1, true, true);
-        Group labelGroup = uiToolkit.createGroup(composite, Messages.IpsPartEditDialog_groupLabel);
-        labelEditComposite = new LabelEditComposite(labelGroup, (ILabeledElement)part, uiToolkit);
-        Group descriptionGroup = uiToolkit.createGroup(composite, Messages.IpsPartEditDialog_groupDescription);
-        new DescriptionEditComposite(descriptionGroup, (IDescribedElement)part, uiToolkit);
+        Composite composite = getToolkit().createGridComposite(folder, 1, true, true);
+        Group labelGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupLabel);
+        labelEditComposite = new LabelEditComposite(labelGroup, (ILabeledElement)part, getToolkit());
+        Group descriptionGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupDescription);
+        new DescriptionEditComposite(descriptionGroup, (IDescribedElement)part, getToolkit());
 
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.IpsPartEditDialog_tabItemLabelAndDescription);
@@ -182,7 +182,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
 
     private TabItem createDescriptionTabItem(TabFolder folder) {
         IDescribedElement describedElement = (IDescribedElement)part;
-        Composite editComposite = new DescriptionEditComposite(folder, describedElement, uiToolkit);
+        Composite editComposite = new DescriptionEditComposite(folder, describedElement, getToolkit());
 
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.IpsPartEditDialog_tabItemDescription);
@@ -192,7 +192,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     }
 
     private TabItem createLabelTabItem(TabFolder folder) {
-        labelEditComposite = new LabelEditComposite(folder, (ILabeledElement)part, uiToolkit);
+        labelEditComposite = new LabelEditComposite(folder, (ILabeledElement)part, getToolkit());
 
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.IpsPartEditDialog_tabItemLabel);

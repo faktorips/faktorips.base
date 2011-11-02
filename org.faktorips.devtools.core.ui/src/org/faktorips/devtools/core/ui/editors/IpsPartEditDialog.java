@@ -118,14 +118,14 @@ public abstract class IpsPartEditDialog extends EditDialog {
     protected abstract Composite createWorkAreaThis(Composite parent);
 
     private TabItem createLabelAndDescriptionTabItem(TabFolder folder) {
-        Composite composite = uiToolkit.createGridComposite(folder, 1, true, true);
-        Group labelGroup = uiToolkit.createGroup(composite, Messages.IpsPartEditDialog_groupLabel);
+        Composite composite = getToolkit().createGridComposite(folder, 1, true, true);
+        Group labelGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupLabel);
         GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
         layoutData.minimumHeight = 120;
         labelGroup.setLayoutData(layoutData);
-        new LabelEditComposite(labelGroup, (ILabeledElement)part, uiToolkit);
-        Group descriptionGroup = uiToolkit.createGroup(composite, Messages.IpsPartEditDialog_groupDescription);
-        new DescriptionEditComposite(descriptionGroup, (IDescribedElement)part, uiToolkit);
+        new LabelEditComposite(labelGroup, (ILabeledElement)part, getToolkit());
+        Group descriptionGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupDescription);
+        new DescriptionEditComposite(descriptionGroup, (IDescribedElement)part, getToolkit());
 
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.IpsPartEditDialog_tabItemLabelAndDescription);
@@ -135,7 +135,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
     }
 
     private TabItem createLabelTabItem(TabFolder folder) {
-        Composite editComposite = new LabelEditComposite(folder, (ILabeledElement)part, uiToolkit);
+        Composite editComposite = new LabelEditComposite(folder, (ILabeledElement)part, getToolkit());
 
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.IpsPartEditDialog_tabItemLabel);
@@ -147,7 +147,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
     private TabItem createDescriptionTabItem(TabFolder folder) {
         IDescribedElement describedElement = (IDescribedElement)part;
         DescriptionEditComposite descriptionEditComposite = new DescriptionEditComposite(folder, describedElement,
-                uiToolkit);
+                getToolkit());
         descriptionEditComposite.setViewOnly(!(descriptionEnabled));
 
         TabItem item = new TabItem(folder, SWT.NONE);

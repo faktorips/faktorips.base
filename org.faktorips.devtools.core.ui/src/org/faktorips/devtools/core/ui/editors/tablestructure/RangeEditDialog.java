@@ -82,9 +82,9 @@ public class RangeEditDialog extends IpsPartEditDialog {
 
     private Control createGeneralPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
-        Composite rangeTypeArea = uiToolkit.createGridComposite(c, 2, false, true);
-        uiToolkit.createFormLabel(rangeTypeArea, Messages.RangeEditDialog_labelType);
-        rangeTypeField = new EnumValueField(uiToolkit.createCombo(rangeTypeArea, ColumnRangeType.getEnumType()),
+        Composite rangeTypeArea = getToolkit().createGridComposite(c, 2, false, true);
+        getToolkit().createFormLabel(rangeTypeArea, Messages.RangeEditDialog_labelType);
+        rangeTypeField = new EnumValueField(getToolkit().createCombo(rangeTypeArea, ColumnRangeType.getEnumType()),
                 ColumnRangeType.getEnumType());
         rangeTypeField.addChangeListener(new ValueChangeListener() {
             @Override
@@ -92,42 +92,43 @@ public class RangeEditDialog extends IpsPartEditDialog {
                 adjustEnableStateToRangeType((ColumnRangeType)e.field.getValue());
             }
         });
-        uiToolkit.createFormLabel(rangeTypeArea, Messages.RangeEditDialog_RangeEditDialog_parameterName);
-        Text parameterNameText = uiToolkit.createText(rangeTypeArea);
+        getToolkit().createFormLabel(rangeTypeArea, Messages.RangeEditDialog_RangeEditDialog_parameterName);
+        Text parameterNameText = getToolkit().createText(rangeTypeArea);
         parameterNameField = new TextField(parameterNameText);
 
-        Composite container = uiToolkit.createGridComposite(c, 3, false, false);
+        Composite container = getToolkit().createGridComposite(c, 3, false, false);
 
-        Composite left = uiToolkit.createGridComposite(container, 1, false, true);
-        Composite leftGroup = uiToolkit.createGroup(left, SWT.NONE, Messages.RangeEditDialog_groupTitle);
+        Composite left = getToolkit().createGridComposite(container, 1, false, true);
+        Composite leftGroup = getToolkit().createGroup(left, SWT.NONE, Messages.RangeEditDialog_groupTitle);
 
-        Composite editArea = uiToolkit.createLabelEditColumnComposite(leftGroup);
+        Composite editArea = getToolkit().createLabelEditColumnComposite(leftGroup);
         GridData data = (GridData)editArea.getLayoutData();
         data.widthHint = 180;
         data.heightHint = 200;
-        fromLabel = uiToolkit.createFormLabel(editArea, Messages.RangeEditDialog_labelFrom);
-        Text fromText = uiToolkit.createText(editArea);
+        fromLabel = getToolkit().createFormLabel(editArea, Messages.RangeEditDialog_labelFrom);
+        Text fromText = getToolkit().createText(editArea);
         fromField = new TextField(fromText);
 
         // add space so that the text control for the to column is aligned
         // with it's buttons
-        uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
-        uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
-        uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
-        uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
-        uiToolkit.createVerticalSpacer(editArea, 10);
-        uiToolkit.createVerticalSpacer(editArea, 10);
+        getToolkit().createLabel(editArea, ""); //$NON-NLS-1$
+        getToolkit().createLabel(editArea, ""); //$NON-NLS-1$
+        getToolkit().createLabel(editArea, ""); //$NON-NLS-1$
+        getToolkit().createLabel(editArea, ""); //$NON-NLS-1$
+        getToolkit().createVerticalSpacer(editArea, 10);
+        getToolkit().createVerticalSpacer(editArea, 10);
 
-        toLabel = uiToolkit.createFormLabel(editArea, Messages.RangeEditDialog_labelTo);
-        Text toText = uiToolkit.createText(editArea);
+        toLabel = getToolkit().createFormLabel(editArea, Messages.RangeEditDialog_labelTo);
+        Text toText = getToolkit().createText(editArea);
         toField = new TextField(toText);
 
-        Composite middle = uiToolkit.createGridComposite(container, 1, true, true);
+        Composite middle = getToolkit().createGridComposite(container, 1, true, true);
         middle.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.HORIZONTAL_ALIGN_CENTER));
         createButtons(middle);
 
-        Composite right = uiToolkit.createGridComposite(container, 1, false, true);
-        Composite rightGroup = uiToolkit.createGroup(right, SWT.NONE, Messages.RangeEditDialog_groupAvailableColsTitle);
+        Composite right = getToolkit().createGridComposite(container, 1, false, true);
+        Composite rightGroup = getToolkit().createGroup(right, SWT.NONE,
+                Messages.RangeEditDialog_groupAvailableColsTitle);
         createColumnSelectionComposite(rightGroup);
 
         return c;
@@ -177,7 +178,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
     }
 
     private void createButtons(Composite middle) {
-        toLeft = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
+        toLeft = getToolkit().createButton(middle, ""); //$NON-NLS-1$
         toLeft.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
         toLeft.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
         toLeft.addSelectionListener(new SelectionListener() {
@@ -193,7 +194,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
             }
         });
 
-        toRight = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
+        toRight = getToolkit().createButton(middle, ""); //$NON-NLS-1$
         toRight.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
         toRight.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
         toRight.addSelectionListener(new SelectionListener() {
@@ -208,9 +209,9 @@ public class RangeEditDialog extends IpsPartEditDialog {
             }
         });
 
-        uiToolkit.createVerticalSpacer(middle, 10);
+        getToolkit().createVerticalSpacer(middle, 10);
 
-        toLeft2 = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
+        toLeft2 = getToolkit().createButton(middle, ""); //$NON-NLS-1$
         toLeft2.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
         toLeft2.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
         toLeft2.addSelectionListener(new SelectionListener() {
@@ -225,7 +226,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
             }
         });
 
-        toRight2 = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
+        toRight2 = getToolkit().createButton(middle, ""); //$NON-NLS-1$
         toRight2.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
         toRight2.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
         toRight2.addSelectionListener(new SelectionListener() {
@@ -244,7 +245,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
     }
 
     private void createColumnSelectionComposite(Composite parent) {
-        Composite c = uiToolkit.createGridComposite(parent, 1, false, false);
+        Composite c = getToolkit().createGridComposite(parent, 1, false, false);
         Table table = new Table(c, SWT.BORDER | SWT.FULL_SELECTION);
         table.setHeaderVisible(false);
         table.setLinesVisible(false);

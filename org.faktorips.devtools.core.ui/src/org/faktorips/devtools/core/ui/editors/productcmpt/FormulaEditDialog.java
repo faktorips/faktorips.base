@@ -205,7 +205,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         GridLayout layout = (GridLayout)c.getLayout();
         layout.verticalSpacing = 20;
 
-        parametersControl = new ChangeParametersControl(c, uiToolkit, SWT.NONE,
+        parametersControl = new ChangeParametersControl(c, getToolkit(), SWT.NONE,
                 Messages.FormulaEditDialog_availableParameters, ipsProject) {
 
             @Override
@@ -223,7 +223,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         parametersControl.initControl();
         parametersControl.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        Text formulaText = uiToolkit.createMultilineText(c);
+        Text formulaText = getToolkit().createMultilineText(c);
         try {
             FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(formula);
             ContentAssistHandler.createHandlerForText(formulaText,
@@ -236,8 +236,8 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         formulaField = new TextField(formulaText);
 
         // create the formula input composite
-        Group formulaTestGroup = uiToolkit.createGroup(c, Messages.FormulaEditDialog_GroupLabel_FormulaTestInput);
-        formulaDummyTestInputValuesControl = new FormulaTestInputValuesControl(formulaTestGroup, uiToolkit,
+        Group formulaTestGroup = getToolkit().createGroup(c, Messages.FormulaEditDialog_GroupLabel_FormulaTestInput);
+        formulaDummyTestInputValuesControl = new FormulaTestInputValuesControl(formulaTestGroup, getToolkit(),
                 uiController, ipsProject);
         formulaDummyTestInputValuesControl.setCanCalulateResult(true);
         formulaDummyTestInputValuesControl.setCanStoreFormulaTestCaseAsNewFormulaTestCase(true);
@@ -330,7 +330,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     private void createFormulaTestCasesTab(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
 
-        formulaTestCaseControl = new FormulaTestCaseControl(c, uiToolkit, uiController, formula);
+        formulaTestCaseControl = new FormulaTestCaseControl(c, getToolkit(), uiController, formula);
         formulaTestCaseControl.initControl();
         formulaTestCaseControl.storeFormulaTestCases(getPersistentFormulaTestCases());
 

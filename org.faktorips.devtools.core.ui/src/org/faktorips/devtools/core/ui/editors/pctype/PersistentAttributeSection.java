@@ -143,7 +143,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
         }
 
         @Override
-        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
+        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             AttributeEditDialog attributeEditDialog = new AttributeEditDialog((IPolicyCmptTypeAttribute)part, shell);
 
             return attributeEditDialog;

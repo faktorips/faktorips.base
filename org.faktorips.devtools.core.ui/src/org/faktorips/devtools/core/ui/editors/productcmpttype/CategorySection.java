@@ -27,22 +27,37 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.DialogHelper;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.ViewerButtonComposite;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
- * TODO AW
+ * A section allowing the user to edit an {@link IProductCmptCategory}.
+ * <p>
+ * By means of this section, the user is able to change the order of the
+ * {@link IProductCmptProperty}s assigned to the {@link IProductCmptCategory} that is being edited.
+ * Furthermore, the {@link IProductCmptCategory} itself can be moved up, down, left or right.
+ * <p>
+ * A separate dialog enables the user to change the properties of an {@link IProductCmptCategory},
+ * for example it's name and whether the {@link IProductCmptCategory} is marked as default for a
+ * specific kind {@link IProductCmptProperty}.
+ * <p>
+ * Yet another dialog allows to change the {@link IProductCmptCategory} of an
+ * {@link IProductCmptProperty}.
  * 
  * @author Alexander Weickmann
  */
-public final class CategorySection extends IpsSection {
+public class CategorySection extends IpsSection {
 
     private final IProductCmptCategory category;
 
@@ -67,7 +82,7 @@ public final class CategorySection extends IpsSection {
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         setLayout(client);
-        categoryComposite = new CategoryComposite(client);
+        categoryComposite = new CategoryComposite(category, contextType, client, toolkit);
     }
 
     private void setLayout(Composite parent) {
@@ -77,18 +92,26 @@ public final class CategorySection extends IpsSection {
         parent.setLayout(layout);
     }
 
-    // TODO AW Create toolbar
+    // TODO AW 02-11-2011: Create toolbar
 
     @Override
     protected void performRefresh() {
         categoryComposite.refresh();
     }
 
-    private class CategoryComposite extends ViewerButtonComposite {
+    private static class CategoryComposite extends ViewerButtonComposite {
 
-        public CategoryComposite(Composite parent) {
+        private final IProductCmptCategory category;
+
+        private final IProductCmptType contextType;
+
+        public CategoryComposite(IProductCmptCategory category, IProductCmptType contextType, Composite parent,
+                UIToolkit toolkit) {
+
             super(parent);
-            initControls(getToolkit());
+            this.category = category;
+            this.contextType = contextType;
+            initControls(toolkit);
         }
 
         @Override
@@ -163,19 +186,12 @@ public final class CategorySection extends IpsSection {
             });
         }
 
-        private void createChangeCategoryButton(Composite buttonComposite, UIToolkit toolkit) {
-            Button changeCategoryButton = toolkit.createButton(buttonComposite,
-                    Messages.CategorySection_buttonChangeCategory);
-            changeCategoryButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-                    | GridData.VERTICAL_ALIGN_BEGINNING));
-        }
-
         private void moveParts(boolean up) {
             if (getTableViewer().getSelection().isEmpty()) {
                 return;
             }
 
-            int[] selection = getTableViewer().getTable().getSelectionIndices();
+            int[] selection = getTable().getSelectionIndices();
             int[] newSelection = Arrays.copyOf(selection, selection.length);
             try {
                 newSelection = category.moveProductCmptProperties(selection, up, contextType);
@@ -186,10 +202,40 @@ public final class CategorySection extends IpsSection {
             }
 
             getTableViewer().refresh();
-            getTableViewer().getTable().setSelection(newSelection);
+            getTable().setSelection(newSelection);
             getTableViewer().getControl().setFocus();
 
             refresh();
+        }
+
+        private void createChangeCategoryButton(Composite buttonComposite, UIToolkit toolkit) {
+            Button changeCategoryButton = toolkit.createButton(buttonComposite,
+                    Messages.CategorySection_buttonChangeCategory);
+            changeCategoryButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
+                    | GridData.VERTICAL_ALIGN_BEGINNING));
+            changeCategoryButton.addSelectionListener(new SelectionListener() {
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    EditDialog editDialog = new ChangeCategoryDialog(getShell());
+                    // TODO AW 02-11-2011: Set data changeable?
+
+                    DialogHelper dialogHelper = new DialogHelper();
+                    dialogHelper.openEditDialogWithMemento(editDialog, getSelectedPart());
+                }
+
+                @Override
+                public void widgetDefaultSelected(SelectionEvent e) {
+                    // Nothing to do
+                }
+            });
+        }
+
+        private IIpsObjectPart getSelectedPart() {
+            return (IIpsObjectPart)getSelectedObject();
+        }
+
+        private Table getTable() {
+            return getTableViewer().getTable();
         }
 
         private TableViewer getTableViewer() {
@@ -198,7 +244,7 @@ public final class CategorySection extends IpsSection {
 
         @Override
         protected void updateButtonEnabledStates() {
-            // TODO Auto-generated method stub
+            // TODO AW 02-11-2011: Auto-generated method stub
 
         }
 

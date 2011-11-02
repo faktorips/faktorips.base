@@ -33,11 +33,13 @@ import org.faktorips.util.message.MessageList;
  */
 public abstract class EditDialog extends TitleAreaDialog implements IDataChangeableReadWriteAccess {
 
-    private String windowTitle;
-    private boolean tabFolderUsed;
-    private boolean dataChangeable = true;
+    private final UIToolkit toolkit = new UIToolkit(null);
 
-    protected UIToolkit uiToolkit = new UIToolkit(null);
+    private String windowTitle;
+
+    private boolean tabFolderUsed;
+
+    private boolean dataChangeable = true;
 
     public EditDialog(Shell shell, String windowTitle) {
         this(shell, windowTitle, false);
@@ -75,7 +77,7 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
      * @param changeable Flag indicating the changeable state.
      */
     protected void setDataChangeableThis(boolean changeable) {
-        uiToolkit.setDataChangeable(getDialogArea(), dataChangeable);
+        toolkit.setDataChangeable(getDialogArea(), dataChangeable);
     }
 
     public void setWindowTitle(String newTitle) {
@@ -138,7 +140,7 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
      * the given number of columns.
      */
     protected final Composite createTabItemComposite(TabFolder folder, int numOfColumns, boolean equalSize) {
-        Composite c = uiToolkit.createGridComposite(folder, numOfColumns, equalSize, true);
+        Composite c = toolkit.createGridComposite(folder, numOfColumns, equalSize, true);
         ((GridLayout)c.getLayout()).marginHeight = 12;
         return c;
     }
@@ -154,6 +156,10 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
 
     protected boolean isTabFolderUsed() {
         return tabFolderUsed;
+    }
+
+    protected final UIToolkit getToolkit() {
+        return toolkit;
     }
 
 }

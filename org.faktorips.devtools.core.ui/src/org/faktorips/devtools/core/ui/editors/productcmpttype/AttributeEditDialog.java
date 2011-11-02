@@ -116,49 +116,49 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private Control createGeneralPage(TabFolder folder) throws CoreException {
         Composite c = createTabItemComposite(folder, 1, false);
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
-        extFactory.createControls(workArea, uiToolkit, attribute, IExtensionPropertyDefinition.POSITION_TOP);
+        Composite workArea = getToolkit().createLabelEditColumnComposite(c);
+        extFactory.createControls(workArea, getToolkit(), attribute, IExtensionPropertyDefinition.POSITION_TOP);
 
-        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_nameLabel);
-        Text nameText = uiToolkit.createText(workArea);
+        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_nameLabel);
+        Text nameText = getToolkit().createText(workArea);
         nameText.setFocus();
         bindingContext.bindContent(nameText, attribute, IIpsElement.PROPERTY_NAME);
 
-        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_datatypeLabel);
-        DatatypeRefControl datatypeControl = uiToolkit.createDatatypeRefEdit(attribute.getIpsProject(), workArea);
+        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_datatypeLabel);
+        DatatypeRefControl datatypeControl = getToolkit().createDatatypeRefEdit(attribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         bindingContext.bindContent(datatypeControl, attribute, IAttribute.PROPERTY_DATATYPE);
 
-        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_modifierLabel);
-        Combo modifierCombo = uiToolkit.createCombo(workArea);
+        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_modifierLabel);
+        Combo modifierCombo = getToolkit().createCombo(workArea);
         bindingContext.bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.class);
 
-        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_changeOverTimeLabel);
-        Checkbox changeOverTimeCheckbox = uiToolkit.createCheckbox(
+        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_changeOverTimeLabel);
+        Checkbox changeOverTimeCheckbox = getToolkit().createCheckbox(
                 workArea,
-                NLS.bind(Messages.AttributeEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault().getIpsPreferences()
-                        .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
+                NLS.bind(Messages.AttributeEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
         bindingContext.bindContent(changeOverTimeCheckbox, attribute,
                 IProductCmptTypeAttribute.PROPERTY_CHANGING_OVER_TIME);
 
-        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_defaultvalueLabel);
-        defaultEditFieldPlaceholder = uiToolkit.createComposite(workArea);
-        defaultEditFieldPlaceholder.setLayout(uiToolkit.createNoMarginGridLayout(1, true));
+        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_defaultvalueLabel);
+        defaultEditFieldPlaceholder = getToolkit().createComposite(workArea);
+        defaultEditFieldPlaceholder.setLayout(getToolkit().createNoMarginGridLayout(1, true));
         defaultEditFieldPlaceholder.setLayoutData(new GridData(GridData.FILL_BOTH));
         createDefaultValueEditField();
 
-        uiToolkit.createVerticalSpacer(c, 4);
-        uiToolkit.createHorizonzalLine(c);
-        uiToolkit.createVerticalSpacer(c, 4);
+        getToolkit().createVerticalSpacer(c, 4);
+        getToolkit().createHorizonzalLine(c);
+        getToolkit().createVerticalSpacer(c, 4);
 
         IpsObjectUIController uiController = new IpsObjectUIController(attribute);
-        Composite temp = uiToolkit.createGridComposite(c, 1, true, false);
-        uiToolkit.createLabel(temp, Messages.AttributeEditDialog_valueSetSection);
-        uiToolkit.createVerticalSpacer(temp, 8);
+        Composite temp = getToolkit().createGridComposite(c, 1, true, false);
+        getToolkit().createLabel(temp, Messages.AttributeEditDialog_valueSetSection);
+        getToolkit().createVerticalSpacer(temp, 8);
         List<ValueSetType> valueSetTypes = attribute.getAllowedValueSetTypes(attribute.getIpsProject());
-        valueSetEditControl = new ValueSetSpecificationControl(temp, uiToolkit, uiController, attribute, valueSetTypes,
-                ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+        valueSetEditControl = new ValueSetSpecificationControl(temp, getToolkit(), uiController, attribute,
+                valueSetTypes, ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
         updateValueSetTypes();
 
         Object layoutData = valueSetEditControl.getLayoutData();
@@ -171,7 +171,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             gd.heightHint = 260;
         }
 
-        extFactory.createControls(workArea, uiToolkit, attribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
+        extFactory.createControls(workArea, getToolkit(), attribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
         extFactory.bind(bindingContext);
 
         return c;
@@ -180,7 +180,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private void createDefaultValueEditField() {
         ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                 currentDatatype);
-        defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, defaultEditFieldPlaceholder,
+        defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), defaultEditFieldPlaceholder,
                 currentDatatype, null, ipsProject);
         if (defaultValueField instanceof EnumTypeDatatypeField) {
             ((EnumTypeDatatypeField)defaultValueField).setEnableEnumContentDisplay(false);

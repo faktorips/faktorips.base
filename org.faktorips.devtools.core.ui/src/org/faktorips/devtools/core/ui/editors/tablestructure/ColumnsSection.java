@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -68,7 +67,7 @@ public class ColumnsSection extends SimpleIpsPartsSection {
         }
 
         @Override
-        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
+        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             return new ColumnEditDialog((IColumn)part, shell);
         }
 

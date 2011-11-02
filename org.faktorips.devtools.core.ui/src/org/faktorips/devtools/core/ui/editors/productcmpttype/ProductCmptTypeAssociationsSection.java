@@ -64,7 +64,7 @@ public class ProductCmptTypeAssociationsSection extends AssociationsSection {
         }
 
         @Override
-        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
+        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             return new AssociationEditDialog((IProductCmptTypeAssociation)part, shell);
         }
 

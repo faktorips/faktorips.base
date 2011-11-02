@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
@@ -60,7 +59,7 @@ public class ForeignKeysSection extends SimpleIpsPartsSection {
         }
 
         @Override
-        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
+        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             return new KeyEditDialog((IForeignKey)part, shell);
         }
 

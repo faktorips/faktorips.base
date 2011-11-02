@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.DialogHelper;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.MenuCleaner;
@@ -601,31 +602,20 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     protected void editPart() {
-        TableViewer viewer = (TableViewer)getViewer();
-        if (viewer.getSelection().isEmpty()) {
+        if (getViewer().getSelection().isEmpty()) {
             return;
         }
 
-        try {
-            IIpsSrcFile file = ipsObject.getIpsSrcFile();
-            boolean dirty = file.isDirty();
-            IIpsObjectPart part = getSelectedPart();
-            Memento memento = part.newMemento();
-            EditDialog dialog = createEditDialog(part, getShell());
-            if (dialog == null) {
-                return;
-            }
-            dialog.setDataChangeable(isDataChangeable());
-            dialog.open();
-            if (dialog.getReturnCode() == Window.CANCEL && file.isMutable()) {
-                part.setState(memento);
-                if (!dirty) {
-                    file.markAsClean();
-                }
-            }
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+        EditDialog editDialog = createEditDialog(getSelectedPart(), getShell());
+        // TODO AW 02-11-2011: createEditDialog should not be allowed to return null
+        if (editDialog == null) {
+            return;
         }
+
+        editDialog.setDataChangeable(isDataChangeable());
+
+        DialogHelper dialogHelper = new DialogHelper();
+        dialogHelper.openEditDialogWithMemento(editDialog, getSelectedPart());
 
         refresh();
     }
@@ -707,7 +697,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     /**
      * Creates a dialog to edit the part.
      */
-    protected abstract EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException;
+    protected abstract EditDialog createEditDialog(IIpsObjectPart part, Shell shell);
 
     /**
      * Moves the parts identified by the indexes in the model object up or down.

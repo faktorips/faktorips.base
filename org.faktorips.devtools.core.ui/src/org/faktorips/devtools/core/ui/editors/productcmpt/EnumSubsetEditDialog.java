@@ -90,7 +90,7 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
     class Chooser extends EnumSubsetChooser {
 
         public Chooser(Composite parent) {
-            super(parent, uiToolkit, source, (IEnumValueSet)configElement.getValueSet(), valueDatatype, uiController);
+            super(parent, getToolkit(), source, (IEnumValueSet)configElement.getValueSet(), valueDatatype, uiController);
         }
 
         @Override

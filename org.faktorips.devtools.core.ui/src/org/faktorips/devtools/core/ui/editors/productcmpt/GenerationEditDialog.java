@@ -73,12 +73,12 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
     private Control createFirstPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
 
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
+        Composite workArea = getToolkit().createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        uiToolkit.createFormLabel(workArea, Messages.GenerationEditDialog_labelValidFrom);
-        // Text date = uiToolkit.createText(workArea);
-        DateControl dateControl = new DateControl(workArea, uiToolkit);
+        getToolkit().createFormLabel(workArea, Messages.GenerationEditDialog_labelValidFrom);
+        // Text date = getToolkit().createText(workArea);
+        DateControl dateControl = new DateControl(workArea, getToolkit());
         Text textControl = dateControl.getTextControl();
         textControl.addModifyListener(this);
 

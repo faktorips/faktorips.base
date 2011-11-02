@@ -50,11 +50,11 @@ public class SetStructureDialog extends EditDialog {
 
     @Override
     protected Composite createWorkArea(Composite parent) {
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
+        Composite workArea = getToolkit().createLabelEditColumnComposite(parent);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        uiToolkit.createFormLabel(workArea, Messages.SetStructureDialog_labelNewStructure);
-        template = new TableStructureRefControl(contents.getIpsProject(), workArea, uiToolkit);
+        getToolkit().createFormLabel(workArea, Messages.SetStructureDialog_labelNewStructure);
+        template = new TableStructureRefControl(contents.getIpsProject(), workArea, getToolkit());
         template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         template.getTextControl().addModifyListener(new ModifyListener() {
             @Override

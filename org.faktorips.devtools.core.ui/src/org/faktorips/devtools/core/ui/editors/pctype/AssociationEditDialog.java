@@ -246,42 +246,41 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
          * side.
          */
         private Control createPage(Composite c) {
-
-            Group groupGeneral = uiToolkit.createGroup(c, Messages.AssociationEditDialog_generalGroup);
+            Group groupGeneral = getToolkit().createGroup(c, Messages.AssociationEditDialog_generalGroup);
             createGeneralControls(groupGeneral);
 
-            uiToolkit.createVerticalSpacer(c, 8);
+            getToolkit().createVerticalSpacer(c, 8);
 
-            createQualificationGroup(uiToolkit.createGroup(c, Messages.AssociationEditDialog_qualificationGroup));
+            createQualificationGroup(getToolkit().createGroup(c, Messages.AssociationEditDialog_qualificationGroup));
 
-            uiToolkit.createVerticalSpacer(c, 8);
-            new AssociationDerivedUnionGroup(uiToolkit, bindingContext, c, association);
+            getToolkit().createVerticalSpacer(c, 8);
+            new AssociationDerivedUnionGroup(getToolkit(), bindingContext, c, association);
 
             return c;
         }
 
         private void createGeneralControls(Composite c) {
-            Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
+            Composite workArea = getToolkit().createLabelEditColumnComposite(c);
             workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
             // top extensions
-            extFactory.createControls(workArea, uiToolkit, association, IExtensionPropertyDefinition.POSITION_TOP);
+            extFactory.createControls(workArea, getToolkit(), association, IExtensionPropertyDefinition.POSITION_TOP);
 
             // target
-            uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_targetLabel);
-            PcTypeRefControl targetControl = uiToolkit.createPcTypeRefControl(association.getIpsProject(), workArea);
+            getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_targetLabel);
+            PcTypeRefControl targetControl = getToolkit().createPcTypeRefControl(association.getIpsProject(), workArea);
             bindingContext.bindContent(targetControl, association, IAssociation.PROPERTY_TARGET);
 
             // type
-            uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_associationTypeLabel);
-            final Combo typeCombo = uiToolkit.createCombo(workArea);
+            getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_associationTypeLabel);
+            final Combo typeCombo = getToolkit().createCombo(workArea);
             bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE,
                     IPolicyCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
             typeCombo.setFocus();
 
             // role singular
-            uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_targetRoleSingularLabel);
-            final Text targetRoleSingularText = uiToolkit.createText(workArea);
+            getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_targetRoleSingularLabel);
+            final Text targetRoleSingularText = getToolkit().createText(workArea);
             bindingContext.bindContent(targetRoleSingularText, association, IAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
             targetRoleSingularText.addFocusListener(new FocusAdapter() {
                 @Override
@@ -293,8 +292,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             });
 
             // role plural
-            uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_targetRolePluralLabel);
-            final Text targetRolePluralText = uiToolkit.createText(workArea);
+            getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_targetRolePluralLabel);
+            final Text targetRolePluralText = getToolkit().createText(workArea);
             bindingContext.bindContent(targetRolePluralText, association, IAssociation.PROPERTY_TARGET_ROLE_PLURAL);
             targetRolePluralText.addFocusListener(new FocusAdapter() {
 
@@ -307,25 +306,25 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             });
 
             // min cardinality
-            uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_minimumCardinality);
-            Text minCardinalityText = uiToolkit.createText(workArea);
+            getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_minimumCardinality);
+            Text minCardinalityText = getToolkit().createText(workArea);
             CardinalityField cardinalityField = new CardinalityField(minCardinalityText);
             cardinalityField.setSupportsNull(false);
             bindingContext.bindContent(cardinalityField, association, IAssociation.PROPERTY_MIN_CARDINALITY);
 
             // max cardinality
-            uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_maximumCardinality);
-            Text maxCardinalityText = uiToolkit.createText(workArea);
+            getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_maximumCardinality);
+            Text maxCardinalityText = getToolkit().createText(workArea);
             cardinalityField = new CardinalityField(maxCardinalityText);
             cardinalityField.setSupportsNull(false);
             bindingContext.bindContent(cardinalityField, association, IAssociation.PROPERTY_MAX_CARDINALITY);
 
             // inverse association
-            uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_inverseAssociationLabel);
-            Composite inverseAssoComposite = uiToolkit.createComposite(workArea);
-            inverseAssoComposite.setLayout(uiToolkit.createNoMarginGridLayout(2, false));
+            getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_inverseAssociationLabel);
+            Composite inverseAssoComposite = getToolkit().createComposite(workArea);
+            inverseAssoComposite.setLayout(getToolkit().createNoMarginGridLayout(2, false));
             inverseAssoComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-            Text inverseRelationText = uiToolkit.createText(inverseAssoComposite);
+            Text inverseRelationText = getToolkit().createText(inverseAssoComposite);
             bindingContext.bindContent(inverseRelationText, association,
                     IPolicyCmptTypeAssociation.PROPERTY_INVERSE_ASSOCIATION);
             InverseAssociationCompletionProcessor inverseAssociationCompletionProcessor = new InverseAssociationCompletionProcessor(
@@ -335,7 +334,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
             // shared associations
             if (ipsProject.getProperties().isSharedDetailToMasterAssociations()) {
-                Button sharedAssociationCheck = uiToolkit.createButton(inverseAssoComposite,
+                Button sharedAssociationCheck = getToolkit().createButton(inverseAssoComposite,
                         Messages.AssociationEditDialog_sharedAssociations, SWT.CHECK);
                 sharedAssociationCheck.setToolTipText(Messages.AssociationEditDialog_sharedAssociationsTooltip);
                 bindingContext.bindContent(sharedAssociationCheck, association,
@@ -350,19 +349,20 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             }
 
             // bottom extensions
-            extFactory.createControls(workArea, uiToolkit, association, IExtensionPropertyDefinition.POSITION_BOTTOM);
+            extFactory
+                    .createControls(workArea, getToolkit(), association, IExtensionPropertyDefinition.POSITION_BOTTOM);
             extFactory.bind(bindingContext);
         }
 
         private void createQualificationGroup(Composite c) {
-            Composite workArea = uiToolkit.createGridComposite(c, 1, true, true);
+            Composite workArea = getToolkit().createGridComposite(c, 1, true, true);
             workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-            Checkbox qualifiedCheckbox = uiToolkit.createCheckbox(workArea);
+            Checkbox qualifiedCheckbox = getToolkit().createCheckbox(workArea);
             bindingContext.bindContent(qualifiedCheckbox, association, IAssociation.PROPERTY_QUALIFIED);
             bindingContext.bindEnabled(qualifiedCheckbox, pmoAssociation,
                     PmoPolicyCmptTypeAssociation.PROPERTY_QUALIFICATION_POSSIBLE);
-            Label note = uiToolkit.createFormLabel(workArea, StringUtils.rightPad("", 120)); //$NON-NLS-1$
+            Label note = getToolkit().createFormLabel(workArea, StringUtils.rightPad("", 120)); //$NON-NLS-1$
             bindingContext.bindContent(note, pmoAssociation, PmoPolicyCmptTypeAssociation.PROPERTY_QUALIFICATION_NOTE);
             bindingContext.add(new ButtonTextBinding(qualifiedCheckbox, pmoAssociation,
                     PmoPolicyCmptTypeAssociation.PROPERTY_QUALIFICATION_LABEL));
@@ -381,44 +381,42 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         private Control createPage(Composite c) {
+            getToolkit().createVerticalSpacer(c, 2);
 
-            uiToolkit.createVerticalSpacer(c, 2);
-
-            Composite labelEditColumnComposite = uiToolkit.createLabelEditColumnComposite(c);
-            uiToolkit.createLabel(labelEditColumnComposite, Messages.AssociationEditDialog_label_foundByFaktorIps);
-            Label matchingAssociationInfoLabel = uiToolkit.createLabel(labelEditColumnComposite, StringUtils.EMPTY);
+            Composite labelEditColumnComposite = getToolkit().createLabelEditColumnComposite(c);
+            getToolkit().createLabel(labelEditColumnComposite, Messages.AssociationEditDialog_label_foundByFaktorIps);
+            Label matchingAssociationInfoLabel = getToolkit().createLabel(labelEditColumnComposite, StringUtils.EMPTY);
             bindingContext.bindContent(matchingAssociationInfoLabel, pmoAssociation,
                     PmoPolicyCmptTypeAssociation.PROPERTY_INFO_LABEL);
-            uiToolkit.createVerticalSpacer(labelEditColumnComposite, 3);
+            getToolkit().createVerticalSpacer(labelEditColumnComposite, 3);
 
-            Group groupMatching = uiToolkit.createGroup(c, Messages.AssociationEditDialog_group_selectExplicitly);
+            Group groupMatching = getToolkit().createGroup(c, Messages.AssociationEditDialog_group_selectExplicitly);
             createMatchingAssociationGroup(groupMatching);
-            Group groupConfig = uiToolkit.createGroup(c, Messages.AssociationEditDialog_group_configuration);
+            Group groupConfig = getToolkit().createGroup(c, Messages.AssociationEditDialog_group_configuration);
             createConfigurationGroup(groupConfig);
             return c;
         }
 
         private void createMatchingAssociationGroup(Composite c) {
-
-            Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
+            Composite workArea = getToolkit().createLabelEditColumnComposite(c);
             workArea.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-            Checkbox constrainedCheckbox = uiToolkit.createCheckbox(workArea,
+            Checkbox constrainedCheckbox = getToolkit().createCheckbox(workArea,
                     Messages.AssociationEditDialog_check_selectMatchingAssociationExpliclitly);
             ((GridData)constrainedCheckbox.getLayoutData()).horizontalSpan = 2;
             bindingContext.bindContent(constrainedCheckbox, pmoAssociation,
                     PmoPolicyCmptTypeAssociation.PROPERTY_MATCHING_EXPLICITLY);
 
-            uiToolkit.createLabel(workArea, Messages.AssociationEditDialog_label_productCmptType);
-            ProductCmptType2RefControl refControl = new ProductCmptType2RefControl(ipsProject, workArea, uiToolkit,
+            getToolkit().createLabel(workArea, Messages.AssociationEditDialog_label_productCmptType);
+            ProductCmptType2RefControl refControl = new ProductCmptType2RefControl(ipsProject, workArea, getToolkit(),
                     false);
             EditField<String> refControlEditField = bindingContext.bindContent(refControl, pmoAssociation,
                     IPolicyCmptTypeAssociation.PROPERTY_MATCHING_ASSOCIATION_SOURCE);
             bindingContext.bindProblemMarker(refControlEditField, association,
                     IPolicyCmptTypeAssociation.PROPERTY_MATCHING_ASSOCIATION_SOURCE);
 
-            uiToolkit.createLabel(workArea, Messages.AssociationEditDialog_label_matchingAssociation);
-            Combo matchingAssociation = uiToolkit.createCombo(workArea);
+            getToolkit().createLabel(workArea, Messages.AssociationEditDialog_label_matchingAssociation);
+            Combo matchingAssociation = getToolkit().createCombo(workArea);
             final ComboViewerField<String> configuringAssociationField = new ComboViewerField<String>(
                     matchingAssociation, String.class);
             configuringAssociationField.setAllowEmptySelection(true);
@@ -446,7 +444,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         private void createConfigurationGroup(Group groupMatching) {
-            final Checkbox checkbox = uiToolkit.createCheckbox(groupMatching,
+            final Checkbox checkbox = getToolkit().createCheckbox(groupMatching,
                     Messages.AssociationEditDialog_check_configuration);
             bindingContext.bindContent(checkbox, pmoAssociation, PmoPolicyCmptTypeAssociation.PROPERTY_CONFIGURED);
             bindingContext.add(new ControlPropertyBinding(checkbox, association,
@@ -706,24 +704,24 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 return;
             }
 
-            final Checkbox checkTransient = uiToolkit.createCheckbox(c,
+            final Checkbox checkTransient = getToolkit().createCheckbox(c,
                     Messages.AssociationEditDialog_labelAssociationIsTransient);
             checkTransient.setEnabled(false);
             bindingContext.bindContent(checkTransient, association.getPersistenceAssociatonInfo(),
                     IPersistentAssociationInfo.PROPERTY_TRANSIENT);
 
-            final Composite allPersistentProps = uiToolkit.createGridComposite(c, 1, true, true);
+            final Composite allPersistentProps = getToolkit().createGridComposite(c, 1, true, true);
 
-            uiToolkit.createVerticalSpacer(allPersistentProps, 12);
+            getToolkit().createVerticalSpacer(allPersistentProps, 12);
             final Composite joinTableComposite = createGroupJoinTable(allPersistentProps);
 
-            uiToolkit.createVerticalSpacer(allPersistentProps, 12);
+            getToolkit().createVerticalSpacer(allPersistentProps, 12);
             final Group groupForeignKey = createGroupForeignKey(allPersistentProps);
 
-            uiToolkit.createVerticalSpacer(allPersistentProps, 12);
+            getToolkit().createVerticalSpacer(allPersistentProps, 12);
             createGroupOtherPersistentProps(allPersistentProps);
 
-            uiToolkit.createVerticalSpacer(allPersistentProps, 12);
+            getToolkit().createVerticalSpacer(allPersistentProps, 12);
             createGroupCascadeType(allPersistentProps);
 
             // persistence is enabled initialize enable / disable bindings
@@ -735,10 +733,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
                     boolean persistEnabled = isPersistEnabled(associationInfo);
                     if (!persistEnabled) {
-                        uiToolkit.setDataChangeable(checkTransient, false);
-                        uiToolkit.setDataChangeable(getControl(), false);
+                        getToolkit().setDataChangeable(checkTransient, false);
+                        getToolkit().setDataChangeable(getControl(), false);
                     } else {
-                        uiToolkit.setDataChangeable(getControl(), !associationInfo.isTransient());
+                        getToolkit().setDataChangeable(getControl(), !associationInfo.isTransient());
                     }
                 }
             });
@@ -751,15 +749,15 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
                     boolean persistEnabled = isPersistEnabled(associationInfo);
                     if (!persistEnabled) {
-                        uiToolkit.setDataChangeable(getControl(), false);
+                        getToolkit().setDataChangeable(getControl(), false);
                         return;
                     }
                     if (associationInfo.isTransient()) {
                         return;
                     }
-                    uiToolkit.setDataChangeable(getControl(), associationInfo.isOwnerOfManyToManyAssociation());
+                    getToolkit().setDataChangeable(getControl(), associationInfo.isOwnerOfManyToManyAssociation());
                     try {
-                        uiToolkit.setDataChangeable(groupForeignKey, !associationInfo.isJoinTableRequired());
+                        getToolkit().setDataChangeable(groupForeignKey, !associationInfo.isJoinTableRequired());
                         enableOrDisableForeignKeyColumn();
                     } catch (CoreException e) {
                         IpsPlugin.logAndShowErrorDialog(e);
@@ -775,10 +773,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
                     boolean persistEnabled = isPersistEnabled(associationInfo);
                     if (!persistEnabled) {
-                        uiToolkit.setDataChangeable(getControl(), false);
+                        getToolkit().setDataChangeable(getControl(), false);
                         return;
                     }
-                    uiToolkit.setDataChangeable(getControl(), associationInfo.isCascadeTypeOverwriteDefault());
+                    getToolkit().setDataChangeable(getControl(), associationInfo.isCascadeTypeOverwriteDefault());
                 }
             });
         }
@@ -791,31 +789,31 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         private Composite createGroupJoinTable(Composite allPersistentProps) {
-            Group groupJoinTable = uiToolkit.createGroup(allPersistentProps,
+            Group groupJoinTable = getToolkit().createGroup(allPersistentProps,
                     Messages.AssociationEditDialog_labelJoinTable);
             GridData layoutData = (GridData)groupJoinTable.getLayoutData();
             layoutData.grabExcessVerticalSpace = false;
 
-            Checkbox checkOwner = uiToolkit.createCheckbox(groupJoinTable,
+            Checkbox checkOwner = getToolkit().createCheckbox(groupJoinTable,
                     Messages.AssociationEditDialog_labelAssociationIsOwningSideOfManyToMany);
             bindingContext.bindContent(checkOwner, association.getPersistenceAssociatonInfo(),
                     IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION);
 
-            Composite joinTableComposte = uiToolkit.createLabelEditColumnComposite(groupJoinTable);
+            Composite joinTableComposte = getToolkit().createLabelEditColumnComposite(groupJoinTable);
             joinTableComposte.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-            uiToolkit.createFormLabel(joinTableComposte, Messages.AssociationEditDialog_labelJoinTableName);
-            Text joinTableNameText = uiToolkit.createText(joinTableComposte);
+            getToolkit().createFormLabel(joinTableComposte, Messages.AssociationEditDialog_labelJoinTableName);
+            Text joinTableNameText = getToolkit().createText(joinTableComposte);
             bindingContext.bindContent(joinTableNameText, association.getPersistenceAssociatonInfo(),
                     IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME);
 
-            uiToolkit.createFormLabel(joinTableComposte, Messages.AssociationEditDialog_labelSourceColumnName);
-            Text sourceColumnNameText = uiToolkit.createText(joinTableComposte);
+            getToolkit().createFormLabel(joinTableComposte, Messages.AssociationEditDialog_labelSourceColumnName);
+            Text sourceColumnNameText = getToolkit().createText(joinTableComposte);
             bindingContext.bindContent(sourceColumnNameText, association.getPersistenceAssociatonInfo(),
                     IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME);
 
-            uiToolkit.createFormLabel(joinTableComposte, Messages.AssociationEditDialog_labelTargetColumnName);
-            Text targetColumnNameText = uiToolkit.createText(joinTableComposte);
+            getToolkit().createFormLabel(joinTableComposte, Messages.AssociationEditDialog_labelTargetColumnName);
+            Text targetColumnNameText = getToolkit().createText(joinTableComposte);
             bindingContext.bindContent(targetColumnNameText, association.getPersistenceAssociatonInfo(),
                     IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME);
 
@@ -823,16 +821,16 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         private Group createGroupOtherPersistentProps(Composite allPersistentProps) {
-            Group groupOtherProps = uiToolkit.createGroup(allPersistentProps,
+            Group groupOtherProps = getToolkit().createGroup(allPersistentProps,
                     Messages.AssociationEditDialog_labelProperties);
             GridData layoutData = (GridData)groupOtherProps.getLayoutData();
             layoutData.grabExcessVerticalSpace = false;
 
-            Composite otherPropsComposite = uiToolkit.createLabelEditColumnComposite(groupOtherProps);
+            Composite otherPropsComposite = getToolkit().createLabelEditColumnComposite(groupOtherProps);
             otherPropsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-            uiToolkit.createFormLabel(otherPropsComposite, Messages.AssociationEditDialog_labelFetchType);
-            Combo fetchTypeCombo = uiToolkit.createCombo(otherPropsComposite);
+            getToolkit().createFormLabel(otherPropsComposite, Messages.AssociationEditDialog_labelFetchType);
+            Combo fetchTypeCombo = getToolkit().createCombo(otherPropsComposite);
             ComboField<FetchType> fetchTypeField = new EnumField<FetchType>(fetchTypeCombo, FetchType.class);
             bindingContext.bindContent(fetchTypeField, association.getPersistenceAssociatonInfo(),
                     IPersistentAssociationInfo.PROPERTY_FETCH_TYPE);
@@ -841,8 +839,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             if (ipsProject.getIpsArtefactBuilderSet().isPersistentProviderSupportOrphanRemoval()) {
                 createCheckbox(otherPropsComposite, labelText, IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL);
             } else {
-                Label label = uiToolkit.createFormLabel(otherPropsComposite, labelText);
-                Label text = uiToolkit.createLabel(otherPropsComposite,
+                Label label = getToolkit().createFormLabel(otherPropsComposite, labelText);
+                Label text = getToolkit().createLabel(otherPropsComposite,
                         Messages.AssociationEditDialog_textNotSupportedByPersistenceProvider);
                 label.setEnabled(false);
                 text.setEnabled(false);
@@ -852,22 +850,22 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         private void createCheckbox(Composite composite, String label, String property) {
-            uiToolkit.createFormLabel(composite, label);
-            bindingContext.bindContent(uiToolkit.createCheckbox(composite), association.getPersistenceAssociatonInfo(),
-                    property);
+            getToolkit().createFormLabel(composite, label);
+            bindingContext.bindContent(getToolkit().createCheckbox(composite),
+                    association.getPersistenceAssociatonInfo(), property);
         }
 
         private Group createGroupForeignKey(Composite allPersistentProps) {
-            Group groupJoinColumn = uiToolkit.createGroup(allPersistentProps,
+            Group groupJoinColumn = getToolkit().createGroup(allPersistentProps,
                     Messages.AssociationEditDialog_labelForeignKeyJoinColumn);
             GridData layoutData = (GridData)groupJoinColumn.getLayoutData();
             layoutData.grabExcessVerticalSpace = false;
 
-            joinColumnComposite = uiToolkit.createLabelEditColumnComposite(groupJoinColumn);
+            joinColumnComposite = getToolkit().createLabelEditColumnComposite(groupJoinColumn);
             joinColumnComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-            uiToolkit.createFormLabel(joinColumnComposite, Messages.AssociationEditDialog_labelForeignKeyColumnName);
-            Text joinColumnNameText = uiToolkit.createText(joinColumnComposite);
+            getToolkit().createFormLabel(joinColumnComposite, Messages.AssociationEditDialog_labelForeignKeyColumnName);
+            Text joinColumnNameText = getToolkit().createText(joinColumnComposite);
             bindingContext.bindContent(joinColumnNameText, association.getPersistenceAssociatonInfo(),
                     IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME);
 
@@ -879,10 +877,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             if (!persistentAssociationInfo.isOwnerOfManyToManyAssociation()) {
                 // special information about foreign key column
                 if (persistentAssociationInfo.isForeignKeyColumnDefinedOnTargetSide(inverseAssociation)) {
-                    uiToolkit.createLabel(groupJoinColumn,
+                    getToolkit().createLabel(groupJoinColumn,
                             Messages.AssociationEditDialog_noteForeignKeyColumnDefinedInInverseAssociation);
                 } else if (persistentAssociationInfo.isForeignKeyColumnCreatedOnTargetSide(inverseAssociation)) {
-                    uiToolkit.createLabel(
+                    getToolkit().createLabel(
                             groupJoinColumn,
                             NLS.bind(Messages.AssociationEditDialog_noteForeignKeyIsColumnOfTheTargetEntity,
                                     StringUtil.unqualifiedName(association.getTarget())));
@@ -906,21 +904,21 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
-            uiToolkit.setDataChangeable(joinColumnComposite, !foreignKeyDefinedOnTargetSide);
+            getToolkit().setDataChangeable(joinColumnComposite, !foreignKeyDefinedOnTargetSide);
         }
 
         private Group createGroupCascadeType(Composite parentComposite) {
-
-            Group group = uiToolkit.createGroup(parentComposite, Messages.AssociationEditDialog_labelCascadeType);
+            Group group = getToolkit().createGroup(parentComposite, Messages.AssociationEditDialog_labelCascadeType);
             GridData layoutData = (GridData)group.getLayoutData();
             layoutData.grabExcessVerticalSpace = false;
 
             bindingContext.bindContent(
-                    uiToolkit.createCheckbox(group, Messages.AssociationEditDialog_labelOverwriteDefaultCascadeTypes),
+                    getToolkit()
+                            .createCheckbox(group, Messages.AssociationEditDialog_labelOverwriteDefaultCascadeTypes),
                     association.getPersistenceAssociatonInfo(),
                     IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT);
 
-            cascadeTypesComposite = uiToolkit.createLabelEditColumnComposite(group);
+            cascadeTypesComposite = getToolkit().createLabelEditColumnComposite(group);
             cascadeTypesComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
             createCheckbox(cascadeTypesComposite, Messages.AssociationEditDialog_labelCascadeTypePersist,

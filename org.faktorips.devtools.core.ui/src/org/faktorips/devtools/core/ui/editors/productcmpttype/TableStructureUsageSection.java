@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -186,7 +185,7 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
         }
 
         @Override
-        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) throws CoreException {
+        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             ArgumentCheck.isInstanceOf(part, ITableStructureUsage.class);
             return new TblsStructureUsageEditDialog((ITableStructureUsage)part, shell);
         }

@@ -116,9 +116,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         Composite panel = createTabItemComposite(folder, 1, false);
 
         createExtensionArea(panel, IExtensionPropertyDefinition.POSITION_TOP);
-        createGenerellGroup(uiToolkit.createGroup(panel, Messages.AssociationEditDialog_generalGroup));
+        createGenerellGroup(getToolkit().createGroup(panel, Messages.AssociationEditDialog_generalGroup));
 
-        createDerivedUnionGroup(uiToolkit.createGroup(panel, Messages.AssociationEditDialog_derivedUnionGroup));
+        createDerivedUnionGroup(getToolkit().createGroup(panel, Messages.AssociationEditDialog_derivedUnionGroup));
         createExtensionArea(panel, IExtensionPropertyDefinition.POSITION_BOTTOM);
 
         extFactory.bind(bindingContext);
@@ -130,30 +130,30 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         if (!extFactory.needsToCreateControlsFor(association, position)) {
             return;
         }
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
+        Composite workArea = getToolkit().createLabelEditColumnComposite(parent);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-        extFactory.createControls(workArea, uiToolkit, association, position);
+        extFactory.createControls(workArea, getToolkit(), association, position);
     }
 
     private void createGenerellGroup(Composite parent) {
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
+        Composite workArea = getToolkit().createLabelEditColumnComposite(parent);
 
         // target
-        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_targetLabel);
+        getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_targetLabel);
         ProductCmptType2RefControl targetControl = new ProductCmptType2RefControl(association.getIpsProject(),
-                workArea, uiToolkit, false);
+                workArea, getToolkit(), false);
         bindingContext.bindContent(targetControl, association, IProductCmptTypeAssociation.PROPERTY_TARGET);
         targetControl.setFocus();
 
         // aggregation kind
-        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_typeLabel);
-        Combo typeCombo = uiToolkit.createCombo(workArea);
+        getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_typeLabel);
+        Combo typeCombo = getToolkit().createCombo(workArea);
         bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE,
                 IProductCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
 
         // role singular
-        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_roleSingularLabel);
-        final Text targetRoleSingularText = uiToolkit.createText(workArea);
+        getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_roleSingularLabel);
+        final Text targetRoleSingularText = getToolkit().createText(workArea);
         bindingContext.bindContent(targetRoleSingularText, association,
                 IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
         targetRoleSingularText.addFocusListener(new FocusAdapter() {
@@ -166,8 +166,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         });
 
         // role plural
-        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_rolePluralLabel);
-        final Text targetRolePluralText = uiToolkit.createText(workArea);
+        getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_rolePluralLabel);
+        final Text targetRolePluralText = getToolkit().createText(workArea);
         bindingContext.bindContent(targetRolePluralText, association,
                 IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
         targetRolePluralText.addFocusListener(new FocusAdapter() {
@@ -181,32 +181,33 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         });
 
         // min cardinality
-        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_minCardLabel);
-        Text minCardinalityText = uiToolkit.createText(workArea);
+        getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_minCardLabel);
+        Text minCardinalityText = getToolkit().createText(workArea);
         CardinalityField cardinalityField = new CardinalityField(minCardinalityText);
         cardinalityField.setSupportsNull(false);
         bindingContext.bindContent(cardinalityField, association, IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
 
         // max cardinality
-        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_maxCardLabel);
-        Text maxCardinalityText = uiToolkit.createText(workArea);
+        getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_maxCardLabel);
+        Text maxCardinalityText = getToolkit().createText(workArea);
         cardinalityField = new CardinalityField(maxCardinalityText);
         cardinalityField.setSupportsNull(false);
         bindingContext.bindContent(cardinalityField, association, IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
     }
 
     private void createDerivedUnionGroup(Composite workArea) {
-        Checkbox derivedUnion = uiToolkit.createCheckbox(workArea, Messages.AssociationEditDialog_derivedUnionCheckbox);
+        Checkbox derivedUnion = getToolkit().createCheckbox(workArea,
+                Messages.AssociationEditDialog_derivedUnionCheckbox);
         bindingContext.bindContent(derivedUnion, association, IProductCmptTypeAssociation.PROPERTY_DERIVED_UNION);
 
-        Checkbox subsetCheckbox = uiToolkit.createCheckbox(workArea, Messages.AssociationEditDialog_subsetCheckbox);
+        Checkbox subsetCheckbox = getToolkit().createCheckbox(workArea, Messages.AssociationEditDialog_subsetCheckbox);
         bindingContext.bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
 
-        Composite temp = uiToolkit.createLabelEditColumnComposite(workArea);
+        Composite temp = getToolkit().createLabelEditColumnComposite(workArea);
         temp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        uiToolkit.createFormLabel(temp, Messages.AssociationEditDialog_derivedUnionLabel);
-        Text unionText = uiToolkit.createText(temp);
+        getToolkit().createFormLabel(temp, Messages.AssociationEditDialog_derivedUnionLabel);
+        Text unionText = getToolkit().createText(temp);
         bindingContext
                 .bindContent(unionText, association, IProductCmptTypeAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
         bindingContext.bindEnabled(unionText, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
@@ -293,30 +294,30 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         private Control createPage(Composite c) {
 
-            uiToolkit.createVerticalSpacer(c, 2);
+            getToolkit().createVerticalSpacer(c, 2);
 
-            Composite labelEditColumnComposite = uiToolkit.createLabelEditColumnComposite(c);
-            uiToolkit.createLabel(labelEditColumnComposite, Messages.AssociationEditDialog_label_foundAssociation);
-            Label matchingAssociationInfoLabel = uiToolkit.createLabel(labelEditColumnComposite, StringUtils.EMPTY);
+            Composite labelEditColumnComposite = getToolkit().createLabelEditColumnComposite(c);
+            getToolkit().createLabel(labelEditColumnComposite, Messages.AssociationEditDialog_label_foundAssociation);
+            Label matchingAssociationInfoLabel = getToolkit().createLabel(labelEditColumnComposite, StringUtils.EMPTY);
             bindingContext
                     .bindContent(matchingAssociationInfoLabel, pmoAssociation, PmoAssociation.PROPERTY_INFO_LABEL);
-            uiToolkit.createVerticalSpacer(labelEditColumnComposite, 3);
+            getToolkit().createVerticalSpacer(labelEditColumnComposite, 3);
 
-            Group groupMatching = uiToolkit.createGroup(c, Messages.AssociationEditDialog_group_selectExplicitly);
+            Group groupMatching = getToolkit().createGroup(c, Messages.AssociationEditDialog_group_selectExplicitly);
             createMatchingAssociationGroup(groupMatching);
             return c;
         }
 
         private void createMatchingAssociationGroup(Composite parent) {
-            Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
-            Checkbox constrainedCheckbox = uiToolkit.createCheckbox(workArea,
+            Composite workArea = getToolkit().createLabelEditColumnComposite(parent);
+            Checkbox constrainedCheckbox = getToolkit().createCheckbox(workArea,
                     Messages.AssociationEditDialog_check_selectExplicitly);
             ((GridData)constrainedCheckbox.getLayoutData()).horizontalSpan = 2;
             bindingContext
                     .bindContent(constrainedCheckbox, pmoAssociation, PmoAssociation.PROPERTY_MATCHING_EXPLICITLY);
 
-            uiToolkit.createLabel(workArea, Messages.AssociationEditDialog_label_matchingAssociation);
-            Combo constrainedCombo = uiToolkit.createCombo(workArea);
+            getToolkit().createLabel(workArea, Messages.AssociationEditDialog_label_matchingAssociation);
+            Combo constrainedCombo = getToolkit().createCombo(workArea);
             bindingContext.bindEnabled(constrainedCombo, pmoAssociation, PmoAssociation.PROPERTY_MATCHING_EXPLICITLY);
             ComboViewerField<IPolicyCmptTypeAssociation> comboViewerField = new ComboViewerField<IPolicyCmptTypeAssociation>(
                     constrainedCombo, IPolicyCmptTypeAssociation.class);

@@ -78,7 +78,7 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog {
 
     private Composite createValueSetControl(Composite parent) {
         IpsObjectUIController uiController = new IpsObjectUIController(configElement);
-        ValueSetSpecificationControl vsEdit = new ValueSetSpecificationControl(parent, uiToolkit, uiController,
+        ValueSetSpecificationControl vsEdit = new ValueSetSpecificationControl(parent, getToolkit(), uiController,
                 configElement, allowedValuesSetTypes, ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
         vsEdit.setAllowedValueSetTypes(allowedValuesSetTypes);
         vsEdit.setEnabled(!viewOnly);

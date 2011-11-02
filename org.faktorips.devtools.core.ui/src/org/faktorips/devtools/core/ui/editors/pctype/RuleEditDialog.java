@@ -39,7 +39,7 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
     private RuleFunctionsControl rfControl;
     private CheckboxField specifiedInSrcField;
 
-    private ValidationRuleEditingUI ruleUI = new ValidationRuleEditingUI(uiToolkit);
+    private ValidationRuleEditingUI ruleUI = new ValidationRuleEditingUI(getToolkit());
 
     public RuleEditDialog(IValidationRule rule, Shell parentShell) {
         super(rule, parentShell, Messages.RuleEditDialog_title, true);
@@ -98,7 +98,7 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
     private Control createFunctionsPage(TabFolder folder) {
         Composite workArea = createTabItemComposite(folder, 1, false);
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
-        Checkbox appliedToAllCheckbox = uiToolkit.createCheckbox(workArea,
+        Checkbox appliedToAllCheckbox = getToolkit().createCheckbox(workArea,
                 Messages.RuleEditDialog_labelApplyInAllBusinessFunctions);
         rfControl = new RuleFunctionsControl(workArea);
         rfControl.initialize(super.getIpsPart(), null);
@@ -110,7 +110,7 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
     private Control createAttributesPage(TabFolder folder) {
         Composite workArea = createTabItemComposite(folder, 1, false);
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
-        Checkbox specifiedInSrc = uiToolkit.createCheckbox(workArea, Messages.RuleEditDialog_labelSpecifiedInSrc);
+        Checkbox specifiedInSrc = getToolkit().createCheckbox(workArea, Messages.RuleEditDialog_labelSpecifiedInSrc);
         specifiedInSrcField = new CheckboxField(specifiedInSrc);
 
         ValidatedAttributesControl validatedAttributesControl = new ValidatedAttributesControl(workArea);
