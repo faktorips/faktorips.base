@@ -18,7 +18,6 @@ import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
@@ -85,18 +84,5 @@ public interface ITypePart extends IIpsObjectPart, IDescribedElement, ILabeledEl
      * @throws CoreException If an error occurs during the search
      */
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
-
-    /**
-     * Returns whether this {@link ITypePart} belongs to the same {@link IProductCmptType} as the
-     * provided other {@link ITypePart}.
-     * 
-     * @param otherPart the other {@link ITypePart} to compare the associated
-     *            {@link IProductCmptType} with
-     * @param ipsProject the {@link IIpsProject} whose {@link IIpsObjectPath} is used for the search
-     * 
-     * @throws CoreException If an error occurs while searching for {@link IProductCmptType}s
-     */
-    public boolean findIsBelongingToSameProductCmptType(ITypePart otherPart, IIpsProject ipsProject)
-            throws CoreException;
 
 }

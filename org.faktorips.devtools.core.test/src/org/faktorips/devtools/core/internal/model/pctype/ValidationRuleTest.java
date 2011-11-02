@@ -33,6 +33,10 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,117 +45,117 @@ import org.w3c.dom.Element;
 
 public class ValidationRuleTest extends AbstractIpsPluginTest {
 
-    private PolicyCmptType pcType;
+    private PolicyCmptType policyCmptType;
     private IIpsSrcFile ipsSrcFile;
-    private IValidationRule rule;
-    private IIpsProject project;
+    private IValidationRule validationRule;
+    private IIpsProject ipsProject;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject");
-        pcType = newPolicyCmptType(project, "Policy");
-        ipsSrcFile = pcType.getIpsSrcFile();
-        rule = pcType.newRule();
+
+        ipsProject = newIpsProject("TestProject");
+        policyCmptType = newPolicyCmptType(ipsProject, "Policy");
+        ipsSrcFile = policyCmptType.getIpsSrcFile();
+        validationRule = policyCmptType.newRule();
         ipsSrcFile.save(true, null);
-        assertFalse(ipsSrcFile.isDirty());
     }
 
     @Test
     public void testRemove() {
-        rule.delete();
-        assertEquals(0, pcType.getValidationRules().size());
+        validationRule.delete();
+        assertEquals(0, policyCmptType.getValidationRules().size());
         assertTrue(ipsSrcFile.isDirty());
     }
 
     @Test
     public void testSetName() {
-        rule.setName("newName");
-        assertEquals("newName", rule.getName());
+        validationRule.setName("newName");
+        assertEquals("newName", validationRule.getName());
         assertTrue(ipsSrcFile.isDirty());
     }
 
     @Test
     public void testAddValidatedAttribute() {
-        rule.addValidatedAttribute("a");
-        rule.addValidatedAttribute("b");
-        assertEquals("a", rule.getValidatedAttributes()[0]);
-        assertEquals("b", rule.getValidatedAttributes()[1]);
+        validationRule.addValidatedAttribute("a");
+        validationRule.addValidatedAttribute("b");
+        assertEquals("a", validationRule.getValidatedAttributes()[0]);
+        assertEquals("b", validationRule.getValidatedAttributes()[1]);
         assertTrue(ipsSrcFile.isDirty());
     }
 
     @Test
     public void testSetValidatedAttributeAt() {
-        rule.addValidatedAttribute("a");
-        rule.addValidatedAttribute("b");
-        rule.setValidatedAttributeAt(1, "c");
-        assertEquals("c", rule.getValidatedAttributes()[1]);
+        validationRule.addValidatedAttribute("a");
+        validationRule.addValidatedAttribute("b");
+        validationRule.setValidatedAttributeAt(1, "c");
+        assertEquals("c", validationRule.getValidatedAttributes()[1]);
         assertTrue(ipsSrcFile.isDirty());
     }
 
     @Test
     public void testGetValidatedAttributeAt() {
-        rule.addValidatedAttribute("a");
-        rule.addValidatedAttribute("b");
-        assertEquals("a", rule.getValidatedAttributeAt(0));
-        assertEquals("b", rule.getValidatedAttributeAt(1));
+        validationRule.addValidatedAttribute("a");
+        validationRule.addValidatedAttribute("b");
+        assertEquals("a", validationRule.getValidatedAttributeAt(0));
+        assertEquals("b", validationRule.getValidatedAttributeAt(1));
     }
 
     @Test
     public void testRemoveValidatedAttribute() {
-        rule.addValidatedAttribute("a");
-        rule.addValidatedAttribute("b");
-        rule.removeValidatedAttribute(0);
-        assertEquals("b", rule.getValidatedAttributeAt(0));
+        validationRule.addValidatedAttribute("a");
+        validationRule.addValidatedAttribute("b");
+        validationRule.removeValidatedAttribute(0);
+        assertEquals("b", validationRule.getValidatedAttributeAt(0));
     }
 
     @Test
     public void testValidatedAttrSpecifiedInSrc() {
         assertFalse(ipsSrcFile.isDirty());
-        rule.setValidatedAttrSpecifiedInSrc(true);
+        validationRule.setValidatedAttrSpecifiedInSrc(true);
         assertTrue(ipsSrcFile.isDirty());
-        assertEquals(true, rule.isValidatedAttrSpecifiedInSrc());
+        assertEquals(true, validationRule.isValidatedAttrSpecifiedInSrc());
     }
 
     @Test
     public void testInitFromXml() {
         Document doc = getTestDocument();
-        rule.setAppliedForAllBusinessFunctions(true);
-        rule.initFromXml(doc.getDocumentElement());
-        assertEquals("42", rule.getId());
-        assertEquals("checkAge", rule.getName());
-        assertEquals("ageMissing", rule.getMessageCode());
-        assertEquals("messageText", rule.getMessageText().get(Locale.GERMAN).getValue());
-        assertEquals(MessageSeverity.WARNING, rule.getMessageSeverity());
-        assertFalse(rule.isAppliedForAllBusinessFunctions());
-        String[] functions = rule.getBusinessFunctions();
+        validationRule.setAppliedForAllBusinessFunctions(true);
+        validationRule.initFromXml(doc.getDocumentElement());
+        assertEquals("42", validationRule.getId());
+        assertEquals("checkAge", validationRule.getName());
+        assertEquals("ageMissing", validationRule.getMessageCode());
+        assertEquals("messageText", validationRule.getMessageText().get(Locale.GERMAN).getValue());
+        assertEquals(MessageSeverity.WARNING, validationRule.getMessageSeverity());
+        assertFalse(validationRule.isAppliedForAllBusinessFunctions());
+        String[] functions = validationRule.getBusinessFunctions();
         assertEquals(2, functions.length);
         assertEquals("NewOffer", functions[0]);
         assertEquals("Renewal", functions[1]);
-        String[] validatedAttributes = rule.getValidatedAttributes();
+        String[] validatedAttributes = validationRule.getValidatedAttributes();
         assertEquals("a", validatedAttributes[0]);
         assertEquals("b", validatedAttributes[1]);
     }
 
     @Test
     public void testToXmlDocument() {
-        rule = pcType.newRule(); // => id=1 because it's the second rule
-        rule.setName("checkAge");
-        rule.setAppliedForAllBusinessFunctions(true);
-        rule.setMessageCode("ageMissing");
-        rule.getMessageText().add(new LocalizedString(Locale.GERMAN, "messageText"));
-        rule.setMessageSeverity(MessageSeverity.WARNING);
-        rule.setBusinessFunctions(new String[] { "NewOffer", "Renewal" });
-        rule.addValidatedAttribute("a");
-        rule.setCheckValueAgainstValueSetRule(true);
-        rule.setCategory("foo");
+        validationRule = policyCmptType.newRule(); // => id=1 because it's the second validationRule
+        validationRule.setName("checkAge");
+        validationRule.setAppliedForAllBusinessFunctions(true);
+        validationRule.setMessageCode("ageMissing");
+        validationRule.getMessageText().add(new LocalizedString(Locale.GERMAN, "messageText"));
+        validationRule.setMessageSeverity(MessageSeverity.WARNING);
+        validationRule.setBusinessFunctions(new String[] { "NewOffer", "Renewal" });
+        validationRule.addValidatedAttribute("a");
+        validationRule.setCheckValueAgainstValueSetRule(true);
+        validationRule.setCategory("foo");
 
-        Element element = rule.toXml(newDocument());
+        Element element = validationRule.toXml(newDocument());
 
         ValidationRule copy = new ValidationRule(mock(IPolicyCmptType.class), "");
         copy.initFromXml(element);
-        assertEquals(rule.getId(), copy.getId());
+        assertEquals(validationRule.getId(), copy.getId());
         assertEquals("checkAge", copy.getName());
         assertEquals("ageMissing", copy.getMessageCode());
         assertEquals("messageText", copy.getMessageText().get(Locale.GERMAN).getValue());
@@ -169,132 +173,150 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
     @Test
     public void testAddBusinessFunction() {
-        rule.addBusinessFunction("f1");
-        assertEquals(1, rule.getNumOfBusinessFunctions());
-        assertEquals("f1", rule.getBusinessFunction(0));
+        validationRule.addBusinessFunction("f1");
+        assertEquals(1, validationRule.getNumOfBusinessFunctions());
+        assertEquals("f1", validationRule.getBusinessFunction(0));
 
-        rule.addBusinessFunction("f2");
-        assertEquals(2, rule.getNumOfBusinessFunctions());
-        assertEquals("f2", rule.getBusinessFunction(1));
+        validationRule.addBusinessFunction("f2");
+        assertEquals(2, validationRule.getNumOfBusinessFunctions());
+        assertEquals("f2", validationRule.getBusinessFunction(1));
     }
 
     @Test
     public void testSetBusinessFunction() {
-        rule.addBusinessFunction("f1");
-        rule.addBusinessFunction("f2");
+        validationRule.addBusinessFunction("f1");
+        validationRule.addBusinessFunction("f2");
 
-        rule.setBusinessFunctions(1, "changed");
-        assertEquals("changed", rule.getBusinessFunction(1));
+        validationRule.setBusinessFunctions(1, "changed");
+        assertEquals("changed", validationRule.getBusinessFunction(1));
     }
 
     @Test
     public void testRemoveBusinessFunction() {
-        rule.addBusinessFunction("f1");
-        rule.addBusinessFunction("f2");
-        rule.addBusinessFunction("f3");
-        rule.addBusinessFunction("f4");
+        validationRule.addBusinessFunction("f1");
+        validationRule.addBusinessFunction("f2");
+        validationRule.addBusinessFunction("f3");
+        validationRule.addBusinessFunction("f4");
 
-        rule.removeBusinessFunction(3);
-        rule.removeBusinessFunction(1);
-        assertEquals(2, rule.getNumOfBusinessFunctions());
-        assertEquals("f1", rule.getBusinessFunction(0));
-        assertEquals("f3", rule.getBusinessFunction(1));
+        validationRule.removeBusinessFunction(3);
+        validationRule.removeBusinessFunction(1);
+        assertEquals(2, validationRule.getNumOfBusinessFunctions());
+        assertEquals("f1", validationRule.getBusinessFunction(0));
+        assertEquals("f3", validationRule.getBusinessFunction(1));
     }
 
     @Test
     public void testValidate() throws Exception {
-        rule.addValidatedAttribute("a");
+        validationRule.addValidatedAttribute("a");
 
         // validation is expected to fail because the specified attribute doesn't exist for the
         // PolicyCmptType
-        MessageList messageList = rule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(rule, "validatedAttributes");
+        MessageList messageList = validationRule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(validationRule,
+                "validatedAttributes");
         assertEquals(1, messageList.size());
 
-        IPolicyCmptTypeAttribute attr = pcType.newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("a");
         attr.setAttributeType(AttributeType.CHANGEABLE);
         attr.setDatatype("String");
 
-        messageList = rule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(rule, "validatedAttributes");
+        messageList = validationRule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(validationRule,
+                "validatedAttributes");
         assertEquals(0, messageList.size());
 
         // validation is expected to fail because of duplicate attribute entries
-        rule.addValidatedAttribute("a");
-        messageList = rule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(rule, "validatedAttributes");
+        validationRule.addValidatedAttribute("a");
+        messageList = validationRule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(validationRule,
+                "validatedAttributes");
         assertEquals(1, messageList.size());
     }
 
     @Test
     public void testValidateBusinessFunctions() throws CoreException {
-        rule.setAppliedForAllBusinessFunctions(true);
-        MessageList msgList = rule.validate(ipsSrcFile.getIpsProject());
-        msgList = msgList.getMessagesFor(rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
+        validationRule.setAppliedForAllBusinessFunctions(true);
+        MessageList msgList = validationRule.validate(ipsSrcFile.getIpsProject());
+        msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
         assertTrue(msgList.isEmpty());
 
-        rule.setAppliedForAllBusinessFunctions(false);
-        msgList = rule.validate(ipsSrcFile.getIpsProject());
-        msgList = msgList.getMessagesFor(rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
+        validationRule.setAppliedForAllBusinessFunctions(false);
+        msgList = validationRule.validate(ipsSrcFile.getIpsProject());
+        msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
         assertFalse(msgList.isEmpty());
 
-        rule.setAppliedForAllBusinessFunctions(false);
-        rule.addBusinessFunction("function");
-        msgList = rule.validate(ipsSrcFile.getIpsProject());
-        msgList = msgList.getMessagesFor(rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
+        validationRule.setAppliedForAllBusinessFunctions(false);
+        validationRule.addBusinessFunction("function");
+        msgList = validationRule.validate(ipsSrcFile.getIpsProject());
+        msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
         assertTrue(msgList.isEmpty());
     }
 
     @Test
     public void testValidateMsgCodeShouldntBeNull() throws CoreException {
-        rule.setMessageCode(null);
-        MessageList list = rule.validate(ipsSrcFile.getIpsProject());
+        validationRule.setMessageCode(null);
+        MessageList list = validationRule.validate(ipsSrcFile.getIpsProject());
         assertNotNull(list.getMessageByCode(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY));
-        rule.setMessageCode("");
-        list = rule.validate(ipsSrcFile.getIpsProject());
+        validationRule.setMessageCode("");
+        list = validationRule.validate(ipsSrcFile.getIpsProject());
         assertNotNull(list.getMessageByCode(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY));
 
-        rule.setMessageCode("code");
-        list = rule.validate(ipsSrcFile.getIpsProject());
+        validationRule.setMessageCode("code");
+        list = validationRule.validate(ipsSrcFile.getIpsProject());
         assertNull(list.getMessageByCode(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY));
     }
 
     @Test
     public void testConstantAttributesCantBeValidated() throws CoreException {
-        IPolicyCmptTypeAttribute a = pcType.newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute a = policyCmptType.newPolicyCmptTypeAttribute();
         a.setName("a1");
         a.setAttributeType(AttributeType.CONSTANT);
-        rule.addValidatedAttribute("a1");
-        assertNotNull(rule.validate(ipsSrcFile.getIpsProject()).getMessageByCode(
+        validationRule.addValidatedAttribute("a1");
+        assertNotNull(validationRule.validate(ipsSrcFile.getIpsProject()).getMessageByCode(
                 IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED));
 
         a.setAttributeType(AttributeType.CHANGEABLE);
-        assertNull(rule.validate(ipsSrcFile.getIpsProject()).getMessageByCode(
+        assertNull(validationRule.validate(ipsSrcFile.getIpsProject()).getMessageByCode(
                 IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED));
     }
 
     @Test
     public void testConfigurableByProductCompt() throws CoreException {
-        ProductCmptType prodType = newProductCmptType(project, "ProdType");
-        pcType.setProductCmptType(prodType.getQualifiedName());
+        ProductCmptType prodType = newProductCmptType(ipsProject, "ProdType");
+        policyCmptType.setProductCmptType(prodType.getQualifiedName());
 
-        pcType.setConfigurableByProductCmptType(true);
-        rule.setConfigurableByProductComponent(true);
-        assertTrue("Rule is supposed to be configurable", rule.isConfigurableByProductComponent());
+        policyCmptType.setConfigurableByProductCmptType(true);
+        validationRule.setConfigurableByProductComponent(true);
+        assertTrue("Rule is supposed to be configurable", validationRule.isConfigurableByProductComponent());
 
-        rule.setConfigurableByProductComponent(false);
-        assertFalse("Rule isn't supposed to be configurable", rule.isConfigurableByProductComponent());
+        validationRule.setConfigurableByProductComponent(false);
+        assertFalse("Rule isn't supposed to be configurable", validationRule.isConfigurableByProductComponent());
 
-        rule.setConfigurableByProductComponent(false);
-        pcType.setConfigurableByProductCmptType(false);
-        assertFalse("Rule isn't supposed to be configurable", rule.isConfigurableByProductComponent());
+        validationRule.setConfigurableByProductComponent(false);
+        policyCmptType.setConfigurableByProductCmptType(false);
+        assertFalse("Rule isn't supposed to be configurable", validationRule.isConfigurableByProductComponent());
 
-        rule.setConfigurableByProductComponent(true);
-        pcType.setConfigurableByProductCmptType(false);
-        assertFalse("Rule isn't supposed to be configurable", rule.isConfigurableByProductComponent());
+        validationRule.setConfigurableByProductComponent(true);
+        policyCmptType.setConfigurableByProductCmptType(false);
+        assertFalse("Rule isn't supposed to be configurable", validationRule.isConfigurableByProductComponent());
     }
 
     @Test
     public void testIsPolicyCmptTypeProperty() {
-        assertTrue(rule.isPolicyCmptTypeProperty());
+        assertTrue(validationRule.isPolicyCmptTypeProperty());
+    }
+
+    @Test
+    public void testIsPropertyFor() throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        productCmptType.setConfigurationForPolicyCmptType(true);
+        productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
+        policyCmptType.setConfigurableByProductCmptType(true);
+        policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
+
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "Product");
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
+        IPropertyValue propertyValue = generation.newValidationRuleConfig(validationRule);
+
+        assertTrue(validationRule.isPropertyFor(propertyValue));
     }
 
 }

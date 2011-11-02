@@ -1272,6 +1272,34 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(s1, properties.get(1));
         assertEquals(a1, properties.get(2));
         assertEquals(a2, properties.get(3));
+        assertEquals(4, properties.size());
+    }
+
+    @Test
+    public void testFindProductCmptPropertiesInOrder_SuperTypeNotFound() throws CoreException {
+        superProductCmptType.newProductCmptTypeAttribute("s");
+        IProductCmptProperty a = productCmptType.newProductCmptTypeAttribute("a");
+
+        productCmptType.setSupertype("foo");
+
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(true, ipsProject);
+        assertEquals(a, properties.get(0));
+        assertEquals(1, properties.size());
+    }
+
+    @Test
+    public void testFindProductCmptPropertiesInOrder_ProductCmptTypeNotFoundFromPolicyCmptType() throws CoreException {
+        IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute("a1");
+        a1.setProductRelevant(true);
+        IPolicyCmptTypeAttribute a2 = policyCmptType.newPolicyCmptTypeAttribute("a2");
+        a2.setProductRelevant(true);
+
+        policyCmptType.setProductCmptType("foo");
+
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(true, ipsProject);
+        assertEquals(a1, properties.get(0));
+        assertEquals(a2, properties.get(1));
+        assertEquals(2, properties.size());
     }
 
     // TODO AW other test

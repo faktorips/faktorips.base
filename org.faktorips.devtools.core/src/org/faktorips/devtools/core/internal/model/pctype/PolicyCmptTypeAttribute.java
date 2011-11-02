@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -468,6 +469,12 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     public boolean isPolicyCmptTypeProperty() {
         return true;
+    }
+
+    @Override
+    public boolean isPropertyFor(IPropertyValue propertyValue) {
+        return getProductCmptPropertyType().equals(propertyValue.getPropertyType())
+                && getPropertyName().equals(propertyValue.getPropertyName());
     }
 
 }

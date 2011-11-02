@@ -66,4 +66,12 @@ public interface IProductCmptProperty extends ITypePart {
      */
     public boolean isPolicyCmptTypeProperty();
 
+    /**
+     * Returns whether this {@link IProductCmptProperty} corresponds to the indicated
+     * {@link IPropertyValue}.
+     * 
+     * @param propertyValue the {@link IPropertyValue} to check for correspondence
+     */
+    public boolean isPropertyFor(IPropertyValue propertyValue);
+
 }

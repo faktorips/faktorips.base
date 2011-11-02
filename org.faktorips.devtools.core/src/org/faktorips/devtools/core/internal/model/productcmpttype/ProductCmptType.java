@@ -95,6 +95,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     public ProductCmptType(IIpsSrcFile file) {
         super(file);
+
         tableStructureUsages = new IpsObjectPartCollection<ITableStructureUsage>(this, TableStructureUsage.class,
                 ITableStructureUsage.class, TableStructureUsage.TAG_NAME);
         attributes = new IpsObjectPartCollection<IProductCmptTypeAttribute>(this, ProductCmptTypeAttribute.class,
@@ -909,16 +910,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void createProductCmptPropertyReferencesForNotReferencedProperties() throws CoreException {
-        List<IProductCmptPropertyReference> references = propertyReferences.asList();
         for (IProductCmptProperty property : findProductCmptProperties(false, getIpsProject())) {
-            boolean referenceFound = false;
-            for (IProductCmptPropertyReference reference : references) {
-                if (reference.isReferencingProperty(property)) {
-                    referenceFound = true;
-                    break;
-                }
-            }
-            if (!referenceFound) {
+            if (getReferencedPropertyIndex(property) == -1) {
                 newProductCmptPropertyReference(property);
             }
         }
@@ -1004,6 +997,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                  * If an error occurs during the search for the property, the property is not found
                  * but we cannot be sure whether it is obsolete.
                  */
+                IpsPlugin.log(e);
                 return true;
             }
         }
@@ -1045,6 +1039,17 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return counter.categoriesFound > 1;
     }
 
+    private int getReferencedPropertyIndex(IProductCmptProperty property) {
+        int index = 0;
+        for (IProductCmptPropertyReference reference : propertyReferences) {
+            if (reference.isReferencingProperty(property)) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
+    }
+
     private static class ProductCmptPropertyComparator implements Comparator<IProductCmptProperty> {
 
         private final IIpsProject ipsProject;
@@ -1063,13 +1068,17 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 productCmptType2 = property2.findProductCmptType(ipsProject);
             } catch (CoreException e) {
                 // Consider elements equal if the product component types cannot be found
+                IpsPlugin.log(e);
                 return 0;
             }
 
-            // TODO AW 31-10-2011: Law of Demeter, method
-            // property1.findIsBelongingToSameProductCmptType(property2)
+            if (productCmptType1 == null || productCmptType2 == null) {
+                // Consider elements equal if the product component types cannot be found
+                return 0;
+            }
+
             if (productCmptType1.equals(productCmptType2)) {
-                return comparePropertyIndices(property1, property2);
+                return comparePropertyIndices(property1, property2, productCmptType1, productCmptType2);
             } else {
                 return compareSubtypeRelationship(ipsProject, productCmptType1, productCmptType2);
             }
@@ -1081,10 +1090,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
          * <p>
          * Properties whose indices are greater are sorted towards the end.
          */
-        private int comparePropertyIndices(IProductCmptProperty property1, IProductCmptProperty property2) {
-            int index1 = getReferencedPropertyIndex(property1);
-            int index2 = getReferencedPropertyIndex(property2);
+        private int comparePropertyIndices(IProductCmptProperty property1,
+                IProductCmptProperty property2,
+                IProductCmptType productCmptType1,
+                IProductCmptType productCmptType2) {
 
+            int index1 = ((ProductCmptType)productCmptType1).getReferencedPropertyIndex(property1);
+            int index2 = ((ProductCmptType)productCmptType2).getReferencedPropertyIndex(property2);
             if (index1 == -1 || index2 == -1) {
                 return 0;
             }
@@ -1096,27 +1108,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
             } else {
                 return 1;
             }
-        }
-
-        private int getReferencedPropertyIndex(IProductCmptProperty property) {
-            IProductCmptType productCmptType = null;
-            try {
-                productCmptType = property.findProductCmptType(ipsProject);
-            } catch (CoreException e) {
-                // Return -1 to indicate that the property index could not be determined
-                IpsPlugin.log(e);
-                return -1;
-            }
-            // TODO AW 31-10-2011: Handle productCmptType null case
-
-            // TODO AW 31-10-2011: Law of Demeter: getReferencedPropertyIndex to ProductCmptType
-            for (int i = 0; i < ((ProductCmptType)productCmptType).propertyReferences.size(); i++) {
-                if (((ProductCmptType)productCmptType).propertyReferences.getPart(i).isReferencingProperty(property)) {
-                    return i;
-                }
-            }
-
-            return -1;
         }
 
         /**

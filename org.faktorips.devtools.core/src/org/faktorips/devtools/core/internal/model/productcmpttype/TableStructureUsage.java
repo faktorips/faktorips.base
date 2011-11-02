@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -306,6 +307,12 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
     @Override
     public boolean isPolicyCmptTypeProperty() {
         return false;
+    }
+
+    @Override
+    public boolean isPropertyFor(IPropertyValue propertyValue) {
+        return getProductCmptPropertyType().equals(propertyValue.getPropertyType())
+                && getPropertyName().equals(propertyValue.getPropertyName());
     }
 
     public class TableStructureReference extends AtomicIpsObjectPart {

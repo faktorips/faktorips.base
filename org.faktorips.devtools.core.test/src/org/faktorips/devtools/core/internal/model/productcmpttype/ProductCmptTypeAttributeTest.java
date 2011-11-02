@@ -16,13 +16,16 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import javax.xml.transform.TransformerException;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -37,9 +40,8 @@ import org.w3c.dom.Element;
 public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
-    private IPolicyCmptType policyCmptType;
+
     private IProductCmptType productCmptType;
-    private org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyAttribute;
 
     private IProductCmptTypeAttribute productAttribute;
 
@@ -48,10 +50,6 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
-        policyCmptType = newPolicyCmptType(ipsProject, "Policy");
-        policyAttribute = policyCmptType.newPolicyCmptTypeAttribute();
-        policyAttribute.setName("policyAttribute");
-        policyAttribute.setDatatype(Datatype.INTEGER.getName());
 
         productCmptType = newProductCmptType(ipsProject, "Product");
         productCmptType.setPolicyCmptType("Policy");
@@ -94,6 +92,15 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     @Test
     public void testIsPolicyCmptTypeProperty() {
         assertFalse(productAttribute.isPolicyCmptTypeProperty());
+    }
+
+    @Test
+    public void testIsPropertyFor() throws CoreException {
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "Product");
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
+        IPropertyValue propertyValue = generation.newAttributeValue(productAttribute);
+
+        assertTrue(productAttribute.isPropertyFor(propertyValue));
     }
 
 }

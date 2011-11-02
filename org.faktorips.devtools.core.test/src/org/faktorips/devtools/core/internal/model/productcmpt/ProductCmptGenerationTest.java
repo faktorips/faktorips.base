@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -51,6 +52,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.AssociationType;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -216,8 +218,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IConfigElement ce3 = generation.newConfigElement();
         IConfigElement ce4 = generation.newConfigElement();
 
-        List<? extends IPropertyValue> values = generation.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE
-                .getValueClass());
+        List<? extends IPropertyValue> values = generation
+                .getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass());
         assertEquals(1, values.size());
         assertEquals(value1, values.get(0));
 
@@ -648,6 +650,26 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertNotNull(generation.getValidationRuleConfig("ruleThree"));
         assertNull(generation.getValidationRuleConfig("nonExistingRule"));
         assertNull(generation.getValidationRuleConfig(null));
+    }
+
+    @Test
+    public void testGetPropertyValuesIncludeProductCmpt() {
+        IProductCmptTypeAttribute productAttribute = productCmptType.newProductCmptTypeAttribute("productAttribute");
+        productAttribute.setChangingOverTime(false);
+        IPropertyValue productValue = productCmpt.newPropertyValue(productAttribute);
+
+        IProductCmptTypeAttribute genAttribute1 = productCmptType.newProductCmptTypeAttribute("g1");
+        IProductCmptTypeAttribute genAttribute2 = productCmptType.newProductCmptTypeAttribute("g2");
+        IPropertyValue genValue1 = generation.newAttributeValue(genAttribute1);
+        IPropertyValue genValue2 = generation.newAttributeValue(genAttribute2);
+
+        List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>(3);
+        properties.addAll(Arrays.asList(productAttribute, genAttribute1));
+        List<IPropertyValue> propertyValues = generation.getPropertyValuesIncludeProductCmpt(properties);
+        assertTrue(propertyValues.contains(productValue));
+        assertTrue(propertyValues.contains(genValue1));
+        assertFalse(propertyValues.contains(genValue2));
+        assertEquals(2, propertyValues.size());
     }
 
 }

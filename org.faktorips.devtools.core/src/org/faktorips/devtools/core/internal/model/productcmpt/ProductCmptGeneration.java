@@ -611,7 +611,26 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return ruleConfig;
     }
 
-    class AssociationsValidator extends TypeHierarchyVisitor<IProductCmptType> {
+    @Override
+    public List<IPropertyValue> getPropertyValuesIncludeProductCmpt(List<IProductCmptProperty> properties) {
+        // Collect all potential property values
+        List<IPropertyValue> allPropertyValues = new ArrayList<IPropertyValue>();
+        allPropertyValues.addAll(getAllPropertyValues());
+        allPropertyValues.addAll(getProductCmpt().getAllPropertyValues());
+
+        // Find the property values corresponding to the given properties
+        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
+        for (IProductCmptProperty property : properties) {
+            for (IPropertyValue propertyValue : allPropertyValues) {
+                if (property.isPropertyFor(propertyValue)) {
+                    propertyValues.add(propertyValue);
+                }
+            }
+        }
+        return propertyValues;
+    }
+
+    private class AssociationsValidator extends TypeHierarchyVisitor<IProductCmptType> {
 
         private final MessageList list;
 

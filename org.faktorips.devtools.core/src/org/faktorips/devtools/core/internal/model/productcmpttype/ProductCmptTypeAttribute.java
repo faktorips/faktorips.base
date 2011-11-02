@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -216,6 +217,12 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     public boolean isPolicyCmptTypeProperty() {
         return false;
+    }
+
+    @Override
+    public boolean isPropertyFor(IPropertyValue propertyValue) {
+        return getProductCmptPropertyType().equals(propertyValue.getPropertyType())
+                && getPropertyName().equals(propertyValue.getPropertyName());
     }
 
 }

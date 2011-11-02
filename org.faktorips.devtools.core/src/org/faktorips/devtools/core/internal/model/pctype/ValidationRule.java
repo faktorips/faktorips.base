@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -500,6 +501,12 @@ public class ValidationRule extends TypePart implements IValidationRule {
     @Override
     public boolean isPolicyCmptTypeProperty() {
         return true;
+    }
+
+    @Override
+    public boolean isPropertyFor(IPropertyValue propertyValue) {
+        return getProductCmptPropertyType().equals(propertyValue.getPropertyType())
+                && getPropertyName().equals(propertyValue.getPropertyName());
     }
 
 }

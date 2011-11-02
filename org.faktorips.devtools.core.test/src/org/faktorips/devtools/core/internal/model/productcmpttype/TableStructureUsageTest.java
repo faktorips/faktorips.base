@@ -23,6 +23,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -39,7 +42,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
 
-    private IProductCmptType type;
+    private IProductCmptType productCmptType;
 
     private ITableStructureUsage tableStructureUsage;
 
@@ -50,9 +53,9 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
 
         project = this.newIpsProject();
 
-        type = newProductCmptType(project, "test.Product");
-        tableStructureUsage = type.newTableStructureUsage();
-        type.getIpsSrcFile().save(true, null);
+        productCmptType = newProductCmptType(project, "test.Product");
+        tableStructureUsage = productCmptType.newTableStructureUsage();
+        productCmptType.getIpsSrcFile().save(true, null);
 
         newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "test.TableStructure1");
     }
@@ -72,8 +75,8 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     @Test
     public void testRemove() {
         tableStructureUsage.delete();
-        assertEquals(0, type.getTableStructureUsages().size());
-        assertTrue(type.getIpsSrcFile().isDirty());
+        assertEquals(0, productCmptType.getTableStructureUsages().size());
+        assertTrue(productCmptType.getIpsSrcFile().isDirty());
     }
 
     @Test
@@ -101,7 +104,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         tableStructureUsage.setCategory("foo");
         Element element = tableStructureUsage.toXml(this.newDocument());
 
-        ITableStructureUsage copy = type.newTableStructureUsage();
+        ITableStructureUsage copy = productCmptType.newTableStructureUsage();
         copy.initFromXml(element);
 
         assertEquals("roleA", copy.getRoleName());
@@ -116,28 +119,28 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     public void testSetRoleName() {
         tableStructureUsage.setRoleName("role100");
         assertEquals("role100", tableStructureUsage.getRoleName());
-        assertTrue(type.getIpsSrcFile().isDirty());
+        assertTrue(productCmptType.getIpsSrcFile().isDirty());
     }
 
     @Test
     public void testSetIsMandatoryTableContent() {
         tableStructureUsage.setMandatoryTableContent(false);
         assertFalse(tableStructureUsage.isMandatoryTableContent());
-        assertFalse(type.getIpsSrcFile().isDirty());
+        assertFalse(productCmptType.getIpsSrcFile().isDirty());
         tableStructureUsage.setMandatoryTableContent(true);
         assertTrue(tableStructureUsage.isMandatoryTableContent());
-        assertTrue(type.getIpsSrcFile().isDirty());
+        assertTrue(productCmptType.getIpsSrcFile().isDirty());
     }
 
     @Test
     public void testAddRemoveTableStructure() {
         assertEquals(0, tableStructureUsage.getTableStructures().length);
         tableStructureUsage.removeTableStructure("tableStructureA");
-        assertFalse(type.getIpsSrcFile().isDirty());
+        assertFalse(productCmptType.getIpsSrcFile().isDirty());
 
         tableStructureUsage.addTableStructure("tableStructureA");
         tableStructureUsage.addTableStructure("tableStructureB");
-        assertTrue(type.getIpsSrcFile().isDirty());
+        assertTrue(productCmptType.getIpsSrcFile().isDirty());
         assertEquals(2, tableStructureUsage.getTableStructures().length);
         tableStructureUsage.removeTableStructure("tableStructureC");
         assertEquals(2, tableStructureUsage.getTableStructures().length);
@@ -195,7 +198,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
 
-        tableStructureUsage = type.newTableStructureUsage();
+        tableStructureUsage = productCmptType.newTableStructureUsage();
         tableStructureUsage.setRoleName("role1");
         ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
@@ -228,6 +231,15 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     @Test
     public void testIsPolicyCmptTypeProperty() {
         assertFalse(tableStructureUsage.isPolicyCmptTypeProperty());
+    }
+
+    @Test
+    public void testIsPropertyFor() throws CoreException {
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "Product");
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
+        IPropertyValue propertyValue = generation.newTableContentUsage(tableStructureUsage);
+
+        assertTrue(tableStructureUsage.isPropertyFor(propertyValue));
     }
 
 }

@@ -119,58 +119,6 @@ public class TypePartTest extends AbstractIpsPluginTest {
         verify(element).setAttribute(ITypePart.PROPERTY_CATEGORY, "foo");
     }
 
-    @Test
-    public void testFindIsBelongingToSameProductCmptType_PolicyCmptTypePart() throws CoreException {
-        IPolicyCmptType policyType = newPolicyAndProductCmptType(ipsProject, "MyPolicy", "MyProduct");
-        IPolicyCmptType foreignPolicyType = newPolicyAndProductCmptType(ipsProject, "MyOtherPolicy", "MyOtherProduct");
-
-        ITypePart typePart = new TestTypePart(policyType, policyType.findProductCmptType(ipsProject), "");
-        ITypePart otherTypePart = new TestTypePart(policyType, policyType.findProductCmptType(ipsProject), "");
-        ITypePart foreignTypePart = new TestTypePart(foreignPolicyType,
-                foreignPolicyType.findProductCmptType(ipsProject), "");
-
-        assertTrue(typePart.findIsBelongingToSameProductCmptType(otherTypePart, ipsProject));
-        assertFalse(typePart.findIsBelongingToSameProductCmptType(foreignTypePart, ipsProject));
-    }
-
-    @Test
-    public void testFindIsBelongingToSameProductCmptType_ProductCmptTypePart() throws CoreException {
-        IPolicyCmptType policyType = newPolicyAndProductCmptType(ipsProject, "MyPolicy", "MyProduct");
-        IPolicyCmptType foreignPolicyType = newPolicyAndProductCmptType(ipsProject, "MyOtherPolicy", "MyOtherProduct");
-        IProductCmptType productType = policyType.findProductCmptType(ipsProject);
-        IProductCmptType foreignProductType = foreignPolicyType.findProductCmptType(ipsProject);
-
-        ITypePart typePart = new TestTypePart(productType, productType, "");
-        ITypePart otherTypePart = new TestTypePart(productType, productType, "");
-        ITypePart foreignTypePart = new TestTypePart(foreignProductType, foreignProductType, "");
-
-        assertTrue(typePart.findIsBelongingToSameProductCmptType(otherTypePart, ipsProject));
-        assertFalse(typePart.findIsBelongingToSameProductCmptType(foreignTypePart, ipsProject));
-    }
-
-    @Test
-    public void testFindIsBelongingToSameProductCmptType_ProductCmptTypeNotFound() throws CoreException {
-        IPolicyCmptType policyType = newPolicyAndProductCmptType(ipsProject, "MyPolicy", "MyProduct");
-
-        ITypePart typePart = new TestTypePart(policyType, null, "");
-        ITypePart otherTypePart = new TestTypePart(policyType, policyType.findProductCmptType(ipsProject), "");
-
-        // False should be returned but no exception may be thrown
-        assertFalse(typePart.findIsBelongingToSameProductCmptType(otherTypePart, ipsProject));
-    }
-
-    @Test
-    public void testFindIsBelongingToSameProductCmptType_ProductCmptTypeOfOtherPropertyNotFound() throws CoreException {
-        IPolicyCmptType policyType = newPolicyAndProductCmptType(ipsProject, "MyPolicy", "MyProduct");
-        IPolicyCmptType foreignPolicyType = newPolicyAndProductCmptType(ipsProject, "MyOtherPolicy", "MyOtherProduct");
-
-        ITypePart typePart = new TestTypePart(policyType, policyType.findProductCmptType(ipsProject), "");
-        ITypePart foreignTypePart = new TestTypePart(foreignPolicyType, null, "");
-
-        // False should be returned but no exception may be thrown
-        assertFalse(typePart.findIsBelongingToSameProductCmptType(foreignTypePart, ipsProject));
-    }
-
     private static class TestTypePart extends TypePart {
 
         private final IProductCmptType productCmptType;

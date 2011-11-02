@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -113,24 +112,8 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
             IProductCmptGeneration contextGeneration,
             IIpsProject ipsProject) throws CoreException {
 
-        // TODO AW 31-10-2011: Law of Demeter
-
-        // Collect all potential property values
-        List<IPropertyValue> allPropertyValues = new ArrayList<IPropertyValue>();
-        allPropertyValues.addAll(contextGeneration.getAllPropertyValues());
-        allPropertyValues.addAll(contextGeneration.getProductCmpt().getAllPropertyValues());
-
-        // Find the property values corresponding to the category's properties
-        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
-        for (IProductCmptProperty property : findProductCmptProperties(contextType, true, ipsProject)) {
-            for (IPropertyValue propertyValue : allPropertyValues) {
-                if (property.getProductCmptPropertyType().equals(propertyValue.getPropertyType())
-                        && property.getPropertyName().equals(propertyValue.getPropertyName())) {
-                    propertyValues.add(propertyValue);
-                }
-            }
-        }
-        return propertyValues;
+        List<IProductCmptProperty> categoryProperties = findProductCmptProperties(contextType, true, ipsProject);
+        return contextGeneration.getPropertyValuesIncludeProductCmpt(categoryProperties);
     }
 
     @Override
