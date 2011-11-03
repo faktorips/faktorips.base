@@ -28,8 +28,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -122,7 +122,7 @@ public class CustomIconSection extends IpsSection {
         iconPathText = toolkit.createText(parent);
 
         iconBrowseButton = toolkit.createButton(parent, Messages.CustomIconSection_BrowseButtonText);
-        iconBrowseButton.addSelectionListener(new BrowseIconsListener((IProductCmptType)type));
+        iconBrowseButton.addSelectionListener(new BrowseIconsListener());
 
         // update Text before binding it to the content, as it will not show up when initially
         // opened otherwise
@@ -163,18 +163,7 @@ public class CustomIconSection extends IpsSection {
         performRefresh();
     }
 
-    private class BrowseIconsListener implements SelectionListener {
-
-        private IProductCmptType type;
-
-        public BrowseIconsListener(IProductCmptType type) {
-            this.type = type;
-        }
-
-        @Override
-        public void widgetDefaultSelected(SelectionEvent e) {
-            // Nothing to do
-        }
+    private class BrowseIconsListener extends SelectionAdapter {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
@@ -201,7 +190,7 @@ public class CustomIconSection extends IpsSection {
                  * will be cached by the IpsUIPlugin using their path, so problems may arise with
                  * caching as well.
                  */
-                type.setInstancesIcon(file.getFullPath().removeFirstSegments(2).toString());
+                ((ProductCmptType)type).setInstancesIcon(file.getFullPath().removeFirstSegments(2).toString());
                 performRefresh();
             }
         }

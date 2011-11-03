@@ -63,6 +63,7 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -432,12 +433,7 @@ public class TestCaseTypeSection extends IpsSection {
         /**
          * Helper class to handle common button functionality
          */
-        private class ButtonSelectionListener implements SelectionListener {
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
+        private class ButtonSelectionListener extends SelectionAdapter {
 
             @Override
             public void widgetSelected(SelectionEvent e) {

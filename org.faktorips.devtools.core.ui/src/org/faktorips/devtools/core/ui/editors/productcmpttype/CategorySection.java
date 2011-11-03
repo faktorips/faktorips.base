@@ -27,8 +27,8 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -231,15 +231,10 @@ public class CategorySection extends IpsSection {
             moveUpButton = toolkit.createButton(buttonComposite, Messages.CategorySection_buttonUp);
             moveUpButton
                     .setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-            moveUpButton.addSelectionListener(new SelectionListener() {
+            moveUpButton.addSelectionListener(new SelectionAdapter() {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     moveParts(true);
-                }
-
-                @Override
-                public void widgetDefaultSelected(SelectionEvent e) {
-                    // Nothing to do
                 }
             });
         }
@@ -248,15 +243,10 @@ public class CategorySection extends IpsSection {
             moveDownButton = toolkit.createButton(buttonComposite, Messages.CategorySection_buttonDown);
             moveDownButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
                     | GridData.VERTICAL_ALIGN_BEGINNING));
-            moveDownButton.addSelectionListener(new SelectionListener() {
+            moveDownButton.addSelectionListener(new SelectionAdapter() {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     moveParts(false);
-                }
-
-                @Override
-                public void widgetDefaultSelected(SelectionEvent e) {
-                    // Nothing to do
                 }
             });
         }
@@ -283,15 +273,10 @@ public class CategorySection extends IpsSection {
             changeCategoryButton = toolkit.createButton(buttonComposite, Messages.CategorySection_buttonChangeCategory);
             changeCategoryButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
                     | GridData.VERTICAL_ALIGN_BEGINNING));
-            changeCategoryButton.addSelectionListener(new SelectionListener() {
+            changeCategoryButton.addSelectionListener(new SelectionAdapter() {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     openChangeCategoryDialog();
-                }
-
-                @Override
-                public void widgetDefaultSelected(SelectionEvent e) {
-                    // Nothing to do
                 }
             });
         }
