@@ -237,6 +237,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
             if (model instanceof IAssociation) {
                 runtimeLabel.setAttribute(IModelElement.LABELS_PROPERTY_PLURAL_VALUE, label.getPluralValue());
             }
+            addExtensionProperties(label, runtimeLabel);
         }
     }
 
@@ -254,6 +255,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
             runtimeDescription.setAttribute(IModelElement.DESCRIPTIONS_PROPERTY_LOCALE,
                     locale == null ? "" : locale.getLanguage());
             runtimeDescription.setTextContent(description.getText());
+            addExtensionProperties(description, runtimeDescription);
         }
     }
 
