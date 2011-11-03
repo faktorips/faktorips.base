@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
@@ -266,16 +265,13 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         modelElement.appendChild(extensionProperties);
         for (IExtensionPropertyDefinition extensionPropertyDefinition : extensionPropertyDefinitions) {
             String propertyId = extensionPropertyDefinition.getPropertyId();
-            if (extensionPropertyDefinition instanceof StringExtensionPropertyDefinition
-                    && element.isExtPropertyDefinitionAvailable(propertyId)) {
-                // TODO enable non-String extension properties
+            if (element.isExtPropertyDefinitionAvailable(propertyId)) {
                 Element extensionProperty = doc.createElement(IModelElement.EXTENSION_PROPERTIES_XML_TAG);
                 extensionProperty.setAttribute(IModelElement.EXTENSION_PROPERTIES_PROPERTY_NULL,
                         Boolean.toString(element.getExtPropertyValue(propertyId) == null));
                 extensionProperty.setAttribute(IModelElement.EXTENSION_PROPERTIES_PROPERTY_ID, propertyId);
                 if (element.getExtPropertyValue(propertyId) != null) {
-                    extensionProperty.appendChild(doc.createCDATASection(element.getExtPropertyValue(propertyId)
-                            .toString()));
+                    extensionPropertyDefinition.valueToXml(extensionProperty, element.getExtPropertyValue(propertyId));
                 }
                 extensionProperties.appendChild(extensionProperty);
             }
