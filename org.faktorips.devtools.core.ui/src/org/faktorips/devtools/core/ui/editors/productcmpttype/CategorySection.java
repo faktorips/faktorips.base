@@ -296,6 +296,9 @@ public class CategorySection extends IpsSection {
 
         private void openChangeCategoryDialog() {
             IProductCmptProperty selectedProperty = getSelectedProperty();
+            if (selectedProperty == null) {
+                return;
+            }
 
             ChangeCategoryDialog dialog = new ChangeCategoryDialog(contextType, selectedProperty, category, getShell());
             DialogHelper dialogHelper = new DialogHelper();
