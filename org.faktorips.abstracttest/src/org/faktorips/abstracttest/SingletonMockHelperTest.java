@@ -63,7 +63,7 @@ public class SingletonMockHelperTest {
         }
     }
 
-    private static class MySingleton {
+    public static class MySingleton {
         private static MySingleton instance = new MySingleton();
         private String name = "foo";
 
@@ -80,7 +80,7 @@ public class SingletonMockHelperTest {
         }
     }
 
-    private static class MySingleton2 extends MySingleton {
+    public static class MySingleton2 extends MySingleton {
 
         @Override
         public String getName() {
@@ -88,27 +88,24 @@ public class SingletonMockHelperTest {
         }
     }
 
-    private static class MyFinalSingleton {
+    public static class MyFinalSingleton {
         private static final MyFinalSingleton instance = new MyFinalSingleton();
 
-        @SuppressWarnings("unused")
         public static MyFinalSingleton getInstance() {
             return instance;
         }
     }
 
-    private static class MyNoSingleton {
-        @SuppressWarnings("unused")
+    public static class MyNoSingleton {
         public MyNoSingleton instance;
     }
 
-    private static class MyDoubleSingleton {
+    public static class MyDoubleSingleton {
         private static MyDoubleSingleton instance = new MyDoubleSingleton();
 
         @SuppressWarnings("unused")
         private static MyDoubleSingleton anotherField;
 
-        @SuppressWarnings("unused")
         public static MyDoubleSingleton getInstance() {
             return instance;
         }
