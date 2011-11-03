@@ -64,7 +64,7 @@ public class TestCaseTypeEditor extends IpsObjectEditor implements IModelDescrip
     }
 
     @Override
-    protected void refreshInclStructuralChanges() {
+    protected void refreshIncludingStructuralChanges() {
         editorPage.refreshInclStructuralChanges();
     }
 

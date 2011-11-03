@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.util.ListElementMover;
 
 /**
  * Page that allows to edit the {@link IProductCmptCategory}s of an {@link IProductCmptType}.
@@ -54,28 +55,39 @@ public class CategoryPage extends IpsObjectEditorPage {
 
     static class CategoryCompositionSection extends IpsSection {
 
-        private final Map<IProductCmptCategory, CategorySection> categorySections = new LinkedHashMap<IProductCmptCategory, CategorySection>(
-                5);
+        private final List<CategorySection> leftSections = new ArrayList<CategorySection>();
+
+        private final List<CategorySection> rightSections = new ArrayList<CategorySection>();
+
+        private final Map<IProductCmptCategory, CategorySection> categoriesToSections = new LinkedHashMap<IProductCmptCategory, CategorySection>();
+
+        private final Map<CategorySection, IProductCmptCategory> sectionsToCategories = new LinkedHashMap<CategorySection, IProductCmptCategory>();
 
         private final IProductCmptType productCmptType;
 
+        private Composite left;
+
+        private Composite right;
+
         public CategoryCompositionSection(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
             super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+
             this.productCmptType = productCmptType;
+
             initControls();
         }
 
         @Override
         protected String getSectionTitle() {
-            return Messages.ProductCmptCategoriesSection_sectionTitle;
+            return Messages.CategoryCompositionSection_sectionTitle;
         }
 
         @Override
         protected void initClientComposite(Composite client, UIToolkit toolkit) {
             setLayout(client);
-            Composite left = createColumnComposite(client);
-            Composite right = createColumnComposite(client);
-            createCategorySections(left, right);
+            left = createColumnComposite(client);
+            right = createColumnComposite(client);
+            createCategorySections();
         }
 
         private void setLayout(Composite parent) {
@@ -89,7 +101,7 @@ public class CategoryPage extends IpsObjectEditorPage {
             return getToolkit().createGridComposite(parent, 1, true, true);
         }
 
-        private void createCategorySections(Composite left, Composite right) {
+        private void createCategorySections() {
             // Determine categories
             List<IProductCmptCategory> categories = new ArrayList<IProductCmptCategory>();
             try {
@@ -104,7 +116,12 @@ public class CategoryPage extends IpsObjectEditorPage {
                 Composite parent = category.isAtLeftPosition() ? left : right;
                 CategorySection categorySection = new CategorySection(category, productCmptType, this, parent,
                         getToolkit());
-                categorySections.put(category, categorySection);
+
+                List<CategorySection> sections = category.isAtLeftPosition() ? leftSections : rightSections;
+                sections.add(categorySection);
+
+                categoriesToSections.put(category, categorySection);
+                sectionsToCategories.put(categorySection, category);
             }
         }
 
@@ -112,7 +129,10 @@ public class CategoryPage extends IpsObjectEditorPage {
 
         @Override
         protected void performRefresh() {
-            for (IpsSection categorySection : categorySections.values()) {
+            for (IpsSection categorySection : leftSections) {
+                categorySection.refresh();
+            }
+            for (IpsSection categorySection : rightSections) {
                 categorySection.refresh();
             }
         }
@@ -122,7 +142,69 @@ public class CategoryPage extends IpsObjectEditorPage {
          * {@link IProductCmptCategory}.
          */
         public CategorySection getCategorySection(IProductCmptCategory category) {
-            return categorySections.get(category);
+            return categoriesToSections.get(category);
+        }
+
+        /**
+         * Moves the {@link CategorySection} for the given {@link IProductCmptCategory} up or down
+         * by one position.
+         * 
+         * @param category the {@link IProductCmptCategory} whose {@link CategorySection} shall be
+         *            move
+         * @param up flag indicating whether to move up or down
+         */
+        public void moveCategorySection(IProductCmptCategory category, boolean up) {
+            List<CategorySection> sections = category.isAtLeftPosition() ? leftSections : rightSections;
+            int sourceIndex = sections.indexOf(categoriesToSections.get(category));
+            // TODO AW
+
+            CategorySection sourceSection = sections.get(sourceIndex);
+            IProductCmptCategory sourceCategory = sectionsToCategories.get(sourceSection);
+
+            ListElementMover<CategorySection> mover = new ListElementMover<CategorySection>(sections);
+            int newIndex = mover.move(new int[] { sourceIndex }, up)[0];
+            if (newIndex == sourceIndex) {
+                return;
+            }
+
+            CategorySection targetSection = sections.get(newIndex);
+            IProductCmptCategory targetCategory = sectionsToCategories.get(targetSection);
+            if (!sourceCategory.getPosition().equals(targetCategory.getPosition())) {
+                return;
+            }
+
+            Composite parent = sourceCategory.isAtLeftPosition() ? left : right;
+            swapCategorySections(sourceIndex, newIndex, sections, parent);
+            parent.layout();
+        }
+
+        private void swapCategorySections(int sourceIndex,
+                int targetIndex,
+                List<CategorySection> sections,
+                Composite parent) {
+
+            CategorySection sourceSection = sections.get(sourceIndex);
+            CategorySection targetSection = sections.get(targetIndex);
+            IProductCmptCategory sourceCategory = sectionsToCategories.get(sourceSection);
+            IProductCmptCategory targetCategory = sectionsToCategories.get(targetSection);
+
+            sourceSection.dispose();
+            targetSection.dispose();
+
+            CategorySection newSourceSection = new CategorySection(targetCategory, productCmptType, this, parent,
+                    getToolkit());
+            CategorySection newTargetSection = new CategorySection(sourceCategory, productCmptType, this, parent,
+                    getToolkit());
+
+            sectionsToCategories.remove(sourceSection);
+            sectionsToCategories.remove(targetSection);
+            sectionsToCategories.put(newSourceSection, targetCategory);
+            sectionsToCategories.put(newTargetSection, sourceCategory);
+            categoriesToSections.put(sourceCategory, newTargetSection);
+            categoriesToSections.put(targetCategory, newSourceSection);
+
+            sections.set(sourceIndex, newSourceSection);
+            sections.set(targetIndex, newTargetSection);
         }
 
     }

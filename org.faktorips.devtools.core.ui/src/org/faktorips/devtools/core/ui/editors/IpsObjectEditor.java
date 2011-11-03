@@ -370,7 +370,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                 // (editors which overwrites the corresponding method e.g. ProductcmptEditor or
                 // TestCaseEditor)
                 if (forceRefreshInclStructuralChanges && getIpsSrcFile().isContentParsable()) {
-                    refreshInclStructuralChanges();
+                    refreshIncludingStructuralChanges();
                 }
 
                 return;
@@ -825,7 +825,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                     }
                 };
                 IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(fix, null);
-                refreshInclStructuralChanges();
+                refreshIncludingStructuralChanges();
             } else {
                 getSettings().put(getIpsSrcFile(), SETTING_DONT_FIX_DIFFERENCES, true);
             }
@@ -853,13 +853,12 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     /**
      * Refreshes the UI and can handle structural changes which means not only the content of the
      * controls is updated but also new controls are created or existing ones are disposed if
-     * neccessary.
+     * necessary.
      */
-    protected void refreshInclStructuralChanges() {
+    protected void refreshIncludingStructuralChanges() {
         if (updatingPageStructure) {
             return;
         }
-
         refresh();
     }
 

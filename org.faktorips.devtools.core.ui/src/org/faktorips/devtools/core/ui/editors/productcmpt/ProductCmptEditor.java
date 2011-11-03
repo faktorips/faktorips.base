@@ -400,7 +400,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     }
 
     @Override
-    protected void refreshInclStructuralChanges() {
+    protected void refreshIncludingStructuralChanges() {
         try {
             getIpsSrcFile().getIpsObject();
             updateChosenActiveGeneration();

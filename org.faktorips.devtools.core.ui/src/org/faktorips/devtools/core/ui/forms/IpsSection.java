@@ -21,6 +21,10 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -29,6 +33,7 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -178,6 +183,32 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
             addStorePreferenceExpansionListener();
             relayoutSection(isExpanded());
         }
+
+        createToolBar();
+    }
+
+    private void createToolBar() {
+        Section section = getSectionControl();
+        ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+        ToolBar toolBar = toolBarManager.createControl(section);
+
+        populateToolBar(toolBarManager);
+
+        toolBarManager.update(false);
+        section.setTextClient(toolBar); // Aligns the tool bar to the right
+    }
+
+    /**
+     * Subclasses are supposed to override this method if they desire to populate this section's
+     * toolbar.
+     * <p>
+     * The default implementation does nothing.
+     * 
+     * @param toolBarManager the {@link IToolBarManager} to add {@link IAction}s or
+     *            {@link IContributionItem}s to
+     */
+    protected void populateToolBar(IToolBarManager toolBarManager) {
+        // Empty default implementation
     }
 
     private void updateSectionTitle() {

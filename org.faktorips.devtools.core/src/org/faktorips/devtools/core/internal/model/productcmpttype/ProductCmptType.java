@@ -215,7 +215,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IProductCmptProperty findProductCmptProperty(String propertyName, IIpsProject ipsProject) throws CoreException {
+    public IProductCmptProperty findProductCmptProperty(String propertyName, IIpsProject ipsProject)
+            throws CoreException {
         for (ProductCmptPropertyType type : ProductCmptPropertyType.values()) {
             IProductCmptProperty property = findProductCmptProperty(type, propertyName, ipsProject);
             if (property != null) {
@@ -749,6 +750,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
             }
         }
         return null;
+    }
+
+    @Override
+    public int getIndexOfProductCmptCategory(IProductCmptCategory category) {
+        return categories.indexOf(category);
     }
 
     @Override

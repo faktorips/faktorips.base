@@ -974,6 +974,29 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return dirtyParts;
     }
 
+    /**
+     * Returns the currently active {@link IpsObjectEditor} or null if no such editor is currently
+     * active.
+     */
+    public IpsObjectEditor getActiveIpsObjectEditor() {
+        IWorkbenchWindow activeWorkbenchWindow = getWorkbench().getActiveWorkbenchWindow();
+        if (activeWorkbenchWindow == null) {
+            return null;
+        }
+
+        IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+        if (activePage == null) {
+            return null;
+        }
+
+        IEditorPart activeEditor = activePage.getActiveEditor();
+        if (!(activeEditor instanceof IpsObjectEditor)) {
+            return null;
+        }
+
+        return (IpsObjectEditor)activeEditor;
+    }
+
     // ************************************************
     // IMAGE HANDLING
     // ************************************************

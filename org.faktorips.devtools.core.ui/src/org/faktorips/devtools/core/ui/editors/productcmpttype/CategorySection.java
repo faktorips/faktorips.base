@@ -18,6 +18,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -39,12 +42,14 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dialogs.DialogHelper;
 import org.faktorips.devtools.core.ui.editors.ViewerButtonComposite;
@@ -75,6 +80,10 @@ public class CategorySection extends IpsSection {
 
     private final CategoryCompositionSection categoryCompositionSection;
 
+    private final IAction moveUpAction;
+
+    private final IAction moveDownAction;
+
     private ViewerButtonComposite viewerButtonComposite;
 
     public CategorySection(IProductCmptCategory category, IProductCmptType contextType,
@@ -85,6 +94,9 @@ public class CategorySection extends IpsSection {
         this.category = category;
         this.contextType = contextType;
         this.categoryCompositionSection = categoryCompositionSection;
+
+        moveUpAction = new MoveCategoryUpDownAction(contextType, category, true, categoryCompositionSection);
+        moveDownAction = new MoveCategoryUpDownAction(contextType, category, false, categoryCompositionSection);
 
         initControls();
     }
@@ -108,7 +120,11 @@ public class CategorySection extends IpsSection {
         parent.setLayout(layout);
     }
 
-    // TODO AW 02-11-2011: Create toolbar
+    @Override
+    protected void populateToolBar(IToolBarManager toolBarManager) {
+        toolBarManager.add(moveUpAction);
+        toolBarManager.add(moveDownAction);
+    }
 
     @Override
     protected void performRefresh() {
@@ -135,7 +151,7 @@ public class CategorySection extends IpsSection {
 
         private Button changeCategoryButton;
 
-        public CategoryComposite(IProductCmptCategory category, final IProductCmptType contextType,
+        public CategoryComposite(IProductCmptCategory category, IProductCmptType contextType,
                 CategoryCompositionSection categoryCompositionSection, Composite parent, UIToolkit toolkit) {
 
             super(parent);
@@ -147,11 +163,15 @@ public class CategorySection extends IpsSection {
             initControls(toolkit);
 
             contentsChangeListener = createContentsChangeListener(contextType);
-            contextType.getIpsModel().addChangeListener(contentsChangeListener);
+            addContentsChangeListener(contextType.getIpsModel());
+        }
+
+        private void addContentsChangeListener(final IIpsModel ipsModel) {
+            ipsModel.addChangeListener(contentsChangeListener);
             addDisposeListener(new DisposeListener() {
                 @Override
                 public void widgetDisposed(DisposeEvent e) {
-                    contextType.getIpsModel().removeChangeListener(contentsChangeListener);
+                    ipsModel.removeChangeListener(contentsChangeListener);
                 }
             });
         }
@@ -333,6 +353,51 @@ public class CategorySection extends IpsSection {
 
         private boolean isPropertySelected() {
             return !getViewer().getSelection().isEmpty();
+        }
+
+    }
+
+    private static class MoveCategoryUpDownAction extends Action {
+
+        private static final String IMAGE_NAME_UP = "ArrowUp.gif"; //$NON-NLS-1$
+
+        private static final String IMAGE_NAME_DOWN = "ArrowDown.gif"; //$NON-NLS-1$
+
+        private final IProductCmptType productCmptType;
+
+        private final IProductCmptCategory category;
+
+        private final boolean up;
+
+        private final CategoryCompositionSection categoryCompositionSection;
+
+        private MoveCategoryUpDownAction(IProductCmptType productCmptType, IProductCmptCategory category, boolean up,
+                CategoryCompositionSection categoryCompositionSection) {
+
+            this.productCmptType = productCmptType;
+            this.category = category;
+            this.up = up;
+            this.categoryCompositionSection = categoryCompositionSection;
+
+            if (up) {
+                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_NAME_UP));
+                setText(Messages.MoveCategoryUpDownAction_labelUp);
+                setToolTipText(Messages.MoveCategoryUpDownAction_tooltipUp);
+            } else {
+                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_NAME_DOWN));
+                setText(Messages.MoveCategoryUpDownAction_labelDown);
+                setToolTipText(Messages.MoveCategoryUpDownAction_tooltipDown);
+            }
+        }
+
+        @Override
+        public void run() {
+            int categoryIndex = productCmptType.getIndexOfProductCmptCategory(category);
+            int[] indices = new int[] { categoryIndex };
+            int[] newIndices = productCmptType.moveProductCmptCategories(indices, up);
+            if (!Arrays.equals(indices, newIndices)) {
+                categoryCompositionSection.moveCategorySection(category, up);
+            }
         }
 
     }

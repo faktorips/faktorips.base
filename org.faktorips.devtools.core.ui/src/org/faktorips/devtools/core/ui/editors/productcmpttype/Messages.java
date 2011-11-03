@@ -121,12 +121,19 @@ public class Messages extends NLS {
     public static String TblsStructureUsageEditDialog_upButton;
 
     public static String CategoryPage_tagPageName;
-    public static String ProductCmptCategoriesSection_sectionTitle;
+
+    public static String CategoryCompositionSection_sectionTitle;
+
     public static String CategorySection_buttonUp;
     public static String CategorySection_buttonDown;
     public static String CategorySection_buttonChangeCategory;
 
     public static String ChangeCategoryDialog_title;
     public static String ChangeCategoryDialog_message;
+
+    public static String MoveCategoryUpDownAction_labelUp;
+    public static String MoveCategoryUpDownAction_labelDown;
+    public static String MoveCategoryUpDownAction_tooltipUp;
+    public static String MoveCategoryUpDownAction_tooltipDown;
 
 }

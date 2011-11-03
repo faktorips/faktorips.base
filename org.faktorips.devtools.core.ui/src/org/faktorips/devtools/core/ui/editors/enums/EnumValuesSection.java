@@ -21,9 +21,9 @@ import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
@@ -52,9 +52,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -220,8 +218,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
 
         loadDialogSettings();
         initControls();
-        createActions();
-        createToolbar();
         createContextMenu();
         setText(Messages.EnumValuesSection_title);
 
@@ -403,11 +399,9 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         }
     }
 
-    /** Creates the section's tool bar. */
-    private void createToolbar() {
-        Section section = getSectionControl();
-        ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
-        ToolBar toolbar = toolBarManager.createControl(section);
+    @Override
+    protected void populateToolBar(IToolBarManager toolBarManager) {
+        createActions();
 
         toolBarManager.add(newEnumValueAction);
         toolBarManager.add(deleteEnumValueAction);
@@ -419,9 +413,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             toolBarManager.add(new Separator());
             toolBarManager.add(lockAndSyncLiteralNameAction);
         }
-
-        toolBarManager.update(true);
-        section.setTextClient(toolbar); // Aligns the tool bar to the right.
     }
 
     /**

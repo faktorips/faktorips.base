@@ -476,6 +476,14 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public IProductCmptCategory getProductCmptCategory(String name);
 
     /**
+     * Returns the index of the indicated {@link IProductCmptCategory} or -1 if no such
+     * {@link IProductCmptCategory} exists in this {@link IProductCmptType}.
+     * 
+     * @param category the {@link IProductCmptCategory} to retrieve the index for
+     */
+    public int getIndexOfProductCmptCategory(IProductCmptCategory category);
+
+    /**
      * Returns whether an {@link IProductCmptCategory} with the given name exists in this
      * {@link IProductCmptType}.
      * 

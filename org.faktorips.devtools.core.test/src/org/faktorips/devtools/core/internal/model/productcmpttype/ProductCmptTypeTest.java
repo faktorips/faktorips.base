@@ -1660,9 +1660,36 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertTrue(productCmptType.findIsCategoryNameUsedTwiceInSupertypeHierarchy("foo", ipsProject));
     }
 
-    private void deleteAllProductCmptCategories(IProductCmptType productCmptType) {
-        for (IProductCmptCategory category : productCmptType.getProductCmptCategories()) {
-            category.delete();
+    @Test
+    public void testGetIndexOfProductCmptCategory() {
+        deleteAllProductCmptCategories(productCmptType);
+
+        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
+        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
+        IProductCmptCategory category3 = productCmptType.newProductCmptCategory("category3");
+
+        assertEquals(0, productCmptType.getIndexOfProductCmptCategory(category1));
+        assertEquals(1, productCmptType.getIndexOfProductCmptCategory(category2));
+        assertEquals(2, productCmptType.getIndexOfProductCmptCategory(category3));
+    }
+
+    @Test
+    public void testGetIndexOfProductCmptCategory_CategoryNotInType() throws CoreException {
+        IProductCmptType productCmptType2 = newProductCmptType(ipsProject, "Product2");
+        deleteAllProductCmptCategories(productCmptType, productCmptType2);
+
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("category1");
+        IProductCmptCategory foreignCategory = productCmptType2.newProductCmptCategory("category2");
+
+        assertEquals(0, productCmptType.getIndexOfProductCmptCategory(category));
+        assertEquals(-1, productCmptType.getIndexOfProductCmptCategory(foreignCategory));
+    }
+
+    private void deleteAllProductCmptCategories(IProductCmptType... productCmptTypes) {
+        for (IProductCmptType productCmptType : productCmptTypes) {
+            for (IProductCmptCategory category : productCmptType.getProductCmptCategories()) {
+                category.delete();
+            }
         }
     }
 
