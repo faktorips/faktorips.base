@@ -27,7 +27,13 @@ public class SingletonMockHelper {
      * This method should be used to replace a singleton with a mock implementation for testing
      * purposes. It looks for a static field declared in the given class that has the same type as
      * the class, no matter what it's called ("instance", "plugin", ...) and sets it to the given
-     * value. The instance field MUST NOT be final, or this method will fail.
+     * value.
+     * 
+     * The instance field MUST NOT be final, or this method will fail.
+     * 
+     * If you want to mock something which usually has heavyweight initialization, you should do
+     * that initialization in it's constructor and only instantiate the instance on the first call
+     * to getInstance() and then set the instance via this helper before calling getInstance().
      * 
      * @param <T> the type of the singleton class
      * @param clazz the singleton class
