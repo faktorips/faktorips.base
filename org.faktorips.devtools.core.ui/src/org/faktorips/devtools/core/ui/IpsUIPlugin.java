@@ -45,6 +45,7 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
@@ -60,7 +61,9 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -1326,6 +1329,26 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 resourceManager.dispose();
             }
         }
+    }
+
+    /**
+     * Returns a {@link Color} instance for the given symbolic name. If no color is found for the
+     * symbolic name the {@link RGB} object is used to create a new color-instance. From this moment
+     * on the new color instance is accessible via the same symbolic name.
+     * <p>
+     * Color instances retrieved/created via this method will be disposed when the corresponding
+     * display is disposed.
+     * 
+     * @param symbolicColorName a name that identifies the color
+     * @param rgb the RGB information of the requested color, so that it can be created in case it
+     *            hasn't been registered yet.
+     */
+    public Color getColor(String symbolicColorName, RGB rgb) {
+        ColorRegistry registry = JFaceResources.getColorRegistry();
+        if (!registry.hasValueFor(symbolicColorName)) {
+            registry.put(symbolicColorName, rgb);
+        }
+        return registry.get(symbolicColorName);
     }
 
     public UIDatatypeFormatter getDatatypeFormatter() {

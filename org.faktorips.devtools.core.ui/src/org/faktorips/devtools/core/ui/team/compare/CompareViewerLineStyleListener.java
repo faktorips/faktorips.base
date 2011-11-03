@@ -26,7 +26,9 @@ import org.eclipse.swt.custom.LineStyleEvent;
 import org.eclipse.swt.custom.LineStyleListener;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.team.compare.productcmpt.Messages;
 
 /**
@@ -37,10 +39,13 @@ import org.faktorips.devtools.core.ui.team.compare.productcmpt.Messages;
  */
 public class CompareViewerLineStyleListener implements LineStyleListener {
 
-    protected final Color ipsObjectHighlight = new Color(IpsPlugin.getDefault().getWorkbench().getDisplay(), 35, 120,
-            60);
-    protected final Color generationHighlight = new Color(IpsPlugin.getDefault().getWorkbench().getDisplay(), 0, 0, 125);
-    protected final Color dateHighlight = new Color(IpsPlugin.getDefault().getWorkbench().getDisplay(), 200, 200, 200);
+    private static final String SYMBOLIC_COLOR_NAME_PREFIX = "CompareViewerLineStyleListener_Color_"; //$NON-NLS-1$
+    private static final String IPS_OBJECT_HIGHLIGHT = SYMBOLIC_COLOR_NAME_PREFIX + "IpsObjectHighlight"; //$NON-NLS-1$
+    private static final String GENERATION_HIGHLIGHT = SYMBOLIC_COLOR_NAME_PREFIX + "GenerationHighlight"; //$NON-NLS-1$
+    private static final String DATE_HIGHLIGHT = SYMBOLIC_COLOR_NAME_PREFIX + "DateHighlight"; //$NON-NLS-1$
+    private Color ipsObjectHighlight;
+    private Color generationHighlight;
+    private Color dateHighlight;
 
     /**
      * Pattern for recognizing separators between generations (single line starting with "-")
@@ -58,6 +63,8 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
     private Map<Pattern, Color> highlightColorMap = new HashMap<Pattern, Color>();
 
     public CompareViewerLineStyleListener() {
+        initColors();
+
         // init patterns and map highlight colors for productCmpts
         Pattern productPattern = Pattern
                 .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductCmptEditor_productComponent);
@@ -107,13 +114,19 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
         linePatternList.add(validFromPattern);
     }
 
+    private void initColors() {
+        ipsObjectHighlight = IpsUIPlugin.getDefault().getColor(IPS_OBJECT_HIGHLIGHT, new RGB(35, 120, 60));
+        generationHighlight = IpsUIPlugin.getDefault().getColor(GENERATION_HIGHLIGHT, new RGB(0, 0, 125));
+        dateHighlight = IpsUIPlugin.getDefault().getColor(DATE_HIGHLIGHT, new RGB(200, 200, 200));
+    }
+
     /**
      * Creates none, one or two StyleRanges for the given line. A style is created if a date or dash
      * is found at the start of the current line. This style displays the date (or dash) in a light
      * gray.
      * <p>
      * If a token is found in the line a style for the rest of the line (not including the date) is
-     * created. This range is colored dependant on the token and the font is set to bold.
+     * created. This range is colored dependent on the token and the font is set to bold.
      * {@inheritDoc}
      */
     @Override
