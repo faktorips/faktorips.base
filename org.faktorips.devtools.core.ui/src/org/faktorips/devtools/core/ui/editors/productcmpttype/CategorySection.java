@@ -36,6 +36,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -71,8 +75,8 @@ public class CategorySection extends IpsSection {
 
     private ViewerButtonComposite categoryComposite;
 
-    public CategorySection(IProductCmptCategory category, IProductCmptType contextType, CategoryPage categoryPage,
-            Composite parent, UIToolkit toolkit) {
+    public CategorySection(IProductCmptCategory category, final IProductCmptType contextType,
+            CategoryPage categoryPage, Composite parent, UIToolkit toolkit) {
 
         super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
 
@@ -110,6 +114,8 @@ public class CategorySection extends IpsSection {
 
     private static class CategoryComposite extends ViewerButtonComposite {
 
+        private final ContentsChangeListener contentsChangeListener;
+
         private final IProductCmptCategory category;
 
         private final IProductCmptType contextType;
@@ -132,6 +138,32 @@ public class CategorySection extends IpsSection {
             this.categoryPage = categoryPage;
 
             initControls(toolkit);
+
+            contentsChangeListener = createContentsChangeListener(contextType);
+            contextType.getIpsModel().addChangeListener(contentsChangeListener);
+        }
+
+        /**
+         * Creates a {@link ContentsChangeListener} that refreshes this section if the
+         * {@link IPolicyCmptType} configured by the context {@link IProductCmptType} has changed.
+         * <p>
+         * The reason for this listener is the whole-content-changed-event that is fired when
+         * changes done to an {@link IIpsSrcFile} are discarded. The section needs to react to this
+         * event accordingly by updating the list of it's {@link IProductCmptProperty}s.
+         */
+        private ContentsChangeListener createContentsChangeListener(final IProductCmptType contextType) {
+            return new ContentsChangeListener() {
+                @Override
+                public void contentsChanged(ContentChangeEvent event) {
+                    try {
+                        if (event.isAffected(contextType.findPolicyCmptType(contextType.getIpsProject()))) {
+                            refresh();
+                        }
+                    } catch (CoreException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            };
         }
 
         @Override
@@ -294,6 +326,12 @@ public class CategorySection extends IpsSection {
 
         private boolean isPropertySelected() {
             return !getViewer().getSelection().isEmpty();
+        }
+
+        @Override
+        public void dispose() {
+            contextType.getIpsModel().removeChangeListener(contentsChangeListener);
+            super.dispose();
         }
 
     }
