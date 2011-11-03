@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -66,14 +67,19 @@ public class CategorySection extends IpsSection {
 
     private final IProductCmptType contextType;
 
+    private final CategoryPage categoryPage;
+
     private ViewerButtonComposite categoryComposite;
 
-    public CategorySection(IProductCmptCategory category, IProductCmptType contextType, Composite parent,
-            UIToolkit toolkit) {
+    public CategorySection(IProductCmptCategory category, IProductCmptType contextType, CategoryPage categoryPage,
+            Composite parent, UIToolkit toolkit) {
 
         super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+
         this.category = category;
         this.contextType = contextType;
+        this.categoryPage = categoryPage;
+
         initControls();
     }
 
@@ -85,7 +91,7 @@ public class CategorySection extends IpsSection {
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         setLayout(client);
-        categoryComposite = new CategoryComposite(category, contextType, client, toolkit);
+        categoryComposite = new CategoryComposite(category, contextType, categoryPage, client, toolkit);
     }
 
     private void setLayout(Composite parent) {
@@ -108,19 +114,22 @@ public class CategorySection extends IpsSection {
 
         private final IProductCmptType contextType;
 
+        private final CategoryPage categoryPage;
+
         private Button moveUpButton;
 
         private Button moveDownButton;
 
         private Button changeCategoryButton;
 
-        public CategoryComposite(IProductCmptCategory category, IProductCmptType contextType, Composite parent,
-                UIToolkit toolkit) {
+        public CategoryComposite(IProductCmptCategory category, IProductCmptType contextType,
+                CategoryPage categoryPage, Composite parent, UIToolkit toolkit) {
 
             super(parent);
 
             this.category = category;
             this.contextType = contextType;
+            this.categoryPage = categoryPage;
 
             initControls(toolkit);
         }
@@ -257,10 +266,11 @@ public class CategorySection extends IpsSection {
 
         private void openChangeCategoryDialog() {
             Dialog dialog = new ChangeCategoryDialog(contextType, getSelectedProperty(), category, getShell());
-            // TODO AW 02-11-2011: Set dataChangeable?
-
             DialogHelper dialogHelper = new DialogHelper();
-            dialogHelper.openEditDialogWithMemento(dialog, getSelectedProperty());
+            int returnCode = dialogHelper.openDialogWithMemento(dialog, getSelectedProperty());
+            if (returnCode == Window.OK) {
+                categoryPage.refresh();
+            }
         }
 
         private IProductCmptProperty getSelectedProperty() {

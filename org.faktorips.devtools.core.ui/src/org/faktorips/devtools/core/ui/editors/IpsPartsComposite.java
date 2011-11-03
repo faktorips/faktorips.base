@@ -576,7 +576,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         editDialog.setDataChangeable(isDataChangeable());
 
         DialogHelper dialogHelper = new DialogHelper();
-        dialogHelper.openEditDialogWithMemento(editDialog, getSelectedPart());
+        dialogHelper.openDialogWithMemento(editDialog, getSelectedPart());
 
         refresh();
     }

@@ -49,7 +49,7 @@ public class CategoryPage extends IpsObjectEditorPage {
         new CategoryCompositionSection((IProductCmptType)getIpsObject(), formBody, toolkit);
     }
 
-    private static class CategoryCompositionSection extends IpsSection {
+    private class CategoryCompositionSection extends IpsSection {
 
         private final List<IpsSection> categorySections = new ArrayList<IpsSection>(5);
 
@@ -98,7 +98,8 @@ public class CategoryPage extends IpsObjectEditorPage {
             // Create a section for each category
             for (IProductCmptCategory category : categories) {
                 Composite parent = category.isAtLeftPosition() ? left : right;
-                IpsSection categorySection = new CategorySection(category, productCmptType, parent, getToolkit());
+                IpsSection categorySection = new CategorySection(category, productCmptType, CategoryPage.this, parent,
+                        getToolkit());
                 categorySections.add(categorySection);
             }
         }

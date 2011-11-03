@@ -62,7 +62,6 @@ import org.eclipse.swt.SWTError;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IDecoratorManager;
@@ -72,11 +71,14 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.ISaveableFilter;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.Saveable;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.dialogs.ListDialog;
@@ -104,6 +106,7 @@ import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsObjectSelectionHistory;
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
@@ -512,6 +515,18 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
+     * Returns whether an {@link IEditorPart} for the provided {@link IIpsSrcFile} is currently
+     * opened.
+     * 
+     * @param ipsSrcFile the {@link IIpsSrcFile} to check whether an editor is opened for
+     */
+    public boolean isOpenEditor(IIpsSrcFile ipsSrcFile) {
+        IEditorInput editorInput = new FileEditorInput(ipsSrcFile.getCorrespondingFile());
+        IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
+        return workbench.getActiveWorkbenchWindow().getActivePage().findEditor(editorInput) != null;
+    }
+
+    /**
      * Open the given file with the default text editor. And show an information message in the
      * editors status bar to inform the user about using the text editor instead of the IPS object
      * editor.
@@ -812,67 +827,122 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Save all dirty editors in the workbench. Opens a dialog to prompt the user. Return true if
-     * successful. Return false if the user has canceled the command.
+     * Saves all dirty editors in the workbench that are editing one of the provided
+     * {@link IIpsSrcFile}s.
+     * <p>
+     * Opens a dialog to prompt the user. Returns true if successful or false if the user has
+     * canceled the command.
      * 
-     * @return <code>true</code> if the command succeeded, and <code>false</code> if the operation
-     *         was canceled by the user or an error occurred while saving
+     * @return true if the command succeeded, false if the operation was canceled by the user or an
+     *         error occurred while saving
      */
-    public boolean saveAllEditors() {
-        // based on the EditorManager.saveAll Method
-        // but allow only save all editor or cancel the current operation
-        Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+    public boolean saveEditors(List<IIpsSrcFile> ipsSrcFiles) {
+        // Collect dirty parts and abort if there are none
         List<IEditorPart> dirtyEditorParts = collectDirtyEditorParts();
-
         if (dirtyEditorParts.size() == 0) {
             return true;
         }
 
-        if (dirtyEditorParts.size() == 1) {
-            // use a simpler dialog if there's only one
-            boolean okPressed = MessageDialog
-                    .openConfirm(activeShell, Messages.IpsPlugin_dialogSaveDirtyEditorTitle, NLS.bind(
-                            Messages.IpsPlugin_dialogSaveDirtyEditorMessageSimple, dirtyEditorParts.get(0).getTitle()));
-            if (!okPressed) {
-                return false;
-            }
+        // Filter dirty editor parts according to the provided source files
+        List<IEditorPart> filteredEditorParts = new ArrayList<IEditorPart>(dirtyEditorParts.size());
+        if (ipsSrcFiles == null) {
+            filteredEditorParts.addAll(dirtyEditorParts);
         } else {
-            // used same behavior like RefactoringSaveHelper#askSaveAllDirtyEditors
-            // but disable double click event in list
-            ListDialog dlg = new ListDialog(activeShell) {
-                {
-                    setShellStyle(getShellStyle() | SWT.APPLICATION_MODAL);
+            for (IEditorPart part : dirtyEditorParts) {
+                if (part instanceof IpsObjectEditor) {
+                    IpsObjectEditor ipsObjectEditor = (IpsObjectEditor)part;
+                    for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                        if (ipsObjectEditor.getIpsSrcFile().equals(ipsSrcFile)) {
+                            filteredEditorParts.add(ipsObjectEditor);
+                            break;
+                        }
+                    }
                 }
+            }
+        }
 
-                @Override
-                protected Control createDialogArea(Composite container) {
-                    Control area = super.createDialogArea(container);
-                    return area;
-                }
+        return saveEditorsInternal(filteredEditorParts);
+    }
 
-                @Override
-                protected void createButtonsForButtonBar(Composite parent) {
-                    setAddCancelButton(true);
-                    super.createButtonsForButtonBar(parent);
-                    // if no cancel button is there then the double click event will be disabled
-                    // see super class implementation ...
-                    setAddCancelButton(false);
+    /**
+     * Saves all dirty editors in the workbench.
+     * <p>
+     * Opens a dialog to prompt the user. Returns true if successful or false if the user has
+     * canceled the command.
+     * 
+     * @return true if the command succeeded, false if the operation was canceled by the user or an
+     *         error occurred while saving
+     */
+    public boolean saveAllEditors() {
+        // Collect dirty parts and abort if there are none
+        List<IEditorPart> dirtyEditorParts = collectDirtyEditorParts();
+        if (dirtyEditorParts.size() == 0) {
+            return true;
+        }
+
+        return saveEditorsInternal(dirtyEditorParts);
+    }
+
+    // Only allows to save or cancel the current operation ('no' is not an option)
+    private boolean saveEditorsInternal(final List<IEditorPart> editorParts) {
+        boolean okPressed = editorParts.size() == 1 ? saveEditorsInternalOnePart(editorParts)
+                : saveEditorsInternalMultipleParts(editorParts);
+        if (!okPressed) {
+            return false;
+        }
+
+        class IpsSrcFileFilter implements ISaveableFilter {
+            @Override
+            public boolean select(Saveable saveable, IWorkbenchPart[] containingParts) {
+                for (IWorkbenchPart part : containingParts) {
+                    if (editorParts.contains(part)) {
+                        return true;
+                    }
                 }
-            };
-            dlg.setInput(dirtyEditorParts);
-            dlg.setLabelProvider(new WorkbenchPartLabelProvider());
-            dlg.setContentProvider(new ArrayContentProvider());
-            dlg.setInitialSelections(dirtyEditorParts.toArray());
-            dlg.setTitle(Messages.IpsPlugin_dialogSaveDirtyEditorTitle);
-            dlg.setMessage(Messages.IpsPlugin_dialogSaveDirtyEditorMessageMany);
-            dlg.setInitialSelections(new Object[0]);
-            int result = dlg.open();
-            if (result == IDialogConstants.CANCEL_ID) {
                 return false;
             }
         }
-        // use Method without confirm because we already ask the user
-        return PlatformUI.getWorkbench().saveAllEditors(false);
+
+        boolean confirm = false; // No need to confirm because we already ask the user
+        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        return PlatformUI.getWorkbench().saveAll(activeWorkbenchWindow, activeWorkbenchWindow, new IpsSrcFileFilter(),
+                confirm);
+    }
+
+    private boolean saveEditorsInternalOnePart(List<IEditorPart> editorParts) {
+        // Use a simple dialog
+        Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        return MessageDialog.openConfirm(activeShell, Messages.IpsPlugin_dialogSaveDirtyEditorTitle,
+                NLS.bind(Messages.IpsPlugin_dialogSaveDirtyEditorMessageSimple, editorParts.get(0).getTitle()));
+    }
+
+    private boolean saveEditorsInternalMultipleParts(List<IEditorPart> editorParts) {
+        /*
+         * Use same behavior like RefactoringSaveHelper#askSaveAllDirtyEditors but disable double
+         * click event in list.
+         */
+        Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        ListDialog dialog = new ListDialog(activeShell) {
+            {
+                setShellStyle(getShellStyle() | SWT.APPLICATION_MODAL);
+            }
+
+            @Override
+            protected void createButtonsForButtonBar(Composite parent) {
+                setAddCancelButton(true);
+                super.createButtonsForButtonBar(parent);
+                // If no cancel button is there the double click event will be disabled
+                setAddCancelButton(false);
+            }
+        };
+        dialog.setInput(editorParts);
+        dialog.setLabelProvider(new WorkbenchPartLabelProvider());
+        dialog.setContentProvider(new ArrayContentProvider());
+        dialog.setInitialSelections(editorParts.toArray());
+        dialog.setTitle(Messages.IpsPlugin_dialogSaveDirtyEditorTitle);
+        dialog.setMessage(Messages.IpsPlugin_dialogSaveDirtyEditorMessageMany);
+        dialog.setInitialSelections(new Object[0]);
+        return dialog.open() == IDialogConstants.OK_ID;
     }
 
     /**

@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -22,7 +23,6 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.ui.dialogs.DialogHelper;
 import org.faktorips.util.memento.Memento;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,10 +58,10 @@ public class DialogHelperTest {
     }
 
     @Test
-    public void testOpenEditDialogWithMemento_RestoreMementoOnCancel() {
+    public void testOpenDialogWithMemento_RestoreMementoOnCancel() {
         when(dialog.getReturnCode()).thenReturn(Window.CANCEL);
 
-        dialogHelper.openEditDialogWithMemento(dialog, editedPart);
+        dialogHelper.openDialogWithMemento(dialog, editedPart);
 
         InOrder inOrder = inOrder(dialog, editedPart);
         inOrder.verify(dialog).open();
@@ -69,42 +69,48 @@ public class DialogHelperTest {
     }
 
     @Test
-    public void testOpenEditDialogWithMemento_MarkAsCleanIfWasCleanBefore() {
+    public void testOpenDialogWithMemento_MarkAsCleanIfWasCleanBefore() {
         when(dialog.getReturnCode()).thenReturn(Window.CANCEL);
         when(ipsSrcFile.isDirty()).thenReturn(false);
 
-        dialogHelper.openEditDialogWithMemento(dialog, editedPart);
+        dialogHelper.openDialogWithMemento(dialog, editedPart);
 
         verify(ipsSrcFile).markAsClean();
     }
 
     @Test
-    public void testOpenEditDialogWithMemento_DoNotMarkAsCleanIfWasNotCleanBefore() {
+    public void testOpenDialogWithMemento_DoNotMarkAsCleanIfWasNotCleanBefore() {
         when(dialog.getReturnCode()).thenReturn(Window.CANCEL);
         when(ipsSrcFile.isDirty()).thenReturn(true);
 
-        dialogHelper.openEditDialogWithMemento(dialog, editedPart);
+        dialogHelper.openDialogWithMemento(dialog, editedPart);
 
         verify(ipsSrcFile, never()).markAsClean();
     }
 
     @Test
-    public void testOpenEditDialogWithMemento_DoNotRestoreMementoIfSrcFileImmutable() {
+    public void testOpenDialogWithMemento_DoNotRestoreMementoIfSrcFileImmutable() {
         when(dialog.getReturnCode()).thenReturn(Window.CANCEL);
         when(ipsSrcFile.isMutable()).thenReturn(false);
 
-        dialogHelper.openEditDialogWithMemento(dialog, editedPart);
+        dialogHelper.openDialogWithMemento(dialog, editedPart);
 
         verify(editedPart, never()).setState(memento);
     }
 
     @Test
-    public void testOpenEditDialogWithMemento_DoNotRestoreMementoOnReturnCodeOK() {
+    public void testOpenDialogWithMemento_DoNotRestoreMementoOnReturnCodeOK() {
         when(dialog.getReturnCode()).thenReturn(Window.OK);
 
-        dialogHelper.openEditDialogWithMemento(dialog, editedPart);
+        dialogHelper.openDialogWithMemento(dialog, editedPart);
 
         verify(editedPart, never()).setState(memento);
+    }
+
+    @Test
+    public void testOpenDialogWithMemento_ReturnDialogReturnCode() {
+        when(dialog.getReturnCode()).thenReturn(123456);
+        assertEquals(123456, dialogHelper.openDialogWithMemento(dialog, editedPart));
     }
 
 }

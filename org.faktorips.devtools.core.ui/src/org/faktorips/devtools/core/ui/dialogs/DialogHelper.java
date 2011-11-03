@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.dialogs;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.util.memento.Memento;
 
 /**
@@ -27,14 +26,16 @@ import org.faktorips.util.memento.Memento;
 public class DialogHelper {
 
     /**
-     * Opens the provided {@link EditDialog} and takes care of resetting the state of the
+     * Opens the provided {@link Dialog} and takes care of resetting the state of the
      * {@link IIpsObjectPart} being edited to the state as it was before opening the dialog if the
      * user presses the cancel button.
      * 
-     * @param dialog the {@link EditDialog} to open
+     * @param dialog the {@link Dialog} to open
      * @param editedPart the {@link IIpsObjectPart} that is being edited
+     * 
+     * @return the return code of the {@link Dialog}
      */
-    public void openEditDialogWithMemento(Dialog dialog, IIpsObjectPart editedPart) {
+    public int openDialogWithMemento(Dialog dialog, IIpsObjectPart editedPart) {
         boolean dirty = editedPart.getIpsSrcFile().isDirty();
         Memento memento = editedPart.newMemento();
 
@@ -46,6 +47,8 @@ public class DialogHelper {
                 editedPart.getIpsSrcFile().markAsClean();
             }
         }
+
+        return dialog.getReturnCode();
     }
 
 }
