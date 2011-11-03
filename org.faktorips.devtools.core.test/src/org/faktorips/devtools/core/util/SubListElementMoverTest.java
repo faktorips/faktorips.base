@@ -31,9 +31,9 @@ public class SubListElementMoverTest extends AbstractIpsPluginTest {
 
         SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
         assertArraysEquals(new int[] { 1, 0 }, mover.move(indices, true));
-        assertEquals(2, list.get(0));
-        assertEquals(3, list.get(1));
-        assertEquals(1, list.get(2));
+        assertEquals(Integer.valueOf(2), list.get(0));
+        assertEquals(Integer.valueOf(3), list.get(1));
+        assertEquals(Integer.valueOf(1), list.get(2));
     }
 
     @Test
@@ -44,9 +44,9 @@ public class SubListElementMoverTest extends AbstractIpsPluginTest {
 
         SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
         assertArraysEquals(new int[] { 1, 2 }, mover.move(indices, false));
-        assertEquals(3, list.get(0));
-        assertEquals(1, list.get(1));
-        assertEquals(2, list.get(2));
+        assertEquals(Integer.valueOf(3), list.get(0));
+        assertEquals(Integer.valueOf(1), list.get(1));
+        assertEquals(Integer.valueOf(2), list.get(2));
     }
 
     @Test
@@ -57,9 +57,9 @@ public class SubListElementMoverTest extends AbstractIpsPluginTest {
 
         SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
         assertArraysEquals(new int[0], mover.move(indices, true));
-        assertEquals(1, list.get(0));
-        assertEquals(2, list.get(1));
-        assertEquals(3, list.get(2));
+        assertEquals(Integer.valueOf(1), list.get(0));
+        assertEquals(Integer.valueOf(2), list.get(1));
+        assertEquals(Integer.valueOf(3), list.get(2));
     }
 
     @Test
@@ -70,10 +70,10 @@ public class SubListElementMoverTest extends AbstractIpsPluginTest {
 
         SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
         assertArraysEquals(new int[] { 0, 1 }, mover.move(indices, true));
-        assertEquals(1, list.get(0));
-        assertEquals(2, list.get(1));
-        assertEquals(3, list.get(2));
-        assertEquals(4, list.get(3));
+        assertEquals(Integer.valueOf(1), list.get(0));
+        assertEquals(Integer.valueOf(2), list.get(1));
+        assertEquals(Integer.valueOf(3), list.get(2));
+        assertEquals(Integer.valueOf(4), list.get(3));
     }
 
     @Test
@@ -84,10 +84,10 @@ public class SubListElementMoverTest extends AbstractIpsPluginTest {
 
         SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
         assertArraysEquals(new int[] { 1, 2 }, mover.move(indices, false));
-        assertEquals(1, list.get(0));
-        assertEquals(2, list.get(1));
-        assertEquals(3, list.get(2));
-        assertEquals(4, list.get(3));
+        assertEquals(Integer.valueOf(1), list.get(0));
+        assertEquals(Integer.valueOf(2), list.get(1));
+        assertEquals(Integer.valueOf(3), list.get(2));
+        assertEquals(Integer.valueOf(4), list.get(3));
     }
 
     /**
@@ -107,9 +107,9 @@ public class SubListElementMoverTest extends AbstractIpsPluginTest {
 
         SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
         assertArraysEquals(new int[] { 0 }, mover.move(indices, true));
-        assertEquals(3, list.get(0));
-        assertEquals(2, list.get(1));
-        assertEquals(1, list.get(2));
+        assertEquals(Integer.valueOf(3), list.get(0));
+        assertEquals(Integer.valueOf(2), list.get(1));
+        assertEquals(Integer.valueOf(1), list.get(2));
     }
 
     /**
@@ -129,9 +129,9 @@ public class SubListElementMoverTest extends AbstractIpsPluginTest {
 
         SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
         assertArraysEquals(new int[] { 1 }, mover.move(indices, false));
-        assertEquals(3, list.get(0));
-        assertEquals(2, list.get(1));
-        assertEquals(1, list.get(2));
+        assertEquals(Integer.valueOf(3), list.get(0));
+        assertEquals(Integer.valueOf(2), list.get(1));
+        assertEquals(Integer.valueOf(1), list.get(2));
     }
 
 }
