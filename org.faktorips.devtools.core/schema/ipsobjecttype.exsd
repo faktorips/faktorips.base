@@ -1,12 +1,16 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.faktorips.devtools.core">
+<schema targetNamespace="org.faktorips.devtools.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.faktorips.devtools.core" id="ipsobjecttype" name="IpsObjectType"/>
       </appInfo>
       <documentation>
-         [Enter description of this extension point.]
+         Extension point for custom IpsObjectTypes. Create a class for your custom IpsObjectType and register it with FaktorIPS using this extension point.
+
+Note that the implementation Class of the IpsObjectType must be visible/accessible from org.faktorips.devtools.core even though it is situated in an internal (non-exported) package. 
+When devtools core creates instances of the registered IpsObjectTypes, the implmentation classes also need to be loaded. It is the devtools&apos; classloader that loads the classes not the pugins&apos; own. That means the implementation class must either be placed in an exported package (which is surely NOT what you want), or you can allow &quot;firend&quot; plugins access to selected packages.
+To configure your plugin accordingly, open the plugin.xml of the plugin that defines the custom IpsObjectType and go to the tab &quot;Runtime&quot;. Klick on the (internal) package that contains the implementation class. On the right side of the editor klick the radio botton &quot;hidden from all plug-ins except:&quot;. Add org.faktorips.devtools.core to the list of plug-ins that are granted access. That&apos;s it.
       </documentation>
    </annotation>
 
