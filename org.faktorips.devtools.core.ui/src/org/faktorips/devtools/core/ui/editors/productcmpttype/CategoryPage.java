@@ -14,7 +14,9 @@
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
@@ -45,13 +47,15 @@ public class CategoryPage extends IpsObjectEditorPage {
 
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
+        super.createPageContent(formBody, toolkit);
         formBody.setLayout(createPageLayout(1, false));
         new CategoryCompositionSection((IProductCmptType)getIpsObject(), formBody, toolkit);
     }
 
-    private static class CategoryCompositionSection extends IpsSection {
+    static class CategoryCompositionSection extends IpsSection {
 
-        private final List<IpsSection> categorySections = new ArrayList<IpsSection>(5);
+        private final Map<IProductCmptCategory, CategorySection> categorySections = new LinkedHashMap<IProductCmptCategory, CategorySection>(
+                5);
 
         private final IProductCmptType productCmptType;
 
@@ -98,8 +102,9 @@ public class CategoryPage extends IpsObjectEditorPage {
             // Create a section for each category
             for (IProductCmptCategory category : categories) {
                 Composite parent = category.isAtLeftPosition() ? left : right;
-                IpsSection categorySection = new CategorySection(category, productCmptType, parent, getToolkit());
-                categorySections.add(categorySection);
+                CategorySection categorySection = new CategorySection(category, productCmptType, this, parent,
+                        getToolkit());
+                categorySections.put(category, categorySection);
             }
         }
 
@@ -107,9 +112,17 @@ public class CategoryPage extends IpsObjectEditorPage {
 
         @Override
         protected void performRefresh() {
-            for (IpsSection categorySection : categorySections) {
+            for (IpsSection categorySection : categorySections.values()) {
                 categorySection.refresh();
             }
+        }
+
+        /**
+         * Returns the {@link CategorySection} corresponding to the indicated
+         * {@link IProductCmptCategory}.
+         */
+        public CategorySection getCategorySection(IProductCmptCategory category) {
+            return categorySections.get(category);
         }
 
     }

@@ -18,12 +18,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -46,6 +48,7 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dialogs.DialogHelper;
 import org.faktorips.devtools.core.ui.editors.ViewerButtonComposite;
+import org.faktorips.devtools.core.ui.editors.productcmpttype.CategoryPage.CategoryCompositionSection;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -70,15 +73,18 @@ public class CategorySection extends IpsSection {
 
     private final IProductCmptType contextType;
 
-    private ViewerButtonComposite categoryComposite;
+    private final CategoryCompositionSection categoryCompositionSection;
 
-    public CategorySection(IProductCmptCategory category, final IProductCmptType contextType, Composite parent,
-            UIToolkit toolkit) {
+    private ViewerButtonComposite viewerButtonComposite;
+
+    public CategorySection(IProductCmptCategory category, IProductCmptType contextType,
+            CategoryCompositionSection categoryCompositionSection, Composite parent, UIToolkit toolkit) {
 
         super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
 
         this.category = category;
         this.contextType = contextType;
+        this.categoryCompositionSection = categoryCompositionSection;
 
         initControls();
     }
@@ -91,7 +97,8 @@ public class CategorySection extends IpsSection {
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         setLayout(client);
-        categoryComposite = new CategoryComposite(category, contextType, client, toolkit);
+        viewerButtonComposite = new CategoryComposite(category, contextType, categoryCompositionSection, client,
+                toolkit);
     }
 
     private void setLayout(Composite parent) {
@@ -105,7 +112,11 @@ public class CategorySection extends IpsSection {
 
     @Override
     protected void performRefresh() {
-        categoryComposite.refresh();
+        viewerButtonComposite.refresh();
+    }
+
+    private ViewerButtonComposite getViewerButtonComposite() {
+        return viewerButtonComposite;
     }
 
     private static class CategoryComposite extends ViewerButtonComposite {
@@ -116,24 +127,33 @@ public class CategorySection extends IpsSection {
 
         private final IProductCmptType contextType;
 
+        private final CategoryCompositionSection categoryCompositionSection;
+
         private Button moveUpButton;
 
         private Button moveDownButton;
 
         private Button changeCategoryButton;
 
-        public CategoryComposite(IProductCmptCategory category, IProductCmptType contextType, Composite parent,
-                UIToolkit toolkit) {
+        public CategoryComposite(IProductCmptCategory category, final IProductCmptType contextType,
+                CategoryCompositionSection categoryCompositionSection, Composite parent, UIToolkit toolkit) {
 
             super(parent);
 
             this.category = category;
             this.contextType = contextType;
+            this.categoryCompositionSection = categoryCompositionSection;
 
             initControls(toolkit);
 
             contentsChangeListener = createContentsChangeListener(contextType);
             contextType.getIpsModel().addChangeListener(contentsChangeListener);
+            addDisposeListener(new DisposeListener() {
+                @Override
+                public void widgetDisposed(DisposeEvent e) {
+                    contextType.getIpsModel().removeChangeListener(contentsChangeListener);
+                }
+            });
         }
 
         /**
@@ -275,9 +295,18 @@ public class CategorySection extends IpsSection {
         }
 
         private void openChangeCategoryDialog() {
-            Dialog dialog = new ChangeCategoryDialog(contextType, getSelectedProperty(), category, getShell());
+            IProductCmptProperty selectedProperty = getSelectedProperty();
+
+            ChangeCategoryDialog dialog = new ChangeCategoryDialog(contextType, selectedProperty, category, getShell());
             DialogHelper dialogHelper = new DialogHelper();
-            dialogHelper.openDialogWithMemento(dialog, getSelectedProperty());
+
+            int returnCode = dialogHelper.openDialogWithMemento(dialog, selectedProperty);
+            if (returnCode == Window.OK) {
+                // Set the selection to the selected property in the target category
+                IProductCmptCategory selectedCategory = dialog.getSelectedCategory();
+                CategorySection targetCategorySection = categoryCompositionSection.getCategorySection(selectedCategory);
+                targetCategorySection.getViewerButtonComposite().setSelectedObject(selectedProperty);
+            }
         }
 
         private IProductCmptProperty getSelectedProperty() {
@@ -301,12 +330,6 @@ public class CategorySection extends IpsSection {
 
         private boolean isPropertySelected() {
             return !getViewer().getSelection().isEmpty();
-        }
-
-        @Override
-        public void dispose() {
-            contextType.getIpsModel().removeChangeListener(contentsChangeListener);
-            super.dispose();
         }
 
     }

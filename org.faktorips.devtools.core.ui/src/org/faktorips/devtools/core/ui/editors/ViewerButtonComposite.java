@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -103,6 +104,14 @@ public abstract class ViewerButtonComposite extends Composite {
             return null;
         }
         return selection.getFirstElement();
+    }
+
+    /**
+     * Sets the selection of the viewer to the provided object.
+     */
+    public void setSelectedObject(Object object) {
+        IStructuredSelection selection = new StructuredSelection(object);
+        viewer.setSelection(selection, true);
     }
 
     /**

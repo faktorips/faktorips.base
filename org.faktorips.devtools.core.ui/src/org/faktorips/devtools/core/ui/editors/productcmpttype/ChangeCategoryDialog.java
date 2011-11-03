@@ -121,7 +121,12 @@ public class ChangeCategoryDialog extends ElementListSelectionDialog {
         property.setCategory(getSelectedCategory().getName());
     }
 
-    private IProductCmptCategory getSelectedCategory() {
+    /**
+     * Returns the {@link IProductCmptCategory} the user has selected.
+     * <p>
+     * Only available after the dialog has been closed by the user pressing the OK button.
+     */
+    public IProductCmptCategory getSelectedCategory() {
         return (IProductCmptCategory)getFirstResult();
     }
 
