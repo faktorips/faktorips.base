@@ -14,18 +14,22 @@
 package org.faktorips.devtools.core.ui.search.product;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.search.IIpsSearchPartPresentationModel;
 import org.faktorips.devtools.core.ui.search.product.conditions.ICondition;
 import org.faktorips.devtools.core.ui.search.product.conditions.ISearchOperatorType;
+import org.faktorips.util.ArgumentCheck;
 
 public class ProductSearchConditionPresentationModel extends PresentationModelObject implements
         IIpsSearchPartPresentationModel {
@@ -38,23 +42,22 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     public static final String OPERATOR_TYPE_CHOSEN = "operatorTypeChosen"; //$NON-NLS-1$
 
     private final ProductSearchPresentationModel parentSearchPresentationModel;
-    private final ICondition condition;
 
-    private final List<? extends IIpsElement> searchableElements;
-    // TODO primitiv?
-    private Integer searchedElementIndex;
+    private List<? extends IIpsElement> searchableElements;
+
+    private int searchedElementIndex = -1;
 
     private List<? extends ISearchOperatorType> operatorTypes;
-    // TODO primitiv?
-    private Integer operatorTypeIndex;
 
+    private int operatorTypeIndex = -1;
+
+    private ICondition condition = null;
     private String argument = null;
+    private List<String> allowedValues = null;
 
-    public ProductSearchConditionPresentationModel(ProductSearchPresentationModel parentSearchPresentationModel,
-            ICondition condition) throws CoreException {
+    public ProductSearchConditionPresentationModel(ProductSearchPresentationModel parentSearchPresentationModel) {
         this.parentSearchPresentationModel = parentSearchPresentationModel;
-        this.condition = condition;
-        this.searchableElements = condition.getSearchableElements(parentSearchPresentationModel.getProductCmptType());
+        this.searchableElements = Collections.emptyList();
         this.operatorTypes = Collections.emptyList();
         this.parentSearchPresentationModel.addProductSearchConditionPresentationModels(this);
     }
@@ -75,13 +78,9 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     }
 
     public void setOperatorTypeIndex(Integer newValue) {
-        Integer oldValue = operatorTypeIndex;
         operatorTypeIndex = newValue;
 
-        notifyListeners(new PropertyChangeEvent(this, OPERATOR_TYPE_INDEX, oldValue, newValue));
-
-        notifyListeners(new PropertyChangeEvent(this, OPERATOR_TYPE_CHOSEN, Boolean.valueOf(oldValue != null),
-                Boolean.valueOf(newValue != null)));
+        parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, "", null, null));
     }
 
     public Integer getOperatorTypeIndex() {
@@ -92,19 +91,8 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
         return operatorTypes.get(operatorTypeIndex);
     }
 
-    public void setSearchedElementIndex(Integer newValue) {
-        Integer oldValue = searchedElementIndex;
-        searchedElementIndex = newValue;
-
-        notifyListeners(new PropertyChangeEvent(this, SEARCHED_ELEMENT_INDEX, oldValue, newValue));
-
-        updateOperatorTypes();
-        notifyListeners(new PropertyChangeEvent(this, SEARCHED_ELEMENT_CHOSEN, Boolean.valueOf(oldValue != null),
-                Boolean.valueOf(newValue != null)));
-    }
-
-    public Integer getSearchedElementIndex() {
-        return searchedElementIndex;
+    protected List<? extends ISearchOperatorType> getSearchOperatorTypes() {
+        return operatorTypes;
     }
 
     private void updateOperatorTypes() {
@@ -112,55 +100,152 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
 
     }
 
+    private void updateOperatorType() {
+        operatorTypeIndex = -1;
+    }
+
+    public Integer getSearchedElementIndex() {
+        return searchedElementIndex;
+    }
+
+    public void setSearchedElementIndex(Integer newValue) {
+        searchedElementIndex = newValue;
+
+        updateOperatorTypes();
+        updateOperatorType();
+        updateAllowedAttributeValues();
+        parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, "", null, null));
+    }
+
     public IIpsElement getSearchedElement() {
-        if (searchedElementIndex == null) {
+        if (searchedElementIndex < 0) {
             return null;
         }
         return getSearchableElements().get(searchedElementIndex);
     }
 
-    public ICondition getCondition() {
-        return condition;
+    private void updateSearchedElement() {
+        searchedElementIndex = -1;
+
     }
 
-    protected List<? extends ISearchOperatorType> getSearchOperatorTypes() {
-        return operatorTypes;
+    private void updateSearchableElements() {
+        searchableElements = condition.getSearchableElements(parentSearchPresentationModel.getProductCmptType());
+
+    }
+
+    public boolean isSearchedElementChosen() {
+        return searchedElementIndex >= 0;
     }
 
     protected List<? extends IIpsElement> getSearchableElements() {
         return searchableElements;
     }
 
-    public boolean isSearchedElementChosen() {
-        return searchedElementIndex != null && searchedElementIndex >= 0;
+    public ICondition getCondition() {
+        return condition;
+    }
+
+    public void setCondition(ICondition condition) {
+        ArgumentCheck.notNull(condition);
+        ArgumentCheck.isTrue(!condition.getSearchableElements(parentSearchPresentationModel.getProductCmptType())
+                .isEmpty(), "Conditions are not allowed without elements, which can be searched."); //$NON-NLS-1$
+
+        if (condition.equals(this.condition)) {
+            return;
+        }
+
+        this.condition = condition;
+
+        updateSearchableElements();
+        updateSearchedElement();
+
+        updateOperatorTypes();
+        updateOperatorType();
+        updateArgument();
+
+        parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, "", null, null)); //$NON-NLS-1$
+    }
+
+    protected List<ICondition> getConditionsWithSearchableElements() {
+        return parentSearchPresentationModel.getConditionsWithSearchableElements();
     }
 
     public ValueDatatype getValueDatatype() {
-        return condition.getValueDatatype(getSearchedElement());
+        return getCondition().getValueDatatype(getSearchedElement());
     }
 
     public void setArgument(String newValue) {
-        String oldValue = argument;
         argument = newValue;
 
-        notifyListeners(new PropertyChangeEvent(this, ARGUMENT, oldValue, newValue));
+        parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, "", null, null));
     }
 
     public String getArgument() {
         return argument;
     }
 
+    private void updateArgument() {
+        argument = null;
+        if (!isSearchedElementChosen()) {
+            return;
+        }
+        if (getCondition().hasValueSet()) {
+            IValueSet valueSet = getCondition().getValueSet(getSearchedElement());
+
+            if (valueSet instanceof EnumValueSet) {
+                EnumValueSet enumValueSet = (EnumValueSet)valueSet;
+                if (enumValueSet.size() > 0) {
+                    argument = enumValueSet.getValue(0);
+                    return;
+                }
+            }
+            return;
+        }
+        if (!getAllowedAttributeValues().isEmpty()) {
+            argument = getAllowedAttributeValues().get(0);
+        }
+
+    }
+
+    /**
+     * @return a List<String> with allowed values
+     */
+    protected List<String> getAllowedAttributeValues() {
+        if (getCondition().hasValueSet()) {
+            // TODO exception werfen????
+            return Collections.emptyList();
+        }
+
+        if (allowedValues == null) {
+            updateAllowedAttributeValues();
+        }
+        return allowedValues;
+    }
+
+    private void updateAllowedAttributeValues() {
+        if (getCondition().hasValueSet()) {
+            allowedValues = Collections.emptyList();
+            return;
+        }
+        Collection<?> allowedValuesInCondition = getCondition().getAllowedValues(getSearchedElement());
+        allowedValues = new ArrayList<String>();
+
+        for (Object object : allowedValuesInCondition) {
+            allowedValues.add(object.toString());
+        }
+    }
+
     public void dispose() {
         parentSearchPresentationModel.removeProductSearchConditionPresentationModels(this);
     }
 
+    @Override
     public boolean isValid() {
-        if (searchedElementIndex == null) {
-            return false;
-        }
-        if (operatorTypeIndex == null) {
-            return false;
-        }
-        return true;
+        return isSearchedElementChosen() && isOperatorTypeChosen();
+    }
+
+    private boolean isOperatorTypeChosen() {
+        return operatorTypeIndex >= 0;
     }
 }

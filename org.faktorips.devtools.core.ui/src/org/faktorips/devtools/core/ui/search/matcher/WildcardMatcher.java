@@ -32,11 +32,10 @@ public class WildcardMatcher {
     private static final String REGEXP_ONCE = "."; //$NON-NLS-1$
 
     private final Pattern pattern;
-    private final boolean isRegExp;
 
     public WildcardMatcher(String searchTerm) {
 
-        isRegExp = searchTerm.contains(WILDCARD_ZERO_OR_MANY) || searchTerm.contains(WILDCARD_ONCE);
+        boolean isRegExp = searchTerm.contains(WILDCARD_ZERO_OR_MANY) || searchTerm.contains(WILDCARD_ONCE);
 
         String regexpSearchTerm;
         if (isRegExp) {

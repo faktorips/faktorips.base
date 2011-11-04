@@ -139,9 +139,10 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
 
     @Override
     public boolean performAction() {
-        // it is impossible to link the search scope to the presentationModel with the context
-        // binding, because
-        // a changed selection of the scope doesn't throw an event.
+        if (!getPresentationModel().isValid()) {
+            return false;
+        }
+
         getPresentationModel().setSearchScope(createSearchScope());
 
         ISearchQuery query = getPresentationModel().createSearchQuery();
@@ -182,11 +183,13 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
 
     protected Text createSrcFilePatternText(UIToolkit toolkit, Composite composite, String srcFilePatternTextLabel) {
         String patternLabel = Messages.AbstractIpsSearchPage_patternLabel;
-        toolkit.createLabel(composite, NLS.bind(Messages.AbstractIpsSearchPage_labelSrcFilePattern, srcFilePatternTextLabel, patternLabel));
+        toolkit.createLabel(composite,
+                NLS.bind(Messages.AbstractIpsSearchPage_labelSrcFilePattern, srcFilePatternTextLabel, patternLabel));
         Text txtTypeName = toolkit.createText(composite);
 
         getBindingContext().bindContent(txtTypeName, getPresentationModel(),
                 IIpsSearchPresentationModel.SRC_FILE_PATTERN);
         return txtTypeName;
     }
+
 }

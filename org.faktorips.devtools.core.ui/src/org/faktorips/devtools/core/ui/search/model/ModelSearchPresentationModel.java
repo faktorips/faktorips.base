@@ -164,4 +164,9 @@ public class ModelSearchPresentationModel extends AbstractSearchPresentationMode
     public ISearchQuery createSearchQuery() {
         return new ModelSearchQuery(this);
     }
+
+    @Override
+    public boolean isValid() {
+        return true;
+    }
 }

@@ -11,30 +11,12 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search;
+package org.faktorips.devtools.core.ui.search.product.conditions;
 
-import java.util.Locale;
 
-import org.eclipse.jface.dialogs.IDialogSettings;
+public abstract class AbstractCondition implements ICondition {
 
-public interface IIpsSearchPartPresentationModel {
-
-    public Locale getSearchLocale();
-
-    /**
-     * stores the actual values into the dialog settings
-     */
-    public void store(IDialogSettings settings);
-
-    /**
-     * reads the dialog setting and uses the values for the actual search
-     */
-    public void read(IDialogSettings settings);
-
-    /**
-     * returns, if this part of a search is valid and so the search is executable
-     * 
-     */
-    public boolean isValid();
-
+    public AbstractCondition() {
+        super();
+    }
 }

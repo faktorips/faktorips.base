@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -49,15 +50,25 @@ public class PolicyAttributeCondition extends AbstractAttributeCondition {
     }
 
     @Override
-    public List<? extends IIpsElement> getSearchableElements(IProductCmptType productCmptType) throws CoreException {
-        List<IPolicyCmptTypeAttribute> policyCmptTypeAttributes = new ArrayList<IPolicyCmptTypeAttribute>();
+    public List<IIpsElement> getSearchableElements(IProductCmptType productCmptType) {
+        List<IIpsElement> policyCmptTypeAttributes = new ArrayList<IIpsElement>();
 
-        IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptType(productCmptType.getIpsProject());
+        IPolicyCmptType policyCmptType;
+        try {
+            policyCmptType = productCmptType.findPolicyCmptType(productCmptType.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
         if (policyCmptType == null) {
             return Collections.emptyList();
         }
 
-        List<IAttribute> attributes = policyCmptType.findAllAttributes(policyCmptType.getIpsProject());
+        List<IAttribute> attributes;
+        try {
+            attributes = policyCmptType.findAllAttributes(policyCmptType.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
 
         for (IAttribute attribute : attributes) {
             if (!(attribute instanceof IPolicyCmptTypeAttribute)) {
@@ -95,5 +106,4 @@ public class PolicyAttributeCondition extends AbstractAttributeCondition {
         return NLS.bind(Messages.PolicyAttributeCondition_noSearchableElementMessage,
                 productCmptType.getQualifiedName());
     }
-
 }

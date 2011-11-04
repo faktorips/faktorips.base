@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.search.product.conditions;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -79,6 +80,15 @@ public class ProductAttributeConditionTest extends AbstractIpsPluginTest {
         when(valueSet.copy(any(IIpsObjectPart.class), any(String.class))).thenReturn(valueSet);
 
         attribut.setValueSetCopy(valueSet);
+
+        assertTrue(condition.hasValueSet());
+
+        try {
+            condition.getAllowedValues(attribut);
+            fail();
+        } catch (Exception e) {
+            // nix
+        }
 
         assertEquals(integerDatatype, condition.getValueDatatype(attribut));
         assertEquals(valueSet, condition.getValueSet(attribut));

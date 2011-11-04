@@ -13,13 +13,15 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions;
 
+import java.util.Collection;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 
-public abstract class AbstractAttributeCondition implements ICondition {
+public abstract class AbstractAttributeCondition extends AbstractCondition {
 
     @Override
     public ValueDatatype getValueDatatype(IIpsElement elementPart) {
@@ -44,4 +46,13 @@ public abstract class AbstractAttributeCondition implements ICondition {
         }
     }
 
+    @Override
+    public Collection<?> getAllowedValues(IIpsElement elementPart) {
+        throw new IllegalStateException("This Condition doesn't allow calling getAllowedValues");
+    }
+
+    @Override
+    public boolean hasValueSet() {
+        return true;
+    }
 }

@@ -13,9 +13,9 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions;
 
+import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -23,13 +23,17 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 
 public interface ICondition {
 
-    public List<? extends IIpsElement> getSearchableElements(IProductCmptType productCmptType) throws CoreException;
+    public List<IIpsElement> getSearchableElements(IProductCmptType productCmptType);
 
     public List<? extends ISearchOperatorType> getSearchOperatorTypes(IIpsElement elementPart);
 
     public ValueDatatype getValueDatatype(IIpsElement elementPart);
 
     public IValueSet getValueSet(IIpsElement elementPart);
+
+    public Collection<?> getAllowedValues(IIpsElement elementPart);
+
+    public boolean hasValueSet();
 
     public IOperandProvider createOperandProvider(IIpsElement elementPart);
 

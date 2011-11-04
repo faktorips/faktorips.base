@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -47,17 +48,25 @@ public class ProductAttributeCondition extends AbstractAttributeCondition {
     }
 
     @Override
-    public List<? extends IIpsElement> getSearchableElements(IProductCmptType element) throws CoreException {
-        return element.findAllAttributes(element.getIpsProject());
+    public List<IIpsElement> getSearchableElements(IProductCmptType element) {
+        try {
+            return new ArrayList<IIpsElement>(element.findAllAttributes(element.getIpsProject()));
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
     public List<ISearchOperatorType> getSearchOperatorTypes(IIpsElement elementPart) {
         List<ISearchOperatorType> searchOperatorTypes = new ArrayList<ISearchOperatorType>();
 
-        searchOperatorTypes.addAll(Arrays.asList(EqualitySearchOperatorType.values()));
-
         ValueDatatype valueDatatype = getValueDatatype(elementPart);
+
+        if (String.class.getName().equals(valueDatatype.getJavaClassName())) {
+            searchOperatorTypes.addAll(Arrays.asList(LikeSearchOperatorType.values()));
+        }
+
+        searchOperatorTypes.addAll(Arrays.asList(EqualitySearchOperatorType.values()));
 
         if (valueDatatype.supportsCompare()) {
             searchOperatorTypes.addAll(Arrays.asList(ComparableSearchOperatorType.values()));

@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.search.product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,6 +28,7 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.faktorips.datatype.ValueDatatype;
@@ -35,7 +37,9 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.search.product.conditions.ICondition;
 import org.faktorips.devtools.core.ui.search.product.conditions.ISearchOperatorType;
+import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 
 public class ProductSearchConditionsTableViewerProvider {
@@ -44,14 +48,25 @@ public class ProductSearchConditionsTableViewerProvider {
         public void update(ViewerCell cell) {
             ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)cell.getElement();
 
-            ValueDatatype valueDatatype = getValueDatatype(model);
+            cell.setText(createCellText(model));
+        }
 
-            if (valueDatatype != null) {
-                cell.setText(IpsUIPlugin.getDefault().getDatatypeFormatter()
-                        .formatValue(valueDatatype, model.getArgument()));
-            } else {
-                cell.setText(model.getArgument() == null ? StringUtils.EMPTY : model.getArgument());
+        private String createCellText(ProductSearchConditionPresentationModel model) {
+            if (model.getCondition() == null) {
+                return StringUtils.EMPTY;
             }
+            if (model.getCondition().hasValueSet()) {
+                ValueDatatype datatype = getValueDatatype(model);
+
+                if (datatype != null) {
+                    return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(datatype, model.getArgument());
+                }
+            }
+
+            if (model.getArgument() == null) {
+                return StringUtils.EMPTY;
+            }
+            return model.getArgument();
         }
 
         private ValueDatatype getValueDatatype(ProductSearchConditionPresentationModel model) {
@@ -72,16 +87,27 @@ public class ProductSearchConditionsTableViewerProvider {
         protected CellEditor getCellEditor(Object element) {
             ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
 
-            ValueDatatype valueDatatype = model.getCondition().getValueDatatype(model.getSearchedElement());
+            if (model.getCondition().hasValueSet()) {
+                ValueDatatype datatype = model.getCondition().getValueDatatype(model.getSearchedElement());
+
+                return createValueDatatypeTableCellEditor(model, datatype);
+            } else {
+                String[] items = model.getAllowedAttributeValues().toArray(new String[0]);
+                return new ComboBoxCellEditor(((TableViewer)getViewer()).getTable(), items);
+            }
+        }
+
+        private IpsCellEditor createValueDatatypeTableCellEditor(ProductSearchConditionPresentationModel model,
+                ValueDatatype valueDatatype) {
+            IpsCellEditor tableCellEditor;
 
             ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     valueDatatype);
 
             IValueSet valueSet = model.getCondition().getValueSet(model.getSearchedElement());
 
-            IpsCellEditor tableCellEditor = controlFactory.createTableCellEditor(new UIToolkit(null), valueDatatype,
-                    valueSet, (TableViewer)getViewer(), 3, model.getSearchedElement().getIpsProject());
-
+            tableCellEditor = controlFactory.createTableCellEditor(new UIToolkit(null), valueDatatype, valueSet,
+                    (TableViewer)getViewer(), 3, model.getSearchedElement().getIpsProject());
             return tableCellEditor;
         }
 
@@ -97,14 +123,30 @@ public class ProductSearchConditionsTableViewerProvider {
         protected Object getValue(Object element) {
             ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
 
-            return model.getArgument();
+            if (model.getCondition().hasValueSet()) {
+                return model.getArgument();
+            } else {
+                String argument = model.getArgument();
+                return Integer.valueOf(model.getAllowedAttributeValues().indexOf(argument));
+            }
         }
 
         @Override
         protected void setValue(Object element, Object value) {
             ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
 
-            model.setArgument((String)value);
+            if (model.getCondition().hasValueSet()) {
+                model.setArgument((String)value);
+            } else {
+                Integer index = (Integer)value;
+                if (index == null || index.intValue() == -1) {
+                    model.setArgument(null);
+                } else {
+                    List<String> allowedValues = model.getAllowedAttributeValues();
+                    String newValue = allowedValues.get(index);
+                    model.setArgument(newValue);
+                }
+            }
             getViewer().refresh();
         }
     }
@@ -114,7 +156,7 @@ public class ProductSearchConditionsTableViewerProvider {
         @Override
         public void update(ViewerCell cell) {
             ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)cell.getElement();
-            if (model.getOperatorTypeIndex() == null) {
+            if (model.getOperatorTypeIndex() < 0) {
                 cell.setText(StringUtils.EMPTY);
             } else {
                 ISearchOperatorType operatorType = model.getOperatorType();
@@ -225,8 +267,71 @@ public class ProductSearchConditionsTableViewerProvider {
     private static final class ConditionTypeLabelProvider extends ColumnLabelProvider {
         @Override
         public String getText(Object element) {
-            return ((ProductSearchConditionPresentationModel)element).getCondition().getName();
+            ICondition condition = ((ProductSearchConditionPresentationModel)element).getCondition();
+            if (condition == null) {
+                return StringUtils.EMPTY;
+            }
+            return condition.getName();
         }
+    }
+
+    private static class ConditionTypeEditingSupport extends EditingSupport {
+
+        public ConditionTypeEditingSupport(TableViewer viewer) {
+            super(viewer);
+        }
+
+        @Override
+        protected CellEditor getCellEditor(Object element) {
+            UIToolkit toolkit = new UIToolkit(null);
+            Combo combo = toolkit.createCombo(((TableViewer)getViewer()).getTable());
+
+            ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
+
+            List<ICondition> conditionTypes = model.getConditionsWithSearchableElements();
+            List<String> conditionTypeNames = new ArrayList<String>(conditionTypes.size());
+
+            for (ICondition condition : conditionTypes) {
+                conditionTypeNames.add(condition.getName());
+            }
+
+            combo.setItems(conditionTypeNames.toArray(new String[0]));
+
+            return new ComboCellEditor(combo);
+        }
+
+        @Override
+        protected boolean canEdit(Object element) {
+            return true;
+        }
+
+        @Override
+        protected Object getValue(Object element) {
+            ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
+
+            System.out.println("getValue: " + model.getCondition());
+            return model.getCondition();
+        }
+
+        @Override
+        protected void setValue(Object element, Object value) {
+            if (value == null) {
+                return;
+            }
+
+            ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
+
+            List<ICondition> conditionTypes = model.getConditionsWithSearchableElements();
+            for (ICondition condition : conditionTypes) {
+                if (condition.getName().equals(value)) {
+                    model.setCondition(condition);
+                    getViewer().refresh();
+                    return;
+                }
+
+            }
+        }
+
     }
 
     private TableViewer tableViewer;
@@ -253,11 +358,14 @@ public class ProductSearchConditionsTableViewerProvider {
         tableViewer.setInput(model.getProductSearchConditionPresentationModels());
 
         createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_conditionType, 150,
-                new ConditionTypeLabelProvider(), null);
+                new ConditionTypeLabelProvider(), new ConditionTypeEditingSupport(tableViewer));
+
         createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_element, 180,
                 new ElementLabelProvider(), new ElementEditingSupport(tableViewer));
+
         createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_operator, 150,
                 new OperatorLabelProvider(), new OperatorEditingSupport(tableViewer));
+
         createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_argument, 170,
                 new ArgumentLabelProvider(), new ArgumentEditingSupport(tableViewer));
 
@@ -288,18 +396,6 @@ public class ProductSearchConditionsTableViewerProvider {
         gridData.heightHint = 150;
         tableViewer.getControl().setLayoutData(gridData);
     }
-
-    /*
-     * return conditionModel.getCondition().getName();
-     * 
-     * case 1: return conditionModel.getSearchedElement().getName();
-     * 
-     * case 2: return conditionModel.getOperatorType().getLabel();
-     * 
-     * case 3: return conditionModel.getArgument();
-     * 
-     * default: return null;
-     */
 
     public TableViewer getTableViewer() {
         return tableViewer;

@@ -13,8 +13,10 @@
 
 package org.faktorips.devtools.core.ui.search.product;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -23,13 +25,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchPage;
-import org.faktorips.devtools.core.ui.search.product.conditions.ICondition;
-import org.faktorips.devtools.core.ui.search.product.conditions.PolicyAttributeCondition;
-import org.faktorips.devtools.core.ui.search.product.conditions.ProductAttributeCondition;
 
 public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresentationModel> {
 
@@ -91,50 +89,23 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
 
         comp.setLayout(new FillLayout(SWT.HORIZONTAL));
 
-        Button btnAddProductCondition = toolkit
-                .createButton(
-                        comp,
-                        NLS.bind(Messages.ProductSearchPage_labelAddConditionButton,
-                                new ProductAttributeCondition().getName()));
+        Button btnAddCondition = toolkit.createButton(comp, Messages.ProductSearchPage_labelAddConditionButton);
 
-        btnAddProductCondition.addSelectionListener(new SelectionAdapter() {
+        btnAddCondition.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ICondition condition = new ProductAttributeCondition();
-                addCondition(condition);
+                addCondition();
             }
         });
-        getBindingContext().bindEnabled(btnAddProductCondition, getPresentationModel(),
+        getBindingContext().bindEnabled(btnAddCondition, getPresentationModel(),
                 ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
 
-        Button btnAddPolicy = toolkit.createButton(comp,
-                NLS.bind(Messages.ProductSearchPage_labelAddConditionButton, new PolicyAttributeCondition().getName()));
-
-
-        btnAddPolicy.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                ICondition condition = new PolicyAttributeCondition();
-                addCondition(condition);
-            }
-        });
-        getBindingContext().bindEnabled(btnAddPolicy, getPresentationModel(),
-                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
-
+        // FIXME remove button
     }
 
-    private void addCondition(ICondition condition) {
+    private void addCondition() {
         try {
-            if (condition.getSearchableElements(getPresentationModel().getProductCmptType()).isEmpty()) {
-                MessageBox mb = new MessageBox(getShell());
-
-                mb.setMessage(condition.getNoSearchableElementsMessage(getPresentationModel().getProductCmptType()));
-
-                mb.open();
-                return;
-            }
-
-            new ProductSearchConditionPresentationModel(getPresentationModel(), condition);
+            new ProductSearchConditionPresentationModel(getPresentationModel());
 
             conditionTableViewer.refresh();
         } catch (Exception e) {
@@ -157,7 +128,18 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
     protected ProductSearchPresentationModel createPresentationModel() {
         ProductSearchPresentationModel model = new ProductSearchPresentationModel();
         model.initDefaultSearchValues();
+        model.addPropertyChangeListener(createPropertyChangeListenerforValidity());
         return model;
     }
 
+    private PropertyChangeListener createPropertyChangeListenerforValidity() {
+        return new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                boolean valid = getPresentationModel().isValid();
+                getContainer().setPerformActionEnabled(valid);
+            }
+        };
+    }
 }
