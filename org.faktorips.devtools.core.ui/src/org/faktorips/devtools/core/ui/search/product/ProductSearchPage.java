@@ -68,6 +68,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
         conditionTableViewer = createConditionTable(conditionsGroup);
         addConditionButtons(toolkit, conditionsGroup);
 
+        // FIXME group nur dann freischalten, wenn auch durchsuchbare elemente vorhanden sind
         getBindingContext().bindEnabled(conditionsGroup, getPresentationModel(),
                 ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
 
