@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -1685,6 +1686,136 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(-1, productCmptType.getIndexOfProductCmptCategory(foreignCategory));
     }
 
+    @Test
+    public void testGetFirstCategory() {
+        deleteAllProductCmptCategories(productCmptType);
+
+        IProductCmptCategory firstLeft = productCmptType.newProductCmptCategory("firstLeft");
+        IProductCmptCategory secondLeft = productCmptType.newProductCmptCategory("secondLeft");
+        firstLeft.setPosition(Position.LEFT);
+        secondLeft.setPosition(Position.LEFT);
+
+        IProductCmptCategory firstRight = productCmptType.newProductCmptCategory("firstRight");
+        IProductCmptCategory secondRight = productCmptType.newProductCmptCategory("secondRight");
+        firstRight.setPosition(Position.RIGHT);
+        secondRight.setPosition(Position.RIGHT);
+
+        assertEquals(firstLeft, productCmptType.getFirstCategory(Position.LEFT));
+        assertEquals(firstRight, productCmptType.getFirstCategory(Position.RIGHT));
+    }
+
+    @Test
+    public void testGetFirstCategory_NoCategoriesDefined() {
+        deleteAllProductCmptCategories(productCmptType);
+        assertNull(productCmptType.getFirstCategory(Position.LEFT));
+        assertNull(productCmptType.getFirstCategory(Position.RIGHT));
+    }
+
+    @Test
+    public void testGetFirstCategory_NoCategoryWithRequestedPositionDefined() {
+        deleteAllProductCmptCategories(productCmptType);
+
+        IProductCmptCategory rightCategory = productCmptType.newProductCmptCategory("rightCategory");
+        rightCategory.setPosition(Position.RIGHT);
+        assertNull(productCmptType.getFirstCategory(Position.LEFT));
+
+        IProductCmptCategory leftCategory = productCmptType.newProductCmptCategory("leftCategory");
+        leftCategory.setPosition(Position.LEFT);
+        rightCategory.delete();
+        assertNull(productCmptType.getFirstCategory(Position.RIGHT));
+    }
+
+    @Test
+    public void testGetLastCategory() {
+        deleteAllProductCmptCategories(productCmptType);
+
+        IProductCmptCategory firstLeft = productCmptType.newProductCmptCategory("firstLeft");
+        IProductCmptCategory secondLeft = productCmptType.newProductCmptCategory("secondLeft");
+        firstLeft.setPosition(Position.LEFT);
+        secondLeft.setPosition(Position.LEFT);
+
+        IProductCmptCategory firstRight = productCmptType.newProductCmptCategory("firstRight");
+        IProductCmptCategory secondRight = productCmptType.newProductCmptCategory("secondRight");
+        firstRight.setPosition(Position.RIGHT);
+        secondRight.setPosition(Position.RIGHT);
+
+        assertEquals(secondLeft, productCmptType.getLastCategory(Position.LEFT));
+        assertEquals(secondRight, productCmptType.getLastCategory(Position.RIGHT));
+    }
+
+    @Test
+    public void testGetLastCategory_NoCategoriesDefined() {
+        deleteAllProductCmptCategories(productCmptType);
+        assertNull(productCmptType.getLastCategory(Position.LEFT));
+        assertNull(productCmptType.getLastCategory(Position.RIGHT));
+    }
+
+    @Test
+    public void testGetLastCategory_NoCategoryWithRequestedPositionDefined() {
+        deleteAllProductCmptCategories(productCmptType);
+
+        IProductCmptCategory rightCategory = productCmptType.newProductCmptCategory("rightCategory");
+        rightCategory.setPosition(Position.RIGHT);
+        assertNull(productCmptType.getLastCategory(Position.LEFT));
+
+        IProductCmptCategory leftCategory = productCmptType.newProductCmptCategory("leftCategory");
+        leftCategory.setPosition(Position.LEFT);
+        rightCategory.delete();
+        assertNull(productCmptType.getLastCategory(Position.RIGHT));
+    }
+
+    @Test
+    public void testGetPredecessorCategory() {
+        deleteAllProductCmptCategories(productCmptType);
+
+        IProductCmptCategory leftCategory1 = productCmptType.newProductCmptCategory("leftCategory1");
+        IProductCmptCategory rightCategory = productCmptType.newProductCmptCategory("rightCategory");
+        IProductCmptCategory leftCategory2 = productCmptType.newProductCmptCategory("leftCategory2");
+        leftCategory1.setPosition(Position.LEFT);
+        rightCategory.setPosition(Position.RIGHT);
+        leftCategory2.setPosition(Position.LEFT);
+
+        assertEquals(leftCategory1, productCmptType.getPredecessorCategory(leftCategory2));
+    }
+
+    @Test
+    public void testGetPredecessorCategory_NoPredecessorCategoryExists() {
+        deleteAllProductCmptCategories(productCmptType);
+
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("category");
+
+        assertNull(productCmptType.getPredecessorCategory(category));
+    }
+
+    @Test
+    public void testGetSuccessorCategory() {
+        deleteAllProductCmptCategories(productCmptType);
+
+        IProductCmptCategory leftCategory1 = productCmptType.newProductCmptCategory("leftCategory1");
+        IProductCmptCategory rightCategory = productCmptType.newProductCmptCategory("rightCategory");
+        IProductCmptCategory leftCategory2 = productCmptType.newProductCmptCategory("leftCategory2");
+        leftCategory1.setPosition(Position.LEFT);
+        rightCategory.setPosition(Position.RIGHT);
+        leftCategory2.setPosition(Position.LEFT);
+
+        assertEquals(leftCategory2, productCmptType.getSuccessorCategory(leftCategory1));
+    }
+
+    @Test
+    public void testGetSuccessorCategory_NoSuccessorCategoryExists() {
+        deleteAllProductCmptCategories(productCmptType);
+
+        IProductCmptCategory category = productCmptType.newProductCmptCategory("category");
+
+        assertNull(productCmptType.getSuccessorCategory(category));
+    }
+
+    /**
+     * Deletes all {@link IProductCmptCategory}s of the provided {@link IProductCmptType}s.
+     * <p>
+     * This is often necessary to create a clean test environment as default
+     * {@link IProductCmptCategory}s are created by the {@code newProductCmptType} methods.
+     */
     private void deleteAllProductCmptCategories(IProductCmptType... productCmptTypes) {
         for (IProductCmptType productCmptType : productCmptTypes) {
             for (IProductCmptCategory category : productCmptType.getProductCmptCategories()) {

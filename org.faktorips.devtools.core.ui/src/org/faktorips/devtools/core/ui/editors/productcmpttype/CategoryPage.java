@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.devtools.core.util.ListElementMover;
 
 /**
  * Page that allows to edit the {@link IProductCmptCategory}s of an {@link IProductCmptType}.
@@ -55,13 +54,7 @@ public class CategoryPage extends IpsObjectEditorPage {
 
     static class CategoryCompositionSection extends IpsSection {
 
-        private final List<CategorySection> leftSections = new ArrayList<CategorySection>();
-
-        private final List<CategorySection> rightSections = new ArrayList<CategorySection>();
-
         private final Map<IProductCmptCategory, CategorySection> categoriesToSections = new LinkedHashMap<IProductCmptCategory, CategorySection>();
-
-        private final Map<CategorySection, IProductCmptCategory> sectionsToCategories = new LinkedHashMap<CategorySection, IProductCmptCategory>();
 
         private final IProductCmptType productCmptType;
 
@@ -111,17 +104,11 @@ public class CategoryPage extends IpsObjectEditorPage {
                 IpsPlugin.log(e);
             }
 
-            // Create a section for each category
             for (IProductCmptCategory category : categories) {
                 Composite parent = category.isAtLeftPosition() ? left : right;
                 CategorySection categorySection = new CategorySection(category, productCmptType, this, parent,
                         getToolkit());
-
-                List<CategorySection> sections = category.isAtLeftPosition() ? leftSections : rightSections;
-                sections.add(categorySection);
-
                 categoriesToSections.put(category, categorySection);
-                sectionsToCategories.put(categorySection, category);
             }
         }
 
@@ -129,12 +116,22 @@ public class CategoryPage extends IpsObjectEditorPage {
 
         @Override
         protected void performRefresh() {
-            for (IpsSection categorySection : leftSections) {
+            for (CategorySection categorySection : categoriesToSections.values()) {
                 categorySection.refresh();
             }
-            for (IpsSection categorySection : rightSections) {
-                categorySection.refresh();
+        }
+
+        /**
+         * Disposes all {@link CategorySection}s and recreates them in the order they are provided
+         * by the underlying model.
+         */
+        public void recreateCategorySections() {
+            for (CategorySection categorySection : categoriesToSections.values()) {
+                categorySection.dispose();
             }
+            createCategorySections();
+            left.layout();
+            right.layout();
         }
 
         /**
@@ -143,68 +140,6 @@ public class CategoryPage extends IpsObjectEditorPage {
          */
         public CategorySection getCategorySection(IProductCmptCategory category) {
             return categoriesToSections.get(category);
-        }
-
-        /**
-         * Moves the {@link CategorySection} for the given {@link IProductCmptCategory} up or down
-         * by one position.
-         * 
-         * @param category the {@link IProductCmptCategory} whose {@link CategorySection} shall be
-         *            move
-         * @param up flag indicating whether to move up or down
-         */
-        public void moveCategorySection(IProductCmptCategory category, boolean up) {
-            List<CategorySection> sections = category.isAtLeftPosition() ? leftSections : rightSections;
-            int sourceIndex = sections.indexOf(categoriesToSections.get(category));
-            // TODO AW
-
-            CategorySection sourceSection = sections.get(sourceIndex);
-            IProductCmptCategory sourceCategory = sectionsToCategories.get(sourceSection);
-
-            ListElementMover<CategorySection> mover = new ListElementMover<CategorySection>(sections);
-            int newIndex = mover.move(new int[] { sourceIndex }, up)[0];
-            if (newIndex == sourceIndex) {
-                return;
-            }
-
-            CategorySection targetSection = sections.get(newIndex);
-            IProductCmptCategory targetCategory = sectionsToCategories.get(targetSection);
-            if (!sourceCategory.getPosition().equals(targetCategory.getPosition())) {
-                return;
-            }
-
-            Composite parent = sourceCategory.isAtLeftPosition() ? left : right;
-            swapCategorySections(sourceIndex, newIndex, sections, parent);
-            parent.layout();
-        }
-
-        private void swapCategorySections(int sourceIndex,
-                int targetIndex,
-                List<CategorySection> sections,
-                Composite parent) {
-
-            CategorySection sourceSection = sections.get(sourceIndex);
-            CategorySection targetSection = sections.get(targetIndex);
-            IProductCmptCategory sourceCategory = sectionsToCategories.get(sourceSection);
-            IProductCmptCategory targetCategory = sectionsToCategories.get(targetSection);
-
-            sourceSection.dispose();
-            targetSection.dispose();
-
-            CategorySection newSourceSection = new CategorySection(targetCategory, productCmptType, this, parent,
-                    getToolkit());
-            CategorySection newTargetSection = new CategorySection(sourceCategory, productCmptType, this, parent,
-                    getToolkit());
-
-            sectionsToCategories.remove(sourceSection);
-            sectionsToCategories.remove(targetSection);
-            sectionsToCategories.put(newSourceSection, targetCategory);
-            sectionsToCategories.put(newTargetSection, sourceCategory);
-            categoriesToSections.put(sourceCategory, newTargetSection);
-            categoriesToSections.put(targetCategory, newSourceSection);
-
-            sections.set(sourceIndex, newSourceSection);
-            sections.set(targetIndex, newTargetSection);
         }
 
     }

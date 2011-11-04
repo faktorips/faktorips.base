@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.FormulaSignatureFinder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -755,6 +756,50 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public int getIndexOfProductCmptCategory(IProductCmptCategory category) {
         return categories.indexOf(category);
+    }
+
+    @Override
+    public IProductCmptCategory getFirstCategory(Position position) {
+        for (IProductCmptCategory category : categories) {
+            if (position.equals(category.getPosition())) {
+                return category;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public IProductCmptCategory getLastCategory(Position position) {
+        for (int i = categories.size() - 1; i >= 0; i--) {
+            if (position.equals(categories.getPart(i).getPosition())) {
+                return categories.getPart(i);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public IProductCmptCategory getPredecessorCategory(IProductCmptCategory category) {
+        int index = categories.indexOf(category);
+        for (int i = index - 1; i >= 0; i--) {
+            // TODO AW 04-11-2011: law of demeter, introduce isSamePositionAs(IProductCmptCategory)?
+            if (categories.getPart(i).getPosition().equals(category.getPosition())) {
+                return categories.getPart(i);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public IProductCmptCategory getSuccessorCategory(IProductCmptCategory category) {
+        int index = categories.indexOf(category);
+        for (int i = index + 1; i < categories.size(); i++) {
+            // TODO AW 04-11-2011: law of demeter, introduce isSamePositionAs(IProductCmptCategory)?
+            if (categories.getPart(i).getPosition().equals(category.getPosition())) {
+                return categories.getPart(i);
+            }
+        }
+        return null;
     }
 
     @Override

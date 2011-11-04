@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
@@ -482,6 +483,64 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @param category the {@link IProductCmptCategory} to retrieve the index for
      */
     public int getIndexOfProductCmptCategory(IProductCmptCategory category);
+
+    /**
+     * Returns the first {@link IProductCmptCategory} of the provided {@link Position}.
+     * <p>
+     * Returns null if no {@link IProductCmptCategory} with the provided {@link Position} is defined
+     * in this {@link IProductCmptType}.
+     * <p>
+     * This operation does <strong>not</strong> consider {@link IProductCmptCategory}s defined in
+     * the supertype hierarchy.
+     * 
+     * @param position the {@link Position} to retrieve the first {@link IProductCmptCategory} for
+     */
+    public IProductCmptCategory getFirstCategory(Position position);
+
+    /**
+     * Returns the last {@link IProductCmptCategory} of the provided {@link Position}.
+     * <p>
+     * Returns null if no {@link IProductCmptCategory}s with the provided {@link Position} is
+     * defined in this {@link IProductCmptType}.
+     * <p>
+     * This operation does <strong>not</strong> consider {@link IProductCmptCategory}s defined in
+     * the supertype hierarchy.
+     * 
+     * @param position the {@link Position} to retrieve the last {@link IProductCmptCategory} for
+     */
+    public IProductCmptCategory getLastCategory(Position position);
+
+    /**
+     * Returns the {@link IProductCmptCategory} that precedes the indicated
+     * {@link IProductCmptCategory} or null if no predecessor {@link IProductCmptCategory} exists.
+     * <p>
+     * The preceding {@link IProductCmptCategory} is the {@link IProductCmptCategory} with the next
+     * smaller index than that of the given {@link IProductCmptCategory} while featuring the same
+     * {@link Position}.
+     * <p>
+     * This operation does <strong>not</strong> consider {@link IProductCmptCategory}s defined in
+     * the supertype hierarchy.
+     * 
+     * @param category the {@link IProductCmptCategory} to find the predecessor
+     *            {@link IProductCmptCategory} for
+     */
+    public IProductCmptCategory getPredecessorCategory(IProductCmptCategory category);
+
+    /**
+     * Returns the {@link IProductCmptCategory} that succeeds the indicated
+     * {@link IProductCmptCategory} or null if no successor {@link IProductCmptCategory} exists.
+     * <p>
+     * The succeeding {@link IProductCmptCategory} is the {@link IProductCmptCategory} with the next
+     * greater index than that of the given {@link IProductCmptCategory} while featuring the same
+     * {@link Position}.
+     * <p>
+     * This operation does <strong>not</strong> consider {@link IProductCmptCategory}s defined in
+     * the supertype hierarchy.
+     * 
+     * @param category the {@link IProductCmptCategory} to find the successor
+     *            {@link IProductCmptCategory} for
+     */
+    public IProductCmptCategory getSuccessorCategory(IProductCmptCategory category);
 
     /**
      * Returns whether an {@link IProductCmptCategory} with the given name exists in this
