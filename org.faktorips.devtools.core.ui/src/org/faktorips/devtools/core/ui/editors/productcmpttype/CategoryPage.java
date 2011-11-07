@@ -98,7 +98,7 @@ public class CategoryPage extends IpsObjectEditorPage {
             // Determine categories
             List<IProductCmptCategory> categories = new ArrayList<IProductCmptCategory>();
             try {
-                categories.addAll(productCmptType.findProductCmptCategories(productCmptType.getIpsProject()));
+                categories.addAll(productCmptType.findCategories(productCmptType.getIpsProject()));
             } catch (CoreException e) {
                 // Recover by not displaying any categories
                 IpsPlugin.log(e);

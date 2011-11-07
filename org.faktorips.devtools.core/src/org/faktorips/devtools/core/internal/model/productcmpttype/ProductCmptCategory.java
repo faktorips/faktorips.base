@@ -71,7 +71,7 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
             return true;
         }
         if (isDefaultFor(property.getProductCmptPropertyType())
-                && !getProductCmptType().findHasProductCmptCategory(property.getCategory(), ipsProject)) {
+                && !getProductCmptType().findHasCategory(property.getCategory(), ipsProject)) {
             return true;
         }
         return false;
@@ -403,7 +403,7 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
 
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
-            for (IProductCmptCategory category : currentType.getProductCmptCategories()) {
+            for (IProductCmptCategory category : currentType.getCategories()) {
                 if (isDefault(category) && !name.equals(category.getName())) {
                     duplicateDefaultFound = true;
                     return false;

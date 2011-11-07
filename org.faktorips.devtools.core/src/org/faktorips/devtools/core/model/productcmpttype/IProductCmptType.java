@@ -436,7 +436,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Creates and returns a new {@link IProductCmptCategory} that belongs to this type.
      */
-    public IProductCmptCategory newProductCmptCategory();
+    public IProductCmptCategory newCategory();
 
     /**
      * Creates and returns a new {@link IProductCmptCategory} with the provided name, belonging to
@@ -444,7 +444,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @param name The name of the category to create
      */
-    public IProductCmptCategory newProductCmptCategory(String name);
+    public IProductCmptCategory newCategory(String name);
 
     /**
      * Returns a list (defensive copy) containing the {@link IProductCmptCategory}s belonging to
@@ -452,7 +452,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <p>
      * This method does <strong>not</strong> consider categories defined in the supertype hierarchy.
      */
-    public List<IProductCmptCategory> getProductCmptCategories();
+    public List<IProductCmptCategory> getCategories();
 
     /**
      * Returns a list containing the {@link IProductCmptCategory}s belonging to this type.
@@ -464,7 +464,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @throws CoreException If an error occurs while searching the supertype hierarchy
      */
-    public List<IProductCmptCategory> findProductCmptCategories(IIpsProject ipsProject) throws CoreException;
+    public List<IProductCmptCategory> findCategories(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the {@link IProductCmptCategory} identified by the given name or null if no such
@@ -474,7 +474,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @param name The name identifying the {@link IProductCmptCategory} to be retrieved
      */
-    public IProductCmptCategory getProductCmptCategory(String name);
+    public IProductCmptCategory getCategory(String name);
 
     /**
      * Returns the index of the indicated {@link IProductCmptCategory} or -1 if no such
@@ -482,7 +482,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @param category the {@link IProductCmptCategory} to retrieve the index for
      */
-    public int getIndexOfProductCmptCategory(IProductCmptCategory category);
+    public int getIndexOfCategory(IProductCmptCategory category);
 
     /**
      * Returns the first {@link IProductCmptCategory} of the provided {@link Position}.
@@ -588,9 +588,9 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @param name The name of the {@link IProductCmptCategory} to check for existence in this type
      * 
-     * @see #findHasProductCmptCategory(String, IIpsProject)
+     * @see #findHasCategory(String, IIpsProject)
      */
-    public boolean hasProductCmptCategory(String name);
+    public boolean hasCategory(String name);
 
     /**
      * Returns whether an {@link IProductCmptCategory} with the given name exists in this
@@ -602,9 +602,9 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @throws CoreException If an error occurs during the search
      * 
-     * @see #hasProductCmptCategory(String)
+     * @see #hasCategory(String)
      */
-    public boolean findHasProductCmptCategory(String name, IIpsProject ipsProject) throws CoreException;
+    public boolean findHasCategory(String name, IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the {@link IProductCmptCategory} identified by the given name or null if no such
@@ -697,6 +697,6 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @throws IndexOutOfBoundsException If one of the indexes does not identify an
      *             {@link IProductCmptCategory}
      */
-    public int[] moveProductCmptCategories(int[] indexes, boolean up);
+    public int[] moveCategories(int[] indexes, boolean up);
 
 }

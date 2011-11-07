@@ -399,9 +399,9 @@ public class CategorySection extends IpsSection {
         @Override
         public void run() {
             // TODO AW 04-11-2011: Offer move with category as parameter?
-            int categoryIndex = productCmptType.getIndexOfProductCmptCategory(category);
+            int categoryIndex = productCmptType.getIndexOfCategory(category);
             int[] indices = new int[] { categoryIndex };
-            int[] newIndices = productCmptType.moveProductCmptCategories(indices, up);
+            int[] newIndices = productCmptType.moveCategories(indices, up);
             if (!Arrays.equals(indices, newIndices)) {
                 categoryCompositionSection.recreateCategorySections();
             }

@@ -724,7 +724,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         boolean defaultTablesFound = false;
         boolean defaultValidationRulesFound = false;
 
-        for (IProductCmptCategory category : productCmptType.findProductCmptCategories(productCmptType.getIpsProject())) {
+        for (IProductCmptCategory category : productCmptType.findCategories(productCmptType.getIpsProject())) {
             if (category.isDefaultForFormulaSignatureDefinitions()) {
                 defaultFormulasFound = true;
             }
@@ -748,27 +748,27 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
         if (!defaultFormulasFound) {
             IProductCmptCategory defaultCategory = productCmptType
-                    .newProductCmptCategory(DEFAULT_CATEGORY_NAME_FORMULA_SIGNATURE_DEFINITIONS);
+                    .newCategory(DEFAULT_CATEGORY_NAME_FORMULA_SIGNATURE_DEFINITIONS);
             defaultCategory.setDefaultForFormulaSignatureDefinitions(true);
         }
         if (!defaultPolicyAttributesFound) {
             IProductCmptCategory defaultCategory = productCmptType
-                    .newProductCmptCategory(DEFAULT_CATEGORY_NAME_POLICY_CMPT_TYPE_ATTRIBUTES);
+                    .newCategory(DEFAULT_CATEGORY_NAME_POLICY_CMPT_TYPE_ATTRIBUTES);
             defaultCategory.setDefaultForPolicyCmptTypeAttributes(true);
         }
         if (!defaultProductAttributesFound) {
             IProductCmptCategory defaultCategory = productCmptType
-                    .newProductCmptCategory(DEFAULT_CATEGORY_NAME_PRODUCT_CMPT_TYPE_ATTRIBUTES);
+                    .newCategory(DEFAULT_CATEGORY_NAME_PRODUCT_CMPT_TYPE_ATTRIBUTES);
             defaultCategory.setDefaultForProductCmptTypeAttributes(true);
         }
         if (!defaultTablesFound) {
             IProductCmptCategory defaultCategory = productCmptType
-                    .newProductCmptCategory(DEFAULT_CATEGORY_NAME_TABLE_STRUCTURE_USAGES);
+                    .newCategory(DEFAULT_CATEGORY_NAME_TABLE_STRUCTURE_USAGES);
             defaultCategory.setDefaultForTableStructureUsages(true);
         }
         if (!defaultValidationRulesFound) {
             IProductCmptCategory defaultCategory = productCmptType
-                    .newProductCmptCategory(DEFAULT_CATEGORY_NAME_VALIDATION_RULES);
+                    .newCategory(DEFAULT_CATEGORY_NAME_VALIDATION_RULES);
             defaultCategory.setDefaultForValidationRules(true);
         }
 

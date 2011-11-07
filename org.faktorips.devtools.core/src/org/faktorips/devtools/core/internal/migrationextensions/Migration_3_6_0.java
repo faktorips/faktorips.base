@@ -64,17 +64,17 @@ public class Migration_3_6_0 extends DefaultMigration {
 
     private void createDefaultCategories(IProductCmptType productCmptType) {
         IProductCmptCategory attributes = productCmptType
-                .newProductCmptCategory(Messages.Migration_3_6_0_nameDefaultCategoryAttributes);
+                .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryAttributes);
         attributes.setDefaultForProductCmptTypeAttributes(true);
         IProductCmptCategory tablesAndFormulas = productCmptType
-                .newProductCmptCategory(Messages.Migration_3_6_0_nameDefaultCategoryTablesAndFormulas);
+                .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryTablesAndFormulas);
         tablesAndFormulas.setDefaultForTableStructureUsages(true);
         tablesAndFormulas.setDefaultForFormulaSignatureDefinitions(true);
         IProductCmptCategory validationRules = productCmptType
-                .newProductCmptCategory(Messages.Migration_3_6_0_nameDefaultCategoryValidationRules);
+                .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryValidationRules);
         validationRules.setDefaultForValidationRules(true);
         IProductCmptCategory defaultsAndValueSets = productCmptType
-                .newProductCmptCategory(Messages.Migration_3_6_0_nameDefaultCategoryDefaultsAndValueSets);
+                .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryDefaultsAndValueSets);
         defaultsAndValueSets.setDefaultForPolicyCmptTypeAttributes(true);
         defaultsAndValueSets.setPosition(Position.RIGHT);
     }

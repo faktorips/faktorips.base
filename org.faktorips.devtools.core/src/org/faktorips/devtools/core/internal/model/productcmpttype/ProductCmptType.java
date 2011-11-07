@@ -705,30 +705,30 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IProductCmptCategory newProductCmptCategory() {
+    public IProductCmptCategory newCategory() {
         return categories.newPart();
     }
 
     @Override
-    public IProductCmptCategory newProductCmptCategory(String name) {
-        IProductCmptCategory category = newProductCmptCategory();
+    public IProductCmptCategory newCategory(String name) {
+        IProductCmptCategory category = newCategory();
         category.setName(name);
         return category;
     }
 
     @Override
-    public List<IProductCmptCategory> getProductCmptCategories() {
+    public List<IProductCmptCategory> getCategories() {
         return Collections.unmodifiableList(categories.asList());
     }
 
     @Override
-    public List<IProductCmptCategory> findProductCmptCategories(IIpsProject ipsProject) throws CoreException {
+    public List<IProductCmptCategory> findCategories(IIpsProject ipsProject) throws CoreException {
         // Collect all categories from the supertype hierarchy
         final Map<IProductCmptType, List<IProductCmptCategory>> typesToOriginalCategories = new LinkedHashMap<IProductCmptType, List<IProductCmptCategory>>();
         TypeHierarchyVisitor<IProductCmptType> visitor = new TypeHierarchyVisitor<IProductCmptType>(ipsProject) {
             @Override
             protected boolean visit(IProductCmptType currentType) throws CoreException {
-                typesToOriginalCategories.put(currentType, currentType.getProductCmptCategories());
+                typesToOriginalCategories.put(currentType, currentType.getCategories());
                 return true;
             }
         };
@@ -744,7 +744,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IProductCmptCategory getProductCmptCategory(String name) {
+    public IProductCmptCategory getCategory(String name) {
         for (IProductCmptCategory category : categories) {
             if (name.equals(category.getName())) {
                 return category;
@@ -754,7 +754,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public int getIndexOfProductCmptCategory(IProductCmptCategory category) {
+    public int getIndexOfCategory(IProductCmptCategory category) {
         return categories.indexOf(category);
     }
 
@@ -790,12 +790,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public boolean canMoveCategoryUp(IProductCmptCategory category) {
-        return !isFirstCategory(category) && hasProductCmptCategory(category.getName());
+        return !isFirstCategory(category) && hasCategory(category.getName());
     }
 
     @Override
     public boolean canMoveCategoryDown(IProductCmptCategory category) {
-        return !isLastCategory(category) && hasProductCmptCategory(category.getName());
+        return !isLastCategory(category) && hasCategory(category.getName());
     }
 
     @Override
@@ -823,12 +823,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public boolean hasProductCmptCategory(String name) {
-        return getProductCmptCategory(name) != null;
+    public boolean hasCategory(String name) {
+        return getCategory(name) != null;
     }
 
     @Override
-    public boolean findHasProductCmptCategory(String name, IIpsProject ipsProject) throws CoreException {
+    public boolean findHasCategory(String name, IIpsProject ipsProject) throws CoreException {
         return findProductCmptCategory(name, ipsProject) != null;
     }
 
@@ -913,8 +913,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
             @Override
             protected boolean visit(IProductCmptType currentType) throws CoreException {
-                if (currentType.getProductCmptCategory(categoryName) != null) {
-                    category = currentType.getProductCmptCategory(categoryName);
+                if (currentType.getCategory(categoryName) != null) {
+                    category = currentType.getCategory(categoryName);
                     return false;
                 }
                 return true;
@@ -929,7 +929,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public int[] moveProductCmptCategories(int[] indexes, boolean up) {
+    public int[] moveCategories(int[] indexes, boolean up) {
         return categories.moveParts(indexes, up);
     }
 
@@ -1095,7 +1095,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
             @Override
             protected boolean visit(IProductCmptType currentType) throws CoreException {
-                for (IProductCmptCategory category : currentType.getProductCmptCategories()) {
+                for (IProductCmptCategory category : currentType.getCategories()) {
                     if (categoryName.equals(category.getName())) {
                         categoriesFound++;
                     }
@@ -1213,7 +1213,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
-            for (IProductCmptCategory category : currentType.getProductCmptCategories()) {
+            for (IProductCmptCategory category : currentType.getCategories()) {
                 if (isDefault(category)) {
                     defaultCategory = category;
                     return false;

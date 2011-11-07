@@ -596,14 +596,14 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testNewProductCmptCategory() {
-        IProductCmptCategory category = productCmptType.newProductCmptCategory();
+        IProductCmptCategory category = productCmptType.newCategory();
         assertNotNull(category);
         assertEquals(productCmptType, category.getParent());
     }
 
     @Test
     public void testNewProductCmptCategoryWithName() {
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("foo");
+        IProductCmptCategory category = productCmptType.newCategory("foo");
         assertEquals("foo", category.getName());
     }
 
@@ -1216,8 +1216,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testFindProductCmptPropertiesForCategory() throws CoreException {
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("category");
-        IProductCmptCategory superCategory = superProductCmptType.newProductCmptCategory("category");
+        IProductCmptCategory category = productCmptType.newCategory("category");
+        IProductCmptCategory superCategory = superProductCmptType.newCategory("category");
 
         IProductCmptProperty superProperty = superProductCmptType.newProductCmptTypeAttribute("superProperty");
         superProperty.setCategory(superCategory.getName());
@@ -1233,8 +1233,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testFindProductCmptPropertiesForCategory_NotSearchingSupertypeHierarchy() throws CoreException {
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("category");
-        IProductCmptCategory superCategory = superProductCmptType.newProductCmptCategory("category");
+        IProductCmptCategory category = productCmptType.newCategory("category");
+        IProductCmptCategory superCategory = superProductCmptType.newCategory("category");
 
         IProductCmptProperty superProperty = superProductCmptType.newProductCmptTypeAttribute("superProperty");
         superProperty.setCategory(superCategory.getName());
@@ -1418,38 +1418,37 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testGetProductCmptCategory() {
-        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("foo");
-        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("bar");
+    public void testGetCategory() {
+        IProductCmptCategory category1 = productCmptType.newCategory("foo");
+        IProductCmptCategory category2 = productCmptType.newCategory("bar");
 
-        assertEquals(category1, productCmptType.getProductCmptCategory("foo"));
-        assertEquals(category2, productCmptType.getProductCmptCategory("bar"));
+        assertEquals(category1, productCmptType.getCategory("foo"));
+        assertEquals(category2, productCmptType.getCategory("bar"));
     }
 
     @Test
-    public void testGetProductCmptCategories() {
-        deleteAllProductCmptCategories(productCmptType);
+    public void testGetCategories() {
+        deleteAllCategories(productCmptType);
 
-        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("foo");
-        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("bar");
+        IProductCmptCategory category1 = productCmptType.newCategory("foo");
+        IProductCmptCategory category2 = productCmptType.newCategory("bar");
 
-        assertEquals(category1, productCmptType.getProductCmptCategories().get(0));
-        assertEquals(category2, productCmptType.getProductCmptCategories().get(1));
-        assertEquals(2, productCmptType.getProductCmptCategories().size());
+        assertEquals(category1, productCmptType.getCategories().get(0));
+        assertEquals(category2, productCmptType.getCategories().get(1));
+        assertEquals(2, productCmptType.getCategories().size());
     }
 
     @Test
-    public void testFindProductCmptCategories() throws CoreException {
-        deleteAllProductCmptCategories(superSuperProductCmptType);
-        deleteAllProductCmptCategories(superProductCmptType);
-        deleteAllProductCmptCategories(productCmptType);
+    public void testFindCategories() throws CoreException {
+        deleteAllCategories(superSuperProductCmptType);
+        deleteAllCategories(superProductCmptType);
+        deleteAllCategories(productCmptType);
 
-        IProductCmptCategory superSuperCategory = superSuperProductCmptType
-                .newProductCmptCategory("superSuperCategory");
-        IProductCmptCategory superCategory = superProductCmptType.newProductCmptCategory("superCategory");
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("category");
+        IProductCmptCategory superSuperCategory = superSuperProductCmptType.newCategory("superSuperCategory");
+        IProductCmptCategory superCategory = superProductCmptType.newCategory("superCategory");
+        IProductCmptCategory category = productCmptType.newCategory("category");
 
-        List<IProductCmptCategory> categories = productCmptType.findProductCmptCategories(ipsProject);
+        List<IProductCmptCategory> categories = productCmptType.findCategories(ipsProject);
         assertEquals(superSuperCategory, categories.get(0));
         assertEquals(superCategory, categories.get(1));
         assertEquals(category, categories.get(2));
@@ -1457,29 +1456,29 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testHasProductCmptCategory() {
-        productCmptType.newProductCmptCategory("foo");
-        assertTrue(productCmptType.hasProductCmptCategory("foo"));
-        assertFalse(productCmptType.hasProductCmptCategory("bar"));
+    public void testHasCategory() {
+        productCmptType.newCategory("foo");
+        assertTrue(productCmptType.hasCategory("foo"));
+        assertFalse(productCmptType.hasCategory("bar"));
     }
 
     @Test
-    public void testFindHasProductCmptCategory() throws CoreException {
-        superProductCmptType.newProductCmptCategory("foo");
-        assertTrue(productCmptType.findHasProductCmptCategory("foo", ipsProject));
-        assertFalse(productCmptType.findHasProductCmptCategory("bar", ipsProject));
+    public void testFindHasCategory() throws CoreException {
+        superProductCmptType.newCategory("foo");
+        assertTrue(productCmptType.findHasCategory("foo", ipsProject));
+        assertFalse(productCmptType.findHasCategory("bar", ipsProject));
     }
 
     @Test
-    public void testMoveProductCmptCategories() {
-        deleteAllProductCmptCategories(productCmptType);
+    public void testMoveCategories() {
+        deleteAllCategories(productCmptType);
 
-        IProductCmptCategory category1 = productCmptType.newProductCmptCategory();
-        IProductCmptCategory category2 = productCmptType.newProductCmptCategory();
-        IProductCmptCategory category3 = productCmptType.newProductCmptCategory();
+        IProductCmptCategory category1 = productCmptType.newCategory();
+        IProductCmptCategory category2 = productCmptType.newCategory();
+        IProductCmptCategory category3 = productCmptType.newCategory();
 
-        productCmptType.moveProductCmptCategories(new int[] { 1, 2 }, true);
-        List<IProductCmptCategory> categories = productCmptType.getProductCmptCategories();
+        productCmptType.moveCategories(new int[] { 1, 2 }, true);
+        List<IProductCmptCategory> categories = productCmptType.getCategories();
         assertEquals(category2, categories.get(0));
         assertEquals(category3, categories.get(1));
         assertEquals(category1, categories.get(2));
@@ -1491,55 +1490,52 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testFindDefaultCategoryForFormulaSignatureDefinitions() throws CoreException {
-        deleteAllProductCmptCategories(productCmptType);
-        deleteAllProductCmptCategories(superProductCmptType);
+        deleteAllCategories(productCmptType);
+        deleteAllCategories(superProductCmptType);
 
-        assertEquals(
-                superSuperProductCmptType.getProductCmptCategory(DEFAULT_CATEGORY_NAME_FORMULA_SIGNATURE_DEFINITIONS),
+        assertEquals(superSuperProductCmptType.getCategory(DEFAULT_CATEGORY_NAME_FORMULA_SIGNATURE_DEFINITIONS),
                 productCmptType.findDefaultCategoryForFormulaSignatureDefinitions(ipsProject));
     }
 
     @Test
     public void testFindDefaultCategoryForPolicyCmptTypeAttributes() throws CoreException {
-        deleteAllProductCmptCategories(productCmptType);
-        deleteAllProductCmptCategories(superProductCmptType);
+        deleteAllCategories(productCmptType);
+        deleteAllCategories(superProductCmptType);
 
-        assertEquals(
-                superSuperProductCmptType.getProductCmptCategory(DEFAULT_CATEGORY_NAME_POLICY_CMPT_TYPE_ATTRIBUTES),
+        assertEquals(superSuperProductCmptType.getCategory(DEFAULT_CATEGORY_NAME_POLICY_CMPT_TYPE_ATTRIBUTES),
                 productCmptType.findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject));
     }
 
     @Test
     public void testFindDefaultCategoryForProductCmptTypeAttributes() throws CoreException {
-        deleteAllProductCmptCategories(productCmptType);
-        deleteAllProductCmptCategories(superProductCmptType);
+        deleteAllCategories(productCmptType);
+        deleteAllCategories(superProductCmptType);
 
-        assertEquals(
-                superSuperProductCmptType.getProductCmptCategory(DEFAULT_CATEGORY_NAME_PRODUCT_CMPT_TYPE_ATTRIBUTES),
+        assertEquals(superSuperProductCmptType.getCategory(DEFAULT_CATEGORY_NAME_PRODUCT_CMPT_TYPE_ATTRIBUTES),
                 productCmptType.findDefaultCategoryForProductCmptTypeAttributes(ipsProject));
     }
 
     @Test
     public void testFindDefaultCategoryForTableStructureUsages() throws CoreException {
-        deleteAllProductCmptCategories(productCmptType);
-        deleteAllProductCmptCategories(superProductCmptType);
+        deleteAllCategories(productCmptType);
+        deleteAllCategories(superProductCmptType);
 
-        assertEquals(superSuperProductCmptType.getProductCmptCategory(DEFAULT_CATEGORY_NAME_TABLE_STRUCTURE_USAGES),
+        assertEquals(superSuperProductCmptType.getCategory(DEFAULT_CATEGORY_NAME_TABLE_STRUCTURE_USAGES),
                 productCmptType.findDefaultCategoryForTableStructureUsages(ipsProject));
     }
 
     @Test
     public void testFindDefaultCategoryForValidationRules() throws CoreException {
-        deleteAllProductCmptCategories(productCmptType);
-        deleteAllProductCmptCategories(superProductCmptType);
+        deleteAllCategories(productCmptType);
+        deleteAllCategories(superProductCmptType);
 
-        assertEquals(superSuperProductCmptType.getProductCmptCategory(DEFAULT_CATEGORY_NAME_VALIDATION_RULES),
+        assertEquals(superSuperProductCmptType.getCategory(DEFAULT_CATEGORY_NAME_VALIDATION_RULES),
                 productCmptType.findDefaultCategoryForValidationRules(ipsProject));
     }
 
     @Test
     public void testMoveProductCmptPropertyReferences_MoveUp() throws CoreException {
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("category");
+        IProductCmptCategory category = productCmptType.newCategory("category");
 
         IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("property1");
         property1.setCategory(category.getName());
@@ -1560,7 +1556,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testMoveProductCmptPropertyReferences_MoveDown() throws CoreException {
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("category");
+        IProductCmptCategory category = productCmptType.newCategory("category");
 
         IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("property1");
         property1.setCategory(category.getName());
@@ -1590,8 +1586,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testMoveProductCmptPropertyReferences_PropertyOfOtherCategoryInBetweenOnMoveUp() throws CoreException {
-        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
-        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
+        IProductCmptCategory category1 = productCmptType.newCategory("category1");
+        IProductCmptCategory category2 = productCmptType.newCategory("category2");
 
         IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("property1");
         property1.setCategory(category1.getName());
@@ -1619,8 +1615,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testMoveProductCmptPropertyReferences_PropertyOfOtherCategoryInBetweenOnMoveDown() throws CoreException {
-        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
-        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
+        IProductCmptCategory category1 = productCmptType.newCategory("category1");
+        IProductCmptCategory category2 = productCmptType.newCategory("category2");
 
         IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("property1");
         property1.setCategory(category1.getName());
@@ -1639,65 +1635,65 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testFindIsCategoryNameUsedTwiceInSupertypeHierarchy() throws CoreException {
-        superProductCmptType.newProductCmptCategory("foo");
+        superProductCmptType.newCategory("foo");
         assertFalse(productCmptType.findIsCategoryNameUsedTwiceInSupertypeHierarchy("foo", ipsProject));
 
-        superProductCmptType.newProductCmptCategory("foo");
+        superProductCmptType.newCategory("foo");
         assertTrue(productCmptType.findIsCategoryNameUsedTwiceInSupertypeHierarchy("foo", ipsProject));
     }
 
     @Test
     public void testFindIsCategoryNameUsedTwiceInSupertypeHierarchy_OnceInTypeAndOnceInSupertype() throws CoreException {
-        superProductCmptType.newProductCmptCategory("foo");
-        productCmptType.newProductCmptCategory("foo");
+        superProductCmptType.newCategory("foo");
+        productCmptType.newCategory("foo");
         assertTrue(productCmptType.findIsCategoryNameUsedTwiceInSupertypeHierarchy("foo", ipsProject));
     }
 
     @Test
     public void testFindIsCategoryNameUsedTwiceInSupertypeHierarchy_NoSupertype() throws CoreException {
         productCmptType.setSupertype("");
-        productCmptType.newProductCmptCategory("foo");
-        productCmptType.newProductCmptCategory("foo");
+        productCmptType.newCategory("foo");
+        productCmptType.newCategory("foo");
 
         assertTrue(productCmptType.findIsCategoryNameUsedTwiceInSupertypeHierarchy("foo", ipsProject));
     }
 
     @Test
-    public void testGetIndexOfProductCmptCategory() {
-        deleteAllProductCmptCategories(productCmptType);
+    public void testGetIndexOfCategory() {
+        deleteAllCategories(productCmptType);
 
-        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
-        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
-        IProductCmptCategory category3 = productCmptType.newProductCmptCategory("category3");
+        IProductCmptCategory category1 = productCmptType.newCategory("category1");
+        IProductCmptCategory category2 = productCmptType.newCategory("category2");
+        IProductCmptCategory category3 = productCmptType.newCategory("category3");
 
-        assertEquals(0, productCmptType.getIndexOfProductCmptCategory(category1));
-        assertEquals(1, productCmptType.getIndexOfProductCmptCategory(category2));
-        assertEquals(2, productCmptType.getIndexOfProductCmptCategory(category3));
+        assertEquals(0, productCmptType.getIndexOfCategory(category1));
+        assertEquals(1, productCmptType.getIndexOfCategory(category2));
+        assertEquals(2, productCmptType.getIndexOfCategory(category3));
     }
 
     @Test
-    public void testGetIndexOfProductCmptCategory_CategoryNotInType() throws CoreException {
+    public void testGetIndexOfCategory_CategoryNotInType() throws CoreException {
         IProductCmptType productCmptType2 = newProductCmptType(ipsProject, "Product2");
-        deleteAllProductCmptCategories(productCmptType, productCmptType2);
+        deleteAllCategories(productCmptType, productCmptType2);
 
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("category1");
-        IProductCmptCategory foreignCategory = productCmptType2.newProductCmptCategory("category2");
+        IProductCmptCategory category = productCmptType.newCategory("category1");
+        IProductCmptCategory foreignCategory = productCmptType2.newCategory("category2");
 
-        assertEquals(0, productCmptType.getIndexOfProductCmptCategory(category));
-        assertEquals(-1, productCmptType.getIndexOfProductCmptCategory(foreignCategory));
+        assertEquals(0, productCmptType.getIndexOfCategory(category));
+        assertEquals(-1, productCmptType.getIndexOfCategory(foreignCategory));
     }
 
     @Test
     public void testGetFirstCategory() {
-        deleteAllProductCmptCategories(productCmptType);
+        deleteAllCategories(productCmptType);
 
-        IProductCmptCategory firstLeft = productCmptType.newProductCmptCategory("firstLeft");
-        IProductCmptCategory secondLeft = productCmptType.newProductCmptCategory("secondLeft");
+        IProductCmptCategory firstLeft = productCmptType.newCategory("firstLeft");
+        IProductCmptCategory secondLeft = productCmptType.newCategory("secondLeft");
         firstLeft.setPosition(Position.LEFT);
         secondLeft.setPosition(Position.LEFT);
 
-        IProductCmptCategory firstRight = productCmptType.newProductCmptCategory("firstRight");
-        IProductCmptCategory secondRight = productCmptType.newProductCmptCategory("secondRight");
+        IProductCmptCategory firstRight = productCmptType.newCategory("firstRight");
+        IProductCmptCategory secondRight = productCmptType.newCategory("secondRight");
         firstRight.setPosition(Position.RIGHT);
         secondRight.setPosition(Position.RIGHT);
 
@@ -1707,20 +1703,20 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testGetFirstCategory_NoCategoriesDefined() {
-        deleteAllProductCmptCategories(productCmptType);
+        deleteAllCategories(productCmptType);
         assertNull(productCmptType.getFirstCategory(Position.LEFT));
         assertNull(productCmptType.getFirstCategory(Position.RIGHT));
     }
 
     @Test
     public void testGetFirstCategory_NoCategoryWithRequestedPositionDefined() {
-        deleteAllProductCmptCategories(productCmptType);
+        deleteAllCategories(productCmptType);
 
-        IProductCmptCategory rightCategory = productCmptType.newProductCmptCategory("rightCategory");
+        IProductCmptCategory rightCategory = productCmptType.newCategory("rightCategory");
         rightCategory.setPosition(Position.RIGHT);
         assertNull(productCmptType.getFirstCategory(Position.LEFT));
 
-        IProductCmptCategory leftCategory = productCmptType.newProductCmptCategory("leftCategory");
+        IProductCmptCategory leftCategory = productCmptType.newCategory("leftCategory");
         leftCategory.setPosition(Position.LEFT);
         rightCategory.delete();
         assertNull(productCmptType.getFirstCategory(Position.RIGHT));
@@ -1728,15 +1724,15 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testGetLastCategory() {
-        deleteAllProductCmptCategories(productCmptType);
+        deleteAllCategories(productCmptType);
 
-        IProductCmptCategory firstLeft = productCmptType.newProductCmptCategory("firstLeft");
-        IProductCmptCategory secondLeft = productCmptType.newProductCmptCategory("secondLeft");
+        IProductCmptCategory firstLeft = productCmptType.newCategory("firstLeft");
+        IProductCmptCategory secondLeft = productCmptType.newCategory("secondLeft");
         firstLeft.setPosition(Position.LEFT);
         secondLeft.setPosition(Position.LEFT);
 
-        IProductCmptCategory firstRight = productCmptType.newProductCmptCategory("firstRight");
-        IProductCmptCategory secondRight = productCmptType.newProductCmptCategory("secondRight");
+        IProductCmptCategory firstRight = productCmptType.newCategory("firstRight");
+        IProductCmptCategory secondRight = productCmptType.newCategory("secondRight");
         firstRight.setPosition(Position.RIGHT);
         secondRight.setPosition(Position.RIGHT);
 
@@ -1746,20 +1742,20 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testGetLastCategory_NoCategoriesDefined() {
-        deleteAllProductCmptCategories(productCmptType);
+        deleteAllCategories(productCmptType);
         assertNull(productCmptType.getLastCategory(Position.LEFT));
         assertNull(productCmptType.getLastCategory(Position.RIGHT));
     }
 
     @Test
     public void testGetLastCategory_NoCategoryWithRequestedPositionDefined() {
-        deleteAllProductCmptCategories(productCmptType);
+        deleteAllCategories(productCmptType);
 
-        IProductCmptCategory rightCategory = productCmptType.newProductCmptCategory("rightCategory");
+        IProductCmptCategory rightCategory = productCmptType.newCategory("rightCategory");
         rightCategory.setPosition(Position.RIGHT);
         assertNull(productCmptType.getLastCategory(Position.LEFT));
 
-        IProductCmptCategory leftCategory = productCmptType.newProductCmptCategory("leftCategory");
+        IProductCmptCategory leftCategory = productCmptType.newCategory("leftCategory");
         leftCategory.setPosition(Position.LEFT);
         rightCategory.delete();
         assertNull(productCmptType.getLastCategory(Position.RIGHT));
@@ -1767,10 +1763,10 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testIsFirstCategory() {
-        deleteAllProductCmptCategories(productCmptType);
+        deleteAllCategories(productCmptType);
 
-        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
-        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
+        IProductCmptCategory category1 = productCmptType.newCategory("category1");
+        IProductCmptCategory category2 = productCmptType.newCategory("category2");
 
         assertTrue(productCmptType.isFirstCategory(category1));
         assertFalse(productCmptType.isFirstCategory(category2));
@@ -1778,10 +1774,10 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testIsLastCategory() {
-        deleteAllProductCmptCategories(productCmptType);
+        deleteAllCategories(productCmptType);
 
-        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
-        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
+        IProductCmptCategory category1 = productCmptType.newCategory("category1");
+        IProductCmptCategory category2 = productCmptType.newCategory("category2");
 
         assertTrue(productCmptType.isLastCategory(category2));
         assertFalse(productCmptType.isLastCategory(category1));
@@ -1789,12 +1785,12 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testCanMoveCategoryUp() {
-        deleteAllProductCmptCategories(productCmptType, superProductCmptType);
+        deleteAllCategories(productCmptType, superProductCmptType);
 
-        IProductCmptCategory superCategory1 = superProductCmptType.newProductCmptCategory("superCategory1");
-        IProductCmptCategory superCategory2 = superProductCmptType.newProductCmptCategory("superCategory2");
-        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
-        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
+        IProductCmptCategory superCategory1 = superProductCmptType.newCategory("superCategory1");
+        IProductCmptCategory superCategory2 = superProductCmptType.newCategory("superCategory2");
+        IProductCmptCategory category1 = productCmptType.newCategory("category1");
+        IProductCmptCategory category2 = productCmptType.newCategory("category2");
 
         assertFalse(productCmptType.canMoveCategoryUp(superCategory1));
         assertFalse(productCmptType.canMoveCategoryUp(superCategory2));
@@ -1804,12 +1800,12 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testCanMoveCategoryDown() {
-        deleteAllProductCmptCategories(productCmptType, superProductCmptType);
+        deleteAllCategories(productCmptType, superProductCmptType);
 
-        IProductCmptCategory superCategory1 = superProductCmptType.newProductCmptCategory("superCategory1");
-        IProductCmptCategory superCategory2 = superProductCmptType.newProductCmptCategory("superCategory2");
-        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
-        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
+        IProductCmptCategory superCategory1 = superProductCmptType.newCategory("superCategory1");
+        IProductCmptCategory superCategory2 = superProductCmptType.newCategory("superCategory2");
+        IProductCmptCategory category1 = productCmptType.newCategory("category1");
+        IProductCmptCategory category2 = productCmptType.newCategory("category2");
 
         assertFalse(productCmptType.canMoveCategoryDown(superCategory1));
         assertFalse(productCmptType.canMoveCategoryDown(superCategory2));
@@ -1819,11 +1815,11 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testGetPredecessorCategory() {
-        deleteAllProductCmptCategories(productCmptType);
+        deleteAllCategories(productCmptType);
 
-        IProductCmptCategory leftCategory1 = productCmptType.newProductCmptCategory("leftCategory1");
-        IProductCmptCategory rightCategory = productCmptType.newProductCmptCategory("rightCategory");
-        IProductCmptCategory leftCategory2 = productCmptType.newProductCmptCategory("leftCategory2");
+        IProductCmptCategory leftCategory1 = productCmptType.newCategory("leftCategory1");
+        IProductCmptCategory rightCategory = productCmptType.newCategory("rightCategory");
+        IProductCmptCategory leftCategory2 = productCmptType.newCategory("leftCategory2");
         leftCategory1.setPosition(Position.LEFT);
         rightCategory.setPosition(Position.RIGHT);
         leftCategory2.setPosition(Position.LEFT);
@@ -1833,20 +1829,20 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testGetPredecessorCategory_NoPredecessorCategoryExists() {
-        deleteAllProductCmptCategories(productCmptType);
+        deleteAllCategories(productCmptType);
 
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("category");
+        IProductCmptCategory category = productCmptType.newCategory("category");
 
         assertNull(productCmptType.getPredecessorCategory(category));
     }
 
     @Test
     public void testGetSuccessorCategory() {
-        deleteAllProductCmptCategories(productCmptType);
+        deleteAllCategories(productCmptType);
 
-        IProductCmptCategory leftCategory1 = productCmptType.newProductCmptCategory("leftCategory1");
-        IProductCmptCategory rightCategory = productCmptType.newProductCmptCategory("rightCategory");
-        IProductCmptCategory leftCategory2 = productCmptType.newProductCmptCategory("leftCategory2");
+        IProductCmptCategory leftCategory1 = productCmptType.newCategory("leftCategory1");
+        IProductCmptCategory rightCategory = productCmptType.newCategory("rightCategory");
+        IProductCmptCategory leftCategory2 = productCmptType.newCategory("leftCategory2");
         leftCategory1.setPosition(Position.LEFT);
         rightCategory.setPosition(Position.RIGHT);
         leftCategory2.setPosition(Position.LEFT);
@@ -1856,9 +1852,9 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testGetSuccessorCategory_NoSuccessorCategoryExists() {
-        deleteAllProductCmptCategories(productCmptType);
+        deleteAllCategories(productCmptType);
 
-        IProductCmptCategory category = productCmptType.newProductCmptCategory("category");
+        IProductCmptCategory category = productCmptType.newCategory("category");
 
         assertNull(productCmptType.getSuccessorCategory(category));
     }
@@ -1869,9 +1865,9 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      * This is often necessary to create a clean test environment as default
      * {@link IProductCmptCategory}s are created by the {@code newProductCmptType} methods.
      */
-    private void deleteAllProductCmptCategories(IProductCmptType... productCmptTypes) {
+    private void deleteAllCategories(IProductCmptType... productCmptTypes) {
         for (IProductCmptType productCmptType : productCmptTypes) {
-            for (IProductCmptCategory category : productCmptType.getProductCmptCategories()) {
+            for (IProductCmptCategory category : productCmptType.getCategories()) {
                 category.delete();
             }
         }

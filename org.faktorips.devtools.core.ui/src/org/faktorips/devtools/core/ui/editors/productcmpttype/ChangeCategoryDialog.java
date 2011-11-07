@@ -62,7 +62,7 @@ public class ChangeCategoryDialog extends ElementListSelectionDialog {
 
     private void setElements() {
         try {
-            categories.addAll(productCmptType.findProductCmptCategories(productCmptType.getIpsProject()));
+            categories.addAll(productCmptType.findCategories(productCmptType.getIpsProject()));
         } catch (CoreException e) {
             // Recover by not showing any categories, just log the exception
             IpsPlugin.log(e);

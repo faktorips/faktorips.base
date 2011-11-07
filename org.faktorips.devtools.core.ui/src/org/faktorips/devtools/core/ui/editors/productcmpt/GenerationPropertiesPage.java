@@ -144,7 +144,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         List<IProductCmptCategory> categories = new ArrayList<IProductCmptCategory>(4);
         if (productCmptType != null) {
             try {
-                categories.addAll(productCmptType.findProductCmptCategories(productCmptType.getIpsProject()));
+                categories.addAll(productCmptType.findCategories(productCmptType.getIpsProject()));
             } catch (CoreException e) {
                 /*
                  * The categories could not be determined. Recover by not creating any sections for
