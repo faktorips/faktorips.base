@@ -74,7 +74,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        support = IpsPlugin.getMultiLanguageSupport();
+        support = new MultiLanguageSupport(Locale.US);
         ipsProject = newIpsProject();
 
         productCmptType = newProductCmptType(ipsProject, "TestPolicy");
@@ -653,7 +653,8 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetLocalizationLocale() {
+    public void testDefaultConstructor() {
+        support = new MultiLanguageSupport();
         Locale localizationLocale = support.getLocalizationLocale();
         String nl = Platform.getNL();
         if (nl.length() > 2) {
