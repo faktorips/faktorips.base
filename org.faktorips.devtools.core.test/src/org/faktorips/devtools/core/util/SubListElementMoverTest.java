@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.util;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
@@ -30,7 +31,7 @@ public class SubListElementMoverTest extends AbstractIpsPluginTest {
         int[] indices = new int[] { 2, 1 };
 
         SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
-        assertArraysEquals(new int[] { 1, 0 }, mover.move(indices, true));
+        assertArrayEquals(new int[] { 1, 0 }, mover.move(indices, true));
         assertEquals(Integer.valueOf(2), list.get(0));
         assertEquals(Integer.valueOf(3), list.get(1));
         assertEquals(Integer.valueOf(1), list.get(2));
@@ -43,7 +44,7 @@ public class SubListElementMoverTest extends AbstractIpsPluginTest {
         int[] indices = new int[] { 0, 1 };
 
         SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
-        assertArraysEquals(new int[] { 1, 2 }, mover.move(indices, false));
+        assertArrayEquals(new int[] { 1, 2 }, mover.move(indices, false));
         assertEquals(Integer.valueOf(3), list.get(0));
         assertEquals(Integer.valueOf(1), list.get(1));
         assertEquals(Integer.valueOf(2), list.get(2));
@@ -56,7 +57,7 @@ public class SubListElementMoverTest extends AbstractIpsPluginTest {
         int[] indices = new int[0];
 
         SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
-        assertArraysEquals(new int[0], mover.move(indices, true));
+        assertArrayEquals(new int[0], mover.move(indices, true));
         assertEquals(Integer.valueOf(1), list.get(0));
         assertEquals(Integer.valueOf(2), list.get(1));
         assertEquals(Integer.valueOf(3), list.get(2));
@@ -69,7 +70,7 @@ public class SubListElementMoverTest extends AbstractIpsPluginTest {
         int[] indices = new int[] { 0, 1 };
 
         SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
-        assertArraysEquals(new int[] { 0, 1 }, mover.move(indices, true));
+        assertArrayEquals(new int[] { 0, 1 }, mover.move(indices, true));
         assertEquals(Integer.valueOf(1), list.get(0));
         assertEquals(Integer.valueOf(2), list.get(1));
         assertEquals(Integer.valueOf(3), list.get(2));
@@ -83,7 +84,7 @@ public class SubListElementMoverTest extends AbstractIpsPluginTest {
         int[] indices = new int[] { 1, 2 };
 
         SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
-        assertArraysEquals(new int[] { 1, 2 }, mover.move(indices, false));
+        assertArrayEquals(new int[] { 1, 2 }, mover.move(indices, false));
         assertEquals(Integer.valueOf(1), list.get(0));
         assertEquals(Integer.valueOf(2), list.get(1));
         assertEquals(Integer.valueOf(3), list.get(2));
@@ -106,7 +107,7 @@ public class SubListElementMoverTest extends AbstractIpsPluginTest {
         int[] indices = new int[] { 1 };
 
         SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
-        assertArraysEquals(new int[] { 0 }, mover.move(indices, true));
+        assertArrayEquals(new int[] { 0 }, mover.move(indices, true));
         assertEquals(Integer.valueOf(3), list.get(0));
         assertEquals(Integer.valueOf(2), list.get(1));
         assertEquals(Integer.valueOf(1), list.get(2));
@@ -128,7 +129,7 @@ public class SubListElementMoverTest extends AbstractIpsPluginTest {
         int[] indices = new int[] { 0 };
 
         SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
-        assertArraysEquals(new int[] { 1 }, mover.move(indices, false));
+        assertArrayEquals(new int[] { 1 }, mover.move(indices, false));
         assertEquals(Integer.valueOf(3), list.get(0));
         assertEquals(Integer.valueOf(2), list.get(1));
         assertEquals(Integer.valueOf(1), list.get(2));

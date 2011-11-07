@@ -15,7 +15,6 @@ package org.faktorips.abstracttest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.beans.PropertyDescriptor;
@@ -29,7 +28,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -148,10 +146,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase implemen
     protected static final String DEFAULT_CATEGORY_NAME_PRODUCT_CMPT_TYPE_ATTRIBUTES = "productAttributes";
     protected static final String DEFAULT_CATEGORY_NAME_POLICY_CMPT_TYPE_ATTRIBUTES = "policyAttributes";
     protected static final String DEFAULT_CATEGORY_NAME_FORMULA_SIGNATURE_DEFINITIONS = "formulas";
-
-    protected final static void assertArraysEquals(int[] array1, int[] array2) {
-        assertTrue(Arrays.equals(array1, array2));
-    }
 
     protected ContentChangeEvent lastContentChangeEvent;
 

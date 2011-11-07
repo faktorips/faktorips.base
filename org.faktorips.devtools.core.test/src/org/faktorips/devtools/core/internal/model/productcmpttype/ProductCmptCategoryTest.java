@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -481,9 +482,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("a3");
         property3.setCategory(CATEGORY_NAME);
 
-        assertArraysEquals(new int[] { 0 }, category.moveProductCmptProperties(new int[] { 1 }, true, superProductType));
-        assertArraysEquals(new int[] { 1, 0 },
-                category.moveProductCmptProperties(new int[] { 2, 1 }, true, productType));
+        assertArrayEquals(new int[] { 0 }, category.moveProductCmptProperties(new int[] { 1 }, true, superProductType));
+        assertArrayEquals(new int[] { 1, 0 }, category.moveProductCmptProperties(new int[] { 2, 1 }, true, productType));
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, true, ipsProject);
         assertEquals(superProperty2, properties.get(0));
@@ -528,7 +528,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("p2");
         property2.setCategory(CATEGORY_NAME);
 
-        assertArraysEquals(new int[0], category.moveProductCmptProperties(new int[0], true, productType));
+        assertArrayEquals(new int[0], category.moveProductCmptProperties(new int[0], true, productType));
         assertEquals(property1, category.findProductCmptProperties(productType, false, ipsProject).get(0));
         assertEquals(property2, category.findProductCmptProperties(productType, false, ipsProject).get(1));
     }
@@ -550,8 +550,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("p3");
         property3.setCategory(CATEGORY_NAME);
 
-        assertArraysEquals(new int[] { 0, 2 },
-                category.moveProductCmptProperties(new int[] { 0, 2 }, true, productType));
+        assertArrayEquals(new int[] { 0, 2 }, category.moveProductCmptProperties(new int[] { 0, 2 }, true, productType));
         assertEquals(property1, category.findProductCmptProperties(productType, false, ipsProject).get(0));
         assertEquals(property2, category.findProductCmptProperties(productType, false, ipsProject).get(1));
         assertEquals(property3, category.findProductCmptProperties(productType, false, ipsProject).get(2));
@@ -574,7 +573,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("p3");
         property3.setCategory(CATEGORY_NAME);
 
-        assertArraysEquals(new int[] { 0, 2 },
+        assertArrayEquals(new int[] { 0, 2 },
                 category.moveProductCmptProperties(new int[] { 0, 2 }, false, productType));
         assertEquals(property1, category.findProductCmptProperties(productType, false, ipsProject).get(0));
         assertEquals(property2, category.findProductCmptProperties(productType, false, ipsProject).get(1));
@@ -600,7 +599,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty testProperty = productType.newProductCmptTypeAttribute("testProperty");
         testProperty.setCategory(testCategory.getName());
 
-        assertArraysEquals(new int[] { 0 }, testCategory.moveProductCmptProperties(new int[] { 0 }, true, productType));
+        assertArrayEquals(new int[] { 0 }, testCategory.moveProductCmptProperties(new int[] { 0 }, true, productType));
         List<IProductCmptProperty> orderedProperties = ((ProductCmptType)productType).findProductCmptPropertiesInOrder(
                 false, ipsProject);
         assertEquals(aboveProperty, orderedProperties.get(0));
@@ -626,7 +625,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty belowProperty = productType.newProductCmptTypeAttribute("belowProperty");
         belowProperty.setCategory(belowCategory.getName());
 
-        assertArraysEquals(new int[] { 0 }, testCategory.moveProductCmptProperties(new int[] { 0 }, false, productType));
+        assertArrayEquals(new int[] { 0 }, testCategory.moveProductCmptProperties(new int[] { 0 }, false, productType));
         List<IProductCmptProperty> orderedProperties = ((ProductCmptType)productType).findProductCmptPropertiesInOrder(
                 false, ipsProject);
         assertEquals(testProperty, orderedProperties.get(0));

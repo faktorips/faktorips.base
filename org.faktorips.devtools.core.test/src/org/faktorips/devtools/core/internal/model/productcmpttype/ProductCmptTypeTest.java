@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -1547,7 +1548,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptProperty property3 = productCmptType.newProductCmptTypeAttribute("property3");
         property3.setCategory(category.getName());
 
-        assertArraysEquals(
+        assertArrayEquals(
                 new int[] { 1, 0 },
                 productCmptType.moveProductCmptPropertyReferences(new int[] { 2, 1 },
                         Arrays.asList(property1, property2, property3), true));
@@ -1568,7 +1569,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptProperty property3 = productCmptType.newProductCmptTypeAttribute("property3");
         property3.setCategory(category.getName());
 
-        assertArraysEquals(
+        assertArrayEquals(
                 new int[] { 1, 2 },
                 productCmptType.moveProductCmptPropertyReferences(new int[] { 0, 1 },
                         Arrays.asList(property1, property2, property3), false));
@@ -1599,7 +1600,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("property2");
         property2.setCategory(category1.getName());
 
-        assertArraysEquals(new int[] { 0 }, productCmptType.moveProductCmptPropertyReferences(new int[] { 1 },
+        assertArrayEquals(new int[] { 0 }, productCmptType.moveProductCmptPropertyReferences(new int[] { 1 },
                 Arrays.asList(property1, property2), true));
         List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(false, ipsProject);
         assertEquals(property2, properties.get(0));
@@ -1628,7 +1629,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("property2");
         property2.setCategory(category1.getName());
 
-        assertArraysEquals(new int[] { 1 }, productCmptType.moveProductCmptPropertyReferences(new int[] { 0 },
+        assertArrayEquals(new int[] { 1 }, productCmptType.moveProductCmptPropertyReferences(new int[] { 0 },
                 Arrays.asList(property1, property2), false));
         List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(false, ipsProject);
         assertEquals(property2, properties.get(0));
