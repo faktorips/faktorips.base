@@ -134,7 +134,7 @@ import org.w3c.dom.Document;
  * 
  * @author Jan Ortmann
  */
-public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase implements ContentsChangeListener {
+public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     protected static final String OUTPUT_FOLDER_NAME_DERIVED = "extension"; //$NON-NLS-1$
     protected static final String OUTPUT_FOLDER_NAME_MERGABLE = "src"; //$NON-NLS-1$
@@ -149,8 +149,16 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase implemen
 
     protected ContentChangeEvent lastContentChangeEvent;
 
+    private final ContentsChangeListener contentsChangeListener;
+
     public AbstractIpsPluginTest() {
         super();
+        contentsChangeListener = new ContentsChangeListener() {
+            @Override
+            public void contentsChanged(ContentChangeEvent event) {
+                lastContentChangeEvent = event;
+            }
+        };
     }
 
     @Before
@@ -177,7 +185,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase implemen
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
 
-        getIpsModel().addChangeListener(this);
+        getIpsModel().addChangeListener(contentsChangeListener);
     }
 
     @After
@@ -187,7 +195,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase implemen
         for (IProject project : projects) {
             project.delete(true, true, null);
         }
-        getIpsModel().removeChangeListener(this);
+        getIpsModel().removeChangeListener(contentsChangeListener);
         tearDownExtension();
     }
 
@@ -1411,11 +1419,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase implemen
         for (IResource resource : folder.members()) {
             resource.delete(true, null);
         }
-    }
-
-    @Override
-    public final void contentsChanged(ContentChangeEvent event) {
-        lastContentChangeEvent = event;
     }
 
     protected final void assertOneValidationMessage(MessageList list,
