@@ -131,9 +131,13 @@ public class Messages extends NLS {
     public static String ChangeCategoryDialog_title;
     public static String ChangeCategoryDialog_message;
 
-    public static String MoveCategoryUpDownAction_labelUp;
-    public static String MoveCategoryUpDownAction_labelDown;
-    public static String MoveCategoryUpDownAction_tooltipUp;
-    public static String MoveCategoryUpDownAction_tooltipDown;
+    public static String MoveCategoryUpAction_label;
+    public static String MoveCategoryUpAction_tooltip;
+    public static String MoveCategoryDownAction_label;
+    public static String MoveCategoryDownAction_tooltip;
+    public static String MoveCategoryLeftAction_label;
+    public static String MoveCategoryLeftAction_tooltip;
+    public static String MoveCategoryRightAction_label;
+    public static String MoveCategoryRightAction_tooltip;
 
 }

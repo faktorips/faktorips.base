@@ -795,6 +795,16 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
+    public boolean canMoveCategoryLeft(IProductCmptCategory category) {
+        return hasCategory(category.getName());
+    }
+
+    @Override
+    public boolean canMoveCategoryRight(IProductCmptCategory category) {
+        return hasCategory(category.getName());
+    }
+
+    @Override
     public boolean hasCategory(String name) {
         return getCategory(name) != null;
     }

@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
@@ -84,6 +85,10 @@ public class CategorySection extends IpsSection {
 
     private final IAction moveDownAction;
 
+    private final IAction moveLeftAction;
+
+    private final IAction moveRightAction;
+
     private ViewerButtonComposite viewerButtonComposite;
 
     public CategorySection(IProductCmptCategory category, IProductCmptType contextType,
@@ -95,8 +100,10 @@ public class CategorySection extends IpsSection {
         this.contextType = contextType;
         this.categoryCompositionSection = categoryCompositionSection;
 
-        moveUpAction = new MoveCategoryUpDownAction(contextType, category, true, categoryCompositionSection);
-        moveDownAction = new MoveCategoryUpDownAction(contextType, category, false, categoryCompositionSection);
+        moveUpAction = new MoveCategoryUpAction(contextType, category, categoryCompositionSection);
+        moveDownAction = new MoveCategoryDownAction(contextType, category, categoryCompositionSection);
+        moveLeftAction = new MoveCategoryLeftAction(contextType, category, categoryCompositionSection);
+        moveRightAction = new MoveCategoryRightAction(contextType, category, categoryCompositionSection);
 
         initControls();
     }
@@ -122,8 +129,16 @@ public class CategorySection extends IpsSection {
 
     @Override
     protected void populateToolBar(IToolBarManager toolBarManager) {
+        if (category.isAtRightPosition()) {
+            toolBarManager.add(moveLeftAction);
+        }
+
         toolBarManager.add(moveUpAction);
         toolBarManager.add(moveDownAction);
+
+        if (category.isAtLeftPosition()) {
+            toolBarManager.add(moveRightAction);
+        }
     }
 
     @Override
@@ -139,6 +154,8 @@ public class CategorySection extends IpsSection {
     private void updateToolBarEnabledStates() {
         moveUpAction.setEnabled(contextType.canMoveCategoryUp(category));
         moveDownAction.setEnabled(contextType.canMoveCategoryDown(category));
+        moveLeftAction.setEnabled(contextType.canMoveCategoryLeft(category));
+        moveRightAction.setEnabled(contextType.canMoveCategoryRight(category));
     }
 
     private static class CategoryComposite extends ViewerButtonComposite {
@@ -362,46 +379,178 @@ public class CategorySection extends IpsSection {
 
     }
 
-    private static class MoveCategoryUpDownAction extends Action {
-
-        private static final String IMAGE_NAME_UP = "ArrowUp.gif"; //$NON-NLS-1$
-
-        private static final String IMAGE_NAME_DOWN = "ArrowDown.gif"; //$NON-NLS-1$
+    private static abstract class MoveCategoryAction extends Action {
 
         private final IProductCmptType productCmptType;
 
         private final IProductCmptCategory category;
 
-        private final boolean up;
-
         private final CategoryCompositionSection categoryCompositionSection;
 
-        private MoveCategoryUpDownAction(IProductCmptType productCmptType, IProductCmptCategory category, boolean up,
+        private MoveCategoryAction(IProductCmptType productCmptType, IProductCmptCategory category,
                 CategoryCompositionSection categoryCompositionSection) {
 
             this.productCmptType = productCmptType;
             this.category = category;
-            this.up = up;
             this.categoryCompositionSection = categoryCompositionSection;
 
-            if (up) {
-                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_NAME_UP));
-                setText(Messages.MoveCategoryUpDownAction_labelUp);
-                setToolTipText(Messages.MoveCategoryUpDownAction_tooltipUp);
-            } else {
-                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_NAME_DOWN));
-                setText(Messages.MoveCategoryUpDownAction_labelDown);
-                setToolTipText(Messages.MoveCategoryUpDownAction_tooltipDown);
-            }
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(getImageFilename()));
+            setText(getLabel());
+            setToolTipText(getToolTip());
         }
+
+        protected abstract String getImageFilename();
+
+        protected abstract String getLabel();
+
+        protected abstract String getToolTip();
 
         @Override
         public void run() {
-            boolean moved = productCmptType.moveCategories(Arrays.asList(category), up);
+            boolean moved = move();
             if (moved) {
                 categoryCompositionSection.recreateCategorySections();
-                categoryCompositionSection.refresh();
+                categoryCompositionSection.relayout();
+                categoryCompositionSection.getCategorySection(getCategory()).setFocus();
             }
+        }
+
+        protected abstract boolean move();
+
+        protected IProductCmptType getProductCmptType() {
+            return productCmptType;
+        }
+
+        protected IProductCmptCategory getCategory() {
+            return category;
+        }
+
+    }
+
+    private static class MoveCategoryUpAction extends MoveCategoryAction {
+
+        private MoveCategoryUpAction(IProductCmptType productCmptType, IProductCmptCategory category,
+                CategoryCompositionSection categoryCompositionSection) {
+
+            super(productCmptType, category, categoryCompositionSection);
+        }
+
+        @Override
+        protected String getImageFilename() {
+            return "ArrowUp.gif"; //$NON-NLS-1$
+        }
+
+        @Override
+        protected String getLabel() {
+            return Messages.MoveCategoryUpAction_label;
+        }
+
+        @Override
+        protected String getToolTip() {
+            return Messages.MoveCategoryUpAction_tooltip;
+        }
+
+        @Override
+        protected boolean move() {
+            return getProductCmptType().moveCategories(Arrays.asList(getCategory()), true);
+        }
+
+    }
+
+    private static class MoveCategoryDownAction extends MoveCategoryAction {
+
+        private MoveCategoryDownAction(IProductCmptType productCmptType, IProductCmptCategory category,
+                CategoryCompositionSection categoryCompositionSection) {
+
+            super(productCmptType, category, categoryCompositionSection);
+        }
+
+        @Override
+        protected String getImageFilename() {
+            return "ArrowDown.gif"; //$NON-NLS-1$
+        }
+
+        @Override
+        protected String getLabel() {
+            return Messages.MoveCategoryDownAction_label;
+        }
+
+        @Override
+        protected String getToolTip() {
+            return Messages.MoveCategoryDownAction_tooltip;
+        }
+
+        @Override
+        protected boolean move() {
+            return getProductCmptType().moveCategories(Arrays.asList(getCategory()), false);
+        }
+
+    }
+
+    private static class MoveCategoryLeftAction extends MoveCategoryAction {
+
+        private MoveCategoryLeftAction(IProductCmptType productCmptType, IProductCmptCategory category,
+                CategoryCompositionSection categoryCompositionSection) {
+
+            super(productCmptType, category, categoryCompositionSection);
+        }
+
+        @Override
+        protected String getImageFilename() {
+            return "ArrowLeft.gif"; //$NON-NLS-1$
+        }
+
+        @Override
+        protected String getLabel() {
+            return Messages.MoveCategoryLeftAction_label;
+        }
+
+        @Override
+        protected String getToolTip() {
+            return Messages.MoveCategoryLeftAction_tooltip;
+        }
+
+        @Override
+        protected boolean move() {
+            if (!getCategory().isAtLeftPosition()) {
+                getCategory().setPosition(Position.LEFT);
+                return true;
+            }
+            return false;
+        }
+
+    }
+
+    private static class MoveCategoryRightAction extends MoveCategoryAction {
+
+        private MoveCategoryRightAction(IProductCmptType productCmptType, IProductCmptCategory category,
+                CategoryCompositionSection categoryCompositionSection) {
+
+            super(productCmptType, category, categoryCompositionSection);
+        }
+
+        @Override
+        protected String getImageFilename() {
+            return "ArrowRight.gif"; //$NON-NLS-1$
+        }
+
+        @Override
+        protected String getLabel() {
+            return Messages.MoveCategoryRightAction_label;
+        }
+
+        @Override
+        protected String getToolTip() {
+            return Messages.MoveCategoryRightAction_tooltip;
+        }
+
+        @Override
+        protected boolean move() {
+            if (!getCategory().isAtRightPosition()) {
+                getCategory().setPosition(Position.RIGHT);
+                return true;
+            }
+            return false;
         }
 
     }

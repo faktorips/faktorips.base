@@ -543,6 +543,26 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public boolean canMoveCategoryDown(IProductCmptCategory category);
 
     /**
+     * Returns whether the indicated {@link IProductCmptCategory} can be moved to the left.
+     * <p>
+     * This is the case if the {@link IProductCmptCategory} is defined in this
+     * {@link IProductCmptType}.
+     * 
+     * @param category The {@link IProductCmptCategory} to check whether it can be moved left
+     */
+    public boolean canMoveCategoryLeft(IProductCmptCategory category);
+
+    /**
+     * Returns whether the indicated {@link IProductCmptCategory} can be moved to the right.
+     * <p>
+     * This is the case if the {@link IProductCmptCategory} is defined in this
+     * {@link IProductCmptType}.
+     * 
+     * @param category The {@link IProductCmptCategory} to check whether it can be moved right
+     */
+    public boolean canMoveCategoryRight(IProductCmptCategory category);
+
+    /**
      * Returns whether an {@link IProductCmptCategory} with the given name exists in this
      * {@link IProductCmptType}.
      * 

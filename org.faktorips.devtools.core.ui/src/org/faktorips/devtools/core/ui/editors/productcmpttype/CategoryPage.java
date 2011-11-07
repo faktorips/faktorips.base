@@ -48,25 +48,25 @@ public class CategoryPage extends IpsObjectEditorPage {
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         super.createPageContent(formBody, toolkit);
+
         formBody.setLayout(createPageLayout(1, false));
-        new CategoryCompositionSection((IProductCmptType)getIpsObject(), formBody, toolkit);
+        new CategoryCompositionSection(formBody, toolkit);
     }
 
-    static class CategoryCompositionSection extends IpsSection {
+    private IProductCmptType getProductCmptType() {
+        return (IProductCmptType)getIpsObject();
+    }
+
+    class CategoryCompositionSection extends IpsSection {
 
         private final Map<IProductCmptCategory, CategorySection> categoriesToSections = new LinkedHashMap<IProductCmptCategory, CategorySection>();
-
-        private final IProductCmptType productCmptType;
 
         private Composite left;
 
         private Composite right;
 
-        public CategoryCompositionSection(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
+        public CategoryCompositionSection(Composite parent, UIToolkit toolkit) {
             super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
-
-            this.productCmptType = productCmptType;
-
             initControls();
         }
 
@@ -78,9 +78,18 @@ public class CategoryPage extends IpsObjectEditorPage {
         @Override
         protected void initClientComposite(Composite client, UIToolkit toolkit) {
             setLayout(client);
-            left = createColumnComposite(client);
-            right = createColumnComposite(client);
+            createLeftComposite(client);
+            createRightComposite(client);
             createCategorySections();
+            setInitialFocus();
+        }
+
+        private void setInitialFocus() {
+            if (categoriesToSections.isEmpty()) {
+                left.setFocus();
+            } else {
+                categoriesToSections.values().toArray(new CategorySection[categoriesToSections.size()])[0].setFocus();
+            }
         }
 
         private void setLayout(Composite parent) {
@@ -88,6 +97,14 @@ public class CategoryPage extends IpsObjectEditorPage {
             layout.marginWidth = 1;
             layout.marginHeight = 2;
             parent.setLayout(layout);
+        }
+
+        private void createLeftComposite(Composite parent) {
+            left = createColumnComposite(parent);
+        }
+
+        private void createRightComposite(Composite parent) {
+            right = createColumnComposite(parent);
         }
 
         private Composite createColumnComposite(Composite parent) {
@@ -98,7 +115,7 @@ public class CategoryPage extends IpsObjectEditorPage {
             // Determine categories
             List<IProductCmptCategory> categories = new ArrayList<IProductCmptCategory>();
             try {
-                categories.addAll(productCmptType.findCategories(productCmptType.getIpsProject()));
+                categories.addAll(getProductCmptType().findCategories(getProductCmptType().getIpsProject()));
             } catch (CoreException e) {
                 // Recover by not displaying any categories
                 IpsPlugin.log(e);
@@ -106,7 +123,7 @@ public class CategoryPage extends IpsObjectEditorPage {
 
             for (IProductCmptCategory category : categories) {
                 Composite parent = category.isAtLeftPosition() ? left : right;
-                CategorySection categorySection = new CategorySection(category, productCmptType, this, parent,
+                CategorySection categorySection = new CategorySection(category, getProductCmptType(), this, parent,
                         getToolkit());
                 categoriesToSections.put(category, categorySection);
             }
@@ -130,8 +147,15 @@ public class CategoryPage extends IpsObjectEditorPage {
                 categorySection.dispose();
             }
             createCategorySections();
+        }
+
+        /**
+         * Recomputes the layout of the entire page.
+         */
+        public void relayout() {
             left.layout();
             right.layout();
+            getManagedForm().reflow(true);
         }
 
         /**

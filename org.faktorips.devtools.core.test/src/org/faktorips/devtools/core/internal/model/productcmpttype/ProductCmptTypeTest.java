@@ -1797,6 +1797,28 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertFalse(productCmptType.canMoveCategoryDown(category2));
     }
 
+    @Test
+    public void testCanMoveCategoryLeft() {
+        deleteAllCategories(productCmptType, superProductCmptType);
+
+        IProductCmptCategory superCategory = superProductCmptType.newCategory("superCategory");
+        IProductCmptCategory category = productCmptType.newCategory("category");
+
+        assertFalse(productCmptType.canMoveCategoryLeft(superCategory));
+        assertTrue(productCmptType.canMoveCategoryLeft(category));
+    }
+
+    @Test
+    public void testCanMoveCategoryRight() {
+        deleteAllCategories(productCmptType, superProductCmptType);
+
+        IProductCmptCategory superCategory = superProductCmptType.newCategory("superCategory");
+        IProductCmptCategory category = productCmptType.newCategory("category");
+
+        assertFalse(productCmptType.canMoveCategoryRight(superCategory));
+        assertTrue(productCmptType.canMoveCategoryRight(category));
+    }
+
     /**
      * Deletes all {@link IProductCmptCategory}s of the provided {@link IProductCmptType}s.
      * <p>
