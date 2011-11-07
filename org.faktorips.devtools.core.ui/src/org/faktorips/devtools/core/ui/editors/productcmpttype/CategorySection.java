@@ -301,9 +301,8 @@ public class CategorySection extends IpsSection {
                 newSelection = Arrays.copyOf(selection, selection.length);
             }
 
-            getTableViewer().refresh();
             getTable().setSelection(newSelection);
-            getTableViewer().getControl().setFocus();
+            getTable().setFocus();
 
             refresh();
         }
