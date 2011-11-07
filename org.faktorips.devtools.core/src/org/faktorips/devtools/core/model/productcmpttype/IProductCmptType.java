@@ -521,46 +521,13 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public boolean isLastCategory(IProductCmptCategory category);
 
     /**
-     * Returns whether the indicated {@link IProductCmptCategory} can be moved up.
-     * <p>
-     * This is the case if the {@link IProductCmptCategory} is defined in this
-     * {@link IProductCmptType} and it is <strong>not</strong> the first
-     * {@link IProductCmptCategory} of it's {@link Position}.
+     * Returns whether this {@link IProductCmptType} defines the indicated
+     * {@link IProductCmptCategory}.
      * 
-     * @param category The {@link IProductCmptCategory} to check whether it can be moved up
+     * @param category the {@link IProductCmptCategory} to check for definition in this
+     *            {@link IProductCmptType}
      */
-    public boolean canMoveCategoryUp(IProductCmptCategory category);
-
-    /**
-     * Returns whether the indicated {@link IProductCmptCategory} can be moved down.
-     * <p>
-     * This is the case if the {@link IProductCmptCategory} is defined in this
-     * {@link IProductCmptType} and it is <strong>not</strong> the last {@link IProductCmptCategory}
-     * of it's {@link Position}.
-     * 
-     * @param category The {@link IProductCmptCategory} to check whether it can be moved down
-     */
-    public boolean canMoveCategoryDown(IProductCmptCategory category);
-
-    /**
-     * Returns whether the indicated {@link IProductCmptCategory} can be moved to the left.
-     * <p>
-     * This is the case if the {@link IProductCmptCategory} is defined in this
-     * {@link IProductCmptType}.
-     * 
-     * @param category The {@link IProductCmptCategory} to check whether it can be moved left
-     */
-    public boolean canMoveCategoryLeft(IProductCmptCategory category);
-
-    /**
-     * Returns whether the indicated {@link IProductCmptCategory} can be moved to the right.
-     * <p>
-     * This is the case if the {@link IProductCmptCategory} is defined in this
-     * {@link IProductCmptType}.
-     * 
-     * @param category The {@link IProductCmptCategory} to check whether it can be moved right
-     */
-    public boolean canMoveCategoryRight(IProductCmptCategory category);
+    public boolean isDefining(IProductCmptCategory category);
 
     /**
      * Returns whether an {@link IProductCmptCategory} with the given name exists in this

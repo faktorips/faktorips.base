@@ -139,5 +139,7 @@ public class Messages extends NLS {
     public static String MoveCategoryLeftAction_tooltip;
     public static String MoveCategoryRightAction_label;
     public static String MoveCategoryRightAction_tooltip;
+    public static String DeleteCategoryAction_label;
+    public static String DeleteCategoryAction_tooltip;
 
 }

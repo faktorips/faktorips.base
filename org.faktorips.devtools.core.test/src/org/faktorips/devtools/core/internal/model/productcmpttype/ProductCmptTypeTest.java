@@ -1768,55 +1768,14 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testCanMoveCategoryUp() {
-        deleteAllCategories(productCmptType, superProductCmptType);
-
-        IProductCmptCategory superCategory1 = superProductCmptType.newCategory("superCategory1");
-        IProductCmptCategory superCategory2 = superProductCmptType.newCategory("superCategory2");
-        IProductCmptCategory category1 = productCmptType.newCategory("category1");
-        IProductCmptCategory category2 = productCmptType.newCategory("category2");
-
-        assertFalse(productCmptType.canMoveCategoryUp(superCategory1));
-        assertFalse(productCmptType.canMoveCategoryUp(superCategory2));
-        assertFalse(productCmptType.canMoveCategoryUp(category1));
-        assertTrue(productCmptType.canMoveCategoryUp(category2));
-    }
-
-    @Test
-    public void testCanMoveCategoryDown() {
-        deleteAllCategories(productCmptType, superProductCmptType);
-
-        IProductCmptCategory superCategory1 = superProductCmptType.newCategory("superCategory1");
-        IProductCmptCategory superCategory2 = superProductCmptType.newCategory("superCategory2");
-        IProductCmptCategory category1 = productCmptType.newCategory("category1");
-        IProductCmptCategory category2 = productCmptType.newCategory("category2");
-
-        assertFalse(productCmptType.canMoveCategoryDown(superCategory1));
-        assertFalse(productCmptType.canMoveCategoryDown(superCategory2));
-        assertTrue(productCmptType.canMoveCategoryDown(category1));
-        assertFalse(productCmptType.canMoveCategoryDown(category2));
-    }
-
-    @Test
-    public void testCanMoveCategoryLeft() {
+    public void testIsDefining() {
         deleteAllCategories(productCmptType, superProductCmptType);
 
         IProductCmptCategory superCategory = superProductCmptType.newCategory("superCategory");
         IProductCmptCategory category = productCmptType.newCategory("category");
 
-        assertFalse(productCmptType.canMoveCategoryLeft(superCategory));
-        assertTrue(productCmptType.canMoveCategoryLeft(category));
-    }
-
-    @Test
-    public void testCanMoveCategoryRight() {
-        deleteAllCategories(productCmptType, superProductCmptType);
-
-        IProductCmptCategory superCategory = superProductCmptType.newCategory("superCategory");
-        IProductCmptCategory category = productCmptType.newCategory("category");
-
-        assertFalse(productCmptType.canMoveCategoryRight(superCategory));
-        assertTrue(productCmptType.canMoveCategoryRight(category));
+        assertFalse(productCmptType.isDefining(superCategory));
+        assertTrue(productCmptType.isDefining(category));
     }
 
     /**

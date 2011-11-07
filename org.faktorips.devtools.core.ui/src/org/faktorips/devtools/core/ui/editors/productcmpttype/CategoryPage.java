@@ -150,6 +150,18 @@ public class CategoryPage extends IpsObjectEditorPage {
         }
 
         /**
+         * Disposes of the {@link CategorySection} corresponding to the provided
+         * {@link IProductCmptCategory}.
+         * 
+         * @param category the {@link IProductCmptCategory} whose corresponding
+         *            {@link CategorySection} is to be disposed
+         */
+        public void deleteCategorySection(IProductCmptCategory category) {
+            getCategorySection(category).dispose();
+            categoriesToSections.remove(category);
+        }
+
+        /**
          * Recomputes the layout of the entire page.
          */
         public void relayout() {
