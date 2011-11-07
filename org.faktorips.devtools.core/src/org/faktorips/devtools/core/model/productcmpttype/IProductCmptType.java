@@ -543,38 +543,6 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public boolean canMoveCategoryDown(IProductCmptCategory category);
 
     /**
-     * Returns the {@link IProductCmptCategory} that precedes the indicated
-     * {@link IProductCmptCategory} or null if no predecessor {@link IProductCmptCategory} exists.
-     * <p>
-     * The preceding {@link IProductCmptCategory} is the {@link IProductCmptCategory} with the next
-     * smaller index than that of the given {@link IProductCmptCategory} while featuring the same
-     * {@link Position}.
-     * <p>
-     * This operation does <strong>not</strong> consider {@link IProductCmptCategory}s defined in
-     * the supertype hierarchy.
-     * 
-     * @param category the {@link IProductCmptCategory} to find the predecessor
-     *            {@link IProductCmptCategory} for
-     */
-    public IProductCmptCategory getPredecessorCategory(IProductCmptCategory category);
-
-    /**
-     * Returns the {@link IProductCmptCategory} that succeeds the indicated
-     * {@link IProductCmptCategory} or null if no successor {@link IProductCmptCategory} exists.
-     * <p>
-     * The succeeding {@link IProductCmptCategory} is the {@link IProductCmptCategory} with the next
-     * greater index than that of the given {@link IProductCmptCategory} while featuring the same
-     * {@link Position}.
-     * <p>
-     * This operation does <strong>not</strong> consider {@link IProductCmptCategory}s defined in
-     * the supertype hierarchy.
-     * 
-     * @param category the {@link IProductCmptCategory} to find the successor
-     *            {@link IProductCmptCategory} for
-     */
-    public IProductCmptCategory getSuccessorCategory(IProductCmptCategory category);
-
-    /**
      * Returns whether an {@link IProductCmptCategory} with the given name exists in this
      * {@link IProductCmptType}.
      * 
@@ -609,7 +577,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @throws CoreException If an error occurs during the search
      */
-    public IProductCmptCategory findProductCmptCategory(String name, IIpsProject ipsProject) throws CoreException;
+    public IProductCmptCategory findCategory(String name, IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the first {@link IProductCmptCategory} marked as default for

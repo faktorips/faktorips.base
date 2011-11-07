@@ -1797,52 +1797,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertFalse(productCmptType.canMoveCategoryDown(category2));
     }
 
-    @Test
-    public void testGetPredecessorCategory() {
-        deleteAllCategories(productCmptType);
-
-        IProductCmptCategory leftCategory1 = productCmptType.newCategory("leftCategory1");
-        IProductCmptCategory rightCategory = productCmptType.newCategory("rightCategory");
-        IProductCmptCategory leftCategory2 = productCmptType.newCategory("leftCategory2");
-        leftCategory1.setPosition(Position.LEFT);
-        rightCategory.setPosition(Position.RIGHT);
-        leftCategory2.setPosition(Position.LEFT);
-
-        assertEquals(leftCategory1, productCmptType.getPredecessorCategory(leftCategory2));
-    }
-
-    @Test
-    public void testGetPredecessorCategory_NoPredecessorCategoryExists() {
-        deleteAllCategories(productCmptType);
-
-        IProductCmptCategory category = productCmptType.newCategory("category");
-
-        assertNull(productCmptType.getPredecessorCategory(category));
-    }
-
-    @Test
-    public void testGetSuccessorCategory() {
-        deleteAllCategories(productCmptType);
-
-        IProductCmptCategory leftCategory1 = productCmptType.newCategory("leftCategory1");
-        IProductCmptCategory rightCategory = productCmptType.newCategory("rightCategory");
-        IProductCmptCategory leftCategory2 = productCmptType.newCategory("leftCategory2");
-        leftCategory1.setPosition(Position.LEFT);
-        rightCategory.setPosition(Position.RIGHT);
-        leftCategory2.setPosition(Position.LEFT);
-
-        assertEquals(leftCategory2, productCmptType.getSuccessorCategory(leftCategory1));
-    }
-
-    @Test
-    public void testGetSuccessorCategory_NoSuccessorCategoryExists() {
-        deleteAllCategories(productCmptType);
-
-        IProductCmptCategory category = productCmptType.newCategory("category");
-
-        assertNull(productCmptType.getSuccessorCategory(category));
-    }
-
     /**
      * Deletes all {@link IProductCmptCategory}s of the provided {@link IProductCmptType}s.
      * <p>

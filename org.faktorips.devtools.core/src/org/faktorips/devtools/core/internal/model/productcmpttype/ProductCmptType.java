@@ -795,37 +795,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IProductCmptCategory getPredecessorCategory(IProductCmptCategory category) {
-        int index = categories.indexOf(category);
-        for (int i = index - 1; i >= 0; i--) {
-            // TODO AW 04-11-2011: law of demeter, introduce isSamePositionAs(IProductCmptCategory)?
-            if (categories.getPart(i).getPosition().equals(category.getPosition())) {
-                return categories.getPart(i);
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public IProductCmptCategory getSuccessorCategory(IProductCmptCategory category) {
-        int index = categories.indexOf(category);
-        for (int i = index + 1; i < categories.size(); i++) {
-            // TODO AW 04-11-2011: law of demeter, introduce isSamePositionAs(IProductCmptCategory)?
-            if (categories.getPart(i).getPosition().equals(category.getPosition())) {
-                return categories.getPart(i);
-            }
-        }
-        return null;
-    }
-
-    @Override
     public boolean hasCategory(String name) {
         return getCategory(name) != null;
     }
 
     @Override
     public boolean findHasCategory(String name, IIpsProject ipsProject) throws CoreException {
-        return findProductCmptCategory(name, ipsProject) != null;
+        return findCategory(name, ipsProject) != null;
     }
 
     @Override
@@ -895,7 +871,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IProductCmptCategory findProductCmptCategory(final String name, IIpsProject ipsProject) throws CoreException {
+    public IProductCmptCategory findCategory(final String name, IIpsProject ipsProject) throws CoreException {
         class ProductCmptCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {
 
             private final String categoryName;
