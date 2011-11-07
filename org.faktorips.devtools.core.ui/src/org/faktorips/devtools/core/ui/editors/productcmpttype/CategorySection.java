@@ -436,6 +436,7 @@ public class CategorySection extends IpsSection {
                 getCategoryCompositionSection().recreateCategorySections();
                 getCategoryCompositionSection().relayout();
                 getCategoryCompositionSection().getCategorySection(getCategory()).setFocus();
+                getCategoryCompositionSection().refresh();
             }
         }
 
