@@ -1477,7 +1477,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptCategory category2 = productCmptType.newCategory();
         IProductCmptCategory category3 = productCmptType.newCategory();
 
-        productCmptType.moveCategories(new int[] { 1, 2 }, true);
+        assertTrue(productCmptType.moveCategories(Arrays.asList(category2, category3), true));
         List<IProductCmptCategory> categories = productCmptType.getCategories();
         assertEquals(category2, categories.get(0));
         assertEquals(category3, categories.get(1));
@@ -1486,6 +1486,15 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertTrue(lastContentChangeEvent.isAffected(category1));
         assertTrue(lastContentChangeEvent.isAffected(category2));
         assertTrue(lastContentChangeEvent.isAffected(category3));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMoveCategories_CategoryFromForeignProductCmptType() {
+        deleteAllCategories(productCmptType, superProductCmptType);
+
+        IProductCmptCategory superCategory = superProductCmptType.newCategory();
+
+        productCmptType.moveCategories(Arrays.asList(superCategory), true);
     }
 
     @Test
@@ -1656,31 +1665,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         productCmptType.newCategory("foo");
 
         assertTrue(productCmptType.findIsCategoryNameUsedTwiceInSupertypeHierarchy("foo", ipsProject));
-    }
-
-    @Test
-    public void testGetIndexOfCategory() {
-        deleteAllCategories(productCmptType);
-
-        IProductCmptCategory category1 = productCmptType.newCategory("category1");
-        IProductCmptCategory category2 = productCmptType.newCategory("category2");
-        IProductCmptCategory category3 = productCmptType.newCategory("category3");
-
-        assertEquals(0, productCmptType.getIndexOfCategory(category1));
-        assertEquals(1, productCmptType.getIndexOfCategory(category2));
-        assertEquals(2, productCmptType.getIndexOfCategory(category3));
-    }
-
-    @Test
-    public void testGetIndexOfCategory_CategoryNotInType() throws CoreException {
-        IProductCmptType productCmptType2 = newProductCmptType(ipsProject, "Product2");
-        deleteAllCategories(productCmptType, productCmptType2);
-
-        IProductCmptCategory category = productCmptType.newCategory("category1");
-        IProductCmptCategory foreignCategory = productCmptType2.newCategory("category2");
-
-        assertEquals(0, productCmptType.getIndexOfCategory(category));
-        assertEquals(-1, productCmptType.getIndexOfCategory(foreignCategory));
     }
 
     @Test

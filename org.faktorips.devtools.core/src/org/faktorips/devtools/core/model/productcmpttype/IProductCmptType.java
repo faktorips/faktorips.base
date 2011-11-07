@@ -477,14 +477,6 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public IProductCmptCategory getCategory(String name);
 
     /**
-     * Returns the index of the indicated {@link IProductCmptCategory} or -1 if no such
-     * {@link IProductCmptCategory} exists in this {@link IProductCmptType}.
-     * 
-     * @param category the {@link IProductCmptCategory} to retrieve the index for
-     */
-    public int getIndexOfCategory(IProductCmptCategory category);
-
-    /**
      * Returns the first {@link IProductCmptCategory} of the provided {@link Position}.
      * <p>
      * Returns null if no {@link IProductCmptCategory} with the provided {@link Position} is defined
@@ -684,19 +676,21 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
             throws CoreException;
 
     /**
-     * Moves the {@link IProductCmptCategory}s identified by the indexes up or down by one position
-     * and returns the new indexes of the moved objects.
+     * Moves the indicated {@link IProductCmptCategory}s up or down by one position and returns
+     * whether a move has been performed.
      * <p>
-     * If one of the indexes is 0 (the first object), no object is moved up. If one of the indexes
-     * is the number of objects - 1 (the last object) no object is moved down.
+     * Returns false if
+     * <ul>
+     * <li>the first {@link IProductCmptCategory} of it's {@link Position} is moved up
+     * <li>the last {@link IProductCmptCategory} of it's {@link Position} is moved down
+     * </ul>
      * 
-     * @param indexes The indexes identifying the {@link IProductCmptCategory}s to be moved
-     * @param up Flag indicating whether to move up or down
+     * @param categories the {@link IProductCmptCategory}s to be moved
+     * @param up flag indicating whether to move up or down
      * 
-     * @throws NullPointerException If indexes is null
-     * @throws IndexOutOfBoundsException If one of the indexes does not identify an
-     *             {@link IProductCmptCategory}
+     * @throws IllegalArgumentException if one of the {@link IProductCmptCategory}s to be moved is
+     *             not defined in this {@link IProductCmptType}
      */
-    public int[] moveCategories(int[] indexes, boolean up);
+    public boolean moveCategories(List<IProductCmptCategory> categories, boolean up);
 
 }

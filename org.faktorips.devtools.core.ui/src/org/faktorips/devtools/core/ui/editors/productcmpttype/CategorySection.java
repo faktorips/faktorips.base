@@ -138,7 +138,7 @@ public class CategorySection extends IpsSection {
 
     private void updateToolBarEnabledStates() {
         moveUpAction.setEnabled(contextType.canMoveCategoryUp(category));
-        moveDownAction.setEnabled(!contextType.canMoveCategoryDown(category));
+        moveDownAction.setEnabled(contextType.canMoveCategoryDown(category));
     }
 
     private static class CategoryComposite extends ViewerButtonComposite {
@@ -398,14 +398,11 @@ public class CategorySection extends IpsSection {
 
         @Override
         public void run() {
-            // TODO AW 04-11-2011: Offer move with category as parameter?
-            int categoryIndex = productCmptType.getIndexOfCategory(category);
-            int[] indices = new int[] { categoryIndex };
-            int[] newIndices = productCmptType.moveCategories(indices, up);
-            if (!Arrays.equals(indices, newIndices)) {
+            boolean moved = productCmptType.moveCategories(Arrays.asList(category), up);
+            if (moved) {
                 categoryCompositionSection.recreateCategorySections();
+                categoryCompositionSection.refresh();
             }
-            categoryCompositionSection.refresh();
         }
 
     }

@@ -71,6 +71,7 @@ import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.devtools.core.util.IElementMover;
 import org.faktorips.devtools.core.util.SubListElementMover;
 import org.faktorips.devtools.core.util.TreeSetHelper;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -754,11 +755,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public int getIndexOfCategory(IProductCmptCategory category) {
-        return categories.indexOf(category);
-    }
-
-    @Override
     public IProductCmptCategory getFirstCategory(Position position) {
         for (IProductCmptCategory category : categories) {
             if (position.equals(category.getPosition())) {
@@ -929,8 +925,14 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public int[] moveCategories(int[] indexes, boolean up) {
-        return categories.moveParts(indexes, up);
+    public boolean moveCategories(List<IProductCmptCategory> categories, boolean up) {
+        int[] indices = new int[categories.size()];
+        for (int i = 0; i < categories.size(); i++) {
+            ArgumentCheck.equals(this, categories.get(i).getProductCmptType());
+            indices[i] = this.categories.indexOf(categories.get(i));
+        }
+        int[] newIndices = this.categories.moveParts(indices, up);
+        return !Arrays.equals(indices, newIndices);
     }
 
     /**
