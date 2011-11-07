@@ -511,6 +511,46 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public IProductCmptCategory getLastCategory(Position position);
 
     /**
+     * Returns whether the indicated {@link IProductCmptCategory} is the first
+     * {@link IProductCmptCategory} at it's {@link Position}.
+     * 
+     * @param category the {@link IProductCmptCategory} to check whether it is the first
+     *            {@link IProductCmptCategory} of it's {@link Position}
+     */
+    public boolean isFirstCategory(IProductCmptCategory category);
+
+    /**
+     * Returns whether the indicated {@link IProductCmptCategory} is the last
+     * {@link IProductCmptCategory} at it's {@link Position}.
+     * 
+     * @param category the {@link IProductCmptCategory} to check whether it is the last
+     *            {@link IProductCmptCategory} of it's {@link Position}
+     */
+    public boolean isLastCategory(IProductCmptCategory category);
+
+    /**
+     * Returns whether the indicated {@link IProductCmptCategory} can be moved up.
+     * <p>
+     * This is the case if the {@link IProductCmptCategory} is defined in this
+     * {@link IProductCmptType} and it is <strong>not</strong> the first
+     * {@link IProductCmptCategory} of it's {@link Position}.
+     * 
+     * @param category The {@link IProductCmptCategory} to check whether it can be moved up
+     */
+    public boolean canMoveCategoryUp(IProductCmptCategory category);
+
+    /**
+     * Returns whether the indicated {@link IProductCmptCategory} can be moved down.
+     * <p>
+     * This is the case if the {@link IProductCmptCategory} is defined in this
+     * {@link IProductCmptType} and it is <strong>not</strong> the last {@link IProductCmptCategory}
+     * of it's {@link Position}.
+     * 
+     * @param category The {@link IProductCmptCategory} to check whether it can be moved down
+     */
+    public boolean canMoveCategoryDown(IProductCmptCategory category);
+
+    /**
      * Returns the {@link IProductCmptCategory} that precedes the indicated
      * {@link IProductCmptCategory} or null if no predecessor {@link IProductCmptCategory} exists.
      * <p>

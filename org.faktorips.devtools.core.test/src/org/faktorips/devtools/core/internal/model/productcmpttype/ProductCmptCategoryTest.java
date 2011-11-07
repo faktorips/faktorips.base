@@ -63,12 +63,12 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
         IPolicyCmptType policyType = newPolicyAndProductCmptType(ipsProject, "PolicyType", "ProductType");
         productType = policyType.findProductCmptType(ipsProject);
-        category = (ProductCmptCategory)productType.newProductCmptCategory(CATEGORY_NAME);
+        category = (ProductCmptCategory)productType.newCategory(CATEGORY_NAME);
     }
 
     @Test
     public void testConstructor_InitializePropertiesToProperDefaultsOnCreation() {
-        IProductCmptCategory category = productType.newProductCmptCategory();
+        IProductCmptCategory category = productType.newCategory();
         assertEquals("", category.getName());
         assertFalse(category.isDefaultForFormulaSignatureDefinitions());
         assertFalse(category.isDefaultForPolicyCmptTypeAttributes());
@@ -110,7 +110,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testFindIsContainingProperty_DefaultCategoryContainsPropertiesThatHaveNoCategory() throws CoreException {
-        IProductCmptCategory defaultAttributeCategory = productType.newProductCmptCategory("defaultAttribute");
+        IProductCmptCategory defaultAttributeCategory = productType.newCategory("defaultAttribute");
         defaultAttributeCategory.setDefaultForProductCmptTypeAttributes(true);
 
         IProductCmptProperty attributeProperty = productType.newProductCmptTypeAttribute("attribute");
@@ -129,7 +129,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testFindIsContainingProperty_CategoryNotFound() throws CoreException {
-        IProductCmptCategory defaultAttributeCategory = productType.newProductCmptCategory("defaultAttribute");
+        IProductCmptCategory defaultAttributeCategory = productType.newCategory("defaultAttribute");
         defaultAttributeCategory.setDefaultForProductCmptTypeAttributes(true);
 
         IProductCmptProperty attributeProperty = productType.newProductCmptTypeAttribute("attribute");
@@ -149,11 +149,11 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testFindIsContainingProperty_CategoryDefinedInSupertype() throws CoreException {
-        IProductCmptCategory defaultAttributeCategory = productType.newProductCmptCategory("defaultAttribute");
+        IProductCmptCategory defaultAttributeCategory = productType.newCategory("defaultAttribute");
         defaultAttributeCategory.setDefaultForProductCmptTypeAttributes(true);
 
         IProductCmptType superProdcutType = createSuperProductType(productType, "Super");
-        IProductCmptCategory superCategory = superProdcutType.newProductCmptCategory("superCategory");
+        IProductCmptCategory superCategory = superProdcutType.newCategory("superCategory");
 
         IProductCmptProperty attributeProperty = productType.newProductCmptTypeAttribute("attribute");
         attributeProperty.setCategory(superCategory.getName());
@@ -259,7 +259,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         category.setPosition(Position.RIGHT);
 
         Element xmlElement = category.toXml(createXmlDocument(IProductCmptCategory.XML_TAG_NAME));
-        IProductCmptCategory loadedCategory = productType.newProductCmptCategory();
+        IProductCmptCategory loadedCategory = productType.newCategory();
         loadedCategory.initFromXml(xmlElement);
 
         assertEquals(CATEGORY_NAME, loadedCategory.getName());
@@ -282,7 +282,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_NameIsUsedTwiceInType() throws CoreException {
-        productType.newProductCmptCategory(CATEGORY_NAME);
+        productType.newCategory(CATEGORY_NAME);
 
         MessageList validationMessageList = category.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
@@ -293,7 +293,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_NameIsUsedTwiceInTypeHierarchy() throws CoreException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
-        superProductType.newProductCmptCategory(CATEGORY_NAME);
+        superProductType.newCategory(CATEGORY_NAME);
 
         MessageList validationMessageList = category.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
@@ -304,7 +304,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_DuplicateCategoriesMarkedAsDefaultForFormulaSignatureDefinitions() throws CoreException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
-        IProductCmptCategory category2 = superProductType.newProductCmptCategory("bar");
+        IProductCmptCategory category2 = superProductType.newCategory("bar");
 
         category.setDefaultForFormulaSignatureDefinitions(true);
         category2.setDefaultForFormulaSignatureDefinitions(true);
@@ -318,7 +318,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_DuplicateCategoriesMarkedAsDefaultForValidationRules() throws CoreException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
-        IProductCmptCategory category2 = superProductType.newProductCmptCategory("bar");
+        IProductCmptCategory category2 = superProductType.newCategory("bar");
 
         category.setDefaultForValidationRules(true);
         category2.setDefaultForValidationRules(true);
@@ -332,7 +332,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_DuplicateCategoriesMarkedAsDefaultForTableStructureUsages() throws CoreException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
-        IProductCmptCategory category2 = superProductType.newProductCmptCategory("bar");
+        IProductCmptCategory category2 = superProductType.newCategory("bar");
 
         category.setDefaultForTableStructureUsages(true);
         category2.setDefaultForTableStructureUsages(true);
@@ -346,7 +346,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_DuplicateCategoriesMarkedAsDefaultForPolicyCmptTypeAttributes() throws CoreException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
-        IProductCmptCategory category2 = superProductType.newProductCmptCategory("bar");
+        IProductCmptCategory category2 = superProductType.newCategory("bar");
 
         category.setDefaultForPolicyCmptTypeAttributes(true);
         category2.setDefaultForPolicyCmptTypeAttributes(true);
@@ -360,7 +360,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_DuplicateCategoriesMarkedAsDefaultForProductCmptTypeAttributes() throws CoreException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
-        IProductCmptCategory category2 = superProductType.newProductCmptCategory("bar");
+        IProductCmptCategory category2 = superProductType.newCategory("bar");
 
         category.setDefaultForProductCmptTypeAttributes(true);
         category2.setDefaultForProductCmptTypeAttributes(true);
@@ -381,7 +381,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty superProperty = superProductType.newProductCmptTypeAttribute("superProperty");
         IProductCmptProperty property = productType.newProductCmptTypeAttribute("property");
 
-        IProductCmptCategory superSuperCategory = superSuperProductType.newProductCmptCategory("superSuperCategory");
+        IProductCmptCategory superSuperCategory = superSuperProductType.newCategory("superSuperCategory");
         superSuperProperty.setCategory(superSuperCategory.getName());
         superProperty.setCategory(superSuperCategory.getName());
         property.setCategory(superSuperCategory.getName());
@@ -408,7 +408,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     @Test
     public void testFindProductCmptProperties_NotSearchingSupertypeHierarchy() throws CoreException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
-        IProductCmptCategory superCategory = superProductType.newProductCmptCategory("superCategory");
+        IProductCmptCategory superCategory = superProductType.newCategory("superCategory");
 
         IProductCmptProperty superProperty = superProductType.newProductCmptTypeAttribute("superProperty");
         superProperty.setCategory(superCategory.getName());
@@ -591,8 +591,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testMoveProductCmptProperties_DontMoveUpIfElementAtUpperCategoryLimit() throws CoreException {
-        IProductCmptCategory aboveCategory = productType.newProductCmptCategory("aboveCategory");
-        IProductCmptCategory testCategory = productType.newProductCmptCategory("testCategory");
+        IProductCmptCategory aboveCategory = productType.newCategory("aboveCategory");
+        IProductCmptCategory testCategory = productType.newCategory("testCategory");
 
         IProductCmptProperty aboveProperty = productType.newProductCmptTypeAttribute("aboveProperty");
         aboveProperty.setCategory(aboveCategory.getName());
@@ -617,8 +617,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testMoveProductCmptProperties_DontMoveDownIfElementAtLowerCategoryLimit() throws CoreException {
-        IProductCmptCategory testCategory = productType.newProductCmptCategory("testCategory");
-        IProductCmptCategory belowCategory = productType.newProductCmptCategory("belowCategory");
+        IProductCmptCategory testCategory = productType.newCategory("testCategory");
+        IProductCmptCategory belowCategory = productType.newCategory("belowCategory");
 
         IProductCmptProperty testProperty = productType.newProductCmptTypeAttribute("testProperty");
         testProperty.setCategory(testCategory.getName());

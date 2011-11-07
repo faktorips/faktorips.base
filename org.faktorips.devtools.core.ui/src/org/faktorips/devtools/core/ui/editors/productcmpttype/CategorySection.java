@@ -129,10 +129,16 @@ public class CategorySection extends IpsSection {
     @Override
     protected void performRefresh() {
         viewerButtonComposite.refresh();
+        updateToolBarEnabledStates();
     }
 
     private ViewerButtonComposite getViewerButtonComposite() {
         return viewerButtonComposite;
+    }
+
+    private void updateToolBarEnabledStates() {
+        moveUpAction.setEnabled(contextType.canMoveCategoryUp(category));
+        moveDownAction.setEnabled(!contextType.canMoveCategoryDown(category));
     }
 
     private static class CategoryComposite extends ViewerButtonComposite {
@@ -399,6 +405,7 @@ public class CategorySection extends IpsSection {
             if (!Arrays.equals(indices, newIndices)) {
                 categoryCompositionSection.recreateCategorySections();
             }
+            categoryCompositionSection.refresh();
         }
 
     }

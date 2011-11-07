@@ -1766,6 +1766,58 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
+    public void testIsFirstCategory() {
+        deleteAllProductCmptCategories(productCmptType);
+
+        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
+        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
+
+        assertTrue(productCmptType.isFirstCategory(category1));
+        assertFalse(productCmptType.isFirstCategory(category2));
+    }
+
+    @Test
+    public void testIsLastCategory() {
+        deleteAllProductCmptCategories(productCmptType);
+
+        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
+        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
+
+        assertTrue(productCmptType.isLastCategory(category2));
+        assertFalse(productCmptType.isLastCategory(category1));
+    }
+
+    @Test
+    public void testCanMoveCategoryUp() {
+        deleteAllProductCmptCategories(productCmptType, superProductCmptType);
+
+        IProductCmptCategory superCategory1 = superProductCmptType.newProductCmptCategory("superCategory1");
+        IProductCmptCategory superCategory2 = superProductCmptType.newProductCmptCategory("superCategory2");
+        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
+        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
+
+        assertFalse(productCmptType.canMoveCategoryUp(superCategory1));
+        assertFalse(productCmptType.canMoveCategoryUp(superCategory2));
+        assertFalse(productCmptType.canMoveCategoryUp(category1));
+        assertTrue(productCmptType.canMoveCategoryUp(category2));
+    }
+
+    @Test
+    public void testCanMoveCategoryDown() {
+        deleteAllProductCmptCategories(productCmptType, superProductCmptType);
+
+        IProductCmptCategory superCategory1 = superProductCmptType.newProductCmptCategory("superCategory1");
+        IProductCmptCategory superCategory2 = superProductCmptType.newProductCmptCategory("superCategory2");
+        IProductCmptCategory category1 = productCmptType.newProductCmptCategory("category1");
+        IProductCmptCategory category2 = productCmptType.newProductCmptCategory("category2");
+
+        assertFalse(productCmptType.canMoveCategoryDown(superCategory1));
+        assertFalse(productCmptType.canMoveCategoryDown(superCategory2));
+        assertTrue(productCmptType.canMoveCategoryDown(category1));
+        assertFalse(productCmptType.canMoveCategoryDown(category2));
+    }
+
+    @Test
     public void testGetPredecessorCategory() {
         deleteAllProductCmptCategories(productCmptType);
 
