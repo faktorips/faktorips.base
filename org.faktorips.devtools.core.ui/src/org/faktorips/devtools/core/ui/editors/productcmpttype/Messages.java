@@ -144,4 +144,7 @@ public class Messages extends NLS {
     public static String EditCategoryAction_label;
     public static String EditCategoryAction_tooltip;
 
+    public static String CategoryEditDialog_title;
+    public static String CategoryEditDialog_generalTabTitle;
+
 }
