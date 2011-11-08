@@ -161,6 +161,7 @@ public class CategorySection extends IpsSection {
     protected void performRefresh() {
         viewerButtonComposite.refresh();
         updateToolBarEnabledStates();
+        updateSectionTitle();
     }
 
     private ViewerButtonComposite getViewerButtonComposite() {
@@ -590,7 +591,6 @@ public class CategorySection extends IpsSection {
             DialogHelper dialogHelper = new DialogHelper();
             Dialog dialog = new CategoryEditDialog(getCategory(), getShell());
             dialogHelper.openDialogWithMemento(dialog, getCategory());
-            // TODO AW
         }
 
     }

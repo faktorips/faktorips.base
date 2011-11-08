@@ -211,7 +211,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         // Empty default implementation
     }
 
-    private void updateSectionTitle() {
+    protected final void updateSectionTitle() {
         if (isDisplayNumberOfElementsInSectionTitle()) {
             setText(getSectionTitle() + " (" + getNumberOfElementsToDisplayInSectionTitle() + ')'); //$NON-NLS-1$
         } else {

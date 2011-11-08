@@ -94,7 +94,7 @@ public class ProductCmptPropertySection extends IpsSection {
 
     @Override
     protected String getSectionTitle() {
-        return category.getName();
+        return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
     }
 
     @Override
