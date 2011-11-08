@@ -24,6 +24,7 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PartInitException;
@@ -112,7 +113,24 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         setFocusSuccessors();
         registerSelectionProviderActivation(stack.topControl);
 
-        layout();
+        reduceToOneColumnAsNecessary(left, right);
+    }
+
+    private void reduceToOneColumnAsNecessary(Composite left, Composite right) {
+        boolean leftEmpty = disposeColumnIfEmpty(left, leftSections);
+        boolean rightEmpty = disposeColumnIfEmpty(right, rightSections);
+        if (leftEmpty || rightEmpty) {
+            GridLayout layout = (GridLayout)((Composite)stack.topControl).getLayout();
+            layout.numColumns = 1;
+        }
+    }
+
+    private boolean disposeColumnIfEmpty(Composite column, List<IpsSection> columnSections) {
+        if (columnSections.isEmpty()) {
+            column.dispose();
+            return true;
+        }
+        return false;
     }
 
     private Composite createColumnComposite() {
@@ -319,10 +337,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     @Override
     protected boolean computeDataChangeableState() {
         return ((ProductCmptEditor)getIpsObjectEditor()).isActiveGenerationEditable();
-    }
-
-    private void layout() {
-        pageRoot.layout();
     }
 
     private IProductCmptGeneration getActiveGeneration() {
