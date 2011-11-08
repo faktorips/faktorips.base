@@ -174,6 +174,7 @@ public class CategorySection extends IpsSection {
         moveLeftAction.setEnabled(contextType.isDefining(category));
         moveRightAction.setEnabled(contextType.isDefining(category));
 
+        editAction.setEnabled(contextType.isDefining(category));
         deleteAction.setEnabled(contextType.isDefining(category));
     }
 
@@ -444,7 +445,7 @@ public class CategorySection extends IpsSection {
             if (moved) {
                 getCategoryCompositionSection().recreateCategorySections();
                 getCategoryCompositionSection().relayout();
-                getCategoryCompositionSection().getCategorySection(getCategory()).setFocus();
+                getCategoryCompositionSection().setFocus(getCategory());
                 getCategoryCompositionSection().refresh();
             }
         }

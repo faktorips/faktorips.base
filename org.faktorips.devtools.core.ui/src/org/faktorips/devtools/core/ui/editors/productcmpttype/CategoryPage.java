@@ -150,15 +150,18 @@ public class CategoryPage extends IpsObjectEditorPage {
         }
 
         /**
-         * Disposes of the {@link CategorySection} corresponding to the provided
+         * Disposes of the {@link CategorySection} corresponding to the indicated
          * {@link IProductCmptCategory}.
-         * 
-         * @param category the {@link IProductCmptCategory} whose corresponding
-         *            {@link CategorySection} is to be disposed
+         * <p>
+         * Does nothing if no {@link CategorySection} exists for the indicated
+         * {@link IProductCmptCategory}.
          */
         public void deleteCategorySection(IProductCmptCategory category) {
-            getCategorySection(category).dispose();
-            categoriesToSections.remove(category);
+            CategorySection categorySection = getCategorySection(category);
+            if (categorySection != null) {
+                categorySection.dispose();
+                categoriesToSections.remove(category);
+            }
         }
 
         /**
@@ -172,10 +175,25 @@ public class CategoryPage extends IpsObjectEditorPage {
 
         /**
          * Returns the {@link CategorySection} corresponding to the indicated
-         * {@link IProductCmptCategory}.
+         * {@link IProductCmptCategory} or null if no {@link CategorySection} exists for the
+         * indicated {@link IProductCmptCategory}.
          */
         public CategorySection getCategorySection(IProductCmptCategory category) {
             return categoriesToSections.get(category);
+        }
+
+        /**
+         * Sets the focus to the {@link CategorySection} corresponding to the indicated
+         * {@link IProductCmptCategory}.
+         * <p>
+         * Does nothing if no {@link CategorySection} exists for the indicated
+         * {@link IProductCmptCategory}.
+         */
+        public void setFocus(IProductCmptCategory category) {
+            CategorySection categorySection = categoriesToSections.get(category);
+            if (categorySection != null) {
+                categorySection.setFocus();
+            }
         }
 
     }
