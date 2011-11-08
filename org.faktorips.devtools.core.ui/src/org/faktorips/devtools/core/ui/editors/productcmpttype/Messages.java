@@ -144,7 +144,16 @@ public class Messages extends NLS {
     public static String EditCategoryAction_label;
     public static String EditCategoryAction_tooltip;
 
+    public static String CategoryEditDialog_defaultFormulaSignatureDefinitions;
+    public static String CategoryEditDialog_defaultPolicyComponentTypeAttributes;
+    public static String CategoryEditDialog_defaultProductComponentTypeAttributes;
+    public static String CategoryEditDialog_defaultsExplanationLabel;
+    public static String CategoryEditDialog_defaultsGroup;
+    public static String CategoryEditDialog_defaultTableStructureUsages;
+    public static String CategoryEditDialog_defaultValidationRules;
     public static String CategoryEditDialog_title;
     public static String CategoryEditDialog_generalTabTitle;
+
+    public static String CategoryEditDialog_nameLabel;
 
 }

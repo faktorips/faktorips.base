@@ -14,24 +14,32 @@
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
 /**
- * TODO AW
+ * Dialog that allows the user to edit the properties of an {@link IProductCmptCategory}.
  * 
  * @author Alexander Weickmann
  */
 public class CategoryEditDialog extends IpsPartEditDialog2 {
 
+    private final ExtensionPropertyControlFactory extensionFactory;
+
     public CategoryEditDialog(IProductCmptCategory category, Shell parentShell) {
         super(category, parentShell, Messages.CategoryEditDialog_title, true);
+        extensionFactory = new ExtensionPropertyControlFactory(category.getClass());
     }
 
     @Override
@@ -48,24 +56,72 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
     private Control createGeneralPage(TabFolder tabFolder) {
         Composite page = createTabItemComposite(tabFolder, 1, false);
 
-        Composite nameComposite = getToolkit().createLabelEditColumnComposite(page);
-        getToolkit().createLabel(nameComposite, "Name:");
-        getToolkit().createText(nameComposite);
+        createTopExtensionPropertyControls(page);
 
-        getToolkit().createVerticalSpacer(page, 10);
+        createNameComposite(page);
+        createVerticalSpacer(page);
+        createDefaultsGroup(page);
 
-        Group defaultsGroup = getToolkit().createGridGroup(page, "Defaults", 1, false);
-        getToolkit().createLabel(
-                defaultsGroup,
-                "Properties without a designated category are automatically assigned "
-                        + "to the corresponding default category.");
-        Composite defaultsComposite = getToolkit().createGridComposite(defaultsGroup, 1, false, true);
-        getToolkit().createCheckbox(defaultsComposite, "Product Component Type Attributes");
-        getToolkit().createCheckbox(defaultsComposite, "Formula Signature Definitions");
-        getToolkit().createCheckbox(defaultsComposite, "Table Structure Usages");
-        getToolkit().createCheckbox(defaultsComposite, "Policy Component Type Attributes (changeable & configurable)");
-        getToolkit().createCheckbox(defaultsComposite, "Validation Rules (configurable)");
+        createBottomExtensionPropertyControls(page);
+
+        extensionFactory.bind(bindingContext);
 
         return page;
     }
+
+    private void createTopExtensionPropertyControls(Composite page) {
+        extensionFactory.createControls(page, getToolkit(), getCategory(), IExtensionPropertyDefinition.POSITION_TOP);
+    }
+
+    private void createNameComposite(Composite page) {
+        Composite nameComposite = getToolkit().createLabelEditColumnComposite(page);
+        getToolkit().createLabel(nameComposite, Messages.CategoryEditDialog_nameLabel);
+        Text nameText = getToolkit().createText(nameComposite);
+        bindingContext.bindContent(nameText, getCategory(), IProductCmptCategory.PROPERTY_NAME);
+    }
+
+    private void createVerticalSpacer(Composite page) {
+        getToolkit().createVerticalSpacer(page, 10);
+    }
+
+    private void createDefaultsGroup(Composite page) {
+        Group defaultsGroup = getToolkit().createGridGroup(page, Messages.CategoryEditDialog_defaultsGroup, 1, false);
+
+        getToolkit().createLabel(defaultsGroup, Messages.CategoryEditDialog_defaultsExplanationLabel);
+
+        Composite defaultsComposite = getToolkit().createGridComposite(defaultsGroup, 1, false, true);
+        ((GridLayout)defaultsComposite.getLayout()).verticalSpacing = 8;
+
+        Checkbox defaultProductCmptTypeAttributesCheckbox = getToolkit().createCheckbox(defaultsComposite,
+                Messages.CategoryEditDialog_defaultProductComponentTypeAttributes);
+        Checkbox defaultFormulaSignatureDefinitionsCheckbox = getToolkit().createCheckbox(defaultsComposite,
+                Messages.CategoryEditDialog_defaultFormulaSignatureDefinitions);
+        Checkbox defaultTableStructureUsagesCheckbox = getToolkit().createCheckbox(defaultsComposite,
+                Messages.CategoryEditDialog_defaultTableStructureUsages);
+        Checkbox defaultPolicyCmptTypeAttributesCheckbox = getToolkit().createCheckbox(defaultsComposite,
+                Messages.CategoryEditDialog_defaultPolicyComponentTypeAttributes);
+        Checkbox defaultValidationRulesCheckbox = getToolkit().createCheckbox(defaultsComposite,
+                Messages.CategoryEditDialog_defaultValidationRules);
+
+        bindingContext.bindContent(defaultProductCmptTypeAttributesCheckbox, getCategory(),
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES);
+        bindingContext.bindContent(defaultFormulaSignatureDefinitionsCheckbox, getCategory(),
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS);
+        bindingContext.bindContent(defaultTableStructureUsagesCheckbox, getCategory(),
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES);
+        bindingContext.bindContent(defaultPolicyCmptTypeAttributesCheckbox, getCategory(),
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES);
+        bindingContext.bindContent(defaultValidationRulesCheckbox, getCategory(),
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
+    }
+
+    private void createBottomExtensionPropertyControls(Composite page) {
+        extensionFactory
+                .createControls(page, getToolkit(), getCategory(), IExtensionPropertyDefinition.POSITION_BOTTOM);
+    }
+
+    private IProductCmptCategory getCategory() {
+        return (IProductCmptCategory)getIpsPart();
+    }
+
 }

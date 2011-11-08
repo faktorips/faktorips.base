@@ -48,7 +48,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
 
     public final static String XML_TAG_NAME = "Category"; //$NON-NLS-1$
 
-    public final static String PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS = "defaultForMethods"; //$NON-NLS-1$
+    public final static String PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS = "defaultForFormulaSignatureDefinitions"; //$NON-NLS-1$
 
     public final static String PROPERTY_DEFAULT_FOR_VALIDATION_RULES = "defaultForValidationRules"; //$NON-NLS-1$
 
