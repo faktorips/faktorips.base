@@ -36,14 +36,14 @@ public class DialogHelper {
      * @return the return code of the {@link Dialog}
      */
     public int openDialogWithMemento(Dialog dialog, IIpsObjectPart editedPart) {
-        boolean dirty = editedPart.getIpsSrcFile().isDirty();
-        Memento memento = editedPart.newMemento();
+        boolean wasDirty = editedPart.getIpsSrcFile().isDirty();
 
+        Memento memento = editedPart.newMemento();
         dialog.open();
 
         if (dialog.getReturnCode() == Window.CANCEL && editedPart.getIpsSrcFile().isMutable()) {
             editedPart.setState(memento);
-            if (!dirty) {
+            if (!wasDirty) {
                 editedPart.getIpsSrcFile().markAsClean();
             }
         }

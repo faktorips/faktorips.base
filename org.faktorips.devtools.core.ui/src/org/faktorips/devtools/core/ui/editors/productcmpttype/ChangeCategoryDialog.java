@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -27,7 +26,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * A dialog that allows the user to select one {@link IProductCmptCategory} out of all
@@ -97,23 +95,19 @@ public class ChangeCategoryDialog extends ElementListSelectionDialog {
     }
 
     private void changeCategoryOfPolicyCmptTypeProperty() {
-        /*
-         * If the property originates from a policy component type, dirty editors editing the policy
-         * component type must be saved.
-         */
-        boolean saved = IpsUIPlugin.getDefault().saveEditors(Arrays.asList(property.getIpsSrcFile()));
-        if (!saved) {
-            return;
-        }
+        boolean wasDirty = property.getIpsSrcFile().isDirty();
 
         property.setCategory(getSelectedCategory().getName());
-        try {
-            property.getIpsSrcFile().save(true, null);
-        } catch (CoreException e) {
-            // The category change could not be saved, so restore the old category
-            IpsPlugin.logAndShowErrorDialog(e);
-            property.setCategory(initialCategory.getName());
-            property.getIpsSrcFile().markAsClean();
+
+        if (!wasDirty) {
+            try {
+                property.getIpsSrcFile().save(true, null);
+            } catch (CoreException e) {
+                // The category change could not be saved, so restore the old category
+                IpsPlugin.logAndShowErrorDialog(e);
+                property.setCategory(initialCategory.getName());
+                property.getIpsSrcFile().markAsClean();
+            }
         }
     }
 

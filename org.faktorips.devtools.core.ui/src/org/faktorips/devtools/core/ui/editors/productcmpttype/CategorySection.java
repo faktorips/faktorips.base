@@ -53,7 +53,6 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.dialogs.DialogHelper;
 import org.faktorips.devtools.core.ui.editors.ViewerButtonComposite;
 import org.faktorips.devtools.core.ui.editors.productcmpttype.CategoryPage.CategoryCompositionSection;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -92,6 +91,8 @@ public class CategorySection extends IpsSection {
 
     private final IAction deleteAction;
 
+    private final IAction editAction;
+
     private ViewerButtonComposite viewerButtonComposite;
 
     public CategorySection(IProductCmptCategory category, IProductCmptType contextType,
@@ -108,6 +109,7 @@ public class CategorySection extends IpsSection {
         moveLeftAction = new MoveCategoryLeftAction(contextType, category, categoryCompositionSection);
         moveRightAction = new MoveCategoryRightAction(contextType, category, categoryCompositionSection);
         deleteAction = new DeleteCategoryAction(contextType, category, categoryCompositionSection);
+        editAction = new EditCategoryAction(contextType, category, categoryCompositionSection);
 
         initControls();
     }
@@ -135,6 +137,7 @@ public class CategorySection extends IpsSection {
     protected void populateToolBar(IToolBarManager toolBarManager) {
         addMoveActions(toolBarManager);
         toolBarManager.add(new Separator());
+        toolBarManager.add(editAction);
         toolBarManager.add(deleteAction);
     }
 
@@ -355,9 +358,7 @@ public class CategorySection extends IpsSection {
             }
 
             ChangeCategoryDialog dialog = new ChangeCategoryDialog(contextType, selectedProperty, category, getShell());
-            DialogHelper dialogHelper = new DialogHelper();
-
-            int returnCode = dialogHelper.openDialogWithMemento(dialog, selectedProperty);
+            int returnCode = dialog.open();
             if (returnCode == Window.OK) {
                 // Set the selection to the selected property in the target category
                 IProductCmptCategory selectedCategory = dialog.getSelectedCategory();
@@ -559,6 +560,27 @@ public class CategorySection extends IpsSection {
                 getCategoryCompositionSection().deleteCategorySection(getCategory());
                 getCategoryCompositionSection().relayout();
             }
+        }
+
+    }
+
+    private static class EditCategoryAction extends CategoryAction {
+
+        private static final String IMAGE_FILENAME = "Edit.gif"; //$NON-NLS-1$
+
+        private EditCategoryAction(IProductCmptType productCmptType, IProductCmptCategory category,
+                CategoryCompositionSection categoryCompositionSection) {
+
+            super(productCmptType, category, categoryCompositionSection);
+
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_FILENAME));
+            setText(Messages.EditCategoryAction_label);
+            setToolTipText(Messages.EditCategoryAction_tooltip);
+        }
+
+        @Override
+        public void run() {
+            // TODO AW
         }
 
     }
