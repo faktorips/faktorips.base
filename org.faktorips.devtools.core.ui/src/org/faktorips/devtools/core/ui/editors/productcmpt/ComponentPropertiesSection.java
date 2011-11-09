@@ -110,7 +110,7 @@ public class ComponentPropertiesSection extends IpsSection {
         initUiMasterController(controller);
 
         extFactory.createControls(rootPane, toolkit, product);
-        extFactory.bind(bindingContext);
+        extFactory.bind(getBindingContext());
     }
 
     private void initUiMasterController(IpsObjectUIController controller) {

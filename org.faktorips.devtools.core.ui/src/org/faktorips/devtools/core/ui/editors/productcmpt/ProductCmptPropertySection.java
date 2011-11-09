@@ -188,7 +188,7 @@ public class ProductCmptPropertySection extends IpsSection {
         EditPropertyValueComposite<?, ?> editComposite = null;
         if (property != null) {
             editComposite = propertyValueUI.createEditComposite(property, propertyValue, this, rootPane,
-                    bindingContext, getToolkit());
+                    getBindingContext(), getToolkit());
         } else {
             createEmptyComposite();
         }

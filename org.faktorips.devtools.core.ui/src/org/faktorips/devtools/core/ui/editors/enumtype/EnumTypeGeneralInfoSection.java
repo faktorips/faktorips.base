@@ -110,18 +110,18 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         EnumTypeRefControl supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite,
                 true);
         supertypeRefControl.setCurrentEnumType(enumType);
-        bindingContext.bindContent(supertypeRefControl, enumType, IEnumType.PROPERTY_SUPERTYPE);
+        getBindingContext().bindContent(supertypeRefControl, enumType, IEnumType.PROPERTY_SUPERTYPE);
 
         // Abstract
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelAbstract);
         Checkbox abstractCheckbox = toolkit.createCheckbox(composite);
-        bindingContext.bindContent(abstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
+        getBindingContext().bindContent(abstractCheckbox, enumType, IEnumType.PROPERTY_ABSTRACT);
 
         // Values are part of model
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelContainingValues);
         valuesArePartOfModelCheckbox = toolkit.createCheckbox(composite, true);
         valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
-        bindingContext.bindContent(valuesArePartOfModelCheckbox, enumType, IEnumType.PROPERTY_CONTAINING_VALUES);
+        getBindingContext().bindContent(valuesArePartOfModelCheckbox, enumType, IEnumType.PROPERTY_CONTAINING_VALUES);
 
         // EnumContent specification
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
@@ -129,7 +129,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         enumContentNameControl = new TextField(text);
         enumContentNameControl.getTextControl()
                 .setEnabled(!(enumType.isAbstract()) && !(enumType.isContainingValues()));
-        bindingContext.bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
+        getBindingContext().bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
 
         // Register controls for focus handling
         addFocusControl(supertypeRefControl);
@@ -139,7 +139,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
         // Extension properties
         extFactory.createControls(composite, toolkit, enumType);
-        extFactory.bind(bindingContext);
+        extFactory.bind(getBindingContext());
     }
 
     @Override

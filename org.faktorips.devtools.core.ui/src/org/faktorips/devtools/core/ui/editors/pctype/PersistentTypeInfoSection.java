@@ -158,10 +158,11 @@ public class PersistentTypeInfoSection extends IpsSection {
         Text descriminatorColumnValueText = toolkit.createText(discriminatorDefComposite);
 
         if (ipsObject.getPersistenceTypeInfo() != null) {
-            bindingContext.bindContent(persistentTypeField, ipsObject.getPersistenceTypeInfo(),
+            getBindingContext().bindContent(persistentTypeField, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_PERSISTENT_TYPE);
-            bindingContext.add(new ControlPropertyBinding(persistentTypeField.getControl(), ipsObject
-                    .getPersistenceTypeInfo(), "enabled", Boolean.TYPE) { //$NON-NLS-1$
+            getBindingContext().add(
+                    new ControlPropertyBinding(persistentTypeField.getControl(), ipsObject.getPersistenceTypeInfo(),
+                            "enabled", Boolean.TYPE) { //$NON-NLS-1$
                         @Override
                         public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                             IPersistentTypeInfo persTypeInfo = (IPersistentTypeInfo)getObject();
@@ -172,57 +173,61 @@ public class PersistentTypeInfoSection extends IpsSection {
                         }
                     });
 
-            bindingContext.bindContent(inheritanceStrategyField, ipsObject.getPersistenceTypeInfo(),
+            getBindingContext().bindContent(inheritanceStrategyField, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY);
-            bindingContext.bindContent(checkboxTableDefinedInSuperclass, ipsObject.getPersistenceTypeInfo(),
+            getBindingContext().bindContent(checkboxTableDefinedInSuperclass, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE);
-            bindingContext.add(new EnabledControlsBindingByProperty(checkboxTableDefinedInSuperclass, toolkit,
-                    IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE, false) {
-                @Override
-                public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                    IPersistentTypeInfo persistenceTypeInfo = ipsObject.getPersistenceTypeInfo();
-                    if (!(ipsObject.getPersistenceTypeInfo().getPersistentType() == PersistentType.ENTITY)) {
-                        uiToolkit.setDataChangeable(tableNameText, false);
-                        return;
-                    }
-
-                    if (persistenceTypeInfo.isUseTableDefinedInSupertype()) {
-                        bindingContext.removeBindings(tableNameText);
-                        try {
-                            IPolicyCmptType rootEntity = persistenceTypeInfo.findRootEntity();
-                            IType superType = ipsObject.findSupertype(ipsObject.getIpsProject());
-                            if (superType == null) {
-                                tableNameText.setText(Messages.PersistentTypeInfoSection_textSupertypeNotFound);
-                            } else if (rootEntity == null) {
-                                tableNameText.setText(Messages.PersistentTypeInfoSection_textRootEntityNotFound);
-                            } else {
-                                tableNameText.setText(rootEntity.getPersistenceTypeInfo().getTableName());
+            getBindingContext().add(
+                    new EnabledControlsBindingByProperty(checkboxTableDefinedInSuperclass, toolkit,
+                            IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE, false) {
+                        @Override
+                        public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                            IPersistentTypeInfo persistenceTypeInfo = ipsObject.getPersistenceTypeInfo();
+                            if (!(ipsObject.getPersistenceTypeInfo().getPersistentType() == PersistentType.ENTITY)) {
+                                uiToolkit.setDataChangeable(tableNameText, false);
+                                return;
                             }
-                            uiToolkit.setDataChangeable(tableNameText, false);
-                        } catch (CoreException e) {
-                            IpsPlugin.logAndShowErrorDialog(e);
+
+                            if (persistenceTypeInfo.isUseTableDefinedInSupertype()) {
+                                getBindingContext().removeBindings(tableNameText);
+                                try {
+                                    IPolicyCmptType rootEntity = persistenceTypeInfo.findRootEntity();
+                                    IType superType = ipsObject.findSupertype(ipsObject.getIpsProject());
+                                    if (superType == null) {
+                                        tableNameText.setText(Messages.PersistentTypeInfoSection_textSupertypeNotFound);
+                                    } else if (rootEntity == null) {
+                                        tableNameText
+                                                .setText(Messages.PersistentTypeInfoSection_textRootEntityNotFound);
+                                    } else {
+                                        tableNameText.setText(rootEntity.getPersistenceTypeInfo().getTableName());
+                                    }
+                                    uiToolkit.setDataChangeable(tableNameText, false);
+                                } catch (CoreException e) {
+                                    IpsPlugin.logAndShowErrorDialog(e);
+                                }
+                            } else {
+                                getBindingContext().bindContent(tableNameText, persistenceTypeInfo,
+                                        IPersistentTypeInfo.PROPERTY_TABLE_NAME);
+                                uiToolkit.setDataChangeable(tableNameText, true);
+                            }
                         }
-                    } else {
-                        bindingContext.bindContent(tableNameText, persistenceTypeInfo,
-                                IPersistentTypeInfo.PROPERTY_TABLE_NAME);
-                        uiToolkit.setDataChangeable(tableNameText, true);
-                    }
-                }
-            });
+                    });
 
-            bindingContext.bindContent(defineDiscriminatorColumn, ipsObject.getPersistenceTypeInfo(),
+            getBindingContext().bindContent(defineDiscriminatorColumn, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN);
-            bindingContext.add(new EnabledControlsBindingByProperty(descriminatorColumnNameText, toolkit,
-                    IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, true));
-            bindingContext.add(new EnabledControlsBindingByProperty(descriminatorDatatypeCombo, toolkit,
-                    IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, true));
+            getBindingContext().add(
+                    new EnabledControlsBindingByProperty(descriminatorColumnNameText, toolkit,
+                            IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, true));
+            getBindingContext().add(
+                    new EnabledControlsBindingByProperty(descriminatorDatatypeCombo, toolkit,
+                            IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, true));
 
-            bindingContext.bindContent(descriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
+            getBindingContext().bindContent(descriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME);
-            bindingContext.bindContent(descriminatorDatatypeField, ipsObject.getPersistenceTypeInfo(),
+            getBindingContext().bindContent(descriminatorDatatypeField, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_DATATYPE);
 
-            bindingContext.bindContent(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
+            getBindingContext().bindContent(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE);
         }
     }

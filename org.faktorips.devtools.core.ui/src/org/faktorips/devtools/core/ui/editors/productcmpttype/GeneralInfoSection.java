@@ -78,17 +78,17 @@ public class GeneralInfoSection extends IpsSection {
 
         ProductCmptType2RefControl supertypeRefControl = new ProductCmptType2RefControl(
                 productCmptType.getIpsProject(), composite, toolkit, false);
-        bindingContext.bindContent(supertypeRefControl, productCmptType, IType.PROPERTY_SUPERTYPE);
+        getBindingContext().bindContent(supertypeRefControl, productCmptType, IType.PROPERTY_SUPERTYPE);
 
         // Abstract flag
         toolkit.createLabel(composite, Messages.GeneralInfoSection_abstractLabel);
         Checkbox abstractCheckbox = toolkit.createCheckbox(composite);
-        bindingContext.bindContent(abstractCheckbox, productCmptType, IType.PROPERTY_ABSTRACT);
+        getBindingContext().bindContent(abstractCheckbox, productCmptType, IType.PROPERTY_ABSTRACT);
 
         // Reference to PolicyCmptType
         toolkit.createFormLabel(composite, Messages.GeneralInfoSection_configuresLabel);
         Checkbox configuratedCheckbox = toolkit.createCheckbox(composite);
-        bindingContext.bindContent(configuratedCheckbox, productCmptType,
+        getBindingContext().bindContent(configuratedCheckbox, productCmptType,
                 IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE);
 
         link = toolkit.createHyperlink(composite, Messages.GeneralInfoSection_configuredTypeLabel);
@@ -107,12 +107,12 @@ public class GeneralInfoSection extends IpsSection {
         });
 
         PcTypeRefControl control = toolkit.createPcTypeRefControl(productCmptType.getIpsProject(), composite);
-        bindingContext.bindContent(control, productCmptType, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
-        bindingContext.bindEnabled(control, productCmptType,
+        getBindingContext().bindContent(control, productCmptType, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
+        getBindingContext().bindEnabled(control, productCmptType,
                 IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE);
 
         extFactory.createControls(composite, toolkit, productCmptType);
-        extFactory.bind(bindingContext);
+        extFactory.bind(getBindingContext());
     }
 
 }

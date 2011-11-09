@@ -116,12 +116,6 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
         return resourceManager;
     }
 
-    @Override
-    protected void performRefresh() {
-        super.performRefresh();
-        bindingContext.updateUI();
-    }
-
     class PersistenceAttributesComposite extends PersistenceComposite {
 
         @Override

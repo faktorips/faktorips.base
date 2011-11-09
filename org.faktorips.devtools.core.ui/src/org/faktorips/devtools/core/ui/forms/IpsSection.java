@@ -53,20 +53,26 @@ import org.faktorips.util.ArgumentCheck;
 public abstract class IpsSection extends Composite implements IDataChangeableReadWriteAccess,
         IDataChangeableReadAccessWithListenerSupport, DisposeListener {
 
-    /** The UI control for the section */
-    private Section section;
+    private final BindingContext bindingContext = new BindingContext();
+
+    private final String id;
+
+    private final boolean collapsible;
 
     /** The SWT style (for example SWT.TITLE_BAR) */
-    private int style;
+    private final int style;
 
     /** SWT info how to layout the data (for example GridData.FILL_BOTH) */
-    private int layoutData;
+    private final int layoutData;
 
     /** The UI toolkit to create new UI elements with */
-    private UIToolkit toolkit;
+    private final UIToolkit toolkit;
 
     /** Flag indicating whether the content of this section can be changed by the user */
-    private boolean changeable;
+    private boolean changeable = true;
+
+    /** The UI control for the section */
+    private Section section;
 
     /**
      * Flag indicating how much space this section will request from its parent. If
@@ -104,13 +110,6 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
 
     private Composite clientComposite;
 
-    private String id;
-
-    private boolean collapsible;
-
-    /** Binding context to bind UI elements with model data. */
-    protected BindingContext bindingContext;
-
     /**
      * Creates a new {@link IpsSection} with the style
      * <tt>ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE</tt>.
@@ -120,9 +119,15 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
      * @param toolkit The UI toolkit to create new UI elements with
      */
     protected IpsSection(String id, Composite parent, int layoutData, UIToolkit toolkit) {
-        this(parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE, layoutData, toolkit);
+        super(parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE);
         this.id = id;
         collapsible = true;
+
+        this.style = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE;
+        this.layoutData = layoutData;
+        this.toolkit = toolkit;
+
+        addDisposeListener(this);
     }
 
     /**
@@ -134,14 +139,11 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     protected IpsSection(Composite parent, int style, int layoutData, UIToolkit toolkit) {
         super(parent, SWT.NONE);
         id = ""; //$NON-NLS-1$
+        collapsible = false;
 
         this.style = style;
         this.layoutData = layoutData;
         this.toolkit = toolkit;
-        collapsible = false;
-
-        bindingContext = new BindingContext();
-        changeable = true;
 
         addDisposeListener(this);
     }
@@ -518,6 +520,10 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
      */
     public UIToolkit getToolkit() {
         return toolkit;
+    }
+
+    protected BindingContext getBindingContext() {
+        return bindingContext;
     }
 
     protected Composite getClientComposite() {

@@ -106,7 +106,7 @@ public class EnumContentGeneralInfoSection extends IpsSection {
         }
 
         enumTypeLabel = toolkit.createLabel(composite, enumContent.getEnumType());
-        bindingContext.bindContent(enumTypeLabel, enumContent, IEnumContent.PROPERTY_ENUM_TYPE);
+        getBindingContext().bindContent(enumTypeLabel, enumContent, IEnumContent.PROPERTY_ENUM_TYPE);
     }
 
     @Override

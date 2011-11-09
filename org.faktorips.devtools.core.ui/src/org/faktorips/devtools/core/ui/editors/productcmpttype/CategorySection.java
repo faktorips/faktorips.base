@@ -131,16 +131,16 @@ public class CategorySection extends IpsSection {
                 toolkit);
 
         SectionEditField sectionEditField = new SectionEditField(getSectionControl());
-        bindingContext.bindContent(sectionEditField, category, IProductCmptCategory.PROPERTY_NAME);
-        bindingContext.bindContent(sectionEditField, category,
+        getBindingContext().bindContent(sectionEditField, category, IProductCmptCategory.PROPERTY_NAME);
+        getBindingContext().bindContent(sectionEditField, category,
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS);
-        bindingContext.bindContent(sectionEditField, category,
+        getBindingContext().bindContent(sectionEditField, category,
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES);
-        bindingContext.bindContent(sectionEditField, category,
+        getBindingContext().bindContent(sectionEditField, category,
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES);
-        bindingContext.bindContent(sectionEditField, category,
+        getBindingContext().bindContent(sectionEditField, category,
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES);
-        bindingContext.bindContent(sectionEditField, category,
+        getBindingContext().bindContent(sectionEditField, category,
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
     }
 

@@ -128,16 +128,17 @@ public class CustomIconSection extends IpsSection {
         // opened otherwise
         // TODO: SW 10.12.09 Why doesn't bindingContext update text field in the first place?
         iconPathText.setText(((IProductCmptType)type).getInstancesIcon());
-        bindingContext.bindContent(iconPathText, type, IProductCmptType.PROPERTY_ICON_FOR_INSTANCES);
+        getBindingContext().bindContent(iconPathText, type, IProductCmptType.PROPERTY_ICON_FOR_INSTANCES);
 
         // Update Icon on path-change
-        bindingContext.add(new ControlPropertyBinding(iconPathText, type, IProductCmptType.PROPERTY_ICON_FOR_INSTANCES,
-                String.class) {
-            @Override
-            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                refreshIcon();
-            }
-        });
+        getBindingContext().add(
+                new ControlPropertyBinding(iconPathText, type, IProductCmptType.PROPERTY_ICON_FOR_INSTANCES,
+                        String.class) {
+                    @Override
+                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                        refreshIcon();
+                    }
+                });
     }
 
     @Override

@@ -1066,7 +1066,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         removeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         // Details section
-        testCaseDetailArea = new TestCaseDetailArea(toolkit, contentProvider, this, bindingContext);
+        testCaseDetailArea = new TestCaseDetailArea(toolkit, contentProvider, this, getBindingContext());
         Section detailAreaSection = testCaseDetailArea.createInitialDetailArea(sashForm, sectionDetailTitle);
 
         createDetailAreaSectionToolbar(detailAreaSection);
@@ -2489,7 +2489,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         pack();
         getParent().layout(true);
         form.reflow(true);
-        bindingContext.updateUI();
+        getBindingContext().updateUI();
         form.setRedraw(true);
     }
 
