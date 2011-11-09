@@ -16,6 +16,8 @@ package org.faktorips.devtools.core.ui;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -29,6 +31,7 @@ import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
@@ -71,6 +74,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
     private IProductCmptTypeAssociation associationToB1;
     private IProductCmptTypeAssociation associationToB2;
     private IProductCmptTypeAssociation associationToC;
+    private FileTransfer fileTransfer;
 
     @Override
     @Before
@@ -108,21 +112,46 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         treeViewer.setInput(structure);
 
         dropListener = new TestDropListener(treeViewer);
+
+        fileTransfer = FileTransfer.getInstance();
     }
 
     @Test
-    public void testValidateDrop() {
+    public void testValidateDropEditableState() {
         IProductCmptReference target = structure.getRoot();
-        int operation = DND.DROP_LINK;
         TransferData transfer = getTransfer(cmptB1);
-        TransferData multiTransfer = getTransfer(cmptB1, cmptB2);
 
-        // check if srcfile editable state is recognized
+        // check if source file editable state is recognized
         assertTrue(dropListener.validateDrop(target, DND.DROP_LINK, transfer));
         IpsPlugin.getDefault().getIpsPreferences().setWorkingMode(IpsPreferences.WORKING_MODE_BROWSE);
         assertFalse(dropListener.validateDrop(target, DND.DROP_LINK, transfer));
         IpsPlugin.getDefault().getIpsPreferences().setWorkingMode(IpsPreferences.WORKING_MODE_EDIT);
         assertTrue(dropListener.validateDrop(target, DND.DROP_LINK, transfer));
+    }
+
+    @Test
+    public void testValidateDropForReferenceTargets() {
+        int operation = DND.DROP_LINK;
+        TransferData transfer = getTransfer(cmptB1);
+
+        // check (reference) targets
+        assertTrue(dropListener.validateDrop(structure.getRoot(), operation, transfer));
+        IProductCmptTypeAssociationReference[] references = structure
+                .getChildProductCmptTypeAssociationReferences(structure.getRoot());
+        assertTrue(dropListener.validateDrop(references[0], operation, transfer));
+        assertTrue(dropListener.validateDrop(references[1], operation, transfer));
+        assertFalse(dropListener.validateDrop(references[2], operation, transfer));
+
+        TransferData multiTransfer = getTransfer(cmptB1, cmptB2);
+        assertFalse(dropListener.validateDrop(references[2], operation, multiTransfer));
+        assertTrue(dropListener.validateDrop(references[1], operation, multiTransfer));
+        assertTrue(dropListener.validateDrop(references[0], operation, multiTransfer));
+    }
+
+    @Test
+    public void testValidateDropTransfer() {
+        IProductCmptReference target = structure.getRoot();
+        int operation = DND.DROP_LINK;
 
         // check transfer
         assertTrue(dropListener.validateDrop(target, operation, getTransfer(cmptB1)));
@@ -132,17 +161,6 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         assertTrue(dropListener.validateDrop(target, operation, getTransfer(cmptB1, cmptB2)));
         assertTrue(dropListener.validateDrop(target, operation, getTransfer(cmptB1, cmptC1)));
         assertFalse(dropListener.validateDrop(target, operation, getTransfer(cmptB1, cmptA)));
-
-        // check (reference) targets
-        assertTrue(dropListener.validateDrop(structure.getRoot(), operation, transfer));
-        IProductCmptTypeAssociationReference[] references = structure
-                .getChildProductCmptTypeAssociationReferences(structure.getRoot());
-        assertTrue(dropListener.validateDrop(references[0], operation, transfer));
-        assertTrue(dropListener.validateDrop(references[0], operation, multiTransfer));
-        assertTrue(dropListener.validateDrop(references[1], operation, transfer));
-        assertTrue(dropListener.validateDrop(references[1], operation, multiTransfer));
-        assertFalse(dropListener.validateDrop(references[2], operation, transfer));
-        assertFalse(dropListener.validateDrop(references[2], operation, multiTransfer));
     }
 
     @Test
@@ -315,9 +333,15 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
     private TransferData getTransfer(ProductCmpt... cmpts) {
         String[] filenames = getFilenames(cmpts);
-        TransferData transfer = FileTransfer.getInstance().getSupportedTypes()[0];
-        FileTransfer.getInstance().javaToNative(filenames, transfer);
-        return transfer;
+
+        TransferData transferData = fileTransfer.getSupportedTypes()[0];
+
+        FileTransfer transfer = mock(FileTransfer.class);
+        when(transfer.nativeToJava(transferData)).thenReturn(filenames);
+        when(transfer.isSupportedType(transferData)).thenReturn(true);
+        SingletonMockHelper.setSingletonInstance(FileTransfer.class, transfer);
+
+        return transferData;
     }
 
     private String[] getFilenames(ProductCmpt... cmpts) {
@@ -395,6 +419,12 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
         }
 
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        super.tearDown();
+        SingletonMockHelper.setSingletonInstance(FileTransfer.class, fileTransfer);
     }
 
 }
