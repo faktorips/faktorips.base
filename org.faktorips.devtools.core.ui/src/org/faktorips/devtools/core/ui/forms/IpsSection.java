@@ -515,11 +515,11 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         }
     }
 
-    protected UIToolkit getToolkit() {
+    protected final UIToolkit getToolkit() {
         return toolkit;
     }
 
-    protected BindingContext getBindingContext() {
+    protected final BindingContext getBindingContext() {
         return bindingContext;
     }
 
