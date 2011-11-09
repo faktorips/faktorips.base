@@ -77,6 +77,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     private Map<Class<?>, IEnumValueLookupService<?>> enumValueLookups = new HashMap<Class<?>, IEnumValueLookupService<?>>();
 
+    private IFormulaEvaluatorFactory formulaEvaluatorFactory;
+
     public AbstractRuntimeRepository(String name) {
         if (name == null) {
             throw new NullPointerException();
@@ -843,10 +845,18 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     /**
      * For default there is no formula evaluation supported.
      * <p>
-     * If you want to support formula evaluation you have to override this method
+     * If you want to support formula evaluation you have to override this method or use
+     * {@link AbstractRuntimeRepository#setFormulaEvaluatorFactory(IFormulaEvaluatorFactory)}.
      */
     public IFormulaEvaluatorFactory getFormulaEvaluatorFactory() {
-        return null;
+        return formulaEvaluatorFactory;
+    }
+
+    /**
+     * If you want to support formula evaluation you can set a {@link IFormulaEvaluatorFactory}.
+     */
+    public void setFormulaEvaluatorFactory(IFormulaEvaluatorFactory formulaEvaluatorFactory) {
+        this.formulaEvaluatorFactory = formulaEvaluatorFactory;
     }
 
     public <T> T getCustomRuntimeObject(Class<T> type, String ipsObjectQualifiedName) {
