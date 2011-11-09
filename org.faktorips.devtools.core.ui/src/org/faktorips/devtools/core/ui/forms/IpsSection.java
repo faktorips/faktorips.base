@@ -119,7 +119,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
      * @param toolkit The UI toolkit to create new UI elements with
      */
     protected IpsSection(String id, Composite parent, int layoutData, UIToolkit toolkit) {
-        super(parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE);
+        super(parent, SWT.NONE);
         this.id = id;
         collapsible = true;
 
