@@ -44,7 +44,6 @@ public abstract class SimpleIpsPartsSection extends IpsObjectPartContainerSectio
         this.site = site;
         initControls();
         setText(title);
-        partsComposite.createContextMenu();
     }
 
     protected SimpleIpsPartsSection(IIpsObject ipsObject, Composite parent, IWorkbenchPartSite site, int style,
@@ -58,13 +57,13 @@ public abstract class SimpleIpsPartsSection extends IpsObjectPartContainerSectio
         this.site = site;
         initControls();
         setText(title);
-        partsComposite.createContextMenu();
     }
 
     @Override
     protected final void initClientComposite(Composite client, UIToolkit toolkit) {
         partsComposite = createIpsPartsComposite(client, toolkit);
         addFocusControl(partsComposite);
+        partsComposite.createContextMenu();
     }
 
     /**
@@ -85,6 +84,7 @@ public abstract class SimpleIpsPartsSection extends IpsObjectPartContainerSectio
 
     @Override
     protected void performRefresh() {
+        super.performRefresh();
         partsComposite.refresh();
     }
 

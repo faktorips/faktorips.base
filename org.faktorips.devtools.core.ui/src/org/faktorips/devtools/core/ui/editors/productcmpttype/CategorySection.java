@@ -132,16 +132,6 @@ public class CategorySection extends IpsSection {
 
         SectionEditField sectionEditField = new SectionEditField(getSectionControl());
         getBindingContext().bindContent(sectionEditField, category, IProductCmptCategory.PROPERTY_NAME);
-        getBindingContext().bindContent(sectionEditField, category,
-                IProductCmptCategory.PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS);
-        getBindingContext().bindContent(sectionEditField, category,
-                IProductCmptCategory.PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES);
-        getBindingContext().bindContent(sectionEditField, category,
-                IProductCmptCategory.PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES);
-        getBindingContext().bindContent(sectionEditField, category,
-                IProductCmptCategory.PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES);
-        getBindingContext().bindContent(sectionEditField, category,
-                IProductCmptCategory.PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
     }
 
     private void setLayout(Composite parent) {

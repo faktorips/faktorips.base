@@ -61,8 +61,7 @@ public abstract class IpsObjectPartContainerSection extends IpsSection {
     }
 
     @Override
-    public void refresh() {
-        super.refresh();
+    protected void performRefresh() {
         refreshSectionMessageIndicator();
     }
 
