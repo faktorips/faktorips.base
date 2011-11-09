@@ -381,13 +381,14 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
      * Refreshes the section with the data from the model object(s).
      */
     public void refresh() {
-        performRefresh();
         bindingContext.updateUI();
+        performRefresh();
     }
 
     /**
-     * Subclass implementation that refreshes the section with actual data from the model object(s),
-     * called by {@link #refresh()} before calling {@link BindingContext#updateUI()}.
+     * Subclass implementation that refreshes the section with actual data from the model object(s).
+     * <p>
+     * Called by {@link #refresh()} right after {@link BindingContext#updateUI()} is called.
      * <p>
      * The default implementation does nothing.
      * 
