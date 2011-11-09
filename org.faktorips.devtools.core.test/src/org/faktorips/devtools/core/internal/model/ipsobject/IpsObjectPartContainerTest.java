@@ -68,6 +68,7 @@ import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * 
@@ -281,7 +282,39 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitFromXml() {
+    public void testToXml_ExtensionProperties_MissingDefinition() {
+        // init with several ext prop values
+        container.initFromXml(getTestDocument().getDocumentElement());
+
+        ExtensionPropertyDefinition extProperty0 = new StringExtensionPropertyDefinition();
+        extProperty0.setPropertyId("org.foo.prop0");
+        extProperty0.setDefaultValue("default");
+        extProperty0.setExtendedType(TestIpsObjectPartContainer.class);
+        model.addIpsObjectExtensionProperty(extProperty0);
+
+        Element containerElement = container.toXml(newDocument());
+        containsExtPropValueForId(containerElement, "org.foo.prop0");
+        containsExtPropValueForId(containerElement, "org.foo.prop1");
+        containsExtPropValueForId(containerElement, "org.foo.prop2");
+        containsExtPropValueForId(containerElement, "org.foo.prop3");
+    }
+
+    private void containsExtPropValueForId(Element containerElement, String extPropId) {
+        Element extPropertiesEl = XmlUtil.getFirstElement(containerElement,
+                IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT);
+        NodeList extPropValues = extPropertiesEl.getElementsByTagName(IpsObjectPartContainer.XML_VALUE_ELEMENT);
+        for (int i = 0; i < extPropValues.getLength(); i++) {
+            Element value = (Element)extPropValues.item(i);
+            assertTrue(value.hasAttribute("id"));
+            if (value.getAttribute("id").equals(extPropId)) {
+                return;
+            }
+        }
+        fail();
+    }
+
+    @Test
+    public void testInitFromXml_ExtensionProperties() {
         ExtensionPropertyDefinition extProp0 = new StringExtensionPropertyDefinition();
         extProp0.setPropertyId("org.foo.prop0");
         extProp0.setExtendedType(TestIpsObjectPartContainer.class);
@@ -326,6 +359,28 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testInitFromXml_ExtensionPropertyWithoutExtPropDefinition() {
+        ExtensionPropertyDefinition extProp0 = new StringExtensionPropertyDefinition();
+        extProp0.setPropertyId("org.foo.prop0");
+        extProp0.setExtendedType(TestIpsObjectPartContainer.class);
+        extProp0.setDefaultValue("default0");
+
+        model.addIpsObjectExtensionProperty(extProp0);
+
+        // test whether property values were loaded even without their ExtensionPropertyDefinitions
+        Element docEl = getTestDocument().getDocumentElement();
+        container.initFromXml(docEl);
+        assertEquals("value0", container.getExtPropertyValue("org.foo.prop0"));
+
+        // getExtPropertyValue() will throw exception, so test whether values are written to xml
+        Element containerElement = container.toXml(newDocument());
+        containsExtPropValueForId(containerElement, "org.foo.prop0");
+        containsExtPropValueForId(containerElement, "org.foo.prop1");
+        containsExtPropValueForId(containerElement, "org.foo.prop2");
+        containsExtPropValueForId(containerElement, "org.foo.prop3");
+    }
+
+    @Test
     public void testInitFromXmlMissingExtPropDefinition() {
         ExtensionPropertyDefinition extProp0 = new StringExtensionPropertyDefinition();
         extProp0.setPropertyId("org.foo.prop0");
@@ -352,8 +407,10 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertTrue(buf.indexOf("org.foo.prop1") != -1);
         assertTrue(buf.indexOf("is unknown") != -1);
         assertEquals("value0", container.getExtPropertyValue("org.foo.prop0"));
+
+        // exception if no value (not even null) is available
         try {
-            container.getExtPropertyValue("org.foo.prop1");
+            container.getExtPropertyValue("org.foo.propInexistent");
             fail();
         } catch (IllegalArgumentException e) {
             // because property doesn't exist

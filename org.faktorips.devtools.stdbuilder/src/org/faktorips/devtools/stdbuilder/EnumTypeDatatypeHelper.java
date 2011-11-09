@@ -107,4 +107,20 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
         }
     }
 
+    @Override
+    public JavaCodeFragment getToStringExpression(String fieldName) {
+        try {
+            JavaCodeFragment fragment = new JavaCodeFragment();
+            String getterName = enumTypeBuilder.getMethodNameGetIdentifierAttribute(enumTypeAdapter.getEnumType(),
+                    enumTypeAdapter.getEnumType().getIpsProject());
+            fragment.append(fieldName);
+            fragment.append(".");
+            fragment.append(getterName);
+            fragment.append("()");
+            return fragment;
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
