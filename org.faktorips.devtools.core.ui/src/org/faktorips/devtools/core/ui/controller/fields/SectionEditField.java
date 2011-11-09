@@ -15,11 +15,15 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.controller.EditField;
 
 /**
- * TODO AW improve documentation
+ * {@link EditField} that can be used to bind the title of a {@link Section} to a model object.
  * 
  * @author Alexander Weickmann
+ * 
+ * @see BindingContext
  */
 public class SectionEditField extends StringValueEditField {
 
@@ -66,7 +70,7 @@ public class SectionEditField extends StringValueEditField {
 
     @Override
     protected void addListenerToControl() {
-        // No listeners required
+        // No listeners are required
     }
 
 }
