@@ -16,9 +16,14 @@ package org.faktorips.devtools.core.ui.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.faktorips.devtools.core.ui.binding.BindingContext;
+
 /**
- * A controller that contains severall other controllers and delegates each call to all of them.
+ * A controller that contains several other controllers and delegates each call to all of them.
+ * 
+ * @deprecated deprecated since 3.6, use {@link BindingContext} instead
  */
+@Deprecated
 public class CompositeUIController implements UIController {
 
     private List<UIController> controllers = new ArrayList<UIController>();

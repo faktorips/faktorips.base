@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -28,7 +29,10 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author eidenschink
  * @author Jan Ortmann
+ * 
+ * @deprecated deprecated since 3.6, use {@link BindingContext} instead
  */
+@Deprecated
 public class IpsObjectUIController extends DefaultUIController {
 
     private IIpsObjectPartContainer partContainer;

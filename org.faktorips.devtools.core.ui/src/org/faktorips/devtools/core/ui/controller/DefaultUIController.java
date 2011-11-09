@@ -27,10 +27,15 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 
+/**
+ * @deprecated deprecated since 3.6, use {@link BindingContext} instead
+ */
+@Deprecated
 public class DefaultUIController implements ValueChangeListener, UIController, FocusListener {
 
     /** list of mappings between edit fields and properties of model objects. */
