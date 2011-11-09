@@ -22,28 +22,21 @@ import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.util.ArgumentCheck;
 
 /**
- * Shows a table structure's general properties and allowes to edit them.
+ * Shows a table structure's general properties and allows to edit them.
  * 
  * @author Thorsten Waertel
  */
 public class GeneralInfoSection extends IpsSection {
 
-    private ITableStructure tableStructure;
-
-    private IpsObjectUIController uiController;
-
-    private EnumValueField typeField;
+    private final ITableStructure tableStructure;
 
     public GeneralInfoSection(ITableStructure tableStructure, Composite parent, UIToolkit toolkit) {
-
         super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
-        ArgumentCheck.notNull(tableStructure);
+
         this.tableStructure = tableStructure;
 
         initControls();
@@ -58,15 +51,9 @@ public class GeneralInfoSection extends IpsSection {
         toolkit.createFormLabel(composite, Messages.GeneralInfoSection_labelTableType);
         Combo combo = toolkit.createCombo(composite, new EnumValue[] { TableStructureType.SINGLE_CONTENT,
                 TableStructureType.MULTIPLE_CONTENTS });
-        typeField = new EnumValueField(combo, TableStructureType.getEnumType());
 
-        uiController = new IpsObjectUIController(tableStructure);
-        uiController.add(typeField, ITableStructure.PROPERTY_TYPE);
-    }
-
-    @Override
-    protected void performRefresh() {
-        uiController.updateUI();
+        EnumValueField typeField = new EnumValueField(combo, TableStructureType.getEnumType());
+        getBindingContext().bindContent(typeField, tableStructure, ITableStructure.PROPERTY_TYPE);
     }
 
 }
