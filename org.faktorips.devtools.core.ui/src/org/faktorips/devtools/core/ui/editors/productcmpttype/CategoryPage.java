@@ -81,6 +81,7 @@ public class CategoryPage extends IpsObjectEditorPage {
             createLeftComposite(client);
             createRightComposite(client);
             createCategorySections();
+            createLinksSection();
             setInitialFocus();
         }
 
@@ -129,6 +130,10 @@ public class CategoryPage extends IpsObjectEditorPage {
             }
         }
 
+        private void createLinksSection() {
+            new LinksCategorySection(right, getToolkit());
+        }
+
         // TODO AW 02-11-2011: Create toolbar
 
         @Override
@@ -147,6 +152,7 @@ public class CategoryPage extends IpsObjectEditorPage {
                 categorySection.dispose();
             }
             createCategorySections();
+            createLinksSection();
         }
 
         /**
@@ -194,6 +200,21 @@ public class CategoryPage extends IpsObjectEditorPage {
             if (categorySection != null) {
                 categorySection.setFocus();
             }
+        }
+
+    }
+
+    private static class LinksCategorySection extends IpsSection {
+
+        private LinksCategorySection(Composite parent, UIToolkit toolkit) {
+            super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+            initControls();
+            setText("Structure");
+        }
+
+        @Override
+        protected void initClientComposite(Composite client, UIToolkit toolkit) {
+            // Nothing to do
         }
 
     }

@@ -59,7 +59,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
 
     private final boolean collapsible;
 
-    /** The SWT style (for example SWT.TITLE_BAR) */
+    /** The SWT style (for example {@link Section#TITLE_BAR}) */
     private final int style;
 
     /** SWT info how to layout the data (for example GridData.FILL_BOTH) */
