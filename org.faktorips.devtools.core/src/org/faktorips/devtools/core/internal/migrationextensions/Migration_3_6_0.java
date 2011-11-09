@@ -28,8 +28,15 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOper
  * Migration to version 3.6.0.
  * <p>
  * Searches for all {@link IProductCmptType}s that have no supertype. For each such
- * {@link IProductCmptType}, default {@link IProductCmptCategory}s are created. The categories that
- * are created correspond to the UI sections as they are set up prior to version 3.6.0.
+ * {@link IProductCmptType}, the default {@link IProductCmptCategory}s are created if they are
+ * missing. The default categories that are created correspond to the UI sections as they were set
+ * up prior to version 3.6.0:
+ * <ul>
+ * <li>Attributes
+ * <li>Tables and Formulas
+ * <li>Validation Rules
+ * <li>Defaults and Value Sets
+ * </ul>
  * 
  * @author Alexander Weickmann
  */
@@ -55,27 +62,52 @@ public class Migration_3_6_0 extends DefaultMigration {
         }
     }
 
-    private void createDefaultCategories(IProductCmptType productCmptType) {
-        IProductCmptCategory attributes = productCmptType
-                .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryAttributes);
-        attributes.setDefaultForProductCmptTypeAttributes(true);
-        attributes.setPosition(Position.LEFT);
+    private void createDefaultCategories(IProductCmptType productCmptType) throws CoreException {
+        createDefaultCategoryAttributes(productCmptType);
+        createDefaultCategoryTablesAndFormulas(productCmptType);
+        createDefaultCategoryValidationRules(productCmptType);
+        createDefaultCategoryDefaultsAndValueSets(productCmptType);
+    }
 
-        IProductCmptCategory tablesAndFormulas = productCmptType
-                .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryTablesAndFormulas);
-        tablesAndFormulas.setDefaultForTableStructureUsages(true);
-        tablesAndFormulas.setDefaultForFormulaSignatureDefinitions(true);
-        tablesAndFormulas.setPosition(Position.LEFT);
+    private void createDefaultCategoryAttributes(IProductCmptType productCmptType) throws CoreException {
+        if (productCmptType.findDefaultCategoryForProductCmptTypeAttributes(productCmptType.getIpsProject()) == null) {
+            IProductCmptCategory attributes = productCmptType
+                    .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryAttributes);
+            attributes.setDefaultForProductCmptTypeAttributes(true);
+            attributes.setPosition(Position.LEFT);
+        }
+    }
 
-        IProductCmptCategory validationRules = productCmptType
-                .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryValidationRules);
-        validationRules.setDefaultForValidationRules(true);
-        validationRules.setPosition(Position.LEFT);
+    private void createDefaultCategoryTablesAndFormulas(IProductCmptType productCmptType) throws CoreException {
+        boolean defaultTableStructureUsagesExists = productCmptType
+                .findDefaultCategoryForTableStructureUsages(productCmptType.getIpsProject()) != null;
+        boolean defaultFormulaSignatureDefinitionsExists = productCmptType
+                .findDefaultCategoryForFormulaSignatureDefinitions(productCmptType.getIpsProject()) != null;
+        if (!defaultTableStructureUsagesExists || !defaultFormulaSignatureDefinitionsExists) {
+            IProductCmptCategory tablesAndFormulas = productCmptType
+                    .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryTablesAndFormulas);
+            tablesAndFormulas.setDefaultForTableStructureUsages(!defaultTableStructureUsagesExists);
+            tablesAndFormulas.setDefaultForFormulaSignatureDefinitions(!defaultFormulaSignatureDefinitionsExists);
+            tablesAndFormulas.setPosition(Position.LEFT);
+        }
+    }
 
-        IProductCmptCategory defaultsAndValueSets = productCmptType
-                .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryDefaultsAndValueSets);
-        defaultsAndValueSets.setDefaultForPolicyCmptTypeAttributes(true);
-        defaultsAndValueSets.setPosition(Position.RIGHT);
+    private void createDefaultCategoryValidationRules(IProductCmptType productCmptType) throws CoreException {
+        if (productCmptType.findDefaultCategoryForValidationRules(productCmptType.getIpsProject()) == null) {
+            IProductCmptCategory validationRules = productCmptType
+                    .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryValidationRules);
+            validationRules.setDefaultForValidationRules(true);
+            validationRules.setPosition(Position.LEFT);
+        }
+    }
+
+    private void createDefaultCategoryDefaultsAndValueSets(IProductCmptType productCmptType) throws CoreException {
+        if (productCmptType.findDefaultCategoryForPolicyCmptTypeAttributes(productCmptType.getIpsProject()) == null) {
+            IProductCmptCategory defaultsAndValueSets = productCmptType
+                    .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryDefaultsAndValueSets);
+            defaultsAndValueSets.setDefaultForPolicyCmptTypeAttributes(true);
+            defaultsAndValueSets.setPosition(Position.RIGHT);
+        }
     }
 
     @Override
@@ -85,12 +117,12 @@ public class Migration_3_6_0 extends DefaultMigration {
 
     @Override
     public String getDescription() {
-        return "Product component properties (product relevant policy component type attributes" //$NON-NLS-1$
+        return "Product component properties (changeable and configurable policy component type attributes" //$NON-NLS-1$
                 + ", configurable validation rules, product component type attributes, formula " //$NON-NLS-1$
                 + "signature definitions and table structure usages) are now all assigned to " //$NON-NLS-1$
                 + "categories in the corresponding product component type. For all product component " //$NON-NLS-1$
                 + "types without a superclass, the default categories are created. The default" //$NON-NLS-1$
-                + " categories correspond to the sorting as it is prior to version 3.6.0."; //$NON-NLS-1$
+                + " categories correspond to the sorting as it was prior to version 3.6.0."; //$NON-NLS-1$
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {

@@ -165,9 +165,17 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
     }
 
     /**
-     * This template method is called after the ips object is loaded. Subclasses must implement
-     * their migration logic here. Note that an object is only saved physically to disk, if it was
-     * either changed or it's enclosing file is marked as dirty.
+     * This template method is called after the {@link IIpsSrcFile} is loaded.
+     * <p>
+     * Subclasses must implement their migration logic here. Note that an object is only saved
+     * physically to disk if it was either changed or it's enclosing {@link IIpsSrcFile} is marked
+     * as dirty.
+     * <p>
+     * <strong>Important:</strong> The migration process must be implemented in such a way that it
+     * can be executed multiple times on the same {@link IIpsSrcFile} as projects may be migrated
+     * several times using the same migration.
+     * 
+     * @param srcFile the {@link IIpsSrcFile} to migrate
      * 
      * @see IIpsSrcFile#markAsDirty()
      */
