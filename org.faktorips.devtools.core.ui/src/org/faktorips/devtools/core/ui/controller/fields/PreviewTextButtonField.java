@@ -14,17 +14,23 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 
 /**
- * Field to handle text-button-controlls which are only for preview-purposes (usually the button
- * opens the editor for the contents only previewed by the textfield).
+ * Field to handle a {@link TextButtonControl} for preview-purposes only (usually the button opens
+ * the editor for the contents to be previewed by the {@link Text} control).
  * 
  * @author Thorsten Guenther
+ * @author Cornelius Dirmeier
+ * @author Alexander Weickmann
  */
-public class PreviewTextButtonField extends DefaultEditField<Object> {
+public class PreviewTextButtonField extends DefaultEditField<IValueSet> {
 
-    private TextButtonControl control;
+    private final TextButtonControl control;
+
+    private IValueSet currentValue;
 
     public PreviewTextButtonField(TextButtonControl control) {
         this.control = control;
@@ -37,17 +43,30 @@ public class PreviewTextButtonField extends DefaultEditField<Object> {
 
     @Override
     protected void addListenerToControl() {
-        // no changes - preview only
-    }
-
-    @Override
-    public Object parseContent() {
-        return control.getText();
-    }
-
-    @Override
-    public void setValue(Object newValue) {
         // nothing to do - preview only!
+    }
+
+    @Override
+    public IValueSet parseContent() {
+        if (currentValue != null && getText().equals(currentValue.toShortString())) {
+            /*
+             * The text in the control equals the text representation of the current value. To avoid
+             * changes, return the current value.
+             */
+            return currentValue;
+        } else {
+            /*
+             * The value has changed or the current value is null. Return null to indicate that the
+             * value needs to be updated.
+             */
+            return null;
+        }
+    }
+
+    @Override
+    public void setValue(IValueSet newValue) {
+        currentValue = newValue;
+        control.setText(newValue.toShortString());
     }
 
     @Override

@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetFilter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
-import org.faktorips.devtools.core.ui.controller.CompositeUIController;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.PreviewTextButtonField;
 import org.faktorips.util.message.ObjectProperty;
@@ -53,10 +53,10 @@ public final class ConfigElementEditComposite extends
         EditPropertyValueComposite<IPolicyCmptTypeAttribute, IConfigElement> {
 
     public ConfigElementEditComposite(IPolicyCmptTypeAttribute property, IConfigElement propertyValue,
-            ProductCmptPropertySection propertySection, Composite parent, CompositeUIController uiMasterController,
+            ProductCmptPropertySection propertySection, Composite parent, BindingContext bindingContext,
             UIToolkit toolkit) {
 
-        super(property, propertyValue, propertySection, parent, uiMasterController, toolkit);
+        super(property, propertyValue, propertySection, parent, bindingContext, toolkit);
         initControls();
     }
 
@@ -165,8 +165,7 @@ public final class ConfigElementEditComposite extends
     private void createValueSetEditFieldForOtherThanRange(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
         createLabelWithWidthHint(Messages.ConfigElementEditComposite_valueSet);
 
-        AnyValueSetControl valueSetControl = new AnyValueSetControl(this, getToolkit(), getPropertyValue(), getShell(),
-                getController());
+        AnyValueSetControl valueSetControl = new AnyValueSetControl(this, getToolkit(), getPropertyValue(), getShell());
         valueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
         valueSetControl.setText(IpsUIPlugin.getDefault().getDatatypeFormatter()
                 .formatValueSet(getPropertyValue().getValueSet()));

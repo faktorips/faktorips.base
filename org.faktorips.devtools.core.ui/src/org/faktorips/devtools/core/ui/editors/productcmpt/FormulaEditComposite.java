@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.CompositeUIController;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.FormulaEditControl;
@@ -40,10 +40,10 @@ import org.faktorips.util.message.ObjectProperty;
 public final class FormulaEditComposite extends EditPropertyValueComposite<IProductCmptTypeMethod, IFormula> {
 
     public FormulaEditComposite(IProductCmptTypeMethod property, IFormula propertyValue,
-            ProductCmptPropertySection propertySection, Composite parent, CompositeUIController uiMasterController,
+            ProductCmptPropertySection propertySection, Composite parent, BindingContext bindingContext,
             UIToolkit toolkit) {
 
-        super(property, propertyValue, propertySection, parent, uiMasterController, toolkit);
+        super(property, propertyValue, propertySection, parent, bindingContext, toolkit);
         initControls();
     }
 

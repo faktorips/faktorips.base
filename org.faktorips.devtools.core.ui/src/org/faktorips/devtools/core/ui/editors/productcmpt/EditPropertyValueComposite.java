@@ -25,9 +25,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.CompositeUIController;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
@@ -65,7 +64,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
 
     private final V propertyValue;
 
-    private final IpsObjectUIController controller;
+    private final BindingContext bindingContext;
 
     private final UIToolkit toolkit;
 
@@ -80,17 +79,15 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     private int firstControlHeight = -1;
 
     protected EditPropertyValueComposite(P property, V propertyValue, ProductCmptPropertySection propertySection,
-            Composite parent, CompositeUIController uiMasterController, UIToolkit toolkit) {
+            Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
 
         super(parent, SWT.NONE);
 
         this.property = property;
         this.propertyValue = propertyValue;
         this.propertySection = propertySection;
+        this.bindingContext = bindingContext;
         this.toolkit = toolkit;
-
-        controller = new IpsObjectUIController(propertyValue);
-        uiMasterController.add(controller);
     }
 
     protected final ProductCmptPropertySection getProductCmptPropertySection() {
@@ -109,8 +106,8 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
         return propertyValue;
     }
 
-    protected final IpsObjectUIController getController() {
-        return controller;
+    protected final BindingContext getBindingContext() {
+        return bindingContext;
     }
 
     protected final UIToolkit getToolkit() {
@@ -152,7 +149,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
                 firstControlHeight = editField.getControl().computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
             }
             ObjectProperty objectProperty = editFieldsToObjectProperties.get(editField);
-            controller.add(editField, objectProperty.getObject(), objectProperty.getProperty());
+            bindingContext.bindContent(editField, objectProperty.getObject(), objectProperty.getProperty());
             propertySection.addFocusControl(editField.getControl());
         }
 

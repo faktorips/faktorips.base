@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 import org.faktorips.util.memento.Memento;
@@ -53,8 +52,6 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
 
     /** The shell to details dialog within. */
     private Shell shell;
-
-    private IpsObjectUIController controller;
 
     /**
      * The state of the config element before opening the detail edit dialog. Used to handle the
@@ -78,15 +75,11 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
      * @param toolkit The toolkit used to create controls.
      * @param configElement The config element that contains the value set.
      * @param shell The shell to open the details edit dialog within.
-     * @param controller The controller to notify uppon changes to update the ui.
      */
-    public AnyValueSetControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell,
-            IpsObjectUIController controller) {
-
+    public AnyValueSetControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell) {
         super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
         this.configElement = configElement;
         this.shell = shell;
-        this.controller = controller;
         getTextControl().setEditable(false);
     }
 
@@ -103,8 +96,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
             if (dialog.open() == Window.OK) {
                 String formattedValue = IpsUIPlugin.getDefault().getDatatypeFormatter()
                         .formatValueSet(configElement.getValueSet());
-                super.getTextControl().setText(formattedValue);
-                controller.updateUI();
+                getTextControl().setText(formattedValue);
             } else {
                 resetState();
             }

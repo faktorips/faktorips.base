@@ -43,7 +43,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.CompositeUIController;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -60,11 +60,6 @@ public class ProductCmptPropertySection extends IpsSection {
     private final List<IPropertyValue> propertyValues;
 
     /**
-     * Controller to handle update of UI and model automatically.
-     */
-    private final CompositeUIController uiMasterController;
-
-    /**
      * Pane which serves as parent for all controls created inside this section.
      */
     private Composite rootPane;
@@ -77,8 +72,6 @@ public class ProductCmptPropertySection extends IpsSection {
 
         this.category = category;
         this.propertyValues = propertyValues;
-
-        uiMasterController = new CompositeUIController();
 
         /*
          * The following call is necessary in addition to the above layout data constants because of
@@ -195,7 +188,7 @@ public class ProductCmptPropertySection extends IpsSection {
         EditPropertyValueComposite<?, ?> editComposite = null;
         if (property != null) {
             editComposite = propertyValueUI.createEditComposite(property, propertyValue, this, rootPane,
-                    uiMasterController, getToolkit());
+                    bindingContext, getToolkit());
         } else {
             createEmptyComposite();
         }
@@ -223,7 +216,7 @@ public class ProductCmptPropertySection extends IpsSection {
 
     @Override
     protected void performRefresh() {
-        uiMasterController.updateUI();
+        bindingContext.updateUI();
     }
 
     @Override
@@ -256,11 +249,11 @@ public class ProductCmptPropertySection extends IpsSection {
                     IPropertyValue propertyValue,
                     ProductCmptPropertySection propertySection,
                     Composite parent,
-                    CompositeUIController uiMasterController,
+                    BindingContext bindingContext,
                     UIToolkit toolkit) {
 
                 return new AttributeValueEditComposite((IProductCmptTypeAttribute)property,
-                        (IAttributeValue)propertyValue, propertySection, parent, uiMasterController, toolkit);
+                        (IAttributeValue)propertyValue, propertySection, parent, bindingContext, toolkit);
             }
         },
 
@@ -295,11 +288,11 @@ public class ProductCmptPropertySection extends IpsSection {
                     IPropertyValue propertyValue,
                     ProductCmptPropertySection propertySection,
                     Composite parent,
-                    CompositeUIController uiMasterController,
+                    BindingContext bindingContext,
                     UIToolkit toolkit) {
 
                 return new TableContentUsageEditComposite((ITableStructureUsage)property,
-                        (ITableContentUsage)propertyValue, propertySection, parent, uiMasterController, toolkit);
+                        (ITableContentUsage)propertyValue, propertySection, parent, bindingContext, toolkit);
             }
         },
 
@@ -309,11 +302,11 @@ public class ProductCmptPropertySection extends IpsSection {
                     IPropertyValue propertyValue,
                     ProductCmptPropertySection propertySection,
                     Composite parent,
-                    CompositeUIController uiMasterController,
+                    BindingContext bindingContext,
                     UIToolkit toolkit) {
 
                 return new ValidationRuleConfigEditComposite((IValidationRule)property,
-                        (IValidationRuleConfig)propertyValue, propertySection, parent, uiMasterController, toolkit);
+                        (IValidationRuleConfig)propertyValue, propertySection, parent, bindingContext, toolkit);
             }
         },
 
@@ -323,11 +316,11 @@ public class ProductCmptPropertySection extends IpsSection {
                     IPropertyValue propertyValue,
                     ProductCmptPropertySection propertySection,
                     Composite parent,
-                    CompositeUIController uiMasterController,
+                    BindingContext bindingContext,
                     UIToolkit toolkit) {
 
                 return new FormulaEditComposite((IProductCmptTypeMethod)property, (IFormula)propertyValue,
-                        propertySection, parent, uiMasterController, toolkit);
+                        propertySection, parent, bindingContext, toolkit);
             }
         },
 
@@ -337,11 +330,11 @@ public class ProductCmptPropertySection extends IpsSection {
                     IPropertyValue propertyValue,
                     ProductCmptPropertySection propertySection,
                     Composite parent,
-                    CompositeUIController uiMasterController,
+                    BindingContext bindingContext,
                     UIToolkit toolkit) {
 
                 return new ConfigElementEditComposite((IPolicyCmptTypeAttribute)property,
-                        (IConfigElement)propertyValue, propertySection, parent, uiMasterController, toolkit);
+                        (IConfigElement)propertyValue, propertySection, parent, bindingContext, toolkit);
             }
         };
 
@@ -380,7 +373,7 @@ public class ProductCmptPropertySection extends IpsSection {
                 IPropertyValue propertyValue,
                 ProductCmptPropertySection propertySection,
                 Composite parent,
-                CompositeUIController uiMasterController,
+                BindingContext bindingContext,
                 UIToolkit toolkit);
 
     }

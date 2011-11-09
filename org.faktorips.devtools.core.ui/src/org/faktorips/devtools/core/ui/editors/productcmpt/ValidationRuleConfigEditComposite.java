@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.CompositeUIController;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -38,10 +38,10 @@ public final class ValidationRuleConfigEditComposite extends
         EditPropertyValueComposite<IValidationRule, IValidationRuleConfig> {
 
     public ValidationRuleConfigEditComposite(IValidationRule property, IValidationRuleConfig propertyValue,
-            ProductCmptPropertySection propertySection, Composite parent, CompositeUIController uiMasterController,
+            ProductCmptPropertySection propertySection, Composite parent, BindingContext bindingContext,
             UIToolkit toolkit) {
 
-        super(property, propertyValue, propertySection, parent, uiMasterController, toolkit);
+        super(property, propertyValue, propertySection, parent, bindingContext, toolkit);
         initControls();
     }
 

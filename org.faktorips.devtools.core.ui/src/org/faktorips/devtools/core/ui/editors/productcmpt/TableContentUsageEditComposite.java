@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.CompositeUIController;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TableContentsUsageRefControl;
@@ -36,10 +36,10 @@ public final class TableContentUsageEditComposite extends
         EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
 
     public TableContentUsageEditComposite(ITableStructureUsage property, ITableContentUsage propertyValue,
-            ProductCmptPropertySection propertySection, Composite parent, CompositeUIController uiMasterController,
+            ProductCmptPropertySection propertySection, Composite parent, BindingContext bindingContext,
             UIToolkit toolkit) {
 
-        super(property, propertyValue, propertySection, parent, uiMasterController, toolkit);
+        super(property, propertyValue, propertySection, parent, bindingContext, toolkit);
         initControls();
     }
 

@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
-import org.faktorips.devtools.core.ui.controller.CompositeUIController;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.util.message.ObjectProperty;
 
@@ -46,10 +46,10 @@ public final class AttributeValueEditComposite extends
         EditPropertyValueComposite<IProductCmptTypeAttribute, IAttributeValue> {
 
     public AttributeValueEditComposite(IProductCmptTypeAttribute property, IAttributeValue propertyValue,
-            ProductCmptPropertySection propertySection, Composite parent, CompositeUIController uiMasterController,
+            ProductCmptPropertySection propertySection, Composite parent, BindingContext bindingContext,
             UIToolkit toolkit) {
 
-        super(property, propertyValue, propertySection, parent, uiMasterController, toolkit);
+        super(property, propertyValue, propertySection, parent, bindingContext, toolkit);
         initControls();
     }
 
