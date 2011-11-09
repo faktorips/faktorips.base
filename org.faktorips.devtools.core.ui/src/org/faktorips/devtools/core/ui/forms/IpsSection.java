@@ -509,9 +509,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     @Override
     public void widgetDisposed(DisposeEvent e) {
         if (e.widget == this) {
-            if (bindingContext != null) {
-                bindingContext.dispose();
-            }
+            bindingContext.dispose();
         }
     }
 
