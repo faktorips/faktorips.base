@@ -23,10 +23,11 @@ import org.faktorips.util.message.MessageList;
  * <p>
  * This interface is necessary to build a generic data binding framework as the method to get and
  * set a value in a SWT control differ slightly from control to control.
- * <p>
- * The type T represents the type that is written to the model. That is not the same data type as
- * this component should show. e.g. an edit field may format an decimal value and let the user enter
- * decimal values but in the model we only write String values. In this case T would be String.
+ * 
+ * @param <T> represents the type that is written to the model. That is not the same data type as
+ *            this component should show. e.g. an edit field may format an decimal value and let the
+ *            user enter decimal values but in the model we only write String values. In this case T
+ *            would be String.
  */
 public interface EditField<T> {
 

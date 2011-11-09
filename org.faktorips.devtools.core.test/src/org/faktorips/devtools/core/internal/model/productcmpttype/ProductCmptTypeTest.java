@@ -1769,9 +1769,25 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testIsDefining() {
-        deleteAllCategories(productCmptType, superProductCmptType);
-
         IProductCmptCategory superCategory = superProductCmptType.newCategory("superCategory");
+        IProductCmptCategory category = productCmptType.newCategory("category");
+
+        assertFalse(productCmptType.isDefining(superCategory));
+        assertTrue(productCmptType.isDefining(category));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * The super {@link IProductCmptType} features an {@link IProductCmptCategory} that has the same
+     * name as the {@link IProductCmptCategory} under test.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The {@link IProductCmptType} should not define the {@link IProductCmptCategory} of the super
+     * {@link IProductCmptType}.
+     */
+    @Test
+    public void testIsDefining_SameCategoryNameInSupertype() {
+        IProductCmptCategory superCategory = superProductCmptType.newCategory("category");
         IProductCmptCategory category = productCmptType.newCategory("category");
 
         assertFalse(productCmptType.isDefining(superCategory));

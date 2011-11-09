@@ -56,11 +56,6 @@ class DescriptionPage extends IpsObjectEditorPage {
             new DescriptionEditComposite(client, describedElement, toolkit);
         }
 
-        @Override
-        protected void performRefresh() {
-            // Nothing to do
-        }
-
     }
 
 }

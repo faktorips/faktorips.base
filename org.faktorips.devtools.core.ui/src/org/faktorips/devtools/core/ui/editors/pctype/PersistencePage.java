@@ -40,7 +40,7 @@ public class PersistencePage extends IpsObjectEditorPage {
         PersistentTypeInfoSection persistenceSection = new PersistentTypeInfoSection((IPolicyCmptType)getIpsObject(),
                 formBody, toolkit);
         persistenceSection.setExpanded(true);
-        persistenceSection.performRefresh();
+        persistenceSection.refresh();
 
         new PersistentAttributeSection((IPolicyCmptType)getIpsObject(), formBody, toolkit);
         new PersistentAssociationSection((IPolicyCmptType)getIpsObject(), formBody, toolkit);

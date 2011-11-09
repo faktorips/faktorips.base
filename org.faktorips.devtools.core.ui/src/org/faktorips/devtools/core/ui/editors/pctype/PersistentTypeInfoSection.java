@@ -227,9 +227,4 @@ public class PersistentTypeInfoSection extends IpsSection {
         }
     }
 
-    @Override
-    protected void performRefresh() {
-        bindingContext.updateUI();
-    }
-
 }

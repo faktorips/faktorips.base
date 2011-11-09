@@ -99,12 +99,6 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
         return new PersistenceAssociationsComposite(getIpsObject(), parent, toolkit);
     }
 
-    @Override
-    protected void performRefresh() {
-        super.performRefresh();
-        bindingContext.updateUI();
-    }
-
     private ResourceManager getResourceManager() {
         if (resourceManager == null) {
             resourceManager = new LocalResourceManager(JFaceResources.getResources());

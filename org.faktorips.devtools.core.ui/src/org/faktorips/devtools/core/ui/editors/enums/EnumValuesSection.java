@@ -747,11 +747,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         };
     }
 
-    @Override
-    protected void performRefresh() {
-        bindingContext.updateUI();
-    }
-
     /** Renames the column identified by the given column name to the given new column name. */
     public void renameTableColumn(String columnName, String newColumnName) {
         if (!(columnNames.contains(columnName))) {

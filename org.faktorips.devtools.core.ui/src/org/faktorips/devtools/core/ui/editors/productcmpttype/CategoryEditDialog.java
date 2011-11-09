@@ -37,6 +37,8 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
 
     private final ExtensionPropertyControlFactory extensionFactory;
 
+    private Text nameText;
+
     public CategoryEditDialog(IProductCmptCategory category, Shell parentShell) {
         super(category, parentShell, Messages.CategoryEditDialog_title, true);
         extensionFactory = new ExtensionPropertyControlFactory(category.getClass());
@@ -49,6 +51,8 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
         TabItem generalPage = new TabItem(tabFolder, SWT.NONE);
         generalPage.setText(Messages.CategoryEditDialog_generalTabTitle);
         generalPage.setControl(createGeneralPage(tabFolder));
+
+        setInitialFocus();
 
         return tabFolder;
     }
@@ -76,7 +80,7 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
     private void createNameComposite(Composite page) {
         Composite nameComposite = getToolkit().createLabelEditColumnComposite(page);
         getToolkit().createLabel(nameComposite, Messages.CategoryEditDialog_nameLabel);
-        Text nameText = getToolkit().createText(nameComposite);
+        nameText = getToolkit().createText(nameComposite);
         bindingContext.bindContent(nameText, getCategory(), IProductCmptCategory.PROPERTY_NAME);
     }
 
@@ -118,6 +122,10 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
     private void createBottomExtensionPropertyControls(Composite page) {
         extensionFactory
                 .createControls(page, getToolkit(), getCategory(), IExtensionPropertyDefinition.POSITION_BOTTOM);
+    }
+
+    private void setInitialFocus() {
+        nameText.setFocus();
     }
 
     private IProductCmptCategory getCategory() {

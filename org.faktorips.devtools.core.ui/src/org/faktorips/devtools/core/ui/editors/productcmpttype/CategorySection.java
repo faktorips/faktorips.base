@@ -55,6 +55,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controller.fields.SectionEditField;
 import org.faktorips.devtools.core.ui.dialogs.DialogHelper;
 import org.faktorips.devtools.core.ui.editors.ViewerButtonComposite;
 import org.faktorips.devtools.core.ui.editors.productcmpttype.CategoryPage.CategoryCompositionSection;
@@ -125,8 +126,22 @@ public class CategorySection extends IpsSection {
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         setLayout(client);
+
         viewerButtonComposite = new CategoryComposite(category, contextType, categoryCompositionSection, client,
                 toolkit);
+
+        SectionEditField sectionEditField = new SectionEditField(getSectionControl());
+        bindingContext.bindContent(sectionEditField, category, IProductCmptCategory.PROPERTY_NAME);
+        bindingContext.bindContent(sectionEditField, category,
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS);
+        bindingContext.bindContent(sectionEditField, category,
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES);
+        bindingContext.bindContent(sectionEditField, category,
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES);
+        bindingContext.bindContent(sectionEditField, category,
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES);
+        bindingContext.bindContent(sectionEditField, category,
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
     }
 
     private void setLayout(Composite parent) {

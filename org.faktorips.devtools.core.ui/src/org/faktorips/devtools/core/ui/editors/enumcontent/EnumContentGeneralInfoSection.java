@@ -111,7 +111,6 @@ public class EnumContentGeneralInfoSection extends IpsSection {
 
     @Override
     protected void performRefresh() {
-        bindingContext.updateUI();
         IIpsProject ipsProject = enumContent.getIpsProject();
         try {
             MessageList validationMessages = enumContent.validate(ipsProject);

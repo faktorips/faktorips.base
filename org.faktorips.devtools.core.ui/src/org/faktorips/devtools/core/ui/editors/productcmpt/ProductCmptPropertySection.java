@@ -215,11 +215,6 @@ public class ProductCmptPropertySection extends IpsSection {
     }
 
     @Override
-    protected void performRefresh() {
-        bindingContext.updateUI();
-    }
-
-    @Override
     protected boolean hasContentToDisplay() {
         return !propertyValues.isEmpty();
     }

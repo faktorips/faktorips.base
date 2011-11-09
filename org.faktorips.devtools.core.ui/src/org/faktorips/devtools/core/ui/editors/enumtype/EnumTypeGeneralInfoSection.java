@@ -143,11 +143,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     }
 
     @Override
-    protected void performRefresh() {
-        bindingContext.updateUI();
-    }
-
-    @Override
     public void contentsChanged(ContentChangeEvent event) {
         // Return if the content changed was not the EnumType to be edited.
         if (!(event.getIpsSrcFile().equals(enumType.getIpsSrcFile()))) {

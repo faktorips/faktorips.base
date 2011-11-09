@@ -229,7 +229,6 @@ public class ComponentPropertiesSection extends IpsSection {
             uiMasterController.updateUI();
         }
         updateRuntimeIdEnableState();
-        bindingContext.updateUI();
     }
 
     @Override

@@ -2572,8 +2572,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     @Override
     protected void performRefresh() {
-        bindingContext.updateUI();
-
         refreshTree();
 
         // reset the test status color of the title area

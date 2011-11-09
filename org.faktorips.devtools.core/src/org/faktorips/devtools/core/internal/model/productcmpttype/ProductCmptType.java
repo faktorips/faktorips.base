@@ -786,7 +786,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public boolean isDefining(IProductCmptCategory category) {
-        return hasCategory(category.getName());
+        return this.equals(category.getParent());
     }
 
     @Override

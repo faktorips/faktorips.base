@@ -18,9 +18,11 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -563,8 +565,7 @@ public class BindingContext {
 
     /**
      * Validates all bound part containers and updates the fields that are associated with their
-     * properties. It returns the MessageList which is the result of the validation. This return
-     * value can be evaluated when overriding this method.
+     * properties.
      */
     protected void showValidationStatus(List<FieldPropertyMapping> propertyMappings) {
         List<IIpsObject> copy = new CopyOnWriteArrayList<IIpsObject>(ipsObjects);
@@ -575,41 +576,59 @@ public class BindingContext {
 
     /**
      * Validates the part container and updates the fields that are associated with attributes of
-     * the IpsPartContainer. It returns the MessageList which is the result of the validation. This
-     * return value can be evaluated when overriding this method.
+     * the {@link IIpsObject}.
+     * <p>
+     * Returns the {@link MessageList} which is the result of the validation. This return value can
+     * be evaluated when overriding this method.
      * 
-     * @return the validation message list. Never returns <code>null</code>.
+     * @return the validation message list (never returns null)
      */
     protected MessageList showValidationStatus(IIpsObject ipsObject, List<FieldPropertyMapping> propertyMappings) {
+        MessageList allValidationMessages;
         try {
-            MessageList list = ipsObject.validate(ipsObject.getIpsProject());
-            for (FieldPropertyMapping mapping : propertyMappings) {
-                Control c = mapping.getField().getControl();
-                if (c == null || c.isDisposed()) {
-                    continue;
-                }
-
-                MessageList fieldMessages = new MessageList();
-                if (mapping.getField().isTextContentParsable()) {
-                    for (Message message : list.getMessagesFor(mapping.getObject(), mapping.getPropertyName())) {
-                        if (!(ignoredMessageCodes.contains(message.getCode()))) {
-                            fieldMessages.add(message);
-                        }
-                    }
-
-                } else {
-                    fieldMessages.add(Message.newError(EditField.INVALID_VALUE,
-                            Messages.IpsObjectPartContainerUIController_invalidValue));
-                }
-
-                mapping.getField().setMessages(fieldMessages);
-            }
-
-            return list;
-
+            allValidationMessages = ipsObject.validate(ipsObject.getIpsProject());
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return new MessageList();
+        }
+
+        Map<EditField<?>, MessageList> messagesPerField = new HashMap<EditField<?>, MessageList>();
+        for (FieldPropertyMapping mapping : propertyMappings) {
+            if (mapping.getField().getControl() == null || mapping.getField().getControl().isDisposed()) {
+                continue;
+            }
+
+            MessageList fieldMessages = messagesPerField.get(mapping.getField());
+            if (fieldMessages == null) {
+                fieldMessages = new MessageList();
+            }
+            fieldMessages.add(getMappingMessages(mapping, allValidationMessages));
+            messagesPerField.put(mapping.getField(), fieldMessages);
+        }
+
+        setFieldMessages(messagesPerField);
+
+        return allValidationMessages;
+    }
+
+    private MessageList getMappingMessages(FieldPropertyMapping mapping, MessageList allValidationMessages) {
+        MessageList mappingMessages = new MessageList();
+        if (mapping.getField().isTextContentParsable()) {
+            for (Message message : allValidationMessages.getMessagesFor(mapping.getObject(), mapping.getPropertyName())) {
+                if (!(ignoredMessageCodes.contains(message.getCode()))) {
+                    mappingMessages.add(message);
+                }
+            }
+        } else {
+            mappingMessages.add(Message.newError(EditField.INVALID_VALUE,
+                    Messages.IpsObjectPartContainerUIController_invalidValue));
+        }
+        return mappingMessages;
+    }
+
+    private void setFieldMessages(Map<EditField<?>, MessageList> messagesPerField) {
+        for (EditField<?> field : messagesPerField.keySet()) {
+            field.setMessages(messagesPerField.get(field));
         }
     }
 

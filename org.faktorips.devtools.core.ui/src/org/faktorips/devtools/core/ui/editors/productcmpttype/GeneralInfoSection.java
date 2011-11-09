@@ -115,9 +115,4 @@ public class GeneralInfoSection extends IpsSection {
         extFactory.bind(bindingContext);
     }
 
-    @Override
-    protected void performRefresh() {
-        bindingContext.updateUI();
-    }
-
 }
