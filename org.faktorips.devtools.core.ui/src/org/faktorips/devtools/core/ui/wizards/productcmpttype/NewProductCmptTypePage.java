@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidations;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
@@ -42,7 +44,7 @@ import org.faktorips.util.message.Message;
 
 public class NewProductCmptTypePage extends NewTypePage {
 
-    private TextButtonField pcTypeField;
+    private TextButtonField policyCmptTypeField;
 
     public NewProductCmptTypePage(IStructuredSelection selection) {
         super(IpsObjectType.PRODUCT_CMPT_TYPE, selection, Messages.NewProductCmptTypePage_title);
@@ -65,7 +67,7 @@ public class NewProductCmptTypePage extends NewTypePage {
         if (ipsObject instanceof IPolicyCmptType) {
             IPolicyCmptType selectedPcType = (IPolicyCmptType)ipsObject;
             if (StringUtils.isEmpty(selectedPcType.getProductCmptType())) {
-                pcTypeField.setValue(selectedPcType.getQualifiedName());
+                policyCmptTypeField.setValue(selectedPcType.getQualifiedName());
                 abstractField.setValue(new Boolean(selectedPcType.isAbstract()));
             }
         }
@@ -82,13 +84,13 @@ public class NewProductCmptTypePage extends NewTypePage {
 
         toolkit.createFormLabel(nameComposite, Messages.NewProductCmptTypePage_labelConfigures);
         IpsObjectRefControl pcTypeControl = toolkit.createPcTypeRefControl(null, nameComposite);
-        pcTypeField = new TextButtonField(pcTypeControl);
-        pcTypeField.addChangeListener(this);
+        policyCmptTypeField = new TextButtonField(pcTypeControl);
+        policyCmptTypeField.addChangeListener(this);
         addAbstractField(nameComposite, toolkit);
     }
 
     private IPolicyCmptType getPolicyCmptType() throws CoreException {
-        String pcTypeQualifiedName = pcTypeField.getText();
+        String pcTypeQualifiedName = policyCmptTypeField.getText();
         if (getIpsProject() != null) {
             IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(pcTypeQualifiedName);
             if (policyCmptType != null) {
@@ -102,7 +104,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreException {
         super.valueChangedExtension(e);
 
-        if (e.field == pcTypeField) {
+        if (e.field == policyCmptTypeField) {
             IPolicyCmptType policyCmptType = getPolicyCmptType();
             if (policyCmptType != null) {
                 setAbstract(policyCmptType.isAbstract());
@@ -116,9 +118,9 @@ public class NewProductCmptTypePage extends NewTypePage {
 
         IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
         if (root != null) {
-            ((IpsObjectRefControl)pcTypeField.getControl()).setIpsProject(root.getIpsProject());
+            ((IpsObjectRefControl)policyCmptTypeField.getControl()).setIpsProject(root.getIpsProject());
         } else {
-            ((IpsObjectRefControl)pcTypeField.getControl()).setIpsProject(null);
+            ((IpsObjectRefControl)policyCmptTypeField.getControl()).setIpsProject(null);
         }
     }
 
@@ -141,20 +143,57 @@ public class NewProductCmptTypePage extends NewTypePage {
         super.finishIpsObjectsExtension(newIpsObject, modifiedIpsObjects);
 
         IProductCmptType productCmptType = (IProductCmptType)newIpsObject;
-        String configuredpcType = pcTypeField.getValue();
-        if (!StringUtils.isEmpty(configuredpcType)) {
-            IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(configuredpcType);
-            if (policyCmptType != null) {
-                policyCmptType.setConfigurableByProductCmptType(true);
-                policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
-                modifiedIpsObjects.add(policyCmptType);
-                productCmptType.setConfigurationForPolicyCmptType(true);
-                productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
-                productCmptType.setAbstract(policyCmptType.isAbstract());
-            }
+
+        if (!productCmptType.hasSupertype()) {
+            createDefaultCategories(productCmptType);
+        }
+
+        associatePolicyCmptType(modifiedIpsObjects, productCmptType);
+    }
+
+    private void createDefaultCategories(IProductCmptType productCmptType) {
+        IProductCmptCategory attributes = productCmptType
+                .newCategory(Messages.NewProductCmptTypePage_nameDefaultCategoryAttributes);
+        attributes.setDefaultForProductCmptTypeAttributes(true);
+        attributes.setPosition(Position.LEFT);
+
+        IProductCmptCategory tablesAndFormulas = productCmptType
+                .newCategory(Messages.NewProductCmptTypePage_nameDefaultCategoryTablesAndFormulas);
+        tablesAndFormulas.setDefaultForTableStructureUsages(true);
+        tablesAndFormulas.setDefaultForFormulaSignatureDefinitions(true);
+        tablesAndFormulas.setPosition(Position.LEFT);
+
+        IProductCmptCategory validationRules = productCmptType
+                .newCategory(Messages.NewProductCmptTypePage_nameDefaultCategoryValidationRules);
+        validationRules.setDefaultForValidationRules(true);
+        validationRules.setPosition(Position.LEFT);
+
+        IProductCmptCategory defaultsAndValueSets = productCmptType
+                .newCategory(Messages.NewProductCmptTypePage_nameDefaultCategoryDefaultsAndValueSets);
+        defaultsAndValueSets.setDefaultForPolicyCmptTypeAttributes(true);
+        defaultsAndValueSets.setPosition(Position.RIGHT);
+    }
+
+    private void associatePolicyCmptType(Set<IIpsObject> modifiedIpsObjects, IProductCmptType productCmptType)
+            throws CoreException {
+
+        if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
+            productCmptType.setConfigurationForPolicyCmptType(false);
             return;
         }
-        productCmptType.setConfigurationForPolicyCmptType(false);
+
+        IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(policyCmptTypeField.getValue());
+        if (policyCmptType == null) {
+            productCmptType.setConfigurationForPolicyCmptType(false);
+            return;
+        }
+
+        policyCmptType.setConfigurableByProductCmptType(true);
+        policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
+        modifiedIpsObjects.add(policyCmptType);
+        productCmptType.setConfigurationForPolicyCmptType(true);
+        productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
+        productCmptType.setAbstract(policyCmptType.isAbstract());
     }
 
     /**
@@ -175,11 +214,11 @@ public class NewProductCmptTypePage extends NewTypePage {
 
         @Override
         public Message execute(IIpsProject ipsProject) throws CoreException {
-            if (StringUtils.isEmpty(pcTypeField.getValue())) {
+            if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }
 
-            IPolicyCmptType configuableType = ipsProject.findPolicyCmptType(pcTypeField.getValue());
+            IPolicyCmptType configuableType = ipsProject.findPolicyCmptType(policyCmptTypeField.getValue());
             if (configuableType == null) {
                 return new Message("", Messages.NewProductCmptTypePage_msgPcTypeDoesNotExist, Message.ERROR); //$NON-NLS-1$
             }
@@ -194,11 +233,11 @@ public class NewProductCmptTypePage extends NewTypePage {
 
         @Override
         public Message execute(IIpsProject ipsProject) throws CoreException {
-            if (StringUtils.isEmpty(pcTypeField.getValue())) {
+            if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }
 
-            IPolicyCmptType configuableType = ipsProject.findPolicyCmptType(pcTypeField.getValue());
+            IPolicyCmptType configuableType = ipsProject.findPolicyCmptType(policyCmptTypeField.getValue());
             if (!StringUtils.isEmpty(configuableType.getProductCmptType())
                     && !configuableType.getProductCmptType().equals(getQualifiedIpsObjectName())) {
                 return new Message("", Messages.NewProductCmptTypePage_msgPcTypeAlreadyConfigured, Message.ERROR); //$NON-NLS-1$
@@ -214,11 +253,11 @@ public class NewProductCmptTypePage extends NewTypePage {
 
         @Override
         public Message execute(IIpsProject ipsProject) throws CoreException {
-            if (StringUtils.isEmpty(pcTypeField.getValue())) {
+            if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }
 
-            IPolicyCmptType configuableType = ipsProject.findPolicyCmptType(pcTypeField.getValue());
+            IPolicyCmptType configuableType = ipsProject.findPolicyCmptType(policyCmptTypeField.getValue());
 
             FindNextConfiguredSuperType finder = new FindNextConfiguredSuperType(ipsProject);
             IProductCmptType superType = ipsProject.findProductCmptType(getSuperType());
@@ -246,11 +285,11 @@ public class NewProductCmptTypePage extends NewTypePage {
 
         @Override
         public Message execute(IIpsProject ipsProject) throws CoreException {
-            if (StringUtils.isEmpty(pcTypeField.getValue())) {
+            if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }
 
-            IPolicyCmptType configuableType = ipsProject.findPolicyCmptType(pcTypeField.getValue());
+            IPolicyCmptType configuableType = ipsProject.findPolicyCmptType(policyCmptTypeField.getValue());
             return ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(
                     configuableType.isAbstract(), getAbstract(), null);
         }

@@ -59,13 +59,19 @@ public class Migration_3_6_0 extends DefaultMigration {
         IProductCmptCategory attributes = productCmptType
                 .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryAttributes);
         attributes.setDefaultForProductCmptTypeAttributes(true);
+        attributes.setPosition(Position.LEFT);
+
         IProductCmptCategory tablesAndFormulas = productCmptType
                 .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryTablesAndFormulas);
         tablesAndFormulas.setDefaultForTableStructureUsages(true);
         tablesAndFormulas.setDefaultForFormulaSignatureDefinitions(true);
+        tablesAndFormulas.setPosition(Position.LEFT);
+
         IProductCmptCategory validationRules = productCmptType
                 .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryValidationRules);
         validationRules.setDefaultForValidationRules(true);
+        validationRules.setPosition(Position.LEFT);
+
         IProductCmptCategory defaultsAndValueSets = productCmptType
                 .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryDefaultsAndValueSets);
         defaultsAndValueSets.setDefaultForPolicyCmptTypeAttributes(true);

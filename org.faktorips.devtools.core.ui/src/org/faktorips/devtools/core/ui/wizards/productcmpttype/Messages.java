@@ -33,4 +33,9 @@ public class Messages extends NLS {
     public static String NewProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX;
     public static String NewProductCmptTypePage_title;
 
+    public static String NewProductCmptTypePage_nameDefaultCategoryAttributes;
+    public static String NewProductCmptTypePage_nameDefaultCategoryTablesAndFormulas;
+    public static String NewProductCmptTypePage_nameDefaultCategoryValidationRules;
+    public static String NewProductCmptTypePage_nameDefaultCategoryDefaultsAndValueSets;
+
 }
