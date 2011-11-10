@@ -259,19 +259,22 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     private void addExtensionProperties(IExtensionPropertyAccess element, Element modelElement) {
         IExtensionPropertyDefinition[] extensionPropertyDefinitions = getIpsProject().getIpsModel()
                 .getExtensionPropertyDefinitions(element.getClass(), true);
-        Element extensionProperties = doc.createElement(IModelElement.EXTENSION_PROPERTIES_XML_WRAPPER_TAG);
-        modelElement.appendChild(extensionProperties);
-        for (IExtensionPropertyDefinition extensionPropertyDefinition : extensionPropertyDefinitions) {
-            String propertyId = extensionPropertyDefinition.getPropertyId();
-            if (element.isExtPropertyDefinitionAvailable(propertyId)) {
-                Element extensionProperty = doc.createElement(IModelElement.EXTENSION_PROPERTIES_XML_TAG);
-                extensionProperty.setAttribute(IModelElement.EXTENSION_PROPERTIES_PROPERTY_NULL,
-                        Boolean.toString(element.getExtPropertyValue(propertyId) == null));
-                extensionProperty.setAttribute(IModelElement.EXTENSION_PROPERTIES_PROPERTY_ID, propertyId);
-                if (element.getExtPropertyValue(propertyId) != null) {
-                    extensionPropertyDefinition.valueToXml(extensionProperty, element.getExtPropertyValue(propertyId));
+        if (extensionPropertyDefinitions.length > 0) {
+            Element extensionProperties = doc.createElement(IModelElement.EXTENSION_PROPERTIES_XML_WRAPPER_TAG);
+            modelElement.appendChild(extensionProperties);
+            for (IExtensionPropertyDefinition extensionPropertyDefinition : extensionPropertyDefinitions) {
+                String propertyId = extensionPropertyDefinition.getPropertyId();
+                if (element.isExtPropertyDefinitionAvailable(propertyId)) {
+                    Element extensionProperty = doc.createElement(IModelElement.EXTENSION_PROPERTIES_XML_TAG);
+                    extensionProperty.setAttribute(IModelElement.EXTENSION_PROPERTIES_PROPERTY_NULL,
+                            Boolean.toString(element.getExtPropertyValue(propertyId) == null));
+                    extensionProperty.setAttribute(IModelElement.EXTENSION_PROPERTIES_PROPERTY_ID, propertyId);
+                    if (element.getExtPropertyValue(propertyId) != null) {
+                        extensionPropertyDefinition.valueToXml(extensionProperty,
+                                element.getExtPropertyValue(propertyId));
+                    }
+                    extensionProperties.appendChild(extensionProperty);
                 }
-                extensionProperties.appendChild(extensionProperty);
             }
         }
     }
