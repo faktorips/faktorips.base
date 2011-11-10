@@ -21,6 +21,9 @@
    <feature url="features/org.faktorips.runtime.addons_0.0.0.jar" id="org.faktorips.runtime.addons" version="0.0.0">
       <category name="faktor_ips_extensions"/>
    </feature>
+   <feature url="features/org.faktorips.m2eclipse.feature_0.0.0.jar" id="org.faktorips.m2eclipse.feature" version="0.0.0">
+      <category name="faktor_ips_tools"/>
+   </feature>
    <category-def name="faktor_ips" label="Faktor-IPS">
       <description>
          In this category you get the core features of Faktor-IPS
@@ -29,6 +32,11 @@
    <category-def name="faktor_ips_extensions" label="Faktor-IPS Extensions">
       <description>
          Extensional plugins for Faktor-IPS. You do not need these features for basic use.
+      </description>
+   </category-def>
+   <category-def name="faktor_ips_tools" label="Faktor-IPS Tools">
+      <description>
+         In this category you could find some tools useful for Faktor-IPS but not necessary in common settings.
       </description>
    </category-def>
 </site>
