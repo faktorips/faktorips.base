@@ -61,8 +61,8 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.TreeViewerRefreshAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
-import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
+import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.util.ArgumentCheck;
 
@@ -192,8 +192,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
         getSite().setSelectionProvider(treeViewer);
 
         resourceListener = new IpsResourceChangeListener(treeViewer);
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener,
-                IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.POST_CHANGE);
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_BUILD);
 
         /*
          * Use the current value of layoutStyle, which is set by loading the memento/viewState

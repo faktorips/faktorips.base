@@ -73,4 +73,5 @@ public class ProductCmptCompareViewer extends TextMergeViewer {
     public String getTitle() {
         return Messages.ProductCmptCompareViewer_CompareViewer_title;
     }
+
 }
