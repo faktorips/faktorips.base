@@ -443,6 +443,12 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         return getMethodNameGetter(idAttribute);
     }
 
+    public ValueDatatype getDatatypeForIdentifierAttribute(IEnumType enumType, IIpsProject ipsProject)
+            throws CoreException {
+        IEnumAttribute idAttribute = enumType.findIdentiferAttribute(ipsProject);
+        return idAttribute.findDatatype(ipsProject);
+    }
+
     /**
      * This method expects the literal name attribute value of an enumeration value as parameter to
      * provide the accurate constant name for it.

@@ -14,8 +14,10 @@
 package org.faktorips.devtools.stdbuilder;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
@@ -107,16 +109,27 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
         }
     }
 
+    /**
+     * Generates code that retrieves the ID attribute from the given field name (enum value). As the
+     * attribute may be of any datatype, that id value is converted to string. {@inheritDoc}
+     */
     @Override
     public JavaCodeFragment getToStringExpression(String fieldName) {
         try {
             JavaCodeFragment fragment = new JavaCodeFragment();
-            String getterName = enumTypeBuilder.getMethodNameGetIdentifierAttribute(enumTypeAdapter.getEnumType(),
-                    enumTypeAdapter.getEnumType().getIpsProject());
+            IEnumType enumType = enumTypeAdapter.getEnumType();
+            String getterName = enumTypeBuilder.getMethodNameGetIdentifierAttribute(enumType, enumType.getIpsProject());
+            Datatype idColumnDatatype = enumTypeBuilder.getDatatypeForIdentifierAttribute(enumType,
+                    enumType.getIpsProject());
+            DatatypeHelper idColumnDatatypeHelper = enumType.getIpsProject().getDatatypeHelper(idColumnDatatype);
+
+            // check for null as default value may be null and enum value set may contain null
+            fragment.append("");
             fragment.append(fieldName);
-            fragment.append(".");
-            fragment.append(getterName);
-            fragment.append("()");
+            fragment.append("==null?null:(");
+            fragment.append(idColumnDatatypeHelper.getToStringExpression(fieldName + "." + getterName + "()"));
+            fragment.append(")");
+
             return fragment;
         } catch (CoreException e) {
             throw new RuntimeException(e);
