@@ -126,8 +126,8 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
 
     @Override
     public boolean close() {
-        if (bindingContext != null) {
-            bindingContext.dispose();
+        if (getBindingContext() != null) {
+            getBindingContext().dispose();
         }
 
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
@@ -145,7 +145,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     @Override
     protected Control createContents(Composite parent) {
         Control control = super.createContents(parent);
-        bindingContext.updateUI();
+        getBindingContext().updateUI();
         updateTitleInTitleArea();
         // updateMessageArea should be called after the size of the dialog has been calculated -->
         // @see method create() (MTB#142)
