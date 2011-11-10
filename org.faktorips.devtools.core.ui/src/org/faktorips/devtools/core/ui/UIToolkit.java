@@ -906,4 +906,15 @@ public class UIToolkit {
         contentProposalAdapter.setLabelProvider(labelProvider);
     }
 
+    /**
+     * Draws a light grey border around the provided {@link Composite}.
+     */
+    public void addBorder(Composite composite) {
+        /*
+         * Following line forces the paint listener to draw a light grey border around the control.
+         * Can only be understood by looking at the FormToolkit$PaintBorder class.
+         */
+        composite.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
+    }
+
 }

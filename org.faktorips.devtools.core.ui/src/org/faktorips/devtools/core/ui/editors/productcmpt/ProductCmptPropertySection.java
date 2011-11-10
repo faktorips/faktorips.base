@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -99,33 +98,25 @@ public class ProductCmptPropertySection extends IpsSection {
     protected void initClientComposite(Composite parent, UIToolkit toolkit) {
         setLayout(parent);
         createRootPane(parent, toolkit);
-        paintBorders(toolkit);
         createEditControls();
-        performRefresh();
     }
 
-    private void setLayout(Composite parent) {
+    private void setLayout(Composite composite) {
         GridLayout layout = new GridLayout(1, true);
         layout.marginWidth = 1;
         layout.marginHeight = 2;
-        parent.setLayout(layout);
+        composite.setLayout(layout);
     }
 
     private void createRootPane(Composite parent, UIToolkit toolkit) {
         rootPane = toolkit.createLabelEditColumnComposite(parent);
-        rootPane.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL));
+
         GridLayout rootPaneLayout = (GridLayout)rootPane.getLayout();
         rootPaneLayout.marginHeight = 5;
         rootPaneLayout.marginWidth = 5;
-    }
+        rootPane.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-    private void paintBorders(UIToolkit toolkit) {
-        /*
-         * Following line forces the paint listener to draw a light grey border around the control.
-         * Can only be understood by looking at the FormToolkit$PaintBorder class.
-         */
-        rootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
-        toolkit.getFormToolkit().paintBordersFor(rootPane);
+        toolkit.addBorder(rootPane);
     }
 
     private void createEditControls() {
