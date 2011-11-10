@@ -31,10 +31,9 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.abstracttest.TestConfigurationElement;
-import org.faktorips.abstracttest.TestExtension;
-import org.faktorips.abstracttest.TestExtensionPoint;
 import org.faktorips.abstracttest.TestExtensionRegistry;
 import org.faktorips.abstracttest.TestLogger;
+import org.faktorips.abstracttest.TestMockingUtils;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -85,12 +84,13 @@ public class IpsArtefactBuilderSetInfoTest {
 
         attributes = new HashMap<String, String>();
         attributes.put("class", DefaultBuilderSet.class.getName());
-        TestConfigurationElement element = new TestConfigurationElement("builderSet", attributes, null,
-                new IConfigurationElement[] { propertyDef1, propertyDef2, propertyDef3 });
+        IExtension extension = TestMockingUtils.mockExtension("mybuilderset", new TestConfigurationElement(
+                "builderSet", attributes, null,
+                new IConfigurationElement[] { propertyDef1, propertyDef2, propertyDef3 }));
 
-        TestExtension extension = new TestExtension(new IConfigurationElement[] { element }, "mybuilderset");
-        TestExtensionPoint extensionPoint = new TestExtensionPoint(new IExtension[] { extension }, IpsPlugin.PLUGIN_ID,
-                "artefactbuilderset");
+        IExtensionPoint extensionPoint = TestMockingUtils.mockExtensionPoint(IpsPlugin.PLUGIN_ID, "artefactbuilderset",
+                extension);
+
         registry = new TestExtensionRegistry(new IExtensionPoint[] { extensionPoint });
 
         logger = new TestLogger();

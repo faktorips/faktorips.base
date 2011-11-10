@@ -323,12 +323,10 @@ public class ClassloaderRuntimeRepositoryTest {
         assertNull(dummyRuntimeObject);
         class NoClass implements IRuntimeObject {
 
-            @Override
             public Set<String> getExtensionPropertyIds() {
                 return Collections.emptySet();
             }
 
-            @Override
             public Object getExtensionPropertyValue(String propertyId) {
                 return null;
             }

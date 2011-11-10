@@ -564,7 +564,8 @@ public class InMemoryRuntimeRepositoryTest {
 
     @Test
     public void testGetByType() {
-        repository.putCustomRuntimeObject(DummyRuntimeObject.class, "dummy.DummyRuntimeObject", new DummyRuntimeObject());
+        repository.putCustomRuntimeObject(DummyRuntimeObject.class, "dummy.DummyRuntimeObject",
+                new DummyRuntimeObject());
         DummyRuntimeObject dummyRuntimeObject = repository.getCustomRuntimeObject(DummyRuntimeObject.class,
                 "dummy.DummyRuntimeObject");
         assertNotNull(dummyRuntimeObject);
@@ -572,12 +573,10 @@ public class InMemoryRuntimeRepositoryTest {
         assertNull(dummyRuntimeObject);
         class NoClass implements IRuntimeObject {
 
-            @Override
             public Set<String> getExtensionPropertyIds() {
                 return Collections.emptySet();
             }
 
-            @Override
             public Object getExtensionPropertyValue(String propertyId) {
                 return null;
             }

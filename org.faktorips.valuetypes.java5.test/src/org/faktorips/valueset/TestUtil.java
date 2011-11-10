@@ -23,7 +23,7 @@ import java.io.Serializable;
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 
-public class TestUtil {
+public abstract class TestUtil {
 
     public final static void testSerializable(Serializable serializableObject) throws AssertionFailedError,
             IOException, ClassNotFoundException {

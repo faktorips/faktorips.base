@@ -28,9 +28,8 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestConfigurationElement;
-import org.faktorips.abstracttest.TestExtension;
-import org.faktorips.abstracttest.TestExtensionPoint;
 import org.faktorips.abstracttest.TestExtensionRegistry;
+import org.faktorips.abstracttest.TestMockingUtils;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -49,7 +48,6 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
     private IExtensionPropertyEditFieldFactory editFieldFactory2;
 
     @Override
-    @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -71,26 +69,26 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
                 return null;
             }
         };
-        HashMap execAttr = new HashMap();
+        HashMap<String, Object> execAttr = new HashMap<String, Object>();
         execAttr.put("class", editFieldFactory);
-        editFieldFactoryAttributes = new HashMap();
+        editFieldFactoryAttributes = new HashMap<String, String>();
         editFieldFactoryAttributes.put("propertyId", "additionalProperty");
         TestConfigurationElement configEl = new TestConfigurationElement("", editFieldFactoryAttributes, "",
                 new IConfigurationElement[0], execAttr);
-        TestExtension extension = new TestExtension(new IConfigurationElement[] { configEl }, IpsUIPlugin.PLUGIN_ID,
-                IpsUIPlugin.EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY);
+        IExtension extension = TestMockingUtils.mockExtension(IpsUIPlugin.PLUGIN_ID + "."
+                + IpsUIPlugin.EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY, configEl);
 
-        HashMap execAttr2 = new HashMap();
+        HashMap<String, Object> execAttr2 = new HashMap<String, Object>();
         execAttr2.put("class", editFieldFactory2);
         Map<String, String> editFieldFactory2Attributes = new HashMap<String, String>();
         editFieldFactory2Attributes.put("propertyId", "additionalProperty2");
         TestConfigurationElement configEl2 = new TestConfigurationElement("", editFieldFactory2Attributes, "",
                 new IConfigurationElement[0], execAttr2);
-        TestExtension extension2 = new TestExtension(new IConfigurationElement[] { configEl2 }, IpsUIPlugin.PLUGIN_ID,
-                IpsUIPlugin.EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY);
+        IExtension extension2 = TestMockingUtils.mockExtension(IpsUIPlugin.PLUGIN_ID + "."
+                + IpsUIPlugin.EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY, configEl2);
 
-        TestExtensionPoint extPoint = new TestExtensionPoint(new IExtension[] { extension, extension2 },
-                IpsUIPlugin.PLUGIN_ID, IpsUIPlugin.EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY);
+        IExtensionPoint extPoint = TestMockingUtils.mockExtensionPoint(IpsUIPlugin.PLUGIN_ID,
+                IpsUIPlugin.EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY, extension, extension2);
 
         // TableFormatPropertiesControlFactory setup code
         TableFormatConfigurationCompositeFactory tableFormatPropertiesFactory = new TableFormatConfigurationCompositeFactory() {
@@ -116,18 +114,17 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
             }
         };
 
-        execAttr = new HashMap();
+        execAttr = new HashMap<String, Object>();
         execAttr.put("class", TestTableFormat.class.getName());
         execAttr.put("guiClass", tableFormatPropertiesFactory);
-        HashMap attributes = new HashMap();
+        HashMap<String, String> attributes = new HashMap<String, String>();
         attributes.put("defaultExtension", ".ext");
         attributes.put("guiClass", tableFormatPropertiesFactory.getClass().getName());
         attributes.put("class", TestTableFormat.class.getName());
         configEl = new TestConfigurationElement("guiClass", attributes, null, new IConfigurationElement[0], execAttr);
-        extension = new TestExtension(new IConfigurationElement[] { configEl }, IpsPlugin.PLUGIN_ID,
-                "externalTableFormat");
-        TestExtensionPoint tableFormatExtPoint = new TestExtensionPoint(new IExtension[] { extension },
-                IpsPlugin.PLUGIN_ID, "externalTableFormat");
+        extension = TestMockingUtils.mockExtension(IpsPlugin.PLUGIN_ID + "." + "externalTableFormat", configEl);
+        IExtensionPoint tableFormatExtPoint = TestMockingUtils.mockExtensionPoint(IpsPlugin.PLUGIN_ID,
+                "externalTableFormat", extension);
         IpsUIPlugin.getDefault().setExtensionRegistry(
                 new TestExtensionRegistry(new IExtensionPoint[] { extPoint, tableFormatExtPoint }));
     }

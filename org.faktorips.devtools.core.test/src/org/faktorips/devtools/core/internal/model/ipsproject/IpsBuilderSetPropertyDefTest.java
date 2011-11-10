@@ -35,10 +35,9 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.abstracttest.TestConfigurationElement;
-import org.faktorips.abstracttest.TestExtension;
-import org.faktorips.abstracttest.TestExtensionPoint;
 import org.faktorips.abstracttest.TestExtensionRegistry;
 import org.faktorips.abstracttest.TestLogger;
+import org.faktorips.abstracttest.TestMockingUtils;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -194,17 +193,18 @@ public class IpsBuilderSetPropertyDefTest {
         TestConfigurationElement propertyDefEl = new TestConfigurationElement("loggingConnectorElement", attributes,
                 null, new IConfigurationElement[] {});
 
-        TestExtension loggingConnectorExt1 = new TestExtension(new IConfigurationElement[] {}, IpsPlugin.PLUGIN_ID,
-                "javaLoggingConnector");
-        TestExtension loggingConnectorExt2 = new TestExtension(new IConfigurationElement[] {}, IpsPlugin.PLUGIN_ID,
-                "log4jLoggingConnector");
-        TestExtension loggingConnectorExt3 = new TestExtension(new IConfigurationElement[] {}, IpsPlugin.PLUGIN_ID,
-                "ownLoggingConnector");
-        TestExtension loggingConnectorExt4 = new TestExtension(new IConfigurationElement[] {}, "None");
+        IExtension loggingConnectorExt1 = TestMockingUtils.mockExtension(IpsPlugin.PLUGIN_ID + "."
+                + "javaLoggingConnector");
+        IExtension loggingConnectorExt2 = TestMockingUtils.mockExtension(IpsPlugin.PLUGIN_ID + "."
+                + "log4jLoggingConnector");
+        IExtension loggingConnectorExt3 = TestMockingUtils.mockExtension(IpsPlugin.PLUGIN_ID + "."
+                + "ownLoggingConnector");
+        IExtension loggingConnectorExt4 = TestMockingUtils.mockExtension("None");
 
-        TestExtensionPoint loggingConnectorExtensionPoint = new TestExtensionPoint(new IExtension[] {
-                loggingConnectorExt1, loggingConnectorExt2, loggingConnectorExt3, loggingConnectorExt4 },
-                IpsPlugin.PLUGIN_ID, "loggingFrameworkConnector");
+        IExtensionPoint loggingConnectorExtensionPoint = TestMockingUtils.mockExtensionPoint(IpsPlugin.PLUGIN_ID,
+                "loggingFrameworkConnector", loggingConnectorExt1, loggingConnectorExt2, loggingConnectorExt3,
+                loggingConnectorExt4);
+
         TestExtensionRegistry registry = new TestExtensionRegistry(
                 new IExtensionPoint[] { loggingConnectorExtensionPoint });
 
