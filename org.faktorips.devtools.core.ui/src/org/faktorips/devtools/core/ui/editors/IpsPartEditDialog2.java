@@ -52,8 +52,22 @@ import org.faktorips.util.message.MessageList;
  */
 public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsChangeListener {
 
-    /** The binding context to use to bind model object properties to ui controls. */
+    /**
+     * The binding context to use to bind model object properties to ui controls.
+     * 
+     * @deprecated use {@link IpsPartEditDialog2#getBindingContext()} instead
+     */
+    @Deprecated
     protected BindingContext bindingContext = new BindingContext();
+
+    /**
+     * Returns the binding context to use to bind model object properties to UI controls.
+     * 
+     * @return the binding context to use to bind model object properties to UI controls
+     */
+    protected BindingContext getBindingContext() {
+        return bindingContext;
+    }
 
     private IIpsObjectPart part;
     private Memento oldState;
