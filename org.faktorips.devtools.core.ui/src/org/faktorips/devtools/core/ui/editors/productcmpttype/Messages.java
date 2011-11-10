@@ -131,6 +131,9 @@ public class Messages extends NLS {
     public static String CategorySection_buttonDown;
     public static String CategorySection_buttonChangeCategory;
 
+    public static String NewCategoryAction_label;
+    public static String NewCategoryAction_tooltip;
+
     public static String ChangeCategoryDialog_title;
     public static String ChangeCategoryDialog_message;
 

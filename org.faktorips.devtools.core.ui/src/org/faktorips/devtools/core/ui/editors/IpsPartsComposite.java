@@ -20,6 +20,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -52,7 +53,7 @@ import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.dialogs.DialogHelper;
+import org.faktorips.devtools.core.ui.dialogs.DialogMementoHelper;
 import org.faktorips.devtools.core.ui.refactor.IpsPullUpHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
@@ -539,6 +540,10 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     private void newPart() {
+        /*
+         * TODO AW 10-11-2011: Should use new DialogMementoHelper but that is not possible as long
+         * as createEditDialog may return null.
+         */
         try {
             IIpsSrcFile file = ipsObject.getIpsSrcFile();
             boolean dirty = file.isDirty();
@@ -567,16 +572,21 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             return;
         }
 
-        EditDialog editDialog = createEditDialog(getSelectedPart(), getShell());
         // TODO AW 02-11-2011: createEditDialog should not be allowed to return null
+        EditDialog editDialog = createEditDialog(getSelectedPart(), getShell());
         if (editDialog == null) {
             return;
         }
 
-        editDialog.setDataChangeable(isDataChangeable());
-
-        DialogHelper dialogHelper = new DialogHelper();
-        dialogHelper.openDialogWithMemento(editDialog, getSelectedPart());
+        DialogMementoHelper dialogHelper = new DialogMementoHelper() {
+            @Override
+            protected Dialog createDialog() {
+                EditDialog editDialog = createEditDialog(getSelectedPart(), getShell());
+                editDialog.setDataChangeable(isDataChangeable());
+                return editDialog;
+            }
+        };
+        dialogHelper.openDialogWithMemento(getSelectedPart());
 
         refresh();
     }

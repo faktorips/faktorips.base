@@ -22,16 +22,20 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.dialogs.DialogHelper;
+import org.faktorips.devtools.core.ui.dialogs.DialogMementoHelper;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.productcmpt.LinksSection;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
@@ -79,7 +83,7 @@ public class CategoryPage extends IpsObjectEditorPage {
         public CategoryCompositionSection(Composite parent, UIToolkit toolkit) {
             super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
 
-            newCategoryAction = new NewCategoryAction(getProductCmptType());
+            newCategoryAction = new NewCategoryAction();
 
             initControls();
         }
@@ -163,11 +167,18 @@ public class CategoryPage extends IpsObjectEditorPage {
         /**
          * Disposes all {@link CategorySection}s and recreates them in the order they are provided
          * by the underlying model.
+         * 
+         * @param newFocusCategory the {@link IProductCmptCategory} that shall have focus after the
+         *            operation
          */
-        public void recreateCategorySections() {
+        public void recreateCategorySections(IProductCmptCategory newFocusCategory) {
             disposeCategorySections();
             createCategorySections();
             createLinksCategorySection();
+
+            relayout();
+            setFocus(newFocusCategory);
+            refresh();
         }
 
         private void disposeCategorySections() {
@@ -192,12 +203,13 @@ public class CategoryPage extends IpsObjectEditorPage {
                 categorySection.dispose();
                 categoriesToSections.remove(category);
             }
+            relayout();
         }
 
         /**
          * Recomputes the layout of the entire page.
          */
-        public void relayout() {
+        private void relayout() {
             left.layout();
             right.layout();
             getManagedForm().reflow(true);
@@ -219,77 +231,90 @@ public class CategoryPage extends IpsObjectEditorPage {
          * Does nothing if no {@link CategorySection} exists for the indicated
          * {@link IProductCmptCategory}.
          */
-        public void setFocus(IProductCmptCategory category) {
+        private void setFocus(IProductCmptCategory category) {
             CategorySection categorySection = categoriesToSections.get(category);
             if (categorySection != null) {
                 categorySection.setFocus();
             }
         }
 
-    }
+        /**
+         * An {@link IpsSection} that represents the <em>Associations</em> category.
+         * <p>
+         * As of now, {@link IAssociation} cannot be assigned to {@link IProductCmptCategory} and in
+         * the {@link ProductCmptEditor}, the {@link LinksSection} is automatically placed at the
+         * bottom right.
+         * <p>
+         * This section represents the {@link LinksSection} in the
+         * {@link CategoryCompositionSection}. It cannot be moved or modified by the user in any
+         * way. It is merely a reminder to the user that the {@link LinksSection} is placed
+         * automatically at the bottom right by the {@link ProductCmptEditor}.
+         */
+        private class LinksCategorySection extends IpsSection {
 
-    /**
-     * An {@link IpsSection} that represents the <em>Associations</em> category.
-     * <p>
-     * As of now, {@link IAssociation} cannot be assigned to {@link IProductCmptCategory} and in the
-     * {@link ProductCmptEditor}, the {@link LinksSection} is automatically placed at the bottom
-     * right.
-     * <p>
-     * This section represents the {@link LinksSection} in the {@link CategoryCompositionSection}.
-     * It cannot be moved or modified by the user in any way. It is merely a reminder to the user
-     * that the {@link LinksSection} is placed automatically at the bottom right by the
-     * {@link ProductCmptEditor}.
-     */
-    private static class LinksCategorySection extends IpsSection {
+            private Composite rootPane;
 
-        private Composite rootPane;
+            private LinksCategorySection(Composite parent, UIToolkit toolkit) {
+                super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+                initControls();
+                setText(Messages.LinksCategorySection_title);
+                setEnabled(false);
+            }
 
-        private LinksCategorySection(Composite parent, UIToolkit toolkit) {
-            super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
-            initControls();
-            setText(Messages.LinksCategorySection_title);
-            setEnabled(false);
+            @Override
+            protected void initClientComposite(Composite client, UIToolkit toolkit) {
+                setLayout(client);
+                createRootPane(client);
+                createExplanationLabel();
+            }
+
+            private void setLayout(Composite composite) {
+                GridLayout layout = new GridLayout(1, true);
+                layout.marginWidth = 1;
+                layout.marginHeight = 2;
+                composite.setLayout(layout);
+            }
+
+            private void createRootPane(Composite client) {
+                rootPane = getToolkit().createGridComposite(client, 1, false, true);
+                getToolkit().addBorder(rootPane);
+            }
+
+            private void createExplanationLabel() {
+                getToolkit().createLabel(rootPane, Messages.LinksCategorySection_explanation);
+            }
+
         }
 
-        @Override
-        protected void initClientComposite(Composite client, UIToolkit toolkit) {
-            setLayout(client);
-            createRootPane(client);
-            createExplanationLabel();
-        }
+        private class NewCategoryAction extends Action {
 
-        private void setLayout(Composite composite) {
-            GridLayout layout = new GridLayout(1, true);
-            layout.marginWidth = 1;
-            layout.marginHeight = 2;
-            composite.setLayout(layout);
-        }
+            private static final String IMAGE_FILENAME = "Add.gif"; //$NON-NLS-1$
 
-        private void createRootPane(Composite client) {
-            rootPane = getToolkit().createGridComposite(client, 1, false, true);
-            getToolkit().addBorder(rootPane);
-        }
+            private NewCategoryAction() {
+                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_FILENAME));
+                setText(Messages.NewCategoryAction_label);
+                setToolTipText(Messages.NewCategoryAction_tooltip);
+            }
 
-        private void createExplanationLabel() {
-            getToolkit().createLabel(rootPane, Messages.LinksCategorySection_explanation);
-        }
+            @Override
+            public void run() {
+                class NewCategoryDialogMementoHelper extends DialogMementoHelper {
+                    private IProductCmptCategory newCategory;
 
-    }
+                    @Override
+                    protected Dialog createDialog() {
+                        newCategory = getProductCmptType().newCategory();
+                        Shell shell = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
+                        return new CategoryEditDialog(newCategory, shell);
+                    }
+                }
+                NewCategoryDialogMementoHelper dialogHelper = new NewCategoryDialogMementoHelper();
+                int returnCode = dialogHelper.openDialogWithMemento(getProductCmptType());
+                if (returnCode == Window.OK) {
+                    recreateCategorySections(dialogHelper.newCategory);
+                }
+            }
 
-    private static class NewCategoryAction extends Action {
-
-        private final IProductCmptType productCmptType;
-
-        private NewCategoryAction(IProductCmptType productCmptType) {
-            this.productCmptType = productCmptType;
-        }
-
-        @Override
-        public void run() {
-            // TODO AW
-            DialogHelper dialogHelper = new DialogHelper();
-            // Dialog dialog = new CategoryEditDialog(category, parentShell);
-            // dialogHelper.openDialogWithMemento(dialog, editedPart);
         }
 
     }

@@ -56,7 +56,7 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.SectionEditField;
-import org.faktorips.devtools.core.ui.dialogs.DialogHelper;
+import org.faktorips.devtools.core.ui.dialogs.DialogMementoHelper;
 import org.faktorips.devtools.core.ui.editors.ViewerButtonComposite;
 import org.faktorips.devtools.core.ui.editors.productcmpttype.CategoryPage.CategoryCompositionSection;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -448,10 +448,7 @@ public class CategorySection extends IpsSection {
         public void run() {
             boolean moved = move();
             if (moved) {
-                getCategoryCompositionSection().recreateCategorySections();
-                getCategoryCompositionSection().relayout();
-                getCategoryCompositionSection().setFocus(getCategory());
-                getCategoryCompositionSection().refresh();
+                getCategoryCompositionSection().recreateCategorySections(getCategory());
             }
         }
 
@@ -572,7 +569,6 @@ public class CategorySection extends IpsSection {
             boolean deleted = oldDeleted != getCategory().isDeleted();
             if (deleted) {
                 getCategoryCompositionSection().deleteCategorySection(getCategory());
-                getCategoryCompositionSection().relayout();
             }
         }
 
@@ -594,9 +590,13 @@ public class CategorySection extends IpsSection {
 
         @Override
         public void run() {
-            DialogHelper dialogHelper = new DialogHelper();
-            Dialog dialog = new CategoryEditDialog(getCategory(), getShell());
-            dialogHelper.openDialogWithMemento(dialog, getCategory());
+            DialogMementoHelper dialogHelper = new DialogMementoHelper() {
+                @Override
+                protected Dialog createDialog() {
+                    return new CategoryEditDialog(getCategory(), getShell());
+                }
+            };
+            dialogHelper.openDialogWithMemento(getCategory());
         }
 
     }

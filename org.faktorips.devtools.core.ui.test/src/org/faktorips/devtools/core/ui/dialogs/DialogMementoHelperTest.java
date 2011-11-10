@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.memento.Memento;
 import org.junit.Before;
@@ -30,7 +30,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class DialogHelperTest {
+public class DialogMementoHelperTest {
 
     @Mock
     private Dialog dialog;
@@ -42,30 +42,35 @@ public class DialogHelperTest {
     private IIpsSrcFile ipsSrcFile;
 
     @Mock
-    private IIpsObjectPart editedPart;
+    private IIpsObjectPartContainer ipsObjectPartContainer;
 
-    private DialogHelper dialogHelper;
+    private DialogMementoHelper dialogMementoHelper;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        when(editedPart.getIpsSrcFile()).thenReturn(ipsSrcFile);
+        when(ipsObjectPartContainer.getIpsSrcFile()).thenReturn(ipsSrcFile);
         when(ipsSrcFile.isMutable()).thenReturn(true);
-        when(editedPart.newMemento()).thenReturn(memento);
+        when(ipsObjectPartContainer.newMemento()).thenReturn(memento);
 
-        dialogHelper = new DialogHelper();
+        dialogMementoHelper = new DialogMementoHelper() {
+            @Override
+            protected Dialog createDialog() {
+                return dialog;
+            }
+        };
     }
 
     @Test
     public void testOpenDialogWithMemento_RestoreMementoOnCancel() {
         when(dialog.getReturnCode()).thenReturn(Window.CANCEL);
 
-        dialogHelper.openDialogWithMemento(dialog, editedPart);
+        dialogMementoHelper.openDialogWithMemento(ipsObjectPartContainer);
 
-        InOrder inOrder = inOrder(dialog, editedPart);
+        InOrder inOrder = inOrder(dialog, ipsObjectPartContainer);
         inOrder.verify(dialog).open();
-        inOrder.verify(editedPart).setState(memento);
+        inOrder.verify(ipsObjectPartContainer).setState(memento);
     }
 
     @Test
@@ -73,7 +78,7 @@ public class DialogHelperTest {
         when(dialog.getReturnCode()).thenReturn(Window.CANCEL);
         when(ipsSrcFile.isDirty()).thenReturn(false);
 
-        dialogHelper.openDialogWithMemento(dialog, editedPart);
+        dialogMementoHelper.openDialogWithMemento(ipsObjectPartContainer);
 
         verify(ipsSrcFile).markAsClean();
     }
@@ -83,7 +88,7 @@ public class DialogHelperTest {
         when(dialog.getReturnCode()).thenReturn(Window.CANCEL);
         when(ipsSrcFile.isDirty()).thenReturn(true);
 
-        dialogHelper.openDialogWithMemento(dialog, editedPart);
+        dialogMementoHelper.openDialogWithMemento(ipsObjectPartContainer);
 
         verify(ipsSrcFile, never()).markAsClean();
     }
@@ -93,24 +98,24 @@ public class DialogHelperTest {
         when(dialog.getReturnCode()).thenReturn(Window.CANCEL);
         when(ipsSrcFile.isMutable()).thenReturn(false);
 
-        dialogHelper.openDialogWithMemento(dialog, editedPart);
+        dialogMementoHelper.openDialogWithMemento(ipsObjectPartContainer);
 
-        verify(editedPart, never()).setState(memento);
+        verify(ipsObjectPartContainer, never()).setState(memento);
     }
 
     @Test
     public void testOpenDialogWithMemento_DoNotRestoreMementoOnReturnCodeOK() {
         when(dialog.getReturnCode()).thenReturn(Window.OK);
 
-        dialogHelper.openDialogWithMemento(dialog, editedPart);
+        dialogMementoHelper.openDialogWithMemento(ipsObjectPartContainer);
 
-        verify(editedPart, never()).setState(memento);
+        verify(ipsObjectPartContainer, never()).setState(memento);
     }
 
     @Test
     public void testOpenDialogWithMemento_ReturnDialogReturnCode() {
         when(dialog.getReturnCode()).thenReturn(123456);
-        assertEquals(123456, dialogHelper.openDialogWithMemento(dialog, editedPart));
+        assertEquals(123456, dialogMementoHelper.openDialogWithMemento(ipsObjectPartContainer));
     }
 
 }
