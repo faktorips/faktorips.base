@@ -27,12 +27,11 @@ import java.util.regex.Matcher;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.devtools.stdbuilder.policycmpttype.MessagesProperties;
 
@@ -52,9 +51,13 @@ public class ValidationRuleMessagesGenerator {
 
     private final Locale locale;
 
-    public ValidationRuleMessagesGenerator(IFile messagesPropertiesFile, Locale locale) {
+    private final ValidationRuleMessagesPropertiesBuilder builder;
+
+    public ValidationRuleMessagesGenerator(IFile messagesPropertiesFile, Locale locale,
+            ValidationRuleMessagesPropertiesBuilder builder) {
         this.messagesPropertiesFile = messagesPropertiesFile;
         this.locale = locale;
+        this.builder = builder;
         try {
             if (messagesPropertiesFile.exists()) {
                 getValidationMessages().load(messagesPropertiesFile.getContents());
@@ -79,16 +82,16 @@ public class ValidationRuleMessagesGenerator {
      * Saving the properties to the file adding the given comment. The file must already exists.
      * 
      * @param comment The comment for the properties file
-     * @param markFileAsDerived Specify whether the file have to be marked as derived or not
      * @return true if file was modified otherwise false
      * @throws CoreException in case of any exception during writing to file
      */
-    public boolean saveIfModified(String comment, boolean markFileAsDerived) throws CoreException {
+    public boolean saveIfModified(String comment) throws CoreException {
         if (getValidationMessages().isModified()) {
             IFile file = getMessagesPropertiesFile();
             if (!file.exists()) {
                 file.create(new ByteArrayInputStream("".getBytes()), true, null); //$NON-NLS-1$
-                file.setDerived(markFileAsDerived);
+                file.setDerived(builder.buildsDerivedArtefacts()
+                        && builder.getBuilderSet().isMarkNoneMergableResourcesAsDerived());
             }
             storeMessagesToFile(file, getValidationMessages(), comment);
             return true;
@@ -107,7 +110,7 @@ public class ValidationRuleMessagesGenerator {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         messages.store(outputStream, comments);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        propertyFile.setContents(inputStream, true, true, new NullProgressMonitor());
+        builder.writeToFile(propertyFile, inputStream, true, true);
     }
 
     public void loadMessages() throws CoreException {

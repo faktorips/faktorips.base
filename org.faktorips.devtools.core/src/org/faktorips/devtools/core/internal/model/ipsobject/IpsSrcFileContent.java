@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.XmlSaxSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsSrcFileSaxHelper;
 import org.faktorips.devtools.core.util.BeanUtil;
+import org.faktorips.devtools.core.util.EclipseIOUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
@@ -322,7 +323,7 @@ public class IpsSrcFileContent {
                     String newXml = XmlUtil.nodeToString(getIpsObject().toXml(doc), encoding);
                     ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));
                     IFile file = ipsObject.getIpsSrcFile().getCorrespondingFile();
-                    file.setContents(is, force, true, monitor);
+                    EclipseIOUtil.writeToFile(file, is, force, true, monitor);
                     modificationStamp = file.getModificationStamp();
                     if (modStampsAfterSave == null) {
                         modStampsAfterSave = new ArrayList<Long>(1);

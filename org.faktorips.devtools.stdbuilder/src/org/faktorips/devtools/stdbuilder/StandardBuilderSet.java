@@ -689,7 +689,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * Returns whether toXml() methods are to be generated.
      */
     public boolean isGenerateToXmlSupport() {
-        return getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_TO_XML_SUPPORT);
+        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_TO_XML_SUPPORT);
+        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean.booleanValue();
     }
 
     public FormulaCompiling getFormulaCompiling() {

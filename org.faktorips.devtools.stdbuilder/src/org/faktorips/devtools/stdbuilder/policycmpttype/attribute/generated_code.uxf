@@ -555,4 +555,28 @@ _+ MAX_ALLOWED_RANGE_FOR_PRICE : DependsOnDatatype_
 + getRangeForPrice(IValidationContext) : DependsOnDatatype</panel_attributes>
     <additional_attributes/>
   </element>
+  <element>
+    <type>com.umlet.element.custom.Text</type>
+    <coordinates>
+      <x>1030</x>
+      <y>850</y>
+      <w>190</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>Constant is completely
+missing if product relevant</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Text</type>
+    <coordinates>
+      <x>1030</x>
+      <y>1100</y>
+      <w>190</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>Constant is completely
+missing if product relevant</panel_attributes>
+    <additional_attributes/>
+  </element>
 </diagram>

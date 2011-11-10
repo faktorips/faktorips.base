@@ -112,10 +112,10 @@ public class JavaNamingConvention implements IJavaNamingConvention {
         String enumLiteral = StringUtils.upperCase(name);
 
         // Replace umlaute
-        enumLiteral = enumLiteral.replaceAll("[Ää]", "AE"); //$NON-NLS-1$ //$NON-NLS-2$
-        enumLiteral = enumLiteral.replaceAll("[Öö]", "OE"); //$NON-NLS-1$ //$NON-NLS-2$
-        enumLiteral = enumLiteral.replaceAll("[Üü]", "UE"); //$NON-NLS-1$ //$NON-NLS-2$
-        enumLiteral = enumLiteral.replaceAll("[ß]", "SS"); //$NON-NLS-1$ //$NON-NLS-2$
+        enumLiteral = enumLiteral.replace("\u00C4", "AE"); //$NON-NLS-1$ //$NON-NLS-2$
+        enumLiteral = enumLiteral.replace("\u00D6", "OE"); //$NON-NLS-1$ //$NON-NLS-2$
+        enumLiteral = enumLiteral.replace("\u00DC", "UE"); //$NON-NLS-1$ //$NON-NLS-2$
+        enumLiteral = enumLiteral.replace("\u00DF", "SS"); //$NON-NLS-1$ //$NON-NLS-2$
 
         // Replace characters that are not valid for Java identifiers
         char[] characters = enumLiteral.toCharArray();

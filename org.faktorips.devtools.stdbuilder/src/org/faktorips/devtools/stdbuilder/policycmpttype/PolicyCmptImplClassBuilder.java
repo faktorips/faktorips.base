@@ -115,7 +115,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     @Override
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) {
-        builder.javaDoc(null, ANNOTATION_GENERATED);
+        String interfaceName = GenType.getUnqualifiedClassName(getPcType(), true);
+        appendLocalizedJavaDoc("CLASS", interfaceName, getIpsObject(), builder);
     }
 
     @Override

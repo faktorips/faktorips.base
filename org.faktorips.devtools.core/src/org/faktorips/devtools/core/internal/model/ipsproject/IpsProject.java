@@ -102,6 +102,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
+import org.faktorips.devtools.core.util.EclipseIOUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
@@ -225,7 +226,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         try {
             is = new ByteArrayInputStream(insertNewLineSeparatorsBeforeComment(contents).getBytes(charset));
             if (file.exists()) {
-                file.setContents(is, true, true, null);
+                EclipseIOUtil.writeToFile(file, is, true, true, null);
             } else {
                 file.create(is, true, null);
             }

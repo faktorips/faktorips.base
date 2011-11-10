@@ -40,6 +40,8 @@ import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
@@ -174,13 +176,13 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public Object getExtPropertyValue(String propertyId) {
         checkExtProperty(propertyId);
+        initExtPropertiesIfNotDoneSoFar();
         return extPropertyValues.get(propertyId);
     }
 
     @Override
     public boolean isExtPropertyDefinitionAvailable(String propertyId) {
-        initExtPropertiesIfNotDoneSoFar();
-        return extPropertyValues.containsKey(propertyId);
+        return getIpsModel().getExtensionPropertyDefinition(getClass(), propertyId, true) != null;
     }
 
     @Override
@@ -191,6 +193,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (!property.beforeSetValue(this, value)) {
             return; // veto to set the new value by the property definition
         }
+        initExtPropertiesIfNotDoneSoFar();
         if (!ObjectUtils.equals(value, getExtPropertyValue(propertyId))) {
             extPropertyValues.put(propertyId, value);
             objectHasChanged();
@@ -322,25 +325,56 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     private void extPropertiesToXml(Element element) {
-        IExtensionPropertyDefinition[] properties = getIpsModel().getExtensionPropertyDefinitions(getClass(), true);
-        if (properties.length == 0) {
+        IExtensionPropertyDefinition[] propertyDefinitions = getIpsModel().getExtensionPropertyDefinitions(getClass(),
+                true);
+        if (propertyDefinitions.length == 0) {
             return;
         }
         initExtPropertiesIfNotDoneSoFar();
         Document doc = element.getOwnerDocument();
         Element extPropertiesEl = doc.createElement(XML_EXT_PROPERTIES_ELEMENT);
         element.appendChild(extPropertiesEl);
-        for (IExtensionPropertyDefinition propertie : properties) {
-            Element valueEl = doc.createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT);
-            extPropertiesEl.appendChild(valueEl);
-            String propertyId = propertie.getPropertyId();
-            valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID, propertyId);
-            Object value = extPropertyValues.get(propertyId);
-            valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL, value == null ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
-            if (value != null) {
-                propertie.valueToXml(valueEl, value);
-            }
+        for (IExtensionPropertyDefinition propertyDefinition : propertyDefinitions) {
+            extPropertyToXml(extPropertiesEl, propertyDefinition);
         }
+        extPropertiesWithMissingDefinitionsToXml(extPropertiesEl, propertyDefinitions);
+    }
+
+    private void extPropertyToXml(Element extPropertiesEl, IExtensionPropertyDefinition propertyDefinition) {
+        Element valueEl = extPropertiesEl.getOwnerDocument().createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT);
+        extPropertiesEl.appendChild(valueEl);
+        String propertyId = propertyDefinition.getPropertyId();
+        valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID, propertyId);
+        Object value = extPropertyValues.get(propertyId);
+        valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL, value == null ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        if (value != null) {
+            propertyDefinition.valueToXml(valueEl, value);
+        }
+    }
+
+    /**
+     * Writes all extension property values without {@link ExtensionPropertyDefinition} to XML. The
+     * String value is written to XML without being modified.
+     * 
+     * @param extPropertiesEl the element the ext-property values should be added to
+     * @param propertyDefinitions the list of available extension property definitions.
+     */
+    private void extPropertiesWithMissingDefinitionsToXml(Element extPropertiesEl,
+            IExtensionPropertyDefinition[] propertyDefinitions) {
+        Map<String, Object> extpropMap = getExtPropertyValueMapForMissingDefinitions(propertyDefinitions);
+        for (String propertyId : extpropMap.keySet()) {
+            ExtensionPropertyDefinition propertyDefinition = new StringExtensionPropertyDefinition();
+            propertyDefinition.setPropertyId(propertyId);
+            extPropertyToXml(extPropertiesEl, propertyDefinition);
+        }
+    }
+
+    private Map<String, Object> getExtPropertyValueMapForMissingDefinitions(IExtensionPropertyDefinition[] propertyDefinitions) {
+        Map<String, Object> extpropMap = new HashMap<String, Object>(extPropertyValues);
+        for (IExtensionPropertyDefinition propertyDefinition : propertyDefinitions) {
+            extpropMap.remove(propertyDefinition.getPropertyId());
+        }
+        return extpropMap;
     }
 
     /**
@@ -464,7 +498,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (StringUtils.isEmpty(isNull) || !Boolean.valueOf(isNull).booleanValue()) {
             IExtensionPropertyDefinition property = findExtensionProperty(propertyId, extPropertyDefinitions);
             if (property == null) {
-                return;
+                /*
+                 * Load property values even if ExtPropDefinition is missing. In that case load
+                 * values as strings without modifying or interpreting them. See jira FIPS-772.
+                 */
+                property = new StringExtensionPropertyDefinition();
             }
             value = property.getValueFromXml(valueElement);
         }

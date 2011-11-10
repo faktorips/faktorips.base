@@ -47,11 +47,12 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
 
     @Test
     public void testLoadMessagesFromFile() throws Exception {
+        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         IFile propertyFile = mock(IFile.class);
         InputStream inputStream = mock(InputStream.class);
         when(propertyFile.getContents()).thenReturn(inputStream);
 
-        new ValidationRuleMessagesGenerator(propertyFile, Locale.GERMAN);
+        new ValidationRuleMessagesGenerator(propertyFile, Locale.GERMAN, builder);
 
         verify(propertyFile).exists();
         verifyNoMoreInteractions(propertyFile);
@@ -59,7 +60,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
 
         when(propertyFile.exists()).thenReturn(true);
 
-        new ValidationRuleMessagesGenerator(propertyFile, Locale.GERMAN);
+        new ValidationRuleMessagesGenerator(propertyFile, Locale.GERMAN, builder);
 
         verify(propertyFile).getContents();
         verify(inputStream).close();
@@ -67,10 +68,11 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
 
     @Test
     public void testGenerate() throws Exception {
+        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         IFile propertyFile = mock(IFile.class);
         InputStream inputStream = mock(InputStream.class);
         ValidationRuleMessagesGenerator messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile,
-                Locale.GERMAN);
+                Locale.GERMAN, builder);
         MessagesProperties validationMessages = messagesGenerator.getValidationMessages();
 
         verify(propertyFile).exists();
@@ -105,10 +107,9 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         assertTrue(validationMessages.isModified());
         assertEquals(2, validationMessages.size());
 
-        messagesGenerator.saveIfModified("", false);
+        messagesGenerator.saveIfModified("");
 
-        verify(propertyFile).setContents(any(InputStream.class), anyBoolean(), anyBoolean(),
-                any(IProgressMonitor.class));
+        verify(propertyFile).create(any(InputStream.class), anyBoolean(), any(IProgressMonitor.class));
 
         reset(propertyFile);
         reset(inputStream);
@@ -122,11 +123,12 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
 
     @Test
     public void testSafeIfModified() throws Exception {
+        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         IFile propertyFile = mock(IFile.class);
         ValidationRuleMessagesGenerator messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile,
-                Locale.GERMAN);
+                Locale.GERMAN, builder);
 
-        messagesGenerator.saveIfModified("", false);
+        messagesGenerator.saveIfModified("");
 
         verify(propertyFile).exists();
         verifyNoMoreInteractions(propertyFile);
@@ -145,7 +147,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
 
         reset(propertyFile);
 
-        messagesGenerator.saveIfModified("", false);
+        messagesGenerator.saveIfModified("");
 
         verify(propertyFile).exists();
         verify(propertyFile).create(any(InputStream.class), anyBoolean(), any(IProgressMonitor.class));
@@ -154,8 +156,9 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
 
     @Test
     public void testDeleteMessagesForDeletedRules() throws Exception {
+        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
-                mock(IFile.class), Locale.GERMAN);
+                mock(IFile.class), Locale.GERMAN, builder);
 
         IValidationRuleMessageText msgTxt1 = mock(IValidationRuleMessageText.class);
         when(msgTxt1.get(any(Locale.class))).thenReturn(new LocalizedString(Locale.GERMAN, "text1"));
@@ -204,8 +207,9 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
 
     @Test
     public void testDeleteAllMessagesFor() throws Exception {
+        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
-                mock(IFile.class), Locale.GERMAN);
+                mock(IFile.class), Locale.GERMAN, builder);
 
         IPolicyCmptType pcType = mock(IPolicyCmptType.class);
         when(pcType.getQualifiedName()).thenReturn("abc");
@@ -253,9 +257,10 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
 
     @Test
     public void testGetMessageText() throws Exception {
+        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         Locale locale = Locale.GERMAN;
         ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
-                mock(IFile.class), locale);
+                mock(IFile.class), locale, builder);
 
         IValidationRule validationRule = mockValidationRule(null);
 
