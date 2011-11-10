@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
+import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
@@ -51,27 +51,22 @@ import org.faktorips.util.message.Message;
 public abstract class AbstractParameterIdentifierResolver implements IdentifierResolver {
 
     private IIpsProject ipsproject;
-    private IFormula formula;
+    private IExpression formula;
     private ExprCompiler exprCompiler;
 
-    public AbstractParameterIdentifierResolver(IFormula formula, ExprCompiler exprCompiler) {
-        ArgumentCheck.notNull(formula, this);
+    public AbstractParameterIdentifierResolver(IExpression formula2, ExprCompiler exprCompiler) {
+        ArgumentCheck.notNull(formula2, this);
         ArgumentCheck.notNull(exprCompiler, this);
-        this.formula = formula;
+        this.formula = formula2;
         this.exprCompiler = exprCompiler;
-        ipsproject = formula.getIpsProject();
+        ipsproject = formula2.getIpsProject();
     }
 
     private IParameter[] getParameters() {
-        try {
-            return formula.findFormulaSignature(ipsproject).getParameters();
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-        return new IParameter[0];
+        return formula.findFormulaSignature(ipsproject).getParameters();
     }
 
-    private IProductCmptType getProductCmptType() throws CoreException {
+    private IProductCmptType getProductCmptType() {
         return formula.findProductCmptType(ipsproject);
     }
 
@@ -80,7 +75,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
      */
     protected abstract String getParameterAttributGetterName(IAttribute attribute, Datatype datatype);
 
-    private Map<String, EnumDatatype> createEnumMap() throws CoreException {
+    private Map<String, EnumDatatype> createEnumMap() {
         EnumDatatype[] enumtypes = formula.getEnumDatatypesAllowedInFormula();
         Map<String, EnumDatatype> enumDatatypes = new HashMap<String, EnumDatatype>(enumtypes.length);
         for (EnumDatatype enumtype : enumtypes) {
@@ -147,7 +142,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         IProductCmptType productCmptType = null;
         try {
             productCmptType = getProductCmptType();
-            List<IAttribute> attributes = productCmptType.findAllAttributes(ipsproject);
+            List<IAttribute> attributes = formula.findMatchingProductCmptTypeAttributes();
             for (IAttribute attribute : attributes) {
                 if (attribute.getName().equals(identifier)) {
                     Datatype attrDatatype = attribute.findDatatype(ipsproject);

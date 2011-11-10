@@ -320,11 +320,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                 ExtDataForFormulaTestCase ftc = (ExtDataForFormulaTestCase)element;
                 IFormula formula = ftc.getFormula();
                 ValueDatatype vd = Datatype.STRING;
-                try {
-                    vd = formula.findValueDatatype(ipsProject);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
+                vd = formula.findValueDatatype(ipsProject);
 
                 if (columnIndex == IDX_COLUMN_NAME) {
                     return getTextInNullPresentationIfNull(ftc.getName());
@@ -781,11 +777,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
 
     private void createTableCellModifier(UIToolkit uiToolkit) {
         ValueDatatype resultValueDatatype = Datatype.STRING;
-        try {
-            resultValueDatatype = formula.findValueDatatype(ipsProject);
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        resultValueDatatype = formula.findValueDatatype(ipsProject);
         BeanTableCellModifier tableCellModifier = new BeanTableCellModifier(formulaTestCaseTableViewer, this,
                 ipsProject);
         tableCellModifier.initModifier(uiToolkit, new String[] { null, IIpsElement.PROPERTY_NAME,
@@ -858,17 +850,13 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
 
     private String formatValue(IFormulaTestCase ftc) {
         String expectedResult = null;
-        try {
-            expectedResult = ftc.getExpectedResult();
-            IFormula formula = ftc.getFormula();
-            expectedResult = IpsUIPlugin
-                    .getDefault()
-                    .getDatatypeFormatter()
-                    .formatValue(formula.findValueDatatype(ipsProject),
-                            (expectedResult == null ? null : expectedResult.toString()));
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        expectedResult = ftc.getExpectedResult();
+        IFormula formula = ftc.getFormula();
+        expectedResult = IpsUIPlugin
+                .getDefault()
+                .getDatatypeFormatter()
+                .formatValue(formula.findValueDatatype(ipsProject),
+                        (expectedResult == null ? null : expectedResult.toString()));
         return expectedResult;
     }
 

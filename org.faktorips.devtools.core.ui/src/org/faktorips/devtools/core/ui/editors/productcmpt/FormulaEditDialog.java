@@ -224,13 +224,9 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         parametersControl.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         Text formulaText = getToolkit().createMultilineText(c);
-        try {
-            FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(formula);
-            ContentAssistHandler.createHandlerForText(formulaText,
-                    CompletionUtil.createContentAssistant(completionProcessor));
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(formula);
+        ContentAssistHandler.createHandlerForText(formulaText,
+                CompletionUtil.createContentAssistant(completionProcessor));
 
         // create fields
         formulaField = new TextField(formulaText);

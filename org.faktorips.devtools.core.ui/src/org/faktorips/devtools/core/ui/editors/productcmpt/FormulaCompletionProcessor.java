@@ -27,9 +27,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
@@ -44,9 +42,9 @@ import org.faktorips.util.ArgumentCheck;
 public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 
     private IMethod signature;
-    private IFormula formula;
+    private IExpression formula;
 
-    public FormulaCompletionProcessor(IFormula formula) throws CoreException {
+    public FormulaCompletionProcessor(IExpression formula) {
         super();
         ArgumentCheck.notNull(formula);
         this.formula = formula;
@@ -127,16 +125,11 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 
     private void addMatchingProductCmptTypeAttributes(List<ICompletionProposal> result,
             String prefix,
-            int replacementOffset) throws CoreException {
-
-        IIpsProject ipsProject = formula.getIpsProject();
-        IProductCmptType productCmptType = formula.findProductCmptType(formula.getIpsProject());
-        if (productCmptType != null) {
-            List<IAttribute> attributes = productCmptType.findAllAttributes(ipsProject);
-            for (IAttribute attribute : attributes) {
-                if (attribute.getName().startsWith(prefix)) {
-                    addPartToResult(result, attribute, attribute.getDatatype(), replacementOffset, prefix.length());
-                }
+            int replacementOffset) {
+        List<IAttribute> attributes = formula.findMatchingProductCmptTypeAttributes();
+        for (IAttribute attribute : attributes) {
+            if (attribute.getName().startsWith(prefix)) {
+                addPartToResult(result, attribute, attribute.getDatatype(), replacementOffset, prefix.length());
             }
         }
     }

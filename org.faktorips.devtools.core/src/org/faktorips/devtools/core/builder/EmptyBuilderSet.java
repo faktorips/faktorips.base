@@ -21,7 +21,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
+import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -61,7 +61,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     @Override
-    public IdentifierResolver createFlIdentifierResolver(IFormula formula, ExprCompiler exprCompiler)
+    public IdentifierResolver createFlIdentifierResolver(IExpression formula, ExprCompiler exprCompiler)
             throws CoreException {
 
         return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
@@ -73,7 +73,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     @Override
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, ExprCompiler exprCompiler)
+    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IExpression formula, ExprCompiler exprCompiler)
             throws CoreException {
 
         return createFlIdentifierResolver(formula, exprCompiler);

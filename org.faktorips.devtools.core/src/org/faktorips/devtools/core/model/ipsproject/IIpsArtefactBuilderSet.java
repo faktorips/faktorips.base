@@ -22,7 +22,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
+import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
@@ -125,7 +125,7 @@ public interface IIpsArtefactBuilderSet {
      * @param exprCompiler can be used by the {@link IdentifierResolver} to ask for properties or
      *            services that are necessary to be able to resolve an identifier properly
      */
-    public IdentifierResolver createFlIdentifierResolver(IFormula formula, ExprCompiler exprCompiler)
+    public IdentifierResolver createFlIdentifierResolver(IExpression expression, ExprCompiler exprCompiler)
             throws CoreException;
 
     /**
@@ -140,7 +140,7 @@ public interface IIpsArtefactBuilderSet {
      * @param exprCompiler can be used by the {@link IdentifierResolver} to ask for properties or
      *            services that are necessary to be able to resolve an identifier properly
      */
-    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, ExprCompiler exprCompiler)
+    public IdentifierResolver createFlIdentifierResolverForFormulaTest(IExpression expression, ExprCompiler exprCompiler)
             throws CoreException;
 
     /**

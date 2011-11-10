@@ -680,13 +680,9 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         String resultToDisplay = ""; //$NON-NLS-1$
         IFormula formula = formulaTestCase.getFormula();
         ValueDatatype vd;
-        try {
-            vd = formula.findValueDatatype(ipsProject);
-            resultToDisplay = IpsUIPlugin.getDefault().getDatatypeFormatter()
-                    .formatValue(vd, (result == null ? null : result.toString()));
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        vd = formula.findValueDatatype(ipsProject);
+        resultToDisplay = IpsUIPlugin.getDefault().getDatatypeFormatter()
+                .formatValue(vd, (result == null ? null : result.toString()));
         formulaResult.setText(resultToDisplay);
         formulaResult.pack();
     }

@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestCase;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -158,7 +159,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindFormulaSignature() throws CoreException {
+    public void testFindFormulaSignature() {
         assertSame(formulaSignature, formula.findFormulaSignature(ipsProject));
 
         formula.setFormulaSignature("Unknown");
@@ -420,18 +421,19 @@ public class FormulaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetExprCompiler() throws CoreException {
+    public void testGetExprCompiler() {
         assertNotNull(formula.newExprCompiler(ipsProject));
     }
 
     @Test
     public void testSetFormulaSignature() {
-        testPropertyAccessReadWrite(IFormula.class, IFormula.PROPERTY_FORMULA_SIGNATURE_NAME, formula, "ComputePremium");
+        testPropertyAccessReadWrite(IExpression.class, IExpression.PROPERTY_FORMULA_SIGNATURE_NAME, formula,
+                "ComputePremium");
     }
 
     @Test
     public void testSetExpression() {
-        testPropertyAccessReadWrite(IFormula.class, IFormula.PROPERTY_EXPRESSION, formula, "a + b");
+        testPropertyAccessReadWrite(IExpression.class, IExpression.PROPERTY_EXPRESSION, formula, "a + b");
     }
 
     @Test
