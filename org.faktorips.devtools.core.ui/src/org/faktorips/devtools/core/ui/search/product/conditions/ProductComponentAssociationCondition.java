@@ -47,16 +47,23 @@ public class ProductComponentAssociationCondition extends AbstractCondition {
 
         @Override
         public Object getSearchOperand(IProductCmptGeneration productComponentGeneration) {
-            List<String> linkNames = new ArrayList<String>();
+            List<String> targetNames = new ArrayList<String>();
 
-            String associationName = productCmptTypeAssociation.getName();
-            IProductCmptLink[] links = productComponentGeneration.getLinks(associationName);
-
-            for (IProductCmptLink productCmptLink : links) {
-                linkNames.add(productCmptLink.getTarget());
+            IProductCmptLink[] links = productComponentGeneration.getLinks();
+            for (IProductCmptLink link : links) {
+                try {
+                    boolean linkOfAssociation = link.isLinkOfAssociation(productCmptTypeAssociation,
+                            productComponentGeneration.getIpsProject());
+                    if (linkOfAssociation) {
+                        targetNames.add(link.getTarget());
+                    }
+                } catch (CoreException e) {
+                    // FIXME handle exception
+                    e.printStackTrace();
+                }
             }
 
-            return linkNames;
+            return targetNames;
         }
     }
 
@@ -128,7 +135,7 @@ public class ProductComponentAssociationCondition extends AbstractCondition {
 
     @Override
     public String getName() {
-        return "BEZIEHUNG";
+        return "Association";
     }
 
     @Override

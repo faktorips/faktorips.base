@@ -19,6 +19,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -42,7 +43,7 @@ public class ProductComponentTypeField extends AbstractTextField<IProductCmptTyp
     @Override
     public void setValue(IProductCmptType newValue) {
         productCmptType = newValue;
-        setText(productCmptType.getQualifiedName());
+        setText(productCmptType.getLabel(new MultiLanguageSupport().getLocalizationLocale()).getValue());
     }
 
     @Override

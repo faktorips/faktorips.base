@@ -245,7 +245,8 @@ public class ProductSearchConditionsTableViewerProvider {
 
         @Override
         protected boolean canEdit(Object element) {
-            return true;
+            ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
+            return model.getCondition() != null;
         }
 
         @Override

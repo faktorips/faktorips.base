@@ -13,8 +13,11 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions;
 
+import java.util.List;
+
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.util.ArgumentCheck;
 
 public class ReferenceSearchOperator extends AbstractSearchOperator<ReferenceSearchOperatorType> {
 
@@ -25,9 +28,15 @@ public class ReferenceSearchOperator extends AbstractSearchOperator<ReferenceSea
 
     @Override
     protected boolean check(Object operand, IProductCmptGeneration productCmptGeneration) {
-        System.out.println(operand.toString() + " - " + getArgument());
-        // FIXME
-        return false;
+        ArgumentCheck.notNull(operand);
+        List<?> operandList = (List<?>)operand;
+        if (operandList.isEmpty()) {
+            return false;
+        }
+
+        // System.out.println(operand.getClass().getName() + " - " + operand.toString() + " - " +
+        // getArgument());
+        return operandList.contains(argument);
     }
 
 }

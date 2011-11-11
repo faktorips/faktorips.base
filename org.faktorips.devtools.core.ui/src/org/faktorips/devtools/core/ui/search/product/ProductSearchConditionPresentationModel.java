@@ -59,7 +59,6 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
         this.parentSearchPresentationModel = parentSearchPresentationModel;
         this.searchableElements = Collections.emptyList();
         this.operatorTypes = Collections.emptyList();
-        this.parentSearchPresentationModel.addProductSearchConditionPresentationModels(this);
     }
 
     @Override
@@ -96,6 +95,9 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     }
 
     private void updateOperatorTypes() {
+        if (getSearchedElement() == null) {
+            operatorTypes = Collections.emptyList();
+        }
         operatorTypes = getCondition().getSearchOperatorTypes(getSearchedElement());
 
     }

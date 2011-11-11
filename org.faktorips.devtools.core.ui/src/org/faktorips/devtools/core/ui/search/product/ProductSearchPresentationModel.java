@@ -104,11 +104,11 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         return productSearchConditionPresentationModels;
     }
 
-    public void addProductSearchConditionPresentationModels(ProductSearchConditionPresentationModel productSearchConditionPresentationModel) {
-        productSearchConditionPresentationModels.add(productSearchConditionPresentationModel);
+    public void createProductSearchConditionPresentationModel() {
+        productSearchConditionPresentationModels.add(new ProductSearchConditionPresentationModel(this));
     }
 
-    public boolean removeProductSearchConditionPresentationModels(ProductSearchConditionPresentationModel productSearchConditionPresentationModel) {
+    boolean removeProductSearchConditionPresentationModels(ProductSearchConditionPresentationModel productSearchConditionPresentationModel) {
         return productSearchConditionPresentationModels.remove(productSearchConditionPresentationModel);
     }
 
@@ -116,7 +116,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         if (productCmptType == null) {
             return Collections.emptyList();
         }
-        
+
         List<ICondition> conditionsWithSearchableElements = new ArrayList<ICondition>();
         for (ICondition condition : CONDITION_TYPES) {
             List<IIpsElement> searchableElements = condition.getSearchableElements(productCmptType);

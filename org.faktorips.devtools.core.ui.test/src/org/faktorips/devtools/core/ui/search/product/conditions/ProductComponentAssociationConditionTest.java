@@ -53,7 +53,7 @@ public class ProductComponentAssociationConditionTest extends AbstractIpsPluginT
     }
 
     @Test
-    public void testGetSearchableElements() throws CoreException {
+    public void testGetSearchableElements() {
 
         IProductCmptTypeAssociation link = productCmptType.newProductCmptTypeAssociation();
         IProductCmptTypeAssociation link2 = productCmptType.newProductCmptTypeAssociation();
@@ -70,9 +70,9 @@ public class ProductComponentAssociationConditionTest extends AbstractIpsPluginT
     public void testGetValueDatatypeAndValueSet() throws CoreException {
         IProductCmptTypeAssociation link = productCmptType.newProductCmptTypeAssociation();
         String linkedProduct = "bbb.LinkedProduct";
-        ProductCmpt productCmpt = newProductCmpt(linkedProductCmptType, linkedProduct);
+        newProductCmpt(linkedProductCmptType, linkedProduct);
         String linkedProductTwo = "bbb.LinkedProductTwo";
-        ProductCmpt productCmpt2 = newProductCmpt(linkedProductCmptType, linkedProductTwo);
+        newProductCmpt(linkedProductCmptType, linkedProductTwo);
 
         Datatype datatype = new StringDatatype();
 
