@@ -1,0 +1,4 @@
+This project contains source Faktor-IPS feature.
+
+This feature is needed because tycho does not yet generates the source features as it should.
+When tycho does support the generation of source features, this feature could be removed.
