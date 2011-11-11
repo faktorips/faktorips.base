@@ -130,8 +130,9 @@
 	<!-- These are all modules that are included in the Faktor-IPS build -->
 
 	<modules>
-		<!-- target definition -->
+		<!-- target definition
 		<module>../org.faktorips.devtarget.galileo</module>
+		 -->
 		<!-- features org.faktorips.feature -->
 		<module>../org.faktorips.feature</module>
 		<module>../org.faktorips.feature.source</module>
