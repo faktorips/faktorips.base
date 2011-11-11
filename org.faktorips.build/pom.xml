@@ -200,7 +200,6 @@
 		<module>../org.faktorips.uml.test</module>
 		<!-- p2 Repository and product -->
 		<module>../org.faktorips.updatesite</module>
-		<module>../org.faktorips.test.repository</module>
 		<module>../org.faktorips.product</module>
 	</modules>
 
