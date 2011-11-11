@@ -67,12 +67,18 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
 
     @Override
     public boolean findIsContainingProperty(IProductCmptProperty property, IIpsProject ipsProject) throws CoreException {
-        if (name.equals(property.getCategory())) {
+        if (!name.isEmpty() && name.equals(property.getCategory())) {
             return true;
         }
-        if (isDefaultFor(property.getProductCmptPropertyType())
-                && !getProductCmptType().findHasCategory(property.getCategory(), ipsProject)) {
-            return true;
+        if (isDefaultFor(property.getProductCmptPropertyType())) {
+            /*
+             * If the name of the property's category does not match this category's name, this
+             * category still may contain the property if this category is the corresponding default
+             * category. This is the case if the property has no category or the property's category
+             * cannot be found.
+             */
+            return StringUtils.isEmpty(property.getCategory())
+                    || !getProductCmptType().findHasCategory(property.getCategory(), ipsProject);
         }
         return false;
     }

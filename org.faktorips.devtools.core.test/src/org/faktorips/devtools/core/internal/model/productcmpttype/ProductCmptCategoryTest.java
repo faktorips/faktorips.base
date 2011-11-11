@@ -161,6 +161,27 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         assertFalse(defaultAttributeCategory.findIsContainingProperty(attributeProperty, ipsProject));
     }
 
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IProductCmptProperty} has no {@link IProductCmptCategory} but an
+     * {@link IProductCmptCategory} with an empty name exists.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The {@link IProductCmptProperty} should not be assigned to the {@link IProductCmptCategory}
+     * with empty name.
+     */
+    @Test
+    public void testFindIsContainingProperty_CategoryNameIsEmpty() throws CoreException {
+        IProductCmptCategory defaultAttributeCategory = productType.newCategory("defaultAttribute");
+        defaultAttributeCategory.setDefaultForProductCmptTypeAttributes(true);
+        IProductCmptCategory emptyNameCategory = productType.newCategory();
+
+        IProductCmptProperty noCategoryProperty = productType.newProductCmptTypeAttribute("noCategoryProperty");
+
+        assertFalse(emptyNameCategory.findIsContainingProperty(noCategoryProperty, ipsProject));
+        assertTrue(defaultAttributeCategory.findIsContainingProperty(noCategoryProperty, ipsProject));
+    }
+
     @Test
     public void testSetDefaultForFormulaSignatureDefinitions() {
         category.setDefaultForFormulaSignatureDefinitions(true);
