@@ -2,5 +2,5 @@ bin
 temp.folder
 build.xml
 javaCompiler.faktorips-core.jar.args
-
 test-output
+target

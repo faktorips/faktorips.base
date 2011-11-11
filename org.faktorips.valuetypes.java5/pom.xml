@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  
+	<parent>
+		<groupId>org.faktorips</groupId>
+		<artifactId>org.faktorips.build</artifactId>
+		<version>3.6.0-SNAPSHOT</version>
+		<relativePath>../org.faktorips.build/pom.xml</relativePath>
+	</parent>
+  
+  <artifactId>org.faktorips.valuetypes.java5</artifactId>
+  
+    <packaging>eclipse-plugin</packaging>
+  
+    <scm>
+    	<connection>scm:cvs:ext:faktorzehn.org:/usr/local/cvsroot:${project.artifactId}</connection>
+    </scm>
+
+</project>

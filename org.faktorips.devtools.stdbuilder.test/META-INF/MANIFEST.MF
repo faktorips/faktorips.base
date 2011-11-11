@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Tests for devtools.stdbuilder
 Bundle-SymbolicName: org.faktorips.devtools.stdbuilder.test
-Bundle-Version: 0.0.0
+Bundle-Version: 3.6.0.qualifier
 Bundle-Localization: plugin
 Fragment-Host: org.faktorips.devtools.stdbuilder
 Require-Bundle: org.faktorips.dtflcommon,

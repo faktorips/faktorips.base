@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Tests for devtools.core
 Bundle-SymbolicName: org.faktorips.devtools.core.test;singleton:=true
-Bundle-Version: 0.0.0
+Bundle-Version: 3.6.0.qualifier
 Fragment-Host: org.faktorips.devtools.core
 Require-Bundle: org.faktorips.abstracttest,
  org.eclipse.core.runtime,

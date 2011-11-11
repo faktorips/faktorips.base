@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature"
       label="%label"
-      version="0.0.0"
+      version="3.6.0.qualifier"
       provider-name="Faktor Zehn AG"
       plugin="org.faktorips.devtools.core">
    <install-handler/>
@@ -770,12 +770,6 @@ Diese Datenschutzbestimmungen können auf der Website der Faktor Zehn AG über d
 schutz” abgerufen und ausgedruckt werden.
    </license>
 
-   <includes
-         id="org.faktorips.feature.source"
-         version="0.0.0"
-         name="Faktor-IPS Sources"
-         optional="true"/>
-
    <requires>
       <import plugin="org.apache.ant"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
@@ -808,6 +802,7 @@ schutz” abgerufen und ausgedruckt werden.
       <import plugin="org.eclipse.text"/>
       <import plugin="org.eclipse.jdt.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.junit" version="3.8.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.views" version="3.3.0" match="greaterOrEqual"/>
@@ -816,8 +811,7 @@ schutz” abgerufen und ausgedruckt werden.
       <import plugin="org.eclipse.core.databinding" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.expressions" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.security" version="1.0.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.nebula.widgets.grid"/>
-      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.swt"/>
    </requires>
 
    <plugin
@@ -906,6 +900,20 @@ schutz” abgerufen und ausgedruckt werden.
 
    <plugin
          id="org.apache.commons.lang"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.nebula.widgets.grid"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="findbugs.annotations"
          download-size="0"
          install-size="0"
          version="0.0.0"

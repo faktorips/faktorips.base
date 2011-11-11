@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test Plug-in
 Bundle-SymbolicName: org.faktorips.devtools.ant.test;singleton:=true
-Bundle-Version: 0.0.0
+Bundle-Version: 3.6.0.qualifier
 Bundle-Vendor: Faktor Zehn AG
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Fragment-Host: org.faktorips.devtools.ant

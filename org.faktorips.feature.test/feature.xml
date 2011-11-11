@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature.test"
       label="Faktor-IPS - Test"
-      version="0.0.0"
+      version="3.6.0.qualifier"
       provider-name="Faktor Zehn AG">
 
    <description url="http://www.faktorips.org">

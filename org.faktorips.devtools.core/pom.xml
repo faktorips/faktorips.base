@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.faktorips</groupId>
+		<artifactId>org.faktorips.build</artifactId>
+		<version>3.6.0-SNAPSHOT</version>
+		<relativePath>../org.faktorips.build/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>org.faktorips.devtools.core</artifactId>
+
+	<packaging>eclipse-plugin</packaging>
+
+	<scm>
+		<connection>scm:cvs:ext:faktorzehn.org:/usr/local/cvsroot:${project.artifactId}</connection>
+	</scm>
+
+	<build>
+		<plugins>
+			<!-- Update the product Build ID and version in the about text -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+
+					<!-- Change the plugin.properties -->
+					<execution>
+						<id>update-plugin-properties</id>
+						<phase>validate</phase>
+						<configuration>
+							<target>
+
+								<copy file="${basedir}/about.mappings" tofile="${basedir}/about.mappings.backup" />
+								<replace file="${basedir}/about.mappings">
+									<replacefilter token="@version@" value="${unqualifiedVersion}" />
+									<replacefilter token="@buildId@" value="${buildQualifier}" />
+								</replace>
+
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+
+					<!-- Restore the plugin.properties -->
+					<execution>
+						<id>restore-plugin-properties</id>
+						<phase>verify</phase>
+						<configuration>
+							<target>
+								<delete file="${basedir}/about.mappings" />
+								<move file="${basedir}/about.mappings.backup" tofile="${basedir}/about.mappings" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

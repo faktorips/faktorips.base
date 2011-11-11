@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.faktorips</groupId>
+	<artifactId>org.faktorips.build</artifactId>
+	<version>3.6.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<!-- this is the parent POM from which all modules inherit common settings -->
+	<properties>
+		<tycho-version>0.13.0</tycho-version>
+		<build-type>nightly</build-type>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>fips-deploy-plugins</id>
+			<layout>p2</layout>
+			<url>http://update.faktorzehn.org/faktorips/p2-repositories/deploy</url>
+		</repository>
+		<repository>
+			<id>fips-test-plugins</id>
+			<layout>p2</layout>
+			<url>http://update.faktorzehn.org/faktorips/p2-repositories/test</url>
+		</repository>
+		<repository>
+			<id>galileo</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/releases/galileo</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<executions>
+					<execution>
+						<id>plugin-source</id>
+						<goals>
+							<goal>plugin-source</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<!-- enable tycho build extension -->
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<!-- Funktioniert noch nicht!!! -->
+			<!-- 
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<configuration>
+					<format>${build-type}_yyyyMMdd-HHmm</format>
+				</configuration>
+			</plugin>
+			 -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<!-- add target file content to target platform 
+					<target>
+						<artifact>
+							<groupId>org.faktorips</groupId>
+							<artifactId>org.faktorips.devtarget.galileo</artifactId>
+							<version>3.6.0-SNAPSHOT</version>
+							<classifier>galileo</classifier>
+						</artifact>
+					</target>
+-->
+					<!-- configure the p2 target environments for multi-platform build -->
+					<environments>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+					<format>${build-type}-yyyyMMdd-HHmm</format>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=256M</argLine>
+					<useUIHarness>true</useUIHarness>
+					<includes>
+						<include>**/*Test.java</include>
+					</includes>
+					<excludes>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- These are all modules that are included in the Faktor-IPS build -->
+
+	<modules>
+		<!-- target definition -->
+		<module>../org.faktorips.devtarget.galileo</module>
+		<!-- features org.faktorips.feature -->
+		<module>../org.faktorips.feature</module>
+		<module>../org.faktorips.feature.source</module>
+		<module>../org.faktorips.feature.nls1</module>
+		<module>../org.faktorips.feature.test</module>
+		<!-- plugins of feature org.faktorips.feature -->
+		<module>../org.faktorips.abstracttest</module>
+		<module>../org.faktorips.devtools.ant</module>
+		<module>../org.faktorips.devtools.ant.test</module>
+		<module>../org.faktorips.devtools.core</module>
+		<module>../org.faktorips.devtools.core.test</module>
+		<module>../org.faktorips.devtools.core.ui</module>
+		<module>../org.faktorips.devtools.core.ui.test</module>
+		<module>../org.faktorips.devtools.htmlexport</module>
+		<module>../org.faktorips.devtools.htmlexport.nl1</module>
+		<module>../org.faktorips.devtools.htmlexport.test</module>
+		<module>../org.faktorips.devtools.stdbuilder</module>
+		<module>../org.faktorips.devtools.stdbuilder.test</module>
+		<module>../org.faktorips.devtools.stdbuilder.ui</module>
+		<module>../org.faktorips.devtools.stdbuilder.ui.test</module>
+		<module>../org.faktorips.devtools.tableconversion</module>
+		<module>../org.faktorips.devtools.tableconversion.nl1</module>
+		<module>../org.faktorips.devtools.tableconversion.test</module>
+		<module>../org.faktorips.dtflcommon</module>
+		<module>../org.faktorips.dtflcommon.test</module>
+		<module>../org.faktorips.fl</module>
+		<module>../org.faktorips.fl.test</module>
+		<module>../org.faktorips.nls.devtools.core.nl1</module>
+		<module>../org.faktorips.nls.devtools.core.ui.nl1</module>
+		<module>../org.faktorips.nls.devtools.stdbuilder.nl1</module>
+		<module>../org.faktorips.nls.devtools.stdbuilder.ui.nl1</module>
+		<module>../org.faktorips.runtime.java5</module>
+		<module>../org.faktorips.runtime.java5.test</module>
+		<module>../org.faktorips.util</module>
+		<module>../org.faktorips.util.test</module>
+		<module>../org.faktorips.valuetypes.java5</module>
+		<module>../org.faktorips.valuetypes.java5.test</module>
+		<!-- features for runtime addons -->
+		<module>../org.faktorips.runtime.addons</module>
+		<module>../org.faktorips.runtime.addons.source</module>
+		<module>../org.faktorips.runtime.addons.test</module>
+		<!-- plugins for runtime addons -->
+		<module>../org.faktorips.runtime.groovy</module>
+		<module>../org.faktorips.runtime.groovy.test</module>
+		<module>../org.faktorips.runtime.productdataprovider.ejbclient</module>
+		<module>../org.faktorips.runtime.productdataprovider.ejbclient.test</module>
+		<module>../org.faktorips.runtime.productdataservice</module>
+		<module>../org.faktorips.runtime.productdataservice.common</module>
+		<!-- features for ormext -->
+		<module>../org.faktorips.ormext.feature</module>
+		<module>../org.faktorips.ormext.feature.nls1</module>
+		<!-- plugins for ormext feature -->
+		<module>../org.faktorips.devtools.ormext</module>
+		<module>../org.faktorips.devtools.ormext.hibernate</module>
+		<module>../org.faktorips.devtools.ormext.test</module>
+		<module>../org.faktorips.devtools.ormext.ui</module>
+		<module>../org.faktorips.nls.devtools.ormext.nl1</module>
+		<module>../org.faktorips.nls.devtools.ormext.ui.nl1</module>
+		<!-- features for uml -->
+		<module>../org.faktorips.uml.feature</module>
+		<module>../org.faktorips.uml.feature.nls1</module>
+		<!-- plugins for uml feature -->
+		<module>../org.faktorips.uml</module>
+		<module>../org.faktorips.uml.nl1</module>
+		<module>../org.faktorips.uml.test</module>
+		<!-- p2 Repository and product -->
+		<module>../org.faktorips.updatesite</module>
+		<module>../org.faktorips.test.repository</module>
+		<module>../org.faktorips.product</module>
+	</modules>
+
+	<profiles>
+		<profile>
+			<!-- as a workaround for TYCHO-520, only build mac binaries on macs -->
+			<id>macosx</id>
+			<activation>
+				<property>
+					<name>java.vendor.url</name>
+					<value>http://www.apple.com/</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>target-platform-configuration</artifactId>
+						<version>${tycho-version}</version>
+						<configuration>
+							<environments combine.children="append">
+								<environment>
+									<os>macosx</os>
+									<ws>cocoa</ws>
+									<arch>x86_64</arch>
+								</environment>
+							</environments>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+    <scm>
+    	<connection>scm:cvs:ext:faktorzehn.org:/usr/local/cvsroot:${project.artifactId}</connection>
+    </scm>
+
+</project>
