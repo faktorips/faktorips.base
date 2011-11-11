@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -46,6 +47,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuil
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.type.GenType;
+import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -132,7 +134,7 @@ public class GenPolicyCmptType extends GenType {
         return genPolicyCmptTypeAttributes;
     }
 
-    private GenPolicyCmptTypeAttribute createGenerator(IPolicyCmptTypeAttribute a) throws CoreException {
+    private GenPolicyCmptTypeAttribute createGenerator(IPolicyCmptTypeAttribute a) {
         if (a.isDerived()) {
             return new GenDerivedAttribute(this, a);
         }
@@ -318,6 +320,27 @@ public class GenPolicyCmptType extends GenType {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    @Override
+    protected GenTypePart getGenTypePart(IIpsObjectPart ipsObjectPart) throws CoreException {
+        GenTypePart genTypePart = null;
+        if (ipsObjectPart instanceof IPolicyCmptTypeAssociation) {
+            genTypePart = getGenerator((IPolicyCmptTypeAssociation)ipsObjectPart);
+        }
+        if (ipsObjectPart instanceof IPolicyCmptTypeAttribute) {
+            genTypePart = getGenerator((IPolicyCmptTypeAttribute)ipsObjectPart);
+        }
+        if (ipsObjectPart instanceof IProductCmptTypeAttribute) {
+            genTypePart = getGenerator((IProductCmptTypeAttribute)ipsObjectPart);
+        }
+        if (ipsObjectPart instanceof IValidationRule) {
+            genTypePart = getGenerator((IValidationRule)ipsObjectPart);
+        }
+        if (ipsObjectPart instanceof IMethod) {
+            genTypePart = getGenerator((IMethod)ipsObjectPart);
+        }
+        return genTypePart;
     }
 
     /**
