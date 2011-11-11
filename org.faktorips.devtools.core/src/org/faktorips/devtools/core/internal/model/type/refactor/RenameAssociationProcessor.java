@@ -121,9 +121,6 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
 
     @Override
     protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
-        updateTargetRoleSingular();
-        updateTargetRolePlural();
-
         if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
             updateInverseAssociation();
             updateTestCaseTypeParameters();
@@ -133,6 +130,9 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
         if (getAssociation().isDerivedUnion()) {
             updateDerivedUnionSubsets();
         }
+
+        updateTargetRoleSingular();
+        updateTargetRolePlural();
     }
 
     private void updateTargetRoleSingular() {
