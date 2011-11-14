@@ -262,19 +262,21 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         }
 
         if (msgList.size() > 0) {
-            Message firstErrorMsg = getFirstMessage(msgList, Message.ERROR, bindingContext.getIgnoredMessageCodes());
+            Message firstErrorMsg = getFirstMessage(msgList, Message.ERROR, getBindingContext()
+                    .getIgnoredMessageCodes());
             if (firstErrorMsg != null) {
                 setMessage(firstErrorMsg.getText(), IMessageProvider.ERROR);
                 return;
             }
 
-            Message firstWarningMsg = getFirstMessage(msgList, Message.WARNING, bindingContext.getIgnoredMessageCodes());
+            Message firstWarningMsg = getFirstMessage(msgList, Message.WARNING, getBindingContext()
+                    .getIgnoredMessageCodes());
             if (firstWarningMsg != null) {
                 setMessage(firstWarningMsg.getText(), IMessageProvider.WARNING);
                 return;
             }
 
-            Message firstInfoMsg = getFirstMessage(msgList, Message.INFO, bindingContext.getIgnoredMessageCodes());
+            Message firstInfoMsg = getFirstMessage(msgList, Message.INFO, getBindingContext().getIgnoredMessageCodes());
             if (firstInfoMsg != null) {
                 setMessage(firstInfoMsg.getText(), IMessageProvider.INFORMATION);
                 return;
