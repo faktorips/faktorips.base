@@ -237,14 +237,13 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
     public void setDefaultForTableStructureUsages(boolean defaultForTableStructureUsages);
 
     /**
-     * Returns whether this category is marked as default category for product relevant
+     * Returns whether this category is marked as default category for configurable
      * {@link IValidationRule}s.
      */
     public boolean isDefaultForValidationRules();
 
     /**
-     * Sets whether this category is the default category for product relevant
-     * {@link IValidationRule}s.
+     * Sets whether this category is the default category for configurable {@link IValidationRule}s.
      * 
      * @param defaultForValidationRules Flag indicating whether this category shall be the default
      *            category for product relevant {@link IValidationRule}s

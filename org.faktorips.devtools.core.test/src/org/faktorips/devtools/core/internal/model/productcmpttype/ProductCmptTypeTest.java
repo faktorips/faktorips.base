@@ -1520,74 +1520,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     /**
      * <strong>Scenario:</strong><br>
-     * There exist 3 categories with the following positions:
-     * <ol>
-     * <li>Category A: {@link Position#LEFT}
-     * <li>Category B: {@link Position#RIGHT}
-     * <li>Category C: {@link Position#LEFT}
-     * </ol>
-     * Category C is moved up.
-     * <p>
-     * <strong>Expected Outcome:</strong><br>
-     * The expected ordering is:
-     * <ol>
-     * <li>Category C
-     * <li>Category B
-     * <li>Category A
-     * </ol>
-     */
-    @Test
-    public void testMoveCategories_MoveUpWithCategoryFromOtherPositionInBetween() {
-        deleteAllCategories(productCmptType);
-
-        IProductCmptCategory categoryA = productCmptType.newCategory("Category A", Position.LEFT);
-        IProductCmptCategory categoryB = productCmptType.newCategory("Category B", Position.RIGHT);
-        IProductCmptCategory categoryC = productCmptType.newCategory("Category C", Position.LEFT);
-
-        productCmptType.moveCategories(Arrays.asList(categoryC), true);
-
-        List<IProductCmptCategory> categories = productCmptType.getCategories();
-        assertEquals(categoryC, categories.get(0));
-        assertEquals(categoryB, categories.get(1));
-        assertEquals(categoryA, categories.get(2));
-    }
-
-    /**
-     * <strong>Scenario:</strong><br>
-     * There exist 3 categories with the following positions:
-     * <ol>
-     * <li>Category A: {@link Position#LEFT}
-     * <li>Category B: {@link Position#RIGHT}
-     * <li>Category C: {@link Position#LEFT}
-     * </ol>
-     * Category A is moved down.
-     * <p>
-     * <strong>Expected Outcome:</strong><br>
-     * The expected ordering is:
-     * <ol>
-     * <li>Category C
-     * <li>Category B
-     * <li>Category A
-     * </ol>
-     */
-    @Test
-    public void testMoveCategories_MoveDownWithCategoryFromOtherPositionInBetween() {
-        deleteAllCategories(productCmptType);
-
-        IProductCmptCategory categoryA = productCmptType.newCategory("Category A", Position.LEFT);
-        IProductCmptCategory categoryB = productCmptType.newCategory("Category B", Position.RIGHT);
-        IProductCmptCategory categoryC = productCmptType.newCategory("Category C", Position.LEFT);
-
-        productCmptType.moveCategories(Arrays.asList(categoryA), false);
-
-        List<IProductCmptCategory> categories = productCmptType.getCategories();
-        assertEquals(categoryC, categories.get(0));
-        assertEquals(categoryB, categories.get(1));
-        assertEquals(categoryA, categories.get(2));
-    }
-
-    /**
-     * <strong>Scenario:</strong><br>
      * There are many categories with mixed positions. Some of these categories are moved. The moved
      * categories contain at least one {@link IProductCmptCategory} of each {@link Position}.
      * <p>
@@ -1600,16 +1532,16 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         deleteAllCategories(productCmptType);
 
         IProductCmptCategory categoryLeft1 = productCmptType.newCategory("categoryLeft1", Position.LEFT);
-        IProductCmptCategory categoryRight1 = productCmptType.newCategory("categoryRight1", Position.RIGHT);
         IProductCmptCategory categoryLeft2 = productCmptType.newCategory("categoryLeft2", Position.LEFT);
+        IProductCmptCategory categoryRight1 = productCmptType.newCategory("categoryRight1", Position.RIGHT);
         IProductCmptCategory categoryRight2 = productCmptType.newCategory("categoryRight2", Position.RIGHT);
 
         assertTrue(productCmptType.moveCategories(Arrays.asList(categoryLeft2, categoryRight2), true));
 
         List<IProductCmptCategory> categories = productCmptType.getCategories();
         assertEquals(categoryLeft2, categories.get(0));
-        assertEquals(categoryRight2, categories.get(1));
-        assertEquals(categoryLeft1, categories.get(2));
+        assertEquals(categoryLeft1, categories.get(1));
+        assertEquals(categoryRight2, categories.get(2));
         assertEquals(categoryRight1, categories.get(3));
         assertEquals(4, categories.size());
     }
