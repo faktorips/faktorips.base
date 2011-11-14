@@ -15,13 +15,13 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.fieldassist.ContentProposal;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
@@ -56,7 +56,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         super();
         ArgumentCheck.notNull(expression);
         this.expression = expression;
-        this.ipsProject = expression.getIpsProject();
+        this.setIpsProject(expression.getIpsProject());
         signature = expression.findFormulaSignature(expression.getIpsProject());
     }
 
@@ -71,20 +71,32 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             String attributePrefix = identifier.substring(pos + 1);
             addMatchingAttributes(result, paramName, attributePrefix);
             addMatchingEnumValues(result, paramName, attributePrefix);
+            addAdditionalProposals(result, getAdditionalProposals(paramName, attributePrefix));
         } else {
             addMatchingProductCmptTypeAttributes(result, identifier);
             addMatchingParameters(result, identifier);
             addMatchingFunctions(result, identifier);
             addMatchingEnumTypes(result, identifier);
+            addAdditionalProposals(result, getAdditionalProposals(identifier));
         }
         return result.toArray(new IContentProposal[result.size()]);
+    }
+
+    private void addAdditionalProposals(final List<IContentProposal> result,
+            final List<IContentProposal> additionalProposals) {
+        for (IContentProposal proposal : additionalProposals) {
+            if (!result.contains(proposal)) {
+                result.add(proposal);
+            }
+        }
     }
 
     private void addMatchingEnumTypes(List<IContentProposal> result, String enumTypePrefix) {
         EnumDatatype[] enumTypes = expression.getEnumDatatypesAllowedInFormula();
         for (EnumDatatype enumType : enumTypes) {
             if (enumType.getName().startsWith(enumTypePrefix)) {
-                IContentProposal proposal = new ContentProposal(enumType.getName());
+                IContentProposal proposal = newContentProposal(enumType.getName(), enumType.getName(),
+                        enumType.getName());
                 result.add(proposal);
             }
         }
@@ -106,7 +118,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     }
 
     private void addEnumValueToResult(List<IContentProposal> result, String enumValue, String prefix) {
-        IContentProposal proposal = new ContentProposal(removePrefix(enumValue, prefix), enumValue, null);
+        IContentProposal proposal = newContentProposal(removePrefix(enumValue, prefix), enumValue, null);
         result.add(proposal);
     }
 
@@ -122,7 +134,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     private void addPartToResult(List<IContentProposal> result, IIpsObjectPart part, String datatype, String prefix) {
         String name = part.getName();
         String displayText = name + " - " + datatype; //$NON-NLS-1$
-        IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText, null);
+        IContentProposal proposal = newContentProposal(removePrefix(name, prefix), displayText, null);
         result.add(proposal);
     }
 
@@ -133,6 +145,29 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 addPartToResult(result, param, param.getDatatype(), prefix);
             }
         }
+    }
+
+    /**
+     * This method should be used by subclasses that want to provide additional
+     * {@link IContentProposal}s.
+     * 
+     * @param prefix the prefix for the proposals
+     * @return additional {@link IContentProposal}s
+     */
+    protected List<IContentProposal> getAdditionalProposals(final String prefix) {
+        return Collections.emptyList();
+    }
+
+    /**
+     * This method should be used by subclasses that want to provide additional
+     * {@link IContentProposal}s.
+     * 
+     * @param paramName the name of the parameter on which the additional proposals are based
+     * @param prefix the prefix for the proposals
+     * @return additional {@link IContentProposal}s
+     */
+    protected List<IContentProposal> getAdditionalProposals(final String paramName, final String prefix) {
+        return Collections.emptyList();
     }
 
     private void addMatchingFunctions(List<IContentProposal> result, String prefix) {
@@ -171,11 +206,11 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         String description = function.getDescription();
         description = description.replaceAll("\r\n", "<br>"); //$NON-NLS-1$ //$NON-NLS-2$
         description = description.replaceAll("\n", "<br>"); //$NON-NLS-1$ //$NON-NLS-2$
-        IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText.toString(), description);
+        IContentProposal proposal = newContentProposal(removePrefix(name, prefix), displayText.toString(), description);
         result.add(proposal);
     }
 
-    private String removePrefix(String name, String prefix) {
+    protected String removePrefix(String name, String prefix) {
         return name.startsWith(prefix) ? name.substring(prefix.length()) : name;
     }
 
@@ -185,11 +220,11 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             return;
         }
         try {
-            Datatype datatype = param.findDatatype(ipsProject);
+            Datatype datatype = param.findDatatype(getIpsProject());
             if (!(datatype instanceof IType)) {
                 return;
             }
-            List<IAttribute> attributes = ((IType)datatype).findAllAttributes(ipsProject);
+            List<IAttribute> attributes = ((IType)datatype).findAllAttributes(getIpsProject());
             List<String> attributeNames = new ArrayList<String>();
             for (IAttribute attribute : attributes) {
                 if (attribute.getName().startsWith(attributePrefix)) {
@@ -208,11 +243,37 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         String name = attribute.getName();
         String displayText = name + " - " + attribute.getDatatype(); //$NON-NLS-1$
         String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(attribute);
-        IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText, localizedDescription);
+        IContentProposal proposal = newContentProposal(removePrefix(name, prefix), displayText, localizedDescription);
         result.add(proposal);
     }
 
-    private IParameter getParameter(String name) {
+    private IContentProposal newContentProposal(final String content, final String label, final String description) {
+        // FIXME in Eclipse 3.6: use ContentProposal
+        return new IContentProposal() {
+
+            @Override
+            public String getLabel() {
+                return label;
+            }
+
+            @Override
+            public String getDescription() {
+                return description;
+            }
+
+            @Override
+            public int getCursorPosition() {
+                return content.length();
+            }
+
+            @Override
+            public String getContent() {
+                return content;
+            }
+        };
+    }
+
+    protected IParameter getParameter(String name) {
         IParameter[] params = signature.getParameters();
         for (IParameter param : params) {
             if (param.getName().equals(name)) {
@@ -239,5 +300,13 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             i--;
         }
         return s.substring(i + 1);
+    }
+
+    public void setIpsProject(IIpsProject ipsProject) {
+        this.ipsProject = ipsProject;
+    }
+
+    public IIpsProject getIpsProject() {
+        return ipsProject;
     }
 }
