@@ -19,7 +19,11 @@ import java.util.List;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.bindings.keys.KeyStroke;
+import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -30,7 +34,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -38,7 +41,6 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestCase;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestInputValue;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.parametertable.ChangeParametersControl;
@@ -224,9 +226,15 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         parametersControl.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         Text formulaText = getToolkit().createMultilineText(c);
-        FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(formula);
-        ContentAssistHandler.createHandlerForText(formulaText,
-                CompletionUtil.createContentAssistant(completionProcessor));
+        final char[] autoActivationCharacters = new char[] { '.' };
+        KeyStroke keyStroke = null;
+        try {
+            keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
+        } catch (final ParseException e) {
+            throw new IllegalArgumentException("KeyStroke \"Ctrl+Space\" could not be parsed.", e); //$NON-NLS-1$
+        }
+        new ContentProposalAdapter(formulaText, new TextContentAdapter(), new ExpressionProposalProvider(formula),
+                keyStroke, autoActivationCharacters);
 
         // create fields
         formulaField = new TextField(formulaText);

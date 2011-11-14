@@ -20,9 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.contentassist.CompletionProposal;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
@@ -47,9 +45,9 @@ import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
 
-public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
+public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
-    private FormulaCompletionProcessor processor;
+    private ExpressionProposalProvider proposalProvider;
     private IpsProject ipsProject;
     private PolicyCmptType cmptType;
     private IProductCmptType productCmptType;
@@ -76,26 +74,23 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         productCmptGen = productCmpt.getProductCmptGeneration(0);
         configElement = productCmptGen.newFormula();
         configElement.setFormulaSignature(formulaSignature.getFormulaName());
-        processor = new FormulaCompletionProcessor(configElement);
+        proposalProvider = new ExpressionProposalProvider(configElement);
     }
 
     @Test
     public void testDoComputeCompletionProposals() throws Exception {
-        ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
-        processor.doComputeCompletionProposals("Test", 0, results);
-        assertEquals(0, results.size());
+        IContentProposal[] results = proposalProvider.getProposals("Test", 4);
+        assertEquals(0, results.length);
 
         formulaSignature.setDatatype(enumDatatype.getQualifiedName());
-        processor.doComputeCompletionProposals("Test", 0, results);
-        CompletionProposal proposal = (CompletionProposal)results.get(0);
-        assertEquals(StringUtil.unqualifiedName(TestEnumType.class.getName()), proposal.getDisplayString());
-        results = new ArrayList<ICompletionProposal>();
-        processor.doComputeCompletionProposals("TestEnumType.", 0, results);
-        assertEquals(3, results.size());
+        results = proposalProvider.getProposals("Test", 4);
+        IContentProposal proposal = results[0];
+        assertEquals(StringUtil.unqualifiedName(TestEnumType.class.getName()), proposal.getLabel());
+        results = proposalProvider.getProposals("TestEnumType.", 13);
+        assertEquals(3, results.length);
         ArrayList<String> expectedValues = new ArrayList<String>();
-        for (Object name : results) {
-            proposal = (CompletionProposal)name;
-            expectedValues.add(proposal.getDisplayString());
+        for (IContentProposal result : results) {
+            expectedValues.add(result.getLabel());
         }
         assertTrue(expectedValues.contains("1"));
         assertTrue(expectedValues.contains("2"));
@@ -104,7 +99,6 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testDoComputeCompletionProposalsForMultipleTableContentsWithDateFormatName() throws Exception {
-
         ITableStructure table = (ITableStructure)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0],
                 IpsObjectType.TABLE_STRUCTURE, "Testtable");
         IColumn column = table.newColumn();
@@ -128,12 +122,11 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         tableContentUsage.setTableContentName(tableContents.getQualifiedName());
         tableContentUsage.setStructureUsage("ratePlan");
 
-        ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
-        processor.doComputeCompletionProposals("TestTable_", 0, results);
-        assertEquals(0, results.size());
+        IContentProposal[] results = proposalProvider.getProposals("TestTable_", 10);
+        assertEquals(0, results.length);
 
-        processor.doComputeCompletionProposals("ra", 0, results);
-        assertEquals(1, results.size());
+        results = proposalProvider.getProposals("ra", 2);
+        assertEquals(1, results.length);
     }
 
     @Test
@@ -163,26 +156,25 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
 
         // there needs to be a table content available for the structure otherwise no completion is
         // proposed
-        ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
-        processor.doComputeCompletionProposals("TestT", 0, results);
-        assertEquals(0, results.size());
+        IContentProposal[] results = proposalProvider.getProposals("TestT", 5);
+        assertEquals(0, results.length);
 
-        results.clear();
-        processor.doComputeCompletionProposals("ratePlan", 0, results);
-        assertEquals(1, results.size());
+        results = proposalProvider.getProposals("ratePlan", 8);
+        assertEquals(1, results.length);
     }
 
     @Test
     public void testDoComputeCompletionProposalsForParam() throws Exception {
         formulaSignature.newParameter(Datatype.DECIMAL.getQualifiedName(), "abcparam");
 
-        ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
-        processor = new FormulaCompletionProcessor(configElement);
-        processor.doComputeCompletionProposals("a", 1, results);
-        CompletionProposal proposal = (CompletionProposal)results.get(0);
-        Document document = new Document("a");
-        proposal.apply(document);
-        assertEquals("abcparam", document.get());
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("a", 1);
+        IContentProposal proposal = results[0];
+        assertEquals("bcparam", proposal.getContent());
+
+        results = proposalProvider.getProposals("", 0);
+        proposal = results[0];
+        assertEquals("abcparam", proposal.getContent());
     }
 
     @Test
@@ -195,26 +187,19 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         secondAttr.setName("secondAttr");
         secondAttr.setDatatype(Datatype.STRING.getQualifiedName());
 
-        ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
-        processor = new FormulaCompletionProcessor(configElement);
-        processor.doComputeCompletionProposals("f", 1, results);
-        CompletionProposal proposal = (CompletionProposal)results.get(0);
-        Document document = new Document(" ");
-        proposal.apply(document);
-        assertEquals("firstAttr", document.get());
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("f", 1);
+        IContentProposal proposal = results[0];
+        assertEquals("irstAttr", proposal.getContent());
 
-        results = new ArrayList<ICompletionProposal>();
-        processor = new FormulaCompletionProcessor(configElement);
-        processor.doComputeCompletionProposals("s", 1, results);
-        proposal = (CompletionProposal)results.get(0);
-        document = new Document(" ");
-        proposal.apply(document);
-        assertEquals("secondAttr", document.get());
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        results = proposalProvider.getProposals("s", 1);
+        proposal = results[0];
+        assertEquals("econdAttr", proposal.getContent());
 
-        results = new ArrayList<ICompletionProposal>();
-        processor = new FormulaCompletionProcessor(configElement);
-        processor.doComputeCompletionProposals("k", 1, results);
-        assertEquals(0, results.size());
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        results = proposalProvider.getProposals("k", 1);
+        assertEquals(0, results.length);
     }
 
     @Test
@@ -224,13 +209,12 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         formulaSignature.newParameter(a.getQualifiedName(), "aParam");
         formulaSignature.newParameter(aConfig.getQualifiedName(), "aConfigParam");
 
-        ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
-        processor = new FormulaCompletionProcessor(configElement);
-        processor.doComputeCompletionProposals("", 1, results);
-        CompletionProposal proposal = (CompletionProposal)results.get(0);
-        assertEquals("aParam - a", proposal.getDisplayString());
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("", 0);
+        IContentProposal proposal = results[0];
+        assertEquals("aParam - a", proposal.getLabel());
 
-        proposal = (CompletionProposal)results.get(1);
-        assertEquals("aConfigParam - aConfigtype", proposal.getDisplayString());
+        proposal = results[1];
+        assertEquals("aConfigParam - aConfigtype", proposal.getLabel());
     }
 }
