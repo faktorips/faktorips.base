@@ -595,16 +595,23 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testNewProductCmptCategory() {
+    public void testNewCategory() {
         IProductCmptCategory category = productCmptType.newCategory();
         assertNotNull(category);
         assertEquals(productCmptType, category.getParent());
     }
 
     @Test
-    public void testNewProductCmptCategoryWithName() {
+    public void testNewCategory_WithName() {
         IProductCmptCategory category = productCmptType.newCategory("foo");
         assertEquals("foo", category.getName());
+    }
+
+    @Test
+    public void testNewCategory_WithNameAndPosition() {
+        IProductCmptCategory category = productCmptType.newCategory("foo", Position.RIGHT);
+        assertEquals("foo", category.getName());
+        assertEquals(Position.RIGHT, category.getPosition());
     }
 
     @Test
@@ -661,7 +668,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         tsu2.setRoleName("role1");
         assertEquals(tsu1, productCmptType.findTableStructureUsage("role1", ipsProject));
-
     }
 
     @Test
@@ -1439,6 +1445,21 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
+    public void testGetCategories_ByPosition() {
+        deleteAllCategories(productCmptType);
+
+        IProductCmptCategory leftCategory = productCmptType.newCategory("left", Position.LEFT);
+        IProductCmptCategory rightCategory = productCmptType.newCategory("right", Position.RIGHT);
+
+        List<IProductCmptCategory> categoriesLeft = productCmptType.getCategories(Position.LEFT);
+        List<IProductCmptCategory> categoriesRight = productCmptType.getCategories(Position.RIGHT);
+        assertEquals(leftCategory, categoriesLeft.get(0));
+        assertEquals(1, categoriesLeft.size());
+        assertEquals(rightCategory, categoriesRight.get(0));
+        assertEquals(1, categoriesRight.size());
+    }
+
+    @Test
     public void testFindCategories() throws CoreException {
         deleteAllCategories(superSuperProductCmptType);
         deleteAllCategories(superProductCmptType);
@@ -1495,6 +1516,102 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptCategory superCategory = superProductCmptType.newCategory();
 
         productCmptType.moveCategories(Arrays.asList(superCategory), true);
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * There exist 3 categories with the following positions:
+     * <ol>
+     * <li>Category A: {@link Position#LEFT}
+     * <li>Category B: {@link Position#RIGHT}
+     * <li>Category C: {@link Position#LEFT}
+     * </ol>
+     * Category C is moved up.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The expected ordering is:
+     * <ol>
+     * <li>Category C
+     * <li>Category B
+     * <li>Category A
+     * </ol>
+     */
+    @Test
+    public void testMoveCategories_MoveUpWithCategoryFromOtherPositionInBetween() {
+        deleteAllCategories(productCmptType);
+
+        IProductCmptCategory categoryA = productCmptType.newCategory("Category A", Position.LEFT);
+        IProductCmptCategory categoryB = productCmptType.newCategory("Category B", Position.RIGHT);
+        IProductCmptCategory categoryC = productCmptType.newCategory("Category C", Position.LEFT);
+
+        productCmptType.moveCategories(Arrays.asList(categoryC), true);
+
+        List<IProductCmptCategory> categories = productCmptType.getCategories();
+        assertEquals(categoryC, categories.get(0));
+        assertEquals(categoryB, categories.get(1));
+        assertEquals(categoryA, categories.get(2));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * There exist 3 categories with the following positions:
+     * <ol>
+     * <li>Category A: {@link Position#LEFT}
+     * <li>Category B: {@link Position#RIGHT}
+     * <li>Category C: {@link Position#LEFT}
+     * </ol>
+     * Category A is moved down.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The expected ordering is:
+     * <ol>
+     * <li>Category C
+     * <li>Category B
+     * <li>Category A
+     * </ol>
+     */
+    @Test
+    public void testMoveCategories_MoveDownWithCategoryFromOtherPositionInBetween() {
+        deleteAllCategories(productCmptType);
+
+        IProductCmptCategory categoryA = productCmptType.newCategory("Category A", Position.LEFT);
+        IProductCmptCategory categoryB = productCmptType.newCategory("Category B", Position.RIGHT);
+        IProductCmptCategory categoryC = productCmptType.newCategory("Category C", Position.LEFT);
+
+        productCmptType.moveCategories(Arrays.asList(categoryA), false);
+
+        List<IProductCmptCategory> categories = productCmptType.getCategories();
+        assertEquals(categoryC, categories.get(0));
+        assertEquals(categoryB, categories.get(1));
+        assertEquals(categoryA, categories.get(2));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * There are many categories with mixed positions. Some of these categories are moved. The moved
+     * categories contain at least one {@link IProductCmptCategory} of each {@link Position}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The moved categories should be swapped only with other categories with the same
+     * {@link Position}.
+     */
+    @Test
+    public void testMoveCategories_MoveCategoriesWithDifferentPosition() {
+        deleteAllCategories(productCmptType);
+
+        IProductCmptCategory categoryLeft1 = productCmptType.newCategory("categoryLeft1", Position.LEFT);
+        IProductCmptCategory categoryRight1 = productCmptType.newCategory("categoryRight1", Position.RIGHT);
+        IProductCmptCategory categoryLeft2 = productCmptType.newCategory("categoryLeft2", Position.LEFT);
+        IProductCmptCategory categoryRight2 = productCmptType.newCategory("categoryRight2", Position.RIGHT);
+
+        assertTrue(productCmptType.moveCategories(Arrays.asList(categoryLeft2, categoryRight2), true));
+
+        List<IProductCmptCategory> categories = productCmptType.getCategories();
+        assertEquals(categoryLeft2, categories.get(0));
+        assertEquals(categoryRight2, categories.get(1));
+        assertEquals(categoryLeft1, categories.get(2));
+        assertEquals(categoryRight1, categories.get(3));
+        assertEquals(4, categories.size());
     }
 
     @Test
@@ -1671,15 +1788,11 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     public void testGetFirstCategory() {
         deleteAllCategories(productCmptType);
 
-        IProductCmptCategory firstLeft = productCmptType.newCategory("firstLeft");
-        IProductCmptCategory secondLeft = productCmptType.newCategory("secondLeft");
-        firstLeft.setPosition(Position.LEFT);
-        secondLeft.setPosition(Position.LEFT);
+        IProductCmptCategory firstLeft = productCmptType.newCategory("firstLeft", Position.LEFT);
+        productCmptType.newCategory("secondLeft", Position.LEFT);
 
-        IProductCmptCategory firstRight = productCmptType.newCategory("firstRight");
-        IProductCmptCategory secondRight = productCmptType.newCategory("secondRight");
-        firstRight.setPosition(Position.RIGHT);
-        secondRight.setPosition(Position.RIGHT);
+        IProductCmptCategory firstRight = productCmptType.newCategory("firstRight", Position.RIGHT);
+        productCmptType.newCategory("secondRight", Position.RIGHT);
 
         assertEquals(firstLeft, productCmptType.getFirstCategory(Position.LEFT));
         assertEquals(firstRight, productCmptType.getFirstCategory(Position.RIGHT));
@@ -1696,12 +1809,10 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     public void testGetFirstCategory_NoCategoryWithRequestedPositionDefined() {
         deleteAllCategories(productCmptType);
 
-        IProductCmptCategory rightCategory = productCmptType.newCategory("rightCategory");
-        rightCategory.setPosition(Position.RIGHT);
+        IProductCmptCategory rightCategory = productCmptType.newCategory("rightCategory", Position.RIGHT);
         assertNull(productCmptType.getFirstCategory(Position.LEFT));
 
-        IProductCmptCategory leftCategory = productCmptType.newCategory("leftCategory");
-        leftCategory.setPosition(Position.LEFT);
+        productCmptType.newCategory("leftCategory", Position.LEFT);
         rightCategory.delete();
         assertNull(productCmptType.getFirstCategory(Position.RIGHT));
     }
@@ -1710,15 +1821,11 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     public void testGetLastCategory() {
         deleteAllCategories(productCmptType);
 
-        IProductCmptCategory firstLeft = productCmptType.newCategory("firstLeft");
-        IProductCmptCategory secondLeft = productCmptType.newCategory("secondLeft");
-        firstLeft.setPosition(Position.LEFT);
-        secondLeft.setPosition(Position.LEFT);
+        productCmptType.newCategory("firstLeft", Position.LEFT);
+        IProductCmptCategory secondLeft = productCmptType.newCategory("secondLeft", Position.LEFT);
 
-        IProductCmptCategory firstRight = productCmptType.newCategory("firstRight");
-        IProductCmptCategory secondRight = productCmptType.newCategory("secondRight");
-        firstRight.setPosition(Position.RIGHT);
-        secondRight.setPosition(Position.RIGHT);
+        productCmptType.newCategory("firstRight", Position.RIGHT);
+        IProductCmptCategory secondRight = productCmptType.newCategory("secondRight", Position.RIGHT);
 
         assertEquals(secondLeft, productCmptType.getLastCategory(Position.LEFT));
         assertEquals(secondRight, productCmptType.getLastCategory(Position.RIGHT));
@@ -1735,12 +1842,10 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     public void testGetLastCategory_NoCategoryWithRequestedPositionDefined() {
         deleteAllCategories(productCmptType);
 
-        IProductCmptCategory rightCategory = productCmptType.newCategory("rightCategory");
-        rightCategory.setPosition(Position.RIGHT);
+        IProductCmptCategory rightCategory = productCmptType.newCategory("rightCategory", Position.RIGHT);
         assertNull(productCmptType.getLastCategory(Position.LEFT));
 
-        IProductCmptCategory leftCategory = productCmptType.newCategory("leftCategory");
-        leftCategory.setPosition(Position.LEFT);
+        productCmptType.newCategory("leftCategory", Position.LEFT);
         rightCategory.delete();
         assertNull(productCmptType.getLastCategory(Position.RIGHT));
     }
@@ -1792,6 +1897,25 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         assertFalse(productCmptType.isDefining(superCategory));
         assertTrue(productCmptType.isDefining(category));
+    }
+
+    @Test
+    public void testSortCategoriesAccordingToPosition() {
+        deleteAllCategories(productCmptType);
+
+        IProductCmptCategory left1 = productCmptType.newCategory("left1", Position.LEFT);
+        IProductCmptCategory right1 = productCmptType.newCategory("right1", Position.RIGHT);
+        IProductCmptCategory left2 = productCmptType.newCategory("left2", Position.LEFT);
+        IProductCmptCategory right2 = productCmptType.newCategory("right2", Position.RIGHT);
+
+        productCmptType.sortCategoriesAccordingToPosition();
+
+        List<IProductCmptCategory> categories = productCmptType.getCategories();
+        assertEquals(left1, categories.get(0));
+        assertEquals(left2, categories.get(1));
+        assertEquals(right1, categories.get(2));
+        assertEquals(right2, categories.get(3));
+        assertEquals(4, categories.size());
     }
 
     /**

@@ -718,8 +718,26 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
+    public IProductCmptCategory newCategory(String name, Position position) {
+        IProductCmptCategory category = newCategory(name);
+        category.setPosition(position);
+        return category;
+    }
+
+    @Override
     public List<IProductCmptCategory> getCategories() {
         return Collections.unmodifiableList(categories.asList());
+    }
+
+    @Override
+    public List<IProductCmptCategory> getCategories(Position position) {
+        List<IProductCmptCategory> positionCategories = new ArrayList<IProductCmptCategory>();
+        for (IProductCmptCategory category : categories) {
+            if (position.equals(category.getPosition())) {
+                positionCategories.add(category);
+            }
+        }
+        return positionCategories;
     }
 
     @Override
@@ -897,12 +915,40 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public boolean moveCategories(List<IProductCmptCategory> categories, boolean up) {
+        // Check that all categories to be moved belong to this type
+        for (IProductCmptCategory category : categories) {
+            ArgumentCheck.equals(this, category.getProductCmptType());
+        }
+
+        // Split the categories to be moved according to position
+        List<IProductCmptCategory> leftCategories = new ArrayList<IProductCmptCategory>();
+        List<IProductCmptCategory> rightCategories = new ArrayList<IProductCmptCategory>();
+        for (IProductCmptCategory category : categories) {
+            List<IProductCmptCategory> targetList = category.isAtLeftPosition() ? leftCategories : rightCategories;
+            targetList.add(category);
+        }
+
+        boolean leftMoved = moveCategories(leftCategories, getCategories(Position.LEFT), up);
+        boolean rightMoved = moveCategories(rightCategories, getCategories(Position.RIGHT), up);
+        if (leftMoved || rightMoved) {
+            partsMoved(this.categories.getParts());
+            return true;
+        }
+        return false;
+    }
+
+    private boolean moveCategories(List<IProductCmptCategory> categories,
+            List<IProductCmptCategory> contextCategories,
+            boolean up) {
+
         int[] indices = new int[categories.size()];
         for (int i = 0; i < categories.size(); i++) {
-            ArgumentCheck.equals(this, categories.get(i).getProductCmptType());
-            indices[i] = this.categories.indexOf(categories.get(i));
+            indices[i] = contextCategories.indexOf(categories.get(i));
         }
-        int[] newIndices = this.categories.moveParts(indices, up);
+
+        SubListElementMover<IProductCmptCategory> mover = new SubListElementMover<IProductCmptCategory>(
+                this.categories.getBackingList(), contextCategories);
+        int[] newIndices = mover.move(indices, up);
         return !Arrays.equals(indices, newIndices);
     }
 
@@ -1090,6 +1136,21 @@ public class ProductCmptType extends Type implements IProductCmptType {
             index++;
         }
         return -1;
+    }
+
+    public void sortCategoriesAccordingToPosition() {
+        Collections.sort(categories.getBackingList(), new Comparator<IProductCmptCategory>() {
+            @Override
+            public int compare(IProductCmptCategory o1, IProductCmptCategory o2) {
+                if (o1.isAtLeftPosition() && o2.isAtRightPosition()) {
+                    return -1;
+                }
+                if (o1.isAtRightPosition() && o2.isAtLeftPosition()) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
     }
 
     private static class ProductCmptPropertyComparator implements Comparator<IProductCmptProperty> {

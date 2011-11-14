@@ -29,6 +29,10 @@ public class SubListElementMover<T> implements IElementMover {
 
     private final List<T> subList;
 
+    /**
+     * @param list the {@link List} containing all elements
+     * @param subList the {@link List} containing the elements that constitute the sub list
+     */
     public SubListElementMover(List<T> list, List<T> subList) {
         this.list = list;
         this.subList = subList;

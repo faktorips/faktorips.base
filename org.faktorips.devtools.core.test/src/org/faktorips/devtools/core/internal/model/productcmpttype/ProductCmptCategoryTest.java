@@ -63,6 +63,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
         IPolicyCmptType policyType = newPolicyAndProductCmptType(ipsProject, "PolicyType", "ProductType");
         productType = policyType.findProductCmptType(ipsProject);
+
         category = (ProductCmptCategory)productType.newCategory(CATEGORY_NAME);
     }
 
@@ -75,7 +76,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         assertFalse(category.isDefaultForProductCmptTypeAttributes());
         assertFalse(category.isDefaultForTableStructureUsages());
         assertFalse(category.isDefaultForValidationRules());
-        assertTrue(category.isAtLeftPosition());
+        assertTrue(category.isAtRightPosition());
     }
 
     @Test
@@ -247,15 +248,15 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetPosition() {
-        category.setPosition(Position.RIGHT);
-        assertEquals(Position.RIGHT, category.getPosition());
-        assertTrue(category.isAtRightPosition());
-        assertPropertyChangedEvent(category, IProductCmptCategory.PROPERTY_POSITION, Position.LEFT, Position.RIGHT);
-
         category.setPosition(Position.LEFT);
         assertEquals(Position.LEFT, category.getPosition());
         assertTrue(category.isAtLeftPosition());
         assertPropertyChangedEvent(category, IProductCmptCategory.PROPERTY_POSITION, Position.RIGHT, Position.LEFT);
+
+        category.setPosition(Position.RIGHT);
+        assertEquals(Position.RIGHT, category.getPosition());
+        assertTrue(category.isAtRightPosition());
+        assertPropertyChangedEvent(category, IProductCmptCategory.PROPERTY_POSITION, Position.LEFT, Position.RIGHT);
     }
 
     @Test(expected = NullPointerException.class)

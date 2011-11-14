@@ -49,11 +49,10 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
 
     private boolean defaultForProductCmptTypeAttributes;
 
-    private Position position;
+    private Position position = Position.RIGHT;
 
     public ProductCmptCategory(final IProductCmptType parent, String id) {
         super(parent, id);
-        position = Position.LEFT;
     }
 
     @Override
@@ -196,6 +195,9 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
 
         Position oldValue = this.position;
         this.position = side;
+
+        getProductCmptTypeImpl().sortCategoriesAccordingToPosition();
+
         valueChanged(oldValue, side, PROPERTY_POSITION);
     }
 

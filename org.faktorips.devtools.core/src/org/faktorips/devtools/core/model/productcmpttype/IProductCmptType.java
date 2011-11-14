@@ -447,12 +447,29 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public IProductCmptCategory newCategory(String name);
 
     /**
-     * Returns a list (defensive copy) containing the {@link IProductCmptCategory}s belonging to
-     * this type.
+     * Creates and returns a new {@link IProductCmptCategory} with the provided name and
+     * {@link Position} belonging to this type.
+     * 
+     * @param name the name of the {@link IProductCmptCategory} to create
+     * @param position the {@link Position} of the {@link IProductCmptCategory} to create
+     */
+    public IProductCmptCategory newCategory(String name, Position position);
+
+    /**
+     * Returns an unmodifiable view on the list of categories belonging to this
+     * {@link IProductCmptType}.
      * <p>
      * This method does <strong>not</strong> consider categories defined in the supertype hierarchy.
      */
     public List<IProductCmptCategory> getCategories();
+
+    /**
+     * Returns a list (defensive copy) containing the categories with the indicated {@link Position}
+     * , belonging to this {@link IProductCmptType}.
+     * 
+     * @param position the {@link Position} to retrieve the categories for
+     */
+    public List<IProductCmptCategory> getCategories(Position position);
 
     /**
      * Returns a list containing the {@link IProductCmptCategory}s belonging to this type.
@@ -633,6 +650,9 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Moves the indicated {@link IProductCmptCategory}s up or down by one position and returns
      * whether a move has been performed.
+     * <p>
+     * Note that a move is always performed in relation to the next respectively previous
+     * {@link IProductCmptCategory} with same {@link Position}.
      * <p>
      * Returns false if
      * <ul>
