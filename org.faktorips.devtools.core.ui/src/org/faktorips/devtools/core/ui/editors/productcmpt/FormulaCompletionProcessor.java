@@ -79,8 +79,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         }
     }
 
-    private void addMatchingEnumTypes(List<ICompletionProposal> result, String enumTypePrefix, int replacementOffset)
-            throws CoreException {
+    private void addMatchingEnumTypes(List<ICompletionProposal> result, String enumTypePrefix, int replacementOffset) {
 
         EnumDatatype[] enumTypes = formula.getEnumDatatypesAllowedInFormula();
         for (EnumDatatype enumType : enumTypes) {
@@ -96,7 +95,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     private void addMatchingEnumValues(List<ICompletionProposal> result,
             String enumTypeName,
             String enumValuePrefix,
-            int replacementOffset) throws CoreException {
+            int replacementOffset) {
 
         EnumDatatype[] enumTypes = formula.getEnumDatatypesAllowedInFormula();
         for (EnumDatatype enumType : enumTypes) {
@@ -156,8 +155,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         }
     }
 
-    private void addMatchingFunctions(List<ICompletionProposal> result, String prefix, int replacementOffset)
-            throws CoreException {
+    private void addMatchingFunctions(List<ICompletionProposal> result, String prefix, int replacementOffset) {
 
         ExprCompiler compiler = formula.newExprCompiler(formula.getIpsProject());
         FlFunction[] functions = compiler.getFunctions();
