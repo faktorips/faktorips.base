@@ -129,6 +129,11 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
                         initLabelsFromXml(parser);
                     }
                     break;
+                case XMLStreamConstants.END_ELEMENT:
+                    if (parser.getLocalName().equals(IModelTypeAssociation.XML_TAG)) {
+                        return;
+                    }
+                    break;
             }
         }
     }

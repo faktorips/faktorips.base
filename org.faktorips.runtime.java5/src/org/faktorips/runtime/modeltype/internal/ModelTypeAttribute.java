@@ -93,6 +93,11 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
                         initLabelsFromXml(parser);
                     }
                     break;
+                case XMLStreamConstants.END_ELEMENT:
+                    if (parser.getLocalName().equals(IModelTypeAttribute.XML_TAG)) {
+                        return;
+                    }
+                    break;
             }
         }
     }
