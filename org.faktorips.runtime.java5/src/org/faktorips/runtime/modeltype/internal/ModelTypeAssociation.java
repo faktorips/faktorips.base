@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -117,13 +118,19 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
                 inverseAssociation = parser.getAttributeValue(i);
             }
         }
-
-        parser.next();
-        initDescriptionsFromXml(parser);
-        parser.next();
-        initLabelsFromXml(parser);
-
-        initExtPropertiesFromXml(parser);
+        for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
+            switch (event) {
+                case XMLStreamConstants.START_ELEMENT:
+                    if (parser.getLocalName().equals(EXTENSION_PROPERTIES_XML_WRAPPER_TAG)) {
+                        initExtPropertiesFromXml(parser);
+                    } else if (parser.getLocalName().equals(IModelElement.DESCRIPTIONS_XML_WRAPPER_TAG)) {
+                        initDescriptionsFromXml(parser);
+                    } else if (parser.getLocalName().equals(IModelElement.LABELS_XML_WRAPPER_TAG)) {
+                        initLabelsFromXml(parser);
+                    }
+                    break;
+            }
+        }
     }
 
     @Override

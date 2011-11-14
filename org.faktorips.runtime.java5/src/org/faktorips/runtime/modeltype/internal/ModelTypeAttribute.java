@@ -13,9 +13,11 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.faktorips.runtime.modeltype.IModelElement;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 
@@ -80,13 +82,19 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
                 isProductRelevant = Boolean.valueOf(parser.getAttributeValue(i));
             }
         }
-
-        parser.next();
-        initDescriptionsFromXml(parser);
-        parser.next();
-        initLabelsFromXml(parser);
-
-        initExtPropertiesFromXml(parser);
+        for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
+            switch (event) {
+                case XMLStreamConstants.START_ELEMENT:
+                    if (parser.getLocalName().equals(EXTENSION_PROPERTIES_XML_WRAPPER_TAG)) {
+                        initExtPropertiesFromXml(parser);
+                    } else if (parser.getLocalName().equals(IModelElement.DESCRIPTIONS_XML_WRAPPER_TAG)) {
+                        initDescriptionsFromXml(parser);
+                    } else if (parser.getLocalName().equals(IModelElement.LABELS_XML_WRAPPER_TAG)) {
+                        initLabelsFromXml(parser);
+                    }
+                    break;
+            }
+        }
     }
 
     protected Class<?> findDatatype() {
