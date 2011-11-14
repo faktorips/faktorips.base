@@ -95,7 +95,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         EnumDatatype[] enumTypes = expression.getEnumDatatypesAllowedInFormula();
         for (EnumDatatype enumType : enumTypes) {
             if (enumType.getName().startsWith(enumTypePrefix)) {
-                IContentProposal proposal = newContentProposal(enumType.getName(), enumType.getName(),
+                IContentProposal proposal = new ContentProposal(enumType.getName(), enumType.getName(),
                         enumType.getName());
                 result.add(proposal);
             }
@@ -118,7 +118,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     }
 
     private void addEnumValueToResult(List<IContentProposal> result, String enumValue, String prefix) {
-        IContentProposal proposal = newContentProposal(removePrefix(enumValue, prefix), enumValue, null);
+        IContentProposal proposal = new ContentProposal(removePrefix(enumValue, prefix), enumValue, null);
         result.add(proposal);
     }
 
@@ -134,7 +134,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     private void addPartToResult(List<IContentProposal> result, IIpsObjectPart part, String datatype, String prefix) {
         String name = part.getName();
         String displayText = name + " - " + datatype; //$NON-NLS-1$
-        IContentProposal proposal = newContentProposal(removePrefix(name, prefix), displayText, null);
+        IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText, null);
         result.add(proposal);
     }
 
@@ -206,7 +206,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         String description = function.getDescription();
         description = description.replaceAll("\r\n", "<br>"); //$NON-NLS-1$ //$NON-NLS-2$
         description = description.replaceAll("\n", "<br>"); //$NON-NLS-1$ //$NON-NLS-2$
-        IContentProposal proposal = newContentProposal(removePrefix(name, prefix), displayText.toString(), description);
+        IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText.toString(), description);
         result.add(proposal);
     }
 
@@ -243,34 +243,43 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         String name = attribute.getName();
         String displayText = name + " - " + attribute.getDatatype(); //$NON-NLS-1$
         String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(attribute);
-        IContentProposal proposal = newContentProposal(removePrefix(name, prefix), displayText, localizedDescription);
+        IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText, localizedDescription);
         result.add(proposal);
     }
 
-    private IContentProposal newContentProposal(final String content, final String label, final String description) {
-        // FIXME in Eclipse 3.6: use ContentProposal
-        return new IContentProposal() {
+    private static class ContentProposal implements IContentProposal {
+        // FIXME in Eclipse 3.6: use org.eclipse.jface.fieldassist.ContentProposal
+        private final String content;
+        private final String label;
+        private final String description;
 
-            @Override
-            public String getLabel() {
-                return label;
-            }
+        public ContentProposal(final String content, final String label, final String description) {
+            this.content = content;
+            this.label = label;
+            this.description = description;
 
-            @Override
-            public String getDescription() {
-                return description;
-            }
+        }
 
-            @Override
-            public int getCursorPosition() {
-                return content.length();
-            }
+        @Override
+        public String getLabel() {
+            return label;
+        }
 
-            @Override
-            public String getContent() {
-                return content;
-            }
-        };
+        @Override
+        public String getDescription() {
+            return description;
+        }
+
+        @Override
+        public int getCursorPosition() {
+            return content.length();
+        }
+
+        @Override
+        public String getContent() {
+            return content;
+        }
+
     }
 
     protected IParameter getParameter(String name) {
