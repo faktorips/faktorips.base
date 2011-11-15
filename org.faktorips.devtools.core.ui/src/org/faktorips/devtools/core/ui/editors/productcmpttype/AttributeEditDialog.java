@@ -122,24 +122,24 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_nameLabel);
         Text nameText = getToolkit().createText(workArea);
         nameText.setFocus();
-        bindingContext.bindContent(nameText, attribute, IIpsElement.PROPERTY_NAME);
+        getBindingContext().bindContent(nameText, attribute, IIpsElement.PROPERTY_NAME);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_datatypeLabel);
         DatatypeRefControl datatypeControl = getToolkit().createDatatypeRefEdit(attribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
-        bindingContext.bindContent(datatypeControl, attribute, IAttribute.PROPERTY_DATATYPE);
+        getBindingContext().bindContent(datatypeControl, attribute, IAttribute.PROPERTY_DATATYPE);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_modifierLabel);
         Combo modifierCombo = getToolkit().createCombo(workArea);
-        bindingContext.bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.class);
+        getBindingContext().bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.class);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_changeOverTimeLabel);
         Checkbox changeOverTimeCheckbox = getToolkit().createCheckbox(
                 workArea,
                 NLS.bind(Messages.AttributeEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
                         .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
-        bindingContext.bindContent(changeOverTimeCheckbox, attribute,
+        getBindingContext().bindContent(changeOverTimeCheckbox, attribute,
                 IProductCmptTypeAttribute.PROPERTY_CHANGING_OVER_TIME);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_defaultvalueLabel);
@@ -172,7 +172,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
 
         extFactory.createControls(workArea, getToolkit(), attribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
-        extFactory.bind(bindingContext);
+        extFactory.bind(getBindingContext());
 
         return c;
     }
@@ -187,7 +187,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
         defaultEditFieldPlaceholder.layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout();
-        bindingContext.bindContent(defaultValueField, attribute, IAttribute.PROPERTY_DEFAULT_VALUE);
+        getBindingContext().bindContent(defaultValueField, attribute, IAttribute.PROPERTY_DEFAULT_VALUE);
     }
 
     @Override
@@ -204,7 +204,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
             currentDatatype = newDatatype;
             if (defaultValueField != null) {
-                bindingContext.removeBindings(defaultValueField.getControl());
+                getBindingContext().removeBindings(defaultValueField.getControl());
                 defaultValueField.getControl().dispose();
             }
 

@@ -75,7 +75,7 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
                     return;
                 }
                 if (event.getIpsSrcFile().equals(rule.getIpsObject().getIpsSrcFile())) {
-                    bindingContext.updateUI();
+                    getBindingContext().updateUI();
                 }
             }
         };
@@ -119,11 +119,11 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
     }
 
     private void bindFields() {
-        ruleUI.bindFields(rule, bindingContext);
-        bindingContext
-                .bindContent(appliedToAllField, rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
-        bindingContext
-                .bindContent(specifiedInSrcField, rule, IValidationRule.PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
+        ruleUI.bindFields(rule, getBindingContext());
+        getBindingContext().bindContent(appliedToAllField, rule,
+                IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
+        getBindingContext().bindContent(specifiedInSrcField, rule,
+                IValidationRule.PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
     }
 
     @Override

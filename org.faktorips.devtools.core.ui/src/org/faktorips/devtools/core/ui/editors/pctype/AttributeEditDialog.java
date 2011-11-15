@@ -215,7 +215,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                bindingContext.updateUI();
+                getBindingContext().updateUI();
             }
         });
 
@@ -235,7 +235,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         // initial update of the checkBox "validationRuleAdded"
         updateErrorMessages();
-        bindingContext.updateUI();
+        getBindingContext().updateUI();
 
         return tabFolder;
     }
@@ -311,12 +311,12 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelName);
         nameText = getToolkit().createText(workArea);
-        bindingContext.bindContent(nameText, attribute, IIpsElement.PROPERTY_NAME);
+        getBindingContext().bindContent(nameText, attribute, IIpsElement.PROPERTY_NAME);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_lableOverwrites);
         final Checkbox cb = new Checkbox(workArea, getToolkit());
         cb.setText(Messages.AttributeEditDialog_overwritesNote);
-        EditField<Boolean> overwrittenField = bindingContext.bindContent(cb, attribute,
+        EditField<Boolean> overwrittenField = getBindingContext().bindContent(cb, attribute,
                 IPolicyCmptTypeAttribute.PROPERTY_OVERWRITES);
         overwrittenField.addChangeListener(new ValueChangeListener() {
             @Override
@@ -343,19 +343,19 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         datatypeControl = getToolkit().createDatatypeRefEdit(attribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
-        bindingContext.bindContent(datatypeControl, attribute, IAttribute.PROPERTY_DATATYPE);
+        getBindingContext().bindContent(datatypeControl, attribute, IAttribute.PROPERTY_DATATYPE);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelModifier);
         Combo modifierCombo = getToolkit().createCombo(workArea);
-        bindingContext.bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.class);
+        getBindingContext().bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.class);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelAttrType);
         Combo typeCombo = getToolkit().createCombo(workArea);
-        bindingContext.bindContent(typeCombo, attribute, IPolicyCmptTypeAttribute.PROPERTY_ATTRIBUTE_TYPE,
+        getBindingContext().bindContent(typeCombo, attribute, IPolicyCmptTypeAttribute.PROPERTY_ATTRIBUTE_TYPE,
                 AttributeType.class);
 
         extFactory.createControls(workArea, getToolkit(), attribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
-        extFactory.bind(bindingContext);
+        extFactory.bind(getBindingContext());
     }
 
     private void recreateConfigGroupContent() {
@@ -368,7 +368,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
         createConfigGroupContent();
         configGroup.layout();
-        bindingContext.updateUI();
+        getBindingContext().updateUI();
     }
 
     private void createConfigGroupContent() {
@@ -378,7 +378,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         if (attribute.isChangeable()) {
             Checkbox checkbox = getToolkit().createCheckbox(area, Messages.AttributeEditDialog_defaultValueConfigured);
-            bindingContext.bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+            getBindingContext().bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
             return;
         }
 
@@ -390,7 +390,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         String productCmptType = QNameUtil.getUnqualifiedName(attribute.getPolicyCmptType().getProductCmptType());
         String checkboxText = NLS.bind(Messages.AttributeEditDialog_attributeComputed, productCmptType);
         Checkbox checkbox = getToolkit().createCheckbox(area, checkboxText);
-        bindingContext.bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+        getBindingContext().bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
         getToolkit().createLabel(area, Messages.AttributeEditDialog_methodNote);
 
         Composite temp = getToolkit().createLabelEditColumnComposite(area);
@@ -411,9 +411,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         MethodSignatureCompletionProcessor processor = new MethodSignatureCompletionProcessor(getProductCmptType());
         CompletionUtil.createHandlerForText(compuationMethodText, processor);
 
-        bindingContext.bindContent(compuationMethodText, attribute,
+        getBindingContext().bindContent(compuationMethodText, attribute,
                 IPolicyCmptTypeAttribute.PROPERTY_COMPUTATION_METHOD_SIGNATURE);
-        bindingContext.bindEnabled(compuationMethodText, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+        getBindingContext().bindEnabled(compuationMethodText, attribute,
+                IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
 
         Link link = new Link(area, SWT.NONE);
         link.setText(Messages.AttributeEditDialog_createNewMethod);
@@ -588,7 +589,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
         adjustLabelWidth();
 
-        bindingContext.bindContent(defaultValueField, attribute, IAttribute.PROPERTY_DEFAULT_VALUE);
+        getBindingContext().bindContent(defaultValueField, attribute, IAttribute.PROPERTY_DEFAULT_VALUE);
     }
 
     @Override
@@ -619,7 +620,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
         currentDatatype = newDatatype;
         if (defaultValueField != null) {
-            bindingContext.removeBindings(defaultValueField.getControl());
+            getBindingContext().removeBindings(defaultValueField.getControl());
             defaultValueField.getControl().dispose();
         }
         if (valueSetWorkArea != null && !valueSetWorkArea.isDisposed()) {
@@ -665,12 +666,12 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (ruleDefinitionUI.isUiInitialized() && evt.getPropertyName() == RuleUIModel.PROPERTY_VALIDATION_RULE) {
-                    ruleDefinitionUI.removeBindingsFromContext(bindingContext);
+                    ruleDefinitionUI.removeBindingsFromContext(getBindingContext());
                     if (evt.getNewValue() != null) {
                         IValidationRule rule = (IValidationRule)evt.getNewValue();
-                        ruleDefinitionUI.bindFields(rule, bindingContext);
+                        ruleDefinitionUI.bindFields(rule, getBindingContext());
                     }
-                    bindingContext.updateUI();
+                    getBindingContext().updateUI();
                 }
             }
         });
@@ -724,9 +725,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private void bindEnablement() {
         if (validationRuleAdded != null) {
-            bindingContext.bindContent(validationRuleAdded.getButton(), ruleModel, RuleUIModel.PROPERTY_ENABLED);
+            getBindingContext().bindContent(validationRuleAdded.getButton(), ruleModel, RuleUIModel.PROPERTY_ENABLED);
         }
-        bindingContext.add(new ControlPropertyBinding(ruleGroup, ruleModel, RuleUIModel.PROPERTY_ENABLED, null) {
+        getBindingContext().add(new ControlPropertyBinding(ruleGroup, ruleModel, RuleUIModel.PROPERTY_ENABLED, null) {
             @Override
             public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                 if (nameOfChangedProperty == null || nameOfChangedProperty.equals(getPropertyName())) {
@@ -749,7 +750,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         Composite checkComposite = getToolkit().createGridComposite(c, 1, true, false);
         Checkbox checkTransient = getToolkit().createCheckbox(checkComposite,
                 Messages.AttributeEditDialog_labelAttributeIsTransient);
-        bindingContext.bindContent(checkTransient, attribute.getPersistenceAttributeInfo(),
+        getBindingContext().bindContent(checkTransient, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TRANSIENT);
 
         final Group group = getToolkit().createGroup(checkComposite,
@@ -758,49 +759,49 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelColumnName);
         Text columnNameText = getToolkit().createText(workArea);
-        bindingContext.bindContent(columnNameText, attribute.getPersistenceAttributeInfo(),
+        getBindingContext().bindContent(columnNameText, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelUnique);
         uniqueCheckbox = getToolkit().createCheckbox(workArea);
-        bindingContext.bindContent(uniqueCheckbox, attribute.getPersistenceAttributeInfo(),
+        getBindingContext().bindContent(uniqueCheckbox, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelNullable);
         nullableCheckbox = getToolkit().createCheckbox(workArea);
-        bindingContext.bindContent(nullableCheckbox, attribute.getPersistenceAttributeInfo(),
+        getBindingContext().bindContent(nullableCheckbox, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelColumnSize);
         sizeField = new IntegerField(getToolkit().createText(workArea));
-        bindingContext.bindContent(sizeField, attribute.getPersistenceAttributeInfo(),
+        getBindingContext().bindContent(sizeField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelPrecision);
         precisionField = new IntegerField(getToolkit().createText(workArea));
-        bindingContext.bindContent(precisionField, attribute.getPersistenceAttributeInfo(),
+        getBindingContext().bindContent(precisionField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelColumnScale);
         scaleField = new IntegerField(getToolkit().createText(workArea));
-        bindingContext.bindContent(scaleField, attribute.getPersistenceAttributeInfo(),
+        getBindingContext().bindContent(scaleField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelTemporalType);
         Combo temporalMappingCombo = getToolkit().createCombo(workArea);
         temporalMappingField = new EnumField<DateTimeMapping>(temporalMappingCombo, DateTimeMapping.class);
-        bindingContext.bindContent(temporalMappingField, attribute.getPersistenceAttributeInfo(),
+        getBindingContext().bindContent(temporalMappingField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TEMPORAL_MAPPING);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelSqlColumnDefinition);
         sqlColumnDefinition = getToolkit().createText(workArea);
-        bindingContext.bindContent(sqlColumnDefinition, attribute.getPersistenceAttributeInfo(),
+        getBindingContext().bindContent(sqlColumnDefinition, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelDatatypeConverterClass);
         if (ipsProject.getIpsArtefactBuilderSet().isPersistentProviderSupportConverter()) {
             final Text converterQualifiedName = getToolkit().createText(workArea);
-            bindingContext.bindContent(converterQualifiedName, attribute.getPersistenceAttributeInfo(),
+            getBindingContext().bindContent(converterQualifiedName, attribute.getPersistenceAttributeInfo(),
                     IPersistentAttributeInfo.PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME);
         } else {
             final Text converterQualifiedName = getToolkit().createText(workArea);
@@ -809,8 +810,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
 
         // disable all tab page controls if policy component type shouldn't persist
-        bindingContext.add(new ControlPropertyBinding(c, attribute.getPolicyCmptType().getPersistenceTypeInfo(),
-                "enabled", Boolean.TYPE) { //$NON-NLS-1$
+        getBindingContext().add(
+                new ControlPropertyBinding(c, attribute.getPolicyCmptType().getPersistenceTypeInfo(),
+                        "enabled", Boolean.TYPE) { //$NON-NLS-1$
                     @Override
                     public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                         if (!isPersistentEnabled()) {
@@ -827,24 +829,25 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 });
 
         // disable property controls if attribute is marked as transient
-        bindingContext.add(new ControlPropertyBinding(c, attribute.getPersistenceAttributeInfo(),
-                IPersistentAttributeInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
-            @Override
-            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                if (!isPersistentEnabled()) {
-                    getToolkit().setDataChangeable(group, false);
-                    return;
-                }
-                if (attribute.getPersistenceAttributeInfo().isTransient()) {
-                    getToolkit().setDataChangeable(group, false);
-                    return;
-                }
-                enableOrDisableDatatypeDependingControls();
-            }
+        getBindingContext().add(
+                new ControlPropertyBinding(c, attribute.getPersistenceAttributeInfo(),
+                        IPersistentAttributeInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
+                    @Override
+                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                        if (!isPersistentEnabled()) {
+                            getToolkit().setDataChangeable(group, false);
+                            return;
+                        }
+                        if (attribute.getPersistenceAttributeInfo().isTransient()) {
+                            getToolkit().setDataChangeable(group, false);
+                            return;
+                        }
+                        enableOrDisableDatatypeDependingControls();
+                    }
 
-        });
+                });
         // datatype depending enabled or disabled controls
-        bindingContext.add(new ControlPropertyBinding(c, attribute, IAttribute.PROPERTY_DATATYPE, String.class) {
+        getBindingContext().add(new ControlPropertyBinding(c, attribute, IAttribute.PROPERTY_DATATYPE, String.class) {
             @Override
             public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                 boolean enabled = isPersistentEnabled();

@@ -68,7 +68,7 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
 
         createBottomExtensionPropertyControls(page);
 
-        extensionFactory.bind(bindingContext);
+        extensionFactory.bind(getBindingContext());
 
         return page;
     }
@@ -81,7 +81,7 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
         Composite nameComposite = getToolkit().createLabelEditColumnComposite(page);
         getToolkit().createLabel(nameComposite, Messages.CategoryEditDialog_nameLabel);
         nameText = getToolkit().createText(nameComposite);
-        bindingContext.bindContent(nameText, getCategory(), IProductCmptCategory.PROPERTY_NAME);
+        getBindingContext().bindContent(nameText, getCategory(), IProductCmptCategory.PROPERTY_NAME);
     }
 
     private void createVerticalSpacer(Composite page) {
@@ -107,15 +107,15 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
         Checkbox defaultValidationRulesCheckbox = getToolkit().createCheckbox(defaultsComposite,
                 Messages.CategoryEditDialog_defaultValidationRules);
 
-        bindingContext.bindContent(defaultProductCmptTypeAttributesCheckbox, getCategory(),
+        getBindingContext().bindContent(defaultProductCmptTypeAttributesCheckbox, getCategory(),
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES);
-        bindingContext.bindContent(defaultFormulaSignatureDefinitionsCheckbox, getCategory(),
+        getBindingContext().bindContent(defaultFormulaSignatureDefinitionsCheckbox, getCategory(),
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS);
-        bindingContext.bindContent(defaultTableStructureUsagesCheckbox, getCategory(),
+        getBindingContext().bindContent(defaultTableStructureUsagesCheckbox, getCategory(),
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES);
-        bindingContext.bindContent(defaultPolicyCmptTypeAttributesCheckbox, getCategory(),
+        getBindingContext().bindContent(defaultPolicyCmptTypeAttributesCheckbox, getCategory(),
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES);
-        bindingContext.bindContent(defaultValidationRulesCheckbox, getCategory(),
+        getBindingContext().bindContent(defaultValidationRulesCheckbox, getCategory(),
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
     }
 

@@ -75,22 +75,22 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
         getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelAccesModifier);
         modifierCombo = getToolkit().createCombo(propertyPane);
         modifierCombo.setFocus();
-        bindingContext.bindContent(modifierCombo, method, IMethod.PROPERTY_MODIFIER, Modifier.class);
+        getBindingContext().bindContent(modifierCombo, method, IMethod.PROPERTY_MODIFIER, Modifier.class);
 
         getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelAbstract);
         abstractCheckbox = getToolkit().createCheckbox(propertyPane);
-        bindingContext.bindContent(abstractCheckbox, method, IMethod.PROPERTY_ABSTRACT);
+        getBindingContext().bindContent(abstractCheckbox, method, IMethod.PROPERTY_ABSTRACT);
 
         getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelType);
         datatypeControl = getToolkit().createDatatypeRefEdit(method.getIpsProject(), propertyPane);
         datatypeControl.setVoidAllowed(true);
         datatypeControl.setOnlyValueDatatypesAllowed(false);
         datatypeControl.setAbstractAllowed(true);
-        bindingContext.bindContent(datatypeControl, method, IMethod.PROPERTY_DATATYPE);
+        getBindingContext().bindContent(datatypeControl, method, IMethod.PROPERTY_DATATYPE);
 
         getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelName);
         nameText = getToolkit().createText(propertyPane);
-        bindingContext.bindContent(nameText, method, IIpsElement.PROPERTY_NAME);
+        getBindingContext().bindContent(nameText, method, IIpsElement.PROPERTY_NAME);
 
         // parameters
         parametersControl = new ParametersEditControl(methodSignatureGroup, getToolkit(), SWT.NONE,

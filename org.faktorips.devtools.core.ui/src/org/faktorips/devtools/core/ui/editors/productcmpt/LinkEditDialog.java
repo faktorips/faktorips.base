@@ -113,13 +113,13 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
         maxCardinalityField = new CardinalityField(maxCardinalityText);
         defaultCardinalityField = new CardinalityField(defaultCardinalityText);
 
-        bindingContext.bindContent(targetField, link, IProductCmptLink.PROPERTY_TARGET);
-        bindingContext.bindContent(minCardinalityField, link, IProductCmptLink.PROPERTY_MIN_CARDINALITY);
-        bindingContext.bindContent(maxCardinalityField, link, IProductCmptLink.PROPERTY_MAX_CARDINALITY);
-        bindingContext.bindContent(defaultCardinalityField, link, IProductCmptLink.PROPERTY_DEFAULT_CARDINALITY);
+        getBindingContext().bindContent(targetField, link, IProductCmptLink.PROPERTY_TARGET);
+        getBindingContext().bindContent(minCardinalityField, link, IProductCmptLink.PROPERTY_MIN_CARDINALITY);
+        getBindingContext().bindContent(maxCardinalityField, link, IProductCmptLink.PROPERTY_MAX_CARDINALITY);
+        getBindingContext().bindContent(defaultCardinalityField, link, IProductCmptLink.PROPERTY_DEFAULT_CARDINALITY);
 
         extFactory.createControls(workArea, getToolkit(), link);
-        extFactory.bind(bindingContext);
+        extFactory.bind(getBindingContext());
 
         return c;
     }

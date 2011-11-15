@@ -83,7 +83,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
-        bindingContext.addIgnoredMessageCode(IProductCmptTypeAssociation.MSGCODE_MATCHING_ASSOCIATION_INVALID);
+        getBindingContext().addIgnoredMessageCode(IProductCmptTypeAssociation.MSGCODE_MATCHING_ASSOCIATION_INVALID);
     }
 
     /**
@@ -121,7 +121,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         createDerivedUnionGroup(getToolkit().createGroup(panel, Messages.AssociationEditDialog_derivedUnionGroup));
         createExtensionArea(panel, IExtensionPropertyDefinition.POSITION_BOTTOM);
 
-        extFactory.bind(bindingContext);
+        extFactory.bind(getBindingContext());
 
         return panel;
     }
@@ -142,19 +142,19 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_targetLabel);
         ProductCmptType2RefControl targetControl = new ProductCmptType2RefControl(association.getIpsProject(),
                 workArea, getToolkit(), false);
-        bindingContext.bindContent(targetControl, association, IProductCmptTypeAssociation.PROPERTY_TARGET);
+        getBindingContext().bindContent(targetControl, association, IProductCmptTypeAssociation.PROPERTY_TARGET);
         targetControl.setFocus();
 
         // aggregation kind
         getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_typeLabel);
         Combo typeCombo = getToolkit().createCombo(workArea);
-        bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE,
+        getBindingContext().bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE,
                 IProductCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
 
         // role singular
         getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_roleSingularLabel);
         final Text targetRoleSingularText = getToolkit().createText(workArea);
-        bindingContext.bindContent(targetRoleSingularText, association,
+        getBindingContext().bindContent(targetRoleSingularText, association,
                 IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
         targetRoleSingularText.addFocusListener(new FocusAdapter() {
             @Override
@@ -168,7 +168,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         // role plural
         getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_rolePluralLabel);
         final Text targetRolePluralText = getToolkit().createText(workArea);
-        bindingContext.bindContent(targetRolePluralText, association,
+        getBindingContext().bindContent(targetRolePluralText, association,
                 IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL);
         targetRolePluralText.addFocusListener(new FocusAdapter() {
 
@@ -185,32 +185,34 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         Text minCardinalityText = getToolkit().createText(workArea);
         CardinalityField cardinalityField = new CardinalityField(minCardinalityText);
         cardinalityField.setSupportsNull(false);
-        bindingContext.bindContent(cardinalityField, association, IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
+        getBindingContext().bindContent(cardinalityField, association,
+                IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
 
         // max cardinality
         getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_maxCardLabel);
         Text maxCardinalityText = getToolkit().createText(workArea);
         cardinalityField = new CardinalityField(maxCardinalityText);
         cardinalityField.setSupportsNull(false);
-        bindingContext.bindContent(cardinalityField, association, IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
+        getBindingContext().bindContent(cardinalityField, association,
+                IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
     }
 
     private void createDerivedUnionGroup(Composite workArea) {
         Checkbox derivedUnion = getToolkit().createCheckbox(workArea,
                 Messages.AssociationEditDialog_derivedUnionCheckbox);
-        bindingContext.bindContent(derivedUnion, association, IProductCmptTypeAssociation.PROPERTY_DERIVED_UNION);
+        getBindingContext().bindContent(derivedUnion, association, IProductCmptTypeAssociation.PROPERTY_DERIVED_UNION);
 
         Checkbox subsetCheckbox = getToolkit().createCheckbox(workArea, Messages.AssociationEditDialog_subsetCheckbox);
-        bindingContext.bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
+        getBindingContext().bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
 
         Composite temp = getToolkit().createLabelEditColumnComposite(workArea);
         temp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         getToolkit().createFormLabel(temp, Messages.AssociationEditDialog_derivedUnionLabel);
         Text unionText = getToolkit().createText(temp);
-        bindingContext
-                .bindContent(unionText, association, IProductCmptTypeAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
-        bindingContext.bindEnabled(unionText, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
+        getBindingContext().bindContent(unionText, association,
+                IProductCmptTypeAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
+        getBindingContext().bindEnabled(unionText, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
         DerivedUnionCompletionProcessor completionProcessor = new DerivedUnionCompletionProcessor(association);
         completionProcessor.setComputeProposalForEmptyPrefix(true);
         ContentAssistHandler
@@ -299,8 +301,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             Composite labelEditColumnComposite = getToolkit().createLabelEditColumnComposite(c);
             getToolkit().createLabel(labelEditColumnComposite, Messages.AssociationEditDialog_label_foundAssociation);
             Label matchingAssociationInfoLabel = getToolkit().createLabel(labelEditColumnComposite, StringUtils.EMPTY);
-            bindingContext
-                    .bindContent(matchingAssociationInfoLabel, pmoAssociation, PmoAssociation.PROPERTY_INFO_LABEL);
+            getBindingContext().bindContent(matchingAssociationInfoLabel, pmoAssociation,
+                    PmoAssociation.PROPERTY_INFO_LABEL);
             getToolkit().createVerticalSpacer(labelEditColumnComposite, 3);
 
             Group groupMatching = getToolkit().createGroup(c, Messages.AssociationEditDialog_group_selectExplicitly);
@@ -313,12 +315,13 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             Checkbox constrainedCheckbox = getToolkit().createCheckbox(workArea,
                     Messages.AssociationEditDialog_check_selectExplicitly);
             ((GridData)constrainedCheckbox.getLayoutData()).horizontalSpan = 2;
-            bindingContext
-                    .bindContent(constrainedCheckbox, pmoAssociation, PmoAssociation.PROPERTY_MATCHING_EXPLICITLY);
+            getBindingContext().bindContent(constrainedCheckbox, pmoAssociation,
+                    PmoAssociation.PROPERTY_MATCHING_EXPLICITLY);
 
             getToolkit().createLabel(workArea, Messages.AssociationEditDialog_label_matchingAssociation);
             Combo constrainedCombo = getToolkit().createCombo(workArea);
-            bindingContext.bindEnabled(constrainedCombo, pmoAssociation, PmoAssociation.PROPERTY_MATCHING_EXPLICITLY);
+            getBindingContext().bindEnabled(constrainedCombo, pmoAssociation,
+                    PmoAssociation.PROPERTY_MATCHING_EXPLICITLY);
             ComboViewerField<IPolicyCmptTypeAssociation> comboViewerField = new ComboViewerField<IPolicyCmptTypeAssociation>(
                     constrainedCombo, IPolicyCmptTypeAssociation.class);
             comboViewerField.setAllowEmptySelection(true);
@@ -331,7 +334,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
-            bindingContext.bindContent(comboViewerField, pmoAssociation, PmoAssociation.PROPERTY_MATCHING_ASSOCIATION);
+            getBindingContext().bindContent(comboViewerField, pmoAssociation,
+                    PmoAssociation.PROPERTY_MATCHING_ASSOCIATION);
         }
 
     }
