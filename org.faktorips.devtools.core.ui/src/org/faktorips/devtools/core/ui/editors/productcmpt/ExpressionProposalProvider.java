@@ -56,8 +56,8 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         super();
         ArgumentCheck.notNull(expression);
         this.expression = expression;
-        this.setIpsProject(expression.getIpsProject());
-        signature = expression.findFormulaSignature(expression.getIpsProject());
+        this.ipsProject = expression.getIpsProject();
+        this.signature = expression.findFormulaSignature(expression.getIpsProject());
     }
 
     @Override
@@ -139,9 +139,9 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     }
 
     private void addMatchingParameters(List<IContentProposal> result, String prefix) {
-        IParameter[] params = signature.getParameters();
+        IParameter[] params = getSignature().getParameters();
         for (IParameter param : params) {
-            if (param.getName().startsWith(prefix)) {
+            if (param.getName().toLowerCase().startsWith(prefix.toLowerCase())) {
                 addPartToResult(result, param, param.getDatatype(), prefix);
             }
         }
@@ -215,12 +215,8 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     }
 
     private void addMatchingAttributes(List<IContentProposal> result, String paramName, String attributePrefix) {
-        IParameter param = getParameter(paramName);
-        if (param == null) {
-            return;
-        }
         try {
-            Datatype datatype = param.findDatatype(getIpsProject());
+            Datatype datatype = findParamDatatype(paramName);
             if (!(datatype instanceof IType)) {
                 return;
             }
@@ -234,6 +230,18 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                     }
                 }
             }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e.getMessage(), e);
+        }
+    }
+
+    protected Datatype findParamDatatype(String paramName) {
+        IParameter param = getParameter(paramName);
+        if (param == null) {
+            return null;
+        }
+        try {
+            return param.findDatatype(getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }
@@ -283,7 +291,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     }
 
     protected IParameter getParameter(String name) {
-        IParameter[] params = signature.getParameters();
+        IParameter[] params = getSignature().getParameters();
         for (IParameter param : params) {
             if (param.getName().equals(name)) {
                 return param;
@@ -311,11 +319,11 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         return s.substring(i + 1);
     }
 
-    public void setIpsProject(IIpsProject ipsProject) {
-        this.ipsProject = ipsProject;
-    }
-
     public IIpsProject getIpsProject() {
         return ipsProject;
+    }
+
+    public IMethod getSignature() {
+        return signature;
     }
 }
