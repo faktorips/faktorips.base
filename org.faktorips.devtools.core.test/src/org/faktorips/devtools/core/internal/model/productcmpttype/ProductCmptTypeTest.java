@@ -1264,6 +1264,31 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                         .get(0));
     }
 
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IPolicyCmptTypeAttribute} marked as <em>overwrite</em> is assigned to an
+     * {@link IProductCmptCategory}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The original {@link IPolicyCmptTypeAttribute} should not be returned.
+     */
+    @Test
+    public void testFindProductCmptPropertiesForCategory_OverriddenAttribute() throws CoreException {
+        IProductCmptProperty superAttribute = createPolicyAttributeProperty(superPolicyCmptType, "overwrittenAttribute");
+        IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)createPolicyAttributeProperty(policyCmptType,
+                "overwrittenAttribute");
+        attribute.setOverwrite(true);
+
+        IProductCmptCategory category = productCmptType.newCategory("myCategory");
+        superAttribute.setCategory(category.getName());
+        attribute.setCategory(category.getName());
+
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesForCategory(category, true,
+                ipsProject);
+        assertTrue(properties.contains(attribute));
+        assertFalse(properties.contains(superAttribute));
+    }
+
     @Test
     public void testFindProductCmptPropertiesInOrder() throws CoreException {
         IProductCmptProperty s1 = superProductCmptType.newProductCmptTypeAttribute("s1");

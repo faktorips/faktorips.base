@@ -1050,7 +1050,49 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 properties.add(property);
             }
         }
+
+        filterOriginalsOfOverwrittenAttributes(properties);
+
         return properties;
+    }
+
+    private void filterOriginalsOfOverwrittenAttributes(List<IProductCmptProperty> properties) {
+        List<IPolicyCmptTypeAttribute> overwriteAttributes = new ArrayList<IPolicyCmptTypeAttribute>();
+
+        // Create a copy of the list to avoid concurrent modification
+        List<IProductCmptProperty> propertiesCopy = new ArrayList<IProductCmptProperty>(properties);
+
+        /*
+         * Iterate over the copied list starting with the last element as attributes of sub types
+         * are positioned towards the end of the list.
+         */
+        for (int i = propertiesCopy.size() - 1; i >= 0; i--) {
+            if (!(propertiesCopy.get(i) instanceof IPolicyCmptTypeAttribute)) {
+                continue;
+            }
+
+            IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)propertiesCopy.get(i);
+
+            // Check whether a corresponding overwritten attribute was already encountered
+            boolean correspondingOverwrittenAttributeEncountered = false;
+            for (IPolicyCmptTypeAttribute overwrittenAttribute : overwriteAttributes) {
+                if (policyCmptTypeAttribute.getName().equals(overwrittenAttribute.getName())) {
+                    correspondingOverwrittenAttributeEncountered = true;
+                    break;
+                }
+            }
+
+            /*
+             * If a corresponding overwritten attribute has already been found, remove the attribute
+             * from the list of returned properties. Otherwise, remember the attribute if it is
+             * marked as overwrite.
+             */
+            if (correspondingOverwrittenAttributeEncountered) {
+                properties.remove(policyCmptTypeAttribute);
+            } else if (policyCmptTypeAttribute.isOverwrite()) {
+                overwriteAttributes.add(policyCmptTypeAttribute);
+            }
+        }
     }
 
     /**
