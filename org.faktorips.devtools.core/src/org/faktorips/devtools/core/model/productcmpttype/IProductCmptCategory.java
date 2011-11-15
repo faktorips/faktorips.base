@@ -26,23 +26,27 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
 /**
- * Used to arrange {@link IProductCmptProperty} into groups that make more sense to the insurance
+ * Used to arrange product component properties into groups that make more sense to the insurance
  * department than a technical arrangement.
  * <p>
- * For example, a category called <em>premium computation</em> including a <em>premium table</em>
- * might be created. Prior to this feature, the <em>premium table</em> would be automatically
- * assigned to the <em>tables and formulas</em> section.
+ * For example, an {@link IProductCmptCategory} called <em>premium computation</em> including a
+ * <em>premium table</em> might be created. Prior to this feature, the <em>premium table</em> would
+ * be automatically assigned to the <em>Tables and Formulas</em> section.
  * <p>
- * A category can be marked to be the <em>default category</em> for each type of
- * {@link IProductCmptProperty}. New parts of that property type will then automatically be
- * referenced by the corresponding default category. Of course, the parts can still be moved to
- * other categories by the user.
+ * An {@link IProductCmptCategory} can be marked to be the <em>default</em> for specific property
+ * types. New parts of these property types will then automatically be referenced by the
+ * corresponding <em>default</em> {@link IProductCmptCategory}. Of course, the parts can still be
+ * moved to another {@link IProductCmptCategory} subsequently.
  * 
  * @since 3.6
  * 
  * @author Alexander Weickmann
+ * 
+ * @see IProductCmptProperty
+ * @see ProductCmptPropertyType
  */
 public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, IDescribedElement {
 
@@ -63,7 +67,8 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
     public final static String MSGCODE_PREFIX = "ProductCmptCategory-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that no name has been specified for this category.
+     * Validation message code to indicate that no name has been specified for this
+     * {@link IProductCmptCategory}.
      */
     public final static String MSGCODE_NAME_IS_EMPTY = MSGCODE_PREFIX + "NameIsEmpty"; //$NON-NLS-1$
 
@@ -127,19 +132,21 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
     public void setName(String name);
 
     /**
-     * Returns the list of {@link IProductCmptProperty}s assigned to this category (defensive copy).
+     * Returns the list of product component properties assigned to this
+     * {@link IProductCmptCategory}.
      * <p>
      * This method <strong>does</strong> consider references of the supertype hierarchy.
      * <p>
-     * The properties in the list are sorted accordingly.
+     * The product component properties are sorted according to the order prescribed in the
+     * assigning product component types.
      * 
-     * @param contextType The {@link IProductCmptType} to start the search from; properties assigned
-     *            by {@link IProductCmptType}s below the context type are not returned
-     * @param searchSupertypeHierarchy Flag indicating whether the supertype hierarchy shall be
+     * @param contextType the {@link IProductCmptType} to start the search from; product component
+     *            properties assigned by product component types below the context type are not
+     *            returned
+     * @param searchSupertypeHierarchy flag indicating whether the supertype hierarchy shall be
      *            searched as well
-     * @param ipsProject The {@link IIpsProject} to use for the search
      * 
-     * @throws CoreException If an error occurs during the search
+     * @throws CoreException if an error occurs during the search
      */
     public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType,
             boolean searchSupertypeHierarchy,

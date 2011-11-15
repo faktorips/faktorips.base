@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
  * 
  * @author Alexander Weickmann
  */
-public final class ProductCmptCategory extends AtomicIpsObjectPart implements IProductCmptCategory {
+public class ProductCmptCategory extends AtomicIpsObjectPart implements IProductCmptCategory {
 
     private boolean defaultForFormulaSignatureDefinitions;
 
@@ -401,6 +401,11 @@ public final class ProductCmptCategory extends AtomicIpsObjectPart implements IP
         return doc.createElement(XML_TAG_NAME);
     }
 
+    /**
+     * {@link TypeHierarchyVisitor} that searches for the existence of at least two
+     * {@link IProductCmptCategory} marked as <em>default</em> for a specific
+     * {@link ProductCmptPropertyType}.
+     */
     private abstract class DuplicateDefaultFinder extends TypeHierarchyVisitor<IProductCmptType> {
 
         private boolean duplicateDefaultFound;

@@ -33,6 +33,18 @@ public abstract class SimpleIpsPartsSection extends IpsObjectPartContainerSectio
 
     private IpsPartsComposite partsComposite;
 
+    /**
+     * <strong>Subclassing:</strong><br>
+     * This constructor first calls {@link #initControls()} to create the section UI elements, and
+     * then {@link #setText(String)} to set the provided section title.
+     * <p>
+     * <strong>Important:</strong> Subclass-specific constructor code is called after
+     * {@link #initControls()} has been invoked.
+     * 
+     * @param id a string that identifies this section, used as key to store whether the section is
+     *            currently expanded
+     * @param ipsObject the {@link IIpsObject} the parts to show belong to
+     */
     protected SimpleIpsPartsSection(String id, IIpsObject ipsObject, Composite parent, IWorkbenchPartSite site,
             String title, UIToolkit toolkit) {
 

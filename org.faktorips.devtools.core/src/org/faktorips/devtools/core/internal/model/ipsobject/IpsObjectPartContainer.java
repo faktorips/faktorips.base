@@ -67,11 +67,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Implementation of {@link IIpsObjectPartContainer}.
+ * Abstract base class for easy implementation of {@link IIpsObjectPartContainer}.
  * <p>
- * This implementation already provides the operations required by the interfaces
- * {@link IDescribedElement} and {@link ILabeledElement}. Therefore, subclasses are able to receive
- * multi-language support just by implementing the corresponding interfaces.
+ * <strong>Subclassing:</strong><br>
+ * This base class provides the implementations required by the interfaces {@link IDescribedElement}
+ * and {@link ILabeledElement}. Therefore, subclasses are able to receive multi-language support
+ * just by implementing the corresponding interfaces.
  * 
  * @see IIpsObjectPartContainer
  * 
@@ -402,12 +403,12 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
-     * Intended to be overridden by subclasses to return whether the given object part should be
-     * persisted to XML.
+     * Returns whether the provided {@link IIpsObjectPart} should be persisted to XML.
      * <p>
+     * <strong>Subclassing:</strong><br>
      * The default implementation always returns true.
      * 
-     * @param part The object part in question to save
+     * @param part the {@link IIpsObjectPart} in question to save
      */
     protected boolean isPartSavedToXml(IIpsObjectPart part) {
         return true;

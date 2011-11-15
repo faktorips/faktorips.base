@@ -630,8 +630,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
     /**
      * <strong>Scenario:</strong><br>
-     * The last property is moved down. However, another property in another category exists in the
-     * product component type below the category under test.
+     * The last property assigned to the {@link IProductCmptCategory} is moved down. However,
+     * another property assigned to another {@link IProductCmptCategory} exists below this property.
      * <p>
      * <strong>Expected Outcome:</strong><br>
      * An array equal to the provided index array should be returned and no move should be
