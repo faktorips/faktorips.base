@@ -213,12 +213,21 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         // Empty default implementation
     }
 
+    /**
+     * Updates the section's title to reflect the current state.
+     * <p>
+     * <strong>Subclassing:</strong><br>
+     * This implementation calls {@link #getSectionTitle()} to obtain the current title string.
+     * Then, if both {@link #isExpanded()} and {@link #hasContentToDisplay()} return false, the
+     * {@link Messages#IpsSection_EmptyTitleExtension} string is appended to the title string.
+     * Finally, {@link #setText(String)} is invoked to set the section title.
+     */
     protected final void updateSectionTitle() {
-        if (isDisplayNumberOfElementsInSectionTitle()) {
-            setText(getSectionTitle() + " (" + getNumberOfElementsToDisplayInSectionTitle() + ')'); //$NON-NLS-1$
-        } else {
-            setText(getSectionTitle());
+        String newTitle = getSectionTitle();
+        if (!isExpanded() && !hasContentToDisplay()) {
+            newTitle += ' ' + Messages.IpsSection_EmptyTitleExtension;
         }
+        setText(newTitle);
     }
 
     /**
@@ -229,27 +238,6 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
      */
     protected String getSectionTitle() {
         return ""; //$NON-NLS-1$
-    }
-
-    /**
-     * Subclasses should override this method in order to state whether the number of elements
-     * within this section should be displayed behind the section title.
-     * <p>
-     * The default implementation always returns false.
-     */
-    protected boolean isDisplayNumberOfElementsInSectionTitle() {
-        return false;
-    }
-
-    /**
-     * Subclasses should override this method to provide the number of elements that shall be
-     * displayed behind the section title.
-     * <p>
-     * Note that this information is only relevant if
-     * {@link #isDisplayNumberOfElementsInSectionTitle()} returns true.
-     */
-    protected int getNumberOfElementsToDisplayInSectionTitle() {
-        return 0;
     }
 
     /**

@@ -90,11 +90,6 @@ public class ProductCmptPropertySection extends IpsSection {
     }
 
     @Override
-    protected int getNumberOfElementsToDisplayInSectionTitle() {
-        return propertyValues.size();
-    }
-
-    @Override
     protected void initClientComposite(Composite parent, UIToolkit toolkit) {
         setLayout(parent);
         createRootPane(parent, toolkit);
@@ -208,11 +203,6 @@ public class ProductCmptPropertySection extends IpsSection {
     @Override
     protected boolean hasContentToDisplay() {
         return !propertyValues.isEmpty();
-    }
-
-    @Override
-    protected boolean isDisplayNumberOfElementsInSectionTitle() {
-        return true;
     }
 
     /**
