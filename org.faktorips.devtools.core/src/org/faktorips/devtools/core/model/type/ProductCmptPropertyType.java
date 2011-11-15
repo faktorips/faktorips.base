@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.type;
 
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.internal.model.productcmpt.Formula;
@@ -73,9 +74,15 @@ public enum ProductCmptPropertyType {
         }
 
         @Override
+        public Class<? extends IpsObjectPart> getValueImplementationClass() {
+            return AttributeValue.class;
+        }
+
+        @Override
         public String getValueXmlTagName() {
             return AttributeValue.TAG_NAME;
         }
+
     },
 
     /**
@@ -102,6 +109,11 @@ public enum ProductCmptPropertyType {
         @Override
         public Class<? extends IPropertyValue> getValueClass() {
             return ITableContentUsage.class;
+        }
+
+        @Override
+        public Class<? extends IpsObjectPart> getValueImplementationClass() {
+            return TableContentUsage.class;
         }
 
         @Override
@@ -133,6 +145,11 @@ public enum ProductCmptPropertyType {
         @Override
         public Class<? extends IPropertyValue> getValueClass() {
             return IFormula.class;
+        }
+
+        @Override
+        public Class<? extends IpsObjectPart> getValueImplementationClass() {
+            return Formula.class;
         }
 
         @Override
@@ -174,6 +191,11 @@ public enum ProductCmptPropertyType {
         }
 
         @Override
+        public Class<? extends IpsObjectPart> getValueImplementationClass() {
+            return ConfigElement.class;
+        }
+
+        @Override
         public String getValueXmlTagName() {
             return ConfigElement.TAG_NAME;
         }
@@ -207,6 +229,11 @@ public enum ProductCmptPropertyType {
         @Override
         public Class<? extends IPropertyValue> getValueClass() {
             return IValidationRuleConfig.class;
+        }
+
+        @Override
+        public Class<? extends IpsObjectPart> getValueImplementationClass() {
+            return ValidationRuleConfig.class;
         }
 
         @Override
@@ -259,6 +286,12 @@ public enum ProductCmptPropertyType {
      * {@link ProductCmptPropertyType}.
      */
     public abstract Class<? extends IPropertyValue> getValueClass();
+
+    /**
+     * Returns the class of the default implementation corresponding to the {@link IPropertyValue}
+     * represented by this {@link ProductCmptPropertyType}.
+     */
+    public abstract Class<? extends IpsObjectPart> getValueImplementationClass();
 
     /**
      * Returns the XML tag for {@link IPropertyValue} of this {@link ProductCmptPropertyType}.
