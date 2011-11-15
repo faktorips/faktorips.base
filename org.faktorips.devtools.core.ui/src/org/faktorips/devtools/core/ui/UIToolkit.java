@@ -53,8 +53,8 @@ import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
+import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
-import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
@@ -789,17 +789,16 @@ public class UIToolkit {
         return newGroup;
     }
 
-    public RadiobuttonGroup createRadiobuttonGroup(Composite parent, int style, String text) {
-        RadiobuttonGroup newRadiobuttonGroup = new RadiobuttonGroup(parent, style, this);
-        Group newGroup = newRadiobuttonGroup.getGroup();
-        if (text != null) {
-            newGroup.setText(text);
-        }
-        newGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
-        GridLayout layout = new GridLayout();
-        newGroup.setLayout(layout);
+    /**
+     * @deprecated use {@link #createRadioButtonGroup(Composite, String, int)} instead
+     */
+    @Deprecated
+    public RadioButtonGroup createRadiobuttonGroup(Composite parent, int style, String text) {
+        return new RadioButtonGroup(parent, style, text, 1, this);
+    }
 
-        return newRadiobuttonGroup;
+    public RadioButtonGroup createRadioButtonGroup(Composite parent, String text, int numberColumns) {
+        return new RadioButtonGroup(parent, SWT.SHADOW_IN, text, numberColumns, this);
     }
 
     public Group createGridGroup(Composite parent, String text, int numOfColumns, boolean equalSize) {

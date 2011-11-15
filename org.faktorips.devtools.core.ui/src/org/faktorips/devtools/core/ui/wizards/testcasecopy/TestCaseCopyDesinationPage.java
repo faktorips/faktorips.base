@@ -66,8 +66,8 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
+import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
-import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.DelegateCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
@@ -208,7 +208,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         root.setLayout(new GridLayout(1, true));
         root.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        RadiobuttonGroup group = toolkit.createRadiobuttonGroup(parent, SWT.SHADOW_IN,
+        RadioButtonGroup group = toolkit.createRadiobuttonGroup(parent, SWT.SHADOW_IN,
                 Messages.TestCaseCopyDesinationPage_TitleProductCmptReplaceGroup);
         group.getGroup().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 

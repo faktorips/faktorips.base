@@ -13,19 +13,28 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
+import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
 /**
@@ -64,6 +73,8 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
 
         createNameComposite(page);
         createVerticalSpacer(page);
+        createPositionGroup(page);
+        createVerticalSpacer(page);
         createDefaultsGroup(page);
 
         createBottomExtensionPropertyControls(page);
@@ -88,10 +99,24 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
         getToolkit().createVerticalSpacer(page, 10);
     }
 
+    private void createPositionGroup(Composite page) {
+        RadioButtonGroup positionRadioGroup = getToolkit().createRadioButtonGroup(page,
+                Messages.CategoryEditDialog_positionGroup, 2);
+        Button leftButton = positionRadioGroup.addRadioButton(Messages.CategoryEditDialog_positionLeft);
+        Button rightButton = positionRadioGroup.addRadioButton(Messages.CategoryEditDialog_positionRight);
+
+        Map<Button, Position> options = new HashMap<Button, Position>();
+        options.put(leftButton, Position.LEFT);
+        options.put(rightButton, Position.RIGHT);
+        getBindingContext().bindContent(new RadioButtonGroupField<Position>(positionRadioGroup, options),
+                getCategory(), IProductCmptCategory.PROPERTY_POSITION);
+    }
+
     private void createDefaultsGroup(Composite page) {
         Group defaultsGroup = getToolkit().createGridGroup(page, Messages.CategoryEditDialog_defaultsGroup, 1, false);
 
-        getToolkit().createLabel(defaultsGroup, Messages.CategoryEditDialog_defaultsExplanationLabel);
+        Label explanationLabel = getToolkit().createLabel(defaultsGroup,
+                Messages.CategoryEditDialog_defaultsExplanationLabel, SWT.WRAP);
 
         Composite defaultsComposite = getToolkit().createGridComposite(defaultsGroup, 1, false, true);
         ((GridLayout)defaultsComposite.getLayout()).verticalSpacing = 8;
@@ -117,6 +142,11 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES);
         getBindingContext().bindContent(defaultValidationRulesCheckbox, getCategory(),
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
+
+        // Enable automatic line break for the explanation label
+        GridData explanationGridData = new GridData();
+        explanationGridData.widthHint = defaultsComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+        explanationLabel.setLayoutData(explanationGridData);
     }
 
     private void createBottomExtensionPropertyControls(Composite page) {

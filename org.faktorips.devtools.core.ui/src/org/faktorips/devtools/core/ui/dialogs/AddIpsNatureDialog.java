@@ -38,8 +38,8 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
-import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
 
 public final class AddIpsNatureDialog extends TitleAreaDialog {
 
@@ -155,7 +155,7 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
     }
 
     private void createProjectTypeGroup(UIToolkit kit, Composite parent) {
-        RadiobuttonGroup group = kit.createRadiobuttonGroup(parent, SWT.SHADOW_IN,
+        RadioButtonGroup group = kit.createRadiobuttonGroup(parent, SWT.SHADOW_IN,
                 Messages.AddIpsNatureDialog_ProjectType);
 
         modelProjectButton = group.addRadiobutton(Messages.AddIpsNatureDialog_modelProject);

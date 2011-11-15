@@ -587,8 +587,7 @@ public class CategorySection extends IpsSection {
         public void run() {
             boolean oldDeleted = getCategory().isDeleted();
             getCategory().delete();
-            boolean deleted = oldDeleted != getCategory().isDeleted();
-            if (deleted) {
+            if (oldDeleted != getCategory().isDeleted()) {
                 getCategoryCompositionSection().deleteCategorySection(getCategory());
             }
         }
@@ -617,7 +616,13 @@ public class CategorySection extends IpsSection {
                     return new CategoryEditDialog(getCategory(), getShell());
                 }
             };
-            dialogHelper.openDialogWithMemento(getCategory());
+
+            Position oldPosition = getCategory().getPosition();
+            int returnCode = dialogHelper.openDialogWithMemento(getCategory());
+            // Recreate the category sections if the category's position has changed (= move)
+            if (returnCode == Window.OK && !oldPosition.equals(getCategory().getPosition())) {
+                getCategoryCompositionSection().recreateCategorySections(getCategory());
+            }
         }
 
     }
