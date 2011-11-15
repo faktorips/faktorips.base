@@ -455,8 +455,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         // product component builders
         ProductCmptBuilder productCmptGenerationImplBuilder = new ProductCmptBuilder(this);
-        IIpsArtefactBuilder productCmptContentCopyBuilder = new ProductCmptXMLBuilder(IpsObjectType.PRODUCT_CMPT, this,
-                productCmptGenerationImplBuilder);
+        IIpsArtefactBuilder productCmptContentCopyBuilder = new ProductCmptXMLBuilder(IpsObjectType.PRODUCT_CMPT, this);
 
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
         productCmptGenerationImplBuilder.setProductCmptGenImplBuilder(productCmptGenImplClassBuilder);

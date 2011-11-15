@@ -16,11 +16,10 @@ package org.faktorips.devtools.stdbuilder.productcmpt;
 import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.BuilderHelper;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.Formula;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -29,16 +28,10 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.AbstractXmlFileBuilder;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
-import org.faktorips.runtime.formula.AbstractFormulaEvaluator;
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,12 +45,12 @@ import org.w3c.dom.NodeList;
  */
 public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
 
-    private final ProductCmptBuilder productCmptGenerationImplBuilder;
+    private final ExpressionXMLBuilderHelper expressionXMLBuilderHelper;
+    private MultiStatus buildStatus;
 
-    public ProductCmptXMLBuilder(IpsObjectType type, StandardBuilderSet builderSet,
-            ProductCmptBuilder productCmptGenerationImplBuilder) {
+    public ProductCmptXMLBuilder(IpsObjectType type, StandardBuilderSet builderSet) {
         super(type, builderSet);
-        this.productCmptGenerationImplBuilder = productCmptGenerationImplBuilder;
+        this.expressionXMLBuilderHelper = new ExpressionXMLBuilderHelper(builderSet);
     }
 
     public StandardBuilderSet getStandardBuilderSet() {
@@ -65,76 +58,48 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
     }
 
     @Override
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-        Document document = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
-        Element root = productCmpt.toXml(document);
-
-        IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
-        NodeList generationNodes = root.getElementsByTagName(IIpsObjectGeneration.TAG_NAME);
-        for (int i = 0; i < generations.length; i++) {
-            updateTargetRuntimeId((IProductCmptGeneration)generations[i], (Element)generationNodes.item(i));
-
-            // creating compiled formula expressions
-            if (getStandardBuilderSet().getFormulaCompiling().isCompileToXml()) {
-                IFormula[] formulas = ((IProductCmptGeneration)generations[i]).getFormulas();
-                NodeList formulaElements = ((Element)generationNodes.item(i)).getElementsByTagName(Formula.TAG_NAME);
-                addCompiledFormulaExpressions(document, formulas, formulaElements);
-            }
-        }
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) {
         try {
-            super.build(ipsSrcFile, XmlUtil.nodeToString(root, ipsSrcFile.getIpsProject().getXmlFileCharset()));
-        } catch (TransformerException e) {
-            throw new CoreException(new IpsStatus(e));
+            super.beforeBuild(ipsSrcFile, status);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e.getMessage(), e);
         }
+        buildStatus = status;
     }
 
-    private void addCompiledFormulaExpressions(Document document, IFormula[] formulas, NodeList formulaElements)
-            throws CoreException {
-        for (int formulaIndex = 0; formulaIndex < formulas.length; formulaIndex++) {
-            IFormula formula = formulas[formulaIndex];
-            IProductCmptTypeMethod method = formula.findFormulaSignature(getIpsProject());
-            if (method != null) {
-                Element formulaElement = (Element)formulaElements.item(formulaIndex);
-                Element javaExpression = document.createElement(AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
-                JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder().appendln();
-                IProductCmptTypeMethod formulaSignature = formula.findFormulaSignature(getIpsProject());
-                JavaCodeFragment formulaFragment = productCmptGenerationImplBuilder.getGenerationBuilder()
-                        .compileFormulaToJava(formula, formulaSignature, false);
+    @Override
+    public void build(IIpsSrcFile ipsSrcFile) {
+        try {
+            IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+            Document document = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
+            Element root = productCmpt.toXml(document);
 
-                generateFormulaMethodSignature(method, builder);
+            IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
+            NodeList generationNodes = root.getElementsByTagName(IIpsObjectGeneration.TAG_NAME);
+            for (int i = 0; i < generations.length; i++) {
+                updateTargetRuntimeId((IProductCmptGeneration)generations[i], (Element)generationNodes.item(i));
 
-                builder.openBracket();
-                builder.append("return ").append(formulaFragment).append(';');
-                builder.closeBracket().appendln();
-                String sourceCode = builder.getFragment().getImportDeclaration().toString() + '\n'
-                        + builder.getFragment().getSourcecode();
-                CDATASection javaCode = document.createCDATASection(sourceCode);
-                javaExpression.appendChild(javaCode);
-                formulaElement.appendChild(javaExpression);
+                // creating compiled formula expressions
+                if (getStandardBuilderSet().getFormulaCompiling().isCompileToXml()) {
+                    IFormula[] formulas = ((IProductCmptGeneration)generations[i]).getFormulas();
+                    NodeList formulaElements = ((Element)generationNodes.item(i))
+                            .getElementsByTagName(Formula.TAG_NAME);
+                    expressionXMLBuilderHelper.addCompiledFormulaExpressions(document, formulas, formulaElements,
+                            buildStatus);
+                }
             }
+            try {
+                super.build(ipsSrcFile, XmlUtil.nodeToString(root, ipsSrcFile.getIpsProject().getXmlFileCharset()));
+            } catch (TransformerException e) {
+                throw new CoreRuntimeException(new CoreException(new IpsStatus(e)));
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e.getMessage(), e);
         }
-    }
-
-    private void generateFormulaMethodSignature(IMethod method, JavaCodeFragmentBuilder builder) throws CoreException {
-        IParameter[] parameters = method.getParameters();
-        int modifier = method.getJavaModifier();
-        String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(), false,
-                getStandardBuilderSet(), getIpsProject());
-
-        String[] parameterNames = BuilderHelper.extractParameterNames(parameters);
-        String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, false,
-                getStandardBuilderSet(), getIpsProject());
-        String[] parameterInSignatur = parameterNames;
-        String[] parameterTypesInSignatur = parameterTypes;
-
-        String methodName = method.getName();
-        // extend the method signature with the given parameter names
-        builder.signature(modifier, returnClass, methodName, parameterInSignatur, parameterTypesInSignatur, false);
     }
 
     private void updateTargetRuntimeId(IProductCmptGeneration generation, Element generationElement)
-            throws DOMException, CoreException {
+            throws DOMException {
         NodeList associationNodes = generationElement.getElementsByTagName(IProductCmptLink.TAG_NAME);
         IProductCmptLink[] associations = generation.getLinks();
         for (int i = 0; i < associations.length; i++) {
@@ -144,8 +109,13 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
         }
     }
 
-    private String getTargetRuntimeId(IProductCmptLink link) throws CoreException {
-        IProductCmpt productCmpt = link.findTarget(link.getIpsProject());
+    private String getTargetRuntimeId(IProductCmptLink link) {
+        IProductCmpt productCmpt;
+        try {
+            productCmpt = link.findTarget(link.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e.getMessage(), e);
+        }
         if (productCmpt != null) {
             return productCmpt.getRuntimeId();
         }
