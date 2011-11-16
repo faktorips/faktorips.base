@@ -207,6 +207,17 @@ public class UIToolkit {
      * Creates a new composite with a grid layout and no borders.
      */
     public Composite createGridComposite(Composite parent, int numColumns, boolean equalSize, boolean margin) {
+        return createGridComposite(parent, numColumns, equalSize, margin, new GridData(GridData.FILL_BOTH));
+    }
+
+    /**
+     * Creates a new composite with a grid layout and no borders.
+     */
+    public Composite createGridComposite(Composite parent,
+            int numColumns,
+            boolean equalSize,
+            boolean margin,
+            GridData gridData) {
         Composite newComposite;
         if (formToolkit != null) {
             newComposite = formToolkit.createComposite(parent);
@@ -218,8 +229,9 @@ public class UIToolkit {
             layout.marginHeight = 0;
             layout.marginWidth = 0;
         }
+        layout.horizontalSpacing = 10;
         newComposite.setLayout(layout);
-        newComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        newComposite.setLayoutData(gridData);
         return newComposite;
     }
 
@@ -249,32 +261,6 @@ public class UIToolkit {
         } else {
             newComposite = new Composite(parent, SWT.NONE);
             // newComposite.setBackground(parent.getBackground());
-            layout.marginHeight = 0;
-            layout.marginWidth = 0;
-        }
-        newComposite.setLayout(layout);
-        if (parent.getLayout() instanceof GridLayout) {
-            newComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        }
-        return newComposite;
-    }
-
-    /**
-     * Creates a new composite with a three column grid layout. First column for structure-label,
-     * second column for input-label, third column for the input control.
-     */
-    public Composite createStructuredLabelEditColumnComposite(Composite parent) {
-        Composite newComposite;
-        GridLayout layout = new GridLayout(3, false);
-        layout.horizontalSpacing = 12;
-        if (formToolkit != null) {
-            newComposite = formToolkit.createComposite(parent);
-            formToolkit.paintBordersFor(newComposite);
-            layout.marginHeight = 2;
-            layout.marginWidth = 2;
-        } else {
-            newComposite = new Composite(parent, SWT.NONE);
-            newComposite.setBackground(parent.getBackground());
             layout.marginHeight = 0;
             layout.marginWidth = 0;
         }
@@ -318,7 +304,7 @@ public class UIToolkit {
                 newLabel.setText(text);
             }
         }
-        GridData gridData = new GridData(SWT.FILL, SWT.END, false, false);
+        GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false);
         newLabel.setLayoutData(gridData);
         return newLabel;
     }
@@ -328,7 +314,7 @@ public class UIToolkit {
      */
     public Label createFormLabel(Composite parent, String text) {
         Composite c = createComposite(parent);
-        c.setLayoutData(new GridData(GridData.FILL, GridData.END, false, false));
+        c.setLayoutData(new GridData(GridData.FILL, SWT.CENTER, false, false));
         GridLayout layout = new GridLayout();
         layout.verticalSpacing = 0;
         layout.horizontalSpacing = 0;
@@ -336,7 +322,7 @@ public class UIToolkit {
         layout.marginWidth = 0;
         c.setLayout(layout);
         Label newLabel = this.createLabel(c, text);
-        GridData gridData = new GridData(GridData.FILL, GridData.END, false, false);
+        GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false);
         newLabel.setLayoutData(gridData);
         return newLabel;
     }
@@ -381,7 +367,7 @@ public class UIToolkit {
             throw new RuntimeException(
                     "Hyperlinks are only available for forms, use createLinks or createLinkOrHyperlink instead."); //$NON-NLS-1$
         }
-        newLink.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_END));
+        newLink.setLayoutData(new GridData(SWT.FILL | SWT.CENTER));
         return newLink;
     }
 
@@ -638,7 +624,7 @@ public class UIToolkit {
      */
     public Combo createCombo(Composite parent) {
         Combo newCombo = new Combo(parent, SWT.READ_ONLY);
-        GridData gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_END);
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.widthHint = DEFAULT_WIDTH;
         newCombo.setLayoutData(gridData);
         return newCombo;
