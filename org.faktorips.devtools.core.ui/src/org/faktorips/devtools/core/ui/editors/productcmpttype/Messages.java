@@ -98,6 +98,8 @@ public class Messages extends NLS {
     public static String GeneralInfoSection_abstractLabel;
     public static String GeneralInfoSection_configuredTypeLabel;
     public static String GeneralInfoSection_configuresLabel;
+
+    public static String GeneralInfoSection_label_layerSupertype;
     public static String GeneralInfoSection_supertypeLabel;
     public static String GeneralInfoSection_title;
     public static String ProductCmptTypeMethodsSection_title;

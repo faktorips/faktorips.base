@@ -246,6 +246,20 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
+    public void testValidateLayerSupertype() throws CoreException {
+        MessageList result = productCmptType.validate(ipsProject);
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_SUPERTYPE_NOT_MARKED_AS_LAYER_SUPERTYPE));
+
+        productCmptType.setLayerSupertype(true);
+        result = productCmptType.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_SUPERTYPE_NOT_MARKED_AS_LAYER_SUPERTYPE));
+
+        superProductCmptType.setLayerSupertype(true);
+        result = productCmptType.validate(ipsProject);
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_SUPERTYPE_NOT_MARKED_AS_LAYER_SUPERTYPE));
+    }
+
+    @Test
     public void testSetConfigurationForPolicyCmptType() {
         Boolean newValue = Boolean.valueOf(!productCmptType.isConfigurationForPolicyCmptType());
         testPropertyAccessReadWrite(IProductCmptType.class,

@@ -84,6 +84,7 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptType extends Type implements IProductCmptType {
 
+    private boolean layerSupertype = false;
     private boolean configurationForPolicyCmptType = true;
     private String policyCmptType = ""; //$NON-NLS-1$
     private String instancesIconPath = null;
@@ -129,7 +130,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IType findSupertype(IIpsProject project) throws CoreException {
+    public IProductCmptType findSupertype(IIpsProject project) throws CoreException {
         if (!hasSupertype()) {
             return null;
         }
@@ -170,6 +171,18 @@ public class ProductCmptType extends Type implements IProductCmptType {
             policyCmptType = ""; //$NON-NLS-1$
         }
         valueChanged(oldValue, newValue);
+    }
+
+    @Override
+    public void setLayerSupertype(boolean layerSupertype) {
+        boolean oldValue = this.layerSupertype;
+        this.layerSupertype = layerSupertype;
+        valueChanged(oldValue, layerSupertype, PROPERTY_LAYER_SUPERTYPE);
+    }
+
+    @Override
+    public boolean isLayerSupertype() {
+        return layerSupertype;
     }
 
     @Override
@@ -320,6 +333,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         policyCmptType = element.getAttribute(PROPERTY_POLICY_CMPT_TYPE);
         configurationForPolicyCmptType = Boolean.valueOf(
                 element.getAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE)).booleanValue();
+        layerSupertype = Boolean.valueOf(element.getAttribute(PROPERTY_LAYER_SUPERTYPE)).booleanValue();
         instancesIconPath = element.getAttribute(PROPERTY_ICON_FOR_INSTANCES);
     }
 
@@ -328,6 +342,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE,
                 String.valueOf(configurationForPolicyCmptType));
+        element.setAttribute(PROPERTY_LAYER_SUPERTYPE, String.valueOf(layerSupertype));
         element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
 
         element.setAttribute(PROPERTY_ICON_FOR_INSTANCES, instancesIconPath);
@@ -482,6 +497,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                         text, Message.ERROR, this, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE));
             }
         }
+        validateLayerSupertype(list, ipsProject);
         validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(list, ipsProject);
         validateIfAnOverrideOfOverloadedFormulaExists(list, ipsProject);
         list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE,
@@ -493,6 +509,19 @@ public class ProductCmptType extends Type implements IProductCmptType {
         validateDefaultCategoryForProductCmptTypeAttribute(list, ipsProject);
         validateDefaultCategoryForTableStructureUsages(list, ipsProject);
         validateDefaultCategoryForValidationRules(list, ipsProject);
+    }
+
+    private void validateLayerSupertype(MessageList list, IIpsProject ipsProject) throws CoreException {
+        if (isLayerSupertype() && hasSupertype()) {
+            IProductCmptType supertype = findSupertype(ipsProject);
+            if (supertype != null && !supertype.isLayerSupertype()) {
+                String text = NLS
+                        .bind(Messages.ProductCmptType_error_supertypeNotMarkedAsLayerSupertype,
+                                supertype.getName());
+                list.add(new Message(MSGCODE_SUPERTYPE_NOT_MARKED_AS_LAYER_SUPERTYPE, text, Message.ERROR, this,
+                        PROPERTY_LAYER_SUPERTYPE));
+            }
+        }
     }
 
     private void validateIfAnOverrideOfOverloadedFormulaExists(MessageList msgList, IIpsProject ipsProject)

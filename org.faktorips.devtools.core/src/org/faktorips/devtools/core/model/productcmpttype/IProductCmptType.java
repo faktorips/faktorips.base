@@ -43,6 +43,9 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType"; //$NON-NLS-1$
 
     public String PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE = "configurationForPolicyCmptType"; //$NON-NLS-1$
+
+    public String PROPERTY_LAYER_SUPERTYPE = "layerSupertype"; //$NON-NLS-1$
+
     public String PROPERTY_ICON_FOR_INSTANCES = "instancesIcon"; //$NON-NLS-1$
 
     /**
@@ -158,6 +161,13 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
             + "NoDefaultCategoryForProductCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that this type is marked as layer supertype but the
+     * supertype of this type ist no layer supertype.
+     */
+    public final static String MSGCODE_SUPERTYPE_NOT_MARKED_AS_LAYER_SUPERTYPE = MSGCODE_PREFIX
+            + "SupertypeNotMarkedAsLayerSupertype"; //$NON-NLS-1$
+
+    /**
      * Returns the policy component type this product component type refers to. Returns
      * <code>null</code> if this type does not refer to a policy component type.
      */
@@ -175,6 +185,26 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Sets if this product component type configures a policy component type or not.
      */
     public void setConfigurationForPolicyCmptType(boolean newValue);
+
+    /**
+     * Marks this type as layer supertype or not. A layer supertype is an abstract base class
+     * containing only technical abstraction but no real business aspects. E.g. you could specify an
+     * abstract base types for your composite structure: <i>ProductPartContainer</i><br>
+     * Marking this class as layer supertype it is filtered for example in the new product component
+     * wizard where only business abstractions are relevant.
+     * 
+     * @param layerSupertype true to specify this type as layer supertype
+     */
+    void setLayerSupertype(boolean layerSupertype);
+
+    /**
+     * Returns true if this type is a layer supertype. Have a look at
+     * {@link #setLayerSupertype(boolean)} for more information about the layer supertype flag.
+     * 
+     * @return true if this type is marked as layered supertype or false if not.
+     * @see #setLayerSupertype(boolean)
+     */
+    boolean isLayerSupertype();
 
     /**
      * Sets the policy component type this type refers to.

@@ -21,6 +21,7 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
@@ -78,17 +79,30 @@ public class GeneralInfoSection extends IpsSection {
                 .createPcTypeRefControl(policyCmptType.getIpsProject(), composite);
         getBindingContext().bindContent(supertypeRefControl, policyCmptType, IType.PROPERTY_SUPERTYPE);
 
-        toolkit.createFormLabel(composite, Messages.GeneralInfoSection_labelAbstractClass);
-        Checkbox abstractCheckbox = toolkit.createCheckbox(composite);
+        extFactory.createControls(composite, toolkit, policyCmptType, IExtensionPropertyDefinition.POSITION_TOP);
+        extFactory.bind(getBindingContext());
+
+        Composite modifyerComposite = toolkit.createGridComposite(client, 1, false, false);
+
+        // Abstract flag
+        Checkbox abstractCheckbox = toolkit.createCheckbox(modifyerComposite,
+                Messages.GeneralInfoSection_labelAbstractClass);
         getBindingContext().bindContent(abstractCheckbox, policyCmptType, IType.PROPERTY_ABSTRACT);
 
-        toolkit.createFormLabel(composite, Messages.GeneralInfoSection_labelProduct);
-        Checkbox configuratedCheckbox = toolkit.createCheckbox(composite);
-        getBindingContext().bindContent(configuratedCheckbox, policyCmptType,
+        // Reference to ProductCmptType
+        Composite refComposite = toolkit.createGridComposite(client, 1, true, false);
+        // the text field should be directly beneath the checkbox
+        ((GridLayout)refComposite.getLayout()).verticalSpacing = 0;
+
+        Checkbox refCheckbox = toolkit.createCheckbox(refComposite, Messages.GeneralInfoSection_labelProduct);
+        getBindingContext().bindContent(refCheckbox, policyCmptType,
                 IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
 
-        Hyperlink link2 = toolkit.createHyperlink(composite, Messages.GeneralInfoSection_labelType);
-        link2.addHyperlinkListener(new HyperlinkAdapter() {
+        Composite productCmptTypeComposite = toolkit.createGridComposite(refComposite, 2, false, false);
+        ((GridLayout)productCmptTypeComposite.getLayout()).marginLeft = 16;
+
+        Hyperlink refLink = toolkit.createHyperlink(productCmptTypeComposite, Messages.GeneralInfoSection_labelType);
+        refLink.addHyperlinkListener(new HyperlinkAdapter() {
 
             @Override
             public void linkActivated(HyperlinkEvent event) {
@@ -105,8 +119,11 @@ public class GeneralInfoSection extends IpsSection {
             }
 
         });
+        getBindingContext().bindEnabled(refLink, policyCmptType,
+                IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
+
         ProductCmptType2RefControl productCmptTypeRefControl = new ProductCmptType2RefControl(
-                policyCmptType.getIpsProject(), composite, toolkit, false);
+                policyCmptType.getIpsProject(), productCmptTypeComposite, toolkit, false);
         getBindingContext().bindContent(productCmptTypeRefControl, policyCmptType,
                 IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE);
         getBindingContext().bindEnabled(productCmptTypeRefControl, policyCmptType,
@@ -116,9 +133,9 @@ public class GeneralInfoSection extends IpsSection {
         addFocusControl(supertypeRefControl);
         addFocusControl(abstractCheckbox);
         addFocusControl(productCmptTypeRefControl);
-        addFocusControl(configuratedCheckbox);
+        addFocusControl(refCheckbox);
 
-        extFactory.createControls(composite, toolkit, policyCmptType);
+        extFactory.createControls(composite, toolkit, policyCmptType, IExtensionPropertyDefinition.POSITION_BOTTOM);
         extFactory.bind(getBindingContext());
     }
 

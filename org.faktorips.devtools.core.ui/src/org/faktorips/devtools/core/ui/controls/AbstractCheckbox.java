@@ -33,7 +33,7 @@ public abstract class AbstractCheckbox extends ControlComposite {
 
     protected AbstractCheckbox(Composite parent, UIToolkit toolkit, int checkboxStyle) {
         super(parent, SWT.NONE);
-        GridData data = new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL);
+        GridData data = new GridData(SWT.CENTER | GridData.FILL_HORIZONTAL);
         data.heightHint = 20;
         setLayoutData(data);
         GridLayout layout = new GridLayout();

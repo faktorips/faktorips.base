@@ -21,6 +21,7 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
@@ -80,18 +81,36 @@ public class GeneralInfoSection extends IpsSection {
                 productCmptType.getIpsProject(), composite, toolkit, false);
         getBindingContext().bindContent(supertypeRefControl, productCmptType, IType.PROPERTY_SUPERTYPE);
 
+        Composite modifyerComposite = toolkit.createGridComposite(client, 2, false, false);
+
         // Abstract flag
-        toolkit.createLabel(composite, Messages.GeneralInfoSection_abstractLabel);
-        Checkbox abstractCheckbox = toolkit.createCheckbox(composite);
+        Checkbox abstractCheckbox = toolkit
+                .createCheckbox(modifyerComposite, Messages.GeneralInfoSection_abstractLabel);
+        ((GridData)abstractCheckbox.getLayoutData()).grabExcessHorizontalSpace = false;
         getBindingContext().bindContent(abstractCheckbox, productCmptType, IType.PROPERTY_ABSTRACT);
 
-        // Reference to PolicyCmptType
-        toolkit.createFormLabel(composite, Messages.GeneralInfoSection_configuresLabel);
-        Checkbox configuratedCheckbox = toolkit.createCheckbox(composite);
+        // Layer Supertype flag
+        Checkbox layerSupertypeCheckbox = toolkit.createCheckbox(modifyerComposite, Messages.GeneralInfoSection_label_layerSupertype);
+        // layerSupertypeCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+        getBindingContext().bindContent(layerSupertypeCheckbox, productCmptType,
+                IProductCmptType.PROPERTY_LAYER_SUPERTYPE);
+
+        extFactory.createControls(composite, toolkit, productCmptType, IExtensionPropertyDefinition.POSITION_TOP);
+        extFactory.bind(getBindingContext());
+
+        // Configured Checkbox
+        Composite configComposite = toolkit.createGridComposite(client, 1, true, false);
+        // the text field should be directly beneath the checkbox
+        ((GridLayout)configComposite.getLayout()).verticalSpacing = 0;
+        Checkbox configuratedCheckbox = toolkit.createCheckbox(configComposite,
+                Messages.GeneralInfoSection_configuresLabel);
         getBindingContext().bindContent(configuratedCheckbox, productCmptType,
                 IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE);
 
-        link = toolkit.createHyperlink(composite, Messages.GeneralInfoSection_configuredTypeLabel);
+        // Reference to PolicyCmptType
+        Composite policyCmptTypeComposite = toolkit.createGridComposite(configComposite, 2, false, false);
+        ((GridLayout)policyCmptTypeComposite.getLayout()).marginLeft = 16;
+        link = toolkit.createHyperlink(policyCmptTypeComposite, Messages.GeneralInfoSection_configuredTypeLabel);
         link.addHyperlinkListener(new HyperlinkAdapter() {
             @Override
             public void linkActivated(HyperlinkEvent event) {
@@ -105,13 +124,16 @@ public class GeneralInfoSection extends IpsSection {
                 }
             }
         });
+        getBindingContext().bindEnabled(link, productCmptType,
+                IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE);
 
-        PcTypeRefControl control = toolkit.createPcTypeRefControl(productCmptType.getIpsProject(), composite);
+        PcTypeRefControl control = toolkit.createPcTypeRefControl(productCmptType.getIpsProject(),
+                policyCmptTypeComposite);
         getBindingContext().bindContent(control, productCmptType, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
         getBindingContext().bindEnabled(control, productCmptType,
                 IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE);
 
-        extFactory.createControls(composite, toolkit, productCmptType);
+        extFactory.createControls(composite, toolkit, productCmptType, IExtensionPropertyDefinition.POSITION_BOTTOM);
         extFactory.bind(getBindingContext());
     }
 
