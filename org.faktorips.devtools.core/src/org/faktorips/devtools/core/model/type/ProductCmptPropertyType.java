@@ -36,23 +36,28 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 
 /**
- * Enumeration that specifies the different types of {@link IProductCmptProperty}s.
- * 
- * @see IProductCmptProperty#getProductCmptPropertyType()
+ * Specifies the different types of product component properties.
+ * <p>
+ * This enum contains methods providing information about the relationship of product component
+ * properties to their corresponding property values. It also provides a convenient way to create
+ * property values for given product component properties.
  * 
  * @author Jan Ortmann
  * @author Stefan Widmaier
+ * @author Alexander Weickmann
+ * 
+ * @see IProductCmptProperty
  */
 public enum ProductCmptPropertyType {
 
     /**
-     * The {@link IProductCmptProperty} is an {@link IProductCmptTypeAttribute} of an
-     * {@link IProductCmptType}.
+     * Represents an {@link IProductCmptTypeAttribute} of an {@link IProductCmptType}.
      * <p>
-     * An {@link IProductCmptProperty} with this type can be safely casted to
-     * {@link IProductCmptTypeAttribute}.
+     * An {@link IProductCmptProperty} with this {@link ProductCmptPropertyType} can be safely
+     * casted to {@link IProductCmptTypeAttribute}.
      * <p>
-     * An {@link IPropertyValue} with this type can be safely casted to {@link IAttributeValue}.
+     * An {@link IPropertyValue} with this {@link ProductCmptPropertyType} can be safely casted to
+     * {@link IAttributeValue}.
      */
     PRODUCT_CMPT_TYPE_ATTRIBUTE("productCmptTypeAttribute", Messages.ProductCmptPropertyType_productAttribute) { //$NON-NLS-1$
 

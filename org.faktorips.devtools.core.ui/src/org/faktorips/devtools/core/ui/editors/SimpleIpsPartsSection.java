@@ -34,6 +34,9 @@ public abstract class SimpleIpsPartsSection extends IpsObjectPartContainerSectio
     private IpsPartsComposite partsComposite;
 
     /**
+     * This constructor is intended to be used if it is desired that the <em>expanded</em> state of
+     * the section is stored in the Faktor-IPS preference store.
+     * <p>
      * <strong>Subclassing:</strong><br>
      * This constructor first calls {@link #initControls()} to create the section UI elements, and
      * then {@link #setText(String)} to set the provided section title.
