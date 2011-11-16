@@ -206,20 +206,8 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
             getGeneratedJavaElementsForType(javaElements, generatedJavaType, forInterface);
 
         } else if (ipsElement instanceof IIpsObjectPart) {
-            GenTypePart genTypePart = getGenTypePart(ipsElement);
-            if (genTypePart != null) {
-                if (forInterface) {
-                    genTypePart.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType,
-                            ipsElement);
-                } else {
-                    genTypePart.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsElement);
-                }
-            }
+            getGeneratedJavaElementsForPart(javaElements, generatedJavaType, (IIpsObjectPart)ipsElement, forInterface);
         }
-    }
-
-    private GenTypePart getGenTypePart(IIpsElement ipsElement) {
-        return getGeneratorsByPart().get(ipsElement);
     }
 
     /**
@@ -234,5 +222,29 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
     protected abstract void getGeneratedJavaElementsForType(List<IJavaElement> javaElements,
             org.eclipse.jdt.core.IType generatedJavaType,
             boolean forInterface);
+
+    private void getGeneratedJavaElementsForPart(List<IJavaElement> javaElements,
+            org.eclipse.jdt.core.IType generatedJavaType,
+            IIpsObjectPart ipsObjectPart,
+            boolean forInterface) {
+
+        GenTypePart genTypePart;
+        try {
+            genTypePart = getGenTypePart(ipsObjectPart);
+            if (genTypePart != null) {
+                if (forInterface) {
+                    genTypePart.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType,
+                            ipsObjectPart);
+                } else {
+                    genTypePart.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType,
+                            ipsObjectPart);
+                }
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected abstract GenTypePart getGenTypePart(IIpsObjectPart ipsObjectPart) throws CoreException;
 
 }

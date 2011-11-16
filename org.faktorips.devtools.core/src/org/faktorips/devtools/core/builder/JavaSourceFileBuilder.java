@@ -691,9 +691,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
 
         content = writeFeatureVersions(content);
-        String formattedContent = format(content);
 
-        formattedContent = new IpsRemoveImportsOperation().removeUnusedImports(formattedContent);
+        String formattedContent = new IpsRemoveImportsOperation().removeUnusedImports(content);
+        formattedContent = format(content);
 
         /*
          * If merging is not activated and the content of the file is equal compared to the

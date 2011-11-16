@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -43,6 +44,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmp
 import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.tableusage.GenTableStructureUsage;
 import org.faktorips.devtools.stdbuilder.type.GenType;
+import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
@@ -355,6 +357,24 @@ public class GenProductCmptType extends GenType {
                 javaElements.add(setProductCmptMethod);
             }
         }
+    }
+
+    @Override
+    protected GenTypePart getGenTypePart(IIpsObjectPart ipsObjectPart) throws CoreException {
+        GenTypePart genTypePart = null;
+        if (ipsObjectPart instanceof IProductCmptTypeAssociation) {
+            genTypePart = getGenerator((IProductCmptTypeAttribute)ipsObjectPart);
+        }
+        if (ipsObjectPart instanceof IProductCmptTypeAttribute) {
+            genTypePart = getGenerator((IProductCmptTypeAttribute)ipsObjectPart);
+        }
+        if (ipsObjectPart instanceof IProductCmptTypeMethod) {
+            genTypePart = getGenerator((IProductCmptTypeMethod)ipsObjectPart);
+        }
+        if (ipsObjectPart instanceof ITableStructureUsage) {
+            genTypePart = getGenerator((ITableStructureUsage)ipsObjectPart);
+        }
+        return genTypePart;
     }
 
     /**

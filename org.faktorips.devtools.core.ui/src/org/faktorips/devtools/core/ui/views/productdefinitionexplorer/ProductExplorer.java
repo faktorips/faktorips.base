@@ -280,7 +280,7 @@ public class ProductExplorer extends ModelExplorer {
                 manager.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID,
                         Messages.ProductExplorer_labelRenameRefactoring));
                 manager.add(IpsRefactoringHandler.getContributionItem(IpsMoveHandler.CONTRIBUTION_ID,
-                        Messages.ProductExplorer_labelPullUpRefactoring));
+                        Messages.ProductExplorer_labelMoveRefactoring));
             }
         }
 
