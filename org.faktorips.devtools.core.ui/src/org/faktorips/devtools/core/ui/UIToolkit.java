@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
@@ -619,7 +620,7 @@ public class UIToolkit {
     }
 
     /**
-     * Creates a new Combo-Box. Note that the FormToolkit does not support Combos, so the appearence
+     * Creates a new Combo-Box. Note that the FormToolkit does not support Combos, so the appearance
      * of this Combo-Box is NOT similar to the other FormToolkit-Controls.
      */
     public Combo createCombo(Composite parent) {
@@ -715,7 +716,7 @@ public class UIToolkit {
     }
 
     /**
-     * Replaces all occurences of <code>null</code> in the values by the defined null
+     * Replaces all occurrences of <code>null</code> in the values by the defined null
      * representation. The result is set as items to the given combo.
      * 
      * @param combo The combo to set the values.
@@ -780,11 +781,25 @@ public class UIToolkit {
      */
     @Deprecated
     public RadioButtonGroup createRadiobuttonGroup(Composite parent, int style, String text) {
-        return new RadioButtonGroup(parent, style, text, 1, this);
+        return new RadioButtonGroup(parent, style, text, this);
     }
 
-    public RadioButtonGroup createRadioButtonGroup(Composite parent, String text, int numberColumns) {
-        return new RadioButtonGroup(parent, SWT.SHADOW_IN, text, numberColumns, this);
+    /**
+     * Creates and returns a new {@link RadioButtonGroup} with the provided group text, number of
+     * columns and options.
+     * 
+     * @param groupText the text that will be shown as title of the group
+     * @param numberColumns the number of radio buttons that will be horizontally placed beside each
+     *            other
+     * @param options the options the user can choose from. The map associates each value with it's
+     *            label. For each option, a radio button is created
+     */
+    public <T> RadioButtonGroup<T> createRadioButtonGroup(Composite parent,
+            String groupText,
+            int numberColumns,
+            Map<T, String> options) {
+
+        return new RadioButtonGroup<T>(parent, groupText, numberColumns, options, this);
     }
 
     public Group createGridGroup(Composite parent, String text, int numOfColumns, boolean equalSize) {

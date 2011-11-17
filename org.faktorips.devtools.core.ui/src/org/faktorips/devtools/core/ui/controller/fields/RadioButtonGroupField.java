@@ -13,32 +13,39 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
 
 /**
+ * {@link EditField} that can be used to bind a {@link RadioButtonGroup} to a model property, using
+ * an instance of {@link BindingContext}.
+ * 
+ * @since 3.6
+ * 
  * @author Alexander Weickmann
+ * 
+ * @see BindingContext
+ * @see RadioButtonGroup
  */
 public class RadioButtonGroupField<T> extends DefaultEditField<T> {
 
-    private final RadioButtonGroup radioButtonGroup;
-
-    private final Map<Button, T> options;
+    private final RadioButtonGroup<T> radioButtonGroup;
 
     /**
      * <strong>Important:</strong> Do not add further radio buttons to the provided
-     * {@link RadioButtonGroup} as this will cause the edit field to be out of sync with the group.
+     * {@link RadioButtonGroup} as this will cause this {@link EditField} to be out of sync with the
+     * group.
+     * 
+     * @param radioButtonGroup the {@link RadioButtonGroup} to create this {@link EditField} for
      */
-    public RadioButtonGroupField(RadioButtonGroup radioButtonGroup, Map<Button, T> options) {
+    public RadioButtonGroupField(RadioButtonGroup<T> radioButtonGroup) {
         this.radioButtonGroup = radioButtonGroup;
-        this.options = new HashMap<Button, T>(options);
     }
 
     @Override
@@ -48,12 +55,7 @@ public class RadioButtonGroupField<T> extends DefaultEditField<T> {
 
     @Override
     public void setValue(T newValue) {
-        for (Button button : options.keySet()) {
-            if (newValue.equals(options.get(button))) {
-                button.setSelection(true);
-                break;
-            }
-        }
+        radioButtonGroup.setSelection(newValue);
     }
 
     @Override
@@ -79,7 +81,7 @@ public class RadioButtonGroupField<T> extends DefaultEditField<T> {
 
     @Override
     protected T parseContent() throws Exception {
-        return options.get(radioButtonGroup.getSelectedButton());
+        return radioButtonGroup.getSelectedOption();
     }
 
     @Override
@@ -94,4 +96,5 @@ public class RadioButtonGroupField<T> extends DefaultEditField<T> {
             });
         }
     }
+
 }

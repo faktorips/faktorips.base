@@ -13,13 +13,12 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -100,16 +99,14 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createPositionGroup(Composite page) {
-        RadioButtonGroup positionRadioGroup = getToolkit().createRadioButtonGroup(page,
-                Messages.CategoryEditDialog_positionGroup, 2);
-        Button leftButton = positionRadioGroup.addRadioButton(Messages.CategoryEditDialog_positionLeft);
-        Button rightButton = positionRadioGroup.addRadioButton(Messages.CategoryEditDialog_positionRight);
+        Map<Position, String> options = new LinkedHashMap<Position, String>();
+        options.put(Position.LEFT, Messages.CategoryEditDialog_positionLeft);
+        options.put(Position.RIGHT, Messages.CategoryEditDialog_positionRight);
+        RadioButtonGroup<Position> positionRadioGroup = getToolkit().createRadioButtonGroup(page,
+                Messages.CategoryEditDialog_positionGroup, 2, options);
 
-        Map<Button, Position> options = new HashMap<Button, Position>();
-        options.put(leftButton, Position.LEFT);
-        options.put(rightButton, Position.RIGHT);
-        getBindingContext().bindContent(new RadioButtonGroupField<Position>(positionRadioGroup, options),
-                getCategory(), IProductCmptCategory.PROPERTY_POSITION);
+        getBindingContext().bindContent(new RadioButtonGroupField<Position>(positionRadioGroup), getCategory(),
+                IProductCmptCategory.PROPERTY_POSITION);
     }
 
     private void createDefaultsGroup(Composite page) {
