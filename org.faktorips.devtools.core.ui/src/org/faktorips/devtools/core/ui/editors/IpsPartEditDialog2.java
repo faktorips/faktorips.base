@@ -292,7 +292,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
             }
         }
 
-        setMessage(null);
+        setMessage(StringUtils.EMPTY);
     }
 
     /**
