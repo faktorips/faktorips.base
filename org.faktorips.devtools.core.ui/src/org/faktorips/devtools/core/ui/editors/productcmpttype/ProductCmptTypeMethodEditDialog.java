@@ -14,15 +14,21 @@
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controls.AbstractCheckbox;
+import org.faktorips.devtools.core.ui.editors.CategoryPmo;
 import org.faktorips.devtools.core.ui.editors.type.MethodEditDialog;
 
 public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
@@ -66,6 +72,27 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
         toolkit.createLabel(area, Messages.ProductCmptTypeMethodEditDialog_formulaNameLabel);
         Text formulaNameText = toolkit.createText(area);
         getBindingContext().bindContent(formulaNameText, method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME);
+
+        toolkit.createLabel(area, Messages.ProductCmptTypeMethodEditDialog_categoryLabel);
+        createCategoryCombo(area);
+    }
+
+    private void createCategoryCombo(Composite workArea) {
+        Combo categoryCombo = getToolkit().createCombo(workArea);
+        ComboViewerField<IProductCmptCategory> comboViewerField = new ComboViewerField<IProductCmptCategory>(
+                categoryCombo, IProductCmptCategory.class);
+
+        CategoryPmo pmo = new CategoryPmo(getProductCmptTypeMethod());
+        comboViewerField.setInput(pmo.getCategories());
+        comboViewerField.setLabelProvider(new LabelProvider() {
+            @Override
+            public String getText(Object element) {
+                IProductCmptCategory category = (IProductCmptCategory)element;
+                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
+            }
+        });
+
+        getBindingContext().bindContent(comboViewerField, pmo, CategoryPmo.PROPERTY_CATEGORY);
     }
 
     @Override

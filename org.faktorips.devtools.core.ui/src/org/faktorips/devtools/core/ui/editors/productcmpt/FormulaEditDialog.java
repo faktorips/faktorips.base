@@ -110,7 +110,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     private MessageList validateAndUpdateDialogUI(MessageList messages) {
         MessageList relevantMessages = new MessageList();
         if (messages.size() > 0) {
-            // get only message wich are not for the dummy formula test case
+            // get only message which are not for the dummy formula test case
             // (getTransientFormulaTestCases)
             for (Message msg : messages) {
                 if (isNotMessageForDummyFormulaTestCase(msg)) {
@@ -252,7 +252,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     }
 
     /**
-     * If necessary updates the ui formula test case to calculate a preview result and execute it if
+     * If necessary updates the UI formula test case to calculate a preview result and execute it if
      * the formula is valid.
      */
     private void updateUiPreviewFormulaResult() throws CoreException {
@@ -271,7 +271,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
                     if (formulaTestCase == null) {
                         throw new RuntimeException("Fomula test case couldn't be created!"); //$NON-NLS-1$
                     }
-                    if (formula.isValid()) {
+                    if (formula.isValid(formula.getIpsProject())) {
                         if (formulaTestCase.addOrDeleteFormulaTestInputValues(parameterIdentifiers, ipsProject)
                                 || formulaTestCase.getFormulaTestInputValues().length == 0) {
                             // only if the parameter have changes repack the table of input values
@@ -320,7 +320,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
 
     @Override
     protected void okPressed() {
-        // delete dummy formula test case for testing the formel on the first editor page
+        // delete dummy formula test case for testing the formula on the first editor page
         IFormulaTestCase formulaTestCase = getTransientFormulaTestCases();
         if (formulaTestCase != null) {
             formulaTestCase.delete();

@@ -60,7 +60,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
@@ -382,7 +381,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             }
         });
 
-        getBindingContext().bindContent(comboViewerField, pmo, IProductCmptProperty.PROPERTY_CATEGORY);
+        getBindingContext().bindContent(comboViewerField, pmo, CategoryPmo.PROPERTY_CATEGORY);
     }
 
     private void recreateConfigGroupContent() {

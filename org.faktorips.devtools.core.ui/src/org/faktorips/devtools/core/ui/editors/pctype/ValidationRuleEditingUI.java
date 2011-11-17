@@ -34,11 +34,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.InternationalStringPresentationObject;
@@ -47,6 +49,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.core.ui.editors.CategoryPmo;
 
 /**
  * Helper class to create the UI controls needed to define/edit an {@link IValidationRule}. An
@@ -63,6 +66,8 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
  */
 public class ValidationRuleEditingUI {
 
+    private final UIToolkit uiToolkit;
+
     private boolean uiInitialized = false;
 
     private CharCountPainter charCountPainter;
@@ -70,11 +75,12 @@ public class ValidationRuleEditingUI {
     private TextField msgCodeField;
     private EnumValueField msgSeverityField;
     private TextField msgTextField;
-    private final UIToolkit uiToolkit;
     private Checkbox configurableByProductBox;
     private Checkbox defaultActivationBox;
 
     private ComboViewerField<Locale> localeComboField;
+
+    private ComboViewerField<IProductCmptCategory> categoryField;
 
     public ValidationRuleEditingUI(UIToolkit uiToolkit) {
         this.uiToolkit = uiToolkit;
@@ -168,6 +174,21 @@ public class ValidationRuleEditingUI {
 
         nameText.setFocus();
         nameField = new TextField(nameText);
+
+        uiToolkit.createFormLabel(nameComposite, Messages.RuleEditDialog_labelCategory);
+        createCategoryCombo(nameComposite);
+    }
+
+    private void createCategoryCombo(Composite workArea) {
+        Combo categoryCombo = uiToolkit.createCombo(workArea);
+        categoryField = new ComboViewerField<IProductCmptCategory>(categoryCombo, IProductCmptCategory.class);
+        categoryField.setLabelProvider(new LabelProvider() {
+            @Override
+            public String getText(Object element) {
+                IProductCmptCategory category = (IProductCmptCategory)element;
+                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
+            }
+        });
     }
 
     private void updateCharCount() {
@@ -206,6 +227,10 @@ public class ValidationRuleEditingUI {
                 IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
         bindingContext.bindEnabled(defaultActivationBox, rule,
                 IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT);
+
+        CategoryPmo categoryPmo = new CategoryPmo(rule);
+        categoryField.setInput(categoryPmo.getCategories());
+        bindingContext.bindContent(categoryField, categoryPmo, CategoryPmo.PROPERTY_CATEGORY);
     }
 
     private Locale[] getSupportedLocales(IIpsProject ipsProject) {
@@ -243,6 +268,7 @@ public class ValidationRuleEditingUI {
      */
     protected void removeBindingsFromContext(BindingContext bindingContext) {
         bindingContext.removeBindings(nameField.getControl());
+        bindingContext.removeBindings(categoryField.getControl());
         bindingContext.removeBindings(msgCodeField.getControl());
         bindingContext.removeBindings(msgSeverityField.getControl());
         bindingContext.removeBindings(configurableByProductBox);

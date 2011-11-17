@@ -37,7 +37,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
@@ -200,7 +199,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             }
         });
 
-        getBindingContext().bindContent(comboViewerField, pmo, IProductCmptProperty.PROPERTY_CATEGORY);
+        getBindingContext().bindContent(comboViewerField, pmo, CategoryPmo.PROPERTY_CATEGORY);
     }
 
     private void createDefaultValueEditField() {
