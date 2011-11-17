@@ -46,12 +46,12 @@ public abstract class AbstractVarArgFunction extends AbstractFlFunction {
 
         ConversionCodeGenerator ccg = compiler.getConversionCodeGenerator();
         ArrayList<CompilationResultImpl> convertedResults = new ArrayList<CompilationResultImpl>(argResults.length);
+        Datatype expectedArgType = getExpectedDatatypeForArgResultConversion(argResults);
 
         for (int i = 0; i < argResults.length; i++) {
 
             CompilationResultImpl newResult = (CompilationResultImpl)argResults[i];
             Datatype argDatatype = argResults[i].getDatatype();
-            Datatype expectedArgType = getArgTypes()[0];
 
             if (!expectedArgType.equals(argDatatype)) {
 
@@ -80,6 +80,14 @@ public abstract class AbstractVarArgFunction extends AbstractFlFunction {
         }
 
         return returnValue;
+    }
+
+    protected Datatype getExpectedDatatypeForArgResultConversion(@SuppressWarnings("unused"/*
+                                                                                            * for
+                                                                                            * overriding
+                                                                                            * implementations
+                                                                                            */) CompilationResult[] argResults) {
+        return getArgTypes()[0];
     }
 
     /**
