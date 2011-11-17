@@ -220,6 +220,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
+    public List<IProductCmptProperty> findProductCmptProperties(IIpsProject ipsProject) throws CoreException {
+        return findProductCmptProperties(true, ipsProject);
+    }
+
+    @Override
     public List<IProductCmptProperty> findProductCmptProperties(boolean searchSupertypeHierarchy, IIpsProject ipsProject)
             throws CoreException {
 
@@ -515,9 +520,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (isLayerSupertype() && hasSupertype()) {
             IProductCmptType supertype = findSupertype(ipsProject);
             if (supertype != null && !supertype.isLayerSupertype()) {
-                String text = NLS
-                        .bind(Messages.ProductCmptType_error_supertypeNotMarkedAsLayerSupertype,
-                                supertype.getName());
+                String text = NLS.bind(Messages.ProductCmptType_error_supertypeNotMarkedAsLayerSupertype,
+                        supertype.getName());
                 list.add(new Message(MSGCODE_SUPERTYPE_NOT_MARKED_AS_LAYER_SUPERTYPE, text, Message.ERROR, this,
                         PROPERTY_LAYER_SUPERTYPE));
             }

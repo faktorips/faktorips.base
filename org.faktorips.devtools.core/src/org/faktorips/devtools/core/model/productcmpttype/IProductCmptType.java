@@ -402,6 +402,14 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public List<IProductCmptTypeMethod> findSignaturesOfOverloadedFormulas(IIpsProject ipsProject) throws CoreException;
 
     /**
+     * Returns the type's product definition properties including all product component properties
+     * in the supertype hierarchy. This method simply calls findProductCmptProperties(true,
+     * ipsProject)
+     * 
+     */
+    public List<IProductCmptProperty> findProductCmptProperties(IIpsProject ipsProject) throws CoreException;
+
+    /**
      * Returns the type's product definition properties.
      * 
      * @param searchSupertypeHierarchy Flag indicating whether the supertype hierarchy shall be
