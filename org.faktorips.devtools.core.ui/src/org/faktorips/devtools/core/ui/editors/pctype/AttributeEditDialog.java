@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -54,10 +55,12 @@ import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
@@ -71,6 +74,7 @@ import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -81,6 +85,7 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
+import org.faktorips.devtools.core.ui.editors.CategoryPmo;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.productcmpttype.ProductCmptTypeMethodEditDialog;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
@@ -110,6 +115,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private EditField<String> defaultValueField;
 
     private ValueSetSpecificationControl valueSetSpecificationControl;
+
     private DatatypeRefControl datatypeControl;
 
     private Label labelDefaultValue;
@@ -296,8 +302,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private Control createGeneralPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
-        Group generelGroup = getToolkit().createGroup(c, Messages.AttributeEditDialog_generalGroup);
-        createGenerelGroupContent(generelGroup);
+        Group generalGroup = getToolkit().createGroup(c, Messages.AttributeEditDialog_generalGroup);
+        createGeneralGroupContent(generalGroup);
         if (attribute.isProductRelevant() || attribute.getPolicyCmptType().isConfigurableByProductCmptType()) {
             configGroup = getToolkit().createGroup(c, Messages.AttributeEditDialog_ConfigurationGroup);
             createConfigGroupContent();
@@ -305,7 +311,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         return c;
     }
 
-    private void createGenerelGroupContent(Composite c) {
+    private void createGeneralGroupContent(Composite c) {
         Composite workArea = getToolkit().createLabelEditColumnComposite(c);
         extFactory.createControls(workArea, getToolkit(), attribute, IExtensionPropertyDefinition.POSITION_TOP);
 
@@ -354,8 +360,29 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindContent(typeCombo, attribute, IPolicyCmptTypeAttribute.PROPERTY_ATTRIBUTE_TYPE,
                 AttributeType.class);
 
+        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelCategory);
+        createCategoryCombo(workArea);
+
         extFactory.createControls(workArea, getToolkit(), attribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
         extFactory.bind(getBindingContext());
+    }
+
+    private void createCategoryCombo(Composite workArea) {
+        Combo categoryCombo = getToolkit().createCombo(workArea);
+        ComboViewerField<IProductCmptCategory> comboViewerField = new ComboViewerField<IProductCmptCategory>(
+                categoryCombo, IProductCmptCategory.class);
+
+        CategoryPmo pmo = new CategoryPmo(attribute);
+        comboViewerField.setInput(pmo.getCategories());
+        comboViewerField.setLabelProvider(new LabelProvider() {
+            @Override
+            public String getText(Object element) {
+                IProductCmptCategory category = (IProductCmptCategory)element;
+                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
+            }
+        });
+
+        getBindingContext().bindContent(comboViewerField, pmo, IProductCmptProperty.PROPERTY_CATEGORY);
     }
 
     private void recreateConfigGroupContent() {
@@ -926,9 +953,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         refactoringOperation.runDirectExecution();
     }
 
-    class MethodSignatureCompletionProcessor extends AbstractCompletionProcessor {
+    private static class MethodSignatureCompletionProcessor extends AbstractCompletionProcessor {
 
-        private IType type;
+        private final IType type;
 
         public MethodSignatureCompletionProcessor(IType type) {
             super(type == null ? null : type.getIpsProject());
@@ -939,6 +966,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         @Override
         protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
                 throws Exception {
+
             if (type == null) {
                 return;
             }

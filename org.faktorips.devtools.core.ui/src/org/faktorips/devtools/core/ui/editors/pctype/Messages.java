@@ -291,6 +291,7 @@ public class Messages extends NLS {
     public static String AttributeEditDialog_labelDefaultValue;
     public static String AttributeEditDialog_labelModifier;
     public static String AttributeEditDialog_labelName;
+    public static String AttributeEditDialog_labelCategory;
 
     public static String AttributeEditDialog_labelNullable;
 

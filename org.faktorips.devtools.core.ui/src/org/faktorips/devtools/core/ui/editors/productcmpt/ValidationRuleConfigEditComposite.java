@@ -15,9 +15,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.Map;
 
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -46,13 +44,6 @@ public final class ValidationRuleConfigEditComposite extends
     }
 
     @Override
-    protected void setLayoutData() {
-        super.setLayoutData();
-        GridData gridData = (GridData)getLayoutData();
-        gridData.horizontalSpan = 2;
-    }
-
-    @Override
     protected void createEditFields(Map<EditField<?>, ObjectProperty> editFieldsToEditedProperties) {
         createActiveEditField(editFieldsToEditedProperties);
     }
@@ -60,7 +51,7 @@ public final class ValidationRuleConfigEditComposite extends
     private void createActiveEditField(Map<EditField<?>, ObjectProperty> editFieldsToEditedProperties) {
         Checkbox checkbox = getToolkit().createCheckbox(this);
         checkbox.setChecked(getPropertyValue().isActive());
-        checkbox.setText(IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getPropertyValue()));
+        checkbox.setText(Messages.ValidationRuleConfigEditComposite_labelValidate);
         CheckboxField editField = new CheckboxField(checkbox);
 
         editFieldsToEditedProperties.put(editField, new ObjectProperty(getPropertyValue(),

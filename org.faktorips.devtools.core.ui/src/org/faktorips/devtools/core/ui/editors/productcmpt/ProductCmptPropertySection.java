@@ -272,7 +272,7 @@ public class ProductCmptPropertySection extends IpsSection {
             }
         },
 
-        VALIDATION_RULE_CONFIG(false) {
+        VALIDATION_RULE_CONFIG(true) {
             @Override
             public EditPropertyValueComposite<?, ?> createEditComposite(IProductCmptProperty property,
                     IPropertyValue propertyValue,

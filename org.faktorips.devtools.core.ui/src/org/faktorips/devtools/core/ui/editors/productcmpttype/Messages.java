@@ -69,6 +69,7 @@ public class Messages extends NLS {
 
     public static String AttributeEditDialog_datatypeLabel;
     public static String AttributeEditDialog_defaultvalueLabel;
+    public static String AttributeEditDialog_categoryLabel;
     public static String AttributeEditDialog_general;
     public static String AttributeEditDialog_modifierLabel;
     public static String AttributeEditDialog_nameLabel;

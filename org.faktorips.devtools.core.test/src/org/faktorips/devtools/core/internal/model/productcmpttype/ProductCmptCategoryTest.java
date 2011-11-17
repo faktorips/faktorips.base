@@ -50,6 +50,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
 
+    private IPolicyCmptType policyType;
+
     private IProductCmptType productType;
 
     private ProductCmptCategory category;
@@ -61,7 +63,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
         ipsProject = newIpsProject();
 
-        IPolicyCmptType policyType = newPolicyAndProductCmptType(ipsProject, "PolicyType", "ProductType");
+        policyType = newPolicyAndProductCmptType(ipsProject, "PolicyType", "ProductType");
         productType = policyType.findProductCmptType(ipsProject);
 
         category = (ProductCmptCategory)productType.newCategory(CATEGORY_NAME);
@@ -77,6 +79,27 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         assertFalse(category.isDefaultForTableStructureUsages());
         assertFalse(category.isDefaultForValidationRules());
         assertTrue(category.isAtRightPosition());
+    }
+
+    @Test
+    public void testIsDefaultFor() {
+        IProductCmptCategory defaultPolicyAttributes = productType.newCategory();
+        IProductCmptCategory defaultProductAttributes = productType.newCategory();
+        IProductCmptCategory defaultFormulas = productType.newCategory();
+        IProductCmptCategory defaultTableStructures = productType.newCategory();
+        IProductCmptCategory defaultValidationRules = productType.newCategory();
+
+        defaultPolicyAttributes.setDefaultForPolicyCmptTypeAttributes(true);
+        defaultProductAttributes.setDefaultForProductCmptTypeAttributes(true);
+        defaultFormulas.setDefaultForFormulaSignatureDefinitions(true);
+        defaultTableStructures.setDefaultForTableStructureUsages(true);
+        defaultValidationRules.setDefaultForValidationRules(true);
+
+        assertTrue(defaultPolicyAttributes.isDefaultFor(policyType.newPolicyCmptTypeAttribute()));
+        assertTrue(defaultProductAttributes.isDefaultFor(productType.newProductCmptTypeAttribute()));
+        assertTrue(defaultFormulas.isDefaultFor(productType.newFormulaSignature("")));
+        assertTrue(defaultTableStructures.isDefaultFor(productType.newTableStructureUsage()));
+        assertTrue(defaultValidationRules.isDefaultFor(policyType.newRule()));
     }
 
     @Test

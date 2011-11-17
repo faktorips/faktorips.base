@@ -1084,12 +1084,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
             }
         }
 
-        filterOriginalsOfOverwrittenAttributes(properties);
+        filterOverwritingAttributes(properties);
 
         return properties;
     }
 
-    private void filterOriginalsOfOverwrittenAttributes(List<IProductCmptProperty> properties) {
+    private void filterOverwritingAttributes(List<IProductCmptProperty> properties) {
         List<IPolicyCmptTypeAttribute> overwriteAttributes = new ArrayList<IPolicyCmptTypeAttribute>();
 
         // Create a copy of the list to avoid concurrent modification

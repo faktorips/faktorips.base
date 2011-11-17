@@ -69,7 +69,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         if (!name.isEmpty() && name.equals(property.getCategory())) {
             return true;
         }
-        if (isDefaultFor(property.getProductCmptPropertyType())) {
+        if (isDefaultFor(property)) {
             /*
              * If the name of the property's category does not match this category's name, this
              * category still may contain the property if this category is the corresponding default
@@ -82,9 +82,10 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         return false;
     }
 
-    private boolean isDefaultFor(ProductCmptPropertyType propertyType) {
+    @Override
+    public boolean isDefaultFor(IProductCmptProperty property) {
         boolean isDefault = false;
-        switch (propertyType) {
+        switch (property.getProductCmptPropertyType()) {
             case POLICY_CMPT_TYPE_ATTRIBUTE:
                 isDefault = isDefaultForPolicyCmptTypeAttributes();
                 break;

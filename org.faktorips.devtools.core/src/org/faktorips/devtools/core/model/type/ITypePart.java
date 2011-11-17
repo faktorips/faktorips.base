@@ -77,7 +77,8 @@ public interface ITypePart extends IIpsObjectPart, IDescribedElement, ILabeledEl
     public boolean hasCategory();
 
     /**
-     * Returns the {@link IProductCmptType} this property belongs to.
+     * Returns the {@link IProductCmptType} this property belongs to or null if the referenced
+     * {@link IProductCmptType} could not be found.
      * 
      * @param ipsProject The IPS project whose IPS object path is used for the search
      * 

@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -33,8 +34,10 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
@@ -42,11 +45,13 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
+import org.faktorips.devtools.core.ui.editors.CategoryPmo;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 
@@ -148,6 +153,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         defaultEditFieldPlaceholder.setLayoutData(new GridData(GridData.FILL_BOTH));
         createDefaultValueEditField();
 
+        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_categoryLabel);
+        createCategoryCombo(workArea);
+
         getToolkit().createVerticalSpacer(c, 4);
         getToolkit().createHorizonzalLine(c);
         getToolkit().createVerticalSpacer(c, 4);
@@ -175,6 +183,24 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         extFactory.bind(getBindingContext());
 
         return c;
+    }
+
+    private void createCategoryCombo(Composite workArea) {
+        Combo categoryCombo = getToolkit().createCombo(workArea);
+        ComboViewerField<IProductCmptCategory> comboViewerField = new ComboViewerField<IProductCmptCategory>(
+                categoryCombo, IProductCmptCategory.class);
+
+        CategoryPmo pmo = new CategoryPmo(attribute);
+        comboViewerField.setInput(pmo.getCategories());
+        comboViewerField.setLabelProvider(new LabelProvider() {
+            @Override
+            public String getText(Object element) {
+                IProductCmptCategory category = (IProductCmptCategory)element;
+                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
+            }
+        });
+
+        getBindingContext().bindContent(comboViewerField, pmo, IProductCmptProperty.PROPERTY_CATEGORY);
     }
 
     private void createDefaultValueEditField() {

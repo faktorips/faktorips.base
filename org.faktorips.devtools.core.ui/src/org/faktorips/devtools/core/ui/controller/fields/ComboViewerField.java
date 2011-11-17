@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
@@ -63,6 +65,10 @@ public class ComboViewerField<T> extends ComboField<T> {
 
     public void setInput(T[] array) {
         comboViewer.setInput(array);
+    }
+
+    public void setInput(List<T> input) {
+        comboViewer.setInput(input);
     }
 
     public Object getInput() {

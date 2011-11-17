@@ -235,4 +235,6 @@ public class Messages extends NLS {
 
     public static String ProductCmptPropertySection_NoContentToDisplay;
 
+    public static String ValidationRuleConfigEditComposite_labelValidate;
+
 }

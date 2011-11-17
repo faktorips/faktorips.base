@@ -40,9 +40,9 @@ public class TypePartTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
 
-    private IType type;
+    private IPolicyCmptType policyCmptType;
 
-    private TypePart typePart;
+    private TestTypePart policyTypePart;
 
     @Override
     @Before
@@ -50,40 +50,40 @@ public class TypePartTest extends AbstractIpsPluginTest {
         super.setUp();
 
         ipsProject = newIpsProject();
-        type = newPolicyAndProductCmptType(ipsProject, "Foo", "Bar");
-        typePart = new TestTypePart(type, ((IPolicyCmptType)type).findProductCmptType(ipsProject), "");
+        policyCmptType = newPolicyAndProductCmptType(ipsProject, "Foo", "Bar");
+        policyTypePart = new TestTypePart(policyCmptType, policyCmptType.findProductCmptType(ipsProject), "");
     }
 
     @Test
     public void testGetType() {
-        assertSame(type, typePart.getType());
+        assertSame(policyCmptType, policyTypePart.getType());
     }
 
     @Test
     public void testIsOfType() {
-        assertTrue(typePart.isOfType(type.getQualifiedName()));
-        assertFalse(typePart.isOfType("bar"));
+        assertTrue(policyTypePart.isOfType(policyCmptType.getQualifiedName()));
+        assertFalse(policyTypePart.isOfType("bar"));
     }
 
     @Test
     public void testSetModifier() {
-        testPropertyAccessReadWrite(TypePart.class, ITypePart.PROPERTY_MODIFIER, typePart, Modifier.PUBLIC);
+        testPropertyAccessReadWrite(TypePart.class, ITypePart.PROPERTY_MODIFIER, policyTypePart, Modifier.PUBLIC);
     }
 
     @Test
     public void testSetCategory() {
-        typePart.setCategory("foo");
-        assertEquals("foo", typePart.getCategory());
-        assertPropertyChangedEvent(typePart, ITypePart.PROPERTY_CATEGORY, "", "foo");
+        policyTypePart.setCategory("foo");
+        assertEquals("foo", policyTypePart.getCategory());
+        assertPropertyChangedEvent(policyTypePart, ITypePart.PROPERTY_CATEGORY, "", "foo");
     }
 
     @Test
     public void testHasCategory() {
-        typePart.setCategory("foo");
-        assertTrue(typePart.hasCategory());
+        policyTypePart.setCategory("foo");
+        assertTrue(policyTypePart.hasCategory());
 
-        typePart.setCategory("");
-        assertFalse(typePart.hasCategory());
+        policyTypePart.setCategory("");
+        assertFalse(policyTypePart.hasCategory());
     }
 
     @Test
@@ -92,28 +92,28 @@ public class TypePartTest extends AbstractIpsPluginTest {
         when(element.getAttribute(ITypePart.PROPERTY_MODIFIER)).thenReturn(Modifier.PUBLIC.getId());
         when(element.getAttribute(ITypePart.PROPERTY_CATEGORY)).thenReturn("foo");
 
-        typePart.initPropertiesFromXml(element, null);
+        policyTypePart.initPropertiesFromXml(element, null);
 
-        assertEquals(Modifier.PUBLIC, typePart.getModifier());
-        assertEquals("foo", typePart.getCategory());
+        assertEquals(Modifier.PUBLIC, policyTypePart.getModifier());
+        assertEquals("foo", policyTypePart.getCategory());
     }
 
     @Test
     public void testInitPropertiesFromXmlNoCategoryAttribute() {
         Element element = mock(Element.class);
 
-        typePart.initPropertiesFromXml(element, null);
+        policyTypePart.initPropertiesFromXml(element, null);
 
-        assertEquals("", typePart.getCategory());
+        assertEquals("", policyTypePart.getCategory());
     }
 
     @Test
     public void testPropertiesToXml() {
         Element element = mock(Element.class);
-        typePart.setCategory("foo");
-        typePart.setModifier(Modifier.PUBLIC);
+        policyTypePart.setCategory("foo");
+        policyTypePart.setModifier(Modifier.PUBLIC);
 
-        typePart.propertiesToXml(element);
+        policyTypePart.propertiesToXml(element);
 
         verify(element).setAttribute(ITypePart.PROPERTY_MODIFIER, Modifier.PUBLIC.getId());
         verify(element).setAttribute(ITypePart.PROPERTY_CATEGORY, "foo");

@@ -186,6 +186,12 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
     public boolean findIsContainingProperty(IProductCmptProperty property, IIpsProject ipsProject) throws CoreException;
 
     /**
+     * Returns whether this {@link IProductCmptCategory} is the corresponding default
+     * {@link IProductCmptCategory} for the indicated {@link IProductCmptProperty}.
+     */
+    public boolean isDefaultFor(IProductCmptProperty property);
+
+    /**
      * Returns whether this category is marked as default category for
      * {@link IProductCmptTypeMethod}s defining formula signatures.
      */
