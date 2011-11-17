@@ -59,7 +59,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * Edit dialog to edit the table structure usages.
  */
-public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
+public class TableStructureUsageEditDialog extends IpsPartEditDialog {
 
     private TextField nameField;
     private CheckboxField mandatoryTableContentField;
@@ -73,7 +73,7 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
     private Button btnUp;
     private Button btnDown;
 
-    public TblsStructureUsageEditDialog(ITableStructureUsage tblStructureUsage, Shell parentShell) {
+    public TableStructureUsageEditDialog(ITableStructureUsage tblStructureUsage, Shell parentShell) {
         super(tblStructureUsage, parentShell, Messages.TblsStructureUsageEditDialog_title, true);
         this.tblStructureUsage = tblStructureUsage;
     }

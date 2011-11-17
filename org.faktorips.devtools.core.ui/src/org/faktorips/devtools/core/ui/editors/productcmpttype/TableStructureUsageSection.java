@@ -187,7 +187,7 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             ArgumentCheck.isInstanceOf(part, ITableStructureUsage.class);
-            return new TblsStructureUsageEditDialog((ITableStructureUsage)part, shell);
+            return new TableStructureUsageEditDialog((ITableStructureUsage)part, shell);
         }
 
         @Override
