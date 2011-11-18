@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,6 +32,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -47,6 +50,8 @@ import org.faktorips.util.ArgumentCheck;
  * @author schwering
  */
 public class ExpressionProposalProvider implements IContentProposalProvider {
+
+    private static final String DEFAULT_VALUE = "@default"; //$NON-NLS-1$
 
     private IMethod signature;
     private IExpression expression;
@@ -70,6 +75,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             String paramName = identifier.substring(0, pos);
             String attributePrefix = identifier.substring(pos + 1);
             addMatchingAttributes(result, paramName, attributePrefix);
+            addDefaultValuesToResult(result, paramName, attributePrefix);
             addMatchingEnumValues(result, paramName, attributePrefix);
             addAdditionalProposals(result, getAdditionalProposals(paramName, attributePrefix));
         } else {
@@ -325,5 +331,56 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     public IMethod getSignature() {
         return signature;
+    }
+
+    private void addDefaultValuesToResult(final List<IContentProposal> result,
+            final String paramName,
+            final String attributePrefix) {
+        try {
+            final Datatype datatype = findParamDatatype(paramName);
+            if (!(datatype instanceof IPolicyCmptType)) {
+                return;
+            }
+            String prefix = attributePrefix;
+            if (prefix.indexOf('@') > 0) {
+                prefix = prefix.substring(0, prefix.indexOf('@'));
+            }
+            final IIpsProject ipsProject = getIpsProject();
+            final List<IAttribute> attributes = findProductRelevantAttributes((IPolicyCmptType)datatype, ipsProject);
+            final List<String> attributeNames = new ArrayList<String>();
+            for (final IAttribute attribute : attributes) {
+                if (attribute.getName().startsWith(prefix) && !attributeNames.contains(attribute.getName())) {
+                    addDefaultValueToResult(result, attribute, attributePrefix);
+                    attributeNames.add(attribute.getName());
+                }
+            }
+
+        } catch (final CoreException e) {
+            throw new CoreRuntimeException(e.getMessage(), e);
+        }
+    }
+
+    private void addDefaultValueToResult(final List<IContentProposal> result,
+            final IAttribute attribute,
+            final String prefix) {
+        String name = attribute.getName() + DEFAULT_VALUE;
+        final String displayText = name
+                + " - " + attribute.getDatatype() + Messages.ExpressionProposalProvider_defaultValue; //$NON-NLS-1$
+        final String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(attribute);
+        final IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText,
+                localizedDescription);
+        result.add(proposal);
+    }
+
+    private List<IAttribute> findProductRelevantAttributes(final IPolicyCmptType datatype, final IIpsProject ipsProject)
+            throws CoreException {
+        final List<IAttribute> attributes = datatype.findAllAttributes(ipsProject);
+        for (Iterator<IAttribute> iterator = attributes.iterator(); iterator.hasNext();) {
+            IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)iterator.next();
+            if (!attribute.isProductRelevant()) {
+                iterator.remove();
+            }
+        }
+        return attributes;
     }
 }

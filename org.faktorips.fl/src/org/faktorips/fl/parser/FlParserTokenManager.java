@@ -664,7 +664,7 @@ public class FlParserTokenManager implements FlParserConstants {
                 MatchLoop: do {
                     switch (jjstateSet[--i]) {
                         case 0:
-                            if ((0x7fffffe87fffffeL & l) != 0L) {
+                            if ((0x7fffffe87ffffffL & l) != 0L) {
                                 if (kind > 15) {
                                     kind = 15;
                                 }
@@ -695,7 +695,7 @@ public class FlParserTokenManager implements FlParserConstants {
                             break;
                         case 9:
                         case 10:
-                            if ((0x7fffffe87fffffeL & l) == 0L) {
+                            if ((0x7fffffe87ffffffL & l) == 0L) {
                                 break;
                             }
                             if (kind > 15) {

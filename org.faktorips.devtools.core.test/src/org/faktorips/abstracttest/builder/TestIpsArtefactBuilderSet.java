@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
@@ -26,6 +27,7 @@ import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
@@ -151,6 +153,11 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
                 return attribute.getIpsProject().getJavaNamingConvention()
                         .getGetterMethodName(attribute.getName(), datatype);
             }
+
+            @Override
+            protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
+                return "getDefaultValue" + StringUtils.capitalize(attribute.getName()); //$NON-NLS-1$
+            }
         };
     }
 
@@ -163,6 +170,11 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
                 return attribute.getIpsProject().getJavaNamingConvention()
                         .getGetterMethodName(attribute.getName(), datatype);
+            }
+
+            @Override
+            protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
+                return "getDefaultValue" + StringUtils.capitalize(attribute.getName()); //$NON-NLS-1$
             }
         };
     }

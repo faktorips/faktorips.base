@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -43,6 +44,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -63,6 +65,8 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.persistence.PolicyCmptImplClassJpaAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessagesPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
@@ -343,6 +347,27 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
                 return null;
             }
+
+            @Override
+            protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
+                try {
+                    GenPolicyCmptType genPolicyCmptType = getGenerator(type);
+                    String getProductCmptGeneration = genPolicyCmptType.getGenProductCmptType()
+                            .getMethodNameGetProductCmptGeneration();
+                    GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = genPolicyCmptType
+                            .getGenerator((IPolicyCmptTypeAttribute)attribute);
+                    if (genPolicyCmptTypeAttribute instanceof GenChangeableAttribute) {
+                        String methodNameGetDefaultValue = ((GenChangeableAttribute)genPolicyCmptTypeAttribute)
+                                .getMethodNameGetDefaultValue();
+                        return getProductCmptGeneration + "()." + methodNameGetDefaultValue;
+                    } else {
+                        throw new IllegalStateException("Could not generate default method access. Attribute "
+                                + attribute.getName() + " is not changeable.");
+                    }
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e.getMessage(), e);
+                }
+            }
         };
     }
 
@@ -364,7 +389,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             @Override
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
                 try {
-
                     if (datatype instanceof IPolicyCmptType) {
                         return getGenerator((IPolicyCmptType)datatype).getMethodNameGetPropertyValue(
                                 attribute.getName(), datatype);
@@ -373,12 +397,31 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                         return getGenerator((IProductCmptType)datatype).getMethodNameGetPropertyValue(
                                 attribute.getName(), datatype);
                     }
-
                 } catch (CoreException e) {
                     return null;
                 }
-
                 return null;
+            }
+
+            @Override
+            protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
+                try {
+                    GenPolicyCmptType genPolicyCmptType = getGenerator(type);
+                    String getProductCmptGeneration = genPolicyCmptType.getGenProductCmptType()
+                            .getMethodNameGetProductCmptGeneration();
+                    GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = genPolicyCmptType
+                            .getGenerator((IPolicyCmptTypeAttribute)attribute);
+                    if (genPolicyCmptTypeAttribute instanceof GenChangeableAttribute) {
+                        String methodNameGetDefaultValue = ((GenChangeableAttribute)genPolicyCmptTypeAttribute)
+                                .getMethodNameGetDefaultValue();
+                        return getProductCmptGeneration + "()." + methodNameGetDefaultValue;
+                    } else {
+                        throw new IllegalStateException("Could not generate default method access. Attribute "
+                                + attribute.getName() + " is not changeable.");
+                    }
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e.getMessage(), e);
+                }
             }
 
             @Override

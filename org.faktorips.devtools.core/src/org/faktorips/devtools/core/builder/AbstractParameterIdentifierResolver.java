@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -74,6 +75,11 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
      * Provides the name of the getter method for the provided attribute.
      */
     protected abstract String getParameterAttributGetterName(IAttribute attribute, Datatype datatype);
+
+    /**
+     * Provides the name of the getter method for the provided attribute's default value.
+     */
+    protected abstract String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type);
 
     private Map<String, EnumDatatype> createEnumMap() {
         EnumDatatype[] enumtypes = formula.getEnumDatatypesAllowedInFormula();
@@ -259,9 +265,12 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                     Messages.AbstractParameterIdentifierResolver_msgAttributeMissing));
         }
 
+        boolean isDefaultValueAccess = type instanceof IPolicyCmptType && attributeName.endsWith("@default"); //$NON-NLS-1$
         IAttribute attribute = null;
         try {
-            attribute = type.findAttribute(attributeName, ipsproject);
+            String actualAttributeName = isDefaultValueAccess ? attributeName.substring(0,
+                    attributeName.lastIndexOf('@')) : attributeName;
+            attribute = type.findAttribute(actualAttributeName, ipsproject);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute,
@@ -281,7 +290,9 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                         attribute.getDatatype(), attributeName);
                 return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
             }
-            String code = param.getName() + '.' + getParameterAttributGetterName(attribute, type) + "()"; //$NON-NLS-1$
+            String parameterAttributGetterName = isDefaultValueAccess ? getParameterAttributDefaultValueGetterName(
+                    attribute, (IPolicyCmptType)type) : getParameterAttributGetterName(attribute, type);
+            String code = param.getName() + '.' + parameterAttributGetterName + "()"; //$NON-NLS-1$
             return new CompilationResultImpl(code, datatype);
         } catch (Exception e) {
             IpsPlugin.log(e);

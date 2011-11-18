@@ -21,6 +21,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
@@ -67,6 +68,11 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
         return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
             @Override
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
+                return ""; //$NON-NLS-1$
+            }
+
+            @Override
+            protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
                 return ""; //$NON-NLS-1$
             }
         };

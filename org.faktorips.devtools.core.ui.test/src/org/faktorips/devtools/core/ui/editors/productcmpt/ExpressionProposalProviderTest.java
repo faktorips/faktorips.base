@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -200,6 +201,42 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("k", 1);
         assertEquals(0, results.length);
+    }
+
+    @Test
+    public void testDoComputeCompletionProposalsForPolicyCmptTypeAttributes() throws Exception {
+        IAttribute firstAttr = cmptType.newAttribute();
+        firstAttr.setName("firstAttr");
+        firstAttr.setDatatype(Datatype.STRING.getQualifiedName());
+
+        IAttribute secondAttr = cmptType.newAttribute();
+        secondAttr.setName("secondAttr");
+        secondAttr.setDatatype(Datatype.STRING.getQualifiedName());
+
+        formulaSignature.newParameter(cmptType.getQualifiedName(), "policy");
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("policy.f", 8);
+        IContentProposal proposal = results[0];
+        assertEquals("irstAttr", proposal.getContent());
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        results = proposalProvider.getProposals("policy.s", 8);
+        proposal = results[0];
+        assertEquals("econdAttr", proposal.getContent());
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        results = proposalProvider.getProposals("policy.k", 8);
+        assertEquals(0, results.length);
+
+        IPolicyCmptTypeAttribute thirdAttr = cmptType.newPolicyCmptTypeAttribute("thirdAttr");
+        thirdAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        thirdAttr.setProductRelevant(true);
+        results = proposalProvider.getProposals("policy.t", 8);
+        proposal = results[0];
+        assertEquals("hirdAttr", proposal.getContent());
+        proposal = results[1];
+        assertEquals("hirdAttr@default", proposal.getContent());
     }
 
     @Test
