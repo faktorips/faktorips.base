@@ -57,7 +57,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         ArgumentCheck.notNull(expression);
         this.expression = expression;
         this.ipsProject = expression.getIpsProject();
-        this.signature = expression.findFormulaSignature(expression.getIpsProject());
+        this.signature = expression.findFormulaSignature(ipsProject);
     }
 
     @Override
