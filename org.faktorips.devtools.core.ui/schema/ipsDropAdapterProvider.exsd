@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="ipsDropHandler"/>
+            <element ref="ipsDropAdapterProvider"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="ipsDropHandler">
+   <element name="ipsDropAdapterProvider">
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.ui.IIpsDropHandler"/>
+                  <meta.attribute kind="java" basedOn="org.faktorips.devtools.core.ui.IpsViewerDropAdapter:"/>
                </appInfo>
             </annotation>
          </attribute>

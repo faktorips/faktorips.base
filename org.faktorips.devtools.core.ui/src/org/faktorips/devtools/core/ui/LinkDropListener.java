@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 
-public class LinkDropListener extends IpsFileTransferViewerDropAdapter implements IIpsDropListener {
+public class LinkDropListener extends IpsFileTransferViewerDropAdapter {
 
     private LinkCreatorUtil linkCreator;
 
@@ -41,16 +41,6 @@ public class LinkDropListener extends IpsFileTransferViewerDropAdapter implement
             event.detail = DND.DROP_LINK;
         }
         super.dragEnter(event);
-    }
-
-    @Override
-    public boolean validateDrop(Object target, int operation, TransferData data) {
-        return IpsDropUtil.getInstance().validateDrop(getViewer(), target, operation, data);
-    }
-
-    @Override
-    public boolean performDrop(Object data) {
-        return IpsDropUtil.getInstance().performDrop(getViewer(), data);
     }
 
     /**

@@ -20,11 +20,11 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
 
 /**
- * Provider of
+ * Provides informations about and an adapter to handle drop events.
  * 
- * @author guenther
+ * @author Thorsten Günther
  */
-public interface IIpsDropListenerProvider {
+public interface IIpsDropAdapterProvider {
 
     /**
      * @return The list of supported {@link Transfer} types.
@@ -41,6 +41,6 @@ public interface IIpsDropListenerProvider {
     /**
      * @return The adapter to handle a drop for the given viewer
      */
-    public IIpsDropListener getDropListener(Viewer viewer);
+    public IpsViewerDropAdapter getDropAdapter(Viewer viewer);
 
 }

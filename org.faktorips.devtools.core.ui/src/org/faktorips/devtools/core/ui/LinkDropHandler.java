@@ -22,7 +22,7 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 
-public class LinkDropHandler implements IIpsDropListenerProvider {
+public class LinkDropHandler implements IIpsDropAdapterProvider {
 
     @Override
     public List<Transfer> getSupportedTransferTypes() {
@@ -38,7 +38,7 @@ public class LinkDropHandler implements IIpsDropListenerProvider {
     }
 
     @Override
-    public IIpsDropListener getDropListener(Viewer viewer) {
+    public IpsViewerDropAdapter getDropAdapter(Viewer viewer) {
         return new LinkDropListener(viewer);
     }
 

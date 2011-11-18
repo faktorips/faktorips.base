@@ -20,8 +20,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -57,14 +59,18 @@ import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IDecoratorManager;
@@ -145,6 +151,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     public final static String EXTENSION_POINT_ID_ADAPTER_PROVIDER = "adapterprovider"; //$NON-NLS-1$
 
     /**
+     * Extension point id for adding external drop support (see {@link IIpsDropAdapterProvider}
+     */
+    public final static String EXTENSION_POINT_ID_IPS_DROP_ADAPTER_PROVIDER = "ipsDropAdapterProvider"; //$NON-NLS-1$
+
+    /**
      * The extension point id of the extension point property <tt>workbenchadapter</tt> in the
      * extension point adapterprovider.
      */
@@ -200,7 +211,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private UIDatatypeFormatter datatypeFormatter;
 
-    private List<IIpsDropListenerProvider> productCmptDnDHandler;
+    private List<IIpsDropAdapterProvider> productCmptDnDHandler;
 
     /**
      * This method is for test purposes only.
@@ -229,11 +240,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         Platform.getAdapterManager().registerAdapters(ipsElementWorkbenchAdapterAdapterFactory, IIpsElement.class);
     }
 
-    private List<IIpsDropListenerProvider> initProductCmptDnDHandler() {
-        List<IIpsDropListenerProvider> dndHandler = new ArrayList<IIpsDropListenerProvider>();
+    private List<IIpsDropAdapterProvider> initProductCmptDnDHandler() {
+        List<IIpsDropAdapterProvider> dndHandler = new ArrayList<IIpsDropAdapterProvider>();
 
         ExtensionPoints extensionPoints = new ExtensionPoints(registry, PLUGIN_ID);
-        IExtension[] extensions = extensionPoints.getExtension("ipsDropHandler"); //$NON-NLS-1$
+        IExtension[] extensions = extensionPoints.getExtension(EXTENSION_POINT_ID_IPS_DROP_ADAPTER_PROVIDER);
         for (IExtension extension : extensions) {
             IConfigurationElement[] configElements = extension.getConfigurationElements();
             for (IConfigurationElement configElement : configElements) {
@@ -243,8 +254,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                             + extension.getExtensionPointUniqueIdentifier()
                             + ". The attribute \"" + CONFIG_PROPERTY_CLASS + "\" is not specified."); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
-                    IIpsDropListenerProvider handler = ExtensionPoints.createExecutableExtension(extension, configElement,
-                            CONFIG_PROPERTY_CLASS, IIpsDropListenerProvider.class);
+                    IIpsDropAdapterProvider handler = ExtensionPoints.createExecutableExtension(extension,
+                            configElement, CONFIG_PROPERTY_CLASS, IIpsDropAdapterProvider.class);
                     if (handler != null) {
                         dndHandler.add(handler);
                     }
@@ -349,8 +360,45 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return controlFactories;
     }
 
-    public List<IIpsDropListenerProvider> getProductCmptDnDHandler() {
-        return productCmptDnDHandler;
+    /**
+     * Adds drop support to the given viewer. All {@link IIpsDropAdapterProvider} instances provided
+     * as extensions to #are registered as drop listener.
+     */
+    public void addDropSupport(StructuredViewer viewer) {
+        Control control = viewer.getControl();
+        DropTarget dropTarget = new DropTarget(control, getSupportedOperations());
+        dropTarget.setTransfer(getSupportedTransferTypes());
+        addDropListener(dropTarget, viewer);
+    }
+
+    private Transfer[] getSupportedTransferTypes() {
+        Set<Transfer> result = new HashSet<Transfer>();
+
+        for (IIpsDropAdapterProvider handler : productCmptDnDHandler) {
+            result.addAll(handler.getSupportedTransferTypes());
+        }
+        return result.toArray(new Transfer[result.size()]);
+    }
+
+    private void addDropListener(DropTarget dropTarget, StructuredViewer viewer) {
+        Set<IpsViewerDropAdapter> adapters = new HashSet<IpsViewerDropAdapter>();
+        for (IIpsDropAdapterProvider handler : productCmptDnDHandler) {
+            IpsViewerDropAdapter adapter = handler.getDropAdapter(viewer);
+            dropTarget.addDropListener(adapter);
+            adapters.add(adapter);
+        }
+
+        for (IpsViewerDropAdapter adapter : adapters) {
+            adapter.setPartnerDropAdapters(adapters);
+        }
+    }
+
+    private int getSupportedOperations() {
+        int result = 0;
+        for (IIpsDropAdapterProvider handler : productCmptDnDHandler) {
+            result = result | handler.getSupportedOperations();
+        }
+        return result;
     }
 
     /**

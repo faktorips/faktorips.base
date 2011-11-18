@@ -21,7 +21,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -30,7 +29,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 
-public abstract class IpsFileTransferViewerDropAdapter extends ViewerDropAdapter {
+public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdapter {
 
     private TransferData actualTransferType;
     private List<IProductCmpt> actualTransferElements;

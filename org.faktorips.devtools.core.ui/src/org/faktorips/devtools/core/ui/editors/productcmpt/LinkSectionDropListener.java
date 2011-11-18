@@ -374,4 +374,16 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     }
 
+    @Override
+    public boolean validateDropSingle(Object target, int operation, TransferData data) {
+        // nothing to do
+        return false;
+    }
+
+    @Override
+    public boolean performDropSingle(Object data) {
+        // nothing to do
+        return false;
+    }
+
 }
