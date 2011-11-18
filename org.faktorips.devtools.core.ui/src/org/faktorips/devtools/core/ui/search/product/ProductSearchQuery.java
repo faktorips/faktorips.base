@@ -67,10 +67,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
         }
 
         for (IIpsSrcFile srcFile : matchingSrcFiles) {
-            boolean matching = isMatching(srcFile, searchOperators);
-            if (matching) {
-                searchResult.addMatch(new Match(srcFile.getIpsObject(), 0, 0));
-            }
+            searchDetailProductCmptGenerations(srcFile, searchOperators);
         }
     }
 
@@ -86,9 +83,10 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
         return searchOperator;
     }
 
-    private boolean isMatching(IIpsSrcFile srcFile, List<ISearchOperator> searchOperators) throws CoreException {
+    private void searchDetailProductCmptGenerations(IIpsSrcFile srcFile, List<ISearchOperator> searchOperators)
+            throws CoreException {
         if (!IpsObjectType.PRODUCT_CMPT.equals(srcFile.getIpsObjectType())) {
-            return false;
+            return;
         }
 
         IProductCmpt productComponent = (IProductCmpt)srcFile.getIpsObject();
@@ -97,11 +95,9 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
 
         for (IProductCmptGeneration productCmptGeneration : generations) {
             if (isMatchingProductCmptGeneration(searchOperators, productCmptGeneration)) {
-                return true;
+                searchResult.addMatch(new Match(productCmptGeneration, 0, 0));
             }
         }
-
-        return false;
     }
 
     protected boolean isMatchingProductCmptGeneration(List<ISearchOperator> searchOperators,

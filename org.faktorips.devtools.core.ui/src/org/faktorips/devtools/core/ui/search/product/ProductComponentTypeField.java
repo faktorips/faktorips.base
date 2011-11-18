@@ -19,11 +19,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.controller.fields.AbstractTextField;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectContext;
@@ -43,25 +41,12 @@ public class ProductComponentTypeField extends AbstractTextField<IProductCmptTyp
     @Override
     public void setValue(IProductCmptType newValue) {
         productCmptType = newValue;
-        setText(productCmptType.getLabel(new MultiLanguageSupport().getLocalizationLocale()).getValue());
+        setText(IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(newValue));
     }
 
     @Override
     protected IProductCmptType parseContent() throws Exception {
-        if (productCmptType != null && productCmptType.getQualifiedName().equals(getText())) {
-            return productCmptType;
-        }
-
-        IIpsProject[] ipsProductDefinitionProjects = IpsPlugin.getDefault().getIpsModel()
-                .getIpsProductDefinitionProjects();
-        for (IIpsProject ipsProject : ipsProductDefinitionProjects) {
-            IProductCmptType productCmptTypeInstance = ipsProject.findProductCmptType(getText());
-
-            if (productCmptTypeInstance != null) {
-                return productCmptTypeInstance;
-            }
-        }
-        return null;
+        return productCmptType;
     }
 
     private final class ProductCmptTypeSelectionListener extends SelectionAdapter {

@@ -44,21 +44,26 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     private final ProductSearchPresentationModel parentSearchPresentationModel;
 
     private List<? extends IIpsElement> searchableElements;
-
-    private int searchedElementIndex = -1;
-
     private List<? extends ISearchOperatorType> operatorTypes;
 
     private int operatorTypeIndex = -1;
 
     private ICondition condition = null;
     private String argument = null;
+    private IIpsElement searchedElement = null;
+
     private List<String> allowedValues = null;
 
     public ProductSearchConditionPresentationModel(ProductSearchPresentationModel parentSearchPresentationModel) {
         this.parentSearchPresentationModel = parentSearchPresentationModel;
         this.searchableElements = Collections.emptyList();
         this.operatorTypes = Collections.emptyList();
+
+        List<ICondition> conditionsWithSearchableElements = getConditionsWithSearchableElements();
+        if (!conditionsWithSearchableElements.isEmpty()) {
+            condition = conditionsWithSearchableElements.get(0);
+            updateSearchableElements();
+        }
     }
 
     @Override
@@ -106,12 +111,8 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
         operatorTypeIndex = -1;
     }
 
-    public Integer getSearchedElementIndex() {
-        return searchedElementIndex;
-    }
-
-    public void setSearchedElementIndex(Integer newValue) {
-        searchedElementIndex = newValue;
+    public void setSearchedElement(IIpsElement newValue) {
+        searchedElement = newValue;
 
         updateOperatorTypes();
         updateOperatorType();
@@ -120,24 +121,19 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     }
 
     public IIpsElement getSearchedElement() {
-        if (searchedElementIndex < 0) {
-            return null;
-        }
-        return getSearchableElements().get(searchedElementIndex);
+        return searchedElement;
     }
 
     private void updateSearchedElement() {
-        searchedElementIndex = -1;
-
+        searchedElement = null;
     }
 
     private void updateSearchableElements() {
         searchableElements = condition.getSearchableElements(parentSearchPresentationModel.getProductCmptType());
-
     }
 
     public boolean isSearchedElementChosen() {
-        return searchedElementIndex >= 0;
+        return searchedElement != null;
     }
 
     protected List<? extends IIpsElement> getSearchableElements() {
@@ -170,7 +166,7 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     }
 
     protected List<ICondition> getConditionsWithSearchableElements() {
-        return parentSearchPresentationModel.getConditionsWithSearchableElements();
+        return parentSearchPresentationModel.getAvailableConditions();
     }
 
     public ValueDatatype getValueDatatype() {

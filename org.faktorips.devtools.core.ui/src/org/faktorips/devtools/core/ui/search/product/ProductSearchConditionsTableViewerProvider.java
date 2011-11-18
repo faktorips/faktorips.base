@@ -213,7 +213,7 @@ public class ProductSearchConditionsTableViewerProvider {
         public void update(ViewerCell cell) {
             ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)cell.getElement();
 
-            if (model.getSearchedElementIndex() == null) {
+            if (model.getSearchedElement() == null) {
                 cell.setText(StringUtils.EMPTY);
             } else {
                 IIpsElement searchedElement = model.getSearchedElement();
@@ -234,13 +234,17 @@ public class ProductSearchConditionsTableViewerProvider {
         protected CellEditor getCellEditor(Object element) {
             ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
 
+            UIToolkit toolkit = new UIToolkit(null);
+            Combo combo = toolkit.createCombo(((TableViewer)getViewer()).getTable());
+
             List<? extends IIpsElement> searchableElements = model.getSearchableElements();
             String[] searchableElementsNames = new String[searchableElements.size()];
             for (int i = 0; i < searchableElementsNames.length; i++) {
                 searchableElementsNames[i] = searchableElements.get(i).getName();
             }
+            combo.setItems(searchableElementsNames);
 
-            return new ComboBoxCellEditor(((TableViewer)getViewer()).getTable(), searchableElementsNames);
+            return new ComboCellEditor(combo);
         }
 
         @Override
@@ -253,15 +257,22 @@ public class ProductSearchConditionsTableViewerProvider {
         protected Object getValue(Object element) {
             ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
 
-            return model.getSearchedElementIndex() == null ? Integer.valueOf(0) : model.getSearchedElementIndex();
+            return model.getSearchedElement();
         }
 
         @Override
         protected void setValue(Object element, Object value) {
             ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
 
-            model.setSearchedElementIndex((Integer)value);
-            getViewer().refresh();
+            List<? extends IIpsElement> searchableElements = model.getSearchableElements();
+
+            for (IIpsElement searchableElement : searchableElements) {
+                if (searchableElement.getName().equals(value)) {
+                    model.setSearchedElement(searchableElement);
+                    getViewer().refresh();
+                    return;
+                }
+            }
         }
     }
 
@@ -303,7 +314,8 @@ public class ProductSearchConditionsTableViewerProvider {
 
         @Override
         protected boolean canEdit(Object element) {
-            return true;
+            ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
+            return model.getConditionsWithSearchableElements().size() > 1;
         }
 
         @Override
@@ -329,7 +341,6 @@ public class ProductSearchConditionsTableViewerProvider {
                     getViewer().refresh();
                     return;
                 }
-
             }
         }
 

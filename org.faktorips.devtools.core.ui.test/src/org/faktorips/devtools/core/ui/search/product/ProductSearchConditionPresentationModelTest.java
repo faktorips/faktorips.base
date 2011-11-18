@@ -38,6 +38,7 @@ public class ProductSearchConditionPresentationModelTest {
     private ProductSearchPresentationModel parentSearchPresentationModel;
     private ProductSearchConditionPresentationModel model;
     private PropertyChangeListener listener;
+    private IIpsElement ipsElement;
 
     @Before
     public void setUp() {
@@ -47,6 +48,8 @@ public class ProductSearchConditionPresentationModelTest {
         parentSearchPresentationModel.setProductCmptType(productCmptType);
 
         model = new ProductSearchConditionPresentationModel(parentSearchPresentationModel);
+
+        ipsElement = mock(IIpsElement.class);
 
         listener = mock(PropertyChangeListener.class);
         parentSearchPresentationModel.addPropertyChangeListener(listener);
@@ -99,7 +102,7 @@ public class ProductSearchConditionPresentationModelTest {
         verify(listener).propertyChange(any(PropertyChangeEvent.class));
         assertFalse(model.isValid());
 
-        model.setSearchedElementIndex(0);
+        model.setSearchedElement(ipsElement);
 
         verify(listener, times(2)).propertyChange(any(PropertyChangeEvent.class));
         assertFalse(model.isValid());
@@ -120,7 +123,7 @@ public class ProductSearchConditionPresentationModelTest {
         PolicyAttributeCondition condition = createConditionwithSearchableElements();
 
         model.setCondition(condition);
-        model.setSearchedElementIndex(0);
+        model.setSearchedElement(ipsElement);
         model.setOperatorTypeIndex(0);
         model.setArgument("");
 
@@ -134,7 +137,7 @@ public class ProductSearchConditionPresentationModelTest {
         PolicyAttributeCondition condition = mock(PolicyAttributeCondition.class);
 
         List<IIpsElement> list = new ArrayList<IIpsElement>();
-        list.add(mock(IIpsElement.class));
+        list.add(ipsElement);
 
         when(condition.getSearchableElements(any(IProductCmptType.class))).thenReturn(list);
         return condition;

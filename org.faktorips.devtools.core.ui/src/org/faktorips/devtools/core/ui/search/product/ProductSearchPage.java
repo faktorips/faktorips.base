@@ -109,7 +109,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
             }
         });
         getBindingContext().bindEnabled(btnAddCondition, getPresentationModel(),
-                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
+                ProductSearchPresentationModel.CONDITION_AVAILABLE);
 
         Button btnRemoveCondition = toolkit.createButton(comp, "Remove Condition");
 
@@ -121,7 +121,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
 
         });
         getBindingContext().bindEnabled(btnRemoveCondition, getPresentationModel(),
-                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
+                ProductSearchPresentationModel.CONDITION_AVAILABLE);
 
     }
 
@@ -158,11 +158,12 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
     protected ProductSearchPresentationModel createPresentationModel() {
         ProductSearchPresentationModel model = new ProductSearchPresentationModel();
         model.initDefaultSearchValues();
-        model.addPropertyChangeListener(createPropertyChangeListenerforValidity());
+        model.addPropertyChangeListener(createPropertyChangeListenerForValidity());
+        model.addPropertyChangeListener(createPropertyChangeListenerForTable());
         return model;
     }
 
-    private PropertyChangeListener createPropertyChangeListenerforValidity() {
+    private PropertyChangeListener createPropertyChangeListenerForValidity() {
         return new PropertyChangeListener() {
 
             @Override
@@ -171,5 +172,18 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
                 getContainer().setPerformActionEnabled(valid);
             }
         };
+    }
+
+    private PropertyChangeListener createPropertyChangeListenerForTable() {
+        return new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE.equals(evt.getPropertyName())) {
+                    conditionTableViewer.refresh();
+                }
+            }
+        };
+
     }
 }

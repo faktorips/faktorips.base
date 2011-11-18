@@ -44,20 +44,20 @@ public class ProductSearchPresentationModelTest extends AbstractIpsPluginTest {
 
     @Test
     public void testConditionsWithSearchableElements() {
-        assertTrue(model.getConditionsWithSearchableElements().isEmpty());
+        assertTrue(model.getAvailableConditions().isEmpty());
 
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType
                 .newPolicyCmptTypeAttribute("VertragsAttribut");
         policyCmptTypeAttribute.setProductRelevant(true);
 
-        assertEquals(1, model.getConditionsWithSearchableElements().size());
+        assertEquals(1, model.getAvailableConditions().size());
 
         productCmptType.newProductCmptTypeAttribute("ProduktAttribut");
 
-        assertEquals(2, model.getConditionsWithSearchableElements().size());
+        assertEquals(2, model.getAvailableConditions().size());
 
         productCmptType.newAssociation();
 
-        assertEquals(3, model.getConditionsWithSearchableElements().size());
+        assertEquals(3, model.getAvailableConditions().size());
     }
 }

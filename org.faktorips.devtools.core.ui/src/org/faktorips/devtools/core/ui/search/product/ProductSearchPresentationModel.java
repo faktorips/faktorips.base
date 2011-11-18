@@ -33,6 +33,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     public static final String VALID_SEARCH = "valid"; //$NON-NLS-1$
     public static final String PRODUCT_COMPONENT_TYPE_CHOSEN = "productCmptTypeChosen"; //$NON-NLS-1$
     public static final String PRODUCT_COMPONENT_TYPE = "productCmptType"; //$NON-NLS-1$
+    public static final String CONDITION_AVAILABLE = "conditionAvailable"; //$NON-NLS-1$
 
     private final List<ProductSearchConditionPresentationModel> productSearchConditionPresentationModels = new ArrayList<ProductSearchConditionPresentationModel>();
 
@@ -69,6 +70,11 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     public void setProductCmptType(IProductCmptType newValue) {
         IProductCmptType oldValue = productCmptType;
         productCmptType = newValue;
+
+        for (ProductSearchConditionPresentationModel productSearchConditionPresentationModel : productSearchConditionPresentationModels) {
+            productSearchConditionPresentationModel.dispose();
+        }
+
         notifyListeners(new PropertyChangeEvent(this, PRODUCT_COMPONENT_TYPE, oldValue, newValue));
     }
 
@@ -112,7 +118,11 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         return productSearchConditionPresentationModels.remove(productSearchConditionPresentationModel);
     }
 
-    protected List<ICondition> getConditionsWithSearchableElements() {
+    public boolean isConditionAvailable() {
+        return !getAvailableConditions().isEmpty();
+    }
+
+    protected List<ICondition> getAvailableConditions() {
         if (productCmptType == null) {
             return Collections.emptyList();
         }
