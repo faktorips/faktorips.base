@@ -82,11 +82,16 @@ public abstract class AbstractVarArgFunction extends AbstractFlFunction {
         return returnValue;
     }
 
-    protected Datatype getExpectedDatatypeForArgResultConversion(@SuppressWarnings("unused"/*
-                                                                                            * for
-                                                                                            * overriding
-                                                                                            * implementations
-                                                                                            */) CompilationResult[] argResults) {
+    /**
+     * Returns the expected datatype used to convert arguments in a varargs statement to a common
+     * datatype. This default implementation returns the datatype defined for the first argument in
+     * the expression signature.
+     * 
+     * @param argResults the results of the compilation of the individual parameters; may be used by
+     *            subclasses to infer a datatype.
+     * @return the expected datatype
+     */
+    protected Datatype getExpectedDatatypeForArgResultConversion(CompilationResult[] argResults) {
         return getArgTypes()[0];
     }
 
