@@ -479,7 +479,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
             memberBuilder.varDeclaration(Modifier.PRIVATE, javaClassName, getParameterBFEVarName(parameter));
             JavaCodeFragment body = new JavaCodeFragment();
             body.append("return ");
-            body.append(parameter.getName());
+            body.append(getParameterBFEVarName(parameter));
             body.append(';');
 
             methodBuilder.method(Modifier.PUBLIC, javaClassName, getMethodNameForGetterParameterValue(parameter),
