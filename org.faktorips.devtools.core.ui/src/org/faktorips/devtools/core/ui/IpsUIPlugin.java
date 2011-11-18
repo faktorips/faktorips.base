@@ -200,6 +200,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private UIDatatypeFormatter datatypeFormatter;
 
+    private List<IIpsDropListenerProvider> productCmptDnDHandler;
+
     /**
      * This method is for test purposes only.
      */
@@ -219,11 +221,37 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         IpsCompositeSaveParticipant saveParticipant = new IpsCompositeSaveParticipant();
         saveParticipant.addSaveParticipant(ipsEditorSettings);
         ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
+        productCmptDnDHandler = initProductCmptDnDHandler();
         controlFactories = initValueDatatypeControlFactories();
         defaultControlFactory = new DefaultControlFactory();
         ipsElementWorkbenchAdapterAdapterFactory = new IpsElementWorkbenchAdapterAdapterFactory();
         datatypeFormatter = new UIDatatypeFormatter();
         Platform.getAdapterManager().registerAdapters(ipsElementWorkbenchAdapterAdapterFactory, IIpsElement.class);
+    }
+
+    private List<IIpsDropListenerProvider> initProductCmptDnDHandler() {
+        List<IIpsDropListenerProvider> dndHandler = new ArrayList<IIpsDropListenerProvider>();
+
+        ExtensionPoints extensionPoints = new ExtensionPoints(registry, PLUGIN_ID);
+        IExtension[] extensions = extensionPoints.getExtension("ipsDropHandler"); //$NON-NLS-1$
+        for (IExtension extension : extensions) {
+            IConfigurationElement[] configElements = extension.getConfigurationElements();
+            for (IConfigurationElement configElement : configElements) {
+                String configElClass = configElement.getAttribute(CONFIG_PROPERTY_CLASS);
+                if (StringUtils.isEmpty(configElClass)) {
+                    throw new RuntimeException("A problem occured while trying to load the extension: " //$NON-NLS-1$
+                            + extension.getExtensionPointUniqueIdentifier()
+                            + ". The attribute \"" + CONFIG_PROPERTY_CLASS + "\" is not specified."); //$NON-NLS-1$ //$NON-NLS-2$
+                } else {
+                    IIpsDropListenerProvider handler = ExtensionPoints.createExecutableExtension(extension, configElement,
+                            CONFIG_PROPERTY_CLASS, IIpsDropListenerProvider.class);
+                    if (handler != null) {
+                        dndHandler.add(handler);
+                    }
+                }
+            }
+        }
+        return dndHandler;
     }
 
     private ValueDatatypeControlFactory[] initValueDatatypeControlFactories() throws InvalidRegistryObjectException,
@@ -319,6 +347,10 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      */
     private ValueDatatypeControlFactory[] getValueDatatypeControlFactories() {
         return controlFactories;
+    }
+
+    public List<IIpsDropListenerProvider> getProductCmptDnDHandler() {
+        return productCmptDnDHandler;
     }
 
     /**

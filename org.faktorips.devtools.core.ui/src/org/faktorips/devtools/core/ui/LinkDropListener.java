@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 
-public class LinkDropListener extends IpsFileTransferViewerDropAdapter {
+public class LinkDropListener extends IpsFileTransferViewerDropAdapter implements IIpsDropListener {
 
     private LinkCreatorUtil linkCreator;
 
@@ -44,11 +44,28 @@ public class LinkDropListener extends IpsFileTransferViewerDropAdapter {
     }
 
     @Override
-    public boolean validateDrop(Object target, int operation, TransferData transferType) {
+    public boolean validateDrop(Object target, int operation, TransferData data) {
+        return IpsDropUtil.getInstance().validateDrop(getViewer(), target, operation, data);
+    }
+
+    @Override
+    public boolean performDrop(Object data) {
+        return IpsDropUtil.getInstance().performDrop(getViewer(), data);
+    }
+
+    /**
+     * Changing the link creator for testing
+     */
+    public void setLinkCreator(LinkCreatorUtil linkCreator) {
+        this.linkCreator = linkCreator;
+    }
+
+    @Override
+    public boolean validateDropSingle(Object target, int operation, TransferData data) {
         if (target == null) {
             return false;
         }
-        List<IProductCmpt> draggedCmpts = getTransferElements(transferType);
+        List<IProductCmpt> draggedCmpts = getTransferElements(data);
         if (draggedCmpts == null) {
             return false;
         }
@@ -71,7 +88,7 @@ public class LinkDropListener extends IpsFileTransferViewerDropAdapter {
     }
 
     @Override
-    public boolean performDrop(Object data) {
+    public boolean performDropSingle(Object data) {
         if (getCurrentOperation() == DND.DROP_LINK && data instanceof String[]) {
             List<IProductCmpt> droppedCmpts = getProductCmpts((String[])data);
             Object target = getCurrentTarget();
@@ -84,12 +101,5 @@ public class LinkDropListener extends IpsFileTransferViewerDropAdapter {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Changing the link creator for testing
-     */
-    public void setLinkCreator(LinkCreatorUtil linkCreator) {
-        this.linkCreator = linkCreator;
     }
 }

@@ -122,11 +122,11 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         TransferData transfer = getTransfer(cmptB1);
 
         // check if source file editable state is recognized
-        assertTrue(dropListener.validateDrop(target, DND.DROP_LINK, transfer));
+        assertTrue(dropListener.validateDropSingle(target, DND.DROP_LINK, transfer));
         IpsPlugin.getDefault().getIpsPreferences().setWorkingMode(IpsPreferences.WORKING_MODE_BROWSE);
-        assertFalse(dropListener.validateDrop(target, DND.DROP_LINK, transfer));
+        assertFalse(dropListener.validateDropSingle(target, DND.DROP_LINK, transfer));
         IpsPlugin.getDefault().getIpsPreferences().setWorkingMode(IpsPreferences.WORKING_MODE_EDIT);
-        assertTrue(dropListener.validateDrop(target, DND.DROP_LINK, transfer));
+        assertTrue(dropListener.validateDropSingle(target, DND.DROP_LINK, transfer));
     }
 
     @Test
@@ -135,17 +135,17 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         TransferData transfer = getTransfer(cmptB1);
 
         // check (reference) targets
-        assertTrue(dropListener.validateDrop(structure.getRoot(), operation, transfer));
+        assertTrue(dropListener.validateDropSingle(structure.getRoot(), operation, transfer));
         IProductCmptTypeAssociationReference[] references = structure
                 .getChildProductCmptTypeAssociationReferences(structure.getRoot());
-        assertTrue(dropListener.validateDrop(references[0], operation, transfer));
-        assertTrue(dropListener.validateDrop(references[1], operation, transfer));
-        assertFalse(dropListener.validateDrop(references[2], operation, transfer));
+        assertTrue(dropListener.validateDropSingle(references[0], operation, transfer));
+        assertTrue(dropListener.validateDropSingle(references[1], operation, transfer));
+        assertFalse(dropListener.validateDropSingle(references[2], operation, transfer));
 
         TransferData multiTransfer = getTransfer(cmptB1, cmptB2);
-        assertFalse(dropListener.validateDrop(references[2], operation, multiTransfer));
-        assertTrue(dropListener.validateDrop(references[1], operation, multiTransfer));
-        assertTrue(dropListener.validateDrop(references[0], operation, multiTransfer));
+        assertFalse(dropListener.validateDropSingle(references[2], operation, multiTransfer));
+        assertTrue(dropListener.validateDropSingle(references[1], operation, multiTransfer));
+        assertTrue(dropListener.validateDropSingle(references[0], operation, multiTransfer));
     }
 
     @Test
@@ -154,13 +154,13 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         int operation = DND.DROP_LINK;
 
         // check transfer
-        assertTrue(dropListener.validateDrop(target, operation, getTransfer(cmptB1)));
-        assertTrue(dropListener.validateDrop(target, operation, getTransfer(cmptB2)));
-        assertTrue(dropListener.validateDrop(target, operation, getTransfer(cmptC1)));
-        assertFalse(dropListener.validateDrop(target, operation, getTransfer(cmptA)));
-        assertTrue(dropListener.validateDrop(target, operation, getTransfer(cmptB1, cmptB2)));
-        assertTrue(dropListener.validateDrop(target, operation, getTransfer(cmptB1, cmptC1)));
-        assertFalse(dropListener.validateDrop(target, operation, getTransfer(cmptB1, cmptA)));
+        assertTrue(dropListener.validateDropSingle(target, operation, getTransfer(cmptB1)));
+        assertTrue(dropListener.validateDropSingle(target, operation, getTransfer(cmptB2)));
+        assertTrue(dropListener.validateDropSingle(target, operation, getTransfer(cmptC1)));
+        assertFalse(dropListener.validateDropSingle(target, operation, getTransfer(cmptA)));
+        assertTrue(dropListener.validateDropSingle(target, operation, getTransfer(cmptB1, cmptB2)));
+        assertTrue(dropListener.validateDropSingle(target, operation, getTransfer(cmptB1, cmptC1)));
+        assertFalse(dropListener.validateDropSingle(target, operation, getTransfer(cmptB1, cmptA)));
     }
 
     @Test
@@ -182,7 +182,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
         // select first
         dropListener.setSelection(1 << 0);
-        assertTrue(dropListener.performDrop(getFilenames(cmptB1)));
+        assertTrue(dropListener.performDropSingle(getFilenames(cmptB1)));
         links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
         assertEquals(1, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
@@ -191,7 +191,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
         // select second
         dropListener.setSelection(1 << 1);
-        assertTrue(dropListener.performDrop(getFilenames(cmptB1)));
+        assertTrue(dropListener.performDropSingle(getFilenames(cmptB1)));
         links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
         assertEquals(1, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
@@ -200,7 +200,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
         // select both
         dropListener.setSelection(1 << 0 | 1 << 1);
-        assertTrue(dropListener.performDrop(getFilenames(cmptB1)));
+        assertTrue(dropListener.performDropSingle(getFilenames(cmptB1)));
         links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
         assertEquals(2, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
@@ -214,7 +214,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
         // select first
         dropListener.setSelection(1 << 0);
-        assertTrue(dropListener.performDrop(getFilenames(cmptB1, cmptB2)));
+        assertTrue(dropListener.performDropSingle(getFilenames(cmptB1, cmptB2)));
         links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
         assertEquals(2, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
@@ -226,7 +226,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
         // select second
         dropListener.setSelection(1 << 1);
-        assertTrue(dropListener.performDrop(getFilenames(cmptB1, cmptB2)));
+        assertTrue(dropListener.performDropSingle(getFilenames(cmptB1, cmptB2)));
         links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
         assertTrue(links.length == 2);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
@@ -238,7 +238,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
         // select both
         dropListener.setSelection(1 << 0 | 1 << 1);
-        assertTrue(dropListener.performDrop(getFilenames(cmptB1, cmptB2)));
+        assertTrue(dropListener.performDropSingle(getFilenames(cmptB1, cmptB2)));
         links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
         assertEquals(4, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
@@ -276,21 +276,21 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
     private void checkSaveFile(IIpsSrcFile ipsSrcFile) throws CoreException {
         dropListener.setAutoSave(false);
         assertFalse(ipsSrcFile.isDirty());
-        assertTrue(dropListener.performDrop(getFilenames(cmptC1)));
+        assertTrue(dropListener.performDropSingle(getFilenames(cmptC1)));
         assertTrue(ipsSrcFile.isDirty());
-        assertTrue(dropListener.performDrop(getFilenames(cmptC2)));
+        assertTrue(dropListener.performDropSingle(getFilenames(cmptC2)));
         assertTrue(ipsSrcFile.isDirty());
         ipsSrcFile.discardChanges();
 
         dropListener.setAutoSave(true);
-        assertTrue(dropListener.performDrop(getFilenames(cmptC1)));
+        assertTrue(dropListener.performDropSingle(getFilenames(cmptC1)));
         assertFalse(ipsSrcFile.isDirty());
 
         IProductCmptLink[] links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
         // delete the last one
         links[links.length - 1].delete();
         assertTrue(ipsSrcFile.isDirty());
-        assertTrue(dropListener.performDrop(getFilenames(cmptC1)));
+        assertTrue(dropListener.performDropSingle(getFilenames(cmptC1)));
         assertTrue(ipsSrcFile.isDirty());
 
         // reset for next test
@@ -307,12 +307,12 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
      */
     private void checkDropWithSinglePossibility(int alreadyExistingLinks) {
         // drop single component on CmptReference with no possibility to add
-        assertFalse(dropListener.performDrop(getFilenames(cmptA)));
+        assertFalse(dropListener.performDropSingle(getFilenames(cmptA)));
         IProductCmptLink[] links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
         assertEquals(alreadyExistingLinks, links.length);
 
         // drop single component on CmptReference with one possibility to add
-        assertTrue(dropListener.performDrop(getFilenames(cmptC1)));
+        assertTrue(dropListener.performDropSingle(getFilenames(cmptC1)));
         links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
         assertEquals(1 + alreadyExistingLinks, links.length);
         assertEquals(cmptC1.getQualifiedName(), links[0 + alreadyExistingLinks].getTarget());
@@ -320,7 +320,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         links[0 + alreadyExistingLinks].delete();
 
         // drop multiple component on CmptReference with one possibility to add
-        assertTrue(dropListener.performDrop(getFilenames(cmptC1, cmptC2)));
+        assertTrue(dropListener.performDropSingle(getFilenames(cmptC1, cmptC2)));
         links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
         assertEquals(2 + alreadyExistingLinks, links.length);
         assertEquals(cmptC1.getQualifiedName(), links[0 + alreadyExistingLinks].getTarget());

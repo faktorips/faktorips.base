@@ -9,6 +9,7 @@
    <extension-point id="adapterprovider" name="Adapter Provider" schema="schema/adapterprovider.exsd" />
    <extension-point id="valueDatatypeControlFactory" name="valueDatatypeControlFactory" schema="schema/valueDatatypeControlFactory.exsd"/>
    <extension-point id="extensionPropertySectionFactory" name="Extension Property Section Factory" schema="schema/extensionPropertySectionFactory.exsd"/>
+   <extension-point id="ipsDropHandler" name="ipsDropHandler" schema="schema/ipsDropHandler.exsd"/>
    
 <!-- 
     Product Definition Perspective
@@ -1982,6 +1983,12 @@
           id="org.faktorips.devtools.core.ipsClasspathContainer"
           name="Faktor-IPS Library">
     </classpathContainerPage>
+ </extension>
+ <extension
+       point="org.faktorips.devtools.core.ui.ipsDropHandler">
+    <ipsDropHandler
+          class="org.faktorips.devtools.core.ui.LinkDropHandler">
+    </ipsDropHandler>
  </extension>
 	
 
