@@ -216,4 +216,9 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
 
     }
 
+    @Override
+    public int getSupportedOperations() {
+        return DND.DROP_MOVE;
+    }
+
 }

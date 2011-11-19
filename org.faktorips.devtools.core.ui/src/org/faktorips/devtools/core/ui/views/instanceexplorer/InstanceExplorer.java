@@ -526,6 +526,11 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
 
             }
         }
+
+        @Override
+        public int getSupportedOperations() {
+            return DND.DROP_LINK;
+        }
     }
 
     private class SubtypeSearchAction extends Action {

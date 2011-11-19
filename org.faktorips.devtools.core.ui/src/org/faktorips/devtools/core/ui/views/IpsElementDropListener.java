@@ -23,8 +23,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
  * 
  * @author Thorsten Guenther
  */
-public abstract class IpsElementDropListener implements DropTargetListener {
+public abstract class IpsElementDropListener implements IIpsElementDropListener {
 
     /**
      * {@inheritDoc}
@@ -137,8 +137,30 @@ public abstract class IpsElementDropListener implements DropTargetListener {
         return element;
     }
 
+    @Override
+    public Transfer[] getSupportedTransfers() {
+        ArrayList<Transfer> result = new ArrayList<Transfer>();
+        result.add(FileTransfer.getInstance());
+        return result.toArray(new Transfer[result.size()]);
+    }
+
     protected FileTransfer getTransfer() {
         return FileTransfer.getInstance();
+    }
+
+    @Override
+    public List<IIpsElement> getDraggedElements(TransferData transferData) {
+        Object[] found = getTransferedElements(transferData);
+
+        ArrayList<IIpsElement> result = new ArrayList<IIpsElement>();
+
+        for (Object object : found) {
+            if (object instanceof IIpsElement) {
+                result.add((IIpsElement)object);
+            }
+        }
+
+        return result;
     }
 
 }

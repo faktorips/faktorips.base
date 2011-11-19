@@ -115,6 +115,11 @@ public class IpsElementDropListenerTest extends AbstractIpsPluginTest {
             return transfer;
         }
 
+        @Override
+        public int getSupportedOperations() {
+            return 0;
+        }
+
     }
 
 }

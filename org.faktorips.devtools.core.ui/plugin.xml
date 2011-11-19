@@ -10,6 +10,7 @@
    <extension-point id="valueDatatypeControlFactory" name="valueDatatypeControlFactory" schema="schema/valueDatatypeControlFactory.exsd"/>
    <extension-point id="extensionPropertySectionFactory" name="Extension Property Section Factory" schema="schema/extensionPropertySectionFactory.exsd"/>
    <extension-point id="ipsDropAdapterProvider" name="ipsDropAdapterProvider" schema="schema/ipsDropAdapterProvider.exsd"/>
+   <extension-point id="ipsDropListenerProvider" name="ipsDropListenerProvider" schema="schema/ipsDropListenerProvider.exsd"/>
    
 <!-- 
     Product Definition Perspective

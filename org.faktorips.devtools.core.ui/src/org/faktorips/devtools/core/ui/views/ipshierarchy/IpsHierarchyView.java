@@ -591,6 +591,11 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
 
             }
         }
+
+        @Override
+        public int getSupportedOperations() {
+            return DND.DROP_LINK;
+        }
     }
 
     private enum MessageTableSwitch {

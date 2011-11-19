@@ -39,7 +39,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
-import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
@@ -75,7 +74,6 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptVRuleReference;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.LinkDropListener;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
@@ -85,7 +83,6 @@ import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
 import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
-import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
@@ -163,44 +160,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                 return;
             }
             super.doubleClick(event);
-        }
-    }
-
-    /**
-     * This drop listener is only responsible to show new objects not to drag into the structure.
-     * For creating new links {@link LinkDropListener} is used.
-     * 
-     * @author dirmeier
-     */
-    private class ProductCmptDropListener extends IpsElementDropListener {
-
-        @Override
-        public void dragEnter(DropTargetEvent event) {
-            dropAccept(event);
-        }
-
-        @Override
-        public void drop(DropTargetEvent event) {
-            Object[] transferred = super.getTransferedElements(event.currentDataType);
-            if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
-                try {
-                    showStructure((IIpsSrcFile)transferred[0]);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
-            }
-        }
-
-        @Override
-        public void dropAccept(DropTargetEvent event) {
-            Object[] transferred = super.getTransferedElements(event.currentDataType);
-            // in linux transferred is always null while drag action
-            if (transferred == null || transferred.length > 0 && transferred[0] instanceof IIpsSrcFile
-                    && isSupported((IIpsSrcFile)transferred[0])) {
-                event.detail = DND.DROP_LINK;
-            } else {
-                event.detail = DND.DROP_NONE;
-            }
         }
     }
 
@@ -407,7 +366,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
         // dnd for label
         DropTarget dropTarget = new DropTarget(parent, DND.DROP_LINK);
-        dropTarget.addDropListener(new ProductCmptDropListener());
+        dropTarget.addDropListener(new ProductCmptDropListener(this));
         dropTarget.setTransfer(new Transfer[] { FileTransfer.getInstance() });
 
         viewerPanel = new Composite(parent, SWT.NONE);
@@ -600,7 +559,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         }
     }
 
-    private boolean isSupported(IIpsSrcFile file) {
+    boolean isSupported(IIpsSrcFile file) {
         return file != null && file.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT;
     }
 
