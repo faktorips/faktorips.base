@@ -156,6 +156,7 @@ public class ProductCmptPage extends IpsObjectPage {
         super.setDefaults(selectedResource);
         IIpsObject obj = getSelectedIpsObject();
         IProductCmptNamingStrategy namingStrategy = getNamingStrategy();
+        updateRuntimeId();
         if (!(obj instanceof IProductCmpt)) {
             if (namingStrategy != null && namingStrategy.supportsVersionId()) {
                 GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
