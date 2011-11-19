@@ -14,9 +14,11 @@
 package org.faktorips.devtools.core.ui.views;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
@@ -67,8 +69,22 @@ public abstract class IpsElementDropListener implements DropTargetListener {
     }
 
     /**
-     * Returns all <tt>IIpsElement</tt>s transferred as files by the given <tt>TransferData</tt> as
-     * array.
+     * For each transfered item, this method does the following three steps in the given order and
+     * adds the last successful result to the returned array:
+     * <p>
+     * First: get the filename - if this first step fails, the return value is <code>null</code>.
+     * <p>
+     * Second: get the {@link IResource} for the filename
+     * <p>
+     * Third: get the {@link IIpsElement} for the resource
+     * <p>
+     * Example: We transfer the String "EGON" (which is not a valid resource) - so the first step is
+     * successful, but the second one will fail. So the String "EGON" is added to the result.
+     * 
+     * Another Example: We transfer the String "model/Readme" (which is a valid resource, but not a
+     * valid {@link IIpsElement}) - Step one and two are successful, but the third one is not, so
+     * the {@link IResource} (an {@link IFile} in this example) is added to the result.
+     * 
      * <p>
      * Note for Linux: If this method is called during drag action (e.g. called by dropAccept
      * method) the <tt>transferData</tt> is not set correctly and this method returns <tt>null</tt>.
@@ -86,51 +102,39 @@ public abstract class IpsElementDropListener implements DropTargetListener {
             Path path = new Path(filename);
 
             IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
+            addElementFromResource(elements, file);
+
             IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
-            if (file != null) {
-                /*
-                 * getFileForLocation(IPath) returns a file even if the path points to a folder. In
-                 * this case file.exists() returns false.
-                 */
-                if (file.exists()) {
-                    IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
-                    if (element != null && element.exists()) {
-                        /*
-                         * Moving package fragment roots does not make sense, so in this case the
-                         * default package is meant to be moved.
-                         */
-                        if (element instanceof IIpsPackageFragmentRoot) {
-                            IIpsPackageFragmentRoot packRoot = (IIpsPackageFragmentRoot)element;
-                            element = packRoot.getDefaultIpsPackageFragment();
-                        }
-                        elements.add(element);
-                    } else {
-                        elements.add(file);
-                    }
-                }
-            } else {
-                elements.add(filename);
-            }
-            if (container != null) {
-                if (container.exists()) {
-                    IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(container);
-                    if (element != null && element.exists()) {
-                        /*
-                         * Moving package fragment roots does not make sense, so in this case the
-                         * default package is meant to be moved.
-                         */
-                        if (element instanceof IIpsPackageFragmentRoot) {
-                            IIpsPackageFragmentRoot packRoot = (IIpsPackageFragmentRoot)element;
-                            element = packRoot.getDefaultIpsPackageFragment();
-                        }
-                        elements.add(element);
-                    } else {
-                        elements.add(container);
-                    }
-                }
-            }
+            addElementFromResource(elements, container);
         }
         return elements.toArray(new Object[elements.size()]);
+    }
+
+    private void addElementFromResource(List<Object> result, IResource resource) {
+        if (resource == null) {
+            return;
+        }
+
+        if (resource.exists()) {
+            IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
+            if (element != null && element.exists()) {
+                result.add(handlePackageFragmentRoot(element));
+            } else {
+                result.add(resource);
+            }
+        }
+    }
+
+    private IIpsElement handlePackageFragmentRoot(IIpsElement element) {
+        /*
+         * Moving package fragment roots does not make sense, so in this case the default package is
+         * meant to be moved.
+         */
+        if (element instanceof IIpsPackageFragmentRoot) {
+            IIpsPackageFragmentRoot packRoot = (IIpsPackageFragmentRoot)element;
+            element = packRoot.getDefaultIpsPackageFragment();
+        }
+        return element;
     }
 
     protected FileTransfer getTransfer() {
