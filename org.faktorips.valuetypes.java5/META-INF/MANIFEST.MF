@@ -10,7 +10,6 @@ Export-Package: org.faktorips.values,
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
  J2SE-1.5
-Eclipse-ExtensibleAPI: true
 Import-Package: javax.xml.bind,
  javax.xml.bind.annotation,
  javax.xml.bind.annotation.adapters

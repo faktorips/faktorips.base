@@ -11,8 +11,5 @@ Require-Bundle: org.faktorips.abstracttest,
  org.eclipse.jdt.core;bundle-version="3.4.0",
  org.eclipse.ltk.core.refactoring;bundle-version="3.4.0"
 Bundle-ActivationPolicy: lazy
-Export-Package: org.faktorips.abstracttest,
- org.faktorips.abstracttest.builder,
- org.faktorips.abstracttest.test
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Faktor Zehn AG

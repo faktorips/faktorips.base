@@ -11,7 +11,7 @@
 	<!-- this is the parent POM from which all modules inherit common settings -->
 	<properties>
 		<tycho-version>0.13.0</tycho-version>
-		<build-type>nightly</build-type>
+		<build-type>ci</build-type>
 	</properties>
 
 	<repositories>
@@ -55,59 +55,12 @@
 				<extensions>true</extensions>
 			</plugin>
 			<!-- Funktioniert noch nicht!!! -->
-			<!-- 
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-packaging-plugin</artifactId>
-				<configuration>
-					<format>${build-type}_yyyyMMdd-HHmm</format>
-				</configuration>
-			</plugin>
-			 -->
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<!-- add target file content to target platform 
-					<target>
-						<artifact>
-							<groupId>org.faktorips</groupId>
-							<artifactId>org.faktorips.devtarget.galileo</artifactId>
-							<version>3.6.0-SNAPSHOT</version>
-							<classifier>galileo</classifier>
-						</artifact>
-					</target>
--->
-					<!-- configure the p2 target environments for multi-platform build -->
-					<environments>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>x86_64</arch>
-						</environment>
-					</environments>
-					<format>${build-type}-yyyyMMdd-HHmm</format>
+					<format>'${build-type}_'yyyyMMdd-HHmm</format>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -115,6 +68,7 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
+					<!-- For Debug add these parameters: -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y -->
 					<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=256M</argLine>
 					<useUIHarness>true</useUIHarness>
 					<includes>
@@ -124,15 +78,21 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
 	<!-- These are all modules that are included in the Faktor-IPS build -->
 
 	<modules>
-		<!-- target definition
-		<module>../org.faktorips.devtarget.galileo</module>
-		 -->
+		<!-- target definition <module>../org.faktorips.devtarget.galileo</module> -->
 		<!-- features org.faktorips.feature -->
 		<module>../org.faktorips.feature</module>
 		<module>../org.faktorips.feature.source</module>
@@ -234,8 +194,8 @@
 		</profile>
 	</profiles>
 
-    <scm>
-    	<connection>scm:cvs:ext:faktorzehn.org:/usr/local/cvsroot:${project.artifactId}</connection>
-    </scm>
+	<scm>
+		<connection>scm:cvs:ext:faktorzehn.org:/usr/local/cvsroot:${project.artifactId}</connection>
+	</scm>
 
 </project>

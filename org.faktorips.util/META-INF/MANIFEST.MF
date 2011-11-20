@@ -9,5 +9,4 @@ Export-Package: org.faktorips.util,
  org.faktorips.util.message
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Eclipse-ExtensibleAPI: true
 Import-Package: org.apache.commons.lang;version="[2.6,2.6]"

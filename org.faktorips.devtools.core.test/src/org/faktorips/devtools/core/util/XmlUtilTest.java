@@ -22,6 +22,7 @@ import java.util.GregorianCalendar;
 
 import javax.xml.transform.TransformerException;
 
+import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

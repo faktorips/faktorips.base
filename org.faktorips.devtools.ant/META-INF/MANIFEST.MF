@@ -14,4 +14,3 @@ Require-Bundle: org.apache.ant,
  org.faktorips.devtools.core
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Bundle-ClassPath: ant_tasks/ant-tasks.jar
-Eclipse-ExtensibleAPI: true
