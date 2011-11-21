@@ -13,11 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +34,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
@@ -64,7 +60,6 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.exception.IORuntimeException;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -82,10 +77,10 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.SectionEditField;
 import org.faktorips.devtools.core.ui.dialogs.DialogMementoHelper;
+import org.faktorips.devtools.core.ui.dnd.IpsObjectPartContainerByteArrayTransfer;
 import org.faktorips.devtools.core.ui.editors.ViewerButtonComposite;
 import org.faktorips.devtools.core.ui.editors.productcmpttype.CategoryPage.CategoryCompositionSection;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.util.IoUtil;
 
 /**
  * A section allowing the user to edit an {@link IProductCmptCategory}.
@@ -398,13 +393,11 @@ public class CategorySection extends IpsSection {
 
                         @Override
                         public boolean performDrop(Object data) {
-                            // The properties to drop into the table viewer
-                            IProductCmptProperty[] droppedProperties = (IProductCmptProperty[])data;
-
                             // The property below the mouse as the drop occurred
                             IProductCmptProperty targetProperty = (IProductCmptProperty)getCurrentTarget();
 
-                            for (IProductCmptProperty droppedProperty : droppedProperties) {
+                            for (Object droppedObject : (Object[])data) {
+                                IProductCmptProperty droppedProperty = (IProductCmptProperty)droppedObject;
                                 IProductCmptCategory targetCategory = (IProductCmptCategory)viewer.getInput();
 
                                 try {
@@ -415,7 +408,8 @@ public class CategorySection extends IpsSection {
                                         targetCategory.insertProductCmptPropertyBelow(droppedProperty, targetProperty,
                                                 droppedProperty.getIpsProject());
                                     } else if (getCurrentLocation() == LOCATION_NONE) {
-                                        droppedProperty.setCategory(targetCategory.getName());
+                                        targetCategory.insertProductCmptPropertyBelow(droppedProperty, null,
+                                                droppedProperty.getIpsProject());
                                     }
                                 } catch (CoreException e) {
                                     throw new CoreRuntimeException(e);
@@ -567,7 +561,7 @@ public class CategorySection extends IpsSection {
             return (TreeViewer)getViewer();
         }
 
-        private static class ProductCmptPropertyTransfer extends ByteArrayTransfer {
+        private static class ProductCmptPropertyTransfer extends IpsObjectPartContainerByteArrayTransfer<IProductCmptProperty> {
 
             private static final String TYPE_NAME = "ProductCmptProperty"; //$NON-NLS-1$
 
@@ -576,7 +570,7 @@ public class CategorySection extends IpsSection {
             private static final ProductCmptPropertyTransfer instance = new ProductCmptPropertyTransfer();
 
             private ProductCmptPropertyTransfer() {
-
+                super(IProductCmptProperty.class);
             }
 
             private static ProductCmptPropertyTransfer getInstance() {
@@ -584,109 +578,38 @@ public class CategorySection extends IpsSection {
             }
 
             @Override
-            public void javaToNative(Object object, TransferData transferData) {
-                if (object == null || !(object instanceof IProductCmptProperty[])) {
-                    return;
-                }
-
-                if (!isSupportedType(transferData)) {
-                    return;
-                }
-
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                DataOutputStream writeOut = new DataOutputStream(out);
-                IProductCmptProperty[] properties = (IProductCmptProperty[])object;
-                try {
-                    // Write data to a byte array output and then let super convert the data
-                    for (IProductCmptProperty property : properties) {
-                        writeProperty(property, writeOut);
-                    }
-                    byte[] buffer = out.toByteArray();
-                    super.javaToNative(buffer, transferData);
-
-                } catch (IOException e) {
-                    throw new IORuntimeException(e);
-                } finally {
-                    IoUtil.close(writeOut);
-                }
-            }
-
-            private void writeProperty(IProductCmptProperty property, DataOutputStream writeOut) throws IOException {
-                writeString(property.getIpsProject().getName(), writeOut);
-                writeString(property.getType().getQualifiedName(), writeOut);
-                writeString(property.getType().getIpsObjectType().getId(), writeOut);
-                writeString(property.getId(), writeOut);
-            }
-
-            private void writeString(String string, DataOutputStream writeOut) throws IOException {
-                writeOut.writeInt(string.getBytes().length);
-                writeOut.write(string.getBytes());
+            protected void writePartContainer(IProductCmptProperty part, DataOutputStream outputStream) {
+                writeString(part.getIpsProject().getName(), outputStream);
+                writeString(part.getType().getQualifiedName(), outputStream);
+                writeString(part.getType().getIpsObjectType().getId(), outputStream);
+                writeString(part.getId(), outputStream);
             }
 
             @Override
-            public Object nativeToJava(TransferData transferData) {
-                if (!isSupportedType(transferData)) {
-                    return null;
-                }
-
-                byte[] buffer = (byte[])super.nativeToJava(transferData);
-                if (buffer == null) {
-                    return null;
-                }
-
-                ByteArrayInputStream in = new ByteArrayInputStream(buffer);
-                DataInputStream readIn = new DataInputStream(in);
-                IProductCmptProperty[] properties = new IProductCmptProperty[0];
-                try {
-                    while (readIn.available() > 20) {
-                        IProductCmptProperty property = readProperty(readIn);
-                        if (property == null) {
-                            throw new RuntimeException();
-                        }
-
-                        IProductCmptProperty[] newData = new IProductCmptProperty[properties.length + 1];
-                        System.arraycopy(properties, 0, newData, 0, properties.length);
-                        newData[properties.length] = property;
-                        properties = newData;
-                    }
-                } catch (IOException e) {
-                    throw new IORuntimeException(e);
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                } finally {
-                    IoUtil.close(readIn);
-                }
-
-                return properties;
-            }
-
-            private IProductCmptProperty readProperty(DataInputStream readIn) throws IOException, CoreException {
+            protected IProductCmptProperty readPartContainer(DataInputStream readIn) {
                 String projectName = readString(readIn);
                 String typeQualifiedName = readString(readIn);
                 IpsObjectType typeObjectType = IpsObjectType.getTypeForName(readString(readIn));
                 String partId = readString(readIn);
 
                 IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
-                IType type = (IType)ipsProject.findIpsObject(typeObjectType, typeQualifiedName);
-                IProductCmptProperty property = null;
-                for (IIpsElement child : type.getChildren()) {
-                    if (!(child instanceof IProductCmptProperty)) {
-                        continue;
+                try {
+                    IType type = (IType)ipsProject.findIpsObject(typeObjectType, typeQualifiedName);
+                    IProductCmptProperty property = null;
+                    for (IIpsElement child : type.getChildren()) {
+                        if (!(child instanceof IProductCmptProperty)) {
+                            continue;
+                        }
+                        IProductCmptProperty potentialProperty = (IProductCmptProperty)child;
+                        if (partId.equals(potentialProperty.getId())) {
+                            property = potentialProperty;
+                            break;
+                        }
                     }
-                    IProductCmptProperty potentialProperty = (IProductCmptProperty)child;
-                    if (partId.equals(potentialProperty.getId())) {
-                        property = potentialProperty;
-                        break;
-                    }
+                    return property;
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
                 }
-
-                return property;
-            }
-
-            private String readString(DataInputStream readIn) throws IOException {
-                byte[] bytes = new byte[readIn.readInt()];
-                readIn.read(bytes);
-                return new String(bytes);
             }
 
             @Override
