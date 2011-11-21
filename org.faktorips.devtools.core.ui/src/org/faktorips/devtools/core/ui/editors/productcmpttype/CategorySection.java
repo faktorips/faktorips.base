@@ -13,6 +13,11 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,10 +31,18 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.ByteArrayTransfer;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
@@ -45,16 +58,21 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.exception.IORuntimeException;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.SectionEditField;
@@ -62,6 +80,7 @@ import org.faktorips.devtools.core.ui.dialogs.DialogMementoHelper;
 import org.faktorips.devtools.core.ui.editors.ViewerButtonComposite;
 import org.faktorips.devtools.core.ui.editors.productcmpttype.CategoryPage.CategoryCompositionSection;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.util.IoUtil;
 
 /**
  * A section allowing the user to edit an {@link IProductCmptCategory}.
@@ -255,7 +274,9 @@ public class CategorySection extends IpsSection {
 
             setLabelProvider(tableViewer);
             setContentProvider(tableViewer);
-            addDoubleClickChangeCategoryListenerToTableViewer(tableViewer);
+            addDoubleClickChangeCategoryListener(tableViewer);
+            addDragSupport(tableViewer);
+            addDropSupport(tableViewer);
 
             tableViewer.setInput(category);
 
@@ -312,13 +333,66 @@ public class CategorySection extends IpsSection {
             });
         }
 
-        private void addDoubleClickChangeCategoryListenerToTableViewer(TableViewer tableViewer) {
+        private void addDoubleClickChangeCategoryListener(TableViewer tableViewer) {
             tableViewer.getTable().addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseDoubleClick(MouseEvent e) {
                     openChangeCategoryDialog();
                 }
             });
+        }
+
+        private void addDragSupport(final TableViewer tableViewer) {
+            tableViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { ProductCmptPropertyTransfer.getInstance() },
+                    new DragSourceListener() {
+                        @Override
+                        public void dragStart(DragSourceEvent event) {
+                            event.doit = !tableViewer.getSelection().isEmpty();
+                        }
+
+                        @Override
+                        public void dragSetData(DragSourceEvent event) {
+                            StructuredSelection selection = (StructuredSelection)tableViewer.getSelection();
+                            List<?> selectedElements = selection.toList();
+                            event.data = selectedElements.toArray(new IProductCmptProperty[selection.size()]);
+                        }
+
+                        @Override
+                        public void dragFinished(DragSourceEvent event) {
+                            // Nothing to do
+                        }
+                    });
+        }
+
+        private void addDropSupport(final TableViewer tableViewer) {
+            tableViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { ProductCmptPropertyTransfer.getInstance() },
+                    new ViewerDropAdapter(tableViewer) {
+                        @Override
+                        public boolean validateDrop(Object target, int operation, TransferData transferType) {
+                            return ProductCmptPropertyTransfer.getInstance().isSupportedType(transferType);
+                        }
+
+                        @Override
+                        public boolean performDrop(Object data) {
+                            // The properties to drop into the table viewer
+                            IProductCmptProperty[] droppedProperties = (IProductCmptProperty[])data;
+
+                            for (IProductCmptProperty droppedProperty : droppedProperties) {
+                                IProductCmptCategory targetCategory = (IProductCmptCategory)tableViewer.getInput();
+
+                                // The property below the mouse as the drop occurred
+                                IProductCmptProperty targetProperty = (IProductCmptProperty)getCurrentTarget();
+                                try {
+                                    targetCategory.insertProductCmptProperty(droppedProperty, targetProperty,
+                                            droppedProperty.getIpsProject());
+                                } catch (CoreException e) {
+                                    throw new CoreRuntimeException(e);
+                                }
+                            }
+
+                            return true;
+                        }
+                    });
         }
 
         @Override
@@ -419,6 +493,140 @@ public class CategorySection extends IpsSection {
 
         private boolean isPropertySelected() {
             return !getViewer().getSelection().isEmpty();
+        }
+
+        private static class ProductCmptPropertyTransfer extends ByteArrayTransfer {
+
+            private static final String TYPE_NAME = "ProductCmptProperty"; //$NON-NLS-1$
+
+            private static final int TYPE_ID = registerType(TYPE_NAME);
+
+            private static final ProductCmptPropertyTransfer instance = new ProductCmptPropertyTransfer();
+
+            private ProductCmptPropertyTransfer() {
+
+            }
+
+            private static ProductCmptPropertyTransfer getInstance() {
+                return instance;
+            }
+
+            @Override
+            public void javaToNative(Object object, TransferData transferData) {
+                if (object == null || !(object instanceof IProductCmptProperty[])) {
+                    return;
+                }
+
+                if (!isSupportedType(transferData)) {
+                    return;
+                }
+
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                DataOutputStream writeOut = new DataOutputStream(out);
+                IProductCmptProperty[] properties = (IProductCmptProperty[])object;
+                try {
+                    // Write data to a byte array output and then let super convert the data
+                    for (IProductCmptProperty property : properties) {
+                        writeProperty(property, writeOut);
+                    }
+                    byte[] buffer = out.toByteArray();
+                    super.javaToNative(buffer, transferData);
+
+                } catch (IOException e) {
+                    throw new IORuntimeException(e);
+                } finally {
+                    IoUtil.close(writeOut);
+                }
+            }
+
+            private void writeProperty(IProductCmptProperty property, DataOutputStream writeOut) throws IOException {
+                writeString(property.getIpsProject().getName(), writeOut);
+                writeString(property.getType().getQualifiedName(), writeOut);
+                writeString(property.getType().getIpsObjectType().getId(), writeOut);
+                writeString(property.getId(), writeOut);
+            }
+
+            private void writeString(String string, DataOutputStream writeOut) throws IOException {
+                writeOut.writeInt(string.getBytes().length);
+                writeOut.write(string.getBytes());
+            }
+
+            @Override
+            public Object nativeToJava(TransferData transferData) {
+                if (!isSupportedType(transferData)) {
+                    return null;
+                }
+
+                byte[] buffer = (byte[])super.nativeToJava(transferData);
+                if (buffer == null) {
+                    return null;
+                }
+
+                ByteArrayInputStream in = new ByteArrayInputStream(buffer);
+                DataInputStream readIn = new DataInputStream(in);
+                IProductCmptProperty[] properties = new IProductCmptProperty[0];
+                try {
+                    while (readIn.available() > 20) {
+                        IProductCmptProperty property = readProperty(readIn);
+                        if (property == null) {
+                            throw new RuntimeException();
+                        }
+
+                        IProductCmptProperty[] newData = new IProductCmptProperty[properties.length + 1];
+                        System.arraycopy(properties, 0, newData, 0, properties.length);
+                        newData[properties.length] = property;
+                        properties = newData;
+                    }
+                } catch (IOException e) {
+                    throw new IORuntimeException(e);
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                } finally {
+                    IoUtil.close(readIn);
+                }
+
+                return properties;
+            }
+
+            private IProductCmptProperty readProperty(DataInputStream readIn) throws IOException, CoreException {
+                String projectName = readString(readIn);
+                String typeQualifiedName = readString(readIn);
+                IpsObjectType typeObjectType = IpsObjectType.getTypeForName(readString(readIn));
+                String partId = readString(readIn);
+
+                IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
+                IType type = (IType)ipsProject.findIpsObject(typeObjectType, typeQualifiedName);
+                IProductCmptProperty property = null;
+                for (IIpsElement child : type.getChildren()) {
+                    if (!(child instanceof IProductCmptProperty)) {
+                        continue;
+                    }
+                    IProductCmptProperty potentialProperty = (IProductCmptProperty)child;
+                    if (partId.equals(potentialProperty.getId())) {
+                        property = potentialProperty;
+                        break;
+                    }
+                }
+
+                return property;
+            }
+
+            private String readString(DataInputStream readIn) throws IOException {
+                byte[] bytes = new byte[readIn.readInt()];
+                readIn.read(bytes);
+                return new String(bytes);
+            }
+
+            @Override
+            protected String[] getTypeNames() {
+                return new String[] { TYPE_NAME };
+            }
+
+            @Override
+            protected int[] getTypeIds() {
+                return new int[] { TYPE_ID };
+            }
+
         }
 
     }

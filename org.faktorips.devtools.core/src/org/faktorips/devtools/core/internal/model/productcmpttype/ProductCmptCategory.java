@@ -364,6 +364,58 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     }
 
     @Override
+    public void insertProductCmptProperty(IProductCmptProperty property,
+            IProductCmptProperty targetProperty,
+            IIpsProject ipsProject) throws CoreException {
+
+        property.setCategory(name);
+
+        IProductCmptType contextType = property.findProductCmptType(ipsProject);
+        if (contextType == null) {
+            return;
+        }
+
+        List<IProductCmptProperty> properties = findProductCmptProperties(contextType, false, ipsProject);
+        int propertyIndex = properties.indexOf(property);
+        int targetPropertyIndex = targetProperty != null ? properties.indexOf(targetProperty) : properties.size() - 1;
+        insertProductCmptProperty(propertyIndex, targetPropertyIndex, contextType);
+    }
+
+    private void insertProductCmptProperty(int propertyIndex, int targetPropertyIndex, IProductCmptType contextType)
+            throws CoreException {
+
+        if (propertyIndex > targetPropertyIndex) {
+            moveProductCmptPropertyUp(propertyIndex, targetPropertyIndex, contextType);
+        } else if (propertyIndex < targetPropertyIndex) {
+            moveProductCmptPropertyDown(propertyIndex, targetPropertyIndex, contextType);
+        }
+    }
+
+    /**
+     * Moves the {@link IProductCmptProperty} identified by the given index up until it is just
+     * below the indicated target index.
+     */
+    private void moveProductCmptPropertyUp(int propertyIndex, int targetPropertyIndex, IProductCmptType contextType)
+            throws CoreException {
+
+        for (; propertyIndex > targetPropertyIndex + 1; propertyIndex--) {
+            moveProductCmptProperties(new int[] { propertyIndex }, true, contextType);
+        }
+    }
+
+    /**
+     * Moves the {@link IProductCmptProperty} identified by the given index down until it is just
+     * below the indicated target index.
+     */
+    private void moveProductCmptPropertyDown(int propertyIndex, int targetPropertyIndex, IProductCmptType contextType)
+            throws CoreException {
+
+        for (; propertyIndex < targetPropertyIndex; propertyIndex++) {
+            moveProductCmptProperties(new int[] { propertyIndex }, false, contextType);
+        }
+    }
+
+    @Override
     protected void initPropertiesFromXml(Element element, String id) {
         name = element.getAttribute(PROPERTY_NAME);
         defaultForFormulaSignatureDefinitions = Boolean.parseBoolean(element
