@@ -290,6 +290,8 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * <p>
      * The {@link Position} gives an indication of where this {@link IProductCmptCategory} is placed
      * by the user interface.
+     * 
+     * @see Position
      */
     public Position getPosition();
 
@@ -297,6 +299,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * Sets the {@link Position} of this {@link IProductCmptCategory}.
      * 
      * @see #getPosition()
+     * @see Position
      */
     public void setPosition(Position side);
 
@@ -375,10 +378,11 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
     public static enum Position {
 
         LEFT("left"), //$NON-NLS-1$
+
         RIGHT("right"); //$NON-NLS-1$
 
         /**
-         * Returns the {@link Position} corresponding to the provided ID.
+         * Returns the {@link Position} corresponding to the provided id.
          */
         public static final Position getValueById(String id) {
             if (Position.LEFT.getId().equals(id)) {
@@ -396,9 +400,9 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
         }
 
         /**
-         * Returns the ID of this {@link Position}.
+         * Returns the id of this {@link Position}.
          */
-        public final String getId() {
+        public String getId() {
             return id;
         }
 

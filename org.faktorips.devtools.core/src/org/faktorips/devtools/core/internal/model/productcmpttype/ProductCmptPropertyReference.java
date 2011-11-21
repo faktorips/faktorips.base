@@ -24,12 +24,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of {@link IProductCmptPropertyReference}, please see the interface for more
- * details.
+ * Default implementation of {@link IProductCmptPropertyReference}.
+ * <p>
+ * This implementation uses the part id of the referenced {@link IProductCmptProperty}. As the part
+ * id is not necessarily unique across types, it is furthermore stored whether the
+ * {@link IProductCmptProperty} originates from the product side or the policy side.
  * 
  * @author Alexander Weickmann
  */
-public final class ProductCmptPropertyReference extends AtomicIpsObjectPart implements IProductCmptPropertyReference {
+public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements IProductCmptPropertyReference {
 
     final static String XML_TAG_NAME = "ProductCmptPropertyReference"; //$NON-NLS-1$
 
@@ -41,8 +44,8 @@ public final class ProductCmptPropertyReference extends AtomicIpsObjectPart impl
 
     private SourceType sourceType;
 
-    public ProductCmptPropertyReference(IProductCmptType parentProductCmptType, String id) {
-        super(parentProductCmptType, id);
+    public ProductCmptPropertyReference(IProductCmptType parent, String id) {
+        super(parent, id);
     }
 
     @Override
@@ -52,20 +55,29 @@ public final class ProductCmptPropertyReference extends AtomicIpsObjectPart impl
         objectHasChanged(ContentChangeEvent.newWholeContentChangedEvent(getIpsSrcFile()));
     }
 
-    public void setReferencedPartId(String referencedPartId) {
-        this.referencedPartId = referencedPartId;
-    }
-
-    public String getReferencedPartId() {
+    /**
+     * Returns the part id of the referenced {@link IProductCmptProperty}.
+     */
+    String getReferencedPartId() {
         return referencedPartId;
     }
 
-    public void setSourceType(SourceType sourceType) {
-        this.sourceType = sourceType;
+    private void setReferencedPartId(String referencedPartId) {
+        this.referencedPartId = referencedPartId;
     }
 
-    public SourceType getSourceType() {
+    /**
+     * Returns whether the referenced {@link IProductCmptProperty} originates from the product side
+     * or the policy side.
+     * 
+     * @see SourceType
+     */
+    SourceType getSourceType() {
         return sourceType;
+    }
+
+    private void setSourceType(SourceType sourceType) {
+        this.sourceType = sourceType;
     }
 
     @Override
@@ -101,11 +113,11 @@ public final class ProductCmptPropertyReference extends AtomicIpsObjectPart impl
     }
 
     @Override
-    protected final void propertiesToXml(Element element) {
+    protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
 
         element.setAttribute(XML_ATTRIBUTE_REFERENCED_PART_ID, referencedPartId);
-        element.setAttribute(XML_ATTRIBUTE_SOURCE_TYPE, sourceType.identifier);
+        element.setAttribute(XML_ATTRIBUTE_SOURCE_TYPE, sourceType.id);
     }
 
     @Override
@@ -117,29 +129,43 @@ public final class ProductCmptPropertyReference extends AtomicIpsObjectPart impl
         return (IProductCmptType)getParent();
     }
 
+    /**
+     * Defines the origin of an {@link IProductCmptProperty}, that is the product side or the policy
+     * side.
+     */
     public static enum SourceType {
 
-        POLICY("policy"), //$NON-NLS-1$
+        PRODUCT("product"), //$NON-NLS-1$
 
-        PRODUCT("product"); //$NON-NLS-1$
+        POLICY("policy"); //$NON-NLS-1$
 
         private static SourceType getValueByProperty(IProductCmptProperty property) {
             return property.isPolicyCmptTypeProperty() ? POLICY : PRODUCT;
         }
 
-        private static SourceType getValueByIdentifier(String identifier) {
+        /**
+         * Returns the {@link SourceType} corresponding to the provided id.
+         */
+        private static SourceType getValueByIdentifier(String id) {
             for (SourceType type : values()) {
-                if (identifier.equals(type.identifier)) {
+                if (id.equals(type.id)) {
                     return type;
                 }
             }
             return null;
         }
 
-        private final String identifier;
+        private final String id;
 
-        private SourceType(String identifier) {
-            this.identifier = identifier;
+        private SourceType(String id) {
+            this.id = id;
+        }
+
+        /**
+         * Returns the id of this {@link SourceType}.
+         */
+        public String getId() {
+            return id;
         }
 
     }

@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  * <p>
  * References to IPS object parts via their names are not always the best solution as these are
  * fragile with respect to the 'Rename' refactoring. An alternative would be to reference the part
- * ID. This interface describes an abstraction to the way such a reference is implemented for
+ * id. This interface describes an abstraction to the way such a reference is implemented for
  * product component properties.
  * 
  * @since 3.6
