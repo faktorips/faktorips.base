@@ -86,8 +86,12 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
     @Override
     public boolean isDefaultFor(IProductCmptProperty property) {
+        return isDefaultFor(property.getProductCmptPropertyType());
+    }
+
+    private boolean isDefaultFor(ProductCmptPropertyType propertyType) {
         boolean isDefault = false;
-        switch (property.getProductCmptPropertyType()) {
+        switch (propertyType) {
             case POLICY_CMPT_TYPE_ATTRIBUTE:
                 isDefault = isDefaultForPolicyCmptTypeAttributes();
                 break;
@@ -259,12 +263,8 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             return;
         }
 
-        DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(ipsProject) {
-            @Override
-            protected boolean isDefault(IProductCmptCategory category) {
-                return category.isDefaultForFormulaSignatureDefinitions();
-            }
-        };
+        DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(
+                ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, ipsProject);
         duplicateFinder.start(getProductCmptType());
         duplicateFinder.addValidationMessageIfDuplicateFound(list,
                 MSGCODE_DUPLICATE_DEFAULTS_FOR_FORMULA_SIGNATURE_DEFINITIONS,
@@ -279,12 +279,8 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             return;
         }
 
-        DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(ipsProject) {
-            @Override
-            protected boolean isDefault(IProductCmptCategory category) {
-                return category.isDefaultForValidationRules();
-            }
-        };
+        DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(ProductCmptPropertyType.VALIDATION_RULE,
+                ipsProject);
         duplicateFinder.start(getProductCmptType());
         duplicateFinder
                 .addValidationMessageIfDuplicateFound(list, MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES,
@@ -299,12 +295,8 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             return;
         }
 
-        DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(ipsProject) {
-            @Override
-            protected boolean isDefault(IProductCmptCategory category) {
-                return category.isDefaultForTableStructureUsages();
-            }
-        };
+        DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(
+                ProductCmptPropertyType.TABLE_STRUCTURE_USAGE, ipsProject);
         duplicateFinder.start(getProductCmptType());
         duplicateFinder.addValidationMessageIfDuplicateFound(list,
                 MSGCODE_DUPLICATE_DEFAULTS_FOR_TABLE_STRUCTURE_USAGES,
@@ -319,12 +311,8 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             return;
         }
 
-        DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(ipsProject) {
-            @Override
-            protected boolean isDefault(IProductCmptCategory category) {
-                return category.isDefaultForPolicyCmptTypeAttributes();
-            }
-        };
+        DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(
+                ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, ipsProject);
         duplicateFinder.start(getProductCmptType());
         duplicateFinder.addValidationMessageIfDuplicateFound(list,
                 MSGCODE_DUPLICATE_DEFAULTS_FOR_POLICY_CMPT_TYPE_ATTRIBUTES,
@@ -339,12 +327,8 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             return;
         }
 
-        DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(ipsProject) {
-            @Override
-            protected boolean isDefault(IProductCmptCategory category) {
-                return category.isDefaultForProductCmptTypeAttributes();
-            }
-        };
+        DuplicateDefaultFinder duplicateFinder = new DuplicateDefaultFinder(
+                ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, ipsProject);
         duplicateFinder.start(getProductCmptType());
         duplicateFinder.addValidationMessageIfDuplicateFound(list,
                 MSGCODE_DUPLICATE_DEFAULTS_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES,
@@ -482,30 +466,34 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     }
 
     /**
-     * {@link TypeHierarchyVisitor} that searches for the existence of at least two
-     * {@link IProductCmptCategory} marked as <em>default</em> for a specific
-     * {@link ProductCmptPropertyType}.
+     * {@link TypeHierarchyVisitor} that searches for the existence of at least two categories
+     * marked as <em>default</em> for a specific {@link ProductCmptPropertyType}.
      */
-    private abstract class DuplicateDefaultFinder extends TypeHierarchyVisitor<IProductCmptType> {
+    private class DuplicateDefaultFinder extends TypeHierarchyVisitor<IProductCmptType> {
+
+        private final ProductCmptPropertyType propertyType;
 
         private boolean duplicateDefaultFound;
 
-        protected DuplicateDefaultFinder(IIpsProject ipsProject) {
+        /**
+         * @param propertyType the {@link ProductCmptPropertyType} for which duplicate defaults are
+         *            searched
+         */
+        protected DuplicateDefaultFinder(ProductCmptPropertyType propertyType, IIpsProject ipsProject) {
             super(ipsProject);
+            this.propertyType = propertyType;
         }
 
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             for (IProductCmptCategory category : currentType.getCategories()) {
-                if (isDefault(category) && !name.equals(category.getName())) {
+                if (isDefaultFor(propertyType) && !name.equals(category.getName())) {
                     duplicateDefaultFound = true;
                     return false;
                 }
             }
             return true;
         }
-
-        protected abstract boolean isDefault(IProductCmptCategory category);
 
         private void addValidationMessageIfDuplicateFound(MessageList list,
                 String code,
