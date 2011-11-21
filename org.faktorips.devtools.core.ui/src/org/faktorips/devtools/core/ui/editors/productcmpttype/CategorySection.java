@@ -41,6 +41,7 @@ import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.events.DisposeEvent;
@@ -50,10 +51,13 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -380,13 +384,13 @@ public class CategorySection extends IpsSection {
                     });
         }
 
-        private void addDropSupport(final TreeViewer tableViewer) {
-            tableViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { ProductCmptPropertyTransfer.getInstance() },
-                    new ViewerDropAdapter(tableViewer) {
+        private void addDropSupport(final TreeViewer viewer) {
+            viewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { ProductCmptPropertyTransfer.getInstance() },
+                    new ViewerDropAdapter(viewer) {
                         @Override
                         public boolean validateDrop(Object target, int operation, TransferData transferType) {
-                            // Can only drop in-between properties
-                            if (!(getCurrentLocation() == LOCATION_BEFORE || getCurrentLocation() == LOCATION_AFTER)) {
+                            // Cannot drop directly onto items
+                            if (getCurrentLocation() == LOCATION_ON) {
                                 return false;
                             }
                             return ProductCmptPropertyTransfer.getInstance().isSupportedType(transferType);
@@ -398,7 +402,7 @@ public class CategorySection extends IpsSection {
                             IProductCmptProperty[] droppedProperties = (IProductCmptProperty[])data;
 
                             for (IProductCmptProperty droppedProperty : droppedProperties) {
-                                IProductCmptCategory targetCategory = (IProductCmptCategory)tableViewer.getInput();
+                                IProductCmptCategory targetCategory = (IProductCmptCategory)viewer.getInput();
 
                                 // The property below the mouse as the drop occurred
                                 IProductCmptProperty targetProperty = (IProductCmptProperty)getCurrentTarget();
@@ -409,6 +413,8 @@ public class CategorySection extends IpsSection {
                                     } else if (getCurrentLocation() == LOCATION_AFTER) {
                                         targetCategory.insertProductCmptPropertyBelow(droppedProperty, targetProperty,
                                                 droppedProperty.getIpsProject());
+                                    } else if (getCurrentLocation() == LOCATION_NONE) {
+                                        droppedProperty.setCategory(targetCategory.getName());
                                     }
                                 } catch (CoreException e) {
                                     throw new CoreRuntimeException(e);
@@ -416,6 +422,33 @@ public class CategorySection extends IpsSection {
                             }
 
                             return true;
+                        }
+
+                        @Override
+                        protected int determineLocation(DropTargetEvent event) {
+                            if (!(event.item instanceof Item)) {
+                                return LOCATION_NONE;
+                            }
+
+                            Item item = (Item)event.item;
+                            Rectangle bounds = getBounds(item);
+                            if (bounds == null) {
+                                return LOCATION_NONE;
+                            }
+
+                            /*
+                             * When the mouse is on an item, return LOCATION_BEFORE or
+                             * LOCATION_AFTER instead, depending on the distance to the respective
+                             * location.
+                             */
+                            Point coordinates = getTree().toControl(new Point(event.x, event.y));
+                            if ((coordinates.y - bounds.y) < bounds.height / 2) {
+                                return LOCATION_BEFORE;
+                            } else if ((bounds.y + bounds.height - coordinates.y) < bounds.height / 2) {
+                                return LOCATION_AFTER;
+                            } else {
+                                return LOCATION_ON;
+                            }
                         }
                     });
         }
