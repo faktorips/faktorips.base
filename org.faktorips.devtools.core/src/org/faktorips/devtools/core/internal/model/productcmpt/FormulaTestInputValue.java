@@ -144,6 +144,9 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
                         identifier)));
             }
             String attributeName = identifier.substring(parameterName.length() + 1);
+            if (attributeName.indexOf('@') > 0) {
+                attributeName = attributeName.substring(0, attributeName.indexOf('@'));
+            }
             IType type = (IType)datatype;
             IAttribute attribute = type.findAttribute(attributeName, ipsProject);
             if (attribute == null) {
