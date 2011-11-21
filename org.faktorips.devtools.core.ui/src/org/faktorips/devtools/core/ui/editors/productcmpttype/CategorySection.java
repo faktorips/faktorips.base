@@ -401,11 +401,12 @@ public class CategorySection extends IpsSection {
                             // The properties to drop into the table viewer
                             IProductCmptProperty[] droppedProperties = (IProductCmptProperty[])data;
 
+                            // The property below the mouse as the drop occurred
+                            IProductCmptProperty targetProperty = (IProductCmptProperty)getCurrentTarget();
+
                             for (IProductCmptProperty droppedProperty : droppedProperties) {
                                 IProductCmptCategory targetCategory = (IProductCmptCategory)viewer.getInput();
 
-                                // The property below the mouse as the drop occurred
-                                IProductCmptProperty targetProperty = (IProductCmptProperty)getCurrentTarget();
                                 try {
                                     if (getCurrentLocation() == LOCATION_BEFORE) {
                                         targetCategory.insertProductCmptPropertyAbove(droppedProperty, targetProperty,
