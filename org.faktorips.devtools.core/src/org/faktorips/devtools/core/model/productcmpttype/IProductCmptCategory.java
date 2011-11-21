@@ -314,6 +314,23 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
 
     /**
      * Inserts the provided {@link IProductCmptProperty} into this {@link IProductCmptCategory} just
+     * above the indicated target {@link IProductCmptProperty}.
+     * 
+     * @param property the {@link IProductCmptProperty} to insert into this
+     *            {@link IProductCmptCategory}
+     * @param targetProperty the {@link IProductCmptProperty} to be inserted will be positioned just
+     *            above the target {@link IProductCmptProperty}. This parameter may be null - in
+     *            this case the {@link IProductCmptProperty} is inserted at the beginning
+     * 
+     * @throws CoreException if an error occurs while searching for the indices of the currently
+     *             assigned properties
+     */
+    public void insertProductCmptPropertyAbove(IProductCmptProperty property,
+            IProductCmptProperty targetProperty,
+            IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Inserts the provided {@link IProductCmptProperty} into this {@link IProductCmptCategory} just
      * below the indicated target {@link IProductCmptProperty}.
      * 
      * @param property the {@link IProductCmptProperty} to insert into this
@@ -325,7 +342,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * @throws CoreException if an error occurs while searching for the indices of the currently
      *             assigned properties
      */
-    public void insertProductCmptProperty(IProductCmptProperty property,
+    public void insertProductCmptPropertyBelow(IProductCmptProperty property,
             IProductCmptProperty targetProperty,
             IIpsProject ipsProject) throws CoreException;
 

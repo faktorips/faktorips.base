@@ -679,7 +679,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInsertProductCmptProperty_FromLowerIndex() throws CoreException {
+    public void testInsertProductCmptPropertyBelow_FromLowerIndex() throws CoreException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
@@ -687,7 +687,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("property3");
         property3.setCategory(CATEGORY_NAME);
 
-        category.insertProductCmptProperty(property1, property3, ipsProject);
+        category.insertProductCmptPropertyBelow(property1, property3, ipsProject);
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
         assertEquals(property2, properties.get(0));
@@ -696,7 +696,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInsertProductCmptProperty_FromHigherIndex() throws CoreException {
+    public void testInsertProductCmptPropertyBelow_FromHigherIndex() throws CoreException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
@@ -704,7 +704,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("property3");
         property3.setCategory(CATEGORY_NAME);
 
-        category.insertProductCmptProperty(property3, property1, ipsProject);
+        category.insertProductCmptPropertyBelow(property3, property1, ipsProject);
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
         assertEquals(property1, properties.get(0));
@@ -714,15 +714,15 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
     /**
      * <strong>Scenario:</strong><br>
-     * Insertion of an {@link IProductCmptProperty} with null as target {@link IProductCmptProperty}
-     * .
+     * Below-insertion of an {@link IProductCmptProperty} with null as target
+     * {@link IProductCmptProperty}.
      * <p>
      * <strong>Expected Outcome:</strong><br>
      * The {@link IProductCmptProperty} to be inserted should be positioned at the very end of the
      * {@link IProductCmptCategory}.
      */
     @Test
-    public void testInsertProductCmptProperty_TargetPropertyNull() throws CoreException {
+    public void testInsertProductCmptPropertyBelow_TargetPropertyNull() throws CoreException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
@@ -730,7 +730,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("property3");
         property3.setCategory(CATEGORY_NAME);
 
-        category.insertProductCmptProperty(property1, null, ipsProject);
+        category.insertProductCmptPropertyBelow(property1, null, ipsProject);
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
         assertEquals(property2, properties.get(0));
@@ -739,7 +739,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInsertProductCmptProperty_FromAnotherCategoryWithLowerIndex() throws CoreException {
+    public void testInsertProductCmptPropertyBelow_FromAnotherCategoryWithLowerIndex() throws CoreException {
         IProductCmptCategory category1 = productType.newCategory("category1");
         IProductCmptCategory category2 = productType.newCategory("category2");
 
@@ -753,7 +753,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("property3");
         property3.setCategory(category2.getName());
 
-        category2.insertProductCmptProperty(foreignProperty, property2, ipsProject);
+        category2.insertProductCmptPropertyBelow(foreignProperty, property2, ipsProject);
 
         List<IProductCmptProperty> properties = category2.findProductCmptProperties(productType, false, ipsProject);
         assertEquals(property1, properties.get(0));
@@ -763,7 +763,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInsertProductCmptProperty_ContextProductCmptTypeNotFound() throws CoreException {
+    public void testInsertProductCmptPropertyBelow_ContextProductCmptTypeNotFound() throws CoreException {
         IPolicyCmptTypeAttribute property1 = policyType.newPolicyCmptTypeAttribute("property1");
         property1.setCategory(CATEGORY_NAME);
         property1.setProductRelevant(true);
@@ -772,7 +772,109 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         property2.setProductRelevant(true);
 
         policyType.setProductCmptType("");
-        category.insertProductCmptProperty(property1, property2, ipsProject);
+        category.insertProductCmptPropertyBelow(property1, property2, ipsProject);
+
+        policyType.setProductCmptType(productType.getQualifiedName());
+        List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
+        assertEquals(property1, properties.get(0));
+        assertEquals(property2, properties.get(1));
+    }
+
+    @Test
+    public void testInsertProductCmptPropertyAbove_FromLowerIndex() throws CoreException {
+        IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
+        property1.setCategory(CATEGORY_NAME);
+        IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
+        property2.setCategory(CATEGORY_NAME);
+        IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("property3");
+        property3.setCategory(CATEGORY_NAME);
+
+        category.insertProductCmptPropertyAbove(property1, property3, ipsProject);
+
+        List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
+        assertEquals(property2, properties.get(0));
+        assertEquals(property1, properties.get(1));
+        assertEquals(property3, properties.get(2));
+    }
+
+    @Test
+    public void testInsertProductCmptPropertyAbove_FromHigherIndex() throws CoreException {
+        IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
+        property1.setCategory(CATEGORY_NAME);
+        IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
+        property2.setCategory(CATEGORY_NAME);
+        IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("property3");
+        property3.setCategory(CATEGORY_NAME);
+
+        category.insertProductCmptPropertyAbove(property3, property1, ipsProject);
+
+        List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
+        assertEquals(property3, properties.get(0));
+        assertEquals(property1, properties.get(1));
+        assertEquals(property2, properties.get(2));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * Above-insertion of an {@link IProductCmptProperty} with null as target
+     * {@link IProductCmptProperty}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The {@link IProductCmptProperty} to be inserted should be positioned at the very beginning of
+     * the {@link IProductCmptCategory}.
+     */
+    @Test
+    public void testInsertProductCmptPropertyAbove_TargetPropertyNull() throws CoreException {
+        IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
+        property1.setCategory(CATEGORY_NAME);
+        IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
+        property2.setCategory(CATEGORY_NAME);
+        IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("property3");
+        property3.setCategory(CATEGORY_NAME);
+
+        category.insertProductCmptPropertyAbove(property3, null, ipsProject);
+
+        List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
+        assertEquals(property3, properties.get(0));
+        assertEquals(property1, properties.get(1));
+        assertEquals(property2, properties.get(2));
+    }
+
+    @Test
+    public void testInsertProductCmptPropertyAbove_FromAnotherCategoryWithHigherIndex() throws CoreException {
+        IProductCmptCategory category1 = productType.newCategory("category1");
+        IProductCmptCategory category2 = productType.newCategory("category2");
+
+        IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
+        property1.setCategory(category1.getName());
+        IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
+        property2.setCategory(category1.getName());
+        IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("property3");
+        property3.setCategory(category1.getName());
+
+        IProductCmptProperty foreignProperty = productType.newProductCmptTypeAttribute("foreignProperty");
+        foreignProperty.setCategory(category2.getName());
+
+        category1.insertProductCmptPropertyAbove(foreignProperty, property2, ipsProject);
+
+        List<IProductCmptProperty> properties = category1.findProductCmptProperties(productType, false, ipsProject);
+        assertEquals(property1, properties.get(0));
+        assertEquals(foreignProperty, properties.get(1));
+        assertEquals(property2, properties.get(2));
+        assertEquals(property3, properties.get(3));
+    }
+
+    @Test
+    public void testInsertProductCmptPropertyAbove_ContextProductCmptTypeNotFound() throws CoreException {
+        IPolicyCmptTypeAttribute property1 = policyType.newPolicyCmptTypeAttribute("property1");
+        property1.setCategory(CATEGORY_NAME);
+        property1.setProductRelevant(true);
+        IPolicyCmptTypeAttribute property2 = policyType.newPolicyCmptTypeAttribute("property2");
+        property2.setCategory(CATEGORY_NAME);
+        property2.setProductRelevant(true);
+
+        policyType.setProductCmptType("");
+        category.insertProductCmptPropertyAbove(property2, property1, ipsProject);
 
         policyType.setProductCmptType(productType.getQualifiedName());
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);

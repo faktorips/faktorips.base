@@ -29,10 +29,10 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ContentViewer;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.jface.window.Window;
@@ -55,7 +55,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -262,7 +263,7 @@ public class CategorySection extends IpsSection {
                             refresh();
                         }
                     } catch (CoreException e) {
-                        throw new RuntimeException(e);
+                        throw new CoreRuntimeException(e);
                     }
                 }
             };
@@ -270,21 +271,21 @@ public class CategorySection extends IpsSection {
 
         @Override
         protected ContentViewer createViewer(Composite parent, UIToolkit toolkit) {
-            TableViewer tableViewer = new TableViewer(toolkit.createTable(parent, SWT.NONE));
+            TreeViewer viewer = new TreeViewer(toolkit.getFormToolkit().createTree(parent, SWT.NONE));
 
-            setLabelProvider(tableViewer);
-            setContentProvider(tableViewer);
-            addDoubleClickChangeCategoryListener(tableViewer);
-            addDragSupport(tableViewer);
-            addDropSupport(tableViewer);
+            setLabelProvider(viewer);
+            setContentProvider(viewer);
+            addDoubleClickChangeCategoryListener(viewer);
+            addDragSupport(viewer);
+            addDropSupport(viewer);
 
-            tableViewer.setInput(category);
+            viewer.setInput(category);
 
-            return tableViewer;
+            return viewer;
         }
 
-        private void setLabelProvider(TableViewer tableViewer) {
-            tableViewer.setLabelProvider(new LabelProvider() {
+        private void setLabelProvider(TreeViewer viewer) {
+            viewer.setLabelProvider(new LabelProvider() {
                 @Override
                 public String getText(Object element) {
                     if (element instanceof IIpsElement) {
@@ -306,8 +307,8 @@ public class CategorySection extends IpsSection {
             });
         }
 
-        private void setContentProvider(ContentViewer tableViewer) {
-            tableViewer.setContentProvider(new IStructuredContentProvider() {
+        private void setContentProvider(TreeViewer viewer) {
+            viewer.setContentProvider(new ITreeContentProvider() {
                 @Override
                 public Object[] getElements(Object inputElement) {
                     List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
@@ -330,11 +331,26 @@ public class CategorySection extends IpsSection {
                 public void dispose() {
                     // Nothing to do
                 }
+
+                @Override
+                public Object[] getChildren(Object parentElement) {
+                    return new Object[0];
+                }
+
+                @Override
+                public Object getParent(Object element) {
+                    return null;
+                }
+
+                @Override
+                public boolean hasChildren(Object element) {
+                    return false;
+                }
             });
         }
 
-        private void addDoubleClickChangeCategoryListener(TableViewer tableViewer) {
-            tableViewer.getTable().addMouseListener(new MouseAdapter() {
+        private void addDoubleClickChangeCategoryListener(TreeViewer viewer) {
+            viewer.getTree().addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseDoubleClick(MouseEvent e) {
                     openChangeCategoryDialog();
@@ -342,17 +358,17 @@ public class CategorySection extends IpsSection {
             });
         }
 
-        private void addDragSupport(final TableViewer tableViewer) {
-            tableViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { ProductCmptPropertyTransfer.getInstance() },
+        private void addDragSupport(final TreeViewer viewer) {
+            viewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { ProductCmptPropertyTransfer.getInstance() },
                     new DragSourceListener() {
                         @Override
                         public void dragStart(DragSourceEvent event) {
-                            event.doit = !tableViewer.getSelection().isEmpty();
+                            event.doit = !viewer.getSelection().isEmpty();
                         }
 
                         @Override
                         public void dragSetData(DragSourceEvent event) {
-                            StructuredSelection selection = (StructuredSelection)tableViewer.getSelection();
+                            StructuredSelection selection = (StructuredSelection)viewer.getSelection();
                             List<?> selectedElements = selection.toList();
                             event.data = selectedElements.toArray(new IProductCmptProperty[selection.size()]);
                         }
@@ -364,11 +380,15 @@ public class CategorySection extends IpsSection {
                     });
         }
 
-        private void addDropSupport(final TableViewer tableViewer) {
+        private void addDropSupport(final TreeViewer tableViewer) {
             tableViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { ProductCmptPropertyTransfer.getInstance() },
                     new ViewerDropAdapter(tableViewer) {
                         @Override
                         public boolean validateDrop(Object target, int operation, TransferData transferType) {
+                            // Can only drop in-between properties
+                            if (!(getCurrentLocation() == LOCATION_BEFORE || getCurrentLocation() == LOCATION_AFTER)) {
+                                return false;
+                            }
                             return ProductCmptPropertyTransfer.getInstance().isSupportedType(transferType);
                         }
 
@@ -383,8 +403,13 @@ public class CategorySection extends IpsSection {
                                 // The property below the mouse as the drop occurred
                                 IProductCmptProperty targetProperty = (IProductCmptProperty)getCurrentTarget();
                                 try {
-                                    targetCategory.insertProductCmptProperty(droppedProperty, targetProperty,
-                                            droppedProperty.getIpsProject());
+                                    if (getCurrentLocation() == LOCATION_BEFORE) {
+                                        targetCategory.insertProductCmptPropertyAbove(droppedProperty, targetProperty,
+                                                droppedProperty.getIpsProject());
+                                    } else if (getCurrentLocation() == LOCATION_AFTER) {
+                                        targetCategory.insertProductCmptPropertyBelow(droppedProperty, targetProperty,
+                                                droppedProperty.getIpsProject());
+                                    }
                                 } catch (CoreException e) {
                                     throw new CoreRuntimeException(e);
                                 }
@@ -428,19 +453,32 @@ public class CategorySection extends IpsSection {
         }
 
         private void moveParts(boolean up) {
-            int[] selection = getTable().getSelectionIndices();
-            int[] newSelection = Arrays.copyOf(selection, selection.length);
+            int[] selectionIndices = getSelectionIndices();
+            int[] newSelectionIndices = Arrays.copyOf(selectionIndices, selectionIndices.length);
             try {
-                newSelection = category.moveProductCmptProperties(selection, up, contextType);
+                newSelectionIndices = category.moveProductCmptProperties(selectionIndices, up, contextType);
             } catch (CoreException e) {
                 // The elements could not be moved so the new selection equals the old selection
                 IpsPlugin.log(e);
-                newSelection = Arrays.copyOf(selection, selection.length);
+                newSelectionIndices = Arrays.copyOf(selectionIndices, selectionIndices.length);
             }
+            setSelection(newSelectionIndices);
+        }
 
-            getTable().setSelection(newSelection);
-            getTable().setFocus();
+        private int[] getSelectionIndices() {
+            TreeItem[] selection = getTree().getSelection();
+            int[] selectionIndices = new int[selection.length];
+            for (int i = 0; i < selection.length; i++) {
+                selectionIndices[i] = getTree().indexOf(selection[i]);
+            }
+            return selectionIndices;
+        }
 
+        private void setSelection(int[] selectionIndices) {
+            for (int index : selectionIndices) {
+                getTree().select(getTree().getItem(index));
+            }
+            getTree().setFocus();
             refresh();
         }
 
@@ -472,18 +510,6 @@ public class CategorySection extends IpsSection {
             }
         }
 
-        private IProductCmptProperty getSelectedProperty() {
-            return (IProductCmptProperty)getSelectedObject();
-        }
-
-        private Table getTable() {
-            return getTableViewer().getTable();
-        }
-
-        private TableViewer getTableViewer() {
-            return (TableViewer)getViewer();
-        }
-
         @Override
         protected void updateButtonEnabledStates() {
             moveUpButton.setEnabled(isPropertySelected() && !isFirstElementSelected());
@@ -491,8 +517,20 @@ public class CategorySection extends IpsSection {
             changeCategoryButton.setEnabled(isPropertySelected());
         }
 
+        private IProductCmptProperty getSelectedProperty() {
+            return (IProductCmptProperty)getSelectedObject();
+        }
+
         private boolean isPropertySelected() {
-            return !getViewer().getSelection().isEmpty();
+            return getTree().getSelectionCount() > 0;
+        }
+
+        private Tree getTree() {
+            return getTreeViewer().getTree();
+        }
+
+        private TreeViewer getTreeViewer() {
+            return (TreeViewer)getViewer();
         }
 
         private static class ProductCmptPropertyTransfer extends ByteArrayTransfer {
