@@ -57,10 +57,8 @@ public final class FormulaEditComposite extends EditPropertyValueComposite<IProd
     }
 
     private void createExpressionEditField(Map<EditField<?>, ObjectProperty> editFieldsToEditedProperties) {
-
         FormulaEditControl formulaEditControl = new FormulaEditControl(this, getToolkit(), getPropertyValue(),
                 getShell(), getProductCmptPropertySection());
-        final char[] autoActivationCharacters = new char[] { '.' };
         KeyStroke keyStroke = null;
         try {
             keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
@@ -68,7 +66,7 @@ public final class FormulaEditComposite extends EditPropertyValueComposite<IProd
             throw new IllegalArgumentException("KeyStroke \"Ctrl+Space\" could not be parsed.", e); //$NON-NLS-1$
         }
         new ContentProposalAdapter(formulaEditControl.getTextControl(), new TextContentAdapter(),
-                new ExpressionProposalProvider(getPropertyValue()), keyStroke, autoActivationCharacters);
+                new ExpressionProposalProvider(getPropertyValue()), keyStroke, new char[] { '.' });
         TextButtonField editField = new TextButtonField(formulaEditControl);
 
         editFieldsToEditedProperties.put(editField,

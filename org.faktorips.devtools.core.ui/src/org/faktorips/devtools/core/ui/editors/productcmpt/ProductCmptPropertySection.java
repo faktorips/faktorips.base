@@ -154,13 +154,10 @@ public class ProductCmptPropertySection extends IpsSection {
         PropertyValueUIConfiguration propertyValueUI = PropertyValueUIConfiguration
                 .getValueByPropertyType(propertyValue.getPropertyType());
 
-        Control label = null;
-        if (propertyValueUI.isLabelRequired()) {
-            label = propertyValueUI.createLabel(propertyValue, rootPane, getToolkit());
-            // Use description of property as tooltip if available
-            if (property != null) {
-                label.setToolTipText(IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(property));
-            }
+        Control label = propertyValueUI.createLabel(propertyValue, rootPane, getToolkit());
+        // Use description of property as tooltip if available
+        if (property != null) {
+            label.setToolTipText(IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(property));
         }
         return label;
     }
@@ -210,7 +207,6 @@ public class ProductCmptPropertySection extends IpsSection {
      * <p>
      * For each property value type, the following configurations are made:
      * <ul>
-     * <li>Flag indicating whether a label is desired
      * <li>Creation of the label
      * <li>Creation of the edit composite
      * </ul>
@@ -219,7 +215,7 @@ public class ProductCmptPropertySection extends IpsSection {
      */
     private static enum PropertyValueUIConfiguration {
 
-        ATTRIBUTE_VALUE(true) {
+        ATTRIBUTE_VALUE() {
             @Override
             public EditPropertyValueComposite<?, ?> createEditComposite(IProductCmptProperty property,
                     IPropertyValue propertyValue,
@@ -233,7 +229,7 @@ public class ProductCmptPropertySection extends IpsSection {
             }
         },
 
-        TABLE_CONTENT_USAGE(true) {
+        TABLE_CONTENT_USAGE() {
             @Override
             public Control createLabel(IPropertyValue propertyValue, Composite parent, UIToolkit toolkit) {
                 Hyperlink hyperlink = toolkit.createHyperlink(parent, IpsPlugin.getMultiLanguageSupport()
@@ -272,7 +268,7 @@ public class ProductCmptPropertySection extends IpsSection {
             }
         },
 
-        VALIDATION_RULE_CONFIG(true) {
+        VALIDATION_RULE_CONFIG() {
             @Override
             public EditPropertyValueComposite<?, ?> createEditComposite(IProductCmptProperty property,
                     IPropertyValue propertyValue,
@@ -286,7 +282,7 @@ public class ProductCmptPropertySection extends IpsSection {
             }
         },
 
-        FORMULA(true) {
+        FORMULA() {
             @Override
             public EditPropertyValueComposite<?, ?> createEditComposite(IProductCmptProperty property,
                     IPropertyValue propertyValue,
@@ -300,7 +296,7 @@ public class ProductCmptPropertySection extends IpsSection {
             }
         },
 
-        CONFIG_ELEMENT(true) {
+        CONFIG_ELEMENT() {
             @Override
             public EditPropertyValueComposite<?, ?> createEditComposite(IProductCmptProperty property,
                     IPropertyValue propertyValue,
@@ -328,16 +324,6 @@ public class ProductCmptPropertySection extends IpsSection {
                     return CONFIG_ELEMENT;
             }
             return null;
-        }
-
-        private final boolean labelRequired;
-
-        private PropertyValueUIConfiguration(boolean labelRequired) {
-            this.labelRequired = labelRequired;
-        }
-
-        public boolean isLabelRequired() {
-            return labelRequired;
         }
 
         public Control createLabel(IPropertyValue propertyValue, Composite parent, UIToolkit toolkit) {

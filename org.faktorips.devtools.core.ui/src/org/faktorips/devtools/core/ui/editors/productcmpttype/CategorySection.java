@@ -307,6 +307,10 @@ public class CategorySection extends IpsSection {
         }
 
         private void setContentProvider(TreeViewer viewer) {
+            /*
+             * Use a TreeViewer to get the horizontal drag and drop markers to drop items in-between
+             * other items.
+             */
             viewer.setContentProvider(new ITreeContentProvider() {
                 @Override
                 public Object[] getElements(Object inputElement) {
@@ -333,16 +337,19 @@ public class CategorySection extends IpsSection {
 
                 @Override
                 public Object[] getChildren(Object parentElement) {
+                    // Not really a tree, there are never any children
                     return new Object[0];
                 }
 
                 @Override
                 public Object getParent(Object element) {
+                    // As there are no children, there are no parents as well
                     return null;
                 }
 
                 @Override
                 public boolean hasChildren(Object element) {
+                    // Not really a tree, there are never any children
                     return false;
                 }
             });
@@ -362,7 +369,7 @@ public class CategorySection extends IpsSection {
                     new DragSourceListener() {
                         @Override
                         public void dragStart(DragSourceEvent event) {
-                            event.doit = !viewer.getSelection().isEmpty();
+                            event.doit = isPropertySelected();
                         }
 
                         @Override
@@ -393,8 +400,7 @@ public class CategorySection extends IpsSection {
 
                         @Override
                         public boolean performDrop(Object data) {
-                            // The property below the mouse as the drop occurred
-                            IProductCmptProperty targetProperty = (IProductCmptProperty)getCurrentTarget();
+                            IProductCmptProperty underMouseProperty = (IProductCmptProperty)getCurrentTarget();
 
                             for (Object droppedObject : (Object[])data) {
                                 IProductCmptProperty droppedProperty = (IProductCmptProperty)droppedObject;
@@ -402,11 +408,11 @@ public class CategorySection extends IpsSection {
 
                                 try {
                                     if (getCurrentLocation() == LOCATION_BEFORE) {
-                                        targetCategory.insertProductCmptPropertyAbove(droppedProperty, targetProperty,
-                                                droppedProperty.getIpsProject());
+                                        targetCategory.insertProductCmptPropertyAbove(droppedProperty,
+                                                underMouseProperty, droppedProperty.getIpsProject());
                                     } else if (getCurrentLocation() == LOCATION_AFTER) {
-                                        targetCategory.insertProductCmptPropertyBelow(droppedProperty, targetProperty,
-                                                droppedProperty.getIpsProject());
+                                        targetCategory.insertProductCmptPropertyBelow(droppedProperty,
+                                                underMouseProperty, droppedProperty.getIpsProject());
                                     } else if (getCurrentLocation() == LOCATION_NONE) {
                                         targetCategory.insertProductCmptPropertyBelow(droppedProperty, null,
                                                 droppedProperty.getIpsProject());
@@ -561,7 +567,8 @@ public class CategorySection extends IpsSection {
             return (TreeViewer)getViewer();
         }
 
-        private static class ProductCmptPropertyTransfer extends IpsObjectPartContainerByteArrayTransfer<IProductCmptProperty> {
+        private static class ProductCmptPropertyTransfer extends
+                IpsObjectPartContainerByteArrayTransfer<IProductCmptProperty> {
 
             private static final String TYPE_NAME = "ProductCmptProperty"; //$NON-NLS-1$
 
