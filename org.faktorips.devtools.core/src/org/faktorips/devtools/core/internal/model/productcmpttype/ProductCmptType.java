@@ -108,10 +108,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
         associations = new IpsObjectPartCollection<IProductCmptTypeAssociation>(this, ProductCmptTypeAssociation.class,
                 IProductCmptTypeAssociation.class, ProductCmptTypeAssociation.TAG_NAME);
         categories = new IpsObjectPartCollection<IProductCmptCategory>(this, ProductCmptCategory.class,
-                IProductCmptCategory.class, IProductCmptCategory.XML_TAG_NAME);
+                IProductCmptCategory.class, ProductCmptCategory.XML_TAG_NAME);
         propertyReferences = new IpsObjectPartCollection<IProductCmptPropertyReference>(this,
                 ProductCmptPropertyReference.class, IProductCmptPropertyReference.class,
-                IProductCmptPropertyReference.XML_TAG_NAME);
+                ProductCmptPropertyReference.XML_TAG_NAME);
     }
 
     @Override

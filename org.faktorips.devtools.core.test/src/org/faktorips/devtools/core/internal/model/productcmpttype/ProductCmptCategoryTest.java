@@ -292,7 +292,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     public void testCreateElement() {
         Document document = mock(Document.class);
         category.createElement(document);
-        verify(document).createElement(IProductCmptCategory.XML_TAG_NAME);
+        verify(document).createElement(ProductCmptCategory.XML_TAG_NAME);
     }
 
     @Test
@@ -304,7 +304,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         category.setDefaultForValidationRules(true);
         category.setPosition(Position.RIGHT);
 
-        Element xmlElement = category.toXml(createXmlDocument(IProductCmptCategory.XML_TAG_NAME));
+        Element xmlElement = category.toXml(createXmlDocument(ProductCmptCategory.XML_TAG_NAME));
         IProductCmptCategory loadedCategory = productType.newCategory();
         loadedCategory.initFromXml(xmlElement);
 

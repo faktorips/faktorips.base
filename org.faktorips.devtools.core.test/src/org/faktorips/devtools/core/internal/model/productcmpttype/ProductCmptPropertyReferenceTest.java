@@ -129,7 +129,7 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
 
     @Test
     public void testXml() throws ParserConfigurationException {
-        Element xmlElement = attributeReference.toXml(createXmlDocument(IProductCmptPropertyReference.XML_TAG_NAME));
+        Element xmlElement = attributeReference.toXml(createXmlDocument(ProductCmptPropertyReference.XML_TAG_NAME));
         IProductCmptPropertyReference loadedReference = new ProductCmptPropertyReference(productType, "blub");
         loadedReference.initFromXml(xmlElement);
 
@@ -141,7 +141,7 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
     public void testCreateElement() {
         Document document = mock(Document.class);
         ((ProductCmptPropertyReference)attributeReference).createElement(document);
-        verify(document).createElement(IProductCmptPropertyReference.XML_TAG_NAME);
+        verify(document).createElement(ProductCmptPropertyReference.XML_TAG_NAME);
     }
 
 }

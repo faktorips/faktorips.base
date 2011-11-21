@@ -572,17 +572,13 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             return;
         }
 
-        // TODO AW 02-11-2011: createEditDialog should not be allowed to return null
-        EditDialog editDialog = createEditDialog(getSelectedPart(), getShell());
-        if (editDialog == null) {
-            return;
-        }
-
         DialogMementoHelper dialogHelper = new DialogMementoHelper() {
             @Override
             protected Dialog createDialog() {
                 EditDialog editDialog = createEditDialog(getSelectedPart(), getShell());
-                editDialog.setDataChangeable(isDataChangeable());
+                if (editDialog != null) {
+                    editDialog.setDataChangeable(isDataChangeable());
+                }
                 return editDialog;
             }
         };

@@ -46,8 +46,11 @@ public abstract class DialogMementoHelper {
         Memento memento = ipsObjectPartContainer.newMemento();
 
         Dialog dialog = createDialog();
-        dialog.open();
+        if (dialog == null) {
+            return Window.CANCEL;
+        }
 
+        dialog.open();
         if (dialog.getReturnCode() == Window.CANCEL && ipsObjectPartContainer.getIpsSrcFile().isMutable()) {
             ipsObjectPartContainer.setState(memento);
             if (!wasDirty) {

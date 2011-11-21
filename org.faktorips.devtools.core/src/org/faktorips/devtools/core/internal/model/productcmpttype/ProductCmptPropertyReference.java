@@ -31,6 +31,8 @@ import org.w3c.dom.Element;
  */
 public final class ProductCmptPropertyReference extends AtomicIpsObjectPart implements IProductCmptPropertyReference {
 
+    final static String XML_TAG_NAME = "ProductCmptPropertyReference"; //$NON-NLS-1$
+
     private static final String XML_ATTRIBUTE_REFERENCED_PART_ID = "referencedPartId"; //$NON-NLS-1$
 
     private static final String XML_ATTRIBUTE_SOURCE_TYPE = "sourceType"; //$NON-NLS-1$

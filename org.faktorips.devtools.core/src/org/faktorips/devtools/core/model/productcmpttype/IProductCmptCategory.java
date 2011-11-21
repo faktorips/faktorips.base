@@ -19,10 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -39,7 +36,7 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
  * An {@link IProductCmptCategory} can be marked to be the <em>default</em> for specific property
  * types. New parts of these property types will then automatically be referenced by the
  * corresponding <em>default</em> {@link IProductCmptCategory}. Of course, the parts can still be
- * moved to another {@link IProductCmptCategory} subsequently.
+ * subsequently moved to another {@link IProductCmptCategory}.
  * 
  * @since 3.6
  * 
@@ -49,8 +46,6 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
  * @see ProductCmptPropertyType
  */
 public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, IDescribedElement {
-
-    public final static String XML_TAG_NAME = "Category"; //$NON-NLS-1$
 
     public final static String PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS = "defaultForFormulaSignatureDefinitions"; //$NON-NLS-1$
 
@@ -73,48 +68,49 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
     public final static String MSGCODE_NAME_IS_EMPTY = MSGCODE_PREFIX + "NameIsEmpty"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the name given to this category is already used for
-     * another category in the scope of the product component type's hierarchy.
+     * Validation message code to indicate that the name given to this {@link IProductCmptCategory}
+     * is already used for another {@link IProductCmptCategory} in the scope of the product
+     * component type's supertype hierarchy.
      */
     public final static String MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY = MSGCODE_PREFIX
             + "NameAlreadyUsedInTypeHierarchy"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that at least one other category within the product
-     * component type's supertype hierarchy is marked to be the default category for formula
-     * signature definitions.
+     * Validation message code to indicate that at least one other {@link IProductCmptCategory}
+     * within the product component type's supertype hierarchy is marked to be the default
+     * {@link IProductCmptCategory} for formula signature definitions.
      */
     public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
             + "DuplicateDefaultsForFormulaSignatureDefinitions"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that at least one other category within the product
-     * component type's supertype hierarchy is marked to be the default category for product
-     * relevant validation rules.
+     * Validation message code to indicate that at least one other {@link IProductCmptCategory}
+     * within the product component type's supertype hierarchy is marked to be the default
+     * {@link IProductCmptCategory} for configurable validation rules.
      */
     public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES = MSGCODE_PREFIX
             + "DuplicateDefaultsForValidationRules"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that at least one other category within the product
-     * component type's supertype hierarchy is marked to be the default category for table structure
-     * usages.
+     * Validation message code to indicate that at least one other {@link IProductCmptCategory}
+     * within the product component type's supertype hierarchy is marked to be the default
+     * {@link IProductCmptCategory} for table structure usages.
      */
     public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
             + "DuplicateDefaultsForTableStructureUsages"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that at least one other category within the product
-     * component type's supertype hierarchy is marked to be the default category for product
-     * relevant policy component attributes.
+     * Validation message code to indicate that at least one other {@link IProductCmptCategory}
+     * within the product component type's supertype hierarchy is marked to be the default
+     * {@link IProductCmptCategory} for product relevant policy component type attributes.
      */
     public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "DuplicateDefaultsForPolicyCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that at least one other category within the product
-     * component type's supertype hierarchy is marked to be the default category for product
-     * component type attributes.
+     * Validation message code to indicate that at least one other {@link IProductCmptCategory}
+     * within the product component type's supertype hierarchy is marked to be the default
+     * {@link IProductCmptCategory} for product component type attributes.
      */
     public final static String MSGCODE_DUPLICATE_DEFAULTS_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "DuplicateDefaultsForProductCmptTypeAttributes"; //$NON-NLS-1$
@@ -125,9 +121,9 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
     public IProductCmptType getProductCmptType();
 
     /**
-     * Sets the name of this category.
+     * Sets the name of this {@link IProductCmptCategory}.
      * 
-     * @param name The new name of this category
+     * @see #getName()
      */
     public void setName(String name);
 
@@ -135,16 +131,16 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * Returns the list of product component properties assigned to this
      * {@link IProductCmptCategory}.
      * <p>
-     * This method <strong>does</strong> consider references of the supertype hierarchy.
+     * This method does consider assignments made in the supertype hierarchy if so desired.
      * <p>
      * The product component properties are sorted according to the order prescribed in the
      * assigning product component types.
      * 
-     * @param contextType the {@link IProductCmptType} to start the search from; product component
+     * @param contextType the {@link IProductCmptType} to start the search from. Product component
      *            properties assigned by product component types below the context type are not
      *            returned
-     * @param searchSupertypeHierarchy flag indicating whether the supertype hierarchy shall be
-     *            searched as well
+     * @param searchSupertypeHierarchy flag indicating whether assignments made in the supertype
+     *            hierarchy shall be searched as well
      * 
      * @throws CoreException if an error occurs during the search
      */
@@ -154,159 +150,186 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
 
     /**
      * Returns a list containing the property values corresponding to the product component
-     * properties assigned to this category.
+     * properties assigned to this {@link IProductCmptCategory}.
      * <p>
-     * This method <strong>does</strong> consider property references of the supertype hierarchy.
+     * This method <strong>does</strong> consider assignments made in the supertype hierarchy.
+     * <p>
+     * The values are sorted according to the order of the properties as returned by
+     * {@link #findProductCmptProperties(IProductCmptType, boolean, IIpsProject)}.
      * 
-     * @param contextType The product component type to start the search from; properties assigned
+     * @param contextType the {@link IProductCmptType} to start the search from. Properties assigned
      *            by product component types below the context type are not returned
-     * @param contextGeneration The product component generation to retrieve property values from
-     * @param ipsProject The IPS project to use for the search
+     * @param contextGeneration the {@link IProductCmptGeneration} to retrieve property values from
      * 
-     * @throws CoreException If an error occurs during the search
+     * @throws CoreException if an error occurs during the search
      */
     public List<IPropertyValue> findPropertyValues(IProductCmptType contextType,
             IProductCmptGeneration contextGeneration,
             IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns whether this category contains the indicated property.
+     * Returns whether this {@link IProductCmptCategory} contains the indicated
+     * {@link IProductCmptProperty}.
      * <p>
-     * If this category is marked as default for the corresponding property type, true will be
-     * returned if the property has no category or belongs to a category that cannot be found.
+     * If this {@link IProductCmptCategory} is marked as default for the corresponding
+     * {@link ProductCmptPropertyType}, true will be returned if the {@link IProductCmptProperty}
+     * has no {@link IProductCmptCategory} or belongs to an {@link IProductCmptCategory} that cannot
+     * be found.
      * <p>
      * The supertype hierarchy of this category's {@link IProductCmptType} is considered while
      * searching for categories.
      * 
-     * @param property The {@link IProductCmptProperty} to check for containment
-     * @param ipsProject The {@link IIpsProject} whose {@link IIpsObjectPath} to use for the search
+     * @param property the {@link IProductCmptProperty} to check for containment
      * 
-     * @throws CoreException If an error occurs during the search
+     * @throws CoreException if an error occurs during the search
      */
     public boolean findIsContainingProperty(IProductCmptProperty property, IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns whether this {@link IProductCmptCategory} is the corresponding default
      * {@link IProductCmptCategory} for the indicated {@link IProductCmptProperty}.
+     * <p>
+     * If this {@link IProductCmptCategory} is the corresponding default
+     * {@link IProductCmptCategory}, new properties of the same {@link ProductCmptPropertyType} will
+     * be automatically assigned to this {@link IProductCmptCategory}.
      */
     public boolean isDefaultFor(IProductCmptProperty property);
 
     /**
-     * Returns whether this category is marked as default category for
-     * {@link IProductCmptTypeMethod}s defining formula signatures.
+     * Returns whether this {@link IProductCmptCategory} is marked as default
+     * {@link IProductCmptCategory} for formula signature definitions.
+     * <p>
+     * If this is the case, new properties of the type
+     * {@link ProductCmptPropertyType#FORMULA_SIGNATURE_DEFINITION} will be automatically assigned
+     * to this {@link IProductCmptCategory}.
      */
     public boolean isDefaultForFormulaSignatureDefinitions();
 
     /**
-     * Sets whether this category is marked as default category for {@link IProductCmptTypeMethod}s.
+     * Sets whether this {@link IProductCmptCategory} is marked as default category for formula
+     * signature definitions.
      * 
-     * @param defaultForFormulaSignatureDefinitions Flag indicating whether this category shall be
-     *            the default category for {@link IProductCmptTypeMethod}s defining formula
-     *            signatures
+     * @see #isDefaultForFormulaSignatureDefinitions()
      */
     public void setDefaultForFormulaSignatureDefinitions(boolean defaultForFormulaSignatureDefinitions);
 
     /**
-     * Returns whether this category is marked as default category for product relevant
-     * {@link IPolicyCmptTypeAttribute}s.
+     * Returns whether this {@link IProductCmptCategory} is marked as default
+     * {@link IProductCmptCategory} for product relevant policy component type attributes.
+     * <p>
+     * If this is the case, new properties of the type
+     * {@link ProductCmptPropertyType#POLICY_CMPT_TYPE_ATTRIBUTE} will be automatically assigned to
+     * this {@link IProductCmptCategory}.
      */
     public boolean isDefaultForPolicyCmptTypeAttributes();
 
     /**
-     * Sets whether this category is the default category for product relevant
-     * {@link IPolicyCmptTypeAttribute}s.
+     * Sets whether this {@link IProductCmptCategory} is the default {@link IProductCmptCategory}
+     * for product relevant policy component type attributes.
      * 
-     * @param defaultForPolicyCmptTypeAttributes Flag indicating whether this category shall be the
-     *            default category for product relevant {@link IPolicyCmptTypeAttribute}s
+     * @see #isDefaultForPolicyCmptTypeAttributes()
      */
     public void setDefaultForPolicyCmptTypeAttributes(boolean defaultForPolicyCmptTypeAttributes);
 
     /**
-     * Returns whether this category is marked as default category for
-     * {@link IProductCmptTypeAttribute}s.
+     * Returns whether this {@link IProductCmptCategory} is marked as default
+     * {@link IProductCmptCategory} for product component type attributes.
+     * <p>
+     * If this is the case, new properties of the type
+     * {@link ProductCmptPropertyType#PRODUCT_CMPT_TYPE_ATTRIBUTE} will be automatically assigned to
+     * this {@link IProductCmptCategory}.
      */
     public boolean isDefaultForProductCmptTypeAttributes();
 
     /**
-     * Sets whether this category is the default category for {@link IProductCmptTypeAttribute}s.
+     * Sets whether this {@link IProductCmptCategory} is the default {@link IProductCmptCategory}
+     * for product component type attributes.
      * 
-     * @param defaultForProductCmptTypeAttributes Flag indicating whether this category shall be the
-     *            default category for {@link IProductCmptTypeAttribute}s
+     * @see #isDefaultForProductCmptTypeAttributes()
      */
     public void setDefaultForProductCmptTypeAttributes(boolean defaultForProductCmptTypeAttributes);
 
     /**
-     * Returns whether this category is marked as default category for {@link ITableStructureUsage}
-     * s.
+     * Returns whether this {@link IProductCmptCategory} is marked as default
+     * {@link IProductCmptCategory} for table structure usages.
+     * <p>
+     * If this is the case, new properties of the type
+     * {@link ProductCmptPropertyType#TABLE_STRUCTURE_USAGE} will be automatically assigned to this
+     * {@link IProductCmptCategory}.
      */
     public boolean isDefaultForTableStructureUsages();
 
     /**
-     * Sets whether this category is the default category for {@link ITableStructureUsage}s.
+     * Sets whether this {@link IProductCmptCategory} is the default {@link IProductCmptCategory}
+     * for table structure usages.
      * 
-     * @param defaultForTableStructureUsages Flag indicating whether this category shall be the
-     *            default category for {@link ITableStructureUsage}s
+     * @see #isDefaultForTableStructureUsages()
      */
     public void setDefaultForTableStructureUsages(boolean defaultForTableStructureUsages);
 
     /**
-     * Returns whether this category is marked as default category for configurable
-     * {@link IValidationRule}s.
+     * Returns whether this {@link IProductCmptCategory} is marked as default
+     * {@link IProductCmptCategory} for configurable validation rules.
+     * <p>
+     * If this is the case, new properties of the type
+     * {@link ProductCmptPropertyType#VALIDATION_RULE} will be automatically assigned to this
+     * {@link IProductCmptCategory}.
      */
     public boolean isDefaultForValidationRules();
 
     /**
-     * Sets whether this category is the default category for configurable {@link IValidationRule}s.
+     * Sets whether this {@link IProductCmptCategory} is the default {@link IProductCmptCategory}
+     * for configurable validation rules.
      * 
-     * @param defaultForValidationRules Flag indicating whether this category shall be the default
-     *            category for product relevant {@link IValidationRule}s
+     * @see #isDefaultForValidationRules()
      */
     public void setDefaultForValidationRules(boolean defaultForValidationRules);
 
     /**
-     * Sets the {@link Position} of this category.
-     * 
-     * @param side The {@link Position} to set this category to
-     * 
-     * @throws NullPointerException If the parameter is null
-     */
-    public void setPosition(Position side);
-
-    /**
-     * Returns the {@link Position} of this category.
+     * Returns the {@link Position} of this {@link IProductCmptCategory}.
+     * <p>
+     * The {@link Position} gives an indication of where this {@link IProductCmptCategory} is placed
+     * by the user interface.
      */
     public Position getPosition();
 
     /**
-     * Returns whether this category is positioned at the left.
+     * Sets the {@link Position} of this {@link IProductCmptCategory}.
+     * 
+     * @see #getPosition()
+     */
+    public void setPosition(Position side);
+
+    /**
+     * Returns whether this {@link IProductCmptCategory} is positioned at {@link Position#LEFT}.
      */
     public boolean isAtLeftPosition();
 
     /**
-     * Returns whether this category is positioned at the right.
+     * Returns whether this {@link IProductCmptCategory} is positioned at {@link Position#RIGHT}.
      */
     public boolean isAtRightPosition();
 
     /**
-     * Moves the {@link IProductCmptProperty}s identified by the provided indexes up or down by one
+     * Moves the product component properties identified by the provided indexes up or down by one
      * position.
      * <p>
      * If one of the indexes is 0 (the first object), no property is moved up. If one of the indexes
      * is the number objects - 1 (the last object), no property is moved down. Returns true if a
      * move was actually performed.
      * 
-     * @param indexes The indexes identifying the {@link IProductCmptCategory}s to be moved
-     * @param up Flag indicating whether to move up or down
-     * @param contextType The {@link IProductCmptType} the moved properties belong to. The provided
-     *            indexes reference the properties assigned to this category by this type, other
-     *            properties are ignored
+     * @param indexes the indexes identifying the product component properties to be moved
+     * @param up flag indicating whether to move up or down
+     * @param contextType the {@link IProductCmptType} the moved properties belong to. The provided
+     *            indexes reference the properties assigned to this {@link IProductCmptCategory} by
+     *            the context type, other properties are ignored
      * 
-     * @return The new indexes of the moved properties
+     * @return the new indexes of the moved properties
      * 
-     * @throws IndexOutOfBoundsException If not all provided indexes identify properties assigned to
-     *             this category with respect to the context type
+     * @throws IndexOutOfBoundsException if not all provided indexes identify properties assigned to
+     *             this {@link IProductCmptCategory} by the context type
      * 
-     * @throws CoreException If an error occurs while searching the supertype hierarchy or while
+     * @throws CoreException if an error occurs while searching the supertype hierarchy or while
      *             searching for policy component types
      */
     public int[] moveProductCmptProperties(int[] indexes, boolean up, IProductCmptType contextType)
@@ -347,7 +370,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
             IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Defines the position of this category.
+     * Defines the user interface position of an {@link IProductCmptCategory}.
      */
     public static enum Position {
 
@@ -355,9 +378,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
         RIGHT("right"); //$NON-NLS-1$
 
         /**
-         * Returns the enum value corresponding to the provided id.
-         * 
-         * @param id the id of the enum value to be returned
+         * Returns the {@link Position} corresponding to the provided ID.
          */
         public static final Position getValueById(String id) {
             if (Position.LEFT.getId().equals(id)) {
@@ -375,7 +396,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
         }
 
         /**
-         * Returns the ID of this position.
+         * Returns the ID of this {@link Position}.
          */
         public final String getId() {
             return id;

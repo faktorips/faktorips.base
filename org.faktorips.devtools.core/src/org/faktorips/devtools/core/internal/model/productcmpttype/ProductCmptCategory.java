@@ -33,11 +33,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of {@link IProductCmptProperty}, please see the interface for more details.
+ * Default implementation of {@link IProductCmptProperty}.
  * 
  * @author Alexander Weickmann
  */
 public class ProductCmptCategory extends AtomicIpsObjectPart implements IProductCmptCategory {
+
+    final static String XML_TAG_NAME = "Category"; //$NON-NLS-1$
 
     private boolean defaultForFormulaSignatureDefinitions;
 
@@ -51,7 +53,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
     private Position position = Position.RIGHT;
 
-    public ProductCmptCategory(final IProductCmptType parent, String id) {
+    public ProductCmptCategory(IProductCmptType parent, String id) {
         super(parent, id);
     }
 
