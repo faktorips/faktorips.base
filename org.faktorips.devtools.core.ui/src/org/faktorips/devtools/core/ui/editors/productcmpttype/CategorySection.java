@@ -75,6 +75,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.controller.fields.SectionEditField;
 import org.faktorips.devtools.core.ui.dialogs.DialogMementoHelper;
 import org.faktorips.devtools.core.ui.dnd.IpsObjectPartContainerByteArrayTransfer;
@@ -151,8 +152,27 @@ public class CategorySection extends IpsSection {
         viewerButtonComposite = new CategoryComposite(category, contextType, categoryCompositionSection, client,
                 toolkit);
 
+        getBindingContext().add(
+                new ControlPropertyBinding(getSectionControl(), category, IProductCmptCategory.PROPERTY_NAME,
+                        String.class) {
+
+                    @Override
+                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                        updateSectionTitle();
+                    }
+                });
         SectionEditField sectionEditField = new SectionEditField(getSectionControl());
-        getBindingContext().bindContent(sectionEditField, category, IProductCmptCategory.PROPERTY_NAME);
+        getBindingContext().bindProblemMarker(sectionEditField, category, IProductCmptCategory.PROPERTY_NAME);
+        getBindingContext().bindProblemMarker(sectionEditField, category,
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS);
+        getBindingContext().bindProblemMarker(sectionEditField, category,
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES);
+        getBindingContext().bindProblemMarker(sectionEditField, category,
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES);
+        getBindingContext().bindProblemMarker(sectionEditField, category,
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES);
+        getBindingContext().bindProblemMarker(sectionEditField, category,
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
     }
 
     private void setLayout(Composite parent) {
@@ -187,7 +207,6 @@ public class CategorySection extends IpsSection {
     protected void performRefresh() {
         viewerButtonComposite.refresh();
         updateToolBarEnabledStates();
-        updateSectionTitle();
     }
 
     private ViewerButtonComposite getViewerButtonComposite() {
