@@ -27,28 +27,29 @@ public class SingletonMockHelperTest {
         assertEquals("bar", MySingleton.getInstance().getName());
         MySingleton mockInstance = mock(MySingleton.class);
         when(mockInstance.getName()).thenReturn("foobar");
-        SingletonMockHelper.setSingletonInstance(MySingleton.class, mockInstance);
+        SingletonMockHelper singletonMockHelper = new SingletonMockHelper();
+        singletonMockHelper.setSingletonInstance(MySingleton.class, mockInstance);
         assertEquals("foobar", MySingleton.getInstance().getName());
 
-        SingletonMockHelper.setSingletonInstance(MySingleton.class, new MySingleton2());
+        singletonMockHelper.setSingletonInstance(MySingleton.class, new MySingleton2());
         assertEquals("test", MySingleton.getInstance().getName());
 
         try {
-            SingletonMockHelper.setSingletonInstance(MySingleton2.class, new MySingleton2());
+            singletonMockHelper.setSingletonInstance(MySingleton2.class, new MySingleton2());
             fail("Expected IllegalArgumentException because MySingleton2 declares no instance field");
         } catch (IllegalArgumentException e) {
             // expected
         }
 
         try {
-            SingletonMockHelper.setSingletonInstance(MyDoubleSingleton.class, new MyDoubleSingleton());
+            singletonMockHelper.setSingletonInstance(MyDoubleSingleton.class, new MyDoubleSingleton());
             fail("Expected IllegalArgumentException because MyDoubleSingleton has two instance fields");
         } catch (IllegalArgumentException e) {
             // expected
         }
 
         try {
-            SingletonMockHelper.setSingletonInstance(MyNoSingleton.class, new MyNoSingleton());
+            singletonMockHelper.setSingletonInstance(MyNoSingleton.class, new MyNoSingleton());
             fail("Expected IllegalArgumentException because MyNoSingleton has no static instance field");
         } catch (IllegalArgumentException e) {
             // expected
@@ -56,11 +57,27 @@ public class SingletonMockHelperTest {
 
         MyFinalSingleton finalMockInstance = mock(MyFinalSingleton.class);
         try {
-            SingletonMockHelper.setSingletonInstance(MyFinalSingleton.class, finalMockInstance);
+            singletonMockHelper.setSingletonInstance(MyFinalSingleton.class, finalMockInstance);
             fail("Expected IllegalArgumentException when trying to set a final field");
         } catch (IllegalArgumentException e) {
             // expected
         }
+        singletonMockHelper.reset();
+    }
+
+    @Test
+    public void testReset() {
+        SingletonMockHelper singletonMockHelper = new SingletonMockHelper();
+
+        MySingleton mockInstance = mock(MySingleton.class);
+        when(mockInstance.getName()).thenReturn("foobar");
+        singletonMockHelper.setSingletonInstance(MySingleton.class, mockInstance);
+
+        when(mockInstance.getName()).thenReturn("foobarXY");
+        singletonMockHelper.setSingletonInstance(MySingleton.class, mockInstance);
+
+        singletonMockHelper.reset();
+        assertEquals("bar", MySingleton.getInstance().getName());
     }
 
     public static class MySingleton {

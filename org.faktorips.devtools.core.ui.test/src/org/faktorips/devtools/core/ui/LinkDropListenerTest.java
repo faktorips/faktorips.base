@@ -74,6 +74,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
     private IProductCmptTypeAssociation associationToB1;
     private IProductCmptTypeAssociation associationToB2;
     private IProductCmptTypeAssociation associationToC;
+    private SingletonMockHelper singletonMockHelper;
     private FileTransfer fileTransfer;
 
     @Override
@@ -113,6 +114,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
 
         dropListener = new TestDropListener(treeViewer);
 
+        singletonMockHelper = new SingletonMockHelper();
         fileTransfer = FileTransfer.getInstance();
     }
 
@@ -339,7 +341,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         FileTransfer transfer = mock(FileTransfer.class);
         when(transfer.nativeToJava(transferData)).thenReturn(filenames);
         when(transfer.isSupportedType(transferData)).thenReturn(true);
-        SingletonMockHelper.setSingletonInstance(FileTransfer.class, transfer);
+        singletonMockHelper.setSingletonInstance(FileTransfer.class, transfer);
 
         return transferData;
     }
@@ -424,7 +426,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
     @Override
     public void tearDown() throws Exception {
         super.tearDown();
-        SingletonMockHelper.setSingletonInstance(FileTransfer.class, fileTransfer);
+        singletonMockHelper.reset();
     }
 
 }

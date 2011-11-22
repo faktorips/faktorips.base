@@ -28,17 +28,28 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class NewProductCmptPMOTest {
 
     private static final String PROJECT_NAME = "projectName";
+    private SingletonMockHelper singletonMockHelper;
+    private IIpsModel ipsModel;
+
+    @Before
+    public void setUp() {
+        IpsPlugin ipsPlugin = mock(IpsPlugin.class);
+        ipsModel = mock(IIpsModel.class);
+        singletonMockHelper = new SingletonMockHelper();
+        singletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
+        when(ipsPlugin.getIpsModel()).thenReturn(ipsModel);
+    }
 
     @Test
     public void testUpdateBaseTypeList_noProject() throws Exception {
         NewProductCmptPMO pmo = new NewProductCmptPMO();
-
-        mockModelAndPlugin();
 
         pmo.setIpsProject(PROJECT_NAME);
 
@@ -56,7 +67,6 @@ public class NewProductCmptPMOTest {
                 ipsSrcFiles.toArray(new IIpsSrcFile[0]));
         when(ipsProject.getName()).thenReturn(PROJECT_NAME);
 
-        IIpsModel ipsModel = mockModelAndPlugin();
         when(ipsModel.getIpsProject(PROJECT_NAME)).thenReturn(ipsProject);
 
         pmo.setIpsProject(ipsProject.getName());
@@ -92,12 +102,9 @@ public class NewProductCmptPMOTest {
         assertTrue(pmo.getBaseTypes().contains(productCmptType3));
     }
 
-    private IIpsModel mockModelAndPlugin() {
-        IpsPlugin ipsPlugin = mock(IpsPlugin.class);
-        IIpsModel ipsModel = mock(IIpsModel.class);
-        SingletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
-        when(ipsPlugin.getIpsModel()).thenReturn(ipsModel);
-        return ipsModel;
+    @After
+    public void tearDown() {
+        singletonMockHelper.reset();
     }
 
 }
