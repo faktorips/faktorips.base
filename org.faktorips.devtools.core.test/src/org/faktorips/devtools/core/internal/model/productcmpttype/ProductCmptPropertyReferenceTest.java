@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -95,6 +96,14 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         assertFalse(policyReference.isReferencingProperty(productAttribute));
     }
 
+    /**
+     * <strong>Scenario:</strong><br>
+     * In a type hierarchy, two properties with the same id exist.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The {@link IProductCmptPropertyReference} must be able to correctly identify it's referenced
+     * {@link IProductCmptProperty} nevertheless.
+     */
     @Test
     public void testIsReferencingProperty_PropertyWithSameIdInSupertype() throws CoreException, SecurityException,
             IllegalArgumentException, NoSuchFieldException, IllegalAccessException {

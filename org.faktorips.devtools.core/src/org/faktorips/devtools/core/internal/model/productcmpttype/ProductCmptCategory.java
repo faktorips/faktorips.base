@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.runtime.internal.StringUtils;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -198,8 +197,6 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
     @Override
     public void setPosition(Position side) {
-        ArgumentCheck.notNull(side);
-
         Position oldValue = this.position;
         this.position = side;
 
@@ -350,38 +347,39 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     }
 
     @Override
-    public void insertProductCmptPropertyAbove(IProductCmptProperty property,
+    public boolean insertProductCmptPropertyAbove(IProductCmptProperty property,
             IProductCmptProperty targetProperty,
             IIpsProject ipsProject) throws CoreException {
 
-        insertProductCmptProperty(property, targetProperty, ipsProject, true);
+        return insertProductCmptProperty(property, targetProperty, ipsProject, true);
     }
 
     @Override
-    public void insertProductCmptPropertyBelow(IProductCmptProperty property,
+    public boolean insertProductCmptPropertyBelow(IProductCmptProperty property,
             IProductCmptProperty targetProperty,
             IIpsProject ipsProject) throws CoreException {
 
-        insertProductCmptProperty(property, targetProperty, ipsProject, false);
+        return insertProductCmptProperty(property, targetProperty, ipsProject, false);
     }
 
-    private void insertProductCmptProperty(IProductCmptProperty property,
+    private boolean insertProductCmptProperty(IProductCmptProperty property,
             IProductCmptProperty targetProperty,
             IIpsProject ipsProject,
             boolean insertAbove) throws CoreException {
 
-        property.setCategory(name);
-
         IProductCmptType contextType = property.findProductCmptType(ipsProject);
         if (contextType == null) {
-            return;
+            return false;
         }
+
+        property.setCategory(name);
 
         List<IProductCmptProperty> properties = findProductCmptProperties(contextType, false, ipsProject);
         int propertyIndex = properties.indexOf(property);
         int limitIndex = insertAbove ? 0 : properties.size() - 1;
         int targetPropertyIndex = targetProperty != null ? properties.indexOf(targetProperty) : limitIndex;
         insertProductCmptProperty(propertyIndex, targetPropertyIndex, contextType, insertAbove);
+        return true;
     }
 
     private void insertProductCmptProperty(int propertyIndex,

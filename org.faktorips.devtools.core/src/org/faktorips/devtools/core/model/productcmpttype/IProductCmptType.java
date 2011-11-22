@@ -686,8 +686,8 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
             throws CoreException;
 
     /**
-     * Moves the indicated {@link IProductCmptCategory}s up or down by one position and returns
-     * whether a move has been performed.
+     * Moves the indicated categories up or down by one position and returns whether a move has been
+     * performed.
      * <p>
      * Note that a move is always performed in relation to the next respectively previous
      * {@link IProductCmptCategory} with same {@link Position}.
@@ -698,11 +698,11 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <li>the last {@link IProductCmptCategory} of it's {@link Position} is moved down
      * </ul>
      * 
-     * @param categories the {@link IProductCmptCategory}s to be moved
+     * @param categories the categories to be moved
      * @param up flag indicating whether to move up or down
      * 
-     * @throws IllegalArgumentException if one of the {@link IProductCmptCategory}s to be moved is
-     *             not defined in this {@link IProductCmptType}
+     * @throws IllegalArgumentException if one of the categories to be moved is not defined in this
+     *             {@link IProductCmptType}
      */
     public boolean moveCategories(List<IProductCmptCategory> categories, boolean up);
 
