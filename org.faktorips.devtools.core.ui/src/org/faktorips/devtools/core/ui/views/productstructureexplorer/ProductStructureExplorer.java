@@ -891,4 +891,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         }
     }
 
+    public void expandAll() {
+        treeViewer.expandAll();
+    }
+
 }
