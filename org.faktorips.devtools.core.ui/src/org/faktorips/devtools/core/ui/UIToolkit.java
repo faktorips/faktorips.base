@@ -906,4 +906,18 @@ public class UIToolkit {
         contentProposalAdapter.setLabelProvider(labelProvider);
     }
 
+    /**
+     * Configures the form-toolkit to draw borders around several controls in the given composite.
+     * This affects text-, combo-, tree-, table- and composite-controls contained in the given
+     * composite. Does nothing if the form-toolkit is <code>null</code>.
+     * <p>
+     * This method is used when developing a form UI, e.g. the product component editor.
+     */
+    public void paintBordersForComposite(Composite composite) {
+        if (getFormToolkit() != null) {
+            composite.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+            getFormToolkit().paintBordersFor(composite);
+        }
+    }
+
 }
