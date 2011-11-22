@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.type;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -107,11 +106,6 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
             @SuppressWarnings("unused") UIToolkit toolkit) {
 
         // nothing to do
-    }
-
-    @Override
-    protected Point getInitialSize() {
-        return new Point(800, 650);
     }
 
     @Override

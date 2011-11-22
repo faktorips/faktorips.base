@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -124,11 +123,6 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
                 IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
         getBindingContext().bindContent(specifiedInSrcField, rule,
                 IValidationRule.PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
-    }
-
-    @Override
-    protected Point getInitialSize() {
-        return new Point(525, 575);
     }
 
     class UIController extends IpsObjectUIController {
