@@ -209,6 +209,11 @@ public class BindingContext {
 
     /**
      * Binds the given text-button control to the given ips object's property.
+     * <p>
+     * This method setting the fields property <code>supportNull<code> to false. This is the default
+     * to prevent the fields returning null or setting the null string representation.
+     * If you want to create a field that supports null and the null string representation, use
+     * {@link #bindContent(TextButtonControl, Object, String, boolean) )}
      * 
      * @return the edit field created to access the value in the text control.
      * 
@@ -216,8 +221,21 @@ public class BindingContext {
      * @throws NullPointerException if any argument is <code>null</code>.
      */
     public EditField<String> bindContent(TextButtonControl control, Object object, String property) {
+        return bindContent(control, object, property, false);
+    }
+
+    /**
+     * Binds the given text-button control to the given ips object's property.
+     * 
+     * @return the edit field created to access the value in the text control.
+     * 
+     * @throws IllegalArgumentException if the property is not of type String.
+     * @throws NullPointerException if any argument is <code>null</code>.
+     */
+    public EditField<String> bindContent(TextButtonControl control, Object object, String property, boolean supportsNull) {
         checkPropertyType(object, property, String.class);
-        EditField<String> field = new TextButtonField(control);
+        TextButtonField field = new TextButtonField(control);
+        field.setSupportsNull(supportsNull);
         bindContent(field, object, property);
 
         return field;

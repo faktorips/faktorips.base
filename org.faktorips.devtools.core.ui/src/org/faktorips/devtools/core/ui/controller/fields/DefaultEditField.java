@@ -58,8 +58,8 @@ public abstract class DefaultEditField<T> implements EditField<T> {
     @Override
     public boolean isTextContentParsable() {
         try {
-            parseContent();
-            return true;
+            T content = parseContent();
+            return supportsNull() ? true : content != null;
         } catch (Exception e) {
             return false;
         }
@@ -149,6 +149,10 @@ public abstract class DefaultEditField<T> implements EditField<T> {
      * <code>true</code> to activate null-handling (which means that a null-object is transformed to
      * the user defined null-representations-string and vice versa) or <code>false</code> to
      * deactivate null-handling.
+     * <p>
+     * If the field does not support null, it should set an empty string if the presentation object
+     * is null. If the content contains the null string representation the method
+     * {@link #isTextContentParsable()} have to return false.
      */
     public void setSupportsNull(boolean supportsNull) {
         this.supportNull = supportsNull;
@@ -156,6 +160,8 @@ public abstract class DefaultEditField<T> implements EditField<T> {
 
     /**
      * Returns whether null is replaced by the null representation string or not.
+     * 
+     * @see #setSupportsNull(boolean)
      */
     public boolean supportsNull() {
         return supportNull;

@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.controller.EditField;
 
@@ -43,8 +44,12 @@ public abstract class StringValueEditField extends DefaultEditField<String> {
      * 
      */
     public static String prepareObjectForSet(String object, boolean supportsNull) {
-        if (object == null && supportsNull) {
-            return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+        if (object == null) {
+            if (supportsNull) {
+                return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+            } else {
+                return StringUtils.EMPTY;
+            }
         }
         return "" + object; //$NON-NLS-1$
     }
