@@ -1303,6 +1303,32 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertFalse(properties.contains(superAttribute));
     }
 
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IProductCmptCategory} is marked as default for a specific
+     * {@link ProductCmptPropertyType}. Then, an {@link IProductCmptProperty} of this
+     * {@link ProductCmptPropertyType} is assigned to an {@link IProductCmptCategory} of a sub type.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The {@link IProductCmptProperty} should not be assigned to the default
+     * {@link IProductCmptCategory} of the supertype.
+     */
+    @Test
+    public void testFindProductCmptPropertiesForCategory_DoNotAssignToDefaultIfPropertyInSubtypeCategory()
+            throws CoreException {
+
+        deleteAllCategories(productCmptType, superProductCmptType);
+
+        IProductCmptCategory superCategory = superProductCmptType.newCategory("superCategory");
+        superCategory.setDefaultForPolicyCmptTypeAttributes(true);
+
+        IProductCmptCategory category = productCmptType.newCategory("category");
+        IProductCmptProperty property = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
+        property.setCategory(category.getName());
+
+        assertTrue(superCategory.findProductCmptProperties(productCmptType, true, ipsProject).isEmpty());
+    }
+
     @Test
     public void testFindProductCmptPropertiesInOrder() throws CoreException {
         IProductCmptProperty s1 = superProductCmptType.newProductCmptTypeAttribute("s1");

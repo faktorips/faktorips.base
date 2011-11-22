@@ -180,10 +180,14 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * searching for categories.
      * 
      * @param property the {@link IProductCmptProperty} to check for containment
+     * @param contextType the {@link IProductCmptType} to start the search from. Properties assigned
+     *            by product component types below the context type are not considered
      * 
      * @throws CoreException if an error occurs during the search
      */
-    public boolean findIsContainingProperty(IProductCmptProperty property, IIpsProject ipsProject) throws CoreException;
+    public boolean findIsContainingProperty(IProductCmptProperty property,
+            IProductCmptType contextType,
+            IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns whether this {@link IProductCmptCategory} is the corresponding default

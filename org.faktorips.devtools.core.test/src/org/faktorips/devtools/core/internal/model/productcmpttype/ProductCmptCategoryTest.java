@@ -140,10 +140,23 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindIsContainingProperty() throws CoreException {
-        IProductCmptProperty property = productType.newProductCmptTypeAttribute("foo");
-        property.setCategory(CATEGORY_NAME);
+        // Create a super product type and a category in it
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
+        IProductCmptCategory superCategory = superProductType.newCategory("superCategory");
 
-        assertTrue(category.findIsContainingProperty(property, ipsProject));
+        // Create a property in each type and assign them to the category
+        IProductCmptProperty superProperty = superProductType.newProductCmptTypeAttribute("superProperty");
+        IProductCmptProperty property = productType.newProductCmptTypeAttribute("property");
+        superProperty.setCategory(superCategory.getName());
+        property.setCategory(superCategory.getName());
+
+        // Given the super type as context type, only the super property is contained
+        assertTrue(superCategory.findIsContainingProperty(superProperty, superProductType, ipsProject));
+        assertFalse(superCategory.findIsContainingProperty(property, superProductType, ipsProject));
+
+        // Given the child type as context type, both properties are contained
+        assertTrue(superCategory.findIsContainingProperty(superProperty, productType, ipsProject));
+        assertTrue(superCategory.findIsContainingProperty(property, productType, ipsProject));
     }
 
     /**
@@ -162,7 +175,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
         IProductCmptProperty attributeProperty = productType.newProductCmptTypeAttribute("attribute");
 
-        assertTrue(defaultAttributeCategory.findIsContainingProperty(attributeProperty, ipsProject));
+        assertTrue(defaultAttributeCategory.findIsContainingProperty(attributeProperty, productType, ipsProject));
     }
 
     /**
@@ -183,7 +196,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty attributeProperty = productType.newProductCmptTypeAttribute("attribute");
         attributeProperty.setCategory("foobar");
 
-        assertTrue(defaultAttributeCategory.findIsContainingProperty(attributeProperty, ipsProject));
+        assertTrue(defaultAttributeCategory.findIsContainingProperty(attributeProperty, productType, ipsProject));
     }
 
     /**
@@ -208,7 +221,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty attributeProperty = productType.newProductCmptTypeAttribute("attribute");
         attributeProperty.setCategory(superCategory.getName());
 
-        assertFalse(defaultAttributeCategory.findIsContainingProperty(attributeProperty, ipsProject));
+        assertFalse(defaultAttributeCategory.findIsContainingProperty(attributeProperty, productType, ipsProject));
     }
 
     /**
@@ -228,8 +241,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
         IProductCmptProperty noCategoryProperty = productType.newProductCmptTypeAttribute("noCategoryProperty");
 
-        assertFalse(emptyNameCategory.findIsContainingProperty(noCategoryProperty, ipsProject));
-        assertTrue(defaultAttributeCategory.findIsContainingProperty(noCategoryProperty, ipsProject));
+        assertFalse(emptyNameCategory.findIsContainingProperty(noCategoryProperty, productType, ipsProject));
+        assertTrue(defaultAttributeCategory.findIsContainingProperty(noCategoryProperty, productType, ipsProject));
     }
 
     @Test

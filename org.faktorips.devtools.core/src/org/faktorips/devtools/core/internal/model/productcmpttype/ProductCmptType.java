@@ -1059,7 +1059,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
         for (IProductCmptProperty property : findProductCmptPropertiesInOrder(searchSupertypeHierarchy, ipsProject)) {
-            if (category.findIsContainingProperty(property, ipsProject)) {
+            if (category.findIsContainingProperty(property, this, ipsProject)) {
                 properties.add(property);
             }
         }

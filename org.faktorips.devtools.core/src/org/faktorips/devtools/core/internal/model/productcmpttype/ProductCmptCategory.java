@@ -66,20 +66,30 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     }
 
     @Override
-    public boolean findIsContainingProperty(IProductCmptProperty property, IIpsProject ipsProject) throws CoreException {
+    public boolean findIsContainingProperty(IProductCmptProperty property,
+            IProductCmptType contextType,
+            IIpsProject ipsProject) throws CoreException {
+
+        // The queried property must be found by the context type
+        if (contextType.findProductCmptProperty(property.getPropertyName(), ipsProject) == null) {
+            return false;
+        }
+
+        // The name of this category must not be empty and must equal the property's category
         if (!name.isEmpty() && name.equals(property.getCategory())) {
             return true;
         }
+
         if (isDefaultFor(property)) {
             /*
              * If the name of the property's category does not match this category's name, this
              * category still may contain the property if this category is the corresponding default
-             * category. This is the case if the property has no category or the property's category
-             * cannot be found.
+             * category. In this case, if the property has no category or the property's category
+             * cannot be found, the property belongs to this category.
              */
-            return StringUtils.isEmpty(property.getCategory())
-                    || !getProductCmptType().findHasCategory(property.getCategory(), ipsProject);
+            return !property.hasCategory() || !contextType.findHasCategory(property.getCategory(), ipsProject);
         }
+
         return false;
     }
 
