@@ -88,7 +88,8 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         return isDefaultFor(property.getProductCmptPropertyType());
     }
 
-    private boolean isDefaultFor(ProductCmptPropertyType propertyType) {
+    @Override
+    public boolean isDefaultFor(ProductCmptPropertyType propertyType) {
         boolean isDefault = false;
         switch (propertyType) {
             case POLICY_CMPT_TYPE_ATTRIBUTE:
@@ -485,7 +486,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             for (IProductCmptCategory category : currentType.getCategories()) {
-                if (isDefaultFor(propertyType) && !name.equals(category.getName())) {
+                if (category.isDefaultFor(propertyType) && !name.equals(category.getName())) {
                     duplicateDefaultFound = true;
                     return false;
                 }

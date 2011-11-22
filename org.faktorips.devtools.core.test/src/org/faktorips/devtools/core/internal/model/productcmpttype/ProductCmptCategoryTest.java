@@ -84,7 +84,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsDefaultFor() {
+    public void testIsDefaultFor_Property() {
         IProductCmptCategory defaultPolicyAttributes = productType.newCategory();
         IProductCmptCategory defaultProductAttributes = productType.newCategory();
         IProductCmptCategory defaultFormulas = productType.newCategory();
@@ -102,6 +102,27 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         assertTrue(defaultFormulas.isDefaultFor(productType.newFormulaSignature("")));
         assertTrue(defaultTableStructures.isDefaultFor(productType.newTableStructureUsage()));
         assertTrue(defaultValidationRules.isDefaultFor(policyType.newRule()));
+    }
+
+    @Test
+    public void testIsDefaultFor_PropertyType() {
+        IProductCmptCategory defaultPolicyAttributes = productType.newCategory();
+        IProductCmptCategory defaultProductAttributes = productType.newCategory();
+        IProductCmptCategory defaultFormulas = productType.newCategory();
+        IProductCmptCategory defaultTableStructures = productType.newCategory();
+        IProductCmptCategory defaultValidationRules = productType.newCategory();
+
+        defaultPolicyAttributes.setDefaultForPolicyCmptTypeAttributes(true);
+        defaultProductAttributes.setDefaultForProductCmptTypeAttributes(true);
+        defaultFormulas.setDefaultForFormulaSignatureDefinitions(true);
+        defaultTableStructures.setDefaultForTableStructureUsages(true);
+        defaultValidationRules.setDefaultForValidationRules(true);
+
+        assertTrue(defaultPolicyAttributes.isDefaultFor(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE));
+        assertTrue(defaultProductAttributes.isDefaultFor(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE));
+        assertTrue(defaultFormulas.isDefaultFor(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION));
+        assertTrue(defaultTableStructures.isDefaultFor(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE));
+        assertTrue(defaultValidationRules.isDefaultFor(ProductCmptPropertyType.VALIDATION_RULE));
     }
 
     @Test

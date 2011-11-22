@@ -196,6 +196,16 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
     public boolean isDefaultFor(IProductCmptProperty property);
 
     /**
+     * Returns whether this {@link IProductCmptCategory} is the corresponding default
+     * {@link IProductCmptCategory} for the indicated {@link ProductCmptPropertyType}.
+     * <p>
+     * If this {@link IProductCmptCategory} is the corresponding default
+     * {@link IProductCmptCategory}, new properties of the indicated {@link ProductCmptPropertyType}
+     * will be automatically assigned to this {@link IProductCmptCategory}.
+     */
+    public boolean isDefaultFor(ProductCmptPropertyType propertyType);
+
+    /**
      * Returns whether this {@link IProductCmptCategory} is marked as default
      * {@link IProductCmptCategory} for formula signature definitions.
      * <p>
