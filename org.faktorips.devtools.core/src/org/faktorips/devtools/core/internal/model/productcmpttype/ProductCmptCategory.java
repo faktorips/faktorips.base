@@ -50,7 +50,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
     private boolean defaultForProductCmptTypeAttributes;
 
-    private Position position = Position.RIGHT;
+    private Position position = Position.LEFT;
 
     public ProductCmptCategory(IProductCmptType parent, String id) {
         super(parent, id);
