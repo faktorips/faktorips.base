@@ -47,7 +47,7 @@ public class RadioButtonGroup<T> {
 
     private final Map<T, String> options;
 
-    private final Group group;
+    private final Composite composite;
 
     private final UIToolkit toolkit;
 
@@ -70,14 +70,14 @@ public class RadioButtonGroup<T> {
      * @deprecated deprecated since version 3.6 due to refactoring, use the new constructor
      *             {@link #RadioButtonGroup(Composite, String, int, Map, UIToolkit)} instead. Note
      *             that the new constructor does not feature a 'style' parameter as it was decided
-     *             to generally use the SWT group default style
+     *             to generally use the SWT composite default style
      */
     @Deprecated
     public RadioButtonGroup(Composite parent, int style, String text, UIToolkit toolkit) {
         this.toolkit = toolkit;
         radioButtons = new ArrayList<Button>();
         options = null;
-        group = createGroupControl(parent, style, text, 1, toolkit);
+        composite = createGroupControl(parent, style, text, 1, toolkit);
     }
 
     /**
@@ -92,11 +92,28 @@ public class RadioButtonGroup<T> {
      */
     public RadioButtonGroup(Composite parent, String text, int numberColumns, Map<T, String> options,
             UIToolkit uiToolkit) {
-
         this.options = new LinkedHashMap<T, String>(options);
         radioButtons = new ArrayList<Button>(options.size());
         toolkit = uiToolkit;
-        group = createGroupControl(parent, SWT.NONE, text, numberColumns, uiToolkit);
+        composite = createGroupControl(parent, SWT.NONE, text, numberColumns, uiToolkit);
+        createRadioButtons(uiToolkit);
+    }
+
+    /**
+     * Creates a new {@link RadioButtonGroup} without creating a {@link Group}. The radiobuttons are
+     * created directly in the parent composite. You have the choice if the parent composite should
+     * be a group, a native composite or any other kind of composite. You also have to specify the
+     * layout of the parent yourself.
+     * 
+     * @param parent The parent composite for the radio buttons
+     * @param options the options the user can choose from. The map associates each value with it's
+     *            label. For each option, a radio button is created
+     */
+    public RadioButtonGroup(Composite parent, Map<T, String> options, UIToolkit uiToolkit) {
+        this.options = new LinkedHashMap<T, String>(options);
+        radioButtons = new ArrayList<Button>(options.size());
+        toolkit = uiToolkit;
+        composite = parent;
         createRadioButtons(uiToolkit);
     }
 
@@ -117,7 +134,7 @@ public class RadioButtonGroup<T> {
     }
 
     private Button addRadioButton(String text, UIToolkit uiTookit) {
-        Button radioButton = uiTookit.createRadioButton(group, text);
+        Button radioButton = uiTookit.createRadioButton(composite, text);
         radioButtons.add(radioButton);
         return radioButton;
     }
@@ -132,7 +149,7 @@ public class RadioButtonGroup<T> {
      */
     @Deprecated
     public final Radiobutton addRadiobutton(String text) {
-        Radiobutton radiobutton = toolkit.createRadiobutton(group, text);
+        Radiobutton radiobutton = toolkit.createRadiobutton(composite, text);
         CheckboxField checkboxField = new CheckboxField(radiobutton);
         checkboxField.addChangeListener(new ValueChangeListener() {
             @Override
@@ -156,8 +173,8 @@ public class RadioButtonGroup<T> {
     /**
      * Returns the SWT {@link Group} wrapped by this {@link RadioButtonGroup}.
      */
-    public final Group getGroup() {
-        return group;
+    public final Composite getComposite() {
+        return composite;
     }
 
     /**

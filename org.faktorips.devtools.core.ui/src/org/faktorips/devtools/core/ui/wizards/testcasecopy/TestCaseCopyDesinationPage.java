@@ -210,7 +210,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
 
         RadioButtonGroup group = toolkit.createRadiobuttonGroup(parent, SWT.SHADOW_IN,
                 Messages.TestCaseCopyDesinationPage_TitleProductCmptReplaceGroup);
-        group.getGroup().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        group.getComposite().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         String label = NLS.bind(Messages.TestCaseCopyDesinationPage_LabelRadioBtnReplaceProdCmptVersion, IpsPlugin
                 .getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNamePlural());
@@ -218,7 +218,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         checkboxFieldReplaceProductCmptAutomatically = new CheckboxField(radiobuttonReplaceAutomatically);
         checkboxFieldReplaceProductCmptAutomatically.addChangeListener(this);
 
-        createRootParameterTable(group.getGroup());
+        createRootParameterTable(group.getComposite());
 
         Radiobutton radiobuttonReplaceProductCmptManual = group
                 .addRadiobutton(Messages.TestCaseCopyDesinationPage_LabelRadioBtnManualReplace);

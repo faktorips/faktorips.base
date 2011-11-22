@@ -50,7 +50,7 @@ public class RadioButtonGroupField<T> extends DefaultEditField<T> {
 
     @Override
     public Control getControl() {
-        return radioButtonGroup.getGroup();
+        return radioButtonGroup.getComposite();
     }
 
     @Override

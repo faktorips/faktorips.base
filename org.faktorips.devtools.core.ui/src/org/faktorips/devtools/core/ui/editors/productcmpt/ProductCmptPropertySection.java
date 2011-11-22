@@ -280,6 +280,13 @@ public class ProductCmptPropertySection extends IpsSection {
                 return new ValidationRuleConfigEditComposite((IValidationRule)property,
                         (IValidationRuleConfig)propertyValue, propertySection, parent, bindingContext, toolkit);
             }
+
+            @Override
+            public Control createLabel(IPropertyValue propertyValue, Composite parent, UIToolkit toolkit) {
+                // We do not show any label for rules, the label of the rule is shown in the
+                // checkbox
+                return toolkit.createVerticalSpacer(parent, 0);
+            }
         },
 
         FORMULA() {

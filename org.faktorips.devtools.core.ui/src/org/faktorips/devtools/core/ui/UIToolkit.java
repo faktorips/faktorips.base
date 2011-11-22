@@ -802,6 +802,20 @@ public class UIToolkit {
         return new RadioButtonGroup<T>(parent, groupText, numberColumns, options, this);
     }
 
+    /**
+     * Creates a new {@link RadioButtonGroup} without creating a {@link Group}. The radio buttons
+     * are created directly in the parent composite. You have the choice if the parent composite
+     * should be a group, a native composite or any other kind of composite. You also have to
+     * specify the layout of the parent yourself.
+     * 
+     * @param parent The parent composite for the radio buttons
+     * @param options the options the user can choose from. The map associates each value with it's
+     *            label. For each option, a radio button is created
+     */
+    public <T> RadioButtonGroup<T> createRadioButtonGroup(Composite parent, Map<T, String> options) {
+        return new RadioButtonGroup<T>(parent, options, this);
+    }
+
     public Group createGridGroup(Composite parent, String text, int numOfColumns, boolean equalSize) {
         return createGridGroup(parent, SWT.NONE, text, numOfColumns, equalSize);
     }

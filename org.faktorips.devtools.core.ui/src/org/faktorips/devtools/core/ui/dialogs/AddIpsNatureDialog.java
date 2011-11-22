@@ -167,7 +167,7 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
         fullProjectButton = group.addRadiobutton(Messages.AddIpsNatureDialog_fullProject);
         fullProjectButton.setChecked(isModelProject && isProductDefinitionProject);
 
-        enablePersistenceCheckbox = kit.createCheckbox(group.getGroup());
+        enablePersistenceCheckbox = kit.createCheckbox(group.getComposite());
         enablePersistenceCheckbox.setText(Messages.AddIpsNatureDialog_PersistenceSupport);
     }
 
