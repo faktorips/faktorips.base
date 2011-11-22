@@ -20,11 +20,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -126,36 +123,36 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public final static String MSGCODE_MUST_HAVE_SUPERTYPE = MSGCODE_PREFIX + "MustHaveSupertype"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that no default {@link IProductCmptCategory} for
-     * {@link IProductCmptTypeMethod}s marked as formula signature definition exists.
+     * Validation message code to indicate that no default {@link IProductCmptCategory} for formula
+     * signature definitions exists.
      */
     public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
             + "NoDefaultCategoryForFormulaSignatureDefinitions"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that no default {@link IProductCmptCategory} for product
-     * relevant {@link IValidationRule}s exists.
+     * Validation message code to indicate that no default {@link IProductCmptCategory} for
+     * configurable validation rules exists.
      */
     public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES = MSGCODE_PREFIX
             + "NoDefaultCategoryForValidationRules"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that no default {@link IProductCmptCategory} for
-     * {@link ITableStructureUsage}s exists.
+     * Validation message code to indicate that no default {@link IProductCmptCategory} for table
+     * structure usages exists.
      */
     public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
             + "NoDefaultCategoryForTableStructureUsages"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that no default {@link IProductCmptCategory} for product
-     * relevant {@link IPolicyCmptTypeAttribute}s exists.
+     * relevant policy component type attributes exists.
      */
     public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "NoDefaultCategoryForPolicyCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that no default {@link IProductCmptCategory} for
-     * {@link IProductCmptTypeAttribute}s exists.
+     * Validation message code to indicate that no default {@link IProductCmptCategory} for product
+     * component type attributes exists.
      */
     public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "NoDefaultCategoryForProductCmptTypeAttributes"; //$NON-NLS-1$
@@ -433,22 +430,6 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public IProductCmptProperty findProductCmptProperty(String propName, IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns a list containing the {@link IProductCmptProperty}s of the indicated
-     * {@link IProductCmptCategory} in the referenced order.
-     * 
-     * @param category The {@link IProductCmptCategory} to search the {@link IProductCmptProperty}s
-     *            for
-     * @param searchSupertypeHierarchy Flag indicating whether the supertype hierarchy shall be
-     *            included
-     * @param ipsProject The {@link IIpsProject} whose {@link IIpsObjectPath} is used for the search
-     * 
-     * @throws CoreException If an error occurs during the search
-     */
-    public List<IProductCmptProperty> findProductCmptPropertiesForCategory(IProductCmptCategory category,
-            boolean searchSupertypeHierarchy,
-            IIpsProject ipsProject) throws CoreException;
-
-    /**
      * Returns <code>true</code> if the user has configured a custom icon for enabled instances of
      * this type, <code>false</code> otherwise.
      */
@@ -472,7 +453,23 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public Collection<IIpsSrcFile> searchProductComponents(boolean includeSubtypes) throws CoreException;
 
     /**
-     * Creates and returns a new {@link IProductCmptCategory} that belongs to this type.
+     * Returns a list containing the product component properties of the indicated
+     * {@link IProductCmptCategory} in the referenced order.
+     * 
+     * @param category the {@link IProductCmptCategory} to search the product component properties
+     *            for
+     * @param searchSupertypeHierarchy flag indicating whether the supertype hierarchy shall be
+     *            included in the search
+     * 
+     * @throws CoreException if an error occurs during the search
+     */
+    public List<IProductCmptProperty> findProductCmptPropertiesForCategory(IProductCmptCategory category,
+            boolean searchSupertypeHierarchy,
+            IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Creates and returns a new {@link IProductCmptCategory} belonging to this
+     * {@link IProductCmptType}.
      */
     public IProductCmptCategory newCategory();
 
@@ -480,7 +477,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Creates and returns a new {@link IProductCmptCategory} with the provided name, belonging to
      * this type.
      * 
-     * @param name The name of the category to create
+     * @param name the name of the category to create
      */
     public IProductCmptCategory newCategory(String name);
 
@@ -510,14 +507,12 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public List<IProductCmptCategory> getCategories(Position position);
 
     /**
-     * Returns a list containing the {@link IProductCmptCategory}s belonging to this type.
+     * Returns a list containing the categories belonging to this type.
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * Categories from supertypes are located at the top of the list.
      * 
-     * @param ipsProject The project which IPS object path is used for the search
-     * 
-     * @throws CoreException If an error occurs while searching the supertype hierarchy
+     * @throws CoreException if an error occurs while searching the supertype hierarchy
      */
     public List<IProductCmptCategory> findCategories(IIpsProject ipsProject) throws CoreException;
 
@@ -527,7 +522,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <p>
      * This method does <strong>not</strong> consider categories defined in the supertype hierarchy.
      * 
-     * @param name The name identifying the {@link IProductCmptCategory} to be retrieved
+     * @param name the name identifying the {@link IProductCmptCategory} to be retrieved
      */
     public IProductCmptCategory getCategory(String name);
 
@@ -537,8 +532,8 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns null if no {@link IProductCmptCategory} with the provided {@link Position} is defined
      * in this {@link IProductCmptType}.
      * <p>
-     * This operation does <strong>not</strong> consider {@link IProductCmptCategory}s defined in
-     * the supertype hierarchy.
+     * This operation does <strong>not</strong> consider categories defined in the supertype
+     * hierarchy.
      * 
      * @param position the {@link Position} to retrieve the first {@link IProductCmptCategory} for
      */
@@ -547,11 +542,11 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Returns the last {@link IProductCmptCategory} of the provided {@link Position}.
      * <p>
-     * Returns null if no {@link IProductCmptCategory}s with the provided {@link Position} is
-     * defined in this {@link IProductCmptType}.
+     * Returns null if no {@link IProductCmptCategory} with the provided {@link Position} is defined
+     * in this {@link IProductCmptType}.
      * <p>
-     * This operation does <strong>not</strong> consider {@link IProductCmptCategory}s defined in
-     * the supertype hierarchy.
+     * This operation does <strong>not</strong> consider categories defined in the supertype
+     * hierarchy.
      * 
      * @param position the {@link Position} to retrieve the last {@link IProductCmptCategory} for
      */
@@ -559,19 +554,13 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
 
     /**
      * Returns whether the indicated {@link IProductCmptCategory} is the first
-     * {@link IProductCmptCategory} at it's {@link Position}.
-     * 
-     * @param category the {@link IProductCmptCategory} to check whether it is the first
-     *            {@link IProductCmptCategory} of it's {@link Position}
+     * {@link IProductCmptCategory} of it's {@link Position}.
      */
     public boolean isFirstCategory(IProductCmptCategory category);
 
     /**
      * Returns whether the indicated {@link IProductCmptCategory} is the last
-     * {@link IProductCmptCategory} at it's {@link Position}.
-     * 
-     * @param category the {@link IProductCmptCategory} to check whether it is the last
-     *            {@link IProductCmptCategory} of it's {@link Position}
+     * {@link IProductCmptCategory} of it's {@link Position}.
      */
     public boolean isLastCategory(IProductCmptCategory category);
 
@@ -579,8 +568,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns whether this {@link IProductCmptType} defines the indicated
      * {@link IProductCmptCategory}.
      * 
-     * @param category the {@link IProductCmptCategory} to check for definition in this
-     *            {@link IProductCmptType}
+     * @return true if {@code this.equals(category.getParent())} returns true, false otherwise
      */
     public boolean isDefining(IProductCmptCategory category);
 
@@ -588,7 +576,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns whether an {@link IProductCmptCategory} with the given name exists in this
      * {@link IProductCmptType}.
      * 
-     * @param name The name of the {@link IProductCmptCategory} to check for existence in this type
+     * @param name the name of the {@link IProductCmptCategory} to check for existence in this type
      * 
      * @see #findHasCategory(String, IIpsProject)
      */
@@ -598,11 +586,10 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns whether an {@link IProductCmptCategory} with the given name exists in this
      * {@link IProductCmptType} or it's supertype hierarchy.
      * 
-     * @param name The name of the {@link IProductCmptCategory} to check for existence in this type
+     * @param name the name of the {@link IProductCmptCategory} to check for existence in this type
      *            and it's supertypes
-     * @param ipsProject The {@link IIpsProject} whose {@link IIpsObjectPath} is used for the search
      * 
-     * @throws CoreException If an error occurs during the search
+     * @throws CoreException if an error occurs during the search
      * 
      * @see #hasCategory(String)
      */
@@ -610,77 +597,65 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
 
     /**
      * Returns the {@link IProductCmptCategory} identified by the given name or null if no such
-     * category is found.
+     * {@link IProductCmptCategory} is found.
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
-     * @param name The name identifying the {@link IProductCmptCategory} to be retrieved
-     * @param ipsProject The project which IPS object path is used for the search
+     * @param name the name identifying the {@link IProductCmptCategory} to be retrieved
      * 
-     * @throws CoreException If an error occurs during the search
+     * @throws CoreException if an error occurs during the search
      */
     public IProductCmptCategory findCategory(String name, IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the first {@link IProductCmptCategory} marked as default for
-     * {@link IProductCmptTypeMethod}s marked as formula signature definition or null if no such
-     * category is found.
+     * Returns the first {@link IProductCmptCategory} marked as default for formula signature
+     * definitions or null if no such {@link IProductCmptCategory} is found.
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
-     * @param ipsProject The project which IPS object path is used for the search
-     * 
-     * @throws CoreException If an error occurs during the search
+     * @throws CoreException if an error occurs during the search
      */
     public IProductCmptCategory findDefaultCategoryForFormulaSignatureDefinitions(IIpsProject ipsProject)
             throws CoreException;
 
     /**
-     * Returns the first {@link IProductCmptCategory} marked as default for product relevant
-     * {@link IValidationRule}s or null if no such category is found.
+     * Returns the first {@link IProductCmptCategory} marked as default for configurable validation
+     * rules or null if no such {@link IProductCmptCategory} is found.
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
-     * @param ipsProject The project which IPS object path is used for the search
-     * 
-     * @throws CoreException If an error occurs during the search
+     * @throws CoreException if an error occurs during the search
      */
     public IProductCmptCategory findDefaultCategoryForValidationRules(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the first {@link IProductCmptCategory} marked as default for
-     * {@link ITableStructureUsage}s or null if no such category is found.
+     * Returns the first {@link IProductCmptCategory} marked as default for table structure usages
+     * or null if no such {@link IProductCmptCategory} is found.
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
-     * @param ipsProject The project which IPS object path is used for the search
-     * 
-     * @throws CoreException If an error occurs during the search
+     * @throws CoreException if an error occurs during the search
      */
     public IProductCmptCategory findDefaultCategoryForTableStructureUsages(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the first {@link IProductCmptCategory} marked as default for product relevant
-     * {@link IPolicyCmptTypeAttribute}s or null if no such category is found.
+     * Returns the first {@link IProductCmptCategory} marked as default for product relevant policy
+     * component type attributes or null if no such {@link IProductCmptCategory} is found.
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
-     * @param ipsProject The project which IPS object path is used for the search
-     * 
-     * @throws CoreException If an error occurs during the search
+     * @throws CoreException if an error occurs during the search
      */
     public IProductCmptCategory findDefaultCategoryForPolicyCmptTypeAttributes(IIpsProject ipsProject)
             throws CoreException;
 
     /**
-     * Returns the first {@link IProductCmptCategory} marked as default for
-     * {@link IProductCmptTypeAttribute}s or null if no such category is found.
+     * Returns the first {@link IProductCmptCategory} marked as default for product component type
+     * attributes or null if no such {@link IProductCmptCategory} is found.
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
-     * @param ipsProject The project which IPS object path is used for the search
-     * 
-     * @throws CoreException If an error occurs during the search
+     * @throws CoreException if an error occurs during the search
      */
     public IProductCmptCategory findDefaultCategoryForProductCmptTypeAttributes(IIpsProject ipsProject)
             throws CoreException;
@@ -700,6 +675,9 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @param categories the categories to be moved
      * @param up flag indicating whether to move up or down
+     * 
+     * @return true if a move has been performed or false if the first or last
+     *         {@link IProductCmptCategory} of it's {@link Position} is moved up respectively down
      * 
      * @throws IllegalArgumentException if one of the categories to be moved is not defined in this
      *             {@link IProductCmptType}

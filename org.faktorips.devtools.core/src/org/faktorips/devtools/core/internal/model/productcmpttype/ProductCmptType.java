@@ -854,12 +854,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
     public IProductCmptCategory findDefaultCategoryForFormulaSignatureDefinitions(IIpsProject ipsProject)
             throws CoreException {
 
-        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
-            @Override
-            protected boolean isDefault(IProductCmptCategory category) {
-                return category.isDefaultForFormulaSignatureDefinitions();
-            }
-        };
+        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
+                ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, ipsProject);
         defaultCategoryFinder.start(this);
         return defaultCategoryFinder.defaultCategory;
     }
@@ -868,12 +864,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
     public IProductCmptCategory findDefaultCategoryForPolicyCmptTypeAttributes(IIpsProject ipsProject)
             throws CoreException {
 
-        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
-            @Override
-            protected boolean isDefault(IProductCmptCategory category) {
-                return category.isDefaultForPolicyCmptTypeAttributes();
-            }
-        };
+        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
+                ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, ipsProject);
         defaultCategoryFinder.start(this);
         return defaultCategoryFinder.defaultCategory;
     }
@@ -882,36 +874,24 @@ public class ProductCmptType extends Type implements IProductCmptType {
     public IProductCmptCategory findDefaultCategoryForProductCmptTypeAttributes(IIpsProject ipsProject)
             throws CoreException {
 
-        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
-            @Override
-            protected boolean isDefault(IProductCmptCategory category) {
-                return category.isDefaultForProductCmptTypeAttributes();
-            }
-        };
+        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
+                ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, ipsProject);
         defaultCategoryFinder.start(this);
         return defaultCategoryFinder.defaultCategory;
     }
 
     @Override
     public IProductCmptCategory findDefaultCategoryForTableStructureUsages(IIpsProject ipsProject) throws CoreException {
-        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
-            @Override
-            protected boolean isDefault(IProductCmptCategory category) {
-                return category.isDefaultForTableStructureUsages();
-            }
-        };
+        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
+                ProductCmptPropertyType.TABLE_STRUCTURE_USAGE, ipsProject);
         defaultCategoryFinder.start(this);
         return defaultCategoryFinder.defaultCategory;
     }
 
     @Override
     public IProductCmptCategory findDefaultCategoryForValidationRules(IIpsProject ipsProject) throws CoreException {
-        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ipsProject) {
-            @Override
-            protected boolean isDefault(IProductCmptCategory category) {
-                return category.isDefaultForValidationRules();
-            }
-        };
+        DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
+                ProductCmptPropertyType.VALIDATION_RULE, ipsProject);
         defaultCategoryFinder.start(this);
         return defaultCategoryFinder.defaultCategory;
     }
@@ -1129,15 +1109,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     /**
-     * Returns a list containing the {@link IProductCmptProperty}s belonging to this
+     * Returns a list containing the product component properties belonging to this
      * {@link IProductCmptType} or the configured {@link IPolicyCmptType} in the order they are
-     * referenced by the {@link IProductCmptCategory}s of this {@link IProductCmptType}.
-     * <p>
-     * Returns an empty list if there are no such {@link IProductCmptProperty}s.
+     * referenced by the categories of this {@link IProductCmptType}.
      * 
-     * @param searchSupertypeHierarchy flag indicating whether to include
-     *            {@link IProductCmptProperty}s defined in the supertype hierarchy
-     * @param ipsProject the {@link IIpsProject} whose {@link IIpsObjectPath} is used for the search
+     * @param searchSupertypeHierarchy flag indicating whether to include product component
+     *            properties defined in the supertype hierarchy
      * 
      * @throws CoreException if an error occurs during the search
      */
@@ -1168,12 +1145,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     /**
-     * Returns whether at least two {@link IProductCmptCategory}s with the indicated name exist in
-     * the supertype hierarchy of this {@link IProductCmptType} of in this {@link IProductCmptType}
-     * itself.
-     * 
-     * @param categoryName the category name to check
-     * @param ipsProject the {@link IIpsProject} whose {@link IIpsObjectPath} is used for the search
+     * Returns whether at least two categories with the indicated name exist in the supertype
+     * hierarchy of this {@link IProductCmptType} of in this {@link IProductCmptType} itself.
      * 
      * @throws CoreException if an error occurs while searching the supertype hierarchy
      */
@@ -1213,6 +1186,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return -1;
     }
 
+    /**
+     * Sorts the categories of this {@link IProductCmptType} in such a way that all categories with
+     * {@link Position#LEFT} are stored before all categories with {@link Position#RIGHT}.
+     */
     public void sortCategoriesAccordingToPosition() {
         Collections.sort(categories.getBackingList(), new Comparator<IProductCmptCategory>() {
             @Override
@@ -1228,6 +1205,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
         });
     }
 
+    /**
+     * {@link Comparator} that can be used to sort product component properties according to the
+     * reference list stored in the {@link IProductCmptType}, with properties belonging to
+     * supertypes being sorted towards the beginning of the list.
+     */
     private static class ProductCmptPropertyComparator implements Comparator<IProductCmptProperty> {
 
         private final IIpsProject ipsProject;
@@ -1263,8 +1245,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         /**
-         * Compares the indices of the {@link IProductCmptProperty}s in the list of
-         * {@link IProductCmptPropertyReference}.
+         * Compares the indices of the given product component properties in the list of property
+         * references.
          * <p>
          * Properties whose indices are greater are sorted towards the end.
          */
@@ -1289,7 +1271,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         /**
-         * Compares the provided {@link IProductCmptType}s according to their subtype/supertype
+         * Compares the provided product component types according to their subtype/supertype
          * relationship.
          * <p>
          * Subtypes are sorted towards the end.
@@ -1312,26 +1294,31 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     }
 
-    private static abstract class DefaultCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {
+    /**
+     * {@link TypeHierarchyVisitor} that allows to search the supertype hierarchy for categories
+     * marked as default for a given {@link ProductCmptPropertyType}.
+     */
+    private static class DefaultCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {
+
+        private final ProductCmptPropertyType propertyType;
 
         private IProductCmptCategory defaultCategory;
 
-        protected DefaultCategoryFinder(IIpsProject ipsProject) {
+        private DefaultCategoryFinder(ProductCmptPropertyType propertyType, IIpsProject ipsProject) {
             super(ipsProject);
+            this.propertyType = propertyType;
         }
 
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             for (IProductCmptCategory category : currentType.getCategories()) {
-                if (isDefault(category)) {
+                if (category.isDefaultFor(propertyType)) {
                     defaultCategory = category;
                     return false;
                 }
             }
             return true;
         }
-
-        protected abstract boolean isDefault(IProductCmptCategory category);
 
     }
 
