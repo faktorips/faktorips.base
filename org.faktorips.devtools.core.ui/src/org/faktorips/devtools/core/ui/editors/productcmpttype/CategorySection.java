@@ -27,7 +27,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -74,6 +73,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.controller.fields.SectionEditField;
@@ -303,15 +303,7 @@ public class CategorySection extends IpsSection {
         }
 
         private void setLabelProvider(TreeViewer viewer) {
-            viewer.setLabelProvider(new LabelProvider() {
-                @Override
-                public String getText(Object element) {
-                    if (element instanceof IIpsElement) {
-                        return IpsUIPlugin.getLabel((IIpsElement)element);
-                    }
-                    return super.getText(element);
-                }
-
+            viewer.setLabelProvider(new LocalizedLabelProvider() {
                 @Override
                 public Image getImage(Object element) {
                     // Returns the default image of the corresponding property value
