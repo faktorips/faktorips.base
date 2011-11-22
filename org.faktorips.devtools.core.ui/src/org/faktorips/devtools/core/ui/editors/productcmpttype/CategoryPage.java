@@ -28,14 +28,18 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.PartAdapter;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dialogs.DialogMementoHelper;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.productcmpt.LinksSection;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
@@ -50,10 +54,12 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  */
 public class CategoryPage extends IpsObjectEditorPage {
 
+    private static final String PAGE_ID = "org.faktorips.devtools.core.ui.editors.productcmpttype.CategoryPage"; //$NON-NLS-1$
+
+    private EditorActivationListener editorActivationListener;
+
     public CategoryPage(ProductCmptTypeEditor editor) {
-        super(
-                editor,
-                "org.faktorips.devtools.core.ui.editors.productcmpttype.CategoryPage", Messages.CategoryPage_tagPageName); //$NON-NLS-1$
+        super(editor, PAGE_ID, Messages.CategoryPage_tagPageName);
     }
 
     @Override
@@ -61,7 +67,20 @@ public class CategoryPage extends IpsObjectEditorPage {
         super.createPageContent(formBody, toolkit);
 
         formBody.setLayout(createPageLayout(1, false));
-        new CategoryCompositionSection(formBody, toolkit);
+        CategoryCompositionSection categoryCompositionSection = new CategoryCompositionSection(formBody, toolkit);
+
+        addRecreateOnActivationListener(categoryCompositionSection);
+    }
+
+    private void addRecreateOnActivationListener(CategoryCompositionSection categoryCompositionSection) {
+        editorActivationListener = new EditorActivationListener(getIpsObjectEditor(), categoryCompositionSection);
+        getEditor().getEditorSite().getPage().addPartListener(editorActivationListener);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        getEditor().getEditorSite().getPage().removePartListener(editorActivationListener);
     }
 
     private IProductCmptType getProductCmptType() {
@@ -131,12 +150,12 @@ public class CategoryPage extends IpsObjectEditorPage {
         }
 
         private void createCategorySections() {
-            // Determine categories
+            // Determine lastCategoryState
             List<IProductCmptCategory> categories = new ArrayList<IProductCmptCategory>();
             try {
                 categories.addAll(getProductCmptType().findCategories(getProductCmptType().getIpsProject()));
             } catch (CoreException e) {
-                // Recover by not displaying any categories
+                // Recover by not displaying any lastCategoryState
                 IpsPlugin.log(e);
             }
 
@@ -169,7 +188,8 @@ public class CategoryPage extends IpsObjectEditorPage {
          * by the underlying model.
          * 
          * @param newFocusCategory the {@link IProductCmptCategory} that shall have focus after the
-         *            operation
+         *            operation or null to let the focus be automatically set to the first
+         *            {@link CategorySection}
          */
         public void recreateCategorySections(IProductCmptCategory newFocusCategory) {
             disposeCategorySections();
@@ -177,8 +197,19 @@ public class CategoryPage extends IpsObjectEditorPage {
             createLinksCategorySection();
 
             relayout();
-            setFocus(newFocusCategory);
+
+            if (newFocusCategory != null || getFirstCategory() != null) {
+                setFocus(newFocusCategory != null ? newFocusCategory : getFirstCategory());
+            }
+
             refresh();
+        }
+
+        private IProductCmptCategory getFirstCategory() {
+            if (categoriesToSections.size() == 0) {
+                return null;
+            }
+            return categoriesToSections.keySet().toArray(new IProductCmptCategory[categoriesToSections.size()])[0];
         }
 
         private void disposeCategorySections() {
@@ -188,6 +219,7 @@ public class CategoryPage extends IpsObjectEditorPage {
             if (linksCategorySection != null) {
                 linksCategorySection.dispose();
             }
+            categoriesToSections.clear();
         }
 
         /**
@@ -315,6 +347,56 @@ public class CategoryPage extends IpsObjectEditorPage {
                 }
             }
 
+        }
+
+    }
+
+    /**
+     * A listener that recreates the category sections on editor activation if a valid supertype can
+     * be found so that changes to the supertype hierarchy's categories are immediately reflected in
+     * the editor.
+     * <p>
+     * To preserve performance, the sections are only recreated if new categories have been added to
+     * the supertype hierarchy or categories have been deleted from the supertype hierarchy.
+     */
+    private static class EditorActivationListener extends PartAdapter {
+
+        private final IpsObjectEditor editor;
+
+        private final CategoryCompositionSection categoryCompositionSection;
+
+        /**
+         * Upon each editor activation, the listener remembers the composition of the categories
+         * from the supertype hierarchy. If categories have been added, deleted or moved, the
+         * category sections of the {@link CategoryCompositionSection} are recreated to reflect the
+         * current state.
+         */
+        private Object lastCategoryState;
+
+        private EditorActivationListener(IpsObjectEditor editor, CategoryCompositionSection categoryCompositionSection) {
+            this.editor = editor;
+            this.categoryCompositionSection = categoryCompositionSection;
+        }
+
+        @Override
+        public void partActivated(IWorkbenchPartReference partRef) {
+            if (partRef.getPart(false) != editor) {
+                return;
+            }
+
+            IProductCmptType productCmptType = (IProductCmptType)editor.getIpsObject();
+            try {
+                List<IProductCmptCategory> categories = productCmptType.findCategories(productCmptType.getIpsProject());
+                if (lastCategoryState == null || !lastCategoryState.equals(categories)) {
+                    if (categoryCompositionSection != null
+                            && productCmptType.hasExistingSupertype(productCmptType.getIpsProject())) {
+                        categoryCompositionSection.recreateCategorySections(null);
+                    }
+                    lastCategoryState = categories;
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
         }
 
     }
