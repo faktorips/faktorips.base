@@ -1,0 +1,103 @@
+/*******************************************************************************
+ * Copyright (c) 2005-2011 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ *******************************************************************************/
+
+package org.faktorips.devtools.core.ui.wizards.productcmpt;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+
+import org.faktorips.abstracttest.SingletonMockHelper;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IType;
+import org.junit.Test;
+
+public class NewProductCmptPMOTest {
+
+    private static final String PROJECT_NAME = "projectName";
+
+    @Test
+    public void testUpdateBaseTypeList_noProject() throws Exception {
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+
+        mockModelAndPlugin();
+
+        pmo.setIpsProject(PROJECT_NAME);
+
+        assertTrue(pmo.getBaseTypes().isEmpty());
+    }
+
+    @Test
+    public void testUpdateBaseTypeList_withProject() throws Exception {
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+
+        when(ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE)).thenReturn(
+                ipsSrcFiles.toArray(new IIpsSrcFile[0]));
+        when(ipsProject.getName()).thenReturn(PROJECT_NAME);
+
+        IIpsModel ipsModel = mockModelAndPlugin();
+        when(ipsModel.getIpsProject(PROJECT_NAME)).thenReturn(ipsProject);
+
+        pmo.setIpsProject(ipsProject.getName());
+        assertTrue(pmo.getBaseTypes().isEmpty());
+
+        IIpsSrcFile ipsSrcFile1 = mock(IIpsSrcFile.class);
+        IProductCmptType productCmptType1 = mock(IProductCmptType.class);
+        IIpsSrcFile ipsSrcFile2 = mock(IIpsSrcFile.class);
+        IProductCmptType productCmptType2 = mock(IProductCmptType.class);
+        IIpsSrcFile ipsSrcFile3 = mock(IIpsSrcFile.class);
+        IProductCmptType productCmptType3 = mock(IProductCmptType.class);
+        ipsSrcFiles.add(ipsSrcFile1);
+        ipsSrcFiles.add(ipsSrcFile2);
+        ipsSrcFiles.add(ipsSrcFile3);
+        when(ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE)).thenReturn(
+                ipsSrcFiles.toArray(new IIpsSrcFile[0]));
+
+        when(ipsSrcFile1.getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE)).thenReturn("true");
+        when(ipsSrcFile1.getIpsObject()).thenReturn(productCmptType1);
+        when(ipsSrcFile2.getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE)).thenReturn("false");
+        when(ipsSrcFile2.getIpsObject()).thenReturn(productCmptType2);
+        when(ipsSrcFile3.getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE)).thenReturn(null);
+        when(ipsSrcFile3.getIpsObject()).thenReturn(productCmptType3);
+
+        when(ipsSrcFile3.getPropertyValue(IType.PROPERTY_SUPERTYPE)).thenReturn("findSuperType");
+
+        when(ipsProject.findIpsSrcFile(new QualifiedNameType("findSuperType", IpsObjectType.PRODUCT_CMPT_TYPE)))
+                .thenReturn(ipsSrcFile1);
+
+        pmo.setIpsProject(ipsProject.getName());
+        assertTrue(pmo.getBaseTypes().size() == 2);
+        assertTrue(pmo.getBaseTypes().contains(productCmptType2));
+        assertTrue(pmo.getBaseTypes().contains(productCmptType3));
+    }
+
+    private IIpsModel mockModelAndPlugin() {
+        IpsPlugin ipsPlugin = mock(IpsPlugin.class);
+        IIpsModel ipsModel = mock(IIpsModel.class);
+        SingletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
+        when(ipsPlugin.getIpsModel()).thenReturn(ipsModel);
+        return ipsModel;
+    }
+
+}

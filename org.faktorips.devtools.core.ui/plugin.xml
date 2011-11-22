@@ -114,7 +114,7 @@
                tooltip="%org.faktorips.devtools.core.ui.wizards.enumcontent.OpenNewEnumContentWizardAction.tooltip">
          </action>
          <action
-               class="org.faktorips.devtools.core.ui.wizards.productcmpt.OpenNewProductCmptWizardAction"
+               class="org.faktorips.devtools.core.ui.wizards.productcmpt_old.OpenNewProductCmptWizardAction"
                icon="icons/NewProductCmptWizard.gif"
                id="org.faktorips.devtools.actions.OpenNewProductCmptWizardAction"
                label="%org.faktorips.devtools.actions.OpenNewProductCmptWizardAction.label"
@@ -829,7 +829,7 @@
       	</wizard>
       <wizard
             category="org.faktorips.devtools"
-            class="org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductCmptWizard"
+            class="org.faktorips.devtools.core.ui.wizards.productcmpt_old.NewProductCmptWizard"
             icon="icons/NewProductCmptWizard.gif"
             id="newProductCmptWizard"
             name="%NewProductCmptWizard.name">

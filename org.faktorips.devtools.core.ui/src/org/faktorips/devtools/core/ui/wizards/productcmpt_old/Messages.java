@@ -11,13 +11,13 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.productcmpt;
+package org.faktorips.devtools.core.ui.wizards.productcmpt_old;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.productcmpt.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.productcmpt_old.messages"; //$NON-NLS-1$
 
     static {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
@@ -27,6 +27,15 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String CopyProductCmptWizard_titleCopyProductComponent;
+
     public static String ProductCmptPage_title;
+    public static String ProductCmptPage_labelTemplate;
+    public static String ProductCmptPage_labelVersionId;
+    public static String ProductCmptPage_labelConstNamePart;
+    public static String ProductCmptPage_labelFullName;
+    public static String ProductCmptPage_labelRuntimeId;
+    public static String ProductCmptPage_buttonDefaultRuntimeId;
+    public static String ProductCmptPage_msgRuntimeIdCollision;
 
 }

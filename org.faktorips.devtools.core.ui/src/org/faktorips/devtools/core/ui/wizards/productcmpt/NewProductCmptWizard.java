@@ -13,30 +13,60 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWizard;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
-import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
 
 /**
  * Wizard to create a new product component.
+ * <p>
+ * This wizard is used to create new product components. Normally you start with the fist page by
+ * selecting an abstract product component type from a list. The list is created in context to the
+ * selected project.
  */
-public class NewProductCmptWizard extends NewIpsObjectWizard {
+public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
 
-    private ProductCmptPage productCmptPage;
+    private NewProductCmptPMO newProductCmptPMO;
 
     public NewProductCmptWizard() {
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "wizards/NewProductCmptWizard.png")); //$NON-NLS-1$
+        newProductCmptPMO = new NewProductCmptPMO();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
-        productCmptPage = new ProductCmptPage(selection);
-        return productCmptPage;
+    public void addPages() {
+        addPage(new TypeSelectionPage(newProductCmptPMO));
+        addPage(new ProductCmptPage());
+        addPage(new FolderAndPackagePage());
+    }
+
+    @Override
+    public boolean performFinish() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void init(IWorkbench workbench, IStructuredSelection selection) {
+        Object element = selection.getFirstElement();
+        if (element instanceof IAdaptable) {
+            IAdaptable adaptableObject = (IAdaptable)element;
+            IResource resource = (IResource)adaptableObject.getAdapter(IResource.class);
+            if (resource != null) {
+                IProject project = resource.getProject();
+                newProductCmptPMO.setIpsProject(project.getName());
+            }
+        }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
     }
 }
