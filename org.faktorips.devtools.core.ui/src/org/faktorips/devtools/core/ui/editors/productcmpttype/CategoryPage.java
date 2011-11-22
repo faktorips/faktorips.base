@@ -56,7 +56,7 @@ public class CategoryPage extends IpsObjectEditorPage {
 
     private static final String PAGE_ID = "org.faktorips.devtools.core.ui.editors.productcmpttype.CategoryPage"; //$NON-NLS-1$
 
-    private EditorActivationListener editorActivationListener;
+    private CategorySectionRefreshizer categorySectionRefreshizer;
 
     public CategoryPage(ProductCmptTypeEditor editor) {
         super(editor, PAGE_ID, Messages.CategoryPage_tagPageName);
@@ -73,14 +73,24 @@ public class CategoryPage extends IpsObjectEditorPage {
     }
 
     private void addRecreateOnActivationListener(CategoryCompositionSection categoryCompositionSection) {
-        editorActivationListener = new EditorActivationListener(getIpsObjectEditor(), categoryCompositionSection);
-        getEditor().getEditorSite().getPage().addPartListener(editorActivationListener);
+        categorySectionRefreshizer = new CategorySectionRefreshizer(getIpsObjectEditor(), this,
+                categoryCompositionSection);
+        getEditor().getEditorSite().getPage().addPartListener(categorySectionRefreshizer);
     }
 
     @Override
     public void dispose() {
+        if (categorySectionRefreshizer != null) {
+            getEditor().getEditorSite().getPage().removePartListener(categorySectionRefreshizer);
+        }
         super.dispose();
-        getEditor().getEditorSite().getPage().removePartListener(editorActivationListener);
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        if (active) {
+            categorySectionRefreshizer.refreshCategorySections();
+        }
     }
 
     private IProductCmptType getProductCmptType() {
@@ -352,16 +362,16 @@ public class CategoryPage extends IpsObjectEditorPage {
     }
 
     /**
-     * A listener that recreates the category sections on editor activation if a valid supertype can
-     * be found so that changes to the supertype hierarchy's categories are immediately reflected in
-     * the editor.
+     * Provides functionality to recreate the category sections if a valid supertype can be found so
+     * that changes to the supertype hierarchy's categories are reflected in the editor.
      * <p>
-     * To preserve performance, the sections are only recreated if new categories have been added to
-     * the supertype hierarchy or categories have been deleted from the supertype hierarchy.
+     * To preserve performance, the sections are only recreated if necessary.
      */
-    private static class EditorActivationListener extends PartAdapter {
+    private static class CategorySectionRefreshizer extends PartAdapter {
 
         private final IpsObjectEditor editor;
+
+        private final IpsObjectEditorPage page;
 
         private final CategoryCompositionSection categoryCompositionSection;
 
@@ -373,17 +383,27 @@ public class CategoryPage extends IpsObjectEditorPage {
          */
         private Object lastCategoryState;
 
-        private EditorActivationListener(IpsObjectEditor editor, CategoryCompositionSection categoryCompositionSection) {
+        private CategorySectionRefreshizer(IpsObjectEditor editor, IpsObjectEditorPage page,
+                CategoryCompositionSection categoryCompositionSection) {
+
             this.editor = editor;
+            this.page = page;
             this.categoryCompositionSection = categoryCompositionSection;
         }
 
         @Override
         public void partActivated(IWorkbenchPartReference partRef) {
-            if (partRef.getPart(false) != editor) {
+            /*
+             * Only refresh if the category page is active (if it is not, the refresh will be
+             * handled by the page's setActive(boolean) method).
+             */
+            if (partRef.getPart(false) != editor || !page.equals(editor.getActiveIpsObjectEditorPage())) {
                 return;
             }
+            refreshCategorySections();
+        }
 
+        private void refreshCategorySections() {
             IProductCmptType productCmptType = (IProductCmptType)editor.getIpsObject();
             try {
                 List<IProductCmptCategory> categories = productCmptType.findCategories(productCmptType.getIpsProject());
