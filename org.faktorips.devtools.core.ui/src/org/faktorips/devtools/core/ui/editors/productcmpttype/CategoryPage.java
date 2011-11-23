@@ -32,7 +32,9 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -376,12 +378,12 @@ public class CategoryPage extends IpsObjectEditorPage {
         private final CategoryCompositionSection categoryCompositionSection;
 
         /**
-         * Upon each editor activation, the listener remembers the composition of the categories
-         * from the supertype hierarchy. If categories have been added, deleted or moved, the
-         * category sections of the {@link CategoryCompositionSection} are recreated to reflect the
-         * current state.
+         * Upon each refresh, the {@link CategorySectionRefreshizer} remembers the composition of
+         * the categories from the supertype hierarchy. If categories have been added, deleted or
+         * moved, the category sections of the {@link CategoryCompositionSection} are recreated to
+         * reflect the current state.
          */
-        private Object lastCategoryState;
+        private List<CategoryState> lastCategoryState;
 
         private CategorySectionRefreshizer(IpsObjectEditor editor, IpsObjectEditorPage page,
                 CategoryCompositionSection categoryCompositionSection) {
@@ -404,19 +406,75 @@ public class CategoryPage extends IpsObjectEditorPage {
         }
 
         private void refreshCategorySections() {
-            IProductCmptType productCmptType = (IProductCmptType)editor.getIpsObject();
             try {
-                List<IProductCmptCategory> categories = productCmptType.findCategories(productCmptType.getIpsProject());
-                if (lastCategoryState == null || !lastCategoryState.equals(categories)) {
+                List<CategoryState> categoryState = obtainCategoryState();
+                if (lastCategoryState == null || !lastCategoryState.equals(categoryState)) {
                     if (categoryCompositionSection != null
-                            && productCmptType.hasExistingSupertype(productCmptType.getIpsProject())) {
+                            && getProductCmptType().hasExistingSupertype(getIpsProject())) {
                         categoryCompositionSection.recreateCategorySections(null);
                     }
-                    lastCategoryState = categories;
+                    lastCategoryState = categoryState;
                 }
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
+        }
+
+        private List<CategoryState> obtainCategoryState() throws CoreException {
+            List<IProductCmptCategory> categories = getProductCmptType().findCategories(getIpsProject());
+            List<CategoryState> categoryState = new ArrayList<CategoryState>(categories.size());
+            for (IProductCmptCategory category : categories) {
+                categoryState.add(new CategoryState(category.getId(), category.getPosition()));
+            }
+            return categoryState;
+        }
+
+        private IProductCmptType getProductCmptType() {
+            return (IProductCmptType)editor.getIpsObject();
+        }
+
+        private IIpsProject getIpsProject() {
+            return editor.getIpsProject();
+        }
+
+        /**
+         * Stores the information necessary to determine whether a given
+         * {@link IProductCmptCategory} has changed in such a way that a recreation of the category
+         * sections is necessary.
+         */
+        private static class CategoryState {
+
+            private final String id;
+
+            private final Position position;
+
+            private CategoryState(String id, Position position) {
+                this.id = id;
+                this.position = position;
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (obj == this) {
+                    return true;
+                }
+                if (!(obj instanceof CategoryState)) {
+                    return false;
+                }
+                CategoryState categoryWrapper = (CategoryState)obj;
+                boolean idEqual = id.equals(categoryWrapper.id);
+                boolean positionEqual = position.equals(categoryWrapper.position);
+                return idEqual && positionEqual;
+            }
+
+            @Override
+            public int hashCode() {
+                int result = 17;
+                result = 31 * result + id.hashCode();
+                result = 31 * result + position.hashCode();
+                return result;
+            }
+
         }
 
     }
