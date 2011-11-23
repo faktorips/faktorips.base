@@ -383,7 +383,7 @@ public class CategoryPage extends IpsObjectEditorPage {
          * moved, the category sections of the {@link CategoryCompositionSection} are recreated to
          * reflect the current state.
          */
-        private List<CategoryState> lastCategoryState;
+        private Object lastCategoryState;
 
         private CategorySectionRefreshizer(IpsObjectEditor editor, IpsObjectEditorPage page,
                 CategoryCompositionSection categoryCompositionSection) {
@@ -407,7 +407,7 @@ public class CategoryPage extends IpsObjectEditorPage {
 
         private void refreshCategorySections() {
             try {
-                List<CategoryState> categoryState = obtainCategoryState();
+                Object categoryState = obtainCategoryState();
                 if (lastCategoryState == null || !lastCategoryState.equals(categoryState)) {
                     if (categoryCompositionSection != null
                             && getProductCmptType().hasExistingSupertype(getIpsProject())) {
@@ -420,7 +420,7 @@ public class CategoryPage extends IpsObjectEditorPage {
             }
         }
 
-        private List<CategoryState> obtainCategoryState() throws CoreException {
+        private Object obtainCategoryState() throws CoreException {
             List<IProductCmptCategory> categories = getProductCmptType().findCategories(getIpsProject());
             List<CategoryState> categoryState = new ArrayList<CategoryState>(categories.size());
             for (IProductCmptCategory category : categories) {
