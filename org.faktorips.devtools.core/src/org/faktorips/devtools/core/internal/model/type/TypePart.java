@@ -14,14 +14,15 @@
 package org.faktorips.devtools.core.internal.model.type;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypePart;
 import org.w3c.dom.Element;
 
 /**
- * Abstract base class for all {@link IIpsObjectPart}s belonging to {@link IType}s.
+ * Abstract base class for all IPS object parts belonging to policy component types or product
+ * component types.
  * 
  * @author Alexander Weickmann
  */
@@ -57,19 +58,46 @@ public abstract class TypePart extends BaseIpsObjectPart implements ITypePart {
         valueChanged(oldModifier, modifier);
     }
 
-    @Override
+    /**
+     * Implementation of {@link IProductCmptProperty#setCategory(String)}.
+     * <p>
+     * This method is implemented in {@link TypePart} because - as we cannot use multiple
+     * inheritance - we are not able to add a base implementation for product component properties
+     * to our class hierarchy. Type parts that implement the {@link IProductCmptProperty} interface
+     * immediately gain this implementation.
+     * 
+     * @see IProductCmptProperty
+     */
     public void setCategory(String category) {
         String oldValue = this.category;
         this.category = category;
         valueChanged(oldValue, category, PROPERTY_CATEGORY);
     }
 
-    @Override
+    /**
+     * Implementation of {@link IProductCmptProperty#getCategory()}.
+     * <p>
+     * This method is implemented in {@link TypePart} because - as we cannot use multiple
+     * inheritance - we are not able to add a base implementation for product component properties
+     * to our class hierarchy. Type parts that implement the {@link IProductCmptProperty} interface
+     * immediately gain this implementation.
+     * 
+     * @see IProductCmptProperty
+     */
     public String getCategory() {
         return category;
     }
 
-    @Override
+    /**
+     * Implementation of {@link IProductCmptProperty#hasCategory()}.
+     * <p>
+     * This method is implemented in {@link TypePart} because - as we cannot use multiple
+     * inheritance - we are not able to add a base implementation for product component properties
+     * to our class hierarchy. Type parts that implement the {@link IProductCmptProperty} interface
+     * immediately gain this implementation.
+     * 
+     * @see IProductCmptProperty
+     */
     public boolean hasCategory() {
         return !category.isEmpty();
     }

@@ -58,25 +58,6 @@ public interface ITypePart extends IIpsObjectPart, IDescribedElement, ILabeledEl
     public void setModifier(Modifier modifier);
 
     /**
-     * Returns the category this part is assigned to.
-     */
-    public String getCategory();
-
-    /**
-     * Sets the name of the category this part is assigned to.
-     * 
-     * @param category The name of the category this part is assigned to
-     */
-    public void setCategory(String category);
-
-    /**
-     * Returns whether this part is assigned to a specific category.
-     * <p>
-     * This operation is a shortcut for {@code !getCategory().isEmpty()}.
-     */
-    public boolean hasCategory();
-
-    /**
      * Returns the {@link IProductCmptType} this property belongs to or null if the referenced
      * {@link IProductCmptType} could not be found.
      * 

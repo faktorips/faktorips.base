@@ -684,4 +684,18 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      */
     public boolean moveCategories(List<IProductCmptCategory> categories, boolean up);
 
+    /**
+     * Assigns the provided {@link IProductCmptProperty} to the indicated category.
+     * <p>
+     * If the provided {@link IProductCmptProperty} belongs to an {@link IPolicyCmptType}, the
+     * change is not forwarded immediately to the {@link IPolicyCmptType} but only as soon as the
+     * {@link IProductCmptType} is saved.
+     * 
+     * @param property the {@link IProductCmptProperty} to assign to another
+     *            {@link IProductCmptCategory}
+     * @param category the name of the {@link IProductCmptCategory} to assign the
+     *            {@link IProductCmptProperty} to
+     */
+    public void changeCategoryAndDeferPolicyChange(IProductCmptProperty property, String category);
+
 }

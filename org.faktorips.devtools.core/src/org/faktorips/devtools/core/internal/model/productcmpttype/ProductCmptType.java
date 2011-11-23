@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Method;
@@ -75,6 +77,7 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -95,6 +98,24 @@ public class ProductCmptType extends Type implements IProductCmptType {
     private final IpsObjectPartCollection<IProductCmptTypeAssociation> associations;
     private final IpsObjectPartCollection<IProductCmptCategory> categories;
     private final IpsObjectPartCollection<IProductCmptPropertyReference> propertyReferences;
+
+    /**
+     * A map that stores changes to category assignments of product component properties belonging
+     * to policy component types.
+     * <p>
+     * If we would directly set the category of such properties, using
+     * {@link IProductCmptProperty#setCategory(String)}, we would need to immediately save the
+     * {@link IIpsSrcFile} of the {@link IPolicyCmptType} if it was not dirty. As this is not the
+     * expected behavior for clients, we instead want to save the policy {@link IIpsSrcFile} only if
+     * the client saves the category composition in the {@link IProductCmptType}.
+     * <p>
+     * Therefore, we remember all changes of category assignments for product component properties
+     * belonging to policy component types done by the client. We persist them in the
+     * {@link IPolicyCmptType} as soon as the client saves the {@link IProductCmptType}. In the
+     * meantime, finders must take this map into account to determine the correct
+     * {@link IProductCmptCategory} of an {@link IProductCmptProperty}.
+     */
+    private Map<IProductCmptProperty, String> policyPropertyCategoryChanges = new HashMap<IProductCmptProperty, String>();
 
     public ProductCmptType(IIpsSrcFile file) {
         super(file);
@@ -349,8 +370,31 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 String.valueOf(configurationForPolicyCmptType));
         element.setAttribute(PROPERTY_LAYER_SUPERTYPE, String.valueOf(layerSupertype));
         element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
-
         element.setAttribute(PROPERTY_ICON_FOR_INSTANCES, instancesIconPath);
+    }
+
+    @Override
+    public Element toXml(Document doc) {
+        Element element = super.toXml(doc);
+        if (!policyPropertyCategoryChanges.isEmpty()) {
+            IIpsSrcFile ipsSrcFile = null;
+            for (IProductCmptProperty property : policyPropertyCategoryChanges.keySet()) {
+                property.setCategory(policyPropertyCategoryChanges.get(property));
+                ipsSrcFile = property.getIpsSrcFile();
+            }
+
+            if (ipsSrcFile == null) {
+                // Not possible because of isEmpty() check above
+                throw new RuntimeException();
+            }
+
+            try {
+                ipsSrcFile.save(true, null);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return element;
     }
 
     @Override
@@ -1203,6 +1247,17 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 return 0;
             }
         });
+    }
+
+    @Override
+    public void changeCategoryAndDeferPolicyChange(IProductCmptProperty property, String category) {
+        // Immediately change product component type properties
+        if (!property.isPolicyCmptTypeProperty()) {
+            property.setCategory(category);
+            return;
+        }
+
+        policyPropertyCategoryChanges.put(property, category);
     }
 
     /**

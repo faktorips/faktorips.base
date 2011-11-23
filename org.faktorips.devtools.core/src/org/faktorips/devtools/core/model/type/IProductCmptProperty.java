@@ -14,10 +14,13 @@
 package org.faktorips.devtools.core.model.type;
 
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 /**
  * An abstraction of properties (defined by a type) that are configured by product components. Such
@@ -73,5 +76,40 @@ public interface IProductCmptProperty extends ITypePart {
      * @param propertyValue the {@link IPropertyValue} to check for correspondence
      */
     public boolean isPropertyFor(IPropertyValue propertyValue);
+
+    /**
+     * Returns the name of the {@link IProductCmptCategory} this {@link IProductCmptProperty} is
+     * assigned to.
+     * <p>
+     * <strong>Important:</strong> The returned string is always the name that is stored in the
+     * {@link IProductCmptProperty} itself. However, this does not always reflect the property's
+     * real {@link IProductCmptCategory}.
+     * <ul>
+     * <li>If the string is empty or the indicated {@link IProductCmptCategory} cannot be found, the
+     * {@link IProductCmptProperty} is automatically assigned to the default
+     * {@link IProductCmptCategory} corresponding to this property's {@link ProductCmptPropertyType}.
+     * <li>If this {@link IProductCmptProperty} belongs to an {@link IPolicyCmptType} and the
+     * category assignment is changed using
+     * {@link IProductCmptType#changeCategoryAndDeferPolicyChange(IProductCmptProperty, String)}, this
+     * change is not immediately reflected by this getter as the method defers saving the
+     * {@link IPolicyCmptType} until the {@link IProductCmptType} is saved.
+     * </ul>
+     */
+    public String getCategory();
+
+    /**
+     * Sets the name of the {@link IProductCmptCategory} this {@link IProductCmptProperty} is
+     * assigned to.
+     * 
+     * @see #getCategory()
+     */
+    public void setCategory(String category);
+
+    /**
+     * Returns whether this part is assigned to a specific {@link IProductCmptCategory}.
+     * <p>
+     * This operation is a shortcut for {@code !getCategory().isEmpty()}.
+     */
+    public boolean hasCategory();
 
 }

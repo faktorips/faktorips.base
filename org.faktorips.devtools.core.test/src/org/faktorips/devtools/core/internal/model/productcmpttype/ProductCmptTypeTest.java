@@ -1915,6 +1915,28 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(4, categories.size());
     }
 
+    @Test
+    public void testChangeCategoryAndDeferPolicyChange_ImmediatelyChangeProductCmptTypeProperty() {
+        IProductCmptProperty productProperty = createProductAttributeProperty(productCmptType, "productAttribute");
+
+        productCmptType.changeCategoryAndDeferPolicyChange(productProperty, "otherCategory");
+
+        assertEquals("otherCategory", productProperty.getCategory());
+    }
+
+    @Test
+    public void testChangeCategoryAndPolicyChange_OnlyChangePolicyTypeUponProductTypeSave() throws CoreException {
+        IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
+        policyProperty.setCategory("beforeCategory");
+
+        productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, "otherCategory");
+
+        assertEquals("beforeCategory", policyProperty.getCategory());
+
+        productCmptType.getIpsSrcFile().save(true, null);
+        assertEquals("otherCategory", policyProperty.getCategory());
+    }
+
     /**
      * Deletes all {@link IProductCmptCategory}s of the provided {@link IProductCmptType}s.
      * <p>
