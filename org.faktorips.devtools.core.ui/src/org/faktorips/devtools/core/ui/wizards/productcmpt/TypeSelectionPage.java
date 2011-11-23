@@ -22,7 +22,10 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -30,10 +33,8 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
@@ -53,6 +54,15 @@ public class TypeSelectionPage extends WizardPage {
         setTitle("Which kind of product component do you want to create?");
         resourManager = new LocalResourceManager(JFaceResources.getResources());
         bindingContext = new BindingContext();
+        pmo.addPropertyChangeListener(new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (isCurrentPage()) {
+                    getContainer().updateButtons();
+                }
+            }
+        });
     }
 
     @Override
@@ -66,19 +76,22 @@ public class TypeSelectionPage extends WizardPage {
         IpsProjectRefControl ipsProjectRefControl = toolkit.createIpsProjectRefControl(twoColumnComposite);
         bindingContext.bindContent(ipsProjectRefControl, pmo, NewProductCmptPMO.PROPERTY_IPSPROJECT);
 
-        ((GridData)toolkit.createLabel(twoColumnComposite, "Type:").getLayoutData()).horizontalSpan = 2;
+        toolkit.createLabel(composite, "Type:");
 
         Composite typeSelection = toolkit.createGridComposite(composite, 2, true, false);
-        ListViewer listViewer = new ListViewer(typeSelection);
+        TableViewer listViewer = new TableViewer(typeSelection);
         listViewer.setContentProvider(new ArrayContentProvider());
-        listViewer.setLabelProvider(new LocalizedLabelProvider());
-        listViewer.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        listViewer.setLabelProvider(new ProductCmptWizardTypeLabelProvider());
+        GridData listLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        listLayoutData.heightHint = 100;
+        listViewer.getControl().setLayoutData(listLayoutData);
         StructuredViewerField<IProductCmptType> listViewerField = new StructuredViewerField<IProductCmptType>(
                 listViewer, IProductCmptType.class);
         bindingContext.bindContent(listViewerField, pmo, NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE);
         listInputUpdater = new ListInputUpdater(listViewer, pmo);
         listInputUpdater.updateListViewer();
         pmo.addPropertyChangeListener(listInputUpdater);
+        listViewer.addDoubleClickListener(new DoubleClickListener(this));
 
         Composite descriptionComposite = toolkit.createGridComposite(typeSelection, 1, false, false);
 
@@ -104,8 +117,11 @@ public class TypeSelectionPage extends WizardPage {
         fontData.setStyle(SWT.BOLD);
         descriptionTitle.setFont(resourManager.createFont(FontDescriptor.createFrom(fontData)));
 
-        final Text description = new Text(parent, SWT.MULTI | SWT.WRAP | SWT.READ_ONLY);
-        toolkit.createMultilineText(descriptionComposite);
+        GridData descriptionLayoutData = listLayoutData;
+        descriptionLayoutData.heightHint = 50;
+        final Label description = toolkit.createLabel(descriptionComposite, StringUtils.EMPTY, SWT.WRAP,
+                descriptionLayoutData);
+
         bindingContext.add(new ControlPropertyBinding(description, pmo, NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE,
                 IProductCmptType.class) {
 
@@ -127,6 +143,11 @@ public class TypeSelectionPage extends WizardPage {
     }
 
     @Override
+    public boolean isPageComplete() {
+        return pmo.getIpsProject() != null && pmo.getSelectedBaseType() != null;
+    }
+
+    @Override
     public void dispose() {
         super.dispose();
         resourManager.dispose();
@@ -136,10 +157,10 @@ public class TypeSelectionPage extends WizardPage {
 
     private static class ListInputUpdater implements PropertyChangeListener {
 
-        private final ListViewer listViewer;
+        private final Viewer listViewer;
         private final NewProductCmptPMO pmo;
 
-        public ListInputUpdater(ListViewer listViewer, NewProductCmptPMO pmo) {
+        public ListInputUpdater(Viewer listViewer, NewProductCmptPMO pmo) {
             this.listViewer = listViewer;
             this.pmo = pmo;
         }
@@ -155,6 +176,21 @@ public class TypeSelectionPage extends WizardPage {
             listViewer.setInput(pmo.getBaseTypes());
         }
 
+    }
+
+    private static class DoubleClickListener implements IDoubleClickListener {
+
+        private final TypeSelectionPage page;
+
+        public DoubleClickListener(TypeSelectionPage page) {
+            this.page = page;
+        }
+
+        @Override
+        public void doubleClick(DoubleClickEvent event) {
+            page.getWizard().getContainer().showPage(page.getNextPage());
+
+        }
     }
 
 }

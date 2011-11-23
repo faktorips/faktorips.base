@@ -62,9 +62,9 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
     }
 
     /**
-     * Public for testing purposes.
+     * Package private for testing purposes.
      */
-    public IconDesc getProductCmptIconDesc(IProductCmptType type) {
+    /* private */IconDesc getProductCmptIconDesc(IProductCmptType type) {
         if (type == null) {
             return new DefaultIconDesc();
         }

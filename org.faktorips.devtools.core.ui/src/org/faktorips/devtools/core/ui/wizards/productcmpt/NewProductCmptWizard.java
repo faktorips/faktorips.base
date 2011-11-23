@@ -42,7 +42,7 @@ public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
     @Override
     public void addPages() {
         addPage(new TypeSelectionPage(newProductCmptPMO));
-        addPage(new ProductCmptPage());
+        addPage(new ProductCmptPage(newProductCmptPMO));
         addPage(new FolderAndPackagePage());
     }
 

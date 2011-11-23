@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.type.TypeHierarchy;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -33,13 +34,19 @@ public class NewProductCmptPMO extends PresentationModelObject {
 
     public static final String PROPERTY_IPSPROJECT = "ipsProject"; //$NON-NLS-1$
 
-    public static final String PROPERTY_SELECTED_BASE_TYPE = "selectedBaseType";
+    public static final String PROPERTY_SELECTED_BASE_TYPE = "selectedBaseType"; //$NON-NLS-1$
+
+    public static final String PROPERTY_CAN_EDIT_RUNTIME_ID = "canEditRuntimeId"; //$NON-NLS-1$
+
+    public static final String PROPERTY_SELECTED_TYPE = "selectedType"; //$NON-NLS-1$
 
     private String ipsProject;
 
     private IProductCmptType selectedBaseType;
 
-    private List<IProductCmptType> baseTypes;
+    private IProductCmptType selectedType;
+
+    private List<IProductCmptType> baseTypes = new ArrayList<IProductCmptType>();
 
     /**
      * @param ipsProject The ipsProject to set.
@@ -48,6 +55,7 @@ public class NewProductCmptPMO extends PresentationModelObject {
         String oldValue = this.ipsProject;
         this.ipsProject = ipsProject;
         updateBaseTypeList();
+        selectedBaseType = null;
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_IPSPROJECT, oldValue, ipsProject));
     }
 
@@ -106,7 +114,10 @@ public class NewProductCmptPMO extends PresentationModelObject {
      * @return Returns the baseTypes.
      */
     public List<IProductCmptType> getBaseTypes() {
-        return baseTypes;
+        List<IProductCmptType> sortedBaseTypes = new ArrayList<IProductCmptType>(baseTypes);
+        // TODO Sort the list by any criteria
+        // Collections.sort(sortedBaseTypes, new StrutcureComparator(baseTypes, findIpsProject()));
+        return sortedBaseTypes;
     }
 
     /**
@@ -120,9 +131,46 @@ public class NewProductCmptPMO extends PresentationModelObject {
     }
 
     /**
+     * @param selectedType The selectedType to set.
+     */
+    public void setSelectedType(IProductCmptType selectedType) {
+        IProductCmptType oldSelection = this.selectedType;
+        this.selectedType = selectedType;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_SELECTED_TYPE, oldSelection, selectedType));
+    }
+
+    /**
+     * @return Returns the selectedType.
+     */
+    public IProductCmptType getSelectedType() {
+        return selectedType;
+    }
+
+    /**
      * @return Returns the selectedBaseType.
      */
     public IProductCmptType getSelectedBaseType() {
         return selectedBaseType;
+    }
+
+    public boolean isCanEditRuntimeId() {
+        return IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId();
+    }
+
+    public List<IProductCmptType> getSubtypes() {
+        ArrayList<IProductCmptType> result = new ArrayList<IProductCmptType>();
+        if (selectedBaseType == null) {
+            return result;
+        }
+        try {
+            TypeHierarchy subtypeHierarchy = TypeHierarchy.getSubtypeHierarchy(selectedBaseType, findIpsProject());
+            List<IType> subtypes = subtypeHierarchy.getAllSubtypes(selectedBaseType);
+            for (IType type : subtypes) {
+                result.add((IProductCmptType)type);
+            }
+            return result;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 }

@@ -294,18 +294,21 @@ public class UIToolkit {
         return createLabel(parent, text, SWT.NONE);
     }
 
-    public Label createLabel(Composite parent, String text, int swtFlags) {
+    public Label createLabel(Composite parent, String text, int style) {
+        return createLabel(parent, text, style, new GridData(SWT.FILL, SWT.CENTER, false, false));
+    }
+
+    public Label createLabel(Composite parent, String text, int style, GridData gridData) {
         Label newLabel;
         if (formToolkit != null) {
-            newLabel = formToolkit.createLabel(parent, text, swtFlags);
+            newLabel = formToolkit.createLabel(parent, text, style);
         } else {
-            newLabel = new Label(parent, swtFlags);
+            newLabel = new Label(parent, style);
             // newLabel.setBackground(parent.getBackground());
             if (text != null) {
                 newLabel.setText(text);
             }
         }
-        GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false);
         newLabel.setLayoutData(gridData);
         return newLabel;
     }

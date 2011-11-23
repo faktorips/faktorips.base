@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.pctype;
+package org.faktorips.devtools.core.internal.model.type;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -40,7 +40,7 @@ import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TypeHierarchyTestProductCmptType extends AbstractIpsPluginTest {
+public class TypeHierarchyProductCmptTypeTest extends AbstractIpsPluginTest {
     private IIpsProject pdProject;
     private IIpsPackageFragmentRoot pdRootFolder;
     private IIpsPackageFragment pdFolder;
