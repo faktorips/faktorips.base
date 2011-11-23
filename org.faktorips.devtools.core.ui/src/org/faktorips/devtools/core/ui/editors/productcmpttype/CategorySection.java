@@ -419,13 +419,13 @@ public class CategorySection extends IpsSection {
 
                                 try {
                                     if (getCurrentLocation() == LOCATION_BEFORE) {
-                                        targetCategory.insertProductCmptPropertyAbove(droppedProperty,
-                                                underMouseProperty, droppedProperty.getIpsProject());
+                                        targetCategory.insertProductCmptProperty(droppedProperty, underMouseProperty,
+                                                true, droppedProperty.getIpsProject());
                                     } else if (getCurrentLocation() == LOCATION_AFTER) {
-                                        targetCategory.insertProductCmptPropertyBelow(droppedProperty,
-                                                underMouseProperty, droppedProperty.getIpsProject());
+                                        targetCategory.insertProductCmptProperty(droppedProperty, underMouseProperty,
+                                                false, droppedProperty.getIpsProject());
                                     } else if (getCurrentLocation() == LOCATION_NONE) {
-                                        targetCategory.insertProductCmptPropertyBelow(droppedProperty, null,
+                                        targetCategory.insertProductCmptProperty(droppedProperty, null, false,
                                                 droppedProperty.getIpsProject());
                                     }
                                 } catch (CoreException e) {

@@ -453,21 +453,6 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public Collection<IIpsSrcFile> searchProductComponents(boolean includeSubtypes) throws CoreException;
 
     /**
-     * Returns a list containing the product component properties of the indicated
-     * {@link IProductCmptCategory} in the referenced order.
-     * 
-     * @param category the {@link IProductCmptCategory} to search the product component properties
-     *            for
-     * @param searchSupertypeHierarchy flag indicating whether the supertype hierarchy shall be
-     *            included in the search
-     * 
-     * @throws CoreException if an error occurs during the search
-     */
-    public List<IProductCmptProperty> findProductCmptPropertiesForCategory(IProductCmptCategory category,
-            boolean searchSupertypeHierarchy,
-            IIpsProject ipsProject) throws CoreException;
-
-    /**
      * Creates and returns a new {@link IProductCmptCategory} belonging to this
      * {@link IProductCmptType}.
      */

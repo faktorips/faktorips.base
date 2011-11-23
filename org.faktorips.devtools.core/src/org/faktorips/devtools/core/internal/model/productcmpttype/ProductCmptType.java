@@ -115,7 +115,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * meantime, finders must take this map into account to determine the correct
      * {@link IProductCmptCategory} of an {@link IProductCmptProperty}.
      */
-    private Map<IProductCmptProperty, String> policyPropertyCategoryChanges = new HashMap<IProductCmptProperty, String>();
+    private Map<IProductCmptProperty, String> pendingPolicyPropertyCategoryChanges = new HashMap<IProductCmptProperty, String>();
 
     public ProductCmptType(IIpsSrcFile file) {
         super(file);
@@ -354,6 +354,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
+    protected void initFromXml(Element element, String id) {
+        pendingPolicyPropertyCategoryChanges.clear();
+        super.initFromXml(element, id);
+    }
+
+    @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         policyCmptType = element.getAttribute(PROPERTY_POLICY_CMPT_TYPE);
@@ -376,10 +382,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public Element toXml(Document doc) {
         Element element = super.toXml(doc);
-        if (!policyPropertyCategoryChanges.isEmpty()) {
+        if (!pendingPolicyPropertyCategoryChanges.isEmpty()) {
             IIpsSrcFile ipsSrcFile = null;
-            for (IProductCmptProperty property : policyPropertyCategoryChanges.keySet()) {
-                property.setCategory(policyPropertyCategoryChanges.get(property));
+            for (IProductCmptProperty property : pendingPolicyPropertyCategoryChanges.keySet()) {
+                property.setCategory(pendingPolicyPropertyCategoryChanges.get(property));
                 ipsSrcFile = property.getIpsSrcFile();
             }
 
@@ -889,6 +895,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return getCategory(name) != null;
     }
 
+    // TODO AW: Rename to hasExistingCategory to be compatible to the way it's done in type
     @Override
     public boolean findHasCategory(String name, IIpsProject ipsProject) throws CoreException {
         return findCategory(name, ipsProject) != null;
@@ -1096,21 +1103,66 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return references;
     }
 
-    @Override
-    public List<IProductCmptProperty> findProductCmptPropertiesForCategory(IProductCmptCategory category,
-            boolean searchSupertypeHierarchy,
+    /**
+     * Returns a list containing the product component properties of the indicated
+     * {@link IProductCmptCategory} in the referenced order.
+     * <p>
+     * This method does consider product component properties of the supertype hierarchy if so
+     * desired.
+     * 
+     * @param category the {@link IProductCmptCategory} to search the product component properties
+     *            for
+     * @param searchSupertypeHierarchy flag indicating whether the supertype hierarchy shall be
+     *            included in the search
+     * 
+     * @throws CoreException if an error occurs during the search
+     */
+    List<IProductCmptProperty> findProductCmptPropertiesForCategory(final IProductCmptCategory category,
+            final boolean searchSupertypeHierarchy,
             IIpsProject ipsProject) throws CoreException {
 
-        List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
-        for (IProductCmptProperty property : findProductCmptPropertiesInOrder(searchSupertypeHierarchy, ipsProject)) {
-            if (category.findIsContainingProperty(property, this, ipsProject)) {
-                properties.add(property);
+        class CategoryPropertyCollector extends TypeHierarchyVisitor<IProductCmptType> {
+
+            private List<IProductCmptProperty> properties;
+
+            private CategoryPropertyCollector(IIpsProject ipsProject) {
+                super(ipsProject);
+                properties = new ArrayList<IProductCmptProperty>();
             }
+
+            @Override
+            protected boolean visit(IProductCmptType currentType) throws CoreException {
+                for (IProductCmptProperty property : currentType.findProductCmptProperties(false, ipsProject)) {
+                    /*
+                     * First look in the map of pending category changes for policy properties to
+                     * see whether the property's current category has a pending change.
+                     */
+                    String changedCategory = ((ProductCmptType)currentType).pendingPolicyPropertyCategoryChanges
+                            .get(property);
+                    if (changedCategory != null) {
+                        if (changedCategory.equals(category.getName())) {
+                            properties.add(property);
+                        }
+                        continue;
+                    }
+
+                    if (category.findIsContainingProperty(property, currentType, ipsProject)) {
+                        properties.add(property);
+                    }
+                }
+
+                return searchSupertypeHierarchy;
+            }
+
         }
 
-        filterOverwritingAttributes(properties);
+        CategoryPropertyCollector collector = new CategoryPropertyCollector(ipsProject);
+        collector.start(this);
 
-        return properties;
+        Collections.sort(collector.properties, new ProductCmptPropertyComparator(ipsProject));
+        filterOverwritingAttributes(collector.properties);
+
+        return collector.properties;
     }
 
     private void filterOverwritingAttributes(List<IProductCmptProperty> properties) {
@@ -1162,8 +1214,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * 
      * @throws CoreException if an error occurs during the search
      */
-    public List<IProductCmptProperty> findProductCmptPropertiesInOrder(boolean searchSupertypeHierarchy,
-            IIpsProject ipsProject) throws CoreException {
+    List<IProductCmptProperty> findProductCmptPropertiesInOrder(boolean searchSupertypeHierarchy, IIpsProject ipsProject)
+            throws CoreException {
 
         List<IProductCmptProperty> properties = findProductCmptProperties(searchSupertypeHierarchy, ipsProject);
         Collections.sort(properties, new ProductCmptPropertyComparator(ipsProject));
@@ -1234,7 +1286,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * Sorts the categories of this {@link IProductCmptType} in such a way that all categories with
      * {@link Position#LEFT} are stored before all categories with {@link Position#RIGHT}.
      */
-    public void sortCategoriesAccordingToPosition() {
+    void sortCategoriesAccordingToPosition() {
         Collections.sort(categories.getBackingList(), new Comparator<IProductCmptCategory>() {
             @Override
             public int compare(IProductCmptCategory o1, IProductCmptCategory o2) {
@@ -1257,7 +1309,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
             return;
         }
 
-        policyPropertyCategoryChanges.put(property, category);
+        pendingPolicyPropertyCategoryChanges.put(property, category);
+        objectHasChanged();
     }
 
     /**

@@ -451,92 +451,6 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmptProperties() throws CoreException {
-        // Create a small supertype hierarchy
-        IProductCmptType superProductType = createSuperProductType(productType, "Super");
-        IProductCmptType superSuperProductType = createSuperProductType(superProductType, "SuperSuper");
-
-        // Create a property in each type of the hierarchy
-        IProductCmptProperty superSuperProperty = superSuperProductType
-                .newProductCmptTypeAttribute("superSuperProperty");
-        IProductCmptProperty superProperty = superProductType.newProductCmptTypeAttribute("superProperty");
-        IProductCmptProperty property = productType.newProductCmptTypeAttribute("property");
-
-        // Create a category in the root type of the hierarchy and assign all properties
-        IProductCmptCategory superSuperCategory = superSuperProductType.newCategory("superSuperCategory");
-        superSuperProperty.setCategory(superSuperCategory.getName());
-        superProperty.setCategory(superSuperCategory.getName());
-        property.setCategory(superSuperCategory.getName());
-
-        // For the root type, only the assignments made by the root type itself are returned
-        List<IProductCmptProperty> superSuperProductTypeProperties = superSuperCategory.findProductCmptProperties(
-                superSuperProductType, true, ipsProject);
-        assertEquals(superSuperProperty, superSuperProductTypeProperties.get(0));
-        assertEquals(1, superSuperProductTypeProperties.size());
-
-        // For the second hierarchy level, the second type and root type assignments are returned
-        List<IProductCmptProperty> superProductTypeProperties = superSuperCategory.findProductCmptProperties(
-                superProductType, true, ipsProject);
-        assertEquals(superSuperProperty, superProductTypeProperties.get(0));
-        assertEquals(superProperty, superProductTypeProperties.get(1));
-        assertEquals(2, superProductTypeProperties.size());
-
-        // For the third hierarchy level, all assignments are returned
-        List<IProductCmptProperty> productTypeProperties = superSuperCategory.findProductCmptProperties(productType,
-                true, ipsProject);
-        assertEquals(superSuperProperty, productTypeProperties.get(0));
-        assertEquals(superProperty, productTypeProperties.get(1));
-        assertEquals(property, productTypeProperties.get(2));
-        assertEquals(3, productTypeProperties.size());
-    }
-
-    /**
-     * <strong>Scenario:</strong><br>
-     * The client wants to know all property assignments made by a specific {@link IProductCmptType}
-     * , excluding all assignments made in the supertype hierarchy.
-     * <p>
-     * <strong>Expected Outcome:</strong><br>
-     * Only the assignments made by the specific {@link IProductCmptType} should be contained in the
-     * returned list.
-     */
-    @Test
-    public void testFindProductCmptProperties_NotSearchingSupertypeHierarchy() throws CoreException {
-        IProductCmptType superProductType = createSuperProductType(productType, "Super");
-        IProductCmptCategory superCategory = superProductType.newCategory("superCategory");
-
-        IProductCmptProperty superProperty = superProductType.newProductCmptTypeAttribute("superProperty");
-        superProperty.setCategory(superCategory.getName());
-        IProductCmptProperty property = productType.newProductCmptTypeAttribute("property");
-        property.setCategory(superCategory.getName());
-
-        List<IProductCmptProperty> properties = superCategory.findProductCmptProperties(productType, false, ipsProject);
-        assertEquals(property, properties.get(0));
-        assertEquals(1, properties.size());
-    }
-
-    /**
-     * <strong>Scenario:</strong><br>
-     * No properties are specifically assigned to a given {@link IProductCmptCategory}. However,
-     * this {@link IProductCmptCategory} is marked to be a default {@link IProductCmptCategory} for
-     * a {@link ProductCmptPropertyType} for which one {@link IProductCmptProperty} exists that has
-     * no {@link IProductCmptCategory}.
-     * <p>
-     * <strong>Expected Outcome:</strong><br>
-     * The {@link IProductCmptProperty} should be contained in the returned list as properties with
-     * no {@link IProductCmptCategory} are automatically assigned to the corresponding default
-     * {@link IProductCmptCategory}.
-     */
-    @Test
-    public void testFindProductCmptProperties_ConsiderDefault() throws CoreException {
-        IProductCmptCategory defaultAttributeCategory = productType
-                .findDefaultCategoryForProductCmptTypeAttributes(ipsProject);
-        IProductCmptProperty attribute = productType.newProductCmptTypeAttribute("foo");
-
-        assertEquals(attribute,
-                defaultAttributeCategory.findProductCmptProperties(productType, false, ipsProject).get(0));
-    }
-
-    @Test
     public void testFindPropertyValues() throws CoreException {
         // Create a static attribute
         IProductCmptTypeAttribute staticAttribute = productType.newProductCmptTypeAttribute("staticAttribute");
@@ -710,10 +624,6 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         testProperty.setCategory(testCategory.getName());
 
         assertArrayEquals(new int[] { 0 }, testCategory.moveProductCmptProperties(new int[] { 0 }, true, productType));
-        List<IProductCmptProperty> orderedProperties = ((ProductCmptType)productType).findProductCmptPropertiesInOrder(
-                false, ipsProject);
-        assertEquals(aboveProperty, orderedProperties.get(0));
-        assertEquals(testProperty, orderedProperties.get(1));
     }
 
     /**
@@ -737,10 +647,6 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         belowProperty.setCategory(belowCategory.getName());
 
         assertArrayEquals(new int[] { 0 }, testCategory.moveProductCmptProperties(new int[] { 0 }, false, productType));
-        List<IProductCmptProperty> orderedProperties = ((ProductCmptType)productType).findProductCmptPropertiesInOrder(
-                false, ipsProject);
-        assertEquals(testProperty, orderedProperties.get(0));
-        assertEquals(belowProperty, orderedProperties.get(1));
     }
 
     /**
@@ -753,7 +659,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * with higher index and true should be returned.
      */
     @Test
-    public void testInsertProductCmptPropertyBelow_FromLowerIndex() throws CoreException {
+    public void testInsertProductCmptProperty_InsertBelowFromLowerIndex() throws CoreException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
@@ -761,7 +667,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("property3");
         property3.setCategory(CATEGORY_NAME);
 
-        assertTrue(category.insertProductCmptPropertyBelow(property1, property3, ipsProject));
+        assertTrue(category.insertProductCmptProperty(property1, property3, false, ipsProject));
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
         assertEquals(property2, properties.get(0));
@@ -779,7 +685,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * with lower index and true should be returned.
      */
     @Test
-    public void testInsertProductCmptPropertyBelow_FromHigherIndex() throws CoreException {
+    public void testInsertProductCmptProperty_InsertBelowFromHigherIndex() throws CoreException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
@@ -787,7 +693,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("property3");
         property3.setCategory(CATEGORY_NAME);
 
-        assertTrue(category.insertProductCmptPropertyBelow(property3, property1, ipsProject));
+        assertTrue(category.insertProductCmptProperty(property3, property1, false, ipsProject));
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
         assertEquals(property1, properties.get(0));
@@ -797,14 +703,14 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
     /**
      * <strong>Scenario:</strong><br>
-     * Below-insertion of an {@link IProductCmptProperty} with null as target.
+     * Insertion of an {@link IProductCmptProperty} with null as target.
      * <p>
      * <strong>Expected Outcome:</strong><br>
      * The {@link IProductCmptProperty} to be inserted should be positioned at the very end of the
      * {@link IProductCmptCategory} and true should be returned.
      */
     @Test
-    public void testInsertProductCmptPropertyBelow_TargetPropertyNull() throws CoreException {
+    public void testInsertProductCmptProperty_TargetPropertyNull() throws CoreException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
@@ -812,7 +718,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("property3");
         property3.setCategory(CATEGORY_NAME);
 
-        assertTrue(category.insertProductCmptPropertyBelow(property1, null, ipsProject));
+        assertTrue(category.insertProductCmptProperty(property1, null, false, ipsProject));
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
         assertEquals(property2, properties.get(0));
@@ -831,7 +737,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * the target {@link IProductCmptCategory} and true should be returned.
      */
     @Test
-    public void testInsertProductCmptPropertyBelow_FromAnotherCategoryWithLowerIndex() throws CoreException {
+    public void testInsertProductCmptPropertyBelow_InsertBelowFromAnotherCategoryWithLowerIndex() throws CoreException {
         IProductCmptCategory foreignCategory = productType.newCategory("foreignCategory");
 
         IProductCmptProperty foreignProperty = productType.newProductCmptTypeAttribute("foreignProperty");
@@ -844,7 +750,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("property3");
         property3.setCategory(CATEGORY_NAME);
 
-        assertTrue(category.insertProductCmptPropertyBelow(foreignProperty, property2, ipsProject));
+        assertTrue(category.insertProductCmptProperty(foreignProperty, property2, false, ipsProject));
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
         assertEquals(property1, properties.get(0));
@@ -855,7 +761,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
     /**
      * <strong>Scenario:</strong><br>
-     * The {@link IProductCmptType} of the {@link IProductCmptProperty} to be inserted below another
+     * The {@link IProductCmptType} of the {@link IProductCmptProperty} to be inserted
      * {@link IProductCmptProperty} cannot be found.
      * <p>
      * <strong>Expected Outcome:</strong><br>
@@ -873,12 +779,30 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         property.setProductRelevant(true);
 
         policyType.setProductCmptType("");
-        assertFalse(category.insertProductCmptPropertyBelow(foreignProperty, property, ipsProject));
+        assertFalse(category.insertProductCmptProperty(foreignProperty, property, false, ipsProject));
         policyType.setProductCmptType(productType.getQualifiedName());
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
         assertEquals(property, properties.get(0));
         assertEquals(1, properties.size());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IProductCmptProperty} belonging to an {@link IPolicyCmptType} is inserted.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The category stored in the {@link IProductCmptProperty} should not be changed.
+     */
+    @Test
+    public void testInsertProductCmptProperty_DoNotChangeCategoryStoredInPolicyProperty() throws CoreException {
+        IPolicyCmptTypeAttribute policyProperty = policyType.newPolicyCmptTypeAttribute("policyProperty");
+        policyProperty.setCategory("beforeCategory");
+        policyProperty.setProductRelevant(true);
+
+        category.insertProductCmptProperty(policyProperty, null, false, ipsProject);
+
+        assertEquals("beforeCategory", policyProperty.getCategory());
     }
 
     /**
@@ -891,7 +815,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * with higher index and true should be returned.
      */
     @Test
-    public void testInsertProductCmptPropertyAbove_FromLowerIndex() throws CoreException {
+    public void testInsertProductCmptProperty_InsertAboveFromLowerIndex() throws CoreException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
@@ -899,7 +823,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("property3");
         property3.setCategory(CATEGORY_NAME);
 
-        assertTrue(category.insertProductCmptPropertyAbove(property1, property3, ipsProject));
+        assertTrue(category.insertProductCmptProperty(property1, property3, true, ipsProject));
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
         assertEquals(property2, properties.get(0));
@@ -917,7 +841,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * with lower index and true should be returned.
      */
     @Test
-    public void testInsertProductCmptPropertyAbove_FromHigherIndex() throws CoreException {
+    public void testInsertProductCmptProperty_InsertAboveFromHigherIndex() throws CoreException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
@@ -925,32 +849,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("property3");
         property3.setCategory(CATEGORY_NAME);
 
-        assertTrue(category.insertProductCmptPropertyAbove(property3, property1, ipsProject));
-
-        List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
-        assertEquals(property3, properties.get(0));
-        assertEquals(property1, properties.get(1));
-        assertEquals(property2, properties.get(2));
-    }
-
-    /**
-     * <strong>Scenario:</strong><br>
-     * Above-insertion of an {@link IProductCmptProperty} with null as target.
-     * <p>
-     * <strong>Expected Outcome:</strong><br>
-     * The {@link IProductCmptProperty} to be inserted should be positioned at the very beginning of
-     * the {@link IProductCmptCategory} and true should be returned.
-     */
-    @Test
-    public void testInsertProductCmptPropertyAbove_TargetPropertyNull() throws CoreException {
-        IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
-        property1.setCategory(CATEGORY_NAME);
-        IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
-        property2.setCategory(CATEGORY_NAME);
-        IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("property3");
-        property3.setCategory(CATEGORY_NAME);
-
-        assertTrue(category.insertProductCmptPropertyAbove(property3, null, ipsProject));
+        assertTrue(category.insertProductCmptProperty(property3, property1, true, ipsProject));
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
         assertEquals(property3, properties.get(0));
@@ -969,7 +868,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * the target {@link IProductCmptCategory} and true should be returned.
      */
     @Test
-    public void testInsertProductCmptPropertyAbove_FromAnotherCategoryWithHigherIndex() throws CoreException {
+    public void testInsertProductCmptProperty_InsertAboveFromAnotherCategoryWithHigherIndex() throws CoreException {
         IProductCmptCategory foreignCategory = productType.newCategory("foreignCategory");
 
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
@@ -982,41 +881,13 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty foreignProperty = productType.newProductCmptTypeAttribute("foreignProperty");
         foreignProperty.setCategory(foreignCategory.getName());
 
-        assertTrue(category.insertProductCmptPropertyAbove(foreignProperty, property2, ipsProject));
+        assertTrue(category.insertProductCmptProperty(foreignProperty, property2, true, ipsProject));
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
         assertEquals(property1, properties.get(0));
         assertEquals(foreignProperty, properties.get(1));
         assertEquals(property2, properties.get(2));
         assertEquals(property3, properties.get(3));
-    }
-
-    /**
-     * <strong>Scenario:</strong><br>
-     * The {@link IProductCmptType} of the {@link IProductCmptProperty} to be inserted above another
-     * {@link IProductCmptProperty} cannot be found.
-     * <p>
-     * <strong>Expected Outcome:</strong><br>
-     * No insert should be performed and false should be returned.
-     */
-    @Test
-    public void testInsertProductCmptPropertyAbove_ContextProductCmptTypeNotFound() throws CoreException {
-        IProductCmptCategory foreignCategory = productType.newCategory("foreignCategory");
-        IPolicyCmptTypeAttribute foreignProperty = policyType.newPolicyCmptTypeAttribute("foreignProperty");
-        foreignProperty.setCategory(foreignCategory.getName());
-        foreignProperty.setProductRelevant(true);
-
-        IPolicyCmptTypeAttribute property = policyType.newPolicyCmptTypeAttribute("property");
-        property.setCategory(CATEGORY_NAME);
-        property.setProductRelevant(true);
-
-        policyType.setProductCmptType("");
-        assertFalse(category.insertProductCmptPropertyAbove(foreignProperty, property, ipsProject));
-        policyType.setProductCmptType(productType.getQualifiedName());
-
-        List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, false, ipsProject);
-        assertEquals(property, properties.get(0));
-        assertEquals(1, properties.size());
     }
 
     private IProductCmptType createSuperProductType(IProductCmptType productType, String prefix) throws CoreException {

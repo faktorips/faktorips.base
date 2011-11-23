@@ -767,8 +767,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             defaultCategory.setDefaultForTableStructureUsages(true);
         }
         if (!defaultValidationRulesFound) {
-            IProductCmptCategory defaultCategory = productCmptType
-                    .newCategory(DEFAULT_CATEGORY_NAME_VALIDATION_RULES);
+            IProductCmptCategory defaultCategory = productCmptType.newCategory(DEFAULT_CATEGORY_NAME_VALIDATION_RULES);
             defaultCategory.setDefaultForValidationRules(true);
         }
 
@@ -1438,8 +1437,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             Object oldValue,
             Object newValue) {
 
+        assertContentChangedEvent(part.getIpsSrcFile(), ContentChangeEvent.TYPE_PROPERTY_CHANGED);
         assertEquals(part, lastContentChangeEvent.getPart());
-        assertEquals(ContentChangeEvent.TYPE_PROPERTY_CHANGED, lastContentChangeEvent.getEventType());
         assertNotNull(lastContentChangeEvent.getPropertyChangeEvent());
         assertEquals(property, lastContentChangeEvent.getPropertyChangeEvent().getPropertyName());
         assertEquals(oldValue, lastContentChangeEvent.getPropertyChangeEvent().getOldValue());
@@ -1447,8 +1446,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     protected final void assertWholeContentChangedEvent(IIpsSrcFile ipsSrcFile) {
+        assertContentChangedEvent(ipsSrcFile, ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED);
+    }
+
+    protected final void assertContentChangedEvent(IIpsSrcFile ipsSrcFile, int eventType) {
         assertEquals(ipsSrcFile, lastContentChangeEvent.getIpsSrcFile());
-        assertEquals(ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED, lastContentChangeEvent.getEventType());
+        assertEquals(eventType, lastContentChangeEvent.getEventType());
     }
 
     protected final void setPartId(IIpsObjectPart part, String id) throws SecurityException, NoSuchFieldException,

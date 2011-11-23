@@ -27,6 +27,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.datatype.Datatype;
@@ -1236,13 +1238,12 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testFindProductCmptPropertiesForCategory() throws CoreException {
-        IProductCmptCategory category = productCmptType.newCategory("category");
-        IProductCmptCategory superCategory = superProductCmptType.newCategory("category");
+        IProductCmptCategory category = superProductCmptType.newCategory("category");
 
         IProductCmptProperty superProperty = superProductCmptType.newProductCmptTypeAttribute("superProperty");
-        superProperty.setCategory(superCategory.getName());
+        superProperty.setCategory(category.getName());
         IProductCmptProperty property = productCmptType.newProductCmptTypeAttribute("property");
-        property.setCategory(superCategory.getName());
+        property.setCategory(category.getName());
 
         List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesForCategory(category, true,
                 ipsProject);
@@ -1251,15 +1252,23 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(2, properties.size());
     }
 
+    /**
+     * <strong>Scenario:</strong><br>
+     * The client wants to know all property assignments made by the {@link IProductCmptType}
+     * itself, excluding all assignments made in the supertype hierarchy.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * Only the assignments made by the {@link IProductCmptType} itself should be contained in the
+     * returned list.
+     */
     @Test
     public void testFindProductCmptPropertiesForCategory_NotSearchingSupertypeHierarchy() throws CoreException {
-        IProductCmptCategory category = productCmptType.newCategory("category");
-        IProductCmptCategory superCategory = superProductCmptType.newCategory("category");
+        IProductCmptCategory category = superProductCmptType.newCategory("category");
 
         IProductCmptProperty superProperty = superProductCmptType.newProductCmptTypeAttribute("superProperty");
-        superProperty.setCategory(superCategory.getName());
+        superProperty.setCategory(category.getName());
         IProductCmptProperty property = productCmptType.newProductCmptTypeAttribute("property");
-        property.setCategory(superCategory.getName());
+        property.setCategory(category.getName());
 
         List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesForCategory(category, false,
                 ipsProject);
@@ -1267,6 +1276,18 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(1, properties.size());
     }
 
+    /**
+     * <strong>Scenario:</strong><br>
+     * No properties are specifically assigned to a given {@link IProductCmptCategory}. However,
+     * this {@link IProductCmptCategory} is marked to be a default {@link IProductCmptCategory} for
+     * a {@link ProductCmptPropertyType} for which one {@link IProductCmptProperty} exists that has
+     * no {@link IProductCmptCategory}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The {@link IProductCmptProperty} should be contained in the returned list as properties with
+     * no {@link IProductCmptCategory} are automatically assigned to the corresponding default
+     * {@link IProductCmptCategory}.
+     */
     @Test
     public void testFindProductCmptPropertiesForCategory_DefaultCategory() throws CoreException {
         IProductCmptCategory defaultAttributeCategory = productCmptType
@@ -1327,6 +1348,62 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         property.setCategory(category.getName());
 
         assertTrue(superCategory.findProductCmptProperties(productCmptType, true, ipsProject).isEmpty());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * The {@link IProductCmptCategory} of an {@link IProductCmptProperty} that belongs to an
+     * {@link IPolicyCmptType} is changed, using the method
+     * {@link IProductCmptType#changeCategoryAndDeferPolicyChange(IProductCmptProperty, String)}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The finder must return the {@link IProductCmptProperty} for the property's new
+     * {@link IProductCmptCategory} but not it's old {@link IProductCmptCategory}, even tough
+     * {@link IProductCmptProperty#getCategory()} will always return the old
+     * {@link IProductCmptCategory}.
+     */
+    @Test
+    public void testFindProductCmptPropertiesForCategory_ConsiderChangedPolicyProperties() throws CoreException {
+        IProductCmptCategory oldCategory = productCmptType.newCategory("oldCategory");
+        IProductCmptCategory newCategory = productCmptType.newCategory("newCategory");
+
+        IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyProperty");
+        policyProperty.setCategory(oldCategory.getName());
+
+        productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, newCategory.getName());
+
+        assertFalse(oldCategory.findProductCmptProperties(productCmptType, false, ipsProject).contains(policyProperty));
+        assertTrue(newCategory.findProductCmptProperties(productCmptType, false, ipsProject).contains(policyProperty));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * The {@link IProductCmptCategory} of an {@link IProductCmptProperty} that belongs to an
+     * {@link IPolicyCmptType} is changed in the supertype, using the method
+     * {@link IProductCmptType#changeCategoryAndDeferPolicyChange(IProductCmptProperty, String)}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * In the subtype, the finder must return the {@link IProductCmptProperty} for the property's
+     * new {@link IProductCmptCategory} as well.
+     */
+    @Test
+    public void testFindProductCmptPropertiesForCategory_ConsiderChangedPolicyPropertiesFromSupertypes()
+            throws CoreException {
+
+        IProductCmptCategory oldCategory = superProductCmptType.newCategory("oldCategory");
+        IProductCmptCategory newCategory = superProductCmptType.newCategory("newCategory");
+
+        IProductCmptProperty superPolicyProperty = createPolicyAttributeProperty(superPolicyCmptType,
+                "superPolicyProperty");
+        superPolicyProperty.setCategory(oldCategory.getName());
+
+        // TODO AW 23-11-2011: Check that the property belongs to the product component type
+        superProductCmptType.changeCategoryAndDeferPolicyChange(superPolicyProperty, newCategory.getName());
+
+        assertFalse(oldCategory.findProductCmptProperties(productCmptType, true, ipsProject).contains(
+                superPolicyProperty));
+        assertTrue(newCategory.findProductCmptProperties(productCmptType, true, ipsProject).contains(
+                superPolicyProperty));
     }
 
     @Test
@@ -1925,7 +2002,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testChangeCategoryAndPolicyChange_OnlyChangePolicyTypeUponProductTypeSave() throws CoreException {
+    public void testChangeCategoryAndDeferPolicyChange_OnlyChangePolicyTypeUponProductTypeSave() throws CoreException {
         IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
         policyProperty.setCategory("beforeCategory");
 
@@ -1935,6 +2012,51 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         productCmptType.getIpsSrcFile().save(true, null);
         assertEquals("otherCategory", policyProperty.getCategory());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * The {@link IProductCmptCategory} of an {@link IProductCmptProperty} belonging to an
+     * {@link IPolicyCmptType} is changed. Then, the {@link IProductCmptType} is reloaded.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The {@link IProductCmptProperty} should again belong to the property's initial
+     * {@link IProductCmptCategory}.
+     */
+    @Test
+    public void testChangeCategoryAndDeferPolicyChange_ClearPendingChangesUponXmlInitialization() throws CoreException,
+            ParserConfigurationException {
+
+        IProductCmptCategory initialCategory = productCmptType.newCategory("initialCategory");
+        IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
+
+        IProductCmptCategory otherCategory = productCmptType.newCategory("otherCategory");
+        productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, otherCategory.getName());
+
+        Element xmlElement = productCmptType.toXml(createXmlDocument("SomeTag"));
+        productCmptType.initFromXml(xmlElement);
+        /*
+         * As the pending change is made persistent in toXml, we have to test that the pending
+         * changes are cleared on re-initialization by manually setting the property's category back
+         * to the initial category.
+         */
+        policyProperty.setCategory(initialCategory.getName());
+
+        /*
+         * If the pending changes are cleared upon XML initialization, the property now again
+         * belongs to the initial category.
+         */
+        assertFalse(otherCategory.findProductCmptProperties(productCmptType, false, ipsProject)
+                .contains(policyProperty));
+    }
+
+    @Test
+    public void testChangeCategoryAndDeferPolicyChange_FireChangeEvent() {
+        IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
+
+        productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, "otherCategory");
+
+        assertWholeContentChangedEvent(productCmptType.getIpsSrcFile());
     }
 
     /**

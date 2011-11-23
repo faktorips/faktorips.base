@@ -126,7 +126,8 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             boolean searchSupertypeHierarchy,
             IIpsProject ipsProject) throws CoreException {
 
-        return contextType.findProductCmptPropertiesForCategory(this, searchSupertypeHierarchy, ipsProject);
+        return ((ProductCmptType)contextType).findProductCmptPropertiesForCategory(this, searchSupertypeHierarchy,
+                ipsProject);
     }
 
     @Override
@@ -358,50 +359,34 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     }
 
     @Override
-    public boolean insertProductCmptPropertyAbove(IProductCmptProperty property,
+    public boolean insertProductCmptProperty(IProductCmptProperty property,
             IProductCmptProperty targetProperty,
+            boolean above,
             IIpsProject ipsProject) throws CoreException {
-
-        return insertProductCmptProperty(property, targetProperty, ipsProject, true);
-    }
-
-    @Override
-    public boolean insertProductCmptPropertyBelow(IProductCmptProperty property,
-            IProductCmptProperty targetProperty,
-            IIpsProject ipsProject) throws CoreException {
-
-        return insertProductCmptProperty(property, targetProperty, ipsProject, false);
-    }
-
-    private boolean insertProductCmptProperty(IProductCmptProperty property,
-            IProductCmptProperty targetProperty,
-            IIpsProject ipsProject,
-            boolean insertAbove) throws CoreException {
 
         IProductCmptType contextType = property.findProductCmptType(ipsProject);
         if (contextType == null) {
             return false;
         }
 
-        property.setCategory(name);
+        getProductCmptType().changeCategoryAndDeferPolicyChange(property, name);
 
         List<IProductCmptProperty> properties = findProductCmptProperties(contextType, false, ipsProject);
         int propertyIndex = properties.indexOf(property);
-        int limitIndex = insertAbove ? 0 : properties.size() - 1;
-        int targetPropertyIndex = targetProperty != null ? properties.indexOf(targetProperty) : limitIndex;
-        insertProductCmptProperty(propertyIndex, targetPropertyIndex, contextType, insertAbove);
+        int targetPropertyIndex = targetProperty != null ? properties.indexOf(targetProperty) : properties.size() - 1;
+        insertProductCmptProperty(propertyIndex, targetPropertyIndex, contextType, above);
         return true;
     }
 
     private void insertProductCmptProperty(int propertyIndex,
             int targetPropertyIndex,
             IProductCmptType contextType,
-            boolean insertAbove) throws CoreException {
+            boolean above) throws CoreException {
 
         if (propertyIndex > targetPropertyIndex) {
-            moveProductCmptPropertyUp(propertyIndex, targetPropertyIndex, contextType, insertAbove);
+            moveProductCmptPropertyUp(propertyIndex, targetPropertyIndex, contextType, above);
         } else if (propertyIndex < targetPropertyIndex) {
-            moveProductCmptPropertyDown(propertyIndex, targetPropertyIndex, contextType, insertAbove);
+            moveProductCmptPropertyDown(propertyIndex, targetPropertyIndex, contextType, above);
         }
     }
 
@@ -412,9 +397,9 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     private void moveProductCmptPropertyUp(int propertyIndex,
             int targetPropertyIndex,
             IProductCmptType contextType,
-            boolean insertAbove) throws CoreException {
+            boolean above) throws CoreException {
 
-        int targetIndex = insertAbove ? targetPropertyIndex : targetPropertyIndex + 1;
+        int targetIndex = above ? targetPropertyIndex : targetPropertyIndex + 1;
         for (; propertyIndex > targetIndex; propertyIndex--) {
             moveProductCmptProperties(new int[] { propertyIndex }, true, contextType);
         }
@@ -427,9 +412,9 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     private void moveProductCmptPropertyDown(int propertyIndex,
             int targetPropertyIndex,
             IProductCmptType contextType,
-            boolean insertAbove) throws CoreException {
+            boolean above) throws CoreException {
 
-        int targetIndex = insertAbove ? targetPropertyIndex - 1 : targetPropertyIndex;
+        int targetIndex = above ? targetPropertyIndex - 1 : targetPropertyIndex;
         for (; propertyIndex < targetIndex; propertyIndex++) {
             moveProductCmptProperties(new int[] { propertyIndex }, false, contextType);
         }

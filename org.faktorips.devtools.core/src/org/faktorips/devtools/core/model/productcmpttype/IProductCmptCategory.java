@@ -354,7 +354,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
 
     /**
      * Inserts the provided {@link IProductCmptProperty} into this {@link IProductCmptCategory} just
-     * above the indicated target {@link IProductCmptProperty}.
+     * above or just below the indicated target {@link IProductCmptProperty}.
      * <p>
      * Returns true if the operation was successful. If the {@link IProductCmptType} corresponding
      * to the {@link IProductCmptProperty} to be inserted cannot be found, the operation will fail.
@@ -365,37 +365,19 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * @param targetProperty the {@link IProductCmptProperty} to be inserted will be positioned just
      *            above the target {@link IProductCmptProperty}. This parameter may be null - in
      *            this case the {@link IProductCmptProperty} is inserted at the beginning
+     * @param above flag indicating whether to insert the {@link IProductCmptProperty} above the
+     *            target {@link IProductCmptProperty}. If the flag is false, the
+     *            {@link IProductCmptProperty} is inserted below the target
+     *            {@link IProductCmptProperty}
      * 
      * @return true if the operation was successful, false if not
      * 
      * @throws CoreException if an error occurs while searching for the indices of the currently
      *             assigned properties
      */
-    public boolean insertProductCmptPropertyAbove(IProductCmptProperty property,
+    public boolean insertProductCmptProperty(IProductCmptProperty property,
             IProductCmptProperty targetProperty,
-            IIpsProject ipsProject) throws CoreException;
-
-    /**
-     * Inserts the provided {@link IProductCmptProperty} into this {@link IProductCmptCategory} just
-     * below the indicated target {@link IProductCmptProperty}.
-     * <p>
-     * Returns true if the operation was successful. If the {@link IProductCmptType} corresponding
-     * to the {@link IProductCmptProperty} to be inserted cannot be found, the operation will fail.
-     * In this case, false is returned.
-     * 
-     * @param property the {@link IProductCmptProperty} to insert into this
-     *            {@link IProductCmptCategory}
-     * @param targetProperty the {@link IProductCmptProperty} to be inserted will be positioned just
-     *            below the target {@link IProductCmptProperty}. This parameter may be null - in
-     *            this case the {@link IProductCmptProperty} is inserted at the end
-     * 
-     * @return true if the operation was successful, false if not
-     * 
-     * @throws CoreException if an error occurs while searching for the indices of the currently
-     *             assigned properties
-     */
-    public boolean insertProductCmptPropertyBelow(IProductCmptProperty property,
-            IProductCmptProperty targetProperty,
+            boolean above,
             IIpsProject ipsProject) throws CoreException;
 
     /**

@@ -79,40 +79,7 @@ public class ChangeCategoryDialog extends ElementListSelectionDialog {
     @Override
     protected void okPressed() {
         super.okPressed();
-        changeCategory();
-    }
-
-    private void changeCategory() {
-        if (initialCategory.equals(getSelectedCategory())) {
-            return;
-        }
-
-        if (property.isPolicyCmptTypeProperty()) {
-            changeCategoryOfPolicyCmptTypeProperty();
-        } else {
-            changeCategoryOfProductCmptTypeProperty();
-        }
-    }
-
-    private void changeCategoryOfPolicyCmptTypeProperty() {
-        boolean wasDirty = property.getIpsSrcFile().isDirty();
-
-        property.setCategory(getSelectedCategory().getName());
-
-        if (!wasDirty) {
-            try {
-                property.getIpsSrcFile().save(true, null);
-            } catch (CoreException e) {
-                // The category change could not be saved, so restore the old category
-                IpsPlugin.logAndShowErrorDialog(e);
-                property.setCategory(initialCategory.getName());
-                property.getIpsSrcFile().markAsClean();
-            }
-        }
-    }
-
-    private void changeCategoryOfProductCmptTypeProperty() {
-        property.setCategory(getSelectedCategory().getName());
+        productCmptType.changeCategoryAndDeferPolicyChange(property, getSelectedCategory().getName());
     }
 
     /**
