@@ -64,7 +64,17 @@ public class TypeHierarchy implements ITypeHierarchy {
      */
     public final static TypeHierarchy getSubtypeHierarchy(IType pcType) throws CoreException {
         TypeHierarchy hierarchy = new TypeHierarchy(pcType);
-        addSubtypes(hierarchy, pcType, null);
+        hierarchy.addSubtypes(pcType, null, true, pcType.getIpsProject());
+        return hierarchy;
+    }
+
+    /**
+     * Creates a new type hierarchy containing all the given type's subtypes. Supertypes are not
+     * resolved.
+     */
+    public final static TypeHierarchy getSubtypeHierarchy(IType pcType, IIpsProject searchProject) throws CoreException {
+        TypeHierarchy hierarchy = new TypeHierarchy(pcType);
+        hierarchy.addSubtypes(pcType, null, false, searchProject);
         return hierarchy;
     }
 
@@ -74,50 +84,56 @@ public class TypeHierarchy implements ITypeHierarchy {
     public final static TypeHierarchy getTypeHierarchy(IType pcType) throws CoreException {
         TypeHierarchy hierarchy = getSupertypeHierarchy(pcType);
         Node pcTypeNode = hierarchy.nodes.get(pcType);
-        List<IType> subtypes = searchDirectSubtypes(pcType, hierarchy);
+        List<IType> subtypes = hierarchy.searchDirectSubtypes(pcType, true, pcType.getIpsProject());
         for (IType subtype : subtypes) {
-            addSubtypes(hierarchy, subtype, pcType);
+            hierarchy.addSubtypes(subtype, pcType, true, pcType.getIpsProject());
         }
         pcTypeNode.subtypes = subtypes;
         return hierarchy;
     }
 
-    private final static void addSubtypes(TypeHierarchy hierarchie, IType pcType, IType superType) throws CoreException {
-
-        List<IType> subtypes = searchDirectSubtypes(pcType, hierarchie);
+    private void addSubtypes(IType pcType, IType superType, boolean searchReferencingProjects, IIpsProject ipsProject)
+            throws CoreException {
+        List<IType> subtypes = searchDirectSubtypes(pcType, searchReferencingProjects, ipsProject);
         Node node = new Node(pcType, superType, subtypes);
-        hierarchie.add(node);
+        add(node);
         for (IType subtype : subtypes) {
-            addSubtypes(hierarchie, subtype, pcType);
+            addSubtypes(subtype, pcType, searchReferencingProjects, ipsProject);
         }
     }
 
-    private final static List<IType> searchDirectSubtypes(IType type, TypeHierarchy hierarchy) throws CoreException {
+    private List<IType> searchDirectSubtypes(IType type, boolean searchReferencingProjects, IIpsProject ipsProject)
+            throws CoreException {
         List<IType> subtypes = new ArrayList<IType>();
-        IIpsProject project = type.getIpsProject();
-        IIpsProject[] projects = project.findReferencingProjectLeavesOrSelf();
-        for (IIpsProject referencingProject : projects) {
-            if (referencingProject.equals(project) || referencingProject.isReferencing(project)) {
-                IIpsSrcFile[] candidateSrcFiles = referencingProject.findIpsSrcFiles(type.getIpsObjectType());
-                for (IIpsSrcFile candidateSrcFile : candidateSrcFiles) {
-                    String candidateSuperTypeName = candidateSrcFile.getPropertyValue(IType.PROPERTY_SUPERTYPE);
-                    if (type.getQualifiedName().equals(candidateSuperTypeName)) {
-                        IIpsObject candidateObject = candidateSrcFile.getIpsObject();
-                        if (candidateObject instanceof IType) {
-                            IType candidateType = (IType)candidateObject;
-                            if (!subtypes.contains(candidateObject)) {
-                                if (hierarchy.contains(candidateType)) {
-                                    hierarchy.containsCycle = true;
-                                } else {
-                                    subtypes.add(candidateType);
-                                }
-                            }
+        if (searchReferencingProjects) {
+            IIpsProject[] referencingProjects = ipsProject.findReferencingProjectLeavesOrSelf();
+            for (IIpsProject referencingProject : referencingProjects) {
+                findDirectSubtypes(type, subtypes, referencingProject);
+            }
+        } else {
+            findDirectSubtypes(type, subtypes, ipsProject);
+        }
+        return subtypes;
+    }
+
+    private void findDirectSubtypes(IType type, List<IType> subtypes, IIpsProject project) throws CoreException {
+        IIpsSrcFile[] candidateSrcFiles = project.findIpsSrcFiles(type.getIpsObjectType());
+        for (IIpsSrcFile candidateSrcFile : candidateSrcFiles) {
+            String candidateSuperTypeName = candidateSrcFile.getPropertyValue(IType.PROPERTY_SUPERTYPE);
+            if (type.getQualifiedName().equals(candidateSuperTypeName)) {
+                IIpsObject candidateObject = candidateSrcFile.getIpsObject();
+                if (candidateObject instanceof IType) {
+                    IType candidateType = (IType)candidateObject;
+                    if (!subtypes.contains(candidateObject)) {
+                        if (contains(candidateType)) {
+                            containsCycle = true;
+                        } else {
+                            subtypes.add(candidateType);
                         }
                     }
                 }
             }
         }
-        return subtypes;
     }
 
     private TypeHierarchy(IType pcType) {
