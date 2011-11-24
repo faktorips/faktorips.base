@@ -19,24 +19,33 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.TestEnumType;
+import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.formula.FormulaEvaluatorUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,6 +58,15 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     private IPolicyCmptTypeAttribute attribute;
     private AbstractParameterIdentifierResolver resolver;
     private Locale locale;
+    private PolicyCmptType branchPolicyCmptType;
+    private PolicyCmptType leafPolicyCmptType;
+    private IPolicyCmptTypeAssociation associationToBranches;
+    private IPolicyCmptTypeAssociation associationBranchToLeaf;
+    private IPolicyCmptTypeAssociation associationToLeaf;
+    private PolicyCmptType twigPolicyCmptType;
+    private IPolicyCmptTypeAssociation associationBranchToTwig;
+    private IPolicyCmptTypeAssociation associationTwigToLeaf;
+    private IPolicyCmptTypeAttribute attributeColor;
 
     @Override
     @Before
@@ -62,6 +80,36 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setName("tax");
         attribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
+
+        branchPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "Branch", "BranchType");
+        twigPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "Twig", "TwigType");
+        leafPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "Leaf", "LeafType");
+        associationToBranches = policyCmptType.newPolicyCmptTypeAssociation();
+        associationToBranches.setTarget(branchPolicyCmptType.getQualifiedName());
+        associationToBranches.setTargetRoleSingular("branch");
+        associationToBranches.setTargetRolePlural("branches");
+        associationToBranches.setMaxCardinality(IAssociation.CARDINALITY_MANY);
+        associationToLeaf = policyCmptType.newPolicyCmptTypeAssociation();
+        associationToLeaf.setTarget(leafPolicyCmptType.getQualifiedName());
+        associationToLeaf.setTargetRoleSingular("leaf");
+        associationToLeaf.setTargetRolePlural("leafs");
+        associationToLeaf.setMaxCardinality(IAssociation.CARDINALITY_ONE);
+        associationBranchToLeaf = branchPolicyCmptType.newPolicyCmptTypeAssociation();
+        associationBranchToLeaf.setTarget(leafPolicyCmptType.getQualifiedName());
+        associationBranchToLeaf.setTargetRoleSingular("leaf");
+        associationBranchToLeaf.setMaxCardinality(IAssociation.CARDINALITY_ONE);
+        associationBranchToTwig = branchPolicyCmptType.newPolicyCmptTypeAssociation();
+        associationBranchToTwig.setTarget(twigPolicyCmptType.getQualifiedName());
+        associationBranchToTwig.setTargetRoleSingular("twig");
+        associationBranchToTwig.setMaxCardinality(IAssociation.CARDINALITY_ONE);
+        associationTwigToLeaf = twigPolicyCmptType.newPolicyCmptTypeAssociation();
+        associationTwigToLeaf.setTarget(leafPolicyCmptType.getQualifiedName());
+        associationTwigToLeaf.setTargetRoleSingular("leaf");
+        associationTwigToLeaf.setMaxCardinality(IAssociation.CARDINALITY_ONE);
+        attributeColor = leafPolicyCmptType.newPolicyCmptTypeAttribute();
+        attributeColor.setName("color");
+        attributeColor.setDatatype(Datatype.STRING.getQualifiedName());
+
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
         method = productCmptType.newFormulaSignature("formula");
         method.setDatatype(Datatype.INTEGER.getName());
@@ -108,50 +156,63 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         result = resolver.compile("policy.tax", null, locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.DECIMAL, result.getDatatype());
+        GenPolicyCmptType genPolicyCmptType = ((StandardBuilderSet)getPolicyCmptInterfaceBuilder().getBuilderSet())
+                .getGenerator(policyCmptType);
         String expected = "policy."
-                + ((StandardBuilderSet)getPolicyCmptInterfaceBuilder().getBuilderSet()).getGenerator(policyCmptType)
-                        .getMethodNameGetPropertyValue(attribute.getName(), result.getDatatype()) + "()";
+                + genPolicyCmptType.getMethodNameGetPropertyValue(attribute.getName(), result.getDatatype()) + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
 
-        // unkown parameter
+        // unknown parameter
         result = resolver.compile("unkownParameter", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
-        // parameter with unkown datatype
+        // parameter with unknown datatype
         method.newParameter("UnknownDatatye", "p3");
         result = resolver.compile("p3", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
-        // unkown attribute
+        // unknown attribute
         result = resolver.compile("policy.unkownAttribute", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
-        // attribute with unkown datatype
+        // attribute with unknown datatype
         attribute.setDatatype("UnknownDatatype");
         result = resolver.compile("policy.tax", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
-        // no attributename given
+        // no attribute name given
         result = resolver.compile("policy.", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
-        // unkown policy component type
+        // unknown policy component type
         result = resolver.compile("unkownType.tax", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
-        // attribute of the product component type can be accessed without specifing the product
+        // default
+        attribute.setProductRelevant(true);
+        attribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
+        result = resolver.compile("policy.tax@default", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(Datatype.DECIMAL, result.getDatatype());
+        expected = "policy." + genPolicyCmptType.getGenProductCmptType().getMethodNameGetProductCmptGeneration()
+                + "()."
+                + ((GenChangeableAttribute)genPolicyCmptType.getGenerator(attribute)).getMethodNameGetDefaultValue()
+                + "()";
+        assertEquals(expected, result.getCodeFragment().getSourcecode());
+
+        // attribute of the product component type can be accessed without specifying the product
         // component type
         IAttribute attribute = productCmptType.newAttribute();
         attribute.setName("a");
@@ -159,6 +220,119 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         result = resolver.compile("a", null, locale);
         assertTrue(result.successfull());
         assertEquals("this.getA()", result.getCodeFragment().getSourcecode());
+    }
+
+    @Test
+    public void testCompileAssociations() throws CoreException, Exception {
+        // parameter with the datatype being a policy component type
+        // => resolver can resolve identifiers with form paramName.associationName.x
+        // with associationName being the name of one of the type's associations
+        method.newParameter(policyCmptType.getQualifiedName(), "policy");
+
+        // 1toMany
+        CompilationResult result = resolver.compile("policy.branch", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(new ArrayOfValueDatatype(branchPolicyCmptType, 1), result.getDatatype());
+        StandardBuilderSet standardBuilderSet = (StandardBuilderSet)getPolicyCmptInterfaceBuilder().getBuilderSet();
+        String expected = "policy."
+                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationToBranches)
+                        .getMethodNameGetAllRefObjects() + "().toArray(new IModelObject[0])";
+        assertEquals(expected, result.getCodeFragment().getSourcecode());
+
+        // 1toMany, indexed
+        result = resolver.compile("policy.branch[1]", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(branchPolicyCmptType, result.getDatatype());
+        expected = "policy."
+                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationToBranches)
+                        .getMethodNameGetRefObject() + "(1)";
+        assertEquals(expected, result.getCodeFragment().getSourcecode());
+
+        // 1toMany, chained with 1to1
+        result = resolver.compile("policy.branch.leaf", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(new ArrayOfValueDatatype(leafPolicyCmptType, 1), result.getDatatype());
+        expected = "FormulaEvaluatorUtil.getTargets(policy."
+                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationToBranches)
+                        .getMethodNameGetAllRefObjects()
+                + "().toArray(new IModelObject[0]), \"leaf\", this.getRepository())";
+        assertEquals(expected, result.getCodeFragment().getSourcecode());
+
+        // 1to1
+        method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
+        result = resolver.compile("twig.leaf", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(leafPolicyCmptType, result.getDatatype());
+        expected = "twig."
+                + standardBuilderSet.getGenerator(twigPolicyCmptType).getGenerator(associationTwigToLeaf)
+                        .getMethodNameGetRefObject() + "()";
+        assertEquals(expected, result.getCodeFragment().getSourcecode());
+
+        // 1to1, chained with 1to1
+        method.newParameter(branchPolicyCmptType.getQualifiedName(), "branch");
+        result = resolver.compile("branch.twig.leaf", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(leafPolicyCmptType, result.getDatatype());
+        expected = "branch."
+                + standardBuilderSet.getGenerator(branchPolicyCmptType).getGenerator(associationBranchToTwig)
+                        .getMethodNameGetRefObject()
+                + "()."
+                + standardBuilderSet.getGenerator(branchPolicyCmptType).getGenerator(associationTwigToLeaf)
+                        .getMethodNameGetRefObject() + "()";
+        assertEquals(expected, result.getCodeFragment().getSourcecode());
+
+        // full chain with index in between
+        result = resolver.compile("policy.branch[0].twig.leaf", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(leafPolicyCmptType, result.getDatatype());
+        expected = "policy."
+                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationToBranches)
+                        .getMethodNameGetRefObject()
+                + "(0)."
+                + standardBuilderSet.getGenerator(branchPolicyCmptType).getGenerator(associationBranchToTwig)
+                        .getMethodNameGetRefObject()
+                + "()."
+                + standardBuilderSet.getGenerator(twigPolicyCmptType).getGenerator(associationTwigToLeaf)
+                        .getMethodNameGetRefObject() + "()";
+        assertEquals(expected, result.getCodeFragment().getSourcecode());
+
+        // full chain with index at end
+        result = resolver.compile("policy.branch.twig.leaf[2]", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(leafPolicyCmptType, result.getDatatype());
+        expected = "((ILeaf)FormulaEvaluatorUtil.getTargets(FormulaEvaluatorUtil.getTargets(policy."
+                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationToBranches)
+                        .getMethodNameGetAllRefObjects()
+                + "().toArray(new IModelObject[0]), \"twig\", this.getRepository()), \"leaf\", this.getRepository())[2])";
+        assertEquals(expected, result.getCodeFragment().getSourcecode());
+        result.getCodeFragment().getImportDeclaration().isCovered(FormulaEvaluatorUtil.class);
+        result.getCodeFragment().getImportDeclaration().isCovered(IModelObject.class);
+        result.getCodeFragment().getImportDeclaration().isCovered("ILeaf");
+
+        // association + attribute
+        result = resolver.compile("twig.leaf.color", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(Datatype.STRING, result.getDatatype());
+        expected = "twig."
+                + standardBuilderSet.getGenerator(twigPolicyCmptType).getGenerator(associationTwigToLeaf)
+                        .getMethodNameGetRefObject()
+                + "()."
+                + standardBuilderSet.getGenerator(leafPolicyCmptType).getMethodNameGetPropertyValue(
+                        attributeColor.getName(), Datatype.STRING) + "()";
+        assertEquals(expected, result.getCodeFragment().getSourcecode());
+
+        // association target not found
+        associationTwigToLeaf.setTarget("unknownTarget");
+        result = resolver.compile("twig.leaf", null, locale);
+        assertTrue(result.failed());
+        assertEquals(1, result.getMessages().size());
+        assertEquals(ExprCompiler.NO_ASSOCIATION_TARGET, result.getMessages().getMessage(0).getCode());
+
+        // association target not found
+        result = resolver.compile("twig.thorn", null, locale);
+        assertTrue(result.failed());
+        assertEquals(1, result.getMessages().size());
+        assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
     }
 
     @Test

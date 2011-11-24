@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -51,6 +52,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
@@ -324,7 +326,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             @Override
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
                 try {
-
                     if (datatype instanceof IPolicyCmptType) {
                         return getGenerator((IPolicyCmptType)datatype).getMethodNameGetPropertyValue(
                                 attribute.getName(), datatype);
@@ -340,11 +341,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                         }
                         return parameterAttributeGetter;
                     }
-
                 } catch (CoreException e) {
                     return null;
                 }
-
                 return null;
             }
 
@@ -366,6 +365,35 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     }
                 } catch (CoreException e) {
                     throw new CoreRuntimeException(e.getMessage(), e);
+                }
+            }
+
+            @Override
+            protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+                try {
+                    return getGenerator(policyCmptType).getGenerator((IPolicyCmptTypeAssociation)association)
+                            .getMethodNameGetRefObject();
+                } catch (CoreException e) {
+                    return null;
+                }
+            }
+
+            @Override
+            protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+                try {
+                    return getGenerator(policyCmptType).getGenerator((IPolicyCmptTypeAssociation)association)
+                            .getMethodNameGetAllRefObjects();
+                } catch (CoreException e) {
+                    return null;
+                }
+            }
+
+            @Override
+            protected String getJavaClassName(IType type) {
+                try {
+                    return getGenerator(type).getQualifiedName(true);
+                } catch (CoreException e) {
+                    return null;
                 }
             }
         };
@@ -443,6 +471,35 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     // the exception was already handled in the compile method of the super class
                 }
                 return compile;
+            }
+
+            @Override
+            protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+                try {
+                    return getGenerator(policyCmptType).getGenerator((IPolicyCmptTypeAssociation)association)
+                            .getMethodNameGetRefObject();
+                } catch (CoreException e) {
+                    return null;
+                }
+            }
+
+            @Override
+            protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+                try {
+                    return getGenerator(policyCmptType).getGenerator((IPolicyCmptTypeAssociation)association)
+                            .getMethodNameGetAllRefObjects();
+                } catch (CoreException e) {
+                    return null;
+                }
+            }
+
+            @Override
+            protected String getJavaClassName(IType type) {
+                try {
+                    return getGenerator(type).getQualifiedName(true);
+                } catch (CoreException e) {
+                    return null;
+                }
             }
 
         };

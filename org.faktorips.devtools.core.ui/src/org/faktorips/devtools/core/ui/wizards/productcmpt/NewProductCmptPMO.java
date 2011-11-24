@@ -163,7 +163,7 @@ public class NewProductCmptPMO extends PresentationModelObject {
             return result;
         }
         try {
-            TypeHierarchy subtypeHierarchy = TypeHierarchy.getSubtypeHierarchy(selectedBaseType, findIpsProject());
+            TypeHierarchy subtypeHierarchy = TypeHierarchy.getSubtypeHierarchy(selectedBaseType);
             List<IType> subtypes = subtypeHierarchy.getAllSubtypes(selectedBaseType);
             for (IType type : subtypes) {
                 result.add((IProductCmptType)type);

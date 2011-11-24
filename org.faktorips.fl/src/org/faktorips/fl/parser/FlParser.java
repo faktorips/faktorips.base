@@ -971,18 +971,18 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
         }
     }
 
-    final private boolean jj_3R_6() {
-        if (jj_scan_token(IDENTIFIER)) {
-            return true;
-        }
-        if (jj_scan_token(30)) {
+    final private boolean jj_3_1() {
+        if (jj_3R_6()) {
             return true;
         }
         return false;
     }
 
-    final private boolean jj_3_1() {
-        if (jj_3R_6()) {
+    final private boolean jj_3R_6() {
+        if (jj_scan_token(IDENTIFIER)) {
+            return true;
+        }
+        if (jj_scan_token(30)) {
             return true;
         }
         return false;
@@ -1114,8 +1114,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
             jj_gen++;
             if (++jj_gc > 100) {
                 jj_gc = 0;
-                for (JJCalls jj_2Rtn : jj_2_rtns) {
-                    JJCalls c = jj_2Rtn;
+                for (int i = 0; i < jj_2_rtns.length; i++) {
+                    JJCalls c = jj_2_rtns[i];
                     while (c != null) {
                         if (c.gen < jj_gen) {
                             c.first = null;

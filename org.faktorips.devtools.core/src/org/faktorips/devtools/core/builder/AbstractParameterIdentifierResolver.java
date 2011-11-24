@@ -13,10 +13,13 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -24,6 +27,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -35,6 +39,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
@@ -44,6 +49,7 @@ import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * An identifier resolver that resolves identifiers against a set of <code>Parameter</code>s that
@@ -51,6 +57,8 @@ import org.faktorips.util.message.Message;
  */
 public abstract class AbstractParameterIdentifierResolver implements IdentifierResolver {
 
+    public static final char VALUE_SUFFIX_SEPARATOR_CHAR = '@';
+    public static final String DEFAULT_VALUE_SUFFIX = "@default"; //$NON-NLS-1$
     private IIpsProject ipsproject;
     private IExpression formula;
     private ExprCompiler exprCompiler;
@@ -80,6 +88,12 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
      * Provides the name of the getter method for the provided attribute's default value.
      */
     protected abstract String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type);
+
+    protected abstract String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType);
+
+    protected abstract String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType);
+
+    protected abstract String getJavaClassName(IType type);
 
     private Map<String, EnumDatatype> createEnumMap() {
         EnumDatatype[] enumtypes = formula.getEnumDatatypesAllowedInFormula();
@@ -199,7 +213,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             return new CompilationResultImpl(Message.newError(ExprCompiler.INTERNAL_ERROR, text));
         }
         if (datatype instanceof IType) {
-            return compileTypeAttributeIdentifier(param, (IType)datatype, attributeName);
+            return compileTypeAttributeIdentifier(new JavaCodeFragment(param.getName()), (IType)datatype, attributeName);
         }
         if (datatype instanceof ValueDatatype) {
             return new CompilationResultImpl(param.getName(), datatype);
@@ -259,27 +273,33 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         return null;
     }
 
-    private CompilationResult compileTypeAttributeIdentifier(IParameter param, IType type, String attributeName) {
+    private CompilationResult compileTypeAttributeIdentifier(JavaCodeFragment javaCodeFragment,
+            IType type,
+            String attributeName) {
         if (StringUtils.isEmpty(attributeName)) {
             return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
                     Messages.AbstractParameterIdentifierResolver_msgAttributeMissing));
         }
+        if (attributeName.indexOf('.') > 0) {
+            return compileAssociationChain(javaCodeFragment, type, attributeName);
+        }
 
-        boolean isDefaultValueAccess = type instanceof IPolicyCmptType && attributeName.endsWith("@default"); //$NON-NLS-1$
+        boolean isDefaultValueAccess = type instanceof IPolicyCmptType && attributeName.endsWith(DEFAULT_VALUE_SUFFIX);
         IAttribute attribute = null;
         try {
-            String actualAttributeName = isDefaultValueAccess ? attributeName.substring(0,
-                    attributeName.lastIndexOf('@')) : attributeName;
-            attribute = type.findAttribute(actualAttributeName, ipsproject);
+            attribute = findAttribute(type, attributeName, isDefaultValueAccess);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute,
                     attributeName, type);
             return new CompilationResultImpl(Message.newError(ExprCompiler.INTERNAL_ERROR, text));
         }
+        if (attribute == null && type instanceof IPolicyCmptType) {
+            return compileTypeAssociationIdentifier(javaCodeFragment, type, attributeName);
+        }
         if (attribute == null) {
             String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {
-                    param.getName(), type.getName(), attributeName });
+                    javaCodeFragment, type.getName(), attributeName });
             return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
         }
 
@@ -292,14 +312,198 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             }
             String parameterAttributGetterName = isDefaultValueAccess ? getParameterAttributDefaultValueGetterName(
                     attribute, (IPolicyCmptType)type) : getParameterAttributGetterName(attribute, type);
-            String code = param.getName() + '.' + parameterAttributGetterName + "()"; //$NON-NLS-1$
-            return new CompilationResultImpl(code, datatype);
+            javaCodeFragment.append('.' + parameterAttributGetterName + "()"); //$NON-NLS-1$
+            return new CompilationResultImpl(javaCodeFragment, datatype);
         } catch (Exception e) {
             IpsPlugin.log(e);
             String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute,
                     attribute.getDatatype(), attributeName);
             return new CompilationResultImpl(Message.newError(ExprCompiler.INTERNAL_ERROR, text));
         }
+    }
+
+    private IAttribute findAttribute(IType type, String attributeName, boolean isDefaultValueAccess)
+            throws CoreException {
+        IAttribute attribute;
+        String actualAttributeName = isDefaultValueAccess ? attributeName.substring(0,
+                attributeName.lastIndexOf(VALUE_SUFFIX_SEPARATOR_CHAR)) : attributeName;// '@'
+        attribute = type.findAttribute(actualAttributeName, ipsproject);
+        return attribute;
+    }
+
+    private CompilationResult compileTypeAssociationIdentifier(JavaCodeFragment javaCodeFragment,
+            IType type,
+            String attributeName) throws NumberFormatException {
+        try {
+            String associationName = attributeName;
+            Integer index = null;
+            if (attributeName.indexOf('[') > 0) {
+                associationName = attributeName.substring(0, attributeName.indexOf('['));
+                index = Integer.valueOf(attributeName.substring(attributeName.indexOf('[') + 1,
+                        attributeName.indexOf(']')));
+            }
+            IAssociation association = type.findAssociation(associationName, ipsproject);
+            if (association == null) {
+                String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {
+                        javaCodeFragment, type.getName(), attributeName });
+                return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+            } else {
+                IType target = association.findTarget(ipsproject);
+                if (target == null) {
+                    return new CompilationResultImpl(Message.newError(
+                            ExprCompiler.NO_ASSOCIATION_TARGET,
+                            NLS.bind(Messages.AbstractParameterIdentifierResolver_noAssociationTarget, new Object[] {
+                                    association, type.getName() })));
+                }
+                String associationTargetGetterName = getAssociationTargetGetterName(association, (IPolicyCmptType)type);
+                if (association.is1ToManyIgnoringQualifier() && index == null) {
+                    return compileTypeAssociationToManyIdentifier(javaCodeFragment, type, association, target);
+                } else {
+                    return compileTypeAssociationTo1Identifier(javaCodeFragment, index, target,
+                            associationTargetGetterName);
+                }
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {
+                    javaCodeFragment, type.getName(), attributeName });
+            return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+        }
+    }
+
+    private CompilationResult compileTypeAssociationTo1Identifier(JavaCodeFragment javaCodeFragment,
+            Integer index,
+            IType target,
+            String associationTargetGetterName) {
+        javaCodeFragment.append('.' + associationTargetGetterName);
+        if (index == null) {
+            javaCodeFragment.append("()"); //$NON-NLS-1$
+        } else {
+            javaCodeFragment.append("(" + index.toString() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return new CompilationResultImpl(javaCodeFragment, target);
+    }
+
+    private CompilationResult compileTypeAssociationToManyIdentifier(JavaCodeFragment javaCodeFragment,
+            IType type,
+            IAssociation association,
+            IType target) {
+        String associationTargetGetterName;
+        associationTargetGetterName = getAssociationTargetsGetterName(association, (IPolicyCmptType)type);
+        javaCodeFragment.append('.' + associationTargetGetterName + "().toArray(new "); //$NON-NLS-1$
+        javaCodeFragment.appendClassName("org.faktorips.runtime.IModelObject"); //$NON-NLS-1$
+        javaCodeFragment.append("[0])"); //$NON-NLS-1$
+        return new CompilationResultImpl(javaCodeFragment, new ArrayOfValueDatatype(target, 1));
+    }
+
+    private CompilationResult compileAssociationChain(JavaCodeFragment javaCodeFragment,
+            IType type,
+            String attributeName) {
+        String target = attributeName.substring(0, attributeName.indexOf('.'));
+        CompilationResult compilationResult1 = compileTypeAttributeIdentifier(javaCodeFragment, type, target);
+        String tail = attributeName.substring(attributeName.indexOf('.') + 1);
+        Datatype datatype = compilationResult1.getDatatype();
+        if (datatype instanceof IType) {
+            return compileAssociationTo1Chain(compilationResult1, tail, datatype);
+        } else if (datatype instanceof ArrayOfValueDatatype) {
+            return compileAssociationToManyChain(compilationResult1.getCodeFragment(), (ArrayOfValueDatatype)datatype,
+                    tail);
+        } else {
+            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {
+                    javaCodeFragment, type.getName(), attributeName });
+            return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+        }
+    }
+
+    private CompilationResult compileAssociationTo1Chain(CompilationResult compilationResult1,
+            String tail,
+            Datatype datatype) {
+        CompilationResult compilationResult2 = compileTypeAttributeIdentifier(compilationResult1.getCodeFragment(),
+                (IType)datatype, tail);
+        MessageList messages = compilationResult1.getMessages();
+        messages.add(compilationResult2.getMessages());
+        Set<String> identifiers = new HashSet<String>();
+        Collections.addAll(identifiers, compilationResult1.getResolvedIdentifiers());
+        Collections.addAll(identifiers, compilationResult2.getResolvedIdentifiers());
+        JavaCodeFragment codeFragment = compilationResult2.getCodeFragment();
+        codeFragment.getImportDeclaration().add(compilationResult1.getCodeFragment().getImportDeclaration());
+        return new CompilationResultImpl(codeFragment, compilationResult2.getDatatype(), messages, identifiers);
+    }
+
+    private CompilationResult compileAssociationToManyChain(JavaCodeFragment javaCodeFragment,
+            ArrayOfValueDatatype datatype,
+            String code) {
+        if (StringUtils.isEmpty(code)) {
+            return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
+                    Messages.AbstractParameterIdentifierResolver_msgAttributeMissing));
+        }
+        String associationName = code;
+        String tail = StringUtils.EMPTY;
+        if (code.indexOf('.') > 0) {
+            associationName = code.substring(0, code.indexOf('.'));
+            tail = code.substring(code.indexOf('.') + 1);
+        }
+        String actualAssociationName = associationName;
+        Integer index = null;
+        if (associationName.indexOf('[') > 0) {
+            actualAssociationName = associationName.substring(0, associationName.indexOf('['));
+            index = Integer.valueOf(associationName.substring(associationName.indexOf('[') + 1,
+                    associationName.indexOf(']')));
+        }
+        IType type = (IType)datatype.getBasicDatatype();
+        try {
+            IAssociation association = type.findAssociation(actualAssociationName, ipsproject);
+            if (association != null) {
+                IType target = association.findTarget(ipsproject);
+                if (target == null) {
+                    return new CompilationResultImpl(Message.newError(
+                            ExprCompiler.NO_ASSOCIATION_TARGET,
+                            NLS.bind(Messages.AbstractParameterIdentifierResolver_noAssociationTarget, new Object[] {
+                                    association, type.getName() })));
+                }
+                JavaCodeFragment getTargetCode = compileAssociationAccess(javaCodeFragment, association);
+                if (index == null) {
+                    if (tail.isEmpty()) {
+                        return new CompilationResultImpl(getTargetCode, new ArrayOfValueDatatype(target, 1));
+                    } else {
+                        return compileAssociationToManyChain(getTargetCode, new ArrayOfValueDatatype(target, 1), tail);
+                    }
+                } else {
+                    JavaCodeFragment castAndArrayIndexCode = compileAssociationIndexedAccess(index, target,
+                            getTargetCode);
+                    if (tail.isEmpty()) {
+                        return new CompilationResultImpl(castAndArrayIndexCode, target);
+                    } else {
+                        return compileTypeAttributeIdentifier(castAndArrayIndexCode, target, tail);
+                    }
+                }
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {
+                    javaCodeFragment, type.getName(), code });
+            return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+        }
+        return null;
+    }
+
+    private JavaCodeFragment compileAssociationIndexedAccess(Integer index, IType target, JavaCodeFragment getTargetCode) {
+        JavaCodeFragment castAndArrayIndexCode = new JavaCodeFragment();
+        castAndArrayIndexCode.append("(("); //$NON-NLS-1$
+        castAndArrayIndexCode.appendClassName(getJavaClassName(target));
+        castAndArrayIndexCode.append(")"); //$NON-NLS-1$
+        castAndArrayIndexCode.append(getTargetCode);
+        castAndArrayIndexCode.append("[" + index.toString() + "])"); //$NON-NLS-1$ //$NON-NLS-2$
+        return castAndArrayIndexCode;
+    }
+
+    private JavaCodeFragment compileAssociationAccess(JavaCodeFragment javaCodeFragment, IAssociation association) {
+        JavaCodeFragment getTargetCode = new JavaCodeFragment();
+        getTargetCode.appendClassName(org.faktorips.runtime.formula.FormulaEvaluatorUtil.class);
+        getTargetCode.append(".getTargets("); //$NON-NLS-1$
+        getTargetCode.append(javaCodeFragment);
+        getTargetCode.append(", \"" + association.getName() + "\", this.getRepository())"); //$NON-NLS-1$//$NON-NLS-2$
+        return getTargetCode;
     }
 
 }

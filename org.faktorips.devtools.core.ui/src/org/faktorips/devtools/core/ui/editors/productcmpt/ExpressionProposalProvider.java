@@ -29,6 +29,7 @@ import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -50,8 +51,6 @@ import org.faktorips.util.ArgumentCheck;
  * @author schwering
  */
 public class ExpressionProposalProvider implements IContentProposalProvider {
-
-    private static final String DEFAULT_VALUE = "@default"; //$NON-NLS-1$
 
     private IMethod signature;
     private IExpression expression;
@@ -261,7 +260,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         result.add(proposal);
     }
 
-    private static class ContentProposal implements IContentProposal {
+    public static class ContentProposal implements IContentProposal {
         // FIXME in Eclipse 3.6: use org.eclipse.jface.fieldassist.ContentProposal
         private final String content;
         private final String label;
@@ -317,7 +316,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         int i = s.length() - 1;
         while (i >= 0) {
             if (!Character.isLetterOrDigit(s.charAt(i)) && s.charAt(i) != '.' && s.charAt(i) != '_'
-                    && s.charAt(i) != '-') {
+                    && s.charAt(i) != '-' && s.charAt(i) != '[' && s.charAt(i) != ']') {
                 break;
             }
             i--;
@@ -342,8 +341,9 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 return;
             }
             String prefix = attributePrefix;
-            if (prefix.indexOf('@') > 0) {
-                prefix = prefix.substring(0, prefix.indexOf('@'));
+            if (prefix.indexOf(AbstractParameterIdentifierResolver.VALUE_SUFFIX_SEPARATOR_CHAR) > 0) { // @
+                prefix = prefix.substring(0,
+                        prefix.indexOf(AbstractParameterIdentifierResolver.VALUE_SUFFIX_SEPARATOR_CHAR));
             }
             final IIpsProject ipsProject = getIpsProject();
             final List<IAttribute> attributes = findProductRelevantAttributes((IPolicyCmptType)datatype, ipsProject);
@@ -363,7 +363,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     private void addDefaultValueToResult(final List<IContentProposal> result,
             final IAttribute attribute,
             final String prefix) {
-        String name = attribute.getName() + DEFAULT_VALUE;
+        String name = attribute.getName() + AbstractParameterIdentifierResolver.DEFAULT_VALUE_SUFFIX;
         final String displayText = name
                 + " - " + attribute.getDatatype() + Messages.ExpressionProposalProvider_defaultValue; //$NON-NLS-1$
         final String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(attribute);

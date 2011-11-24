@@ -31,7 +31,9 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
@@ -158,6 +160,23 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
             protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
                 return "getDefaultValue" + StringUtils.capitalize(attribute.getName()); //$NON-NLS-1$
             }
+
+            @Override
+            protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+                return association.getIpsProject().getJavaNamingConvention()
+                        .getGetterMethodName(association.getName(), policyCmptType);
+            }
+
+            @Override
+            protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+                return association.getIpsProject().getJavaNamingConvention()
+                        .getGetterMethodName(association.getTargetRolePlural(), policyCmptType);
+            }
+
+            @Override
+            protected String getJavaClassName(IType type) {
+                return type.getQualifiedName();
+            }
         };
     }
 
@@ -175,6 +194,23 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
             @Override
             protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
                 return "getDefaultValue" + StringUtils.capitalize(attribute.getName()); //$NON-NLS-1$
+            }
+
+            @Override
+            protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+                return association.getIpsProject().getJavaNamingConvention()
+                        .getGetterMethodName(association.getName(), policyCmptType);
+            }
+
+            @Override
+            protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+                return association.getIpsProject().getJavaNamingConvention()
+                        .getGetterMethodName(association.getTargetRolePlural(), policyCmptType);
+            }
+
+            @Override
+            protected String getJavaClassName(IType type) {
+                return type.getQualifiedName();
             }
         };
     }

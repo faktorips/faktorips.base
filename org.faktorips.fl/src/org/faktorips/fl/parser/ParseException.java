@@ -99,14 +99,14 @@ public class ParseException extends Exception {
         }
         String expected = "";
         int maxSize = 0;
-        for (int[] expectedTokenSequence : expectedTokenSequences) {
-            if (maxSize < expectedTokenSequence.length) {
-                maxSize = expectedTokenSequence.length;
+        for (int i = 0; i < expectedTokenSequences.length; i++) {
+            if (maxSize < expectedTokenSequences[i].length) {
+                maxSize = expectedTokenSequences[i].length;
             }
-            for (int j = 0; j < expectedTokenSequence.length; j++) {
-                expected += tokenImage[expectedTokenSequence[j]] + " ";
+            for (int j = 0; j < expectedTokenSequences[i].length; j++) {
+                expected += tokenImage[expectedTokenSequences[i][j]] + " ";
             }
-            if (expectedTokenSequence[expectedTokenSequence.length - 1] != 0) {
+            if (expectedTokenSequences[i][expectedTokenSequences[i].length - 1] != 0) {
                 expected += "...";
             }
             expected += eol + "    ";

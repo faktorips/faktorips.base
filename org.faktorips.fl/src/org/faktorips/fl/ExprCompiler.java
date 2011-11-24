@@ -130,6 +130,17 @@ public class ExprCompiler {
     public final static String UNDEFINED_IDENTIFIER = PREFIX + "UndefinedIdentifier"; //$NON-NLS-1$
 
     /**
+     * An identifier is resolved to an association but the association's target can't be found.
+     * <p>
+     * Example: a.b.c * 2
+     * <p>
+     * In the expression a, b, c are identifiers. If the {IdentifierResolver} the compiler uses
+     * can't identify the target types of associations a and b then an error message
+     * {@link ExprCompiler#NO_ASSOCIATION_TARGET} is returned.
+     */
+    public final static String NO_ASSOCIATION_TARGET = PREFIX + "NoAssociationTarget"; //$NON-NLS-1$
+
+    /**
      * The expression contains a call to an undefined function.
      */
     public final static String UNDEFINED_FUNCTION = PREFIX + "UndefinedFunction"; //$NON-NLS-1$
