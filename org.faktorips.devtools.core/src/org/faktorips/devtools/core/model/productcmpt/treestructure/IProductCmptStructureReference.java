@@ -18,7 +18,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
- * A reference to unspecified objects (see subi nterfaces / -classes for further details) for used
+ * A reference to unspecified objects (see sub interfaces / -classes for further details) for used
  * in a <code>IProductCmptStructure</code>.
  * 
  * @author Thorsten Guenther
