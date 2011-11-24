@@ -22,7 +22,9 @@ import java.util.GregorianCalendar;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.lang.SystemUtils;
 import org.junit.Test;
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -76,6 +78,17 @@ public class XmlUtilTest extends XmlAbstractTestCase {
     public void testNodeToString() throws TransformerException {
         Document doc = newDocument();
         XmlUtil.nodeToString(doc, "Cp1252"); //$NON-NLS-1$
+
+        Element element = doc.createElement("el");
+        doc.appendChild(element);
+        CDATASection cdataSection = doc.createCDATASection("a" + SystemUtils.LINE_SEPARATOR + "b");
+        element.appendChild(cdataSection);
+
+        String string = XmlUtil.nodeToString(doc, "Cp1252");
+        String expected = "<?xml version=\"1.0\" encoding=\"WINDOWS-1252\" standalone=\"no\"?>"
+                + SystemUtils.LINE_SEPARATOR + "<el><![CDATA[a" + SystemUtils.LINE_SEPARATOR + "b]]></el>"
+                + SystemUtils.LINE_SEPARATOR;
+        assertEquals(expected, string);
     }
 
     @Test

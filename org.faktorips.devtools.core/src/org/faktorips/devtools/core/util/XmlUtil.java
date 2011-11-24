@@ -204,7 +204,7 @@ public class XmlUtil {
     public final static String nodeToString(Node node, String encoding) throws TransformerException {
         StringWriter writer = new StringWriter();
         nodeToWriter(node, writer, encoding);
-        return writer.toString();
+        return writer.toString().replace("\r\r", "\r"); //workaround for Windows bug producing \r\r\n in CDATA sections //$NON-NLS-1$//$NON-NLS-2$
     }
 
     /**
