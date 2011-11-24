@@ -16,10 +16,14 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.NullQualifiedNameType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.type.IType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -27,8 +31,9 @@ import org.w3c.dom.Element;
  * Default implementation of {@link IProductCmptPropertyReference}.
  * <p>
  * This implementation uses the part id of the referenced {@link IProductCmptProperty}. As the part
- * id is not necessarily unique across types, it is furthermore stored whether the
- * {@link IProductCmptProperty} originates from the product side or the policy side.
+ * id is not necessarily unique across types, and because product component types also store
+ * references for properties originating from the supertype hierarchy, the {@link QualifiedNameType}
+ * of the poperty's {@link IType} is stored as well.
  * 
  * @author Alexander Weickmann
  */
@@ -38,11 +43,14 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
 
     private static final String XML_ATTRIBUTE_REFERENCED_PART_ID = "referencedPartId"; //$NON-NLS-1$
 
-    private static final String XML_ATTRIBUTE_SOURCE_TYPE = "sourceType"; //$NON-NLS-1$
+    private static final String XML_ATTRIBUTE_QUALIFIED_TYPE_NAME = "qualifiedTypeName"; //$NON-NLS-1$
 
-    private String referencedPartId;
+    private static final String XML_ATTRIBUTE_IPS_OBJECT_TYPE = "ipsObjectType"; //$NON-NLS-1$
 
-    private SourceType sourceType;
+    private String referencedPartId = ""; //$NON-NLS-1$
+
+    // TODO AW 24-11-11: Depends on must be updated
+    private QualifiedNameType qualifiedNameType = new NullQualifiedNameType();
 
     public ProductCmptPropertyReference(IProductCmptType parent, String id) {
         super(parent, id);
@@ -50,8 +58,8 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
 
     @Override
     public void setReferencedProperty(IProductCmptProperty property) {
-        setReferencedPartId(property.getId());
-        setSourceType(SourceType.getValueByProperty(property));
+        referencedPartId = property.getId();
+        qualifiedNameType = property.getType().getQualifiedNameType();
         objectHasChanged(ContentChangeEvent.newWholeContentChangedEvent(getIpsSrcFile()));
     }
 
@@ -62,41 +70,25 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
         return referencedPartId;
     }
 
-    private void setReferencedPartId(String referencedPartId) {
-        this.referencedPartId = referencedPartId;
-    }
-
     /**
-     * Returns whether the referenced {@link IProductCmptProperty} originates from the product side
-     * or the policy side.
-     * 
-     * @see SourceType
+     * Returns a {@link QualifiedNameType} describing the origin of the referenced
+     * {@link IProductCmptProperty}.
      */
-    SourceType getSourceType() {
-        return sourceType;
-    }
-
-    private void setSourceType(SourceType sourceType) {
-        this.sourceType = sourceType;
+    QualifiedNameType getQualifiedNameType() {
+        return qualifiedNameType;
     }
 
     @Override
     public boolean isReferencingProperty(IProductCmptProperty property) {
-        return isEqualSourceType(property) && isEqualId(property) && isEqualProductCmptType(property);
+        return isEqualQualifiedNameType(property) && isEqualId(property);
     }
 
-    private boolean isEqualSourceType(IProductCmptProperty property) {
-        return (sourceType == SourceType.POLICY && property.isPolicyCmptTypeProperty())
-                || (sourceType == SourceType.PRODUCT && !property.isPolicyCmptTypeProperty());
+    private boolean isEqualQualifiedNameType(IProductCmptProperty property) {
+        return property.isOfType(qualifiedNameType);
     }
 
     private boolean isEqualId(IProductCmptProperty property) {
         return getReferencedPartId().equals(property.getId());
-    }
-
-    private boolean isEqualProductCmptType(IProductCmptProperty property) {
-        return property.isOfType(getProductCmptType().getQualifiedName())
-                || property.isOfType(getProductCmptType().getPolicyCmptType());
     }
 
     @Override
@@ -107,7 +99,9 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
     @Override
     protected void initFromXml(Element element, String id) {
         referencedPartId = element.getAttribute(XML_ATTRIBUTE_REFERENCED_PART_ID);
-        sourceType = SourceType.getValueByIdentifier(element.getAttribute(XML_ATTRIBUTE_SOURCE_TYPE));
+        String qualifiedTypeName = element.getAttribute(XML_ATTRIBUTE_QUALIFIED_TYPE_NAME);
+        IpsObjectType ipsObjectType = IpsObjectType.getTypeForName(element.getAttribute(XML_ATTRIBUTE_IPS_OBJECT_TYPE));
+        qualifiedNameType = new QualifiedNameType(qualifiedTypeName, ipsObjectType);
 
         super.initFromXml(element, id);
     }
@@ -117,7 +111,8 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
         super.propertiesToXml(element);
 
         element.setAttribute(XML_ATTRIBUTE_REFERENCED_PART_ID, referencedPartId);
-        element.setAttribute(XML_ATTRIBUTE_SOURCE_TYPE, sourceType.id);
+        element.setAttribute(XML_ATTRIBUTE_QUALIFIED_TYPE_NAME, qualifiedNameType.getName());
+        element.setAttribute(XML_ATTRIBUTE_IPS_OBJECT_TYPE, qualifiedNameType.getIpsObjectType().getId());
     }
 
     @Override
@@ -127,47 +122,6 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
 
     private IProductCmptType getProductCmptType() {
         return (IProductCmptType)getParent();
-    }
-
-    /**
-     * Defines the origin of an {@link IProductCmptProperty}, that is the product side or the policy
-     * side.
-     */
-    public static enum SourceType {
-
-        PRODUCT("product"), //$NON-NLS-1$
-
-        POLICY("policy"); //$NON-NLS-1$
-
-        private static SourceType getValueByProperty(IProductCmptProperty property) {
-            return property.isPolicyCmptTypeProperty() ? POLICY : PRODUCT;
-        }
-
-        /**
-         * Returns the {@link SourceType} corresponding to the provided id.
-         */
-        private static SourceType getValueByIdentifier(String id) {
-            for (SourceType type : values()) {
-                if (id.equals(type.id)) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
-        private final String id;
-
-        private SourceType(String id) {
-            this.id = id;
-        }
-
-        /**
-         * Returns the id of this {@link SourceType}.
-         */
-        public String getId() {
-            return id;
-        }
-
     }
 
 }

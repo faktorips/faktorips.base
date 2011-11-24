@@ -25,7 +25,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -61,8 +63,8 @@ public class TypePartTest extends AbstractIpsPluginTest {
 
     @Test
     public void testIsOfType() {
-        assertTrue(policyTypePart.isOfType(policyCmptType.getQualifiedName()));
-        assertFalse(policyTypePart.isOfType("bar"));
+        assertTrue(policyTypePart.isOfType(policyCmptType.getQualifiedNameType()));
+        assertFalse(policyTypePart.isOfType(new QualifiedNameType("bar", IpsObjectType.POLICY_CMPT_TYPE)));
     }
 
     @Test

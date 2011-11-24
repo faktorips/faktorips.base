@@ -337,9 +337,11 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * 
      * @param indexes the indexes identifying the product component properties to be moved
      * @param up flag indicating whether to move up or down
-     * @param contextType the {@link IProductCmptType} the moved properties belong to. The provided
-     *            indexes reference the properties assigned to this {@link IProductCmptCategory} by
-     *            the context type, other properties are ignored
+     * @param contextType the {@link IProductCmptType} the move is performed for. The provided
+     *            indexes reference properties from the context type and it's supertypes, where
+     *            properties from supertypes occupy the lesser indexes. Properties assigned to this
+     *            {@link IProductCmptCategory} by product component types below the context type are
+     *            ignored
      * 
      * @return the new indexes of the moved properties
      * 

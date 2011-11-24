@@ -353,7 +353,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             return new int[0];
         }
 
-        List<IProductCmptProperty> contextProperties = findProductCmptProperties(contextType, false,
+        List<IProductCmptProperty> contextProperties = findProductCmptProperties(contextType, true,
                 contextType.getIpsProject());
         return ((ProductCmptType)contextType).moveProductCmptPropertyReferences(indexes, contextProperties, up);
     }

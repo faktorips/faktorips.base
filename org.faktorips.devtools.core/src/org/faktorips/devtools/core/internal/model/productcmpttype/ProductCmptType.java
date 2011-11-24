@@ -1040,19 +1040,17 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * <p>
      * Returns the new indices within the context list.
      * 
-     * @param movedIndices the indices identifying the {@link IProductCmptProperty}s of the context
-     *            list to be moved
-     * @param contextProperties only {@link IProductCmptPropertyReference}s corresponding to these
-     *            {@link IProductCmptProperty}s are swapped with each other. This is necessary to be
-     *            able to change the ordering of properties that belong to the same category without
-     *            interference from properties belonging to other categories. To achieve this,
-     *            clients must provide all move-enabled properties assigned to the category in
-     *            question
+     * @param movedIndices the indices identifying the properties of the context list to be moved
+     * @param contextProperties only references corresponding to these {@link IProductCmptProperty}s
+     *            are swapped with each other. This is necessary to be able to change the ordering
+     *            of properties that belong to the same category without interference from
+     *            properties belonging to other categories. To achieve this, clients must provide
+     *            all move-enabled properties assigned to the category in question
      * @param up flag indicating whether to move up or down
      * 
-     * @return true the new indices within the context list
+     * @return the new indices within the context list
      * 
-     * @throws CoreException If an error occurs during the move
+     * @throws CoreException if an error occurs during the move
      */
     int[] moveProductCmptPropertyReferences(int[] movedIndices, List<IProductCmptProperty> contextProperties, boolean up)
             throws CoreException {
@@ -1062,14 +1060,14 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void createProductCmptPropertyReferencesForNotReferencedProperties() throws CoreException {
-        for (IProductCmptProperty property : findProductCmptProperties(false, getIpsProject())) {
+        for (IProductCmptProperty property : findProductCmptProperties(true, getIpsProject())) {
             if (getReferencedPropertyIndex(property) == -1) {
                 newProductCmptPropertyReference(property);
             }
         }
     }
 
-    private IProductCmptPropertyReference newProductCmptPropertyReference(IProductCmptProperty productCmptProperty) {
+    private IProductCmptPropertyReference newProductCmptPropertyReference(final IProductCmptProperty productCmptProperty) {
         IProductCmptPropertyReference reference = propertyReferences.newPart();
         reference.setReferencedProperty(productCmptProperty);
         return reference;
@@ -1159,7 +1157,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         CategoryPropertyCollector collector = new CategoryPropertyCollector(ipsProject);
         collector.start(this);
 
-        Collections.sort(collector.properties, new ProductCmptPropertyComparator(ipsProject));
+        Collections.sort(collector.properties, new ProductCmptPropertyComparator(this));
         filterOverwritingAttributes(collector.properties);
 
         return collector.properties;
@@ -1218,7 +1216,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             throws CoreException {
 
         List<IProductCmptProperty> properties = findProductCmptProperties(searchSupertypeHierarchy, ipsProject);
-        Collections.sort(properties, new ProductCmptPropertyComparator(ipsProject));
+        Collections.sort(properties, new ProductCmptPropertyComparator(this));
         return properties;
     }
 
@@ -1303,53 +1301,42 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public void changeCategoryAndDeferPolicyChange(IProductCmptProperty property, String category) {
+        ArgumentCheck.isTrue(property.isOfType(getQualifiedNameType())
+                || property.isOfType(new QualifiedNameType(policyCmptType, IpsObjectType.POLICY_CMPT_TYPE)));
+
         // Immediately change product component type properties
         if (!property.isPolicyCmptTypeProperty()) {
             property.setCategory(category);
             return;
+        } else {
+            pendingPolicyPropertyCategoryChanges.put(property, category);
+            objectHasChanged();
         }
-
-        pendingPolicyPropertyCategoryChanges.put(property, category);
-        objectHasChanged();
     }
 
     /**
      * {@link Comparator} that can be used to sort product component properties according to the
      * reference list stored in the {@link IProductCmptType}, with properties belonging to
-     * supertypes being sorted towards the beginning of the list.
+     * supertypes being sorted towards the beginning of the list by default.
      */
     private static class ProductCmptPropertyComparator implements Comparator<IProductCmptProperty> {
 
-        private final IIpsProject ipsProject;
+        private final IProductCmptType productCmptType;
 
-        private ProductCmptPropertyComparator(IIpsProject ipsProject) {
-            this.ipsProject = ipsProject;
+        private ProductCmptPropertyComparator(IProductCmptType productCmptType) {
+            this.productCmptType = productCmptType;
         }
 
         @Override
         public int compare(IProductCmptProperty property1, IProductCmptProperty property2) {
-            // Search the product component types the properties belong to
-            IProductCmptType productCmptType1;
-            IProductCmptType productCmptType2;
-            try {
-                productCmptType1 = property1.findProductCmptType(ipsProject);
-                productCmptType2 = property2.findProductCmptType(ipsProject);
-            } catch (CoreException e) {
-                // Consider elements equal if the product component types cannot be found
-                IpsPlugin.log(e);
-                return 0;
-            }
+            // First, try to compare the indices of the properties in the reference list
+            int indexCompare = comparePropertyIndices(property1, property2);
 
-            if (productCmptType1 == null || productCmptType2 == null) {
-                // Consider elements equal if the product component types cannot be found
-                return 0;
-            }
-
-            if (productCmptType1.equals(productCmptType2)) {
-                return comparePropertyIndices(property1, property2, productCmptType1, productCmptType2);
-            } else {
-                return compareSubtypeRelationship(ipsProject, productCmptType1, productCmptType2);
-            }
+            /*
+             * If the indices are equal, at least one of the properties is not stored in the
+             * reference list. In this case, compare the subtype relationship.
+             */
+            return indexCompare != 0 ? indexCompare : compareSubtypeRelationship(property1, property2);
         }
 
         /**
@@ -1358,13 +1345,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
          * <p>
          * Properties whose indices are greater are sorted towards the end.
          */
-        private int comparePropertyIndices(IProductCmptProperty property1,
-                IProductCmptProperty property2,
-                IProductCmptType productCmptType1,
-                IProductCmptType productCmptType2) {
-
-            int index1 = ((ProductCmptType)productCmptType1).getReferencedPropertyIndex(property1);
-            int index2 = ((ProductCmptType)productCmptType2).getReferencedPropertyIndex(property2);
+        private int comparePropertyIndices(IProductCmptProperty property1, IProductCmptProperty property2) {
+            int index1 = ((ProductCmptType)productCmptType).getReferencedPropertyIndex(property1);
+            int index2 = ((ProductCmptType)productCmptType).getReferencedPropertyIndex(property2);
             if (index1 == -1 || index2 == -1) {
                 return 0;
             }
@@ -1384,12 +1367,32 @@ public class ProductCmptType extends Type implements IProductCmptType {
          * <p>
          * Subtypes are sorted towards the end.
          */
-        private int compareSubtypeRelationship(final IIpsProject ipsProject,
-                IProductCmptType productCmptType1,
-                IProductCmptType productCmptType2) {
-
+        private int compareSubtypeRelationship(IProductCmptProperty property1, IProductCmptProperty property2) {
+            // Search the product component types the properties belong to
+            IProductCmptType productCmptType1;
+            IProductCmptType productCmptType2;
             try {
-                if (productCmptType1.isSubtypeOf(productCmptType2, ipsProject)) {
+                productCmptType1 = property1.findProductCmptType(productCmptType.getIpsProject());
+                productCmptType2 = property2.findProductCmptType(productCmptType.getIpsProject());
+            } catch (CoreException e) {
+                // Consider elements equal if the product component types cannot be found
+                IpsPlugin.log(e);
+                return 0;
+            }
+
+            // Consider elements equal if the product component types cannot be found
+            if (productCmptType1 == null || productCmptType2 == null) {
+                return 0;
+            }
+
+            // Consider elements equal if both properties belong to the same product component type
+            if (productCmptType1.equals(productCmptType2)) {
+                return 0;
+            }
+
+            // Sort supertypes towards the beginning
+            try {
+                if (productCmptType1.isSubtypeOf(productCmptType2, productCmptType.getIpsProject())) {
                     return 1;
                 } else {
                     return -1;

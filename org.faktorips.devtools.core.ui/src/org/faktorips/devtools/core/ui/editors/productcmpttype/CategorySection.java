@@ -27,7 +27,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
@@ -45,6 +44,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -62,7 +62,6 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -233,11 +232,15 @@ public class CategorySection extends IpsSection {
 
         private final CategoryCompositionSection categoryCompositionSection;
 
+        private final Color disabledColor = new Color(getDisplay(), 100, 100, 100);
+
         private Button moveUpButton;
 
         private Button moveDownButton;
 
         private Button changeCategoryButton;
+
+        private PropertyContentProvider contentProvider;
 
         public CategoryComposite(IProductCmptCategory category, IProductCmptType contextType,
                 CategoryCompositionSection categoryCompositionSection, Composite parent, UIToolkit toolkit) {
@@ -251,15 +254,20 @@ public class CategorySection extends IpsSection {
             initControls(toolkit);
 
             contentsChangeListener = createContentsChangeListener(contextType);
-            addContentsChangeListener(contextType.getIpsModel());
+            addContentsChangeListener();
+            addDisposeListener();
         }
 
-        private void addContentsChangeListener(final IIpsModel ipsModel) {
-            ipsModel.addChangeListener(contentsChangeListener);
+        private void addContentsChangeListener() {
+            contextType.getIpsModel().addChangeListener(contentsChangeListener);
+        }
+
+        private void addDisposeListener() {
             addDisposeListener(new DisposeListener() {
                 @Override
                 public void widgetDisposed(DisposeEvent e) {
-                    ipsModel.removeChangeListener(contentsChangeListener);
+                    contextType.getIpsModel().removeChangeListener(contentsChangeListener);
+                    disabledColor.dispose();
                 }
             });
         }
@@ -285,6 +293,23 @@ public class CategorySection extends IpsSection {
                     }
                 }
             };
+        }
+
+        @Override
+        protected void refreshThis() {
+            updateTreeItemEnabledStates();
+        }
+
+        /**
+         * Sets the foreground color of all tree items representing properties assigned by
+         * supertypes to the disabled color.
+         */
+        private void updateTreeItemEnabledStates() {
+            for (int i = 0; i < contentProvider.properties.size(); i++) {
+                if (!isPropertyOfContextType(contentProvider.properties.get(i))) {
+                    getTree().getItem(i).setForeground(disabledColor);
+                }
+            }
         }
 
         @Override
@@ -318,52 +343,8 @@ public class CategorySection extends IpsSection {
         }
 
         private void setContentProvider(TreeViewer viewer) {
-            /*
-             * Use a TreeViewer to get the horizontal drag and drop markers to drop items in-between
-             * other items.
-             */
-            viewer.setContentProvider(new ITreeContentProvider() {
-                @Override
-                public Object[] getElements(Object inputElement) {
-                    List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
-                    try {
-                        properties.addAll(category.findProductCmptProperties(contextType, false,
-                                contextType.getIpsProject()));
-                    } catch (CoreException e) {
-                        // Recover by not displaying any properties
-                        IpsPlugin.log(e);
-                    }
-                    return properties.toArray();
-                }
-
-                @Override
-                public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                    // Nothing to do
-                }
-
-                @Override
-                public void dispose() {
-                    // Nothing to do
-                }
-
-                @Override
-                public Object[] getChildren(Object parentElement) {
-                    // Not really a tree, there are never any children
-                    return new Object[0];
-                }
-
-                @Override
-                public Object getParent(Object element) {
-                    // As there are no children, there are no parents as well
-                    return null;
-                }
-
-                @Override
-                public boolean hasChildren(Object element) {
-                    // Not really a tree, there are never any children
-                    return false;
-                }
-            });
+            contentProvider = new PropertyContentProvider(contextType, category);
+            viewer.setContentProvider(contentProvider);
         }
 
         private void addDoubleClickChangeCategoryListener(TreeViewer viewer) {
@@ -377,92 +358,12 @@ public class CategorySection extends IpsSection {
 
         private void addDragSupport(final TreeViewer viewer) {
             viewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { ProductCmptPropertyTransfer.getInstance() },
-                    new DragSourceListener() {
-                        @Override
-                        public void dragStart(DragSourceEvent event) {
-                            event.doit = isPropertySelected();
-                        }
-
-                        @Override
-                        public void dragSetData(DragSourceEvent event) {
-                            StructuredSelection selection = (StructuredSelection)viewer.getSelection();
-                            List<?> selectedElements = selection.toList();
-                            event.data = selectedElements.toArray(new IProductCmptProperty[selection.size()]);
-                        }
-
-                        @Override
-                        public void dragFinished(DragSourceEvent event) {
-                            // Nothing to do
-                        }
-                    });
+                    new PropertyDragListener(this));
         }
 
-        private void addDropSupport(final TreeViewer viewer) {
+        private void addDropSupport(TreeViewer viewer) {
             viewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { ProductCmptPropertyTransfer.getInstance() },
-                    new ViewerDropAdapter(viewer) {
-                        @Override
-                        public boolean validateDrop(Object target, int operation, TransferData transferType) {
-                            // Cannot drop directly onto items
-                            if (getCurrentLocation() == LOCATION_ON) {
-                                return false;
-                            }
-                            return ProductCmptPropertyTransfer.getInstance().isSupportedType(transferType);
-                        }
-
-                        @Override
-                        public boolean performDrop(Object data) {
-                            IProductCmptProperty underMouseProperty = (IProductCmptProperty)getCurrentTarget();
-
-                            for (Object droppedObject : (Object[])data) {
-                                IProductCmptProperty droppedProperty = (IProductCmptProperty)droppedObject;
-                                IProductCmptCategory targetCategory = (IProductCmptCategory)viewer.getInput();
-
-                                try {
-                                    if (getCurrentLocation() == LOCATION_BEFORE) {
-                                        targetCategory.insertProductCmptProperty(droppedProperty, underMouseProperty,
-                                                true, droppedProperty.getIpsProject());
-                                    } else if (getCurrentLocation() == LOCATION_AFTER) {
-                                        targetCategory.insertProductCmptProperty(droppedProperty, underMouseProperty,
-                                                false, droppedProperty.getIpsProject());
-                                    } else if (getCurrentLocation() == LOCATION_NONE) {
-                                        targetCategory.insertProductCmptProperty(droppedProperty, null, false,
-                                                droppedProperty.getIpsProject());
-                                    }
-                                } catch (CoreException e) {
-                                    throw new CoreRuntimeException(e);
-                                }
-                            }
-
-                            return true;
-                        }
-
-                        @Override
-                        protected int determineLocation(DropTargetEvent event) {
-                            if (!(event.item instanceof Item)) {
-                                return LOCATION_NONE;
-                            }
-
-                            Item item = (Item)event.item;
-                            Rectangle bounds = getBounds(item);
-                            if (bounds == null) {
-                                return LOCATION_NONE;
-                            }
-
-                            /*
-                             * When the mouse is on an item, return LOCATION_BEFORE or
-                             * LOCATION_AFTER instead, depending on the distance to the respective
-                             * location.
-                             */
-                            Point coordinates = getTree().toControl(new Point(event.x, event.y));
-                            if ((coordinates.y - bounds.y) < bounds.height / 2) {
-                                return LOCATION_BEFORE;
-                            } else if ((bounds.y + bounds.height - coordinates.y) < bounds.height / 2) {
-                                return LOCATION_AFTER;
-                            } else {
-                                return LOCATION_ON;
-                            }
-                        }
-                    });
+                    new PropertyDropAdapter(this, viewer));
         }
 
         @Override
@@ -541,7 +442,7 @@ public class CategorySection extends IpsSection {
 
         private void openChangeCategoryDialog() {
             IProductCmptProperty selectedProperty = getSelectedProperty();
-            if (selectedProperty == null) {
+            if (selectedProperty == null || !isSelectedPropertyOfContextType()) {
                 return;
             }
 
@@ -559,7 +460,21 @@ public class CategorySection extends IpsSection {
         protected void updateButtonEnabledStates() {
             moveUpButton.setEnabled(isPropertySelected() && !isFirstElementSelected());
             moveDownButton.setEnabled(isPropertySelected() && !isLastElementSelected());
-            changeCategoryButton.setEnabled(isPropertySelected());
+            changeCategoryButton.setEnabled(isPropertySelected() && isSelectedPropertyOfContextType());
+        }
+
+        private boolean isSelectedPropertyOfContextType() {
+            return isPropertyOfContextType(getSelectedProperty());
+        }
+
+        private boolean isPropertyOfContextType(IProductCmptProperty property) {
+            IProductCmptType productCmptType;
+            try {
+                productCmptType = property.findProductCmptType(property.getIpsProject());
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+            return contextType.equals(productCmptType);
         }
 
         private IProductCmptProperty getSelectedProperty() {
@@ -576,6 +491,198 @@ public class CategorySection extends IpsSection {
 
         private TreeViewer getTreeViewer() {
             return (TreeViewer)getViewer();
+        }
+
+        private static class PropertyContentProvider implements ITreeContentProvider {
+
+            private final List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
+
+            private final IProductCmptType contextType;
+
+            private final IProductCmptCategory category;
+
+            private PropertyContentProvider(IProductCmptType contextType, IProductCmptCategory category) {
+                this.contextType = contextType;
+                this.category = category;
+            }
+
+            @Override
+            public Object[] getElements(Object inputElement) {
+                properties.clear();
+                try {
+                    properties
+                            .addAll(category.findProductCmptProperties(contextType, true, contextType.getIpsProject()));
+                } catch (CoreException e) {
+                    // Recover by not displaying any properties
+                    IpsPlugin.log(e);
+                }
+                return properties.toArray();
+            }
+
+            @Override
+            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                // Nothing to do
+            }
+
+            @Override
+            public void dispose() {
+                // Nothing to do
+            }
+
+            @Override
+            public Object[] getChildren(Object parentElement) {
+                // Not really a tree, there are never any children
+                return new Object[0];
+            }
+
+            @Override
+            public Object getParent(Object element) {
+                // As there are no children, there are no parents as well
+                return null;
+            }
+
+            @Override
+            public boolean hasChildren(Object element) {
+                // Not really a tree, there are never any children
+                return false;
+            }
+
+        }
+
+        private static class PropertyDragListener implements DragSourceListener {
+
+            private final CategoryComposite categoryComposite;
+
+            private PropertyDragListener(CategoryComposite categoryComposite) {
+                this.categoryComposite = categoryComposite;
+            }
+
+            @Override
+            public void dragStart(DragSourceEvent event) {
+                event.doit = categoryComposite.isPropertySelected();
+                if (event.doit) {
+                    PropertyDropAdapter.sourceTree = categoryComposite.getTree();
+                }
+            }
+
+            @Override
+            public void dragSetData(DragSourceEvent event) {
+                event.data = new IProductCmptProperty[] { categoryComposite.getSelectedProperty() };
+            }
+
+            @Override
+            public void dragFinished(DragSourceEvent event) {
+                PropertyDropAdapter.sourceTree = null;
+            }
+
+        }
+
+        private static class PropertyDropAdapter extends ViewerDropAdapter {
+
+            /**
+             * The {@link Tree} widget that started the drag and drop operation.
+             * <p>
+             * This reference is used by the method {@link #validateDrop(Object, int, TransferData)}
+             * to obtain the {@link IProductCmptProperty} the user wants to transfer and to deduce
+             * the source {@link IProductCmptCategory}. The field is set by the
+             * {@link PropertyDragListener} that starts the drag and drop operation.
+             * <p>
+             * We know that this is not a "nice" solution but see no other way as
+             * {@code getCurrentEvent().data} is null in
+             * {@link #validateDrop(Object, int, TransferData)}.
+             */
+            private static Tree sourceTree;
+
+            private final CategoryComposite categoryComposite;
+
+            private PropertyDropAdapter(CategoryComposite categoryComposite, Viewer viewer) {
+                super(viewer);
+                this.categoryComposite = categoryComposite;
+            }
+
+            @Override
+            public boolean validateDrop(Object target, int operation, TransferData transferType) {
+                // Cannot drop directly onto items
+                if (getCurrentLocation() == LOCATION_ON) {
+                    return false;
+                }
+
+                // Cannot drop properties from supertypes into another category
+                if (isDropSupertypePropertyIntoDifferentCategory()) {
+                    return false;
+                }
+
+                return ProductCmptPropertyTransfer.getInstance().isSupportedType(transferType);
+            }
+
+            private boolean isDropSupertypePropertyIntoDifferentCategory() {
+                return !categoryComposite.isPropertyOfContextType(getDroppedPropertyFromSourceTree())
+                        && !categoryComposite.getTree().equals(sourceTree);
+            }
+
+            private IProductCmptProperty getDroppedPropertyFromSourceTree() {
+                return (IProductCmptProperty)sourceTree.getSelection()[0].getData();
+            }
+
+            @Override
+            public boolean performDrop(Object data) {
+                IProductCmptProperty droppedProperty = getDroppedProperty(data);
+                try {
+                    if (getCurrentLocation() == LOCATION_BEFORE) {
+                        getTargetCategory().insertProductCmptProperty(droppedProperty, getTargetProperty(), true,
+                                droppedProperty.getIpsProject());
+                    } else if (getCurrentLocation() == LOCATION_AFTER) {
+                        getTargetCategory().insertProductCmptProperty(droppedProperty, getTargetProperty(), false,
+                                droppedProperty.getIpsProject());
+                    } else if (getCurrentLocation() == LOCATION_NONE) {
+                        getTargetCategory().insertProductCmptProperty(droppedProperty, null, false,
+                                droppedProperty.getIpsProject());
+                    }
+                } catch (CoreException e) {
+                    return false;
+                }
+
+                return true;
+            }
+
+            private IProductCmptProperty getDroppedProperty(Object data) {
+                return (IProductCmptProperty)((Object[])data)[0];
+            }
+
+            @Override
+            protected int determineLocation(DropTargetEvent event) {
+                if (!(event.item instanceof Item)) {
+                    return LOCATION_NONE;
+                }
+
+                Item item = (Item)event.item;
+                Rectangle bounds = getBounds(item);
+                if (bounds == null) {
+                    return LOCATION_NONE;
+                }
+
+                /*
+                 * When the mouse is on an item, return LOCATION_BEFORE or LOCATION_AFTER instead,
+                 * depending on the distance to the respective location.
+                 */
+                Point coordinates = categoryComposite.getTree().toControl(new Point(event.x, event.y));
+                if ((coordinates.y - bounds.y) < bounds.height / 2) {
+                    return LOCATION_BEFORE;
+                } else if ((bounds.y + bounds.height - coordinates.y) < bounds.height / 2) {
+                    return LOCATION_AFTER;
+                } else {
+                    return LOCATION_ON;
+                }
+            }
+
+            private IProductCmptProperty getTargetProperty() {
+                return (IProductCmptProperty)getCurrentTarget();
+            }
+
+            private IProductCmptCategory getTargetCategory() {
+                return (IProductCmptCategory)getViewer().getInput();
+            }
+
         }
 
         private static class ProductCmptPropertyTransfer extends

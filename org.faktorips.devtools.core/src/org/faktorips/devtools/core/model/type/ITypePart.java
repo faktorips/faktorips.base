@@ -18,6 +18,7 @@ import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
@@ -39,11 +40,12 @@ public interface ITypePart extends IIpsObjectPart, IDescribedElement, ILabeledEl
 
     /**
      * Returns whether this {@link ITypePart} belongs to the {@link IType} identified by the
-     * provided qualified name.
+     * provided {@link QualifiedNameType}.
      * 
-     * @param typeQualifiedName The qualified name identifying the {@link IType} in question
+     * @param qualifiedNameType the {@link QualifiedNameType} identifying the {@link IType} in
+     *            question
      */
-    public boolean isOfType(String typeQualifiedName);
+    public boolean isOfType(QualifiedNameType qualifiedNameType);
 
     /**
      * Returns the part's {@link Modifier}.

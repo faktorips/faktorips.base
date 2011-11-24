@@ -145,6 +145,16 @@ public abstract class ViewerButtonComposite extends Composite {
         }
         viewer.refresh();
         updateButtonEnabledStates();
+        refreshThis();
+    }
+
+    /**
+     * <strong>Subclassing:</strong><br>
+     * This implementation does nothing. Subclasses may override this method in order to extend the
+     * {@link #refresh()} method.
+     */
+    protected void refreshThis() {
+        // Empty default implementation
     }
 
     protected ContentViewer getViewer() {

@@ -504,11 +504,16 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         property3.setCategory(CATEGORY_NAME);
 
         assertArrayEquals(new int[] { 0 }, category.moveProductCmptProperties(new int[] { 1 }, true, superProductType));
-        assertArrayEquals(new int[] { 1, 0 }, category.moveProductCmptProperties(new int[] { 2, 1 }, true, productType));
+        assertArrayEquals(new int[] { 3, 2 }, category.moveProductCmptProperties(new int[] { 4, 3 }, true, productType));
+
+        List<IProductCmptProperty> superProperties = category.findProductCmptProperties(superProductType, true,
+                ipsProject);
+        assertEquals(superProperty2, superProperties.get(0));
+        assertEquals(superProperty1, superProperties.get(1));
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, true, ipsProject);
-        assertEquals(superProperty2, properties.get(0));
-        assertEquals(superProperty1, properties.get(1));
+        assertEquals(superProperty1, properties.get(0));
+        assertEquals(superProperty2, properties.get(1));
         assertEquals(property2, properties.get(2));
         assertEquals(property3, properties.get(3));
         assertEquals(property1, properties.get(4));
@@ -523,15 +528,6 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      */
     @Test(expected = IndexOutOfBoundsException.class)
     public void testMoveProductCmptProperties_InvalidIndexesGiven() throws CoreException {
-        IProductCmptType superProductType = createSuperProductType(productType, "Super");
-
-        IProductCmptProperty property1 = superProductType.newProductCmptTypeAttribute("p1");
-        property1.setCategory(CATEGORY_NAME);
-        IProductCmptProperty property2 = superProductType.newProductCmptTypeAttribute("p2");
-        property2.setCategory(CATEGORY_NAME);
-        IProductCmptProperty property3 = superProductType.newProductCmptTypeAttribute("p3");
-        property3.setCategory(CATEGORY_NAME);
-
         category.moveProductCmptProperties(new int[] { 1 }, true, productType);
     }
 

@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.type;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypePart;
@@ -42,8 +43,8 @@ public abstract class TypePart extends BaseIpsObjectPart implements ITypePart {
     }
 
     @Override
-    public boolean isOfType(String typeQualifiedName) {
-        return typeQualifiedName.equals(getType().getQualifiedName());
+    public boolean isOfType(QualifiedNameType qualifiedNameType) {
+        return qualifiedNameType.equals(getType().getQualifiedNameType());
     }
 
     @Override
