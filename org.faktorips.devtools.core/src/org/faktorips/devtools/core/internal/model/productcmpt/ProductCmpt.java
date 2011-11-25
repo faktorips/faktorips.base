@@ -90,6 +90,15 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
+    public IProductCmptGeneration getLatestProductCmptGeneration() {
+        IIpsObjectGeneration[] generationsOrderedByValidDate = getGenerationsOrderedByValidDate();
+        if (generationsOrderedByValidDate.length > 0) {
+            return (IProductCmptGeneration)generationsOrderedByValidDate[generationsOrderedByValidDate.length - 1];
+        }
+        return null;
+    }
+
+    @Override
     public IProductCmptKind findProductCmptKind() throws CoreException {
         IProductCmptNamingStrategy stratgey = getIpsProject().getProductCmptNamingStrategy();
         try {

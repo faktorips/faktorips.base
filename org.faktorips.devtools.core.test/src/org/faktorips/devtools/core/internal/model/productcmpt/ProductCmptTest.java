@@ -18,11 +18,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
@@ -35,6 +37,7 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeMethod;
 import org.faktorips.devtools.core.internal.model.productcmpttype.TableStructureUsage;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -644,4 +647,25 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertNull(part);
     }
 
+    @Test
+    public void returnLatestGenerationNull() {
+        GregorianCalendar today = new GregorianCalendar();
+        today = new GregorianCalendar(today.get(Calendar.YEAR), today.get(Calendar.MONTH) + 1,
+                today.get(Calendar.DAY_OF_MONTH));
+        GregorianCalendar tomorrow = (GregorianCalendar)today.clone();
+        tomorrow.add(Calendar.DAY_OF_MONTH, 1);
+        GregorianCalendar yesterday = (GregorianCalendar)today.clone();
+        yesterday.add(Calendar.DAY_OF_MONTH, -1);
+
+        IIpsObjectGeneration firstGeneration = productCmpt.newGeneration(yesterday);
+        IIpsObjectGeneration secondGeneration = productCmpt.newGeneration(tomorrow);
+        IIpsObjectGeneration thirdGeneration = productCmpt.newGeneration(today);
+
+        assertSame(firstGeneration, productCmpt.getProductCmptGeneration(0));
+        assertSame(secondGeneration, productCmpt.getProductCmptGeneration(1));
+        assertSame(thirdGeneration, productCmpt.getProductCmptGeneration(2));
+        assertSame(firstGeneration, productCmpt.getFirstGeneration());
+        assertSame(secondGeneration, productCmpt.getLatestProductCmptGeneration());
+
+    }
 }

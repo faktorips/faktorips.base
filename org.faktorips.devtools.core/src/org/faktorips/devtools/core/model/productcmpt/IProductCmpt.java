@@ -67,6 +67,12 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProperty
     public IProductCmptGeneration getProductCmptGeneration(int index);
 
     /**
+     * @return Returns the latest generation of this product component or <code>null</code>, if no
+     *         generation exists.
+     */
+    public IProductCmptGeneration getLatestProductCmptGeneration();
+
+    /**
      * Returns the product component's kind or <code>null</code> if the kind can't be found.
      * 
      * @throws CoreException if an error occurs while searching for the kind.
