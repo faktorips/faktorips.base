@@ -50,6 +50,9 @@ public class StructuredViewerField<T> extends AbstractViewerField<T> {
     @Override
     public T parseContent() {
         TypedSelection<T> selection = new TypedSelection<T>(type, strucuredViewer.getSelection());
+        if (!selection.isValid()) {
+            return null;
+        }
         T o = selection.getFirstElement();
 
         if (supportsNull() && IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(o)) {

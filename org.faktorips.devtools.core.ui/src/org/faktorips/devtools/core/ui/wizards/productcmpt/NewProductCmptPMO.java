@@ -126,6 +126,7 @@ public class NewProductCmptPMO extends PresentationModelObject {
     public void setSelectedBaseType(IProductCmptType selectedBaseType) {
         IProductCmptType oldSelection = this.selectedBaseType;
         this.selectedBaseType = selectedBaseType;
+        setSelectedType(null);
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_SELECTED_BASE_TYPE, oldSelection, selectedBaseType));
 
     }
@@ -163,7 +164,7 @@ public class NewProductCmptPMO extends PresentationModelObject {
             return result;
         }
         try {
-            TypeHierarchy subtypeHierarchy = TypeHierarchy.getSubtypeHierarchy(selectedBaseType);
+            TypeHierarchy subtypeHierarchy = TypeHierarchy.getSubtypeHierarchy(selectedBaseType, findIpsProject());
             List<IType> subtypes = subtypeHierarchy.getAllSubtypes(selectedBaseType);
             for (IType type : subtypes) {
                 result.add((IProductCmptType)type);
