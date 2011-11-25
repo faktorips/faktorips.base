@@ -13,8 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -81,7 +81,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.controller.fields.SectionEditField;
 import org.faktorips.devtools.core.ui.dialogs.DialogMementoHelper;
-import org.faktorips.devtools.core.ui.dnd.IpsObjectPartContainerByteArrayTransfer;
+import org.faktorips.devtools.core.ui.dnd.IpsByteArrayTransfer;
 import org.faktorips.devtools.core.ui.editors.ViewerButtonComposite;
 import org.faktorips.devtools.core.ui.editors.productcmpttype.CategoryPage.CategoryCompositionSection;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -678,8 +678,7 @@ public class CategorySection extends IpsSection {
 
         }
 
-        private static class ProductCmptPropertyTransfer extends
-                IpsObjectPartContainerByteArrayTransfer<IProductCmptProperty> {
+        private static class ProductCmptPropertyTransfer extends IpsByteArrayTransfer<IProductCmptProperty> {
 
             private static final String TYPE_NAME = "ProductCmptProperty"; //$NON-NLS-1$
 
@@ -696,19 +695,19 @@ public class CategorySection extends IpsSection {
             }
 
             @Override
-            protected void writePartContainer(IProductCmptProperty part, DataOutputStream outputStream) {
-                writeString(part.getIpsProject().getName(), outputStream);
-                writeString(part.getType().getQualifiedName(), outputStream);
-                writeString(part.getType().getIpsObjectType().getId(), outputStream);
-                writeString(part.getId(), outputStream);
+            protected void writeObject(IProductCmptProperty part, DataOutput output) {
+                writeString(part.getIpsProject().getName(), output);
+                writeString(part.getType().getQualifiedName(), output);
+                writeString(part.getType().getIpsObjectType().getId(), output);
+                writeString(part.getId(), output);
             }
 
             @Override
-            protected IProductCmptProperty readPartContainer(DataInputStream readIn) {
-                String projectName = readString(readIn);
-                String typeQualifiedName = readString(readIn);
-                IpsObjectType typeObjectType = IpsObjectType.getTypeForName(readString(readIn));
-                String partId = readString(readIn);
+            protected IProductCmptProperty readObject(DataInput input) {
+                String projectName = readString(input);
+                String typeQualifiedName = readString(input);
+                IpsObjectType typeObjectType = IpsObjectType.getTypeForName(readString(input));
+                String partId = readString(input);
 
                 IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
                 try {
