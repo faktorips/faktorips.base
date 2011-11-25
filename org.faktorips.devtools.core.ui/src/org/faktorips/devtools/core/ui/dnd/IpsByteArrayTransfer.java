@@ -41,8 +41,12 @@ import org.faktorips.util.IoUtil;
  * <strong>Subclassing:</strong><br>
  * This class provides the infrastructure to convert objects to bytes and vice versa. Subclasses
  * simply need to implement the methods {@link #writeObject(Object, DataOutput)} and
- * {@link #readObject(DataInput)}, using the provided {@code write} and {@code read} methods. Please
- * read the documentation of the respective methods for further implementation instructions.
+ * {@link #readObject(DataInput)}, using the provided {@code write} and {@code read} methods.
+ * <p>
+ * If necessary, subclasses may also override the methods {@link #validate(Object)} and / or
+ * {@link #validateObject(Object)}. However, it should be the exception that this is necessary.
+ * <p>
+ * Please read the documentation of the respective methods for further implementation instructions.
  * 
  * @param <T> the type of the objects to be transfered
  * 
