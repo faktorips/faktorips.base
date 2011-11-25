@@ -31,9 +31,10 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchQuery;
-import org.faktorips.devtools.core.ui.search.product.conditions.IOperandProvider;
-import org.faktorips.devtools.core.ui.search.product.conditions.ISearchOperator;
-import org.faktorips.devtools.core.ui.search.product.conditions.ISearchOperatorType;
+import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.IOperandProvider;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperator;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
 
 public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPresentationModel> {
 

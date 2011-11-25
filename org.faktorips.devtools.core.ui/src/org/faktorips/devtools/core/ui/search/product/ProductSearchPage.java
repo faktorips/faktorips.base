@@ -31,6 +31,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchPage;
+import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
+import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionsTableViewerProvider;
 
 public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresentationModel> {
 
@@ -62,10 +64,14 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
         getBindingContext().bindContent(chooser, getPresentationModel(),
                 ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE);
 
+        toolkit.createVerticalSpacer(baseComposite, 10);
+
         Text txtSrcFilePatternText = createSrcFilePatternText(toolkit, baseComposite,
                 Messages.ProductSearchPage_labelProductComponent);
         getBindingContext().bindEnabled(txtSrcFilePatternText, getPresentationModel(),
                 ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
+
+        toolkit.createVerticalSpacer(baseComposite, 20);
 
         createConditionsGroup(toolkit);
 
@@ -85,6 +91,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
         getBindingContext().bindEnabled(conditionsGroup, getPresentationModel(),
                 ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
         conditionsGroup.setEnabled(false);
+
     }
 
     private TableViewer createConditionTable(Composite composite) {
@@ -109,7 +116,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
             }
         });
         getBindingContext().bindEnabled(btnAddCondition, getPresentationModel(),
-                ProductSearchPresentationModel.CONDITION_AVAILABLE);
+                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
 
         Button btnRemoveCondition = toolkit.createButton(comp, "Remove Condition");
 
@@ -121,7 +128,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
 
         });
         getBindingContext().bindEnabled(btnRemoveCondition, getPresentationModel(),
-                ProductSearchPresentationModel.CONDITION_AVAILABLE);
+                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
 
     }
 

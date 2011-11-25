@@ -23,10 +23,11 @@ import org.eclipse.search.ui.ISearchQuery;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.search.AbstractSearchPresentationModel;
-import org.faktorips.devtools.core.ui.search.product.conditions.ICondition;
-import org.faktorips.devtools.core.ui.search.product.conditions.PolicyAttributeCondition;
-import org.faktorips.devtools.core.ui.search.product.conditions.ProductAttributeCondition;
-import org.faktorips.devtools.core.ui.search.product.conditions.ProductComponentAssociationCondition;
+import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.ICondition;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.PolicyAttributeCondition;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductAttributeCondition;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductComponentAssociationCondition;
 
 public class ProductSearchPresentationModel extends AbstractSearchPresentationModel {
 
@@ -79,7 +80,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     }
 
     @Override
-    protected void notifyListeners(PropertyChangeEvent event) {
+    public void notifyListeners(PropertyChangeEvent event) {
         super.notifyListeners(event);
     }
 
@@ -114,7 +115,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         productSearchConditionPresentationModels.add(new ProductSearchConditionPresentationModel(this));
     }
 
-    boolean removeProductSearchConditionPresentationModels(ProductSearchConditionPresentationModel productSearchConditionPresentationModel) {
+    public boolean removeProductSearchConditionPresentationModels(ProductSearchConditionPresentationModel productSearchConditionPresentationModel) {
         return productSearchConditionPresentationModels.remove(productSearchConditionPresentationModel);
     }
 
@@ -122,7 +123,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         return !getAvailableConditions().isEmpty();
     }
 
-    protected List<ICondition> getAvailableConditions() {
+    public List<ICondition> getAvailableConditions() {
         if (productCmptType == null) {
             return Collections.emptyList();
         }
