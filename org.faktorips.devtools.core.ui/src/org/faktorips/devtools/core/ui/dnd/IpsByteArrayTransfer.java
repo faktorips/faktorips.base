@@ -20,6 +20,7 @@ import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -264,7 +265,14 @@ public abstract class IpsByteArrayTransfer<T> extends ByteArrayTransfer {
             IoUtil.close(readInputStream);
         }
 
-        return objects.toArray();
+        @SuppressWarnings({ "unchecked" })
+        /*
+         * need this unchecked cast because Array.newInstance has Object as return type, but of
+         * course it returns an typed array. Done the assignment to temp to be able to suppress the
+         * warning at assignment-level.
+         */
+        T[] temp = (T[])Array.newInstance(transferClass, objects.size());
+        return objects.toArray(temp);
     }
 
     /**

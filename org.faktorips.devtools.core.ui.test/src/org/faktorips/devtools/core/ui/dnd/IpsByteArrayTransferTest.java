@@ -192,7 +192,7 @@ public class IpsByteArrayTransferTest {
         transfer.readInt(readInputStream);
     }
 
-    private static class TestTransfer extends IpsByteArrayTransfer<IIpsObjectPart> {
+    public static class TestTransfer extends IpsByteArrayTransfer<IIpsObjectPart> {
 
         private final IIpsObjectPart transferedObject = mock(IIpsObjectPart.class);
 
