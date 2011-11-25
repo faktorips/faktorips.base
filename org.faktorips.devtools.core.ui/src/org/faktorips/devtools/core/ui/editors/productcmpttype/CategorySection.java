@@ -25,7 +25,10 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ContentViewer;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
+import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -44,7 +47,6 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -64,6 +66,7 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
@@ -73,6 +76,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.controller.fields.SectionEditField;
@@ -232,8 +236,6 @@ public class CategorySection extends IpsSection {
 
         private final CategoryCompositionSection categoryCompositionSection;
 
-        private final Color disabledColor = new Color(getDisplay(), 100, 100, 100);
-
         private Button moveUpButton;
 
         private Button moveDownButton;
@@ -267,7 +269,6 @@ public class CategorySection extends IpsSection {
                 @Override
                 public void widgetDisposed(DisposeEvent e) {
                     contextType.getIpsModel().removeChangeListener(contentsChangeListener);
-                    disabledColor.dispose();
                 }
             });
         }
@@ -296,23 +297,6 @@ public class CategorySection extends IpsSection {
         }
 
         @Override
-        protected void refreshThis() {
-            updateTreeItemEnabledStates();
-        }
-
-        /**
-         * Sets the foreground color of all tree items representing properties assigned by
-         * supertypes to the disabled color.
-         */
-        private void updateTreeItemEnabledStates() {
-            for (int i = 0; i < contentProvider.properties.size(); i++) {
-                if (!isPropertyOfContextType(contentProvider.properties.get(i))) {
-                    getTree().getItem(i).setForeground(disabledColor);
-                }
-            }
-        }
-
-        @Override
         protected ContentViewer createViewer(Composite parent, UIToolkit toolkit) {
             TreeViewer viewer = new TreeViewer(toolkit.getFormToolkit().createTree(parent, SWT.NONE));
 
@@ -331,13 +315,26 @@ public class CategorySection extends IpsSection {
             viewer.setLabelProvider(new LocalizedLabelProvider() {
                 @Override
                 public Image getImage(Object element) {
-                    // Returns the default image of the corresponding property value
-                    if (element instanceof IProductCmptProperty) {
-                        IProductCmptProperty property = (IProductCmptProperty)element;
-                        return IpsUIPlugin.getImageHandling().getDefaultImage(
-                                property.getProductCmptPropertyType().getValueImplementationClass());
+                    // Return the default image of the corresponding property value
+                    if (!(element instanceof IProductCmptProperty)) {
+                        return super.getImage(element);
                     }
-                    return super.getImage(element);
+
+                    IProductCmptProperty property = (IProductCmptProperty)element;
+                    Image baseImage = IpsUIPlugin.getImageHandling().getDefaultImage(
+                            property.getProductCmptPropertyType().getValueImplementationClass());
+
+                    if (isPropertyOfContextType(property)) {
+                        return baseImage;
+                    }
+
+                    /*
+                     * Decorate the image with an override overlay if the property does not belong
+                     * to the context type.
+                     */
+                    ImageDescriptor imageDescriptor = new DecorationOverlayIcon(baseImage,
+                            OverlayIcons.OVERRIDE_OVR_DESC, IDecoration.BOTTOM_RIGHT);
+                    return IpsUIPlugin.getImageHandling().getImage(imageDescriptor);
                 }
             });
         }
@@ -468,13 +465,9 @@ public class CategorySection extends IpsSection {
         }
 
         private boolean isPropertyOfContextType(IProductCmptProperty property) {
-            IProductCmptType productCmptType;
-            try {
-                productCmptType = property.findProductCmptType(property.getIpsProject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-            return contextType.equals(productCmptType);
+            return property.isOfType(contextType.getQualifiedNameType())
+                    || property.isOfType(new QualifiedNameType(contextType.getPolicyCmptType(),
+                            IpsObjectType.POLICY_CMPT_TYPE));
         }
 
         private IProductCmptProperty getSelectedProperty() {

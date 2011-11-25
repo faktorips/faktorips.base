@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -30,7 +29,6 @@ import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypePart;
 import org.junit.Before;
@@ -53,7 +51,7 @@ public class TypePartTest extends AbstractIpsPluginTest {
 
         ipsProject = newIpsProject();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Foo", "Bar");
-        policyTypePart = new TestTypePart(policyCmptType, policyCmptType.findProductCmptType(ipsProject), "");
+        policyTypePart = new TestTypePart(policyCmptType, "");
     }
 
     @Test
@@ -123,11 +121,8 @@ public class TypePartTest extends AbstractIpsPluginTest {
 
     private static class TestTypePart extends TypePart {
 
-        private final IProductCmptType productCmptType;
-
-        protected TestTypePart(IType parent, IProductCmptType productCmptType, String id) {
+        protected TestTypePart(IType parent, String id) {
             super(parent, id);
-            this.productCmptType = productCmptType;
         }
 
         @Override
@@ -163,11 +158,6 @@ public class TypePartTest extends AbstractIpsPluginTest {
         @Override
         protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
             return null;
-        }
-
-        @Override
-        public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
-            return productCmptType;
         }
 
     }

@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.core.model.type;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -90,8 +92,8 @@ public interface IProductCmptProperty extends ITypePart {
      * {@link IProductCmptCategory} corresponding to this property's {@link ProductCmptPropertyType}.
      * <li>If this {@link IProductCmptProperty} belongs to an {@link IPolicyCmptType} and the
      * category assignment is changed using
-     * {@link IProductCmptType#changeCategoryAndDeferPolicyChange(IProductCmptProperty, String)}, this
-     * change is not immediately reflected by this getter as the method defers saving the
+     * {@link IProductCmptType#changeCategoryAndDeferPolicyChange(IProductCmptProperty, String)},
+     * this change is not immediately reflected by this getter as the method defers saving the
      * {@link IPolicyCmptType} until the {@link IProductCmptType} is saved.
      * </ul>
      */
@@ -111,5 +113,13 @@ public interface IProductCmptProperty extends ITypePart {
      * This operation is a shortcut for {@code !getCategory().isEmpty()}.
      */
     public boolean hasCategory();
+
+    /**
+     * Returns the {@link IProductCmptType} this {@link IProductCmptProperty} belongs to or null if
+     * the referenced {@link IProductCmptType} could not be found.
+     * 
+     * @throws CoreException if an error occurs during the search
+     */
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
 }

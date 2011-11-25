@@ -371,9 +371,4 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME, matchingAssociationName);
     }
 
-    @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
-        return getProductCmptType();
-    }
-
 }

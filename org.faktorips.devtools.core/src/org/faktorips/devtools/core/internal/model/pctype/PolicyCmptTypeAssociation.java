@@ -750,9 +750,4 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return false;
     }
 
-    @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
-        return getPolicyCmptType().findProductCmptType(ipsProject);
-    }
-
 }

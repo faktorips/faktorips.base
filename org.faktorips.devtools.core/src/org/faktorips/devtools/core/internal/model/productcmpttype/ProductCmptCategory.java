@@ -364,14 +364,18 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             boolean above,
             IIpsProject ipsProject) throws CoreException {
 
+        /*
+         * TODO AW 25-11-11: Context type must be a parameter (supertype properties with context
+         * type below the property's type).
+         */
         IProductCmptType contextType = property.findProductCmptType(ipsProject);
         if (contextType == null) {
             return false;
         }
 
-        getProductCmptType().changeCategoryAndDeferPolicyChange(property, name);
+        contextType.changeCategoryAndDeferPolicyChange(property, name);
 
-        List<IProductCmptProperty> properties = findProductCmptProperties(contextType, false, ipsProject);
+        List<IProductCmptProperty> properties = findProductCmptProperties(contextType, true, ipsProject);
         int propertyIndex = properties.indexOf(property);
         int targetPropertyIndex = targetProperty != null ? properties.indexOf(targetProperty) : properties.size() - 1;
         insertProductCmptProperty(propertyIndex, targetPropertyIndex, contextType, above);

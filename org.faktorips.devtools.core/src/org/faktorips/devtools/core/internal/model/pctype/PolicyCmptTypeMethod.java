@@ -13,12 +13,9 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.type.Method;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeMethod;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 
 /**
@@ -30,11 +27,6 @@ public class PolicyCmptTypeMethod extends Method implements IPolicyCmptTypeMetho
 
     public PolicyCmptTypeMethod(IType parent, String id) {
         super(parent, id);
-    }
-
-    @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
-        return getPolicyCmptType().findProductCmptType(ipsProject);
     }
 
     @Override

@@ -793,12 +793,44 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     @Test
     public void testInsertProductCmptProperty_DoNotChangeCategoryStoredInPolicyProperty() throws CoreException {
         IPolicyCmptTypeAttribute policyProperty = policyType.newPolicyCmptTypeAttribute("policyProperty");
-        policyProperty.setCategory("beforeCategory");
         policyProperty.setProductRelevant(true);
+        policyProperty.setCategory("beforeCategory");
 
         category.insertProductCmptProperty(policyProperty, null, false, ipsProject);
 
         assertEquals("beforeCategory", policyProperty.getCategory());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IProductCmptProperty} from the policy side is inserted into an
+     * {@link IProductCmptCategory} defined in the supertype hierarchy.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The category stored in the {@link IProductCmptProperty} should be changed as soon as the
+     * configuring {@link IProductCmptType} is saved.
+     */
+    @Test
+    public void testInsertProductCmptProperty_DoChangeCategoryStoredInPolicyPropertyOnSaveOfConfiguringProductCmptType()
+            throws CoreException {
+
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
+        IProductCmptCategory category = superProductType.newCategory("testCategory");
+
+        IPolicyCmptTypeAttribute policyProperty = policyType.newPolicyCmptTypeAttribute("policyProperty");
+        policyProperty.setProductRelevant(true);
+
+        category.insertProductCmptProperty(policyProperty, null, false, ipsProject);
+
+        /*
+         * The category should not change if another type of the hierarchy is saved which does not
+         * configure the policy component type.
+         */
+        superProductType.getIpsSrcFile().save(true, null);
+        assertEquals("", policyProperty.getCategory());
+
+        productType.getIpsSrcFile().save(true, null);
+        assertEquals(category.getName(), policyProperty.getCategory());
     }
 
     /**
@@ -884,6 +916,73 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         assertEquals(foreignProperty, properties.get(1));
         assertEquals(property2, properties.get(2));
         assertEquals(property3, properties.get(3));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IProductCmptProperty} of an {@link IProductCmptType} is inserted into the
+     * {@link IProductCmptCategory} it already belongs to but at another position. The
+     * insert-position happens to be in-between two properties from the supertype hierarchy.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The {@link IProductCmptProperty} should be inserted between the supertype properties and true
+     * should be returned.
+     */
+    @Test
+    public void testInsertProductCmptProperty_InsertPropertyBetweenSupertypeProperties() throws CoreException {
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
+        IProductCmptCategory category = superProductType.newCategory("myCategory");
+
+        IProductCmptProperty s1 = superProductType.newProductCmptTypeAttribute("s1");
+        s1.setCategory(category.getName());
+        IProductCmptProperty s2 = superProductType.newProductCmptTypeAttribute("s2");
+        s2.setCategory(category.getName());
+        IProductCmptProperty testProperty = productType.newProductCmptTypeAttribute("testProperty");
+        testProperty.setCategory(category.getName());
+
+        assertTrue(category.insertProductCmptProperty(testProperty, s1, false, ipsProject));
+
+        List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, true, ipsProject);
+        assertEquals(s1, properties.get(0));
+        assertEquals(testProperty, properties.get(1));
+        assertEquals(s2, properties.get(2));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IProductCmptProperty} from the supertype hierarchy is moved to the bottom of the
+     * property list. Then, the {@link IProductCmptProperty} is inserted again to the top of the
+     * list.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The {@link IProductCmptProperty} from the supertype hierarchy should be correctly inserted at
+     * the top of the list and true should be returned.
+     */
+    @Test
+    public void testInsertProductCmptProperty_InsertSupertypePropertyToOtherPosition() throws CoreException {
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
+        IProductCmptCategory category = superProductType.newCategory("myCategory");
+
+        IProductCmptProperty superProperty = superProductType.newProductCmptTypeAttribute("superProperty");
+        superProperty.setCategory(category.getName());
+        IProductCmptProperty p1 = productType.newProductCmptTypeAttribute("p1");
+        p1.setCategory(category.getName());
+        IProductCmptProperty p2 = productType.newProductCmptTypeAttribute("p2");
+        p2.setCategory(category.getName());
+
+        // Move super property to the end of the list
+        category.moveProductCmptProperties(new int[] { 0 }, false, productType);
+        category.moveProductCmptProperties(new int[] { 1 }, false, productType);
+
+        // Insert the super property to the beginning of the list
+        assertTrue(category.insertProductCmptProperty(superProperty, p1, true, ipsProject));
+
+        // TODO AW
+        // List<IProductCmptProperty> properties = category.findProductCmptProperties(productType,
+        // true, ipsProject);
+        // assertEquals(superProperty, properties.get(0));
+        // assertEquals(p1, properties.get(1));
+        // assertEquals(p2, properties.get(2));
     }
 
     private IProductCmptType createSuperProductType(IProductCmptType productType, String prefix) throws CoreException {

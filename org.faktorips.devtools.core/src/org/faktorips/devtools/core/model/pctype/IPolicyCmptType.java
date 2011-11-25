@@ -263,8 +263,6 @@ public interface IPolicyCmptType extends IType {
     /**
      * Returns an array of all attributes of all super types not yet overwritten by this policy
      * component type.
-     * 
-     * @param ipsProject TODO
      */
     public List<IPolicyCmptTypeAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException;
 

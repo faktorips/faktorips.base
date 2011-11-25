@@ -105,7 +105,6 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.Messages;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.ipsobject.ArchiveIpsSrcFile;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -1423,7 +1422,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             return imageDescriptor;
         }
 
-        public IpsElementWorkbenchAdapter getWorkbenchAdapterFor(Class<ProductCmpt> class1) {
+        public IpsElementWorkbenchAdapter getWorkbenchAdapterFor(Class<? extends IpsElement> class1) {
             return getDefault().ipsElementWorkbenchAdapterAdapterFactory.getAdapterByClass(class1);
         }
 

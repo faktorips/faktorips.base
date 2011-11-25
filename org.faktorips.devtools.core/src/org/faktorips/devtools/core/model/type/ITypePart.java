@@ -13,14 +13,11 @@
 
 package org.faktorips.devtools.core.model.type;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 /**
  * Represents a part that is common to all {@link IType}s.
@@ -58,15 +55,5 @@ public interface ITypePart extends IIpsObjectPart, IDescribedElement, ILabeledEl
      * @throws NullPointerException If the parameter is null
      */
     public void setModifier(Modifier modifier);
-
-    /**
-     * Returns the {@link IProductCmptType} this property belongs to or null if the referenced
-     * {@link IProductCmptType} could not be found.
-     * 
-     * @param ipsProject The IPS project whose IPS object path is used for the search
-     * 
-     * @throws CoreException If an error occurs during the search
-     */
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
 }

@@ -365,8 +365,8 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * @param property the {@link IProductCmptProperty} to insert into this
      *            {@link IProductCmptCategory}
      * @param targetProperty the {@link IProductCmptProperty} to be inserted will be positioned just
-     *            above the target {@link IProductCmptProperty}. This parameter may be null - in
-     *            this case the {@link IProductCmptProperty} is inserted at the beginning
+     *            above or just below the target {@link IProductCmptProperty}. This parameter may be
+     *            null - in this case the {@link IProductCmptProperty} is inserted at the end
      * @param above flag indicating whether to insert the {@link IProductCmptProperty} above the
      *            target {@link IProductCmptProperty}. If the flag is false, the
      *            {@link IProductCmptProperty} is inserted below the target

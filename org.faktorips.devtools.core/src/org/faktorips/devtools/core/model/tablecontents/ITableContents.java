@@ -75,8 +75,6 @@ public interface ITableContents extends IIpsMetaObject, ITimedIpsObject, XmlSaxS
      * Searches the table structure this contents is based on and returns it. Returns
      * <code>null</code> if the structure can't be found.
      * 
-     * @param ipsProject TODO
-     * 
      * @throws CoreException if an exception occurs while searching for the table structure.
      */
     public ITableStructure findTableStructure(IIpsProject ipsProject) throws CoreException;
