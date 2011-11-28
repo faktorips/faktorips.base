@@ -123,7 +123,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals("new description", policyContainer.getDescriptionText(Locale.GERMAN));
         assertEquals("", policyContainer.getDescription(Locale.US).getText());
         assertTrue(policyContainer.getIpsSrcFile().isDirty());
-        assertEquals(policyContainer.getIpsSrcFile(), lastContentChangeEvent.getIpsSrcFile());
+        assertEquals(policyContainer.getIpsSrcFile(), getLastContentChangeEvent().getIpsSrcFile());
 
         try {
             container.setDescription(null);

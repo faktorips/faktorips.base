@@ -32,12 +32,11 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.faktorips.devtools.core.exception.IORuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.util.IoUtil;
 
 /**
- * An abstract base class for easy implementation transfers enabling drag and drop of objects within
- * Faktor-IPS.
+ * An abstract base class for easy implementation of transfers enabling drag and drop of objects
+ * within Faktor-IPS.
  * <p>
  * <strong>Subclassing:</strong><br>
  * This class provides the infrastructure to convert objects to bytes and vice versa. Subclasses
@@ -55,7 +54,6 @@ import org.faktorips.util.IoUtil;
  * 
  * @author Alexander Weickmann
  * 
- * @see IIpsObjectPartContainer
  * @see ByteArrayTransfer
  */
 public abstract class IpsByteArrayTransfer<T> extends ByteArrayTransfer {

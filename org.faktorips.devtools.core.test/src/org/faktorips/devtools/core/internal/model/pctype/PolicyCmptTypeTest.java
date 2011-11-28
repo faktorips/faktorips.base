@@ -281,9 +281,9 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         assertSame(policyCmptType, a.getIpsObject());
         assertEquals(1, policyCmptType.getNumOfAttributes());
         assertTrue(sourceFile.isDirty());
-        assertEquals(sourceFile, lastContentChangeEvent.getIpsSrcFile());
-        assertEquals(a, lastContentChangeEvent.getPart());
-        assertEquals(ContentChangeEvent.TYPE_PART_ADDED, lastContentChangeEvent.getEventType());
+        assertEquals(sourceFile, getLastContentChangeEvent().getIpsSrcFile());
+        assertEquals(a, getLastContentChangeEvent().getPart());
+        assertEquals(ContentChangeEvent.TYPE_PART_ADDED, getLastContentChangeEvent().getEventType());
         String aId = a.getId();
         assertNotNull(aId);
 
@@ -370,7 +370,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         assertSame(policyCmptType, m.getIpsObject());
         assertEquals(1, policyCmptType.getNumOfMethods());
         assertTrue(sourceFile.isDirty());
-        assertEquals(sourceFile, lastContentChangeEvent.getIpsSrcFile());
+        assertEquals(sourceFile, getLastContentChangeEvent().getIpsSrcFile());
 
         IMethod m2 = policyCmptType.newMethod();
         String m2Id = m2.getId();
@@ -399,7 +399,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         assertSame(policyCmptType, r.getIpsObject());
         assertEquals(1, policyCmptType.getNumOfRules());
         assertTrue(sourceFile.isDirty());
-        assertEquals(sourceFile, lastContentChangeEvent.getIpsSrcFile());
+        assertEquals(sourceFile, getLastContentChangeEvent().getIpsSrcFile());
 
         IValidationRule r2 = policyCmptType.newRule();
         String r2Id = r2.getId();
@@ -428,7 +428,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         assertSame(policyCmptType, r.getIpsObject());
         assertEquals(1, policyCmptType.getNumOfAssociations());
         assertTrue(sourceFile.isDirty());
-        assertEquals(sourceFile, lastContentChangeEvent.getIpsSrcFile());
+        assertEquals(sourceFile, getLastContentChangeEvent().getIpsSrcFile());
 
         IPolicyCmptTypeAssociation r2 = policyCmptType.newPolicyCmptTypeAssociation();
         String r2Id = r2.getId();

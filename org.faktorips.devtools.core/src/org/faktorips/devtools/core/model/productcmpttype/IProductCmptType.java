@@ -680,10 +680,6 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      *            {@link IProductCmptCategory}
      * @param category the name of the {@link IProductCmptCategory} to assign the
      *            {@link IProductCmptProperty} to
-     * 
-     * @throws IllegalArgumentException if the given {@link IProductCmptProperty} does not belong to
-     *             this {@link IProductCmptType} or the {@link IPolicyCmptType} that is configured
-     *             by this {@link IProductCmptType}
      */
     public void changeCategoryAndDeferPolicyChange(IProductCmptProperty property, String category);
 

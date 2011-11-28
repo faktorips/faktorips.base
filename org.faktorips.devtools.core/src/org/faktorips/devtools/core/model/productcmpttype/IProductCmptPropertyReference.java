@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  * 
  * @see IProductCmptProperty
  */
+// TODO AW 28-11-11: Make interface explicit for our use case
 public interface IProductCmptPropertyReference extends IIpsObjectPart {
 
     /**

@@ -147,18 +147,11 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected static final String DEFAULT_CATEGORY_NAME_POLICY_CMPT_TYPE_ATTRIBUTES = "policyAttributes";
     protected static final String DEFAULT_CATEGORY_NAME_FORMULA_SIGNATURE_DEFINITIONS = "formulas";
 
-    protected ContentChangeEvent lastContentChangeEvent;
-
-    private final ContentsChangeListener contentsChangeListener;
+    private final TestChangeListener contentsChangeListener;
 
     public AbstractIpsPluginTest() {
         super();
-        contentsChangeListener = new ContentsChangeListener() {
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                lastContentChangeEvent = event;
-            }
-        };
+        contentsChangeListener = new TestChangeListener();
     }
 
     @Before
@@ -1196,7 +1189,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             assertEquals("Getter method for property " + propertyName + " of class " + clazz.getName()
                     + " does not return the expected value", testValueToSet, retValue);
             assertNotNull("Setter method for property " + propertyName + " of class " + clazz.getName()
-                    + " hasn't triggered a change event", lastContentChangeEvent);
+                    + " hasn't triggered a change event", getLastContentChangeEvent());
         } catch (Exception e) {
             if (writeOk) {
                 fail("An exception occured while reading property " + propertyName + " of class " + clazz.getName());
@@ -1438,11 +1431,15 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             Object newValue) {
 
         assertContentChangedEvent(part.getIpsSrcFile(), ContentChangeEvent.TYPE_PROPERTY_CHANGED);
-        assertEquals(part, lastContentChangeEvent.getPart());
-        assertNotNull(lastContentChangeEvent.getPropertyChangeEvent());
-        assertEquals(property, lastContentChangeEvent.getPropertyChangeEvent().getPropertyName());
-        assertEquals(oldValue, lastContentChangeEvent.getPropertyChangeEvent().getOldValue());
-        assertEquals(newValue, lastContentChangeEvent.getPropertyChangeEvent().getNewValue());
+        assertEquals(part, getLastContentChangeEvent().getPart());
+        assertNotNull(getLastContentChangeEvent().getPropertyChangeEvent());
+        assertEquals(property, getLastContentChangeEvent().getPropertyChangeEvent().getPropertyName());
+        assertEquals(oldValue, getLastContentChangeEvent().getPropertyChangeEvent().getOldValue());
+        assertEquals(newValue, getLastContentChangeEvent().getPropertyChangeEvent().getNewValue());
+    }
+
+    protected final void assertSingleContentChangeEvent() {
+        assertEquals(1, contentsChangeListener.numberContentChangeEvents);
     }
 
     protected final void assertWholeContentChangedEvent(IIpsSrcFile ipsSrcFile) {
@@ -1450,8 +1447,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     protected final void assertContentChangedEvent(IIpsSrcFile ipsSrcFile, int eventType) {
-        assertEquals(ipsSrcFile, lastContentChangeEvent.getIpsSrcFile());
-        assertEquals(eventType, lastContentChangeEvent.getEventType());
+        assertEquals(ipsSrcFile, getLastContentChangeEvent().getIpsSrcFile());
+        assertEquals(eventType, getLastContentChangeEvent().getEventType());
     }
 
     protected final void setPartId(IIpsObjectPart part, String id) throws SecurityException, NoSuchFieldException,
@@ -1460,6 +1457,32 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         Field field = IpsObjectPart.class.getDeclaredField("id");
         field.setAccessible(true);
         field.set(part, id);
+    }
+
+    protected final ContentChangeEvent getLastContentChangeEvent() {
+        return contentsChangeListener.lastContentChangeEvent;
+    }
+
+    protected final void resetLastContentChangeEvent() {
+        contentsChangeListener.lastContentChangeEvent = null;
+    }
+
+    protected final void resetNumberContentChangeEvents() {
+        contentsChangeListener.numberContentChangeEvents = 0;
+    }
+
+    private static class TestChangeListener implements ContentsChangeListener {
+
+        private ContentChangeEvent lastContentChangeEvent;
+
+        private int numberContentChangeEvents;
+
+        @Override
+        public void contentsChanged(ContentChangeEvent event) {
+            lastContentChangeEvent = event;
+            numberContentChangeEvents++;
+        }
+
     }
 
     private static class TestBuilder extends AbstractArtefactBuilder {

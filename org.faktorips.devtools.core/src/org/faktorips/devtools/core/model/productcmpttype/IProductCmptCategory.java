@@ -358,29 +358,27 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * Inserts the provided {@link IProductCmptProperty} into this {@link IProductCmptCategory} just
      * above or just below the indicated target {@link IProductCmptProperty}.
      * <p>
-     * Returns true if the operation was successful. If the {@link IProductCmptType} corresponding
-     * to the {@link IProductCmptProperty} to be inserted cannot be found, the operation will fail.
-     * In this case, false is returned.
+     * Returns true if the operation was successful. If the index of any of the two provided
+     * properties cannot be computed, the operation will fail. In this case, false is returned.
      * 
      * @param property the {@link IProductCmptProperty} to insert into this
      *            {@link IProductCmptCategory}
      * @param targetProperty the {@link IProductCmptProperty} to be inserted will be positioned just
      *            above or just below the target {@link IProductCmptProperty}. This parameter may be
      *            null - in this case the {@link IProductCmptProperty} is inserted at the end
-     * @param above flag indicating whether to insert the {@link IProductCmptProperty} above the
-     *            target {@link IProductCmptProperty}. If the flag is false, the
-     *            {@link IProductCmptProperty} is inserted below the target
-     *            {@link IProductCmptProperty}
+     * @param above flag indicating whether to insert the {@link IProductCmptProperty} above or
+     *            below the target {@link IProductCmptProperty}
+     * @param contextType the {@link IProductCmptType} the operation is performed for
      * 
      * @return true if the operation was successful, false if not
      * 
      * @throws CoreException if an error occurs while searching for the indices of the currently
-     *             assigned properties
+     *             assigned properties or while moving properties
      */
     public boolean insertProductCmptProperty(IProductCmptProperty property,
             IProductCmptProperty targetProperty,
             boolean above,
-            IIpsProject ipsProject) throws CoreException;
+            IProductCmptType contextType) throws CoreException;
 
     /**
      * Defines the user interface position of an {@link IProductCmptCategory}.

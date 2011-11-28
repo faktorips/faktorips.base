@@ -101,10 +101,10 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertTrue(parsableFile.isDirty());
 
         lastModStatusEvent = null;
-        lastContentChangeEvent = null;
+        resetLastContentChangeEvent();
         parsableFile.save(true, null);
         assertFalse(parsableFile.isDirty());
-        assertNull(lastContentChangeEvent);
+        assertNull(getLastContentChangeEvent());
         assertEquals(parsableFile, lastModStatusEvent.getIpsSrcFile());
     }
 

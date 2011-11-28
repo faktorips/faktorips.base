@@ -19,10 +19,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.junit.Test;
 
-public class SubListElementMoverTest extends AbstractIpsPluginTest {
+public class SubListElementMoverTest {
 
     @Test
     public void testMove_StandardMoveUp() {

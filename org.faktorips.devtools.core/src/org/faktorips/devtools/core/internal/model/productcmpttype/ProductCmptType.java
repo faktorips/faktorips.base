@@ -35,6 +35,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Method;
@@ -746,9 +747,21 @@ public class ProductCmptType extends Type implements IProductCmptType {
             }
         }
 
+        addProductCmptPropertyReferenceDependencies(details);
+
         super.dependsOn(dependencies, details);
 
         return dependencies.toArray(new IDependency[dependencies.size()]);
+    }
+
+    // TODO AW 28-11-11: Shouldn't dependsOn() be available on part level?
+    private void addProductCmptPropertyReferenceDependencies(Map<IDependency, List<IDependencyDetail>> details) {
+        for (IProductCmptPropertyReference propertyReference : propertyReferences) {
+            IDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+                    new QualifiedNameType(getSupertype(), IpsObjectType.PRODUCT_CMPT_TYPE));
+            // TODO AW 28-11-11: Make working
+            addDetails(details, dependency, propertyReference, "");
+        }
     }
 
     @Override
@@ -895,7 +908,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return getCategory(name) != null;
     }
 
-    // TODO AW: Rename to hasExistingCategory to be compatible to the way it's done in type
     @Override
     public boolean findHasCategory(String name, IIpsProject ipsProject) throws CoreException {
         return findCategory(name, ipsProject) != null;
@@ -1038,7 +1050,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * The indices array identifies the properties to be moved within the context list. Therefore,
      * the indices must be valid with respect to the context list.
      * <p>
-     * Returns the new indices within the context list.
+     * Returns the new indices within the context list. Note that only a single
+     * <em>whole content changed</em> event is fired.
      * 
      * @param movedIndices the indices identifying the properties of the context list to be moved
      * @param contextProperties only references corresponding to these {@link IProductCmptProperty}s
@@ -1052,19 +1065,26 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * 
      * @throws CoreException if an error occurs during the move
      */
-    int[] moveProductCmptPropertyReferences(int[] movedIndices, List<IProductCmptProperty> contextProperties, boolean up)
-            throws CoreException {
+    int[] movePropertyReferences(final int[] movedIndices,
+            final List<IProductCmptProperty> contextProperties,
+            final boolean up) throws CoreException {
 
-        createProductCmptPropertyReferencesForNotReferencedProperties();
-        return moveProductCmptPropertyReferencesInternal(movedIndices, contextProperties, up);
-    }
+        return (int[])getIpsModel().executeModificationsWithSingleEvent(
+                new SingleEventModification<Object>(getIpsSrcFile()) {
+                    private Object result;
 
-    private void createProductCmptPropertyReferencesForNotReferencedProperties() throws CoreException {
-        for (IProductCmptProperty property : findProductCmptProperties(true, getIpsProject())) {
-            if (getReferencedPropertyIndex(property) == -1) {
-                newProductCmptPropertyReference(property);
-            }
-        }
+                    @Override
+                    protected boolean execute() throws CoreException {
+                        createProductCmptPropertyReferencesForNotReferencedProperties();
+                        result = moveProductCmptPropertyReferencesInternal(movedIndices, contextProperties, up);
+                        return true;
+                    }
+
+                    @Override
+                    protected Object getResult() {
+                        return result;
+                    }
+                });
     }
 
     private IProductCmptPropertyReference newProductCmptPropertyReference(final IProductCmptProperty productCmptProperty) {
@@ -1269,6 +1289,14 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return counter.categoriesFound > 1;
     }
 
+    private void createProductCmptPropertyReferencesForNotReferencedProperties() throws CoreException {
+        for (IProductCmptProperty property : findProductCmptProperties(true, getIpsProject())) {
+            if (getReferencedPropertyIndex(property) == -1) {
+                newProductCmptPropertyReference(property);
+            }
+        }
+    }
+
     private int getReferencedPropertyIndex(IProductCmptProperty property) {
         int index = 0;
         for (IProductCmptPropertyReference reference : propertyReferences) {
@@ -1301,17 +1329,27 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public void changeCategoryAndDeferPolicyChange(IProductCmptProperty property, String category) {
-        ArgumentCheck.isTrue(property.isOfType(getQualifiedNameType())
-                || property.isOfType(new QualifiedNameType(policyCmptType, IpsObjectType.POLICY_CMPT_TYPE)));
-
-        // Immediately change product component type properties
         if (!property.isPolicyCmptTypeProperty()) {
+            // Immediately change product component type properties
             property.setCategory(category);
-            return;
         } else {
             pendingPolicyPropertyCategoryChanges.put(property, category);
             objectHasChanged();
         }
+    }
+
+    /**
+     * Returns a copy of the list containing the product component property references of this
+     * {@link IProductCmptType}.
+     * <p>
+     * An {@link IProductCmptProperty} is referenced by the corresponding {@link IProductCmptType}
+     * if the ordering of the properties has been changed by the client, using
+     * {@link #movePropertyReferences(int[], List, boolean)}. In this case, the
+     * {@link IProductCmptPropertyReference} parts are used to describe the ordering of the
+     * properties.
+     */
+    List<IProductCmptPropertyReference> getPropertyReferences() {
+        return new ArrayList<IProductCmptPropertyReference>(propertyReferences.getBackingList());
     }
 
     /**

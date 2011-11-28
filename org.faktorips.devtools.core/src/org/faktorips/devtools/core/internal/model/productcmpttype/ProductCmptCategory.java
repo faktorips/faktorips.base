@@ -355,30 +355,27 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
         List<IProductCmptProperty> contextProperties = findProductCmptProperties(contextType, true,
                 contextType.getIpsProject());
-        return ((ProductCmptType)contextType).moveProductCmptPropertyReferences(indexes, contextProperties, up);
+        return ((ProductCmptType)contextType).movePropertyReferences(indexes, contextProperties, up);
     }
 
     @Override
     public boolean insertProductCmptProperty(IProductCmptProperty property,
             IProductCmptProperty targetProperty,
             boolean above,
-            IIpsProject ipsProject) throws CoreException {
-
-        /*
-         * TODO AW 25-11-11: Context type must be a parameter (supertype properties with context
-         * type below the property's type).
-         */
-        IProductCmptType contextType = property.findProductCmptType(ipsProject);
-        if (contextType == null) {
-            return false;
-        }
+            IProductCmptType contextType) throws CoreException {
 
         contextType.changeCategoryAndDeferPolicyChange(property, name);
 
-        List<IProductCmptProperty> properties = findProductCmptProperties(contextType, true, ipsProject);
+        List<IProductCmptProperty> properties = findProductCmptProperties(contextType, true,
+                contextType.getIpsProject());
         int propertyIndex = properties.indexOf(property);
         int targetPropertyIndex = targetProperty != null ? properties.indexOf(targetProperty) : properties.size() - 1;
+        if (propertyIndex == -1 || targetPropertyIndex == -1) {
+            return false;
+        }
+
         insertProductCmptProperty(propertyIndex, targetPropertyIndex, contextType, above);
+
         return true;
     }
 

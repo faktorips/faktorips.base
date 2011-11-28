@@ -623,13 +623,13 @@ public class CategorySection extends IpsSection {
                 try {
                     if (getCurrentLocation() == LOCATION_BEFORE) {
                         getTargetCategory().insertProductCmptProperty(droppedProperty, getTargetProperty(), true,
-                                droppedProperty.getIpsProject());
+                                categoryComposite.contextType);
                     } else if (getCurrentLocation() == LOCATION_AFTER) {
                         getTargetCategory().insertProductCmptProperty(droppedProperty, getTargetProperty(), false,
-                                droppedProperty.getIpsProject());
+                                categoryComposite.contextType);
                     } else if (getCurrentLocation() == LOCATION_NONE) {
                         getTargetCategory().insertProductCmptProperty(droppedProperty, null, false,
-                                droppedProperty.getIpsProject());
+                                categoryComposite.contextType);
                     }
                 } catch (CoreException e) {
                     return false;
