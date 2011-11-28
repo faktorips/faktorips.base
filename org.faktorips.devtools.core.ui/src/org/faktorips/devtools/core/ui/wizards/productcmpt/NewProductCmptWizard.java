@@ -34,6 +34,8 @@ public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
     private NewProductCmptPMO newProductCmptPMO;
 
     public NewProductCmptWizard() {
+        super();
+        setWindowTitle("Create new product component");
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "wizards/NewProductCmptWizard.png")); //$NON-NLS-1$
         newProductCmptPMO = new NewProductCmptPMO();

@@ -40,13 +40,25 @@ public class NewProductCmptPMO extends PresentationModelObject {
 
     public static final String PROPERTY_SELECTED_TYPE = "selectedType"; //$NON-NLS-1$
 
-    private String ipsProject;
+    public static final String PROPERTY_NAME = "name"; //$NON-NLS-1$
+
+    public static final String PROPERTY_VERSION_ID = "versionId"; //$NON-NLS-1$
+
+    public static final String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
+
+    private String ipsProject = StringUtils.EMPTY;
 
     private IProductCmptType selectedBaseType;
 
     private IProductCmptType selectedType;
 
     private List<IProductCmptType> baseTypes = new ArrayList<IProductCmptType>();
+
+    private String name = StringUtils.EMPTY;
+
+    private String versionId = StringUtils.EMPTY;
+
+    private String runtimeId = StringUtils.EMPTY;
 
     /**
      * @param ipsProject The ipsProject to set.
@@ -173,5 +185,67 @@ public class NewProductCmptPMO extends PresentationModelObject {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    /**
+     * @param name The name to set.
+     */
+    public void setName(String name) {
+        String oldName = this.name;
+        this.name = name;
+        updateRuntimeId();
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_NAME, oldName, name));
+    }
+
+    private void updateRuntimeId() {
+        try {
+            setRuntimeId(findIpsProject().getProperties().getProductCmptNamingStrategy()
+                    .getUniqueRuntimeId(findIpsProject(), name));
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    public String getFullName() {
+        return findIpsProject().getProperties().getProductCmptNamingStrategy().getProductCmptName(name, versionId);
+    }
+
+    /**
+     * @return Returns the name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param versionId The versionId to set.
+     */
+    public void setVersionId(String versionId) {
+        String oldId = this.versionId;
+        this.versionId = versionId;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_VERSION_ID, oldId, versionId));
+    }
+
+    /**
+     * @return Returns the versionId.
+     */
+    public String getVersionId() {
+        return versionId;
+    }
+
+    /**
+     * @param runtimeId The runtimeId to set.
+     */
+    public void setRuntimeId(String runtimeId) {
+        String oldRuntimeId = this.runtimeId;
+        this.runtimeId = runtimeId;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_RUNTIME_ID, oldRuntimeId, runtimeId));
+    }
+
+    /**
+     * @return Returns the runtimeId.
+     */
+    public String getRuntimeId() {
+        return runtimeId;
     }
 }

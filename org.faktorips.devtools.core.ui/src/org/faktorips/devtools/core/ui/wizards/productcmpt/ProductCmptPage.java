@@ -21,7 +21,10 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -41,6 +44,14 @@ public class ProductCmptPage extends WizardPage {
 
     private UiUpdater uiUpdater;
 
+    private Text nameText;
+
+    private Label fullNameLabel;
+
+    private Text runtimeId;
+
+    private Text versionIdText;
+
     public ProductCmptPage(NewProductCmptPMO pmo) {
         super("create product component");
         this.pmo = pmo;
@@ -53,7 +64,25 @@ public class ProductCmptPage extends WizardPage {
         UIToolkit toolkit = new UIToolkit(null);
         Composite composite = toolkit.createGridComposite(parent, 1, false, false);
         typeSelectionComposite = new TypeSelectionComposite(composite, toolkit);
-        typeSelectionComposite.setTitle("Type");
+        typeSelectionComposite.setTitle("Type:");
+
+        toolkit.createHorizonzalLine(composite);
+
+        Composite nameAndIdComposite = toolkit.createLabelEditColumnComposite(composite);
+        toolkit.createLabel(nameAndIdComposite, "Name:");
+        Composite nameComposite = toolkit.createGridComposite(nameAndIdComposite, 3, false, false);
+
+        nameText = toolkit.createText(nameComposite);
+        toolkit.createLabel(nameComposite, "Generation:");
+        versionIdText = toolkit.createText(nameComposite);
+        ((GridData)versionIdText.getLayoutData()).widthHint = 20;
+
+        toolkit.createVerticalSpacer(nameAndIdComposite, 0);
+        fullNameLabel = toolkit.createLabel(nameAndIdComposite, "Full Name:");
+
+        toolkit.createLabel(nameAndIdComposite, "Runtime ID:");
+        runtimeId = toolkit.createText(nameAndIdComposite);
+        runtimeId.setEnabled(pmo.isCanEditRuntimeId());
 
         setControl(composite);
 
@@ -67,6 +96,10 @@ public class ProductCmptPage extends WizardPage {
 
         bindingContext.bindContent(typeSelectionComposite.getListViewerField(), pmo,
                 NewProductCmptPMO.PROPERTY_SELECTED_TYPE);
+
+        bindingContext.bindContent(nameText, pmo, NewProductCmptPMO.PROPERTY_NAME);
+        bindingContext.bindContent(versionIdText, pmo, NewProductCmptPMO.PROPERTY_VERSION_ID);
+        bindingContext.bindContent(runtimeId, pmo, NewProductCmptPMO.PROPERTY_RUNTIME_ID);
     }
 
     @Override
@@ -104,6 +137,10 @@ public class ProductCmptPage extends WizardPage {
                     productCmptPage.typeSelectionComposite.setDescription(IpsPlugin.getMultiLanguageSupport()
                             .getLocalizedDescription(pmo.getSelectedType()));
                 }
+            }
+            if (NewProductCmptPMO.PROPERTY_NAME.equals(evt.getPropertyName())
+                    || NewProductCmptPMO.PROPERTY_VERSION_ID.equals(evt.getPropertyName())) {
+                productCmptPage.fullNameLabel.setText(pmo.getFullName());
             }
         }
 
