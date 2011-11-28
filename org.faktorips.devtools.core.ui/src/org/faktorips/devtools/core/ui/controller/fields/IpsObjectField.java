@@ -26,6 +26,7 @@ public class IpsObjectField extends TextButtonField {
 
     public IpsObjectField(TextButtonControl control) {
         super(control);
+        setSupportsNullStringRepresentation(false);
     }
 
     /**

@@ -25,6 +25,7 @@ public class IpsPckFragmentRootRefField extends DefaultEditField<IIpsPackageFrag
 
     public IpsPckFragmentRootRefField(IpsPckFragmentRootRefControl refControl) {
         fragmentRootRefControl = refControl;
+        setSupportsNullStringRepresentation(false);
     }
 
     @Override
