@@ -236,7 +236,7 @@ public abstract class IpsByteArrayTransfer<T> extends ByteArrayTransfer {
      *         returns false
      */
     @Override
-    public final Object nativeToJava(TransferData transferData) {
+    protected final Object nativeToJava(TransferData transferData) {
         if (!isSupportedType(transferData)) {
             return null;
         }
@@ -265,9 +265,9 @@ public abstract class IpsByteArrayTransfer<T> extends ByteArrayTransfer {
 
         @SuppressWarnings({ "unchecked" })
         /*
-         * need this unchecked cast because Array.newInstance has Object as return type, but of
-         * course it returns an typed array. Done the assignment to temp to be able to suppress the
-         * warning at assignment-level.
+         * We need this unchecked cast because Array.newInstance(...) has Object as return type, but
+         * of course it returns a typed array. Done the assignment to a temporary variable to be
+         * able to suppress the warning at assignment-level.
          */
         T[] temp = (T[])Array.newInstance(transferClass, objects.size());
         return objects.toArray(temp);
