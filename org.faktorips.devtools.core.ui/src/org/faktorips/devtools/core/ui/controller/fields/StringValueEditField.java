@@ -35,7 +35,7 @@ public abstract class StringValueEditField extends DefaultEditField<String> {
      * 
      */
     public String prepareObjectForSet(String object) {
-        return prepareObjectForSet(object, supportsNull());
+        return prepareObjectForSet(object, supportsNullStringRepresentation());
     }
 
     /**
@@ -59,7 +59,7 @@ public abstract class StringValueEditField extends DefaultEditField<String> {
      * unmodified value otherwise.
      */
     public String prepareObjectForGet(String value) {
-        return prepareObjectForGet(value, supportsNull());
+        return prepareObjectForGet(value, supportsNullStringRepresentation());
     }
 
     /**

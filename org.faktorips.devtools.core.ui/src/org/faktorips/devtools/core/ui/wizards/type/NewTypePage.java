@@ -67,14 +67,6 @@ public abstract class NewTypePage extends IpsObjectPage {
         toolkit.createFormLabel(nameComposite, Messages.NewTypePage_superclass);
         IpsObjectRefControl superTypeControl = createSupertypeControl(nameComposite, toolkit);
         supertypeField = new TextButtonField(superTypeControl);
-        /*
-         * SW 9.4.2010: Super-type field should not return "null", even if the null-presentation is
-         * matched. Prior to this fix opening the Wizard would cause an NPE in the
-         * QualifiedNameType's constructor, if the null-presentation was set to "" (empty String).
-         * The empty TextField then matched the null-presentation and thus findPCType() was called
-         * with null argument.
-         */
-        supertypeField.setSupportsNull(false);
         supertypeField.addChangeListener(this);
     }
 

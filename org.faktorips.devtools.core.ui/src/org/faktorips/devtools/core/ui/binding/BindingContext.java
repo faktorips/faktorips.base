@@ -235,7 +235,7 @@ public class BindingContext {
     public EditField<String> bindContent(TextButtonControl control, Object object, String property, boolean supportsNull) {
         checkPropertyType(object, property, String.class);
         TextButtonField field = new TextButtonField(control);
-        field.setSupportsNull(supportsNull);
+        field.setSupportsNullStringRepresentation(supportsNull);
         bindContent(field, object, property);
 
         return field;

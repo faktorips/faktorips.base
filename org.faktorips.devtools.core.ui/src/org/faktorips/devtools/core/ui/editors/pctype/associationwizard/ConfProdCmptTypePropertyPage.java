@@ -156,14 +156,12 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
         toolkit.createFormLabel(workArea, Messages.ConfProdCmptTypePropertyPage_labelMinimumCardinality);
         Text minCardinalityText = toolkit.createText(workArea);
         cardinalityFieldMinProdCmptType = new CardinalityField(minCardinalityText);
-        cardinalityFieldMinProdCmptType.setSupportsNull(false);
         visibleProperties.add(IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
 
         // max cardinality
         toolkit.createFormLabel(workArea, Messages.ConfProdCmptTypePropertyPage_labelMaximumCardinality);
         Text maxCardinalityText = toolkit.createText(workArea);
         cardinalityFieldMaxProdCmptType = new CardinalityField(maxCardinalityText);
-        cardinalityFieldMaxProdCmptType.setSupportsNull(false);
         visibleProperties.add(IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
 
         // bottom extensions

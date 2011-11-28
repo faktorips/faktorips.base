@@ -75,12 +75,12 @@ public class FormattingTextField<T> extends AbstractTextField<T> {
 
     @Override
     public T parseContent() {
-        return getFormat().parse(getText(), supportsNull());
+        return getFormat().parse(getText(), supportsNullStringRepresentation());
     }
 
     @Override
     public void setValue(T newValue) {
-        setText(getFormat().format(newValue, supportsNull()));
+        setText(getFormat().format(newValue, supportsNullStringRepresentation()));
     }
 
     public AbstractInputFormat<T> getFormat() {

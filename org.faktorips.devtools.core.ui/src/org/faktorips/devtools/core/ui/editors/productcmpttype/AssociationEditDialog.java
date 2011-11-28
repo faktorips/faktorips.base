@@ -184,7 +184,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_minCardLabel);
         Text minCardinalityText = getToolkit().createText(workArea);
         CardinalityField cardinalityField = new CardinalityField(minCardinalityText);
-        cardinalityField.setSupportsNull(false);
         getBindingContext().bindContent(cardinalityField, association,
                 IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY);
 
@@ -192,7 +191,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_maxCardLabel);
         Text maxCardinalityText = getToolkit().createText(workArea);
         cardinalityField = new CardinalityField(maxCardinalityText);
-        cardinalityField.setSupportsNull(false);
         getBindingContext().bindContent(cardinalityField, association,
                 IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY);
     }

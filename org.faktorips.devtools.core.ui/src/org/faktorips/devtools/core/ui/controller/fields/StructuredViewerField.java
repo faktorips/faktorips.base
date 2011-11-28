@@ -55,7 +55,7 @@ public class StructuredViewerField<T> extends AbstractViewerField<T> {
         }
         T o = selection.getFirstElement();
 
-        if (supportsNull() && IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(o)) {
+        if (supportsNullStringRepresentation() && IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(o)) {
             return null;
         }
         return o;

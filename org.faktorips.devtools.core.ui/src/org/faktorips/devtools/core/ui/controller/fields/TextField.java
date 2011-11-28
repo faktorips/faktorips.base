@@ -30,12 +30,12 @@ public class TextField extends AbstractTextField<String> {
 
     @Override
     public String parseContent() {
-        return StringValueEditField.prepareObjectForGet(text.getText(), supportsNull());
+        return StringValueEditField.prepareObjectForGet(text.getText(), supportsNullStringRepresentation());
     }
 
     @Override
     public void setValue(String newValue) {
-        setText(StringValueEditField.prepareObjectForSet(newValue, supportsNull()));
+        setText(StringValueEditField.prepareObjectForSet(newValue, supportsNullStringRepresentation()));
     }
 
 }

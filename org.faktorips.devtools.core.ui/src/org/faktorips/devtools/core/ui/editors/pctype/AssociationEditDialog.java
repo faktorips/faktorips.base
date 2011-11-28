@@ -311,14 +311,12 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_minimumCardinality);
             Text minCardinalityText = getToolkit().createText(workArea);
             CardinalityField cardinalityField = new CardinalityField(minCardinalityText);
-            cardinalityField.setSupportsNull(false);
             getBindingContext().bindContent(cardinalityField, association, IAssociation.PROPERTY_MIN_CARDINALITY);
 
             // max cardinality
             getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_maximumCardinality);
             Text maxCardinalityText = getToolkit().createText(workArea);
             cardinalityField = new CardinalityField(maxCardinalityText);
-            cardinalityField.setSupportsNull(false);
             getBindingContext().bindContent(cardinalityField, association, IAssociation.PROPERTY_MAX_CARDINALITY);
 
             // inverse association

@@ -33,7 +33,7 @@ public abstract class DefaultEditField<T> implements EditField<T> {
 
     private boolean notifyChangeListeners = true;
     private List<ValueChangeListener> changeListeners;
-    private boolean supportNull = true;
+    private boolean supportNullStringRepresentation = true;
 
     /**
      * Returns the value shown in the edit field's underlying control. If the control's content
@@ -59,7 +59,7 @@ public abstract class DefaultEditField<T> implements EditField<T> {
     public boolean isTextContentParsable() {
         try {
             T content = parseContent();
-            return supportsNull() ? true : content != null;
+            return supportsNullStringRepresentation() ? true : content != null;
         } catch (Exception e) {
             return false;
         }
@@ -150,20 +150,24 @@ public abstract class DefaultEditField<T> implements EditField<T> {
      * the user defined null-representations-string and vice versa) or <code>false</code> to
      * deactivate null-handling.
      * <p>
-     * If the field does not support null, it should set an empty string if the presentation object
-     * is null. If the content contains the null string representation the method
-     * {@link #isTextContentParsable()} have to return false.
+     * If the edit field does not supports the null string representation it does not mean that the
+     * {@link #parseContent()} method never returns null. For example formatted text fields may
+     * return null if the input text could not be parsed to the expected data type. In this case the
+     * method {@link #isTextContentParsable()} should return false. Another exasmple is an edit
+     * field that handles a selection. If nothing is selected, {@link #parseContent()} would return
+     * null and as far this is an valid state, the method {@link #isTextContentParsable()} return
+     * true.
      */
-    public void setSupportsNull(boolean supportsNull) {
-        this.supportNull = supportsNull;
+    public void setSupportsNullStringRepresentation(boolean supportsNull) {
+        this.supportNullStringRepresentation = supportsNull;
     }
 
     /**
      * Returns whether null is replaced by the null representation string or not.
      * 
-     * @see #setSupportsNull(boolean)
+     * @see #setSupportsNullStringRepresentation(boolean)
      */
-    public boolean supportsNull() {
-        return supportNull;
+    public boolean supportsNullStringRepresentation() {
+        return supportNullStringRepresentation;
     }
 }

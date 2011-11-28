@@ -38,7 +38,7 @@ public class StringValueComboField extends ComboField<String> {
      * 
      */
     public String prepareObjectForSet(String object) {
-        if (object == null && supportsNull()) {
+        if (object == null && supportsNullStringRepresentation()) {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         }
         return "" + object; //$NON-NLS-1$
@@ -49,7 +49,7 @@ public class StringValueComboField extends ComboField<String> {
      * unmodified value otherwise.
      */
     public String prepareObjectForGet(String value) {
-        if (supportsNull() && IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(value)) {
+        if (supportsNullStringRepresentation() && IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(value)) {
             return null;
         }
         return value;

@@ -177,14 +177,12 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         toolkit.createFormLabel(workArea, Messages.InverseAssociationPropertyPage_labelMinimumCardinality);
         Text minCardinalityText = toolkit.createText(workArea);
         cardinalityFieldMin = new CardinalityField(minCardinalityText);
-        cardinalityFieldMin.setSupportsNull(false);
         visibleProperties.add(IAssociation.PROPERTY_MIN_CARDINALITY);
 
         // max cardinality
         toolkit.createFormLabel(workArea, Messages.InverseAssociationPropertyPage_labelMaximumCardinality);
         Text maxCardinalityText = toolkit.createText(workArea);
         cardinalityFieldMax = new CardinalityField(maxCardinalityText);
-        cardinalityFieldMax.setSupportsNull(false);
         visibleProperties.add(IAssociation.PROPERTY_MAX_CARDINALITY);
 
         // bottom extensions

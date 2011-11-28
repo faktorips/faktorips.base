@@ -120,14 +120,12 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         toolkit.createFormLabel(workArea, Messages.PropertyPage_labelMinimumCardinality);
         Text minCardinalityText = toolkit.createText(workArea);
         cardinalityFieldMin = new CardinalityField(minCardinalityText);
-        cardinalityFieldMin.setSupportsNull(false);
         visibleProperties.add(IAssociation.PROPERTY_MIN_CARDINALITY);
 
         // max cardinality
         toolkit.createFormLabel(workArea, Messages.PropertyPage_labelMaximumCardinality);
         Text maxCardinalityText = toolkit.createText(workArea);
         cardinalityFieldMax = new CardinalityField(maxCardinalityText);
-        cardinalityFieldMax.setSupportsNull(false);
         visibleProperties.add(IAssociation.PROPERTY_MAX_CARDINALITY);
 
         Composite info = toolkit.createGridComposite(groupGeneral, 1, true, false);

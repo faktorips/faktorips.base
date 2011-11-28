@@ -31,6 +31,7 @@ public class CardinalityField extends AbstractCardinalityField {
     public CardinalityField(Text text) {
         super();
         this.text = text;
+        setSupportsNullStringRepresentation(false);
     }
 
     @Override

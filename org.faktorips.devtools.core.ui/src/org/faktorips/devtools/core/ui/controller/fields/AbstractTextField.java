@@ -66,7 +66,7 @@ public abstract class AbstractTextField<T> extends DefaultEditField<T> {
         try {
             if (newText == null) {
                 // AbstractNumberFormats call this method with null values
-                if (supportsNull()) {
+                if (supportsNullStringRepresentation()) {
                     newText = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
                 } else {
                     newText = ""; //$NON-NLS-1$
