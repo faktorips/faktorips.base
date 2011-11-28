@@ -130,6 +130,16 @@ public class ExprCompiler {
     public final static String UNDEFINED_IDENTIFIER = PREFIX + "UndefinedIdentifier"; //$NON-NLS-1$
 
     /**
+     * A qualifier can't be resolved.
+     * <p>
+     * Example: a.b(qual)
+     * <p>
+     * In the expression a and b are identifiers, qual is a qualifier which does not correspond to
+     * any product component's unqualified name.
+     */
+    public final static String UNKNOWN_QUALIFIER = PREFIX + "UnknownQualifier"; //$NON-NLS-1$
+
+    /**
      * An identifier is resolved to an association but the association's target can't be found.
      * <p>
      * Example: a.b.c * 2
@@ -139,6 +149,16 @@ public class ExprCompiler {
      * {@link ExprCompiler#NO_ASSOCIATION_TARGET} is returned.
      */
     public final static String NO_ASSOCIATION_TARGET = PREFIX + "NoAssociationTarget"; //$NON-NLS-1$
+
+    /**
+     * An identifier is resolved to an 1to1 association but an index is also provided.
+     * <p>
+     * Example: a.b[0]
+     * <p>
+     * In the expression a and b are identifiers. The identifier b is resolved to a 1to1
+     * association.
+     */
+    public final static String NO_INDEX_FOR_1TO1_ASSOCIATION = PREFIX + "NoIndexFor1to1Association"; //$NON-NLS-1$
 
     /**
      * The expression contains a call to an undefined function.

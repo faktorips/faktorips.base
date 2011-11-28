@@ -39,6 +39,7 @@ public class Messages extends NLS {
     public static String AbstractParameterIdentifierResolver_msgAttributeMissing;
     public static String AbstractParameterIdentifierResolver_noAssociationIdentifier;
     public static String AbstractParameterIdentifierResolver_noAssociationTarget;
+    public static String AbstractParameterIdentifierResolver_noIndexFor1to1Association0;
 
     public static String IpsBuilder_ipsSrcFileNotParsable;
     public static String IpsBuilder_msgExceptionWhileBuildingDependentProjects;

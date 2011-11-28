@@ -17,11 +17,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.TestEnumType;
-import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -39,8 +40,10 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.type.ListOfTypeDatatype;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
@@ -49,6 +52,11 @@ import org.faktorips.runtime.formula.FormulaEvaluatorUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * 
+ * @author erzberger
+ * @author schwering
+ */
 public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderTest {
 
     private IPolicyCmptType policyCmptType;
@@ -60,13 +68,15 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     private Locale locale;
     private PolicyCmptType branchPolicyCmptType;
     private PolicyCmptType leafPolicyCmptType;
-    private IPolicyCmptTypeAssociation associationToBranches;
+    private IPolicyCmptTypeAssociation associationTreeToBranches;
     private IPolicyCmptTypeAssociation associationBranchToLeaf;
-    private IPolicyCmptTypeAssociation associationToLeaf;
+    private IPolicyCmptTypeAssociation associationTreeToLeaf;
     private PolicyCmptType twigPolicyCmptType;
     private IPolicyCmptTypeAssociation associationBranchToTwig;
     private IPolicyCmptTypeAssociation associationTwigToLeaf;
     private IPolicyCmptTypeAttribute attributeColor;
+    private StandardBuilderSet standardBuilderSet;
+    private PolicyCmptType treePolicyCmptType;
 
     @Override
     @Before
@@ -81,19 +91,20 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         attribute.setName("tax");
         attribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
 
+        treePolicyCmptType = newPolicyAndProductCmptType(ipsProject, "Tree", "TreeType");
         branchPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "Branch", "BranchType");
         twigPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "Twig", "TwigType");
         leafPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "Leaf", "LeafType");
-        associationToBranches = policyCmptType.newPolicyCmptTypeAssociation();
-        associationToBranches.setTarget(branchPolicyCmptType.getQualifiedName());
-        associationToBranches.setTargetRoleSingular("branch");
-        associationToBranches.setTargetRolePlural("branches");
-        associationToBranches.setMaxCardinality(IAssociation.CARDINALITY_MANY);
-        associationToLeaf = policyCmptType.newPolicyCmptTypeAssociation();
-        associationToLeaf.setTarget(leafPolicyCmptType.getQualifiedName());
-        associationToLeaf.setTargetRoleSingular("leaf");
-        associationToLeaf.setTargetRolePlural("leafs");
-        associationToLeaf.setMaxCardinality(IAssociation.CARDINALITY_ONE);
+        associationTreeToBranches = treePolicyCmptType.newPolicyCmptTypeAssociation();
+        associationTreeToBranches.setTarget(branchPolicyCmptType.getQualifiedName());
+        associationTreeToBranches.setTargetRoleSingular("branch");
+        associationTreeToBranches.setTargetRolePlural("branches");
+        associationTreeToBranches.setMaxCardinality(IAssociation.CARDINALITY_MANY);
+        associationTreeToLeaf = treePolicyCmptType.newPolicyCmptTypeAssociation();
+        associationTreeToLeaf.setTarget(leafPolicyCmptType.getQualifiedName());
+        associationTreeToLeaf.setTargetRoleSingular("leaf");
+        associationTreeToLeaf.setTargetRolePlural("leafs");
+        associationTreeToLeaf.setMaxCardinality(IAssociation.CARDINALITY_ONE);
         associationBranchToLeaf = branchPolicyCmptType.newPolicyCmptTypeAssociation();
         associationBranchToLeaf.setTarget(leafPolicyCmptType.getQualifiedName());
         associationBranchToLeaf.setTargetRoleSingular("leaf");
@@ -121,6 +132,8 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         formula.setFormulaSignature(method.getFormulaName());
         resolver = (AbstractParameterIdentifierResolver)ipsProject.getIpsArtefactBuilderSet()
                 .createFlIdentifierResolver(formula, formula.newExprCompiler(ipsProject));
+
+        standardBuilderSet = (StandardBuilderSet)getPolicyCmptInterfaceBuilder().getBuilderSet();
     }
 
     private PolicyCmptInterfaceBuilder getPolicyCmptInterfaceBuilder() throws Exception {
@@ -222,72 +235,201 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         assertEquals("this.getA()", result.getCodeFragment().getSourcecode());
     }
 
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "tree"} of the {@link IPolicyCmptType}
+     * {@code "Tree"} which has a 1toMany association to the {@link IPolicyCmptType}
+     * {@code "Branch"} with the name {@code "branch"}. The resolver is called with
+     * {@code "tree.branch"}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>successful compilation
+     * <li>the result is a {@link ListOfTypeDatatype} with the basic type {@code IBranch}
+     * <li>the result's sourcecode uses the method the
+     * {@link GenAssociation#getMethodNameGetAllRefObjects()} method returns
+     * </ul>
+     */
     @Test
-    public void testCompileAssociations() throws CoreException, Exception {
-        // parameter with the datatype being a policy component type
-        // => resolver can resolve identifiers with form paramName.associationName.x
-        // with associationName being the name of one of the type's associations
-        method.newParameter(policyCmptType.getQualifiedName(), "policy");
-
-        // 1toMany
-        CompilationResult result = resolver.compile("policy.branch", null, locale);
+    public void testCompileAssociations_1toMany() throws CoreException {
+        method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
+        CompilationResult result = resolver.compile("tree.branch", null, locale);
         assertTrue(result.successfull());
-        assertEquals(new ArrayOfValueDatatype(branchPolicyCmptType, 1), result.getDatatype());
-        StandardBuilderSet standardBuilderSet = (StandardBuilderSet)getPolicyCmptInterfaceBuilder().getBuilderSet();
-        String expected = "policy."
-                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationToBranches)
-                        .getMethodNameGetAllRefObjects() + "().toArray(new IModelObject[0])";
+        assertEquals(new ListOfTypeDatatype(branchPolicyCmptType), result.getDatatype());
+        String expected = "tree."
+                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationTreeToBranches)
+                        .getMethodNameGetAllRefObjects() + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
+    }
 
-        // 1toMany, indexed
-        result = resolver.compile("policy.branch[1]", null, locale);
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "tree"} of the {@link IPolicyCmptType}
+     * {@code "Tree"} which has a 1toMany association to the {@link IPolicyCmptType}
+     * {@code "Branch"} with the name {@code "branch"}. The resolver is called with
+     * {@code "tree.branch[1]"}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>successful compilation
+     * <li>the result datatype is {@code IBranch}
+     * <li>the result's sourcecode uses the method the
+     * {@link GenAssociation#getMethodNameGetRefObjectAtIndex()} method returns and the index
+     * {@code 1}
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_1toManyIndexed() throws CoreException {
+        method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
+        CompilationResult result = resolver.compile("tree.branch[1]", null, locale);
         assertTrue(result.successfull());
         assertEquals(branchPolicyCmptType, result.getDatatype());
-        expected = "policy."
-                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationToBranches)
-                        .getMethodNameGetRefObject() + "(1)";
+        String expected = "tree."
+                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationTreeToBranches)
+                        .getMethodNameGetRefObjectAtIndex() + "(1)";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
+    }
 
-        // 1toMany, chained with 1to1
-        result = resolver.compile("policy.branch.leaf", null, locale);
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "tree"} of the {@link IPolicyCmptType}
+     * {@code "Tree"} which has a 1toMany association to the {@link IPolicyCmptType}
+     * {@code "Branch"} with the name {@code "branch"}. The {@code "Branch"} has a 1to1 association
+     * to the {@link IPolicyCmptType} {@code "Leaf"} with the name {@code "leaf"}. The resolver is
+     * called with {@code "tree.branch.leaf"}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>successful compilation
+     * <li>the result is a {@link ListOfTypeDatatype} with the basic type {@code ILeaf}
+     * <li>the result's sourcecode uses the method the
+     * {@link GenAssociation#getMethodNameGetRefObjectAtIndex()} method returns and the
+     * {@link FormulaEvaluatorUtil#getTargets(java.util.List, String, Class, org.faktorips.runtime.IRuntimeRepository)}
+     * method with the association name {@code "leaf"} and the unqualified class name for
+     * {@code ILeaf}
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_1toMany1to1() throws CoreException {
+        method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
+        CompilationResult result = resolver.compile("tree.branch.leaf", null, locale);
         assertTrue(result.successfull());
-        assertEquals(new ArrayOfValueDatatype(leafPolicyCmptType, 1), result.getDatatype());
-        expected = "FormulaEvaluatorUtil.getTargets(policy."
-                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationToBranches)
-                        .getMethodNameGetAllRefObjects()
-                + "().toArray(new IModelObject[0]), \"leaf\", this.getRepository())";
+        assertEquals(new ListOfTypeDatatype(leafPolicyCmptType), result.getDatatype());
+        String expected = "FormulaEvaluatorUtil.getTargets(tree."
+                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationTreeToBranches)
+                        .getMethodNameGetAllRefObjects() + "(), \"leaf\", "
+                + standardBuilderSet.getGenerator(leafPolicyCmptType).getUnqualifiedClassName(true)
+                + ".class, this.getRepository())";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
+    }
 
-        // 1to1
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "tree"} of the {@link IPolicyCmptType}
+     * {@code "Tree"} which has a 1to1 association to the {@link IPolicyCmptType} {@code "Leaf"}
+     * with the name {@code "leaf"}. The resolver is called with {@code "tree.leaf"}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>successful compilation
+     * <li>the result datatype is {@code ILeaf}
+     * <li>the result's sourcecode uses the method the
+     * {@link GenAssociation#getMethodNameGetRefObject()} method returns
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_1to1() throws CoreException {
         method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
-        result = resolver.compile("twig.leaf", null, locale);
+        CompilationResult result = resolver.compile("twig.leaf", null, locale);
         assertTrue(result.successfull());
         assertEquals(leafPolicyCmptType, result.getDatatype());
-        expected = "twig."
+        String expected = "twig."
                 + standardBuilderSet.getGenerator(twigPolicyCmptType).getGenerator(associationTwigToLeaf)
                         .getMethodNameGetRefObject() + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
+    }
 
-        // 1to1, chained with 1to1
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "tree"} of the {@link IPolicyCmptType}
+     * {@code "Tree"} which has a 1to1 association to the {@link IPolicyCmptType} {@code "Leaf"}
+     * with the name {@code "leaf"}. The resolver is called with {@code "tree.leaf[0]"}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>failed compilation
+     * <li>the result contains an error message with the message code
+     * {@link ExprCompiler#NO_INDEX_FOR_1TO1_ASSOCIATION}
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_1to1Indexed() {
+        method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
+        CompilationResult result = resolver.compile("twig.leaf[0]", null, locale);
+        assertTrue(result.failed());
+        assertEquals(1, result.getMessages().size());
+        assertEquals(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, result.getMessages().getMessage(0).getCode());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "branch"} of the {@link IPolicyCmptType}
+     * {@code "Branch"} which has a 1to1 association to the {@link IPolicyCmptType} {@code "Twig"}
+     * with the name {@code "twig"}. The {@code "Twig"} has a 1to1 association to the
+     * {@link IPolicyCmptType} {@code "Leaf"} with the name {@code "leaf"}. The resolver is called
+     * with {@code "branch.twig.leaf"}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>successful compilation
+     * <li>the result datatype is {@code ILeaf}
+     * <li>the result's sourcecode uses the methods the
+     * {@link GenAssociation#getMethodNameGetRefObject()} method returns for both associations
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_1to1Chain() throws CoreException {
         method.newParameter(branchPolicyCmptType.getQualifiedName(), "branch");
-        result = resolver.compile("branch.twig.leaf", null, locale);
+        CompilationResult result = resolver.compile("branch.twig.leaf", null, locale);
         assertTrue(result.successfull());
         assertEquals(leafPolicyCmptType, result.getDatatype());
-        expected = "branch."
+        String expected = "branch."
                 + standardBuilderSet.getGenerator(branchPolicyCmptType).getGenerator(associationBranchToTwig)
                         .getMethodNameGetRefObject()
                 + "()."
                 + standardBuilderSet.getGenerator(branchPolicyCmptType).getGenerator(associationTwigToLeaf)
                         .getMethodNameGetRefObject() + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
+    }
 
-        // full chain with index in between
-        result = resolver.compile("policy.branch[0].twig.leaf", null, locale);
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "tree"} of the {@link IPolicyCmptType}
+     * {@code "Tree"} which has a 1toMany association to the {@link IPolicyCmptType}
+     * {@code "Branch"} with the name {@code "branch"}.The {@code "Branch"} has a 1to1 association
+     * to the {@link IPolicyCmptType} {@code "Twig"} with the name {@code "twig"}. The
+     * {@code "Twig"} has a 1to1 association to the {@link IPolicyCmptType} {@code "Leaf"} with the
+     * name {@code "leaf"}. The resolver is called with {@code "tree.branch[0].twig.leaf"}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>successful compilation
+     * <li>the result datatype is {@code ILeaf}
+     * <li>the result's sourcecode uses the methods the
+     * {@link GenAssociation#getMethodNameGetRefObjectAtIndex()} method returns for the first
+     * association and the methods the {@link GenAssociation#getMethodNameGetRefObject()} method
+     * returns for the other two associations
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_fullChainWithIndexInBetween() throws CoreException {
+        method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
+        CompilationResult result = resolver.compile("tree.branch[0].twig.leaf", null, locale);
         assertTrue(result.successfull());
         assertEquals(leafPolicyCmptType, result.getDatatype());
-        expected = "policy."
-                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationToBranches)
-                        .getMethodNameGetRefObject()
+        String expected = "tree."
+                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationTreeToBranches)
+                        .getMethodNameGetRefObjectAtIndex()
                 + "(0)."
                 + standardBuilderSet.getGenerator(branchPolicyCmptType).getGenerator(associationBranchToTwig)
                         .getMethodNameGetRefObject()
@@ -295,44 +437,210 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
                 + standardBuilderSet.getGenerator(twigPolicyCmptType).getGenerator(associationTwigToLeaf)
                         .getMethodNameGetRefObject() + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
+    }
 
-        // full chain with index at end
-        result = resolver.compile("policy.branch.twig.leaf[2]", null, locale);
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "tree"} of the {@link IPolicyCmptType}
+     * {@code "Tree"} which has a 1toMany association to the {@link IPolicyCmptType}
+     * {@code "Branch"} with the name {@code "branch"}.The {@code "Branch"} has a 1to1 association
+     * to the {@link IPolicyCmptType} {@code "Twig"} with the name {@code "twig"}. The
+     * {@code "Twig"} has a 1to1 association to the {@link IPolicyCmptType} {@code "Leaf"} with the
+     * name {@code "leaf"}. The resolver is called with {@code "tree.branch.twig.leaf[2]"}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>successful compilation
+     * <li>the result datatype is {@code ILeaf}
+     * <li>the result's sourcecode uses the methods the
+     * {@link GenAssociation#getMethodNameGetAllRefObjects()} method returns for the first
+     * association and the
+     * {@link FormulaEvaluatorUtil#getTargets(java.util.List, String, Class, org.faktorips.runtime.IRuntimeRepository)}
+     * method with the association names {@code "twig"} and {@code "leaf"} and the unqualified class
+     * names for {@code ITwig} and {@code ILeaf} for the other two associations as well as the
+     * {@link List#get(int)} method with index {@code 2}
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_fullChainWithIndexAtEnd() throws CoreException {
+        method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
+        CompilationResult result = resolver.compile("tree.branch.twig.leaf[2]", null, locale);
         assertTrue(result.successfull());
         assertEquals(leafPolicyCmptType, result.getDatatype());
-        expected = "((ILeaf)FormulaEvaluatorUtil.getTargets(FormulaEvaluatorUtil.getTargets(policy."
-                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationToBranches)
-                        .getMethodNameGetAllRefObjects()
-                + "().toArray(new IModelObject[0]), \"twig\", this.getRepository()), \"leaf\", this.getRepository())[2])";
+        String expected = "FormulaEvaluatorUtil.getTargets(FormulaEvaluatorUtil.getTargets(tree."
+                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationTreeToBranches)
+                        .getMethodNameGetAllRefObjects() + "(), \"twig\", "
+                + standardBuilderSet.getGenerator(twigPolicyCmptType).getUnqualifiedClassName(true)
+                + ".class, this.getRepository()), \"leaf\", "
+                + standardBuilderSet.getGenerator(leafPolicyCmptType).getUnqualifiedClassName(true)
+                + ".class, this.getRepository()).get(2)";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
         result.getCodeFragment().getImportDeclaration().isCovered(FormulaEvaluatorUtil.class);
         result.getCodeFragment().getImportDeclaration().isCovered(IModelObject.class);
+        result.getCodeFragment().getImportDeclaration().isCovered("ITwig");
         result.getCodeFragment().getImportDeclaration().isCovered("ILeaf");
+    }
 
-        // association + attribute
-        result = resolver.compile("twig.leaf.color", null, locale);
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "twig"} of the {@link IPolicyCmptType}
+     * {@code "Twig"} which has a 1to1 association to the {@link IPolicyCmptType} {@code "Leaf"}
+     * with the name {@code "leaf"}. The {@code "Leaf"} has an attribute {@code "color"} of type
+     * String. The resolver is called with {@code "twig.leaf.color"}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>successful compilation
+     * <li>the result datatype is {@link Datatype#STRING}
+     * <li>the result's sourcecode uses the method the
+     * {@link GenAssociation#getMethodNameGetRefObject()} method returns
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_associationAndAttribute() throws CoreException {
+        method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
+        CompilationResult result = resolver.compile("twig.leaf.color", null, locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.STRING, result.getDatatype());
-        expected = "twig."
+        String expected = "twig."
                 + standardBuilderSet.getGenerator(twigPolicyCmptType).getGenerator(associationTwigToLeaf)
                         .getMethodNameGetRefObject()
                 + "()."
                 + standardBuilderSet.getGenerator(leafPolicyCmptType).getMethodNameGetPropertyValue(
                         attributeColor.getName(), Datatype.STRING) + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
+    }
 
-        // association target not found
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "twig"} of the {@link IPolicyCmptType}
+     * {@code "Twig"} which has a 1to1 association to an unknown target with the name {@code "leaf"}
+     * . The resolver is called with {@code "twig.leaf"}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>failed compilation
+     * <li>the result contains an error message with the message code
+     * {@link ExprCompiler#NO_ASSOCIATION_TARGET}
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_associationTargetNotFound() {
+        method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
         associationTwigToLeaf.setTarget("unknownTarget");
-        result = resolver.compile("twig.leaf", null, locale);
+        CompilationResult result = resolver.compile("twig.leaf", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.NO_ASSOCIATION_TARGET, result.getMessages().getMessage(0).getCode());
+    }
 
-        // association target not found
-        result = resolver.compile("twig.thorn", null, locale);
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "twig"} of the {@link IPolicyCmptType}
+     * {@code "Twig"} which has no association or attribute called {@code "thorn"}. The resolver is
+     * called with {@code "twig.thorn"}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>failed compilation
+     * <li>the result contains an error message with the message code
+     * {@link ExprCompiler#UNDEFINED_IDENTIFIER}
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_associationTargetUndefined() {
+        method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
+        CompilationResult result = resolver.compile("twig.thorn", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "tree"} of the {@link IPolicyCmptType}
+     * {@code "Tree"} which has a 1toMany association to the {@link IPolicyCmptType}
+     * {@code "Branch"} with the name {@code "branch"}. The resolver is called with
+     * {@code "tree.branch(Branch)"} where {@code "Branch"} is the runtime ID of a
+     * {@link IProductCmpt} configuring {@code "Branch"}.
+     * <p>
+     * 
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>successful compilation
+     * <li>the result datatype is {@code IBranch}
+     * <li>the result's sourcecode uses the method the
+     * {@link GenAssociation#getMethodNameGetAllRefObjects()} method returns and the
+     * {@link FormulaEvaluatorUtil#getModelObjectById(List, String)} method with the ID
+     * {@code "Branch"}
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_1toManyQualified() throws CoreException {
+        method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
+        newProductCmpt(branchPolicyCmptType.findProductCmptType(ipsProject), "my.Branch");
+        CompilationResult result = resolver.compile("tree.branch(Branch)", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(branchPolicyCmptType, result.getDatatype());
+        String expected = "FormulaEvaluatorUtil.getModelObjectById(tree."
+                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationTreeToBranches)
+                        .getMethodNameGetAllRefObjects() + "(), \"Branch\")";
+        assertEquals(expected, result.getCodeFragment().getSourcecode());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "twig"} of the {@link IPolicyCmptType}
+     * {@code "Twig"} which has a 1to1 association to the {@link IPolicyCmptType} {@code "Leaf"}
+     * with the name {@code "leaf"}. The resolver is called with {@code "twig.leaf(ALeaf)"} where
+     * {@code "ALeaf"} is the runtime ID of a {@link IProductCmpt} configuring {@code "Leaf"}.
+     * <p>
+     * 
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>successful compilation
+     * <li>the result datatype is {@code IBranch}
+     * <li>the result's sourcecode uses the method the
+     * {@link GenAssociation#getMethodNameGetRefObject()} method returns and the
+     * {@link FormulaEvaluatorUtil#getModelObjectById(IModelObject, String)} method with the ID
+     * {@code "ALeaf"}
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_1to1Qualified() throws CoreException {
+        method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
+        newProductCmpt(leafPolicyCmptType.findProductCmptType(ipsProject), "pack.ALeaf");
+        CompilationResult result = resolver.compile("twig.leaf(ALeaf)", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(leafPolicyCmptType, result.getDatatype());
+        Object expected = "FormulaEvaluatorUtil.getModelObjectById(twig."
+                + standardBuilderSet.getGenerator(twigPolicyCmptType).getGenerator(associationTwigToLeaf)
+                        .getMethodNameGetRefObject() + "(), \"ALeaf\")";
+        assertEquals(expected, result.getCodeFragment().getSourcecode());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "twig"} of the {@link IPolicyCmptType}
+     * {@code "Twig"} which has a 1to1 association to the {@link IPolicyCmptType} {@code "Leaf"}
+     * with the name {@code "leaf"}. The resolver is called with {@code "twig.leaf(ALeaf)"} where
+     * {@code "UnknownLeaf"} is no known runtime ID.
+     * <p>
+     * 
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>failed compilation
+     * <li>the result contains an error message with the message code
+     * {@link ExprCompiler#UNKNOWN_QUALIFIER}
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_1to1QualifiedWithUnknownProduct() {
+        method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
+        CompilationResult result = resolver.compile("twig.leaf(UnknownLeaf)", null, locale);
+        assertTrue(result.failed());
+        assertEquals(1, result.getMessages().size());
+        assertEquals(ExprCompiler.UNKNOWN_QUALIFIER, result.getMessages().getMessage(0).getCode());
     }
 
     @Test

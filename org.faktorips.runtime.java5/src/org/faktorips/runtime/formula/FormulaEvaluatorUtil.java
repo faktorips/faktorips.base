@@ -14,21 +14,24 @@
 package org.faktorips.runtime.formula;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.internal.StringUtils;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 
 /**
- * This utility class provides methods that can be used in formula evaluation.
+ * Provides methods that can be used in formula evaluation.
+ * <p>
+ * Some code in formulas does not need to be generated again and again but is implemented in static
+ * methods in this class that are used by the formulas.
  * 
- * @author schwering
+ * @since 3.6
+ * @see IFormulaEvaluator
+ * @author Daniel Schwering, Faktor Zehn AG
  */
 public class FormulaEvaluatorUtil {
 
@@ -39,58 +42,86 @@ public class FormulaEvaluatorUtil {
      * 
      * @param sourceObjects the {@link IModelObject}s searched for the given association name
      * @param associationName the name of the {@link IModelTypeAssociation}
+     * @param targetClass the class for the association's target type, used for the type of the
+     *            returned list
      * @param repository the {@link IRuntimeRepository} used to find model type information
      * @return an array of {@link IModelObject}s found by following the
      *         {@link IModelTypeAssociation} identified by the given association name
      */
-    public static IModelObject[] getTargets(IModelObject[] sourceObjects,
+    public static <S extends IModelObject, T extends IModelObject> List<T> getTargets(List<S> sourceObjects,
             String associationName,
+            Class<T> targetClass,
             IRuntimeRepository repository) {
-        List<IModelObject> targets = findTargets(sourceObjects, associationName, repository);
-        return targets.toArray(new IModelObject[targets.size()]);
-    }
-
-    private static List<IModelObject> findTargets(IModelObject[] sourceObjects,
-            String associationName,
-            IRuntimeRepository repository) {
-        return findTargets(sourceObjects, associationName, repository, null);
-    }
-
-    private static List<IModelObject> findTargets(IModelObject[] sourceObjects,
-            String associationName,
-            IRuntimeRepository repository,
-            String targetId) {
-        List<IModelObject> targets = new ArrayList<IModelObject>();
-        for (IModelObject sourceObject : sourceObjects) {
-            targets.addAll(findTargets(sourceObject, associationName, repository, targetId));
+        List<T> targets = new ArrayList<T>();
+        for (S sourceObject : sourceObjects) {
+            List<T> foundTargets = findTargets(sourceObject, associationName, targetClass, repository);
+            for (T target : foundTargets) {
+                if (!targets.contains(target)) {
+                    targets.add(target);
+                }
+            }
         }
         return targets;
     }
 
-    private static List<IModelObject> findTargets(IModelObject sourceObject,
+    private static <S extends IModelObject, T extends IModelObject> List<T> findTargets(S sourceObject,
             String associationName,
-            IRuntimeRepository repository,
-            String targetId) {
-        if (sourceObject == null) {
-            return Collections.emptyList();
-        }
+            Class<T> targetClass,
+            IRuntimeRepository repository) {
         IModelType modelType = repository.getModelType(sourceObject);
         IModelTypeAssociation association = modelType.getAssociation(associationName);
-        List<IModelObject> targetObjects = association.getTargetObjects(sourceObject);
-        filterTargets(targetObjects, targetId);
+        List<IModelObject> targets = association.getTargetObjects(sourceObject);
+        List<T> targetObjects = new ArrayList<T>(targets.size());
+        for (IModelObject target : targets) {
+            if (targetClass.isInstance(target)) {
+                @SuppressWarnings("unchecked")
+                T castTarget = (T)target;
+                targetObjects.add(castTarget);
+            }
+        }
         return targetObjects;
     }
 
-    private static void filterTargets(List<IModelObject> targets, String targetId) {
-        if (StringUtils.isEmpty(targetId)) {
-            return;
-        }
-        for (Iterator<IModelObject> iterator = targets.iterator(); iterator.hasNext();) {
-            IModelObject target = iterator.next();
-            if (!(target instanceof IConfigurableModelObject)
-                    || !((IConfigurableModelObject)target).getProductComponent().getId().equals(targetId)) {
-                iterator.remove();
+    /**
+     * Returns the (first) {@link IConfigurableModelObject} in the list that is configured by a
+     * {@link IProductComponent} with the given ID, {@code null} if no such object is found in the
+     * list.
+     * 
+     * @param <T> the type of {@link IModelObject} returned by this method and expected in the list
+     * @param modelObjects a list of model objects of type <T>
+     * @param id the runtime ID this method searches
+     * @see FormulaEvaluatorUtil#getModelObjectById(IModelObject, String)
+     * @return the (first) {@link IConfigurableModelObject} in the list that is configured by a
+     *         {@link IProductComponent} with the given ID, {@code null} if no such object is found
+     *         in the list
+     */
+    public static <T extends IModelObject> T getModelObjectById(List<T> modelObjects, String id) {
+        for (T modelObject : modelObjects) {
+            if (modelObject instanceof IConfigurableModelObject) {
+                if (((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
+                    return modelObject;
+                }
             }
         }
+        return null;
+    }
+
+    /**
+     * Returns the {@link IModelObject} if it is a {@link IConfigurableModelObject} configured by a
+     * {@link IProductComponent} with the given ID, {@code null} otherwise.
+     * 
+     * @param <T> the type of {@link IModelObject} returned and expected by this method
+     * @param modelObject a model object of type <T>
+     * @param id the runtime ID this method searches
+     * @see FormulaEvaluatorUtil#getModelObjectById(List, String)
+     * @return the {@link IModelObject} if it is a {@link IConfigurableModelObject} configured by a
+     *         {@link IProductComponent} with the given ID, {@code null} otherwise
+     */
+    public static <T extends IModelObject> T getModelObjectById(T modelObject, String id) {
+        if (modelObject instanceof IConfigurableModelObject
+                && ((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
+            return modelObject;
+        }
+        return null;
     }
 }

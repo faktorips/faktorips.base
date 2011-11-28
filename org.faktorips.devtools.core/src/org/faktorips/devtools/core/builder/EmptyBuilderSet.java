@@ -66,33 +66,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     @Override
     public IdentifierResolver createFlIdentifierResolver(IExpression formula, ExprCompiler exprCompiler)
             throws CoreException {
-
-        return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
-            @Override
-            protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-                return ""; //$NON-NLS-1$
-            }
-
-            @Override
-            protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
-                return ""; //$NON-NLS-1$
-            }
-
-            @Override
-            protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-                return ""; //$NON-NLS-1$
-            }
-
-            @Override
-            protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-                return ""; //$NON-NLS-1$
-            }
-
-            @Override
-            protected String getJavaClassName(IType type) {
-                return ""; //$NON-NLS-1$
-            }
-        };
+        return new EmptyParameterIdentifierResolver(formula, exprCompiler);
     }
 
     @Override
@@ -151,6 +125,42 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     @Override
     public String getInternalPackage(String basePackageName, String subPackageFragment) {
         return null;
+    }
+
+    private final class EmptyParameterIdentifierResolver extends AbstractParameterIdentifierResolver {
+        private EmptyParameterIdentifierResolver(IExpression formula2, ExprCompiler exprCompiler) {
+            super(formula2, exprCompiler);
+        }
+
+        @Override
+        protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
+            return ""; //$NON-NLS-1$
+        }
+
+        @Override
+        protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
+            return ""; //$NON-NLS-1$
+        }
+
+        @Override
+        protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+            return ""; //$NON-NLS-1$
+        }
+
+        @Override
+        protected String getAssociationTargetAtIndexGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+            return ""; //$NON-NLS-1$
+        }
+
+        @Override
+        protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+            return ""; //$NON-NLS-1$
+        }
+
+        @Override
+        protected String getJavaClassName(IType type) {
+            return ""; //$NON-NLS-1$
+        }
     }
 
 }

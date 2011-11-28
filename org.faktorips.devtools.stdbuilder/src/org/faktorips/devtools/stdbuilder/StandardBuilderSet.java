@@ -311,198 +311,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     @Override
     public IdentifierResolver createFlIdentifierResolver(IExpression formula, ExprCompiler exprCompiler)
             throws CoreException {
-        return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
-
-            @Override
-            protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
-                    EnumTypeDatatypeAdapter datatype,
-                    ExprCompiler exprCompiler,
-                    String value) throws CoreException {
-                ExtendedExprCompiler compiler = (ExtendedExprCompiler)exprCompiler;
-                fragment.append(enumTypeBuilder.getNewInstanceCodeFragement(datatype, value,
-                        compiler.getRuntimeRepositoryExpression()));
-            }
-
-            @Override
-            protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-                try {
-                    if (datatype instanceof IPolicyCmptType) {
-                        return getGenerator((IPolicyCmptType)datatype).getMethodNameGetPropertyValue(
-                                attribute.getName(), datatype);
-                    }
-                    if (datatype instanceof IProductCmptType) {
-                        GenProductCmptType generator = getGenerator((IProductCmptType)datatype);
-                        String parameterAttributeGetter = generator.getMethodNameGetPropertyValue(attribute.getName(),
-                                datatype);
-                        if (attribute instanceof IProductCmptTypeAttribute) {
-                            if (!((IProductCmptTypeAttribute)attribute).isChangingOverTime()) {
-                                return generator.getMethodNameGetProductCmpt() + "()." + parameterAttributeGetter;
-                            }
-                        }
-                        return parameterAttributeGetter;
-                    }
-                } catch (CoreException e) {
-                    return null;
-                }
-                return null;
-            }
-
-            @Override
-            protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
-                try {
-                    GenPolicyCmptType genPolicyCmptType = getGenerator(type);
-                    String getProductCmptGeneration = genPolicyCmptType.getGenProductCmptType()
-                            .getMethodNameGetProductCmptGeneration();
-                    GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = genPolicyCmptType
-                            .getGenerator((IPolicyCmptTypeAttribute)attribute);
-                    if (genPolicyCmptTypeAttribute instanceof GenChangeableAttribute) {
-                        String methodNameGetDefaultValue = ((GenChangeableAttribute)genPolicyCmptTypeAttribute)
-                                .getMethodNameGetDefaultValue();
-                        return getProductCmptGeneration + "()." + methodNameGetDefaultValue;
-                    } else {
-                        throw new IllegalStateException("Could not generate default method access. Attribute "
-                                + attribute.getName() + " is not changeable.");
-                    }
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e.getMessage(), e);
-                }
-            }
-
-            @Override
-            protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-                try {
-                    return getGenerator(policyCmptType).getGenerator((IPolicyCmptTypeAssociation)association)
-                            .getMethodNameGetRefObject();
-                } catch (CoreException e) {
-                    return null;
-                }
-            }
-
-            @Override
-            protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-                try {
-                    return getGenerator(policyCmptType).getGenerator((IPolicyCmptTypeAssociation)association)
-                            .getMethodNameGetAllRefObjects();
-                } catch (CoreException e) {
-                    return null;
-                }
-            }
-
-            @Override
-            protected String getJavaClassName(IType type) {
-                try {
-                    return getGenerator(type).getQualifiedName(true);
-                } catch (CoreException e) {
-                    return null;
-                }
-            }
-        };
+        return new StandardParameterIdentifierResolver(formula, exprCompiler);
     }
 
     @Override
     public IdentifierResolver createFlIdentifierResolverForFormulaTest(IExpression formula, ExprCompiler exprCompiler)
             throws CoreException {
-        return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
-
-            @Override
-            protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
-                    EnumTypeDatatypeAdapter datatype,
-                    ExprCompiler exprCompiler,
-                    String value) throws CoreException {
-                ExtendedExprCompiler compiler = (ExtendedExprCompiler)exprCompiler;
-                fragment.append(enumTypeBuilder.getNewInstanceCodeFragement(datatype, value,
-                        compiler.getRuntimeRepositoryExpression()));
-            }
-
-            @Override
-            protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-                try {
-                    if (datatype instanceof IPolicyCmptType) {
-                        return getGenerator((IPolicyCmptType)datatype).getMethodNameGetPropertyValue(
-                                attribute.getName(), datatype);
-                    }
-                    if (datatype instanceof IProductCmptType) {
-                        return getGenerator((IProductCmptType)datatype).getMethodNameGetPropertyValue(
-                                attribute.getName(), datatype);
-                    }
-                } catch (CoreException e) {
-                    return null;
-                }
-                return null;
-            }
-
-            @Override
-            protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
-                try {
-                    GenPolicyCmptType genPolicyCmptType = getGenerator(type);
-                    String getProductCmptGeneration = genPolicyCmptType.getGenProductCmptType()
-                            .getMethodNameGetProductCmptGeneration();
-                    GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = genPolicyCmptType
-                            .getGenerator((IPolicyCmptTypeAttribute)attribute);
-                    if (genPolicyCmptTypeAttribute instanceof GenChangeableAttribute) {
-                        String methodNameGetDefaultValue = ((GenChangeableAttribute)genPolicyCmptTypeAttribute)
-                                .getMethodNameGetDefaultValue();
-                        return getProductCmptGeneration + "()." + methodNameGetDefaultValue;
-                    } else {
-                        throw new IllegalStateException("Could not generate default method access. Attribute "
-                                + attribute.getName() + " is not changeable.");
-                    }
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e.getMessage(), e);
-                }
-            }
-
-            @Override
-            protected CompilationResult compile(IParameter param, String attributeName) {
-                CompilationResult compile = super.compile(param, attributeName);
-                try {
-                    Datatype datatype = param.findDatatype(getIpsProject());
-                    if (datatype instanceof IType) {
-                        /*
-                         * instead of using the types getter method to get the value for an
-                         * identifier, the given datatype plus the attribute will be used as new
-                         * parameter identifier, this parameter identifier will also be used as
-                         * parameter inside the formula method which uses this code fragment
-                         */
-                        String code = param.getName() + "_" + attributeName; //$NON-NLS-1$
-                        return new CompilationResultImpl(code, compile.getDatatype());
-                    }
-                } catch (CoreException ignored) {
-                    // the exception was already handled in the compile method of the super class
-                }
-                return compile;
-            }
-
-            @Override
-            protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-                try {
-                    return getGenerator(policyCmptType).getGenerator((IPolicyCmptTypeAssociation)association)
-                            .getMethodNameGetRefObject();
-                } catch (CoreException e) {
-                    return null;
-                }
-            }
-
-            @Override
-            protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-                try {
-                    return getGenerator(policyCmptType).getGenerator((IPolicyCmptTypeAssociation)association)
-                            .getMethodNameGetAllRefObjects();
-                } catch (CoreException e) {
-                    return null;
-                }
-            }
-
-            @Override
-            protected String getJavaClassName(IType type) {
-                try {
-                    return getGenerator(type).getQualifiedName(true);
-                } catch (CoreException e) {
-                    return null;
-                }
-            }
-
-        };
+        return new StandardParameterIdentifierResolverForFormulaTest(formula, exprCompiler);
     }
 
     @Override
@@ -946,6 +761,150 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public final ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
         return productCmptInterfaceBuilder;
+    }
+
+    private final class StandardParameterIdentifierResolverForFormulaTest extends StandardParameterIdentifierResolver {
+        private StandardParameterIdentifierResolverForFormulaTest(IExpression formula2, ExprCompiler exprCompiler) {
+            super(formula2, exprCompiler);
+        }
+
+        @Override
+        protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
+            try {
+                if (datatype instanceof IPolicyCmptType) {
+                    return getGenerator((IPolicyCmptType)datatype).getMethodNameGetPropertyValue(attribute.getName(),
+                            datatype);
+                }
+                if (datatype instanceof IProductCmptType) {
+                    return getGenerator((IProductCmptType)datatype).getMethodNameGetPropertyValue(attribute.getName(),
+                            datatype);
+                }
+            } catch (CoreException e) {
+                return null;
+            }
+            return null;
+        }
+
+        @Override
+        protected CompilationResult compile(IParameter param, String attributeName) {
+            CompilationResult compile = super.compile(param, attributeName);
+            try {
+                Datatype datatype = param.findDatatype(getIpsProject());
+                if (datatype instanceof IType) {
+                    /*
+                     * instead of using the types getter method to get the value for an identifier,
+                     * the given datatype plus the attribute will be used as new parameter
+                     * identifier, this parameter identifier will also be used as parameter inside
+                     * the formula method which uses this code fragment
+                     */
+                    String code = param.getName() + "_" + attributeName; //$NON-NLS-1$
+                    return new CompilationResultImpl(code, compile.getDatatype());
+                }
+            } catch (CoreException ignored) {
+                // the exception was already handled in the compile method of the super class
+            }
+            return compile;
+        }
+    }
+
+    private class StandardParameterIdentifierResolver extends AbstractParameterIdentifierResolver {
+        private StandardParameterIdentifierResolver(IExpression formula2, ExprCompiler exprCompiler) {
+            super(formula2, exprCompiler);
+        }
+
+        @Override
+        protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
+                EnumTypeDatatypeAdapter datatype,
+                ExprCompiler exprCompiler,
+                String value) throws CoreException {
+            ExtendedExprCompiler compiler = (ExtendedExprCompiler)exprCompiler;
+            fragment.append(enumTypeBuilder.getNewInstanceCodeFragement(datatype, value,
+                    compiler.getRuntimeRepositoryExpression()));
+        }
+
+        @Override
+        protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
+            try {
+                if (datatype instanceof IPolicyCmptType) {
+                    return getGenerator((IPolicyCmptType)datatype).getMethodNameGetPropertyValue(attribute.getName(),
+                            datatype);
+                }
+                if (datatype instanceof IProductCmptType) {
+                    GenProductCmptType generator = getGenerator((IProductCmptType)datatype);
+                    String parameterAttributeGetter = generator.getMethodNameGetPropertyValue(attribute.getName(),
+                            datatype);
+                    if (attribute instanceof IProductCmptTypeAttribute) {
+                        if (!((IProductCmptTypeAttribute)attribute).isChangingOverTime()) {
+                            return generator.getMethodNameGetProductCmpt() + "()." + parameterAttributeGetter;
+                        }
+                    }
+                    return parameterAttributeGetter;
+                }
+            } catch (CoreException e) {
+                return null;
+            }
+            return null;
+        }
+
+        @Override
+        protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
+            try {
+                GenPolicyCmptType genPolicyCmptType = getGenerator(type);
+                String getProductCmptGeneration = genPolicyCmptType.getGenProductCmptType()
+                        .getMethodNameGetProductCmptGeneration();
+                GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = genPolicyCmptType
+                        .getGenerator((IPolicyCmptTypeAttribute)attribute);
+                if (genPolicyCmptTypeAttribute instanceof GenChangeableAttribute) {
+                    String methodNameGetDefaultValue = ((GenChangeableAttribute)genPolicyCmptTypeAttribute)
+                            .getMethodNameGetDefaultValue();
+                    return getProductCmptGeneration + "()." + methodNameGetDefaultValue;
+                } else {
+                    throw new IllegalStateException("Could not generate default method access. Attribute "
+                            + attribute.getName() + " is not changeable.");
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e.getMessage(), e);
+            }
+        }
+
+        @Override
+        protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+            try {
+                return getGenerator(policyCmptType).getGenerator((IPolicyCmptTypeAssociation)association)
+                        .getMethodNameGetRefObject();
+            } catch (CoreException e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected String getAssociationTargetAtIndexGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+            try {
+                return getGenerator(policyCmptType).getGenerator((IPolicyCmptTypeAssociation)association)
+                        .getMethodNameGetRefObjectAtIndex();
+            } catch (CoreException e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+            try {
+                return getGenerator(policyCmptType).getGenerator((IPolicyCmptTypeAssociation)association)
+                        .getMethodNameGetAllRefObjects();
+            } catch (CoreException e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected String getJavaClassName(IType type) {
+            try {
+                return getGenerator(type).getQualifiedName(true);
+            } catch (CoreException e) {
+                return null;
+            }
+        }
     }
 
     private static class CachedPersistenceProvider {

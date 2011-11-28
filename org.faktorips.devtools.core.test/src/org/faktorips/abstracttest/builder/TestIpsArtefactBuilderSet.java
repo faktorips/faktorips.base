@@ -148,71 +148,13 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     @Override
     public IdentifierResolver createFlIdentifierResolver(IExpression formula, ExprCompiler exprCompiler)
             throws CoreException {
-
-        return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
-            @Override
-            protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-                return attribute.getIpsProject().getJavaNamingConvention()
-                        .getGetterMethodName(attribute.getName(), datatype);
-            }
-
-            @Override
-            protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
-                return "getDefaultValue" + StringUtils.capitalize(attribute.getName()); //$NON-NLS-1$
-            }
-
-            @Override
-            protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-                return association.getIpsProject().getJavaNamingConvention()
-                        .getGetterMethodName(association.getName(), policyCmptType);
-            }
-
-            @Override
-            protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-                return association.getIpsProject().getJavaNamingConvention()
-                        .getGetterMethodName(association.getTargetRolePlural(), policyCmptType);
-            }
-
-            @Override
-            protected String getJavaClassName(IType type) {
-                return type.getQualifiedName();
-            }
-        };
+        return new TestParameterIdentifierResolver(formula, exprCompiler);
     }
 
     @Override
     public IdentifierResolver createFlIdentifierResolverForFormulaTest(IExpression formula, ExprCompiler exprCompiler)
             throws CoreException {
-
-        return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
-            @Override
-            protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-                return attribute.getIpsProject().getJavaNamingConvention()
-                        .getGetterMethodName(attribute.getName(), datatype);
-            }
-
-            @Override
-            protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
-                return "getDefaultValue" + StringUtils.capitalize(attribute.getName()); //$NON-NLS-1$
-            }
-
-            @Override
-            protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-                return association.getIpsProject().getJavaNamingConvention()
-                        .getGetterMethodName(association.getName(), policyCmptType);
-            }
-
-            @Override
-            protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
-                return association.getIpsProject().getJavaNamingConvention()
-                        .getGetterMethodName(association.getTargetRolePlural(), policyCmptType);
-            }
-
-            @Override
-            protected String getJavaClassName(IType type) {
-                return type.getQualifiedName();
-            }
-        };
+        return new TestParameterIdentifierResolver(formula, exprCompiler);
     }
 
     @Override
@@ -238,6 +180,46 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     @Override
     public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter) {
         return (DatatypeHelper)testObjectsMap.get(datatypeAdapter);
+    }
+
+    private final class TestParameterIdentifierResolver extends AbstractParameterIdentifierResolver {
+        private TestParameterIdentifierResolver(IExpression formula2, ExprCompiler exprCompiler) {
+            super(formula2, exprCompiler);
+        }
+
+        @Override
+        protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
+            return attribute.getIpsProject().getJavaNamingConvention()
+                    .getGetterMethodName(attribute.getName(), datatype);
+        }
+
+        @Override
+        protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
+            return "getDefaultValue" + StringUtils.capitalize(attribute.getName()); //$NON-NLS-1$
+        }
+
+        @Override
+        protected String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+            return association.getIpsProject().getJavaNamingConvention()
+                    .getGetterMethodName(association.getName(), policyCmptType);
+        }
+
+        @Override
+        protected String getAssociationTargetAtIndexGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+            return association.getIpsProject().getJavaNamingConvention()
+                    .getGetterMethodName(association.getName(), policyCmptType);
+        }
+
+        @Override
+        protected String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType) {
+            return association.getIpsProject().getJavaNamingConvention()
+                    .getGetterMethodName(association.getTargetRolePlural(), policyCmptType);
+        }
+
+        @Override
+        protected String getJavaClassName(IType type) {
+            return type.getQualifiedName();
+        }
     }
 
 }

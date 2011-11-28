@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -35,14 +34,18 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ListOfTypeDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -89,10 +92,28 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
      */
     protected abstract String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type);
 
+    /**
+     * Provides the name of the getter method for a single target of the given association from the
+     * given policy component type.
+     */
     protected abstract String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType);
 
+    /**
+     * Provides the name of the getter method for indexed access of one of multiple targets of the
+     * given association from the given policy component type.
+     */
+    protected abstract String getAssociationTargetAtIndexGetterName(IAssociation association,
+            IPolicyCmptType policyCmptType);
+
+    /**
+     * Provides the name of the getter method for access a list of multiple targets of the given
+     * association from the given policy component type.
+     */
     protected abstract String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType);
 
+    /**
+     * Provides the name of the Java Class generated for the given type.
+     */
     protected abstract String getJavaClassName(IType type);
 
     private Map<String, EnumDatatype> createEnumMap() {
@@ -342,12 +363,22 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                 index = Integer.valueOf(attributeName.substring(attributeName.indexOf('[') + 1,
                         attributeName.indexOf(']')));
             }
+            String qualifier = null;
+            if (attributeName.indexOf('(') > 0) {
+                associationName = attributeName.substring(0, attributeName.indexOf('('));
+                qualifier = attributeName.substring(attributeName.indexOf('(') + 1, attributeName.indexOf(')'));
+            }
             IAssociation association = type.findAssociation(associationName, ipsproject);
             if (association == null) {
                 String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {
                         javaCodeFragment, type.getName(), attributeName });
                 return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
             } else {
+                if (association.is1To1() && index != null) {
+                    return new CompilationResultImpl(Message.newError(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, NLS
+                            .bind(Messages.AbstractParameterIdentifierResolver_noIndexFor1to1Association0,
+                                    new Object[] { association, index })));
+                }
                 IType target = association.findTarget(ipsproject);
                 if (target == null) {
                     return new CompilationResultImpl(Message.newError(
@@ -355,12 +386,43 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                             NLS.bind(Messages.AbstractParameterIdentifierResolver_noAssociationTarget, new Object[] {
                                     association, type.getName() })));
                 }
-                String associationTargetGetterName = getAssociationTargetGetterName(association, (IPolicyCmptType)type);
+                CompilationResult associationIdentifier = null;
                 if (association.is1ToManyIgnoringQualifier() && index == null) {
-                    return compileTypeAssociationToManyIdentifier(javaCodeFragment, type, association, target);
+                    associationIdentifier = compileTypeAssociationToManyIdentifier(javaCodeFragment, type, association,
+                            target);
                 } else {
-                    return compileTypeAssociationTo1Identifier(javaCodeFragment, index, target,
-                            associationTargetGetterName);
+                    associationIdentifier = compileTypeAssociationTo1Identifier(javaCodeFragment, index, type,
+                            association, target);
+                }
+                if (qualifier == null || associationIdentifier.failed()) {
+                    return associationIdentifier;
+                } else {
+                    IProductCmptType productCmptType = ((IPolicyCmptType)target).findProductCmptType(ipsproject);
+                    IIpsSrcFile[] allProductCmptSrcFiles = ipsproject.findAllProductCmptSrcFiles(productCmptType, true);
+                    String runtimeId = null;
+                    for (IIpsSrcFile ipsSrcFile : allProductCmptSrcFiles) {
+                        if (qualifier.equals(ipsSrcFile.getIpsObjectName())) {
+                            IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+                            if (ipsObject instanceof IProductCmpt) {
+                                IProductCmpt productCmpt = (IProductCmpt)ipsObject;
+                                runtimeId = productCmpt.getRuntimeId();
+                                break;
+                            }
+                        }
+                    }
+                    if (runtimeId == null) {
+                        String text = NLS.bind("The qualifier {0} is no product component for type {1}.", new Object[] { //$NON-NLS-1$
+                                qualifier, productCmptType.getName() });
+                        return new CompilationResultImpl(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, text));
+                    }
+                    JavaCodeFragment getQualifiedTargetCode = new JavaCodeFragment();
+                    getQualifiedTargetCode.appendClassName(org.faktorips.runtime.formula.FormulaEvaluatorUtil.class);
+                    getQualifiedTargetCode.append(".getModelObjectById("); //$NON-NLS-1$
+                    getQualifiedTargetCode.append(associationIdentifier.getCodeFragment());
+                    getQualifiedTargetCode.append(", \""); //$NON-NLS-1$
+                    getQualifiedTargetCode.append(runtimeId);
+                    getQualifiedTargetCode.append("\")"); //$NON-NLS-1$
+                    return new CompilationResultImpl(getQualifiedTargetCode, target);
                 }
             }
         } catch (CoreException e) {
@@ -373,12 +435,16 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
 
     private CompilationResult compileTypeAssociationTo1Identifier(JavaCodeFragment javaCodeFragment,
             Integer index,
-            IType target,
-            String associationTargetGetterName) {
-        javaCodeFragment.append('.' + associationTargetGetterName);
+            IType type,
+            IAssociation association,
+            IType target) {
         if (index == null) {
+            javaCodeFragment.append('.');
+            javaCodeFragment.append(getAssociationTargetGetterName(association, (IPolicyCmptType)type));
             javaCodeFragment.append("()"); //$NON-NLS-1$
         } else {
+            javaCodeFragment.append('.');
+            javaCodeFragment.append(getAssociationTargetGetterName(association, (IPolicyCmptType)type));
             javaCodeFragment.append("(" + index.toString() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return new CompilationResultImpl(javaCodeFragment, target);
@@ -390,10 +456,8 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             IType target) {
         String associationTargetGetterName;
         associationTargetGetterName = getAssociationTargetsGetterName(association, (IPolicyCmptType)type);
-        javaCodeFragment.append('.' + associationTargetGetterName + "().toArray(new "); //$NON-NLS-1$
-        javaCodeFragment.appendClassName("org.faktorips.runtime.IModelObject"); //$NON-NLS-1$
-        javaCodeFragment.append("[0])"); //$NON-NLS-1$
-        return new CompilationResultImpl(javaCodeFragment, new ArrayOfValueDatatype(target, 1));
+        javaCodeFragment.append('.' + associationTargetGetterName + "()"); //$NON-NLS-1$
+        return new CompilationResultImpl(javaCodeFragment, new ListOfTypeDatatype(target));
     }
 
     private CompilationResult compileAssociationChain(JavaCodeFragment javaCodeFragment,
@@ -405,8 +469,8 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         Datatype datatype = compilationResult1.getDatatype();
         if (datatype instanceof IType) {
             return compileAssociationTo1Chain(compilationResult1, tail, datatype);
-        } else if (datatype instanceof ArrayOfValueDatatype) {
-            return compileAssociationToManyChain(compilationResult1.getCodeFragment(), (ArrayOfValueDatatype)datatype,
+        } else if (datatype instanceof ListOfTypeDatatype) {
+            return compileAssociationToManyChain(compilationResult1.getCodeFragment(), (ListOfTypeDatatype)datatype,
                     tail);
         } else {
             String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {
@@ -431,7 +495,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
     }
 
     private CompilationResult compileAssociationToManyChain(JavaCodeFragment javaCodeFragment,
-            ArrayOfValueDatatype datatype,
+            ListOfTypeDatatype datatype,
             String code) {
         if (StringUtils.isEmpty(code)) {
             return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
@@ -464,17 +528,16 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                 JavaCodeFragment getTargetCode = compileAssociationAccess(javaCodeFragment, association);
                 if (index == null) {
                     if (tail.isEmpty()) {
-                        return new CompilationResultImpl(getTargetCode, new ArrayOfValueDatatype(target, 1));
+                        return new CompilationResultImpl(getTargetCode, new ListOfTypeDatatype(target));
                     } else {
-                        return compileAssociationToManyChain(getTargetCode, new ArrayOfValueDatatype(target, 1), tail);
+                        return compileAssociationToManyChain(getTargetCode, new ListOfTypeDatatype(target), tail);
                     }
                 } else {
-                    JavaCodeFragment castAndArrayIndexCode = compileAssociationIndexedAccess(index, target,
-                            getTargetCode);
+                    getTargetCode.append(".get(" + index.toString() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
                     if (tail.isEmpty()) {
-                        return new CompilationResultImpl(castAndArrayIndexCode, target);
+                        return new CompilationResultImpl(getTargetCode, target);
                     } else {
-                        return compileTypeAttributeIdentifier(castAndArrayIndexCode, target, tail);
+                        return compileTypeAttributeIdentifier(getTargetCode, target, tail);
                     }
                 }
             }
@@ -487,22 +550,16 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         return null;
     }
 
-    private JavaCodeFragment compileAssociationIndexedAccess(Integer index, IType target, JavaCodeFragment getTargetCode) {
-        JavaCodeFragment castAndArrayIndexCode = new JavaCodeFragment();
-        castAndArrayIndexCode.append("(("); //$NON-NLS-1$
-        castAndArrayIndexCode.appendClassName(getJavaClassName(target));
-        castAndArrayIndexCode.append(")"); //$NON-NLS-1$
-        castAndArrayIndexCode.append(getTargetCode);
-        castAndArrayIndexCode.append("[" + index.toString() + "])"); //$NON-NLS-1$ //$NON-NLS-2$
-        return castAndArrayIndexCode;
-    }
-
-    private JavaCodeFragment compileAssociationAccess(JavaCodeFragment javaCodeFragment, IAssociation association) {
+    private JavaCodeFragment compileAssociationAccess(JavaCodeFragment javaCodeFragment, IAssociation association)
+            throws CoreException {
         JavaCodeFragment getTargetCode = new JavaCodeFragment();
         getTargetCode.appendClassName(org.faktorips.runtime.formula.FormulaEvaluatorUtil.class);
         getTargetCode.append(".getTargets("); //$NON-NLS-1$
         getTargetCode.append(javaCodeFragment);
-        getTargetCode.append(", \"" + association.getName() + "\", this.getRepository())"); //$NON-NLS-1$//$NON-NLS-2$
+        getTargetCode.append(", \"" + association.getName() + "\", "); //$NON-NLS-1$ //$NON-NLS-2$
+        IType target = association.findTarget(association.getIpsProject());
+        getTargetCode.appendClassName(getJavaClassName(target));
+        getTargetCode.append(".class, this.getRepository())"); //$NON-NLS-1$
         return getTargetCode;
     }
 
