@@ -89,18 +89,24 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
 
     /**
      * Provides the name of the getter method for the provided attribute's default value.
+     * 
+     * @since 3.6
      */
     protected abstract String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type);
 
     /**
      * Provides the name of the getter method for a single target of the given association from the
      * given policy component type.
+     * 
+     * @since 3.6
      */
     protected abstract String getAssociationTargetGetterName(IAssociation association, IPolicyCmptType policyCmptType);
 
     /**
      * Provides the name of the getter method for indexed access of one of multiple targets of the
      * given association from the given policy component type.
+     * 
+     * @since 3.6
      */
     protected abstract String getAssociationTargetAtIndexGetterName(IAssociation association,
             IPolicyCmptType policyCmptType);
@@ -108,11 +114,15 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
     /**
      * Provides the name of the getter method for access a list of multiple targets of the given
      * association from the given policy component type.
+     * 
+     * @since 3.6
      */
     protected abstract String getAssociationTargetsGetterName(IAssociation association, IPolicyCmptType policyCmptType);
 
     /**
      * Provides the name of the Java Class generated for the given type.
+     * 
+     * @since 3.6
      */
     protected abstract String getJavaClassName(IType type);
 
