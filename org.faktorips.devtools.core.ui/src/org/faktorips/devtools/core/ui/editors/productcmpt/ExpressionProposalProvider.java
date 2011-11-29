@@ -36,10 +36,13 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ListOfTypeDatatype;
+import org.faktorips.devtools.core.ui.ContentProposal;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FlFunction;
 import org.faktorips.util.ArgumentCheck;
@@ -76,6 +79,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             addMatchingAttributes(result, paramName, attributePrefix);
             addDefaultValuesToResult(result, paramName, attributePrefix);
             addMatchingEnumValues(result, paramName, attributePrefix);
+            addMatchingAssociations(result, paramName, attributePrefix);
             addAdditionalProposals(result, getAdditionalProposals(paramName, attributePrefix));
         } else {
             addMatchingProductCmptTypeAttributes(result, identifier);
@@ -240,14 +244,38 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         }
     }
 
-    protected Datatype findParamDatatype(String paramName) {
-        IParameter param = getParameter(paramName);
+    protected Datatype findParamDatatype(final String paramName) {
+        final String[] names = paramName.split("\\."); //$NON-NLS-1$
+        final IParameter param = getParameter(names[0]);
         if (param == null) {
             return null;
         }
+        final IIpsProject ipsProject = getIpsProject();
         try {
-            return param.findDatatype(getIpsProject());
-        } catch (CoreException e) {
+            Datatype target = param.findDatatype(ipsProject);
+            for (int i = 1; i < names.length; i++) {
+                String name = names[i];
+                boolean isIndexed = false;
+                if (name.indexOf('[') > 0) {
+                    name = name.substring(0, name.indexOf('['));
+                    isIndexed = true;
+                }
+                if (name.indexOf('(') > 0) {
+                    name = name.substring(0, name.indexOf('('));
+                    isIndexed = true;
+                }
+                final boolean isList = target instanceof ListOfTypeDatatype;
+                if (isList) {
+                    target = ((ListOfTypeDatatype)target).getBasicDatatype();
+                }
+                final IAssociation association = ((IType)target).findAssociation(name, ipsProject);
+                target = association.findTarget(ipsProject);
+                if (!isIndexed && (isList || association.is1ToManyIgnoringQualifier())) {
+                    target = new ListOfTypeDatatype((IType)target);
+                }
+            }
+            return target;
+        } catch (final CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }
     }
@@ -258,41 +286,6 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(attribute);
         IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText, localizedDescription);
         result.add(proposal);
-    }
-
-    public static class ContentProposal implements IContentProposal {
-        // FIXME in Eclipse 3.6: use org.eclipse.jface.fieldassist.ContentProposal
-        private final String content;
-        private final String label;
-        private final String description;
-
-        public ContentProposal(final String content, final String label, final String description) {
-            this.content = content;
-            this.label = label;
-            this.description = description;
-
-        }
-
-        @Override
-        public String getLabel() {
-            return label;
-        }
-
-        @Override
-        public String getDescription() {
-            return description;
-        }
-
-        @Override
-        public int getCursorPosition() {
-            return content.length();
-        }
-
-        @Override
-        public String getContent() {
-            return content;
-        }
-
     }
 
     protected IParameter getParameter(String name) {
@@ -382,5 +375,50 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             }
         }
         return attributes;
+    }
+
+    private void addMatchingAssociations(final List<IContentProposal> result,
+            final String paramName,
+            final String attributePrefix) {
+        try {
+            Datatype datatype = findParamDatatype(paramName);
+            boolean isList = false;
+            if (datatype instanceof ListOfTypeDatatype) {
+                datatype = ((ListOfTypeDatatype)datatype).getBasicDatatype();
+                isList = true;
+            }
+            if (!(datatype instanceof IType)) {
+                return;
+            }
+            final List<IAssociation> associations = ((IType)datatype).findAllAssociations(getIpsProject());
+            final List<String> associationNames = new ArrayList<String>();
+            for (final IAssociation association : associations) {
+                if (association.getName().startsWith(attributePrefix)
+                        && !associationNames.contains(association.getName())) {
+                    addAssociationToResult(result, association, attributePrefix,
+                            association.is1ToManyIgnoringQualifier() || isList);
+                    associationNames.add(association.getName());
+                }
+            }
+        } catch (final CoreException e) {
+            throw new CoreRuntimeException(e.getMessage(), e);
+        }
+    }
+
+    private void addAssociationToResult(final List<IContentProposal> result,
+            final IAssociation association,
+            final String prefix,
+            boolean addIndexedProposal) {
+        final String name = association.getName();
+        final String displayText = name + " -> " + association.getTarget(); //$NON-NLS-1$
+        final String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(association);
+        final IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText,
+                localizedDescription);
+        result.add(proposal);
+        if (addIndexedProposal) {
+            final IContentProposal proposalWithIndex = new ContentProposal(removePrefix(name, prefix) + "[0]", //$NON-NLS-1$
+                    displayText + "[0]", localizedDescription); //$NON-NLS-1$
+            result.add(proposalWithIndex);
+        }
     }
 }

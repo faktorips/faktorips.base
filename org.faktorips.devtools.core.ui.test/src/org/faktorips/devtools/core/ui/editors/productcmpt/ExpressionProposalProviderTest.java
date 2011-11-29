@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.StringUtil;
 import org.junit.Before;
@@ -237,6 +238,88 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         assertEquals("hirdAttr", proposal.getContent());
         proposal = results[1];
         assertEquals("hirdAttr@default", proposal.getContent());
+    }
+
+    @Test
+    public void testDoComputeCompletionProposalsForPolicyCmptTypeAssociations() throws Exception {
+        IAssociation to1Association = cmptType.newAssociation();
+        to1Association.setTargetRoleSingular("mainTarget");
+        to1Association.setMaxCardinality(1);
+
+        IAssociation toManyAssociation = cmptType.newAssociation();
+        toManyAssociation.setTargetRoleSingular("additionalTarget");
+        toManyAssociation.setMaxCardinality(Integer.MAX_VALUE);
+
+        formulaSignature.newParameter(cmptType.getQualifiedName(), "policy");
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("policy.m", 8);
+        assertEquals(1, results.length);
+        IContentProposal proposal = results[0];
+        assertEquals("ainTarget", proposal.getContent());
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        results = proposalProvider.getProposals("policy.a", 8);
+        assertEquals(2, results.length);
+        proposal = results[0];
+        assertEquals("dditionalTarget", proposal.getContent());
+        proposal = results[1];
+        assertEquals("dditionalTarget[0]", proposal.getContent());
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        results = proposalProvider.getProposals("policy.x", 8);
+        assertEquals(0, results.length);
+    }
+
+    @Test
+    public void testDoComputeCompletionProposalsForPolicyCmptTypeAssociationChains() throws Exception {
+        PolicyCmptType cmptType1 = newPolicyAndProductCmptType(ipsProject, "TestPart1", "TestPartType1");
+        IAssociation association1 = cmptType.newAssociation();
+        association1.setTargetRoleSingular("target1");
+        association1.setMaxCardinality(1);
+        association1.setTarget(cmptType1.getQualifiedName());
+
+        PolicyCmptType cmptType2 = newPolicyAndProductCmptType(ipsProject, "TestPart2", "TestPartType2");
+        IAssociation association2 = cmptType1.newAssociation();
+        association2.setTargetRoleSingular("target2");
+        association2.setMaxCardinality(Integer.MAX_VALUE);
+        association2.setTarget(cmptType2.getQualifiedName());
+
+        PolicyCmptType cmptType3 = newPolicyAndProductCmptType(ipsProject, "TestPart3", "TestPartType3");
+        IAssociation association3 = cmptType2.newAssociation();
+        association3.setTargetRoleSingular("target3");
+        association3.setMaxCardinality(1);
+        association3.setTarget(cmptType3.getQualifiedName());
+
+        formulaSignature.newParameter(cmptType.getQualifiedName(), "policy");
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("policy.t", 8);
+        assertEquals(1, results.length);
+        IContentProposal proposal = results[0];
+        assertEquals("arget1", proposal.getContent());
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        results = proposalProvider.getProposals("policy.target1.t", 16);
+        assertEquals(2, results.length);
+        proposal = results[0];
+        assertEquals("arget2", proposal.getContent());
+        proposal = results[1];
+        assertEquals("arget2[0]", proposal.getContent());
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        results = proposalProvider.getProposals("policy.target1.target2.t", 24);
+        assertEquals(2, results.length);
+        proposal = results[0];
+        assertEquals("arget3", proposal.getContent());
+        proposal = results[1];
+        assertEquals("arget3[0]", proposal.getContent());
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        results = proposalProvider.getProposals("policy.target1.target2[0].t", 27);
+        assertEquals(1, results.length);
+        proposal = results[0];
+        assertEquals("arget3", proposal.getContent());
     }
 
     @Test
