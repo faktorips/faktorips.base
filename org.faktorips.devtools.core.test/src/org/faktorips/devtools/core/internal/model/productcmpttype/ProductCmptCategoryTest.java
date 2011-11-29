@@ -521,6 +521,48 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
     /**
      * <strong>Scenario:</strong><br>
+     * There exist two product component types, one being the supertype of the other type. In the
+     * supertype, a new {@link IProductCmptProperty} is added. Now, the property is moved to another
+     * position within the {@link IProductCmptCategory} in the subtype.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The {@link IProductCmptProperty} should be moved to the desired position and the appropriate
+     * new indexes should be returned.
+     */
+    @Test
+    // TODO AW 29-11-11: Currently not working as Cornelius still needs to think about it
+    public void testMoveProductCmptProperties_MoveNewPropertyOfSupertypeInSubtype() throws CoreException {
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
+        IProductCmptCategory category = superProductType.newCategory("testCategory");
+
+        // Create some initial content
+        IProductCmptProperty s1 = superProductType.newProductCmptTypeAttribute("s1");
+        s1.setCategory(category.getName());
+        IProductCmptProperty p = productType.newProductCmptTypeAttribute("p");
+        p.setCategory(category.getName());
+        category.moveProductCmptProperties(new int[] { 0 }, false, productType);
+
+        // Create a new property in the supertype
+        IProductCmptProperty s2 = superProductType.newProductCmptTypeAttribute("s2");
+        s2.setCategory(category.getName());
+
+        // The expected ordering is to sort new supertype properties before subtype properties
+        List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, true, ipsProject);
+        assertEquals(s2, properties.get(0));
+        assertEquals(p, properties.get(1));
+        assertEquals(s1, properties.get(2));
+
+        // Now we move the new property up
+        category.moveProductCmptProperties(new int[] { 1 }, true, productType);
+
+        List<IProductCmptProperty> movedProperties = category.findProductCmptProperties(productType, true, ipsProject);
+        assertEquals(s2, movedProperties.get(0));
+        assertEquals(s1, movedProperties.get(1));
+        assertEquals(p, movedProperties.get(2));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
      * The indexes to be moved are not valid in relation to the provided context type.
      * <p>
      * <strong>Expected Outcome:</strong><br>

@@ -22,6 +22,8 @@ import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -124,35 +126,40 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
 
     /**
      * Validation message code to indicate that no default {@link IProductCmptCategory} for formula
-     * signature definitions exists.
+     * signature definitions exists, even though a formula signature definition exists in the
+     * {@link IProductCmptType}.
      */
     public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
             + "NoDefaultCategoryForFormulaSignatureDefinitions"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that no default {@link IProductCmptCategory} for
-     * configurable validation rules exists.
+     * configurable validation rules exists, even though a configurable {@link IValidationRule}
+     * exists in the {@link IProductCmptType}.
      */
     public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES = MSGCODE_PREFIX
             + "NoDefaultCategoryForValidationRules"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that no default {@link IProductCmptCategory} for table
-     * structure usages exists.
+     * structure usages exists, even though an {@link ITableStructureUsage} exists in the
+     * {@link IProductCmptType}.
      */
     public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
             + "NoDefaultCategoryForTableStructureUsages"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that no default {@link IProductCmptCategory} for product
-     * relevant policy component type attributes exists.
+     * relevant policy component type attributes exists, even though a product relevant
+     * {@link IPolicyCmptTypeAttribute} exists in the {@link IProductCmptType}.
      */
     public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "NoDefaultCategoryForPolicyCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that no default {@link IProductCmptCategory} for product
-     * component type attributes exists.
+     * component type attributes exists, even though an {@link IProductCmptTypeAttribute} exists in
+     * the {@link IProductCmptType}.
      */
     public final static String MSGCODE_NO_DEFAULT_CATEGORY_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "NoDefaultCategoryForProductCmptTypeAttributes"; //$NON-NLS-1$
@@ -409,11 +416,24 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Returns the type's product definition properties.
      * 
-     * @param searchSupertypeHierarchy Flag indicating whether the supertype hierarchy shall be
+     * @param searchSupertypeHierarchy flag indicating whether the supertype hierarchy shall be
      *            searched as well
      */
     public List<IProductCmptProperty> findProductCmptProperties(boolean searchSupertypeHierarchy, IIpsProject ipsProject)
             throws CoreException;
+
+    /**
+     * Returns the type's product definition properties according to the given search parameters.
+     * 
+     * @param propertyType only properties of this {@link ProductCmptPropertyType} will be included
+     * @param searchSupertypeHierarchy flag indicating whether the supertype hierarchy shall be
+     *            searched as well
+     * 
+     * @throws CoreException if an error occurs during the search
+     */
+    public List<IProductCmptProperty> findProductCmptProperties(ProductCmptPropertyType propertyType,
+            boolean searchSupertypeHierarchy,
+            IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the product definition property with the given name and type. If no such property is

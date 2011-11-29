@@ -61,6 +61,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -1105,7 +1106,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath2() throws CoreException {
-
         IIpsProject a = newIpsProject("aProject");
         IPolicyCmptType aPolicyProjectA = newPolicyCmptType(a, "faktorzehn.example.APolicy");
         IProductCmptType aProductTypeProjectB = newProductCmptType(a, "faktorzehn.example.APolicy");
@@ -1139,10 +1139,26 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateNoDefaultCategoryForFormulaSignatureDefinitionsExists() throws CoreException {
+    public void testValidate_NoDefaultCategoryForFormulaSignatureDefinitionsExistsButThereAlsoExistsNoFormulaSignatureDefinition()
+            throws CoreException {
+
         productCmptType.findDefaultCategoryForFormulaSignatureDefinitions(ipsProject).delete();
         policyCmptType.setSupertype("");
         productCmptType.setSupertype("");
+
+        assertTrue(productCmptType.isValid());
+    }
+
+    @Test
+    public void testValidate_NoDefaultCategoryForFormulaSignatureDefinitionsExistsEvenThoughAFormulaSignatureDefinitionExists()
+            throws CoreException {
+
+        productCmptType.findDefaultCategoryForFormulaSignatureDefinitions(ipsProject).delete();
+        policyCmptType.setSupertype("");
+        productCmptType.setSupertype("");
+
+        IProductCmptTypeMethod formula = productCmptType.newFormulaSignature("myFormula");
+        formula.setDatatype(Datatype.INTEGER.getQualifiedName());
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
@@ -1151,10 +1167,32 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateNoDefaultCategoryForPolicyCmptTypeAttributesExists() throws CoreException {
+    public void testValidate_NoDefaultCategoryForPolicyCmptTypeAttributesExistsButThereAlsoExistsNoProductRelevantPolicyCmptTypeAttribute()
+            throws CoreException {
+
         productCmptType.findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject).delete();
         policyCmptType.setSupertype("");
         productCmptType.setSupertype("");
+
+        IPolicyCmptTypeAttribute policyAttribute = policyCmptType
+                .newPolicyCmptTypeAttribute("notAProductRelevantAttribute");
+        policyAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+
+        assertTrue(productCmptType.isValid());
+    }
+
+    @Test
+    public void testValidate_NoDefaultCategoryForPolicyCmptTypeAttributesExistsEvenThoughAProductRelevantPolicyCmptTypeAttributeExists()
+            throws CoreException {
+
+        productCmptType.findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject).delete();
+        policyCmptType.setSupertype("");
+        productCmptType.setSupertype("");
+
+        IPolicyCmptTypeAttribute policyAttribute = policyCmptType
+                .newPolicyCmptTypeAttribute("productRelevantAttribute");
+        policyAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        policyAttribute.setProductRelevant(true);
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
@@ -1163,10 +1201,26 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateNoDefaultCategoryForProductCmptTypeAttributesExists() throws CoreException {
+    public void testValidate_NoDefaultCategoryForProductCmptTypeAttributesExistsButThereAlsoExistsNoProductCmptTypeAttribute()
+            throws CoreException {
+
         productCmptType.findDefaultCategoryForProductCmptTypeAttributes(ipsProject).delete();
         policyCmptType.setSupertype("");
         productCmptType.setSupertype("");
+
+        assertTrue(productCmptType.isValid());
+    }
+
+    @Test
+    public void testValidate_NoDefaultCategoryForProductCmptTypeAttributesExistsEvenThoughAProductCmptTypeAttributeExists()
+            throws CoreException {
+
+        productCmptType.findDefaultCategoryForProductCmptTypeAttributes(ipsProject).delete();
+        policyCmptType.setSupertype("");
+        productCmptType.setSupertype("");
+
+        IProductCmptTypeAttribute productAttribute = productCmptType.newProductCmptTypeAttribute("productAttribute");
+        productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
@@ -1175,10 +1229,28 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateNoDefaultCategoryForTableStructureUsagesExists() throws CoreException {
+    public void testValidate_NoDefaultCategoryForTableStructureUsagesExistsButThereAlsoExistsNoTableStructureUsage()
+            throws CoreException {
+
         productCmptType.findDefaultCategoryForTableStructureUsages(ipsProject).delete();
         policyCmptType.setSupertype("");
         productCmptType.setSupertype("");
+
+        assertTrue(productCmptType.isValid());
+    }
+
+    @Test
+    public void testValidate_NoDefaultCategoryForTableStructureUsagesExistsEvenThoughATableStructureUsageExists()
+            throws CoreException {
+
+        productCmptType.findDefaultCategoryForTableStructureUsages(ipsProject).delete();
+        policyCmptType.setSupertype("");
+        productCmptType.setSupertype("");
+
+        ITableStructure tableStructure = newTableStructure(ipsProject, "MyTableStructure");
+        ITableStructureUsage tsu = productCmptType.newTableStructureUsage();
+        tsu.setRoleName("myTable");
+        tsu.addTableStructure(tableStructure.getQualifiedName());
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
@@ -1187,10 +1259,30 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateNoDefaultCategoryForValidationRulesExists() throws CoreException {
+    public void testValidate_NoDefaultCategoryForValidationRulesExistsButThereAlsoExistsNoValidationRule()
+            throws CoreException {
+
         productCmptType.findDefaultCategoryForValidationRules(ipsProject).delete();
         policyCmptType.setSupertype("");
         productCmptType.setSupertype("");
+
+        IValidationRule rule = policyCmptType.newRule();
+        rule.setName("myRule");
+
+        assertTrue(productCmptType.isValid());
+    }
+
+    @Test
+    public void testValidate_NoDefaultCategoryForValidationRulesExistsEvenThoughAConfigurableValidationRuleExsits()
+            throws CoreException {
+
+        productCmptType.findDefaultCategoryForValidationRules(ipsProject).delete();
+        policyCmptType.setSupertype("");
+        productCmptType.setSupertype("");
+
+        IValidationRule rule = policyCmptType.newRule();
+        rule.setName("myRule");
+        rule.setConfigurableByProductComponent(true);
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
@@ -1307,6 +1399,20 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertTrue(properties.contains(policyAttribute));
         assertTrue(properties.contains(validationRule));
         assertEquals(5, properties.size());
+    }
+
+    @Test
+    public void testFindProductCmptProperties_SearchForSpecificPropertyType() throws CoreException {
+        createProductAttributeProperty(productCmptType, "productAttribute");
+        createTableStructureUsageProperty(productCmptType, "tsu");
+        createPolicyAttributeProperty(policyCmptType, "policyAttribute");
+        createValidationRuleProperty(policyCmptType, "validationRule");
+        IProductCmptProperty formulaSignature = createFormulaSignatureProperty(productCmptType, "formula");
+
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptProperties(
+                ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, true, ipsProject);
+        assertTrue(properties.contains(formulaSignature));
+        assertEquals(1, properties.size());
     }
 
     @Test
@@ -1672,12 +1778,12 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         String productCmpt3QName = "pack.MyProductCmpt3";
         String productCmptProj2QName = "otherpack.MyProductCmptProj2";
 
-        IIpsProject referencingProject = newIpsProject("referencingProject");
+        IIpsProject referencingProject = newIpsProject();
         IIpsObjectPath path = referencingProject.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject);
         referencingProject.setIpsObjectPath(path);
 
-        IIpsProject independentProject = newIpsProject("independentProject");
+        IIpsProject independentProject = newIpsProject();
 
         /*
          * leaveProject1 and leaveProject2 are not directly integrated in any test. But the tested
@@ -1687,12 +1793,12 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
          * found.
          */
 
-        IIpsProject leaveProject1 = newIpsProject("LeaveProject1");
+        IIpsProject leaveProject1 = newIpsProject();
         path = leaveProject1.getIpsObjectPath();
         path.newIpsProjectRefEntry(referencingProject);
         leaveProject1.setIpsObjectPath(path);
 
-        IIpsProject leaveProject2 = newIpsProject("LeaveProject2");
+        IIpsProject leaveProject2 = newIpsProject();
         path = leaveProject2.getIpsObjectPath();
         path.newIpsProjectRefEntry(referencingProject);
         leaveProject2.setIpsObjectPath(path);
