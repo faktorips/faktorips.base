@@ -359,9 +359,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindContent(typeCombo, attribute, IPolicyCmptTypeAttribute.PROPERTY_ATTRIBUTE_TYPE,
                 AttributeType.class);
 
-        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelCategory);
-        createCategoryCombo(workArea);
-
         extFactory.createControls(workArea, getToolkit(), attribute, IExtensionPropertyDefinition.POSITION_BOTTOM);
         extFactory.bind(getBindingContext());
     }
@@ -404,8 +401,17 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         gridData.heightHint = 100;
 
         if (attribute.isChangeable()) {
-            Checkbox checkbox = getToolkit().createCheckbox(area, Messages.AttributeEditDialog_defaultValueConfigured);
+            Composite labelEditColumnComposite = getToolkit().createLabelEditColumnComposite(area);
+
+            Checkbox checkbox = getToolkit().createCheckbox(labelEditColumnComposite,
+                    Messages.AttributeEditDialog_defaultValueConfigured);
+            GridData checkboxLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+            checkboxLayoutData.horizontalSpan = 2;
+            checkbox.setLayoutData(checkboxLayoutData);
             getBindingContext().bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+
+            getToolkit().createFormLabel(labelEditColumnComposite, Messages.AttributeEditDialog_labelCategory);
+            createCategoryCombo(labelEditColumnComposite);
             return;
         }
 

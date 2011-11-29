@@ -67,11 +67,15 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
         AbstractCheckbox overloadsFormula = toolkit.createCheckbox(group,
                 Messages.ProductCmptTypeMethodEditDialog_labelOverloadsFormula);
         getBindingContext().bindContent(overloadsFormula, method, IProductCmptTypeMethod.PROPERTY_OVERLOADS_FORMULA);
+        getBindingContext().bindEnabled(overloadsFormula, method,
+                IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
 
         Composite area = getToolkit().createLabelEditColumnComposite(group);
         toolkit.createLabel(area, Messages.ProductCmptTypeMethodEditDialog_formulaNameLabel);
         Text formulaNameText = toolkit.createText(area);
         getBindingContext().bindContent(formulaNameText, method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME);
+        getBindingContext().bindEnabled(formulaNameText, method,
+                IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
 
         toolkit.createLabel(area, Messages.ProductCmptTypeMethodEditDialog_categoryLabel);
         createCategoryCombo(area);
@@ -94,6 +98,8 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
         });
 
         getBindingContext().bindContent(comboViewerField, pmo, CategoryPmo.PROPERTY_CATEGORY);
+        getBindingContext().bindEnabled(comboViewerField.getCombo(), method,
+                IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
     }
 
     @Override

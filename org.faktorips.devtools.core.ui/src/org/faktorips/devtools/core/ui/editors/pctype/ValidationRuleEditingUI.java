@@ -156,13 +156,34 @@ public class ValidationRuleEditingUI {
     private void createConfigGroup(Composite workArea) {
         Group configGroup = uiToolkit.createGroup(workArea, Messages.AttributeEditDialog_ConfigurationGroup);
         configGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
-        Composite nameComposite = uiToolkit.createGridComposite(configGroup, 1, false, false);
 
-        configurableByProductBox = uiToolkit.createCheckbox(nameComposite,
+        Composite labelEditColumnComposite = uiToolkit.createLabelEditColumnComposite(configGroup);
+        GridData checkboxLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+        checkboxLayoutData.horizontalSpan = 2;
+
+        configurableByProductBox = uiToolkit.createCheckbox(labelEditColumnComposite,
                 Messages.RuleEditDialog_Configurable_CheckboxLabel);
-        defaultActivationBox = uiToolkit.createCheckbox(nameComposite,
-                Messages.RuleEditDialog_ActivatedByDefault_CheckboxLabel);
+        configurableByProductBox.setLayoutData(checkboxLayoutData);
 
+        defaultActivationBox = uiToolkit.createCheckbox(labelEditColumnComposite,
+                Messages.RuleEditDialog_ActivatedByDefault_CheckboxLabel);
+        defaultActivationBox.setLayoutData(checkboxLayoutData);
+
+        uiToolkit.createFormLabel(labelEditColumnComposite, Messages.RuleEditDialog_labelCategory);
+        createCategoryCombo(labelEditColumnComposite);
+    }
+
+    private void createCategoryCombo(Composite workArea) {
+        Combo categoryCombo = uiToolkit.createCombo(workArea);
+        categoryField = new ComboViewerField<IProductCmptCategory>(categoryCombo, IProductCmptCategory.class);
+        categoryField.setAllowEmptySelection(true);
+        categoryField.setLabelProvider(new LabelProvider() {
+            @Override
+            public String getText(Object element) {
+                IProductCmptCategory category = (IProductCmptCategory)element;
+                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
+            }
+        });
     }
 
     private void createGeneralGroup(Composite workArea) {
@@ -174,21 +195,6 @@ public class ValidationRuleEditingUI {
 
         nameText.setFocus();
         nameField = new TextField(nameText);
-
-        uiToolkit.createFormLabel(nameComposite, Messages.RuleEditDialog_labelCategory);
-        createCategoryCombo(nameComposite);
-    }
-
-    private void createCategoryCombo(Composite workArea) {
-        Combo categoryCombo = uiToolkit.createCombo(workArea);
-        categoryField = new ComboViewerField<IProductCmptCategory>(categoryCombo, IProductCmptCategory.class);
-        categoryField.setLabelProvider(new LabelProvider() {
-            @Override
-            public String getText(Object element) {
-                IProductCmptCategory category = (IProductCmptCategory)element;
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
-            }
-        });
     }
 
     private void updateCharCount() {
@@ -227,10 +233,11 @@ public class ValidationRuleEditingUI {
                 IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
         bindingContext.bindEnabled(defaultActivationBox, rule,
                 IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT);
+        bindingContext.bindEnabled(categoryField.getControl(), rule,
+                IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT);
 
         CategoryPmo categoryPmo = new CategoryPmo(rule);
         categoryField.setInput(categoryPmo.getCategories());
-        categoryField.setAllowEmptySelection(true);
         bindingContext.bindContent(categoryField, categoryPmo, CategoryPmo.PROPERTY_CATEGORY);
     }
 
