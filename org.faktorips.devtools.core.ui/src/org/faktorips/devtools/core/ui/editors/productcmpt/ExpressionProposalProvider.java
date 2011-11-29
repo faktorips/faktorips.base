@@ -42,7 +42,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ListOfTypeDatatype;
-import org.faktorips.devtools.core.ui.ContentProposal;
+import org.faktorips.devtools.core.ui.internal.ContentProposal;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FlFunction;
 import org.faktorips.util.ArgumentCheck;
