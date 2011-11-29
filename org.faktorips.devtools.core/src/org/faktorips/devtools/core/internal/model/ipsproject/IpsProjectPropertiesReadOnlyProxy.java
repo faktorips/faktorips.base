@@ -513,4 +513,14 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
         return propertiesInternal.getReleaseExtensionId();
     }
 
+    @Override
+    public boolean isAssociationsInFormulas() {
+        return propertiesInternal.isAssociationsInFormulas();
+    }
+
+    @Override
+    public void setAssociationsInFormulas(boolean associationsInFormulas) {
+        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+    }
+
 }

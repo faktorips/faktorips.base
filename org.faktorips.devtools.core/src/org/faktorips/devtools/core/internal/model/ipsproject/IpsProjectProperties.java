@@ -80,6 +80,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private final static String OPTIONAL_CONSTRAINT_SHARED_ASSOCIATIONS = "sharedDetailToMasterAssociations"; //$NON-NLS-1$
 
+    private final static String OPTIONAL_CONSTRAINT_ASSOCIATIONS_IN_FORMULAS = "associationsInFormulas"; //$NON-NLS-1$
+
     public final static IpsProjectProperties createFromXml(IpsProject ipsProject, Element element) {
         IpsProjectProperties data = new IpsProjectProperties();
         data.initFromXml(ipsProject, element);
@@ -130,6 +132,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = true;
     private boolean rulesWithoutReferencesAllowed = false;
     private boolean sharedDetailToMasterAssociations = false;
+    private boolean associationsInFormulas = false;
 
     private Map<String, String> requiredFeatures = new HashMap<String, String>();
 
@@ -523,6 +526,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         optionalConstraintsEl.appendChild(createConstraintElement(doc, OPTIONAL_CONSTRAINT_SHARED_ASSOCIATIONS,
                 isSharedDetailToMasterAssociations()));
 
+        optionalConstraintsEl.appendChild(createConstraintElement(doc, OPTIONAL_CONSTRAINT_ASSOCIATIONS_IN_FORMULAS,
+                isAssociationsInFormulas()));
+
         // persistence options
         createPersistenceOptionsDescriptionComment(projectEl);
         Element persistenceOptionsEl = doc.createElement("PersistenceOptions"); //$NON-NLS-1$
@@ -763,6 +769,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 rulesWithoutReferencesAllowed = enable;
             } else if (name.equals(OPTIONAL_CONSTRAINT_SHARED_ASSOCIATIONS)) {
                 setSharedDetailToMasterAssociations(enable);
+            } else if (name.equals(OPTIONAL_CONSTRAINT_ASSOCIATIONS_IN_FORMULAS)) {
+                setAssociationsInFormulas(enable);
             }
         }
     }
@@ -1091,6 +1099,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "         by multiple master-to-detail associations-->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <Constraint name=\"" + OPTIONAL_CONSTRAINT_SHARED_ASSOCIATIONS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$
                 + SystemUtils.LINE_SEPARATOR
+                + "    <!-- True to allow navigation via associations in formulas. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <Constraint name=\"" + OPTIONAL_CONSTRAINT_ASSOCIATIONS_IN_FORMULAS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$
+                + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
                 // FIPS-85 we need
@@ -1391,6 +1402,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public String getReleaseExtensionId() {
         return releaseExtensionId;
+    }
+
+    @Override
+    public void setAssociationsInFormulas(boolean associationsInFormulas) {
+        this.associationsInFormulas = associationsInFormulas;
+    }
+
+    @Override
+    public boolean isAssociationsInFormulas() {
+        return associationsInFormulas;
     }
 
 }

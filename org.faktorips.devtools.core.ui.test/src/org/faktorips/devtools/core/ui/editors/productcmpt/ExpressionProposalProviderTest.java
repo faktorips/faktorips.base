@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -242,6 +243,9 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testDoComputeCompletionProposalsForPolicyCmptTypeAssociations() throws Exception {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setAssociationsInFormulas(true);
+        ipsProject.setProperties(properties);
         IAssociation to1Association = cmptType.newAssociation();
         to1Association.setTargetRoleSingular("mainTarget");
         to1Association.setMaxCardinality(1);
@@ -269,10 +273,20 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("policy.x", 8);
         assertEquals(0, results.length);
+        properties = ipsProject.getProperties();
+        properties.setAssociationsInFormulas(false);
+        ipsProject.setProperties(properties);
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        results = proposalProvider.getProposals("policy.a", 8);
+        assertEquals(0, results.length);
     }
 
     @Test
     public void testDoComputeCompletionProposalsForPolicyCmptTypeAssociationChains() throws Exception {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setAssociationsInFormulas(true);
+        ipsProject.setProperties(properties);
         PolicyCmptType cmptType1 = newPolicyAndProductCmptType(ipsProject, "TestPart1", "TestPartType1");
         IAssociation association1 = cmptType.newAssociation();
         association1.setTargetRoleSingular("target1");
@@ -320,6 +334,9 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         assertEquals(1, results.length);
         proposal = results[0];
         assertEquals("arget3", proposal.getContent());
+        properties = ipsProject.getProperties();
+        properties.setAssociationsInFormulas(false);
+        ipsProject.setProperties(properties);
     }
 
     @Test
