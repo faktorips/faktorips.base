@@ -767,25 +767,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
             }
         }
 
-        addProductCmptPropertyReferenceDependencies(dependencies, details);
-
         super.dependsOn(dependencies, details);
 
         return dependencies.toArray(new IDependency[dependencies.size()]);
-    }
-
-    private void addProductCmptPropertyReferenceDependencies(Set<IDependency> dependencies,
-            Map<IDependency, List<IDependencyDetail>> details) {
-
-        // Create a dependency for each property reference
-        for (IProductCmptPropertyReference propertyReference : propertyReferences) {
-            IDependency dependency = IpsObjectDependency.createReferenceDependency(
-                    getQualifiedNameType(),
-                    new QualifiedNameType(propertyReference.getReferencedType(), propertyReference
-                            .getReferencedIpsObjectType()));
-            dependencies.add(dependency);
-            addDetails(details, dependency, propertyReference, IProductCmptPropertyReference.PROPERTY_REFERENCED_TYPE);
-        }
     }
 
     @Override

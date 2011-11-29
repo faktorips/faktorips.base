@@ -353,7 +353,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             return new int[0];
         }
 
-        List<IProductCmptProperty> contextProperties = findProductCmptProperties(contextType, true,
+        List<IProductCmptProperty> contextProperties = findProductCmptProperties(contextType, false,
                 contextType.getIpsProject());
         return ((ProductCmptType)contextType).movePropertyReferences(indexes, contextProperties, up);
     }
@@ -361,12 +361,16 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     @Override
     public boolean insertProductCmptProperty(IProductCmptProperty property,
             IProductCmptProperty targetProperty,
-            boolean above,
-            IProductCmptType contextType) throws CoreException {
+            boolean above) throws CoreException {
+
+        IProductCmptType contextType = property.findProductCmptType(property.getIpsProject());
+        if (contextType == null) {
+            return false;
+        }
 
         contextType.changeCategoryAndDeferPolicyChange(property, name);
 
-        List<IProductCmptProperty> properties = findProductCmptProperties(contextType, true,
+        List<IProductCmptProperty> properties = findProductCmptProperties(contextType, false,
                 contextType.getIpsProject());
         int propertyIndex = properties.indexOf(property);
         int targetPropertyIndex = targetProperty != null ? properties.indexOf(targetProperty) : properties.size() - 1;

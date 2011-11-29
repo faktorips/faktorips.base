@@ -17,9 +17,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsobject.NullQualifiedNameType;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -37,7 +36,7 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
 
     private String referencedPartId = ""; //$NON-NLS-1$
 
-    private QualifiedNameType referencedQualifiedNameType = new NullQualifiedNameType();
+    private IpsObjectType referencedIpsObjectType = new NullIpsObjectType();
 
     public ProductCmptPropertyReference(IProductCmptType parent, String id) {
         super(parent, id);
@@ -46,7 +45,7 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
     @Override
     public void setReferencedProperty(IProductCmptProperty property) {
         referencedPartId = property.getId();
-        referencedQualifiedNameType = property.getType().getQualifiedNameType();
+        referencedIpsObjectType = property.getType().getIpsObjectType();
         objectHasChanged(ContentChangeEvent.newWholeContentChangedEvent(getIpsSrcFile()));
     }
 
@@ -63,41 +62,37 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
     }
 
     @Override
-    public String getReferencedType() {
-        return referencedQualifiedNameType.getName();
-    }
-
-    @Override
-    public void setReferencedType(String qualifiedTypeName) {
-        String oldValue = referencedQualifiedNameType.getName();
-        referencedQualifiedNameType = new QualifiedNameType(qualifiedTypeName,
-                referencedQualifiedNameType.getIpsObjectType());
-        valueChanged(oldValue, qualifiedTypeName, PROPERTY_REFERENCED_TYPE);
-    }
-
-    @Override
     public IpsObjectType getReferencedIpsObjectType() {
-        return referencedQualifiedNameType.getIpsObjectType();
+        return referencedIpsObjectType;
     }
 
     @Override
     public void setReferencedIpsObjectType(IpsObjectType ipsObjectType) {
-        IpsObjectType oldValue = referencedQualifiedNameType.getIpsObjectType();
-        referencedQualifiedNameType = new QualifiedNameType(referencedQualifiedNameType.getName(), ipsObjectType);
+        IpsObjectType oldValue = referencedIpsObjectType;
+        referencedIpsObjectType = ipsObjectType;
         valueChanged(oldValue, ipsObjectType, PROPERTY_REFERENCED_IPS_OBJECT_TYPE);
     }
 
     @Override
     public boolean isReferencedProperty(IProductCmptProperty property) {
-        return isEqualQualifiedNameType(property) && isEqualId(property);
+        return isEqualIpsObjectType(property) && isEqualId(property) && isEqualProductCmptType(property);
     }
 
-    private boolean isEqualQualifiedNameType(IProductCmptProperty property) {
-        return property.isOfType(referencedQualifiedNameType);
+    private boolean isEqualIpsObjectType(IProductCmptProperty property) {
+        return referencedIpsObjectType.equals(property.getType().getIpsObjectType());
     }
 
     private boolean isEqualId(IProductCmptProperty property) {
-        return getReferencedPartId().equals(property.getId());
+        return referencedPartId.equals(property.getId());
+    }
+
+    private boolean isEqualProductCmptType(IProductCmptProperty property) {
+        if (property.isPolicyCmptTypeProperty()) {
+            IPolicyCmptType policyCmptType = (IPolicyCmptType)property.getType();
+            return getProductCmptType().getQualifiedName().equals(policyCmptType.getProductCmptType());
+        } else {
+            return property.isOfType(getProductCmptType().getQualifiedNameType());
+        }
     }
 
     @Override
@@ -108,10 +103,8 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
     @Override
     protected void initFromXml(Element element, String id) {
         referencedPartId = element.getAttribute(PROPERTY_REFERENCED_PART_ID);
-        String qualifiedTypeName = element.getAttribute(PROPERTY_REFERENCED_TYPE);
-        IpsObjectType ipsObjectType = IpsObjectType.getTypeForName(element
+        referencedIpsObjectType = IpsObjectType.getTypeForName(element
                 .getAttribute(PROPERTY_REFERENCED_IPS_OBJECT_TYPE));
-        referencedQualifiedNameType = new QualifiedNameType(qualifiedTypeName, ipsObjectType);
 
         super.initFromXml(element, id);
     }
@@ -121,9 +114,7 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
         super.propertiesToXml(element);
 
         element.setAttribute(PROPERTY_REFERENCED_PART_ID, referencedPartId);
-        element.setAttribute(PROPERTY_REFERENCED_TYPE, referencedQualifiedNameType.getName());
-        element.setAttribute(PROPERTY_REFERENCED_IPS_OBJECT_TYPE, referencedQualifiedNameType.getIpsObjectType()
-                .getId());
+        element.setAttribute(PROPERTY_REFERENCED_IPS_OBJECT_TYPE, referencedIpsObjectType.getId());
     }
 
     @Override
@@ -133,6 +124,14 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
 
     private IProductCmptType getProductCmptType() {
         return (IProductCmptType)getParent();
+    }
+
+    private static class NullIpsObjectType extends IpsObjectType {
+
+        protected NullIpsObjectType() {
+            super("", "", "", "", "", false, false, null); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        }
+
     }
 
 }

@@ -29,9 +29,7 @@ import org.faktorips.devtools.core.model.type.IType;
  * References to IPS object parts via their names are not always the best solution as these are
  * fragile with respect to the 'Rename' refactoring. Therefore, an
  * {@link IProductCmptPropertyReference} utilizes the part id. As the part id is not necessarily
- * unique across types, and because product component types also store references for properties
- * originating from the supertype hierarchy, the qualified name and the {@link IpsObjectType} of the
- * poperty's {@link IType} is stored as well.
+ * unique across types, the {@link IpsObjectType} of the poperty's {@link IType} is stored as well.
  * 
  * @since 3.6
  * 
@@ -44,8 +42,6 @@ import org.faktorips.devtools.core.model.type.IType;
 public interface IProductCmptPropertyReference extends IIpsObjectPart {
 
     public static final String PROPERTY_REFERENCED_PART_ID = "referencedPartId"; //$NON-NLS-1$
-
-    public static final String PROPERTY_REFERENCED_TYPE = "referencedType"; //$NON-NLS-1$
 
     public static final String PROPERTY_REFERENCED_IPS_OBJECT_TYPE = "referencedIpsObjectType"; //$NON-NLS-1$
 
@@ -83,28 +79,11 @@ public interface IProductCmptPropertyReference extends IIpsObjectPart {
     public void setReferencedPartId(String partId);
 
     /**
-     * Returns the qualified name of the {@link IType} that is the origin of the referenced
-     * {@link IProductCmptProperty}.
-     * <p>
-     * As a part id is not necessarily unique across types, this information is important to be able
-     * to determine the origin of the referenced {@link IProductCmptProperty}.
-     */
-    public String getReferencedType();
-
-    /**
-     * Sets the qualified name of the {@link IType} that is the origin of the referenced
-     * {@link IProductCmptProperty}.
-     * 
-     * @see #getReferencedType()
-     */
-    public void setReferencedType(String qualifiedTypeName);
-
-    /**
      * Returns the {@link IpsObjectType} of the {@link IType} that is the origin of the referenced
      * {@link IProductCmptProperty}.
      * <p>
-     * As it is not possible to search for IPS objects without specifying an {@link IpsObjectType},
-     * this information is important to determine the origin of the referenced
+     * As the part id of an {@link IProductCmptProperty} is not necessarily unique across types,
+     * this information is essential to be able to correctly determine the referenced
      * {@link IProductCmptProperty}.
      */
     public IpsObjectType getReferencedIpsObjectType();

@@ -622,14 +622,11 @@ public class CategorySection extends IpsSection {
                 IProductCmptProperty droppedProperty = getDroppedProperty(data);
                 try {
                     if (getCurrentLocation() == LOCATION_BEFORE) {
-                        getTargetCategory().insertProductCmptProperty(droppedProperty, getTargetProperty(), true,
-                                categoryComposite.contextType);
+                        getTargetCategory().insertProductCmptProperty(droppedProperty, getTargetProperty(), true);
                     } else if (getCurrentLocation() == LOCATION_AFTER) {
-                        getTargetCategory().insertProductCmptProperty(droppedProperty, getTargetProperty(), false,
-                                categoryComposite.contextType);
+                        getTargetCategory().insertProductCmptProperty(droppedProperty, getTargetProperty(), false);
                     } else if (getCurrentLocation() == LOCATION_NONE) {
-                        getTargetCategory().insertProductCmptProperty(droppedProperty, null, false,
-                                categoryComposite.contextType);
+                        getTargetCategory().insertProductCmptProperty(droppedProperty, null, false);
                     }
                 } catch (CoreException e) {
                     return false;

@@ -368,7 +368,6 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      *            null - in this case the {@link IProductCmptProperty} is inserted at the end
      * @param above flag indicating whether to insert the {@link IProductCmptProperty} above or
      *            below the target {@link IProductCmptProperty}
-     * @param contextType the {@link IProductCmptType} the operation is performed for
      * 
      * @return true if the operation was successful, false if not
      * 
@@ -377,8 +376,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      */
     public boolean insertProductCmptProperty(IProductCmptProperty property,
             IProductCmptProperty targetProperty,
-            boolean above,
-            IProductCmptType contextType) throws CoreException;
+            boolean above) throws CoreException;
 
     /**
      * Defines the user interface position of an {@link IProductCmptCategory}.

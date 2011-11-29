@@ -71,7 +71,6 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         attributeReference.setReferencedProperty(productAttribute);
 
         assertEquals(productAttribute.getId(), ((ProductCmptPropertyReference)attributeReference).getReferencedPartId());
-        assertEquals(productType.getQualifiedName(), attributeReference.getReferencedType());
         assertEquals(productType.getIpsObjectType(), attributeReference.getReferencedIpsObjectType());
         assertWholeContentChangedEvent(attributeReference.getIpsSrcFile());
     }
@@ -83,15 +82,6 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         assertEquals("foo", attributeReference.getReferencedPartId());
         assertPropertyChangedEvent(attributeReference, IProductCmptPropertyReference.PROPERTY_REFERENCED_PART_ID,
                 attributeProperty.getId(), "foo");
-    }
-
-    @Test
-    public void testSetReferencedType() {
-        attributeReference.setReferencedType("foo");
-
-        assertEquals("foo", attributeReference.getReferencedType());
-        assertPropertyChangedEvent(attributeReference, IProductCmptPropertyReference.PROPERTY_REFERENCED_TYPE,
-                policyType.getQualifiedName(), "foo");
     }
 
     @Test
@@ -138,7 +128,7 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
     @Test
     public void testIsReferencedProperty_IncompleteReference() {
         IProductCmptPropertyReference reference = new ProductCmptPropertyReference(productType, "");
-        reference.isReferencedProperty(attributeProperty);
+        assertFalse(reference.isReferencedProperty(attributeProperty));
     }
 
     /**
@@ -169,35 +159,6 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         assertFalse(reference.isReferencedProperty(superProductAttribute));
     }
 
-    /**
-     * <strong>Scenario:</strong><br>
-     * The {@link IProductCmptPropertyReference} is for an {@link IProductCmptProperty} of the
-     * supertype hierarchy. However, an {@link IProductCmptProperty} with the same id exists in the
-     * subtype.
-     * <p>
-     * <strong>Expected Outcome:</strong><br>
-     * The reference should be able to identify it's correct {@link IProductCmptProperty}, which is
-     * the one from the supertype hierarchy.
-     */
-    @Test
-    public void testIsReferencedProperty_PropertyOfSupertype() throws CoreException {
-        IProductCmptType superProductType = newProductCmptType(ipsProject, "SuperProductCmptType");
-        productType.setSupertype(superProductType.getQualifiedName());
-
-        IProductCmptProperty superProperty = new ProductCmptTypeAttribute(superProductType, "sameId");
-        IProductCmptProperty property = new ProductCmptTypeAttribute(productType, "sameId");
-
-        IProductCmptPropertyReference superReference = new ProductCmptPropertyReference(productType, "");
-        superReference.setReferencedProperty(superProperty);
-        IProductCmptPropertyReference reference = new ProductCmptPropertyReference(productType, "");
-        reference.setReferencedProperty(property);
-
-        assertTrue(superReference.isReferencedProperty(superProperty));
-        assertFalse(superReference.isReferencedProperty(property));
-        assertFalse(reference.isReferencedProperty(superProperty));
-        assertTrue(reference.isReferencedProperty(property));
-    }
-
     @Test
     public void testFindProductCmptProperty() throws CoreException {
         IPolicyCmptTypeAttribute policyAttribute = policyType.newPolicyCmptTypeAttribute("policyAttribute");
@@ -217,7 +178,6 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         loadedReference.initFromXml(xmlElement);
 
         assertEquals(attributeProperty.getId(), ((ProductCmptPropertyReference)loadedReference).getReferencedPartId());
-        assertEquals(attributeProperty.getType().getQualifiedName(), loadedReference.getReferencedType());
         assertEquals(attributeProperty.getType().getIpsObjectType(), loadedReference.getReferencedIpsObjectType());
     }
 

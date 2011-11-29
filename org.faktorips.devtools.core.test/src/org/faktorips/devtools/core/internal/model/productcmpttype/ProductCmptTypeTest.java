@@ -20,12 +20,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,9 +39,7 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
-import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
@@ -874,100 +870,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testDependsOn_ProductCmptPropertyReferencesToSupertypeHierarchy() throws CoreException {
-        IProductCmptProperty s1 = createProductAttributeProperty(superSuperProductCmptType, "s1");
-        IProductCmptProperty s2 = createProductAttributeProperty(superSuperProductCmptType, "s2");
-
-        performTestDependsOn_ProductCmptPropertyReferences(s1, s2, superSuperProductCmptType);
-    }
-
-    @Test
-    public void testDependsOn_ProductCmptPropertyReferencesToPolicySide() throws CoreException {
-        IProductCmptProperty policyAttribute1 = createPolicyAttributeProperty(superPolicyCmptType, "policyAttribute1");
-        IProductCmptProperty policyAttribute2 = createPolicyAttributeProperty(superPolicyCmptType, "policyAttribute2");
-
-        performTestDependsOn_ProductCmptPropertyReferences(policyAttribute1, policyAttribute2, superPolicyCmptType);
-    }
-
-    @Test
-    public void testDependsOn_ProductCmptPropertyReferencesToSameType() throws CoreException {
-        IProductCmptProperty p1 = createProductAttributeProperty(productCmptType, "p1");
-        IProductCmptProperty p2 = createProductAttributeProperty(productCmptType, "p2");
-
-        performTestDependsOn_ProductCmptPropertyReferences(p1, p2, productCmptType);
-    }
-
-    private void performTestDependsOn_ProductCmptPropertyReferences(IProductCmptProperty p1,
-            IProductCmptProperty p2,
-            IType referencedType) throws CoreException {
-
-        // Create reference parts by moving
-        productCmptType.movePropertyReferences(new int[] { 0 }, Arrays.asList(p1, p2), false);
-        List<IProductCmptPropertyReference> propertyReferences = productCmptType.getPropertyReferences();
-
-        // Check that the dependencies caused by the property references are computed correctly
-        Map<IDependency, List<IDependencyDetail>> details = new HashMap<IDependency, List<IDependencyDetail>>();
-        IDependencyDetail p1Details = null;
-        IDependencyDetail p2Details = null;
-        for (IDependency dependency : getDependenciesForTarget(referencedType.getQualifiedNameType(), details)) {
-            if (p1Details == null) {
-                p1Details = getDependencyDetailForPart(dependency, propertyReferences.get(1), details);
-            }
-            if (p2Details == null) {
-                p2Details = getDependencyDetailForPart(dependency, propertyReferences.get(0), details);
-            }
-        }
-
-        // The property references must cause a dependency to the referenced type
-        if (p1Details == null || p2Details == null) {
-            fail();
-            return;
-        }
-
-        // The dependencies caused by the property references must indicate the referring property
-        assertEquals(IProductCmptPropertyReference.PROPERTY_REFERENCED_TYPE, p1Details.getPropertyName());
-        assertEquals(IProductCmptPropertyReference.PROPERTY_REFERENCED_TYPE, p2Details.getPropertyName());
-    }
-
-    @Test
-    public void testDependsOn_ProductCmptPropertyReferencesNoDetailsRequested() throws CoreException {
-        IProductCmptProperty p1 = createProductAttributeProperty(productCmptType, "p1");
-        IProductCmptProperty p2 = createProductAttributeProperty(productCmptType, "p2");
-
-        // Create reference parts by moving
-        productCmptType.movePropertyReferences(new int[] { 0 }, Arrays.asList(p1, p2), false);
-
-        // Check that the dependency to the referenced type is created
-        List<IDependency> dependencies = getDependenciesForTarget(productCmptType.getQualifiedNameType(), null);
-        assertTrue(dependencies.contains(IpsObjectDependency.createReferenceDependency(
-                productCmptType.getQualifiedNameType(), productCmptType.getQualifiedNameType())));
-    }
-
-    private List<IDependency> getDependenciesForTarget(Object target, Map<IDependency, List<IDependencyDetail>> details)
-            throws CoreException {
-
-        List<IDependency> dependencies = new ArrayList<IDependency>();
-        for (IDependency dependency : productCmptType.dependsOn(details)) {
-            if (target.equals(dependency.getTarget())) {
-                dependencies.add(dependency);
-            }
-        }
-        return dependencies;
-    }
-
-    private IDependencyDetail getDependencyDetailForPart(IDependency dependency,
-            IIpsObjectPart part,
-            Map<IDependency, List<IDependencyDetail>> details) {
-
-        for (IDependencyDetail detail : details.get(dependency)) {
-            if (part.equals(detail.getPart())) {
-                return detail;
-            }
-        }
-        return null;
-    }
-
-    @Test
     public void testGetPropertyReferences() throws CoreException {
         IProductCmptProperty p1 = createProductAttributeProperty(productCmptType, "p1");
         IProductCmptProperty p2 = createProductAttributeProperty(productCmptType, "p2");
@@ -1641,19 +1543,19 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         p1.setCategory(category.getName());
         p2.setCategory(category.getName());
 
-        productCmptType.movePropertyReferences(new int[] { 2, 3 }, Arrays.asList(s1, s2, p1, p2), true);
+        productCmptType.movePropertyReferences(new int[] { 1 }, Arrays.asList(p1, p2), true);
 
         List<IProductCmptProperty> allProperties = productCmptType.findProductCmptPropertiesForCategory(category, true,
                 ipsProject);
         assertEquals(s1, allProperties.get(0));
-        assertEquals(p1, allProperties.get(1));
+        assertEquals(s2, allProperties.get(1));
         assertEquals(p2, allProperties.get(2));
-        assertEquals(s2, allProperties.get(3));
+        assertEquals(p1, allProperties.get(3));
 
         List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesForCategory(category, false,
                 ipsProject);
-        assertEquals(p1, properties.get(0));
-        assertEquals(p2, properties.get(1));
+        assertEquals(p2, properties.get(0));
+        assertEquals(p1, properties.get(1));
         assertEquals(2, properties.size());
     }
 
@@ -1682,24 +1584,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(s1, properties.get(0));
         assertEquals(s2, properties.get(1));
         assertEquals(a1, properties.get(2));
-        assertEquals(a2, properties.get(3));
-    }
-
-    @Test
-    public void testFindProductCmptPropertiesInOrder_AllowReorderingOfSupertypePropertiesInSubtype()
-            throws CoreException {
-
-        IProductCmptProperty s1 = superProductCmptType.newProductCmptTypeAttribute("s1");
-        IProductCmptProperty s2 = superProductCmptType.newProductCmptTypeAttribute("s2");
-        IProductCmptProperty a1 = productCmptType.newProductCmptTypeAttribute("a1");
-        IProductCmptProperty a2 = productCmptType.newProductCmptTypeAttribute("a2");
-
-        productCmptType.movePropertyReferences(new int[] { 1 }, Arrays.asList(s1, s2, a1, a2), false);
-
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(true, ipsProject);
-        assertEquals(s1, properties.get(0));
-        assertEquals(a1, properties.get(1));
-        assertEquals(s2, properties.get(2));
         assertEquals(a2, properties.get(3));
     }
 
@@ -2110,22 +1994,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(property2, properties.get(0));
         assertEquals(inBetweenProperty, properties.get(1));
         assertEquals(property1, properties.get(2));
-    }
-
-    @Test
-    public void testMoveProductCmptPropertyReferences_MovePropertyOfSupertype() throws CoreException {
-        IProductCmptCategory category = superProductCmptType.newCategory("category");
-
-        IProductCmptProperty superProperty = createProductAttributeProperty(superProductCmptType, "superProperty");
-        superProperty.setCategory(category.getName());
-        IProductCmptProperty property = createProductAttributeProperty(productCmptType, "property");
-        property.setCategory(category.getName());
-
-        assertArrayEquals(new int[] { 1 },
-                productCmptType.movePropertyReferences(new int[] { 0 }, Arrays.asList(superProperty, property), false));
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(true, ipsProject);
-        assertEquals(property, properties.get(0));
-        assertEquals(superProperty, properties.get(1));
     }
 
     /**
