@@ -373,6 +373,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         CategoryPmo pmo = new CategoryPmo(attribute);
         comboViewerField.setInput(pmo.getCategories());
+        comboViewerField.setAllowEmptySelection(true);
         comboViewerField.setLabelProvider(new LabelProvider() {
             @Override
             public String getText(Object element) {

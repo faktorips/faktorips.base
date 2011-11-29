@@ -230,6 +230,7 @@ public class ValidationRuleEditingUI {
 
         CategoryPmo categoryPmo = new CategoryPmo(rule);
         categoryField.setInput(categoryPmo.getCategories());
+        categoryField.setAllowEmptySelection(true);
         bindingContext.bindContent(categoryField, categoryPmo, CategoryPmo.PROPERTY_CATEGORY);
     }
 

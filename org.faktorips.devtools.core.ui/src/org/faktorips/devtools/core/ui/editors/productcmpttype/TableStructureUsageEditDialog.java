@@ -306,6 +306,7 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog {
 
         categoryPmo = new CategoryPmo(tableStructureUsage);
         categoryField.setInput(categoryPmo.getCategories());
+        categoryField.setAllowEmptySelection(true);
         categoryField.setLabelProvider(new LabelProvider() {
             @Override
             public String getText(Object element) {

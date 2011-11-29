@@ -84,6 +84,7 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
 
         CategoryPmo pmo = new CategoryPmo(getProductCmptTypeMethod());
         comboViewerField.setInput(pmo.getCategories());
+        comboViewerField.setAllowEmptySelection(true);
         comboViewerField.setLabelProvider(new LabelProvider() {
             @Override
             public String getText(Object element) {
