@@ -234,7 +234,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             throws CoreException {
 
         for (IProductCmptProperty property : findProductCmptProperties(false, ipsProject)) {
-            if (reference.isReferencingProperty(property)) {
+            if (reference.isReferencedProperty(property)) {
                 return property;
             }
         }
@@ -400,6 +400,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
+
+            pendingPolicyPropertyCategoryChanges.clear();
         }
         return element;
     }
@@ -747,20 +749,24 @@ public class ProductCmptType extends Type implements IProductCmptType {
             }
         }
 
-        addProductCmptPropertyReferenceDependencies(details);
+        addProductCmptPropertyReferenceDependencies(dependencies, details);
 
         super.dependsOn(dependencies, details);
 
         return dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
-    // TODO AW 28-11-11: Shouldn't dependsOn() be available on part level?
-    private void addProductCmptPropertyReferenceDependencies(Map<IDependency, List<IDependencyDetail>> details) {
+    private void addProductCmptPropertyReferenceDependencies(Set<IDependency> dependencies,
+            Map<IDependency, List<IDependencyDetail>> details) {
+
+        // Create a dependency for each property reference
         for (IProductCmptPropertyReference propertyReference : propertyReferences) {
-            IDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
-                    new QualifiedNameType(getSupertype(), IpsObjectType.PRODUCT_CMPT_TYPE));
-            // TODO AW 28-11-11: Make working
-            addDetails(details, dependency, propertyReference, "");
+            IDependency dependency = IpsObjectDependency.createReferenceDependency(
+                    getQualifiedNameType(),
+                    new QualifiedNameType(propertyReference.getReferencedType(), propertyReference
+                            .getReferencedIpsObjectType()));
+            dependencies.add(dependency);
+            addDetails(details, dependency, propertyReference, IProductCmptPropertyReference.PROPERTY_REFERENCED_TYPE);
         }
     }
 
@@ -1112,7 +1118,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         List<IProductCmptPropertyReference> references = new ArrayList<IProductCmptPropertyReference>(properties.size());
         for (IProductCmptProperty property : properties) {
             for (IProductCmptPropertyReference reference : propertyReferences) {
-                if (reference.isReferencingProperty(property)) {
+                if (reference.isReferencedProperty(property)) {
                     references.add(reference);
                     break;
                 }
@@ -1300,7 +1306,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     private int getReferencedPropertyIndex(IProductCmptProperty property) {
         int index = 0;
         for (IProductCmptPropertyReference reference : propertyReferences) {
-            if (reference.isReferencingProperty(property)) {
+            if (reference.isReferencedProperty(property)) {
                 return index;
             }
             index++;

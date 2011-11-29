@@ -20,10 +20,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +43,7 @@ import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
@@ -871,30 +873,97 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testDependsOn_ProductCmptPropertyReferenceTypeReferences() throws CoreException {
-        IProductCmptProperty s1 = createProductAttributeProperty(superProductCmptType, "s1");
-        IProductCmptProperty s2 = createProductAttributeProperty(superProductCmptType, "s2");
+    public void testDependsOn_ProductCmptPropertyReferencesToSupertypeHierarchy() throws CoreException {
+        IProductCmptProperty s1 = createProductAttributeProperty(superSuperProductCmptType, "s1");
+        IProductCmptProperty s2 = createProductAttributeProperty(superSuperProductCmptType, "s2");
+
+        performTestDependsOn_ProductCmptPropertyReferences(s1, s2, superSuperProductCmptType);
+    }
+
+    @Test
+    public void testDependsOn_ProductCmptPropertyReferencesToPolicySide() throws CoreException {
+        IProductCmptProperty policyAttribute1 = createPolicyAttributeProperty(superPolicyCmptType, "policyAttribute1");
+        IProductCmptProperty policyAttribute2 = createPolicyAttributeProperty(superPolicyCmptType, "policyAttribute2");
+
+        performTestDependsOn_ProductCmptPropertyReferences(policyAttribute1, policyAttribute2, superPolicyCmptType);
+    }
+
+    @Test
+    public void testDependsOn_ProductCmptPropertyReferencesToSameType() throws CoreException {
+        IProductCmptProperty p1 = createProductAttributeProperty(productCmptType, "p1");
+        IProductCmptProperty p2 = createProductAttributeProperty(productCmptType, "p2");
+
+        performTestDependsOn_ProductCmptPropertyReferences(p1, p2, productCmptType);
+    }
+
+    private void performTestDependsOn_ProductCmptPropertyReferences(IProductCmptProperty p1,
+            IProductCmptProperty p2,
+            IType referencedType) throws CoreException {
 
         // Create reference parts by moving
-        productCmptType.movePropertyReferences(new int[] { 0 }, Arrays.asList(s1, s2), false);
+        productCmptType.movePropertyReferences(new int[] { 0 }, Arrays.asList(p1, p2), false);
         List<IProductCmptPropertyReference> propertyReferences = productCmptType.getPropertyReferences();
 
-        // Search for the parts causing a dependency to the supertype
-        IDependency[] dependencies = productCmptType.dependsOn();
-        List<IIpsObjectPartContainer> dependencyParts = new ArrayList<IIpsObjectPartContainer>();
-        for (IDependency dependency : dependencies) {
-            if (superProductCmptType.equals(dependency.getTarget())) {
-                List<IDependencyDetail> details = productCmptType.getDependencyDetails(dependency);
-                for (IDependencyDetail detail : details) {
-                    dependencyParts.add(detail.getPart());
-                }
-                break;
+        // Check that the dependencies caused by the property references are computed correctly
+        Map<IDependency, List<IDependencyDetail>> details = new HashMap<IDependency, List<IDependencyDetail>>();
+        IDependencyDetail p1Details = null;
+        IDependencyDetail p2Details = null;
+        for (IDependency dependency : getDependenciesForTarget(referencedType.getQualifiedNameType(), details)) {
+            if (p1Details == null) {
+                p1Details = getDependencyDetailForPart(dependency, propertyReferences.get(1), details);
+            }
+            if (p2Details == null) {
+                p2Details = getDependencyDetailForPart(dependency, propertyReferences.get(0), details);
             }
         }
 
-        // The property references must be recognized as parts causing a dependency to the supertype
-        assertTrue(dependencyParts.contains(propertyReferences.get(0)));
-        assertTrue(dependencyParts.contains(propertyReferences.get(1)));
+        // The property references must cause a dependency to the referenced type
+        if (p1Details == null || p2Details == null) {
+            fail();
+            return;
+        }
+
+        // The dependencies caused by the property references must indicate the referring property
+        assertEquals(IProductCmptPropertyReference.PROPERTY_REFERENCED_TYPE, p1Details.getPropertyName());
+        assertEquals(IProductCmptPropertyReference.PROPERTY_REFERENCED_TYPE, p2Details.getPropertyName());
+    }
+
+    @Test
+    public void testDependsOn_ProductCmptPropertyReferencesNoDetailsRequested() throws CoreException {
+        IProductCmptProperty p1 = createProductAttributeProperty(productCmptType, "p1");
+        IProductCmptProperty p2 = createProductAttributeProperty(productCmptType, "p2");
+
+        // Create reference parts by moving
+        productCmptType.movePropertyReferences(new int[] { 0 }, Arrays.asList(p1, p2), false);
+
+        // Check that the dependency to the referenced type is created
+        List<IDependency> dependencies = getDependenciesForTarget(productCmptType.getQualifiedNameType(), null);
+        assertTrue(dependencies.contains(IpsObjectDependency.createReferenceDependency(
+                productCmptType.getQualifiedNameType(), productCmptType.getQualifiedNameType())));
+    }
+
+    private List<IDependency> getDependenciesForTarget(Object target, Map<IDependency, List<IDependencyDetail>> details)
+            throws CoreException {
+
+        List<IDependency> dependencies = new ArrayList<IDependency>();
+        for (IDependency dependency : productCmptType.dependsOn(details)) {
+            if (target.equals(dependency.getTarget())) {
+                dependencies.add(dependency);
+            }
+        }
+        return dependencies;
+    }
+
+    private IDependencyDetail getDependencyDetailForPart(IDependency dependency,
+            IIpsObjectPart part,
+            Map<IDependency, List<IDependencyDetail>> details) {
+
+        for (IDependencyDetail detail : details.get(dependency)) {
+            if (part.equals(detail.getPart())) {
+                return detail;
+            }
+        }
+        return null;
     }
 
     @Test
@@ -2161,15 +2230,16 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     /**
      * <strong>Scenario:</strong><br>
      * The {@link IProductCmptCategory} of an {@link IProductCmptProperty} belonging to an
-     * {@link IPolicyCmptType} is changed. Then, the {@link IProductCmptType} is reloaded.
+     * {@link IPolicyCmptType} is changed. Then, the {@link IProductCmptType} is reloaded without
+     * first saving it.
      * <p>
      * <strong>Expected Outcome:</strong><br>
      * The {@link IProductCmptProperty} should again belong to the property's initial
      * {@link IProductCmptCategory}.
      */
     @Test
-    public void testChangeCategoryAndDeferPolicyChange_ClearPendingChangesUponXmlInitialization() throws CoreException,
-            ParserConfigurationException {
+    public void testChangeCategoryAndDeferPolicyChange_ClearPendingPolicyChangesUponXmlInitialization()
+            throws CoreException, ParserConfigurationException {
 
         IProductCmptCategory initialCategory = productCmptType.newCategory("initialCategory");
         IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
@@ -2190,6 +2260,41 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
          * If the pending changes are cleared upon XML initialization, the property now again
          * belongs to the initial category.
          */
+        assertTrue(initialCategory.findProductCmptProperties(productCmptType, false, ipsProject).contains(
+                policyProperty));
+        assertFalse(otherCategory.findProductCmptProperties(productCmptType, false, ipsProject)
+                .contains(policyProperty));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * The {@link IProductCmptCategory} of an {@link IProductCmptProperty} belonging to an
+     * {@link IPolicyCmptType} is changed. Then, the {@link IProductCmptType} is saved.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The {@link IProductCmptProperty} should belong to the new {@link IProductCmptCategory}.
+     * Afterwards, directly setting the property's {@link IProductCmptCategory} should take effect
+     * once again as there no longer are any pending policy changes.
+     */
+    @Test
+    public void testChangeCategoryAndDeferPolicyChange_ClearPendingPolicyChangesUponSave()
+            throws ParserConfigurationException, CoreException {
+
+        IProductCmptCategory initialCategory = productCmptType.newCategory("initialCategory");
+        IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
+
+        IProductCmptCategory otherCategory = productCmptType.newCategory("otherCategory");
+        productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, otherCategory.getName());
+
+        productCmptType.toXml(createXmlDocument("SomeTag"));
+
+        /*
+         * If the pending changes are cleared upon save, setting the category now directly should
+         * take immediate effect.
+         */
+        policyProperty.setCategory(initialCategory.getName());
+        assertTrue(initialCategory.findProductCmptProperties(productCmptType, false, ipsProject).contains(
+                policyProperty));
         assertFalse(otherCategory.findProductCmptProperties(productCmptType, false, ipsProject)
                 .contains(policyProperty));
     }

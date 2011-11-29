@@ -23,6 +23,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -70,13 +71,41 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         attributeReference.setReferencedProperty(productAttribute);
 
         assertEquals(productAttribute.getId(), ((ProductCmptPropertyReference)attributeReference).getReferencedPartId());
-        assertEquals(productType.getQualifiedNameType(),
-                ((ProductCmptPropertyReference)attributeReference).getQualifiedNameType());
+        assertEquals(productType.getQualifiedName(), attributeReference.getReferencedType());
+        assertEquals(productType.getIpsObjectType(), attributeReference.getReferencedIpsObjectType());
         assertWholeContentChangedEvent(attributeReference.getIpsSrcFile());
     }
 
     @Test
-    public void testIsReferencingProperty() throws SecurityException, IllegalArgumentException, NoSuchFieldException,
+    public void testSetReferencedPartId() {
+        attributeReference.setReferencedPartId("foo");
+
+        assertEquals("foo", attributeReference.getReferencedPartId());
+        assertPropertyChangedEvent(attributeReference, IProductCmptPropertyReference.PROPERTY_REFERENCED_PART_ID,
+                attributeProperty.getId(), "foo");
+    }
+
+    @Test
+    public void testSetReferencedType() {
+        attributeReference.setReferencedType("foo");
+
+        assertEquals("foo", attributeReference.getReferencedType());
+        assertPropertyChangedEvent(attributeReference, IProductCmptPropertyReference.PROPERTY_REFERENCED_TYPE,
+                policyType.getQualifiedName(), "foo");
+    }
+
+    @Test
+    public void testSetReferencedIpsObjectType() {
+        attributeReference.setReferencedIpsObjectType(IpsObjectType.PRODUCT_CMPT_TYPE);
+
+        assertEquals(IpsObjectType.PRODUCT_CMPT_TYPE, attributeReference.getReferencedIpsObjectType());
+        assertPropertyChangedEvent(attributeReference,
+                IProductCmptPropertyReference.PROPERTY_REFERENCED_IPS_OBJECT_TYPE, policyType.getIpsObjectType(),
+                IpsObjectType.PRODUCT_CMPT_TYPE);
+    }
+
+    @Test
+    public void testIsReferencedProperty() throws SecurityException, IllegalArgumentException, NoSuchFieldException,
             IllegalAccessException {
 
         IProductCmptTypeAttribute productAttribute = productType.newProductCmptTypeAttribute("productAttribute");
@@ -90,10 +119,10 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         IProductCmptPropertyReference policyReference = new ProductCmptPropertyReference(productType, "b");
         policyReference.setReferencedProperty(policyAttribute);
 
-        assertTrue(productReference.isReferencingProperty(productAttribute));
-        assertFalse(productReference.isReferencingProperty(policyAttribute));
-        assertTrue(policyReference.isReferencingProperty(policyAttribute));
-        assertFalse(policyReference.isReferencingProperty(productAttribute));
+        assertTrue(productReference.isReferencedProperty(productAttribute));
+        assertFalse(productReference.isReferencedProperty(policyAttribute));
+        assertTrue(policyReference.isReferencedProperty(policyAttribute));
+        assertFalse(policyReference.isReferencedProperty(productAttribute));
     }
 
     /**
@@ -107,9 +136,9 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
      * False should be returned, but an exception must not be thrown.
      */
     @Test
-    public void testIsReferencingProperty_IncompleteReference() {
+    public void testIsReferencedProperty_IncompleteReference() {
         IProductCmptPropertyReference reference = new ProductCmptPropertyReference(productType, "");
-        reference.isReferencingProperty(attributeProperty);
+        reference.isReferencedProperty(attributeProperty);
     }
 
     /**
@@ -121,7 +150,7 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
      * {@link IProductCmptProperty} nevertheless.
      */
     @Test
-    public void testIsReferencingProperty_PropertyWithSameIdInSupertype() throws CoreException, SecurityException,
+    public void testIsReferencedProperty_PropertyWithSameIdInSupertype() throws CoreException, SecurityException,
             IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
 
         IProductCmptType superProductType = newProductCmptType(ipsProject, "SuperProductCmptType");
@@ -136,8 +165,8 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         IProductCmptPropertyReference reference = new ProductCmptPropertyReference(productType, "id");
         reference.setReferencedProperty(productAttribute);
 
-        assertTrue(reference.isReferencingProperty(productAttribute));
-        assertFalse(reference.isReferencingProperty(superProductAttribute));
+        assertTrue(reference.isReferencedProperty(productAttribute));
+        assertFalse(reference.isReferencedProperty(superProductAttribute));
     }
 
     /**
@@ -147,11 +176,11 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
      * subtype.
      * <p>
      * <strong>Expected Outcome:</strong><br>
-     * The reference should must be able to identify it's correct {@link IProductCmptProperty},
-     * which is the one from the supertype hierarchy.
+     * The reference should be able to identify it's correct {@link IProductCmptProperty}, which is
+     * the one from the supertype hierarchy.
      */
     @Test
-    public void testIsReferencingProperty_PropertyOfSupertype() throws CoreException {
+    public void testIsReferencedProperty_PropertyOfSupertype() throws CoreException {
         IProductCmptType superProductType = newProductCmptType(ipsProject, "SuperProductCmptType");
         productType.setSupertype(superProductType.getQualifiedName());
 
@@ -163,10 +192,10 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         IProductCmptPropertyReference reference = new ProductCmptPropertyReference(productType, "");
         reference.setReferencedProperty(property);
 
-        assertTrue(superReference.isReferencingProperty(superProperty));
-        assertFalse(superReference.isReferencingProperty(property));
-        assertFalse(reference.isReferencingProperty(superProperty));
-        assertTrue(reference.isReferencingProperty(property));
+        assertTrue(superReference.isReferencedProperty(superProperty));
+        assertFalse(superReference.isReferencedProperty(property));
+        assertFalse(reference.isReferencedProperty(superProperty));
+        assertTrue(reference.isReferencedProperty(property));
     }
 
     @Test
@@ -188,8 +217,8 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         loadedReference.initFromXml(xmlElement);
 
         assertEquals(attributeProperty.getId(), ((ProductCmptPropertyReference)loadedReference).getReferencedPartId());
-        assertEquals(attributeProperty.getType().getQualifiedNameType(),
-                ((ProductCmptPropertyReference)loadedReference).getQualifiedNameType());
+        assertEquals(attributeProperty.getType().getQualifiedName(), loadedReference.getReferencedType());
+        assertEquals(attributeProperty.getType().getIpsObjectType(), loadedReference.getReferencedIpsObjectType());
     }
 
     @Test

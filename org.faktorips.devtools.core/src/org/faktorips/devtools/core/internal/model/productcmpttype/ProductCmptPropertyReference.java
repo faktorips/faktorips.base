@@ -23,17 +23,11 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.IType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
  * Default implementation of {@link IProductCmptPropertyReference}.
- * <p>
- * This implementation uses the part id of the referenced {@link IProductCmptProperty}. As the part
- * id is not necessarily unique across types, and because product component types also store
- * references for properties originating from the supertype hierarchy, the {@link QualifiedNameType}
- * of the poperty's {@link IType} is stored as well.
  * 
  * @author Alexander Weickmann
  */
@@ -41,16 +35,9 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
 
     final static String XML_TAG_NAME = "ProductCmptPropertyReference"; //$NON-NLS-1$
 
-    private static final String XML_ATTRIBUTE_REFERENCED_PART_ID = "referencedPartId"; //$NON-NLS-1$
-
-    private static final String XML_ATTRIBUTE_QUALIFIED_TYPE_NAME = "qualifiedTypeName"; //$NON-NLS-1$
-
-    private static final String XML_ATTRIBUTE_IPS_OBJECT_TYPE = "ipsObjectType"; //$NON-NLS-1$
-
     private String referencedPartId = ""; //$NON-NLS-1$
 
-    // TODO AW 24-11-11: Depends on must be updated
-    private QualifiedNameType qualifiedNameType = new NullQualifiedNameType();
+    private QualifiedNameType referencedQualifiedNameType = new NullQualifiedNameType();
 
     public ProductCmptPropertyReference(IProductCmptType parent, String id) {
         super(parent, id);
@@ -59,32 +46,54 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
     @Override
     public void setReferencedProperty(IProductCmptProperty property) {
         referencedPartId = property.getId();
-        qualifiedNameType = property.getType().getQualifiedNameType();
+        referencedQualifiedNameType = property.getType().getQualifiedNameType();
         objectHasChanged(ContentChangeEvent.newWholeContentChangedEvent(getIpsSrcFile()));
     }
 
-    /**
-     * Returns the part id of the referenced {@link IProductCmptProperty}.
-     */
-    String getReferencedPartId() {
+    @Override
+    public String getReferencedPartId() {
         return referencedPartId;
     }
 
-    /**
-     * Returns a {@link QualifiedNameType} describing the origin of the referenced
-     * {@link IProductCmptProperty}.
-     */
-    QualifiedNameType getQualifiedNameType() {
-        return qualifiedNameType;
+    @Override
+    public void setReferencedPartId(String partId) {
+        String oldValue = referencedPartId;
+        referencedPartId = partId;
+        valueChanged(oldValue, partId, PROPERTY_REFERENCED_PART_ID);
     }
 
     @Override
-    public boolean isReferencingProperty(IProductCmptProperty property) {
+    public String getReferencedType() {
+        return referencedQualifiedNameType.getName();
+    }
+
+    @Override
+    public void setReferencedType(String qualifiedTypeName) {
+        String oldValue = referencedQualifiedNameType.getName();
+        referencedQualifiedNameType = new QualifiedNameType(qualifiedTypeName,
+                referencedQualifiedNameType.getIpsObjectType());
+        valueChanged(oldValue, qualifiedTypeName, PROPERTY_REFERENCED_TYPE);
+    }
+
+    @Override
+    public IpsObjectType getReferencedIpsObjectType() {
+        return referencedQualifiedNameType.getIpsObjectType();
+    }
+
+    @Override
+    public void setReferencedIpsObjectType(IpsObjectType ipsObjectType) {
+        IpsObjectType oldValue = referencedQualifiedNameType.getIpsObjectType();
+        referencedQualifiedNameType = new QualifiedNameType(referencedQualifiedNameType.getName(), ipsObjectType);
+        valueChanged(oldValue, ipsObjectType, PROPERTY_REFERENCED_IPS_OBJECT_TYPE);
+    }
+
+    @Override
+    public boolean isReferencedProperty(IProductCmptProperty property) {
         return isEqualQualifiedNameType(property) && isEqualId(property);
     }
 
     private boolean isEqualQualifiedNameType(IProductCmptProperty property) {
-        return property.isOfType(qualifiedNameType);
+        return property.isOfType(referencedQualifiedNameType);
     }
 
     private boolean isEqualId(IProductCmptProperty property) {
@@ -98,10 +107,11 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
 
     @Override
     protected void initFromXml(Element element, String id) {
-        referencedPartId = element.getAttribute(XML_ATTRIBUTE_REFERENCED_PART_ID);
-        String qualifiedTypeName = element.getAttribute(XML_ATTRIBUTE_QUALIFIED_TYPE_NAME);
-        IpsObjectType ipsObjectType = IpsObjectType.getTypeForName(element.getAttribute(XML_ATTRIBUTE_IPS_OBJECT_TYPE));
-        qualifiedNameType = new QualifiedNameType(qualifiedTypeName, ipsObjectType);
+        referencedPartId = element.getAttribute(PROPERTY_REFERENCED_PART_ID);
+        String qualifiedTypeName = element.getAttribute(PROPERTY_REFERENCED_TYPE);
+        IpsObjectType ipsObjectType = IpsObjectType.getTypeForName(element
+                .getAttribute(PROPERTY_REFERENCED_IPS_OBJECT_TYPE));
+        referencedQualifiedNameType = new QualifiedNameType(qualifiedTypeName, ipsObjectType);
 
         super.initFromXml(element, id);
     }
@@ -110,9 +120,10 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
 
-        element.setAttribute(XML_ATTRIBUTE_REFERENCED_PART_ID, referencedPartId);
-        element.setAttribute(XML_ATTRIBUTE_QUALIFIED_TYPE_NAME, qualifiedNameType.getName());
-        element.setAttribute(XML_ATTRIBUTE_IPS_OBJECT_TYPE, qualifiedNameType.getIpsObjectType().getId());
+        element.setAttribute(PROPERTY_REFERENCED_PART_ID, referencedPartId);
+        element.setAttribute(PROPERTY_REFERENCED_TYPE, referencedQualifiedNameType.getName());
+        element.setAttribute(PROPERTY_REFERENCED_IPS_OBJECT_TYPE, referencedQualifiedNameType.getIpsObjectType()
+                .getId());
     }
 
     @Override
