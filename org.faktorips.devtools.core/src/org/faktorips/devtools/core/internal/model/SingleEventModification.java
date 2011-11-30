@@ -57,11 +57,14 @@ public abstract class SingleEventModification<T> {
 
     /**
      * Returns the result of the execution if available. Returns <code>null</code> if the execution
-     * doesn't have a result that needs to be returned.
+     * doesn't have a result that needs to be returned. The default implementation always returns
+     * null.
      * 
      * @return the result of the execution or <code>null</code> if none needs to be returned
      */
-    protected abstract T getResult();
+    protected T getResult() {
+        return null;
+    }
 
     /**
      * @return Returns the ipsSrcFile.

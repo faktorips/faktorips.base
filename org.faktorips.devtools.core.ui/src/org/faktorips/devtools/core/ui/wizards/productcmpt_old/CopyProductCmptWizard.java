@@ -86,17 +86,11 @@ public class CopyProductCmptWizard extends Wizard implements INewIpsObjectWizard
                     getContentsOfIpsObject(sourceProductCmpt), true, null);
             IpsPlugin.getDefault().getIpsModel()
                     .executeModificationsWithSingleEvent(new SingleEventModification<Void>(srcFile) {
-
                         @Override
                         protected boolean execute() throws CoreException {
                             finishIpsObject((IProductCmpt)srcFile.getIpsObject());
                             srcFile.save(true, null);
                             return true;
-                        }
-
-                        @Override
-                        protected Void getResult() {
-                            return null;
                         }
                     });
 

@@ -983,6 +983,26 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         assertEquals(policyProperty, properties.get(1));
     }
 
+    @Test
+    public void testInsertProductCmptProperty_FireOnlyASingleChangeEvent() throws CoreException {
+        IProductCmptType superProductType = createSuperProductType(productType, "Super");
+        IProductCmptCategory category = superProductType.newCategory("myCategory");
+
+        IProductCmptProperty p1 = productType.newProductCmptTypeAttribute("p1");
+        IProductCmptProperty p2 = productType.newProductCmptTypeAttribute("p2");
+        IProductCmptProperty p3 = productType.newProductCmptTypeAttribute("p3");
+        p1.setCategory(category.getName());
+        p2.setCategory(category.getName());
+        p3.setCategory(category.getName());
+
+        resetNumberContentChangeEvents();
+
+        category.insertProductCmptProperty(p1, p3, false);
+
+        assertSingleContentChangeEvent();
+        assertWholeContentChangedEvent(productType.getIpsSrcFile());
+    }
+
     private IProductCmptType createSuperProductType(IProductCmptType productType, String prefix) throws CoreException {
         IPolicyCmptType superPolicyType = newPolicyAndProductCmptType(ipsProject, prefix + "PolicyType", prefix
                 + "ProductType");

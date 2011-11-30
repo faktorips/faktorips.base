@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -383,16 +384,23 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         return true;
     }
 
-    private void insertProductCmptProperty(int propertyIndex,
-            int targetPropertyIndex,
-            IProductCmptType contextType,
-            boolean above) throws CoreException {
+    private void insertProductCmptProperty(final int propertyIndex,
+            final int targetPropertyIndex,
+            final IProductCmptType contextType,
+            final boolean above) throws CoreException {
 
-        if (propertyIndex > targetPropertyIndex) {
-            moveProductCmptPropertyUp(propertyIndex, targetPropertyIndex, contextType, above);
-        } else if (propertyIndex < targetPropertyIndex) {
-            moveProductCmptPropertyDown(propertyIndex, targetPropertyIndex, contextType, above);
-        }
+        getIpsModel().executeModificationsWithSingleEvent(
+                new SingleEventModification<Void>(contextType.getIpsSrcFile()) {
+                    @Override
+                    protected boolean execute() throws CoreException {
+                        if (propertyIndex > targetPropertyIndex) {
+                            moveProductCmptPropertyUp(propertyIndex, targetPropertyIndex, contextType, above);
+                        } else if (propertyIndex < targetPropertyIndex) {
+                            moveProductCmptPropertyDown(propertyIndex, targetPropertyIndex, contextType, above);
+                        }
+                        return true;
+                    }
+                });
     }
 
     /**

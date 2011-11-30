@@ -718,18 +718,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             handleEnumAttributeDeletion(index);
         }
 
-        getIpsModel().executeModificationsWithSingleEvent(new SingleEventModification<Object>(getIpsSrcFile()) {
-
+        getIpsModel().executeModificationsWithSingleEvent(new SingleEventModification<Void>(getIpsSrcFile()) {
             @Override
             public boolean execute() throws CoreException {
                 deleteEnumAttributeValues(enumAttribute, getEnumValues());
                 enumAttribute.delete();
                 return true;
-            }
-
-            @Override
-            public Object getResult() {
-                return null;
             }
         });
         return true;
