@@ -391,15 +391,15 @@ public class CategorySection extends IpsSection {
                  * Returns the {@link Image} to be used if the provided {@link IProductCmptProperty}
                  * originates from the supertype hierarchy.
                  * <p>
-                 * This is the disabled version of the default {@link Image} of the corresponding
-                 * {@link IPropertyValue} with an additional 'override' overlay.
+                 * This is the default {@link Image} of the corresponding {@link IPropertyValue}
+                 * with an additional 'override' overlay.
                  */
                 private Image getImageForPropertyOfSupertypeHierarchy(IProductCmptProperty property) {
                     Image baseImage = IpsUIPlugin.getImageHandling().getDefaultImage(
                             property.getProductCmptPropertyType().getValueImplementationClass());
                     ImageDescriptor imageDescriptor = new DecorationOverlayIcon(baseImage,
                             OverlayIcons.OVERRIDE_OVR_DESC, IDecoration.BOTTOM_RIGHT);
-                    return IpsUIPlugin.getImageHandling().getDisabledSharedImage(imageDescriptor);
+                    return IpsUIPlugin.getImageHandling().getImage(imageDescriptor);
                 }
             });
         }
@@ -736,6 +736,10 @@ public class CategorySection extends IpsSection {
                 return (IProductCmptProperty)((Object[])data)[0];
             }
 
+            /*
+             * Overridden to activate LOCATION_BEFORE and LOCATION_AFTER when the cursor's real
+             * location is LOCATION_ON.
+             */
             @Override
             protected int determineLocation(DropTargetEvent event) {
                 if (!(event.item instanceof Item)) {
@@ -829,6 +833,9 @@ public class CategorySection extends IpsSection {
 
     }
 
+    /**
+     * Abstract base class for all actions within the {@link CategorySection}.
+     */
     private static abstract class CategoryAction extends Action {
 
         private final IProductCmptType productCmptType;
@@ -863,6 +870,9 @@ public class CategorySection extends IpsSection {
 
     }
 
+    /**
+     * Abstract base class for all move-related actions within the {@link CategorySection}.
+     */
     private static abstract class MoveCategoryAction extends CategoryAction {
 
         private MoveCategoryAction(IProductCmptType productCmptType, IProductCmptCategory category,
@@ -871,6 +881,13 @@ public class CategorySection extends IpsSection {
             super(productCmptType, category, categoryCompositionSection);
         }
 
+        /**
+         * <strong>Subclassing:</strong><br>
+         * This implementation calls {@link #move()} to perform the move operation. If true is
+         * returned by {@link #move()},
+         * {@link CategoryCompositionSection#recreateCategorySections(IProductCmptCategory)} is
+         * invoked.
+         */
         @Override
         public void run() {
             boolean moved = move();
@@ -879,10 +896,16 @@ public class CategorySection extends IpsSection {
             }
         }
 
+        /**
+         * Performs the move operation and returns whether a move has been performed.
+         */
         protected abstract boolean move();
 
     }
 
+    /**
+     * {@link Action} to move an {@link IProductCmptCategory} up by one position.
+     */
     private static class MoveCategoryUpAction extends MoveCategoryAction {
 
         private static final String IMAGE_FILENAME = "ArrowUp.gif"; //$NON-NLS-1$
@@ -904,6 +927,9 @@ public class CategorySection extends IpsSection {
 
     }
 
+    /**
+     * {@link Action} to move an {@link IProductCmptCategory} down by one position.
+     */
     private static class MoveCategoryDownAction extends MoveCategoryAction {
 
         private static final String IMAGE_FILENAME = "ArrowDown.gif"; //$NON-NLS-1$
@@ -925,6 +951,9 @@ public class CategorySection extends IpsSection {
 
     }
 
+    /**
+     * {@link Action} to move an {@link IProductCmptCategory} to {@link Position#LEFT}.
+     */
     private static class MoveCategoryLeftAction extends MoveCategoryAction {
 
         private static final String IMAGE_FILENAME = "ArrowLeft.gif"; //$NON-NLS-1$
@@ -950,6 +979,9 @@ public class CategorySection extends IpsSection {
 
     }
 
+    /**
+     * {@link Action} to move an {@link IProductCmptCategory} to {@link Position#RIGHT}.
+     */
     private static class MoveCategoryRightAction extends MoveCategoryAction {
 
         private static final String IMAGE_FILENAME = "ArrowRight.gif"; //$NON-NLS-1$
@@ -975,6 +1007,9 @@ public class CategorySection extends IpsSection {
 
     }
 
+    /**
+     * {@link Action} to delete an {@link IProductCmptCategory}.
+     */
     private static class DeleteCategoryAction extends CategoryAction {
 
         private static final String IMAGE_FILENAME = "elcl16/trash.gif"; //$NON-NLS-1$
@@ -1000,6 +1035,9 @@ public class CategorySection extends IpsSection {
 
     }
 
+    /**
+     * {@link Action} to open up a {@link CategoryEditDialog}.
+     */
     private static class EditCategoryAction extends CategoryAction {
 
         private static final String IMAGE_FILENAME = "Edit.gif"; //$NON-NLS-1$

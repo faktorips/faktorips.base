@@ -48,11 +48,13 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
- * Page that allows to edit the {@link IProductCmptCategory}s of an {@link IProductCmptType}.
+ * {@link IpsObjectEditorPage} that allows to edit the categories of an {@link IProductCmptType}.
  * <p>
  * The page provides a {@link CategorySection} for each {@link IProductCmptCategory}.
  * 
- * @author Alexander Weickmann
+ * @since 3.6
+ * 
+ * @author Alexander Weickmann, Faktor Zehn AG
  */
 public class CategoryPage extends IpsObjectEditorPage {
 
@@ -99,6 +101,13 @@ public class CategoryPage extends IpsObjectEditorPage {
         return (IProductCmptType)getIpsObject();
     }
 
+    /**
+     * A section that contains all category sections and provides an "Add new category" button via
+     * it's toolbar.
+     * <p>
+     * If the positioning of the categories changes, invoking
+     * {@link #recreateCategorySections(IProductCmptCategory)} synchronizes the UI with the model.
+     */
     class CategoryCompositionSection extends IpsSection {
 
         private final Map<IProductCmptCategory, CategorySection> categoriesToSections = new LinkedHashMap<IProductCmptCategory, CategorySection>();
@@ -196,8 +205,8 @@ public class CategoryPage extends IpsObjectEditorPage {
         }
 
         /**
-         * Disposes all {@link CategorySection}s and recreates them in the order they are provided
-         * by the underlying model.
+         * Disposes all category sections and recreates them in the order they are provided by the
+         * underlying model.
          * 
          * @param newFocusCategory the {@link IProductCmptCategory} that shall have focus after the
          *            operation or null to let the focus be automatically set to the first
@@ -285,9 +294,9 @@ public class CategoryPage extends IpsObjectEditorPage {
         /**
          * An {@link IpsSection} that represents the <em>Associations</em> category.
          * <p>
-         * As of now, {@link IAssociation} cannot be assigned to {@link IProductCmptCategory} and in
-         * the {@link ProductCmptEditor}, the {@link LinksSection} is automatically placed at the
-         * bottom right.
+         * As of now, an {@link IAssociation} cannot be assigned to an {@link IProductCmptCategory}
+         * and in the {@link ProductCmptEditor}, the {@link LinksSection} is automatically placed at
+         * the bottom right.
          * <p>
          * This section represents the {@link LinksSection} in the
          * {@link CategoryCompositionSection}. It cannot be moved or modified by the user in any
@@ -330,6 +339,9 @@ public class CategoryPage extends IpsObjectEditorPage {
 
         }
 
+        /**
+         * {@link Action} to create a new {@link IProductCmptCategory}.
+         */
         private class NewCategoryAction extends Action {
 
             private static final String IMAGE_FILENAME = "Add.gif"; //$NON-NLS-1$
