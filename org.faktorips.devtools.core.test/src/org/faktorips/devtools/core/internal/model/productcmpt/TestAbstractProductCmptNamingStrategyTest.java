@@ -65,11 +65,13 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
     @Test
     public void testGetKindId() {
         assertEquals("abc", namingStrategy.getKindId("abc - id"));
+        assertEquals("abc - def", namingStrategy.getKindId("abc - def - id"));
     }
 
     @Test
     public void testGetVersionId() {
         assertEquals("id", namingStrategy.getVersionId("abc - id"));
+        assertEquals("id", namingStrategy.getVersionId("abc - def - id"));
     }
 
     @Test
@@ -86,8 +88,8 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
         list = namingStrategy.validate("abc% - 123");
         assertNotNull(list.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_ILLEGAL_CHARACTERS));
 
-        list = namingStrategy.validate("abc - qwe - 123"); // two version separators strings are ok,
-        // the first one is taken
+        list = namingStrategy.validate("abc - qwe - 123"); // two version separator strings are ok,
+        // the last one is taken
         assertFalse(list.containsErrorMsg());
 
         list = namingStrategy.validate("abc - d123");

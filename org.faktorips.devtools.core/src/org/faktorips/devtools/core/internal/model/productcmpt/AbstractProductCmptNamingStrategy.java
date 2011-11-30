@@ -143,7 +143,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
 
     @Override
     public String getKindId(String productCmptName) {
-        int index = productCmptName.indexOf(separator);
+        int index = productCmptName.lastIndexOf(separator);
         if (index == -1) {
             throw new IllegalArgumentException(
                     "Can't get constant part from " + productCmptName + ", separator not found!"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -153,7 +153,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
 
     @Override
     public String getVersionId(String productCmptName) {
-        int index = productCmptName.indexOf(separator);
+        int index = productCmptName.lastIndexOf(separator);
         if (index == -1) {
             throw new IllegalArgumentException(
                     "Can't get constant part from " + productCmptName + ", separator not found!"); //$NON-NLS-1$ //$NON-NLS-2$
