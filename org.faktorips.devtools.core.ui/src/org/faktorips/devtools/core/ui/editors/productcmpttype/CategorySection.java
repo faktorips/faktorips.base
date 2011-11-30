@@ -977,7 +977,7 @@ public class CategorySection extends IpsSection {
 
     private static class DeleteCategoryAction extends CategoryAction {
 
-        private static final String IMAGE_FILENAME = "elcl16/Trash.gif"; //$NON-NLS-1$
+        private static final String IMAGE_FILENAME = "elcl16/trash.gif"; //$NON-NLS-1$
 
         private DeleteCategoryAction(IProductCmptType productCmptType, IProductCmptCategory category,
                 CategoryCompositionSection categoryCompositionSection) {
