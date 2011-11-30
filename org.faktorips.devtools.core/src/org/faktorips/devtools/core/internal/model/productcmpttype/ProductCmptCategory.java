@@ -360,47 +360,53 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     }
 
     @Override
-    public boolean insertProductCmptProperty(IProductCmptProperty property,
-            IProductCmptProperty targetProperty,
-            boolean above) throws CoreException {
+    public boolean insertProductCmptProperty(final IProductCmptProperty property,
+            final IProductCmptProperty targetProperty,
+            final boolean above) throws CoreException {
 
-        IProductCmptType contextType = property.findProductCmptType(property.getIpsProject());
+        final IProductCmptType contextType = property.findProductCmptType(property.getIpsProject());
         if (contextType == null) {
             return false;
         }
 
-        contextType.changeCategoryAndDeferPolicyChange(property, name);
+        return getIpsModel().executeModificationsWithSingleEvent(
+                new SingleEventModification<Boolean>(contextType.getIpsSrcFile()) {
+                    private boolean result = true;
 
-        List<IProductCmptProperty> properties = findProductCmptProperties(contextType, false,
-                contextType.getIpsProject());
-        int propertyIndex = properties.indexOf(property);
-        int targetPropertyIndex = targetProperty != null ? properties.indexOf(targetProperty) : properties.size() - 1;
-        if (propertyIndex == -1 || targetPropertyIndex == -1) {
-            return false;
-        }
-
-        insertProductCmptProperty(propertyIndex, targetPropertyIndex, contextType, above);
-
-        return true;
-    }
-
-    private void insertProductCmptProperty(final int propertyIndex,
-            final int targetPropertyIndex,
-            final IProductCmptType contextType,
-            final boolean above) throws CoreException {
-
-        getIpsModel().executeModificationsWithSingleEvent(
-                new SingleEventModification<Void>(contextType.getIpsSrcFile()) {
                     @Override
                     protected boolean execute() throws CoreException {
-                        if (propertyIndex > targetPropertyIndex) {
-                            moveProductCmptPropertyUp(propertyIndex, targetPropertyIndex, contextType, above);
-                        } else if (propertyIndex < targetPropertyIndex) {
-                            moveProductCmptPropertyDown(propertyIndex, targetPropertyIndex, contextType, above);
+                        contextType.changeCategoryAndDeferPolicyChange(property, name);
+
+                        List<IProductCmptProperty> properties = findProductCmptProperties(contextType, false,
+                                contextType.getIpsProject());
+                        int propertyIndex = properties.indexOf(property);
+                        int targetPropertyIndex = targetProperty != null ? properties.indexOf(targetProperty)
+                                : properties.size() - 1;
+                        if (propertyIndex == -1 || targetPropertyIndex == -1) {
+                            result = false;
+                        } else {
+                            insertProductCmptProperty(propertyIndex, targetPropertyIndex, contextType, above);
                         }
                         return true;
                     }
+
+                    @Override
+                    protected Boolean getResult() {
+                        return result;
+                    }
                 });
+    }
+
+    private void insertProductCmptProperty(int propertyIndex,
+            int targetPropertyIndex,
+            IProductCmptType contextType,
+            boolean above) throws CoreException {
+
+        if (propertyIndex > targetPropertyIndex) {
+            moveProductCmptPropertyUp(propertyIndex, targetPropertyIndex, contextType, above);
+        } else if (propertyIndex < targetPropertyIndex) {
+            moveProductCmptPropertyDown(propertyIndex, targetPropertyIndex, contextType, above);
+        }
     }
 
     /**

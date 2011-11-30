@@ -360,6 +360,8 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * <p>
      * Returns true if the operation was successful. If the index of any of the two provided
      * properties cannot be computed, the operation will fail. In this case, false is returned.
+     * <p>
+     * Note that only a single <em>whole content changed</em> event will be fired by this operation.
      * 
      * @param property the {@link IProductCmptProperty} to insert into this
      *            {@link IProductCmptCategory}

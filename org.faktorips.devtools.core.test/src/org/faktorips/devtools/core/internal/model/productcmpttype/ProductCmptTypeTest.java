@@ -1559,6 +1559,44 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(2, properties.size());
     }
 
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IProductCmptCategory} has some properties assigned. Then, a new
+     * {@link IProductCmptProperty} is created which is not yet in the
+     * {@link IProductCmptPropertyReference} list of the {@link IProductCmptType}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The new {@link IProductCmptProperty} should be at the very end of the category's properties.
+     */
+    @Test
+    public void testFindProductCmptPropertiesForCategory_SortPropertiesThatAreNotYetInReferenceListTowardsTheEnd()
+            throws CoreException {
+
+        IProductCmptCategory category = productCmptType.newCategory("myCategory");
+
+        IProductCmptProperty p1 = createProductAttributeProperty(productCmptType, "p1");
+        IProductCmptProperty p2 = createProductAttributeProperty(productCmptType, "p2");
+        IProductCmptProperty p3 = createPolicyAttributeProperty(policyCmptType, "p3");
+
+        p1.setCategory(category.getName());
+        p2.setCategory(category.getName());
+        p3.setCategory(category.getName());
+
+        // Create reference objects by moving
+        productCmptType.movePropertyReferences(new int[] { 0 }, Arrays.asList(p1, p2, p3), false);
+
+        // Create a new property
+        IProductCmptProperty newProperty = productCmptType.newProductCmptTypeAttribute("newProperty");
+        newProperty.setCategory(category.getName());
+
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesForCategory(category, false,
+                ipsProject);
+        assertEquals(p2, properties.get(0));
+        assertEquals(p1, properties.get(1));
+        assertEquals(p3, properties.get(2));
+        assertEquals(newProperty, properties.get(3));
+    }
+
     @Test
     public void testFindProductCmptPropertiesInOrder() throws CoreException {
         IProductCmptProperty a1 = productCmptType.newProductCmptTypeAttribute("a1");

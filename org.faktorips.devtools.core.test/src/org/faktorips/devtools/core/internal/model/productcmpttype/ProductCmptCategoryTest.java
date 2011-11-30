@@ -26,6 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -983,24 +984,36 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         assertEquals(policyProperty, properties.get(1));
     }
 
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IProductCmptProperty} that is assigned to an {@link IProductCmptCategory} is
+     * inserted at beginning of another {@link IProductCmptCategory}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * Only a single change event of type {@link ContentChangeEvent#TYPE_WHOLE_CONTENT_CHANGED}
+     * should be fired.
+     */
     @Test
     public void testInsertProductCmptProperty_FireOnlyASingleChangeEvent() throws CoreException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
-        IProductCmptCategory category = superProductType.newCategory("myCategory");
+        IProductCmptCategory sourceCategory = superProductType.newCategory("sourceCategory");
+        IProductCmptCategory targetCategory = superProductType.newCategory("targetCategory");
 
+        IProductCmptProperty sourceProperty = productType.newProductCmptTypeAttribute("sourceProperty");
         IProductCmptProperty p1 = productType.newProductCmptTypeAttribute("p1");
         IProductCmptProperty p2 = productType.newProductCmptTypeAttribute("p2");
         IProductCmptProperty p3 = productType.newProductCmptTypeAttribute("p3");
-        p1.setCategory(category.getName());
-        p2.setCategory(category.getName());
-        p3.setCategory(category.getName());
+        sourceProperty.setCategory(sourceCategory.getName());
+        p1.setCategory(targetCategory.getName());
+        p2.setCategory(targetCategory.getName());
+        p3.setCategory(targetCategory.getName());
 
         resetNumberContentChangeEvents();
 
-        category.insertProductCmptProperty(p1, p3, false);
+        targetCategory.insertProductCmptProperty(sourceProperty, p1, true);
 
-        assertSingleContentChangeEvent();
         assertWholeContentChangedEvent(productType.getIpsSrcFile());
+        assertSingleContentChangeEvent();
     }
 
     private IProductCmptType createSuperProductType(IProductCmptType productType, String prefix) throws CoreException {

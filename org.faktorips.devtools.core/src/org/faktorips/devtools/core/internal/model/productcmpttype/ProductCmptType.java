@@ -1058,8 +1058,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * The indices array identifies the properties to be moved within the context list. Therefore,
      * the indices must be valid with respect to the context list.
      * <p>
-     * Returns the new indices within the context list. Note that only a single
-     * <em>whole content changed</em> event is fired.
+     * Returns the new indices within the context list.
+     * <p>
+     * Note that only a single <em>whole content changed</em> event will be fired by this operation.
      * 
      * @param movedIndices the indices identifying the properties of the context list to be moved
      * @param contextProperties only references corresponding to these {@link IProductCmptProperty}s
@@ -1375,36 +1376,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         @Override
         public int compare(IProductCmptProperty property1, IProductCmptProperty property2) {
-            // First, try to compare the indices of the properties in the reference list
-            int indexCompare = comparePropertyIndices(property1, property2);
+            // First, try to sort properties of the supertype hierarchy to the top
+            int subtypeCompare = compareSubtypeRelationship(property1, property2);
 
-            /*
-             * If the indices are equal, at least one of the properties is not stored in the
-             * reference list. In this case, compare the subtype relationship.
-             */
-            return indexCompare != 0 ? indexCompare : compareSubtypeRelationship(property1, property2);
-        }
-
-        /**
-         * Compares the indices of the given product component properties in the list of property
-         * references.
-         * <p>
-         * Properties whose indices are greater are sorted towards the end.
-         */
-        private int comparePropertyIndices(IProductCmptProperty property1, IProductCmptProperty property2) {
-            int index1 = ((ProductCmptType)productCmptType).getReferencedPropertyIndex(property1);
-            int index2 = ((ProductCmptType)productCmptType).getReferencedPropertyIndex(property2);
-            if (index1 == -1 || index2 == -1) {
-                return 0;
-            }
-
-            if (index1 == index2) {
-                return 0;
-            } else if (index1 < index2) {
-                return -1;
-            } else {
-                return 1;
-            }
+            // If the indices are equal, compare the indices of the properties in the reference list
+            return subtypeCompare != 0 ? subtypeCompare : comparePropertyIndices(property1, property2);
         }
 
         /**
@@ -1446,6 +1422,32 @@ public class ProductCmptType extends Type implements IProductCmptType {
             } catch (CoreException e) {
                 // Consider elements equal if it the subtype relationship cannot be determined
                 return 0;
+            }
+        }
+
+        /**
+         * Compares the indices of the given product component properties in the list of property
+         * references.
+         * <p>
+         * Properties whose indices are greater are sorted towards the end.
+         */
+        private int comparePropertyIndices(IProductCmptProperty property1, IProductCmptProperty property2) {
+            int index1 = ((ProductCmptType)productCmptType).getReferencedPropertyIndex(property1);
+            int index2 = ((ProductCmptType)productCmptType).getReferencedPropertyIndex(property2);
+
+            if (index1 == -1) {
+                index1 = Integer.MAX_VALUE;
+            }
+            if (index2 == -1) {
+                index2 = Integer.MAX_VALUE;
+            }
+
+            if (index1 == index2) {
+                return 0;
+            } else if (index1 < index2) {
+                return -1;
+            } else {
+                return 1;
             }
         }
 
