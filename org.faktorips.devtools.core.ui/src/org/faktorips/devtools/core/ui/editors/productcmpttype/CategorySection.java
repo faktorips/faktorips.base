@@ -25,7 +25,9 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
@@ -70,6 +72,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -77,6 +80,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
 import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -105,7 +109,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * 
  * @since 3.6
  * 
- * @author Alexander Weickmann
+ * @author Alexander Weickmann, Faktor Zehn AG
  * 
  * @see IProductCmptCategory
  * @see IProductCmptProperty
@@ -133,6 +137,12 @@ public class CategorySection extends IpsSection {
 
     private ViewerButtonComposite viewerButtonComposite;
 
+    /**
+     * @param category the {@link IProductCmptCategory} that is represented by this section
+     * @param contextType the {@link IProductCmptType} that is being edited
+     * @param categoryCompositionSection the parent {@link CategoryCompositionSection}, this section
+     *            is a part of
+     */
     public CategorySection(IProductCmptCategory category, IProductCmptType contextType,
             CategoryCompositionSection categoryCompositionSection, Composite parent, UIToolkit toolkit) {
 
@@ -234,9 +244,16 @@ public class CategorySection extends IpsSection {
         deleteAction.setEnabled(contextType.isDefining(category));
     }
 
+    /**
+     * A {@link ViewerButtonComposite} that shows the product component properties assigned to the
+     * {@link IProductCmptCategory} represented by the section.
+     * <p>
+     * This composite provides the controls that allow the user to edit the ordering of properties
+     * within categories and to edit the assignment of properties to categories.
+     */
     private static class CategoryComposite extends ViewerButtonComposite {
 
-        private final ContentsChangeListener contentsChangeListener;
+        private final ContentsChangeListener policySideChangedListener;
 
         private final IProductCmptCategory category;
 
@@ -252,6 +269,12 @@ public class CategorySection extends IpsSection {
 
         private PropertyContentProvider contentProvider;
 
+        /**
+         * @param category the {@link IProductCmptCategory} that is represented by this composite
+         * @param contextType the {@link IProductCmptType} that is being edited
+         * @param categoryCompositionSection the parent {@link CategoryCompositionSection}, this
+         *            composite is a part of
+         */
         public CategoryComposite(IProductCmptCategory category, IProductCmptType contextType,
                 CategoryCompositionSection categoryCompositionSection, Composite parent, UIToolkit toolkit) {
 
@@ -263,20 +286,20 @@ public class CategorySection extends IpsSection {
 
             initControls(toolkit);
 
-            contentsChangeListener = createContentsChangeListener(contextType);
-            addContentsChangeListener();
+            policySideChangedListener = createPolicySideChangedListener(contextType);
+            addContentsChangeListener(policySideChangedListener);
             addDisposeListener();
         }
 
-        private void addContentsChangeListener() {
-            contextType.getIpsModel().addChangeListener(contentsChangeListener);
+        private void addContentsChangeListener(ContentsChangeListener listener) {
+            contextType.getIpsModel().addChangeListener(listener);
         }
 
         private void addDisposeListener() {
             addDisposeListener(new DisposeListener() {
                 @Override
                 public void widgetDisposed(DisposeEvent e) {
-                    contextType.getIpsModel().removeChangeListener(contentsChangeListener);
+                    contextType.getIpsModel().removeChangeListener(policySideChangedListener);
                 }
             });
         }
@@ -285,11 +308,11 @@ public class CategorySection extends IpsSection {
          * Creates a {@link ContentsChangeListener} that refreshes this section if the
          * {@link IPolicyCmptType} configured by the context {@link IProductCmptType} has changed.
          * <p>
-         * The reason for this listener is the whole-content-changed-event that is fired when
-         * changes done to an {@link IIpsSrcFile} are discarded. The section needs to react to this
-         * event accordingly by updating the list of it's {@link IProductCmptProperty}s.
+         * The reason for this listener is the <em>whole content changed</em> event that is fired
+         * when changes done to an {@link IIpsSrcFile} are discarded. The section needs to react to
+         * this event accordingly by refreshing itself.
          */
-        private ContentsChangeListener createContentsChangeListener(final IProductCmptType contextType) {
+        private ContentsChangeListener createPolicySideChangedListener(final IProductCmptType contextType) {
             return new ContentsChangeListener() {
                 @Override
                 public void contentsChanged(ContentChangeEvent event) {
@@ -302,6 +325,24 @@ public class CategorySection extends IpsSection {
                     }
                 }
             };
+        }
+
+        @Override
+        protected void refreshThis() {
+            updateTreeItemColors();
+        }
+
+        /**
+         * Sets the foreground {@link Color} of all tree items representing properties from the
+         * supertype hierarchy to {@link JFacePreferences#QUALIFIER_COLOR}.
+         */
+        private void updateTreeItemColors() {
+            for (TreeItem item : getTree().getItems()) {
+                IProductCmptProperty property = (IProductCmptProperty)item.getData();
+                if (!isPropertyOfContextType(property)) {
+                    item.setForeground(JFaceResources.getColorRegistry().get(JFacePreferences.QUALIFIER_COLOR));
+                }
+            }
         }
 
         @Override
@@ -330,20 +371,32 @@ public class CategorySection extends IpsSection {
                     IProductCmptProperty property = (IProductCmptProperty)element;
                     Image baseImage = getImageForPropertyOfContextType(property);
                     return isPropertyOfContextType(property) ? baseImage
-                            : getImageForPropertyOfSupertypeHierarchy(baseImage);
+                            : getImageForPropertyOfSupertypeHierarchy(property);
                 }
 
+                /**
+                 * Returns the {@link Image} to be used if the provided {@link IProductCmptProperty}
+                 * belongs to the edited {@link IProductCmptType} itself.
+                 * <p>
+                 * This is the default {@link Image} of the corresponding {@link IPropertyValue}.
+                 * 
+                 * @see ImageHandling#getDefaultImage(Class)
+                 */
                 private Image getImageForPropertyOfContextType(IProductCmptProperty property) {
-                    // Return the default image of the corresponding property value
                     return IpsUIPlugin.getImageHandling().getDefaultImage(
                             property.getProductCmptPropertyType().getValueImplementationClass());
                 }
 
-                private Image getImageForPropertyOfSupertypeHierarchy(Image baseImage) {
-                    /*
-                     * Add the 'override' overlay and use a 'disabled' image if the property
-                     * originates from the supertype hierarchy
-                     */
+                /**
+                 * Returns the {@link Image} to be used if the provided {@link IProductCmptProperty}
+                 * originates from the supertype hierarchy.
+                 * <p>
+                 * This is the disabled version of the default {@link Image} of the corresponding
+                 * {@link IPropertyValue} with an additional 'override' overlay.
+                 */
+                private Image getImageForPropertyOfSupertypeHierarchy(IProductCmptProperty property) {
+                    Image baseImage = IpsUIPlugin.getImageHandling().getDefaultImage(
+                            property.getProductCmptPropertyType().getValueImplementationClass());
                     ImageDescriptor imageDescriptor = new DecorationOverlayIcon(baseImage,
                             OverlayIcons.OVERRIDE_OVR_DESC, IDecoration.BOTTOM_RIGHT);
                     return IpsUIPlugin.getImageHandling().getDisabledSharedImage(imageDescriptor);
@@ -483,24 +536,6 @@ public class CategorySection extends IpsSection {
 
                 // Hand the focus to the target category section
                 targetCategorySection.getViewerButtonComposite().setFocus();
-            }
-        }
-
-        @Override
-        protected void refreshThis() {
-            updateTreeItemColors();
-        }
-
-        /**
-         * Sets the foreground {@link Color} of all tree items representing properties from the
-         * supertype hierarchy to {@link SWT#COLOR_DARK_GRAY}
-         */
-        private void updateTreeItemColors() {
-            for (TreeItem item : getTree().getItems()) {
-                IProductCmptProperty property = (IProductCmptProperty)item.getData();
-                if (!isPropertyOfContextType(property)) {
-                    item.setForeground(getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
-                }
             }
         }
 
