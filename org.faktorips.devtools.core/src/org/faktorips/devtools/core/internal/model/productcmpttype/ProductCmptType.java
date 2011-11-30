@@ -1146,19 +1146,47 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         class CategoryPropertyCollector extends TypeHierarchyVisitor<IProductCmptType> {
 
-            private List<IProductCmptProperty> properties;
+            private final List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
+
+            /**
+             * {@link Set} that is used to store all property names of properties that overwrite
+             * another property from the supertype hierarchy.
+             * <p>
+             * When testing whether a given {@link IProductCmptProperty} shall be included in an
+             * {@link IProductCmptCategory}, it is first checked whether an
+             * {@link IProductCmptProperty} with the same property name is contained within this
+             * set. In this case, the {@link IProductCmptProperty} has been overwritten by a subtype
+             * which means that the supertype {@link IProductCmptProperty} is not to be added to the
+             * {@link IProductCmptCategory}.
+             */
+            private final Set<String> overwritingProperties = new HashSet<String>();
 
             private CategoryPropertyCollector(IIpsProject ipsProject) {
                 super(ipsProject);
-                properties = new ArrayList<IProductCmptProperty>();
             }
 
             @Override
             protected boolean visit(IProductCmptType currentType) throws CoreException {
                 for (IProductCmptProperty property : currentType.findProductCmptProperties(false, ipsProject)) {
                     /*
-                     * First look in the map of pending category changes for policy properties to
-                     * see whether the property's current category has a pending change.
+                     * First, check whether the property has been overwritten by a subtype - in this
+                     * case we do not add the property to the category.
+                     */
+                    if (overwritingProperties.contains(property.getPropertyName())) {
+                        continue;
+                    }
+
+                    /*
+                     * Memorize the property if it is overwriting another property from the
+                     * supertype hierarchy.
+                     */
+                    if (isOverwriteProperty(property)) {
+                        overwritingProperties.add(property.getPropertyName());
+                    }
+
+                    /*
+                     * Look in the map of pending category changes for policy properties to see
+                     * whether the property's current category has a pending change.
                      */
                     String changedCategory = ((ProductCmptType)currentType).pendingPolicyPropertyCategoryChanges
                             .get(property);
@@ -1177,38 +1205,27 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 return searchSupertypeHierarchy;
             }
 
+            /**
+             * Returns whether the given {@link IProductCmptProperty} overwrites another
+             * {@link IProductCmptProperty} from the supertype hierarchy.
+             */
+            private boolean isOverwriteProperty(IProductCmptProperty property) {
+                if (property instanceof IPolicyCmptTypeAttribute) {
+                    return ((IPolicyCmptTypeAttribute)property).isOverwrite();
+                } else if (property instanceof IProductCmptTypeMethod) {
+                    return ((IProductCmptTypeMethod)property).isOverloadsFormula();
+                }
+                return false;
+            }
+
         }
 
         CategoryPropertyCollector collector = new CategoryPropertyCollector(ipsProject);
         collector.start(this);
 
         Collections.sort(collector.properties, new ProductCmptPropertyComparator(this));
-        filterOverwrittenAttributes(collector.properties);
-        filterOverloadedFormulas(collector.properties);
 
         return collector.properties;
-    }
-
-    private void filterOverwrittenAttributes(List<IProductCmptProperty> properties) {
-        OverwrittenPropertyFilter<IPolicyCmptTypeAttribute> filter = new OverwrittenPropertyFilter<IPolicyCmptTypeAttribute>(
-                IPolicyCmptTypeAttribute.class) {
-            @Override
-            protected boolean isOverwriteProperty(IPolicyCmptTypeAttribute property) {
-                return property.isOverwrite();
-            }
-        };
-        filter.filter(properties);
-    }
-
-    private void filterOverloadedFormulas(List<IProductCmptProperty> properties) {
-        OverwrittenPropertyFilter<IProductCmptTypeMethod> filter = new OverwrittenPropertyFilter<IProductCmptTypeMethod>(
-                IProductCmptTypeMethod.class) {
-            @Override
-            protected boolean isOverwriteProperty(IProductCmptTypeMethod property) {
-                return property.isOverloadsFormula();
-            }
-        };
-        filter.filter(properties);
     }
 
     /**
@@ -1339,88 +1356,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     List<IProductCmptPropertyReference> getPropertyReferences() {
         return new ArrayList<IProductCmptPropertyReference>(propertyReferences.getBackingList());
-    }
-
-    /**
-     * Allows to filter out the originals of overwritten properties from a list of product component
-     * properties.
-     * 
-     * @param <T> the type of the {@link IProductCmptProperty} that is filtered out
-     */
-    private abstract static class OverwrittenPropertyFilter<T extends IProductCmptProperty> {
-
-        private final Class<T> propertyClass;
-
-        /**
-         * @param propertyClass the {@link Class} of the {@link IProductCmptProperty} that is
-         *            filtered out
-         */
-        private OverwrittenPropertyFilter(Class<T> propertyClass) {
-            this.propertyClass = propertyClass;
-        }
-
-        /**
-         * Removes the originals of the overwriting properties contained within the given property
-         * list.
-         * <p>
-         * In the following example, the properties of Type Level 1 and Type Level 2 are removed
-         * from the property list:
-         * <p>
-         * Type Level 1<br>
-         * - property<br>
-         * Type Level 2<br>
-         * - property (overwritten)<br>
-         * Type Level 3<br>
-         * - property (overwritten)
-         * 
-         * @param properties the list of properties from which the originals of overwriting
-         *            properties are removed
-         */
-        private void filter(List<IProductCmptProperty> properties) {
-            List<T> overwriteProperties = new ArrayList<T>();
-
-            // Create a copy of the list to avoid concurrent modification
-            List<IProductCmptProperty> propertiesCopy = new ArrayList<IProductCmptProperty>(properties);
-
-            /*
-             * Iterate over the copied list starting with the last element as properties of sub
-             * types are positioned towards the end of the list.
-             */
-            for (int i = propertiesCopy.size() - 1; i >= 0; i--) {
-                if (!propertyClass.isAssignableFrom(propertiesCopy.get(i).getClass())) {
-                    continue;
-                }
-
-                T property = propertyClass.cast(propertiesCopy.get(i));
-
-                // Check whether a corresponding overwritten property was already encountered
-                boolean correspondingOverwrittenPropertyEncountered = false;
-                for (T overwrittenProperty : overwriteProperties) {
-                    if (property.getName().equals(overwrittenProperty.getName())) {
-                        correspondingOverwrittenPropertyEncountered = true;
-                        break;
-                    }
-                }
-
-                /*
-                 * If a corresponding overwritten property has already been found, remove the
-                 * property from the list of returned properties. Otherwise, remember the property
-                 * if it is overwriting another property.
-                 */
-                if (correspondingOverwrittenPropertyEncountered) {
-                    properties.remove(property);
-                } else if (isOverwriteProperty(property)) {
-                    overwriteProperties.add(property);
-                }
-            }
-        }
-
-        /**
-         * Returns whether the indicated property is overwriting another property of the supertype
-         * hierarchy.
-         */
-        protected abstract boolean isOverwriteProperty(T property);
-
     }
 
     /**

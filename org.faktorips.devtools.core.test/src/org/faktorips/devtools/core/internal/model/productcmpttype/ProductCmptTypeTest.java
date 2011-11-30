@@ -1438,7 +1438,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 "overwrittenAttribute");
         attribute.setOverwrite(true);
 
-        IProductCmptCategory category = productCmptType.newCategory("myCategory");
+        IProductCmptCategory category = superProductCmptType.newCategory("myCategory");
         superAttribute.setCategory(category.getName());
         attribute.setCategory(category.getName());
 
@@ -1446,6 +1446,42 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 ipsProject);
         assertTrue(properties.contains(attribute));
         assertFalse(properties.contains(superAttribute));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IPolicyCmptTypeAttribute} marked as <em>overwrite</em> is assigned to an
+     * {@link IProductCmptCategory}. The {@link IProductCmptCategory} of the overwriting
+     * {@link IPolicyCmptTypeAttribute} is different from the {@link IProductCmptCategory} of the
+     * original {@link IPolicyCmptTypeAttribute}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The original {@link IPolicyCmptTypeAttribute} should not be returned as property of it's
+     * {@link IProductCmptCategory} with the subtype as context type. However, it must still be
+     * returned if the context type is the supertype.
+     */
+    @Test
+    public void testFindProductCmptPropertiesForCategory_FilterOverwrittenAttributesAcrossDifferentCategories()
+            throws CoreException {
+
+        IProductCmptProperty superAttribute = createPolicyAttributeProperty(superPolicyCmptType, "overwrittenAttribute");
+        IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)createPolicyAttributeProperty(policyCmptType,
+                "overwrittenAttribute");
+        attribute.setOverwrite(true);
+
+        IProductCmptCategory category1 = superProductCmptType.newCategory("category1");
+        IProductCmptCategory category2 = superProductCmptType.newCategory("category2");
+        superAttribute.setCategory(category1.getName());
+        attribute.setCategory(category2.getName());
+
+        assertTrue(superProductCmptType.findProductCmptPropertiesForCategory(category1, true, ipsProject).contains(
+                superAttribute));
+        assertFalse(productCmptType.findProductCmptPropertiesForCategory(category1, true, ipsProject).contains(
+                superAttribute));
+        assertTrue(productCmptType.findProductCmptPropertiesForCategory(category2, true, ipsProject)
+                .contains(attribute));
+        assertFalse(productCmptType.findProductCmptPropertiesForCategory(category2, true, ipsProject).contains(
+                superAttribute));
     }
 
     /**
@@ -1463,7 +1499,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 "overloadedFormula");
         formula.setOverloadsFormula(true);
 
-        IProductCmptCategory category = productCmptType.newCategory("myCategory");
+        IProductCmptCategory category = superProductCmptType.newCategory("myCategory");
         superFormula.setCategory(category.getName());
         formula.setCategory(category.getName());
 
@@ -1471,6 +1507,41 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 ipsProject);
         assertTrue(properties.contains(formula));
         assertFalse(properties.contains(superFormula));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IProductCmptTypeMethod} marked as <em>overloaded formula signature</em> is assigned
+     * to an {@link IProductCmptCategory}. The {@link IProductCmptCategory} of the overloaded
+     * {@link IProductCmptTypeMethod} is different from the {@link IProductCmptCategory} of the
+     * original {@link IProductCmptTypeMethod}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The original {@link IProductCmptTypeMethod} should not be returned as property of it's
+     * {@link IProductCmptCategory} with the subtype as context type. However, it must still be
+     * returned if the context type is the supertype.
+     */
+    @Test
+    public void testFindProductCmptPropertiesForCategory_FilterOverloadedFormulasAcrossDifferentCategories()
+            throws CoreException {
+
+        IProductCmptProperty superFormula = createFormulaSignatureProperty(superProductCmptType, "overloadedFormula");
+        IProductCmptTypeMethod formula = (IProductCmptTypeMethod)createFormulaSignatureProperty(productCmptType,
+                "overloadedFormula");
+        formula.setOverloadsFormula(true);
+
+        IProductCmptCategory category1 = superProductCmptType.newCategory("category1");
+        IProductCmptCategory category2 = superProductCmptType.newCategory("category2");
+        superFormula.setCategory(category1.getName());
+        formula.setCategory(category2.getName());
+
+        assertTrue(superProductCmptType.findProductCmptPropertiesForCategory(category1, true, ipsProject).contains(
+                superFormula));
+        assertFalse(productCmptType.findProductCmptPropertiesForCategory(category1, true, ipsProject).contains(
+                superFormula));
+        assertTrue(productCmptType.findProductCmptPropertiesForCategory(category2, true, ipsProject).contains(formula));
+        assertFalse(productCmptType.findProductCmptPropertiesForCategory(category2, true, ipsProject).contains(
+                superFormula));
     }
 
     /**
