@@ -29,12 +29,12 @@ import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
  * {@link IProductCmptCategory} an {@link IProductCmptProperty} is assigned to.
  * <p>
  * Using {@link BindingContext} to bind {@link IProductCmptProperty#PROPERTY_CATEGORY} to the
- * control is not sufficient as the property is of type string and does not consider implicit
- * assignments to default categories.
+ * control is not sufficient as the property is of type {@link String} and does not consider
+ * implicit assignments to default categories.
  * 
  * @since 3.6
  * 
- * @author Alexander Weickmann
+ * @author Alexander Weickmann, Faktor Zehn AG
  * 
  * @see IProductCmptCategory
  */
