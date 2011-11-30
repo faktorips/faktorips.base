@@ -513,8 +513,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         assertEquals(superProperty1, superProperties.get(1));
 
         List<IProductCmptProperty> properties = category.findProductCmptProperties(productType, true, ipsProject);
-        assertEquals(superProperty1, properties.get(0));
-        assertEquals(superProperty2, properties.get(1));
+        assertEquals(superProperty2, properties.get(0));
+        assertEquals(superProperty1, properties.get(1));
         assertEquals(property2, properties.get(2));
         assertEquals(property3, properties.get(3));
         assertEquals(property1, properties.get(4));

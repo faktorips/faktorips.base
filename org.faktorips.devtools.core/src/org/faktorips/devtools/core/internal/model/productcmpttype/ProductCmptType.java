@@ -1494,8 +1494,28 @@ public class ProductCmptType extends Type implements IProductCmptType {
          * Properties whose indices are greater are sorted towards the end.
          */
         private int comparePropertyIndices(IProductCmptProperty property1, IProductCmptProperty property2) {
-            int index1 = ((ProductCmptType)productCmptType).getReferencedPropertyIndex(property1);
-            int index2 = ((ProductCmptType)productCmptType).getReferencedPropertyIndex(property2);
+            IProductCmptType contextType = null;
+            try {
+                contextType = property1.findProductCmptType(property1.getIpsProject());
+            } catch (CoreException e) {
+                /*
+                 * Consider the properties equal if the product component type containing the
+                 * references cannot be found.
+                 */
+                IpsPlugin.log(e);
+                return 0;
+            }
+
+            /*
+             * Consider the properties equal if the product component type containing the references
+             * cannot be found.
+             */
+            if (contextType == null) {
+                return 0;
+            }
+
+            int index1 = ((ProductCmptType)contextType).getReferencedPropertyIndex(property1);
+            int index2 = ((ProductCmptType)contextType).getReferencedPropertyIndex(property2);
 
             // If no reference exists for a property, it is sorted towards the end
             if (index1 == -1) {
