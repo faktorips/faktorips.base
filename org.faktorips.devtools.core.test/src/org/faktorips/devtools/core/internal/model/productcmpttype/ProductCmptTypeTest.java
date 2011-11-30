@@ -1432,7 +1432,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      * The original {@link IPolicyCmptTypeAttribute} should not be returned.
      */
     @Test
-    public void testFindProductCmptPropertiesForCategory_OverriddenAttribute() throws CoreException {
+    public void testFindProductCmptPropertiesForCategory_FilterOverwrittenAttributes() throws CoreException {
         IProductCmptProperty superAttribute = createPolicyAttributeProperty(superPolicyCmptType, "overwrittenAttribute");
         IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)createPolicyAttributeProperty(policyCmptType,
                 "overwrittenAttribute");
@@ -1446,6 +1446,31 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 ipsProject);
         assertTrue(properties.contains(attribute));
         assertFalse(properties.contains(superAttribute));
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IProductCmptTypeMethod} marked as <em>overloaded formula signature</em> is assigned
+     * to an {@link IProductCmptCategory}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The original {@link IProductCmptTypeMethod} should not be returned.
+     */
+    @Test
+    public void testFindProductCmptPropertiesForCategory_FilterOverloadedFormulas() throws CoreException {
+        IProductCmptProperty superFormula = createFormulaSignatureProperty(superProductCmptType, "overloadedFormula");
+        IProductCmptTypeMethod formula = (IProductCmptTypeMethod)createFormulaSignatureProperty(productCmptType,
+                "overloadedFormula");
+        formula.setOverloadsFormula(true);
+
+        IProductCmptCategory category = productCmptType.newCategory("myCategory");
+        superFormula.setCategory(category.getName());
+        formula.setCategory(category.getName());
+
+        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesForCategory(category, true,
+                ipsProject);
+        assertTrue(properties.contains(formula));
+        assertFalse(properties.contains(superFormula));
     }
 
     /**
