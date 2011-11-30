@@ -47,6 +47,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -74,6 +75,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Po
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
 import org.faktorips.devtools.core.ui.OverlayIcons;
@@ -89,18 +91,25 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 /**
  * A section allowing the user to edit an {@link IProductCmptCategory}.
  * <p>
- * By means of this section, the user is able to change the order of the
- * {@link IProductCmptProperty}s assigned to the {@link IProductCmptCategory} that is being edited.
- * Furthermore, the {@link IProductCmptCategory} itself can be moved up, down, left or right.
+ * By means of this section, the user is able to change the order of the product component
+ * properties assigned to the {@link IProductCmptCategory} that is being edited. This can be done
+ * via 'Up' and 'Down' buttons, or via drag and drop. Furthermore, the {@link IProductCmptCategory}
+ * itself can be moved up, down, left or right.
  * <p>
  * A separate dialog enables the user to change the properties of an {@link IProductCmptCategory},
  * for example it's name and whether the {@link IProductCmptCategory} is marked as default for a
- * specific kind {@link IProductCmptProperty}.
+ * specific {@link ProductCmptPropertyType}.
  * <p>
- * Yet another dialog allows to change the {@link IProductCmptCategory} of an
- * {@link IProductCmptProperty}.
+ * Yet another dialog allows the user to change the {@link IProductCmptCategory} of an
+ * {@link IProductCmptProperty}. This can also be achieved via drag and drop.
+ * 
+ * @since 3.6
  * 
  * @author Alexander Weickmann
+ * 
+ * @see IProductCmptCategory
+ * @see IProductCmptProperty
+ * @see ProductCmptPropertyType
  */
 public class CategorySection extends IpsSection {
 
@@ -158,7 +167,6 @@ public class CategorySection extends IpsSection {
         getBindingContext().add(
                 new ControlPropertyBinding(getSectionControl(), category, IProductCmptCategory.PROPERTY_NAME,
                         String.class) {
-
                     @Override
                     public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                         updateSectionTitle();
@@ -315,26 +323,30 @@ public class CategorySection extends IpsSection {
             viewer.setLabelProvider(new LocalizedLabelProvider() {
                 @Override
                 public Image getImage(Object element) {
-                    // Return the default image of the corresponding property value
                     if (!(element instanceof IProductCmptProperty)) {
                         return super.getImage(element);
                     }
 
                     IProductCmptProperty property = (IProductCmptProperty)element;
-                    Image baseImage = IpsUIPlugin.getImageHandling().getDefaultImage(
+                    Image baseImage = getImageForPropertyOfContextType(property);
+                    return isPropertyOfContextType(property) ? baseImage
+                            : getImageForPropertyOfSupertypeHierarchy(baseImage);
+                }
+
+                private Image getImageForPropertyOfContextType(IProductCmptProperty property) {
+                    // Return the default image of the corresponding property value
+                    return IpsUIPlugin.getImageHandling().getDefaultImage(
                             property.getProductCmptPropertyType().getValueImplementationClass());
+                }
 
-                    if (isPropertyOfContextType(property)) {
-                        return baseImage;
-                    }
-
+                private Image getImageForPropertyOfSupertypeHierarchy(Image baseImage) {
                     /*
-                     * Decorate the image with an override overlay if the property does not belong
-                     * to the context type.
+                     * Add the 'override' overlay and use a 'disabled' image if the property
+                     * originates from the supertype hierarchy
                      */
                     ImageDescriptor imageDescriptor = new DecorationOverlayIcon(baseImage,
                             OverlayIcons.OVERRIDE_OVR_DESC, IDecoration.BOTTOM_RIGHT);
-                    return IpsUIPlugin.getImageHandling().getImage(imageDescriptor);
+                    return IpsUIPlugin.getImageHandling().getDisabledSharedImage(imageDescriptor);
                 }
             });
         }
@@ -360,7 +372,7 @@ public class CategorySection extends IpsSection {
 
         private void addDropSupport(TreeViewer viewer) {
             viewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { ProductCmptPropertyTransfer.getInstance() },
-                    new PropertyDropAdapter(this, viewer));
+                    new PropertyDropAdapter(viewer));
         }
 
         @Override
@@ -398,14 +410,32 @@ public class CategorySection extends IpsSection {
         private void moveParts(boolean up) {
             int[] selectionIndices = getSelectionIndices();
             int[] newSelectionIndices = Arrays.copyOf(selectionIndices, selectionIndices.length);
+            int[] moveIndices = getSelectionIndicesMinusSupertypePropertyOffset(selectionIndices);
             try {
-                newSelectionIndices = category.moveProductCmptProperties(selectionIndices, up, contextType);
+                int[] newIndices = category.moveProductCmptProperties(moveIndices, up, contextType);
+                newSelectionIndices = getSelectionindicesPlusSupertypePropertyOffset(newIndices);
             } catch (CoreException e) {
                 // The elements could not be moved so the new selection equals the old selection
                 IpsPlugin.log(e);
                 newSelectionIndices = Arrays.copyOf(selectionIndices, selectionIndices.length);
             }
             setSelection(newSelectionIndices);
+        }
+
+        private int[] getSelectionindicesPlusSupertypePropertyOffset(int[] selectionIndices) {
+            int[] result = Arrays.copyOf(selectionIndices, selectionIndices.length);
+            for (int i = 0; i < selectionIndices.length; i++) {
+                result[i] += getNumberOfPropertiesFromSupertypeHierarchy();
+            }
+            return result;
+        }
+
+        private int[] getSelectionIndicesMinusSupertypePropertyOffset(int[] selectionIndices) {
+            int[] result = Arrays.copyOf(selectionIndices, selectionIndices.length);
+            for (int i = 0; i < selectionIndices.length; i++) {
+                result[i] -= getNumberOfPropertiesFromSupertypeHierarchy();
+            }
+            return result;
         }
 
         private int[] getSelectionIndices() {
@@ -438,11 +468,11 @@ public class CategorySection extends IpsSection {
         }
 
         private void openChangeCategoryDialog() {
-            IProductCmptProperty selectedProperty = getSelectedProperty();
-            if (selectedProperty == null || !isSelectedPropertyOfContextType()) {
+            if (!isPropertySelected() || !isPropertyOfContextTypeSelected()) {
                 return;
             }
 
+            IProductCmptProperty selectedProperty = getSelectedProperty();
             ChangeCategoryDialog dialog = new ChangeCategoryDialog(contextType, selectedProperty, category, getShell());
             int returnCode = dialog.open();
             if (returnCode == Window.OK) {
@@ -450,17 +480,68 @@ public class CategorySection extends IpsSection {
                 IProductCmptCategory selectedCategory = dialog.getSelectedCategory();
                 CategorySection targetCategorySection = categoryCompositionSection.getCategorySection(selectedCategory);
                 targetCategorySection.getViewerButtonComposite().setSelectedObject(selectedProperty);
+
+                // Hand the focus to the target category section
+                targetCategorySection.getViewerButtonComposite().setFocus();
+            }
+        }
+
+        @Override
+        protected void refreshThis() {
+            updateTreeItemColors();
+        }
+
+        /**
+         * Sets the foreground {@link Color} of all tree items representing properties from the
+         * supertype hierarchy to {@link SWT#COLOR_DARK_GRAY}
+         */
+        private void updateTreeItemColors() {
+            for (TreeItem item : getTree().getItems()) {
+                IProductCmptProperty property = (IProductCmptProperty)item.getData();
+                if (!isPropertyOfContextType(property)) {
+                    item.setForeground(getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+                }
             }
         }
 
         @Override
         protected void updateButtonEnabledStates() {
-            moveUpButton.setEnabled(isPropertySelected() && !isFirstElementSelected());
-            moveDownButton.setEnabled(isPropertySelected() && !isLastElementSelected());
-            changeCategoryButton.setEnabled(isPropertySelected() && isSelectedPropertyOfContextType());
+            moveUpButton.setEnabled(isPropertySelected() && !isFirstPropertyOfContextTypeSelected()
+                    && isPropertyOfContextTypeSelected());
+            moveDownButton.setEnabled(isPropertySelected() && !isLastPropertyOfContextTypeSelected()
+                    && isPropertyOfContextTypeSelected());
+            changeCategoryButton.setEnabled(isPropertySelected() && isPropertyOfContextTypeSelected());
         }
 
-        private boolean isSelectedPropertyOfContextType() {
+        private boolean isFirstPropertyOfContextTypeSelected() {
+            return getSelectedObject().equals(getFirstPropertyOfContextType());
+        }
+
+        private IProductCmptProperty getFirstPropertyOfContextType() {
+            for (Object o : contentProvider.getElements(null)) {
+                if (isPropertyOfContextType((IProductCmptProperty)o)) {
+                    return (IProductCmptProperty)o;
+                }
+            }
+            return null;
+        }
+
+        private int getNumberOfPropertiesFromSupertypeHierarchy() {
+            int numberPropertiesFromSupertypeHierarchy = 0;
+            for (Object o : contentProvider.getElements(null)) {
+                if (!isPropertyOfContextType((IProductCmptProperty)o)) {
+                    numberPropertiesFromSupertypeHierarchy++;
+                }
+            }
+            return numberPropertiesFromSupertypeHierarchy;
+
+        }
+
+        private boolean isLastPropertyOfContextTypeSelected() {
+            return isLastElementSelected();
+        }
+
+        private boolean isPropertyOfContextTypeSelected() {
             return isPropertyOfContextType(getSelectedProperty());
         }
 
@@ -488,8 +569,6 @@ public class CategorySection extends IpsSection {
 
         private static class PropertyContentProvider implements ITreeContentProvider {
 
-            private final List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
-
             private final IProductCmptType contextType;
 
             private final IProductCmptCategory category;
@@ -501,7 +580,7 @@ public class CategorySection extends IpsSection {
 
             @Override
             public Object[] getElements(Object inputElement) {
-                properties.clear();
+                List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
                 try {
                     properties
                             .addAll(category.findProductCmptProperties(contextType, true, contextType.getIpsProject()));
@@ -552,10 +631,8 @@ public class CategorySection extends IpsSection {
 
             @Override
             public void dragStart(DragSourceEvent event) {
-                event.doit = categoryComposite.isPropertySelected();
-                if (event.doit) {
-                    PropertyDropAdapter.sourceTree = categoryComposite.getTree();
-                }
+                event.doit = categoryComposite.isPropertySelected()
+                        && categoryComposite.isPropertyOfContextTypeSelected();
             }
 
             @Override
@@ -565,32 +642,15 @@ public class CategorySection extends IpsSection {
 
             @Override
             public void dragFinished(DragSourceEvent event) {
-                PropertyDropAdapter.sourceTree = null;
+                // Nothing to do
             }
 
         }
 
-        private static class PropertyDropAdapter extends ViewerDropAdapter {
+        private class PropertyDropAdapter extends ViewerDropAdapter {
 
-            /**
-             * The {@link Tree} widget that started the drag and drop operation.
-             * <p>
-             * This reference is used by the method {@link #validateDrop(Object, int, TransferData)}
-             * to obtain the {@link IProductCmptProperty} the user wants to transfer and to deduce
-             * the source {@link IProductCmptCategory}. The field is set by the
-             * {@link PropertyDragListener} that starts the drag and drop operation.
-             * <p>
-             * We know that this is not a "nice" solution but see no other way as
-             * {@code getCurrentEvent().data} is null in
-             * {@link #validateDrop(Object, int, TransferData)}.
-             */
-            private static Tree sourceTree;
-
-            private final CategoryComposite categoryComposite;
-
-            private PropertyDropAdapter(CategoryComposite categoryComposite, Viewer viewer) {
+            private PropertyDropAdapter(Viewer viewer) {
                 super(viewer);
-                this.categoryComposite = categoryComposite;
             }
 
             @Override
@@ -600,21 +660,12 @@ public class CategorySection extends IpsSection {
                     return false;
                 }
 
-                // Cannot drop properties from supertypes into another category
-                if (isDropSupertypePropertyIntoDifferentCategory()) {
+                // Cannot drop on properties from the supertype hierarchy
+                if (getTargetProperty() != null && !isPropertyOfContextType(getTargetProperty())) {
                     return false;
                 }
 
                 return ProductCmptPropertyTransfer.getInstance().isSupportedType(transferType);
-            }
-
-            private boolean isDropSupertypePropertyIntoDifferentCategory() {
-                return !categoryComposite.isPropertyOfContextType(getDroppedPropertyFromSourceTree())
-                        && !categoryComposite.getTree().equals(sourceTree);
-            }
-
-            private IProductCmptProperty getDroppedPropertyFromSourceTree() {
-                return (IProductCmptProperty)sourceTree.getSelection()[0].getData();
             }
 
             @Override
@@ -632,7 +683,18 @@ public class CategorySection extends IpsSection {
                     return false;
                 }
 
+                setSelectedObject(droppedProperty);
+                setFocus();
+
                 return true;
+            }
+
+            private IProductCmptProperty getTargetProperty() {
+                return (IProductCmptProperty)getCurrentTarget();
+            }
+
+            private IProductCmptCategory getTargetCategory() {
+                return (IProductCmptCategory)getViewer().getInput();
             }
 
             private IProductCmptProperty getDroppedProperty(Object data) {
@@ -655,7 +717,7 @@ public class CategorySection extends IpsSection {
                  * When the mouse is on an item, return LOCATION_BEFORE or LOCATION_AFTER instead,
                  * depending on the distance to the respective location.
                  */
-                Point coordinates = categoryComposite.getTree().toControl(new Point(event.x, event.y));
+                Point coordinates = getTree().toControl(new Point(event.x, event.y));
                 if ((coordinates.y - bounds.y) < bounds.height / 2) {
                     return LOCATION_BEFORE;
                 } else if ((bounds.y + bounds.height - coordinates.y) < bounds.height / 2) {
@@ -663,14 +725,6 @@ public class CategorySection extends IpsSection {
                 } else {
                     return LOCATION_ON;
                 }
-            }
-
-            private IProductCmptProperty getTargetProperty() {
-                return (IProductCmptProperty)getCurrentTarget();
-            }
-
-            private IProductCmptCategory getTargetCategory() {
-                return (IProductCmptCategory)getViewer().getInput();
             }
 
         }

@@ -1298,7 +1298,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void createProductCmptPropertyReferencesForNotReferencedProperties() throws CoreException {
-        for (IProductCmptProperty property : findProductCmptProperties(true, getIpsProject())) {
+        for (IProductCmptProperty property : findProductCmptProperties(false, getIpsProject())) {
             if (getReferencedPropertyIndex(property) == -1) {
                 newProductCmptPropertyReference(property);
             }
