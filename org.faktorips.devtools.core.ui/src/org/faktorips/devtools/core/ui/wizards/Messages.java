@@ -53,4 +53,9 @@ public class Messages extends NLS {
     public static String ResultDisplayer_titleResults;
     public static String ResultDisplayer_Warnings;
 
+    public static String NewWizardUtil_nameDefaultCategoryAttributes;
+    public static String NewWizardUtil_nameDefaultCategoryTablesAndFormulas;
+    public static String NewWizardUtil_nameDefaultCategoryValidationRules;
+    public static String NewWizardUtil_nameDefaultCategoryDefaultsAndValueSets;
+
 }

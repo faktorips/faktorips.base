@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
+import org.faktorips.devtools.core.ui.wizards.NewWizardUtil;
 import org.faktorips.devtools.core.ui.wizards.type.NewTypePage;
 import org.faktorips.util.message.Message;
 
@@ -141,6 +142,9 @@ public class NewProductCmptTypePage extends NewTypePage {
         super.finishIpsObjectsExtension(newIpsObject, modifiedIpsObjects);
 
         IProductCmptType productCmptType = (IProductCmptType)newIpsObject;
+
+        NewWizardUtil.createDefaultCategoriesIfNecessary(productCmptType);
+
         if (((NewPcTypePage)getPageOfAssociatedType()).isPolicyCmptTypeConfigurable()) {
             productCmptType.setConfigurationForPolicyCmptType(true);
             productCmptType.setPolicyCmptType(getPageOfAssociatedType().getQualifiedIpsObjectName());

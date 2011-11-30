@@ -28,8 +28,6 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidations;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
@@ -39,6 +37,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
+import org.faktorips.devtools.core.ui.wizards.NewWizardUtil;
 import org.faktorips.devtools.core.ui.wizards.type.NewTypePage;
 import org.faktorips.util.message.Message;
 
@@ -144,34 +143,9 @@ public class NewProductCmptTypePage extends NewTypePage {
 
         IProductCmptType productCmptType = (IProductCmptType)newIpsObject;
 
-        if (!productCmptType.hasSupertype()) {
-            createDefaultCategories(productCmptType);
-        }
+        NewWizardUtil.createDefaultCategoriesIfNecessary(productCmptType);
 
         associatePolicyCmptType(modifiedIpsObjects, productCmptType);
-    }
-
-    private void createDefaultCategories(IProductCmptType productCmptType) {
-        IProductCmptCategory attributes = productCmptType
-                .newCategory(Messages.NewProductCmptTypePage_nameDefaultCategoryAttributes);
-        attributes.setDefaultForProductCmptTypeAttributes(true);
-        attributes.setPosition(Position.LEFT);
-
-        IProductCmptCategory tablesAndFormulas = productCmptType
-                .newCategory(Messages.NewProductCmptTypePage_nameDefaultCategoryTablesAndFormulas);
-        tablesAndFormulas.setDefaultForTableStructureUsages(true);
-        tablesAndFormulas.setDefaultForFormulaSignatureDefinitions(true);
-        tablesAndFormulas.setPosition(Position.LEFT);
-
-        IProductCmptCategory validationRules = productCmptType
-                .newCategory(Messages.NewProductCmptTypePage_nameDefaultCategoryValidationRules);
-        validationRules.setDefaultForValidationRules(true);
-        validationRules.setPosition(Position.LEFT);
-
-        IProductCmptCategory defaultsAndValueSets = productCmptType
-                .newCategory(Messages.NewProductCmptTypePage_nameDefaultCategoryDefaultsAndValueSets);
-        defaultsAndValueSets.setDefaultForPolicyCmptTypeAttributes(true);
-        defaultsAndValueSets.setPosition(Position.RIGHT);
     }
 
     private void associatePolicyCmptType(Set<IIpsObject> modifiedIpsObjects, IProductCmptType productCmptType)
