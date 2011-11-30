@@ -28,10 +28,12 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
 /**
- * A dialog that allows the user to select one {@link IProductCmptCategory} out of all
- * {@link IProductCmptCategory}s of an {@link IProductCmptType}.
+ * A dialog that allows the user to select one {@link IProductCmptCategory} out of all categories of
+ * an {@link IProductCmptType}.
  * 
- * @author Alexander Weickmann
+ * @since 3.6
+ * 
+ * @author Alexander Weickmann, Faktor Zehn AG
  */
 public class ChangeCategoryDialog extends ElementListSelectionDialog {
 
@@ -68,7 +70,7 @@ public class ChangeCategoryDialog extends ElementListSelectionDialog {
         setElements(categories.toArray());
     }
 
-    // Overridden to set initial selection
+    // Overridden to set the initial selection
     @Override
     protected Control createDialogArea(Composite parent) {
         Control dialogArea = super.createDialogArea(parent);

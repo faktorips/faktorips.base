@@ -39,7 +39,9 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 /**
  * Dialog that allows the user to edit the properties of an {@link IProductCmptCategory}.
  * 
- * @author Alexander Weickmann
+ * @since 3.6
+ * 
+ * @author Alexander Weickmann, Faktor Zehn AG
  */
 public class CategoryEditDialog extends IpsPartEditDialog2 {
 
@@ -120,29 +122,29 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
 
         Checkbox defaultProductCmptTypeAttributesCheckbox = getToolkit().createCheckbox(defaultsComposite,
                 Messages.CategoryEditDialog_defaultProductComponentTypeAttributes);
-        Checkbox defaultFormulaSignatureDefinitionsCheckbox = getToolkit().createCheckbox(defaultsComposite,
-                Messages.CategoryEditDialog_defaultFormulaSignatureDefinitions);
-        Checkbox defaultTableStructureUsagesCheckbox = getToolkit().createCheckbox(defaultsComposite,
-                Messages.CategoryEditDialog_defaultTableStructureUsages);
         Checkbox defaultPolicyCmptTypeAttributesCheckbox = getToolkit().createCheckbox(defaultsComposite,
                 Messages.CategoryEditDialog_defaultPolicyComponentTypeAttributes);
+        Checkbox defaultTableStructureUsagesCheckbox = getToolkit().createCheckbox(defaultsComposite,
+                Messages.CategoryEditDialog_defaultTableStructureUsages);
+        Checkbox defaultFormulaSignatureDefinitionsCheckbox = getToolkit().createCheckbox(defaultsComposite,
+                Messages.CategoryEditDialog_defaultFormulaSignatureDefinitions);
         Checkbox defaultValidationRulesCheckbox = getToolkit().createCheckbox(defaultsComposite,
                 Messages.CategoryEditDialog_defaultValidationRules);
 
         getBindingContext().bindContent(defaultProductCmptTypeAttributesCheckbox, getCategory(),
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES);
-        getBindingContext().bindContent(defaultFormulaSignatureDefinitionsCheckbox, getCategory(),
-                IProductCmptCategory.PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS);
-        getBindingContext().bindContent(defaultTableStructureUsagesCheckbox, getCategory(),
-                IProductCmptCategory.PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES);
         getBindingContext().bindContent(defaultPolicyCmptTypeAttributesCheckbox, getCategory(),
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES);
+        getBindingContext().bindContent(defaultTableStructureUsagesCheckbox, getCategory(),
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES);
+        getBindingContext().bindContent(defaultFormulaSignatureDefinitionsCheckbox, getCategory(),
+                IProductCmptCategory.PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS);
         getBindingContext().bindContent(defaultValidationRulesCheckbox, getCategory(),
                 IProductCmptCategory.PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
 
         // Enable automatic line break for the explanation label
         GridData explanationGridData = new GridData();
-        explanationGridData.widthHint = defaultsComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+        explanationGridData.widthHint = defaultsComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT).x * 2;
         explanationLabel.setLayoutData(explanationGridData);
     }
 
