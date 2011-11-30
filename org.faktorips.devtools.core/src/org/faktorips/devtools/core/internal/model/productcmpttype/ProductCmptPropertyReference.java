@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
 /**
  * Default implementation of {@link IProductCmptPropertyReference}.
  * 
- * @author Alexander Weickmann
+ * @author Alexander Weickmann, Faktor Zehn AG
  */
 public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements IProductCmptPropertyReference {
 

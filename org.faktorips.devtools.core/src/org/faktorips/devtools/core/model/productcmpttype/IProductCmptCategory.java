@@ -40,7 +40,7 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
  * 
  * @since 3.6
  * 
- * @author Alexander Weickmann
+ * @author Alexander Weickmann, Faktor Zehn AG
  * 
  * @see IProductCmptProperty
  * @see ProductCmptPropertyType
@@ -116,7 +116,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
             + "DuplicateDefaultsForProductCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
-     * Returns the {@link IProductCmptType} this category belongs to.
+     * Returns the {@link IProductCmptType} this {@link IProductCmptCategory} belongs to.
      */
     public IProductCmptType getProductCmptType();
 

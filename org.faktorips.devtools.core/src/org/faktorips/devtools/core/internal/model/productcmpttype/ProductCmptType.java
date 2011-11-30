@@ -48,7 +48,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -226,9 +225,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * 
      * @param reference the {@link IProductCmptPropertyReference} to search the corresponding
      *            {@link IProductCmptProperty} for
-     * @param ipsProject the {@link IIpsProject} whose {@link IIpsObjectPath} is used for the search
      * 
-     * @throws CoreException If an error occurs during the search
+     * @throws CoreException if an error occurs during the search
      */
     IProductCmptProperty findProductCmptProperty(IProductCmptPropertyReference reference, IIpsProject ipsProject)
             throws CoreException {
@@ -970,7 +968,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public IProductCmptCategory findCategory(final String name, IIpsProject ipsProject) throws CoreException {
         class ProductCmptCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {
-
             private final String categoryName;
 
             private IProductCmptCategory category;
@@ -988,7 +985,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 }
                 return true;
             }
-
         }
 
         ProductCmptCategoryFinder visitor = new ProductCmptCategoryFinder(ipsProject, name);
@@ -1037,7 +1033,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     /**
-     * Moves {@link IProductCmptPropertyReference}s up or down within this type.
+     * Moves property references within this {@link IProductCmptType} up or down.
      * <p>
      * The move operation is logically performed according to the provided context list.
      * <p>
@@ -1063,9 +1059,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * Note that only a single <em>whole content changed</em> event will be fired by this operation.
      * 
      * @param movedIndices the indices identifying the properties of the context list to be moved
-     * @param contextProperties only references corresponding to these {@link IProductCmptProperty}s
-     *            are swapped with each other. This is necessary to be able to change the ordering
-     *            of properties that belong to the same category without interference from
+     * @param contextProperties only references corresponding to these properties are swapped with
+     *            each other. This is necessary to be able to change the ordering of properties that
+     *            belong to the same {@link IProductCmptCategory} without interference from
      *            properties belonging to other categories. To achieve this, clients must provide
      *            all move-enabled properties assigned to the category in question
      * @param up flag indicating whether to move up or down
@@ -1501,6 +1497,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             int index1 = ((ProductCmptType)productCmptType).getReferencedPropertyIndex(property1);
             int index2 = ((ProductCmptType)productCmptType).getReferencedPropertyIndex(property2);
 
+            // If no reference exists for a property, it is sorted towards the end
             if (index1 == -1) {
                 index1 = Integer.MAX_VALUE;
             }

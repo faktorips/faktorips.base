@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
 /**
  * Default implementation of {@link IProductCmptProperty}.
  * 
- * @author Alexander Weickmann
+ * @author Alexander Weickmann, Faktor Zehn AG
  */
 public class ProductCmptCategory extends AtomicIpsObjectPart implements IProductCmptCategory {
 
