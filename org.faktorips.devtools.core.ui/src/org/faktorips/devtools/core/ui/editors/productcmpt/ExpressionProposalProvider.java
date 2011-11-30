@@ -28,20 +28,22 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.ListOfTypeDatatype;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FlFunction;
@@ -262,10 +264,6 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                     name = name.substring(0, name.indexOf('['));
                     isIndexed = true;
                 }
-                if (name.indexOf('(') > 0) {
-                    name = name.substring(0, name.indexOf('('));
-                    isIndexed = true;
-                }
                 final boolean isList = target instanceof ListOfTypeDatatype;
                 if (isList) {
                     target = ((ListOfTypeDatatype)target).getBasicDatatype();
@@ -273,7 +271,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 final IAssociation association = ((IType)target).findAssociation(name, ipsProject);
                 target = association.findTarget(ipsProject);
                 if (!isIndexed && (isList || association.is1ToManyIgnoringQualifier())) {
-                    target = new ListOfTypeDatatype((IType)target);
+                    target = new ListOfTypeDatatype(target);
                 }
             }
             return target;
@@ -310,8 +308,9 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         }
         int i = s.length() - 1;
         while (i >= 0) {
-            if (!Character.isLetterOrDigit(s.charAt(i)) && s.charAt(i) != '.' && s.charAt(i) != '_'
-                    && s.charAt(i) != '-' && s.charAt(i) != '[' && s.charAt(i) != ']') {
+            char c = s.charAt(i);
+            if (!Character.isLetterOrDigit(c) && c != '.' && c != '_' && c != '-' && c != '[' && c != ']' && c != '"'
+                    && c != ' ') {
                 break;
             }
             i--;
@@ -421,6 +420,21 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             final IContentProposal proposalWithIndex = new ContentProposal(removePrefix(name, prefix) + "[0]", //$NON-NLS-1$
                     displayText + "[0]", localizedDescription); //$NON-NLS-1$
             result.add(proposalWithIndex);
+        }
+        try {
+            IType target = association.findTarget(ipsProject);
+            if (target instanceof IPolicyCmptType && ((IPolicyCmptType)target).isConfigurableByProductCmptType()) {
+                IProductCmptType productCmptType = ((IPolicyCmptType)target).findProductCmptType(ipsProject);
+                IIpsSrcFile[] productCmptSrcFiles = ipsProject.findAllProductCmptSrcFiles(productCmptType, true);
+                for (IIpsSrcFile srcFile : productCmptSrcFiles) {
+                    String qualifier = "[\"" + srcFile.getIpsObjectName() + "\"]"; //$NON-NLS-1$ //$NON-NLS-2$
+                    final IContentProposal proposalWithQualifier = new ContentProposal(removePrefix(name, prefix)
+                            + qualifier, displayText + qualifier, localizedDescription);
+                    result.add(proposalWithQualifier);
+                }
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e.getMessage(), e);
         }
     }
 }

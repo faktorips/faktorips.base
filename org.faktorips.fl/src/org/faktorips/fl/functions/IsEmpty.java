@@ -17,6 +17,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -43,7 +44,10 @@ public class IsEmpty extends AbstractFlFunction {
             return new CompilationResultImpl("false", Datatype.PRIMITIVE_BOOLEAN);
         }
         JavaCodeFragment code = new JavaCodeFragment();
-        if (argType.hasNullObject()) {
+        if (argType instanceof ListOfTypeDatatype) {
+            code.append(argResults[0].getCodeFragment());
+            code.append(".isEmpty()");
+        } else if (argType.hasNullObject()) {
             DatatypeHelper helper = getCompiler().getDatatypeHelper(argType);
             code.append(helper.nullExpression());
             code.append(".equals(");

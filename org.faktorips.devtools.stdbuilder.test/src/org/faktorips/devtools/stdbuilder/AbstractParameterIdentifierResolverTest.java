@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
@@ -40,7 +41,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
-import org.faktorips.devtools.core.model.type.ListOfTypeDatatype;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
@@ -561,7 +561,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * An {@link IExpression} has a parameter called {@code "tree"} of the {@link IPolicyCmptType}
      * {@code "Tree"} which has a 1toMany association to the {@link IPolicyCmptType}
      * {@code "Branch"} with the name {@code "branch"}. The resolver is called with
-     * {@code "tree.branch(Branch)"} where {@code "Branch"} is the runtime ID of a
+     * {@code tree.branch["Branch"]} where {@code "Branch"} is the runtime ID of a
      * {@link IProductCmpt} configuring {@code "Branch"}.
      * <p>
      * 
@@ -579,7 +579,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     public void testCompileAssociations_1toManyQualified() throws CoreException {
         method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
         newProductCmpt(branchPolicyCmptType.findProductCmptType(ipsProject), "my.Branch");
-        CompilationResult result = resolver.compile("tree.branch(Branch)", null, locale);
+        CompilationResult result = resolver.compile("tree.branch[\"Branch\"]", null, locale);
         assertTrue(result.successfull());
         assertEquals(branchPolicyCmptType, result.getDatatype());
         String expected = "FormulaEvaluatorUtil.getModelObjectById(tree."
@@ -592,7 +592,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * <strong>Scenario:</strong><br>
      * An {@link IExpression} has a parameter called {@code "twig"} of the {@link IPolicyCmptType}
      * {@code "Twig"} which has a 1to1 association to the {@link IPolicyCmptType} {@code "Leaf"}
-     * with the name {@code "leaf"}. The resolver is called with {@code "twig.leaf(ALeaf)"} where
+     * with the name {@code "leaf"}. The resolver is called with {@code twig.leaf["ALeaf"]} where
      * {@code "ALeaf"} is the runtime ID of a {@link IProductCmpt} configuring {@code "Leaf"}.
      * <p>
      * 
@@ -610,7 +610,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     public void testCompileAssociations_1to1Qualified() throws CoreException {
         method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
         newProductCmpt(leafPolicyCmptType.findProductCmptType(ipsProject), "pack.ALeaf");
-        CompilationResult result = resolver.compile("twig.leaf(ALeaf)", null, locale);
+        CompilationResult result = resolver.compile("twig.leaf[\"ALeaf\"]", null, locale);
         assertTrue(result.successfull());
         assertEquals(leafPolicyCmptType, result.getDatatype());
         Object expected = "FormulaEvaluatorUtil.getModelObjectById(twig."
@@ -623,8 +623,8 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * <strong>Scenario:</strong><br>
      * An {@link IExpression} has a parameter called {@code "twig"} of the {@link IPolicyCmptType}
      * {@code "Twig"} which has a 1to1 association to the {@link IPolicyCmptType} {@code "Leaf"}
-     * with the name {@code "leaf"}. The resolver is called with {@code "twig.leaf(ALeaf)"} where
-     * {@code "UnknownLeaf"} is no known runtime ID.
+     * with the name {@code "leaf"}. The resolver is called with {@code twig.leaf["UnknownLeaf"]}
+     * where {@code "UnknownLeaf"} is no known runtime ID.
      * <p>
      * 
      * <strong>Expected Outcome:</strong><br>
@@ -637,7 +637,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     @Test
     public void testCompileAssociations_1to1QualifiedWithUnknownProduct() {
         method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
-        CompilationResult result = resolver.compile("twig.leaf(UnknownLeaf)", null, locale);
+        CompilationResult result = resolver.compile("twig.leaf[\"UnknownLeaf\"]", null, locale);
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNKNOWN_QUALIFIER, result.getMessages().getMessage(0).getCode());

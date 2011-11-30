@@ -29,6 +29,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -45,7 +46,6 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.ListOfTypeDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -368,15 +368,15 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         try {
             String associationName = attributeName;
             Integer index = null;
+            String qualifier = null;
             if (attributeName.indexOf('[') > 0) {
                 associationName = attributeName.substring(0, attributeName.indexOf('['));
-                index = Integer.valueOf(attributeName.substring(attributeName.indexOf('[') + 1,
-                        attributeName.indexOf(']')));
-            }
-            String qualifier = null;
-            if (attributeName.indexOf('(') > 0) {
-                associationName = attributeName.substring(0, attributeName.indexOf('('));
-                qualifier = attributeName.substring(attributeName.indexOf('(') + 1, attributeName.indexOf(')'));
+                String substring = attributeName.substring(attributeName.indexOf('[') + 1, attributeName.indexOf(']'));
+                if (substring.startsWith("\"")) { //$NON-NLS-1$
+                    qualifier = substring.substring(1, substring.length() - 1);
+                } else {
+                    index = Integer.valueOf(substring);
+                }
             }
             IAssociation association = type.findAssociation(associationName, ipsproject);
             if (association == null) {
