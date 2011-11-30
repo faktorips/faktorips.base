@@ -33,8 +33,9 @@ public class Not extends AbstractFlFunction {
      * {@inheritDoc}
      */
     public CompilationResult compile(CompilationResult[] argResults) {
-        JavaCodeFragment code = new JavaCodeFragment("!");
+        JavaCodeFragment code = new JavaCodeFragment("!(");
         code.append(argResults[0].getCodeFragment());
+        code.append(')');
         ((CompilationResultImpl)argResults[0]).setJavaCodeFragment(code);
         return argResults[0];
     }

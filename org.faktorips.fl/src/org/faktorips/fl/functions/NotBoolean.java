@@ -36,10 +36,10 @@ public class NotBoolean extends AbstractFlFunction {
         CompilationResultImpl result = (CompilationResultImpl)argResults[0];
         JavaCodeFragment code = result.getCodeFragment();
         JavaCodeFragment newCode = new JavaCodeFragment();
-        newCode.append('(');
+        newCode.append("((");
         newCode.append(code);
-        newCode.append("==null ? (Boolean)null : ");
-        newCode.append("Boolean.valueOf(!" + code + ".booleanValue())");
+        newCode.append(")==null ? (Boolean)null : ");
+        newCode.append("Boolean.valueOf(!(" + code + ").booleanValue())");
         newCode.append(')');
         result.setJavaCodeFragment(newCode);
         return result;
