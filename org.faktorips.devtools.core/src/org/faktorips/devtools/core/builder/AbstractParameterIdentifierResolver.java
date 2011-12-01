@@ -329,9 +329,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             return compileTypeAssociationIdentifier(javaCodeFragment, type, attributeName);
         }
         if (attribute == null) {
-            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {
-                    javaCodeFragment, type.getName(), attributeName });
-            return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+            return returnErrorCompilationResultForNoAttribute(javaCodeFragment, attributeName, type);
         }
 
         try {
@@ -380,9 +378,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             }
             IAssociation association = type.findAssociation(associationName, ipsproject);
             if (association == null) {
-                String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {
-                        javaCodeFragment, type.getName(), attributeName });
-                return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+                return returnErrorCompilationResultForNoAttribute(javaCodeFragment, attributeName, type);
             } else {
                 if (association.is1To1() && index != null) {
                     return new CompilationResultImpl(Message.newError(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, NLS
@@ -408,9 +404,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);
-            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {
-                    javaCodeFragment, type.getName(), attributeName });
-            return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+            return returnErrorCompilationResultForNoAttribute(javaCodeFragment, attributeName, type);
         }
     }
 
@@ -489,9 +483,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             return compileAssociationToManyChain(compilationResult1.getCodeFragment(), (ListOfTypeDatatype)datatype,
                     tail);
         } else {
-            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {
-                    javaCodeFragment, type.getName(), attributeName });
-            return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+            return returnErrorCompilationResultForNoAttribute(javaCodeFragment, attributeName, type);
         }
     }
 
@@ -569,11 +561,24 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);
-            String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {
-                    javaCodeFragment, type.getName(), code });
-            return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+            return returnErrorCompilationResultForNoAttribute(javaCodeFragment, code, type);
         }
         return null;
+    }
+
+    private CompilationResult returnErrorCompilationResultForNoAttribute(JavaCodeFragment javaCodeFragment,
+            String attributeName,
+            IType type) {
+        String code = javaCodeFragment.getSourcecode().replace("\n", "").trim(); //$NON-NLS-1$//$NON-NLS-2$
+        String text = StringUtils.EMPTY;
+        if (code.contains("FormulaEvaluatorUtil")) { //$NON-NLS-1$
+            text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttributeInClass, new Object[] {
+                    type.getName(), attributeName });
+        } else {
+            text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute,
+                    new Object[] { code, type.getName(), attributeName });
+        }
+        return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
     }
 
     private JavaCodeFragment compileAssociationAccess(JavaCodeFragment javaCodeFragment, IAssociation association)
