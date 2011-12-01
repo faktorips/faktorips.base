@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.TimedEnumDatatypeUtil;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
@@ -32,7 +31,6 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.model.valueset.ValueSetFilter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -80,11 +78,8 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         ValueDatatype datatype = findDatatypeForDefaultValueEditField();
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
 
-        IValueSet sourceSet = ValueSetFilter.filterValueSet(getPropertyValue().getValueSet(), datatype, getGeneration()
-                .getValidFrom(), getGeneration().getValidTo(),
-                TimedEnumDatatypeUtil.ValidityCheck.SOME_TIME_OF_THE_PERIOD);
-        EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, sourceSet,
-                getGeneration().getIpsProject());
+        EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, getPropertyValue()
+                .getValueSet(), getGeneration().getIpsProject());
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IConfigElement.PROPERTY_VALUE);
     }
