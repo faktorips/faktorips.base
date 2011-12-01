@@ -404,42 +404,48 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                     associationIdentifier = compileTypeAssociationTo1Identifier(javaCodeFragment, index, type,
                             association, target);
                 }
-                if (qualifier == null || associationIdentifier.failed()) {
-                    return associationIdentifier;
-                } else {
-                    IProductCmptType productCmptType = ((IPolicyCmptType)target).findProductCmptType(ipsproject);
-                    IIpsSrcFile[] allProductCmptSrcFiles = ipsproject.findAllProductCmptSrcFiles(productCmptType, true);
-                    String runtimeId = null;
-                    for (IIpsSrcFile ipsSrcFile : allProductCmptSrcFiles) {
-                        if (qualifier.equals(ipsSrcFile.getIpsObjectName())) {
-                            IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-                            if (ipsObject instanceof IProductCmpt) {
-                                IProductCmpt productCmpt = (IProductCmpt)ipsObject;
-                                runtimeId = productCmpt.getRuntimeId();
-                                break;
-                            }
-                        }
-                    }
-                    if (runtimeId == null) {
-                        String text = NLS.bind("The qualifier {0} is no product component for type {1}.", new Object[] { //$NON-NLS-1$
-                                qualifier, productCmptType.getName() });
-                        return new CompilationResultImpl(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, text));
-                    }
-                    JavaCodeFragment getQualifiedTargetCode = new JavaCodeFragment();
-                    getQualifiedTargetCode.appendClassName(org.faktorips.runtime.formula.FormulaEvaluatorUtil.class);
-                    getQualifiedTargetCode.append(".getModelObjectById("); //$NON-NLS-1$
-                    getQualifiedTargetCode.append(associationIdentifier.getCodeFragment());
-                    getQualifiedTargetCode.append(", \""); //$NON-NLS-1$
-                    getQualifiedTargetCode.append(runtimeId);
-                    getQualifiedTargetCode.append("\")"); //$NON-NLS-1$
-                    return new CompilationResultImpl(getQualifiedTargetCode, target);
-                }
+                return compileAssociationQualifier(qualifier, target, associationIdentifier);
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);
             String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {
                     javaCodeFragment, type.getName(), attributeName });
             return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
+        }
+    }
+
+    private CompilationResult compileAssociationQualifier(String qualifier,
+            IType target,
+            CompilationResult associationIdentifier) throws CoreException {
+        if (qualifier == null || associationIdentifier.failed()) {
+            return associationIdentifier;
+        } else {
+            IProductCmptType productCmptType = ((IPolicyCmptType)target).findProductCmptType(ipsproject);
+            IIpsSrcFile[] allProductCmptSrcFiles = ipsproject.findAllProductCmptSrcFiles(productCmptType, true);
+            String runtimeId = null;
+            for (IIpsSrcFile ipsSrcFile : allProductCmptSrcFiles) {
+                if (qualifier.equals(ipsSrcFile.getIpsObjectName())) {
+                    IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+                    if (ipsObject instanceof IProductCmpt) {
+                        IProductCmpt productCmpt = (IProductCmpt)ipsObject;
+                        runtimeId = productCmpt.getRuntimeId();
+                        break;
+                    }
+                }
+            }
+            if (runtimeId == null) {
+                String text = NLS.bind("The qualifier {0} is no product component for type {1}.", new Object[] { //$NON-NLS-1$
+                        qualifier, productCmptType.getName() });
+                return new CompilationResultImpl(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, text));
+            }
+            JavaCodeFragment getQualifiedTargetCode = new JavaCodeFragment();
+            getQualifiedTargetCode.appendClassName(org.faktorips.runtime.formula.FormulaEvaluatorUtil.class);
+            getQualifiedTargetCode.append(".getModelObjectById("); //$NON-NLS-1$
+            getQualifiedTargetCode.append(associationIdentifier.getCodeFragment());
+            getQualifiedTargetCode.append(", \""); //$NON-NLS-1$
+            getQualifiedTargetCode.append(runtimeId);
+            getQualifiedTargetCode.append("\")"); //$NON-NLS-1$
+            return new CompilationResultImpl(getQualifiedTargetCode, target);
         }
     }
 
@@ -519,10 +525,16 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         }
         String actualAssociationName = associationName;
         Integer index = null;
+        String qualifier = null;
         if (associationName.indexOf('[') > 0) {
             actualAssociationName = associationName.substring(0, associationName.indexOf('['));
-            index = Integer.valueOf(associationName.substring(associationName.indexOf('[') + 1,
-                    associationName.indexOf(']')));
+            String substring = associationName
+                    .substring(associationName.indexOf('[') + 1, associationName.indexOf(']'));
+            if (substring.startsWith("\"")) { //$NON-NLS-1$
+                qualifier = substring.substring(1, substring.length() - 1);
+            } else {
+                index = Integer.valueOf(substring);
+            }
         }
         IType type = (IType)datatype.getBasicDatatype();
         try {
@@ -536,20 +548,24 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                                     association, type.getName() })));
                 }
                 JavaCodeFragment getTargetCode = compileAssociationAccess(javaCodeFragment, association);
+                CompilationResult associationIdentifier;
                 if (index == null) {
                     if (tail.isEmpty()) {
-                        return new CompilationResultImpl(getTargetCode, new ListOfTypeDatatype(target));
+                        associationIdentifier = new CompilationResultImpl(getTargetCode, new ListOfTypeDatatype(target));
                     } else {
-                        return compileAssociationToManyChain(getTargetCode, new ListOfTypeDatatype(target), tail);
+                        associationIdentifier = compileAssociationToManyChain(getTargetCode, new ListOfTypeDatatype(
+                                target), tail);
                     }
                 } else {
                     getTargetCode.append(".get(" + index.toString() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
                     if (tail.isEmpty()) {
-                        return new CompilationResultImpl(getTargetCode, target);
+                        associationIdentifier = new CompilationResultImpl(getTargetCode, target);
                     } else {
-                        return compileTypeAttributeIdentifier(getTargetCode, target, tail);
+                        associationIdentifier = compileTypeAttributeIdentifier(getTargetCode, target, tail);
                     }
                 }
+
+                return compileAssociationQualifier(qualifier, target, associationIdentifier);
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);

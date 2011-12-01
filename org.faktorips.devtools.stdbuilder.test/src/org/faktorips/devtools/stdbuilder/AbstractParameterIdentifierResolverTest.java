@@ -590,6 +590,40 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
 
     /**
      * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "tree"} of the {@link IPolicyCmptType}
+     * {@code "Tree"} which has a 1toMany association to the {@link IPolicyCmptType}
+     * {@code "Branch"} with the name {@code "branch"}. The resolver is called with
+     * {@code tree.branch["Branch"]} where {@code "Branch"} is the runtime ID of a
+     * {@link IProductCmpt} configuring {@code "Branch"}.
+     * <p>
+     * 
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>successful compilation
+     * <li>the result datatype is {@code IBranch}
+     * <li>the result's sourcecode uses the method the
+     * {@link GenAssociation#getMethodNameGetAllRefObjects()} method returns and the
+     * {@link FormulaEvaluatorUtil#getModelObjectById(List, String)} method with the ID
+     * {@code "Branch"}
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_1toManyChainQualified() throws CoreException {
+        method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
+        newProductCmpt(leafPolicyCmptType.findProductCmptType(ipsProject), "pack.ALeaf");
+        CompilationResult result = resolver.compile("tree.branch.leaf[\"ALeaf\"]", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(leafPolicyCmptType, result.getDatatype());
+        String expected = "FormulaEvaluatorUtil.getModelObjectById(FormulaEvaluatorUtil.getTargets(tree."
+                + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationTreeToBranches)
+                        .getMethodNameGetAllRefObjects() + "(), \"leaf\", "
+                + standardBuilderSet.getGenerator(leafPolicyCmptType).getUnqualifiedClassName(true)
+                + ".class, this.getRepository()), \"ALeaf\")";
+        assertEquals(expected, result.getCodeFragment().getSourcecode());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
      * An {@link IExpression} has a parameter called {@code "twig"} of the {@link IPolicyCmptType}
      * {@code "Twig"} which has a 1to1 association to the {@link IPolicyCmptType} {@code "Leaf"}
      * with the name {@code "leaf"}. The resolver is called with {@code twig.leaf["ALeaf"]} where
