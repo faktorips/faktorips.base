@@ -2059,12 +2059,14 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     /**
      * <strong>Scenario:</strong><br>
-     * A reference is moved up, but in-between the logically affected properties, a property of
-     * another category is located.
+     * An {@link IProductCmptPropertyReference} is moved up, but in-between the logically affected
+     * properties, an {@link IProductCmptProperty} of another {@link IProductCmptCategory} is
+     * located.
      * <p>
      * <strong>Expected Outcome:</strong><br>
-     * The move operation should skip the in-between reference, so that only properties belonging to
-     * a category are swapped with each other, and return true.
+     * The move operation should skip the in-between {@link IProductCmptPropertyReference}, so that
+     * only properties belonging to an {@link IProductCmptCategory} are swapped with each other, and
+     * return true.
      */
     @Test
     public void testMoveProductCmptPropertyReferences_PropertyOfOtherCategoryInBetweenOnMoveUp() throws CoreException {
@@ -2088,12 +2090,14 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     /**
      * <strong>Scenario:</strong><br>
-     * A reference is moved down, but in-between the logically affected properties, a property of
-     * another category is located.
+     * A {@link IProductCmptPropertyReference} is moved down, but in-between the logically affected
+     * properties, an {@link IProductCmptProperty} assigned to another {@link IProductCmptCategory}
+     * is located.
      * <p>
      * <strong>Expected Outcome:</strong><br>
-     * The move operation should skip the in-between reference, so that only properties belonging to
-     * a category are swapped with each other, and return true.
+     * The move operation should skip the in-between {@link IProductCmptPropertyReference}, so that
+     * only properties belonging to an {@link IProductCmptCategory} are swapped with each other, and
+     * return true.
      */
     @Test
     public void testMoveProductCmptPropertyReferences_PropertyOfOtherCategoryInBetweenOnMoveDown() throws CoreException {

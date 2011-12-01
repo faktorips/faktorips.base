@@ -13,9 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.Map;
+import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
@@ -28,35 +27,34 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.FormulaEditControl;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
- * Allows the user to edit a formula expression.
+ * Provides controls that allow the user to edit an {@link IFormula}.
  * <p>
  * Provides content assist support.
  * 
- * @see IFormula
+ * @since 3.6
  * 
- * @author Alexander Weickmann
+ * @author Alexander Weickmann, Faktor Zehn AG
+ * 
+ * @see IFormula
  */
-public final class FormulaEditComposite extends EditPropertyValueComposite<IProductCmptTypeMethod, IFormula> {
+public class FormulaEditComposite extends EditPropertyValueComposite<IProductCmptTypeMethod, IFormula> {
 
-    public FormulaEditComposite(IProductCmptTypeMethod property, IFormula propertyValue,
-            ProductCmptPropertySection propertySection, Composite parent, BindingContext bindingContext,
-            UIToolkit toolkit) {
+    public FormulaEditComposite(IProductCmptTypeMethod property, IFormula propertyValue, IpsSection parentSection,
+            Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
 
-        super(property, propertyValue, propertySection, parent, bindingContext, toolkit);
+        super(property, propertyValue, parentSection, parent, bindingContext, toolkit);
         initControls();
     }
 
     @Override
-    protected void createEditFields(Map<EditField<?>, ObjectProperty> editFieldsToEditedProperties)
-            throws CoreException {
-
-        createExpressionEditField(editFieldsToEditedProperties);
+    protected void createEditFields(List<EditField<?>> editFields) {
+        createExpressionEditField(editFields);
     }
 
-    private void createExpressionEditField(Map<EditField<?>, ObjectProperty> editFieldsToEditedProperties) {
+    private void createExpressionEditField(List<EditField<?>> editFields) {
         FormulaEditControl formulaEditControl = new FormulaEditControl(this, getToolkit(), getPropertyValue(),
                 getShell(), getProductCmptPropertySection());
         KeyStroke keyStroke = null;
@@ -67,10 +65,10 @@ public final class FormulaEditComposite extends EditPropertyValueComposite<IProd
         }
         new ContentProposalAdapter(formulaEditControl.getTextControl(), new TextContentAdapter(),
                 new ExpressionProposalProvider(getPropertyValue()), keyStroke, new char[] { '.' });
-        TextButtonField editField = new TextButtonField(formulaEditControl);
 
-        editFieldsToEditedProperties.put(editField,
-                new ObjectProperty(getPropertyValue(), IFormula.PROPERTY_EXPRESSION));
+        TextButtonField editField = new TextButtonField(formulaEditControl);
+        editFields.add(editField);
+        getBindingContext().bindContent(editField, getPropertyValue(), IFormula.PROPERTY_EXPRESSION);
     }
 
 }

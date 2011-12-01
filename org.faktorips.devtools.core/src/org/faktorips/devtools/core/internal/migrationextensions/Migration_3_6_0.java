@@ -27,10 +27,9 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOper
 /**
  * Migration to version 3.6.0.
  * <p>
- * Searches for all {@link IProductCmptType}s that have no supertype. For each such
- * {@link IProductCmptType}, the default {@link IProductCmptCategory}s are created if they are
- * missing. The default categories that are created correspond to the UI sections as they were set
- * up prior to version 3.6.0:
+ * Searches for all product component types that have no supertype. For each such
+ * {@link IProductCmptType}, the default categories are created if they are missing. The default
+ * categories correspond to the UI sections as they were set up prior to version 3.6:
  * <ul>
  * <li>Attributes
  * <li>Tables and Formulas
@@ -38,7 +37,12 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOper
  * <li>Defaults and Value Sets
  * </ul>
  * 
- * @author Alexander Weickmann
+ * @since 3.6
+ * 
+ * @author Alexander Weickmann, Faktor Zehn AG
+ * 
+ * @see IProductCmptType
+ * @see IProductCmptCategory
  */
 public class Migration_3_6_0 extends DefaultMigration {
 
@@ -122,7 +126,7 @@ public class Migration_3_6_0 extends DefaultMigration {
                 + "signature definitions and table structure usages) are now all assigned to " //$NON-NLS-1$
                 + "categories in the corresponding product component type. For all product component " //$NON-NLS-1$
                 + "types without a superclass, the default categories are created. The default" //$NON-NLS-1$
-                + " categories correspond to the sorting as it was prior to version 3.6.0."; //$NON-NLS-1$
+                + " categories correspond to the UI setup as it was prior to version 3.6"; //$NON-NLS-1$
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {

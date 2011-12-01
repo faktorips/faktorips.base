@@ -21,6 +21,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -33,7 +34,6 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -47,14 +47,30 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
  * Provides a generic section for all kinds of property values.
+ * <p>
+ * A section of this type features a two-column layout displaying a label (usually representing a
+ * property value's caption) on the left hand side and an {@link EditPropertyValueComposite} on the
+ * right hand side.
+ * <p>
+ * The property values to display are provided to the section via the constructor.
+ * <p>
+ * <strong>Subclassing:</strong><br>
+ * The only reason this class is abstract is to allow concrete classes to provide the section title.
+ * This should be done by overriding {@link #getSectionTitle()}. Calling {@link #setText(String)} is
+ * not safe, as the section title is dynamic in the sense that it might be refreshed by the
+ * superclass from time to time.
+ * <p>
+ * Subclasses must not forget to invoke {@link #initControls()} within the subclass constructor
+ * (usually this is the subclass constructor's last statement).
  * 
+ * @since 3.6
+ * 
+ * @author Alexander Weickmann, Faktor Zehn AG
+ * 
+ * @see EditPropertyValueComposite
  * @see IPropertyValue
- * 
- * @author Alexander Weickmann
  */
-public class ProductCmptPropertySection extends IpsSection {
-
-    private final IProductCmptCategory category;
+public abstract class ProductCmptPropertySection extends IpsSection {
 
     private final List<IPropertyValue> propertyValues;
 
@@ -63,30 +79,43 @@ public class ProductCmptPropertySection extends IpsSection {
      */
     private Composite rootPane;
 
-    public ProductCmptPropertySection(IProductCmptCategory category, List<IPropertyValue> propertyValues,
-            Composite parent, UIToolkit toolkit) {
+    /**
+     * Creates a {@link ProductCmptPropertySection} that can be expanded and collapsed by the user.
+     * <p>
+     * <strong>Subclassing:</strong><br>
+     * This constructor calls {@link #setInitCollapsedIfNoContent(boolean)} with true as argument.
+     * 
+     * @param id a unique {@link String} that is used as key to store the section's expanded state
+     *            in the preference store
+     * @param propertyValues list containing the property values to be displayed by this section
+     */
+    protected ProductCmptPropertySection(String id, List<IPropertyValue> propertyValues, Composite parent,
+            int layoutData, UIToolkit toolkit) {
 
-        super(category.getId(), parent, category.isAtLeftPosition() ? GridData.FILL_BOTH : GridData.FILL_HORIZONTAL
-                | GridData.VERTICAL_ALIGN_FILL, toolkit);
+        super(id, parent, layoutData, toolkit);
 
-        this.category = category;
         this.propertyValues = propertyValues;
 
-        /*
-         * The following call is necessary in addition to the above layout data constants because of
-         * the relayoutSection(boolean) method.
-         */
-        if (category.isAtRightPosition()) {
-            setGrabVerticalSpace(false);
-        }
-
         setInitCollapsedIfNoContent(true);
-        initControls();
     }
 
-    @Override
-    protected String getSectionTitle() {
-        return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
+    /**
+     * Creates a {@link ProductCmptPropertySection} that cannot be expanded and collapsed by the
+     * user.
+     * <p>
+     * <strong>Subclassing:</strong><br>
+     * This constructor calls {@link #setInitCollapsedIfNoContent(boolean)} with true as argument.
+     * 
+     * @param propertyValues list containing the property values to be displayed by this section
+     */
+    protected ProductCmptPropertySection(List<IPropertyValue> propertyValues, Composite parent, int style,
+            int layoutData, UIToolkit toolkit) {
+
+        super(parent, style, layoutData, toolkit);
+
+        this.propertyValues = propertyValues;
+
+        setInitCollapsedIfNoContent(true);
     }
 
     @Override
@@ -151,8 +180,7 @@ public class ProductCmptPropertySection extends IpsSection {
     }
 
     private Control createLabel(IPropertyValue propertyValue, IProductCmptProperty property) {
-        PropertyValueUIConfiguration propertyValueUI = PropertyValueUIConfiguration
-                .getValueByPropertyType(propertyValue.getPropertyType());
+        PropertyValueUI propertyValueUI = PropertyValueUI.getValueByPropertyType(propertyValue.getPropertyType());
 
         Control label = propertyValueUI.createLabel(propertyValue, rootPane, getToolkit());
         // Use description of property as tooltip if available
@@ -165,8 +193,7 @@ public class ProductCmptPropertySection extends IpsSection {
     private EditPropertyValueComposite<?, ?> createEditComposite(IPropertyValue propertyValue,
             IProductCmptProperty property) {
 
-        PropertyValueUIConfiguration propertyValueUI = PropertyValueUIConfiguration
-                .getValueByPropertyType(propertyValue.getPropertyType());
+        PropertyValueUI propertyValueUI = PropertyValueUI.getValueByPropertyType(propertyValue.getPropertyType());
 
         EditPropertyValueComposite<?, ?> editComposite = null;
         if (property != null) {
@@ -181,9 +208,9 @@ public class ProductCmptPropertySection extends IpsSection {
     private void verticallyAlignLabel(Control label, EditPropertyValueComposite<?, ?> editComposite) {
         if (label != null && editComposite != null) {
             /*
-             * Vertically indent the label so it does not stick at the very top of the composite.
-             * The magnitude of the indentation depends on the height and margin of the edit
-             * composite.
+             * Vertically indent the label so it is of the same height as the first control of the
+             * edit composite. The magnitude of the indentation depends on the height and margin of
+             * the first control within the edit composite.
              */
             ((GridData)label.getLayoutData()).verticalAlignment = SWT.TOP;
             int topOfControlToLabelPixels = editComposite.getFirstControlHeight()
@@ -197,23 +224,24 @@ public class ProductCmptPropertySection extends IpsSection {
         getToolkit().createComposite(rootPane);
     }
 
+    /**
+     * <strong>Subclassing:</strong><br>
+     * This implementation returns whether the list of property values given to the section via the
+     * constructor is not empty.
+     */
     @Override
     protected boolean hasContentToDisplay() {
         return !propertyValues.isEmpty();
     }
 
     /**
-     * Configures the user interface for each kind of property value.
-     * <p>
-     * For each property value type, the following configurations are made:
-     * <ul>
-     * <li>Creation of the label
-     * <li>Creation of the edit composite
-     * </ul>
+     * Provides the user interface for each kind of {@link IPropertyValue}, that is an appropriate
+     * label and {@link EditPropertyValueComposite}.
      * 
      * @see IPropertyValue
+     * @see EditPropertyValueComposite
      */
-    private static enum PropertyValueUIConfiguration {
+    private static enum PropertyValueUI {
 
         ATTRIBUTE_VALUE() {
             @Override
@@ -317,7 +345,12 @@ public class ProductCmptPropertySection extends IpsSection {
             }
         };
 
-        public static PropertyValueUIConfiguration getValueByPropertyType(ProductCmptPropertyType propertyType) {
+        /**
+         * Returns the {@link PropertyValueUI} corresponding to the provided
+         * {@link ProductCmptPropertyType} or null if no {@link PropertyValueUI} exists for the
+         * provided {@link ProductCmptPropertyType}.
+         */
+        public static PropertyValueUI getValueByPropertyType(ProductCmptPropertyType propertyType) {
             switch (propertyType) {
                 case PRODUCT_CMPT_TYPE_ATTRIBUTE:
                     return ATTRIBUTE_VALUE;
@@ -333,11 +366,21 @@ public class ProductCmptPropertySection extends IpsSection {
             return null;
         }
 
+        /**
+         * Creates and returns an appropriate label for this kind of {@link IPropertyValue}.
+         * <p>
+         * Note that this method returns a {@link Control} and not a {@link Label} in order to
+         * support hyperlinks as well.
+         */
         public Control createLabel(IPropertyValue propertyValue, Composite parent, UIToolkit toolkit) {
             String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(propertyValue);
             return toolkit.createLabel(parent, localizedCaption);
         }
 
+        /**
+         * Creates and returns an appropriate {@link EditPropertyValueComposite} for this kind of
+         * {@link IPropertyValue}.
+         */
         public abstract EditPropertyValueComposite<?, ?> createEditComposite(IProductCmptProperty property,
                 IPropertyValue propertyValue,
                 ProductCmptPropertySection propertySection,

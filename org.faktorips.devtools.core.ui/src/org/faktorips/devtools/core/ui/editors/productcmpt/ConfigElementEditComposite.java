@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.Map;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
@@ -39,24 +39,25 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.PreviewTextButtonField;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
- * Allows the user to edit the value set and the default value of a configuration element.
+ * Provides controls that allow the user to edit the value set and the default value of an
+ * {@link IConfigElement}.
  * 
- * @see IValueSet
+ * @since 3.6
+ * 
+ * @author Alexander Weickmann, Faktor Zehn AG
+ * 
  * @see IConfigElement
- * 
- * @author Alexander Weickmann
+ * @see IValueSet
  */
-public final class ConfigElementEditComposite extends
-        EditPropertyValueComposite<IPolicyCmptTypeAttribute, IConfigElement> {
+public class ConfigElementEditComposite extends EditPropertyValueComposite<IPolicyCmptTypeAttribute, IConfigElement> {
 
     public ConfigElementEditComposite(IPolicyCmptTypeAttribute property, IConfigElement propertyValue,
-            ProductCmptPropertySection propertySection, Composite parent, BindingContext bindingContext,
-            UIToolkit toolkit) {
+            IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
 
-        super(property, propertyValue, propertySection, parent, bindingContext, toolkit);
+        super(property, propertyValue, parentSection, parent, bindingContext, toolkit);
         initControls();
     }
 
@@ -68,12 +69,12 @@ public final class ConfigElementEditComposite extends
     }
 
     @Override
-    protected void createEditFields(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
-        createValueSetEditField(editFieldsToObjectProperties);
-        createDefaultValueEditField(editFieldsToObjectProperties);
+    protected void createEditFields(List<EditField<?>> editFields) {
+        createValueSetEditField(editFields);
+        createDefaultValueEditField(editFields);
     }
 
-    private void createDefaultValueEditField(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
+    private void createDefaultValueEditField(List<EditField<?>> editFields) {
         createLabelWithWidthHint(Messages.ConfigElementEditComposite_defaultValue);
 
         ValueDatatype datatype = findDatatypeForDefaultValueEditField();
@@ -84,9 +85,8 @@ public final class ConfigElementEditComposite extends
                 TimedEnumDatatypeUtil.ValidityCheck.SOME_TIME_OF_THE_PERIOD);
         EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, sourceSet,
                 getGeneration().getIpsProject());
-
-        editFieldsToObjectProperties.put(editField, new ObjectProperty(getPropertyValue(),
-                IConfigElement.PROPERTY_VALUE));
+        editFields.add(editField);
+        getBindingContext().bindContent(editField, getPropertyValue(), IConfigElement.PROPERTY_VALUE);
     }
 
     private ValueDatatype findDatatypeForDefaultValueEditField() {
@@ -105,11 +105,11 @@ public final class ConfigElementEditComposite extends
         return datatype;
     }
 
-    private void createValueSetEditField(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
+    private void createValueSetEditField(List<EditField<?>> editFields) {
         if (areRangeValueEditFieldsRequired()) {
-            createValueSetEditFieldForRange(editFieldsToObjectProperties);
+            createValueSetEditFieldForRange(editFields);
         } else {
-            createValueSetEditFieldForOtherThanRange(editFieldsToObjectProperties);
+            createValueSetEditFieldForOtherThanRange(editFields);
         }
     }
 
@@ -118,12 +118,7 @@ public final class ConfigElementEditComposite extends
                 .getValueSet().isRange();
     }
 
-    @Override
-    protected int getFirstControlMarginHeight() {
-        return areRangeValueEditFieldsRequired() ? 4 : 0;
-    }
-
-    private void createValueSetEditFieldForRange(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
+    private void createValueSetEditFieldForRange(List<EditField<?>> editFields) {
         RangeValueSet range = (RangeValueSet)getPropertyValue().getValueSet();
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                 range.getValueDatatype());
@@ -139,11 +134,15 @@ public final class ConfigElementEditComposite extends
         EditField<String> upperField = createRangeEditField(controlFactory, rangeComposite, range);
         EditField<String> stepField = createRangeEditField(controlFactory, rangeComposite, range);
 
-        getToolkit().getFormToolkit().paintBordersFor(rangeComposite);
+        editFields.add(lowerField);
+        editFields.add(upperField);
+        editFields.add(stepField);
 
-        editFieldsToObjectProperties.put(upperField, new ObjectProperty(range, IRangeValueSet.PROPERTY_UPPERBOUND));
-        editFieldsToObjectProperties.put(lowerField, new ObjectProperty(range, IRangeValueSet.PROPERTY_LOWERBOUND));
-        editFieldsToObjectProperties.put(stepField, new ObjectProperty(range, IRangeValueSet.PROPERTY_STEP));
+        getBindingContext().bindContent(upperField, range, IRangeValueSet.PROPERTY_UPPERBOUND);
+        getBindingContext().bindContent(lowerField, range, IRangeValueSet.PROPERTY_LOWERBOUND);
+        getBindingContext().bindContent(stepField, range, IRangeValueSet.PROPERTY_STEP);
+
+        getToolkit().getFormToolkit().paintBordersFor(rangeComposite);
     }
 
     private EditField<String> createRangeEditField(ValueDatatypeControlFactory controlFactory,
@@ -162,7 +161,7 @@ public final class ConfigElementEditComposite extends
         }
     }
 
-    private void createValueSetEditFieldForOtherThanRange(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties) {
+    private void createValueSetEditFieldForOtherThanRange(List<EditField<?>> editFields) {
         createLabelWithWidthHint(Messages.ConfigElementEditComposite_valueSet);
 
         AnyValueSetControl valueSetControl = new AnyValueSetControl(this, getToolkit(), getPropertyValue(), getShell());
@@ -172,13 +171,12 @@ public final class ConfigElementEditComposite extends
         ((GridData)valueSetControl.getLayoutData()).widthHint = UIToolkit.DEFAULT_WIDTH;
 
         PreviewTextButtonField editField = new PreviewTextButtonField(valueSetControl);
-
-        editFieldsToObjectProperties.put(editField, new ObjectProperty(getPropertyValue(),
-                IConfigElement.PROPERTY_VALUE_SET));
+        editFields.add(editField);
+        getBindingContext().bindContent(editField, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
     }
 
     /**
-     * Creates a label so that it's width corresponds to the width of the broadest label of this
+     * Creates a {@link Label} whose width corresponds to the width of the broadest label of this
      * section.
      */
     private void createLabelWithWidthHint(String text) {
@@ -200,6 +198,11 @@ public final class ConfigElementEditComposite extends
 
     private IProductCmptGeneration getGeneration() {
         return getPropertyValue().getProductCmptGeneration();
+    }
+
+    @Override
+    protected int getFirstControlMarginHeight() {
+        return areRangeValueEditFieldsRequired() ? 4 : 0;
     }
 
 }

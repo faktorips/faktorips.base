@@ -242,8 +242,8 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
 
     /**
      * A Subclass should return <code>true</code> if it has content that needs to be displayed,
-     * <code>false</code> else. The Section will then be initialized with a "(none defined)"
-     * annotation in collapsed state.
+     * <code>false</code> else. The Section will then be initialized with a "(empty)" annotation in
+     * collapsed state.
      * <p>
      * The default implementation returns <code>true</code>.
      * 

@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.Map;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -24,39 +24,40 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
- * Allows the user to activate / deactivate a validation rule.
+ * Provides controls that allow the user to edit an {@link IValidationRuleConfig}.
+ * 
+ * @since 3.6
+ * 
+ * @author Alexander Weickmann, Faktor Zehn AG
  * 
  * @see IValidationRuleConfig
- * 
- * @author Alexander Weickmann
  */
-public final class ValidationRuleConfigEditComposite extends
+public class ValidationRuleConfigEditComposite extends
         EditPropertyValueComposite<IValidationRule, IValidationRuleConfig> {
 
     public ValidationRuleConfigEditComposite(IValidationRule property, IValidationRuleConfig propertyValue,
-            ProductCmptPropertySection propertySection, Composite parent, BindingContext bindingContext,
-            UIToolkit toolkit) {
+            IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
 
-        super(property, propertyValue, propertySection, parent, bindingContext, toolkit);
+        super(property, propertyValue, parentSection, parent, bindingContext, toolkit);
         initControls();
     }
 
     @Override
-    protected void createEditFields(Map<EditField<?>, ObjectProperty> editFieldsToEditedProperties) {
-        createActiveEditField(editFieldsToEditedProperties);
+    protected void createEditFields(List<EditField<?>> editFields) {
+        createActiveEditField(editFields);
     }
 
-    private void createActiveEditField(Map<EditField<?>, ObjectProperty> editFieldsToEditedProperties) {
+    private void createActiveEditField(List<EditField<?>> editFields) {
         Checkbox checkbox = getToolkit().createCheckbox(this);
         checkbox.setChecked(getPropertyValue().isActive());
-        IpsPlugin.getDefault();
         checkbox.setText(IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getPropertyValue()));
-        CheckboxField editField = new CheckboxField(checkbox);
 
-        editFieldsToEditedProperties.put(editField, new ObjectProperty(getPropertyValue(),
-                IValidationRuleConfig.PROPERTY_ACTIVE));
+        CheckboxField editField = new CheckboxField(checkbox);
+        editFields.add(editField);
+        getBindingContext().bindContent(editField, getPropertyValue(), IValidationRuleConfig.PROPERTY_ACTIVE);
     }
+
 }

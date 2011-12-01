@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.Map;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
@@ -23,38 +23,39 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TableContentsUsageRefControl;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
- * Allows the user to edit a table usage.
+ * Provides controls that allow the user to edit an {@link ITableContentUsage}.
  * 
- * @see ITableContentUsage
+ * @since 3.6
  * 
  * @author Alexander Weickmann
+ * 
+ * @see ITableContentUsage
  */
-public final class TableContentUsageEditComposite extends
+public class TableContentUsageEditComposite extends
         EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
 
     public TableContentUsageEditComposite(ITableStructureUsage property, ITableContentUsage propertyValue,
-            ProductCmptPropertySection propertySection, Composite parent, BindingContext bindingContext,
-            UIToolkit toolkit) {
+            IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
 
-        super(property, propertyValue, propertySection, parent, bindingContext, toolkit);
+        super(property, propertyValue, parentSection, parent, bindingContext, toolkit);
         initControls();
     }
 
     @Override
-    protected void createEditFields(Map<EditField<?>, ObjectProperty> editFieldsToEditedProperties) {
-        createTableContentEditField(editFieldsToEditedProperties);
+    protected void createEditFields(List<EditField<?>> editFields) {
+        createTableContentEditField(editFields);
     }
 
-    private void createTableContentEditField(Map<EditField<?>, ObjectProperty> editFieldsToEditedProperties) {
+    private void createTableContentEditField(List<EditField<?>> editFields) {
         TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(getProperty().getIpsProject(), this,
                 getToolkit(), getProperty());
-        TextButtonField editField = new TextButtonField(tcuControl);
 
-        editFieldsToEditedProperties.put(editField, new ObjectProperty(getPropertyValue(),
-                ITableContentUsage.PROPERTY_TABLE_CONTENT));
+        TextButtonField editField = new TextButtonField(tcuControl);
+        editFields.add(editField);
+        getBindingContext().bindContent(editField, getPropertyValue(), ITableContentUsage.PROPERTY_TABLE_CONTENT);
     }
 
 }

@@ -197,7 +197,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         // Create a new section for this category and attach it to the page
         List<IpsSection> sections = category.isAtLeftPosition() ? leftSections : rightSections;
         Composite parent = category.isAtLeftPosition() ? left : right;
-        IpsSection section = new ProductCmptPropertySection(category, propertyValues, parent, toolkit);
+        IpsSection section = new PropertySection(category, propertyValues, parent, toolkit);
         sections.add(section);
     }
 
@@ -341,6 +341,40 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     private IProductCmptGeneration getActiveGeneration() {
         return (IProductCmptGeneration)((ProductCmptEditor)getEditor()).getActiveGeneration();
+    }
+
+    /**
+     * Section that displays the property values corresponding to the product component properties
+     * assigned to a specific {@link IProductCmptCategory}.
+     */
+    private static class PropertySection extends ProductCmptPropertySection {
+
+        private final IProductCmptCategory category;
+
+        private PropertySection(IProductCmptCategory category, List<IPropertyValue> propertyValues, Composite parent,
+                UIToolkit toolkit) {
+
+            super(category.getId(), propertyValues, parent, category.isAtLeftPosition() ? GridData.FILL_BOTH
+                    : GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL, toolkit);
+
+            this.category = category;
+
+            /*
+             * The following call is necessary in addition to the above layout data because of the
+             * relayoutSection(boolean) method.
+             */
+            if (category.isAtRightPosition()) {
+                setGrabVerticalSpace(false);
+            }
+
+            initControls();
+        }
+
+        @Override
+        protected String getSectionTitle() {
+            return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(category);
+        }
+
     }
 
     private abstract class GotoGenerationAction extends Action {

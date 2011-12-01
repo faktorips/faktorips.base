@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.Map;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -31,50 +31,45 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
- * Allows the user to edit the value of a product attribute.
+ * Provides controls that allow the user to edit the an {@link IAttributeValue}.
  * <p>
  * For attributes that do not change over time, a decoration marker is attached to the edit control.
  * 
- * @see IAttributeValue
+ * @since 3.6
  * 
- * @author Alexander Weickmann
+ * @author Alexander Weickmann, Faktor Zehn AG
+ * 
+ * @see IAttributeValue
  */
-public final class AttributeValueEditComposite extends
-        EditPropertyValueComposite<IProductCmptTypeAttribute, IAttributeValue> {
+public class AttributeValueEditComposite extends EditPropertyValueComposite<IProductCmptTypeAttribute, IAttributeValue> {
 
     public AttributeValueEditComposite(IProductCmptTypeAttribute property, IAttributeValue propertyValue,
-            ProductCmptPropertySection propertySection, Composite parent, BindingContext bindingContext,
-            UIToolkit toolkit) {
+            IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
 
-        super(property, propertyValue, propertySection, parent, bindingContext, toolkit);
+        super(property, propertyValue, parentSection, parent, bindingContext, toolkit);
         initControls();
     }
 
     @Override
-    protected void createEditFields(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties)
-            throws CoreException {
-
-        createValueEditField(editFieldsToObjectProperties);
+    protected void createEditFields(List<EditField<?>> editFields) throws CoreException {
+        createValueEditField(editFields);
     }
 
-    private void createValueEditField(Map<EditField<?>, ObjectProperty> editFieldsToObjectProperties)
-            throws CoreException {
-
+    private void createValueEditField(List<EditField<?>> editFields) throws CoreException {
         ValueDatatype datatype = getProperty().findDatatype(getProperty().getIpsProject());
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
         EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, getProperty()
                 .getValueSet(), getProperty().getIpsProject());
+        editFields.add(editField);
+        getBindingContext().bindContent(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE);
 
         // Attribute values belonging to the product component and not to the generation are static
         if (getPropertyValue().getParent() instanceof IProductCmpt) {
             addNotChangingOverTimeControlDecoration(editField);
         }
-
-        editFieldsToObjectProperties.put(editField, new ObjectProperty(getPropertyValue(),
-                IAttributeValue.PROPERTY_VALUE));
     }
 
     private void addNotChangingOverTimeControlDecoration(EditField<?> editField) {
