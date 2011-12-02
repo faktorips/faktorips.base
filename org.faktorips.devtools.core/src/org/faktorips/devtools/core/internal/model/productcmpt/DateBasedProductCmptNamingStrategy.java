@@ -41,6 +41,7 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
     /**
      * XML Element name.
      */
+    @SuppressWarnings("hiding")
     public final static String XML_TAG_NAME = "DateBasedProductCmptNamingStrategy"; //$NON-NLS-1$
 
     private String dateFormatPattern; // the pattern has to be kept in order to save the state to
@@ -171,11 +172,12 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
         String id = project.getRuntimeIdPrefix() + productCmptName;
         String uniqueId = id;
 
-        String[] parts = uniqueId.split(getVersionIdSeparator(), 2);
+        String kindId = getKindId(uniqueId);
+        String versionId = getVersionId(uniqueId);
 
         int i = 1;
         while (project.findProductCmptByRuntimeId(uniqueId) != null) {
-            uniqueId = parts[0] + i + getVersionIdSeparator() + parts[1];
+            uniqueId = kindId + i + getVersionIdSeparator() + versionId;
             i++;
         }
 

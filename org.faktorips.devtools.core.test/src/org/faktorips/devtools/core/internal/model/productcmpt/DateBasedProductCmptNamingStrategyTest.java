@@ -136,6 +136,14 @@ public class DateBasedProductCmptNamingStrategyTest extends AbstractIpsPluginTes
         newProductCmpt(ipsProject, "pack2.TestProduct 2005-01-01");
         id = strategy.getUniqueRuntimeId(ipsProject, "TestProduct 2005-01-01");
         assertEquals(prefix + "TestProduct2 2005-01-01", id);
+
+        id = strategy.getUniqueRuntimeId(ipsProject, "Test Product 2005-01-01");
+        assertEquals(prefix + "Test Product 2005-01-01", id);
+
+        newProductCmpt(ipsProject, "pack2.Test Product 2005-01-01");
+
+        id = strategy.getUniqueRuntimeId(ipsProject, "Test Product 2005-01-01");
+        assertEquals(prefix + "Test Product1 2005-01-01", id);
     }
 
 }
