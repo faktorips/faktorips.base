@@ -30,8 +30,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 public abstract class IpsElement extends PlatformObject implements IIpsElement {
 
-    protected String name;
-    protected IIpsElement parent;
+    protected String name; // FIXME make private
+    protected IIpsElement parent; // FIXME make private
 
     final static IIpsElement[] NO_CHILDREN = new IIpsElement[0];
 
