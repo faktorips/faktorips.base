@@ -187,10 +187,18 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         kind = productCmpt.findProductCmptKind();
         assertEquals("MotorProduct", kind.getName());
         assertEquals("MotorProduct", kind.getRuntimeId());
+    }
 
-        productCmpt = newProductCmpt(ipsProject, "motor.MotorProduct");
+    @Test
+    public void testFindProductCmptKindWithIllegalName() throws CoreException {
+        IProductCmptNamingStrategy strategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", false);
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.setProductCmptNamingStrategy(strategy);
+        ipsProject.setProperties(props);
+
+        productCmpt = newProductCmpt(ipsProject, "motor.MotorProduct 2011-11");
+        productCmpt.setName("motor.MotorProduct");
         assertNull(productCmpt.findProductCmptKind());
-
     }
 
     @Test
