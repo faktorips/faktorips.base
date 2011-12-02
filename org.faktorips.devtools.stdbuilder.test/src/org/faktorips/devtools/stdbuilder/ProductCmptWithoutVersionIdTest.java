@@ -33,7 +33,7 @@ public class ProductCmptWithoutVersionIdTest extends AbstractStdBuilderTest {
         super();
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void test() throws CoreException {
         IIpsProject project = newIpsProject();
         IIpsProjectProperties props = project.getProperties();
