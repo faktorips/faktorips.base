@@ -158,7 +158,8 @@ public class DateTime implements Comparable<DateTime>, Serializable {
 
     @Override
     public String toString() {
-        return toIsoFormat() + ' ' + hour + ':' + minute + ':' + second;
+        return toIsoFormat() + ' ' + (hour < 10 ? "0" + hour : hour) + ':' + (minute < 10 ? "0" + minute : minute)
+                + ':' + (second < 10 ? "0" + second : second);
     }
 
     public int compareTo(DateTime other) {

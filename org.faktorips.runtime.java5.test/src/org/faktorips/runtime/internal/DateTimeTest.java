@@ -45,4 +45,16 @@ public class DateTimeTest {
         assertNull(DateTime.createDateOnly(null));
     }
 
+    @Test
+    public void testToString() {
+        DateTime dt = new DateTime(2005, 5, 1, 10, 10, 10);
+        assertEquals("2005-05-01 10:10:10", dt.toString());
+    }
+
+    @Test
+    public void testToString_PrefixTimeComponentsLessThan10With0() {
+        DateTime dt = new DateTime(2005, 5, 1, 9, 9, 9);
+        assertEquals("2005-05-01 09:09:09", dt.toString());
+    }
+
 }
