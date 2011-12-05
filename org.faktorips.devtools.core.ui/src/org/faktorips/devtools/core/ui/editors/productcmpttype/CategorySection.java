@@ -25,14 +25,18 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ContentViewer;
+import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.IDecoration;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.jface.window.Window;
@@ -49,7 +53,6 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -57,10 +60,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -328,28 +330,8 @@ public class CategorySection extends IpsSection {
         }
 
         @Override
-        protected void refreshThis() {
-            updateTreeItemColors();
-        }
-
-        /**
-         * Sets the foreground {@link Color} of all tree items representing properties from the
-         * supertype hierarchy to {@link JFacePreferences#QUALIFIER_COLOR}.
-         */
-        private void updateTreeItemColors() {
-            for (TreeItem item : getTree().getItems()) {
-                IProductCmptProperty property = (IProductCmptProperty)item.getData();
-                if (!isPropertyOfContextType(property)) {
-                    item.setForeground(JFaceResources.getColorRegistry().get(JFacePreferences.QUALIFIER_COLOR));
-                }
-            }
-        }
-
-        @Override
         protected ContentViewer createViewer(Composite parent, UIToolkit toolkit) {
-            Tree tree = toolkit.getFormToolkit().createTree(parent, SWT.NONE);
-            tree.setLinesVisible(false);
-            TreeViewer viewer = new TreeViewer(tree);
+            StructuredViewer viewer = new TableViewer(toolkit.createTable(parent, SWT.NONE));
 
             setLabelProvider(viewer);
             setContentProvider(viewer);
@@ -362,8 +344,8 @@ public class CategorySection extends IpsSection {
             return viewer;
         }
 
-        private void setLabelProvider(TreeViewer viewer) {
-            viewer.setLabelProvider(new LocalizedLabelProvider() {
+        private void setLabelProvider(StructuredViewer viewer) {
+            class PropertyLabelProvider extends LocalizedLabelProvider implements IStyledLabelProvider {
                 @Override
                 public Image getImage(Object element) {
                     if (!(element instanceof IProductCmptProperty)) {
@@ -385,8 +367,7 @@ public class CategorySection extends IpsSection {
                  * @see ImageHandling#getDefaultImage(Class)
                  */
                 private Image getImageForPropertyOfContextType(IProductCmptProperty property) {
-                    return IpsUIPlugin.getImageHandling().getDefaultImage(
-                            property.getProductCmptPropertyType().getValueImplementationClass());
+                    return IpsUIPlugin.getImageHandling().getImage(property);
                 }
 
                 /**
@@ -397,22 +378,37 @@ public class CategorySection extends IpsSection {
                  * with an additional 'override' overlay.
                  */
                 private Image getImageForPropertyOfSupertypeHierarchy(IProductCmptProperty property) {
-                    Image baseImage = IpsUIPlugin.getImageHandling().getDefaultImage(
-                            property.getProductCmptPropertyType().getValueImplementationClass());
+                    Image baseImage = IpsUIPlugin.getImageHandling().getImage(property);
                     ImageDescriptor imageDescriptor = new DecorationOverlayIcon(baseImage,
                             OverlayIcons.OVERRIDE_OVR_DESC, IDecoration.BOTTOM_RIGHT);
                     return IpsUIPlugin.getImageHandling().getImage(imageDescriptor);
                 }
-            });
+
+                @Override
+                public StyledString getStyledText(Object element) {
+                    StyledString styledString = new StyledString();
+                    IProductCmptProperty property = (IProductCmptProperty)element;
+                    if (!isPropertyOfContextType(property)) {
+                        styledString.append(getText(element), StyledString.QUALIFIER_STYLER);
+                    } else {
+                        styledString.append(getText(element));
+                    }
+                    return styledString;
+                }
+            }
+
+            DecoratingStyledCellLabelProvider decoratedLabelProvider = new DecoratingStyledCellLabelProvider(
+                    new PropertyLabelProvider(), null, null);
+            viewer.setLabelProvider(decoratedLabelProvider);
         }
 
-        private void setContentProvider(TreeViewer viewer) {
+        private void setContentProvider(StructuredViewer viewer) {
             contentProvider = new PropertyContentProvider(contextType, category);
             viewer.setContentProvider(contentProvider);
         }
 
-        private void addDoubleClickChangeCategoryListener(TreeViewer viewer) {
-            viewer.getTree().addMouseListener(new MouseAdapter() {
+        private void addDoubleClickChangeCategoryListener(StructuredViewer viewer) {
+            viewer.getControl().addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseDoubleClick(MouseEvent e) {
                     openChangeCategoryDialog();
@@ -420,12 +416,12 @@ public class CategorySection extends IpsSection {
             });
         }
 
-        private void addDragSupport(final TreeViewer viewer) {
+        private void addDragSupport(StructuredViewer viewer) {
             viewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { ProductCmptPropertyTransfer.getInstance() },
                     new PropertyDragListener(this));
         }
 
-        private void addDropSupport(TreeViewer viewer) {
+        private void addDropSupport(StructuredViewer viewer) {
             viewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { ProductCmptPropertyTransfer.getInstance() },
                     new PropertyDropAdapter(viewer));
         }
@@ -494,20 +490,27 @@ public class CategorySection extends IpsSection {
         }
 
         private int[] getSelectionIndices() {
-            TreeItem[] selection = getTree().getSelection();
-            int[] selectionIndices = new int[selection.length];
-            for (int i = 0; i < selection.length; i++) {
-                selectionIndices[i] = getTree().indexOf(selection[i]);
+            List<Object> elements = Arrays.asList(contentProvider.getElements(category));
+            IStructuredSelection selection = (IStructuredSelection)getViewer().getSelection();
+            int[] selectionIndices = new int[selection.size()];
+            for (int i = 0; i < selection.size(); i++) {
+                selectionIndices[i] = elements.indexOf(selection.toArray()[i]);
             }
             return selectionIndices;
         }
 
         private void setSelection(int[] selectionIndices) {
-            for (int index : selectionIndices) {
-                getTree().select(getTree().getItem(index));
-            }
-            getTree().setFocus();
+            getViewer().setSelection(createSelection(selectionIndices), true);
+            getControl().setFocus();
             refresh();
+        }
+
+        private IStructuredSelection createSelection(int[] selectionIndices) {
+            List<Object> itemsToSelect = new ArrayList<Object>(selectionIndices.length);
+            for (int index : selectionIndices) {
+                itemsToSelect.add(contentProvider.getElements(category)[index]);
+            }
+            return new StructuredSelection(itemsToSelect);
         }
 
         private void createChangeCategoryButton(Composite buttonComposite, UIToolkit toolkit) {
@@ -593,15 +596,11 @@ public class CategorySection extends IpsSection {
         }
 
         private boolean isPropertySelected() {
-            return getTree().getSelectionCount() > 0;
+            return !getViewer().getSelection().isEmpty();
         }
 
-        private Tree getTree() {
-            return getTreeViewer().getTree();
-        }
-
-        private TreeViewer getTreeViewer() {
-            return (TreeViewer)getViewer();
+        private Control getControl() {
+            return getViewer().getControl();
         }
 
         private static class PropertyContentProvider implements ITreeContentProvider {
@@ -758,13 +757,40 @@ public class CategorySection extends IpsSection {
                  * When the mouse is on an item, return LOCATION_BEFORE or LOCATION_AFTER instead,
                  * depending on the distance to the respective location.
                  */
-                Point coordinates = getTree().toControl(new Point(event.x, event.y));
-                if ((coordinates.y - bounds.y) < bounds.height / 2) {
+                if (isLocationBefore(event)) {
                     return LOCATION_BEFORE;
-                } else if ((bounds.y + bounds.height - coordinates.y) < bounds.height / 2) {
+                } else if (isLocationAfter(event)) {
                     return LOCATION_AFTER;
                 } else {
                     return LOCATION_ON;
+                }
+            }
+
+            private boolean isLocationBefore(DropTargetEvent event) {
+                Rectangle bounds = getBounds((Item)event.item);
+                if (bounds == null) {
+                    return false;
+                }
+                Point coordinates = getControl().toControl(new Point(event.x, event.y));
+                return (coordinates.y - bounds.y) < bounds.height / 2;
+            }
+
+            private boolean isLocationAfter(DropTargetEvent event) {
+                Rectangle bounds = getBounds((Item)event.item);
+                if (bounds == null) {
+                    return false;
+                }
+                Point coordinates = getControl().toControl(new Point(event.x, event.y));
+                return (bounds.y + bounds.height - coordinates.y) < bounds.height / 2;
+            }
+
+            @Override
+            public void dragOver(DropTargetEvent event) {
+                super.dragOver(event);
+                if (isLocationBefore(event)) {
+                    event.feedback = DND.FEEDBACK_INSERT_BEFORE;
+                } else if (isLocationAfter(event)) {
+                    event.feedback = DND.FEEDBACK_INSERT_AFTER;
                 }
             }
 
