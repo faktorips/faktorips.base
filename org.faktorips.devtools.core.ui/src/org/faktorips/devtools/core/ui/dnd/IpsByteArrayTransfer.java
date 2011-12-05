@@ -66,8 +66,8 @@ public abstract class IpsByteArrayTransfer<T> extends ByteArrayTransfer {
     private final Class<T> transferClass;
 
     /**
-     * @param transferClass the class of the transfered objects. Used to check the validity of drag
-     *            sources
+     * @param transferClass the {@link Class} of the transfered objects. Used to check the validity
+     *            of drag sources
      */
     protected IpsByteArrayTransfer(Class<T> transferClass) {
         super();
@@ -78,8 +78,8 @@ public abstract class IpsByteArrayTransfer<T> extends ByteArrayTransfer {
      * <strong>Subclassing:</strong><br>
      * This implementation first checks the validity of the operation by
      * <ol>
-     * <li>testing whether {@link #isSupportedType(TransferData)} returns true and by
-     * <li>testing whether {@link #validate(Object)} returns true.
+     * <li>testing whether {@link #isSupportedType(TransferData)} returns {@code true} and by
+     * <li>testing whether {@link #validate(Object)} returns {@code true}.
      * </ol>
      * <p>
      * If any of these conditions is not fulfilled, a drag and drop error of code
@@ -115,21 +115,21 @@ public abstract class IpsByteArrayTransfer<T> extends ByteArrayTransfer {
      * {@inheritDoc}
      * <p>
      * <strong>Subclassing:</strong><br>
-     * This implementation first checks that the object is not null and that the object is an array.
-     * Then, it is checked that the <em>transfer class</em> - which was provided to this
+     * This implementation first checks that the object is not {@code null} and that the object is
+     * an array. Then, it is checked that the <em>transfer class</em> - which was provided to this
      * {@link IpsByteArrayTransfer} via the constructor - is assignable from each transfered
      * object's class. Finally, {@link #validateObject(Object)} is invoked for each transfered
-     * object. If {@link #validateObject(Object)} returns false for any transfered object, false is
-     * returned.
+     * object. If {@link #validateObject(Object)} returns {@code false} for any transfered object,
+     * {@code false} is returned.
      * <p>
-     * Note that this implementation is not final and may be overridden by subclasses if it is
-     * inappropriate for the subclass.
+     * Note that this implementation is not {@code final} and may be overridden by subclasses if it
+     * is inappropriate for the subclass.
      * 
-     * @return false if any of the following conditions applies (true otherwise):
+     * @return {@code false} if any of the following conditions applies ({@code true} otherwise):
      *         <ol>
-     *         <li>the object is null <li>the object is not an array <li> the <em>transfer class
-     *         </em> is not assignable from an object within the array <li>
-     *         {@link #validateObject(Object)} returns false for any object within the array
+     *         <li>the object is {@code null} <li>the object is not an array <li> the <em>transfer
+     *         class </em> is not assignable from an object within the array <li>
+     *         {@link #validateObject(Object)} returns {@code false} for any object within the array
      *         </ol>
      * 
      * @see Class#isAssignableFrom(Class)
@@ -161,17 +161,17 @@ public abstract class IpsByteArrayTransfer<T> extends ByteArrayTransfer {
     /**
      * Validates whether the provided object is of the correct format for this {@link Transfer}.
      * <p>
-     * Returns true if the check succeeded, false otherwise.
+     * Returns {@code true} if the check succeeded, {@code false} otherwise.
      * <p>
      * <strong>Subclassing:</strong><br>
-     * This implementation checks that the object is not null.
+     * This implementation checks that the object is not {@code null}.
      * <p>
-     * Note that this implementation is not final and may be overridden by subclasses if it is
-     * inappropriate for the subclass.
+     * Note that this implementation is not {@code final} and may be overridden by subclasses if it
+     * is inappropriate for the subclass.
      * 
      * @param object the object whose format is to be validated
      * 
-     * @return true if the provided object is of the correct format, false if not
+     * @return {@code true} if the provided object is of the correct format, {@code false} if not
      */
     protected boolean validateObject(T object) {
         return object != null;
@@ -228,12 +228,12 @@ public abstract class IpsByteArrayTransfer<T> extends ByteArrayTransfer {
     /**
      * <strong>Subclassing:</strong><br>
      * This implementation first checks the validity of the operation by testing whether
-     * {@link #isSupportedType(TransferData)} returns true. If this is not the case, null is
-     * returned. Otherwise, {@link #readObject(DataInput)} is called as long as more data remains in
-     * the byte stream.
+     * {@link #isSupportedType(TransferData)} returns {@code true}. If this is not the case,
+     * {@code null} is returned. Otherwise, {@link #readObject(DataInput)} is called as long as more
+     * data remains in the byte stream.
      * 
-     * @return the array of transfered objects or null if {@link #isSupportedType(TransferData)}
-     *         returns false
+     * @return the array of transfered objects or {@code null} if
+     *         {@link #isSupportedType(TransferData)} returns {@code false}
      */
     @Override
     protected final Object nativeToJava(TransferData transferData) {
