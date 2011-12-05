@@ -69,25 +69,26 @@ public class TypeSelectionPage extends WizardPage {
         setControl(composite);
 
         bindControls(ipsProjectRefControl, typeSelectionComposite);
-        bindingContext.updateUI();
     }
 
     void bindControls(IpsProjectRefControl ipsProjectRefControl, final TypeSelectionComposite typeSelectionComposite) {
-        bindingContext.bindContent(ipsProjectRefControl, pmo, NewProductCmptPMO.PROPERTY_IPSPROJECT);
+        bindingContext.bindContent(ipsProjectRefControl, pmo, NewProductCmptPMO.PROPERTY_PACKAGE_ROOT);
 
         typeSelectionComposite.addDoubleClickListener(new DoubleClickListener(this));
         listInputUpdater = new TypeSelectionUpdater(typeSelectionComposite, pmo);
         pmo.addPropertyChangeListener(listInputUpdater);
-        listInputUpdater.updateListViewer();
 
         bindingContext.bindContent(typeSelectionComposite.getListViewerField(), pmo,
                 NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE);
+
+        listInputUpdater.updateListViewer();
+        bindingContext.updateUI();
 
     }
 
     @Override
     public boolean isPageComplete() {
-        return pmo.getIpsProject() != null && pmo.getSelectedBaseType() != null;
+        return pmo.getPackageRoot() != null && pmo.getSelectedBaseType() != null;
     }
 
     @Override
@@ -110,7 +111,7 @@ public class TypeSelectionPage extends WizardPage {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
-            if (evt.getPropertyName().equals(NewProductCmptPMO.PROPERTY_IPSPROJECT)) {
+            if (evt.getPropertyName().equals(NewProductCmptPMO.PROPERTY_PACKAGE_ROOT)) {
                 updateListViewer();
             }
             if (NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE.equals(evt.getPropertyName())) {

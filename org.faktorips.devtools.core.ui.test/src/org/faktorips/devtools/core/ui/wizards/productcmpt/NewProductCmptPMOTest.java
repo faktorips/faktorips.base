@@ -14,18 +14,23 @@
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.junit.After;
@@ -49,18 +54,34 @@ public class NewProductCmptPMOTest {
 
     @Test
     public void testUpdateBaseTypeList_noProject() throws Exception {
-        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        NewProductCmptPMO pmo = new NewProductCmptPMO(null);
 
-        pmo.setIpsProject(PROJECT_NAME);
+        IIpsPackageFragmentRoot ipsPackageFragmentRoot = mockPackageFragmentRoot();
+
+        pmo.setPackageRoot(ipsPackageFragmentRoot);
 
         assertTrue(pmo.getBaseTypes().isEmpty());
     }
 
+    private IIpsPackageFragmentRoot mockPackageFragmentRoot() throws CoreException {
+        IIpsPackageFragmentRoot ipsPackageFragmentRoot = mock(IIpsPackageFragmentRoot.class);
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        IIpsProjectProperties ipsProjectProperties = mock(IIpsProjectProperties.class);
+        IProductCmptNamingStrategy productCmptNamingStrategy = mock(IProductCmptNamingStrategy.class);
+        when(ipsProjectProperties.getProductCmptNamingStrategy()).thenReturn(productCmptNamingStrategy);
+        when(ipsPackageFragmentRoot.getIpsProject()).thenReturn(ipsProject);
+        when(ipsProject.getProperties()).thenReturn(ipsProjectProperties);
+        when(ipsProject.findIpsSrcFiles(any(IpsObjectType.class))).thenReturn(new IIpsSrcFile[0]);
+        return ipsPackageFragmentRoot;
+    }
+
     @Test
     public void testUpdateBaseTypeList_withProject() throws Exception {
-        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        NewProductCmptPMO pmo = new NewProductCmptPMO(null);
 
-        IIpsProject ipsProject = mock(IIpsProject.class);
+        IIpsPackageFragmentRoot packageFragmentRoot = mockPackageFragmentRoot();
+        IIpsProject ipsProject = packageFragmentRoot.getIpsProject();
+
         ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
 
         when(ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE)).thenReturn(
@@ -69,7 +90,7 @@ public class NewProductCmptPMOTest {
 
         when(ipsModel.getIpsProject(PROJECT_NAME)).thenReturn(ipsProject);
 
-        pmo.setIpsProject(ipsProject.getName());
+        pmo.setPackageRoot(packageFragmentRoot);
         assertTrue(pmo.getBaseTypes().isEmpty());
 
         IIpsSrcFile ipsSrcFile1 = mock(IIpsSrcFile.class);
@@ -96,7 +117,9 @@ public class NewProductCmptPMOTest {
         when(ipsProject.findIpsSrcFile(new QualifiedNameType("findSuperType", IpsObjectType.PRODUCT_CMPT_TYPE)))
                 .thenReturn(ipsSrcFile1);
 
-        pmo.setIpsProject(ipsProject.getName());
+        // refresh the list
+        pmo.setPackageRoot(packageFragmentRoot);
+
         assertTrue(pmo.getBaseTypes().size() == 2);
         assertTrue(pmo.getBaseTypes().contains(productCmptType2));
         assertTrue(pmo.getBaseTypes().contains(productCmptType3));
@@ -105,6 +128,11 @@ public class NewProductCmptPMOTest {
     @After
     public void tearDown() {
         singletonMockHelper.reset();
+    }
+
+    @Test
+    public void testSetPackageRoot() {
+
     }
 
 }

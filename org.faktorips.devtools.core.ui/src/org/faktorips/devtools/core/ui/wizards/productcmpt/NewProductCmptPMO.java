@@ -15,24 +15,34 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.type.TypeHierarchy;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 
 public class NewProductCmptPMO extends PresentationModelObject {
 
-    public static final String PROPERTY_IPSPROJECT = "ipsProject"; //$NON-NLS-1$
+    public static final String PROPERTY_PACKAGE_ROOT = "packageRoot"; //$NON-NLS-1$
+
+    public static final String PROPERTY_IPS_PACKAGE = "ipsPackage"; //$NON-NLS-1$
 
     public static final String PROPERTY_SELECTED_BASE_TYPE = "selectedBaseType"; //$NON-NLS-1$
 
@@ -46,7 +56,9 @@ public class NewProductCmptPMO extends PresentationModelObject {
 
     public static final String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
 
-    private String ipsProject = StringUtils.EMPTY;
+    private IIpsPackageFragmentRoot packageRoot;
+
+    private IIpsPackageFragment ipsPackage;
 
     private IProductCmptType selectedBaseType;
 
@@ -60,19 +72,56 @@ public class NewProductCmptPMO extends PresentationModelObject {
 
     private String runtimeId = StringUtils.EMPTY;
 
-    /**
-     * @param ipsProject The ipsProject to set.
-     */
-    public void setIpsProject(String ipsProject) {
-        String oldValue = this.ipsProject;
-        this.ipsProject = ipsProject;
-        updateBaseTypeList();
-        selectedBaseType = null;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_IPSPROJECT, oldValue, ipsProject));
+    private final GregorianCalendar workingDate;
+
+    private IProductCmpt contextProductCmpt = null;
+
+    private ArrayList<IProductCmptType> subtypes;
+
+    public NewProductCmptPMO(GregorianCalendar workingDate) {
+        this.workingDate = workingDate;
     }
 
-    private IIpsProject findIpsProject() {
-        return IpsPlugin.getDefault().getIpsModel().getIpsProject(ipsProject);
+    /**
+     * @param packageRoot The packageRoot to set.
+     */
+    public void setPackageRoot(IIpsPackageFragmentRoot ipsProject) {
+        IIpsPackageFragmentRoot oldValue = this.packageRoot;
+        this.packageRoot = ipsProject;
+        updateBaseTypeList();
+        selectedBaseType = null;
+
+        IProductCmptNamingStrategy namingStrategy = getIpsProject().getProperties().getProductCmptNamingStrategy();
+        setVersionId(namingStrategy.getNextVersionId(contextProductCmpt, workingDate));
+
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_PACKAGE_ROOT, oldValue, ipsProject));
+    }
+
+    /**
+     * @return Returns the packageRoot.
+     */
+    public IIpsPackageFragmentRoot getPackageRoot() {
+        return packageRoot;
+    }
+
+    IIpsProject getIpsProject() {
+        return packageRoot.getIpsProject();
+    }
+
+    /**
+     * @param ipsPackage The ipsPackage to set.
+     */
+    public void setIpsPackage(IIpsPackageFragment ipsPackage) {
+        IIpsPackageFragment oldPackage = this.ipsPackage;
+        this.ipsPackage = ipsPackage;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_IPS_PACKAGE, oldPackage, ipsPackage));
+    }
+
+    /**
+     * @return Returns the ipsPackage.
+     */
+    public IIpsPackageFragment getIpsPackage() {
+        return ipsPackage;
     }
 
     /**
@@ -83,11 +132,11 @@ public class NewProductCmptPMO extends PresentationModelObject {
      * as an base type.
      */
     private void updateBaseTypeList() {
-        if (ipsProject == null) {
+        if (packageRoot == null) {
             return;
         }
         baseTypes = new ArrayList<IProductCmptType>();
-        IIpsProject ipsProject = findIpsProject();
+        IIpsProject ipsProject = getIpsProject();
         if (ipsProject == null) {
             return;
         }
@@ -116,13 +165,6 @@ public class NewProductCmptPMO extends PresentationModelObject {
     }
 
     /**
-     * @return Returns the ipsProject.
-     */
-    public String getIpsProject() {
-        return ipsProject;
-    }
-
-    /**
      * @return Returns the baseTypes.
      */
     public List<IProductCmptType> getBaseTypes() {
@@ -138,7 +180,7 @@ public class NewProductCmptPMO extends PresentationModelObject {
     public void setSelectedBaseType(IProductCmptType selectedBaseType) {
         IProductCmptType oldSelection = this.selectedBaseType;
         this.selectedBaseType = selectedBaseType;
-        setSelectedType(null);
+        updateSubtypeList();
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_SELECTED_BASE_TYPE, oldSelection, selectedBaseType));
 
     }
@@ -171,19 +213,28 @@ public class NewProductCmptPMO extends PresentationModelObject {
     }
 
     public List<IProductCmptType> getSubtypes() {
+        return subtypes;
+    }
+
+    private void updateSubtypeList() {
         ArrayList<IProductCmptType> result = new ArrayList<IProductCmptType>();
         if (selectedBaseType == null) {
-            return result;
+            subtypes = result;
         }
         try {
-            TypeHierarchy subtypeHierarchy = TypeHierarchy.getSubtypeHierarchy(selectedBaseType, findIpsProject());
-            List<IType> subtypes = subtypeHierarchy.getAllSubtypes(selectedBaseType);
-            for (IType type : subtypes) {
+            TypeHierarchy subtypeHierarchy = TypeHierarchy.getSubtypeHierarchy(selectedBaseType, getIpsProject());
+            List<IType> subtypesList = subtypeHierarchy.getAllSubtypes(selectedBaseType);
+            for (IType type : subtypesList) {
                 result.add((IProductCmptType)type);
             }
-            return result;
+            subtypes = result;
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
+        }
+        if (!subtypes.isEmpty()) {
+            setSelectedType(subtypes.get(0));
+        } else {
+            setSelectedType(null);
         }
     }
 
@@ -199,15 +250,17 @@ public class NewProductCmptPMO extends PresentationModelObject {
 
     private void updateRuntimeId() {
         try {
-            setRuntimeId(findIpsProject().getProperties().getProductCmptNamingStrategy()
-                    .getUniqueRuntimeId(findIpsProject(), name));
+            setRuntimeId(getIpsProject().getProperties().getProductCmptNamingStrategy()
+                    .getUniqueRuntimeId(getIpsProject(), getFullName()));
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            setRuntimeId(StringUtils.EMPTY);
         }
     }
 
     public String getFullName() {
-        return findIpsProject().getProperties().getProductCmptNamingStrategy().getProductCmptName(name, versionId);
+        return getIpsProject().getProperties().getProductCmptNamingStrategy().getProductCmptName(name, versionId);
     }
 
     /**
@@ -247,5 +300,48 @@ public class NewProductCmptPMO extends PresentationModelObject {
      */
     public String getRuntimeId() {
         return runtimeId;
+    }
+
+    public void initDefaults(IResource resource) {
+        IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
+        // TODO check other selected resources
+        if (ipsElement instanceof IIpsSrcFile) {
+            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
+            setPackageRoot(ipsSrcFile.getIpsPackageFragment().getRoot());
+            setIpsPackage(ipsSrcFile.getIpsPackageFragment());
+            if (ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
+                try {
+                    contextProductCmpt = (IProductCmpt)((IIpsSrcFile)ipsElement).getIpsObject();
+                    IProductCmptType cmptType = contextProductCmpt.findProductCmptType(contextProductCmpt
+                            .getIpsProject());
+                    if (cmptType != null) {
+                        initDefaultTypes(cmptType, contextProductCmpt.getIpsProject());
+                    }
+                    setName(contextProductCmpt.findProductCmptKind().getName());
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            }
+        }
+        if (getPackageRoot() == null) {
+            IProject project = resource.getProject();
+            IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
+            try {
+                setPackageRoot(ipsProject.getSourceIpsPackageFragmentRoots()[0]);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+    }
+
+    private void initDefaultTypes(IProductCmptType cmptType, IIpsProject ipsProject) throws CoreException {
+        IProductCmptType baseType = cmptType;
+        while (!getBaseTypes().contains(baseType) && baseType.hasSupertype()) {
+            baseType = cmptType.findSuperProductCmptType(ipsProject);
+        }
+        if (getBaseTypes().contains(baseType)) {
+            setSelectedBaseType(baseType);
+        }
+        setSelectedType(cmptType);
     }
 }

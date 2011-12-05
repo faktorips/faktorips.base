@@ -21,16 +21,26 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 
 /**
- *
+ * The second page of the {@link NewProductCmptWizard}. In this page you could select the concrete
+ * {@link IProductCmptType} and specify the name, version id and runtime id of the new product
+ * component.
+ * <p>
+ * If the wizard is started by an context sensitive action that has already set the correct base
+ * type, the wizard would start with this page automatically.
+ * 
+ * @since 3.6
+ * @author dirmeier
  */
 public class ProductCmptPage extends WizardPage {
 
@@ -74,6 +84,8 @@ public class ProductCmptPage extends WizardPage {
 
         nameText = toolkit.createText(nameComposite);
         toolkit.createLabel(nameComposite, "Generation:");
+        nameText.setFocus();
+
         versionIdText = toolkit.createText(nameComposite);
         ((GridData)versionIdText.getLayoutData()).widthHint = 20;
 
@@ -87,12 +99,15 @@ public class ProductCmptPage extends WizardPage {
         setControl(composite);
 
         bindControls(typeSelectionComposite);
+
+        uiUpdater.updateUi();
+        bindingContext.updateUI();
     }
 
     void bindControls(final TypeSelectionComposite typeSelectionComposite) {
         uiUpdater = new UiUpdater(this);
         pmo.addPropertyChangeListener(uiUpdater);
-        uiUpdater.updateListViewer();
+        uiUpdater.updateSelectedBaseType();
 
         bindingContext.bindContent(typeSelectionComposite.getListViewerField(), pmo,
                 NewProductCmptPMO.PROPERTY_SELECTED_TYPE);
@@ -100,6 +115,13 @@ public class ProductCmptPage extends WizardPage {
         bindingContext.bindContent(nameText, pmo, NewProductCmptPMO.PROPERTY_NAME);
         bindingContext.bindContent(versionIdText, pmo, NewProductCmptPMO.PROPERTY_VERSION_ID);
         bindingContext.bindContent(runtimeId, pmo, NewProductCmptPMO.PROPERTY_RUNTIME_ID);
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        nameText.selectAll();
+        nameText.setFocus();
     }
 
     @Override
@@ -123,29 +145,48 @@ public class ProductCmptPage extends WizardPage {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             if (evt.getPropertyName().equals(NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE)) {
-                updateListViewer();
-                productCmptPage.setTitle("Create new "
-                        + IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(pmo.getSelectedBaseType()));
+                updateSelectedBaseType();
             }
             if (NewProductCmptPMO.PROPERTY_SELECTED_TYPE.equals(evt.getPropertyName())) {
-                if (pmo.getSelectedType() == null) {
-                    productCmptPage.typeSelectionComposite.setDescriptionTitle(StringUtils.EMPTY);
-                    productCmptPage.typeSelectionComposite.setDescription(StringUtils.EMPTY);
-                } else {
-                    productCmptPage.typeSelectionComposite.setDescriptionTitle(IpsPlugin.getMultiLanguageSupport()
-                            .getLocalizedLabel(pmo.getSelectedType()));
-                    productCmptPage.typeSelectionComposite.setDescription(IpsPlugin.getMultiLanguageSupport()
-                            .getLocalizedDescription(pmo.getSelectedType()));
-                }
+                updateSelectedType();
             }
             if (NewProductCmptPMO.PROPERTY_NAME.equals(evt.getPropertyName())
                     || NewProductCmptPMO.PROPERTY_VERSION_ID.equals(evt.getPropertyName())) {
-                productCmptPage.fullNameLabel.setText(pmo.getFullName());
+                updateNameOrVersionId();
             }
         }
 
-        void updateListViewer() {
+        public void updateUi() {
+            updateSelectedBaseType();
+            updateSelectedType();
+            updateNameOrVersionId();
+        }
+
+        public void updateNameOrVersionId() {
+            productCmptPage.fullNameLabel.setText(NLS.bind("Full Name: {0}", pmo.getFullName()));
+        }
+
+        public void updateSelectedType() {
+            if (pmo.getSelectedType() == null) {
+                productCmptPage.typeSelectionComposite.setDescriptionTitle(StringUtils.EMPTY);
+                productCmptPage.typeSelectionComposite.setDescription(StringUtils.EMPTY);
+            } else {
+                productCmptPage.typeSelectionComposite.setDescriptionTitle(IpsPlugin.getMultiLanguageSupport()
+                        .getLocalizedLabel(pmo.getSelectedType()));
+                productCmptPage.typeSelectionComposite.setDescription(IpsPlugin.getMultiLanguageSupport()
+                        .getLocalizedDescription(pmo.getSelectedType()));
+            }
+        }
+
+        public void updateSelectedBaseType() {
             productCmptPage.typeSelectionComposite.setListInput(pmo.getSubtypes());
+            IProductCmptType selectedBaseType = pmo.getSelectedBaseType();
+            if (selectedBaseType != null) {
+                productCmptPage.setTitle("Create new "
+                        + IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(selectedBaseType));
+            } else {
+                productCmptPage.setTitle(StringUtils.EMPTY);
+            }
         }
 
     }
