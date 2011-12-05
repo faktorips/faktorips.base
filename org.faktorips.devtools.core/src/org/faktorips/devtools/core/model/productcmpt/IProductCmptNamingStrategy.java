@@ -216,6 +216,8 @@ public interface IProductCmptNamingStrategy {
      * @param productCmptName The name of the new product component for which the runtime id will be
      *            returned.
      * @throws CoreException if an error occurs during evaluation.
+     * @throws IllegalArgumentException may throw an illegal argument exception if the name could
+     *             not be divided in kind id and version id
      */
     public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException;
 

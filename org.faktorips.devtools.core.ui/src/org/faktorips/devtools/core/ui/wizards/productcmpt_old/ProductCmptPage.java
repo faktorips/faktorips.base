@@ -325,8 +325,11 @@ public class ProductCmptPage extends IpsObjectPage {
             if (productCmptNamingStrategy != null) {
                 defaultRuntimeId = productCmptNamingStrategy.getUniqueRuntimeId(getIpsProject(), getIpsObjectName());
             }
+        } catch (IllegalArgumentException e) {
+            // the actual name could not be parsed
+            return StringUtils.EMPTY;
         } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+            IpsPlugin.log(e);
         }
         return defaultRuntimeId;
     }
