@@ -26,10 +26,9 @@ import java.util.List;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
-import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.formula.FormulaEvaluatorUtil.AssociationTo1Helper;
+import org.faktorips.runtime.formula.FormulaEvaluatorUtil.AssociationToManyHelper;
 import org.faktorips.runtime.formula.FormulaEvaluatorUtil.ExistsHelper;
-import org.faktorips.runtime.modeltype.IModelType;
-import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,12 +41,12 @@ public class FormulaEvaluatorUtilTest {
 
     private ITree tree;
     private IBranch branch;
-    private IModelTypeAssociation associationTreeToBranch;
-    private IRuntimeRepository repository;
-    private IModelType treeModelType;
     private IProductComponent treePC;
 
     public interface ITree extends IConfigurableModelObject {
+        List<IBranch> getBranches();
+
+        IBranch getBranch();
     }
 
     public interface IBranch extends IModelObject {
@@ -59,12 +58,6 @@ public class FormulaEvaluatorUtilTest {
         treePC = mock(IProductComponent.class);
         when(tree.getProductComponent()).thenReturn(treePC);
         branch = mock(IBranch.class);
-        associationTreeToBranch = mock(IModelTypeAssociation.class);
-        when(associationTreeToBranch.getName()).thenReturn("branch");
-        treeModelType = mock(IModelType.class);
-        when(treeModelType.getAssociation(associationTreeToBranch.getName())).thenReturn(associationTreeToBranch);
-        repository = mock(IRuntimeRepository.class);
-        when(repository.getModelType(tree)).thenReturn(treeModelType);
     }
 
     /**
@@ -75,10 +68,15 @@ public class FormulaEvaluatorUtilTest {
      * The target object is returned
      */
     @Test
-    public void testGetTargets_singleTarget() {
-        when(associationTreeToBranch.getTargetObjects(tree)).thenReturn(Arrays.asList((IModelObject)branch));
-        List<IBranch> targets = FormulaEvaluatorUtil.getTargets(Arrays.asList(tree), associationTreeToBranch.getName(),
-                IBranch.class, repository);
+    public void testAssociationTo1Helper() {
+        when(tree.getBranch()).thenReturn(branch);
+        List<IBranch> targets = new AssociationTo1Helper<ITree, IBranch>() {
+
+            @Override
+            protected IBranch getTargetInternal(ITree sourceObject) {
+                return sourceObject.getBranch();
+            }
+        }.getTargets(Arrays.asList(tree));
         assertNotNull(targets);
         assertEquals(1, targets.size());
         assertEquals(branch, targets.get(0));
@@ -92,12 +90,16 @@ public class FormulaEvaluatorUtilTest {
      * All target objects are returned in the order the source object defines.
      */
     @Test
-    public void testGetTargets_multipleTargets() {
+    public void testAssociationToManyHelper() {
         IBranch branch2 = mock(IBranch.class);
-        when(associationTreeToBranch.getTargetObjects(tree)).thenReturn(
-                Arrays.asList((IModelObject)branch, (IModelObject)branch2));
-        List<IBranch> targets = FormulaEvaluatorUtil.getTargets(Arrays.asList(tree), associationTreeToBranch.getName(),
-                IBranch.class, repository);
+        when(tree.getBranches()).thenReturn(Arrays.asList(branch, branch2));
+        List<IBranch> targets = new AssociationToManyHelper<ITree, IBranch>() {
+
+            @Override
+            protected List<IBranch> getTargetsInternal(ITree sourceObject) {
+                return sourceObject.getBranches();
+            }
+        }.getTargets(Arrays.asList(tree));
         assertNotNull(targets);
         assertEquals(2, targets.size());
         assertEquals(branch, targets.get(0));
@@ -113,17 +115,19 @@ public class FormulaEvaluatorUtilTest {
      * All target objects are returned in the order the source objects define, excluding duplicates.
      */
     @Test
-    public void testGetTargets_multipleSourcesAndTargets() {
+    public void testAssociationToManyHelper_multipleSources() {
         IBranch branch2 = mock(IBranch.class);
-        when(associationTreeToBranch.getTargetObjects(tree)).thenReturn(
-                Arrays.asList((IModelObject)branch, (IModelObject)branch2));
         ITree tree2 = mock(ITree.class);
         IBranch branch3 = mock(IBranch.class);
-        when(repository.getModelType(tree2)).thenReturn(treeModelType);
-        when(associationTreeToBranch.getTargetObjects(tree2)).thenReturn(
-                Arrays.asList((IModelObject)branch2, (IModelObject)branch3));
-        List<IBranch> targets = FormulaEvaluatorUtil.getTargets(Arrays.asList(tree, tree2),
-                associationTreeToBranch.getName(), IBranch.class, repository);
+        when(tree.getBranches()).thenReturn(Arrays.asList(branch, branch2));
+        when(tree2.getBranches()).thenReturn(Arrays.asList(branch2, branch3));
+        List<IBranch> targets = new AssociationToManyHelper<ITree, IBranch>() {
+
+            @Override
+            protected List<IBranch> getTargetsInternal(ITree sourceObject) {
+                return sourceObject.getBranches();
+            }
+        }.getTargets(Arrays.asList(tree, tree2));
         assertNotNull(targets);
         assertEquals(3, targets.size());
         assertEquals(branch, targets.get(0));

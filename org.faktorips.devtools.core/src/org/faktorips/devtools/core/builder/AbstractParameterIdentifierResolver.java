@@ -464,8 +464,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             IType type,
             IAssociation association,
             IType target) {
-        String associationTargetGetterName;
-        associationTargetGetterName = getAssociationTargetsGetterName(association, (IPolicyCmptType)type);
+        String associationTargetGetterName = getAssociationTargetsGetterName(association, (IPolicyCmptType)type);
         javaCodeFragment.append('.' + associationTargetGetterName + "()"); //$NON-NLS-1$
         return new CompilationResultImpl(javaCodeFragment, new ListOfTypeDatatype(target));
     }
@@ -539,7 +538,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                             NLS.bind(Messages.AbstractParameterIdentifierResolver_noAssociationTarget, new Object[] {
                                     association, type.getName() })));
                 }
-                JavaCodeFragment getTargetCode = compileAssociationAccess(javaCodeFragment, association);
+                JavaCodeFragment getTargetCode = compileAssociationAccess(javaCodeFragment, type, association);
                 CompilationResult associationIdentifier;
                 if (index == null) {
                     if (tail.isEmpty()) {
@@ -581,16 +580,49 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
     }
 
-    private JavaCodeFragment compileAssociationAccess(JavaCodeFragment javaCodeFragment, IAssociation association)
-            throws CoreException {
-        JavaCodeFragment getTargetCode = new JavaCodeFragment();
-        getTargetCode.appendClassName(org.faktorips.runtime.formula.FormulaEvaluatorUtil.class);
-        getTargetCode.append(".getTargets("); //$NON-NLS-1$
-        getTargetCode.append(javaCodeFragment);
-        getTargetCode.append(", \"" + association.getName() + "\", "); //$NON-NLS-1$ //$NON-NLS-2$
+    private JavaCodeFragment compileAssociationAccess(JavaCodeFragment javaCodeFragment,
+            IType type,
+            IAssociation association) throws CoreException {
         IType target = association.findTarget(association.getIpsProject());
-        getTargetCode.appendClassName(getJavaClassName(target));
-        getTargetCode.append(".class, this.getRepository())"); //$NON-NLS-1$
+        // new AssociationToManyHelper<IPolicy, ICoverage>(){@Override\nprotected List<ICoverage>
+        // getTargetsInternal(IPolicy sourceObject){return
+        // sourceObject.getCoverages();}}.getTargets(javaCodeFragment)
+        JavaCodeFragment getTargetCode = new JavaCodeFragment("new "); //$NON-NLS-1$
+        if (association.is1ToManyIgnoringQualifier()) {
+            getTargetCode
+                    .appendClassName(org.faktorips.runtime.formula.FormulaEvaluatorUtil.AssociationToManyHelper.class);
+        } else {
+            getTargetCode
+                    .appendClassName(org.faktorips.runtime.formula.FormulaEvaluatorUtil.AssociationTo1Helper.class);
+        }
+        getTargetCode.append("<"); //$NON-NLS-1$
+        String sourceClassName = getJavaClassName(type);
+        getTargetCode.appendClassName(sourceClassName);
+        getTargetCode.append(", "); //$NON-NLS-1$
+        String targetClassName = getJavaClassName(target);
+        getTargetCode.appendClassName(targetClassName);
+        getTargetCode.append(">(){@Override protected "); //$NON-NLS-1$
+        if (association.is1ToManyIgnoringQualifier()) {
+            getTargetCode.appendClassName(List.class);
+            getTargetCode.append("<"); //$NON-NLS-1$
+        }
+        getTargetCode.appendClassName(targetClassName);
+        if (association.is1ToManyIgnoringQualifier()) {
+            getTargetCode.append("> getTargetsInternal("); //$NON-NLS-1$
+        } else {
+            getTargetCode.append(" getTargetInternal("); //$NON-NLS-1$
+        }
+        getTargetCode.appendClassName(sourceClassName);
+        getTargetCode.append(" sourceObject){return sourceObject."); //$NON-NLS-1$
+        if (association.is1ToManyIgnoringQualifier()) {
+            getTargetCode.append(getAssociationTargetsGetterName(association, (IPolicyCmptType)target));
+        } else {
+            getTargetCode.append(getAssociationTargetGetterName(association, (IPolicyCmptType)target));
+        }
+        getTargetCode.append("();}}.getTargets("); //$NON-NLS-1$
+        getTargetCode.append(javaCodeFragment);
+        getTargetCode.append(")"); //$NON-NLS-1$
+
         return getTargetCode;
     }
 

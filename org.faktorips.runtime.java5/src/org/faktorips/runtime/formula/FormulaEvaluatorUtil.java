@@ -19,9 +19,6 @@ import java.util.List;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
-import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.modeltype.IModelType;
-import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 
 /**
  * Provides methods that can be used in formula evaluation.
@@ -34,53 +31,6 @@ import org.faktorips.runtime.modeltype.IModelTypeAssociation;
  * @author Daniel Schwering, Faktor Zehn AG
  */
 public class FormulaEvaluatorUtil {
-
-    /**
-     * Returns an array of {@link IModelObject}s found by following the
-     * {@link IModelTypeAssociation} identified by the given association name from all
-     * {@link IModelObject}s in the source array.
-     * 
-     * @param sourceObjects the {@link IModelObject}s searched for the given association name
-     * @param associationName the name of the {@link IModelTypeAssociation}
-     * @param targetClass the class for the association's target type, used for the type of the
-     *            returned list
-     * @param repository the {@link IRuntimeRepository} used to find model type information
-     * @return an array of {@link IModelObject}s found by following the
-     *         {@link IModelTypeAssociation} identified by the given association name
-     */
-    public static <S extends IModelObject, T extends IModelObject> List<T> getTargets(List<S> sourceObjects,
-            String associationName,
-            Class<T> targetClass,
-            IRuntimeRepository repository) {
-        List<T> targets = new ArrayList<T>();
-        for (S sourceObject : sourceObjects) {
-            List<T> foundTargets = findTargets(sourceObject, associationName, targetClass, repository);
-            for (T target : foundTargets) {
-                if (!targets.contains(target)) {
-                    targets.add(target);
-                }
-            }
-        }
-        return targets;
-    }
-
-    private static <S extends IModelObject, T extends IModelObject> List<T> findTargets(S sourceObject,
-            String associationName,
-            Class<T> targetClass,
-            IRuntimeRepository repository) {
-        IModelType modelType = repository.getModelType(sourceObject);
-        IModelTypeAssociation association = modelType.getAssociation(associationName);
-        List<IModelObject> targets = association.getTargetObjects(sourceObject);
-        List<T> targetObjects = new ArrayList<T>(targets.size());
-        for (IModelObject target : targets) {
-            if (targetClass.isInstance(target)) {
-                @SuppressWarnings("unchecked")
-                T castTarget = (T)target;
-                targetObjects.add(castTarget);
-            }
-        }
-        return targetObjects;
-    }
 
     /**
      * Returns the (first) {@link IConfigurableModelObject} in the list that is configured by a
@@ -144,5 +94,84 @@ public class FormulaEvaluatorUtil {
         }
 
         abstract protected boolean existsInternal();
+    }
+
+    /**
+     * Helper class for navigating 1-to-many associations from a list of source objects of type
+     * {@code <S>} to target objects of type {@code <T>}.
+     * 
+     * @param <S> the type of the source objects
+     * @param <T> the type of the association targets
+     */
+    public static abstract class AssociationToManyHelper<S extends IModelObject, T extends IModelObject> {
+
+        /**
+         * Returns a {@link List} of target {@link IModelObject model objects} found by calling
+         * {@link #getTargetsInternal(IModelObject)} for every object in the {@code sourceObjects}
+         * {@link List}.
+         * 
+         * @param sourceObjects the {@link IModelObject model objects} on which
+         *            {@link #getTargetsInternal(IModelObject)} will be called
+         * @return a {@link List} of target {@link IModelObject model objects}
+         */
+        public List<T> getTargets(List<S> sourceObjects) {
+            List<T> targets = new ArrayList<T>();
+            for (S sourceObject : sourceObjects) {
+                List<T> foundTargets = getTargetsInternal(sourceObject);
+                for (T target : foundTargets) {
+                    if (!targets.contains(target)) {
+                        targets.add(target);
+                    }
+                }
+            }
+            return targets;
+        }
+
+        /**
+         * Returns a {@link List} of target {@link IModelObject model objects} by following a
+         * 1-to-many association from the given {@link IModelObject source object}.
+         * 
+         * @param sourceObject the {@link IModelObject} source for the association
+         * @return a {@link List} of target {@link IModelObject model objects}
+         */
+        abstract protected List<T> getTargetsInternal(S sourceObject);
+    }
+
+    /**
+     * Helper class for navigating 1-to-1 associations from a list of source objects of type
+     * {@code <S>} to target objects of type {@code <T>}.
+     * 
+     * @param <S> the type of the source objects
+     * @param <T> the type of the association targets
+     */
+    public static abstract class AssociationTo1Helper<S extends IModelObject, T extends IModelObject> {
+        /**
+         * Returns a {@link List} of target {@link IModelObject model objects} found by calling
+         * {@link #getTargetInternal(IModelObject)} for every object in the {@code sourceObjects}
+         * {@link List}.
+         * 
+         * @param sourceObjects the {@link IModelObject model objects} on which
+         *            {@link #getTargetInternal(IModelObject)} will be called
+         * @return a {@link List} of target {@link IModelObject model objects}
+         */
+        public List<T> getTargets(List<S> sourceObjects) {
+            List<T> targets = new ArrayList<T>();
+            for (S sourceObject : sourceObjects) {
+                T target = getTargetInternal(sourceObject);
+                if (!targets.contains(target)) {
+                    targets.add(target);
+                }
+            }
+            return targets;
+        }
+
+        /**
+         * Returns the target {@link IModelObject} by following a 1-to-1 association from the given
+         * {@link IModelObject source object}.
+         * 
+         * @param sourceObject the {@link IModelObject} source for the association
+         * @return the target {@link IModelObject}
+         */
+        abstract protected T getTargetInternal(S sourceObject);
     }
 }
