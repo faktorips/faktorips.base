@@ -316,22 +316,23 @@ public class ProductCmptPage extends IpsObjectPage {
     }
 
     private String getDefaultRuntimeId() {
-        String defaultRuntimeId = ""; //$NON-NLS-1$
         if (getIpsProject() == null) {
-            return ""; //$NON-NLS-1$
+            return StringUtils.EMPTY;
         }
         try {
             IProductCmptNamingStrategy productCmptNamingStrategy = getIpsProject().getProductCmptNamingStrategy();
             if (productCmptNamingStrategy != null) {
-                defaultRuntimeId = productCmptNamingStrategy.getUniqueRuntimeId(getIpsProject(), getIpsObjectName());
+                return productCmptNamingStrategy.getUniqueRuntimeId(getIpsProject(), getIpsObjectName());
+            } else {
+                return StringUtils.EMPTY;
             }
         } catch (IllegalArgumentException e) {
             // the actual name could not be parsed
             return StringUtils.EMPTY;
         } catch (CoreException e) {
             IpsPlugin.log(e);
+            return StringUtils.EMPTY;
         }
-        return defaultRuntimeId;
     }
 
     /*
