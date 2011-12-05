@@ -192,13 +192,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public ExtendedExprCompiler newExpressionCompiler() {
         ExtendedExprCompiler compiler = new ExtendedExprCompiler();
-        IFunctionResolverFactory[] resolvers = IpsPlugin.getDefault().getFlFunctionResolverFactories();
-        for (IFunctionResolverFactory resolver : resolvers) {
-            try {
-                compiler.add(resolver.newFunctionResolver(getExpressionLanguageFunctionsLanguage()));
-            } catch (Exception e) {
-                IpsPlugin.log(new IpsStatus("Unable the function resolver for the following factory: " //$NON-NLS-1$
-                        + resolver.getClass(), e));
+        IFunctionResolverFactory[] factories = IpsPlugin.getDefault().getFlFunctionResolverFactories();
+        for (IFunctionResolverFactory factory : factories) {
+            if (getProperties().isActive(factory)) {
+                try {
+                    compiler.add(factory.newFunctionResolver(getExpressionLanguageFunctionsLanguage()));
+                } catch (Exception e) {
+                    IpsPlugin.log(new IpsStatus("Unable to create the function resolver for the following factory: " //$NON-NLS-1$
+                            + factory.getClass(), e));
+                }
             }
         }
 

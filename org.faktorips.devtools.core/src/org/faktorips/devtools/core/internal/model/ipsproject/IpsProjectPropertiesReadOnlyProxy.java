@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
@@ -521,6 +522,11 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     @Override
     public void setAssociationsInFormulas(boolean associationsInFormulas) {
         throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
+    public boolean isActive(IFunctionResolverFactory factory) {
+        return propertiesInternal.isActive(factory);
     }
 
 }

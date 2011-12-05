@@ -21,8 +21,10 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.util.message.MessageList;
 
@@ -564,5 +566,15 @@ public interface IIpsProjectProperties {
      * @return the default currency
      */
     Currency getDefaultCurrency();
+
+    /**
+     * Returns whether the given {@link IFunctionResolverFactory} is active for the
+     * {@link IIpsProject} configured by these {@link IpsProjectProperties}
+     * 
+     * @param factory the {@link IFunctionResolverFactory} in question
+     * @return whether the given {@link IFunctionResolverFactory} is active for the
+     *         {@link IIpsProject}
+     */
+    boolean isActive(IFunctionResolverFactory factory);
 
 }

@@ -33,6 +33,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.enums.DefaultEnumType;
@@ -57,6 +58,7 @@ import org.faktorips.devtools.core.model.question.QuestionAssignedUserGroup;
 import org.faktorips.devtools.core.model.question.QuestionStatus;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.fl.AssociationNavigationFunctionsResolver;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -1412,6 +1414,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public boolean isAssociationsInFormulas() {
         return associationsInFormulas;
+    }
+
+    @Override
+    public boolean isActive(IFunctionResolverFactory factory) {
+        if (!isAssociationsInFormulas()) {
+            if (factory instanceof AssociationNavigationFunctionsResolver) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

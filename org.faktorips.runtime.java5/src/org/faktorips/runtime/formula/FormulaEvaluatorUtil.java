@@ -124,4 +124,25 @@ public class FormulaEvaluatorUtil {
         }
         return null;
     }
+
+    /**
+     * Helper class to encapsulate a function call to verify the existence of an object that could
+     * result in an {@link Exception} (for example a {@link NullPointerException} or
+     * {@link IndexOutOfBoundsException} when navigating over associations in {@link IModelObject
+     * model objects}) which should just be treated as a {@code false} result.
+     * <p>
+     * <strong>This class is intended to be subclassed in compiled formulas only.</strong>
+     * </p>
+     */
+    public static abstract class ExistsHelper {
+        public boolean exists() {
+            try {
+                return existsInternal();
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        abstract protected boolean existsInternal();
+    }
 }

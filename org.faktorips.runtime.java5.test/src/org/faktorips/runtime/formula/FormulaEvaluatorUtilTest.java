@@ -27,6 +27,7 @@ import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.formula.FormulaEvaluatorUtil.ExistsHelper;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.junit.Before;
@@ -262,6 +263,31 @@ public class FormulaEvaluatorUtilTest {
     public void testGetModelObjectByIdTString_notConfigurable() {
         IBranch modelObject = FormulaEvaluatorUtil.getModelObjectById(branch, "id1");
         assertNull(modelObject);
+    }
+
+    @Test
+    public void testExistsHelper() {
+        assertEquals(true, new ExistsHelper() {
+
+            @Override
+            protected boolean existsInternal() {
+                return true;
+            }
+        }.exists());
+        assertEquals(false, new ExistsHelper() {
+
+            @Override
+            protected boolean existsInternal() {
+                return false;
+            }
+        }.exists());
+        assertEquals(false, new ExistsHelper() {
+
+            @Override
+            protected boolean existsInternal() {
+                throw new IllegalStateException();
+            }
+        }.exists());
     }
 
 }

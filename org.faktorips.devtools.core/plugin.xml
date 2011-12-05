@@ -272,6 +272,9 @@
          name="function resolver factory for an excel function resolver"
          point="org.faktorips.devtools.core.flFunctionResolverFactory">
          <functionResolverFactory class="org.faktorips.devtools.core.ExcelFunctionsFunctionResolverFactory"/>
+         <functionResolverFactory
+               class="org.faktorips.devtools.core.AssociationNavigationFunctionsResolverFactory">
+         </functionResolverFactory>
    </extension>
    
    <extension
