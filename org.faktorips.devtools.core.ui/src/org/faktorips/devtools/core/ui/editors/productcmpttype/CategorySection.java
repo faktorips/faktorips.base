@@ -347,7 +347,9 @@ public class CategorySection extends IpsSection {
 
         @Override
         protected ContentViewer createViewer(Composite parent, UIToolkit toolkit) {
-            TreeViewer viewer = new TreeViewer(toolkit.getFormToolkit().createTree(parent, SWT.NONE));
+            Tree tree = toolkit.getFormToolkit().createTree(parent, SWT.NONE);
+            tree.setLinesVisible(false);
+            TreeViewer viewer = new TreeViewer(tree);
 
             setLabelProvider(viewer);
             setContentProvider(viewer);
