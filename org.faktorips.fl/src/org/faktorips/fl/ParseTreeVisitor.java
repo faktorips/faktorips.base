@@ -372,13 +372,13 @@ class ParseTreeVisitor implements FlParserVisitor {
         // if the function name is defined but the argument types are wrong
         // generate a ExprCompiler.WRONG_ARGUMENT_TYPES error message.
         if (functionFoundByName) {
-            String[] replacements = new String[] { fctName, argTypesToString(argResults) };
+            Object[] replacements = new String[] { fctName, argTypesToString(argResults) };
             String text = ExprCompiler.localizedStrings.getString(ExprCompiler.WRONG_ARGUMENT_TYPES,
                     compiler.getLocale(), replacements);
             return new CompilationResultImpl(Message.newError(ExprCompiler.WRONG_ARGUMENT_TYPES, text));
         }
 
-        // The function is undefined. Generate a ExprCompiler.UNDEFINED_FUNCTION errror message
+        // The function is undefined. Generate a ExprCompiler.UNDEFINED_FUNCTION error message
         String text = ExprCompiler.localizedStrings.getString(ExprCompiler.UNDEFINED_FUNCTION, compiler.getLocale(),
                 fctName);
         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_FUNCTION, text));
