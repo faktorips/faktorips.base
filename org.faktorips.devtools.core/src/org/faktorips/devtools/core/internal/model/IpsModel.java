@@ -761,6 +761,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     private void notifyIpsSrcFileChangedListeners(final Map<IIpsSrcFile, IResourceDelta> changedIpsSrcFiles) {
+        if (changedIpsSrcFiles.isEmpty()) {
+            return;
+        }
         final Runnable notifier = new Runnable() {
             @Override
             public void run() {
@@ -1097,17 +1100,18 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 forceReloadOfCachedIpsSrcFileContents((IProject)event.getResource());
             }
             return;
-        }
-        IResourceDelta delta = event.getDelta();
-        if (delta != null) {
-            try {
-                delta.accept(resourceDeltaVisitor);
-                IpsSrcFileChangeVisitor visitor = new IpsSrcFileChangeVisitor();
-                delta.accept(visitor);
-                notifyIpsSrcFileChangedListeners(visitor.changedIpsSrcFiles);
-            } catch (Exception e) {
-                IpsPlugin.log(new IpsStatus("Error updating model objects in resurce changed event.", //$NON-NLS-1$
-                        e));
+        } else {
+            IResourceDelta delta = event.getDelta();
+            if (delta != null) {
+                try {
+                    delta.accept(resourceDeltaVisitor);
+                    IpsSrcFileChangeVisitor visitor = new IpsSrcFileChangeVisitor();
+                    delta.accept(visitor);
+                    notifyIpsSrcFileChangedListeners(visitor.changedIpsSrcFiles);
+                } catch (Exception e) {
+                    IpsPlugin.log(new IpsStatus("Error updating model objects in resurce changed event.", //$NON-NLS-1$
+                            e));
+                }
             }
         }
     }
