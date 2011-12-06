@@ -411,23 +411,19 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             final String prefix,
             boolean addIndexedProposal) {
         final String name = association.getName();
-        String displayText;
-        try {
-            displayText = name + " -> " + association.findTarget(ipsProject).getUnqualifiedName(); //$NON-NLS-1$
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
-        final String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(association);
-        final IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText,
-                localizedDescription);
-        result.add(proposal);
-        if (addIndexedProposal) {
-            final IContentProposal proposalWithIndex = new ContentProposal(removePrefix(name, prefix) + "[0]", //$NON-NLS-1$
-                    displayText + "[0]", localizedDescription); //$NON-NLS-1$
-            result.add(proposalWithIndex);
-        }
         try {
             IType target = association.findTarget(ipsProject);
+            String displayText = name + " -> " + target.getUnqualifiedName(); //$NON-NLS-1$
+            final String localizedDescription = IpsPlugin.getMultiLanguageSupport()
+                    .getLocalizedDescription(association);
+            final IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText,
+                    localizedDescription);
+            result.add(proposal);
+            if (addIndexedProposal) {
+                final IContentProposal proposalWithIndex = new ContentProposal(removePrefix(name, prefix) + "[0]", //$NON-NLS-1$
+                        displayText + "[0]", localizedDescription); //$NON-NLS-1$
+                result.add(proposalWithIndex);
+            }
             if (target instanceof IPolicyCmptType && ((IPolicyCmptType)target).isConfigurableByProductCmptType()) {
                 IProductCmptType productCmptType = ((IPolicyCmptType)target).findProductCmptType(ipsProject);
                 IIpsSrcFile[] productCmptSrcFiles = ipsProject.findAllProductCmptSrcFiles(productCmptType, true);
