@@ -411,7 +411,12 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             final String prefix,
             boolean addIndexedProposal) {
         final String name = association.getName();
-        final String displayText = name + " -> " + association.getTarget(); //$NON-NLS-1$
+        String displayText;
+        try {
+            displayText = name + " -> " + association.findTarget(ipsProject).getUnqualifiedName(); //$NON-NLS-1$
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e.getMessage(), e);
+        }
         final String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(association);
         final IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText,
                 localizedDescription);
