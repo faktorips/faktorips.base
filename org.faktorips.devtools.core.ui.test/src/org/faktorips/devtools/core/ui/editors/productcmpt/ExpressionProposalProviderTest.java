@@ -246,12 +246,17 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.setAssociationsInFormulas(true);
         ipsProject.setProperties(properties);
+
+        PolicyCmptType targetType = newPolicyAndProductCmptType(ipsProject, "TestTarget", "TestTargetType");
+
         IAssociation to1Association = cmptType.newAssociation();
         to1Association.setTargetRoleSingular("mainTarget");
+        to1Association.setTarget(targetType.getQualifiedName());
         to1Association.setMaxCardinality(1);
 
         IAssociation toManyAssociation = cmptType.newAssociation();
         toManyAssociation.setTargetRoleSingular("additionalTarget");
+        toManyAssociation.setTarget(targetType.getQualifiedName());
         toManyAssociation.setMaxCardinality(Integer.MAX_VALUE);
 
         formulaSignature.newParameter(cmptType.getQualifiedName(), "policy");
