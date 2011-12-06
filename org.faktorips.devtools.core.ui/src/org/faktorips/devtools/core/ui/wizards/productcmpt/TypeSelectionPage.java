@@ -27,13 +27,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.controller.fields.IpsProjectRefField;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 
 public class TypeSelectionPage extends WizardPage {
 
     private final ResourceManager resourManager;
+
     private final NewProductCmptPMO pmo;
+
     private final BindingContext bindingContext;
+
     private TypeSelectionUpdater listInputUpdater;
 
     public TypeSelectionPage(NewProductCmptPMO pmo) {
@@ -72,7 +76,9 @@ public class TypeSelectionPage extends WizardPage {
     }
 
     void bindControls(IpsProjectRefControl ipsProjectRefControl, final TypeSelectionComposite typeSelectionComposite) {
-        bindingContext.bindContent(ipsProjectRefControl, pmo, NewProductCmptPMO.PROPERTY_PACKAGE_ROOT);
+        IpsProjectRefField ipsProjectRefField = new IpsProjectRefField(ipsProjectRefControl);
+
+        bindingContext.bindContent(ipsProjectRefField, pmo, NewProductCmptPMO.PROPERTY_IPS_PROJECT);
 
         typeSelectionComposite.addDoubleClickListener(new DoubleClickListener(this));
         listInputUpdater = new TypeSelectionUpdater(typeSelectionComposite, pmo);
@@ -96,7 +102,9 @@ public class TypeSelectionPage extends WizardPage {
         super.dispose();
         resourManager.dispose();
         bindingContext.dispose();
-        pmo.removePropertyChangeListener(listInputUpdater);
+        if (listInputUpdater != null) {
+            pmo.removePropertyChangeListener(listInputUpdater);
+        }
     }
 
     private static class TypeSelectionUpdater implements PropertyChangeListener {
@@ -111,7 +119,7 @@ public class TypeSelectionPage extends WizardPage {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
-            if (evt.getPropertyName().equals(NewProductCmptPMO.PROPERTY_PACKAGE_ROOT)) {
+            if (evt.getPropertyName().equals(NewProductCmptPMO.PROPERTY_IPS_PROJECT)) {
                 updateListViewer();
             }
             if (NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE.equals(evt.getPropertyName())) {

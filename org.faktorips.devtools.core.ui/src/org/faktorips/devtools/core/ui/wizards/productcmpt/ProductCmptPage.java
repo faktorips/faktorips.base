@@ -80,17 +80,18 @@ public class ProductCmptPage extends WizardPage {
 
         Composite nameAndIdComposite = toolkit.createLabelEditColumnComposite(composite);
         toolkit.createLabel(nameAndIdComposite, "Name:");
-        Composite nameComposite = toolkit.createGridComposite(nameAndIdComposite, 3, false, false);
+        Composite nameComposite = toolkit.createGridComposite(nameAndIdComposite, pmo.needVersionId() ? 3 : 1, false,
+                false);
 
         nameText = toolkit.createText(nameComposite);
-        toolkit.createLabel(nameComposite, "Generation:");
-        nameText.setFocus();
 
-        versionIdText = toolkit.createText(nameComposite);
-        ((GridData)versionIdText.getLayoutData()).widthHint = 20;
-
-        toolkit.createVerticalSpacer(nameAndIdComposite, 0);
-        fullNameLabel = toolkit.createLabel(nameAndIdComposite, "Full Name:");
+        if (pmo.needVersionId()) {
+            toolkit.createLabel(nameComposite, "Generation:");
+            versionIdText = toolkit.createText(nameComposite);
+            ((GridData)versionIdText.getLayoutData()).widthHint = 20;
+            toolkit.createVerticalSpacer(nameAndIdComposite, 0);
+            fullNameLabel = toolkit.createLabel(nameAndIdComposite, "Full Name:");
+        }
 
         toolkit.createLabel(nameAndIdComposite, "Runtime ID:");
         runtimeId = toolkit.createText(nameAndIdComposite);
@@ -113,7 +114,9 @@ public class ProductCmptPage extends WizardPage {
                 NewProductCmptPMO.PROPERTY_SELECTED_TYPE);
 
         bindingContext.bindContent(nameText, pmo, NewProductCmptPMO.PROPERTY_NAME);
-        bindingContext.bindContent(versionIdText, pmo, NewProductCmptPMO.PROPERTY_VERSION_ID);
+        if (versionIdText != null) {
+            bindingContext.bindContent(versionIdText, pmo, NewProductCmptPMO.PROPERTY_VERSION_ID);
+        }
         bindingContext.bindContent(runtimeId, pmo, NewProductCmptPMO.PROPERTY_RUNTIME_ID);
     }
 
@@ -129,7 +132,9 @@ public class ProductCmptPage extends WizardPage {
         super.dispose();
         resourManager.dispose();
         bindingContext.dispose();
-        pmo.removePropertyChangeListener(uiUpdater);
+        if (uiUpdater != null) {
+            pmo.removePropertyChangeListener(uiUpdater);
+        }
     }
 
     private static class UiUpdater implements PropertyChangeListener {
@@ -163,7 +168,9 @@ public class ProductCmptPage extends WizardPage {
         }
 
         public void updateNameOrVersionId() {
-            productCmptPage.fullNameLabel.setText(NLS.bind("Full Name: {0}", pmo.getFullName()));
+            if (productCmptPage.fullNameLabel != null) {
+                productCmptPage.fullNameLabel.setText(NLS.bind("Full Name: {0}", pmo.getFullName()));
+            }
         }
 
         public void updateSelectedType() {
