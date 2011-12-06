@@ -83,6 +83,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             addMatchingEnumValues(result, paramName, attributePrefix);
             if (ipsProject.getProperties().isAssociationsInFormulas()) {
                 addMatchingAssociations(result, paramName, attributePrefix);
+                // TODO proposals für Produktbausteine als Qualifier
             }
             addAdditionalProposals(result, getAdditionalProposals(paramName, attributePrefix));
         } else {
