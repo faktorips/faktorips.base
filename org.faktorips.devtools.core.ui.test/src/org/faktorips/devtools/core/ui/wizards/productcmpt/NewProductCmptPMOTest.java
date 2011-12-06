@@ -70,8 +70,10 @@ public class NewProductCmptPMOTest {
         IProductCmptNamingStrategy productCmptNamingStrategy = mock(IProductCmptNamingStrategy.class);
         when(ipsProjectProperties.getProductCmptNamingStrategy()).thenReturn(productCmptNamingStrategy);
         when(ipsPackageFragmentRoot.getIpsProject()).thenReturn(ipsProject);
-        when(ipsProject.getProperties()).thenReturn(ipsProjectProperties);
+        when(ipsProject.getReadOnlyProperties()).thenReturn(ipsProjectProperties);
         when(ipsProject.findIpsSrcFiles(any(IpsObjectType.class))).thenReturn(new IIpsSrcFile[0]);
+        when(ipsProject.getSourceIpsPackageFragmentRoots()).thenReturn(
+                new IIpsPackageFragmentRoot[] { ipsPackageFragmentRoot });
         return ipsPackageFragmentRoot;
     }
 
@@ -90,7 +92,7 @@ public class NewProductCmptPMOTest {
 
         when(ipsModel.getIpsProject(PROJECT_NAME)).thenReturn(ipsProject);
 
-        pmo.setPackageRoot(packageFragmentRoot);
+        pmo.setIpsProject(ipsProject);
         assertTrue(pmo.getBaseTypes().isEmpty());
 
         IIpsSrcFile ipsSrcFile1 = mock(IIpsSrcFile.class);
@@ -118,7 +120,7 @@ public class NewProductCmptPMOTest {
                 .thenReturn(ipsSrcFile1);
 
         // refresh the list
-        pmo.setPackageRoot(packageFragmentRoot);
+        pmo.setIpsProject(ipsProject);
 
         assertTrue(pmo.getBaseTypes().size() == 2);
         assertTrue(pmo.getBaseTypes().contains(productCmptType2));
@@ -136,9 +138,8 @@ public class NewProductCmptPMOTest {
     }
 
     @Test
-    public void testInitDefaults()
-    {
-    
+    public void testInitDefaults() {
+
     }
 
 }
