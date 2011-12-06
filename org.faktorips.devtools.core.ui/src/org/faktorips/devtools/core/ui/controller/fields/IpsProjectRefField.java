@@ -16,33 +16,38 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 
-public class IpsPckFragmentRefField extends DefaultEditField<IIpsPackageFragment> {
+/**
+ * Field for {@link IpsProjectRefControl project reference controls}.
+ * 
+ * @author dirmeier
+ */
+public class IpsProjectRefField extends DefaultEditField<IIpsProject> {
 
-    private IpsPckFragmentRefControl fragmentRefControl;
+    private IpsProjectRefControl ipsProjectRefControl;
 
-    public IpsPckFragmentRefField(IpsPckFragmentRefControl refControl) {
-        fragmentRefControl = refControl;
+    public IpsProjectRefField(IpsProjectRefControl refControl) {
+        ipsProjectRefControl = refControl;
         setSupportsNullStringRepresentation(false);
     }
 
     @Override
     protected void addListenerToControl() {
-        fragmentRefControl.getTextControl().addModifyListener(new ModifyListener() {
+        ipsProjectRefControl.getTextControl().addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
-                notifyChangeListeners(new FieldValueChangedEvent(IpsPckFragmentRefField.this));
+                notifyChangeListeners(new FieldValueChangedEvent(IpsProjectRefField.this));
             }
         });
     }
 
     @Override
-    protected IIpsPackageFragment parseContent() throws Exception {
-        IIpsPackageFragment ipsPackageFragment = fragmentRefControl.getIpsPackageFragment();
-        if (ipsPackageFragment != null) {
-            return ipsPackageFragment;
+    protected IIpsProject parseContent() throws Exception {
+        IIpsProject ipsProject = ipsProjectRefControl.getIpsProject();
+        if (ipsProject == null) {
+            return ipsProject;
         } else {
             throw new IllegalArgumentException("Invalild package fragment"); //$NON-NLS-1$
         }
@@ -50,32 +55,32 @@ public class IpsPckFragmentRefField extends DefaultEditField<IIpsPackageFragment
 
     @Override
     public Control getControl() {
-        return fragmentRefControl;
+        return ipsProjectRefControl;
     }
 
     @Override
     public String getText() {
-        return fragmentRefControl.getText();
+        return ipsProjectRefControl.getText();
     }
 
     @Override
     public void insertText(String text) {
-        fragmentRefControl.setText(text);
+        ipsProjectRefControl.setText(text);
     }
 
     @Override
     public void selectAll() {
-        fragmentRefControl.getTextControl().selectAll();
+        ipsProjectRefControl.getTextControl().selectAll();
     }
 
     @Override
     public void setText(String newText) {
-        fragmentRefControl.setText(newText);
+        ipsProjectRefControl.setText(newText);
     }
 
     @Override
-    public void setValue(IIpsPackageFragment newValue) {
-        fragmentRefControl.setIpsPackageFragment(newValue);
+    public void setValue(IIpsProject newValue) {
+        ipsProjectRefControl.setIpsProject(newValue);
     }
 
 }

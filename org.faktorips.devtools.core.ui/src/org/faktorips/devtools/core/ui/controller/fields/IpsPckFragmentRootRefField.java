@@ -40,7 +40,12 @@ public class IpsPckFragmentRootRefField extends DefaultEditField<IIpsPackageFrag
 
     @Override
     protected IIpsPackageFragmentRoot parseContent() throws Exception {
-        return fragmentRootRefControl.getIpsPackageFragmentRoot();
+        IIpsPackageFragmentRoot ipsPackageFragmentRoot = fragmentRootRefControl.getIpsPackageFragmentRoot();
+        if (ipsPackageFragmentRoot != null) {
+            return ipsPackageFragmentRoot;
+        } else {
+            throw new IllegalArgumentException("Invalild package fragment root"); //$NON-NLS-1$
+        }
     }
 
     @Override
