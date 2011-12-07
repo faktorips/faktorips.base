@@ -11,6 +11,7 @@
    <extension-point id="extensionPropertySectionFactory" name="Extension Property Section Factory" schema="schema/extensionPropertySectionFactory.exsd"/>
    <extension-point id="ipsDropAdapterProvider" name="ipsDropAdapterProvider" schema="schema/ipsDropAdapterProvider.exsd"/>
    <extension-point id="ipsDropListenerProvider" name="ipsDropListenerProvider" schema="schema/ipsDropListenerProvider.exsd"/>
+   <extension-point id="productCmptPropertyFilter" name="Product Component Property Filter" schema="schema/productCmptPropertyFilter.exsd"/>
    
 <!-- 
     Product Definition Perspective

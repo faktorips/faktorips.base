@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -325,11 +326,14 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     public IValidationRuleConfig newValidationRuleConfig(IValidationRule ruleToBeConfigured);
 
     /**
-     * Returns a list containing the {@link IPropertyValue}s of this {@link IProductCmptGeneration}
-     * and it's parent {@link IProductCmpt} that match the provided {@link IProductCmptProperty}s.
+     * Returns a {@link Map map} containing the {@link IPropertyValue property values} of this
+     * {@link IProductCmptGeneration product component generation} and it's parent
+     * {@link IProductCmpt product component} that match the provided {@link IProductCmptProperty
+     * product component properties}.
      * 
-     * @param properties the {@link IProductCmptProperty}s to retrieve {@link IPropertyValue}s for
+     * @param properties the {@link IProductCmptProperty product component properties} to retrieve
+     *            {@link IPropertyValue property values} for
      */
-    public List<IPropertyValue> getPropertyValuesIncludeProductCmpt(List<IProductCmptProperty> properties);
+    public Map<IProductCmptProperty, IPropertyValue> getPropertyValuesIncludeProductCmpt(List<IProductCmptProperty> properties);
 
 }

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -661,14 +662,17 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IProductCmptTypeAttribute genAttribute1 = productCmptType.newProductCmptTypeAttribute("g1");
         IProductCmptTypeAttribute genAttribute2 = productCmptType.newProductCmptTypeAttribute("g2");
         IPropertyValue genValue1 = generation.newAttributeValue(genAttribute1);
-        IPropertyValue genValue2 = generation.newAttributeValue(genAttribute2);
+        generation.newAttributeValue(genAttribute2);
 
         List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>(3);
-        properties.addAll(Arrays.asList(productAttribute, genAttribute1));
-        List<IPropertyValue> propertyValues = generation.getPropertyValuesIncludeProductCmpt(properties);
-        assertTrue(propertyValues.contains(productValue));
-        assertTrue(propertyValues.contains(genValue1));
-        assertFalse(propertyValues.contains(genValue2));
+        properties.add(productAttribute);
+        properties.add(genAttribute1);
+        Map<IProductCmptProperty, IPropertyValue> propertyValues = generation
+                .getPropertyValuesIncludeProductCmpt(properties);
+
+        assertEquals(productValue, propertyValues.get(productAttribute));
+        assertEquals(genValue1, propertyValues.get(genAttribute1));
+        assertNull(propertyValues.get(genAttribute2));
         assertEquals(2, propertyValues.size());
     }
 

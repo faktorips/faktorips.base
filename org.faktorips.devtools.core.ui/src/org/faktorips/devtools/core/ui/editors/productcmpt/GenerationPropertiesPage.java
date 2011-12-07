@@ -16,8 +16,11 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -28,14 +31,18 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PartInitException;
+import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IExtensionPropertySectionFactory.Position;
+import org.faktorips.devtools.core.ui.IProductCmptPropertyFilter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
@@ -53,9 +60,13 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     public final static String PAGE_ID = "Properties"; //$NON-NLS-1$
 
+    private static final String EXTENSION_POINT_ID_PRODUCT_CMPT_PROPERTY_FILTER = "productCmptPropertyFilter"; //$NON-NLS-1$
+
     private final List<IpsSection> leftSections = new ArrayList<IpsSection>(4);
 
     private final List<IpsSection> rightSections = new ArrayList<IpsSection>(4);
+
+    private final List<IProductCmptPropertyFilter> propertyFilters;
 
     /**
      * Layout for this page (see pageRoot) - if the content-structure for this page changes, the
@@ -78,6 +89,19 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     public GenerationPropertiesPage(IpsObjectEditor editor) {
         super(editor, PAGE_ID, ""); // Title will be updated based on selected generation //$NON-NLS-1$
+        propertyFilters = loadPropertyFilters();
+    }
+
+    private List<IProductCmptPropertyFilter> loadPropertyFilters() {
+        List<IProductCmptPropertyFilter> filters = new ArrayList<IProductCmptPropertyFilter>(1);
+        ExtensionPoints extensionPoints = new ExtensionPoints(IpsUIPlugin.PLUGIN_ID);
+        IExtension[] extensions = extensionPoints.getExtension(EXTENSION_POINT_ID_PRODUCT_CMPT_PROPERTY_FILTER);
+        for (IExtension extension : extensions) {
+            IConfigurationElement[] configElements = extension.getConfigurationElements();
+            filters.add(ExtensionPoints.createExecutableExtension(extension, configElements[0],
+                    "class", IProductCmptPropertyFilter.class)); //$NON-NLS-1$
+        }
+        return filters;
     }
 
     @Override
@@ -185,20 +209,35 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             Composite right) {
 
         // Find the property values that match to the category's properties
-        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
+        Map<IProductCmptProperty, IPropertyValue> propertyValues;
         try {
-            propertyValues.addAll(category.findPropertyValues(productCmptType, getActiveGeneration(),
-                    getActiveGeneration().getIpsProject()));
+            propertyValues = category.findPropertyValues(productCmptType, getActiveGeneration(), getActiveGeneration()
+                    .getIpsProject());
         } catch (CoreException e) {
-            // Recover from exception by not displaying any property values for this category
-            IpsPlugin.log(e);
+            throw new CoreRuntimeException(e);
         }
 
         // Create a new section for this category and attach it to the page
         List<IpsSection> sections = category.isAtLeftPosition() ? leftSections : rightSections;
         Composite parent = category.isAtLeftPosition() ? left : right;
-        IpsSection section = new PropertySection(category, propertyValues, parent, toolkit);
+        IpsSection section = new PropertySection(category, filterPropertyValues(propertyValues), parent, toolkit);
         sections.add(section);
+    }
+
+    /**
+     * Filters the {@link IPropertyValue property values} according to the registered
+     * {@link IProductCmptPropertyFilter product component property filters}.
+     */
+    private List<IPropertyValue> filterPropertyValues(Map<IProductCmptProperty, IPropertyValue> propertyValues) {
+        List<IPropertyValue> filteredPropertyValues = new ArrayList<IPropertyValue>(propertyValues.size());
+        for (IProductCmptPropertyFilter filter : propertyFilters) {
+            for (IProductCmptProperty property : propertyValues.keySet()) {
+                if (!filter.isFiltered(property)) {
+                    filteredPropertyValues.add(propertyValues.get(property));
+                }
+            }
+        }
+        return filteredPropertyValues;
     }
 
     private void createExtensionFactorySections(Composite left, Composite right) {

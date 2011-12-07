@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.productcmpttype;
 
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
@@ -149,8 +150,9 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
             IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns a list containing the property values corresponding to the product component
-     * properties assigned to this {@link IProductCmptCategory}.
+     * Returns a map containing the {@link IPropertyValue property values} corresponding to the
+     * {@link IProductCmptProperty product component properties} assigned to this
+     * {@link IProductCmptCategory}.
      * <p>
      * This method <strong>does</strong> consider assignments made in the supertype hierarchy.
      * <p>
@@ -163,7 +165,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * 
      * @throws CoreException if an error occurs during the search
      */
-    public List<IPropertyValue> findPropertyValues(IProductCmptType contextType,
+    public Map<IProductCmptProperty, IPropertyValue> findPropertyValues(IProductCmptType contextType,
             IProductCmptGeneration contextGeneration,
             IIpsProject ipsProject) throws CoreException;
 

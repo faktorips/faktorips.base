@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.ui.IProductCmptPropertyFilterUpdateSupport;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.ProductCmptDeltaDialog;
@@ -45,7 +46,8 @@ import org.faktorips.values.DateUtil;
  * @author Jan Ortmann
  * @author Thorsten Guenther
  */
-public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDescriptionSupport {
+public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDescriptionSupport,
+        IProductCmptPropertyFilterUpdateSupport {
 
     /**
      * Setting key for user's decision not to choose a new product component type, because the old
@@ -402,11 +404,18 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     @Override
     protected void refreshIncludingStructuralChanges() {
         try {
-            getIpsSrcFile().getIpsObject();
+            getIpsSrcFile().getIpsObject(); // Updates cache
             updateChosenActiveGeneration();
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
+        if (getGenerationPropertiesPage() != null) {
+            generationPropertiesPage.rebuildInclStructuralChanges();
+        }
+    }
+
+    @Override
+    public void adjustToFilter() {
         if (getGenerationPropertiesPage() != null) {
             generationPropertiesPage.rebuildInclStructuralChanges();
         }

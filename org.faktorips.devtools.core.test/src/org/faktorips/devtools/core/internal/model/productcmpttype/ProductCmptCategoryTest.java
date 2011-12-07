@@ -20,7 +20,9 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -472,10 +474,37 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         ((IProductCmptGeneration)productCmpt.getGeneration(0)).newPropertyValue(dynamicAttribute);
         IAttributeValue dynamicAttributeValue = (IAttributeValue)generation.newPropertyValue(dynamicAttribute);
 
-        List<IPropertyValue> propertyValues = category.findPropertyValues(productType, generation, ipsProject);
-        assertEquals(staticAttributeValue, propertyValues.get(0));
-        assertEquals(dynamicAttributeValue, propertyValues.get(1));
+        Map<IProductCmptProperty, IPropertyValue> propertyValues = category.findPropertyValues(productType, generation,
+                ipsProject);
+        assertEquals(staticAttributeValue, propertyValues.get(staticAttribute));
+        assertEquals(dynamicAttributeValue, propertyValues.get(dynamicAttribute));
         assertEquals(2, propertyValues.size());
+    }
+
+    @Test
+    public void testFindPropertyValues_OrderingMustMatchReferenceList() throws CoreException {
+        IProductCmptProperty p1 = productType.newProductCmptTypeAttribute("p1");
+        IProductCmptProperty p2 = productType.newProductCmptTypeAttribute("p2");
+        IProductCmptProperty p3 = productType.newProductCmptTypeAttribute("p3");
+
+        p1.setCategory(CATEGORY_NAME);
+        p2.setCategory(CATEGORY_NAME);
+        p3.setCategory(CATEGORY_NAME);
+
+        ((ProductCmptType)productType).movePropertyReferences(new int[] { 0 }, Arrays.asList(p1, p2, p3), false);
+
+        // Create the property values
+        IProductCmpt productCmpt = newProductCmpt(productType, "MyProduct");
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
+        IAttributeValue v1 = (IAttributeValue)generation.newPropertyValue(p1);
+        IAttributeValue v2 = (IAttributeValue)generation.newPropertyValue(p2);
+        IAttributeValue v3 = (IAttributeValue)generation.newPropertyValue(p3);
+
+        IPropertyValue[] propertyValues = category.findPropertyValues(productType, generation, ipsProject).values()
+                .toArray(new IPropertyValue[0]);
+        assertEquals(v2, propertyValues[0]);
+        assertEquals(v1, propertyValues[1]);
+        assertEquals(v3, propertyValues[2]);
     }
 
     /**
