@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.JFaceResources;
@@ -30,6 +29,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.util.message.MessageList;
 
 /**
  * The second page of the {@link NewProductCmptWizard}. In this page you could select the concrete
@@ -52,7 +52,7 @@ public class ProductCmptPage extends WizardPage {
 
     private TypeSelectionComposite typeSelectionComposite;
 
-    private UiUpdater uiUpdater;
+    private ProductCmptPageUiUpdater uiUpdater;
 
     private Text nameText;
 
@@ -61,6 +61,8 @@ public class ProductCmptPage extends WizardPage {
     private Text runtimeId;
 
     private Text versionIdText;
+
+    private Label versionIdLabel;
 
     public ProductCmptPage(NewProductCmptPMO pmo) {
         super("create product component");
@@ -80,18 +82,15 @@ public class ProductCmptPage extends WizardPage {
 
         Composite nameAndIdComposite = toolkit.createLabelEditColumnComposite(composite);
         toolkit.createLabel(nameAndIdComposite, "Name:");
-        Composite nameComposite = toolkit.createGridComposite(nameAndIdComposite, pmo.needVersionId() ? 3 : 1, false,
-                false);
+        Composite nameComposite = toolkit.createGridComposite(nameAndIdComposite, 3, false, false);
 
         nameText = toolkit.createText(nameComposite);
 
-        if (pmo.needVersionId()) {
-            toolkit.createLabel(nameComposite, "Generation:");
-            versionIdText = toolkit.createText(nameComposite);
-            ((GridData)versionIdText.getLayoutData()).widthHint = 20;
-            toolkit.createVerticalSpacer(nameAndIdComposite, 0);
-            fullNameLabel = toolkit.createLabel(nameAndIdComposite, "Full Name:");
-        }
+        versionIdLabel = toolkit.createLabel(nameComposite, "Generation:");
+        versionIdText = toolkit.createText(nameComposite);
+        ((GridData)versionIdText.getLayoutData()).widthHint = 40;
+        toolkit.createVerticalSpacer(nameAndIdComposite, 0);
+        fullNameLabel = toolkit.createLabel(nameAndIdComposite, "Full Name:");
 
         toolkit.createLabel(nameAndIdComposite, "Runtime ID:");
         runtimeId = toolkit.createText(nameAndIdComposite);
@@ -106,18 +105,22 @@ public class ProductCmptPage extends WizardPage {
     }
 
     void bindControls(final TypeSelectionComposite typeSelectionComposite) {
-        uiUpdater = new UiUpdater(this);
+        uiUpdater = new ProductCmptPageUiUpdater(this, pmo);
         pmo.addPropertyChangeListener(uiUpdater);
         uiUpdater.updateSelectedBaseType();
 
         bindingContext.bindContent(typeSelectionComposite.getListViewerField(), pmo,
                 NewProductCmptPMO.PROPERTY_SELECTED_TYPE);
 
-        bindingContext.bindContent(nameText, pmo, NewProductCmptPMO.PROPERTY_NAME);
+        bindingContext.bindContent(nameText, pmo, NewProductCmptPMO.PROPERTY_KIND_ID);
         if (versionIdText != null) {
             bindingContext.bindContent(versionIdText, pmo, NewProductCmptPMO.PROPERTY_VERSION_ID);
         }
         bindingContext.bindContent(runtimeId, pmo, NewProductCmptPMO.PROPERTY_RUNTIME_ID);
+
+        bindingContext.bindVisible(versionIdLabel, pmo, NewProductCmptPMO.PROPERTY_NEED_VERSION_ID, true, nameText);
+        bindingContext.bindVisible(versionIdText, pmo, NewProductCmptPMO.PROPERTY_NEED_VERSION_ID, true, nameText);
+        bindingContext.bindVisible(fullNameLabel, pmo, NewProductCmptPMO.PROPERTY_NEED_VERSION_ID, false);
     }
 
     @Override
@@ -137,14 +140,18 @@ public class ProductCmptPage extends WizardPage {
         }
     }
 
-    private static class UiUpdater implements PropertyChangeListener {
+    private static class ProductCmptPageUiUpdater extends UiUpdater {
 
-        private final NewProductCmptPMO pmo;
-        private ProductCmptPage productCmptPage;
+        public ProductCmptPageUiUpdater(ProductCmptPage productCmptPage, NewProductCmptPMO pmo) {
+            super(productCmptPage, pmo);
+        }
 
-        public UiUpdater(ProductCmptPage productCmptPage) {
-            this.productCmptPage = productCmptPage;
-            pmo = productCmptPage.pmo;
+        /**
+         * @return Returns the productCmptPage.
+         */
+        @Override
+        public ProductCmptPage getPage() {
+            return (ProductCmptPage)super.getPage();
         }
 
         @Override
@@ -155,10 +162,11 @@ public class ProductCmptPage extends WizardPage {
             if (NewProductCmptPMO.PROPERTY_SELECTED_TYPE.equals(evt.getPropertyName())) {
                 updateSelectedType();
             }
-            if (NewProductCmptPMO.PROPERTY_NAME.equals(evt.getPropertyName())
+            if (NewProductCmptPMO.PROPERTY_KIND_ID.equals(evt.getPropertyName())
                     || NewProductCmptPMO.PROPERTY_VERSION_ID.equals(evt.getPropertyName())) {
                 updateNameOrVersionId();
             }
+            super.propertyChange(evt);
         }
 
         public void updateUi() {
@@ -168,32 +176,38 @@ public class ProductCmptPage extends WizardPage {
         }
 
         public void updateNameOrVersionId() {
-            if (productCmptPage.fullNameLabel != null) {
-                productCmptPage.fullNameLabel.setText(NLS.bind("Full Name: {0}", pmo.getFullName()));
+            if (getPage().fullNameLabel != null) {
+                getPage().fullNameLabel.setText(NLS.bind("Full Name: {0}", getPmo().getFullName()));
             }
         }
 
         public void updateSelectedType() {
-            if (pmo.getSelectedType() == null) {
-                productCmptPage.typeSelectionComposite.setDescriptionTitle(StringUtils.EMPTY);
-                productCmptPage.typeSelectionComposite.setDescription(StringUtils.EMPTY);
+            if (getPmo().getSelectedType() == null) {
+                getPage().typeSelectionComposite.setDescriptionTitle(StringUtils.EMPTY);
+                getPage().typeSelectionComposite.setDescription(StringUtils.EMPTY);
             } else {
-                productCmptPage.typeSelectionComposite.setDescriptionTitle(IpsPlugin.getMultiLanguageSupport()
-                        .getLocalizedLabel(pmo.getSelectedType()));
-                productCmptPage.typeSelectionComposite.setDescription(IpsPlugin.getMultiLanguageSupport()
-                        .getLocalizedDescription(pmo.getSelectedType()));
+                getPage().typeSelectionComposite.setDescriptionTitle(IpsPlugin.getMultiLanguageSupport()
+                        .getLocalizedLabel(getPmo().getSelectedType()));
+                getPage().typeSelectionComposite.setDescription(IpsPlugin.getMultiLanguageSupport()
+                        .getLocalizedDescription(getPmo().getSelectedType()));
             }
         }
 
         public void updateSelectedBaseType() {
-            productCmptPage.typeSelectionComposite.setListInput(pmo.getSubtypes());
-            IProductCmptType selectedBaseType = pmo.getSelectedBaseType();
+            getPage().typeSelectionComposite.setListInput(getPmo().getSubtypes());
+            IProductCmptType selectedBaseType = getPmo().getSelectedBaseType();
             if (selectedBaseType != null) {
-                productCmptPage.setTitle("Create new "
-                        + IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(selectedBaseType));
+                getPage().setTitle(
+                        "Create new " + IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(selectedBaseType));
             } else {
-                productCmptPage.setTitle(StringUtils.EMPTY);
+                getPage().setTitle(StringUtils.EMPTY);
             }
+        }
+
+        @Override
+        protected MessageList validatePage() {
+            MessageList messageList = getPmo().getValidator().validateProductCmptPage();
+            return messageList;
         }
 
     }

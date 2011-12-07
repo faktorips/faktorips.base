@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.IpsProjectRefField;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
+import org.faktorips.util.message.MessageList;
 
 public class TypeSelectionPage extends WizardPage {
 
@@ -38,7 +39,11 @@ public class TypeSelectionPage extends WizardPage {
 
     private final BindingContext bindingContext;
 
-    private TypeSelectionUpdater listInputUpdater;
+    private TypeSelectionUpdater typeSelectionUpdater;
+
+    private IpsProjectRefControl ipsProjectRefControl;
+
+    private TypeSelectionComposite typeSelectionComposite;
 
     public TypeSelectionPage(NewProductCmptPMO pmo) {
         super("New Product Component");
@@ -65,36 +70,31 @@ public class TypeSelectionPage extends WizardPage {
 
         // Select Project
         toolkit.createLabel(twoColumnComposite, "Project:");
-        IpsProjectRefControl ipsProjectRefControl = toolkit.createIpsProjectRefControl(twoColumnComposite);
+        ipsProjectRefControl = toolkit.createIpsProjectRefControl(twoColumnComposite);
 
-        TypeSelectionComposite typeSelectionComposite = new TypeSelectionComposite(composite, toolkit);
+        typeSelectionComposite = new TypeSelectionComposite(composite, toolkit);
         typeSelectionComposite.setTitle("Type:");
 
         setControl(composite);
 
-        bindControls(ipsProjectRefControl, typeSelectionComposite);
+        bindControls();
     }
 
-    void bindControls(IpsProjectRefControl ipsProjectRefControl, final TypeSelectionComposite typeSelectionComposite) {
+    void bindControls() {
         IpsProjectRefField ipsProjectRefField = new IpsProjectRefField(ipsProjectRefControl);
 
         bindingContext.bindContent(ipsProjectRefField, pmo, NewProductCmptPMO.PROPERTY_IPS_PROJECT);
 
         typeSelectionComposite.addDoubleClickListener(new DoubleClickListener(this));
-        listInputUpdater = new TypeSelectionUpdater(typeSelectionComposite, pmo);
-        pmo.addPropertyChangeListener(listInputUpdater);
+        typeSelectionUpdater = new TypeSelectionUpdater(this, pmo);
+        pmo.addPropertyChangeListener(typeSelectionUpdater);
 
         bindingContext.bindContent(typeSelectionComposite.getListViewerField(), pmo,
                 NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE);
 
-        listInputUpdater.updateListViewer();
+        typeSelectionUpdater.updateUI();
         bindingContext.updateUI();
 
-    }
-
-    @Override
-    public boolean isPageComplete() {
-        return pmo.getPackageRoot() != null && pmo.getSelectedBaseType() != null;
     }
 
     @Override
@@ -102,19 +102,23 @@ public class TypeSelectionPage extends WizardPage {
         super.dispose();
         resourManager.dispose();
         bindingContext.dispose();
-        if (listInputUpdater != null) {
-            pmo.removePropertyChangeListener(listInputUpdater);
+        if (typeSelectionUpdater != null) {
+            pmo.removePropertyChangeListener(typeSelectionUpdater);
         }
     }
 
-    private static class TypeSelectionUpdater implements PropertyChangeListener {
+    private static class TypeSelectionUpdater extends UiUpdater {
 
-        private final NewProductCmptPMO pmo;
-        private final TypeSelectionComposite typeSelectionComposite;
+        public TypeSelectionUpdater(TypeSelectionPage page, NewProductCmptPMO pmo) {
+            super(page, pmo);
+        }
 
-        public TypeSelectionUpdater(TypeSelectionComposite typeSelectionComposite, NewProductCmptPMO pmo) {
-            this.typeSelectionComposite = typeSelectionComposite;
-            this.pmo = pmo;
+        /**
+         * @return Returns the page.
+         */
+        @Override
+        public TypeSelectionPage getPage() {
+            return (TypeSelectionPage)super.getPage();
         }
 
         @Override
@@ -123,20 +127,36 @@ public class TypeSelectionPage extends WizardPage {
                 updateListViewer();
             }
             if (NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE.equals(evt.getPropertyName())) {
-                if (pmo.getSelectedBaseType() == null) {
-                    typeSelectionComposite.setDescriptionTitle(StringUtils.EMPTY);
-                    typeSelectionComposite.setDescription(StringUtils.EMPTY);
-                } else {
-                    typeSelectionComposite.setDescriptionTitle(IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
-                            pmo.getSelectedBaseType()));
-                    typeSelectionComposite.setDescription(IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(
-                            pmo.getSelectedBaseType()));
-                }
+                updateLabelAndDescription();
+            }
+            super.propertyChange(evt);
+        }
+
+        public void updateUI() {
+            updateListViewer();
+            updateLabelAndDescription();
+        }
+
+        private void updateListViewer() {
+            getPage().typeSelectionComposite.setListInput(getPmo().getBaseTypes());
+        }
+
+        private void updateLabelAndDescription() {
+            if (getPmo().getSelectedBaseType() == null) {
+                getPage().typeSelectionComposite.setDescriptionTitle(StringUtils.EMPTY);
+                getPage().typeSelectionComposite.setDescription(StringUtils.EMPTY);
+            } else {
+                getPage().typeSelectionComposite.setDescriptionTitle(IpsPlugin.getMultiLanguageSupport()
+                        .getLocalizedLabel(getPmo().getSelectedBaseType()));
+                getPage().typeSelectionComposite.setDescription(IpsPlugin.getMultiLanguageSupport()
+                        .getLocalizedDescription(getPmo().getSelectedBaseType()));
             }
         }
 
-        void updateListViewer() {
-            typeSelectionComposite.setListInput(pmo.getBaseTypes());
+        @Override
+        protected MessageList validatePage() {
+            MessageList messageList = getPmo().getValidator().validateTypeSelection();
+            return messageList;
         }
 
     }
@@ -151,7 +171,9 @@ public class TypeSelectionPage extends WizardPage {
 
         @Override
         public void doubleClick(DoubleClickEvent event) {
-            page.getWizard().getContainer().showPage(page.getNextPage());
+            if (page.canFlipToNextPage()) {
+                page.getWizard().getContainer().showPage(page.getNextPage());
+            }
 
         }
     }

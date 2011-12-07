@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
@@ -66,12 +65,10 @@ public class NewProductCmptPMOTest {
     private IIpsPackageFragmentRoot mockPackageFragmentRoot() throws CoreException {
         IIpsPackageFragmentRoot ipsPackageFragmentRoot = mock(IIpsPackageFragmentRoot.class);
         IIpsProject ipsProject = mock(IIpsProject.class);
-        IIpsProjectProperties ipsProjectProperties = mock(IIpsProjectProperties.class);
         IProductCmptNamingStrategy productCmptNamingStrategy = mock(IProductCmptNamingStrategy.class);
-        when(ipsProjectProperties.getProductCmptNamingStrategy()).thenReturn(productCmptNamingStrategy);
         when(ipsPackageFragmentRoot.getIpsProject()).thenReturn(ipsProject);
-        when(ipsProject.getReadOnlyProperties()).thenReturn(ipsProjectProperties);
         when(ipsProject.findIpsSrcFiles(any(IpsObjectType.class))).thenReturn(new IIpsSrcFile[0]);
+        when(ipsProject.getProductCmptNamingStrategy()).thenReturn(productCmptNamingStrategy);
         when(ipsProject.getSourceIpsPackageFragmentRoots()).thenReturn(
                 new IIpsPackageFragmentRoot[] { ipsPackageFragmentRoot });
         return ipsPackageFragmentRoot;

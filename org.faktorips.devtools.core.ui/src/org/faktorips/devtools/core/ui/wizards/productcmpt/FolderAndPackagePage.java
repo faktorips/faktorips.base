@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.WizardPage;
@@ -27,13 +26,16 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsPckFragmentRefField;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
+import org.faktorips.util.message.MessageList;
 
 public class FolderAndPackagePage extends WizardPage {
 
     private final NewProductCmptPMO pmo;
     private final BindingContext bindingContext;
-    private UiUpdater uiUpdater;
-    private IpsPckFragmentRefField ipsPckFragmentRefField;
+    private FolderAndPackageUiUpdater uiUpdater;
+    private IpsPckFragmentRefControl packageRefControl;
+    private Combo rootFolder;
+    private ComboViewerField<IIpsPackageFragmentRoot> rootFolderField;
 
     protected FolderAndPackagePage(NewProductCmptPMO pmo) {
         super("Select Folder and Package");
@@ -49,28 +51,26 @@ public class FolderAndPackagePage extends WizardPage {
         Composite labelEditColumnComposite = toolkit.createLabelEditColumnComposite(composite);
 
         toolkit.createLabel(labelEditColumnComposite, "Root Folder:");
-        Combo rootFolder = toolkit.createCombo(labelEditColumnComposite);
+        rootFolder = toolkit.createCombo(labelEditColumnComposite);
 
         toolkit.createLabel(labelEditColumnComposite, "Package:");
-        IpsPckFragmentRefControl packageRefControl = toolkit
-                .createPdPackageFragmentRefControl(labelEditColumnComposite);
+        packageRefControl = toolkit.createPdPackageFragmentRefControl(labelEditColumnComposite);
         packageRefControl.setIpsPckFragmentRoot(pmo.getPackageRoot());
 
         setControl(composite);
-        bindControls(rootFolder, packageRefControl);
+        bindControls();
     }
 
-    private void bindControls(Combo rootFolder, IpsPckFragmentRefControl packageRefControl) {
-        ComboViewerField<IIpsPackageFragmentRoot> rootFolderField = new ComboViewerField<IIpsPackageFragmentRoot>(
-                rootFolder, IIpsPackageFragmentRoot.class);
+    private void bindControls() {
+        rootFolderField = new ComboViewerField<IIpsPackageFragmentRoot>(rootFolder, IIpsPackageFragmentRoot.class);
         bindingContext.bindContent(rootFolderField, pmo, NewProductCmptPMO.PROPERTY_PACKAGE_ROOT);
 
-        ipsPckFragmentRefField = new IpsPckFragmentRefField(packageRefControl);
+        IpsPckFragmentRefField ipsPckFragmentRefField = new IpsPckFragmentRefField(packageRefControl);
         bindingContext.bindContent(ipsPckFragmentRefField, pmo, NewProductCmptPMO.PROPERTY_IPS_PACKAGE);
-        bindingContext.updateUI();
-        uiUpdater = new UiUpdater(pmo, rootFolderField, packageRefControl);
+        uiUpdater = new FolderAndPackageUiUpdater(this, pmo);
         pmo.addPropertyChangeListener(uiUpdater);
         uiUpdater.updateUi();
+        bindingContext.updateUI();
     }
 
     @Override
@@ -82,19 +82,18 @@ public class FolderAndPackagePage extends WizardPage {
         }
     }
 
-    private static class UiUpdater implements PropertyChangeListener {
+    private static class FolderAndPackageUiUpdater extends UiUpdater {
 
-        private final IpsPckFragmentRefControl pckFragmentRef;
+        public FolderAndPackageUiUpdater(FolderAndPackagePage page, NewProductCmptPMO pmo) {
+            super(page, pmo);
+        }
 
-        private final NewProductCmptPMO pmo;
-
-        private final ComboViewerField<IIpsPackageFragmentRoot> rootFolderField;
-
-        public UiUpdater(NewProductCmptPMO pmo, ComboViewerField<IIpsPackageFragmentRoot> rootFolderField,
-                IpsPckFragmentRefControl ipsPckFragmentRef) {
-            this.pmo = pmo;
-            this.rootFolderField = rootFolderField;
-            pckFragmentRef = ipsPckFragmentRef;
+        /**
+         * @return Returns the page.
+         */
+        @Override
+        public FolderAndPackagePage getPage() {
+            return (FolderAndPackagePage)super.getPage();
         }
 
         @Override
@@ -105,7 +104,7 @@ public class FolderAndPackagePage extends WizardPage {
             if (NewProductCmptPMO.PROPERTY_IPS_PROJECT.equals(evt.getPropertyName())) {
                 updateRootFolderCombo();
             }
-
+            super.propertyChange(evt);
         }
 
         void updateUi() {
@@ -114,15 +113,21 @@ public class FolderAndPackagePage extends WizardPage {
         }
 
         void updatePackageFragmentControl() {
-            pckFragmentRef.setIpsPckFragmentRoot(pmo.getPackageRoot());
+            getPage().packageRefControl.setIpsPckFragmentRoot(getPmo().getPackageRoot());
         }
 
         void updateRootFolderCombo() {
             try {
-                rootFolderField.setInput(pmo.getIpsProject().getSourceIpsPackageFragmentRoots());
+                getPage().rootFolderField.setInput(getPmo().getIpsProject().getSourceIpsPackageFragmentRoots());
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
+        }
+
+        @Override
+        protected MessageList validatePage() {
+            MessageList messageList = getPmo().getValidator().validateFolderAndPackage();
+            return messageList;
         }
 
     }

@@ -21,6 +21,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Wizard to create a new product component.
@@ -40,6 +41,7 @@ public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
     private final TypeSelectionPage typeSelectionPage;
     private final ProductCmptPage productCmptPage;
     private FolderAndPackagePage folderAndPackagePage;
+    private NewProdutCmptValidator validator;
 
     /**
      * Creating a the new wizard.
@@ -50,6 +52,7 @@ public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "wizards/NewProductCmptWizard.png")); //$NON-NLS-1$
         newProductCmptPMO = new NewProductCmptPMO(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+        validator = new NewProdutCmptValidator(newProductCmptPMO);
         typeSelectionPage = new TypeSelectionPage(newProductCmptPMO);
         productCmptPage = new ProductCmptPage(newProductCmptPMO);
         folderAndPackagePage = new FolderAndPackagePage(newProductCmptPMO);
@@ -60,6 +63,12 @@ public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
         addPage(typeSelectionPage);
         addPage(productCmptPage);
         addPage(folderAndPackagePage);
+    }
+
+    @Override
+    public boolean canFinish() {
+        MessageList messageList = validator.validateAll();
+        return super.canFinish() && !messageList.containsErrorMsg();
     }
 
     @Override

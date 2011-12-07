@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.core.util.QNameUtil;
 
 public class NewProductCmptPMO extends PresentationModelObject {
 
@@ -53,11 +54,13 @@ public class NewProductCmptPMO extends PresentationModelObject {
 
     public static final String PROPERTY_SELECTED_TYPE = "selectedType"; //$NON-NLS-1$
 
-    public static final String PROPERTY_NAME = "name"; //$NON-NLS-1$
+    public static final String PROPERTY_KIND_ID = "kindId"; //$NON-NLS-1$
 
     public static final String PROPERTY_VERSION_ID = "versionId"; //$NON-NLS-1$
 
     public static final String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
+
+    public static final String PROPERTY_NEED_VERSION_ID = "needVersionId"; //$NON-NLS-1$
 
     private IIpsProject ipsProject;
 
@@ -71,7 +74,7 @@ public class NewProductCmptPMO extends PresentationModelObject {
 
     private List<IProductCmptType> baseTypes = new ArrayList<IProductCmptType>();
 
-    private String name = StringUtils.EMPTY;
+    private String kindId = StringUtils.EMPTY;
 
     private String versionId = StringUtils.EMPTY;
 
@@ -83,8 +86,11 @@ public class NewProductCmptPMO extends PresentationModelObject {
 
     private ArrayList<IProductCmptType> subtypes;
 
+    private final NewProdutCmptValidator validator;
+
     public NewProductCmptPMO(GregorianCalendar workingDate) {
         this.workingDate = workingDate;
+        validator = new NewProdutCmptValidator(this);
     }
 
     /**
@@ -97,7 +103,7 @@ public class NewProductCmptPMO extends PresentationModelObject {
         updateBaseTypeList();
         selectedBaseType = null;
 
-        IProductCmptNamingStrategy namingStrategy = ipsProject.getReadOnlyProperties().getProductCmptNamingStrategy();
+        IProductCmptNamingStrategy namingStrategy = ipsProject.getProductCmptNamingStrategy();
         setVersionId(namingStrategy.getNextVersionId(contextProductCmpt, workingDate));
 
         try {
@@ -112,8 +118,11 @@ public class NewProductCmptPMO extends PresentationModelObject {
         return ipsProject;
     }
 
-    public boolean needVersionId() {
-        IProductCmptNamingStrategy namingStrategy = ipsProject.getReadOnlyProperties().getProductCmptNamingStrategy();
+    public boolean isNeedVersionId() {
+        if (ipsProject == null) {
+            return true;
+        }
+        IProductCmptNamingStrategy namingStrategy = ipsProject.getProductCmptNamingStrategy();
         return namingStrategy.supportsVersionId();
     }
 
@@ -266,36 +275,20 @@ public class NewProductCmptPMO extends PresentationModelObject {
     }
 
     /**
-     * @param name The name to set.
+     * @param kindId The kindId to set.
      */
-    public void setName(String name) {
-        String oldName = this.name;
-        this.name = name;
+    public void setKindId(String name) {
+        String oldName = this.kindId;
+        this.kindId = name;
         updateRuntimeId();
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_NAME, oldName, name));
-    }
-
-    private void updateRuntimeId() {
-        try {
-            setRuntimeId(getIpsProject().getReadOnlyProperties().getProductCmptNamingStrategy()
-                    .getUniqueRuntimeId(getIpsProject(), getFullName()));
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        } catch (IllegalArgumentException e) {
-            setRuntimeId(StringUtils.EMPTY);
-        }
-    }
-
-    public String getFullName() {
-        return getIpsProject().getReadOnlyProperties().getProductCmptNamingStrategy()
-                .getProductCmptName(name, versionId);
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_KIND_ID, oldName, name));
     }
 
     /**
-     * @return Returns the name.
+     * @return Returns the kindId.
      */
-    public String getName() {
-        return name;
+    public String getKindId() {
+        return kindId;
     }
 
     /**
@@ -312,6 +305,25 @@ public class NewProductCmptPMO extends PresentationModelObject {
      */
     public String getVersionId() {
         return versionId;
+    }
+
+    private void updateRuntimeId() {
+        try {
+            setRuntimeId(getIpsProject().getProductCmptNamingStrategy().getUniqueRuntimeId(getIpsProject(),
+                    getFullName()));
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            setRuntimeId(StringUtils.EMPTY);
+        }
+    }
+
+    public String getFullName() {
+        return getIpsProject().getProductCmptNamingStrategy().getProductCmptName(kindId, versionId);
+    }
+
+    public String getQualifiedName() {
+        return QNameUtil.concat(getIpsPackage().getName(), getFullName());
     }
 
     /**
@@ -355,7 +367,7 @@ public class NewProductCmptPMO extends PresentationModelObject {
                     if (cmptType != null) {
                         initDefaultType(cmptType, contextProductCmpt.getIpsProject());
                     }
-                    setName(contextProductCmpt.findProductCmptKind().getName());
+                    setKindId(contextProductCmpt.findProductCmptKind().getName());
                 } catch (CoreException e) {
                     throw new CoreRuntimeException(e);
                 }
@@ -370,8 +382,20 @@ public class NewProductCmptPMO extends PresentationModelObject {
 
     private void initDefaultType(IProductCmptType cmptType, IIpsProject ipsProject) {
         SelectedBaseTypeVisitor selectedBaseTypeVisitor = new SelectedBaseTypeVisitor(getBaseTypes(), ipsProject);
-        setSelectedBaseType(selectedBaseTypeVisitor.selectedBaseType);
+        try {
+            selectedBaseTypeVisitor.start(cmptType);
+            setSelectedBaseType(selectedBaseTypeVisitor.selectedBaseType);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
         setSelectedType(cmptType);
+    }
+
+    /**
+     * @return Returns the validator.
+     */
+    public NewProdutCmptValidator getValidator() {
+        return validator;
     }
 
     /**
