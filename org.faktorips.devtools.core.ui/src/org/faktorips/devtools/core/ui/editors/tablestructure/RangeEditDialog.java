@@ -37,8 +37,8 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
-import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -254,7 +254,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
         data.heightHint = 200;
         table.setLayoutData(data);
         columnViewer = new TableViewer(table);
-        columnViewer.setLabelProvider(new DefaultLabelProvider());
+        columnViewer.setLabelProvider(new LocalizedLabelProvider());
         columnViewer.setContentProvider(new IStructuredContentProvider() {
             @Override
             public Object[] getElements(Object inputElement) {

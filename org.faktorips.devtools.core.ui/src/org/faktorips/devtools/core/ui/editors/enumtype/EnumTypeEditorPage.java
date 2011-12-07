@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.menus.MenuUtil;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -110,8 +111,9 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
         try {
             enumValuesSection = new EnumValuesSection(enumType, formBody, toolkit);
         } catch (CoreException e) {
-            throw new RuntimeException(e);
+            throw new CoreRuntimeException(e);
         }
+        enumAttributesSection.setEnumValuesSection(enumValuesSection);
     }
 
     @Override

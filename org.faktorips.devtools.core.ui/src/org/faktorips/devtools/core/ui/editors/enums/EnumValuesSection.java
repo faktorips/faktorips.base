@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
@@ -69,7 +68,6 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -320,7 +318,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      */
     private void createTableColumnsForEnumType() throws CoreException {
         for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies(true)) {
-            addTableColumn(currentEnumAttribute.getName(), currentEnumAttribute.findDatatype(ipsProject),
+            String columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute);
+            addTableColumn(columnName, currentEnumAttribute.findDatatype(ipsProject),
                     EnumUtil.findEnumAttributeIsUnique(currentEnumAttribute, ipsProject));
         }
     }
@@ -339,7 +338,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             } else {
                 IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributesIncludeSupertypeCopies(false)
                         .get(i);
-                addTableColumn(enumAttributeReference.getName(), currentEnumAttribute.findDatatype(ipsProject),
+                String columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute);
+                addTableColumn(columnName, currentEnumAttribute.findDatatype(ipsProject),
                         EnumUtil.findEnumAttributeIsUnique(currentEnumAttribute, ipsProject));
             }
         }
@@ -747,30 +747,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         };
     }
 
-    /** Renames the column identified by the given column name to the given new column name. */
-    public void renameTableColumn(String columnName, String newColumnName) {
-        if (!(columnNames.contains(columnName))) {
-            throw new NoSuchElementException();
-        }
-
-        // Change name in table column.
-        for (TableColumn currentColumn : enumValuesTable.getColumns()) {
-            if (currentColumn.getText().equals(columnName)) {
-                currentColumn.setText(newColumnName);
-                break;
-            }
-        }
-
-        // Update column names.
-        for (int i = 0; i < columnNames.size(); i++) {
-            String currentColumnName = columnNames.get(i);
-            if (currentColumnName.equals(columnName)) {
-                columnNames.set(i, newColumnName);
-                break;
-            }
-        }
-    }
-
     /**
      * Returns the current index of the column identified by the given name. Returns <tt>null</tt>
      * if no column with the given name exists.
@@ -796,7 +772,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      */
     @Override
     public void contentsChanged(ContentChangeEvent event) {
-        // TODO AW: REFACTOR - this method is pretty awkward.
         IEnumType enumType;
         try {
             enumType = enumValueContainer.findEnumType(ipsProject);
@@ -837,42 +812,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
                     }
                 } catch (CoreException e) {
                     throw new RuntimeException(e);
-                }
-                break;
-
-            case ContentChangeEvent.TYPE_PROPERTY_CHANGED:
-                IIpsObjectPart part = event.getPart();
-                if (part != null) {
-                    if (part instanceof IEnumAttribute) {
-
-                        try {
-                            IEnumAttribute modifiedEnumAttribute = (IEnumAttribute)part;
-                            String oldName = null;
-                            for (String currentColumnName : columnNames) {
-                                IEnumType enumTypeModifiedEnumAttribute = modifiedEnumAttribute.getEnumType();
-                                if (enumTypeModifiedEnumAttribute
-                                        .getEnumAttributeIncludeSupertypeCopies(currentColumnName) == null) {
-                                    oldName = currentColumnName;
-                                    break;
-                                }
-                            }
-
-                            // Something else but the name has changed.
-                            if (oldName == null) {
-                                if (enumTypeEditing) {
-                                    reinit();
-                                } else {
-                                    updateTableViewer();
-                                }
-                                return;
-                            }
-
-                            renameTableColumn(oldName, modifiedEnumAttribute.getName());
-                            updateTableViewer();
-                        } catch (CoreException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
                 }
                 break;
         }

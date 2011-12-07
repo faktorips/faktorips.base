@@ -87,7 +87,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         String oldName = this.name;
         this.name = name;
-        valueChanged(oldName, name);
+        valueChanged(oldName, name, PROPERTY_NAME);
     }
 
     @Override

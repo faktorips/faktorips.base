@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -620,7 +621,8 @@ public class FixEnumContentWizard extends Wizard {
             List<IEnumAttribute> enumAttributes = newEnumType.getEnumAttributesIncludeSupertypeCopies(false);
             for (int i = 0; i < numberEnumAttributes; i++) {
                 IEnumAttribute currentEnumAttribute = enumAttributes.get(i);
-                labels[i] = uiToolkit.createFormLabel(contents, currentEnumAttribute.getName() + ':');
+                String localizedLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute);
+                labels[i] = uiToolkit.createFormLabel(contents, localizedLabel + ':');
                 combos[i] = uiToolkit.createCombo(contents);
                 for (int j = 0; j < availableColumns.size(); j++) {
                     if (availableColumns.get(j).equals(currentEnumAttribute.getName())) {

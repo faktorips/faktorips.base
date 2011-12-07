@@ -191,11 +191,14 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         // set column header text
         for (int i = 0; i < columnCount; i++) {
             if (structure instanceof ITableStructure) {
-                columns[i].setText(((ITableStructure)structure).getColumn(i).getName());
+                String columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
+                        ((ITableStructure)structure).getColumn(i));
+                columns[i].setText(columnName);
             } else if (structure instanceof IEnumType) {
                 IEnumType type = (IEnumType)structure;
-                String attributeName = type.getEnumAttributesIncludeSupertypeCopies(true).get(i).getName();
-                columns[i].setText(attributeName);
+                String columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
+                        type.getEnumAttributesIncludeSupertypeCopies(true).get(i));
+                columns[i].setText(columnName);
             }
         }
 

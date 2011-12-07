@@ -559,6 +559,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 if (!dirty) {
                     file.markAsClean();
                 }
+                editPartCanceled();
+            } else if (dialog.getReturnCode() == Window.OK) {
+                editPartConfirmed();
             }
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -582,9 +585,22 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 return editDialog;
             }
         };
-        dialogHelper.openDialogWithMemento(getSelectedPart());
+        int returnCode = dialogHelper.openDialogWithMemento(getSelectedPart());
+        if (returnCode == Window.OK) {
+            editPartConfirmed();
+        } else if (returnCode == Window.CANCEL) {
+            editPartCanceled();
+        }
 
         refresh();
+    }
+
+    protected void editPartConfirmed() {
+        // Empty default implementation
+    }
+
+    protected void editPartCanceled() {
+        // Empty default implementation
     }
 
     private void deletePart() {

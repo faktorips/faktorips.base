@@ -233,7 +233,7 @@ public class ContentPage extends IpsObjectEditorPage {
                 if (tableStructure == null) {
                     columnName = Messages.ContentPage_Column + (i + 1);
                 } else {
-                    columnName = tableStructure.getColumn(i).getName();
+                    columnName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(tableStructure.getColumn(i));
                     valueDatatype = tableStructure.getColumn(i).findValueDatatype(getTableContents().getIpsProject());
                 }
                 ValueDatatypeControlFactory valueDatatypeControlFactory = IpsUIPlugin.getDefault()
