@@ -46,7 +46,7 @@ public class IpsProjectRefField extends DefaultEditField<IIpsProject> {
     @Override
     protected IIpsProject parseContent() throws Exception {
         IIpsProject ipsProject = ipsProjectRefControl.getIpsProject();
-        if (ipsProject == null) {
+        if (ipsProject != null) {
             return ipsProject;
         } else {
             throw new IllegalArgumentException("Invalild package fragment"); //$NON-NLS-1$
