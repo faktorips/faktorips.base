@@ -185,7 +185,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
         GridLayout clientLayout = new GridLayout(1, false);
         clientLayout.marginWidth = 1;
         clientLayout.marginHeight = 2;
-        clientLayout.horizontalSpacing = 7;
+        clientLayout.horizontalSpacing = 7; // needed to grant problem markers enough space
         setLayout(clientLayout);
     }
 
