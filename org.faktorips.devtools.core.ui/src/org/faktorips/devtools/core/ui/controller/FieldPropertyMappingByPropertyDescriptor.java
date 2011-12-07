@@ -34,7 +34,7 @@ public class FieldPropertyMappingByPropertyDescriptor<T> implements FieldPropert
     }
 
     @Override
-    public EditField<?> getField() {
+    public EditField<T> getField() {
         return field;
     }
 

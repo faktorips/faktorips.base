@@ -116,6 +116,7 @@ public class BindingContext {
         // defensive copy to avoid concurrent modification exceptions
         List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings);
         for (FieldPropertyMapping mapping : copy) {
+            removeMappingIfControlIsDisposed(mapping);
             try {
                 mapping.setControlValue();
             } catch (Exception e) {
@@ -126,6 +127,12 @@ public class BindingContext {
 
         showValidationStatus(copy);
         applyControlBindings();
+    }
+
+    private void removeMappingIfControlIsDisposed(FieldPropertyMapping mapping) {
+        if (mapping.getField().getControl() == null || mapping.getField().getControl().isDisposed()) {
+            removeMapping(mapping);
+        }
     }
 
     /**
@@ -494,6 +501,14 @@ public class BindingContext {
         }
     }
 
+    private void removeBinding(ControlPropertyBinding binding) {
+        controlBindings.remove(binding);
+    }
+
+    private void removeMapping(FieldPropertyMapping mapping) {
+        mappings.remove(mapping);
+    }
+
     private boolean existsMappingOrBindingFor(Object candidate) {
         for (ControlPropertyBinding binding : controlBindings) {
             if (binding.getObject() == candidate) {
@@ -663,6 +678,7 @@ public class BindingContext {
     private void applyControlBindings(String propertyName) {
         List<ControlPropertyBinding> copy = new CopyOnWriteArrayList<ControlPropertyBinding>(controlBindings);
         for (ControlPropertyBinding binding : copy) {
+            removeBindingIfControlIsDisposed(binding);
             try {
                 if (propertyName == null) {
                     binding.updateUI();
@@ -672,6 +688,12 @@ public class BindingContext {
             } catch (Exception e) {
                 IpsPlugin.log(new IpsStatus("Error updating ui with control binding " + binding)); //$NON-NLS-1$
             }
+        }
+    }
+
+    private void removeBindingIfControlIsDisposed(ControlPropertyBinding binding) {
+        if (binding.getControl() == null || binding.getControl().isDisposed()) {
+            removeBinding(binding);
         }
     }
 

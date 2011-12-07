@@ -39,6 +39,12 @@ public abstract class AbstractCheckbox extends ControlComposite {
         GridLayout layout = new GridLayout();
         layout.horizontalSpacing = 0;
         layout.verticalSpacing = 0;
+        /*
+         * SW 18.11.2011 Reduced height margin from 4 to 0 as the previous value would cut off three
+         * pixels of the check-box' label at the bottom (at least in linux/gnome). Another
+         * possibility would have been to increase the height hint from 20 to 23, but that would
+         * have made the abstract check box too high.
+         */
         layout.marginHeight = 0;
         layout.marginWidth = 0;
         setLayout(layout);

@@ -209,7 +209,7 @@ public class PropertyValueCollection {
     }
 
     /**
-     * Removes the given property value from this holder.
+     * Removes the given property value from this {@link PropertyValueCollection}.
      * 
      * @param value the value to be removed
      * @return <code>true</code> if the given value was removed from this holder, <code>false</code>

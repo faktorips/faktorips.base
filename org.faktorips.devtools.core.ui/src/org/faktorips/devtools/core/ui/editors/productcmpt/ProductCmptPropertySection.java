@@ -140,7 +140,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
         rootPaneLayout.marginWidth = 5;
         rootPane.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        toolkit.addBorder(rootPane);
+        toolkit.paintBordersForComposite(rootPane);
     }
 
     private void createEditControls() {

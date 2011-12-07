@@ -330,7 +330,7 @@ public class CategoryPage extends IpsObjectEditorPage {
 
             private void createRootPane(Composite client) {
                 rootPane = getToolkit().createGridComposite(client, 1, false, true);
-                getToolkit().addBorder(rootPane);
+                getToolkit().paintBordersForComposite(rootPane);
             }
 
             private void createExplanationLabel() {

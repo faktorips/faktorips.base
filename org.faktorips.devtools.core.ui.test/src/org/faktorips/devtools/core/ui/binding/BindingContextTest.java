@@ -35,6 +35,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMapping;
+import org.faktorips.devtools.core.ui.controller.FieldPropertyMappingByPropertyDescriptor;
+import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -263,5 +265,37 @@ public class BindingContextTest extends AbstractIpsPluginTest {
 
         }
 
+    }
+
+    @Test
+    public void removeBindingIfControlIsDisposed() {
+        ControlPropertyBinding binding = mock(ControlPropertyBinding.class);
+        Control control = mock(Control.class);
+
+        when(binding.getControl()).thenReturn(control);
+        when(control.isDisposed()).thenReturn(true);
+
+        bindingContext.add(binding);
+        assertEquals(1, bindingContext.getNumberOfMappingsAndBindings());
+        bindingContext.updateUI();
+        assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
+    }
+
+    @Test
+    public void removeMappingIfControlIsDisposed() {
+        @SuppressWarnings("unchecked")
+        // Class
+        FieldPropertyMappingByPropertyDescriptor<Integer> mapping = mock(FieldPropertyMappingByPropertyDescriptor.class);
+        IntegerField editField = mock(IntegerField.class);
+
+        when(mapping.getField()).thenReturn(editField);
+        Control control = mock(Control.class);
+        when(editField.getControl()).thenReturn(control);
+        when(control.isDisposed()).thenReturn(true);
+
+        bindingContext.add(mapping);
+        assertEquals(1, bindingContext.getNumberOfMappingsAndBindings());
+        bindingContext.updateUI();
+        assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
     }
 }
