@@ -177,14 +177,15 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
      * <p>
      * <strong>Subclassing:</strong><br>
      * The default implementation creates a grid layout with 1 column, a <em>margin-width</em> of 1
-     * as well as a <em>margin-height</em> of 2. Then, {@link #setLayout(Layout)} is invoked.
-     * Subclasses are allowed to override this method if the default implementation is
-     * inappropriate.
+     * as well as a <em>margin-height</em> of 2 and a <em>horizontal-spacing</em> of 7. Then,
+     * {@link #setLayout(Layout)} is invoked. Subclasses are allowed to override this method if the
+     * default implementation is inappropriate.
      */
     protected void setLayout() {
         GridLayout clientLayout = new GridLayout(1, false);
         clientLayout.marginWidth = 1;
         clientLayout.marginHeight = 2;
+        clientLayout.horizontalSpacing = 7;
         setLayout(clientLayout);
     }
 
