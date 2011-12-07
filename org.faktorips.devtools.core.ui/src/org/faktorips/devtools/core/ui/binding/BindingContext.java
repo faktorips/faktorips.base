@@ -415,11 +415,33 @@ public class BindingContext {
     /**
      * Binds the control's visible property to the given part container's property.
      * 
+     * @param excludeWhenInvisible if true, the {@link org.eclipse.swt.layout.GridData#exclude
+     *            GridData.exclude} is set if the component is invisible
+     * @param controlToSpan An optional control which
+     *            {@link org.eclipse.swt.layout.GridData#horizontalSpan GridData.horizontalSpan} is
+     *            increased when the control is invisible
+     * 
      * @throws IllegalArgumentException if the object's property is not of type boolean.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public void bindVisible(Control control, Object object, String property) {
-        add(new VisibleBinding(control, object, property));
+    public void bindVisible(Control control,
+            Object object,
+            String property,
+            boolean excludeWhenInvisible,
+            Control controlToSpan) {
+        add(new VisibleBinding(control, object, property, excludeWhenInvisible, controlToSpan));
+    }
+
+    /**
+     * Binds the control's visible property to the given part container's property.
+     * 
+     * @param excludeWhenInvisible if true, the {@link org.eclipse.swt.layout.GridData#exclude
+     *            GridData.exclude} is set if the component is invisible
+     * @throws IllegalArgumentException if the object's property is not of type boolean.
+     * @throws NullPointerException if any argument is <code>null</code>.
+     */
+    public void bindVisible(Control control, Object object, String property, boolean excludeWhenInvisible) {
+        bindVisible(control, object, property, excludeWhenInvisible, null);
     }
 
     protected void add(FieldPropertyMapping mapping) {
