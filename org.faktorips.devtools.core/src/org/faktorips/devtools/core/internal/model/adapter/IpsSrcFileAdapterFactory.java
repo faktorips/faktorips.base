@@ -27,6 +27,9 @@ public class IpsSrcFileAdapterFactory extends AbstractIpsAdapterFactory {
     public Object getAdapter(Object adaptableObject, Class adapterType) {
         if (adaptableObject instanceof IIpsSrcFile) {
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)adaptableObject;
+            if (!ipsSrcFile.exists()) {
+                return null;
+            }
             if (IProductCmpt.class.equals(adapterType)) {
                 return adaptToProductCmpt(ipsSrcFile);
             }
