@@ -859,7 +859,7 @@ public class UIToolkit {
      * <code>{@link IMessageProvider}</code>.
      */
     // TODO move to Message when the class is moved to the core project
-    public int convertToJFaceSeverity(int severity) {
+    public static int convertToJFaceSeverity(int severity) {
         switch (severity) {
             case Message.ERROR:
                 return IMessageProvider.ERROR;
