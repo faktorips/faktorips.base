@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
@@ -67,7 +66,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         getBindingContext().bindContent(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE);
 
         // Attribute values belonging to the product component and not to the generation are static
-        if (getPropertyValue().getParent() instanceof IProductCmpt) {
+        if (!getPropertyValue().getPropertyValueContainer().isChangingOverTimeContainer()) {
             addNotChangingOverTimeControlDecoration(editField);
         }
     }
