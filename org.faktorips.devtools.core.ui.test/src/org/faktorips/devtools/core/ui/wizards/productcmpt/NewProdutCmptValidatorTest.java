@@ -74,6 +74,7 @@ public class NewProdutCmptValidatorTest {
     public void testValidateProductCmptPage_selectedType() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProdutCmptValidator newProdutCmptValidator = new NewProdutCmptValidator(pmo);
+        mockTypeSelection(pmo);
 
         MessageList msgList = newProdutCmptValidator.validateProductCmptPage();
         assertNotNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_INVALID_SELECTED_TYPE));
@@ -85,13 +86,21 @@ public class NewProdutCmptValidatorTest {
         assertNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_INVALID_SELECTED_TYPE));
     }
 
+    IIpsProject mockTypeSelection(NewProductCmptPMO pmo) {
+        IProductCmptType baseType = mock(IProductCmptType.class);
+        when(pmo.getSelectedBaseType()).thenReturn(baseType);
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(pmo.getIpsProject()).thenReturn(ipsProject);
+        when(ipsProject.isProductDefinitionProject()).thenReturn(true);
+        return ipsProject;
+    }
+
     @Test
     public void testValidateProductCmptPage_emptyKindId() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProdutCmptValidator newProdutCmptValidator = new NewProdutCmptValidator(pmo);
+        IIpsProject ipsProject = mockTypeSelection(pmo);
 
-        IIpsProject ipsProject = mock(IIpsProject.class);
-        when(pmo.getIpsProject()).thenReturn(ipsProject);
         IProductCmptNamingStrategy namingStrategy = mock(IProductCmptNamingStrategy.class);
         when(ipsProject.getProductCmptNamingStrategy()).thenReturn(namingStrategy);
 
@@ -108,13 +117,12 @@ public class NewProdutCmptValidatorTest {
     public void testValidateProductCmptPage_emptyVersionId() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProdutCmptValidator newProdutCmptValidator = new NewProdutCmptValidator(pmo);
+        IIpsProject ipsProject = mockTypeSelection(pmo);
 
         MessageList msgList = newProdutCmptValidator.validateProductCmptPage();
         assertTrue(msgList.containsErrorMsg());
         assertNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_EMPTY_VERSION_ID));
 
-        IIpsProject ipsProject = mock(IIpsProject.class);
-        when(pmo.getIpsProject()).thenReturn(ipsProject);
         IProductCmptNamingStrategy namingStrategy = mock(IProductCmptNamingStrategy.class);
         when(ipsProject.getProductCmptNamingStrategy()).thenReturn(namingStrategy);
 
@@ -136,6 +144,7 @@ public class NewProdutCmptValidatorTest {
     public void testValidateProductCmptPage_invalidKindId() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProdutCmptValidator newProdutCmptValidator = new NewProdutCmptValidator(pmo);
+        mockTypeSelection(pmo);
 
         MessageList msgList = newProdutCmptValidator.validateProductCmptPage();
         assertTrue(msgList.containsErrorMsg());
@@ -169,6 +178,7 @@ public class NewProdutCmptValidatorTest {
     public void testValidateProductCmptPage_invalidVersionId() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProdutCmptValidator newProdutCmptValidator = new NewProdutCmptValidator(pmo);
+        mockTypeSelection(pmo);
 
         MessageList msgList = newProdutCmptValidator.validateProductCmptPage();
         assertTrue(msgList.containsErrorMsg());
@@ -208,6 +218,7 @@ public class NewProdutCmptValidatorTest {
     public void testValidateProductCmptPage_validateName() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProdutCmptValidator newProdutCmptValidator = new NewProdutCmptValidator(pmo);
+        mockTypeSelection(pmo);
 
         IIpsProject ipsProject = mock(IIpsProject.class);
         IProductCmptType baseType = mock(IProductCmptType.class);
@@ -243,12 +254,17 @@ public class NewProdutCmptValidatorTest {
 
         msgList = newProdutCmptValidator.validateProductCmptPage();
         assertNotNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_SRC_FILE_EXISTS));
+
+        when(namingStrategy.getKindId("anyFullName")).thenThrow(new IllegalArgumentException());
+        msgList = newProdutCmptValidator.validateProductCmptPage();
+        assertNotNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_INVALID_FULL_NAME));
     }
 
     @Test
     public void testValidateFolderAndPackage_invalidPackageRoot() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProdutCmptValidator newProdutCmptValidator = new NewProdutCmptValidator(pmo);
+        mockTypeSelection(pmo);
 
         MessageList msgList = newProdutCmptValidator.validateFolderAndPackage();
         assertNotNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_INVALID_PACKAGE_ROOT));
@@ -264,6 +280,7 @@ public class NewProdutCmptValidatorTest {
     public void testValidateFolderAndPackage_invalidPackage() throws Exception {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProdutCmptValidator newProdutCmptValidator = new NewProdutCmptValidator(pmo);
+        mockTypeSelection(pmo);
 
         MessageList msgList = newProdutCmptValidator.validateFolderAndPackage();
         assertNotNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_INVALID_PACKAGE));

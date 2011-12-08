@@ -47,6 +47,8 @@ public class NewProdutCmptValidator {
 
     public static final String MSG_SRC_FILE_EXISTS = MSGCODE_PREFIX + "sourceFileExists";
 
+    public static final String MSG_INVALID_FULL_NAME = MSGCODE_PREFIX + "invalidFullName";
+
     private final NewProductCmptPMO pmo;
 
     public NewProdutCmptValidator(NewProductCmptPMO pmo) {
@@ -72,6 +74,10 @@ public class NewProdutCmptValidator {
 
     public MessageList validateProductCmptPage() {
         MessageList result = new MessageList();
+        if (validateTypeSelection().containsErrorMsg()) {
+            // validation only makes sense if there are no error on type selection page.
+            return result;
+        }
 
         if (pmo.getSelectedType() == null) {
             result.add(new Message(MSG_INVALID_SELECTED_TYPE,
@@ -89,14 +95,19 @@ public class NewProdutCmptValidator {
         }
         if (pmo.getKindId() != null && (!pmo.isNeedVersionId() || pmo.getVersionId() != null)) {
             IProductCmptNamingStrategy productCmptNamingStrategy = pmo.getIpsProject().getProductCmptNamingStrategy();
-            if (!pmo.getKindId().equals(productCmptNamingStrategy.getKindId(pmo.getFullName()))) {
-                result.add(new Message(MSG_INVALID_KIND_ID, "Please insert a correct kind id", Message.ERROR, pmo,
-                        NewProductCmptPMO.PROPERTY_KIND_ID));
-            }
-            if (pmo.isNeedVersionId()
-                    && !pmo.getVersionId().equals(productCmptNamingStrategy.getVersionId(pmo.getFullName()))) {
-                result.add(new Message(MSG_INVALID_VERSION_ID, "Please insert a correct version id", Message.ERROR,
-                        pmo, NewProductCmptPMO.PROPERTY_VERSION_ID));
+            try {
+                if (!pmo.getKindId().equals(productCmptNamingStrategy.getKindId(pmo.getFullName()))) {
+                    result.add(new Message(MSG_INVALID_KIND_ID, "Please insert a correct kind id", Message.ERROR, pmo,
+                            NewProductCmptPMO.PROPERTY_KIND_ID));
+                }
+                if (pmo.isNeedVersionId()
+                        && !pmo.getVersionId().equals(productCmptNamingStrategy.getVersionId(pmo.getFullName()))) {
+                    result.add(new Message(MSG_INVALID_VERSION_ID, "Please insert a correct version id", Message.ERROR,
+                            pmo, NewProductCmptPMO.PROPERTY_VERSION_ID));
+                }
+            } catch (IllegalArgumentException e) {
+                result.add(new Message(MSG_INVALID_FULL_NAME, "Please insert a valid name", Message.ERROR, pmo,
+                        NewProductCmptPMO.PROPERTY_VERSION_ID, NewProductCmptPMO.PROPERTY_KIND_ID));
             }
         }
 
@@ -121,6 +132,10 @@ public class NewProdutCmptValidator {
 
     public MessageList validateFolderAndPackage() {
         MessageList result = new MessageList();
+        if (validateTypeSelection().containsErrorMsg()) {
+            // validation only makes sense if there are no error on type selection page.
+            return result;
+        }
 
         if (pmo.getPackageRoot() == null) {
             result.add(new Message(MSG_INVALID_PACKAGE_ROOT, "No valid root folder is selected", Message.ERROR, pmo,

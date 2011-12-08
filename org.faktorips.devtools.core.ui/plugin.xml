@@ -830,7 +830,7 @@
       	</wizard>
       <wizard
             category="org.faktorips.devtools"
-            class="org.faktorips.devtools.core.ui.wizards.productcmpt_old.NewProductCmptWizard"
+            class="org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductCmptWizard"
             icon="icons/NewProductCmptWizard.gif"
             id="newProductCmptWizard"
             name="%NewProductCmptWizard.name">

@@ -104,7 +104,7 @@ public class NewProductCmptPMO extends PresentationModelObject {
         selectedBaseType = null;
 
         IProductCmptNamingStrategy namingStrategy = ipsProject.getProductCmptNamingStrategy();
-        setVersionId(namingStrategy.getNextVersionId(contextProductCmpt, workingDate));
+        setVersionId(namingStrategy.getNextVersionId(contextProductCmpt, getWorkingDate()));
 
         try {
             setPackageRoot(ipsProject.getSourceIpsPackageFragmentRoots()[0]);
@@ -132,6 +132,9 @@ public class NewProductCmptPMO extends PresentationModelObject {
     public void setPackageRoot(IIpsPackageFragmentRoot packageRoot) {
         IIpsPackageFragmentRoot oldValue = this.packageRoot;
         this.packageRoot = packageRoot;
+        if (getIpsPackage() == null) {
+            setIpsPackage(packageRoot.getDefaultIpsPackageFragment());
+        }
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_PACKAGE_ROOT, oldValue, packageRoot));
     }
 
@@ -319,7 +322,11 @@ public class NewProductCmptPMO extends PresentationModelObject {
     }
 
     public String getFullName() {
-        return getIpsProject().getProductCmptNamingStrategy().getProductCmptName(kindId, versionId);
+        if (StringUtils.isEmpty(kindId)) {
+            return StringUtils.EMPTY;
+        } else {
+            return getIpsProject().getProductCmptNamingStrategy().getProductCmptName(kindId, versionId);
+        }
     }
 
     public String getQualifiedName() {
@@ -396,6 +403,13 @@ public class NewProductCmptPMO extends PresentationModelObject {
      */
     public NewProdutCmptValidator getValidator() {
         return validator;
+    }
+
+    /**
+     * @return Returns the workingDate.
+     */
+    public GregorianCalendar getWorkingDate() {
+        return workingDate;
     }
 
     /**

@@ -69,7 +69,7 @@ public class FolderAndPackagePage extends WizardPage {
         bindingContext.bindContent(ipsPckFragmentRefField, pmo, NewProductCmptPMO.PROPERTY_IPS_PACKAGE);
         uiUpdater = new FolderAndPackageUiUpdater(this, pmo);
         pmo.addPropertyChangeListener(uiUpdater);
-        uiUpdater.updateUi();
+        uiUpdater.updateUI();
         bindingContext.updateUI();
     }
 
@@ -107,7 +107,9 @@ public class FolderAndPackagePage extends WizardPage {
             super.propertyChange(evt);
         }
 
-        void updateUi() {
+        @Override
+        public void updateUI() {
+            super.updateUI();
             updatePackageFragmentControl();
             updateRootFolderCombo();
         }
@@ -118,7 +120,9 @@ public class FolderAndPackagePage extends WizardPage {
 
         void updateRootFolderCombo() {
             try {
-                getPage().rootFolderField.setInput(getPmo().getIpsProject().getSourceIpsPackageFragmentRoots());
+                if (getPmo().getIpsProject() != null) {
+                    getPage().rootFolderField.setInput(getPmo().getIpsProject().getSourceIpsPackageFragmentRoots());
+                }
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }

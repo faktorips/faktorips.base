@@ -132,7 +132,9 @@ public class TypeSelectionPage extends WizardPage {
             super.propertyChange(evt);
         }
 
+        @Override
         public void updateUI() {
+            super.updateUI();
             updateListViewer();
             updateLabelAndDescription();
         }

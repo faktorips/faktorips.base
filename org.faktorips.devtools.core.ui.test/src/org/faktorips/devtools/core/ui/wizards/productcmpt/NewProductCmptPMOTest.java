@@ -136,7 +136,6 @@ public class NewProductCmptPMOTest {
 
     @Test
     public void testInitDefaults() {
-
     }
 
 }

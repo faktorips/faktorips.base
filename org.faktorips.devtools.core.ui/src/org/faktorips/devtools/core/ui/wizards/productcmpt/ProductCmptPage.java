@@ -100,7 +100,7 @@ public class ProductCmptPage extends WizardPage {
 
         bindControls(typeSelectionComposite);
 
-        uiUpdater.updateUi();
+        uiUpdater.updateUI();
         bindingContext.updateUI();
     }
 
@@ -169,7 +169,9 @@ public class ProductCmptPage extends WizardPage {
             super.propertyChange(evt);
         }
 
-        public void updateUi() {
+        @Override
+        public void updateUI() {
+            super.updateUI();
             updateSelectedBaseType();
             updateSelectedType();
             updateNameOrVersionId();

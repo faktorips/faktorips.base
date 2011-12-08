@@ -13,14 +13,31 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.GregorianCalendar;
+
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -73,8 +90,50 @@ public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
 
     @Override
     public boolean performFinish() {
-        // TODO Auto-generated method stub
-        return false;
+        IWorkspaceRunnable op = new IWorkspaceRunnable() {
+            @Override
+            public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
+                monitor.beginTask("Create product component", 3);
+                IIpsSrcFile ipsSrcFile = newProductCmptPMO.getIpsPackage().createIpsFile(IpsObjectType.PRODUCT_CMPT,
+                        newProductCmptPMO.getFullName(), true, new SubProgressMonitor(monitor, 1));
+
+                IProductCmpt newProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+                newProductCmpt.setProductCmptType(newProductCmptPMO.getSelectedType().getQualifiedName());
+
+                GregorianCalendar date = newProductCmptPMO.getWorkingDate();
+                newProductCmpt.setRuntimeId(newProductCmptPMO.getRuntimeId());
+                IProductCmptGeneration generation = (IProductCmptGeneration)newProductCmpt.newGeneration();
+                generation.setValidFrom(date);
+                newProductCmpt.fixAllDifferencesToModel(newProductCmptPMO.getIpsProject());
+                monitor.worked(1);
+
+                ipsSrcFile.save(true, new SubProgressMonitor(monitor, 1));
+                monitor.done();
+            }
+        };
+        try {
+            ISchedulingRule rule = null;
+            Job job = Job.getJobManager().currentJob();
+            if (job != null) {
+                rule = job.getRule();
+            }
+            IRunnableWithProgress runnable = null;
+            if (rule != null) {
+                runnable = new WorkbenchRunnableAdapter(op, rule);
+            } else {
+                runnable = new WorkbenchRunnableAdapter(op, ResourcesPlugin.getWorkspace().getRoot());
+            }
+            getContainer().run(false, true, runnable);
+        } catch (InvocationTargetException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            return false;
+        } catch (InterruptedException e) {
+            return false;
+        }
+        IIpsSrcFile srcFile = newProductCmptPMO.getIpsPackage().getIpsSrcFile(
+                IpsObjectType.PRODUCT_CMPT.getFileName(newProductCmptPMO.getQualifiedName()));
+        IpsUIPlugin.getDefault().openEditor(srcFile);
+        return true;
     }
 
     @Override

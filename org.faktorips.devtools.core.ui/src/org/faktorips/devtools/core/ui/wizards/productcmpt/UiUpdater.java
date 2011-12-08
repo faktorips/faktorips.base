@@ -33,10 +33,11 @@ abstract class UiUpdater implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        updatePageMessages();
         updatePageComplete();
     }
 
-    void updatePageComplete() {
+    void updatePageMessages() {
         MessageList messageList = validatePage();
         Message message = messageList.getMessageWithHighestSeverity();
         if (message != null) {
@@ -44,6 +45,14 @@ abstract class UiUpdater implements PropertyChangeListener {
         } else {
             getPage().setMessage(null);
         }
+    }
+
+    public void updateUI() {
+        updatePageComplete();
+    }
+
+    void updatePageComplete() {
+        MessageList messageList = validatePage();
         getPage().setPageComplete(!messageList.containsErrorMsg());
     }
 
