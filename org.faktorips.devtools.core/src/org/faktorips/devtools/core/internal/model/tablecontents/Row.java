@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
@@ -229,8 +230,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
                     } else if (columnRange.getColumnRangeType().isTwoColumn()) {
                         validateUniqueKeyValue(list, structure, columnRange.getFromColumn());
                         validateUniqueKeyValue(list, structure, columnRange.getToColumn());
-                        validateFromAndToColumnCombination(list, datatypes, structure, columnRange,
-                                columnRange.getFromColumn(), columnRange.getToColumn());
+                        validateFromAndToColumnCombination(list, datatypes, structure, columnRange.getFromColumn(),
+                                columnRange.getToColumn());
                     }
                 }
             }
@@ -240,7 +241,6 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     private void validateFromAndToColumnCombination(MessageList list,
             ValueDatatype[] datatypes,
             ITableStructure structure,
-            IColumnRange columnRange,
             String fromColumnName,
             String toColumnName) {
 
@@ -272,7 +272,12 @@ public class Row extends AtomicIpsObjectPart implements IRow {
                 return;
             }
             if (valueDatatypeFrom.compare(getValue(fromColumnIndex), valueTo) > 0) {
-                String text = NLS.bind(Messages.Row_FromValueGreaterThanToValue, columnRange.getName());
+                IColumn fromColumn = structure.getColumn(fromColumnIndex);
+                IColumn toColumn = structure.getColumn(toColumnIndex);
+                String localizedFromLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(fromColumn);
+                String localizedToLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(toColumn);
+                String text = NLS.bind(Messages.Row_FromValueGreaterThanToValue, localizedFromLabel + '-'
+                        + localizedToLabel);
                 list.add(new Message(MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE, text,
                         Message.ERROR, new ObjectProperty(this, IRow.PROPERTY_VALUE, fromColumnIndex)));
                 list.add(new Message(MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE, text,
@@ -286,9 +291,11 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     private void validateUniqueKeyValue(MessageList list, ITableStructure structure, String columnName) {
         try {
             int columnIndex = structure.getColumnIndex(columnName);
+            String localizedLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
+                    structure.getColumn(columnIndex));
             String value = getValue(columnIndex);
             if (value != null && StringUtils.isEmpty(value.trim()) || value == null) {
-                String text = NLS.bind(Messages.Row_MissingValueForUniqueKey, columnName);
+                String text = NLS.bind(Messages.Row_MissingValueForUniqueKey, localizedLabel);
                 Message message = new Message(MSGCODE_UNDEFINED_UNIQUEKEY_VALUE, text, Message.ERROR,
                         new ObjectProperty(this, IRow.PROPERTY_VALUE, columnIndex));
                 list.add(message);
@@ -311,8 +318,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             ValueDatatype dataType = datatypes[i];
             String value = getValue(i);
             if (dataType == null || !dataType.isParsable(value)) {
-                String text = NLS.bind(Messages.Row_ValueNotParsable,
-                        new Object[] { value, dataType, column.getName() });
+                String localizedLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(column);
+                String text = NLS.bind(Messages.Row_ValueNotParsable, new Object[] { value, dataType, localizedLabel });
                 Message message = new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, new ObjectProperty(this,
                         IRow.PROPERTY_VALUE, i));
                 list.add(message);
