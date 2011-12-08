@@ -74,11 +74,10 @@ public class ResourceAdapterFactory extends AbstractIpsAdapterFactory {
 
     private IIpsElement adaptToIpsElement(Object adaptableObject) {
         IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement((IResource)adaptableObject);
-        if (ipsElement.exists()) {
-            return ipsElement;
-        } else {
+        if (ipsElement == null || !ipsElement.exists()) {
             return null;
         }
+        return ipsElement;
     }
 
     @Override
