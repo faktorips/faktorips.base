@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 
 public class ProductComponentAssociationCondition extends AbstractCondition {
 
-    private final class ProductComponentAssociationOperandProvider implements IOperandProvider {
+    private final static class ProductComponentAssociationOperandProvider implements IOperandProvider {
 
         private final IProductCmptTypeAssociation productCmptTypeAssociation;
 
@@ -58,7 +58,7 @@ public class ProductComponentAssociationCondition extends AbstractCondition {
                         targetNames.add(link.getTarget());
                     }
                 } catch (CoreException e) {
-                    // FIXME handle exception
+                    // TODO handle exception
                     e.printStackTrace();
                 }
             }
@@ -88,7 +88,7 @@ public class ProductComponentAssociationCondition extends AbstractCondition {
 
     @Override
     public IValueSet getValueSet(IIpsElement elementPart) {
-        throw new IllegalStateException("This Condition doesn't allow calling getValueSet");
+        throw new IllegalStateException("This Condition doesn't allow calling getValueSet"); //$NON-NLS-1$
     }
 
     @Override
@@ -135,12 +135,12 @@ public class ProductComponentAssociationCondition extends AbstractCondition {
 
     @Override
     public String getName() {
-        return "Association";
+        return Messages.ProductComponentAssociationCondition_association;
     }
 
     @Override
     public String getNoSearchableElementsMessage(IProductCmptType productCmptType) {
-        return "NIX GEFUNDEN";
+        return Messages.ProductComponentAssociationCondition_messageNoElement;
     }
 
 }

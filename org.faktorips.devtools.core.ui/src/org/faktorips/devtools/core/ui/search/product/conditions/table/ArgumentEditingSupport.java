@@ -33,6 +33,8 @@ final class ArgumentEditingSupport extends EnhancedCellTrackingEditingSupport {
     protected IpsCellEditor getCellEditorInternal(Object element) {
         ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
 
+        // FIXME bei Beziehungen über den IContentProposalProvider Textfield mit Completion
+        // verwenden statt DropDown
         if (model.getCondition().hasValueSet()) {
             ValueDatatype datatype = model.getCondition().getValueDatatype(model.getSearchedElement());
 

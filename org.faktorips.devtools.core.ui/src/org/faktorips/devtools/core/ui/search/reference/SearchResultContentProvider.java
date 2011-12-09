@@ -38,12 +38,6 @@ public class SearchResultContentProvider implements ITreeContentProvider {
 
     private synchronized void initialize(ReferenceSearchResult result) {
         this.searchResult = result;
-
-        if (searchResult == null) {
-            return;
-        }
-
-        searchResult.setPage(page);
     }
 
     @Override

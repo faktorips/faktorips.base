@@ -111,7 +111,6 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
     protected void writeConfiguration() {
         IDialogSettings settings = getDialogSettings();
 
-        // TODO evtl. sortierkriterium optimieren
         IDialogSettings newSection = settings.addNewSection(getDialogSettingPrefix() + System.currentTimeMillis());
 
         getPresentationModel().store(newSection);

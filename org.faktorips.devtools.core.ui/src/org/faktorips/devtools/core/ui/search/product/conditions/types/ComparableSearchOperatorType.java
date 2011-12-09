@@ -16,10 +16,10 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 import org.faktorips.datatype.ValueDatatype;
 
 public enum ComparableSearchOperatorType implements ISearchOperatorType {
-    LOWER_THAN("<", false, true), //$NON-NLS-1$
-    LOWER_THAN_OR_EQUALS("<=", true, true), //$NON-NLS-1$
-    GREATER_THAN(">", false, false), //$NON-NLS-1$
-    GREATER_THAN_OR_EQUALS(">=", true, false); //$NON-NLS-1$
+    LESS(Messages.ComparableSearchOperatorType_labelLess, false, true),
+    LESS_OR_EQUALS(Messages.ComparableSearchOperatorType_labelLessOrEqual, true, true),
+    GREATER(Messages.ComparableSearchOperatorType_labelGreater, false, false),
+    GREATER_OR_EQUALS(Messages.ComparableSearchOperatorType_labelGreaterOrEqual, true, false);
 
     private final String label;
     private final int argumentCount;

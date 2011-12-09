@@ -16,8 +16,8 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 import org.faktorips.datatype.ValueDatatype;
 
 public enum LikeSearchOperatorType implements ISearchOperatorType {
-    LIKE("likes", true),
-    NOT_LIKE("doesn't like", false);
+    LIKE(Messages.LikeSearchOperatorType_labelLike, true),
+    NOT_LIKE(Messages.LikeSearchOperatorType_labelDoesNotLike, false);
 
     private final String label;
     private final boolean negation;
@@ -45,6 +45,12 @@ public enum LikeSearchOperatorType implements ISearchOperatorType {
     public ISearchOperator createSearchOperator(IOperandProvider operandProvider,
             ValueDatatype valueDatatype,
             String argument) {
+
+        // if argument is null, then just null as an allowed hit
+        if (argument == null) {
+            return new EqualitySearchOperator(valueDatatype, EqualitySearchOperatorType.EQUALITY, operandProvider, null);
+        }
+
         return new LikeSearchOperator(valueDatatype, this, operandProvider, argument);
     }
 }

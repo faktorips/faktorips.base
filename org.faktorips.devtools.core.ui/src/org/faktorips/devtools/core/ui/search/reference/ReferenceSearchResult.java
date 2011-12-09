@@ -23,12 +23,10 @@ import org.eclipse.search.ui.text.IEditorMatchAdapter;
 import org.eclipse.search.ui.text.IFileMatchAdapter;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.ui.search.IpsElementsSearchViewPage;
 
 public class ReferenceSearchResult extends AbstractTextSearchResult {
 
     private ReferenceSearchQuery query;
-    IpsElementsSearchViewPage page;
 
     public ReferenceSearchResult(ReferenceSearchQuery query) {
         this.query = query;
@@ -62,10 +60,6 @@ public class ReferenceSearchResult extends AbstractTextSearchResult {
     @Override
     public IFileMatchAdapter getFileMatchAdapter() {
         return null;
-    }
-
-    public void setPage(IpsElementsSearchViewPage page) {
-        this.page = page;
     }
 
     @Override

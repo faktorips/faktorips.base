@@ -48,7 +48,7 @@ public abstract class AbstractAttributeCondition extends AbstractCondition {
 
     @Override
     public Collection<?> getAllowedValues(IIpsElement elementPart) {
-        throw new IllegalStateException("This Condition doesn't allow calling getAllowedValues");
+        throw new IllegalStateException("This Condition doesn't allow calling getAllowedValues"); //$NON-NLS-1$
     }
 
     @Override

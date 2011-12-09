@@ -39,7 +39,9 @@ public class ProductAttributeCondition extends AbstractAttributeCondition {
         @Override
         public String getSearchOperand(IProductCmptGeneration productComponentGeneration) {
             IAttributeValue attributeValue = productComponentGeneration.getAttributeValue(attribute.getName());
-            // TODO bei nicht-migrierten produktbausteinen droht NPE
+
+            // null-check necessary, because attributeValue maybe null if a product component is not
+            // migrated
             if (attributeValue == null) {
                 return null;
             }

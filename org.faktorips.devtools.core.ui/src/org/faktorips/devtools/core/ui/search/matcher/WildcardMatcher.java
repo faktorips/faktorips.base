@@ -33,6 +33,10 @@ public class WildcardMatcher {
 
     private final Pattern pattern;
 
+    /**
+     * @param searchTerm pattern
+     * @throws NullPointerException if searchTerm is null
+     */
     public WildcardMatcher(String searchTerm) {
 
         boolean isRegExp = searchTerm.contains(WILDCARD_ZERO_OR_MANY) || searchTerm.contains(WILDCARD_ONCE);

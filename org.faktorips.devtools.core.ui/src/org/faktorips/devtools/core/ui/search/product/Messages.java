@@ -25,6 +25,7 @@ public class Messages extends NLS {
     public static String ProductSearchPage_labelChooseProductComponentType;
     public static String ProductSearchPage_labelProductComponent;
     public static String ProductSearchPage_labelProductComponentType;
+    public static String ProductSearchPage_labelRemoveConditionButton;
     public static String ProductSearchPage_labelSearchConditions;
     public static String ProductSearchQuery_1;
     public static String ProductSearchQuery_faktorIpsProductSearchLabel;

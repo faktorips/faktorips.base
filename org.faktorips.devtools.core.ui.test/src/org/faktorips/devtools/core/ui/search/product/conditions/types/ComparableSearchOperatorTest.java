@@ -27,7 +27,7 @@ public class ComparableSearchOperatorTest {
 
     @Test
     public void testInteger() {
-        ComparableSearchOperatorType searchOperatorType = ComparableSearchOperatorType.LOWER_THAN;
+        ComparableSearchOperatorType searchOperatorType = ComparableSearchOperatorType.LESS;
         String fuenf = "5";
         String vier = "4";
 
@@ -44,7 +44,7 @@ public class ComparableSearchOperatorTest {
         assertTrue(searchOperator.check(vier, null));
         assertFalse(searchOperator.check(fuenf, null));
 
-        searchOperatorType = ComparableSearchOperatorType.GREATER_THAN_OR_EQUALS;
+        searchOperatorType = ComparableSearchOperatorType.GREATER_OR_EQUALS;
 
         searchOperator = new ComparableSearchOperator(new IntegerDatatype(), searchOperatorType, operandProvider, vier);
         assertTrue(searchOperator.check(vier, null));

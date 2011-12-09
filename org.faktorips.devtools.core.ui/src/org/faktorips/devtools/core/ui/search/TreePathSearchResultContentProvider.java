@@ -85,7 +85,7 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
             if (matchEvent.getKind() == MatchEvent.ADDED) {
                 addMatches(matchEvent.getMatches());
             } else {
-                // TODO removeElements(matchEvent.getMatches());
+                // TODO removeElements(matchEvent.getMatches()) necessary?;
             }
             return;
         }

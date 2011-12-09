@@ -16,8 +16,8 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 import org.faktorips.datatype.ValueDatatype;
 
 public enum ReferenceSearchOperatorType implements ISearchOperatorType {
-    REFERENCE("references", false),
-    NO_REFERENCE("doesn't reference", true);
+    REFERENCE(Messages.ReferenceSearchOperatorType_labelReferences, false),
+    NO_REFERENCE(Messages.ReferenceSearchOperatorType_labelDoesNotReference, true);
 
     private final String label;
     private final boolean negation;

@@ -45,13 +45,13 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
 
     @Override
     public void store(IDialogSettings settings) {
-        // TODO Auto-generated method stub
+        // no idea yet
 
     }
 
     @Override
     public void read(IDialogSettings settings) {
-        // TODO Auto-generated method stub
+        // no idea yet
 
     }
 
@@ -72,9 +72,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         IProductCmptType oldValue = productCmptType;
         productCmptType = newValue;
 
-        for (ProductSearchConditionPresentationModel productSearchConditionPresentationModel : productSearchConditionPresentationModels) {
-            productSearchConditionPresentationModel.dispose();
-        }
+        productSearchConditionPresentationModels.clear();
 
         notifyListeners(new PropertyChangeEvent(this, PRODUCT_COMPONENT_TYPE, oldValue, newValue));
     }

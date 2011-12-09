@@ -27,7 +27,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchPage;
@@ -73,24 +72,13 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
 
         toolkit.createVerticalSpacer(baseComposite, 20);
 
-        createConditionsGroup(toolkit);
+        toolkit.createLabel(baseComposite, Messages.ProductSearchPage_labelSearchConditions);
+        conditionTableViewer = createConditionTable(baseComposite);
+        addConditionButtons(toolkit, baseComposite);
 
         getPresentationModel().initDefaultSearchValues();
 
         setControl(baseComposite);
-
-    }
-
-    void createConditionsGroup(UIToolkit toolkit) {
-        Group conditionsGroup = toolkit.createGroup(baseComposite, Messages.ProductSearchPage_labelSearchConditions);
-
-        conditionTableViewer = createConditionTable(conditionsGroup);
-        addConditionButtons(toolkit, conditionsGroup);
-
-        // FIXME group nur dann freischalten, wenn auch durchsuchbare elemente vorhanden sind
-        getBindingContext().bindEnabled(conditionsGroup, getPresentationModel(),
-                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
-        conditionsGroup.setEnabled(false);
 
     }
 
@@ -117,8 +105,9 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
         });
         getBindingContext().bindEnabled(btnAddCondition, getPresentationModel(),
                 ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
+        btnAddCondition.setEnabled(false);
 
-        Button btnRemoveCondition = toolkit.createButton(comp, "Remove Condition");
+        Button btnRemoveCondition = toolkit.createButton(comp, Messages.ProductSearchPage_labelRemoveConditionButton);
 
         btnRemoveCondition.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -129,7 +118,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
         });
         getBindingContext().bindEnabled(btnRemoveCondition, getPresentationModel(),
                 ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
-
+        btnRemoveCondition.setEnabled(false);
     }
 
     private void addCondition() {
@@ -145,7 +134,8 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
         for (Object object : list) {
             if (object instanceof ProductSearchConditionPresentationModel) {
                 ProductSearchConditionPresentationModel productSearchConditionPresentationModel = (ProductSearchConditionPresentationModel)object;
-                productSearchConditionPresentationModel.dispose();
+                getPresentationModel().removeProductSearchConditionPresentationModels(
+                        productSearchConditionPresentationModel);
             }
         }
         conditionTableViewer.refresh();

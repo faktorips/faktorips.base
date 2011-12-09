@@ -19,12 +19,22 @@ public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.search.product.conditions.types.messages"; //$NON-NLS-1$
     public static String AllowanceSearchOperatorType_allowed;
     public static String AllowanceSearchOperatorType_notAllowed;
+    public static String ComparableSearchOperatorType_labelGreater;
+    public static String ComparableSearchOperatorType_labelGreaterOrEqual;
+    public static String ComparableSearchOperatorType_labelLess;
+    public static String ComparableSearchOperatorType_labelLessOrEqual;
     public static String EqualitySearchOperatorType_equals;
     public static String EqualitySearchOperatorType_notEquals;
+    public static String LikeSearchOperatorType_labelDoesNotLike;
+    public static String LikeSearchOperatorType_labelLike;
     public static String PolicyAttributeCondition_conditionName;
     public static String PolicyAttributeCondition_noSearchableElementMessage;
     public static String ProductAttributeCondition_conditionName;
     public static String ProductAttributeCondition_noSearchableElementMessage;
+    public static String ProductComponentAssociationCondition_association;
+    public static String ProductComponentAssociationCondition_messageNoElement;
+    public static String ReferenceSearchOperatorType_labelDoesNotReference;
+    public static String ReferenceSearchOperatorType_labelReferences;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

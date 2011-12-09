@@ -226,10 +226,6 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
         }
     }
 
-    public void dispose() {
-        parentSearchPresentationModel.removeProductSearchConditionPresentationModels(this);
-    }
-
     @Override
     public boolean isValid() {
         return isSearchedElementChosen() && isOperatorTypeChosen();
