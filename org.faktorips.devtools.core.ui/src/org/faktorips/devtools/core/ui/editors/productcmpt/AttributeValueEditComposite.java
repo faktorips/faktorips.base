@@ -65,8 +65,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE);
 
-        // Attribute values belonging to the product component and not to the generation are static
-        if (!getPropertyValue().getPropertyValueContainer().isChangingOverTimeContainer()) {
+        if (!getProperty().isChangingOverTime()) {
             addNotChangingOverTimeControlDecoration(editField);
         }
     }
