@@ -13,7 +13,10 @@
 
 package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Set;
 
@@ -145,6 +148,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
     private IWorkbenchAction deleteAction;
 
+    private List<ISelectionChangedListener> externalSelectionChangedListener;
+
     /**
      * Class to handle double clicks. Doubleclicks of ProductCmptTypeAssociationReference will be
      * ignored.
@@ -171,6 +176,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
         // add as resource listener because refactoring-actions like move or rename
         // would not cause a model-changed-event otherwise.
+
+        externalSelectionChangedListener = new ArrayList<ISelectionChangedListener>();
     }
 
     /**
@@ -893,6 +900,104 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
     public void expandAll() {
         treeViewer.expandAll();
+    }
+
+    /**
+     * Searches the shown structure for the given elements. Every element of the structure
+     * representing one of the given elements is revealed and selected.
+     */
+    public void setSelection(final List<IIpsElement> toBeSelected) {
+        if (toBeSelected.isEmpty()) {
+            return;
+        }
+
+        final List<IProductCmptReference> refs = getReferencesFor(toBeSelected);
+
+        IStructuredSelection selection = new IStructuredSelection() {
+            @Override
+            public boolean isEmpty() {
+                return refs.isEmpty();
+            }
+
+            @Override
+            public List<IProductCmptReference> toList() {
+                return refs;
+            }
+
+            @Override
+            public Object[] toArray() {
+                return refs.toArray();
+            }
+
+            @Override
+            public int size() {
+                return refs.size();
+            }
+
+            @Override
+            public Iterator<IProductCmptReference> iterator() {
+                return refs.iterator();
+            }
+
+            @Override
+            public Object getFirstElement() {
+                if (size() > 0) {
+                    return refs.get(0);
+                }
+                return null;
+            }
+        };
+
+        for (ISelectionChangedListener listener : externalSelectionChangedListener) {
+            treeViewer.removeSelectionChangedListener(listener);
+        }
+
+        treeViewer.setSelection(selection, true);
+
+        for (ISelectionChangedListener listener : externalSelectionChangedListener) {
+            treeViewer.addSelectionChangedListener(listener);
+        }
+
+    }
+
+    private List<IProductCmptReference> getReferencesFor(List<IIpsElement> toBeSelected) {
+        ArrayList<IProductCmptReference> result = new ArrayList<IProductCmptReference>();
+
+        Object input = treeViewer.getInput();
+        if (!(input instanceof IProductCmptTreeStructure)) {
+            return result;
+        }
+
+        IProductCmptTreeStructure struct = (IProductCmptTreeStructure)input;
+
+        for (IIpsElement selectElement : toBeSelected) {
+            result.addAll(getReference(struct, selectElement));
+        }
+
+        return result;
+    }
+
+    private List<IProductCmptReference> getReference(IProductCmptTreeStructure struct, IIpsElement selectElement) {
+        return getReferences(struct, struct.getRoot(), selectElement);
+    }
+
+    private List<IProductCmptReference> getReferences(IProductCmptTreeStructure struct,
+            IProductCmptReference reference,
+            IIpsElement selectElement) {
+        IProductCmptReference[] children = struct.getChildProductCmptReferences(reference);
+        ArrayList<IProductCmptReference> result = new ArrayList<IProductCmptReference>();
+        for (IProductCmptReference child : children) {
+            if (selectElement.equals(child.getProductCmpt())) {
+                result.add(child);
+            }
+            result.addAll(getReferences(struct, child, selectElement));
+        }
+        return result;
+    }
+
+    public void addSelectionChangedListener(ISelectionChangedListener listener) {
+        this.externalSelectionChangedListener.add(listener);
+        treeViewer.addSelectionChangedListener(listener);
     }
 
 }
