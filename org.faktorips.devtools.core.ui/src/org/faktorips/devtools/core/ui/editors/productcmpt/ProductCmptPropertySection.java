@@ -17,6 +17,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -149,6 +151,14 @@ public abstract class ProductCmptPropertySection extends IpsSection {
             for (IPropertyValue propertyValue : propertyValues) {
                 createLabelAndEditComposite(propertyValue);
             }
+            // Remove all visible bindings as soon as the section is disposed
+            addDisposeListener(new DisposeListener() {
+                @Override
+                public void widgetDisposed(DisposeEvent e) {
+                    IpsUIPlugin.getDefault().getPropertyVisibleController()
+                            .removePropertyControlMapping(ProductCmptPropertySection.this);
+                }
+            });
         } else {
             createLabelForEmptySection();
         }
@@ -162,9 +172,16 @@ public abstract class ProductCmptPropertySection extends IpsSection {
     }
 
     private void createLabelAndEditComposite(IPropertyValue propertyValue) {
-        IProductCmptProperty property = findProperty(propertyValue);
+        final IProductCmptProperty property = findProperty(propertyValue);
+
         Control label = createLabel(propertyValue, property);
         EditPropertyValueComposite<?, ?> editComposite = createEditComposite(propertyValue, property);
+
+        if (property != null) {
+            IpsUIPlugin.getDefault().getPropertyVisibleController()
+                    .addPropertyControlMapping(this, property, label, editComposite);
+        }
+
         verticallyAlignLabel(label, editComposite);
     }
 

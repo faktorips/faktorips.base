@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -667,12 +666,10 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>(3);
         properties.add(productAttribute);
         properties.add(genAttribute1);
-        Map<IProductCmptProperty, IPropertyValue> propertyValues = generation
-                .getPropertyValuesIncludeProductCmpt(properties);
+        List<IPropertyValue> propertyValues = generation.getPropertyValuesIncludeProductCmpt(properties);
 
-        assertEquals(productValue, propertyValues.get(productAttribute));
-        assertEquals(genValue1, propertyValues.get(genAttribute1));
-        assertNull(propertyValues.get(genAttribute2));
+        assertEquals(productValue, propertyValues.get(0));
+        assertEquals(genValue1, propertyValues.get(1));
         assertEquals(2, propertyValues.size());
     }
 

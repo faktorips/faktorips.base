@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -133,7 +132,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     }
 
     @Override
-    public Map<IProductCmptProperty, IPropertyValue> findPropertyValues(IProductCmptType contextType,
+    public List<IPropertyValue> findPropertyValues(IProductCmptType contextType,
             IProductCmptGeneration contextGeneration,
             IIpsProject ipsProject) throws CoreException {
 

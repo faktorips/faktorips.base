@@ -22,7 +22,6 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -474,10 +473,9 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         ((IProductCmptGeneration)productCmpt.getGeneration(0)).newPropertyValue(dynamicAttribute);
         IAttributeValue dynamicAttributeValue = (IAttributeValue)generation.newPropertyValue(dynamicAttribute);
 
-        Map<IProductCmptProperty, IPropertyValue> propertyValues = category.findPropertyValues(productType, generation,
-                ipsProject);
-        assertEquals(staticAttributeValue, propertyValues.get(staticAttribute));
-        assertEquals(dynamicAttributeValue, propertyValues.get(dynamicAttribute));
+        List<IPropertyValue> propertyValues = category.findPropertyValues(productType, generation, ipsProject);
+        assertEquals(staticAttributeValue, propertyValues.get(0));
+        assertEquals(dynamicAttributeValue, propertyValues.get(1));
         assertEquals(2, propertyValues.size());
     }
 
@@ -500,11 +498,10 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IAttributeValue v2 = (IAttributeValue)generation.newPropertyValue(p2);
         IAttributeValue v3 = (IAttributeValue)generation.newPropertyValue(p3);
 
-        IPropertyValue[] propertyValues = category.findPropertyValues(productType, generation, ipsProject).values()
-                .toArray(new IPropertyValue[0]);
-        assertEquals(v2, propertyValues[0]);
-        assertEquals(v1, propertyValues[1]);
-        assertEquals(v3, propertyValues[2]);
+        List<IPropertyValue> propertyValues = category.findPropertyValues(productType, generation, ipsProject);
+        assertEquals(v2, propertyValues.get(0));
+        assertEquals(v1, propertyValues.get(1));
+        assertEquals(v3, propertyValues.get(2));
     }
 
     /**

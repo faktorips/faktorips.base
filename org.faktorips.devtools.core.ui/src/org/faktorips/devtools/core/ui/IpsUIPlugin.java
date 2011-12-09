@@ -109,6 +109,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsObjectSelectionHistory;
@@ -117,6 +118,7 @@ import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.internal.PropertyVisibleController;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapter;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapterAdapterFactory;
@@ -131,6 +133,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /** The plug-in ID. */
     public static final String PLUGIN_ID = "org.faktorips.devtools.core.ui"; //$NON-NLS-1$
+
+    public static final String EXTENSION_POINT_ID_PRODUCT_CMPT_PROPERTY_FILTER = "productCmptPropertyFilter"; //$NON-NLS-1$
 
     /**
      * The simple extension point id of the extension point
@@ -182,6 +186,12 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     /** The shared instance. */
     private static IpsUIPlugin plugin;
 
+    private static IExtensionRegistry registry;
+
+    private static List<IWorkbenchAdapterProvider> workbenchAdapterProviders;
+
+    private IPropertyVisibleController propertyVisibleController;
+
     /** Factories for creating controls depending on the datatype. */
     private ValueDatatypeControlFactory[] controlFactories;
 
@@ -200,11 +210,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private Map<String, IExtensionPropertySectionFactory> extensionPropertySectionFactoriesMap;
 
-    private static IExtensionRegistry registry;
-
     private IpsObjectSelectionHistory openIpsObjectHistory;
-
-    private static List<IWorkbenchAdapterProvider> workbenchAdapterProviders;
 
     private IpsElementWorkbenchAdapterAdapterFactory ipsElementWorkbenchAdapterAdapterFactory;
 
@@ -218,7 +224,14 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     protected void setExtensionRegistry(IExtensionRegistry registry) {
         IpsUIPlugin.registry = registry;
         extensionPropertyEditFieldFactoryMap = null;
+    }
 
+    /**
+     * Returns the {@link IPropertyVisibleController} that allows to dynamically hide elements
+     * associated to {@link IProductCmptProperty product component properties} from the UI.
+     */
+    public IPropertyVisibleController getPropertyVisibleController() {
+        return propertyVisibleController;
     }
 
     @Override
@@ -228,6 +241,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         registry = Platform.getExtensionRegistry();
         ipsEditorSettings = new IpsObjectEditorSettings();
         ipsEditorSettings.load(getStateLocation());
+        propertyVisibleController = createPropertyVisibleController();
         IpsCompositeSaveParticipant saveParticipant = new IpsCompositeSaveParticipant();
         saveParticipant.addSaveParticipant(ipsEditorSettings);
         ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
@@ -237,6 +251,24 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         ipsElementWorkbenchAdapterAdapterFactory = new IpsElementWorkbenchAdapterAdapterFactory();
         datatypeFormatter = new UIDatatypeFormatter();
         Platform.getAdapterManager().registerAdapters(ipsElementWorkbenchAdapterAdapterFactory, IIpsElement.class);
+    }
+
+    private IPropertyVisibleController createPropertyVisibleController() {
+        IPropertyVisibleController propertyVisibleController = new PropertyVisibleController();
+        loadPropertyFilters(propertyVisibleController);
+        return propertyVisibleController;
+    }
+
+    private void loadPropertyFilters(IPropertyVisibleController propertyVisibleController) {
+        ExtensionPoints extensionPoints = new ExtensionPoints(IpsUIPlugin.PLUGIN_ID);
+        IExtension[] extensions = extensionPoints.getExtension(EXTENSION_POINT_ID_PRODUCT_CMPT_PROPERTY_FILTER);
+        for (IExtension extension : extensions) {
+            IConfigurationElement[] configElements = extension.getConfigurationElements();
+            IProductCmptPropertyFilter filter = ExtensionPoints.createExecutableExtension(extension, configElements[0],
+                    "class", IProductCmptPropertyFilter.class); //$NON-NLS-1$
+            filter.setPropertyVisibleController(propertyVisibleController);
+            propertyVisibleController.addFilter(filter);
+        }
     }
 
     private List<IIpsDropAdapterProvider> initProductCmptDnDHandler() {

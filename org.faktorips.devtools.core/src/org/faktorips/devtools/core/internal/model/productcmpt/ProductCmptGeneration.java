@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -613,7 +612,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public Map<IProductCmptProperty, IPropertyValue> getPropertyValuesIncludeProductCmpt(List<IProductCmptProperty> properties) {
+    public List<IPropertyValue> getPropertyValuesIncludeProductCmpt(List<IProductCmptProperty> properties) {
         // Collect all potential property values
         List<IPropertyValue> allPropertyValues = new ArrayList<IPropertyValue>();
         allPropertyValues.addAll(getAllPropertyValues());
@@ -623,11 +622,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
          * Find the property values corresponding to the given properties while maintaining the
          * ordering of the list.
          */
-        Map<IProductCmptProperty, IPropertyValue> propertyValues = new LinkedHashMap<IProductCmptProperty, IPropertyValue>();
+        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
         for (IProductCmptProperty property : properties) {
             for (IPropertyValue propertyValue : allPropertyValues) {
                 if (property.isPropertyFor(propertyValue)) {
-                    propertyValues.put(property, propertyValue);
+                    propertyValues.add(propertyValue);
                 }
             }
         }
