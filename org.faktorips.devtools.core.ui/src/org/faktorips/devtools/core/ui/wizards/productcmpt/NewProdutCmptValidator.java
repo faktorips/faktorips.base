@@ -15,11 +15,14 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -74,7 +77,7 @@ public class NewProdutCmptValidator {
 
     public MessageList validateProductCmptPage() {
         MessageList result = new MessageList();
-        if (validateTypeSelection().containsErrorMsg()) {
+        if ((result = validateTypeSelection()).containsErrorMsg()) {
             // validation only makes sense if there are no error on type selection page.
             return result;
         }
@@ -112,27 +115,51 @@ public class NewProdutCmptValidator {
         }
 
         if (result.isEmpty()) {
-            IIpsProjectNamingConventions namingConventions = pmo.getIpsProject().getNamingConventions();
-            try {
-                result.add(namingConventions.validateUnqualifiedIpsObjectName(IpsObjectType.PRODUCT_CMPT,
-                        pmo.getFullName()));
-                IIpsSrcFile file = pmo.getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT,
-                        pmo.getQualifiedName());
-                if (file != null) {
-                    result.add(new Message(MSG_SRC_FILE_EXISTS,
-                            "A product component with this name does already exist.", Message.ERROR));
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            result.add(additionalValidateProductCmptName());
+            result.add(validateAddTo());
         }
 
         return result;
     }
 
+    MessageList additionalValidateProductCmptName() {
+        MessageList result = new MessageList();
+        IIpsProjectNamingConventions namingConventions = pmo.getIpsProject().getNamingConventions();
+        try {
+            result.add(namingConventions.validateUnqualifiedIpsObjectName(IpsObjectType.PRODUCT_CMPT, pmo.getFullName()));
+            IIpsSrcFile file = pmo.getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, pmo.getQualifiedName());
+            if (file != null) {
+                result.add(new Message(MSG_SRC_FILE_EXISTS, "A product component with this name does already exist.",
+                        Message.ERROR));
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        return result;
+    }
+
+    MessageList validateAddTo() {
+        MessageList result = new MessageList();
+        if (pmo.getAddToProductCmptGeneration() != null && pmo.getAddToProductCmptGeneration() != null) {
+            IProductCmptTypeAssociation addToAssociation = pmo.getAddToAssociation();
+            try {
+                IProductCmptType targetProductCmptType = addToAssociation
+                        .findTargetProductCmptType(pmo.getIpsProject());
+                if (!pmo.getSelectedType().isSubtypeOrSameType(targetProductCmptType, pmo.getIpsProject())) {
+                    result.add(new Message(MSG_INVALID_SELECTED_TYPE, NLS.bind(
+                            "The selected type cannot be added to the association {0} ob product component type {1}.",
+                            addToAssociation.getName(), pmo.getAddToProductCmptGeneration().getName()), Message.ERROR));
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return result;
+    }
+
     public MessageList validateFolderAndPackage() {
         MessageList result = new MessageList();
-        if (validateTypeSelection().containsErrorMsg()) {
+        if ((result = validateTypeSelection()).containsErrorMsg()) {
             // validation only makes sense if there are no error on type selection page.
             return result;
         }

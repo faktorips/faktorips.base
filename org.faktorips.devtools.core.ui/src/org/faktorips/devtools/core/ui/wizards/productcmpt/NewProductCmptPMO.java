@@ -24,7 +24,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.type.TypeHierarchy;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -33,8 +32,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
@@ -87,6 +88,10 @@ public class NewProductCmptPMO extends PresentationModelObject {
     private ArrayList<IProductCmptType> subtypes;
 
     private final NewProdutCmptValidator validator;
+
+    private IProductCmptGeneration addToProductCmptGeneration;
+
+    private IProductCmptTypeAssociation addToAssociation;
 
     public NewProductCmptPMO(GregorianCalendar workingDate) {
         this.workingDate = workingDate;
@@ -259,16 +264,13 @@ public class NewProductCmptPMO extends PresentationModelObject {
         if (selectedBaseType == null) {
             subtypes = result;
         } else {
-            try {
-                TypeHierarchy subtypeHierarchy = TypeHierarchy.getSubtypeHierarchy(selectedBaseType, getIpsProject());
-                List<IType> subtypesList = subtypeHierarchy.getAllSubtypes(selectedBaseType);
-                for (IType type : subtypesList) {
+            List<IType> subtypesList = selectedBaseType.findSubtypes(true, true, ipsProject);
+            for (IType type : subtypesList) {
+                if (!type.isAbstract()) {
                     result.add((IProductCmptType)type);
                 }
-                subtypes = result;
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
             }
+            subtypes = result;
             if (!subtypes.isEmpty()) {
                 setSelectedType(subtypes.get(0));
             } else {
@@ -410,6 +412,48 @@ public class NewProductCmptPMO extends PresentationModelObject {
      */
     public GregorianCalendar getWorkingDate() {
         return workingDate;
+    }
+
+    /**
+     * Sets a {@link IProductCmptGeneration} and a {@link IProductCmptTypeAssociation} to which the
+     * newly created product component will be added.
+     * <p>
+     * The type of the new product component have to be compatible to the target type of the
+     * {@link #getAddToAssociation()}
+     * 
+     * @param addToProductCmptGeneration The product component you want to add the newly created
+     *            product component to
+     * @param addToAssociation The association in which context the newly created product component
+     *            is added to the {@link #addToProductCmptGeneration}
+     */
+    public void setAddToAssociation(IProductCmptGeneration addToProductCmptGeneration,
+            IProductCmptTypeAssociation addToAssociation) {
+        this.addToProductCmptGeneration = addToProductCmptGeneration;
+        this.addToAssociation = addToAssociation;
+        try {
+            setSelectedBaseType(addToAssociation.findTargetProductCmptType(ipsProject));
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    /**
+     * Returns the product component generation to which the newly created product component will be
+     * added
+     * 
+     * @see #setAddToAssociation(IProductCmptGeneration, IProductCmptTypeAssociation)
+     */
+    public IProductCmptGeneration getAddToProductCmptGeneration() {
+        return addToProductCmptGeneration;
+    }
+
+    /**
+     * Returns the association to which the newly created product component will be added
+     * 
+     * @see #setAddToAssociation(IProductCmpt, IProductCmptTypeAssociation)
+     */
+    public IProductCmptTypeAssociation getAddToAssociation() {
+        return addToAssociation;
     }
 
     /**

@@ -23,6 +23,7 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -65,12 +66,17 @@ public class TypeSelectionPage extends WizardPage {
     @Override
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
-        Composite composite = toolkit.createGridComposite(parent, 1, false, false);
+        Composite composite = toolkit.createGridComposite(parent, 1, false, true);
+        GridLayout layout = (GridLayout)composite.getLayout();
+        layout.verticalSpacing = 10;
+
         Composite twoColumnComposite = toolkit.createLabelEditColumnComposite(composite);
 
         // Select Project
         toolkit.createLabel(twoColumnComposite, "Project:");
         ipsProjectRefControl = toolkit.createIpsProjectRefControl(twoColumnComposite);
+
+        toolkit.createHorizonzalLine(composite);
 
         typeSelectionComposite = new TypeSelectionComposite(composite, toolkit);
         typeSelectionComposite.setTitle("Type:");

@@ -22,6 +22,7 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -75,8 +76,11 @@ public class ProductCmptPage extends WizardPage {
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         Composite composite = toolkit.createGridComposite(parent, 1, false, false);
+        GridLayout layout = (GridLayout)composite.getLayout();
+        layout.verticalSpacing = 10;
+
         typeSelectionComposite = new TypeSelectionComposite(composite, toolkit);
-        typeSelectionComposite.setTitle("Type:");
+        typeSelectionComposite.setTitle("Select Type:");
 
         toolkit.createHorizonzalLine(composite);
 
@@ -126,6 +130,8 @@ public class ProductCmptPage extends WizardPage {
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
+        // setting the actual message if there is any but do not show as error
+        setMessage(getMessage());
         nameText.selectAll();
         nameText.setFocus();
     }

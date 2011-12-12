@@ -76,17 +76,24 @@ class TypeSelectionComposite extends Composite {
 
     private void createControls() {
         title = toolkit.createLabel(this, StringUtils.EMPTY);
-        ((GridData)title.getLayoutData()).horizontalSpan = 2;
+        toolkit.createLabel(this, "Description:");
 
         listViewer = new TableViewer(this);
         listViewer.setContentProvider(new ArrayContentProvider());
         listViewer.setLabelProvider(new ProductCmptWizardTypeLabelProvider());
         GridData listLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        listLayoutData.heightHint = 100;
+        listLayoutData.heightHint = 50;
+        listLayoutData.widthHint = 50;
         listViewer.getControl().setLayoutData(listLayoutData);
         listViewerField = new StructuredViewerField<IProductCmptType>(listViewer, IProductCmptType.class);
 
-        Composite descriptionComposite = toolkit.createGridComposite(this, 1, false, false);
+        Composite descriptionComposite = new Composite(this, SWT.BORDER);
+        GridData descriptionCompositeData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        GridLayout descriptionCompositeLayout = new GridLayout();
+        descriptionCompositeLayout.marginHeight = 3;
+        descriptionCompositeLayout.marginWidth = 3;
+        descriptionComposite.setLayoutData(descriptionCompositeData);
+        descriptionComposite.setLayout(descriptionCompositeLayout);
 
         descriptionTitle = toolkit.createLabel(descriptionComposite, StringUtils.EMPTY);
 
@@ -96,8 +103,9 @@ class TypeSelectionComposite extends Composite {
         fontData.setStyle(SWT.BOLD);
         descriptionTitle.setFont(resourManager.createFont(FontDescriptor.createFrom(fontData)));
 
-        GridData descriptionLayoutData = listLayoutData;
+        GridData descriptionLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);;
         descriptionLayoutData.heightHint = 50;
+        descriptionLayoutData.widthHint = 50;
         description = toolkit.createLabel(descriptionComposite, StringUtils.EMPTY, SWT.WRAP, descriptionLayoutData);
     }
 
@@ -123,7 +131,12 @@ class TypeSelectionComposite extends Composite {
     }
 
     public void setDescription(String descriptionString) {
-        description.setText(descriptionString);
+        if (StringUtils.isEmpty(descriptionString) && StringUtils.isNotEmpty(descriptionTitle.getText())) {
+            description.setText("no description available");
+            description.setEnabled(false);
+        } else {
+            description.setText(descriptionString);
+            description.setEnabled(true);
+        }
     }
-
 }

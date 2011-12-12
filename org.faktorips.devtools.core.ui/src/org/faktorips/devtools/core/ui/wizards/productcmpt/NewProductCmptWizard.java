@@ -36,6 +36,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.util.message.MessageList;
@@ -54,7 +56,7 @@ import org.faktorips.util.message.MessageList;
  */
 public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
 
-    private final NewProductCmptPMO newProductCmptPMO;
+    private final NewProductCmptPMO pmo;
     private final TypeSelectionPage typeSelectionPage;
     private final ProductCmptPage productCmptPage;
     private FolderAndPackagePage folderAndPackagePage;
@@ -68,11 +70,11 @@ public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
         setWindowTitle("Create new product component");
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "wizards/NewProductCmptWizard.png")); //$NON-NLS-1$
-        newProductCmptPMO = new NewProductCmptPMO(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
-        validator = new NewProdutCmptValidator(newProductCmptPMO);
-        typeSelectionPage = new TypeSelectionPage(newProductCmptPMO);
-        productCmptPage = new ProductCmptPage(newProductCmptPMO);
-        folderAndPackagePage = new FolderAndPackagePage(newProductCmptPMO);
+        pmo = new NewProductCmptPMO(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+        validator = new NewProdutCmptValidator(pmo);
+        typeSelectionPage = new TypeSelectionPage(pmo);
+        productCmptPage = new ProductCmptPage(pmo);
+        folderAndPackagePage = new FolderAndPackagePage(pmo);
     }
 
     @Override
@@ -94,22 +96,13 @@ public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
             @Override
             public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
                 monitor.beginTask("Create product component", 3);
-                IIpsSrcFile ipsSrcFile = newProductCmptPMO.getIpsPackage().createIpsFile(IpsObjectType.PRODUCT_CMPT,
-                        newProductCmptPMO.getFullName(), true, new SubProgressMonitor(monitor, 1));
-
-                IProductCmpt newProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-                newProductCmpt.setProductCmptType(newProductCmptPMO.getSelectedType().getQualifiedName());
-
-                GregorianCalendar date = newProductCmptPMO.getWorkingDate();
-                newProductCmpt.setRuntimeId(newProductCmptPMO.getRuntimeId());
-                IProductCmptGeneration generation = (IProductCmptGeneration)newProductCmpt.newGeneration();
-                generation.setValidFrom(date);
-                newProductCmpt.fixAllDifferencesToModel(newProductCmptPMO.getIpsProject());
-                monitor.worked(1);
-
+                IIpsSrcFile ipsSrcFile = createIpsSrcFile(monitor);
+                finishIpsSrcFile(ipsSrcFile, monitor);
                 ipsSrcFile.save(true, new SubProgressMonitor(monitor, 1));
+                addToProductCmpt(ipsSrcFile);
                 monitor.done();
             }
+
         };
         try {
             ISchedulingRule rule = null;
@@ -130,10 +123,34 @@ public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
         } catch (InterruptedException e) {
             return false;
         }
-        IIpsSrcFile srcFile = newProductCmptPMO.getIpsPackage().getIpsSrcFile(
-                IpsObjectType.PRODUCT_CMPT.getFileName(newProductCmptPMO.getQualifiedName()));
+        IIpsSrcFile srcFile = pmo.getIpsPackage().getIpsSrcFile(getIpsObjectType().getFileName(pmo.getFullName()));
         IpsUIPlugin.getDefault().openEditor(srcFile);
         return true;
+    }
+
+    protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreException {
+        IProductCmpt newProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+        newProductCmpt.setProductCmptType(pmo.getSelectedType().getQualifiedName());
+
+        GregorianCalendar date = pmo.getWorkingDate();
+        newProductCmpt.setRuntimeId(pmo.getRuntimeId());
+        IProductCmptGeneration generation = (IProductCmptGeneration)newProductCmpt.newGeneration();
+        generation.setValidFrom(date);
+        newProductCmpt.fixAllDifferencesToModel(pmo.getIpsProject());
+        monitor.worked(1);
+    }
+
+    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
+        IIpsSrcFile ipsSrcFile = pmo.getIpsPackage().createIpsFile(getIpsObjectType(), pmo.getFullName(), true,
+                new SubProgressMonitor(monitor, 1));
+        return ipsSrcFile;
+    }
+
+    protected void addToProductCmpt(IIpsSrcFile ipsSrcFile) {
+        if (pmo.getAddToProductCmptGeneration() != null && pmo.getAddToAssociation() != null) {
+            IProductCmptLink newLink = pmo.getAddToProductCmptGeneration().newLink(pmo.getAddToAssociation());
+            newLink.setTarget(ipsSrcFile.getQualifiedNameType().getName());
+        }
     }
 
     @Override
@@ -143,13 +160,23 @@ public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
             IAdaptable adaptableObject = (IAdaptable)element;
             IResource resource = (IResource)adaptableObject.getAdapter(IResource.class);
             if (resource != null) {
-                newProductCmptPMO.initDefaults(resource);
+                pmo.initDefaults(resource);
             }
         }
+    }
+
+    public void setAddToAssociation(IProductCmptGeneration addToproductCmptGen,
+            IProductCmptTypeAssociation addToAssociation) {
+        pmo.setAddToAssociation(addToproductCmptGen, addToAssociation);
     }
 
     @Override
     public void dispose() {
         super.dispose();
     }
+
+    protected IpsObjectType getIpsObjectType() {
+        return IpsObjectType.PRODUCT_CMPT;
+    }
+
 }
