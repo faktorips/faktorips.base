@@ -463,4 +463,42 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
      */
     public IMethod getMatchingMethod(IMethod method);
 
+    /**
+     * Finds sub types extending this type by searching in the given project root.
+     * <p>
+     * By setting the property transitive you could include or exclude indirect extending types.
+     * <p>
+     * If you want to find all sub types in the current workspace you have to use
+     * {@link #searchSubtypes(boolean, boolean)} to include all projects depending on this project.
+     * 
+     * @param transitive {@code true} to include indirect extending types, {@code false} for only
+     *            return direct sub types
+     * @param includingSelf {@code true} to include this type in result list
+     * @param project the root for finding types
+     * 
+     * @return a list of types extending the current type, directly or indirectly depends on
+     *         parameter transitive
+     * @see #searchSubtypes(boolean, boolean)
+     */
+    List<IType> findSubtypes(boolean transitive, boolean includingSelf, IIpsProject project);
+
+    /**
+     * Searches for all types extending the current type in the whole workspace.
+     * <p>
+     * By setting the property transitive you could include or exclude indirect extending types.
+     * <p>
+     * To find all sub types the implementation would search in the current project and in every
+     * project that depends on the current project. If you want to find only types in one project
+     * including depending projects, use {@link #findSubtypes(boolean, boolean, IIpsProject)}.
+     * 
+     * @param transitive {@code true} to include indirect extending types, {@code false} for only
+     *            return direct sub types
+     * @param includingSelf {@code true} to include this type in the result list
+     * 
+     * @return a list containing every type in the workspace that extends this type
+     * 
+     * @see #findSubtypes(boolean, boolean, IIpsProject)
+     */
+    List<IType> searchSubtypes(boolean transitive, boolean includingSelf);
+
 }

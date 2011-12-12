@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.DatatypeDependency;
@@ -574,6 +575,39 @@ public abstract class Type extends BaseIpsObject implements IType {
             }
         }
         return false;
+    }
+
+    @Override
+    public List<IType> findSubtypes(boolean transitive, boolean includeSelf, IIpsProject project) {
+        try {
+            TypeHierarchy subtypeHierarchy = TypeHierarchy.getSubtypeHierarchy(this, project);
+            return getSubtypesInternal(transitive, includeSelf, subtypeHierarchy);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<IType> searchSubtypes(boolean transitive, boolean includingSelf) {
+        try {
+            TypeHierarchy subtypeHierarchy = TypeHierarchy.getSubtypeHierarchy(this);
+            return getSubtypesInternal(transitive, includingSelf, subtypeHierarchy);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    private List<IType> getSubtypesInternal(boolean transitive, boolean includingSelf, TypeHierarchy subtypeHierarchy) {
+        List<IType> result;
+        if (transitive) {
+            result = subtypeHierarchy.getAllSubtypes(this);
+        } else {
+            result = subtypeHierarchy.getSubtypes(this);
+        }
+        if (includingSelf) {
+            result.add(this);
+        }
+        return result;
     }
 
     private class MethodOverrideCandidatesFinder extends TypeHierarchyVisitor<IType> {
