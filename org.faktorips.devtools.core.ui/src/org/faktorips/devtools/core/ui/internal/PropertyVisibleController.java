@@ -64,8 +64,8 @@ public class PropertyVisibleController implements IPropertyVisibleController {
     }
 
     private void updateControlVisibility() {
-        for (Control outerControl : propertyControlMappings.keySet()) {
-            for (IProductCmptProperty property : propertyControlMappings.get(outerControl).keySet()) {
+        for (Control containerControl : propertyControlMappings.keySet()) {
+            for (IProductCmptProperty property : propertyControlMappings.get(containerControl).keySet()) {
                 boolean filtered = false;
                 for (IProductCmptPropertyFilter filter : filters) {
                     filtered = filter.isFiltered(property);
@@ -73,7 +73,7 @@ public class PropertyVisibleController implements IPropertyVisibleController {
                         break;
                     }
                 }
-                for (Control control : propertyControlMappings.get(outerControl).get(property)) {
+                for (Control control : propertyControlMappings.get(containerControl).get(property)) {
                     control.setVisible(!filtered);
                     Object layoutData = control.getLayoutData();
                     ((GridData)layoutData).exclude = filtered;
@@ -84,9 +84,9 @@ public class PropertyVisibleController implements IPropertyVisibleController {
 
     private void relayoutParents() {
         Set<Composite> parents = new HashSet<Composite>();
-        for (Control outerControl : propertyControlMappings.keySet()) {
-            for (IProductCmptProperty property : propertyControlMappings.get(outerControl).keySet()) {
-                for (Control control : propertyControlMappings.get(outerControl).get(property)) {
+        for (Control containerControl : propertyControlMappings.keySet()) {
+            for (IProductCmptProperty property : propertyControlMappings.get(containerControl).keySet()) {
+                for (Control control : propertyControlMappings.get(containerControl).get(property)) {
                     parents.add(control.getParent());
                 }
             }
@@ -97,7 +97,10 @@ public class PropertyVisibleController implements IPropertyVisibleController {
     }
 
     @Override
-    public boolean addPropertyControlMapping(Control outerControl, IProductCmptProperty property, Control... controls) {
+    public boolean addPropertyControlMapping(Control containerControl,
+            IProductCmptProperty property,
+            Control... controls) {
+
         // Check the validity of the provided controls
         ArgumentCheck.isTrue(controls.length > 0);
         for (Control control : controls) {
@@ -107,10 +110,10 @@ public class PropertyVisibleController implements IPropertyVisibleController {
         }
 
         // Get the mappings for the outer control
-        Map<IProductCmptProperty, Set<Control>> propertyMappings = propertyControlMappings.get(outerControl);
+        Map<IProductCmptProperty, Set<Control>> propertyMappings = propertyControlMappings.get(containerControl);
         if (propertyMappings == null) {
             propertyMappings = new HashMap<IProductCmptProperty, Set<Control>>();
-            propertyControlMappings.put(outerControl, propertyMappings);
+            propertyControlMappings.put(containerControl, propertyMappings);
         }
 
         // Build a set from the provided controls
@@ -129,8 +132,8 @@ public class PropertyVisibleController implements IPropertyVisibleController {
     }
 
     @Override
-    public boolean removePropertyControlMapping(Control outerControl) {
-        return propertyControlMappings.remove(outerControl) != null;
+    public boolean removePropertyControlMapping(Control containerControl) {
+        return propertyControlMappings.remove(containerControl) != null;
     }
 
     @Override

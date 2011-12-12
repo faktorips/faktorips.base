@@ -49,13 +49,15 @@ public interface IPropertyVisibleController {
      * controls associated to the {@link IProductCmptProperty} are disposed by means of the
      * {@link #removePropertyControlMapping(Control)} method.
      * 
-     * @param outerControl the control for which to create the mapping. This should normally be a
-     *            common parent of the mapped controls. The information is required to be able to
+     * @param containerControl the control for which to create the mapping. This should normally be
+     *            a common parent of the mapped controls. The information is required to be able to
      *            handle the fact that multiple editors can be opened at the same time
      * @param property the {@link IProductCmptProperty} to register to this controller
      * @param controls the controls to associated with the {@link IProductCmptProperty}
      */
-    public boolean addPropertyControlMapping(Control outerControl, IProductCmptProperty property, Control... controls);
+    public boolean addPropertyControlMapping(Control containerControl,
+            IProductCmptProperty property,
+            Control... controls);
 
     /**
      * Removes all mappings for the indicated control from this controller.
@@ -63,9 +65,9 @@ public interface IPropertyVisibleController {
      * Returns {@code true} if at least one mapping existed for the indicated control, {@code false}
      * otherwise.
      * 
-     * @param outerControl the control for which to remove all mappings
+     * @param containerControl the control for which to remove all mappings
      */
-    public boolean removePropertyControlMapping(Control outerControl);
+    public boolean removePropertyControlMapping(Control containerControl);
 
     /**
      * Adds the indicated {@link IProductCmptPropertyFilter} to this controller.
