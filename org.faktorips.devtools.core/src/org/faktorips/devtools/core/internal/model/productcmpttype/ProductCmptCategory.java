@@ -20,8 +20,6 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -129,15 +127,6 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
         return ((ProductCmptType)contextType).findProductCmptPropertiesForCategory(this, searchSupertypeHierarchy,
                 ipsProject);
-    }
-
-    @Override
-    public List<IPropertyValue> findPropertyValues(IProductCmptType contextType,
-            IProductCmptGeneration contextGeneration,
-            IIpsProject ipsProject) throws CoreException {
-
-        List<IProductCmptProperty> categoryProperties = findProductCmptProperties(contextType, true, ipsProject);
-        return contextGeneration.getPropertyValuesIncludeProductCmpt(categoryProperties);
     }
 
     @Override

@@ -31,6 +31,7 @@ import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
@@ -176,20 +177,16 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
         // Create a section for each category
         for (IProductCmptCategory category : categories) {
-            createSectionForCategory(category, productCmptType, left, right);
+            createSectionForCategory(category, left, right);
         }
     }
 
-    private void createSectionForCategory(IProductCmptCategory category,
-            IProductCmptType productCmptType,
-            Composite left,
-            Composite right) {
-
+    private void createSectionForCategory(IProductCmptCategory category, Composite left, Composite right) {
         // Find the property values that match to the category's properties
         List<IPropertyValue> propertyValues;
         try {
-            propertyValues = category.findPropertyValues(productCmptType, getActiveGeneration(), getActiveGeneration()
-                    .getIpsProject());
+            propertyValues = getProductCmpt().findPropertyValues(category, getActiveGeneration().getValidFrom(),
+                    getIpsObject().getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -341,6 +338,10 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     private IProductCmptGeneration getActiveGeneration() {
         return (IProductCmptGeneration)((ProductCmptEditor)getEditor()).getActiveGeneration();
+    }
+
+    private IProductCmpt getProductCmpt() {
+        return (IProductCmpt)getIpsObject();
     }
 
     /**

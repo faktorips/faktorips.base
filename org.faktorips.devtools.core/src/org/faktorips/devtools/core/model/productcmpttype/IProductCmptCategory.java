@@ -20,8 +20,6 @@ import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
@@ -146,26 +144,6 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      */
     public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType,
             boolean searchSupertypeHierarchy,
-            IIpsProject ipsProject) throws CoreException;
-
-    /**
-     * Returns a list containing the {@link IPropertyValue property values} corresponding to the
-     * {@link IProductCmptProperty product component properties} assigned to this
-     * {@link IProductCmptCategory}.
-     * <p>
-     * This method <strong>does</strong> consider assignments made in the supertype hierarchy.
-     * <p>
-     * The values are sorted according to the order of the properties as returned by
-     * {@link #findProductCmptProperties(IProductCmptType, boolean, IIpsProject)}.
-     * 
-     * @param contextType the {@link IProductCmptType} to start the search from. Properties assigned
-     *            by product component types below the context type are not returned
-     * @param contextGeneration the {@link IProductCmptGeneration} to retrieve property values from
-     * 
-     * @throws CoreException if an error occurs during the search
-     */
-    public List<IPropertyValue> findPropertyValues(IProductCmptType contextType,
-            IProductCmptGeneration contextGeneration,
             IIpsProject ipsProject) throws CoreException;
 
     /**

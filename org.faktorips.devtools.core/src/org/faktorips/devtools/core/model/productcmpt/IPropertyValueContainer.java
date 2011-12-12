@@ -37,7 +37,13 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
      * the indicated property. If you want to search only by name, use
      * {@link #getPropertyValue(String)}.
      */
-    public abstract IPropertyValue getPropertyValue(IProductCmptProperty property);
+    public IPropertyValue getPropertyValue(IProductCmptProperty property);
+
+    /**
+     * Returns whether this {@link IPropertyValueContainer} contains an {@link IPropertyValue} for
+     * the indicated {@link IProductCmptProperty}.
+     */
+    public boolean hasPropertyValue(IProductCmptProperty property);
 
     /**
      * Returns the property values for the given property name or <code>null</code> if no value is
@@ -47,26 +53,26 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
      * <p>
      * Returns <code>null</code> if propertyName is <code>null</code>.
      */
-    public abstract IPropertyValue getPropertyValue(String propertyName);
+    public IPropertyValue getPropertyValue(String propertyName);
 
     /**
      * Returns all property values for the given type. Returns an empty array if type is
      * <code>null</code> or no property values were found for the given type.
      */
-    public abstract <T extends IPropertyValue> List<T> getPropertyValues(Class<T> type);
+    public <T extends IPropertyValue> List<T> getPropertyValues(Class<T> type);
 
     /**
      * Returns all property values in this container or an empty list, if no property values are
      * defined.
      */
-    public abstract List<IPropertyValue> getAllPropertyValues();
+    public List<IPropertyValue> getAllPropertyValues();
 
     /**
      * Creates a new property value for the given property.
      * 
      * @throws NullPointerException if property is <code>null</code>.
      */
-    public abstract IPropertyValue newPropertyValue(IProductCmptProperty property);
+    public IPropertyValue newPropertyValue(IProductCmptProperty property);
 
     /**
      * Check whether this container contains values that change over time or only contains not
@@ -102,6 +108,6 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
      *         configure a {@link IPolicyCmptType}
      * @throws CoreException in case of getting a core exception while searching the model
      */
-    public abstract IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
 
 }

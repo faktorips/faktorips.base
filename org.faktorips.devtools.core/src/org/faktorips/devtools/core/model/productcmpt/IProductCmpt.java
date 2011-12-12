@@ -25,7 +25,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
 /**
  * A part (or component) of a product.
@@ -71,6 +73,9 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProperty
      *         generation exists.
      */
     public IProductCmptGeneration getLatestProductCmptGeneration();
+
+    @Override
+    public IProductCmptGeneration getGenerationByEffectiveDate(GregorianCalendar date);
 
     /**
      * Returns the product component's kind or <code>null</code> if the kind can't be found.
@@ -221,6 +226,29 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProperty
      * 
      * @return this {@link IProductCmpt}'s generations as a type safe list.
      */
-    public abstract List<IProductCmptGeneration> getProductCmptGenerations();
+    public List<IProductCmptGeneration> getProductCmptGenerations();
+
+    /**
+     * Returns all {@link IPropertyValue property values} of this {@link IProductCmpt product
+     * component} that belong to the indicated {@link IProductCmptCategory category}.
+     * <p>
+     * Furthermore, all {@link IPropertyValue property values} of the {@link IProductCmptGeneration
+     * generation} corresponding to the given effective date, belonging to the indicated
+     * {@link IProductCmptCategory category} are returned as well.
+     * 
+     * @param category the {@link IProductCmptCategory category} for which to retrieve the
+     *            {@link IPropertyValue property values}
+     * @param effectiveDate the effective date for which to retrieve the {@link IPropertyValue
+     *            property values}
+     * 
+     * @throws CoreException if an error occurs while searching for the {@link IProductCmptType
+     *             product component type} this {@link IProductCmpt product component} is an
+     *             instance of, or while searching for the {@link IProductCmptProperty product
+     *             component properties} belonging to the {@link IProductCmptType product component
+     *             type}
+     */
+    public List<IPropertyValue> findPropertyValues(IProductCmptCategory category,
+            GregorianCalendar effectiveDate,
+            IIpsProject ipsProject) throws CoreException;
 
 }

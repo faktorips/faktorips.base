@@ -137,6 +137,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
+    public boolean hasPropertyValue(IProductCmptProperty property) {
+        return getPropertyValue(property) != null;
+    }
+
+    @Override
     public IPropertyValue getPropertyValue(String propertyName) {
         return propertyValueCollection.getPropertyValue(propertyName);
     }
@@ -609,28 +614,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         IValidationRuleConfig ruleConfig = newValidationRuleInternal(ruleToBeConfigured, getNextPartId());
         objectHasChanged();
         return ruleConfig;
-    }
-
-    @Override
-    public List<IPropertyValue> getPropertyValuesIncludeProductCmpt(List<IProductCmptProperty> properties) {
-        // Collect all potential property values
-        List<IPropertyValue> allPropertyValues = new ArrayList<IPropertyValue>();
-        allPropertyValues.addAll(getAllPropertyValues());
-        allPropertyValues.addAll(getProductCmpt().getAllPropertyValues());
-
-        /*
-         * Find the property values corresponding to the given properties while maintaining the
-         * ordering of the list.
-         */
-        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
-        for (IProductCmptProperty property : properties) {
-            for (IPropertyValue propertyValue : allPropertyValues) {
-                if (property.isPropertyFor(propertyValue)) {
-                    propertyValues.add(propertyValue);
-                }
-            }
-        }
-        return propertyValues;
     }
 
     private class AssociationsValidator extends TypeHierarchyVisitor<IProductCmptType> {

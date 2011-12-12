@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
@@ -59,6 +60,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptKind;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IType;
@@ -174,6 +176,95 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
         ml = product.validate(type.getIpsProject());
         assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+    }
+
+    @Test
+    // Suppressed "unused" warning for better readability
+    @SuppressWarnings("unused")
+    public void testFindPropertyValues() throws CoreException {
+        IProductCmpt productCmpt = newProductCmpt(type, "MyProduct");
+
+        // Create some properties on the product component
+        IProductCmptTypeAttribute productAttribute1 = type.newProductCmptTypeAttribute("productAttribute1");
+        IProductCmptTypeAttribute productAttribute2 = type.newProductCmptTypeAttribute("productAttribute2");
+        IProductCmptTypeAttribute productAttribute3 = type.newProductCmptTypeAttribute("productAttribute3");
+
+        // Create some properties on the generation
+        IProductCmptTypeAttribute genAttribute1 = type.newProductCmptTypeAttribute("g1");
+        IProductCmptTypeAttribute genAttribute2 = type.newProductCmptTypeAttribute("g2");
+
+        // Create a category and assign some properties
+        IProductCmptCategory category = type.newCategory("myCategory");
+        productAttribute1.setCategory(category.getName());
+        productAttribute3.setCategory(category.getName());
+        genAttribute2.setCategory(category.getName());
+
+        // Create two generations
+        GregorianCalendar validFrom1 = new GregorianCalendar(2011, 12, 12);
+        GregorianCalendar validFrom2 = new GregorianCalendar(2012, 12, 12);
+        IProductCmptGeneration generation1 = (IProductCmptGeneration)productCmpt.newGeneration(validFrom1);
+        IProductCmptGeneration generation2 = (IProductCmptGeneration)productCmpt.newGeneration(validFrom2);
+
+        // Create the corresponding property values
+        IPropertyValue productValue1 = productCmpt.newPropertyValue(productAttribute1);
+        IPropertyValue productValue2 = productCmpt.newPropertyValue(productAttribute2);
+        IPropertyValue productValue3 = productCmpt.newPropertyValue(productAttribute3);
+        IPropertyValue gen1Value1 = generation1.newAttributeValue(genAttribute1);
+        IPropertyValue gen1Value2 = generation1.newAttributeValue(genAttribute2);
+        IPropertyValue gen2Value1 = generation2.newAttributeValue(genAttribute1);
+        IPropertyValue gen2Value2 = generation2.newAttributeValue(genAttribute2);
+
+        // Check for generation 1
+        List<IPropertyValue> propertyValuesGen1 = productCmpt.findPropertyValues(category, validFrom1, ipsProject);
+        assertEquals(productValue1, propertyValuesGen1.get(0));
+        assertEquals(productValue3, propertyValuesGen1.get(1));
+        assertEquals(gen1Value2, propertyValuesGen1.get(2));
+        assertEquals(3, propertyValuesGen1.size());
+
+        // Check for generation 2
+        List<IPropertyValue> propertyValuesGen2 = productCmpt.findPropertyValues(category, validFrom2, ipsProject);
+        assertEquals(productValue1, propertyValuesGen2.get(0));
+        assertEquals(productValue3, propertyValuesGen2.get(1));
+        assertEquals(gen2Value2, propertyValuesGen2.get(2));
+        assertEquals(3, propertyValuesGen2.size());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * The {@link IPropertyValue property values} are requested but the {@link IProductCmptType} the
+     * {@link IProductCmpt} is an instance of cannot be found.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * An empty list should be returned but no exception may be thrown.
+     */
+    @Test
+    public void testFindPropertyValues_ProductCmptTypeCannotBeFound() throws CoreException {
+        assertTrue(productCmpt.findPropertyValues(type.newCategory(), new GregorianCalendar(), ipsProject).isEmpty());
+    }
+
+    /**
+     * 
+     * <strong>Scenario:</strong><br>
+     * The {@link IPropertyValue property values} are requested but no
+     * {@link IProductCmptGeneration} exists for the indicated effective date.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * Only the {@link IPropertyValue property values} belonging to the {@link IProductCmpt} itself
+     * should be returned.
+     */
+    @Test
+    public void testFindPropertyValues_NoGenerationWithTheIndicatedEffectiveDate() throws CoreException {
+        IProductCmptCategory category = type.newCategory("myCategory");
+        IProductCmptTypeAttribute productAttribute = type.newProductCmptTypeAttribute("productAttribute");
+        productAttribute.setCategory(category.getName());
+
+        IProductCmpt productCmpt = newProductCmpt(type, "MyProduct");
+        IPropertyValue productValue = productCmpt.newPropertyValue(productAttribute);
+
+        List<IPropertyValue> propertyValues = productCmpt.findPropertyValues(category,
+                new GregorianCalendar(2070, 1, 1), ipsProject);
+        assertEquals(productValue, propertyValues.get(0));
+        assertEquals(1, propertyValues.size());
     }
 
     @Test
@@ -299,127 +390,6 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertTrue(productCmpt.containsFormulaTest());
     }
 
-    @Test
-    public void testDependsOn() throws Exception {
-        // TODO v2 - fix test
-        // IPolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "A", "AConfigType");
-        // IPolicyCmptType b = newPolicyAndProductCmptType(ipsProject, "B", "BConfigType");
-        // IRelation relation = a.newRelation();
-        // relation.setTarget(b.getQualifiedName());
-        //
-        // IPolicyCmptType c = newPolicyAndProductCmptType(ipsProject, "C", "Config");
-        // c.setSupertype(a.getQualifiedName());
-        //
-        // IPolicyCmptType d = newPolicyCmptType(root, "D");
-        // relation = c.newRelation();
-        // relation.setTargetRoleSingular("relationD");
-        // relation.setTarget(d.getQualifiedName());
-        //
-        // IProductCmpt productCmptC = newProductCmpt(c.findProductCmptType(ipsProject),
-        // "productC");
-        // QualifiedNameType[] dependsOn = productCmptC.dependsOn();
-        // List dependsOnAsList = CollectionUtil.toArrayList(dependsOn);
-        // assertTrue(dependsOnAsList.contains(c.getQualifiedNameType()));
-        // assertTrue(dependsOnAsList.contains(a.getQualifiedNameType()));
-        // assertTrue(dependsOnAsList.contains(d.getQualifiedNameType()));
-        //
-        // a.getRelations()[0].setProductRelevant(false);
-        // c.getRelations()[0].setProductRelevant(false);
-        // dependsOn = productCmptC.dependsOn();
-        // dependsOnAsList = CollectionUtil.toArrayList(dependsOn);
-        // dependsOnAsList.contains(a.getQualifiedNameType());
-        // dependsOnAsList.contains(c.getQualifiedNameType());
-        // assertEquals(2, dependsOn.length);
-        //
-        // IProductCmpt productCmptTmp = (IProductCmpt)newIpsObject(root,
-        // IpsObjectType.PRODUCT_CMPT, "deckung");
-        // dependsOn = productCmptTmp.dependsOn();
-        // assertEquals(0, dependsOn.length);
-        //
-        // // test dependency to product cmpts in all generations
-        // IProductCmpt productCmptD = (IProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT,
-        // "productD");
-        // productCmptD.setPolicyCmptType(d.getQualifiedName());
-        // IProductCmpt productCmptD2 = (IProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT,
-        // "productD2");
-        // productCmptD2.setPolicyCmptType(d.getQualifiedName());
-        // c.getRelations()[0].setProductRelevant(true);
-        //
-        // // generation1
-        // IProductCmptGeneration generation1 = (IProductCmptGeneration)
-        // productCmptC.newGeneration();
-        // generation1.setValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
-        //
-        // IProductCmptRelation productCmptRelation = generation1.newRelation("relationD");
-        // productCmptRelation.setTarget(productCmptD.getQualifiedName());
-        // // generation2
-        // IProductCmptGeneration generation2 = (IProductCmptGeneration)
-        // productCmptC.newGeneration(new GregorianCalendar(1990, 1, 1));
-        // productCmptRelation = generation2.newRelation("relationD");
-        // productCmptRelation.setTarget(productCmptD2.getQualifiedName());
-        //
-        // dependsOnAsList = CollectionUtil.toArrayList(productCmptC.dependsOn());
-        // assertEquals(5, dependsOnAsList.size());
-        // assertTrue(dependsOnAsList.contains(c.getQualifiedNameType()));
-        // assertTrue(dependsOnAsList.contains(a.getQualifiedNameType()));
-        // assertTrue(dependsOnAsList.contains(d.getQualifiedNameType()));
-        // assertTrue(dependsOnAsList.contains(productCmptD.getQualifiedNameType()));
-        // assertTrue(dependsOnAsList.contains(productCmptD2.getQualifiedNameType()));
-        //
-        // // test dependency to table content usage
-        // ITableContents tableContents1 = (ITableContents)newIpsObject(root,
-        // IpsObjectType.TABLE_CONTENTS, "table1");
-        // ITableContents tableContents2 = (ITableContents)newIpsObject(root,
-        // IpsObjectType.TABLE_CONTENTS, "table2");
-        // generation1.newTableContentUsage().setTableContentName(tableContents1.getQualifiedName());
-        //
-        // dependsOnAsList = CollectionUtil.toArrayList(productCmptC.dependsOn());
-        // assertEquals(6, dependsOnAsList.size());
-        // assertTrue(dependsOnAsList.contains(tableContents1.getQualifiedNameType()));
-        //
-        // generation2.newTableContentUsage().setTableContentName(tableContents2.getQualifiedName());
-        //
-        // dependsOnAsList = CollectionUtil.toArrayList(productCmptC.dependsOn());
-        // assertEquals(7, dependsOnAsList.size());
-        // assertTrue(dependsOnAsList.contains(tableContents2.getQualifiedNameType()));
-    }
-
-    @Test
-    public void testDependsOnWithFormula() {
-        // TODO v2 - fix test
-        // IPolicyCmptType a = newPolicyCmptType(root, "A");
-        // IPolicyCmptType b = newPolicyCmptType(root, "B");
-        // IPolicyCmptType c = newPolicyCmptType(root, "C");
-        // IAttribute attrA = a.newAttribute();
-        // attrA.setName("attrA");
-        // attrA.setDatatype(Datatype.STRING.getQualifiedName());
-        // attrA.setProductRelevant(true);
-        // attrA.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-        // Parameter[] parameter = new Parameter[2];
-        // parameter[0] = new Parameter(0, "paraB", b.getQualifiedName());
-        // parameter[1] = new Parameter(1, "paraC", c.getQualifiedName());
-        // attrA.setFormulaParameters(parameter);
-        // IProductCmpt productA = newProductCmpt(root, "productA");
-        // productA.setPolicyCmptType(a.getQualifiedName());
-        // IProductCmptGeneration genProductA = (IProductCmptGeneration)productA.newGeneration();
-        // IConfigElement configElAttrA = genProductA.newConfigElement();
-        // configElAttrA.setPcTypeAttribute(attrA.getName());
-        // configElAttrA.setType(ConfigElementType.FORMULA);
-        // List dependsOnList = Arrays.asList(productA.dependsOn());
-        //
-        // assertTrue(dependsOnList.contains(new QualifiedNameType(a.getQualifiedName(),
-        // a.getIpsObjectType())));
-        // assertTrue(dependsOnList.contains(new QualifiedNameType(b.getQualifiedName(),
-        // b.getIpsObjectType())));
-        // assertTrue(dependsOnList.contains(new QualifiedNameType(c.getQualifiedName(),
-        // b.getIpsObjectType())));
-    }
-
-    /**
-     * Test method for
-     * {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#containsDifferenceToModel(IIpsProject)}
-     * .
-     */
     @Test
     public void testContainsDifferenceToModel() throws CoreException {
         PolicyCmptType testType = newPolicyAndProductCmptType(ipsProject, "TestPolicyType", "TestProductType");
@@ -651,6 +621,14 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt.newPropertyValue(attr);
         assertNotNull(productCmpt.getAttributeValue("TypeAttr1"));
         assertNull(productCmpt.getAttributeValue("NonExistentAttr"));
+    }
+
+    @Test
+    public void testHasPropertyValue() {
+        assertFalse(productCmpt.hasPropertyValue(attr));
+
+        productCmpt.newPropertyValue(attr);
+        assertTrue(productCmpt.hasPropertyValue(attr));
     }
 
     @Test

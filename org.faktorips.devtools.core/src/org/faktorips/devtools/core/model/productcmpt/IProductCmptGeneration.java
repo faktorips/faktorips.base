@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
 public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyValueContainer {
 
@@ -323,16 +322,5 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      * an {@link IValidationRule} is set.
      */
     public IValidationRuleConfig newValidationRuleConfig(IValidationRule ruleToBeConfigured);
-
-    /**
-     * Returns a list containing the {@link IPropertyValue property values} of this
-     * {@link IProductCmptGeneration product component generation} and it's parent
-     * {@link IProductCmpt product component} that match the provided {@link IProductCmptProperty
-     * product component properties}.
-     * 
-     * @param properties the {@link IProductCmptProperty product component properties} to retrieve
-     *            {@link IPropertyValue property values} for
-     */
-    public List<IPropertyValue> getPropertyValuesIncludeProductCmpt(List<IProductCmptProperty> properties);
 
 }

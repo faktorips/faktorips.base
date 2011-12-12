@@ -52,6 +52,7 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTy
 import org.faktorips.devtools.core.model.productcmpt.ProductCmptValidations;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -318,6 +319,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
+    public boolean hasPropertyValue(IProductCmptProperty property) {
+        return getPropertyValue(property) != null;
+    }
+
+    @Override
     public IPropertyValue getPropertyValue(String propertyName) {
         return propertyValueCollection.getPropertyValue(propertyName);
     }
@@ -436,6 +442,34 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             generations.add((IProductCmptGeneration)ipsObjectGeneration);
         }
         return generations;
+    }
+
+    @Override
+    public IProductCmptGeneration getGenerationByEffectiveDate(GregorianCalendar date) {
+        return (IProductCmptGeneration)super.getGenerationByEffectiveDate(date);
+    }
+
+    @Override
+    public List<IPropertyValue> findPropertyValues(IProductCmptCategory category,
+            GregorianCalendar effectiveDate,
+            IIpsProject ipsProject) throws CoreException {
+
+        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
+
+        IProductCmptType contextType = findProductCmptType(ipsProject);
+        if (contextType == null) {
+            return propertyValues;
+        }
+
+        IProductCmptGeneration generation = getGenerationByEffectiveDate(effectiveDate);
+        for (IProductCmptProperty property : category.findProductCmptProperties(contextType, true, ipsProject)) {
+            if (hasPropertyValue(property)) {
+                propertyValues.add(getPropertyValue(property));
+            } else if (generation != null && generation.hasPropertyValue(property)) {
+                propertyValues.add(generation.getPropertyValue(property));
+            }
+        }
+        return propertyValues;
     }
 
 }

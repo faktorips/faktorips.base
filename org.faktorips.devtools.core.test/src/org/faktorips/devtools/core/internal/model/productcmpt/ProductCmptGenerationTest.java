@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -52,7 +51,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -127,13 +125,11 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetPropertyValue() {
-        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
-        attribute.setName("a1");
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute("a1");
         ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
         structureUsage.setRoleName("RateTable");
         IProductCmptTypeMethod signature = productCmptType.newFormulaSignature("calculation");
-        IPolicyCmptTypeAttribute policyAttr = policyCmptType.newPolicyCmptTypeAttribute();
-        policyAttr.setName("policyAttribute");
+        IPolicyCmptTypeAttribute policyAttr = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
         policyAttr.setProductRelevant(true);
 
         IAttributeValue value = generation.newAttributeValue();
@@ -149,6 +145,16 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertEquals(formula, generation.getPropertyValue(signature));
         assertEquals(contentUsage, generation.getPropertyValue(structureUsage));
         assertEquals(element, generation.getPropertyValue(policyAttr));
+    }
+
+    @Test
+    public void testHasPropertyValue() {
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute("productAttribute");
+
+        assertFalse(generation.hasPropertyValue(attribute));
+
+        generation.newAttributeValue(attribute);
+        assertTrue(generation.hasPropertyValue(attribute));
     }
 
     @Test
@@ -650,27 +656,6 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertNotNull(generation.getValidationRuleConfig("ruleThree"));
         assertNull(generation.getValidationRuleConfig("nonExistingRule"));
         assertNull(generation.getValidationRuleConfig(null));
-    }
-
-    @Test
-    public void testGetPropertyValuesIncludeProductCmpt() {
-        IProductCmptTypeAttribute productAttribute = productCmptType.newProductCmptTypeAttribute("productAttribute");
-        productAttribute.setChangingOverTime(false);
-        IPropertyValue productValue = productCmpt.newPropertyValue(productAttribute);
-
-        IProductCmptTypeAttribute genAttribute1 = productCmptType.newProductCmptTypeAttribute("g1");
-        IProductCmptTypeAttribute genAttribute2 = productCmptType.newProductCmptTypeAttribute("g2");
-        IPropertyValue genValue1 = generation.newAttributeValue(genAttribute1);
-        generation.newAttributeValue(genAttribute2);
-
-        List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>(3);
-        properties.add(productAttribute);
-        properties.add(genAttribute1);
-        List<IPropertyValue> propertyValues = generation.getPropertyValuesIncludeProductCmpt(properties);
-
-        assertEquals(productValue, propertyValues.get(0));
-        assertEquals(genValue1, propertyValues.get(1));
-        assertEquals(2, propertyValues.size());
     }
 
 }
