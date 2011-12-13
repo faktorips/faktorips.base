@@ -218,6 +218,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private List<IIpsDropAdapterProvider> productCmptDnDHandler;
 
+    private boolean openEditorAllowed = true;
+
     /**
      * This method is for test purposes only.
      */
@@ -499,6 +501,19 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
+     * Controls whether it is allowed to open an editor using this plugin or not. In some cases, for
+     * example a fixed perspective only showing views, you don't want to open any editor.
+     * <p>
+     * Note: This method only controls the openEditor-Methods of this plugin!
+     * 
+     * @param openEditorAllowed {@code true} to allow editors to be opened, {@code false} not to
+     *            open any editors.
+     */
+    public void setOpenEditorAllowed(boolean openEditorAllowed) {
+        this.openEditorAllowed = openEditorAllowed;
+    }
+
+    /**
      * Opens the given IpsObject in its editor.<br>
      * Returns the editor part of the opened editor. Returns <code>null</code> if no editor was
      * opened.
@@ -516,7 +531,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * opened.
      */
     public IEditorPart openEditor(IIpsSrcFile srcFile) {
-        if (srcFile == null) {
+        if (srcFile == null || !openEditorAllowed) {
             return null;
         }
         if (srcFile instanceof ArchiveIpsSrcFile) {
@@ -554,7 +569,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * @see IDE#openEditor(org.eclipse.ui.IWorkbenchPage, org.eclipse.core.resources.IFile)
      */
     public IEditorPart openEditor(final IFile fileToEdit) {
-        if (fileToEdit == null) {
+        if (fileToEdit == null || !openEditorAllowed) {
             return null;
         }
         RunnableFuture<IEditorPart> runnable = new FutureTask<IEditorPart>(new Callable<IEditorPart>() {
@@ -602,6 +617,10 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * opened.
      */
     public IEditorPart openEditor(IFileEditorInput editorInput) {
+        if (!openEditorAllowed) {
+            return null;
+        }
+
         try {
             IFile file = editorInput.getFile();
             IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
@@ -646,6 +665,10 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * editor.
      */
     private IEditorPart openWithDefaultIpsSrcTextEditor(IFile fileToEdit) throws CoreException {
+        if (!openEditorAllowed) {
+            return null;
+        }
+
         String defaultContentTypeOfIpsSrcFilesId = "org.faktorips.devtools.core.ipsSrcFile"; //$NON-NLS-1$
         IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
         IFileEditorInput editorInput = new FileEditorInput(fileToEdit);

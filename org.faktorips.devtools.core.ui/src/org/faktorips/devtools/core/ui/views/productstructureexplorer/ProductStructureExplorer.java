@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Set;
@@ -37,6 +36,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -911,42 +911,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             return;
         }
 
-        final List<IProductCmptReference> refs = getReferencesFor(toBeSelected);
-
-        IStructuredSelection selection = new IStructuredSelection() {
-            @Override
-            public boolean isEmpty() {
-                return refs.isEmpty();
-            }
-
-            @Override
-            public List<IProductCmptReference> toList() {
-                return refs;
-            }
-
-            @Override
-            public Object[] toArray() {
-                return refs.toArray();
-            }
-
-            @Override
-            public int size() {
-                return refs.size();
-            }
-
-            @Override
-            public Iterator<IProductCmptReference> iterator() {
-                return refs.iterator();
-            }
-
-            @Override
-            public Object getFirstElement() {
-                if (size() > 0) {
-                    return refs.get(0);
-                }
-                return null;
-            }
-        };
+        List<IProductCmptReference> refs = getReferencesFor(toBeSelected);
+        IStructuredSelection selection = new StructuredSelection(refs);
 
         for (ISelectionChangedListener listener : externalSelectionChangedListener) {
             treeViewer.removeSelectionChangedListener(listener);
