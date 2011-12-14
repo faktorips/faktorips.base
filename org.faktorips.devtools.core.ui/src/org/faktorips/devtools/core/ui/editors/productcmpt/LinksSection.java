@@ -16,30 +16,24 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -48,25 +42,22 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.editors.ISelectionProviderActivation;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
 import org.faktorips.devtools.core.ui.editors.productcmpt.LinkSectionDropListener.MoveLinkDragListener;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
@@ -110,8 +101,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      * Listener to update the cardinality-pane on selection changes.
      */
     private SelectionChangedListener selectionChangedListener;
-
-    private OpenReferencedProductCmptInEditorAction openAction;
 
     private LinkSectionDropListener dropListener;
 
@@ -192,51 +181,11 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 
             addFocusControl(treeViewer.getTree());
             registerDoubleClickListener();
-            registerOpenLinkListener();
             ModelViewerSynchronizer synchronizer = new ModelViewerSynchronizer(treeViewer);
             synchronizer.setWidget(client);
             IpsPlugin.getDefault().getIpsModel().addChangeListener(synchronizer);
         }
         toolkit.getFormToolkit().paintBordersFor(relationRootPane);
-    }
-
-    /**
-     * If mouse down and the CTRL key is pressed then the selected object will be opened in a new
-     * edior
-     */
-    private void registerOpenLinkListener() {
-        MouseAdapter adapter = new MouseAdapter() {
-            @Override
-            public void mouseDown(MouseEvent e) {
-                // the following conditions must be fit fulfilled to open
-                // the item in a new editor:
-                // 1. ctrl must be pressed
-                // 2. only one item is selected
-                // 3. the current selected item is the item under the mouse cursor
-                // because otherwise if two items are selected and an item will be deselected using
-                // ctrl
-                // the other (previous) selected item will be opened
-                if ((e.stateMask & SWT.CTRL) != 0) {
-                    ITreeSelection selection = (ITreeSelection)treeViewer.getSelection();
-                    if (selection.size() == 1) {
-                        Object firstElement = selection.getFirstElement();
-                        TreeItem item = treeViewer.getTree().getItem(new Point(e.x, e.y));
-                        if (item == null) {
-                            return;
-                        }
-                        if (firstElement.equals(item.getData())) {
-                            openLink();
-                        }
-                    }
-                }
-            }
-
-        };
-        treeViewer.getTree().addMouseListener(adapter);
-    }
-
-    private void openLink() {
-        openAction.run();
     }
 
     /**
@@ -246,9 +195,18 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
             @Override
             public void doubleClick(DoubleClickEvent event) {
-                openLink();
+                TypedSelection<IProductCmptLink> typedSelection = new TypedSelection<IProductCmptLink>(
+                        IProductCmptLink.class, event.getSelection());
+                if (typedSelection.isValid()) {
+                    openLink(typedSelection.getFirstElement());
+                }
             }
         });
+    }
+
+    private void openLink(IProductCmptLink link) {
+        IFile file = (IFile)link.getAdapter(IFile.class);
+        IpsUIPlugin.getDefault().openEditor(file);
     }
 
     /**
@@ -256,23 +214,13 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      */
     private void buildContextMenu() {
         MenuManager menuManager = new MenuManager();
-        menuManager.setRemoveAllWhenShown(false);
 
-        menuManager.add(new Separator("open")); //$NON-NLS-1$
-        openAction = new OpenReferencedProductCmptInEditorAction();
-        menuManager.add(openAction);
+        site.registerContextMenu(ID, menuManager, treeViewer);
 
-        menuManager.add(new Separator("edit")); //$NON-NLS-1$
-        menuManager.add(new NewProductCmptRelationAction(site.getShell(), treeViewer, this));
-
-        menuManager.add(ActionFactory.DELETE.create(site.getWorkbenchWindow()));
-
-        menuManager.add(new OpenProductCmptRelationDialogAction());
-
-        menuManager.add(new Separator());
-        menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-        menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end")); //$NON-NLS-1$
-        menuManager.add(new Separator());
+        // We do not want to have additions in this menu!
+        MenuCleaner menuCleaner = new MenuCleaner();
+        menuCleaner.addFilteredMenuGroup(IWorkbenchActionConstants.MB_ADDITIONS);
+        menuManager.addMenuListener(menuCleaner);
 
         treePopup = menuManager.createContextMenu(treeViewer.getControl());
 
@@ -345,42 +293,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     }
 
     /**
-     * Returns all targets for all relations defined with the given product component relation type.
-     * 
-     * @param relationType The type of the relations to find.
-     */
-    public IProductCmpt[] getRelationTargetsFor(String relationType) {
-        IProductCmptLink[] relations = generation.getLinks(relationType);
-        IProductCmpt[] targets = new IProductCmpt[relations.length];
-        for (int i = 0; i < relations.length; i++) {
-            try {
-                targets[i] = (IProductCmpt)generation.getIpsProject().findIpsObject(IpsObjectType.PRODUCT_CMPT,
-                        relations[i].getTarget());
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-        }
-        return targets;
-    }
-
-    private void openLinkEditDialog(IProductCmptLink link) {
-        try {
-            IIpsSrcFile file = link.getIpsObject().getIpsSrcFile();
-            IIpsSrcFileMemento memento = file.newMemento();
-            LinkEditDialog dialog = new LinkEditDialog(link, getShell());
-            dialog.setDataChangeable(isDataChangeable());
-            int rc = dialog.open();
-            if (rc == Window.CANCEL) {
-                file.setMemento(memento);
-            } else if (rc == Window.OK) {
-                refresh();
-            }
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
-    }
-
-    /**
      * To get access to the informations which depend on the selections that can be made in this
      * section, only some parts can be disabled, other parts need special handling.
      */
@@ -397,65 +309,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             treeViewer.getTree().setMenu(emptyMenu);
         }
         cardinalityPanel.setEnabled(enabled);
-
-        // disabele IPSDeleteAction
-        IAction delAction = site.getActionBars().getGlobalActionHandler(ActionFactory.DELETE.getId());
-        if (delAction != null) {
-            delAction.setEnabled(enabled);
-        }
-    }
-
-    class OpenProductCmptRelationDialogAction extends IpsAction {
-
-        public OpenProductCmptRelationDialogAction() {
-            super(treeViewer);
-            setText(Messages.RelationsSection_ContextMenu_Properties);
-        }
-
-        @Override
-        public void run(IStructuredSelection selection) {
-            Object selected = selection.getFirstElement();
-            if (selected instanceof IProductCmptLink) {
-                IProductCmptLink relation = (IProductCmptLink)selected;
-                openLinkEditDialog(relation);
-            }
-        }
-
-        @Override
-        protected boolean computeEnabledProperty(IStructuredSelection selection) {
-            Object selected = selection.getFirstElement();
-            return (selected instanceof IProductCmptLink);
-        }
-
-    }
-
-    class OpenReferencedProductCmptInEditorAction extends IpsAction {
-
-        public OpenReferencedProductCmptInEditorAction() {
-            super(treeViewer);
-            setText(Messages.RelationsSection_ContextMenu_OpenInNewEditor);
-        }
-
-        @Override
-        protected boolean computeEnabledProperty(IStructuredSelection selection) {
-            Object selected = selection.getFirstElement();
-            return (selected instanceof IProductCmptLink);
-        }
-
-        @Override
-        public void run(IStructuredSelection selection) {
-            Object selected = selection.getFirstElement();
-            if (selected instanceof IProductCmptLink) {
-                IProductCmptLink relation = (IProductCmptLink)selected;
-                try {
-                    IProductCmpt target = relation.findTarget(generation.getIpsProject());
-                    IpsUIPlugin.getDefault().openEditor(target);
-                } catch (Exception e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                }
-            }
-        }
-
     }
 
     /**

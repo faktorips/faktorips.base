@@ -21,14 +21,18 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Test;
@@ -86,7 +90,7 @@ public class NewProdutCmptValidatorTest {
         assertNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_INVALID_SELECTED_TYPE));
     }
 
-    IIpsProject mockTypeSelection(NewProductCmptPMO pmo) {
+    private IIpsProject mockTypeSelection(NewProductCmptPMO pmo) {
         IProductCmptType baseType = mock(IProductCmptType.class);
         when(pmo.getSelectedBaseType()).thenReturn(baseType);
         IIpsProject ipsProject = mock(IIpsProject.class);
@@ -258,6 +262,45 @@ public class NewProdutCmptValidatorTest {
         when(namingStrategy.getKindId("anyFullName")).thenThrow(new IllegalArgumentException());
         msgList = newProdutCmptValidator.validateProductCmptPage();
         assertNotNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_INVALID_FULL_NAME));
+    }
+
+    @Test
+    public void testValidateProductCmptPage_validateAddToType() throws CoreException {
+        NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
+        NewProdutCmptValidator newProdutCmptValidator = new NewProdutCmptValidator(pmo);
+        IIpsProject ipsProject = mockTypeSelection(pmo);
+
+        IProductCmptType selectedType = mock(IProductCmptType.class);
+        when(pmo.getSelectedType()).thenReturn(selectedType);
+
+        MessageList msgList = newProdutCmptValidator.validateAddToType();
+        assertNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_INVALID_SELECTED_TYPE));
+
+        IProductCmptTypeAssociation addToAssociation = mock(IProductCmptTypeAssociation.class);
+        when(pmo.getAddToAssociation()).thenReturn(addToAssociation);
+
+        IProductCmptGeneration addToProductCmptGen = mock(IProductCmptGeneration.class);
+        IProductCmpt addToProductCmpt = mock(IProductCmpt.class);
+        when(pmo.getAddToProductCmptGeneration()).thenReturn(addToProductCmptGen);
+        when(addToProductCmptGen.getProductCmpt()).thenReturn(addToProductCmpt);
+
+        msgList = newProdutCmptValidator.validateAddToType();
+        assertNotNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_INVALID_SELECTED_TYPE));
+
+        IProductCmptType targetType = mock(IProductCmptType.class);
+        when(addToAssociation.findTargetProductCmptType(ipsProject)).thenReturn(targetType);
+
+        msgList = newProdutCmptValidator.validateAddToType();
+        assertNotNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_INVALID_SELECTED_TYPE));
+
+        when(selectedType.isSubtypeOrSameType(targetType, pmo.getIpsProject())).thenReturn(true);
+
+        msgList = newProdutCmptValidator.validateAddToType();
+        assertNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_INVALID_SELECTED_TYPE));
+
+        when(selectedType.isSubtypeOrSameType(targetType, pmo.getIpsProject())).thenReturn(false);
+        msgList = newProdutCmptValidator.validateAddToType();
+        assertNotNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_INVALID_SELECTED_TYPE));
     }
 
     @Test

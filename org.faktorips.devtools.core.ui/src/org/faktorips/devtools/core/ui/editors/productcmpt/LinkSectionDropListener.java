@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsFileTransferViewerDropAdapter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LinkDropListener;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 
 /**
  * Drop Listener for the link section. This drop listener is able to move elements within the link
@@ -77,6 +78,10 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     @Override
     public boolean validateDrop(Object target, int operation, TransferData transferType) {
+        IpsObjectEditor activeIpsObjectEditor = IpsUIPlugin.getDefault().getActiveIpsObjectEditor();
+        if (activeIpsObjectEditor == null || !activeIpsObjectEditor.isDataChangeable()) {
+            return false;
+        }
         if (target == null) {
             return false;
         }
@@ -231,10 +236,6 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
     }
 
     private boolean canCreateLinks(List<IProductCmpt> draggedCmpts, Object target) throws CoreException {
-        IpsUIPlugin.getDefault();
-        if (!IpsUIPlugin.isEditable(generation.getIpsSrcFile())) {
-            return false;
-        }
         // should only return true if all dragged cmpts are valid
         IAssociation association = getAssociation(target);
         boolean result = false;

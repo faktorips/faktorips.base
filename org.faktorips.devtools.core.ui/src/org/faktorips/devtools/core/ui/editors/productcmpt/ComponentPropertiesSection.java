@@ -238,7 +238,7 @@ public class ComponentPropertiesSection extends IpsSection {
         if (changeable) {
             productCmptTypeControl.setButtonEnabled(true);
         } else {
-            productCmptTypeControl.setButtonEnabled(editor.couldDateBeChangedIfProductCmptTypeWasntMissing());
+            productCmptTypeControl.setButtonEnabled(IpsUIPlugin.isEditable(product.getIpsSrcFile()));
         }
     }
 

@@ -16,13 +16,17 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -51,6 +55,8 @@ public class NewProdutCmptValidator {
     public static final String MSG_SRC_FILE_EXISTS = MSGCODE_PREFIX + "sourceFileExists";
 
     public static final String MSG_INVALID_FULL_NAME = MSGCODE_PREFIX + "invalidFullName";
+
+    public static final String MSG_INVALID_ADD_TO_GENERATION = MSGCODE_PREFIX + "addToGeneration";
 
     private final NewProductCmptPMO pmo;
 
@@ -116,7 +122,7 @@ public class NewProdutCmptValidator {
 
         if (result.isEmpty()) {
             result.add(additionalValidateProductCmptName());
-            result.add(validateAddTo());
+            result.add(validateAddToGeneration());
         }
 
         return result;
@@ -134,25 +140,6 @@ public class NewProdutCmptValidator {
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
-        }
-        return result;
-    }
-
-    MessageList validateAddTo() {
-        MessageList result = new MessageList();
-        if (pmo.getAddToProductCmptGeneration() != null && pmo.getAddToProductCmptGeneration() != null) {
-            IProductCmptTypeAssociation addToAssociation = pmo.getAddToAssociation();
-            try {
-                IProductCmptType targetProductCmptType = addToAssociation
-                        .findTargetProductCmptType(pmo.getIpsProject());
-                if (!pmo.getSelectedType().isSubtypeOrSameType(targetProductCmptType, pmo.getIpsProject())) {
-                    result.add(new Message(MSG_INVALID_SELECTED_TYPE, NLS.bind(
-                            "The selected type cannot be added to the association {0} ob product component type {1}.",
-                            addToAssociation.getName(), pmo.getAddToProductCmptGeneration().getName()), Message.ERROR));
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
         }
         return result;
     }
@@ -181,6 +168,56 @@ public class NewProdutCmptValidator {
         MessageList result = validateTypeSelection();
         result.add(validateProductCmptPage());
         result.add(validateFolderAndPackage());
+        result.add(validateAddToGeneration());
+        return result;
+    }
+
+    public MessageList validateAddToGeneration() {
+        MessageList messageList = new MessageList();
+        messageList.add(validateAddToType());
+        IProductCmptGeneration generation = pmo.getAddToProductCmptGeneration();
+        if (generation == null) {
+            return messageList;
+        }
+        IIpsSrcFile ipsSrcFile = generation.getIpsSrcFile();
+        if (!IpsUIPlugin.isEditable(ipsSrcFile)) {
+            messageList.add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
+                    "The new product component would not be added becaus you cannot edit {0}.", ipsSrcFile.getName()),
+                    Message.WARNING));
+        }
+        IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
+        if (generation.isValidFromInPast() && !ipsPreferences.canEditRecentGeneration()) {
+            messageList.add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
+                    "Cannot add the new product component to {0} beacause you cannot edit generations in the past.",
+                    generation.getProductCmpt().getName()), Message.WARNING));
+        }
+        if (!generation.getValidFrom().equals(ipsPreferences.getWorkingDate())) {
+            messageList.add(new Message(MSG_INVALID_ADD_TO_GENERATION,
+                    "You can only add links to the active generation, please select correct working date.",
+                    Message.WARNING));
+        }
+        return messageList;
+    }
+
+    MessageList validateAddToType() {
+        MessageList result = new MessageList();
+        if (pmo.getAddToProductCmptGeneration() != null && pmo.getAddToProductCmptGeneration() != null) {
+            IProductCmptTypeAssociation addToAssociation = pmo.getAddToAssociation();
+            try {
+                IProductCmptType targetProductCmptType = addToAssociation
+                        .findTargetProductCmptType(pmo.getIpsProject());
+                if (!pmo.getSelectedType().isSubtypeOrSameType(targetProductCmptType, pmo.getIpsProject())) {
+                    result.add(new Message(
+                            MSG_INVALID_SELECTED_TYPE,
+                            NLS.bind(
+                                    "The selected type cannot be added to the association {0} of product component {1}.",
+                                    addToAssociation.getName(), pmo.getAddToProductCmptGeneration().getProductCmpt()
+                                            .getName()), Message.WARNING));
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
         return result;
     }
 

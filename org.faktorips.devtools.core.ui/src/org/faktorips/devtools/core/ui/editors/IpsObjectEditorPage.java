@@ -240,7 +240,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * @see #computeDataChangeableState()
      */
     public void updateDataChangeableState() {
-        if (getIpsObjectEditor().isDataChangeable() == null || !getIpsObjectEditor().isDataChangeable().booleanValue()) {
+        if (!getIpsObjectEditor().isDataChangeable()) {
             setDataChangeable(false);
         } else {
             setDataChangeable(computeDataChangeableState());

@@ -159,8 +159,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 
     private void checkMissingType() throws CoreException {
         // open the select template dialog if the template is missing and the data is changeable
-        if (getProductCmpt().findProductCmptType(getIpsProject()) == null
-                && couldDateBeChangedIfProductCmptTypeWasntMissing() && !IpsPlugin.getDefault().isTestMode()
+        if (getProductCmpt().findProductCmptType(getIpsProject()) == null && isDataChangeable()
+                && !IpsPlugin.getDefault().isTestMode()
                 && !getSettings().getBoolean(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE)) {
             String msg = NLS
                     .bind(Messages.ProductCmptEditor_msgTemplateNotFound, getProductCmpt().getProductCmptType());
@@ -271,7 +271,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 
     @Override
     protected boolean computeDataChangeableState() {
-        if (!couldDateBeChangedIfProductCmptTypeWasntMissing()) {
+        if (!super.computeDataChangeableState()) {
             return false;
         }
         try {
@@ -280,10 +280,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             IpsPlugin.log(e);
             return false;
         }
-    }
-
-    boolean couldDateBeChangedIfProductCmptTypeWasntMissing() {
-        return super.computeDataChangeableState();
     }
 
     /**

@@ -14,22 +14,24 @@
 package org.faktorips.devtools.core.ui.commands;
 
 import org.eclipse.core.expressions.PropertyTester;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 
-/**
- * This property tester is able to test an Object if it is a model object or not.
- * 
- * @author dirmeier
- */
-public class ModelObjectTester extends PropertyTester {
+public class IpsObjectEditorTester extends PropertyTester {
 
-    public ModelObjectTester() {
+    public static final String PROPERTY_EDITOR_EDITABLE = "isEditorEditable"; //$NON-NLS-1$
+
+    public IpsObjectEditorTester() {
         super();
     }
 
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-        return !((IIpsObject)receiver).getIpsObjectType().isProductDefinitionType();
+        IpsObjectEditor editor = (IpsObjectEditor)receiver;
+        if (PROPERTY_EDITOR_EDITABLE.equals(property)) {
+            return editor.isDataChangeable();
+        } else {
+            return false;
+        }
     }
 
 }

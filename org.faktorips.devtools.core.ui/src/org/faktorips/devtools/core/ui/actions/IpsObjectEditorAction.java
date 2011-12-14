@@ -34,7 +34,7 @@ public abstract class IpsObjectEditorAction extends IpsAction {
 
     @Override
     protected boolean computeEnabledProperty(IStructuredSelection selection) {
-        if (!editor.isDataChangeable().booleanValue()) {
+        if (!editor.isDataChangeable()) {
             return false;
         }
         if (!editor.getActiveIpsObjectEditorPage().isDataChangeable()) {

@@ -107,7 +107,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
     private boolean dirty = false;
 
-    private Boolean contentChangeable = null;
+    private boolean contentChangeable = false;
 
     /** The editor's ISelectionProvider */
     private SelectionProviderDispatcher selectionProviderDispatcher;
@@ -477,7 +477,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         // check to enable all controls,
         // note that this must be done before refresh the control states because
         // maybe a control are disabled by the controls own enable/disable logic
-        updateDataChangeableStateIfChangeable();
+        if (computeDataChangeableState()) {
+            updateDataChangeableState();
+        }
 
         // refresh the pages and control state
         IEditorPart editorPart = getActivePageInstance();
@@ -489,7 +491,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         // check to disable all controls,
         // note that this must be done after refresh the control states because
         // maybe a control will be enabled by the controls own enable/disable logic
-        updateDataChangeableStateIfNotChangeable();
+        if (!computeDataChangeableState()) {
+            updateDataChangeableState();
+        }
 
         if (TRACE) {
             logMethodFinished("refresh"); //$NON-NLS-1$
@@ -497,52 +501,16 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     /**
-     * Evaluates the new data changeable state and updates it, if it has changed and the new state
-     * is "changeable", if the new state is "not changeable" this method does nothing
-     */
-    private void updateDataChangeableStateIfChangeable() {
-        updateDataChangeableState(true);
-    }
-
-    /**
-     * Evaluates the new data changeable state and updates it, if it has changed and the new state
-     * is "not changeable", if the new state is "changeable" this method does nothing
-     */
-    private void updateDataChangeableStateIfNotChangeable() {
-        updateDataChangeableState(false);
-    }
-
-    /**
-     * Evaluates the new data changeable state and updates it, if it has changed.
+     * Evaluates the new data changeable state and updates it
      * 
-     * @param checkToEnable true if the state should be
      */
-    public void updateDataChangeableState(boolean checkToEnable) {
-        if (TRACE) {
-            logMethodStarted("updateDataChangeable"); //$NON-NLS-1$
-        }
-
+    public void updateDataChangeableState() {
         boolean newState = computeDataChangeableState();
-        if (checkToEnable != newState) {
-            if (TRACE) {
-                logMethodFinished("updateDataChangeable"); //$NON-NLS-1$
-            }
-            return;
-        }
-
-        if (TRACE) {
-            log("Next data changeable state=" + newState + ", oldState=" + isDataChangeable()); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-
         setDataChangeable(newState);
         IEditorPart editor = getActivePageInstance();
         if (editor instanceof IpsObjectEditorPage) {
             IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
             page.updateDataChangeableState();
-        }
-
-        if (TRACE) {
-            logMethodFinished("updateDataChangeable"); //$NON-NLS-1$
         }
     }
 
@@ -555,14 +523,23 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * Subclasses may override this method.
      */
     protected boolean computeDataChangeableState() {
-        return IpsUIPlugin.isEditable(ipsSrcFile);
+        return IpsUIPlugin.isEditable(ipsSrcFile) && isPageChangeable();
+    }
+
+    private boolean isPageChangeable() {
+        if (getActivePageInstance() instanceof IpsObjectEditorPage) {
+            IpsObjectEditorPage ipsPage = (IpsObjectEditorPage)getActivePageInstance();
+            return ipsPage.computeDataChangeableState();
+        } else {
+            return true;
+        }
     }
 
     /**
      * Returns <code>true</code> if the data shown in this editor is changeable by the user,
      * otherwise <code>false</code>.
      */
-    public final Boolean isDataChangeable() {
+    public final boolean isDataChangeable() {
         return contentChangeable;
     }
 
@@ -573,7 +550,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * {@link #computeDataChangeableState()}.
      */
     final protected void setDataChangeable(boolean changeable) {
-        contentChangeable = Boolean.valueOf(changeable);
+        contentChangeable = changeable;
         if (getIpsSrcFile() != null) {
             setTitleImage(errorTickupdater.getDecoratedImage());
         }
@@ -771,7 +748,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             logMethodStarted("checkForInconsistenciesToModel"); //$NON-NLS-1$
         }
 
-        if (isDataChangeable() == null || !isDataChangeable().booleanValue()) {
+        if (!isDataChangeable()) {
             if (TRACE) {
                 logMethodFinished("checkForInconsistenciesToModel - no need to check, content is read-only."); //$NON-NLS-1$
             }
@@ -1108,7 +1085,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
          */
         Image getDecoratedImage() {
             Image titleImage = IpsUIPlugin.getImageHandling().getImage(ipsObjectEditor.getIpsSrcFile(),
-                    ipsObjectEditor.isDataChangeable().booleanValue());
+                    ipsObjectEditor.isDataChangeable());
             return decorator.decorateImage(titleImage, ipsObjectEditor.getIpsSrcFile());
         }
 

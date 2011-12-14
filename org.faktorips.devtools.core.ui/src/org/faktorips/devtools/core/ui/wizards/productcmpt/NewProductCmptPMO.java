@@ -19,12 +19,9 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -351,41 +348,40 @@ public class NewProductCmptPMO extends PresentationModelObject {
         return runtimeId;
     }
 
-    public void initDefaults(IResource resource) {
-        IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
-        if (ipsElement instanceof IIpsPackageFragmentRoot) {
-            IIpsPackageFragmentRoot ipsPackageRoot = (IIpsPackageFragmentRoot)ipsElement;
-            setIpsProject(ipsPackageRoot.getIpsProject());
-            setPackageRoot(ipsPackageRoot);
-        }
-        if (ipsElement instanceof IIpsPackageFragment) {
-            IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
-            setPackageRoot(packageFragment.getRoot());
-            setIpsPackage(packageFragment);
-        }
-        if (ipsElement instanceof IIpsSrcFile) {
-            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
-            setIpsProject(ipsSrcFile.getIpsProject());
-            setPackageRoot(ipsSrcFile.getIpsPackageFragment().getRoot());
-            setIpsPackage(ipsSrcFile.getIpsPackageFragment());
-            if (ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
-                try {
-                    contextProductCmpt = (IProductCmpt)((IIpsSrcFile)ipsElement).getIpsObject();
-                    IProductCmptType cmptType = contextProductCmpt.findProductCmptType(contextProductCmpt
-                            .getIpsProject());
-                    if (cmptType != null) {
-                        initDefaultType(cmptType, contextProductCmpt.getIpsProject());
-                    }
-                    setKindId(contextProductCmpt.findProductCmptKind().getName());
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+    /**
+     * Setting the defaults for the new product component wizard.
+     * <p>
+     * The default package set the project, the package root and the package fragment. The default
+     * package should not be null, if it is null, the method does nothing. The default type may be
+     * null, if not null it is used to specify the base type as well as the current selected type,
+     * if it is not abstract. The default product component may also be null. It does not change the
+     * default type but is used to fill default kind id and version id.
+     * 
+     * @param defaultPackage Used for default project, package root and package fragment, should not
+     *            be null.
+     * @param defaultType The type to initialize the selected base type and selected concrete type
+     * @param defaultProductCmpt a product component to initialize the version id and kind id - does
+     *            not set the default type!
+     */
+    public void initDefaults(IIpsPackageFragment defaultPackage,
+            IProductCmptType defaultType,
+            IProductCmpt defaultProductCmpt) {
+        try {
+            if (defaultPackage == null) {
+                return;
             }
-        }
-        if (getPackageRoot() == null) {
-            IProject project = resource.getProject();
-            IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
-            setIpsProject(ipsProject);
+            if (contextProductCmpt != null) {
+                contextProductCmpt = defaultProductCmpt;
+                setKindId(contextProductCmpt.findProductCmptKind().getName());
+            }
+            setIpsProject(defaultPackage.getIpsProject());
+            setPackageRoot(defaultPackage.getRoot());
+            setIpsPackage(defaultPackage);
+            if (defaultType != null) {
+                initDefaultType(defaultType, defaultPackage.getIpsProject());
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
     }
 
@@ -420,6 +416,12 @@ public class NewProductCmptPMO extends PresentationModelObject {
      * <p>
      * The type of the new product component have to be compatible to the target type of the
      * {@link #getAddToAssociation()}
+     * <p>
+     * This method overwrites the selected base type with the target type of the given association.
+     * It uses exactly the target type of the association also it may not be in the list of
+     * available base type. With this behavior the list of selectable concrete types contains
+     * exactly the types that could be selected for this association. If the target type of the
+     * association is not abstract it is also used as default selected type.
      * 
      * @param addToProductCmptGeneration The product component you want to add the newly created
      *            product component to
@@ -431,7 +433,12 @@ public class NewProductCmptPMO extends PresentationModelObject {
         this.addToProductCmptGeneration = addToProductCmptGeneration;
         this.addToAssociation = addToAssociation;
         try {
-            setSelectedBaseType(addToAssociation.findTargetProductCmptType(ipsProject));
+            IProductCmptType targetProductCmptType = addToAssociation
+                    .findTargetProductCmptType(addToProductCmptGeneration.getIpsProject());
+            setSelectedBaseType(targetProductCmptType);
+            if (!targetProductCmptType.isAbstract()) {
+                setSelectedType(targetProductCmptType);
+            }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

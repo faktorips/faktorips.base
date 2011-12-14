@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -122,6 +123,50 @@ public class NewProductCmptPMOTest {
         assertTrue(pmo.getBaseTypes().size() == 2);
         assertTrue(pmo.getBaseTypes().contains(productCmptType2));
         assertTrue(pmo.getBaseTypes().contains(productCmptType3));
+    }
+
+    @Test
+    public void testUpdateTypeList() throws Exception {
+        NewProductCmptPMO pmo = new NewProductCmptPMO(null);
+
+        IIpsPackageFragmentRoot packageFragmentRoot = mockPackageFragmentRoot();
+        IIpsProject ipsProject = packageFragmentRoot.getIpsProject();
+        when(ipsProject.getName()).thenReturn(PROJECT_NAME);
+        when(ipsModel.getIpsProject(PROJECT_NAME)).thenReturn(ipsProject);
+
+        pmo.setIpsProject(ipsProject);
+
+        IProductCmptType baseType = mock(IProductCmptType.class);
+
+        ArrayList<IType> subTypes = new ArrayList<IType>();
+        when(baseType.findSubtypes(true, true, ipsProject)).thenReturn(subTypes);
+
+        subTypes.add(baseType);
+
+        // setting the base type updates the sub types list
+        pmo.setSelectedBaseType(baseType);
+        assertTrue(pmo.getSubtypes().contains(baseType));
+
+        when(baseType.isAbstract()).thenReturn(true);
+
+        pmo.setSelectedBaseType(baseType);
+        assertTrue(pmo.getSubtypes().isEmpty());
+
+        IProductCmptType subtype1 = mock(IProductCmptType.class);
+        IProductCmptType subtype2 = mock(IProductCmptType.class);
+        subTypes.add(subtype1);
+        subTypes.add(subtype2);
+
+        pmo.setSelectedBaseType(baseType);
+        assertEquals(2, pmo.getSubtypes().size());
+        assertTrue(pmo.getSubtypes().contains(subtype1));
+        assertTrue(pmo.getSubtypes().contains(subtype2));
+
+        when(subtype2.isAbstract()).thenReturn(true);
+
+        pmo.setSelectedBaseType(baseType);
+        assertEquals(1, pmo.getSubtypes().size());
+        assertTrue(pmo.getSubtypes().contains(subtype1));
     }
 
     @After

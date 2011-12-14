@@ -271,6 +271,24 @@
             id="org.faktorips.devtools.core.ui.category.refactoring"
             name="%RefactoringCommandCategory_name">
       </category>
+      <command
+            description="%newProductCmpt_description"
+            id="org.faktorips.devtools.core.ui.wizards.productcmpt.newProductCmpt"
+            name="%newProductCmpt_label">
+      </command>
+      <command
+            id="org.faktorips.devtools.core.ui.openEditor"
+            name="%openEditor">
+      </command>
+      <command
+            id="org.faktorips.devtools.core.ui.commands.openIpsPartDialog"
+            name="%openIpsPartProperty">
+      </command>
+      <command
+            defaultHandler="org.faktorips.devtools.core.ui.editors.productcmpt.AddProductCmptLinkCommand"
+            id="org.faktorips.devtools.core.ui.commands.AddProductCmptLink"
+            name="%NewProductCmptLinkCommand_name">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -1448,7 +1466,7 @@
                         value="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
                   </instanceof>
                   <test
-                        property="org.faktorips.devtools.core.ui.isDeletable">
+                        property="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester.isPartEditableInEditor">
                   </test>
                </iterate>
             </with>
@@ -1697,26 +1715,87 @@
          </enabledWhen>
       </handler>
       <handler
-            class="org.faktorips.devtools.core.ui.commands.OpenModelSearchPageHandler"
             commandId="org.faktorips.devtools.core.ui.search.model">
             <class class="org.faktorips.devtools.core.ui.commands.OpenModelSearchPageHandler">
             </class>
+      </handler>
+      <handler
+            commandId="org.faktorips.devtools.core.ui.wizards.productcmpt.newProductCmpt">
+         <class
+               class="org.faktorips.devtools.core.ui.wizards.productcmpt.AddNewProductCmptCommand">
+         </class>
+         <activeWhen>
+            <with
+                  variable="activeEditor">
+               <test
+                     property="org.faktorips.devtools.core.ui.commands.ipsObjectEditorTester.isEditorEditable">
+               </test>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            commandId="org.faktorips.devtools.core.ui.openEditor">
+         <class
+               class="org.faktorips.devtools.core.ui.commands.OpenEditorHandler"></class>
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="or">
+                  <adapt
+                        type="org.eclipse.core.resources.IFile">
+                  </adapt>
+               </iterate>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            commandId="org.faktorips.devtools.core.ui.commands.openIpsPartDialog">
+         <class
+               class="org.faktorips.devtools.core.ui.commands.OpenIpsObjectPartDialog">
+         </class>
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false">
+                  <instanceof
+                        value="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+                  </instanceof>
+               </iterate>
+            </with>
+         </activeWhen>
       </handler>
    </extension>
 
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
+         <propertyTester
+               class="org.faktorips.devtools.core.ui.commands.ModelObjectTester"
+               id="org.faktorips.devtools.core.ui.ModelObjectTester"
+               namespace="org.faktorips.devtools.core.ui.ModelObjectTester"
+               properties="isModelObject"
+               type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+         </propertyTester>
       <propertyTester
-     	 namespace="org.faktorips.devtools.core.ui"
-       id="org.faktorips.devtools.core.ui.commands.IpsObjectPartDeleteHandlerTester"
-       properties="isDeletable"
+     	 namespace="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester"
+       id="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester"
+       properties="isPartEditableInEditor"
        type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart"
-       class="org.faktorips.devtools.core.ui.commands.IpsObjectPartDeleteHandlerTester">
+       class="org.faktorips.devtools.core.ui.commands.IpsObjectPartTester">
      </propertyTester>
+      <propertyTester
+            class="org.faktorips.devtools.core.ui.commands.IpsObjectEditorTester"
+            id="org.faktorips.devtools.core.ui.commands.ipsObjectEditorTester"
+            namespace="org.faktorips.devtools.core.ui.commands.ipsObjectEditorTester"
+            properties="isEditorEditable"
+            type="org.faktorips.devtools.core.ui.editors.IpsObjectEditor">
+      </propertyTester>
    </extension>
    
       <extension
-         point="org.eclipse.ui.menus">
+            point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="menu:org.eclipse.search.menu?after=dialogGroup">
          <command
@@ -1889,6 +1968,71 @@
             </visibleWhen>
          </command>
       </menuContribution>
+      <menuContribution
+            locationURI="popup:org.faktorips.devtools.core.ui.editors.productcmpt.LinksSection">
+         <command
+               commandId="org.faktorips.devtools.core.ui.openEditor"
+               label="%openInNewEditor"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <separator
+               name="editSeparator"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.faktorips.devtools.core.ui.wizards.productcmpt.newProductCmpt"
+               style="push"
+               tooltip="%newProductCmpt_description">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="true"
+                        operator="and">
+                     <instanceof
+                           value="java.lang.String">
+                     </instanceof>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.faktorips.devtools.core.ui.commands.AddProductCmptLink"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate>
+                     <instanceof
+                           value="java.lang.String">
+                     </instanceof>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.eclipse.ui.edit.delete"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <separator
+               name="org.faktorips.devtools.core.ui.separatorProperties">
+         </separator>
+         <command
+               commandId="org.faktorips.devtools.core.ui.commands.openIpsPartDialog"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+      </menuContribution>
    </extension>
       <extension
             point="org.eclipse.ui.contexts">
@@ -1898,16 +2042,6 @@
                name="%org.faktorips.devtools.core.ui.views.modelExplorer Context"
                parentId="org.eclipse.ui.contexts.window">
          </context>
-      </extension>
-      <extension
-            point="org.eclipse.core.expressions.propertyTesters">
-         <propertyTester
-               class="org.faktorips.devtools.core.ui.commands.ModelObjectTester"
-               id="org.faktorips.devtools.core.ui.ModelObjectTester"
-               namespace="org.faktorips.devtools.core.ui.ModelObjectTester"
-               properties="isModelObject"
-               type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
-         </propertyTester>
       </extension>
       <extension
             point="org.faktorips.devtools.core.ui.valueDatatypeControlFactory">
