@@ -197,7 +197,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(Class adapterType) {
-        if (IResource.class.isAssignableFrom(adapterType) | ResourceMapping.class.isAssignableFrom(adapterType)) {
+        if (IResource.class.equals(adapterType) || ResourceMapping.class.isAssignableFrom(adapterType)) {
             /*
              * This prevents the CVSLightweightDecorator from displaying decorations for
              * ipsobjectparts in ModelExplorer and ProductExplorer.

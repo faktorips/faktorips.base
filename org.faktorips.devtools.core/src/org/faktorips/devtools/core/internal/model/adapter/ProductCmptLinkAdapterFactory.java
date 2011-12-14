@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.adapter;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -27,6 +28,9 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
  * {@link IFile}. This is necessary because in case of {@link IProductCmptLink} we do not want to
  * use the enclosing resource like in nearly every other {@link IIpsElement} (@see
  * {@link IpsElementAdapterFactory}) but we want to get the resource of the target.
+ * <p>
+ * Note: You cannot adapt to {@link IResource} directly because it is prevented in
+ * {@link IpsObjectPart#getAdapter(Class)}
  * 
  * @author dirmeier
  */
@@ -66,7 +70,7 @@ public class ProductCmptLinkAdapterFactory extends AbstractIpsAdapterFactory {
     // eclipse adapters are not type safe
     @Override
     public Class[] getAdapterList() {
-        return new Class[] { IResource.class, IFile.class };
+        return new Class[] { IFile.class, IIpsSrcFile.class, IIpsObject.class };
     }
 
 }

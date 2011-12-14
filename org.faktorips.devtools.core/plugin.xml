@@ -298,9 +298,6 @@
             adaptableType="org.faktorips.devtools.core.model.productcmpt.IProductCmptLink"
             class="org.faktorips.devtools.core.internal.model.adapter.ProductCmptLinkAdapterFactory">
          <adapter
-               type="org.eclipse.core.resources.IResource">
-         </adapter>
-         <adapter
                type="org.eclipse.core.resources.IFile">
          </adapter>
          <adapter
@@ -391,6 +388,9 @@
          </adapter>
          <adapter
                type="org.eclipse.core.resources.IFile">
+         </adapter>
+         <adapter
+               type="org.eclipse.jface.resource.ResourceManager">
          </adapter>
       </factory>
    </extension>
