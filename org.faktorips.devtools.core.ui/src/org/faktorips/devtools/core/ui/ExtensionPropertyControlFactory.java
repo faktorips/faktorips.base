@@ -136,7 +136,8 @@ public class ExtensionPropertyControlFactory {
             try {
                 IExtensionPropertySectionFactory sectionFactory = IpsUIPlugin.getDefault()
                         .getExtensionPropertySectionFactory(extPropControlData.extProperty.getPropertyId());
-                if (sectionFactory != null && sectionFactory.getPosition() == position) {
+                if (sectionFactory != null && sectionFactory.getPosition() == position
+                        && sectionFactory.createsSectionFor(ipsObjectPart)) {
                     IpsSection newSection = sectionFactory.newSection(ipsObjectPart, parent, toolkit);
                     sections.add(newSection);
                 }
