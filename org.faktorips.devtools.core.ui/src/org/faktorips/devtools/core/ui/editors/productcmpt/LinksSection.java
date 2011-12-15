@@ -40,7 +40,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -83,11 +82,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     private TreeViewer treeViewer;
 
     /**
-     * The site this editor is related to (e.g. for menu and toolbar handling)
-     */
-    private IEditorSite site;
-
-    /**
      * The popup-Menu for the treeview if enabled.
      */
     private Menu treePopup;
@@ -104,6 +98,8 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 
     private LinkSectionDropListener dropListener;
 
+    private final ProductCmptEditor editor;
+
     /**
      * Creates a new RelationsSection which displays relations for the given generation.
      * 
@@ -111,11 +107,11 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      * @param parent The composite whicht is the ui-parent for this section.
      * @param toolkit The ui-toolkit to support drawing.
      */
-    public LinksSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit, IEditorSite site) {
+    public LinksSection(ProductCmptEditor editor, IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
         super(ID, parent, GridData.FILL_BOTH, toolkit);
+        this.editor = editor;
         ArgumentCheck.notNull(generation);
         this.generation = generation;
-        this.site = site;
         initControls();
         setText(Messages.PropertiesPage_relations);
     }
@@ -155,7 +151,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             treeViewer.setContentProvider(contentProvider);
             treeViewer.setInput(generation);
             treeViewer.addSelectionChangedListener(selectionChangedListener);
-            dropListener = new LinkSectionDropListener(treeViewer, generation);
+            dropListener = new LinkSectionDropListener(editor, treeViewer, generation);
             treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
                     TextTransfer.getInstance() }, dropListener);
             MoveLinkDragListener dragListener = dropListener.new MoveLinkDragListener(treeViewer);
@@ -215,7 +211,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     private void buildContextMenu() {
         MenuManager menuManager = new MenuManager();
 
-        site.registerContextMenu(ID, menuManager, treeViewer);
+        editor.getSite().registerContextMenu(ID, menuManager, treeViewer);
 
         // We do not want to have additions in this menu!
         MenuCleaner menuCleaner = new MenuCleaner();

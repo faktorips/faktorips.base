@@ -538,18 +538,21 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     /**
      * Returns <code>true</code> if the data shown in this editor is changeable by the user,
      * otherwise <code>false</code>.
+     * <p>
+     * This method is not intended to be overwritten by client. Instead you should overwrite
+     * {@link #computeDataChangeableState()}.
      */
-    public final boolean isDataChangeable() {
+    public boolean isDataChangeable() {
         return contentChangeable;
     }
 
     /**
      * Sets the content changeable state.
      * <p>
-     * This method is final. If you want to change an editor's data changeable behaviour override
+     * This method is final. If you want to change an editor's data changeable behavior override
      * {@link #computeDataChangeableState()}.
      */
-    final protected void setDataChangeable(boolean changeable) {
+    protected final void setDataChangeable(boolean changeable) {
         contentChangeable = changeable;
         if (getIpsSrcFile() != null) {
             setTitleImage(errorTickupdater.getDecoratedImage());

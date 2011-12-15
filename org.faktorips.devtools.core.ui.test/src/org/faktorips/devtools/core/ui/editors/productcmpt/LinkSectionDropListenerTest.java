@@ -16,6 +16,9 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
@@ -58,6 +61,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
     private IProductCmptGeneration cmptAGeneration;
     private ProductCmpt cmptC4;
     private TreeViewer treeViewer;
+    private ProductCmptEditor productCmptEditor;
 
     @Override
     @Before
@@ -96,11 +100,14 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setInput(cmptAGeneration);
 
-        dropListener = new TestDropListener(treeViewer, cmptAGeneration);
+        productCmptEditor = mock(ProductCmptEditor.class);
+        dropListener = spy(new TestDropListener(productCmptEditor, treeViewer, cmptAGeneration));
     }
 
     @Test
     public void testValidateDropNewLink() {
+        when(productCmptEditor.isDataChangeable()).thenReturn(true);
+
         int operation = DND.DROP_LINK;
 
         // check (link) targets
@@ -114,11 +121,26 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptC1, cmptB1)));
         assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptC1, cmptB2)));
         link.delete();
+    }
 
+    @Test
+    public void testValidateDrop_editorEditable() throws Exception {
+        when(productCmptEditor.isDataChangeable()).thenReturn(true);
+
+        int operation = DND.DROP_LINK;
+
+        IProductCmptLink link = ((IProductCmptGeneration)cmptA.getFirstGeneration()).newLink(associationToB1);
+        link.setTarget(cmptB1.getQualifiedName());
+        assertTrue(dropListener.validateDrop(link, operation, getTransfer(cmptB2)));
+
+        when(productCmptEditor.isDataChangeable()).thenReturn(false);
+        assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptB2)));
     }
 
     @Test
     public void testValidateDropMoveLink() {
+        when(productCmptEditor.isDataChangeable()).thenReturn(true);
+
         IProductCmptLink b1Link1 = cmptAGeneration.newLink(associationToB1);
         b1Link1.setTarget(cmptB1.getQualifiedName());
         IProductCmptLink b1Link2 = cmptAGeneration.newLink(associationToB1);
@@ -352,14 +374,14 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         return filenames;
     }
 
-    private static class TestDropListener extends LinkSectionDropListener {
+    public static class TestDropListener extends LinkSectionDropListener {
 
         private Object target;
         private int operation;
         private int location;
 
-        public TestDropListener(Viewer viewer, IProductCmptGeneration generation) {
-            super(viewer, generation);
+        public TestDropListener(ProductCmptEditor editor, Viewer viewer, IProductCmptGeneration generation) {
+            super(editor, viewer, generation);
         }
 
         public void setTarget(Object target) {

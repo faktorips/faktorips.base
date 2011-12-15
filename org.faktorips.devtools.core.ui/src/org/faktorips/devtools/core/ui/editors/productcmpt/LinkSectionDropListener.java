@@ -39,7 +39,6 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsFileTransferViewerDropAdapter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LinkDropListener;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 
 /**
  * Drop Listener for the link section. This drop listener is able to move elements within the link
@@ -55,9 +54,11 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     private List<IProductCmptLink> movedCmptLinks;
     private final IProductCmptGeneration generation;
+    private final ProductCmptEditor editor;
 
-    public LinkSectionDropListener(Viewer viewer, IProductCmptGeneration generation) {
+    public LinkSectionDropListener(ProductCmptEditor editor, Viewer viewer, IProductCmptGeneration generation) {
         super(viewer);
+        this.editor = editor;
         this.generation = generation;
     }
 
@@ -78,11 +79,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     @Override
     public boolean validateDrop(Object target, int operation, TransferData transferType) {
-        IpsObjectEditor activeIpsObjectEditor = IpsUIPlugin.getDefault().getActiveIpsObjectEditor();
-        if (activeIpsObjectEditor == null || !activeIpsObjectEditor.isDataChangeable()) {
-            return false;
-        }
-        if (target == null) {
+        if (target == null | !editor.isDataChangeable()) {
             return false;
         }
         if (movedCmptLinks != null) {

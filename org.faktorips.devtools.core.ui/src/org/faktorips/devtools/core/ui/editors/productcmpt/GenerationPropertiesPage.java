@@ -40,7 +40,6 @@ import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IExtensionPropertySectionFactory.Position;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.modeldescription.ModelDescriptionView;
@@ -78,8 +77,13 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     private GotoGenerationAction gotoNextGenerationAction;
 
-    public GenerationPropertiesPage(IpsObjectEditor editor) {
+    public GenerationPropertiesPage(ProductCmptEditor editor) {
         super(editor, PAGE_ID, ""); // Title will be updated based on selected generation //$NON-NLS-1$
+    }
+
+    @Override
+    public ProductCmptEditor getEditor() {
+        return (ProductCmptEditor)super.getEditor();
     }
 
     @Override
@@ -206,7 +210,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     }
 
     private void createLinksSection(Composite right) {
-        IpsSection linksSection = new LinksSection(getActiveGeneration(), right, toolkit, getEditorSite());
+        IpsSection linksSection = new LinksSection(getEditor(), getActiveGeneration(), right, toolkit);
         rightSections.add(linksSection);
     }
 
@@ -337,7 +341,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     }
 
     private IProductCmptGeneration getActiveGeneration() {
-        return (IProductCmptGeneration)((ProductCmptEditor)getEditor()).getActiveGeneration();
+        return (IProductCmptGeneration)(getEditor()).getActiveGeneration();
     }
 
     private IProductCmpt getProductCmpt() {
@@ -413,7 +417,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
                 @Override
                 public void run() {
                     IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(getGeneration().getValidFrom());
-                    ((ProductCmptEditor)getEditor()).setActiveGeneration(getGeneration(), true);
+                    (getEditor()).setActiveGeneration(getGeneration(), true);
                 }
             });
         }
