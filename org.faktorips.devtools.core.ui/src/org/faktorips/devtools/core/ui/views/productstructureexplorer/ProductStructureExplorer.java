@@ -148,8 +148,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
     private IWorkbenchAction deleteAction;
 
-    private List<ISelectionChangedListener> externalSelectionChangedListener;
-
     /**
      * Class to handle double clicks. Doubleclicks of ProductCmptTypeAssociationReference will be
      * ignored.
@@ -176,8 +174,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
         // add as resource listener because refactoring-actions like move or rename
         // would not cause a model-changed-event otherwise.
-
-        externalSelectionChangedListener = new ArrayList<ISelectionChangedListener>();
     }
 
     /**
@@ -914,16 +910,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         List<IProductCmptReference> refs = getReferencesFor(toBeSelected);
         IStructuredSelection selection = new StructuredSelection(refs);
 
-        for (ISelectionChangedListener listener : externalSelectionChangedListener) {
-            treeViewer.removeSelectionChangedListener(listener);
-        }
-
         treeViewer.setSelection(selection, true);
-
-        for (ISelectionChangedListener listener : externalSelectionChangedListener) {
-            treeViewer.addSelectionChangedListener(listener);
-        }
-
     }
 
     private List<IProductCmptReference> getReferencesFor(List<IIpsElement> toBeSelected) {
@@ -944,7 +931,13 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
     }
 
     private List<IProductCmptReference> getReference(IProductCmptTreeStructure struct, IIpsElement selectElement) {
-        return getReferences(struct, struct.getRoot(), selectElement);
+        List<IProductCmptReference> result = getReferences(struct, struct.getRoot(), selectElement);
+        IProductCmpt rootCmpt = struct.getRoot().getProductCmpt();
+        if (selectElement.equals(rootCmpt)) {
+            result.add(struct.getRoot());
+        }
+
+        return result;
     }
 
     private List<IProductCmptReference> getReferences(IProductCmptTreeStructure struct,
@@ -959,11 +952,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             result.addAll(getReferences(struct, child, selectElement));
         }
         return result;
-    }
-
-    public void addSelectionChangedListener(ISelectionChangedListener listener) {
-        this.externalSelectionChangedListener.add(listener);
-        treeViewer.addSelectionChangedListener(listener);
     }
 
 }
