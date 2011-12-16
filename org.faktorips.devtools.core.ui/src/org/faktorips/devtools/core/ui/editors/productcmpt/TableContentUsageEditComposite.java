@@ -50,8 +50,8 @@ public class TableContentUsageEditComposite extends
     }
 
     private void createTableContentEditField(List<EditField<?>> editFields) {
-        TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(getProperty().getIpsProject(), this,
-                getToolkit(), getProperty());
+        TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(getPropertyValue().getIpsProject(),
+                this, getToolkit(), getProperty());
 
         TextButtonField editField = new TextButtonField(tcuControl);
         editFields.add(editField);
