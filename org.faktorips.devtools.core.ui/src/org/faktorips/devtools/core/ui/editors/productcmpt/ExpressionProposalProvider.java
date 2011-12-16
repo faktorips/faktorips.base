@@ -308,15 +308,22 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             return ""; //$NON-NLS-1$
         }
         int i = s.length() - 1;
+        boolean isInQuotes = false;
         while (i >= 0) {
             char c = s.charAt(i);
-            if (!Character.isLetterOrDigit(c) && c != '.' && c != '_' && c != '-' && c != '[' && c != ']' && c != '"'
-                    && c != ' ') {
+            if (c == '"') {
+                isInQuotes = !isInQuotes;
+            } else if (!isLegalChar(c, isInQuotes)) {
                 break;
             }
             i--;
         }
         return s.substring(i + 1);
+    }
+
+    private boolean isLegalChar(char c, boolean isInQuotes) {
+        return Character.isLetterOrDigit(c) || c == '.' || c == '_' || c == '-' || c == '[' || c == ']'
+                || (isInQuotes && c == ' ');
     }
 
     public IIpsProject getIpsProject() {
