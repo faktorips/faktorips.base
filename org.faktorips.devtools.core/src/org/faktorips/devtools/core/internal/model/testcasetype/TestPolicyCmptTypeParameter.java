@@ -485,7 +485,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
                          * check if the specified policy cmpt type is the same or a supertype of the
                          * found product cmpt policy cmpt type
                          */
-                        if (!pcTypeOfProduct.isSubtypeOrSameType(pcType, getIpsProject())) {
+                        if (!pcTypeOfProduct.isSubtypeOrSameType(pcType, ipsProjectToSearch)) {
                             continue;
                         }
                     }
