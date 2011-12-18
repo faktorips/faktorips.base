@@ -27,7 +27,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -105,7 +104,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      * </pre>
      */
     private void generateMethodGet1RelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGet1RelatedCmptLink(methodsBuilder);
 
         methodsBuilder.openBracket();
@@ -126,7 +125,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      * </pre>
      */
     private void generateMethodGetRelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGetRelatedCmptLink(methodsBuilder);
 
         String fieldName = getFieldNameTo1Association();
@@ -166,7 +165,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
 
     private void generateMethodGetCardinalityFor1To1Association(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGetCardinalityForAssociation(methodsBuilder);
         String[][] params = getParamGetCardinalityForAssociation();
         JavaCodeFragment frag = new JavaCodeFragment();
@@ -246,7 +245,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      */
     private void generateMethodGet1RelatedCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGet1RelatedCmpt(methodsBuilder);
         String fieldName = getFieldNameTo1Association();
         methodsBuilder.openBracket();
@@ -279,8 +278,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      * </pre>
      */
     private void generateMethodGet1RelatedCmptGen(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGet1RelatedCmptGen(methodsBuilder);
         String fieldName = getFieldNameTo1Association();
         methodsBuilder.openBracket();

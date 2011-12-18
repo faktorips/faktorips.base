@@ -58,6 +58,40 @@ public abstract class JavaGeneratorForIpsPart {
     }
 
     /**
+     * Adds JavaDoc and <code>Override</code> annotation to the java code fragment. If the java
+     * compliance level is greater than 1.5. It takes into account the fine differences regarding
+     * the <code>Override</code> annotation for compliance level 1.5 and higher.
+     * 
+     * @param builder the annotation is added to this {@link JavaCodeFragmentBuilder}
+     * @param override be able to decide if an Override annotation needs to be generated it must be
+     *            known if the the generated method is an implementation of an interface method or
+     *            an override of a super class method.
+     */
+    public void appendJavaDocAndOverrideAnnotation(JavaCodeFragmentBuilder builder, Overrides override) {
+
+        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendOverrideAnnotation(builder, getIpsPart().getIpsProject(), override);
+    }
+
+    /**
+     * Adds an <code>Override</code> annotation to the java code fragment if the java compliance
+     * level is greater than 1.5. It takes into account the fine differences regarding the
+     * <code>Override</code> annotation for compliance level 1.5 and higher.
+     * 
+     * @param fragmentBuilder the annotation is added to this {@link JavaCodeFragmentBuilder}
+     * @param override to be able to decide if an Override annotation needs to be generated it must
+     *            be known if the the generated method is an implementation of an interface method
+     *            or an override of a super class method.
+     */
+    public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder,
+            IIpsProject ipsProject,
+            Overrides override) {
+
+        boolean interfaceMethodImplementation = override == Overrides.INTERFACE_METHOD;
+        JavaGeneratorHelper.appendOverrideAnnotation(fragmentBuilder, ipsProject, interfaceMethodImplementation);
+    }
+
+    /**
      * Adds an <code>Override</code> annotation to the java code fragment if the java compliance
      * level is greater than 1.5. It takes into account the fine differences regarding the
      * <code>Override</code> annotation for compliance level 1.5 and higher.
@@ -304,4 +338,10 @@ public abstract class JavaGeneratorForIpsPart {
         return "Generator for " + ipsPart.toString(); //$NON-NLS-1$
     }
 
+    protected enum Overrides {
+
+        CLASS_METHOD,
+        INTERFACE_METHOD
+
+    }
 }

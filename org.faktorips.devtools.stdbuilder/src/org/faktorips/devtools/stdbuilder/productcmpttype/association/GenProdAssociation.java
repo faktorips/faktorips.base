@@ -153,7 +153,8 @@ public abstract class GenProdAssociation extends GenAbstractAssociation {
         if (association.isDerivedUnion()) {
             throw new IllegalArgumentException("Association needn't be a container association.");
         }
-        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(builder, Overrides.INTERFACE_METHOD);
+
         generateSignatureGetNumOfRelatedCmpts(builder);
         builder.openBracket();
         builder.append("return ");

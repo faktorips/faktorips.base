@@ -70,14 +70,11 @@ public abstract class GenAbstractAssociation extends GenTypePart {
 
         private final IAssociation derivedUnion;
 
-        private final IIpsProject ipsProject;
-
         private boolean foundSubset = false;
 
         public FindSubsetOfDerivedUnion(IIpsProject ipsProject, IAssociation derivedUnion) {
             super(ipsProject);
             this.derivedUnion = derivedUnion;
-            this.ipsProject = ipsProject;
         }
 
         @Override

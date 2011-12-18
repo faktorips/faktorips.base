@@ -27,6 +27,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -108,8 +109,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
      * </pre>
      */
     private void generateMethodGetValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) {
-
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGetValue(datatypeHelper, methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return ");
@@ -224,9 +224,10 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
         builder.append(" = ");
         if (getDatatypeHelper() instanceof EnumTypeDatatypeHelper) {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)getDatatypeHelper();
-            if (!enumHelper.getEnumType().isContainingValues()) {
-                builder.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(
-                        enumHelper.getEnumType(), "value", new JavaCodeFragment("getRepository()")));
+            IEnumType enumType = enumHelper.getEnumType();
+            if (!enumType.isContainingValues()) {
+                builder.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumType,
+                        "value", new JavaCodeFragment("getRepository()")));
                 builder.appendln(";");
                 return;
             }

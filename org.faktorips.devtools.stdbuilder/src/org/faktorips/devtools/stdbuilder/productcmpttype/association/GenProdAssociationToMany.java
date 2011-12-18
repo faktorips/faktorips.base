@@ -166,7 +166,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * 
      */
     private void generateMethodGetRelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGetRelatedCmptLink(methodsBuilder);
 
         String fieldName = getFieldNameToManyAssociation();
@@ -189,7 +189,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * 
      */
     private void generateMethodGetManyRelatedCmptLinks(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGetManyRelatedCmptLinks(methodsBuilder);
 
         String fieldName = getFieldNameToManyAssociation();
@@ -204,7 +204,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
 
     private void generateMethodGetCardinalityFor1ToManyAssociation(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGetCardinalityForAssociation(methodsBuilder);
         String[][] params = getParamGetCardinalityForAssociation();
         JavaCodeFragment frag = new JavaCodeFragment();
@@ -272,7 +272,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * </pre>
      */
     private void generateMethodGetManyRelatedCmpts(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGetManyRelatedCmpts(methodsBuilder);
 
         String fieldName = getFieldNameToManyAssociation();
@@ -325,7 +325,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      * </pre>
      */
     private void generateMethodGetManyRelatedCmptGens(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGetManyRelatedCmptGens(methodsBuilder);
         String targetClass = getQualifiedInterfaceClassNameForTarget();
         String targetGenClass = getQualifiedInterfaceClassNameForTargetGen();
@@ -412,7 +412,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
      */
     private void generateMethodGetRelatedCmptAtIndex(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGetRelatedCmptsAtIndex(methodsBuilder);
         String fieldName = getFieldNameToManyAssociation();
         String targetClass = getQualifiedInterfaceClassNameForTarget();
@@ -620,10 +620,9 @@ public class GenProdAssociationToMany extends GenProdAssociation {
             throws CoreException {
 
         if (!association.isDerivedUnion()) {
-            throw new IllegalArgumentException("Association must be a container association.");
+            throw new IllegalArgumentException("Association must be a derived union.");
         }
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-
         appendOverrideAnnotation(builder, getIpsProject(), !needSuperCallForDerivedUnion());
         generateSignatureGetNumOfRelatedCmpts(builder);
         builder.openBracket();
@@ -650,7 +649,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
     private void generateMethodGetNumOfRelatedProductCmptsInternal(List<IAssociation> implAssociations,
             JavaCodeFragmentBuilder builder) throws CoreException {
         if (!association.isDerivedUnion()) {
-            throw new IllegalArgumentException("Association must be a container association.");
+            throw new IllegalArgumentException("Association must be a derived union.");
         }
         builder.javaDoc("", JavaSourceFileBuilder.ANNOTATION_GENERATED);
         String methodName = getMethodNameGetNumOfRelatedCmptsInternal();

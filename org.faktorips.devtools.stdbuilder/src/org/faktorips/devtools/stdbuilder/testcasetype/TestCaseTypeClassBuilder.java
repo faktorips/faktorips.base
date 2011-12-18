@@ -71,8 +71,6 @@ import org.w3c.dom.Element;
  */
 public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
 
-    private final static String[] EMPTY_STRING_ARRAY = new String[0];
-
     // property key for the Javadoc.
     private final static String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC";
     private final static String INITINPUTFROMXML_JAVADOC = "INITINPUTFROMXML_JAVADOC";
@@ -197,7 +195,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             ITestValueParameter[] testValueParams,
             String variablePrefix) throws CoreException {
         for (int i = 0; i < testValueParams.length; i++) {
-            if (!testValueParams[i].isValid()) {
+            if (!testValueParams[i].isValid(getIpsProject())) {
                 continue;
             }
             ITestValueParameter testValueParam = testValueParams[i];
@@ -232,7 +230,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
                 notViolatedConstantName, new JavaCodeFragment("\"notViolated\""));
 
         for (int i = 0; i < testRuleParams.length; i++) {
-            if (!testRuleParams[i].isValid()) {
+            if (!testRuleParams[i].isValid(getIpsProject())) {
                 continue;
             }
             // create two lists, the list will be filled in the init expected result from xml method
@@ -292,7 +290,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             ITestPolicyCmptTypeParameter[] policyTypeParams,
             String variablePrefix) throws CoreException {
         for (int i = 0; i < policyTypeParams.length; i++) {
-            if (!policyTypeParams[i].isValid()) {
+            if (!policyTypeParams[i].isValid(getIpsProject())) {
                 continue;
             }
             codeBuilder.javaDoc("", ANNOTATION_GENERATED);
@@ -343,8 +341,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void buildSuperMethodImplementation(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)
             throws CoreException {
-        buildMethodExecuteBusinessLogic(codeBuilder, testCaseType);
-        buildMethodExecuteAsserts(codeBuilder, testCaseType);
+        buildMethodExecuteBusinessLogic(codeBuilder);
+        buildMethodExecuteAsserts(codeBuilder);
         buildMethodsForAssertRules(codeBuilder, testCaseType.getTestRuleParameters(), expectedResultPrefix);
         buildMethodInitInputFromXml(codeBuilder, testCaseType);
         buildMethodInitExpectedResultFromXml(codeBuilder, testCaseType);
@@ -425,7 +423,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         for (int i = 0; i < policyTypeParams.length; i++) {
-            if (!policyTypeParams[i].isValid()) {
+            if (!policyTypeParams[i].isValid(getIpsProject())) {
                 continue;
             }
 
@@ -525,7 +523,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.appendln("String value = null;");
         }
         for (int i = 0; i < valueParams.length; i++) {
-            if (!valueParams[i].isValid()) {
+            if (!valueParams[i].isValid(getIpsProject())) {
                 continue;
             }
             ITestValueParameter policyTypeParam = valueParams[i];
@@ -566,7 +564,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             ITestRuleParameter[] ruleParams,
             String variablePrefix) throws CoreException {
         for (int i = 0; i < ruleParams.length; i++) {
-            if (!ruleParams[i].isValid()) {
+            if (!ruleParams[i].isValid(getIpsProject())) {
                 continue;
             }
             String rulesVariableNameNotViolated = getRuleMemberVariableName(variablePrefix,
@@ -636,7 +634,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * Generates the method executeBusinessLogic. <p> Example: <p> <pre> public void
      * executeBusinessLogic() throws Exception { } </pre>
      */
-    private void buildMethodExecuteBusinessLogic(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType) {
+    private void buildMethodExecuteBusinessLogic(JavaCodeFragmentBuilder codeBuilder) {
         String javaDoc = getLocalizedText(getIpsSrcFile(), EXECUTEBUSINESSLOGIC_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln(MARKER_BEGIN_USER_CODE);
@@ -657,7 +655,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * Generates the method executeAsserts. <p> Example: <p> <pre> public void
      * executeAsserts(IpsTestResult result) throws Exception { } </pre>
      */
-    private void buildMethodExecuteAsserts(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType) {
+    private void buildMethodExecuteAsserts(JavaCodeFragmentBuilder codeBuilder) {
         StringBuffer javaDoc = new StringBuffer();
         appendln(javaDoc, getLocalizedText(getIpsSrcFile(), EXECUTEASSERTS_JAVADOC));
         appendln(javaDoc, " ");
@@ -713,7 +711,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             return;
         }
         for (int i = 0; i < ruleParams.length; i++) {
-            if (!ruleParams[i].isValid()) {
+            if (!ruleParams[i].isValid(getIpsProject())) {
                 continue;
             }
             buildMethodAssertRule(codeBuilder, variablePrefix, ruleParams[i].getName());
@@ -789,7 +787,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             throws CoreException {
         ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParameters = testCaseType.getTestPolicyCmptTypeParameters();
         for (int i = 0; i < testPolicyCmptTypeParameters.length; i++) {
-            if (!testPolicyCmptTypeParameters[i].isValid()) {
+            if (!testPolicyCmptTypeParameters[i].isValid(getIpsProject())) {
                 continue;
             }
             buildXmlCallbackClasseFor(memberVarBuilder, testPolicyCmptTypeParameters[i]);

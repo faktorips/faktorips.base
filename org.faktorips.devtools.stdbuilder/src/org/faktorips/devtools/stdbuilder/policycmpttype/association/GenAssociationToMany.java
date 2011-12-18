@@ -39,6 +39,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.runtime.internal.MethodNames;
 
 /**
+ * Code generator for 1-to-many assocations.
  * 
  * @author Jan Ortmann
  */
@@ -272,7 +273,7 @@ public class GenAssociationToMany extends GenAssociation {
      * </pre>
      */
     private void generateMethodGetNumOfForNoneContainerAssociation(JavaCodeFragmentBuilder methodsBuilder) {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGetNumOfRefObjects(methodsBuilder);
         methodsBuilder.openBracket();
         if (association.is1ToMany()) {
@@ -296,8 +297,8 @@ public class GenAssociationToMany extends GenAssociation {
     protected void generateMethodContainsObjectForNoneContainerAssociation(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         String paramName = getParamNameForContainsObject();
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureContainsObject(methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.appendln("return " + fieldName + ".contains(" + paramName + ");");
@@ -326,7 +327,7 @@ public class GenAssociationToMany extends GenAssociation {
     protected void generateMethodGetAllObjectsForNoneDerivedUnion(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGetAllRefObjects(methodsBuilder);
         methodsBuilder.openBracket();
         if (isUseTypesafeCollections()) {
@@ -367,8 +368,8 @@ public class GenAssociationToMany extends GenAssociation {
      * }
      * </pre>
      */
-    @Override
     protected void generateMethodGetRefObjectAtIndex(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+        appendJavaDocAndOverrideAnnotation(methodBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGetRefObjectAtIndex(methodBuilder);
         methodBuilder.openBracket();
         methodBuilder.append("return ");
@@ -427,7 +428,7 @@ public class GenAssociationToMany extends GenAssociation {
 
         // generate add method which delegates to the internal add method
         // and notifies all change listener
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureAddObject(methodsBuilder, false);
         methodsBuilder.openBracket();
 
@@ -451,7 +452,7 @@ public class GenAssociationToMany extends GenAssociation {
         } else {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         }
-
+        appendOverrideAnnotation(methodsBuilder, getIpsProject(), true);
         generateSignatureAddObject(methodsBuilder, internal);
         String paramName = getParamNameForAddObject();
         methodsBuilder.openBracket();
@@ -508,7 +509,7 @@ public class GenAssociationToMany extends GenAssociation {
     protected void generateMethodRemoveObject(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String paramName = getParamNameForRemoveObject();
 
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureRemoveObject(methodsBuilder);
 
         methodsBuilder.openBracket();
@@ -630,6 +631,7 @@ public class GenAssociationToMany extends GenAssociation {
      */
     protected void generateMethodGetRefObjectAtIndexInterface(JavaCodeFragmentBuilder methodBuilder)
             throws CoreException {
+        appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT_BY_INDEX", association.getTargetRoleSingular(), methodBuilder);
         generateSignatureGetRefObjectAtIndex(methodBuilder);
         methodBuilder.append(';');
     }
@@ -1058,7 +1060,9 @@ public class GenAssociationToMany extends GenAssociation {
      * for (IVisitedSubChild child : visitedSubChilds) {
      *     child.accept(visitor);
      * }
-     * </pre> {@inheritDoc}
+     * </pre>
+     * 
+     * {@inheritDoc}
      */
     @Override
     public void generateSnippetForAcceptVisitor(String paramName, JavaCodeFragmentBuilder builder) throws CoreException {

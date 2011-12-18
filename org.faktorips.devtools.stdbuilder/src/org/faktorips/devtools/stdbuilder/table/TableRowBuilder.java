@@ -224,6 +224,7 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IIpsObjectPartContainer ipsObjectPartContainer) {
 
+        // not supported, yet
     }
 
     @Override

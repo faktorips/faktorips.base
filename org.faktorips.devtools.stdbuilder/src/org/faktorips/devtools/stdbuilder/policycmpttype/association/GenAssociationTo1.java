@@ -319,7 +319,7 @@ public class GenAssociationTo1 extends GenAssociation {
         if (internal) {
             appendLocalizedJavaDoc("METHOD_SET_OBJECT_INTERNAL", association.getTargetRoleSingular(), builder);
         } else {
-            builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+            appendJavaDocAndOverrideAnnotation(builder, Overrides.INTERFACE_METHOD);
         }
         generateSignatureSetObject(builder, internal);
 
@@ -372,7 +372,7 @@ public class GenAssociationTo1 extends GenAssociation {
 
         // generate set method which delegates to the internal set method
         // and notifies all change listener
-        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(builder, Overrides.INTERFACE_METHOD);
         generateSignatureSetObject(builder, false);
         builder.openBracket();
 
@@ -424,10 +424,13 @@ public class GenAssociationTo1 extends GenAssociation {
      */
     protected void generateMethodSetRefObjectForAssociation(JavaCodeFragmentBuilder methodsBuilder, boolean internal)
             throws CoreException {
-        String paramName = getParamNameForSetObject();
-        String javaDocText = internal ? null : getJavaDocCommentForOverriddenMethod();
-        methodsBuilder.javaDoc(javaDocText, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        if (internal) {
+            methodsBuilder.javaDoc(null, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        } else {
+            appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
+        }
         generateSignatureSetObject(methodsBuilder, internal);
+        String paramName = getParamNameForSetObject();
         methodsBuilder.openBracket();
         methodsBuilder.append("if(" + paramName + " == ");
         methodsBuilder.append(fieldName);
@@ -514,7 +517,7 @@ public class GenAssociationTo1 extends GenAssociation {
      */
     protected void generateMethodGetRefObjectBasedOnMemberVariable(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureGetRefObject(methodsBuilder);
         methodsBuilder.openBracket();
         if (!association.isCompositionDetailToMaster()) {
@@ -553,7 +556,7 @@ public class GenAssociationTo1 extends GenAssociation {
         // to assert that a child is only related to one parent
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         if (isAlreadyDefinedInSupertype()) {
-            appendOverrideAnnotation(methodsBuilder, getIpsProject(), false);
+            appendOverrideAnnotation(methodsBuilder, getIpsProject(), Overrides.CLASS_METHOD);
         }
         generateSignatureGetRefObject(methodsBuilder);
         methodsBuilder.openBracket();
@@ -760,7 +763,9 @@ public class GenAssociationTo1 extends GenAssociation {
      * if (coverage != null) {
      *     coverage.accept(visitor);
      * }
-     * </pre> {@inheritDoc}
+     * </pre>
+     * 
+     * {@inheritDoc}
      */
     @Override
     public void generateSnippetForAcceptVisitor(String paramName, JavaCodeFragmentBuilder builder) throws CoreException {
@@ -801,7 +806,9 @@ public class GenAssociationTo1 extends GenAssociation {
      *   Person copyPerson = (Person)copyMap.get(person);
      *   person.copyAssociationsInternal(copyPerson, copyMap);
      * }
-     * </pre> {@inheritDoc}
+     * </pre>
+     * 
+     * {@inheritDoc}
      * 
      */
     @Override

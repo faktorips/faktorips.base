@@ -178,7 +178,7 @@ public abstract class GenAssociation extends GenAbstractAssociation {
     public void generateImplMethodNewChild(boolean inclProductCmptArg, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        appendJavaDocAndOverrideAnnotation(methodsBuilder, Overrides.INTERFACE_METHOD);
         generateSignatureNewChild(inclProductCmptArg, methodsBuilder);
         String addOrSetMethod;
         if (getGenPolicyCmptType().isGenerateChangeListenerSupport()) {
@@ -943,23 +943,9 @@ public abstract class GenAssociation extends GenAbstractAssociation {
      * </pre>
      */
     public void generateSignatureGetRefObjectAtIndex(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-        appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT_BY_INDEX", association.getTargetRoleSingular(), methodBuilder);
         methodBuilder.signature(java.lang.reflect.Modifier.PUBLIC,
                 getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true),
                 getMethodNameGetRefObjectAtIndex(), new String[] { "index" }, new String[] { Integer.TYPE.getName() });
-    }
-
-    /**
-     * Code sample:
-     * 
-     * <pre>
-     * [Javadoc]
-     * public IMotorCoverage getMotorCoverage(int index);
-     * </pre>
-     */
-    protected void generateMethodGetRefObjectAtIndex(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-        generateSignatureGetRefObjectAtIndex(methodBuilder);
-        methodBuilder.append(';');
     }
 
     /**

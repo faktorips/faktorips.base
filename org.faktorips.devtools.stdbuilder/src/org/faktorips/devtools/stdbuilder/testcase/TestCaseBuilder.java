@@ -120,7 +120,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         ArgumentCheck.isTrue(ipsSrcFile.getIpsObjectType() == IpsObjectType.TEST_CASE);
         ITestCase testCase = (ITestCase)ipsSrcFile.getIpsObject();
-        if (!testCase.isValid()) {
+        if (!testCase.isValid(getIpsProject())) {
             return;
         }
         InputStream is = null;
@@ -265,7 +265,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             return;
         }
         for (int i = 0; i < testValues.length; i++) {
-            if (!testValues[i].isValid()) {
+            if (!testValues[i].isValid(getIpsProject())) {
                 continue;
             }
             Element valueElem = XmlUtil.addNewChild(doc, element, testValues[i].getTestValueParameter());
@@ -281,7 +281,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             return;
         }
         for (int i = 0; i < testRules.length; i++) {
-            if (!testRules[i].isValid()) {
+            if (!testRules[i].isValid(getIpsProject())) {
                 continue;
             }
             IValidationRule validationRule = testRules[i].findValidationRule(getIpsProject());
@@ -311,7 +311,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             return;
         }
         for (int i = 0; i < testPolicyCmpts.length; i++) {
-            if (!testPolicyCmpts[i].isValid()) {
+            if (!testPolicyCmpts[i].isValid(getIpsProject())) {
                 continue;
             }
             Element testPolicyCmptElem = createTestPolicyCmptElem(doc, parent, testPolicyCmpts[i], link);
@@ -416,7 +416,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         }
         if (associations.length > 0) {
             for (int i = 0; i < associations.length; i++) {
-                if (!associations[i].isValid()) {
+                if (!associations[i].isValid(getIpsProject())) {
                     continue;
                 }
                 if (!associationsParentSameType(associations[i], isInput)) {
@@ -463,7 +463,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         }
         IIpsProject ipsProject = getIpsProject();
         for (int i = 0; i < testAttrValues.length; i++) {
-            if (!testAttrValues[i].isValid()) {
+            if (!testAttrValues[i].isValid(getIpsProject())) {
                 continue;
             }
             if (testAttrValues[i].isInputAttribute(ipsProject) && isInput

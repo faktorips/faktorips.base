@@ -96,7 +96,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setClassModifier(Modifier.PUBLIC);
         mainSection.setUnqualifiedName(getUnqualifiedClassName(getEnumType().getIpsSrcFile()));
         IEnumAttribute idAttribute = getEnumType().findIdentiferAttribute(getIpsProject());
-        if (idAttribute == null || !idAttribute.isValid()) {
+        if (idAttribute == null || !idAttribute.isValid(getIpsProject())) {
             return;
         }
         DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(idAttribute.findDatatype(getIpsProject()));

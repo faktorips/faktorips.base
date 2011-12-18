@@ -91,7 +91,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)ipsElement;
 
         try {
-            if (!association.getPersistenceAssociatonInfo().isValid()) {
+            if (!association.getPersistenceAssociatonInfo().isValid(association.getIpsProject())) {
                 return fragment;
             }
 

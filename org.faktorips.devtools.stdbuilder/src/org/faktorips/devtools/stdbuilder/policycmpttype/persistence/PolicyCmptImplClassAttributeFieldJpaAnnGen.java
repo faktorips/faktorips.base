@@ -73,7 +73,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
         if (StringUtils.isEmpty(jpaAttributeInfo.getSqlColumnDefinition())) {
             attributesToAppend.add("nullable = " + isNullable);
             attributesToAppend.add("unique = " + isUnique);
-            addDatatypeDendingJpaAttributes(attributesToAppend, attribute, jpaAttributeInfo, datatype);
+            addDatatypeDendingJpaAttributes(attributesToAppend, jpaAttributeInfo, datatype);
         } else {
             // sql column definition overwrites nullable (not null), unique, scale, precision and
             // length
@@ -106,7 +106,6 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
     }
 
     private void addDatatypeDendingJpaAttributes(List<String> attributesToAppend,
-            IPolicyCmptTypeAttribute attribute,
             IPersistentAttributeInfo persAttrInfo,
             ValueDatatype datatype) {
         if (PersistenceUtil.isSupportingDecimalPlaces(datatype)) {
@@ -123,8 +122,6 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
      * Converter(name = "gender", converterClass = example.Gender) 
      * Convert("gender")
      * <code>
-     * 
-     * @param datatype
      */
     private void createConverterAnnotation(JavaCodeFragment fragment, IPersistentAttributeInfo jpaAttributeInfo) {
         if (StringUtils.isEmpty(jpaAttributeInfo.getConverterQualifiedClassName())) {

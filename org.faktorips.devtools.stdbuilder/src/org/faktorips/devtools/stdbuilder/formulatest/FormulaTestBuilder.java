@@ -224,7 +224,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         // Do not generate code if the product component is not valid as it may lead to exceptions.
-        if (!productCmpt.isValid()) {
+        if (!productCmpt.isValid(getIpsProject())) {
             return;
         }
 
@@ -237,7 +237,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         generateMethodGetProductCmptType(productCmptType, mainSection.getMethodBuilder());
 
         List<String> testMethods = generateTestMethods(productCmpt, mainSection.getMethodBuilder());
-        generateExecuteBusinessLogicMethod(productCmptType, testMethods, mainSection.getMethodBuilder());
+        generateExecuteBusinessLogicMethod(mainSection.getMethodBuilder());
         generateExecuteAssertsMethod(productCmptType, testMethods, mainSection.getMethodBuilder());
 
         generateComputeTestMethods(formulasToTestForGeneration, mainSection.getMethodBuilder());
@@ -335,9 +335,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * Generates an empty method.
      */
-    private void generateExecuteBusinessLogicMethod(IProductCmptType productCmptType,
-            List<String> testMethods,
-            JavaCodeFragmentBuilder builder) {
+    private void generateExecuteBusinessLogicMethod(JavaCodeFragmentBuilder builder) {
         String javaDoc = getJavaDocCommentForOverriddenMethod();
         JavaCodeFragment body = new JavaCodeFragment();
         appendOverrideAnnotation(builder, false);
@@ -413,9 +411,6 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         return true;
     }
 
-    /**
-     * @see generateTestMethods
-     */
     private void appendTestMethodsContentForGeneration(IProductCmptGeneration generation,
             JavaCodeFragmentBuilder builder,
             ArrayList<String> testMethods) throws CoreException {
@@ -583,7 +578,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IIpsObjectPartContainer ipsObjectPartContainer) {
-
+        // nothing to do
     }
 
     @Override
