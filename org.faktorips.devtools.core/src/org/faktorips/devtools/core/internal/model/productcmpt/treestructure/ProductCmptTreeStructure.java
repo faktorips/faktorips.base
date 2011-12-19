@@ -505,4 +505,37 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         return root.findProductCmptReference(prodCmptQualifiedName) != null;
     }
 
+    @Override
+    public List<IProductCmptReference> findReferencesFor(List<IProductCmpt> cmpts) {
+        ArrayList<IProductCmptReference> result = new ArrayList<IProductCmptReference>();
+
+        for (IIpsElement selectElement : cmpts) {
+            result.addAll(getReference(selectElement));
+        }
+
+        return result;
+    }
+
+    private List<IProductCmptReference> getReference(IIpsElement selectElement) {
+        List<IProductCmptReference> result = getReferences(getRoot(), selectElement);
+
+        IProductCmpt rootCmpt = getRoot().getProductCmpt();
+        if (selectElement.equals(rootCmpt)) {
+            result.add(getRoot());
+        }
+
+        return result;
+    }
+
+    private List<IProductCmptReference> getReferences(IProductCmptReference reference, IIpsElement selectElement) {
+        IProductCmptReference[] children = getChildProductCmptReferences(reference);
+        ArrayList<IProductCmptReference> result = new ArrayList<IProductCmptReference>();
+        for (IProductCmptReference child : children) {
+            if (selectElement.equals(child.getProductCmpt())) {
+                result.add(child);
+            }
+            result.addAll(getReferences(child, selectElement));
+        }
+        return result;
+    }
 }

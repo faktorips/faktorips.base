@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Observable;
@@ -900,58 +899,22 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
     /**
      * Searches the shown structure for the given elements. Every element of the structure
-     * representing one of the given elements is revealed and selected.
+     * representing one of the given elements is selected.
      */
-    public void setSelection(final List<IIpsElement> toBeSelected) {
+    public void setSelection(final List<IProductCmpt> toBeSelected) {
         if (toBeSelected.isEmpty()) {
             return;
         }
 
-        List<IProductCmptReference> refs = getReferencesFor(toBeSelected);
+        Object input = treeViewer.getInput();
+        if (!(input instanceof IProductCmptTreeStructure)) {
+            return;
+        }
+
+        IProductCmptTreeStructure struct = (IProductCmptTreeStructure)input;
+        List<IProductCmptReference> refs = struct.findReferencesFor(toBeSelected);
         IStructuredSelection selection = new StructuredSelection(refs);
 
         treeViewer.setSelection(selection, true);
     }
-
-    private List<IProductCmptReference> getReferencesFor(List<IIpsElement> toBeSelected) {
-        ArrayList<IProductCmptReference> result = new ArrayList<IProductCmptReference>();
-
-        Object input = treeViewer.getInput();
-        if (!(input instanceof IProductCmptTreeStructure)) {
-            return result;
-        }
-
-        IProductCmptTreeStructure struct = (IProductCmptTreeStructure)input;
-
-        for (IIpsElement selectElement : toBeSelected) {
-            result.addAll(getReference(struct, selectElement));
-        }
-
-        return result;
-    }
-
-    private List<IProductCmptReference> getReference(IProductCmptTreeStructure struct, IIpsElement selectElement) {
-        List<IProductCmptReference> result = getReferences(struct, struct.getRoot(), selectElement);
-        IProductCmpt rootCmpt = struct.getRoot().getProductCmpt();
-        if (selectElement.equals(rootCmpt)) {
-            result.add(struct.getRoot());
-        }
-
-        return result;
-    }
-
-    private List<IProductCmptReference> getReferences(IProductCmptTreeStructure struct,
-            IProductCmptReference reference,
-            IIpsElement selectElement) {
-        IProductCmptReference[] children = struct.getChildProductCmptReferences(reference);
-        ArrayList<IProductCmptReference> result = new ArrayList<IProductCmptReference>();
-        for (IProductCmptReference child : children) {
-            if (selectElement.equals(child.getProductCmpt())) {
-                result.add(child);
-            }
-            result.addAll(getReferences(struct, child, selectElement));
-        }
-        return result;
-    }
-
 }

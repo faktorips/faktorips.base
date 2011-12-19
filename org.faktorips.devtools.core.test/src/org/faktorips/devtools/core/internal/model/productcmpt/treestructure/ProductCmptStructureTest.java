@@ -19,7 +19,9 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -32,6 +34,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
@@ -180,5 +183,27 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         assertTrue(structure.referencesProductCmptQualifiedName(productCmptTarget.getQualifiedName()));
         assertFalse(structure.referencesProductCmptQualifiedName(productCmptTarget2.getQualifiedName()));
         assertFalse(structure.referencesProductCmptQualifiedName(unReferencedProductCmpt.getQualifiedName()));
+    }
+
+    @Test
+    public void testFindReferencesFor() throws CoreException {
+        List<IProductCmptReference> result;
+        List<IProductCmpt> cmpts = new ArrayList<IProductCmpt>();
+
+        result = structure.findReferencesFor(cmpts);
+        assertTrue(result.isEmpty());
+
+        cmpts.add(productCmpt);
+        result = structure.findReferencesFor(cmpts);
+        assertEquals(1, result.size());
+
+        cmpts.add(productCmptTarget);
+        cmpts.add(productCmptTarget2);
+        result = structure.findReferencesFor(cmpts);
+        assertEquals(3, result.size());
+
+        cmpts.add(newProductCmpt(ipsProject, "dummy"));
+        result = structure.findReferencesFor(cmpts);
+        assertEquals(3, result.size());
     }
 }

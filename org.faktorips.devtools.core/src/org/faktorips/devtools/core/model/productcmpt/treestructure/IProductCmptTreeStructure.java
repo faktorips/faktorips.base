@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.productcmpt.treestructure;
 
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Set;
 
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -130,5 +131,14 @@ public interface IProductCmptTreeStructure {
      *         <code>false</code> otherwise.
      */
     public boolean referencesProductCmptQualifiedName(String string);
+
+    /**
+     * Searches this structure/tree for {@link IProductCmptReference references} to any of the given
+     * {@link IProductCmpt product components}.
+     * 
+     * @return a list of references referring to at least one {@link IProductCmpt} given in the
+     *         list.
+     */
+    public List<IProductCmptReference> findReferencesFor(List<IProductCmpt> cmpts);
 
 }
