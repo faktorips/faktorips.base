@@ -218,8 +218,6 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         displayText.append(" - "); //$NON-NLS-1$
         displayText.append(function.getType().getName());
         String description = function.getDescription();
-        description = description.replaceAll("\r\n", "<br>"); //$NON-NLS-1$ //$NON-NLS-2$
-        description = description.replaceAll("\n", "<br>"); //$NON-NLS-1$ //$NON-NLS-2$
         IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText.toString(), description);
         result.add(proposal);
     }
