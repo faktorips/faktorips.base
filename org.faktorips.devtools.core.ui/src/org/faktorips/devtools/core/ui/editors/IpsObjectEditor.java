@@ -75,21 +75,17 @@ import org.faktorips.devtools.core.ui.views.outline.OutlinePage;
  * editor is active.
  * <p>
  * Implementations of <code>ISelectionProvider</code> that are used on the pages of this editor have
- * to be registered at the <code>SelectionProviderDispatcher</code> of the
- * <code>ISelectionProvider</code> of this editor. The dispatcher finds the currently active of all
- * registered selection providers and forwards requests to it.
- * <p>
- * There are two ways of registering with the <code>SelectionProviderDispatcher</code>:
- * <ol>
- * <li>The <code>Composite</code> where the control of the <code>ISelectionProvider</code>
- * implementation e.g. a <code>TreeViewer</code> is added to has to implement the
- * {@link ISelectionProviderActivation} interface. The editor will track all the implementations of
- * this interface at initialization time and register them with the dispatcher.</li>
- * <li>The dispatcher can be retrieved by the <code>getSelectionProviderDispatcher()</code> method
- * of this editor and an {@link ISelectionProviderActivation} can be registered manually.</li>
- * </ol>
+ * to be register the <code>SelectionProviderIntermediate</code> of this editor. The currently
+ * active selection provider should set
+ * {@link SelectionProviderIntermediate#setSelectionProviderDelegate(org.eclipse.jface.viewers.ISelectionProvider)}
+ * . If your composite implements the interface {@link ICompositeWithSelectableViewer} the
+ * {@link IpsObjectEditorPage} would find the composite and register the necessary listeners
+ * automatically. Otherwise you could handle setting and removing your selection provider for your
+ * own.
  * 
  * @see org.eclipse.jface.viewers.ISelectionProvider
+ * @see SelectionProviderIntermediate
+ * @see ICompositeWithSelectableViewer
  */
 public abstract class IpsObjectEditor extends FormEditor implements ContentsChangeListener,
         IModificationStatusChangeListener, IResourceChangeListener, IPropertyChangeListener, IIpsSrcFileEditor {
@@ -110,7 +106,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     private boolean contentChangeable = false;
 
     /** The editor's ISelectionProvider */
-    private SelectionProviderDispatcher selectionProviderDispatcher;
+    private SelectionProviderIntermediate selectionProviderDispatcher;
 
     /**
      * Storage for the user's decision not to load the changes made directly in the file system.
@@ -233,7 +229,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             getSite().getShell().getDisplay().syncExec(closeRunnable);
         } else {
             activationListener = new ActivationListener(site.getPage());
-            selectionProviderDispatcher = new SelectionProviderDispatcher();
+            selectionProviderDispatcher = new SelectionProviderIntermediate();
             site.setSelectionProvider(selectionProviderDispatcher);
             IpsUIPlugin.getDefault().addHistoryItem(ipsSrcFile);
         }
@@ -843,10 +839,10 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     /**
-     * Returns the <code>SelectionProviderDispatcher</code> which is the
+     * Returns the <code>SelectionProviderIntermediate</code> which is the
      * <code>ISelectionProvider</code> for this <code>IEditorPart</code>.
      */
-    public SelectionProviderDispatcher getSelectionProviderDispatcher() {
+    public SelectionProviderIntermediate getSelectionProviderIntermediate() {
         return selectionProviderDispatcher;
     }
 
@@ -855,7 +851,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         super.dispose();
 
         if (selectionProviderDispatcher != null) {
-            selectionProviderDispatcher.dispose();
+            selectionProviderDispatcher.setSelectionProviderDelegate(null);
         }
 
         if (activationListener != null) {

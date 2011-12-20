@@ -64,8 +64,8 @@ import org.faktorips.util.message.MessageList;
  * A composite that shows parts in a table viewer and provides an area containing a new, edit and
  * delete button.
  */
-public abstract class IpsPartsComposite extends ViewerButtonComposite implements ISelectionProviderActivation,
-        ISelectionProvider, IDataChangeableReadWriteAccess {
+public abstract class IpsPartsComposite extends ViewerButtonComposite implements ISelectionProvider,
+        IDataChangeableReadWriteAccess {
 
     /** The object the parts belong to. */
     private final IIpsObject ipsObject;
@@ -158,7 +158,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         if (!contextMenuManager.isEmpty()) {
             final Menu contextMenu = contextMenuManager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
-            site.registerContextMenu(contextMenuManager, getSelectionProvider());
+            site.registerContextMenu(contextMenuManager, getViewer());
 
             MenuCleaner.addAdditionsCleaner(contextMenuManager);
             // Hide the context menu if nothing is selected
@@ -717,19 +717,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         for (IDeleteListener listener : deleteListeners) {
             listener.deleted(part);
         }
-    }
-
-    @Override
-    public ISelectionProvider getSelectionProvider() {
-        return viewer;
-    }
-
-    @Override
-    public boolean isActivated() {
-        if (viewer == null) {
-            return false;
-        }
-        return viewer.getTable().getDisplay().getCursorControl() == viewer.getTable() ? true : false;
     }
 
 }

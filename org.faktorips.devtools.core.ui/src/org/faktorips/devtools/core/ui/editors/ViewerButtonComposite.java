@@ -25,7 +25,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
-public abstract class ViewerButtonComposite extends Composite {
+public abstract class ViewerButtonComposite extends Composite implements ICompositeWithSelectableViewer {
 
     private ContentViewer viewer;
 
@@ -157,7 +157,8 @@ public abstract class ViewerButtonComposite extends Composite {
         // Empty default implementation
     }
 
-    protected ContentViewer getViewer() {
+    @Override
+    public ContentViewer getViewer() {
         return viewer;
     }
 

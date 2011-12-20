@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -105,13 +106,14 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     }
 
     /**
-     * Searches for composites that implement the {@link ISelectionProviderActivation} interface and
-     * registers them with the selection provider dispatcher of the {@link IpsObjectEditor}.
+     * Searches for composites that implement the {@link ICompositeWithSelectableViewer} interface
+     * and registers them with the {@link SelectionProviderIntermediate} of the
+     * {@link IpsObjectEditor}.
      */
-    protected final void registerSelectionProviderActivation(Control container) {
-        if (container instanceof ISelectionProviderActivation) {
-            getIpsObjectEditor().getSelectionProviderDispatcher().addSelectionProviderActivation(
-                    (ISelectionProviderActivation)container);
+    protected final void registerSelectionProviderActivation(final Control container) {
+        if (container instanceof ICompositeWithSelectableViewer) {
+            Viewer viewer = ((ICompositeWithSelectableViewer)container).getViewer();
+            getIpsObjectEditor().getSelectionProviderIntermediate().registerListenersFor(viewer);
         }
 
         if (!(container instanceof Composite)) {
