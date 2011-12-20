@@ -393,6 +393,16 @@
                type="org.eclipse.jface.resource.ResourceManager">
          </adapter>
       </factory>
+      <factory
+            adaptableType="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference"
+            class="org.faktorips.devtools.core.model.productcmpt.treestructure.ProductCmptStructureAdapterFactory">
+         <adapter
+               type="org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation">
+         </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.faktorips.devtools.core.productComponentNamingStrategy">
