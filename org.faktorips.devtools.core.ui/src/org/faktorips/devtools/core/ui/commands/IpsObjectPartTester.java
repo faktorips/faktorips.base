@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.commands;
 import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.ui.IWorkbenchPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 
@@ -32,17 +33,18 @@ public class IpsObjectPartTester extends PropertyTester {
      */
     public static final String PROPERTY_PART_EDITABLE_IN_EDITOR = "isPartEditableInEditor"; //$NON-NLS-1$
 
+    /**
+     * Check wether the receiver part is editable
+     */
+    public static final String PROPERTY_PART_EDITABLE = "isPartEditable"; //$NON-NLS-1$
+
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
         IIpsObjectPart ipsObjectPart = (IIpsObjectPart)receiver;
-        /*
-         * TODO At the moment delete of IpsObjectPart is only enabled when the editor for the
-         * IpsSrcFile you want to manipulate is active. This is because we do not have a refactoring
-         * dialog for deleting IpsObjectParts. We could activate this feature if there is a dialog
-         * to confirm the deletion.
-         */
         if (PROPERTY_PART_EDITABLE_IN_EDITOR.equals(property)) {
             return isPartEditableInEditor(ipsObjectPart);
+        } else if (PROPERTY_PART_EDITABLE.equals(property)) {
+            return isPartEditable(ipsObjectPart);
         } else {
             return false;
         }
@@ -53,11 +55,19 @@ public class IpsObjectPartTester extends PropertyTester {
                 .getActivePart();
         if (activePart instanceof IpsObjectEditor) {
             IpsObjectEditor ipsEditor = (IpsObjectEditor)activePart;
-            if (ipsEditor.getIpsSrcFile().equals(ipsObjectPart.getIpsSrcFile())) {
+            if (ipsEditor.getIpsSrcFile().equals(ipsObjectPart.getIpsSrcFile()) && ipsEditor.isDataChangeable()) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean isPartEditable(IIpsObjectPart ipsObjectPart) {
+        if (ipsObjectPart instanceof IProductCmptGeneration) {
+            return IpsUIPlugin.getDefault().isGenerationEditable((IProductCmptGeneration)ipsObjectPart);
+        } else {
+            return IpsUIPlugin.isEditable(ipsObjectPart.getIpsSrcFile());
+        }
     }
 
 }

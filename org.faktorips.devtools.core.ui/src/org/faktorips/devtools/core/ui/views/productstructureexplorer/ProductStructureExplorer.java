@@ -66,6 +66,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
@@ -475,21 +476,9 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
         menumanager.add(new Separator("edit")); //$NON-NLS-1$
 
-        IIpsSrcFile srcFileToChange = null;
-        if (selectedRef instanceof IProductCmptReference) {
-            srcFileToChange = selectedRef.getWrappedIpsSrcFile();
-        } else if (selectedRef instanceof IProductCmptTypeAssociationReference) {
-            srcFileToChange = selectedRef.getParent().getWrappedIpsSrcFile();
-        } else if (selectedRef instanceof IProductCmptVRuleReference) {
-            srcFileToChange = selectedRef.getParent().getWrappedIpsSrcFile();
-        }
-        boolean editable = IpsUIPlugin.isEditable(srcFileToChange);
-
-        if (selectedRef instanceof IProductCmptReference || selectedRef instanceof IProductCmptTypeAssociationReference) {
-            final IAction addAction = new AddLinkAction(treeViewer);
-            menumanager.add(addAction);
-            addAction.setEnabled(editable);
-        }
+        IProductCmptGeneration prodCmptGenToChange = (IProductCmptGeneration)selectedRef
+                .getAdapter(IProductCmptGeneration.class);
+        boolean editable = IpsUIPlugin.getDefault().isGenerationEditable(prodCmptGenToChange);
 
         if (selectedRef instanceof IProductCmptReference) {
             menumanager.add(deleteAction);
@@ -853,7 +842,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         return ((showReferencedTable ? OPTION_REFERENCE_TABLE : 0) | //
                 (showTableStructureRoleName ? OPTION_TABLE_STRUCTURE_ROLE_NAME : 0) | //
                 (showAssociationNode ? OPTION_ASSOCIATION_NODE : 0) | (showAssociatedCmpts ? OPTION_ASSOCIATED_CMPTS
-                    : 0)); //
+                : 0)); //
     }
 
     /**

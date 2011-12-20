@@ -272,17 +272,17 @@
             name="%RefactoringCommandCategory_name">
       </category>
       <command
-            description="%newProductCmpt_description"
-            id="org.faktorips.devtools.core.ui.wizards.productcmpt.newProductCmpt"
-            name="%newProductCmpt_label">
-      </command>
-      <command
             id="org.faktorips.devtools.core.ui.openEditor"
             name="%openEditor">
       </command>
       <command
             id="org.faktorips.devtools.core.ui.commands.openIpsPartDialog"
             name="%openIpsPartProperty">
+      </command>
+      <command
+            description="%newProductCmpt_description"
+            id="org.faktorips.devtools.core.ui.wizards.productcmpt.newProductCmpt"
+            name="%newProductCmpt_label">
       </command>
       <command
             defaultHandler="org.faktorips.devtools.core.ui.editors.productcmpt.AddProductCmptLinkCommand"
@@ -757,7 +757,7 @@
             name="%testCaseTypeEditor"/>
       	<editor
              class="org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor"
-             contributorClass="org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorActionContributor"
+             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
              default="true"
              extensions="ipsproduct"
              icon="icons/ProductCmpt.gif"
@@ -1725,12 +1725,29 @@
                class="org.faktorips.devtools.core.ui.wizards.productcmpt.AddNewProductCmptCommand">
          </class>
          <activeWhen>
+         <or>
             <with
-                  variable="activeEditor">
-               <test
-                     property="org.faktorips.devtools.core.ui.commands.ipsObjectEditorTester.isEditorEditable">
-               </test>
+                  variable="selection">
+               <iterate
+                     ifEmpty="true"
+                     operator="or">
+                  <adapt
+                        type="org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration">
+                     <test
+                           property="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester.isPartEditable">
+                     </test>
+                  </adapt>
+               </iterate>
             </with>
+
+               <with
+                     variable="activeEditor">
+                  <test
+                        property="org.faktorips.devtools.core.ui.commands.ipsObjectEditorTester.isEditorEditable">
+                  </test>
+               </with>
+               
+               </or>
          </activeWhen>
       </handler>
       <handler
@@ -1781,7 +1798,7 @@
       <propertyTester
      	 namespace="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester"
        id="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester"
-       properties="isPartEditableInEditor"
+       properties="isPartEditableInEditor,isPartEditable"
        type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart"
        class="org.faktorips.devtools.core.ui.commands.IpsObjectPartTester">
      </propertyTester>
@@ -1972,6 +1989,7 @@
             locationURI="popup:org.faktorips.devtools.core.ui.editors.productcmpt.LinksSection">
          <command
                commandId="org.faktorips.devtools.core.ui.openEditor"
+               icon="icons/OpenIpsObject.gif"
                label="%openInNewEditor"
                style="push">
             <visibleWhen
@@ -1984,6 +2002,8 @@
          </separator>
          <command
                commandId="org.faktorips.devtools.core.ui.wizards.productcmpt.newProductCmpt"
+               icon="icons/Add_new.gif"
+               label="%newProductCmpt_label"
                style="push"
                tooltip="%newProductCmpt_description">
             <visibleWhen
@@ -2002,6 +2022,8 @@
          </command>
          <command
                commandId="org.faktorips.devtools.core.ui.commands.AddProductCmptLink"
+               icon="icons/Add.gif"
+               label="%NewProductCmptLinkCommand_name"
                style="push">
             <visibleWhen
                   checkEnabled="false">
@@ -2027,11 +2049,66 @@
          </separator>
          <command
                commandId="org.faktorips.devtools.core.ui.commands.openIpsPartDialog"
+               label="%openIpsPartProperty"
                style="push">
             <visibleWhen
                   checkEnabled="true">
             </visibleWhen>
          </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.faktorips.devtools.core.ui.views.productStructureExplorer?after=edit">
+         <command
+               commandId="org.faktorips.devtools.core.ui.wizards.productcmpt.newProductCmpt"
+               icon="icons/Add_new.gif"
+               label="%newProductCmpt_label"
+               style="push"
+               tooltip="%newProductCmpt_description">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="true"
+                        operator="and">
+                     <and>
+                        <adapt
+                              type="org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration">
+                        </adapt>
+                        <adapt
+                              type="org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation">
+                        </adapt>
+                     </and>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.faktorips.devtools.core.ui.commands.AddProductCmptLink"
+               icon="icons/Add.gif"
+               label="%NewProductCmptLinkCommand_name"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate>
+                     <or>
+                        <instanceof
+                              value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference">
+                        </instanceof>
+                        <instanceof
+                              value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference">
+                        </instanceof>
+                     </or>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            class="org.faktorips.devtools.core.ui.views.productstructureexplorer.AddNewProductCmptLinkSubmenuFactory"
+            locationURI="popup:org.faktorips.devtools.core.ui.views.productStructureExplorer?after=edit">
       </menuContribution>
    </extension>
       <extension

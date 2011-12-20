@@ -191,7 +191,7 @@ public class LinkCreatorUtil {
     }
 
     private void createLink(String droppedCmptQName, IProductCmptGeneration generation, IAssociation association) {
-        if (generation != null && association != null && IpsUIPlugin.isEditable(generation.getIpsSrcFile())) {
+        if (generation != null && association != null && IpsUIPlugin.getDefault().isGenerationEditable(generation)) {
             IProductCmptLink newLink = generation.newLink(association.getName());
             newLink.setTarget(droppedCmptQName);
             newLink.setMaxCardinality(1);

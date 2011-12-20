@@ -109,6 +109,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
@@ -366,6 +367,29 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Checks whether the given generation is editable, that means if the generation is valid in
+     * past the preference to edit these generations have to be enabled.
+     * <p>
+     * This method does not check if the given generation is active in respect to the current
+     * working date because this check is used in editors.
+     * <p>
+     * This method is in ui module although it only uses information from core module. We put it in
+     * here because the ips preferences should be an ui aspect and may be moved to ui.
+     * 
+     * @param generation The generation you want to check
+     * 
+     * @return true if the generation is editable
+     */
+    public boolean isGenerationEditable(IProductCmptGeneration generation) {
+        if (generation == null) {
+            return false;
+        }
+        return isEditable(generation.getIpsSrcFile())
+                && (!generation.isValidFromInPast() || IpsPlugin.getDefault().getIpsPreferences()
+                        .canEditRecentGeneration());
     }
 
     /**
