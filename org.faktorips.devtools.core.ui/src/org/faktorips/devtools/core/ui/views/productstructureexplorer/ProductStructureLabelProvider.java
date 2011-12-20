@@ -80,7 +80,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
             ITableContentUsage tcu = ((IProductCmptStructureTblUsageReference)element).getTableContentUsage();
             if (showTableStructureUsageName) {
-                return IpsUIPlugin.getLabel(tcu);
+                return IpsPlugin.getMultiLanguageSupport().getDefaultCaption(tcu);
             } else {
                 return StringUtil.unqualifiedName(tcu.getTableContentName());
             }
