@@ -363,7 +363,7 @@ public class GenProductCmptType extends GenType {
     protected GenTypePart getGenTypePart(IIpsObjectPart ipsObjectPart) throws CoreException {
         GenTypePart genTypePart = null;
         if (ipsObjectPart instanceof IProductCmptTypeAssociation) {
-            genTypePart = getGenerator((IProductCmptTypeAttribute)ipsObjectPart);
+            genTypePart = getGenerator((IProductCmptTypeAssociation)ipsObjectPart);
         }
         if (ipsObjectPart instanceof IProductCmptTypeAttribute) {
             genTypePart = getGenerator((IProductCmptTypeAttribute)ipsObjectPart);
