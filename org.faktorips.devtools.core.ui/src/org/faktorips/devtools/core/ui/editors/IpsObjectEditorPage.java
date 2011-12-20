@@ -113,7 +113,9 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     protected final void registerSelectionProviderActivation(final Control container) {
         if (container instanceof ICompositeWithSelectableViewer) {
             Viewer viewer = ((ICompositeWithSelectableViewer)container).getViewer();
-            getIpsObjectEditor().getSelectionProviderIntermediate().registerListenersFor(viewer);
+            if (viewer != null) {
+                getIpsObjectEditor().getSelectionProviderIntermediate().registerListenersFor(viewer);
+            }
         }
 
         if (!(container instanceof Composite)) {
