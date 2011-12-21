@@ -95,10 +95,13 @@ public class NewProductCmptPMOTest {
 
         IIpsSrcFile ipsSrcFile1 = mock(IIpsSrcFile.class);
         IProductCmptType productCmptType1 = mock(IProductCmptType.class);
+        when(productCmptType1.getName()).thenReturn("1");
         IIpsSrcFile ipsSrcFile2 = mock(IIpsSrcFile.class);
         IProductCmptType productCmptType2 = mock(IProductCmptType.class);
+        when(productCmptType2.getName()).thenReturn("1");
         IIpsSrcFile ipsSrcFile3 = mock(IIpsSrcFile.class);
         IProductCmptType productCmptType3 = mock(IProductCmptType.class);
+        when(productCmptType3.getName()).thenReturn("1");
         ipsSrcFiles.add(ipsSrcFile1);
         ipsSrcFiles.add(ipsSrcFile2);
         ipsSrcFiles.add(ipsSrcFile3);

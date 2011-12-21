@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -219,9 +220,14 @@ public class NewProductCmptPMO extends PresentationModelObject {
 
             @Override
             public int compare(IProductCmptType o1, IProductCmptType o2) {
-                String label1 = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(o1);
-                String label2 = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(o2);
-                return label1.compareTo(label2);
+                MultiLanguageSupport multiLanguageSupport = IpsPlugin.getMultiLanguageSupport();
+                if (multiLanguageSupport != null) {
+                    String label1 = multiLanguageSupport.getLocalizedLabel(o1);
+                    String label2 = multiLanguageSupport.getLocalizedLabel(o2);
+                    return label1.compareTo(label2);
+                } else {
+                    return o1.getName().compareTo(o2.getName());
+                }
             }
 
         });
