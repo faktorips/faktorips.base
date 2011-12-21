@@ -38,10 +38,10 @@ public class ProductCmptStructureAdapterFactory implements IAdapterFactory {
             }
             if (adapterType.isAssignableFrom(IProductCmptTypeAssociation.class)) {
                 // can only adapt to association if there is only one child
-                if (cmptReference.getChildren().length == 1
-                        && cmptReference.getChildren()[0] instanceof IProductCmptTypeAssociationReference) {
-                    IProductCmptTypeAssociationReference associationRef = (IProductCmptTypeAssociationReference)cmptReference
-                            .getChildren()[0];
+                IProductCmptTypeAssociationReference[] children = cmptReference.getStructure()
+                        .getChildProductCmptTypeAssociationReferences(cmptReference);
+                if (children.length == 1) {
+                    IProductCmptTypeAssociationReference associationRef = children[0];
                     return associationRef.getAssociation();
                 } else {
                     return null;
