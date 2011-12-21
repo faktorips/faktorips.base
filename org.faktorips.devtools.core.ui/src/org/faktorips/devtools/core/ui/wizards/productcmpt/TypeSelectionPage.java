@@ -47,9 +47,9 @@ public class TypeSelectionPage extends WizardPage {
     private TypeSelectionComposite typeSelectionComposite;
 
     public TypeSelectionPage(NewProductCmptPMO pmo) {
-        super("New Product Component");
+        super(Messages.TypeSelectionPage_name);
         this.pmo = pmo;
-        setTitle("Which kind of product component do you want to create?");
+        setTitle(Messages.TypeSelectionPage_title);
         resourManager = new LocalResourceManager(JFaceResources.getResources());
         bindingContext = new BindingContext();
         pmo.addPropertyChangeListener(new PropertyChangeListener() {
@@ -73,13 +73,13 @@ public class TypeSelectionPage extends WizardPage {
         Composite twoColumnComposite = toolkit.createLabelEditColumnComposite(composite);
 
         // Select Project
-        toolkit.createLabel(twoColumnComposite, "Project:");
+        toolkit.createLabel(twoColumnComposite, Messages.TypeSelectionPage_label_project);
         ipsProjectRefControl = toolkit.createIpsProjectRefControl(twoColumnComposite);
 
         toolkit.createHorizonzalLine(composite);
 
         typeSelectionComposite = new TypeSelectionComposite(composite, toolkit);
-        typeSelectionComposite.setTitle("Type:");
+        typeSelectionComposite.setTitle(Messages.TypeSelectionPage_label_type);
 
         setControl(composite);
 

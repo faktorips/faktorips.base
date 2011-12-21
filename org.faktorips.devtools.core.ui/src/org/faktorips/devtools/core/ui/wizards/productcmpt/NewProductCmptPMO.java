@@ -15,6 +15,8 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -60,6 +62,8 @@ public class NewProductCmptPMO extends PresentationModelObject {
 
     public static final String PROPERTY_NEED_VERSION_ID = "needVersionId"; //$NON-NLS-1$
 
+    public static final String PROPERTY_OPEN_EDITOR = "openEditor"; //$NON-NLS-1$
+
     private IIpsProject ipsProject;
 
     private IIpsPackageFragmentRoot packageRoot;
@@ -89,6 +93,8 @@ public class NewProductCmptPMO extends PresentationModelObject {
     private IProductCmptGeneration addToProductCmptGeneration;
 
     private IProductCmptTypeAssociation addToAssociation;
+
+    private boolean openEditor;
 
     public NewProductCmptPMO(GregorianCalendar workingDate) {
         this.workingDate = workingDate;
@@ -209,8 +215,16 @@ public class NewProductCmptPMO extends PresentationModelObject {
      */
     public List<IProductCmptType> getBaseTypes() {
         List<IProductCmptType> sortedBaseTypes = new ArrayList<IProductCmptType>(baseTypes);
-        // TODO Sort the list by any criteria
-        // Collections.sort(sortedBaseTypes, new StrutcureComparator(baseTypes, findIpsProject()));
+        Collections.sort(sortedBaseTypes, new Comparator<IProductCmptType>() {
+
+            @Override
+            public int compare(IProductCmptType o1, IProductCmptType o2) {
+                String label1 = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(o1);
+                String label2 = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(o2);
+                return label1.compareTo(label2);
+            }
+
+        });
         return sortedBaseTypes;
     }
 
@@ -277,7 +291,7 @@ public class NewProductCmptPMO extends PresentationModelObject {
     }
 
     /**
-     * @param kindId The kindId to set.
+     * @param name The kindId to set.
      */
     public void setKindId(String name) {
         String oldName = this.kindId;
@@ -457,10 +471,26 @@ public class NewProductCmptPMO extends PresentationModelObject {
     /**
      * Returns the association to which the newly created product component will be added
      * 
-     * @see #setAddToAssociation(IProductCmpt, IProductCmptTypeAssociation)
+     * @see #setAddToAssociation(IProductCmptGeneration, IProductCmptTypeAssociation)
      */
     public IProductCmptTypeAssociation getAddToAssociation() {
         return addToAssociation;
+    }
+
+    /**
+     * @param openEditor The openEditor to set.
+     */
+    public void setOpenEditor(boolean openEditor) {
+        boolean oldValue = this.openEditor;
+        this.openEditor = openEditor;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_OPEN_EDITOR, oldValue, openEditor));
+    }
+
+    /**
+     * @return Returns the openEditor.
+     */
+    public boolean isOpenEditor() {
+        return openEditor;
     }
 
     /**

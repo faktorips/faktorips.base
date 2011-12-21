@@ -27,6 +27,37 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String FolderAndPackagePage_check_openInEditor;
+    public static String FolderAndPackagePage_label_package;
+    public static String FolderAndPackagePage_label_rootFolder;
+    public static String FolderAndPackagePage_title;
+    public static String NewProductCmptWizard_title;
+    public static String NewProdutCmptValidator_msg_emptyKindId;
+    public static String NewProdutCmptValidator_msg_emptyVersionId;
+    public static String NewProdutCmptValidator_msg_invalidAddGenerationInPast;
+    public static String NewProdutCmptValidator_msg_invalidAddToGeneration;
+    public static String NewProdutCmptValidator_msg_invalidBaseType;
+    public static String NewProdutCmptValidator_msg_invalidFullName;
+    public static String NewProdutCmptValidator_msg_invalidKindId;
+    public static String NewProdutCmptValidator_msg_invalidPackage;
+    public static String NewProdutCmptValidator_msg_invalidPackageRoot;
+    public static String NewProdutCmptValidator_msg_invalidProject;
+    public static String NewProdutCmptValidator_msg_invalidSelectedType;
+    public static String NewProdutCmptValidator_msg_invalidTypeAddTo;
+    public static String NewProdutCmptValidator_msg_invalidVersionId;
+    public static String NewProdutCmptValidator_msg_srcFileExists;
+    public static String ProductCmptPage_label_fullName;
+    public static String ProductCmptPage_label_fullNameText;
+    public static String ProductCmptPage_label_name;
+    public static String ProductCmptPage_label_runtimeId;
+    public static String ProductCmptPage_label_selectType;
+    public static String ProductCmptPage_name;
     public static String ProductCmptPage_title;
+    public static String TypeSelectionComposite_label_description;
+    public static String TypeSelectionComposite_label_noDescriptionAvailable;
+    public static String TypeSelectionPage_label_project;
+    public static String TypeSelectionPage_label_type;
+    public static String TypeSelectionPage_name;
+    public static String TypeSelectionPage_title;
 
 }

@@ -76,7 +76,7 @@ class TypeSelectionComposite extends Composite {
 
     private void createControls() {
         title = toolkit.createLabel(this, StringUtils.EMPTY);
-        toolkit.createLabel(this, "Description:");
+        toolkit.createLabel(this, Messages.TypeSelectionComposite_label_description);
 
         listViewer = new TableViewer(this);
         listViewer.setContentProvider(new ArrayContentProvider());
@@ -103,7 +103,7 @@ class TypeSelectionComposite extends Composite {
         fontData.setStyle(SWT.BOLD);
         descriptionTitle.setFont(resourManager.createFont(FontDescriptor.createFrom(fontData)));
 
-        GridData descriptionLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);;
+        GridData descriptionLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
         descriptionLayoutData.heightHint = 50;
         descriptionLayoutData.widthHint = 50;
         description = toolkit.createLabel(descriptionComposite, StringUtils.EMPTY, SWT.WRAP, descriptionLayoutData);
@@ -132,7 +132,7 @@ class TypeSelectionComposite extends Composite {
 
     public void setDescription(String descriptionString) {
         if (StringUtils.isEmpty(descriptionString) && StringUtils.isNotEmpty(descriptionTitle.getText())) {
-            description.setText("no description available");
+            description.setText(Messages.TypeSelectionComposite_label_noDescriptionAvailable);
             description.setEnabled(false);
         } else {
             description.setText(descriptionString);

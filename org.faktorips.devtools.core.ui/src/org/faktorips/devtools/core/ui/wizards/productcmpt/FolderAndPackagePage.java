@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsPckFragmentRefField;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.util.message.MessageList;
 
@@ -36,9 +37,10 @@ public class FolderAndPackagePage extends WizardPage {
     private IpsPckFragmentRefControl packageRefControl;
     private Combo rootFolder;
     private ComboViewerField<IIpsPackageFragmentRoot> rootFolderField;
+    private Checkbox openEditor;
 
     protected FolderAndPackagePage(NewProductCmptPMO pmo) {
-        super("Select Folder and Package");
+        super(Messages.FolderAndPackagePage_title);
         this.pmo = pmo;
         bindingContext = new BindingContext();
     }
@@ -50,12 +52,16 @@ public class FolderAndPackagePage extends WizardPage {
 
         Composite labelEditColumnComposite = toolkit.createLabelEditColumnComposite(composite);
 
-        toolkit.createLabel(labelEditColumnComposite, "Root Folder:");
+        toolkit.createLabel(labelEditColumnComposite, Messages.FolderAndPackagePage_label_rootFolder);
         rootFolder = toolkit.createCombo(labelEditColumnComposite);
 
-        toolkit.createLabel(labelEditColumnComposite, "Package:");
+        toolkit.createLabel(labelEditColumnComposite, Messages.FolderAndPackagePage_label_package);
         packageRefControl = toolkit.createPdPackageFragmentRefControl(labelEditColumnComposite);
         packageRefControl.setIpsPckFragmentRoot(pmo.getPackageRoot());
+
+        toolkit.createHorizonzalLine(composite);
+
+        openEditor = toolkit.createCheckbox(composite, Messages.FolderAndPackagePage_check_openInEditor);
 
         setControl(composite);
         bindControls();
@@ -69,6 +75,9 @@ public class FolderAndPackagePage extends WizardPage {
         bindingContext.bindContent(ipsPckFragmentRefField, pmo, NewProductCmptPMO.PROPERTY_IPS_PACKAGE);
         uiUpdater = new FolderAndPackageUiUpdater(this, pmo);
         pmo.addPropertyChangeListener(uiUpdater);
+
+        bindingContext.bindContent(openEditor, pmo, NewProductCmptPMO.PROPERTY_OPEN_EDITOR);
+
         uiUpdater.updateUI();
         bindingContext.updateUI();
     }

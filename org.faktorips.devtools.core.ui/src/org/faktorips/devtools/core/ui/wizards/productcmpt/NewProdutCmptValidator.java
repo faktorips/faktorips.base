@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
@@ -48,15 +49,15 @@ public class NewProdutCmptValidator {
 
     public static final String MSG_INVALID_VERSION_ID = MSGCODE_PREFIX + "invalidVersionId"; //$NON-NLS-1$
 
-    public static final String MSG_INVALID_PACKAGE_ROOT = MSGCODE_PREFIX + "invalidPackageRoot";
+    public static final String MSG_INVALID_PACKAGE_ROOT = MSGCODE_PREFIX + "invalidPackageRoot"; //$NON-NLS-1$
 
-    public static final String MSG_INVALID_PACKAGE = MSGCODE_PREFIX + "invalidPackage";
+    public static final String MSG_INVALID_PACKAGE = MSGCODE_PREFIX + "invalidPackage"; //$NON-NLS-1$
 
-    public static final String MSG_SRC_FILE_EXISTS = MSGCODE_PREFIX + "sourceFileExists";
+    public static final String MSG_SRC_FILE_EXISTS = MSGCODE_PREFIX + "sourceFileExists"; //$NON-NLS-1$
 
-    public static final String MSG_INVALID_FULL_NAME = MSGCODE_PREFIX + "invalidFullName";
+    public static final String MSG_INVALID_FULL_NAME = MSGCODE_PREFIX + "invalidFullName"; //$NON-NLS-1$
 
-    public static final String MSG_INVALID_ADD_TO_GENERATION = MSGCODE_PREFIX + "addToGeneration";
+    public static final String MSG_INVALID_ADD_TO_GENERATION = MSGCODE_PREFIX + "addToGeneration"; //$NON-NLS-1$
 
     private final NewProductCmptPMO pmo;
 
@@ -68,20 +69,21 @@ public class NewProdutCmptValidator {
         MessageList result = new MessageList();
 
         if (pmo.getIpsProject() == null || !pmo.getIpsProject().isProductDefinitionProject()) {
-            result.add(new Message(MSG_INVALID_PROJECT, "Please select a product definition project", Message.ERROR,
-                    pmo, NewProductCmptPMO.PROPERTY_IPS_PROJECT));
+            result.add(new Message(MSG_INVALID_PROJECT, Messages.NewProdutCmptValidator_msg_invalidProject,
+                    Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_IPS_PROJECT));
         }
 
         if (pmo.getSelectedBaseType() == null) {
-            result.add(new Message(MSG_INVALID_BASE_TYPE,
-                    "Please select the type of product component you want to create", Message.ERROR, pmo,
-                    NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE));
+            result.add(new Message(MSG_INVALID_BASE_TYPE, Messages.NewProdutCmptValidator_msg_invalidBaseType,
+                    Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE));
         }
 
         return result;
     }
 
     public MessageList validateProductCmptPage() {
+        IChangesOverTimeNamingConvention convention = IpsPlugin.getDefault().getIpsPreferences()
+                .getChangesOverTimeNamingConvention();
         MessageList result = new MessageList();
         if ((result = validateTypeSelection()).containsErrorMsg()) {
             // validation only makes sense if there are no error on type selection page.
@@ -89,34 +91,36 @@ public class NewProdutCmptValidator {
         }
 
         if (pmo.getSelectedType() == null) {
-            result.add(new Message(MSG_INVALID_SELECTED_TYPE,
-                    "Please select the type of product component you want to create", Message.ERROR, pmo,
-                    NewProductCmptPMO.PROPERTY_SELECTED_TYPE));
+            result.add(new Message(MSG_INVALID_SELECTED_TYPE, Messages.NewProdutCmptValidator_msg_invalidSelectedType,
+                    Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_SELECTED_TYPE));
         }
 
         if (StringUtils.isEmpty(pmo.getKindId())) {
-            result.add(new Message(MSG_EMPTY_KIND_ID, "Please insert a name for the new product component",
-                    Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_KIND_ID));
+            result.add(new Message(MSG_EMPTY_KIND_ID, Messages.NewProdutCmptValidator_msg_emptyKindId, Message.ERROR,
+                    pmo, NewProductCmptPMO.PROPERTY_KIND_ID));
         }
         if (pmo.isNeedVersionId() && StringUtils.isEmpty(pmo.getVersionId())) {
-            result.add(new Message(MSG_EMPTY_VERSION_ID, "Please insert a correct version id", Message.ERROR, pmo,
+            result.add(new Message(MSG_EMPTY_VERSION_ID, NLS.bind(Messages.NewProdutCmptValidator_msg_emptyVersionId,
+                    convention.getVersionConceptNameSingular()), Message.ERROR, pmo,
                     NewProductCmptPMO.PROPERTY_VERSION_ID));
         }
         if (pmo.getKindId() != null && (!pmo.isNeedVersionId() || pmo.getVersionId() != null)) {
             IProductCmptNamingStrategy productCmptNamingStrategy = pmo.getIpsProject().getProductCmptNamingStrategy();
             try {
                 if (!pmo.getKindId().equals(productCmptNamingStrategy.getKindId(pmo.getFullName()))) {
-                    result.add(new Message(MSG_INVALID_KIND_ID, "Please insert a correct kind id", Message.ERROR, pmo,
-                            NewProductCmptPMO.PROPERTY_KIND_ID));
+                    result.add(new Message(MSG_INVALID_KIND_ID, Messages.NewProdutCmptValidator_msg_invalidKindId,
+                            Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_KIND_ID));
                 }
                 if (pmo.isNeedVersionId()
                         && !pmo.getVersionId().equals(productCmptNamingStrategy.getVersionId(pmo.getFullName()))) {
-                    result.add(new Message(MSG_INVALID_VERSION_ID, "Please insert a correct version id", Message.ERROR,
-                            pmo, NewProductCmptPMO.PROPERTY_VERSION_ID));
+                    result.add(new Message(MSG_INVALID_VERSION_ID, NLS.bind(
+                            Messages.NewProdutCmptValidator_msg_invalidVersionId,
+                            convention.getVersionConceptNameSingular()), Message.ERROR, pmo,
+                            NewProductCmptPMO.PROPERTY_VERSION_ID));
                 }
             } catch (IllegalArgumentException e) {
-                result.add(new Message(MSG_INVALID_FULL_NAME, "Please insert a valid name", Message.ERROR, pmo,
-                        NewProductCmptPMO.PROPERTY_VERSION_ID, NewProductCmptPMO.PROPERTY_KIND_ID));
+                result.add(new Message(MSG_INVALID_FULL_NAME, Messages.NewProdutCmptValidator_msg_invalidFullName,
+                        Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_VERSION_ID, NewProductCmptPMO.PROPERTY_KIND_ID));
             }
         }
 
@@ -135,7 +139,7 @@ public class NewProdutCmptValidator {
             result.add(namingConventions.validateUnqualifiedIpsObjectName(IpsObjectType.PRODUCT_CMPT, pmo.getFullName()));
             IIpsSrcFile file = pmo.getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, pmo.getQualifiedName());
             if (file != null) {
-                result.add(new Message(MSG_SRC_FILE_EXISTS, "A product component with this name does already exist.",
+                result.add(new Message(MSG_SRC_FILE_EXISTS, Messages.NewProdutCmptValidator_msg_srcFileExists,
                         Message.ERROR));
             }
         } catch (CoreException e) {
@@ -152,13 +156,13 @@ public class NewProdutCmptValidator {
         }
 
         if (pmo.getPackageRoot() == null) {
-            result.add(new Message(MSG_INVALID_PACKAGE_ROOT, "No valid root folder is selected", Message.ERROR, pmo,
-                    NewProductCmptPMO.PROPERTY_PACKAGE_ROOT));
+            result.add(new Message(MSG_INVALID_PACKAGE_ROOT, Messages.NewProdutCmptValidator_msg_invalidPackageRoot,
+                    Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_PACKAGE_ROOT));
         }
 
         if (pmo.getIpsPackage() == null || !pmo.getIpsPackage().getRoot().equals(pmo.getPackageRoot())) {
-            result.add(new Message(MSG_INVALID_PACKAGE, "Please specify a valid package", Message.ERROR, pmo,
-                    NewProductCmptPMO.PROPERTY_IPS_PACKAGE));
+            result.add(new Message(MSG_INVALID_PACKAGE, Messages.NewProdutCmptValidator_msg_invalidPackage,
+                    Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_IPS_PACKAGE));
         }
 
         return result;
@@ -181,20 +185,16 @@ public class NewProdutCmptValidator {
         }
         IIpsSrcFile ipsSrcFile = generation.getIpsSrcFile();
         if (!IpsUIPlugin.isEditable(ipsSrcFile)) {
-            messageList.add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
-                    "The new product component would not be added becaus you cannot edit {0}.", ipsSrcFile.getName()),
-                    Message.WARNING));
+            messageList
+                    .add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
+                            Messages.NewProdutCmptValidator_msg_invalidAddToGeneration, ipsSrcFile.getName()),
+                            Message.WARNING));
         }
         IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
         if (generation.isValidFromInPast() && !ipsPreferences.canEditRecentGeneration()) {
             messageList.add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
-                    "Cannot add the new product component to {0} beacause you cannot edit generations in the past.",
-                    generation.getProductCmpt().getName()), Message.WARNING));
-        }
-        if (!generation.getValidFrom().equals(ipsPreferences.getWorkingDate())) {
-            messageList.add(new Message(MSG_INVALID_ADD_TO_GENERATION,
-                    "You can only add links to the active generation, please select correct working date.",
-                    Message.WARNING));
+                    Messages.NewProdutCmptValidator_msg_invalidAddGenerationInPast, generation.getProductCmpt()
+                            .getName()), Message.WARNING));
         }
         return messageList;
     }
@@ -207,12 +207,9 @@ public class NewProdutCmptValidator {
                 IProductCmptType targetProductCmptType = addToAssociation
                         .findTargetProductCmptType(pmo.getIpsProject());
                 if (!pmo.getSelectedType().isSubtypeOrSameType(targetProductCmptType, pmo.getIpsProject())) {
-                    result.add(new Message(
-                            MSG_INVALID_SELECTED_TYPE,
-                            NLS.bind(
-                                    "The selected type cannot be added to the association {0} of product component {1}.",
-                                    addToAssociation.getName(), pmo.getAddToProductCmptGeneration().getProductCmpt()
-                                            .getName()), Message.WARNING));
+                    result.add(new Message(MSG_INVALID_SELECTED_TYPE, NLS.bind(
+                            Messages.NewProdutCmptValidator_msg_invalidTypeAddTo, addToAssociation.getName(), pmo
+                                    .getAddToProductCmptGeneration().getProductCmpt().getName()), Message.WARNING));
                 }
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);

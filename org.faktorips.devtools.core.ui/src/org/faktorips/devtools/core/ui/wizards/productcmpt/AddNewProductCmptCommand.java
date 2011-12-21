@@ -63,9 +63,6 @@ public class AddNewProductCmptCommand extends AbstractHandler {
                     addNewLinkOnReference((IProductCmptStructureReference)firstElement, shell);
                 }
             }
-        } else {
-            // TODO only for debugging - remove!
-            throw new RuntimeException("No structured selection");
         }
         return null;
     }

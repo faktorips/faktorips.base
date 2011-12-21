@@ -27,12 +27,13 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchWizard;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -62,7 +63,9 @@ import org.faktorips.util.message.MessageList;
  * @author dirmeier
  * 
  */
-public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
+public class NewProductCmptWizard extends Wizard implements INewWizard {
+
+    public static final String ID = "newProductCmptWizard"; //$NON-NLS-1$
 
     private final NewProductCmptPMO pmo;
     private final TypeSelectionPage typeSelectionPage;
@@ -76,10 +79,11 @@ public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
      */
     public NewProductCmptWizard() {
         super();
-        setWindowTitle("Create new product component");
+        setWindowTitle(Messages.NewProductCmptWizard_title);
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "wizards/NewProductCmptWizard.png")); //$NON-NLS-1$
         pmo = new NewProductCmptPMO(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+        loadDialogSettings();
         validator = new NewProdutCmptValidator(pmo);
         typeSelectionPage = new TypeSelectionPage(pmo);
         productCmptPage = new ProductCmptPage(pmo);
@@ -113,7 +117,7 @@ public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
         IWorkspaceRunnable op = new IWorkspaceRunnable() {
             @Override
             public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
-                monitor.beginTask("Create product component", 4);
+                monitor.beginTask(Messages.NewProductCmptWizard_title, 4);
                 IIpsSrcFile ipsSrcFile = createIpsSrcFile(monitor);
                 finishIpsSrcFile(ipsSrcFile, monitor);
                 ipsSrcFile.save(true, new SubProgressMonitor(monitor, 1));
@@ -142,7 +146,10 @@ public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
             return false;
         }
         IIpsSrcFile srcFile = pmo.getIpsPackage().getIpsSrcFile(getIpsObjectType().getFileName(pmo.getFullName()));
-        IpsUIPlugin.getDefault().openEditor(srcFile);
+        if (pmo.isOpenEditor()) {
+            IpsUIPlugin.getDefault().openEditor(srcFile);
+        }
+        safeDialogSettings();
         return true;
     }
 
@@ -181,8 +188,6 @@ public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
                         throw new CoreRuntimeException(e);
                     }
                 }
-            } else {
-                // TODO was not added dialog?
             }
         }
     }
@@ -261,6 +266,19 @@ public class NewProductCmptWizard extends Wizard implements IWorkbenchWizard {
     public void setAddToAssociation(IProductCmptGeneration addToproductCmptGen,
             IProductCmptTypeAssociation addToAssociation) {
         pmo.setAddToAssociation(addToproductCmptGen, addToAssociation);
+    }
+
+    private void loadDialogSettings() {
+        IDialogSettings section = IpsUIPlugin.getDefault().getDialogSettings().getSection(ID);
+        if (section != null) {
+            boolean openEditor = section.getBoolean(NewProductCmptPMO.PROPERTY_OPEN_EDITOR);
+            pmo.setOpenEditor(openEditor);
+        }
+    }
+
+    private void safeDialogSettings() {
+        IDialogSettings section = IpsUIPlugin.getDefault().getDialogSettings().addNewSection(ID);
+        section.put(NewProductCmptPMO.PROPERTY_OPEN_EDITOR, pmo.isOpenEditor());
     }
 
     @Override

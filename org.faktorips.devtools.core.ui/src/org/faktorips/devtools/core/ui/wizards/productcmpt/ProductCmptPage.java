@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -66,7 +67,7 @@ public class ProductCmptPage extends WizardPage {
     private Label versionIdLabel;
 
     public ProductCmptPage(NewProductCmptPMO pmo) {
-        super("create product component");
+        super(Messages.ProductCmptPage_name);
         this.pmo = pmo;
         resourManager = new LocalResourceManager(JFaceResources.getResources());
         bindingContext = new BindingContext();
@@ -80,23 +81,27 @@ public class ProductCmptPage extends WizardPage {
         layout.verticalSpacing = 10;
 
         typeSelectionComposite = new TypeSelectionComposite(composite, toolkit);
-        typeSelectionComposite.setTitle("Select Type:");
+        typeSelectionComposite.setTitle(Messages.ProductCmptPage_label_selectType);
 
         toolkit.createHorizonzalLine(composite);
 
         Composite nameAndIdComposite = toolkit.createLabelEditColumnComposite(composite);
-        toolkit.createLabel(nameAndIdComposite, "Name:");
+        toolkit.createLabel(nameAndIdComposite, Messages.ProductCmptPage_label_name);
         Composite nameComposite = toolkit.createGridComposite(nameAndIdComposite, 3, false, false);
 
         nameText = toolkit.createText(nameComposite);
+        ((GridData)nameText.getLayoutData()).widthHint = 250;
 
-        versionIdLabel = toolkit.createLabel(nameComposite, "Generation:");
+        IChangesOverTimeNamingConvention changesOverTimeNamingConvention = IpsPlugin.getDefault().getIpsPreferences()
+                .getChangesOverTimeNamingConvention();
+        versionIdLabel = toolkit.createLabel(nameComposite,
+                changesOverTimeNamingConvention.getVersionConceptNameSingular() + ":"); //$NON-NLS-1$
         versionIdText = toolkit.createText(nameComposite);
         ((GridData)versionIdText.getLayoutData()).widthHint = 40;
         toolkit.createVerticalSpacer(nameAndIdComposite, 0);
-        fullNameLabel = toolkit.createLabel(nameAndIdComposite, "Full Name:");
+        fullNameLabel = toolkit.createLabel(nameAndIdComposite, Messages.ProductCmptPage_label_fullNameText);
 
-        toolkit.createLabel(nameAndIdComposite, "Runtime ID:");
+        toolkit.createLabel(nameAndIdComposite, Messages.ProductCmptPage_label_runtimeId);
         runtimeId = toolkit.createText(nameAndIdComposite);
         runtimeId.setEnabled(pmo.isCanEditRuntimeId());
 
@@ -185,7 +190,8 @@ public class ProductCmptPage extends WizardPage {
 
         public void updateNameOrVersionId() {
             if (getPage().fullNameLabel != null) {
-                getPage().fullNameLabel.setText(NLS.bind("Full Name: {0}", getPmo().getFullName()));
+                getPage().fullNameLabel.setText(NLS.bind(Messages.ProductCmptPage_label_fullNameText, getPmo()
+                        .getFullName()));
             }
         }
 
@@ -206,7 +212,8 @@ public class ProductCmptPage extends WizardPage {
             IProductCmptType selectedBaseType = getPmo().getSelectedBaseType();
             if (selectedBaseType != null) {
                 getPage().setTitle(
-                        "Create new " + IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(selectedBaseType));
+                        NLS.bind(Messages.ProductCmptPage_title,
+                                IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(selectedBaseType)));
             } else {
                 getPage().setTitle(StringUtils.EMPTY);
             }
