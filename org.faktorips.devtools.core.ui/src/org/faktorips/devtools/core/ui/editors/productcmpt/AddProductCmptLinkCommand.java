@@ -80,14 +80,16 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
 
     @Override
     public void setEnabled(Object evaluationContext) {
-        super.setEnabled(evaluationContext);
         ISelection selection = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getSelectionService()
                 .getSelection();
         TypedSelection<IProductCmptReference> typedSelection = new TypedSelection<IProductCmptReference>(
                 IProductCmptReference.class, selection);
         if (typedSelection.isValid()) {
             setBaseEnabled(typedSelection.getFirstElement().getChildren().length > 0);
+        } else {
+            setBaseEnabled(true);
         }
+        super.setEnabled(evaluationContext);
     }
 
     private Object addLinkInEditor(ISelection selection, Shell shell, ProductCmptEditor productCmptEditor) {
