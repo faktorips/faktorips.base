@@ -73,8 +73,8 @@ public class SelectionProviderIntermediateTest {
 
         intermediate.setSelectionProviderDelegate(newPostDelegate);
 
-        verify(selectionListener).selectionChanged(any(SelectionChangedEvent.class));
-        verify(postSelectionListener).selectionChanged(any(SelectionChangedEvent.class));
+        verify(selectionListener, times(2)).selectionChanged(any(SelectionChangedEvent.class));
+        verify(postSelectionListener, times(2)).selectionChanged(any(SelectionChangedEvent.class));
         verify(newPostDelegate).addSelectionChangedListener(intermediateChangeListenerCapture.getValue());
         verify(newPostDelegate).addPostSelectionChangedListener(intermediatePostChangeListenerCapture.capture());
         verify(newPostDelegate, times(2)).getSelection();
