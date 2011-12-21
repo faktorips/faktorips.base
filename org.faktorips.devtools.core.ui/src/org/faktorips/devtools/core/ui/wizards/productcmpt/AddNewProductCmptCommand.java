@@ -13,57 +13,33 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import java.util.Map;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.commands.IElementUpdater;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.menus.UIElement;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 
-public class AddNewProductCmptCommand extends AbstractHandler implements IElementUpdater {
+public class AddNewProductCmptCommand extends AbstractHandler {
 
-    @Override
-    public void updateElement(UIElement element, Map parameters) {
-        ISelectionService selectionService = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
-                .getSelectionService();
-        if (selectionService != null) {
-            IStructuredSelection selection = (IStructuredSelection)selectionService.getSelection();
-            if (selection == null) {
-                return;
-            }
-            if (selection.getFirstElement() instanceof String) {
-                String selectedString = (String)selection.getFirstElement();
-                element.setText(NLS.bind("Add new {0}...", selectedString));
-            } else if (selection.getFirstElement() instanceof IAdaptable) {
-                IAdaptable adaptable = (IAdaptable)selection.getFirstElement();
-                IWorkbenchAdapter workbenchAdapter = (IWorkbenchAdapter)adaptable.getAdapter(IWorkbenchAdapter.class);
-                if (workbenchAdapter != null) {
-                    element.setText(NLS.bind("Add new {0}...", workbenchAdapter.getLabel(adaptable)));
-                }
-            }
-        }
-    }
+    public static final String COMMAND_ID = "org.faktorips.devtools.core.ui.wizards.productcmpt.newProductCmpt"; //$NON-NLS-1$
+
+    public static final String PARAMETER_SELECTED_ASSOCIATION = "org.faktorips.devtools.core.ui.wizards.productcmpt.newProductCmpt.selectedAssociation"; //$NON-NLS-1$
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -79,7 +55,13 @@ public class AddNewProductCmptCommand extends AbstractHandler implements IElemen
                 addNewLinkInEditor(activeEditor, activeWorkbenchWindow, firstElement);
             } else if (firstElement instanceof IProductCmptStructureReference) {
                 Shell shell = HandlerUtil.getActiveShell(event);
-                addNewLinkOnReference((IProductCmptStructureReference)firstElement, shell);
+                String selectedAssociationParameter = event.getParameter(PARAMETER_SELECTED_ASSOCIATION);
+                if (selectedAssociationParameter != null) {
+                    addNewLinkOnReference((IProductCmptStructureReference)firstElement, selectedAssociationParameter,
+                            shell);
+                } else {
+                    addNewLinkOnReference((IProductCmptStructureReference)firstElement, shell);
+                }
             }
         } else {
             // TODO only for debugging - remove!
@@ -100,7 +82,9 @@ public class AddNewProductCmptCommand extends AbstractHandler implements IElemen
                         .getIpsProject());
                 IProductCmptTypeAssociation addToAssociation = (IProductCmptTypeAssociation)productCmptType
                         .findAssociation(associationName, sourceGeneration.getIpsProject());
-                initWizard(sourceGeneration, addToAssociation, null, activeWorkbenchWindow.getShell());
+                if (addToAssociation != null) {
+                    initWizard(sourceGeneration, addToAssociation, null, activeWorkbenchWindow.getShell());
+                }
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
@@ -112,11 +96,32 @@ public class AddNewProductCmptCommand extends AbstractHandler implements IElemen
                 .getAdapter(IProductCmptGeneration.class);
         IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)structureReference
                 .getAdapter(IProductCmptTypeAssociation.class);
-        initWizard(generation, association, null, shell);
-        structureReference.getWrappedIpsObject();
+        if (generation != null && association != null) {
+            initWizard(generation, association, null, shell);
+        }
     }
 
-    public void initWizard(IProductCmptGeneration sourceGeneration,
+    private void addNewLinkOnReference(IProductCmptStructureReference structureReference,
+            String selectedAssociationParameter,
+            Shell shell) {
+        try {
+            IProductCmptGeneration generation = (IProductCmptGeneration)structureReference
+                    .getAdapter(IProductCmptGeneration.class);
+            if (generation != null) {
+                IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)generation.findProductCmptType(
+                        generation.getIpsProject()).findAssociation(selectedAssociationParameter,
+                        generation.getIpsProject());
+                if (association != null) {
+                    initWizard(generation, association, null, shell);
+                }
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+
+    }
+
+    private void initWizard(IProductCmptGeneration sourceGeneration,
             IProductCmptTypeAssociation association,
             IProductCmpt targetProductCmpt,
             Shell shell) {
@@ -143,4 +148,15 @@ public class AddNewProductCmptCommand extends AbstractHandler implements IElemen
         }
     }
 
+    @Override
+    public void setEnabled(Object evaluationContext) {
+        super.setEnabled(evaluationContext);
+        ISelection selection = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getSelectionService()
+                .getSelection();
+        TypedSelection<IProductCmptReference> typedSelection = new TypedSelection<IProductCmptReference>(
+                IProductCmptReference.class, selection);
+        if (typedSelection.isValid()) {
+            setBaseEnabled(typedSelection.getFirstElement().getChildren().length > 0);
+        }
+    }
 }

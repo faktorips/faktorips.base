@@ -283,6 +283,11 @@
             description="%newProductCmpt_description"
             id="org.faktorips.devtools.core.ui.wizards.productcmpt.newProductCmpt"
             name="%newProductCmpt_label">
+         <commandParameter
+               id="org.faktorips.devtools.core.ui.wizards.productcmpt.newProductCmpt.selectedAssociation"
+               name="selectedAssociation"
+               optional="true">
+         </commandParameter>
       </command>
       <command
             defaultHandler="org.faktorips.devtools.core.ui.editors.productcmpt.AddProductCmptLinkCommand"
@@ -1731,21 +1736,41 @@
                <iterate
                      ifEmpty="true"
                      operator="or">
-                  <adapt
-                        type="org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration">
-                     <test
-                           property="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester.isPartEditable">
-                     </test>
-                  </adapt>
+                  <and>
+                     <adapt
+                           type="org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration">
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester.isPartEditable">
+                        </test>
+                     </adapt>
+                     <or>
+                        <instanceof
+                              value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference">
+                        </instanceof>
+                        <instanceof
+                              value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference">
+                        </instanceof>
+                     </or>
+                  </and>
                </iterate>
             </with>
 
-               <with
-                     variable="activeEditor">
-                  <test
-                        property="org.faktorips.devtools.core.ui.commands.ipsObjectEditorTester.isEditorEditable">
-                  </test>
-               </with>
+               <and>
+                  <with
+                        variable="activeEditor">
+                     <test
+                           property="org.faktorips.devtools.core.ui.commands.ipsObjectEditorTester.isEditorEditable">
+                     </test>
+                  </with>
+                  <with
+                        variable="selection">
+                     <iterate>
+                        <instanceof
+                              value="java.lang.String">
+                        </instanceof>
+                     </iterate>
+                  </with>
+               </and>
                
                </or>
          </activeWhen>

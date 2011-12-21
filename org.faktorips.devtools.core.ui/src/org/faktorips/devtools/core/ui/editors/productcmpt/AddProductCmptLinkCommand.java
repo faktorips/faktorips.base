@@ -37,7 +37,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.dialogs.SingleTypeSelectIpsObjectContext;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
@@ -74,6 +76,18 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
             }
         }
         return null;
+    }
+
+    @Override
+    public void setEnabled(Object evaluationContext) {
+        super.setEnabled(evaluationContext);
+        ISelection selection = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getSelectionService()
+                .getSelection();
+        TypedSelection<IProductCmptReference> typedSelection = new TypedSelection<IProductCmptReference>(
+                IProductCmptReference.class, selection);
+        if (typedSelection.isValid()) {
+            setBaseEnabled(typedSelection.getFirstElement().getChildren().length > 0);
+        }
     }
 
     private Object addLinkInEditor(ISelection selection, Shell shell, ProductCmptEditor productCmptEditor) {
