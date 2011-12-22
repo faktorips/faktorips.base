@@ -451,8 +451,8 @@ public class GenAssociationToMany extends GenAssociation {
             appendLocalizedJavaDoc("METHOD_ADD_OBJECT_INTERNAL", association.getTargetRoleSingular(), methodsBuilder);
         } else {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+            appendOverrideAnnotation(methodsBuilder, getIpsProject(), true);
         }
-        appendOverrideAnnotation(methodsBuilder, getIpsProject(), true);
         generateSignatureAddObject(methodsBuilder, internal);
         String paramName = getParamNameForAddObject();
         methodsBuilder.openBracket();
