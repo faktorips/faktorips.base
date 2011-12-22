@@ -156,15 +156,11 @@ public class ClassloaderRuntimeRepositoryTest {
         assertTrue(list.contains(repository.getProductComponent("motor.MotorBasic")));
         assertTrue(list.contains(repository.getProductComponent("motor.MotorPlus")));
         assertTrue(list.contains(repository.getProductComponent("home.HomeBasic")));
-
-        // Unknown policy component class => should return empty list
-        list = repository.getAllProductComponents(String.class);
-        assertEquals(0, list.size());
     }
 
     @Test
     public void testGetTableByClass() {
-        RateTable table = (RateTable)repository.getTable(RateTable.class);
+        RateTable table = repository.getTable(RateTable.class);
         assertNotNull(table);
     }
 

@@ -210,9 +210,6 @@ public class InMemoryRuntimeRepositoryTest {
         assertTrue(list.contains(a));
         assertTrue(list.contains(b));
         assertTrue(list.contains(c));
-
-        list = repository.getAllProductComponents(String.class);
-        assertEquals(0, list.size());
     }
 
     @Test
