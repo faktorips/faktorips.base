@@ -73,8 +73,7 @@ public class AddNewProductCmptLinkSubmenuFactory extends ExtensionContributionFa
     private void createMultipleAddNewItem(IServiceLocator serviceLocator,
             IContributionRoot additions,
             IProductCmptTypeAssociationReference[] children) {
-        MenuManager menuManager = new MenuManager(PluginMessages.NewProductCmptLinkCommand_name,
-                getAddNewImageDescriptor(), null);
+        MenuManager menuManager = new MenuManager(PluginMessages.newProductCmpt_label, getAddNewImageDescriptor(), null);
         additions.addContributionItem(menuManager, null);
         for (IProductCmptStructureReference child : children) {
             if (child instanceof IProductCmptTypeAssociationReference) {

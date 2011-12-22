@@ -20,9 +20,8 @@ import org.eclipse.osgi.util.NLS;
  * contributed by the plugin.xml. However sometimes you want to use the same message also in your
  * code. If you do so, add the name of the message as static {@link String} variable to this class.
  * <p>
- * Note: Because eclipse does not copy the plugin.properties file by default to the bin directory
- * you may not see the text in the correct language. However it should be displayed correctly in
- * deployed bundles.
+ * Note: check whether the translated messages are found properly. Some plugins have problems
+ * because they use an internal nl1.jar instead of directly bundling all property files.
  * 
  * @author dirmeier
  */
@@ -38,6 +37,6 @@ public class PluginMessages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
-    public static String NewProductCmptLinkCommand_name;
+    public static String newProductCmpt_label;
 
 }
