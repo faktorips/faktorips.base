@@ -199,7 +199,7 @@ public interface IRuntimeRepository {
      * Returns all product components that are instances of the indicated class. Returns an empty
      * list if no such component exists.
      */
-    public List<IProductComponent> getAllProductComponents(Class<?> productComponentType);
+    public <T extends IProductComponent> List<IProductComponent> getAllProductComponents(Class<T> productComponentType);
 
     /**
      * Returns all product components available in this repository. Returns an empty list if no
@@ -253,7 +253,7 @@ public interface IRuntimeRepository {
     /**
      * Returns the table contents for the given table class.
      */
-    public ITable getTable(Class<?> tableClass);
+    public <T extends ITable> T getTable(Class<T> tableClass);
 
     /**
      * Returns the table contents for the given qualified table name.

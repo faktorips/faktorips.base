@@ -29,6 +29,7 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
+import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
@@ -38,7 +39,6 @@ import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
-import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 
@@ -195,12 +195,12 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
     }
 
     @Override
-    protected ITable getTableInternal(Class<?> tableClass) {
+    protected <T extends ITable> T getTableInternal(Class<T> tableClass) {
         TableContentTocEntry tocEntry = toc.getTableTocEntryByClassname(tableClass.getName());
         if (tocEntry == null) {
             return null;
         }
-        return getTable(tocEntry.getIpsObjectQualifiedName());
+        return tableClass.cast(getTable(tocEntry.getIpsObjectQualifiedName()));
     }
 
     private ITable getTableInternal(TableContentTocEntry tocEntry) {

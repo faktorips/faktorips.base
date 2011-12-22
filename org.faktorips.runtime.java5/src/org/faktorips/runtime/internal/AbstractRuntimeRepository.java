@@ -249,7 +249,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     protected abstract IProductComponentGeneration getProductComponentGenerationInternal(String id,
             Calendar effectiveDate);
 
-    public final List<IProductComponent> getAllProductComponents(Class<?> productCmptClass) {
+    public final <T extends IProductComponent> List<IProductComponent> getAllProductComponents(Class<T> productCmptClass) {
         List<IProductComponent> result = new ArrayList<IProductComponent>();
         getAllProductComponentsInternal(productCmptClass, result);
         for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
@@ -341,8 +341,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract void getAllTables(List<ITable> result);
 
-    public final ITable getTable(Class<?> tableClass) {
-        ITable table = getTableInternal(tableClass);
+    public final <T extends ITable> T getTable(Class<T> tableClass) {
+        T table = getTableInternal(tableClass);
         if (table != null) {
             return table;
         }
@@ -361,7 +361,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * Same as {@link #getTable(Class)} but searches only in this repository and not the ones, this
      * repository depends on.
      */
-    protected abstract ITable getTableInternal(Class<?> tableClass);
+    protected abstract <T extends ITable> T getTableInternal(Class<T> tableClass);
 
     public ITable getTable(String qualifiedTableName) {
         ITable table = getTableInternal(qualifiedTableName);

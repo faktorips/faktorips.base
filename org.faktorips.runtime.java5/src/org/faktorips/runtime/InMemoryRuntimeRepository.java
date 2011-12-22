@@ -135,10 +135,10 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      * {@inheritDoc}
      */
     @Override
-    protected ITable getTableInternal(Class<?> tableClass) {
+    protected <T extends ITable> T getTableInternal(Class<T> tableClass) {
         for (ITable table : tables) {
             if (tableClass.isAssignableFrom(table.getClass())) {
-                return table;
+                return tableClass.cast(table);
             }
         }
         return null;
@@ -397,7 +397,9 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * Puts the runtimeObject into the repository.
      */
-    public <T extends IRuntimeObject> void putCustomRuntimeObject(Class<T> type, String ipsObjectQualifiedName, T runtimeObject) {
+    public <T extends IRuntimeObject> void putCustomRuntimeObject(Class<T> type,
+            String ipsObjectQualifiedName,
+            T runtimeObject) {
         Map<String, IRuntimeObject> customRuntimeObjects = customRuntimeObjectsByType.get(type);
         if (customRuntimeObjects == null) {
             customRuntimeObjects = new HashMap<String, IRuntimeObject>();
