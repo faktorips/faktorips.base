@@ -152,7 +152,7 @@ public class AddNewProductCmptCommand extends AbstractHandler {
         TypedSelection<IProductCmptReference> typedSelection = new TypedSelection<IProductCmptReference>(
                 IProductCmptReference.class, selection);
         if (typedSelection.isValid()) {
-            setBaseEnabled(typedSelection.getFirstElement().getChildren().length > 0);
+            setBaseEnabled(typedSelection.getFirstElement().hasAssociationChildren());
         } else {
             setBaseEnabled(true);
         }

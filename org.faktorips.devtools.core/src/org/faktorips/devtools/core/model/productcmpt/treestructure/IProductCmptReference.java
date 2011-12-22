@@ -44,4 +44,11 @@ public interface IProductCmptReference extends IProductCmptStructureReference {
      */
     public IProductCmptReference findProductCmptReference(String prodCmptQualifiedName);
 
+    /**
+     * Checks whether this product component reference has outgoing associations as children
+     * 
+     * @return true if there are any associations defined in the corresponding type
+     */
+    public boolean hasAssociationChildren();
+
 }

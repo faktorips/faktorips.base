@@ -85,4 +85,9 @@ public class ProductCmptReference extends ProductCmptStructureReference implemen
         }
         return null;
     }
+
+    @Override
+    public boolean hasAssociationChildren() {
+        return getStructure().getChildProductCmptTypeAssociationReferences(this).length > 0;
+    }
 }
