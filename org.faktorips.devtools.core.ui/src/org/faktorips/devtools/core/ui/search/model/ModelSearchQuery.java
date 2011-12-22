@@ -30,14 +30,15 @@ import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchQuery;
+import org.faktorips.devtools.core.ui.search.IpsSearchResult;
 import org.faktorips.devtools.core.ui.search.matcher.ClassMatcher;
 import org.faktorips.devtools.core.ui.search.matcher.ExtensionPropertyMatcher;
 import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
 
 /**
- * ModelSearchQuery contains the logic of the Faktor-IPS Model Search. A
- * ModelSearchPresentationModel contains the conditions for the search and the result is stored in a
- * IpsSearchResult
+ * Contains the logic of the Faktor-IPS Model Search. It contains a
+ * {@link ModelSearchPresentationModel} with the conditions for the search and the result is stored
+ * in the {@link IpsSearchResult}
  * 
  * @author dicker
  */
@@ -62,15 +63,15 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
     }
 
     private void addMatches(Set<IType> searchedTypes) throws CoreException {
-        WildcardMatcher stringMatcher = new WildcardMatcher(searchModel.getSearchTerm());
-        ClassMatcher classMatcher = new ClassMatcher(searchModel.getSearchedClazzes());
-        ExtensionPropertyMatcher extensionPropertyMatcher = new ExtensionPropertyMatcher(stringMatcher, ipsModel);
+        WildcardMatcher stringMatcher = new WildcardMatcher(getSearchModel().getSearchTerm());
+        ClassMatcher classMatcher = new ClassMatcher(getSearchModel().getSearchedClazzes());
+        ExtensionPropertyMatcher extensionPropertyMatcher = new ExtensionPropertyMatcher(stringMatcher, getIpsModel());
 
         for (IType type : searchedTypes) {
             IIpsElement[] children = type.getChildren();
             for (IIpsElement childElement : children) {
                 if (isMatchingElement(childElement, classMatcher, stringMatcher, extensionPropertyMatcher)) {
-                    searchResult.addMatch(new Match(childElement, 0, 0));
+                    getSearchResult().addMatch(new Match(childElement, 0, 0));
                 }
             }
         }
@@ -80,7 +81,7 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
             ClassMatcher classMatcher,
             WildcardMatcher stringMatcher,
             ExtensionPropertyMatcher extensionPropertyMatcher) {
-        if (!classMatcher.isMatchingClass(element)) {
+        if (!classMatcher.isMatching(element)) {
             return false;
         }
         if (stringMatcher.isMatching(element.getName())) {
@@ -91,7 +92,7 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
             return true;
         }
 
-        return extensionPropertyMatcher.isMatchingElement(element);
+        return extensionPropertyMatcher.isMatching(element);
     }
 
     private boolean isMatchingLabel(IIpsElement element, WildcardMatcher stringMatcher) {
@@ -101,13 +102,23 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
 
         ILabeledElement labeledElement = (ILabeledElement)element;
 
-        ILabel label = labeledElement.getLabel(searchModel.getSearchLocale());
+        List<ILabel> labels = labeledElement.getLabels();
 
-        if (label == null) {
-            return false;
+        for (ILabel label : labels) {
+
+            if (label == null) {
+                continue;
+            }
+
+            if (stringMatcher.isMatching(label.getValue())) {
+                return true;
+            }
+            if (stringMatcher.isMatching(label.getPluralValue())) {
+                return true;
+            }
         }
 
-        return stringMatcher.isMatching(label.getValue()) || stringMatcher.isMatching(label.getPluralValue());
+        return false;
     }
 
     private Set<IType> getTypes(Set<IIpsSrcFile> searchedSrcFiles) throws CoreException {
@@ -125,7 +136,7 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
     }
 
     @Override
-    protected List<IpsObjectType> getIpsObjectTypeFilter() {
+    protected List<IpsObjectType> getAllowedIpsObjectTypes() {
         List<IpsObjectType> objectTypes = new ArrayList<IpsObjectType>();
         objectTypes.add(IpsObjectType.POLICY_CMPT_TYPE);
         objectTypes.add(IpsObjectType.PRODUCT_CMPT_TYPE);
@@ -133,8 +144,8 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
     }
 
     @Override
-    protected boolean isJustTypeNameSearch() {
-        return StringUtils.isEmpty(searchModel.getSearchTerm());
+    protected boolean isOnlyTypeNameSearch() {
+        return StringUtils.isEmpty(getSearchModel().getSearchTerm());
     }
 
     /**
@@ -145,8 +156,8 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
         List<Object> args = new ArrayList<Object>();
 
         String message;
-        if (isJustTypeNameSearch()) {
-            args.add(searchModel.getSrcFilePattern());
+        if (isOnlyTypeNameSearch()) {
+            args.add(getSearchModel().getSrcFilePattern());
 
             if (matchingCount == 1) {
                 message = Messages.ModelSearchQuery_labelHitTypeName;
@@ -155,9 +166,9 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
                 message = Messages.ModelSearchQuery_labelHitsTypeName;
             }
         } else {
-            args.add(searchModel.getSearchTerm());
+            args.add(getSearchModel().getSearchTerm());
 
-            if (StringUtils.isEmpty(searchModel.getSrcFilePattern())) {
+            if (StringUtils.isEmpty(getSearchModel().getSrcFilePattern())) {
                 if (matchingCount == 1) {
                     message = Messages.ModelSearchQuery_labelHitSearchTerm;
                 } else {
@@ -166,7 +177,7 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
                 }
 
             } else {
-                args.add(searchModel.getSrcFilePattern());
+                args.add(getSearchModel().getSrcFilePattern());
                 if (matchingCount == 1) {
                     message = Messages.ModelSearchQuery_labelHitSearchTermAndTypeName;
                 } else {
@@ -176,7 +187,7 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
             }
         }
 
-        args.add(searchModel.getSearchScope().getScopeDescription());
+        args.add(getSearchModel().getSearchScope().getScopeDescription());
 
         String resultLabel = Messages.bind(message, args.toArray());
 

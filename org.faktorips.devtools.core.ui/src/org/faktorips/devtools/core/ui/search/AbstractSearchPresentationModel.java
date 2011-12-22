@@ -14,13 +14,16 @@
 package org.faktorips.devtools.core.ui.search;
 
 import java.beans.PropertyChangeEvent;
-import java.util.Locale;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
 
+/**
+ * Abstract implementation of the {@link IIpsSearchPresentationModel}
+ * 
+ * @author dicker
+ */
 public abstract class AbstractSearchPresentationModel extends PresentationModelObject implements
         IIpsSearchPresentationModel {
 
@@ -35,11 +38,6 @@ public abstract class AbstractSearchPresentationModel extends PresentationModelO
     @Override
     public IIpsSearchScope getSearchScope() {
         return searchScope;
-    }
-
-    @Override
-    public Locale getSearchLocale() {
-        return new MultiLanguageSupport().getLocalizationLocale();
     }
 
     @Override
@@ -60,5 +58,8 @@ public abstract class AbstractSearchPresentationModel extends PresentationModelO
         notifyListeners(new PropertyChangeEvent(this, SRC_FILE_PATTERN, oldValue, newValue));
     }
 
+    /**
+     * Inits the default values for the search
+     */
     protected abstract void initDefaultSearchValues();
 }

@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -33,6 +34,12 @@ import org.faktorips.devtools.core.ui.search.AbstractIpsSearchPage;
 import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
 import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionsTableViewerProvider;
 
+/**
+ * 
+ * DialogPage for the Faktor-IPS Product Search
+ * 
+ * @author dicker
+ */
 public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresentationModel> {
 
     private static final String PRODUCT_SEARCH_PAGE_NAME = "ProductSearchPage"; //$NON-NLS-1$
@@ -44,49 +51,60 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
     @Override
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
-        readConfiguration();
+        readDialogSettings();
 
         GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
         layoutData.minimumHeight = 440;
+
         baseComposite = toolkit.createGridComposite(parent, 1, false, true);
         baseComposite.setLayoutData(layoutData);
 
-        Composite cmpProductComponentTypeChooser = toolkit.createGridComposite(baseComposite, 3, false, false);
-        toolkit.createLabel(cmpProductComponentTypeChooser, Messages.ProductSearchPage_labelProductComponentType);
-
-        Text text = toolkit.createText(cmpProductComponentTypeChooser);
-        Button button = toolkit.createButton(cmpProductComponentTypeChooser,
-                Messages.ProductSearchPage_labelChooseProductComponentType);
-        ProductComponentTypeField chooser = new ProductComponentTypeField(text, button);
-        text.setEnabled(false);
-
-        getBindingContext().bindContent(chooser, getPresentationModel(),
-                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE);
+        createProductComponentTypeChoser(toolkit);
 
         toolkit.createVerticalSpacer(baseComposite, 10);
 
-        Text txtSrcFilePatternText = createSrcFilePatternText(toolkit, baseComposite,
-                Messages.ProductSearchPage_labelProductComponent);
-        getBindingContext().bindEnabled(txtSrcFilePatternText, getPresentationModel(),
-                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
+        createSrcFilePatternText(toolkit, baseComposite, Messages.ProductSearchPage_labelProductComponent);
 
         toolkit.createVerticalSpacer(baseComposite, 20);
 
-        toolkit.createLabel(baseComposite, Messages.ProductSearchPage_labelSearchConditions);
-        conditionTableViewer = createConditionTable(baseComposite);
-        addConditionButtons(toolkit, baseComposite);
-
-        getPresentationModel().initDefaultSearchValues();
+        createConditionTable(baseComposite, toolkit);
 
         setControl(baseComposite);
 
+        getBindingContext().updateUI();
+
     }
 
-    private TableViewer createConditionTable(Composite composite) {
+    private void createProductComponentTypeChoser(UIToolkit toolkit) {
+        Composite cmpProductComponentTypeChooser = toolkit.createGridComposite(baseComposite, 3, false, false);
+        toolkit.createLabel(cmpProductComponentTypeChooser, Messages.ProductSearchPage_labelProductComponentType);
+
+        ProductComponentTypeField chooser = new ProductComponentTypeField(toolkit, cmpProductComponentTypeChooser);
+        chooser.getTextControl().setEnabled(false);
+
+        getBindingContext().bindContent(chooser, getPresentationModel(),
+                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE);
+    }
+
+    @Override
+    protected Text createSrcFilePatternText(UIToolkit toolkit, Composite composite, String srcFilePatternTextLabel) {
+        Text txtSrcFilePatternText = super.createSrcFilePatternText(toolkit, composite, srcFilePatternTextLabel);
+
+        getBindingContext().bindEnabled(txtSrcFilePatternText, getPresentationModel(),
+                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
+
+        return txtSrcFilePatternText;
+    }
+
+    private void createConditionTable(Composite composite, UIToolkit toolkit) {
+        toolkit.createLabel(baseComposite, Messages.ProductSearchPage_labelSearchConditions);
+
         ProductSearchConditionsTableViewerProvider productSearchConditionsTableViewerProvider = new ProductSearchConditionsTableViewerProvider(
                 getPresentationModel(), composite);
 
-        return productSearchConditionsTableViewerProvider.getTableViewer();
+        conditionTableViewer = productSearchConditionsTableViewerProvider.getTableViewer();
+
+        addConditionButtons(toolkit, baseComposite);
     }
 
     private void addConditionButtons(UIToolkit toolkit, Composite composite) {
@@ -166,7 +184,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 boolean valid = getPresentationModel().isValid();
-                getContainer().setPerformActionEnabled(valid);
+                getSearchPageContainer().setPerformActionEnabled(valid);
             }
         };
     }
@@ -182,5 +200,10 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
             }
         };
 
+    }
+
+    @Override
+    protected ISearchQuery createSearchQuery() {
+        return new ProductSearchQuery(getPresentationModel());
     }
 }

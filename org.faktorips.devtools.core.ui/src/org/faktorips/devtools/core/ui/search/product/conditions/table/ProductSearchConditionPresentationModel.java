@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -63,11 +62,6 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
             condition = conditionsWithSearchableElements.get(0);
             updateSearchableElements();
         }
-    }
-
-    @Override
-    public Locale getSearchLocale() {
-        return parentSearchPresentationModel.getSearchLocale();
     }
 
     @Override

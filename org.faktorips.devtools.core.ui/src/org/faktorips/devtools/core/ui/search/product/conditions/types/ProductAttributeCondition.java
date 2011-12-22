@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -26,7 +25,25 @@ import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.runtime.IProductComponent;
 
+/**
+ * A condition for {@link IAttribute IAttributes} of a {@link IProductComponent}.
+ * <p>
+ * The condition tests, whether the value of an attribute of a IProductComponent (within a
+ * {@link IProductCmptGeneration}) matches a given argument.
+ * <p>
+ * The ProductAttributeCondition uses
+ * <ul>
+ * <li>the {@link EqualitySearchOperatorType EqualitySearchOperatorTypes}</li>
+ * <li>the {@link LikeSearchOperatorType LikeSearchOperatorTypes}, if the {@link ValueDatatype} of
+ * the {@link IAttribute} is a {@link String}</li>
+ * <li>the {@link ComparableSearchOperatorType ComparableSearchOperatorTypes}, if the
+ * {@link ValueDatatype} of the {@link IAttribute} is a {@link Comparable}</li>
+ * </ul>
+ * 
+ * @author dicker
+ */
 public class ProductAttributeCondition extends AbstractAttributeCondition {
 
     private static final class ProductAttributeArgumentProvider implements IOperandProvider {
@@ -45,6 +62,7 @@ public class ProductAttributeCondition extends AbstractAttributeCondition {
             if (attributeValue == null) {
                 return null;
             }
+
             return attributeValue.getValue();
         }
     }
@@ -59,10 +77,10 @@ public class ProductAttributeCondition extends AbstractAttributeCondition {
     }
 
     @Override
-    public List<ISearchOperatorType> getSearchOperatorTypes(IIpsElement elementPart) {
+    public List<ISearchOperatorType> getSearchOperatorTypes(IIpsElement searchableElement) {
         List<ISearchOperatorType> searchOperatorTypes = new ArrayList<ISearchOperatorType>();
 
-        ValueDatatype valueDatatype = getValueDatatype(elementPart);
+        ValueDatatype valueDatatype = getValueDatatype(searchableElement);
 
         if (String.class.getName().equals(valueDatatype.getJavaClassName())) {
             searchOperatorTypes.addAll(Arrays.asList(LikeSearchOperatorType.values()));
@@ -85,11 +103,5 @@ public class ProductAttributeCondition extends AbstractAttributeCondition {
     @Override
     public String getName() {
         return Messages.ProductAttributeCondition_conditionName;
-    }
-
-    @Override
-    public String getNoSearchableElementsMessage(IProductCmptType productCmptType) {
-        return NLS.bind(Messages.ProductAttributeCondition_noSearchableElementMessage,
-                productCmptType.getQualifiedName());
     }
 }

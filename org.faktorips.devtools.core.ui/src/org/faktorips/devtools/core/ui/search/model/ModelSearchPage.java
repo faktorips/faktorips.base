@@ -14,7 +14,7 @@
 package org.faktorips.devtools.core.ui.search.model;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.search.ui.NewSearchUI;
+import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -50,7 +50,7 @@ public class ModelSearchPage extends AbstractIpsSearchPage<ModelSearchPresentati
     @Override
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
-        readConfiguration();
+        readDialogSettings();
 
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(1, true));
@@ -120,22 +120,6 @@ public class ModelSearchPage extends AbstractIpsSearchPage<ModelSearchPresentati
     }
 
     @Override
-    public boolean performAction() {
-        // it is impossible to link the search scope to the model with the context binding, because
-        // a
-        // changed selection of the scope doesn't throw an event.
-        getPresentationModel().setSearchScope(createSearchScope());
-
-        ModelSearchQuery query = new ModelSearchQuery(getPresentationModel());
-
-        writeConfiguration();
-
-        NewSearchUI.runQueryInBackground(query);
-
-        return true;
-    }
-
-    @Override
     protected String getDialogSettingPrefix() {
         return MODEL_SEARCH_DATA;
     }
@@ -150,5 +134,10 @@ public class ModelSearchPage extends AbstractIpsSearchPage<ModelSearchPresentati
         ModelSearchPresentationModel model = new ModelSearchPresentationModel();
         model.initDefaultSearchValues();
         return model;
+    }
+
+    @Override
+    protected ISearchQuery createSearchQuery() {
+        return new ModelSearchQuery(getPresentationModel());
     }
 }

@@ -17,24 +17,32 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.AbstractTextField;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectContext;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 
+/**
+ * The ProductComponentTypeField is a field to choose a {@link IProductCmptType}.
+ * <p>
+ * It
+ * 
+ * @author dicker
+ */
 public class ProductComponentTypeField extends AbstractTextField<IProductCmptType> {
 
     private IProductCmptType productCmptType;
     private final Button button;
 
-    public ProductComponentTypeField(Text text, Button button) {
-        super(text);
-        this.button = button;
+    public ProductComponentTypeField(UIToolkit toolkit, Composite parent) {
+        super(toolkit.createText(parent));
+        this.button = toolkit.createButton(parent, Messages.ProductSearchPage_labelChooseProductComponentType);
         button.addSelectionListener(new ProductCmptTypeSelectionListener());
     }
 

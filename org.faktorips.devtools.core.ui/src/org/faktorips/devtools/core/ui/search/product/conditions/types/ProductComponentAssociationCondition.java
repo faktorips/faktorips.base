@@ -33,8 +33,21 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.runtime.IProductComponent;
 
+/**
+ * A condition for {@link IAssociation IAssociations} of a {@link IProductComponent}.
+ * <p>
+ * The condition tests, whether the association of a IProductComponent (within a
+ * {@link IProductCmptGeneration}) references another given {@link IProductComponent}.
+ * <p>
+ * The ProductAttributeCondition uses the {@link ReferenceSearchOperatorType
+ * ReferenceSearchOperatorTypes}.
+ * 
+ * @author dicker
+ */
 public class ProductComponentAssociationCondition extends AbstractCondition {
 
     private final static class ProductComponentAssociationOperandProvider implements IOperandProvider {
@@ -77,7 +90,7 @@ public class ProductComponentAssociationCondition extends AbstractCondition {
     }
 
     @Override
-    public List<? extends ISearchOperatorType> getSearchOperatorTypes(IIpsElement elementPart) {
+    public List<? extends ISearchOperatorType> getSearchOperatorTypes(IIpsElement searchableElement) {
         return Arrays.asList(ReferenceSearchOperatorType.values());
     }
 
@@ -139,8 +152,7 @@ public class ProductComponentAssociationCondition extends AbstractCondition {
     }
 
     @Override
-    public String getNoSearchableElementsMessage(IProductCmptType productCmptType) {
-        return Messages.ProductComponentAssociationCondition_messageNoElement;
+    public boolean isArgumentIpsObject() {
+        return true;
     }
-
 }

@@ -22,11 +22,15 @@ import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 
 /**
- * Matcher for Extension Properties
+ * ExtensionPropertyMatcher is a matcher to for Extension Properties.
+ * <p>
+ * The ExtensionPropertyMatcher uses a {@link WildcardMatcher} to check, whether the value of an
+ * ExtensionProperty matches a given pattern. If there is no ExtensionProperty, the element does not
+ * match.
  * 
  * @author dicker
  */
-public class ExtensionPropertyMatcher {
+public class ExtensionPropertyMatcher implements IMatcher<IIpsElement> {
     private final WildcardMatcher wildcardMatcher;
     private final Map<Class<? extends IExtensionPropertyAccess>, IExtensionPropertyDefinition[]> extensionProperties = new HashMap<Class<? extends IExtensionPropertyAccess>, IExtensionPropertyDefinition[]>();
     private final IIpsModel ipsModel;
@@ -36,7 +40,8 @@ public class ExtensionPropertyMatcher {
         this.ipsModel = ipsModel;
     }
 
-    public boolean isMatchingElement(IIpsElement element) {
+    @Override
+    public boolean isMatching(IIpsElement element) {
         if (!(element instanceof IExtensionPropertyAccess)) {
             return false;
         }
@@ -69,5 +74,4 @@ public class ExtensionPropertyMatcher {
         }
         return extensionProperties.get(clazz);
     }
-
 }

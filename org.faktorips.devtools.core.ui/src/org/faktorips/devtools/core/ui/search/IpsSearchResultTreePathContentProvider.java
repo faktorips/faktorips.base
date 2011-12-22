@@ -39,9 +39,13 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 
 /**
+ * 
+ * An implementation of the {@link ITreeContentProvider} for the searches in Faktor-IPS
+ * 
+ * @author Stefan Dicker
  * @author Thorsten Guenther
  */
-public class TreePathSearchResultContentProvider implements ITreeContentProvider, ISearchResultListener {
+public class IpsSearchResultTreePathContentProvider implements ITreeContentProvider, ISearchResultListener {
 
     private static class IpsElementSearchTreeNode {
 
@@ -70,22 +74,20 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
 
     private Map<IIpsElement, IpsElementSearchTreeNode> ipsElementTree;
 
-    public TreePathSearchResultContentProvider(IpsElementsSearchViewPage page) {
+    public IpsSearchResultTreePathContentProvider(IpsElementsSearchViewPage page) {
         this.page = page;
     }
 
     @Override
     public void searchResultChanged(SearchResultEvent e) {
         if (e instanceof RemoveAllEvent) {
-            ipsElementTree = new HashMap<IIpsElement, TreePathSearchResultContentProvider.IpsElementSearchTreeNode>();
+            ipsElementTree = new HashMap<IIpsElement, IpsSearchResultTreePathContentProvider.IpsElementSearchTreeNode>();
             return;
         }
         if (e instanceof MatchEvent) {
             MatchEvent matchEvent = (MatchEvent)e;
             if (matchEvent.getKind() == MatchEvent.ADDED) {
                 addMatches(matchEvent.getMatches());
-            } else {
-                // TODO removeElements(matchEvent.getMatches()) necessary?;
             }
             return;
         }
@@ -110,7 +112,7 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
         IpsElementSearchTreeNode ipsElementSearchTreeNode = ipsElementTree.get(element);
         if (ipsElementSearchTreeNode == null) {
 
-            IIpsElement parent = getIpsElementParent(element);
+            IIpsElement parent = getParentOfIpsElement(element);
             if (parent != null) {
                 addMatchedElement(parent, element);
             }
@@ -124,7 +126,7 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
         }
     }
 
-    protected IIpsElement getIpsElementParent(IIpsElement element) {
+    private IIpsElement getParentOfIpsElement(IIpsElement element) {
         if (element instanceof IIpsProject) {
             return null;
         }
@@ -160,7 +162,7 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
             return;
         }
 
-        ipsElementTree = new HashMap<IIpsElement, TreePathSearchResultContentProvider.IpsElementSearchTreeNode>();
+        ipsElementTree = new HashMap<IIpsElement, IpsSearchResultTreePathContentProvider.IpsElementSearchTreeNode>();
         addElements(((AbstractTextSearchResult)result).getElements());
 
     }
@@ -177,7 +179,7 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
     @Override
     public Object getParent(Object element) {
         if (element instanceof IIpsElement) {
-            IIpsElement ipsElementParent = getIpsElementParent((IIpsElement)element);
+            IIpsElement ipsElementParent = getParentOfIpsElement((IIpsElement)element);
             return ipsElementParent;
         }
         return null;
@@ -203,7 +205,7 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
             AbstractTextSearchResult searchResult = (AbstractTextSearchResult)inputElement;
             return searchResult.getElements();
         }
-        // in Eclipse 3.3 this method will always retrurn an empty array because the elementsChanged
+        // in Eclipse 3.3 this method will always return an empty array because the elementsChanged
         // Method populates the elements depending on the match filter to the view
         return new Object[0];
     }
@@ -214,7 +216,10 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
 
     }
 
-    public synchronized void elementsChanged(Object[] updatedElements) {
+    /**
+     * handles the changed Elements
+     */
+    protected synchronized void elementsChanged(Object[] updatedElements) {
         if (searchResult == null) {
             return;
         }
@@ -266,8 +271,8 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
         }
     }
 
-    protected void add(AbstractTreeViewer viewer, IIpsElement element) {
-        IIpsElement parent = getIpsElementParent(element);
+    private void add(AbstractTreeViewer viewer, IIpsElement element) {
+        IIpsElement parent = getParentOfIpsElement(element);
         if (parent != null && viewer.testFindItem(parent) == null) {
             add(viewer, parent);
         }
@@ -285,16 +290,8 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
 
     }
 
-    public void clear() {
+    protected void clear() {
         initialize(searchResult);
         page.getViewer().refresh();
     }
-
-    /**
-     * @return Returns the searchResult.
-     */
-    public ISearchResult getSearchResult() {
-        return searchResult;
-    }
-
 }

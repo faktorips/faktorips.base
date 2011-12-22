@@ -52,8 +52,8 @@ public class ExtensionPropertiesMatcherTest {
         IPolicyCmptType policyCmptType = mock(IPolicyCmptType.class);
         IProductCmptType productCmptType = mock(IProductCmptType.class);
 
-        assertFalse(matcher.isMatchingElement(policyCmptType));
-        assertFalse(matcher.isMatchingElement(productCmptType));
+        assertFalse(matcher.isMatching(policyCmptType));
+        assertFalse(matcher.isMatching(productCmptType));
     }
 
     @Test
@@ -78,8 +78,8 @@ public class ExtensionPropertiesMatcherTest {
 
         ExtensionPropertyMatcher matcher = new ExtensionPropertyMatcher(wildcardMatcher, ipsModel);
 
-        assertFalse(matcher.isMatchingElement(policyCmptType));
-        assertFalse(matcher.isMatchingElement(productCmptType));
+        assertFalse(matcher.isMatching(policyCmptType));
+        assertFalse(matcher.isMatching(productCmptType));
     }
 
     @Test
@@ -104,7 +104,7 @@ public class ExtensionPropertiesMatcherTest {
 
         ExtensionPropertyMatcher matcher = new ExtensionPropertyMatcher(wildcardMatcher, ipsModel);
 
-        assertTrue(matcher.isMatchingElement(policyCmptType));
-        assertFalse(matcher.isMatchingElement(productCmptType));
+        assertTrue(matcher.isMatching(policyCmptType));
+        assertFalse(matcher.isMatching(productCmptType));
     }
 }

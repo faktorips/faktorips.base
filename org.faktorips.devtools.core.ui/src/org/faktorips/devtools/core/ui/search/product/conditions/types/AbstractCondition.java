@@ -13,6 +13,11 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
+/**
+ * Absrtact implementation of {@link ICondition}
+ * 
+ * @author dicker
+ */
 public abstract class AbstractCondition implements ICondition {
 
     public AbstractCondition() {

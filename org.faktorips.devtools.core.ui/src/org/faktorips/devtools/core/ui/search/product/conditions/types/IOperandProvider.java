@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 public interface IOperandProvider {
 
     /**
-     * returns the operand of an given (=searched) IProductCmptGeneration e.g. an attribute value or
+     * Returns the operand of an given (=searched) IProductCmptGeneration e.g. an attribute value or
      * a used table.
      */
     public Object getSearchOperand(IProductCmptGeneration productComponentGeneration);

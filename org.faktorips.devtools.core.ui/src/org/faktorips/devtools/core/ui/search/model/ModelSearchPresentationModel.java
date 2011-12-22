@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.search.ui.ISearchQuery;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -158,11 +157,6 @@ public class ModelSearchPresentationModel extends AbstractSearchPresentationMode
 
     public Set<Class<? extends IIpsObjectPart>> getSearchedClazzes() {
         return searchedClazzes;
-    }
-
-    @Override
-    public ISearchQuery createSearchQuery() {
-        return new ModelSearchQuery(this);
     }
 
     @Override

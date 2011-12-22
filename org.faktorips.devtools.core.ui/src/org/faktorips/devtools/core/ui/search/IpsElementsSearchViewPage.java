@@ -22,7 +22,9 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.search.ui.IContextMenuConstants;
+import org.eclipse.search.ui.ISearchResultPage;
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -30,10 +32,20 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 
+/**
+ * An implementation of the {@link ISearchResultPage} for searches of {@link IIpsElement
+ * IIpsElements}.
+ * <p>
+ * The IpsElementsSearchViewPage does not support the table layout
+ * {@link AbstractTextSearchViewPage#FLAG_LAYOUT_FLAT}
+ * 
+ * 
+ * @author dicker
+ */
 public class IpsElementsSearchViewPage extends AbstractTextSearchViewPage {
 
-    private SearchResultLabelProvider labelProvider;
-    private TreePathSearchResultContentProvider contentProvider;
+    private IpsSearchResultLabelProvider labelProvider;
+    private IpsSearchResultTreePathContentProvider contentProvider;
 
     public IpsElementsSearchViewPage() {
         super(AbstractTextSearchViewPage.FLAG_LAYOUT_TREE);
@@ -41,7 +53,7 @@ public class IpsElementsSearchViewPage extends AbstractTextSearchViewPage {
 
     @Override
     public StructuredViewer getViewer() {
-        // increase viewer visible
+        // increase viewer visibility
         return super.getViewer();
     }
 
@@ -58,17 +70,20 @@ public class IpsElementsSearchViewPage extends AbstractTextSearchViewPage {
     @Override
     protected void configureTreeViewer(TreeViewer viewer) {
         if (labelProvider == null) {
-            labelProvider = new SearchResultLabelProvider();
+            labelProvider = new IpsSearchResultLabelProvider();
         }
         if (contentProvider == null) {
             // contentProvider = new SearchResultContentProvider(this);
-            contentProvider = new TreePathSearchResultContentProvider(this);
+            contentProvider = new IpsSearchResultTreePathContentProvider(this);
         }
         viewer.setLabelProvider(labelProvider);
         viewer.setContentProvider(contentProvider);
         viewer.setUseHashlookup(true);
     }
 
+    /**
+     * This method does nothing, because the table layout is not supported for the search result
+     */
     @Override
     protected void configureTableViewer(TableViewer viewer) {
         // nothing to do
@@ -85,13 +100,26 @@ public class IpsElementsSearchViewPage extends AbstractTextSearchViewPage {
         super.fillContextMenu(mgr);
     }
 
-    public IIpsSrcFile getIpsSrcFileForSelection() {
+    private IIpsSrcFile getIpsSrcFileForSelection() {
         Object selection = ((IStructuredSelection)getViewer().getSelection()).getFirstElement();
         // retrieve first element of the selection
         return getCorrespondingIpsSrcFile(selection);
     }
 
-    protected IIpsSrcFile getCorrespondingIpsSrcFile(Object selection) {
+    /**
+     * Returns an corresponding {@link IIpsSrcFile} out of the given parameter. If there is no
+     * corresponding IIpsSrcFile, {@code null} is returned.
+     * <p>
+     * The method is called to sort the result and fill the context menu.
+     * <p>
+     * If the object is an {@link IIpsObject} or an {@link IIpsObjectPart}, the corresponding
+     * IIpsSrcFile is returned. If the parameter is an Object[], the first element is checked,
+     * whether it is an IIpsObject or IIpsObjectPart.
+     * 
+     */
+    protected IIpsSrcFile getCorrespondingIpsSrcFile(Object object) {
+        Object selection = object;
+
         if (selection instanceof Object[]) {
             selection = ((Object[])selection)[0];
         }

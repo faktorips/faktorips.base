@@ -29,6 +29,7 @@ import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
@@ -37,6 +38,14 @@ import org.faktorips.devtools.core.ui.search.scope.IpsSearchSelectionScope;
 import org.faktorips.devtools.core.ui.search.scope.IpsSearchWorkingSetScope;
 import org.faktorips.devtools.core.ui.search.scope.IpsSearchWorkspaceScope;
 
+/**
+ * An abstract implementation of the {@link ISearchPage} for the model and product search, which
+ * contains basic and common functionality.
+ * 
+ * @param <T> the type of the {@link IIpsSearchPresentationModel} for the search
+ * 
+ * @author dicker
+ */
 public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationModel> extends DialogPage implements
         ISearchPage {
 
@@ -59,21 +68,21 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
         super(title, image);
     }
 
-    protected IIpsSearchScope createSearchScope() {
-        int selectedScope = getContainer().getSelectedScope();
+    private IIpsSearchScope createSearchScope() {
+        int selectedScope = getSearchPageContainer().getSelectedScope();
 
         switch (selectedScope) {
             case ISearchPageContainer.WORKSPACE_SCOPE:
                 return new IpsSearchWorkspaceScope();
 
             case ISearchPageContainer.SELECTION_SCOPE:
-                return new IpsSearchSelectionScope(getContainer().getSelection());
+                return new IpsSearchSelectionScope(getSearchPageContainer().getSelection());
 
             case ISearchPageContainer.WORKING_SET_SCOPE:
-                return new IpsSearchWorkingSetScope(getContainer().getSelectedWorkingSets());
+                return new IpsSearchWorkingSetScope(getSearchPageContainer().getSelectedWorkingSets());
 
             case ISearchPageContainer.SELECTED_PROJECTS_SCOPE:
-                return new IpsSearchProjectsScope(getContainer().getSelection());
+                return new IpsSearchProjectsScope(getSearchPageContainer().getSelection());
 
             default:
                 break;
@@ -81,15 +90,18 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
         return null;
     }
 
-    protected void readConfiguration() {
+    /**
+     * reads the {@link IDialogSettings} of the search
+     */
+    protected void readDialogSettings() {
         IDialogSettings settings = getDialogSettings();
 
         IDialogSettings[] sections = settings.getSections();
 
-        setPreviousSearchData(new ArrayList<IDialogSettings>());
+        previousSearchData = new ArrayList<IDialogSettings>();
         for (IDialogSettings dialogSettings : sections) {
             if (dialogSettings.getName().startsWith(getDialogSettingPrefix())) {
-                getPreviousSearchData().add(dialogSettings);
+                previousSearchData.add(dialogSettings);
             }
         }
 
@@ -104,11 +116,20 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
         Collections.sort(getPreviousSearchData(), comparator);
     }
 
+    /**
+     * returns a prefix to identify the {@link IDialogSettings} for the search
+     */
     protected abstract String getDialogSettingPrefix();
 
+    /**
+     * returns the name of the search page
+     */
     protected abstract String getSearchPageName();
 
-    protected void writeConfiguration() {
+    /**
+     * reads the {@link IDialogSettings} of the search
+     */
+    protected void storeDialogSettings() {
         IDialogSettings settings = getDialogSettings();
 
         IDialogSettings newSection = settings.addNewSection(getDialogSettingPrefix() + System.currentTimeMillis());
@@ -144,42 +165,65 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
 
         getPresentationModel().setSearchScope(createSearchScope());
 
-        ISearchQuery query = getPresentationModel().createSearchQuery();
+        ISearchQuery query = createSearchQuery();
 
-        writeConfiguration();
+        storeDialogSettings();
 
         NewSearchUI.runQueryInBackground(query);
 
         return true;
     }
 
+    /**
+     * creates the {@link ISearchQuery}
+     */
+    protected abstract ISearchQuery createSearchQuery();
+
     @Override
     public void setContainer(ISearchPageContainer container) {
         this.container = container;
     }
 
+    /**
+     * creates and returns an {@link IIpsSearchPresentationModel}
+     */
     protected abstract T createPresentationModel();
 
-    protected ISearchPageContainer getContainer() {
+    /**
+     * returns the {@link ISearchPageContainer}
+     */
+    protected ISearchPageContainer getSearchPageContainer() {
         return container;
-    }
-
-    protected void setPreviousSearchData(List<IDialogSettings> previousSearchData) {
-        this.previousSearchData = previousSearchData;
     }
 
     protected List<IDialogSettings> getPreviousSearchData() {
         return previousSearchData;
     }
 
+    /**
+     * returns the {@link BindingContext} between search page and presentation model
+     */
     protected BindingContext getBindingContext() {
         return bindingContext;
     }
 
+    /**
+     * returns the {@link IIpsSearchPresentationModel}
+     */
     protected T getPresentationModel() {
         return presentationModel;
     }
 
+    /**
+     * 
+     * returns a {@link Text text control} to restrict the name of an {@link IIpsSrcFile} by a
+     * wildcard pattern for the search. The control is already connected to the
+     * {@link IIpsSearchPresentationModel} by the {@link BindingContext}.
+     * 
+     * @param toolkit the UIToolkit
+     * @param composite the parent composite
+     * @param srcFilePatternTextLabel the label for the control
+     */
     protected Text createSrcFilePatternText(UIToolkit toolkit, Composite composite, String srcFilePatternTextLabel) {
         String patternLabel = Messages.AbstractIpsSearchPage_patternLabel;
         toolkit.createLabel(composite,

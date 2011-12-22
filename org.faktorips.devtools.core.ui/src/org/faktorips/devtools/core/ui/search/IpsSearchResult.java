@@ -21,18 +21,27 @@ import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
 import org.eclipse.search.ui.text.IEditorMatchAdapter;
 import org.eclipse.search.ui.text.IFileMatchAdapter;
-import org.eclipse.search.ui.text.Match;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * The result of a Faktor-IPS Model or Product Search
+ * The result of a model or product search.
+ * <p>
+ * The result is based on a {@link IIpsSearchQuery}.
+ * 
  * 
  * @author dicker
  */
 public class IpsSearchResult extends AbstractTextSearchResult {
 
-    private Set<IIpsElement> matchingIpsElements = new HashSet<IIpsElement>();
+    private final IIpsSearchQuery query;
+
+    /**
+     * @param query the {@link IIpsSearchQuery} the {@link IpsSearchResult} is based on.
+     */
+    protected IpsSearchResult(IIpsSearchQuery query) {
+        this.query = query;
+    }
 
     @Override
     public Object[] getElements() {
@@ -49,18 +58,6 @@ public class IpsSearchResult extends AbstractTextSearchResult {
         }
 
         return projects.toArray();
-    }
-
-    private final IIpsSearchQuery query;
-
-    protected IpsSearchResult(IIpsSearchQuery query) {
-        this.query = query;
-    }
-
-    @Override
-    public Match[] getMatches(Object element) {
-
-        return super.getMatches(element);
     }
 
     @Override
@@ -91,22 +88,5 @@ public class IpsSearchResult extends AbstractTextSearchResult {
     @Override
     public IFileMatchAdapter getFileMatchAdapter() {
         return null;
-    }
-
-    @Override
-    public void addMatch(Match match) {
-        matchingIpsElements.add((IIpsElement)match.getElement());
-        super.addMatch(match);
-    }
-
-    @Override
-    public void removeMatch(Match match) {
-        IIpsElement element = (IIpsElement)match.getElement();
-        matchingIpsElements.remove(element);
-        super.removeMatch(match);
-    }
-
-    public Set<IIpsElement> getMatchingIpsElements() {
-        return matchingIpsElements;
     }
 }

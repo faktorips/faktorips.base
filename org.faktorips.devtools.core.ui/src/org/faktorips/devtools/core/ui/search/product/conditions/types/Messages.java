@@ -28,11 +28,8 @@ public class Messages extends NLS {
     public static String LikeSearchOperatorType_labelDoesNotLike;
     public static String LikeSearchOperatorType_labelLike;
     public static String PolicyAttributeCondition_conditionName;
-    public static String PolicyAttributeCondition_noSearchableElementMessage;
     public static String ProductAttributeCondition_conditionName;
-    public static String ProductAttributeCondition_noSearchableElementMessage;
     public static String ProductComponentAssociationCondition_association;
-    public static String ProductComponentAssociationCondition_messageNoElement;
     public static String ReferenceSearchOperatorType_labelDoesNotReference;
     public static String ReferenceSearchOperatorType_labelReferences;
     static {

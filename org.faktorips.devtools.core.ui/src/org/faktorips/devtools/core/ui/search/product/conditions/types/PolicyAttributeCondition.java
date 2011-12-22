@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -29,10 +28,22 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.runtime.IProductComponent;
 
+/**
+ * A condition for product relevant {@link IAttribute IAttributes} of a {@link IPolicyCmptType}.
+ * <p>
+ * The condition tests, whether the argument matches the {@link IValueSet}, which is defined in the
+ * {@link IProductComponent} for the product relevant Attribute of the {@link IPolicyCmptType}.
+ * <p>
+ * The conditions only uses the {@link AllowanceSearchOperatorType AllowanceSearchOperatorTypes}
+ * 
+ * @author dicker
+ */
 public class PolicyAttributeCondition extends AbstractAttributeCondition {
 
-    public static class PolicyAttributeConditionOperandProvider implements IOperandProvider {
+    private static final class PolicyAttributeConditionOperandProvider implements IOperandProvider {
 
         private final IAttribute attribute;
 
@@ -85,7 +96,7 @@ public class PolicyAttributeCondition extends AbstractAttributeCondition {
     }
 
     @Override
-    public List<? extends ISearchOperatorType> getSearchOperatorTypes(IIpsElement elementPart) {
+    public List<? extends ISearchOperatorType> getSearchOperatorTypes(IIpsElement searchableElement) {
         AllowanceSearchOperatorType[] values = AllowanceSearchOperatorType.values();
         return Arrays.asList(values);
     }
@@ -99,11 +110,5 @@ public class PolicyAttributeCondition extends AbstractAttributeCondition {
     @Override
     public String getName() {
         return Messages.PolicyAttributeCondition_conditionName;
-    }
-
-    @Override
-    public String getNoSearchableElementsMessage(IProductCmptType productCmptType) {
-        return NLS.bind(Messages.PolicyAttributeCondition_noSearchableElementMessage,
-                productCmptType.getQualifiedName());
     }
 }

@@ -22,7 +22,12 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
-public class SearchResultLabelProvider implements ILabelProvider {
+/**
+ * An implementation of the {@link ILabelProvider} for the model, product and reference search
+ * 
+ * @author dicker
+ */
+public class IpsSearchResultLabelProvider implements ILabelProvider {
 
     private List<ILabelProviderListener> listeners = new ArrayList<ILabelProviderListener>();
 

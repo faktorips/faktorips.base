@@ -11,33 +11,15 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search;
+package org.faktorips.devtools.core.ui.search.matcher;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import org.eclipse.search.ui.text.Match;
-import org.faktorips.devtools.core.model.IIpsElement;
+public interface IMatcher<T> {
 
-public class IpsElementMatch extends Match {
-
-    public List<IIpsElement> pathToRoot;
-
-    public IpsElementMatch(IIpsElement element) {
-        super(element, 0, 0);
-
-        initialize();
-    }
-
-    private void initialize() {
-        pathToRoot = new ArrayList<IIpsElement>();
-
-        pathToRoot.add(getMatchedIpsElement());
-
-    }
-
-    public IIpsElement getMatchedIpsElement() {
-        return (IIpsElement)getElement();
-    }
+    /**
+     * Returns true, if the given element fits the matching.
+     * 
+     */
+    public boolean isMatching(T element);
 
 }

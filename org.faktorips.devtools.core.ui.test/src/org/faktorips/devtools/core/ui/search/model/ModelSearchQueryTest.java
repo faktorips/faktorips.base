@@ -14,20 +14,21 @@
 package org.faktorips.devtools.core.ui.search.model;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Locale;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.search.ui.ISearchQuery;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
@@ -47,7 +48,6 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.search.IIpsSearchQuery;
 import org.faktorips.devtools.core.ui.search.IpsSearchResult;
 import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
 import org.junit.Before;
@@ -56,7 +56,7 @@ import org.junit.Test;
 public class ModelSearchQueryTest {
 
     private ModelSearchPresentationModel searchModel;
-    private IIpsSearchQuery query;
+    private ISearchQuery query;
     private IpsSearchResult searchResult;
     private IIpsModel ipsModel;
 
@@ -111,18 +111,12 @@ public class ModelSearchQueryTest {
         assertObjectMatched(srcFile1.getIpsObject());
     }
 
-    protected void assertObjectMatched(Object object) {
-        Set<IIpsElement> matches = searchResult.getMatchingIpsElements();
-        assertTrue(matches.contains(object));
-
-        /*
-         * Match[] matches = searchResult.getMatches(object); assertEquals(object,
-         * matches[0].getElement());
-         */
+    protected void assertObjectMatched(IIpsElement object) {
+        assertNotSame("Object " + object + " is not matched", 0, searchResult.getMatchCount(object));
     }
 
     protected void assertObjectNotMatched(Object object) {
-        assertFalse(searchResult.getMatchingIpsElements().contains(object));
+        assertEquals("Object " + object + " is matched, but should not.", 0, searchResult.getMatchCount(object));
     }
 
     @Test
@@ -506,27 +500,18 @@ public class ModelSearchQueryTest {
         IAttribute matchingAttribute = mock(IAttribute.class);
         when(matchingAttribute.getName()).thenReturn("Name");
 
-        Locale locale = Locale.ENGLISH;
-
         ILabel label = mock(ILabel.class);
         when(label.getValue()).thenReturn("MatchingLabel");
-        when(matchingAttribute.getLabel(locale)).thenReturn(label);
+
+        List<ILabel> labels = new ArrayList<ILabel>();
+        labels.add(label);
+        when(matchingAttribute.getLabels()).thenReturn(labels);
 
         IIpsElement[] attributes = new IIpsElement[] { matchingAttribute };
 
         when(type1.getChildren()).thenReturn(attributes);
 
-        when(searchModel.getSearchLocale()).thenReturn(Locale.GERMAN);
-
         IStatus status = query.run(new NullProgressMonitor());
-
-        assertEquals(IStatus.OK, status.getSeverity());
-
-        assertEquals(0, searchResult.getMatchCount());
-
-        when(searchModel.getSearchLocale()).thenReturn(Locale.ENGLISH);
-
-        status = query.run(new NullProgressMonitor());
 
         assertEquals(IStatus.OK, status.getSeverity());
 

@@ -19,11 +19,11 @@ import java.util.regex.PatternSyntaxException;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Text-Matcher, which uses ? and * as wildcards for one are many Characters
+ * Matcher for Strings, which uses ? and * as wildcard for one are many characters
  * 
  * @author dicker
  */
-public class WildcardMatcher {
+public class WildcardMatcher implements IMatcher<String> {
 
     private static final String WILDCARD_ZERO_OR_MANY = "*"; //$NON-NLS-1$
     private static final String WILDCARD_ONCE = "?"; //$NON-NLS-1$
@@ -33,10 +33,6 @@ public class WildcardMatcher {
 
     private final Pattern pattern;
 
-    /**
-     * @param searchTerm pattern
-     * @throws NullPointerException if searchTerm is null
-     */
     public WildcardMatcher(String searchTerm) {
 
         boolean isRegExp = searchTerm.contains(WILDCARD_ZERO_OR_MANY) || searchTerm.contains(WILDCARD_ONCE);
@@ -60,6 +56,7 @@ public class WildcardMatcher {
         }
     }
 
+    @Override
     public boolean isMatching(String text) {
         if (StringUtils.isEmpty(text)) {
             return false;

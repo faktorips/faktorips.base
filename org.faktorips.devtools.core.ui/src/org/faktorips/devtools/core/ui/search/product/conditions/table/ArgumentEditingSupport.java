@@ -13,8 +13,13 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions.table;
 
+import org.eclipse.jface.bindings.keys.KeyStroke;
+import org.eclipse.jface.bindings.keys.ParseException;
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -22,6 +27,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.core.ui.table.TextCellEditor;
 
 final class ArgumentEditingSupport extends EnhancedCellTrackingEditingSupport {
 
@@ -33,8 +39,26 @@ final class ArgumentEditingSupport extends EnhancedCellTrackingEditingSupport {
     protected IpsCellEditor getCellEditorInternal(Object element) {
         ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
 
-        // FIXME bei Beziehungen über den IContentProposalProvider Textfield mit Completion
-        // verwenden statt DropDown
+        if (model.getCondition().isArgumentIpsObject()) {
+            UIToolkit toolkit = new UIToolkit(null);
+
+            Text textControl = toolkit.createText(((TableViewer)getViewer()).getTable());
+
+            KeyStroke keyStroke = null;
+            try {
+                keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
+            } catch (final ParseException e) {
+                throw new IllegalArgumentException("KeyStroke \"Ctrl+Space\" could not be parsed.", e); //$NON-NLS-1$
+            }
+
+            ContentProposalAdapter contentProposalAdapter = new ContentProposalAdapter(textControl,
+                    new TextContentAdapter(), new IpsObjectContentProposalProvider(model.getAllowedAttributeValues()),
+                    keyStroke, new char[] { '.' });
+            contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
+
+            return new TextCellEditor(textControl);
+        }
+
         if (model.getCondition().hasValueSet()) {
             ValueDatatype datatype = model.getCondition().getValueDatatype(model.getSearchedElement());
 

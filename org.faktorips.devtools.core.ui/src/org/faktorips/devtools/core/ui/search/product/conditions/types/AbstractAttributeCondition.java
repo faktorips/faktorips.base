@@ -21,6 +21,11 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 
+/**
+ * Abstract implementation of {@link ICondition} for searching attribute values.
+ * 
+ * @author dicker
+ */
 public abstract class AbstractAttributeCondition extends AbstractCondition {
 
     @Override
@@ -55,4 +60,10 @@ public abstract class AbstractAttributeCondition extends AbstractCondition {
     public boolean hasValueSet() {
         return true;
     }
+
+    @Override
+    public boolean isArgumentIpsObject() {
+        return false;
+    }
+
 }

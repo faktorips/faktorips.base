@@ -13,13 +13,19 @@
 
 package org.faktorips.devtools.core.ui.search;
 
-import java.util.Locale;
-
 import org.eclipse.jface.dialogs.IDialogSettings;
 
+/**
+ * 
+ * The interface provides methods for presentation models for the model and product search
+ * <p>
+ * It contains methods for storing and reading {@link IDialogSettings} and checking the validity of
+ * the data of the presentation model.
+ * 
+ * 
+ * @author dicker
+ */
 public interface IIpsSearchPartPresentationModel {
-
-    public Locale getSearchLocale();
 
     /**
      * stores the actual values into the dialog settings

@@ -15,8 +15,18 @@ package org.faktorips.devtools.core.ui.search;
 
 import org.eclipse.search.ui.ISearchQuery;
 
+/**
+ * Extends the {@link ISearchQuery} for the model and product search.
+ * 
+ * @author dicker
+ */
 public interface IIpsSearchQuery extends ISearchQuery {
 
+    /**
+     * Returns a the text for the result label using the
+     * 
+     * @param matchCount number of matches
+     */
     public String getResultLabel(int matchCount);
 
 }
