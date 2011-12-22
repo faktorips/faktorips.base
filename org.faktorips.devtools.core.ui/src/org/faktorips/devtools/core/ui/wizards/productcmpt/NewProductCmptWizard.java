@@ -100,7 +100,9 @@ public class NewProductCmptWizard extends Wizard implements INewWizard {
     @Override
     public IWizardPage getStartingPage() {
         if (skipFirstPage) {
-            return getPages()[1];
+            IWizardPage secondWizardPage = getPages()[1];
+            secondWizardPage.setPreviousPage(getPages()[0]);
+            return secondWizardPage;
         } else {
             return getPages()[0];
         }

@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.layout.GridData;
@@ -135,10 +136,22 @@ public class ProductCmptPage extends WizardPage {
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
+        fixPreviousPage();
         // setting the actual message if there is any but do not show as error
         setMessage(getMessage());
         nameText.selectAll();
         nameText.setFocus();
+    }
+
+    /**
+     * Previous page may be wrong if dialog was started by new menu.
+     */
+    private void fixPreviousPage() {
+        IWizardPage page0 = getWizard().getPages()[0];
+        if (getPreviousPage() != page0) {
+            page0.setPreviousPage(getPreviousPage());
+            setPreviousPage(page0);
+        }
     }
 
     @Override
