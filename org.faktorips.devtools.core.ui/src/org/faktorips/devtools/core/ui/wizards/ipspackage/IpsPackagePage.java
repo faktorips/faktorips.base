@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.ipspackage;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -21,11 +22,9 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ITreeSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -38,6 +37,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IDecoratorManager;
+import org.eclipse.ui.IWorkbenchPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentRoot;
@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -83,8 +84,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
 
     private TreeViewer treeViewer;
 
-    private TextField packagePathTextfield;
-
     public IpsPackagePage(IStructuredSelection selection) {
         super(Messages.IpsPackagePage_title);
         Object selectedObject = selection.getFirstElement();
@@ -92,15 +91,13 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     }
 
     private IResource getSelectedResource(Object selectedObject) {
-        if (selectedObject instanceof IResource) {
-            return (IResource)selectedObject;
-        } else if (selectedObject instanceof IIpsElement) {
+        if (selectedObject instanceof IIpsElement) {
             return ((IIpsElement)selectedObject).getEnclosingResource();
         } else if (selectedObject instanceof IAdaptable) {
             IAdaptable adaptable = (IAdaptable)selectedObject;
             return (IResource)adaptable.getAdapter(IResource.class);
         } else {
-            return null;
+        	return null;
         }
     }
 
@@ -135,13 +132,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         Label line = new Label(pageControl, SWT.SEPARATOR | SWT.HORIZONTAL);
         line.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        Composite pathComposite = toolkit.createLabelEditColumnComposite(pageControl);
-
-        toolkit.createFormLabel(pathComposite, Messages.IpsPackagePage_packagePath);
-        Text parentPackageText = toolkit.createText(pathComposite);
-        packagePathTextfield = new TextField(parentPackageText);
-        packagePathTextfield.addChangeListener(this);
-
         treeViewer = new TreeViewer(pageControl);
         GridData gridData = new GridData(SWT.FILL);
         gridData.grabExcessVerticalSpace = true;
@@ -153,7 +143,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(labelProvider,
                 decoManager.getLabelDecorator());
         treeViewer.setLabelProvider(decoProvider);
-        treeViewer.addSelectionChangedListener(new IpsPackageSelectionChangedListener());
         GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
         layoutData.horizontalSpan = 2;
         layoutData.heightHint = 250;
@@ -222,7 +211,18 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     }
 
     public String getIpsPackagePath() {
-        return packagePathTextfield.getText();
+        ISelection selection = treeViewer.getSelection();
+        if (selection instanceof ITreeSelection) {
+            ITreeSelection treeSelection = (ITreeSelection)selection;
+            Object selectionElement = treeSelection.getFirstElement();
+            if (selectionElement instanceof IpsPackageFragment) {
+                IIpsPackageFragment iIpsPackageFragment = (IIpsPackageFragment)selectionElement;
+                String path = iIpsPackageFragment.toString();
+                int index = path.lastIndexOf("/"); //$NON-NLS-1$
+                return path.substring(index + 1);
+            }
+        }
+        return StringUtils.EMPTY;
     }
 
     /**
@@ -234,26 +234,11 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         return getSelectedIIpsPackageFragment();
     }
 
-    public String getSourceFolder() {
-        return sourceFolderField.getText();
-    }
-
     /**
      * Returns the package fragment root corresponding to the selected source folder.
      */
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
         return sourceFolderControl.getIpsPackageFragmentRoot();
-    }
-
-    protected void packagePathChanged() {
-        if (getIpsPackageFragmentRoot() != null) {
-            String packageName = packagePathTextfield.getText();
-            IIpsPackageFragment pack = getIpsPackageFragmentRoot().getIpsPackageFragment(packageName);
-            if (pack != null) {
-                treeViewer.setSelection(new StructuredSelection(pack), true);
-                treeViewer.expandToLevel(pack, 1);
-            }
-        }
     }
 
     private void setIpsPackageFragment(IIpsPackageFragment pack) {
@@ -262,8 +247,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             treeViewer.setInput(pack.getRoot());
             treeViewer.setSelection(new StructuredSelection(pack), true);
             treeViewer.expandToLevel(pack, 1);
-        } else {
-            packagePathTextfield.setText(""); //$NON-NLS-1$
         }
     }
 
@@ -297,9 +280,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             sourceFolderChanged();
         }
 
-        if (e.field == packagePathTextfield) {
-            packagePathChanged();
-        }
         if (validateInput) { // don't validate during control creating!
             try {
                 validatePage();
@@ -477,26 +457,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             }
 
             return new Object[0];
-        }
-    }
-
-    class IpsPackageSelectionChangedListener implements ISelectionChangedListener {
-
-        @Override
-        public void selectionChanged(SelectionChangedEvent event) {
-            ISelection selection = treeViewer.getSelection();
-            if (selection instanceof ITreeSelection) {
-                ITreeSelection treeSelection = (ITreeSelection)selection;
-                Object selectionElement = treeSelection.getFirstElement();
-                if (selectionElement instanceof IpsPackageFragment) {
-                    IIpsPackageFragment iIpsPackageFragment = (IIpsPackageFragment)selectionElement;
-                    String path = iIpsPackageFragment.toString();
-                    int index = path.lastIndexOf("/"); //$NON-NLS-1$
-                    String packagePath = path.substring(index + 1);
-                    packagePathTextfield.setValue(packagePath, true);
-
-                }
-            }
         }
     }
 }
