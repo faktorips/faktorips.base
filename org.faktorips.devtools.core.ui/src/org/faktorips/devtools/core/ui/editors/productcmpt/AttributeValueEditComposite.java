@@ -58,10 +58,10 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
     }
 
     private void createValueEditField(List<EditField<?>> editFields) throws CoreException {
-        ValueDatatype datatype = getProperty().findDatatype(getProperty().getIpsProject());
+        ValueDatatype datatype = getProperty().findDatatype(getPropertyValue().getIpsProject());
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
         EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, getProperty()
-                .getValueSet(), getProperty().getIpsProject());
+                .getValueSet(), getPropertyValue().getIpsProject());
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE);
 
