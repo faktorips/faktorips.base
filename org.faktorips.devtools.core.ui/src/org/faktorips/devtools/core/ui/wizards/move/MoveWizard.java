@@ -101,8 +101,10 @@ public class MoveWizard extends Wizard {
         selectedObjects = new IIpsElement[selected.length];
         for (int i = 0; i < selection.size(); i++) {
             boolean unsupported = false;
-            if (selected[i] instanceof IProductCmpt || selected[i] instanceof IIpsPackageFragment
-                    || selected[i] instanceof ITableContents || selected[i] instanceof ITestCase) {
+            // TODO AW 23-12-2011: Removed IIpsPackageFragment because package refactoring is
+            // currently broken
+            if (selected[i] instanceof IProductCmpt || selected[i] instanceof ITableContents
+                    || selected[i] instanceof ITestCase) {
                 if (selected[i] instanceof IIpsPackageFragment) {
                     IIpsPackageFragment packageFragment = (IIpsPackageFragment)selected[i];
                     if (packageFragment.isDefaultPackage()) {
