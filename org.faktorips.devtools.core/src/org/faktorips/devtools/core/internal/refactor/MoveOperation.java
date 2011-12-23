@@ -37,13 +37,13 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
 import org.eclipse.ui.actions.MoveFilesAndFoldersOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsproject.ArchiveIpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.ipsproject.ArchiveIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -357,17 +357,18 @@ public class MoveOperation implements IRunnableWithProgress {
 
     @Override
     public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-        IWorkspaceRunnable run = new IWorkspaceRunnable() {
+        Runnable run = new Runnable() {
             @Override
-            public void run(IProgressMonitor monitor) {
+            public void run() {
+                IProgressMonitor pm = monitor;
                 if (monitor == null) {
-                    monitor = new NullProgressMonitor();
+                    pm = new NullProgressMonitor();
                 }
 
-                monitor.beginTask("Move", sourceObjects.length); //$NON-NLS-1$
+                pm.beginTask("Move", sourceObjects.length); //$NON-NLS-1$
                 for (int i = 0; i < sourceObjects.length; i++) {
                     try {
-                        monitor.internalWorked(1);
+                        pm.internalWorked(1);
 
                         Object toMove = null;
                         if (sourceObjects[i] instanceof IIpsSrcFile) {
@@ -377,17 +378,17 @@ public class MoveOperation implements IRunnableWithProgress {
                         }
 
                         if (toMove instanceof IProductCmpt) {
-                            moveProductCmpt((IProductCmpt)toMove, targetNames[i], getNewRuntimeId(i), monitor);
+                            moveProductCmpt((IProductCmpt)toMove, targetNames[i], getNewRuntimeId(i), pm);
                         } else if (toMove instanceof IIpsPackageFragment) {
-                            movePackageFragement((IIpsPackageFragment)toMove, targetNames[i], monitor);
+                            movePackageFragement((IIpsPackageFragment)toMove, targetNames[i], pm);
                         } else if (toMove instanceof ITableContents) {
-                            moveTableContent((ITableContents)toMove, targetNames[i], monitor);
+                            moveTableContent((ITableContents)toMove, targetNames[i], pm);
                         } else if (toMove instanceof ITestCase) {
-                            moveTestCase((ITestCase)toMove, targetNames[i], monitor);
+                            moveTestCase((ITestCase)toMove, targetNames[i], pm);
                         } else if (toMove instanceof IFile) {
                             moveNoneIpsElement((IFile)sourceObjects[i], targetNames[i]);
                         } else if (toMove instanceof IIpsObject) {
-                            moveIpsObject((IIpsObject)sourceObjects[i], targetNames[i], targetRoot, monitor);
+                            moveIpsObject((IIpsObject)sourceObjects[i], targetNames[i], targetRoot, pm);
                         } else if (toMove instanceof File) {
                             moveNoneIpsElement((File)sourceObjects[i], targetNames[i]);
                         }
@@ -395,14 +396,14 @@ public class MoveOperation implements IRunnableWithProgress {
                         IpsPlugin.logAndShowErrorDialog(e);
                     }
                 }
-                monitor.done();
+                pm.done();
             }
         };
 
-        try {
-            ResourcesPlugin.getWorkspace().run(run, monitor);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (getDisplay() == null) {
+            Display.getDefault().asyncExec(run);
+        } else {
+            BusyIndicator.showWhile(getDisplay(), run);
         }
     }
 
