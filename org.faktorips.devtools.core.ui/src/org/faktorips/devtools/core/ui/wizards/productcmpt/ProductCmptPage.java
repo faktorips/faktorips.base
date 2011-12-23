@@ -209,15 +209,7 @@ public class ProductCmptPage extends WizardPage {
         }
 
         public void updateSelectedType() {
-            if (getPmo().getSelectedType() == null) {
-                getPage().typeSelectionComposite.setDescriptionTitle(StringUtils.EMPTY);
-                getPage().typeSelectionComposite.setDescription(StringUtils.EMPTY);
-            } else {
-                getPage().typeSelectionComposite.setDescriptionTitle(IpsPlugin.getMultiLanguageSupport()
-                        .getLocalizedLabel(getPmo().getSelectedType()));
-                getPage().typeSelectionComposite.setDescription(IpsPlugin.getMultiLanguageSupport()
-                        .getLocalizedDescription(getPmo().getSelectedType()));
-            }
+            getPage().typeSelectionComposite.setInput(getPmo().getSelectedType());
         }
 
         public void updateSelectedBaseType() {

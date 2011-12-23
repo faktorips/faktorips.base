@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.FontDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -32,7 +33,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
 
@@ -125,12 +130,32 @@ class TypeSelectionComposite extends Composite {
         return listViewerField;
     }
 
-    public void setDescriptionTitle(String title) {
+    public void setInput(IProductCmptType type) {
+        if (type == null) {
+            setDescriptionTitle(StringUtils.EMPTY);
+            setDescription(StringUtils.EMPTY);
+        } else {
+            setDescriptionTitle(IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(type));
+            setDescription(getDescription(type));
+        }
+    }
+
+    private String getDescription(IProductCmptType type) {
+        try {
+            DescriptionFinder descriptionFinder = new DescriptionFinder(type.getIpsProject());
+            descriptionFinder.start(type);
+            return descriptionFinder.localizedDescription;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    private void setDescriptionTitle(String title) {
         descriptionTitle.setText(title);
         descriptionTitle.pack();
     }
 
-    public void setDescription(String descriptionString) {
+    private void setDescription(String descriptionString) {
         if (StringUtils.isEmpty(descriptionString) && StringUtils.isNotEmpty(descriptionTitle.getText())) {
             description.setText(Messages.TypeSelectionComposite_label_noDescriptionAvailable);
             description.setEnabled(false);
@@ -139,4 +164,25 @@ class TypeSelectionComposite extends Composite {
             description.setEnabled(true);
         }
     }
+
+    private static class DescriptionFinder extends TypeHierarchyVisitor<IProductCmptType> {
+
+        private String localizedDescription;
+
+        public DescriptionFinder(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(currentType);
+            if (localizedDescription.isEmpty()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+    }
+
 }

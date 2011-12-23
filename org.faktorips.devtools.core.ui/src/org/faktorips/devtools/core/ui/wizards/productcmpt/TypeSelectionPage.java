@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
@@ -25,7 +24,6 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.IpsProjectRefField;
@@ -150,15 +148,7 @@ public class TypeSelectionPage extends WizardPage {
         }
 
         private void updateLabelAndDescription() {
-            if (getPmo().getSelectedBaseType() == null) {
-                getPage().typeSelectionComposite.setDescriptionTitle(StringUtils.EMPTY);
-                getPage().typeSelectionComposite.setDescription(StringUtils.EMPTY);
-            } else {
-                getPage().typeSelectionComposite.setDescriptionTitle(IpsPlugin.getMultiLanguageSupport()
-                        .getLocalizedLabel(getPmo().getSelectedBaseType()));
-                getPage().typeSelectionComposite.setDescription(IpsPlugin.getMultiLanguageSupport()
-                        .getLocalizedDescription(getPmo().getSelectedBaseType()));
-            }
+            getPage().typeSelectionComposite.setInput(getPmo().getSelectedBaseType());
         }
 
         @Override
