@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.resource.FontDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
@@ -27,8 +26,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -48,7 +45,6 @@ class TypeSelectionComposite extends Composite {
     private Label title;
     private TableViewer listViewer;
     private StructuredViewerField<IProductCmptType> listViewerField;
-    private Label descriptionTitle;
     private Label description;
 
     public TypeSelectionComposite(Composite parent, UIToolkit toolkit) {
@@ -100,14 +96,6 @@ class TypeSelectionComposite extends Composite {
         descriptionComposite.setLayoutData(descriptionCompositeData);
         descriptionComposite.setLayout(descriptionCompositeLayout);
 
-        descriptionTitle = toolkit.createLabel(descriptionComposite, StringUtils.EMPTY);
-
-        Font font = descriptionTitle.getFont();
-        FontData fontData = font.getFontData()[0];
-        fontData.setHeight(fontData.getHeight() + 1);
-        fontData.setStyle(SWT.BOLD);
-        descriptionTitle.setFont(resourManager.createFont(FontDescriptor.createFrom(fontData)));
-
         GridData descriptionLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
         descriptionLayoutData.heightHint = 50;
         descriptionLayoutData.widthHint = 50;
@@ -132,10 +120,8 @@ class TypeSelectionComposite extends Composite {
 
     public void setInput(IProductCmptType type) {
         if (type == null) {
-            setDescriptionTitle(StringUtils.EMPTY);
             setDescription(StringUtils.EMPTY);
         } else {
-            setDescriptionTitle(IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(type));
             setDescription(getDescription(type));
         }
     }
@@ -150,13 +136,8 @@ class TypeSelectionComposite extends Composite {
         }
     }
 
-    private void setDescriptionTitle(String title) {
-        descriptionTitle.setText(title);
-        descriptionTitle.pack();
-    }
-
     private void setDescription(String descriptionString) {
-        if (StringUtils.isEmpty(descriptionString) && StringUtils.isNotEmpty(descriptionTitle.getText())) {
+        if (StringUtils.isEmpty(descriptionString)) {
             description.setText(Messages.TypeSelectionComposite_label_noDescriptionAvailable);
             description.setEnabled(false);
         } else {
