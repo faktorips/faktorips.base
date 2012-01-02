@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.helper.IpsObjectTypeComparator;
 import org.faktorips.devtools.htmlexport.helper.filter.IIpsElementFilter;
 import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
@@ -56,12 +57,21 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
 
     /**
      * {@link Comparator}, which is used for sorting the {@link IIpsObject}s according to their
-     * unqualified name.
+     * {@link IpsObjectType} and then their unqualified name.
      */
     protected final static Comparator<IIpsSrcFile> IPS_OBJECT_COMPARATOR = new Comparator<IIpsSrcFile>() {
         @Override
         public int compare(IIpsSrcFile o1, IIpsSrcFile o2) {
-            return o1.getIpsObjectName().compareTo(o2.getIpsObjectName());
+            IpsObjectTypeComparator ipsObjectTypeComparator = new IpsObjectTypeComparator();
+
+            int comparationIpsObjectType = ipsObjectTypeComparator
+                    .compare(o1.getIpsObjectType(), o2.getIpsObjectType());
+
+            if (comparationIpsObjectType == 0) {
+                return o1.getIpsObjectName().compareTo(o2.getIpsObjectName());
+            }
+
+            return comparationIpsObjectType;
         }
     };
 
