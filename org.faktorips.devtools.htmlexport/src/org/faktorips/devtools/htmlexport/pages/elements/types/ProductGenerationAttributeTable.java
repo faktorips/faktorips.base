@@ -93,7 +93,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
         addTableStructureUsages();
 
-        addChildProductCmptTypes();
+        addAssociations();
 
         addValidationRules();
 
@@ -392,11 +392,23 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         addSubElement(new TableRowPageElement(cells));
     }
 
-    private void addChildProductCmptTypes() {
+    private void addAssociations() {
+        List<IAssociation> notDerivedUnionAssociations = new ArrayList<IAssociation>();
+
+        List<IAssociation> allAssociations = getAllAssociations();
+        for (IAssociation association : allAssociations) {
+            if (!association.isDerivedUnion()) {
+                notDerivedUnionAssociations.add(association);
+            }
+        }
+
+        if (notDerivedUnionAssociations.isEmpty()) {
+            return;
+        }
+
         addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_associatedComponents));
 
-        List<IAssociation> associations = getAllAssociations();
-        for (IAssociation association : associations) {
+        for (IAssociation association : notDerivedUnionAssociations) {
             IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
             cells[0] = new PageElementUtils().createIpsElementRepresentation(association, context,
                     context.getLabel(association), true);
@@ -410,7 +422,11 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
                 cells[i + 1] = createAssociatedProductCmpts(productCmptGeneration, association);
             }
-            addSubElement(new TableRowPageElement(cells));
+            TableRowPageElement pageElement = new TableRowPageElement(cells);
+
+            pageElement.setId(association.getName());
+
+            addSubElement(pageElement);
         }
 
     }
