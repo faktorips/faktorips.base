@@ -114,35 +114,6 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * For this test, one object of the comfort-product of the default test content is moved to a
-     * product with the same package, but another name. After that, the new file is expected to be
-     * existent and the references to this object have to be the same as to the source.
-     */
-    @Test
-    public void testRenameProduct() throws CoreException, InvocationTargetException, InterruptedException {
-        String targetName = "Moved" + coverage.getName(); //$NON-NLS-1$
-        IIpsSrcFile targetFile = coverage.getIpsPackageFragment().getIpsSrcFile(targetName, IpsObjectType.PRODUCT_CMPT);
-
-        assertFalse(targetFile.exists());
-        assertTrue(coverage.getIpsSrcFile().exists());
-
-        IPropertyValueContainer[] sourceRefs = ipsProject.findReferencingProductCmptGenerations(coverage
-                .getQualifiedNameType());
-
-        String targetQName = coverage.getIpsPackageFragment().getName() + '.' + targetName;
-        MoveOperation move = new MoveOperation(coverage, targetQName);
-        move.run(null);
-
-        assertTrue(targetFile.exists());
-        assertFalse(coverage.getIpsSrcFile().exists());
-        IProductCmpt targetObject = (IProductCmpt)targetFile.getIpsObject();
-        IPropertyValueContainer[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(
-                targetObject.getQualifiedNameType());
-
-        assertEquals(sourceRefs.length, targetRefs.length);
-    }
-
-    /**
      * For this test, one package is renamed. After that, the new package is expected to be existent
      * and the references to the contained objects have to be the same as to the source.
      */
@@ -186,8 +157,9 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     public void testMoveProduct() throws CoreException, InvocationTargetException, InterruptedException {
         String runtimeId = coverage.getRuntimeId();
 
-        IIpsSrcFile target = coverage.getIpsPackageFragment().getRoot().getIpsPackageFragment("test.my.pack")
-                .getIpsSrcFile(coverage.getName(), IpsObjectType.PRODUCT_CMPT);
+        IIpsPackageFragment targetPackage = coverage.getIpsPackageFragment().getRoot()
+                .createPackageFragment("test.my.pack", true, null);
+        IIpsSrcFile target = targetPackage.getIpsSrcFile(coverage.getName(), IpsObjectType.PRODUCT_CMPT);
         String targetName = target.getIpsPackageFragment().getName() + "." + coverage.getName();
 
         assertFalse(target.exists());
@@ -218,8 +190,9 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testMoveProductRefByTestCase() throws Exception {
-        IIpsSrcFile target = coverage.getIpsPackageFragment().getRoot().getIpsPackageFragment("test.my.pack")
-                .getIpsSrcFile(coverage.getName() + ".ipsproduct");
+        IIpsPackageFragment targetPackage = coverage.getIpsPackageFragment().getRoot()
+                .createPackageFragment("test.my.pack", true, null);
+        IIpsSrcFile target = targetPackage.getIpsSrcFile(coverage.getName() + ".ipsproduct");
         String targetName = target.getIpsPackageFragment().getName() + "." + coverage.getName();
         assertFalse(target.exists());
         assertTrue(coverage.getIpsSrcFile().exists());
@@ -539,7 +512,8 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     public void testMovePackageInRootContainingEmptyPackage() throws Exception {
         IIpsPackageFragment target = ipsRoot.createPackageFragment("target", true, null);
         IIpsPackageFragment source = ipsRoot.createPackageFragment("source", true, null);
-        newProductCmpt(ipsRoot, "source.TestProduct");
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "source.TestProductType");
+        newProductCmpt(productCmptType, "source.TestProduct");
         ipsRoot.createPackageFragment("source.empty", true, null);
 
         MoveOperation move = new MoveOperation(new IIpsElement[] { source }, target);
@@ -548,6 +522,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertFalse(source.exists());
         assertTrue(ipsRoot.getIpsPackageFragment("target.source").exists());
         assertTrue(ipsRoot.getIpsPackageFragment("target.source.empty").exists());
+        assertTrue(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, "target.source.TestProductType").exists());
         assertTrue(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT, "target.source.TestProduct").exists());
     }
 
@@ -555,7 +530,8 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     public void testMovePackageContainingEmptyPackage() throws Exception {
         IIpsPackageFragment target = ipsRoot.createPackageFragment("target", true, null);
         IIpsPackageFragment source = ipsRoot.createPackageFragment("parent.source", true, null);
-        newProductCmpt(ipsRoot, "parent.source.TestProduct");
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "parent.source.TestProductType");
+        newProductCmpt(productCmptType, "parent.source.TestProduct");
         ipsRoot.createPackageFragment("parent.source.empty", true, null);
 
         MoveOperation move = new MoveOperation(new IIpsElement[] { source }, target);
@@ -565,13 +541,15 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(ipsRoot.getIpsPackageFragment("parent").exists());
         assertTrue(ipsRoot.getIpsPackageFragment("target.source").exists());
         assertTrue(ipsRoot.getIpsPackageFragment("target.source.empty").exists());
+        assertTrue(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, "target.source.TestProductType").exists());
         assertTrue(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT, "target.source.TestProduct").exists());
     }
 
     @Test
     public void testCreateSubpackageByRename() throws CoreException, InvocationTargetException, InterruptedException {
         IIpsPackageFragment source = ipsRoot.createPackageFragment("source", true, null);
-        newProductCmpt(ipsRoot, "source.TestProduct");
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "source.TestProductType");
+        newProductCmpt(productCmptType, "source.TestProduct");
 
         MoveOperation move = new MoveOperation(new IIpsElement[] { source }, new String[] { "source.target" });
         move.run(null);
@@ -579,6 +557,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(source.exists());
         assertTrue(ipsRoot.getIpsPackageFragment("source").exists());
         assertTrue(ipsRoot.getIpsPackageFragment("source.target").exists());
+        assertTrue(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, "source.target.TestProductType").exists());
         assertTrue(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT, "source.target.TestProduct").exists());
         assertNull(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT, "source.TestProduct"));
     }

@@ -392,8 +392,11 @@ public class MoveOperation implements IRunnableWithProgress {
             IIpsPackageFragmentRoot targetRoot,
             IProgressMonitor pm) throws CoreException {
 
-        IIpsPackageFragment targetIpsPackageFragment = targetRoot.getIpsPackageFragment(QNameUtil
-                .getPackageName(targetName));
+        IIpsPackageFragmentRoot root = targetRoot;
+        if (root == null) {
+            root = ipsObject.getIpsPackageFragment().getRoot();
+        }
+        IIpsPackageFragment targetIpsPackageFragment = root.getIpsPackageFragment(QNameUtil.getPackageName(targetName));
         IIpsRefactoring ipsMoveRefactoring = IpsPlugin.getIpsRefactoringFactory().createMoveRefactoring(ipsObject,
                 targetIpsPackageFragment);
         IWorkspaceRunnable operation = new PerformRefactoringOperation(ipsMoveRefactoring.toLtkRefactoring(),
