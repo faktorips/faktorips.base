@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.refactor;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -29,9 +28,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
@@ -56,11 +53,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.StringUtil;
@@ -187,18 +182,6 @@ public class MoveOperation implements IRunnableWithProgress {
 
         checkSources(sources);
         checkTargets(sources, targetNames);
-    }
-
-    /**
-     * Returns the new runtime id for the target specified by the given index. Returns
-     * <code>null</code> if no new runtime id is provided. In this case the old runtime id, has to
-     * used.
-     */
-    private String getNewRuntimeId(int index) {
-        if (newRuntimeIds == null) {
-            return null;
-        }
-        return newRuntimeIds.get(index);
     }
 
     /**
@@ -377,9 +360,7 @@ public class MoveOperation implements IRunnableWithProgress {
                             toMove = sourceObjects[i];
                         }
 
-                        if (toMove instanceof IProductCmpt) {
-                            moveProductCmpt((IProductCmpt)toMove, targetNames[i], getNewRuntimeId(i), currMonitor);
-                        } else if (toMove instanceof IIpsPackageFragment) {
+                        if (toMove instanceof IIpsPackageFragment) {
                             movePackageFragement((IIpsPackageFragment)toMove, targetNames[i], currMonitor);
                         } else if (toMove instanceof ITableContents) {
                             moveTableContent((ITableContents)toMove, targetNames[i], currMonitor);
@@ -503,10 +484,7 @@ public class MoveOperation implements IRunnableWithProgress {
             IIpsSrcFile sourceFile = sourcePackage.getIpsSrcFile(fileInfos[1]);
             if (sourceFile != null) {
                 // We have an IIpsSrcFile, so we have to move it correctly.
-                if (sourceFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
-                    IProductCmpt cmpt = (IProductCmpt)sourceFile.getIpsObject();
-                    move(cmpt, targetFile, null, monitor);
-                } else if (sourceFile.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS) {
+                if (sourceFile.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS) {
                     ITableContents tblcontent = (ITableContents)sourceFile.getIpsObject();
                     move(tblcontent, targetFile, monitor);
                 } else if (sourceFile.getIpsObjectType() == IpsObjectType.TEST_CASE) {
@@ -538,11 +516,6 @@ public class MoveOperation implements IRunnableWithProgress {
         if (!(createSubPackage)) {
             pack.getEnclosingResource().delete(true, monitor);
         }
-    }
-
-    private void moveProductCmpt(IProductCmpt cmpt, String newName, String newRuntimeId, IProgressMonitor monitor) {
-        IIpsSrcFile file = createTarget(cmpt, newName);
-        move(cmpt, file, newRuntimeId, monitor);
     }
 
     private void moveTableContent(ITableContents content, String newName, IProgressMonitor monitor) {
@@ -670,52 +643,6 @@ public class MoveOperation implements IRunnableWithProgress {
     }
 
     /**
-     * Moves one product component to the given target file.
-     */
-    private void move(IProductCmpt source, IIpsSrcFile targetFile, String newRuntimeId, IProgressMonitor monitor) {
-        try {
-            String runtimeId = source.getRuntimeId();
-
-            // create a tmpTargetFile to avoid case problems with windows file systems
-            String tmpFileName = new Date().getTime() + "." + targetFile.getIpsObjectType().getFileExtension(); //$NON-NLS-1$
-            IIpsSrcFile tmpTargetFile = targetFile.getIpsPackageFragment().getIpsSrcFile(tmpFileName);
-            String qualifiedTargetName = targetFile.getQualifiedNameType().getName();
-
-            // first, find all objects referring the source (which will be deleted later)
-            IProductCmptGeneration[] refs = source.getIpsProject().findReferencingProductCmptGenerations(
-                    source.getQualifiedNameType());
-            List<ITestCase> testCaseRefs = source.getIpsModel().searchReferencingTestCases(source);
-
-            // second, create the target
-            createCopy(source.getIpsSrcFile(), tmpTargetFile, monitor);
-
-            // third a), update references to product component generations
-            for (IProductCmptGeneration ref : refs) {
-                fixRelations(ref, source.getQualifiedName(), qualifiedTargetName, monitor);
-            }
-
-            // third b), update references to test cases
-            for (ITestCase iTestCase : testCaseRefs) {
-                fixRelations(iTestCase, source.getQualifiedName(), qualifiedTargetName);
-            }
-
-            // fourth, delete the source
-            source.getEnclosingResource().delete(true, monitor);
-            // move tmp file to correct file
-            tmpTargetFile.getCorrespondingFile().move(targetFile.getCorrespondingFile().getFullPath(), true, monitor);
-
-            // at least, update the runtime id of the moved product cmpt to the original runtime id
-            IProductCmpt productCmpt = (IProductCmpt)targetFile.getIpsObject();
-            productCmpt.setRuntimeId(newRuntimeId != null ? newRuntimeId : runtimeId);
-            productCmpt.getIpsSrcFile().save(true, null);
-
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
-                    Messages.MoveOperation_msgAborted, e));
-        }
-    }
-
-    /**
      * Moves one test case to the given target file.
      */
     private void move(ITestCase source, IIpsSrcFile targetFile, IProgressMonitor monitor) {
@@ -735,32 +662,6 @@ public class MoveOperation implements IRunnableWithProgress {
             pack.getRoot().createPackageFragment(pack.getName(), true, monitor);
         }
         pack.createIpsFile(targetFile.getName(), source.getContentFromEnclosingResource(), true, monitor);
-    }
-
-    /**
-     * Resets the target of all relations of the given generation, if the target equals the old
-     * name, to the new name.
-     * 
-     * @param generation The generation to fix the relations at.
-     * @param oldName The old, qualified name of the target.
-     * @param newName The new, qualified name of the target
-     * @param monitor Progress monitor to show progress.
-     */
-    private void fixRelations(IProductCmptGeneration generation,
-            String oldName,
-            String newName,
-            IProgressMonitor monitor) throws CoreException {
-
-        IProductCmptLink[] relations = generation.getLinks();
-
-        for (IProductCmptLink relation : relations) {
-            String target = relation.getTarget();
-            if (target.equals(oldName)) {
-                relation.setTarget(newName);
-            }
-        }
-
-        generation.getIpsSrcFile().save(true, monitor);
     }
 
     /**
@@ -785,20 +686,6 @@ public class MoveOperation implements IRunnableWithProgress {
             }
         }
         generation.getIpsSrcFile().save(true, monitor);
-    }
-
-    /**
-     * Resets the product component of all test policy components of the given test case, if the
-     * product component equals the old name, to the new name.
-     */
-    private void fixRelations(ITestCase testCase, String oldName, String newName) throws CoreException {
-        ITestPolicyCmpt[] allTestPolicyCmpt = testCase.getAllTestPolicyCmpt();
-        for (ITestPolicyCmpt element : allTestPolicyCmpt) {
-            if (oldName.equals(element.getProductCmpt())) {
-                element.setProductCmptAndNameAfterIfApplicable(newName);
-            }
-        }
-        testCase.getIpsSrcFile().save(true, null);
     }
 
     /**
