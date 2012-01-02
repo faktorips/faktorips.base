@@ -39,7 +39,8 @@ public final class RefactorUtil {
      * @param progressMonitor A progress monitor to report progress to or <tt>null</tt>.
      * 
      * @throws NullPointerException If <tt>toBeCopied</tt>, <tt>targetIpsPackageFragment</tt> or
-     *             <tt>newName</tt> is <tt>null</tt>.
+     *             <tt>newName</tt> is <tt>null</tt>
+     * @throws IllegalArgumentException if the source file to be copied is dirty
      */
     public static final IIpsSrcFile copyIpsSrcFile(IIpsSrcFile toBeCopied,
             IIpsPackageFragment targetIpsPackageFragment,
@@ -47,6 +48,7 @@ public final class RefactorUtil {
             IProgressMonitor progressMonitor) throws CoreException {
 
         ArgumentCheck.notNull(new Object[] { toBeCopied, targetIpsPackageFragment, copyName });
+        ArgumentCheck.isTrue(!toBeCopied.isDirty());
 
         IPath destinationFolder = targetIpsPackageFragment.getCorrespondingResource().getFullPath();
 

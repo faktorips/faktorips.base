@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -93,6 +94,8 @@ public final class MoveRenameIpsObjectHelper {
         ignoredValidationMessageCodes.add(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE);
         ignoredValidationMessageCodes.add(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION);
         ignoredValidationMessageCodes.add(IEnumContent.MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT);
+        ignoredValidationMessageCodes.add(IProductCmptLink.MSGCODE_UNKNWON_TARGET);
+        ignoredValidationMessageCodes.add(IProductCmptLink.MSGCODE_INVALID_TARGET);
     }
 
     /**
@@ -257,6 +260,15 @@ public final class MoveRenameIpsObjectHelper {
             IProgressMonitor pm) throws CoreException {
 
         IIpsSrcFile originalSrcFile = toBeRefactored.getIpsSrcFile();
+
+        /*
+         * Save the original source file if it is dirty as it is possible that is has been modified
+         * during updateDependencies(...)
+         */
+        if (originalSrcFile.isDirty()) {
+            originalSrcFile.save(true, null);
+        }
+
         IIpsSrcFile targetSrcFile = null;
         if (targetIpsPackageFragment.equals(originalSrcFile.getIpsPackageFragment())
                 && isOnlyCapitalizationChanged(originalSrcFile, newName)) {
@@ -269,6 +281,13 @@ public final class MoveRenameIpsObjectHelper {
             targetSrcFile = RefactorUtil.copyIpsSrcFile(originalSrcFile, targetIpsPackageFragment, newName, pm);
             originalSrcFile.delete();
         }
+
+        /*
+         * If the original source file has changed by means of the updateDependencies(...) method,
+         * we have to touch the new file so that the change is reported to the environment.
+         */
+        targetSrcFile.getCorrespondingFile().touch(pm);
+
         return targetSrcFile;
     }
 

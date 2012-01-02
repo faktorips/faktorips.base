@@ -15,6 +15,8 @@ package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
@@ -28,7 +30,9 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -271,6 +275,29 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         checkIpsSourceFile(policyCmptType.getName(), newName, policyCmptType.getIpsPackageFragment(),
                 policyCmptType.getIpsPackageFragment(), IpsObjectType.POLICY_CMPT_TYPE);
         policyCmptTypeReferences.check(newName);
+    }
+
+    @Test
+    public void testRenameProductCmptThatReferencesItself() throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "MyProductType");
+        IProductCmptTypeAssociation toSelfAssociation = productCmptType.newProductCmptTypeAssociation();
+        toSelfAssociation.setTarget(productCmptType.getQualifiedName());
+        toSelfAssociation.setTargetRoleSingular("SelfType");
+        toSelfAssociation.setTargetRolePlural("SelfTypes");
+
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "MyProductCmpt");
+        IProductCmptLink toSelfLink = productCmpt.getProductCmptGeneration(0).newLink(toSelfAssociation);
+        toSelfLink.setTarget("MyProductCmpt");
+        toSelfLink.setMinCardinality(0);
+        toSelfLink.setMaxCardinality(Integer.MAX_VALUE);
+
+        saveIpsSrcFile(productCmptType);
+        saveIpsSrcFile(productCmpt);
+        performRenameRefactoring(productCmpt, "MyProductCmpt2");
+
+        assertNull(ipsProject.findProductCmpt("MyProductCmpt"));
+        assertNotNull(ipsProject.findProductCmpt("MyProductCmpt2"));
+        assertTrue(ipsProject.findProductCmpt("MyProductCmpt2").isValid(ipsProject));
     }
 
 }
