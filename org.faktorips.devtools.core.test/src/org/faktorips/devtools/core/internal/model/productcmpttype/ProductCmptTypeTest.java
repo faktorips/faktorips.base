@@ -2324,6 +2324,20 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals("otherCategory", policyProperty.getCategory());
     }
 
+    @Test
+    public void testChangeCategoryAndDeferPolicyChange_DoNotChangePolicyTypeUponProductTypeSaveIfThePolicySourceFileIsImmutable()
+            throws CoreException {
+
+        IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
+        policyProperty.setCategory("beforeCategory");
+        policyCmptType.getIpsSrcFile().delete();
+
+        productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, "otherCategory");
+        productCmptType.getIpsSrcFile().save(true, null);
+
+        assertEquals("beforeCategory", policyProperty.getCategory());
+    }
+
     /**
      * <strong>Scenario:</strong><br>
      * The {@link IProductCmptCategory} of an {@link IProductCmptProperty} belonging to an

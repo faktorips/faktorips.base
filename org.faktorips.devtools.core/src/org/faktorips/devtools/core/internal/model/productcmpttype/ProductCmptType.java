@@ -390,24 +390,20 @@ public class ProductCmptType extends Type implements IProductCmptType {
     public Element toXml(Document doc) {
         Element element = super.toXml(doc);
         if (!pendingPolicyPropertyCategoryChanges.isEmpty()) {
-            IIpsSrcFile ipsSrcFile = null;
-            for (IProductCmptProperty property : pendingPolicyPropertyCategoryChanges.keySet()) {
-                property.setCategory(pendingPolicyPropertyCategoryChanges.get(property));
-                ipsSrcFile = property.getIpsSrcFile();
+            IProductCmptProperty[] policyProperties = pendingPolicyPropertyCategoryChanges.keySet().toArray(
+                    new IProductCmptProperty[pendingPolicyPropertyCategoryChanges.size()]);
+            IIpsSrcFile policySrcFile = policyProperties[0].getIpsSrcFile();
+            if (policySrcFile.isMutable()) {
+                for (IProductCmptProperty property : pendingPolicyPropertyCategoryChanges.keySet()) {
+                    property.setCategory(pendingPolicyPropertyCategoryChanges.get(property));
+                }
+                try {
+                    policySrcFile.save(true, null);
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+                pendingPolicyPropertyCategoryChanges.clear();
             }
-
-            if (ipsSrcFile == null) {
-                // Not possible because of isEmpty() check above
-                throw new RuntimeException();
-            }
-
-            try {
-                ipsSrcFile.save(true, null);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-
-            pendingPolicyPropertyCategoryChanges.clear();
         }
         return element;
     }

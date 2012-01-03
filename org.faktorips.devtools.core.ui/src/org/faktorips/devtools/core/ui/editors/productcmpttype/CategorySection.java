@@ -173,8 +173,7 @@ public class CategorySection extends IpsSection {
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         setLayout(client);
 
-        viewerButtonComposite = new CategoryComposite(category, contextType, categoryCompositionSection, client,
-                toolkit);
+        viewerButtonComposite = new CategoryComposite(category, contextType, this, client, toolkit);
 
         getBindingContext().add(
                 new ControlPropertyBinding(getSectionControl(), category, IProductCmptCategory.PROPERTY_NAME,
@@ -237,13 +236,19 @@ public class CategorySection extends IpsSection {
     }
 
     private void updateToolBarEnabledStates() {
-        moveUpAction.setEnabled(!contextType.isFirstCategory(category) && contextType.isDefining(category));
-        moveDownAction.setEnabled(!contextType.isLastCategory(category) && contextType.isDefining(category));
-        moveLeftAction.setEnabled(contextType.isDefining(category));
-        moveRightAction.setEnabled(contextType.isDefining(category));
+        moveUpAction.setEnabled(isContextTypeEditable() && !contextType.isFirstCategory(category)
+                && contextType.isDefining(category));
+        moveDownAction.setEnabled(isContextTypeEditable() && !contextType.isLastCategory(category)
+                && contextType.isDefining(category));
+        moveLeftAction.setEnabled(isContextTypeEditable() && contextType.isDefining(category));
+        moveRightAction.setEnabled(isContextTypeEditable() && contextType.isDefining(category));
 
         editAction.setEnabled(contextType.isDefining(category));
-        deleteAction.setEnabled(contextType.isDefining(category));
+        deleteAction.setEnabled(isContextTypeEditable() && contextType.isDefining(category));
+    }
+
+    private boolean isContextTypeEditable() {
+        return IpsUIPlugin.isEditable(contextType.getIpsSrcFile());
     }
 
     /**
@@ -261,7 +266,7 @@ public class CategorySection extends IpsSection {
 
         private final IProductCmptType contextType;
 
-        private final CategoryCompositionSection categoryCompositionSection;
+        private final CategorySection categorySection;
 
         private Button moveUpButton;
 
@@ -274,17 +279,16 @@ public class CategorySection extends IpsSection {
         /**
          * @param category the {@link IProductCmptCategory} that is represented by this composite
          * @param contextType the {@link IProductCmptType} that is being edited
-         * @param categoryCompositionSection the parent {@link CategoryCompositionSection}, this
-         *            composite is a part of
+         * @param categorySection the parent {@link CategorySection}, this composite is a part of
          */
         public CategoryComposite(IProductCmptCategory category, IProductCmptType contextType,
-                CategoryCompositionSection categoryCompositionSection, Composite parent, UIToolkit toolkit) {
+                CategorySection categorySection, Composite parent, UIToolkit toolkit) {
 
             super(parent);
 
             this.category = category;
             this.contextType = contextType;
-            this.categoryCompositionSection = categoryCompositionSection;
+            this.categorySection = categorySection;
 
             initControls(toolkit);
 
@@ -418,7 +422,7 @@ public class CategorySection extends IpsSection {
 
         private void addDragSupport(StructuredViewer viewer) {
             viewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { ProductCmptPropertyTransfer.getInstance() },
-                    new PropertyDragListener(this));
+                    new PropertyDragListener());
         }
 
         private void addDropSupport(StructuredViewer viewer) {
@@ -536,7 +540,8 @@ public class CategorySection extends IpsSection {
             if (returnCode == Window.OK) {
                 // Set the selection to the selected property in the target category
                 IProductCmptCategory selectedCategory = dialog.getSelectedCategory();
-                CategorySection targetCategorySection = categoryCompositionSection.getCategorySection(selectedCategory);
+                CategorySection targetCategorySection = categorySection.categoryCompositionSection
+                        .getCategorySection(selectedCategory);
                 targetCategorySection.getViewerButtonComposite().setSelectedObject(selectedProperty);
 
                 // Hand the focus to the target category section
@@ -546,11 +551,12 @@ public class CategorySection extends IpsSection {
 
         @Override
         protected void updateButtonEnabledStates() {
-            moveUpButton.setEnabled(isPropertySelected() && !isFirstPropertyOfContextTypeSelected()
+            moveUpButton.setEnabled(categorySection.isContextTypeEditable() && isPropertySelected()
+                    && !isFirstPropertyOfContextTypeSelected() && isPropertyOfContextTypeSelected());
+            moveDownButton.setEnabled(categorySection.isContextTypeEditable() && isPropertySelected()
+                    && !isLastPropertyOfContextTypeSelected() && isPropertyOfContextTypeSelected());
+            changeCategoryButton.setEnabled(categorySection.isContextTypeEditable() && isPropertySelected()
                     && isPropertyOfContextTypeSelected());
-            moveDownButton.setEnabled(isPropertySelected() && !isLastPropertyOfContextTypeSelected()
-                    && isPropertyOfContextTypeSelected());
-            changeCategoryButton.setEnabled(isPropertySelected() && isPropertyOfContextTypeSelected());
         }
 
         private boolean isFirstPropertyOfContextTypeSelected() {
@@ -657,23 +663,17 @@ public class CategorySection extends IpsSection {
 
         }
 
-        private static class PropertyDragListener implements DragSourceListener {
-
-            private final CategoryComposite categoryComposite;
-
-            private PropertyDragListener(CategoryComposite categoryComposite) {
-                this.categoryComposite = categoryComposite;
-            }
+        private class PropertyDragListener implements DragSourceListener {
 
             @Override
             public void dragStart(DragSourceEvent event) {
-                event.doit = categoryComposite.isPropertySelected()
-                        && categoryComposite.isPropertyOfContextTypeSelected();
+                event.doit = isPropertySelected() && isPropertyOfContextTypeSelected()
+                        && categorySection.isContextTypeEditable();
             }
 
             @Override
             public void dragSetData(DragSourceEvent event) {
-                event.data = new IProductCmptProperty[] { categoryComposite.getSelectedProperty() };
+                event.data = new IProductCmptProperty[] { getSelectedProperty() };
             }
 
             @Override
@@ -1085,7 +1085,9 @@ public class CategorySection extends IpsSection {
             DialogMementoHelper dialogHelper = new DialogMementoHelper() {
                 @Override
                 protected Dialog createDialog() {
-                    return new CategoryEditDialog(getCategory(), getShell());
+                    CategoryEditDialog categoryEditDialog = new CategoryEditDialog(getCategory(), getShell());
+                    categoryEditDialog.setDataChangeable(IpsUIPlugin.isEditable(getProductCmptType().getIpsSrcFile()));
+                    return categoryEditDialog;
                 }
             };
 
