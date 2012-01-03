@@ -132,6 +132,20 @@ public interface IAssociation extends ITypePart {
     public final static String MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE = IPolicyCmptTypeAssociation.MSGCODE_PREFIX
             + "TargetTypeNotASubtype"; //$NON-NLS-1$
 
+    /**
+     * Validation message code that indicates that the target role singular is not a valid Java
+     * field name, which is illegal as Java code is generated from this name.
+     */
+    public final static String MSGCODE_TARGET_ROLE_SINGULAR_NOT_A_VALID_JAVA_FIELD_NAME = MSGCODE_PREFIX
+            + "TargetRoleSingularNotAValidJavaFieldName"; //$NON-NLS-1$
+
+    /**
+     * Validation message code that indicates that the target role plural is not a valid Java field
+     * name, which is illegal as Java code is generated from this name.
+     */
+    public final static String MSGCODE_TARGET_ROLE_PLURAL_NOT_A_VALID_JAVA_FIELD_NAME = MSGCODE_PREFIX
+            + "TargetRolePluralNotAValidJavaFieldName"; //$NON-NLS-1$
+
     public final static AssociationType DEFAULT_RELATION_TYPE = AssociationType.ASSOCIATION;
 
     /**

@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -291,11 +292,59 @@ public abstract class Association extends TypePart implements IAssociation {
 
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-        super.validateThis(list, ipsProject);
+        validateTarget(list);
+
+        validateTargetRoleSingular(list, ipsProject);
+        validateTargetRolePlural(list, ipsProject);
+
+        validateMaxCardinality(list);
+        validateMinCardinality(list);
+
+        validateDerivedUnion(list, ipsProject);
+    }
+
+    private void validateTarget(MessageList list) throws CoreException {
         ValidationUtils.checkIpsObjectReference(target, getIpsObject().getIpsObjectType(), "target", this, //$NON-NLS-1$
                 PROPERTY_TARGET, MSGCODE_TARGET_DOES_NOT_EXIST, list);
+    }
+
+    private void validateTargetRoleSingular(MessageList list, IIpsProject ipsProject) {
         ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, Messages.Association_msg_TargetRoleSingular,
                 this, PROPERTY_TARGET_ROLE_SINGULAR, MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET, list);
+
+        IStatus javaStatus = ValidationUtils.validateFieldName(targetRoleSingular, ipsProject);
+        if (!javaStatus.isOK()) {
+            String text = NLS.bind(Messages.Association_msg_TargetRoleSingularNotAValidJavaFieldName,
+                    targetRoleSingular);
+            list.add(createMessageFromStatus(javaStatus, MSGCODE_TARGET_ROLE_SINGULAR_NOT_A_VALID_JAVA_FIELD_NAME,
+                    text, PROPERTY_TARGET_ROLE_SINGULAR));
+        }
+    }
+
+    private void validateTargetRolePlural(MessageList list, IIpsProject ipsProject) {
+        if (StringUtils.isNotEmpty(targetRolePlural)) {
+            IStatus javaStatus = ValidationUtils.validateFieldName(targetRolePlural, ipsProject);
+            if (!javaStatus.isOK()) {
+                String text = NLS.bind(Messages.Association_msg_TargetRolePluralNotAValidJavaFieldName,
+                        targetRolePlural);
+                list.add(createMessageFromStatus(javaStatus, MSGCODE_TARGET_ROLE_PLURAL_NOT_A_VALID_JAVA_FIELD_NAME,
+                        text, PROPERTY_TARGET_ROLE_PLURAL));
+            }
+
+            if (targetRolePlural.equals(targetRoleSingular)) {
+                String text = Messages.Association_msg_TargetRoleSingularIlleaglySameAsTargetRolePlural;
+                list.add(new Message(MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR, text, Message.ERROR, this,
+                        new String[] { PROPERTY_TARGET_ROLE_SINGULAR, PROPERTY_TARGET_ROLE_PLURAL }));
+            }
+        }
+
+        if (is1ToMany() || getIpsProject().getIpsArtefactBuilderSet().isRoleNamePluralRequiredForTo1Relations()) {
+            ValidationUtils.checkStringPropertyNotEmpty(targetRolePlural, Messages.Association_msg_TargetRolePlural,
+                    this, PROPERTY_TARGET_ROLE_PLURAL, MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET, list);
+        }
+    }
+
+    private void validateMaxCardinality(MessageList list) {
         if (maxCardinality == 0) {
             String text = Messages.Association_msg_MaxCardinalityMustBeAtLeast1;
             list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1, text, Message.ERROR, this,
@@ -305,22 +354,34 @@ public abstract class Association extends TypePart implements IAssociation {
             String text = Messages.Association_msg_MaxCardinalityForDerivedUnionTooLow;
             list.add(new Message(MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW, text, Message.ERROR, this,
                     new String[] { PROPERTY_DERIVED_UNION, PROPERTY_MAX_CARDINALITY }));
-        } else if (minCardinality > maxCardinality) {
+        }
+    }
+
+    private void validateMinCardinality(MessageList list) {
+        if (minCardinality > maxCardinality) {
             String text = Messages.Association_msg_MinCardinalityGreaterThanMaxCardinality;
             list.add(new Message(MSGCODE_MAX_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[] {
                     PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY }));
         }
+    }
 
-        if (is1ToMany() || getIpsProject().getIpsArtefactBuilderSet().isRoleNamePluralRequiredForTo1Relations()) {
-            ValidationUtils.checkStringPropertyNotEmpty(targetRolePlural, Messages.Association_msg_TargetRolePlural,
-                    this, PROPERTY_TARGET_ROLE_PLURAL, MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET, list);
+    private Message createMessageFromStatus(IStatus status, String code, String text, String invalidProperty) {
+        // TODO AW 03-01-2012: Move the conversion code to Message when the class is moved to core
+        int severity;
+        switch (status.getSeverity()) {
+            case IStatus.ERROR:
+                severity = Message.ERROR;
+                break;
+            case IStatus.WARNING:
+                severity = Message.WARNING;
+                break;
+            case IStatus.INFO:
+                severity = Message.INFO;
+                break;
+            default:
+                throw new RuntimeException();
         }
-        if (StringUtils.isNotEmpty(getTargetRolePlural()) && getTargetRolePlural().equals(getTargetRoleSingular())) {
-            String text = Messages.Association_msg_TargetRoleSingularIlleaglySameAsTargetRolePlural;
-            list.add(new Message(MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR, text, Message.ERROR, this,
-                    new String[] { PROPERTY_TARGET_ROLE_SINGULAR, PROPERTY_TARGET_ROLE_PLURAL }));
-        }
-        validateDerivedUnion(list, ipsProject);
+        return new Message(code, text, severity, this, invalidProperty);
     }
 
     private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) throws CoreException {

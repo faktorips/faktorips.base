@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -252,6 +253,32 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidate_TargetRoleSingularMustBeAValidJavaFieldName() throws CoreException {
+        association.setTargetRoleSingular("invalid java field name");
+
+        Message message = association.validate(ipsProject).getMessageByCode(
+                IAssociation.MSGCODE_TARGET_ROLE_SINGULAR_NOT_A_VALID_JAVA_FIELD_NAME);
+
+        assertNotNull(message);
+        assertEquals(Message.ERROR, message.getSeverity());
+        assertEquals(association, message.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IAssociation.PROPERTY_TARGET_ROLE_SINGULAR, message.getInvalidObjectProperties()[0].getProperty());
+    }
+
+    @Test
+    public void testValidate_TargetRolePluralMustBeAValidJavaFieldName() throws CoreException {
+        association.setTargetRolePlural("invalid java field name");
+
+        Message message = association.validate(ipsProject).getMessageByCode(
+                IAssociation.MSGCODE_TARGET_ROLE_PLURAL_NOT_A_VALID_JAVA_FIELD_NAME);
+
+        assertNotNull(message);
+        assertEquals(Message.ERROR, message.getSeverity());
+        assertEquals(association, message.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IAssociation.PROPERTY_TARGET_ROLE_PLURAL, message.getInvalidObjectProperties()[0].getProperty());
+    }
+
+    @Test
     public void testValidate_TargetRoleSingularMustBeSet() throws CoreException {
         association.setTargetRoleSingular("");
         MessageList ml = association.validate(association.getIpsProject());
@@ -260,6 +287,46 @@ public class AssociationTest extends AbstractIpsPluginTest {
         association.setTargetRoleSingular("Coverage");
         ml = association.validate(association.getIpsProject());
         assertNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET));
+    }
+
+    @Test
+    public void testValidate_TargetRolePluralMustNotMatchTargetRoleSingularIfSet() throws CoreException {
+        association.setTargetRoleSingular("singular");
+        association.setTargetRolePlural("singular");
+
+        Message message = association.validate(association.getIpsProject()).getMessageByCode(
+                IAssociation.MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR);
+
+        assertEquals(Message.ERROR, message.getSeverity());
+        assertEquals(association, message.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IAssociation.PROPERTY_TARGET_ROLE_SINGULAR, message.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(association, message.getInvalidObjectProperties()[1].getObject());
+        assertEquals(IAssociation.PROPERTY_TARGET_ROLE_PLURAL, message.getInvalidObjectProperties()[1].getProperty());
+    }
+
+    @Test
+    public void testValidate_TargetRolePluralMayBeEmptyIfCardinalityAllowsIt() throws CoreException {
+        association.setMinCardinality(0);
+        association.setMaxCardinality(1);
+        association.setTargetRoleSingular("singular");
+        association.setTargetRolePlural("");
+
+        assertTrue(association.isValid(ipsProject));
+    }
+
+    @Test
+    public void testValidate_TargetRolePluralMustNotBeEmptyIfTheCardinalityDoesNotAllowIt() throws CoreException {
+        association.setMinCardinality(0);
+        association.setMaxCardinality(Integer.MAX_VALUE);
+        association.setTargetRoleSingular("singular");
+        association.setTargetRolePlural("");
+
+        Message message = association.validate(association.getIpsProject()).getMessageByCode(
+                IAssociation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET);
+
+        assertEquals(Message.ERROR, message.getSeverity());
+        assertEquals(association, message.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IAssociation.PROPERTY_TARGET_ROLE_PLURAL, message.getInvalidObjectProperties()[0].getProperty());
     }
 
     @Test

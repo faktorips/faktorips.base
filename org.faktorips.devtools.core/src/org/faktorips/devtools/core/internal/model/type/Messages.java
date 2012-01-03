@@ -32,6 +32,8 @@ public class Messages extends NLS {
     public static String Association_msg_MinCardinalityGreaterThanMaxCardinality;
     public static String Association_msg_TargetRolePlural;
     public static String Association_msg_TargetRoleSingular;
+    public static String Association_msg_TargetRoleSingularNotAValidJavaFieldName;
+    public static String Association_msg_TargetRolePluralNotAValidJavaFieldName;
     public static String Association_msg_TargetRoleSingularIlleaglySameAsTargetRolePlural;
     public static String Association_msg_DerivedUnionDoesNotExist;
     public static String Association_msg_NotMarkedAsDerivedUnion;
