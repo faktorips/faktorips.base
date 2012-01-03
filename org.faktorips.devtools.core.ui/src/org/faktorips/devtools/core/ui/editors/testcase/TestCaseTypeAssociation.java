@@ -206,7 +206,7 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
 
         // get the validation messages of the number of instances from the parent test policy cmpt,
         // thus it could be displayed on the association symbol
-        MessageList ml = parentTestPolicyCmpt.validate(null);
+        MessageList ml = parentTestPolicyCmpt.validate(ipsProject);
 
         MessageList mlMin = ml
                 .getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
