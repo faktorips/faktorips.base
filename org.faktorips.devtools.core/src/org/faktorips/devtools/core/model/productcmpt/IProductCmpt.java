@@ -237,7 +237,8 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProperty
      * {@link IProductCmptCategory category} are returned as well.
      * 
      * @param category the {@link IProductCmptCategory category} for which to retrieve the
-     *            {@link IPropertyValue property values}
+     *            {@link IPropertyValue property values} or {@code null} if the
+     *            {@link IProductCmptCategory category} is of no relevance
      * @param effectiveDate the effective date for which to retrieve the {@link IPropertyValue
      *            property values}
      * 

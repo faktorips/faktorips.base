@@ -179,7 +179,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    // Suppressed "unused" warning for better readability
+    // Suppressed "unused" warning for improved readability
     @SuppressWarnings("unused")
     public void testFindPropertyValues() throws CoreException {
         IProductCmpt productCmpt = newProductCmpt(type, "MyProduct");
@@ -239,7 +239,10 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testFindPropertyValues_ProductCmptTypeCannotBeFound() throws CoreException {
-        assertTrue(productCmpt.findPropertyValues(type.newCategory(), new GregorianCalendar(), ipsProject).isEmpty());
+        GregorianCalendar validFrom = new GregorianCalendar(2011, 12, 12);
+        productCmpt.newGeneration(validFrom);
+
+        assertTrue(productCmpt.findPropertyValues(null, validFrom, ipsProject).isEmpty());
     }
 
     /**
@@ -265,6 +268,37 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
                 new GregorianCalendar(2070, 1, 1), ipsProject);
         assertEquals(productValue, propertyValues.get(0));
         assertEquals(1, propertyValues.size());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * The {@link IPropertyValue property values} are requested but no specific
+     * {@link IProductCmptCategory} is given.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The {@link IPropertyValue property values} for all {@link IProductCmptCategory categories}
+     * should be returned.
+     */
+    @Test
+    public void testFindPropertyValues_NoCategoryGiven() throws CoreException {
+        IProductCmptCategory category1 = type.newCategory("category1");
+        IProductCmptCategory category2 = type.newCategory("category2");
+
+        IProductCmptTypeAttribute productAttribute1 = type.newProductCmptTypeAttribute("productAttribute1");
+        productAttribute1.setCategory(category1.getName());
+        IProductCmptTypeAttribute productAttribute2 = type.newProductCmptTypeAttribute("productAttribute2");
+        productAttribute2.setCategory(category2.getName());
+
+        IProductCmpt productCmpt = newProductCmpt(type, "MyProduct");
+        GregorianCalendar validFrom = new GregorianCalendar(2011, 12, 12);
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(validFrom);
+        IPropertyValue productValue1 = generation.newPropertyValue(productAttribute1);
+        IPropertyValue productValue2 = generation.newPropertyValue(productAttribute2);
+
+        List<IPropertyValue> propertyValues = productCmpt.findPropertyValues(null, validFrom, ipsProject);
+        assertEquals(productValue1, propertyValues.get(0));
+        assertEquals(productValue2, propertyValues.get(1));
+        assertEquals(2, propertyValues.size());
     }
 
     @Test

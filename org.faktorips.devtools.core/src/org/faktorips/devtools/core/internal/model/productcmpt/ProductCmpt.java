@@ -454,6 +454,15 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             GregorianCalendar effectiveDate,
             IIpsProject ipsProject) throws CoreException {
 
+        IProductCmptGeneration generation = getGenerationByEffectiveDate(effectiveDate);
+        return category != null ? findPropertyValuesForSpecificCategory(generation, category, ipsProject)
+                : findPropertyValuesForNoCategory(generation);
+    }
+
+    private List<IPropertyValue> findPropertyValuesForSpecificCategory(IProductCmptGeneration generation,
+            IProductCmptCategory category,
+            IIpsProject ipsProject) throws CoreException {
+
         List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
 
         IProductCmptType contextType = findProductCmptType(ipsProject);
@@ -461,7 +470,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             return propertyValues;
         }
 
-        IProductCmptGeneration generation = getGenerationByEffectiveDate(effectiveDate);
         for (IProductCmptProperty property : category.findProductCmptProperties(contextType, true, ipsProject)) {
             if (hasPropertyValue(property)) {
                 propertyValues.add(getPropertyValue(property));
@@ -469,6 +477,14 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
                 propertyValues.add(generation.getPropertyValue(property));
             }
         }
+
+        return propertyValues;
+    }
+
+    private List<IPropertyValue> findPropertyValuesForNoCategory(IProductCmptGeneration generation) {
+        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
+        propertyValues.addAll(getAllPropertyValues());
+        propertyValues.addAll(generation.getAllPropertyValues());
         return propertyValues;
     }
 

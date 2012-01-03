@@ -157,32 +157,51 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             productCmptType = getActiveGeneration().findProductCmptType(getActiveGeneration().getIpsProject());
         } catch (CoreException e) {
             /*
-             * The product component type could not be found. Recover by not creating any sections
-             * for categories and log exception.
+             * An error occurred while searching for the product component type. Recover by creating
+             * a fallback section and log the exception.
              */
+            createFallbackSection(left);
             IpsPlugin.log(e);
+            return;
+        }
+
+        // Create a fallback section if the product component type cannot be found
+        if (productCmptType == null) {
+            createFallbackSection(left);
             return;
         }
 
         // Determine categories
         List<IProductCmptCategory> categories = new ArrayList<IProductCmptCategory>(4);
-        if (productCmptType != null) {
-            try {
-                categories.addAll(productCmptType.findCategories(productCmptType.getIpsProject()));
-            } catch (CoreException e) {
-                /*
-                 * The categories could not be determined. Recover by not creating any sections for
-                 * categories and log exception.
-                 */
-                IpsPlugin.log(e);
-                return;
-            }
+        try {
+            categories.addAll(productCmptType.findCategories(productCmptType.getIpsProject()));
+        } catch (CoreException e) {
+            /*
+             * The categories could not be determined. Recover by creating a fallback section and
+             * log the exception.
+             */
+            createFallbackSection(left);
+            IpsPlugin.log(e);
+            return;
         }
 
         // Create a section for each category
         for (IProductCmptCategory category : categories) {
             createSectionForCategory(category, left, right);
         }
+    }
+
+    private void createFallbackSection(Composite left) {
+        // Obtain all property values
+        List<IPropertyValue> propertyValues;
+        try {
+            propertyValues = getProductCmpt().findPropertyValues(null, getActiveGeneration().getValidFrom(),
+                    getIpsObject().getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+
+        leftSections.add(new FallbackSection(propertyValues, left, toolkit));
     }
 
     private void createSectionForCategory(IProductCmptCategory category, Composite left, Composite right) {
@@ -346,6 +365,28 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     private IProductCmpt getProductCmpt() {
         return (IProductCmpt)getIpsObject();
+    }
+
+    /**
+     * A section that shows all properties of the generation.
+     * <p>
+     * This kind of section is needed if the {@link IProductCmptType} of the {@link IProductCmpt}
+     * cannot be found or if the {@link IProductCmptCategory categories} cannot be determined.
+     */
+    private static class FallbackSection extends ProductCmptPropertySection {
+
+        private static final String ID = "org.faktorips.devtools.core.ui.editors.productcmpt.FallbackSection"; //$NON-NLS-1$
+
+        private FallbackSection(List<IPropertyValue> propertyValues, Composite parent, UIToolkit toolkit) {
+            super(ID, propertyValues, parent, GridData.FILL_BOTH, toolkit);
+            initControls();
+        }
+
+        @Override
+        protected String getSectionTitle() {
+            return Messages.GenerationPropertiesPage_fallbackSectionTitle;
+        }
+
     }
 
     /**

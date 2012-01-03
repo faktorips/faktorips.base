@@ -24,6 +24,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -58,14 +59,16 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
     }
 
     private void createValueEditField(List<EditField<?>> editFields) throws CoreException {
-        ValueDatatype datatype = getProperty().findDatatype(getPropertyValue().getIpsProject());
+        ValueDatatype datatype = getProperty() == null ? null : getProperty().findDatatype(
+                getPropertyValue().getIpsProject());
+        IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-        EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, getProperty()
-                .getValueSet(), getPropertyValue().getIpsProject());
+        EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, valueSet,
+                getPropertyValue().getIpsProject());
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE);
 
-        if (!getProperty().isChangingOverTime()) {
+        if (getProperty() != null && !getProperty().isChangingOverTime()) {
             addNotChangingOverTimeControlDecoration(editField);
         }
     }

@@ -211,15 +211,8 @@ public abstract class ProductCmptPropertySection extends IpsSection {
             IProductCmptProperty property) {
 
         PropertyValueUI propertyValueUI = PropertyValueUI.getValueByPropertyType(propertyValue.getPropertyType());
-
-        EditPropertyValueComposite<?, ?> editComposite = null;
-        if (property != null) {
-            editComposite = propertyValueUI.createEditComposite(property, propertyValue, this, rootPane,
-                    getBindingContext(), getToolkit());
-        } else {
-            createEmptyComposite();
-        }
-        return editComposite;
+        return propertyValueUI.createEditComposite(property, propertyValue, this, rootPane, getBindingContext(),
+                getToolkit());
     }
 
     private void verticallyAlignLabel(Control label, EditPropertyValueComposite<?, ?> editComposite) {
@@ -235,10 +228,6 @@ public abstract class ProductCmptPropertySection extends IpsSection {
             ((GridData)label.getLayoutData()).verticalIndent = ((GridLayout)editComposite.getLayout()).marginHeight
                     + topOfControlToLabelPixels / 2;
         }
-    }
-
-    private void createEmptyComposite() {
-        getToolkit().createComposite(rootPane);
     }
 
     /**

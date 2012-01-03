@@ -75,9 +75,12 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     private void createDefaultValueEditField(List<EditField<?>> editFields) {
         createLabelWithWidthHint(Messages.ConfigElementEditComposite_defaultValue);
 
-        ValueDatatype datatype = findDatatypeForDefaultValueEditField();
+        ValueDatatype datatype = getProperty() == null ? null : findDatatypeForDefaultValueEditField();
+        if (datatype == null) {
+            // No datatype found - use String as default
+            datatype = Datatype.STRING;
+        }
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-
         EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, getPropertyValue()
                 .getValueSet(), getGeneration().getIpsProject());
         editFields.add(editField);
@@ -93,10 +96,6 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
             IpsPlugin.log(e);
             datatype = Datatype.STRING;
         }
-        if (datatype == null) {
-            // No datatype found - use String as default
-            datatype = Datatype.STRING;
-        }
         return datatype;
     }
 
@@ -109,8 +108,8 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     }
 
     private boolean areRangeValueEditFieldsRequired() {
-        return getProperty().getValueSet() != null ? getProperty().getValueSet().isRange() : getPropertyValue()
-                .getValueSet().isRange();
+        IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
+        return valueSet != null ? valueSet.isRange() : getPropertyValue().getValueSet().isRange();
     }
 
     private void createValueSetEditFieldForRange(List<EditField<?>> editFields) {
