@@ -117,54 +117,6 @@ public class TestCaseDetailArea {
 
     private BindingContext bindingContext;
 
-    /**
-     * Mouse listener class to select the section if the mouse button is clicked
-     */
-    private class SectionSelectMouseListener implements MouseListener {
-
-        private ITestPolicyCmpt testPolicyCmptType;
-        private ITestPolicyCmptLink testPolicyCmptTypeLink;
-        private ITestObject testObject;
-
-        public SectionSelectMouseListener(IIpsObjectPart object) {
-            if (object instanceof ITestPolicyCmpt) {
-                testPolicyCmptType = (ITestPolicyCmpt)object;
-            } else if (object instanceof ITestPolicyCmptLink) {
-                testPolicyCmptTypeLink = (ITestPolicyCmptLink)object;
-            } else if (object instanceof ITestObject) {
-                testObject = (ITestObject)object;
-            }
-        }
-
-        public SectionSelectMouseListener(ITestPolicyCmptLink testPolicyCmptTypeLink) {
-            this.testPolicyCmptTypeLink = testPolicyCmptTypeLink;
-        }
-
-        @Override
-        public void mouseDown(MouseEvent e) {
-            if (testPolicyCmptType != null) {
-                testCaseSection.selectInTreeByObject(testPolicyCmptType, false);
-                testCaseSection.selectInDetailArea(testPolicyCmptType, false);
-            } else if (testPolicyCmptTypeLink != null) {
-                testCaseSection.selectInTreeByObject(testPolicyCmptTypeLink, false);
-                testCaseSection.selectInDetailArea(testPolicyCmptTypeLink, false);
-            } else if (testObject != null) {
-                testCaseSection.selectTestObjectInTree(testObject);
-                testCaseSection.selectInDetailArea(testObject, false);
-            }
-        }
-
-        @Override
-        public void mouseDoubleClick(MouseEvent e) {
-            // nothing to do
-        }
-
-        @Override
-        public void mouseUp(MouseEvent e) {
-            // nothing to do
-        }
-    }
-
     public TestCaseDetailArea(UIToolkit toolkit, TestCaseContentProvider contentProvider, TestCaseSection section,
             BindingContext bindingContext) {
 
@@ -731,13 +683,6 @@ public class TestCaseDetailArea {
     }
 
     /**
-     * Packs the detail area.
-     */
-    public void pack() {
-        dynamicArea.pack();
-    }
-
-    /**
      * Mark the test attribute value field or test value field - which is identified by the given
      * key - as failure. Returns <code>true</code> if the field was found otherwise
      * <code>false</code>.
@@ -881,4 +826,53 @@ public class TestCaseDetailArea {
         }
         return editField;
     }
+
+    /**
+     * Mouse listener class to select the section if the mouse button is clicked
+     */
+    private class SectionSelectMouseListener implements MouseListener {
+
+        private ITestPolicyCmpt testPolicyCmptType;
+        private ITestPolicyCmptLink testPolicyCmptTypeLink;
+        private ITestObject testObject;
+
+        public SectionSelectMouseListener(IIpsObjectPart object) {
+            if (object instanceof ITestPolicyCmpt) {
+                testPolicyCmptType = (ITestPolicyCmpt)object;
+            } else if (object instanceof ITestPolicyCmptLink) {
+                testPolicyCmptTypeLink = (ITestPolicyCmptLink)object;
+            } else if (object instanceof ITestObject) {
+                testObject = (ITestObject)object;
+            }
+        }
+
+        public SectionSelectMouseListener(ITestPolicyCmptLink testPolicyCmptTypeLink) {
+            this.testPolicyCmptTypeLink = testPolicyCmptTypeLink;
+        }
+
+        @Override
+        public void mouseDown(MouseEvent e) {
+            if (testPolicyCmptType != null) {
+                testCaseSection.selectInTreeByObject(testPolicyCmptType, false);
+                testCaseSection.selectInDetailArea(testPolicyCmptType, false);
+            } else if (testPolicyCmptTypeLink != null) {
+                testCaseSection.selectInTreeByObject(testPolicyCmptTypeLink, false);
+                testCaseSection.selectInDetailArea(testPolicyCmptTypeLink, false);
+            } else if (testObject != null) {
+                testCaseSection.selectTestObjectInTree(testObject);
+                testCaseSection.selectInDetailArea(testObject, false);
+            }
+        }
+
+        @Override
+        public void mouseDoubleClick(MouseEvent e) {
+            // nothing to do
+        }
+
+        @Override
+        public void mouseUp(MouseEvent e) {
+            // nothing to do
+        }
+    }
+
 }
