@@ -20,7 +20,9 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -30,11 +32,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
@@ -166,14 +169,8 @@ public class TestCaseDetailArea {
         Section detailsSection = toolkit.getFormToolkit().createSection(parent, ExpandableComposite.TITLE_BAR);
         detailsSection.setLayoutData(new GridData(GridData.FILL_BOTH));
         detailsSection.setText(title);
-        detailsArea = toolkit.createComposite(detailsSection);
-        detailsArea.setLayoutData(new GridData(GridData.FILL_BOTH));
+        detailsArea = toolkit.createGridComposite(detailsSection, 1, false, true);
         detailsSection.setClient(detailsArea);
-        GridLayout detailLayout = new GridLayout(1, false);
-        detailLayout.horizontalSpacing = 0;
-        detailLayout.marginWidth = 0;
-        detailLayout.marginHeight = 0;
-        detailsArea.setLayout(detailLayout);
         return detailsSection;
     }
 
@@ -203,16 +200,21 @@ public class TestCaseDetailArea {
             notifyListener(testObjects);
 
             for (ITestObject testObject : testObjects) {
+                ScrolledComposite scrolledComposite = createScrolledComposite(dynamicArea);
+                Composite container = new Composite(scrolledComposite, SWT.NONE);
+                container.setBackground(detailsArea.getBackground());
+                container.setLayoutData(new GridData(GridData.FILL_BOTH));
+                GridLayout layout = new GridLayout(1, false);
+                container.setLayout(layout);
                 if (testObject instanceof ITestValue) {
-                    Composite borderedComosite = createBorderComposite(dynamicArea);
-                    createTestValuesSection((ITestValue)testObject, borderedComosite);
+                    createTestValuesSection((ITestValue)testObject, container);
                 } else if (testObject instanceof ITestRule) {
-                    Composite borderedComosite = createBorderComposite(dynamicArea);
-                    createTestRuleSection((ITestRule)testObject, borderedComosite);
+                    createTestRuleSection((ITestRule)testObject, container);
                 } else if (testObject instanceof ITestPolicyCmpt) {
-                    Composite borderedComosite = createBorderComposite(dynamicArea);
-                    createPolicyCmptAndLinkSection((ITestPolicyCmpt)testObject, borderedComosite);
+                    createPolicyCmptAndLinkSection((ITestPolicyCmpt)testObject, container);
                 }
+                scrolledComposite.setContent(container);
+                scrolledComposite.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
             }
 
             if (!testCaseSection.isDataChangeable()) {
@@ -221,6 +223,41 @@ public class TestCaseDetailArea {
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private ScrolledComposite createScrolledComposite(Composite parent) {
+        if (parent.isDisposed()) {
+            return null;
+        }
+        final ScrolledComposite scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL
+                | SWT.BORDER);
+        applyHeight(scrolledComposite);
+
+        scrolledComposite.setExpandHorizontal(true);
+        scrolledComposite.setExpandVertical(true);
+
+        testCaseSection.addListener(SWT.Resize, new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+                if (!scrolledComposite.isDisposed()) {
+                    applyHeight(scrolledComposite);
+                    testCaseSection.layout();
+                }
+            }
+        });
+
+        return scrolledComposite;
+    }
+
+    private void applyHeight(ScrolledComposite scrolledComposite) {
+        GridDataFactory dataFactory = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL)
+                .hint(SWT.DEFAULT, computeScrolledCompositeHeight()).grab(true, true);
+        dataFactory.applyTo(scrolledComposite);
+    }
+
+    private int computeScrolledCompositeHeight() {
+        // TODO AW 04-01-2012: I don't know where the 25 comes from
+        return testCaseSection.treeViewer.getTree().getSize().y - 25;
     }
 
     /**
@@ -625,30 +662,6 @@ public class TestCaseDetailArea {
     }
 
     /**
-     * Create a bordered composite
-     */
-    private Composite createBorderComposite(Composite parent) {
-        if (parent.isDisposed()) {
-            return null;
-        }
-        Composite c1 = toolkit.createLabelEditColumnComposite(parent);
-        c1.setLayoutData(new GridData(GridData.FILL_BOTH));
-        c1.setLayout(new GridLayout(1, true));
-
-        Composite c2 = toolkit.getFormToolkit().createComposite(c1);
-        c2.setLayoutData(new GridData(GridData.FILL_BOTH));
-        GridLayout detailLayout = new GridLayout(1, true);
-
-        detailLayout.horizontalSpacing = 10;
-        detailLayout.marginWidth = 10;
-        detailLayout.marginHeight = 10;
-        c2.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
-
-        c2.setLayout(detailLayout);
-        return c2;
-    }
-
-    /**
      * Resets the containers containing the control references.
      */
     private void resetContainers() {
@@ -672,7 +685,7 @@ public class TestCaseDetailArea {
         }
 
         dynamicArea = toolkit.getFormToolkit().createComposite(detailsArea);
-        dynamicArea.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        dynamicArea.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
         GridLayout detailLayout = new GridLayout(1, true);
         detailLayout.horizontalSpacing = 0;
         detailLayout.marginWidth = 0;

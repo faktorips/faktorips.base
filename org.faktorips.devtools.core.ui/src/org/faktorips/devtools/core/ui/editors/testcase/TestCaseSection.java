@@ -157,7 +157,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     // The tree view which displays all test policy components and test values which are available
     // in this test
-    private TreeViewer treeViewer;
+    TreeViewer treeViewer;
 
     // Contains the test case which is displayed in this section
     private ITestCase testCase;
@@ -243,6 +243,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private RemoveAction removeAction;
 
     private AddAction addAction;
+
+    Section structureSection;
 
     public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
             TestCaseContentProvider contentProvider, final String title, String detailTitle, ScrolledForm form,
@@ -356,8 +358,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         toolkit.getFormToolkit().adapt(sashForm, false, false);
         sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        // Tree structure section
-        Section structureSection = toolkit.getFormToolkit().createSection(sashForm, ExpandableComposite.TITLE_BAR);
+        structureSection = toolkit.getFormToolkit().createSection(sashForm, ExpandableComposite.TITLE_BAR);
         structureSection.setLayoutData(new GridData(GridData.FILL_BOTH));
         structureSection.setText(sectionTreeStructureTitle);
 
