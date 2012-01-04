@@ -236,7 +236,7 @@ public class TestCaseDetailArea {
         scrolledComposite.setExpandHorizontal(true);
         scrolledComposite.setExpandVertical(true);
 
-        testCaseSection.addListener(SWT.Resize, new Listener() {
+        testCaseSection.treeViewer.getTree().addListener(SWT.Resize, new Listener() {
             @Override
             public void handleEvent(Event event) {
                 if (!scrolledComposite.isDisposed()) {
