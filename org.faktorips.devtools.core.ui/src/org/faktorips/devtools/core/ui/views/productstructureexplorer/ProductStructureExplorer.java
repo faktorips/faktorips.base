@@ -765,6 +765,10 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         updateView();
     }
 
+    public IProductCmptTreeStructure getContent() {
+        return (IProductCmptTreeStructure)treeViewer.getInput();
+    }
+
     public void updateView() {
         if (treeViewer != null && !treeViewer.getControl().isDisposed()) {
             Object element = treeViewer.getInput();
@@ -842,7 +846,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         return ((showReferencedTable ? OPTION_REFERENCE_TABLE : 0) | //
                 (showTableStructureRoleName ? OPTION_TABLE_STRUCTURE_ROLE_NAME : 0) | //
                 (showAssociationNode ? OPTION_ASSOCIATION_NODE : 0) | (showAssociatedCmpts ? OPTION_ASSOCIATED_CMPTS
-                : 0)); //
+                    : 0)); //
     }
 
     /**
@@ -882,8 +886,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         }
     }
 
-    public void expandAll() {
-        treeViewer.expandAll();
+    public void expandToLevel(int level) {
+        treeViewer.expandToLevel(level);
     }
 
     /**
