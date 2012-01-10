@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.model.tablestructure;
 
-import java.util.Locale;
-
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
@@ -64,13 +62,10 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement {
     public boolean isModelEnumType();
 
     /**
-     * Returns the functions to access the table in the formula language for the given locale.
+     * Returns the functions to access the table in the formula language.
      * 
-     * @param locale The locale to return the access functions for
-     * 
-     * @throws NullPointerException If the parameter is null
      */
-    public ITableAccessFunction[] getAccessFunctions(Locale locale);
+    public ITableAccessFunction[] getAccessFunctions();
 
     /**
      * Returns the table's columns.

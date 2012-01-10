@@ -15,6 +15,7 @@ package org.faktorips.util;
 
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -68,28 +69,84 @@ public class LocalizedStringsSet {
         this.loader = loader;
     }
 
+    /**
+     * Checking whether the resource is accessible in given locale. That does not necessary means
+     * that the resource is available in exactly this language when there is a default resource.
+     * 
+     * @param locale The locale you want be check.
+     * @return true if there is a resource bundle could be found for the given locale
+     * 
+     * @see ResourceBundle#getBundle(String)
+     */
+    public boolean isAccessible(Locale locale) {
+        try {
+            ResourceBundle.getBundle(name, locale, loader);
+            return true;
+        } catch (MissingResourceException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Try to load the resource bundle in given locale and searches for the given key. This method
+     * also replaces the replacement parameters in the found message by using the
+     * {@link MessageFormat}.
+     * 
+     * @param key The key of the message
+     * @param locale the locale of the message
+     * @param replacements optional replacement parameters
+     * @return the message for the key in specified locale
+     * @throws MissingResourceException if the resource or the specified key is not found
+     * 
+     * @see ResourceBundle#getBundle(String, Locale, ClassLoader)
+     * @see MessageFormat#format(Object)
+     */
     public String getString(String key, Locale locale, Object... replacements) {
         String s = ResourceBundle.getBundle(name, locale, loader).getString(key);
         MessageFormat mf = new MessageFormat(s, locale);
         return mf.format(replacements);
     }
 
-    public String getString(String key, Locale locale, Object replacement) {
-        return getString(key, locale, new Object[] { replacement });
-    }
-
+    /**
+     * Try to load the resource bundle in given locale and searches for the given key.
+     * 
+     * @param key The key of the message
+     * @param locale the locale of the message
+     * @return the message for the key in specified locale
+     * @throws MissingResourceException if the resource or the specified key is not found
+     * 
+     * @see ResourceBundle#getBundle(String, Locale, ClassLoader)
+     */
     public String getString(String key, Locale locale) {
         return ResourceBundle.getBundle(name, locale, loader).getString(key);
     }
 
+    /**
+     * Try to load the resource bundle in the jvm's default language and searches for the given key.
+     * This method also replaces the replacement parameters in the found message by using the
+     * {@link MessageFormat}.
+     * 
+     * @param key The key of the message
+     * @param replacements optional replacement parameters
+     * @return the message for the key in specified locale
+     * @throws MissingResourceException if the resource or the specified key is not found
+     * 
+     * @see ResourceBundle#getBundle(String, Locale, ClassLoader)
+     * @see MessageFormat#format(Object)
+     */
     public String getString(String key, Object... replacements) {
         return getString(key, Locale.getDefault(), replacements);
     }
 
-    public String getString(String key, Object replacement) {
-        return getString(key, Locale.getDefault(), replacement);
-    }
-
+    /**
+     * Try to load the resource bundle in the jvm's default language and searches for the given key.
+     * 
+     * @param key The key of the message
+     * @return the message for the key in specified locale
+     * @throws MissingResourceException if the resource or the specified key is not found
+     * 
+     * @see ResourceBundle#getBundle(String, Locale, ClassLoader)
+     */
     public String getString(String key) {
         return ResourceBundle.getBundle(name, Locale.getDefault(), loader).getString(key);
     }

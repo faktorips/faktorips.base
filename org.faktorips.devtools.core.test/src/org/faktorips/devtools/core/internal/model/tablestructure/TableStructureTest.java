@@ -19,8 +19,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -31,6 +31,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -56,7 +57,11 @@ public class TableStructureTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject");
+        ArrayList<Locale> supportedLanguages = new ArrayList<Locale>();
+        supportedLanguages.add(Locale.GERMAN);
+        supportedLanguages.add(Locale.ENGLISH);
+        supportedLanguages.add(Locale.FRENCH);
+        project = newIpsProject(supportedLanguages);
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
     }
 
@@ -152,7 +157,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetAccessFunctions() {
-        ITableAccessFunction[] fcts = table.getAccessFunctions(Locale.GERMAN);
+        ITableAccessFunction[] fcts = table.getAccessFunctions();
         assertEquals(0, fcts.length);
 
         IColumn gender = table.newColumn();
@@ -176,7 +181,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         IUniqueKey key = table.newUniqueKey();
         key.setKeyItems(new String[] { gender.getName(), range.getName() });
 
-        fcts = table.getAccessFunctions(Locale.GERMAN);
+        fcts = table.getAccessFunctions();
         assertEquals(2, fcts.length);
         assertSame(table, fcts[0].getTableStructure());
         assertEquals("TestTable.rate", fcts[0].getName());
@@ -196,7 +201,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         IUniqueKey secondKey = table.newUniqueKey();
         secondKey.setKeyItems(new String[] { gender.getName(), newKeyColumn.getName() });
 
-        fcts = table.getAccessFunctions(Locale.GERMAN);
+        fcts = table.getAccessFunctions();
         assertEquals(7, fcts.length);
         assertSame(table, fcts[0].getTableStructure());
         assertEquals("TestTable.rate", fcts[0].getName());
@@ -216,13 +221,40 @@ public class TableStructureTest extends AbstractIpsPluginTest {
 
     }
 
-    @Test
-    public void testGetAccessFunctionsNullPointer() {
-        try {
-            table.getAccessFunctions(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+    public void testGetAccessFunctions_description() {
+        ITableAccessFunction[] fcts = table.getAccessFunctions();
+        assertEquals(0, fcts.length);
+
+        IColumn gender = table.newColumn();
+        gender.setName("gender");
+        gender.setDatatype(Datatype.STRING.getQualifiedName());
+        IColumn ageFrom = table.newColumn();
+        ageFrom.setName("ageFrom");
+        ageFrom.setDatatype(Datatype.INTEGER.getQualifiedName());
+        IColumn ageTo = table.newColumn();
+        ageTo.setName("ageTo");
+        IColumn rate = table.newColumn();
+        rate.setName("rate");
+        rate.setDatatype(Datatype.DECIMAL.getQualifiedName());
+        IColumn premium = table.newColumn();
+        premium.setName("minPremium");
+        premium.setDatatype(Datatype.MONEY.getQualifiedName());
+        IColumnRange range = table.newRange();
+        range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
+        range.setFromColumn("ageFrom");
+        range.setToColumn("ageTo");
+        IUniqueKey key = table.newUniqueKey();
+        key.setKeyItems(new String[] { gender.getName(), range.getName() });
+
+        fcts = table.getAccessFunctions();
+        List<IDescription> descriptions = fcts[0].getDescriptions();
+        assertEquals(3, descriptions.size());
+        System.out.println(fcts[0].getDescription(Locale.GERMAN).getText());
+        System.out.println(fcts[0].getDescription(Locale.ENGLISH).getText());
+        System.out.println(fcts[0].getDescription(Locale.FRENCH).getText());
+        assertEquals("", fcts[0].getDescription(Locale.GERMAN).getText());
+        assertEquals("", fcts[0].getDescription(Locale.ENGLISH).getText());
+        assertEquals("", fcts[0].getDescription(Locale.FRENCH).getText());
     }
 
     @Test

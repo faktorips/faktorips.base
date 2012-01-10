@@ -77,8 +77,7 @@ public class TableUsageFunctionsResolver implements FunctionResolver {
             ITableContents tableContents,
             String contentUsage) throws CoreException {
 
-        ITableAccessFunction[] fcts = table.getAccessFunctions(IpsPlugin.getMultiLanguageSupport()
-                .getLocalizationLocale());
+        ITableAccessFunction[] fcts = table.getAccessFunctions();
         for (int j = 0; j < fcts.length; j++) {
             if (!fcts[j].validate(table.getIpsProject()).containsErrorMsg()) {
                 functions.add(createFlFunctionAdapter(tableContents, fcts[j], contentUsage));

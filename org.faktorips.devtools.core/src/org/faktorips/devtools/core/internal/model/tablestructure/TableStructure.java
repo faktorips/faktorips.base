@@ -18,8 +18,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.Description;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
@@ -28,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
@@ -40,7 +43,6 @@ import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.devtools.core.util.TreeSetHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -50,12 +52,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
     private static final String KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_END = "TableAccessFunctionDescriptionEnd"; //$NON-NLS-1$
 
     private static final String KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_START = "TableAccessFunctionDescriptionStart"; //$NON-NLS-1$
-
-    private final static String packageName = StringUtil.getPackageName(TableStructure.class.getName());
-
-    private final static String unqualifiedClassName = StringUtil.unqualifiedName(TableStructure.class.getName());
-
-    private final LocalizedStringsSet localizedStringSet;
 
     private TableStructureType type = TableStructureType.SINGLE_CONTENT;
 
@@ -69,8 +65,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     public TableStructure(IIpsSrcFile file) {
         super(file);
-        localizedStringSet = new LocalizedStringsSet(packageName + '.' + unqualifiedClassName,
-                TableStructure.class.getClassLoader());
     }
 
     /**
@@ -78,8 +72,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     public TableStructure() {
         super();
-        localizedStringSet = new LocalizedStringsSet(packageName + '.' + unqualifiedClassName,
-                TableStructure.class.getClassLoader());
     }
 
     @Override
@@ -332,9 +324,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    public ITableAccessFunction[] getAccessFunctions(Locale locale) {
-        ArgumentCheck.notNull(locale);
-
+    public ITableAccessFunction[] getAccessFunctions() {
         if (getUniqueKeys().length == 0) {
             return new ITableAccessFunction[0];
         }
@@ -347,39 +337,56 @@ public class TableStructure extends IpsObject implements ITableStructure {
             IColumn[] columns = getColumnsNotInKey(key);
             for (int j = 0; j < columns.length; j++) {
                 // add function for each column which is not included in the key
-                functions.add(createFunction("" + j, key, columns[j], locale)); //$NON-NLS-1$
+                functions.add(createFunction("" + j, key, columns[j])); //$NON-NLS-1$
             }
         }
 
         return functions.toArray(new ITableAccessFunction[functions.size()]);
     }
 
-    private ITableAccessFunction createFunction(String id, IUniqueKey key, IColumn column, Locale locale) {
+    private ITableAccessFunction createFunction(String id, IUniqueKey key, IColumn column) {
         TableAccessFunction fct = new TableAccessFunction(this, id);
         fct.setAccessedColumn(column.getName());
         fct.setType(column.getDatatype());
 
-        StringBuffer descriptionText = new StringBuffer(
-                localizedStringSet.getString(KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_START));
         IKeyItem[] items = key.getKeyItems();
         String[] argTypes = new String[items.length];
         for (int i = 0; i < items.length; i++) {
             argTypes[i] = items[i].getDatatype();
-            if (i > 0) {
-                descriptionText.append(", "); //$NON-NLS-1$
-            }
-            descriptionText.append(items[i].getAccessParameterName());
         }
         fct.setArgTypes(argTypes);
-        descriptionText.append(localizedStringSet.getString(KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_END)).append(
-                column.getName());
 
-        Description description = (Description)fct.getDescription(locale);
-        if (description != null) {
-            description.setTextWithoutChangeEvent(descriptionText.toString());
-        }
-
+        createDescriptionForFunction(key, column, fct);
         return fct;
+    }
+
+    private void createDescriptionForFunction(IUniqueKey key, IColumn column, TableAccessFunction fct) {
+        LocalizedStringsSet localizedStringSet = new LocalizedStringsSet(this.getClass());
+        Set<ISupportedLanguage> supportedLanguages = getIpsProject().getReadOnlyProperties().getSupportedLanguages();
+        for (ISupportedLanguage supportedLanguage : supportedLanguages) {
+            Locale locale = supportedLanguage.getLocale();
+            if (localizedStringSet.isAccessible(locale)) {
+                StringBuffer descriptionText = new StringBuffer(localizedStringSet.getString(
+                        KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_START, locale));
+                IKeyItem[] items = key.getKeyItems();
+                String[] argTypes = new String[items.length];
+                for (int i = 0; i < items.length; i++) {
+                    argTypes[i] = items[i].getDatatype();
+                    if (i > 0) {
+                        descriptionText.append(", "); //$NON-NLS-1$
+                    }
+                    descriptionText.append(items[i].getAccessParameterName());
+                }
+                fct.setArgTypes(argTypes);
+                descriptionText.append(localizedStringSet.getString(KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_END, locale))
+                        .append(column.getName());
+
+                Description description = (Description)fct.getDescription(locale);
+                if (description != null) {
+                    description.setTextWithoutChangeEvent(descriptionText.toString());
+                }
+            }
+        }
     }
 
     @Override
@@ -408,16 +415,8 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
         String typeId = element.getAttribute(PROPERTY_TYPE);
 
-        if (typeId.length() > 0) {
+        if (StringUtils.isNotEmpty(typeId)) {
             type = TableStructureType.getTypeForId(typeId);
-        } else {
-            // Code for migrating old table structures
-            // TODO remove migration code
-            if (Boolean.valueOf(element.getAttribute("multipleContentsAllowed")).booleanValue()) { //$NON-NLS-1$
-                type = TableStructureType.MULTIPLE_CONTENTS;
-            } else {
-                type = TableStructureType.SINGLE_CONTENT;
-            }
         }
     }
 
