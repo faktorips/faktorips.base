@@ -200,8 +200,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         genAttribute2.setCategory(category.getName());
 
         // Create two generations
-        GregorianCalendar validFrom1 = new GregorianCalendar(2011, 12, 12);
-        GregorianCalendar validFrom2 = new GregorianCalendar(2012, 12, 12);
+        GregorianCalendar validFrom1 = createValidFromDate(1);
+        GregorianCalendar validFrom2 = createValidFromDate(2);
         IProductCmptGeneration generation1 = (IProductCmptGeneration)productCmpt.newGeneration(validFrom1);
         IProductCmptGeneration generation2 = (IProductCmptGeneration)productCmpt.newGeneration(validFrom2);
 
@@ -290,7 +290,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productAttribute2.setCategory(category2.getName());
 
         IProductCmpt productCmpt = newProductCmpt(type, "MyProduct");
-        GregorianCalendar validFrom = new GregorianCalendar(2011, 12, 12);
+        GregorianCalendar validFrom = createValidFromDate(1);
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(validFrom);
         IPropertyValue productValue1 = generation.newPropertyValue(productAttribute1);
         IPropertyValue productValue2 = generation.newPropertyValue(productAttribute2);
@@ -700,6 +700,13 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertSame(thirdGeneration, productCmpt.getProductCmptGeneration(2));
         assertSame(firstGeneration, productCmpt.getFirstGeneration());
         assertSame(secondGeneration, productCmpt.getLatestProductCmptGeneration());
-
     }
+
+    private GregorianCalendar createValidFromDate(int offsetToCurrentDay) {
+        int currentYear = GregorianCalendar.getInstance().get(Calendar.YEAR);
+        int currentMonth = GregorianCalendar.getInstance().get(Calendar.MONTH);
+        int currentDay = GregorianCalendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        return new GregorianCalendar(currentYear, currentMonth, currentDay + offsetToCurrentDay);
+    }
+
 }
