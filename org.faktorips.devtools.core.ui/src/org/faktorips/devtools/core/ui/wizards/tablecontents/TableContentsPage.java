@@ -6,190 +6,184 @@
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
-import java.util.GregorianCalendar;
-import java.util.Set;
+import java.beans.PropertyChangeEvent;
 
-import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.IWizard;
-import org.eclipse.osgi.util.NLS;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
+import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
-import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
-import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
-import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.controller.fields.IpsProjectRefField;
+import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionComposite;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.UiUpdater;
+import org.faktorips.util.message.MessageList;
 
-public class TableContentsPage extends IpsObjectPage {
+public class TableContentsPage extends WizardPage {
 
-    private TableStructureRefControl structureControl;
-    private TextButtonField structureField;
-    private Text name;
+    private final ResourceManager resourManager;
 
-    private ITableContents createdTableContents;
+    private final NewTableContentsPMO pmo;
 
-    public TableContentsPage(IStructuredSelection selection) {
-        super(IpsObjectType.TABLE_CONTENTS, selection, Messages.TableContentsPage_title);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/NewTableContentsWizard.png")); //$NON-NLS-1$
-    }
+    private BindingContext bindingContext;
 
-    String getTableStructureName() {
-        return structureControl.getText();
+    private TypeSelectionComposite structureSelectionComposite;
+
+    private TableContentsPageUiUpdater uiUpdater;
+
+    private Text nameText;
+
+    private Text runtimeId;
+
+    private IpsProjectRefControl ipsProjectRefControl;
+
+    public TableContentsPage(NewTableContentsPMO pmo) {
+        super(Messages.TableContentsPage_title);
+        this.pmo = pmo;
+        resourManager = new LocalResourceManager(JFaceResources.getResources());
+        bindingContext = new BindingContext();
     }
 
     @Override
-    protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
-        toolkit.createFormLabel(nameComposite, Messages.TableContentsPage_labelStructure);
-        structureControl = toolkit.createTableStructureRefControl(null, nameComposite);
+    public void createControl(Composite parent) {
+        UIToolkit toolkit = new UIToolkit(null);
+        Composite composite = toolkit.createGridComposite(parent, 1, false, false);
+        GridLayout layout = (GridLayout)composite.getLayout();
+        layout.verticalSpacing = 10;
 
-        structureField = new TextButtonField(structureControl);
-        structureField.addChangeListener(this);
-        name = addNameLabelField(toolkit, nameComposite);
+        Composite twoColumnComposite = toolkit.createLabelEditColumnComposite(composite);
+        toolkit.createLabel(twoColumnComposite, "Project:");
+        ipsProjectRefControl = toolkit.createIpsProjectRefControl(twoColumnComposite);
 
-        structureControl.setFocus();
+        toolkit.createHorizonzalLine(composite);
 
-        // sets the default table structure if the selection is a table structure or a table content
-        String tableStructureInSelect = getTableStructureFromSelection();
-        if (tableStructureInSelect != null) {
-            structureControl.getTextControl().setText(tableStructureInSelect);
-            name.setFocus();
-        }
+        structureSelectionComposite = new TypeSelectionComposite(composite, toolkit);
+        structureSelectionComposite.setTitle(Messages.TableContentsPage_labelStructure);
+
+        toolkit.createHorizonzalLine(composite);
+
+        Composite nameAndIdComposite = toolkit.createLabelEditColumnComposite(composite);
+        toolkit.createLabel(nameAndIdComposite, "Name:");
+
+        nameText = toolkit.createText(nameAndIdComposite);
+
+        toolkit.createLabel(nameAndIdComposite, "Runtime ID:");
+        runtimeId = toolkit.createText(nameAndIdComposite);
+        runtimeId.setEnabled(pmo.isCanEditRuntimeId());
+
+        setControl(composite);
+
+        bindControls(structureSelectionComposite);
+
+        uiUpdater.updateUI();
+        bindingContext.updateUI();
+    }
+
+    void bindControls(final TypeSelectionComposite typeSelectionComposite) {
+        uiUpdater = new TableContentsPageUiUpdater(this, pmo);
+        pmo.addPropertyChangeListener(uiUpdater);
+        uiUpdater.updateStructuresList();
+
+        IpsProjectRefField ipsProjectRefField = new IpsProjectRefField(ipsProjectRefControl);
+        bindingContext.bindContent(ipsProjectRefField, pmo, NewTableContentsPMO.PROPERTY_IPS_PROJECT);
+        bindingContext.bindContent(typeSelectionComposite.getListViewerField(), pmo,
+                NewTableContentsPMO.PROPERTY_SELECTED_STRUCTURE);
+
+        bindingContext.bindContent(nameText, pmo, NewTableContentsPMO.PROPERTY_NAME);
+        bindingContext.bindContent(runtimeId, pmo, NewTableContentsPMO.PROPERTY_RUNTIME_ID);
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        fixPreviousPage();
+        // setting the actual message if there is any but do not show as error
+        setMessage(getMessage());
+        nameText.selectAll();
+        nameText.setFocus();
     }
 
     /**
-     * Calls the supertype method and checks sets the focus to the structure field if it is empty
-     * and the source folder field isn't empty.
+     * Previous page may be wrong if dialog was started by new menu.
      */
-    @Override
-    protected void setDefaultFocus() {
-        super.setDefaultFocus();
-        if (StringUtils.isEmpty(getSourceFolder())) {
-            return;
-        }
-        if (StringUtils.isEmpty(structureField.getText())) {
-            structureField.getControl().setFocus();
+    private void fixPreviousPage() {
+        IWizardPage page0 = getWizard().getPages()[0];
+        if (getPreviousPage() != page0) {
+            page0.setPreviousPage(getPreviousPage());
+            setPreviousPage(page0);
         }
     }
 
-    private String getTableStructureFromSelection() {
-        IIpsObject selectedObject;
-        try {
-            selectedObject = getSelectedIpsObject();
-            if (selectedObject instanceof ITableStructure) {
-                return ((ITableStructure)selectedObject).getQualifiedName();
-            } else if (selectedObject instanceof ITableContents) {
-                return ((ITableContents)selectedObject).getTableStructure();
+    @Override
+    public void dispose() {
+        super.dispose();
+        resourManager.dispose();
+        bindingContext.dispose();
+        if (uiUpdater != null) {
+            pmo.removePropertyChangeListener(uiUpdater);
+        }
+    }
+
+    private static class TableContentsPageUiUpdater extends UiUpdater {
+
+        private final NewTableContentsPMO pmo;
+
+        public TableContentsPageUiUpdater(TableContentsPage productCmptPage, NewTableContentsPMO pmo) {
+            super(productCmptPage);
+            this.pmo = pmo;
+        }
+
+        /**
+         * @return Returns the pmo.
+         */
+        public NewTableContentsPMO getPmo() {
+            return pmo;
+        }
+
+        /**
+         * @return Returns the productCmptPage.
+         */
+        @Override
+        public TableContentsPage getPage() {
+            return (TableContentsPage)super.getPage();
+        }
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if (evt.getPropertyName().equals(NewTableContentsPMO.PROPERTY_IPS_PROJECT)) {
+                updateStructuresList();
             }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-        return null;
-    }
-
-    @Override
-    protected void sourceFolderChanged() {
-        super.sourceFolderChanged();
-        IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
-        if (root != null) {
-            structureControl.setIpsProject(root.getIpsProject());
-        } else {
-            structureControl.setIpsProject(null);
-        }
-    }
-
-    public ITableStructure getTableStructure() {
-        try {
-            return structureControl.findTableStructure();
-        } catch (CoreException e) {
-            return null;
-        }
-    }
-
-    @Override
-    protected void validatePageExtension() throws CoreException {
-        if (getErrorMessage() != null) {
-            return;
-        }
-        if (structureControl.getText().length() == 0) {
-            setErrorMessage(Messages.TableContentsPage_msgStructureEmpty);
-            return;
-        }
-        ITableStructure structure = structureControl.findTableStructure();
-        if (structure == null) {
-            setErrorMessage(NLS.bind(Messages.TableContentsPage_msgMissingStructure, structureControl.getText()));
-        } else {
-            if (structure.getNumOfColumns() == 0) {
-                setErrorMessage(Messages.TableContentsPage_tableStructureHasntGotAnyColumns);
-            }
-        }
-    }
-
-    @Override
-    public IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
-        IIpsSrcFile createdIpsSrcFile = super.createIpsSrcFile(monitor);
-        createdTableContents = (ITableContents)createdIpsSrcFile.getIpsObject();
-        return createdIpsSrcFile;
-    }
-
-    @Override
-    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreException {
-
-        ITableContents table = (ITableContents)newIpsObject;
-        table.setTableStructure(getTableStructureName());
-        GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        if (date == null) {
-            return;
-        }
-        IIpsObjectGeneration generation = table.newGeneration();
-        generation.setValidFrom(date);
-        ITableStructure structure = (ITableStructure)table.getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE,
-                table.getTableStructure());
-        if (structure != null) {
-            for (int i = 0; i < structure.getNumOfColumns(); i++) {
-                table.newColumn(""); //$NON-NLS-1$
-            }
-        }
-    }
-
-    /**
-     * Returns the <tt>ITableContents</tt> that has been created by this page or <tt>null</tt> if it
-     * has not been created yet.
-     */
-    public ITableContents getCreatedTableContents() {
-        return createdTableContents;
-    }
-
-    @Override
-    public boolean canFlipToNextPage() {
-        IWizard wizard = getWizard();
-        if (wizard instanceof IpsObjectImportWizard) {
-            if (((IpsObjectImportWizard)wizard).isExcelTableFormatSelected()) {
-                // do not show the configuration/preview page for excel
-                return false;
-            }
+            super.propertyChange(evt);
         }
 
-        return super.canFlipToNextPage();
+        public void updateStructuresList() {
+            getPage().structureSelectionComposite.setListInput(getPmo().getStructuresList());
+        }
+
+        @Override
+        public void updateUI() {
+            super.updateUI();
+            updateStructuresList();
+        }
+
+        @Override
+        protected MessageList validatePage() {
+            // TODO
+            MessageList messageList = new MessageList();
+            return messageList;
+        }
     }
 
 }

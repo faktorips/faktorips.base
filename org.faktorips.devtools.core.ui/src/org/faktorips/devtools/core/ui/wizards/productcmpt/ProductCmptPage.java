@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import java.beans.PropertyChangeEvent;
+import java.util.GregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.JFaceResources;
@@ -22,7 +23,6 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -32,6 +32,11 @@ import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConven
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
+import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
+import org.faktorips.devtools.core.ui.controls.DateControl;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionComposite;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.UiUpdater;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -67,6 +72,8 @@ public class ProductCmptPage extends WizardPage {
 
     private Label versionIdLabel;
 
+    private DateControlField<GregorianCalendar> effectiveDateField;
+
     public ProductCmptPage(NewProductCmptPMO pmo) {
         super(Messages.ProductCmptPage_name);
         this.pmo = pmo;
@@ -88,19 +95,22 @@ public class ProductCmptPage extends WizardPage {
 
         Composite nameAndIdComposite = toolkit.createLabelEditColumnComposite(composite);
         toolkit.createLabel(nameAndIdComposite, Messages.ProductCmptPage_label_name);
-        Composite nameComposite = toolkit.createGridComposite(nameAndIdComposite, 3, false, false);
 
-        nameText = toolkit.createText(nameComposite);
-        ((GridData)nameText.getLayoutData()).widthHint = 250;
+        nameText = toolkit.createText(nameAndIdComposite);
+
+        toolkit.createLabel(nameAndIdComposite, Messages.ProductCmptPage_label_effectiveFrom);
+
+        Composite dateComposite = toolkit.createGridComposite(nameAndIdComposite, 3, false, false);
+
+        DateControl dateControl = new DateControl(dateComposite, toolkit);
+        effectiveDateField = new DateControlField<GregorianCalendar>(dateControl, GregorianCalendarFormat.newInstance());
 
         IChangesOverTimeNamingConvention changesOverTimeNamingConvention = IpsPlugin.getDefault().getIpsPreferences()
                 .getChangesOverTimeNamingConvention();
-        versionIdLabel = toolkit.createLabel(nameComposite,
-                changesOverTimeNamingConvention.getVersionConceptNameSingular() + ":"); //$NON-NLS-1$
-        versionIdText = toolkit.createText(nameComposite);
-        ((GridData)versionIdText.getLayoutData()).widthHint = 40;
-        toolkit.createVerticalSpacer(nameAndIdComposite, 0);
-        fullNameLabel = toolkit.createLabel(nameAndIdComposite, Messages.ProductCmptPage_label_fullNameText);
+        versionIdLabel = toolkit.createLabel(dateComposite,
+                changesOverTimeNamingConvention.getVersionConceptNameSingular()
+                        + Messages.ProductCmptPage_label_versionSuffix);
+        versionIdText = toolkit.createText(dateComposite);
 
         toolkit.createLabel(nameAndIdComposite, Messages.ProductCmptPage_label_runtimeId);
         runtimeId = toolkit.createText(nameAndIdComposite);
@@ -123,13 +133,14 @@ public class ProductCmptPage extends WizardPage {
                 NewProductCmptPMO.PROPERTY_SELECTED_TYPE);
 
         bindingContext.bindContent(nameText, pmo, NewProductCmptPMO.PROPERTY_KIND_ID);
-        if (versionIdText != null) {
-            bindingContext.bindContent(versionIdText, pmo, NewProductCmptPMO.PROPERTY_VERSION_ID);
-        }
+        bindingContext.bindContent(effectiveDateField, pmo, NewProductCmptPMO.PROPERTY_EFFECTIVE_DATE);
+        bindingContext.bindContent(versionIdText, pmo, NewProductCmptPMO.PROPERTY_VERSION_ID);
         bindingContext.bindContent(runtimeId, pmo, NewProductCmptPMO.PROPERTY_RUNTIME_ID);
 
-        bindingContext.bindVisible(versionIdLabel, pmo, NewProductCmptPMO.PROPERTY_NEED_VERSION_ID, true, nameText);
-        bindingContext.bindVisible(versionIdText, pmo, NewProductCmptPMO.PROPERTY_NEED_VERSION_ID, true, nameText);
+        bindingContext.bindVisible(versionIdLabel, pmo, NewProductCmptPMO.PROPERTY_NEED_VERSION_ID, true,
+                effectiveDateField.getControl());
+        bindingContext.bindVisible(versionIdText, pmo, NewProductCmptPMO.PROPERTY_NEED_VERSION_ID, true,
+                effectiveDateField.getControl());
         bindingContext.bindVisible(fullNameLabel, pmo, NewProductCmptPMO.PROPERTY_NEED_VERSION_ID, false);
     }
 
@@ -166,8 +177,18 @@ public class ProductCmptPage extends WizardPage {
 
     private static class ProductCmptPageUiUpdater extends UiUpdater {
 
+        private final NewProductCmptPMO pmo;
+
         public ProductCmptPageUiUpdater(ProductCmptPage productCmptPage, NewProductCmptPMO pmo) {
-            super(productCmptPage, pmo);
+            super(productCmptPage);
+            this.pmo = pmo;
+        }
+
+        /**
+         * @return Returns the pmo.
+         */
+        public NewProductCmptPMO getPmo() {
+            return pmo;
         }
 
         /**
@@ -186,10 +207,6 @@ public class ProductCmptPage extends WizardPage {
             if (NewProductCmptPMO.PROPERTY_SELECTED_TYPE.equals(evt.getPropertyName())) {
                 updateSelectedType();
             }
-            if (NewProductCmptPMO.PROPERTY_KIND_ID.equals(evt.getPropertyName())
-                    || NewProductCmptPMO.PROPERTY_VERSION_ID.equals(evt.getPropertyName())) {
-                updateNameOrVersionId();
-            }
             super.propertyChange(evt);
         }
 
@@ -198,18 +215,18 @@ public class ProductCmptPage extends WizardPage {
             super.updateUI();
             updateSelectedBaseType();
             updateSelectedType();
-            updateNameOrVersionId();
         }
 
-        public void updateNameOrVersionId() {
-            if (getPage().fullNameLabel != null) {
-                getPage().fullNameLabel.setText(NLS.bind(Messages.ProductCmptPage_label_fullNameText, getPmo()
-                        .getFullName()));
+        @Override
+        protected void updatePageMessages() {
+            super.updatePageMessages();
+            if (StringUtils.isEmpty(getPage().getMessage()) && StringUtils.isNotEmpty(getPmo().getFullName())) {
+                getPage().setMessage(NLS.bind(Messages.ProductCmptPage_msg_fullName, getPmo().getFullName()));
             }
         }
 
         public void updateSelectedType() {
-            getPage().typeSelectionComposite.setInput(getPmo().getSelectedType());
+            getPage().typeSelectionComposite.setSelection(getPmo().getSelectedType());
         }
 
         public void updateSelectedBaseType() {

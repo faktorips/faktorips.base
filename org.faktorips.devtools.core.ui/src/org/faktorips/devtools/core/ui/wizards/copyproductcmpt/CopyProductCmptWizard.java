@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.productcmpt_old;
+package org.faktorips.devtools.core.ui.wizards.copyproductcmpt;
 
 import javax.xml.transform.TransformerException;
 

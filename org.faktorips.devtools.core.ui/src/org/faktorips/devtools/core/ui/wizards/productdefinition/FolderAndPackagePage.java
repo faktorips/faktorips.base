@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.productcmpt;
+package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
 import java.beans.PropertyChangeEvent;
 
@@ -31,7 +31,7 @@ import org.faktorips.util.message.MessageList;
 
 public class FolderAndPackagePage extends WizardPage {
 
-    private final NewProductCmptPMO pmo;
+    private final NewProductDefinitionPMO pmo;
     private final BindingContext bindingContext;
     private FolderAndPackageUiUpdater uiUpdater;
     private IpsPckFragmentRefControl packageRefControl;
@@ -39,7 +39,7 @@ public class FolderAndPackagePage extends WizardPage {
     private ComboViewerField<IIpsPackageFragmentRoot> rootFolderField;
     private Checkbox openEditor;
 
-    protected FolderAndPackagePage(NewProductCmptPMO pmo) {
+    public FolderAndPackagePage(NewProductDefinitionPMO pmo) {
         super(Messages.FolderAndPackagePage_title);
         this.pmo = pmo;
         bindingContext = new BindingContext();
@@ -69,14 +69,14 @@ public class FolderAndPackagePage extends WizardPage {
 
     private void bindControls() {
         rootFolderField = new ComboViewerField<IIpsPackageFragmentRoot>(rootFolder, IIpsPackageFragmentRoot.class);
-        bindingContext.bindContent(rootFolderField, pmo, NewProductCmptPMO.PROPERTY_PACKAGE_ROOT);
+        bindingContext.bindContent(rootFolderField, pmo, NewProductDefinitionPMO.PROPERTY_PACKAGE_ROOT);
 
         IpsPckFragmentRefField ipsPckFragmentRefField = new IpsPckFragmentRefField(packageRefControl);
-        bindingContext.bindContent(ipsPckFragmentRefField, pmo, NewProductCmptPMO.PROPERTY_IPS_PACKAGE);
+        bindingContext.bindContent(ipsPckFragmentRefField, pmo, NewProductDefinitionPMO.PROPERTY_IPS_PACKAGE);
         uiUpdater = new FolderAndPackageUiUpdater(this, pmo);
         pmo.addPropertyChangeListener(uiUpdater);
 
-        bindingContext.bindContent(openEditor, pmo, NewProductCmptPMO.PROPERTY_OPEN_EDITOR);
+        bindingContext.bindContent(openEditor, pmo, NewProductDefinitionPMO.PROPERTY_OPEN_EDITOR);
 
         uiUpdater.updateUI();
         bindingContext.updateUI();
@@ -93,8 +93,18 @@ public class FolderAndPackagePage extends WizardPage {
 
     private static class FolderAndPackageUiUpdater extends UiUpdater {
 
-        public FolderAndPackageUiUpdater(FolderAndPackagePage page, NewProductCmptPMO pmo) {
-            super(page, pmo);
+        private final NewProductDefinitionPMO pmo;
+
+        public FolderAndPackageUiUpdater(FolderAndPackagePage page, NewProductDefinitionPMO pmo) {
+            super(page);
+            this.pmo = pmo;
+        }
+
+        /**
+         * @return Returns the pmo.
+         */
+        public NewProductDefinitionPMO getPmo() {
+            return pmo;
         }
 
         /**
@@ -107,10 +117,10 @@ public class FolderAndPackagePage extends WizardPage {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
-            if (NewProductCmptPMO.PROPERTY_PACKAGE_ROOT.equals(evt.getPropertyName())) {
+            if (NewProductDefinitionPMO.PROPERTY_PACKAGE_ROOT.equals(evt.getPropertyName())) {
                 updatePackageFragmentControl();
             }
-            if (NewProductCmptPMO.PROPERTY_IPS_PROJECT.equals(evt.getPropertyName())) {
+            if (NewProductDefinitionPMO.PROPERTY_IPS_PROJECT.equals(evt.getPropertyName())) {
                 updateRootFolderCombo();
             }
             super.propertyChange(evt);

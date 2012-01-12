@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.productcmpt;
+package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -21,14 +21,12 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
-abstract class UiUpdater implements PropertyChangeListener {
+public abstract class UiUpdater implements PropertyChangeListener {
 
     private final WizardPage page;
-    private final NewProductCmptPMO pmo;
 
-    public UiUpdater(WizardPage page, NewProductCmptPMO pmo) {
+    public UiUpdater(WizardPage page) {
         this.page = page;
-        this.pmo = pmo;
     }
 
     @Override
@@ -37,7 +35,7 @@ abstract class UiUpdater implements PropertyChangeListener {
         updatePageComplete();
     }
 
-    void updatePageMessages() {
+    protected void updatePageMessages() {
         MessageList messageList = validatePage();
         Message message = messageList.getMessageWithHighestSeverity();
         if (message != null) {
@@ -63,13 +61,6 @@ abstract class UiUpdater implements PropertyChangeListener {
      */
     public WizardPage getPage() {
         return page;
-    }
-
-    /**
-     * @return Returns the pmo.
-     */
-    public NewProductCmptPMO getPmo() {
-        return pmo;
     }
 
 }

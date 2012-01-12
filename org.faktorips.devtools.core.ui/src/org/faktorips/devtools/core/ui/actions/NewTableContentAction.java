@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.ui.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.wizards.tablecontents.OpenNewTableContentsWizardAction;
+import org.faktorips.devtools.core.ui.wizards.tablecontents_old.OpenNewTableContentsWizardAction;
 
 /**
  * Open the new product component wizard.

@@ -27,10 +27,6 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
-    public static String FolderAndPackagePage_check_openInEditor;
-    public static String FolderAndPackagePage_label_package;
-    public static String FolderAndPackagePage_label_rootFolder;
-    public static String FolderAndPackagePage_title;
     public static String NewProductCmptWizard_title;
     public static String NewProdutCmptValidator_msg_emptyKindId;
     public static String NewProdutCmptValidator_msg_emptyVersionId;
@@ -46,14 +42,15 @@ public class Messages extends NLS {
     public static String NewProdutCmptValidator_msg_invalidTypeAddTo;
     public static String NewProdutCmptValidator_msg_invalidVersionId;
     public static String NewProdutCmptValidator_msg_srcFileExists;
+    public static String ProductCmptPage_label_effectiveFrom;
     public static String ProductCmptPage_label_fullNameText;
     public static String ProductCmptPage_label_name;
+    public static String ProductCmptPage_label_versionSuffix;
     public static String ProductCmptPage_label_runtimeId;
     public static String ProductCmptPage_label_selectType;
+    public static String ProductCmptPage_msg_fullName;
     public static String ProductCmptPage_name;
     public static String ProductCmptPage_title;
-    public static String TypeSelectionComposite_label_description;
-    public static String TypeSelectionComposite_label_noDescriptionAvailable;
     public static String TypeSelectionPage_label_project;
     public static String TypeSelectionPage_label_type;
     public static String TypeSelectionPage_name;

@@ -28,12 +28,11 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionValidator;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
-public class NewProdutCmptValidator {
-
-    public static final String MSGCODE_PREFIX = "NEW_PRODUCT_CMPT_WIZARD-"; //$NON-NLS-1$
+public class NewProdutCmptValidator extends NewProductDefinitionValidator {
 
     public static final String MSG_INVALID_PROJECT = MSGCODE_PREFIX + "invalidProject"; //$NON-NLS-1$
 
@@ -49,19 +48,16 @@ public class NewProdutCmptValidator {
 
     public static final String MSG_INVALID_VERSION_ID = MSGCODE_PREFIX + "invalidVersionId"; //$NON-NLS-1$
 
-    public static final String MSG_INVALID_PACKAGE_ROOT = MSGCODE_PREFIX + "invalidPackageRoot"; //$NON-NLS-1$
-
-    public static final String MSG_INVALID_PACKAGE = MSGCODE_PREFIX + "invalidPackage"; //$NON-NLS-1$
-
     public static final String MSG_SRC_FILE_EXISTS = MSGCODE_PREFIX + "sourceFileExists"; //$NON-NLS-1$
 
     public static final String MSG_INVALID_FULL_NAME = MSGCODE_PREFIX + "invalidFullName"; //$NON-NLS-1$
 
     public static final String MSG_INVALID_ADD_TO_GENERATION = MSGCODE_PREFIX + "addToGeneration"; //$NON-NLS-1$
 
-    private final NewProductCmptPMO pmo;
+    final NewProductCmptPMO pmo;
 
     public NewProdutCmptValidator(NewProductCmptPMO pmo) {
+        super(pmo);
         this.pmo = pmo;
     }
 
@@ -82,8 +78,6 @@ public class NewProdutCmptValidator {
     }
 
     public MessageList validateProductCmptPage() {
-        IChangesOverTimeNamingConvention convention = IpsPlugin.getDefault().getIpsPreferences()
-                .getChangesOverTimeNamingConvention();
         MessageList result = new MessageList();
         if ((result = validateTypeSelection()).containsErrorMsg()) {
             // validation only makes sense if there are no error on type selection page.
@@ -99,6 +93,8 @@ public class NewProdutCmptValidator {
             result.add(new Message(MSG_EMPTY_KIND_ID, Messages.NewProdutCmptValidator_msg_emptyKindId, Message.ERROR,
                     pmo, NewProductCmptPMO.PROPERTY_KIND_ID));
         }
+
+        IChangesOverTimeNamingConvention convention = getChangeOverTimeNamingConvention();
         if (pmo.isNeedVersionId() && StringUtils.isEmpty(pmo.getVersionId())) {
             result.add(new Message(MSG_EMPTY_VERSION_ID, NLS.bind(Messages.NewProdutCmptValidator_msg_emptyVersionId,
                     convention.getVersionConceptNameSingular()), Message.ERROR, pmo,
@@ -132,6 +128,10 @@ public class NewProdutCmptValidator {
         return result;
     }
 
+    private IChangesOverTimeNamingConvention getChangeOverTimeNamingConvention() {
+        return IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention();
+    }
+
     MessageList additionalValidateProductCmptName() {
         MessageList result = new MessageList();
         IIpsProjectNamingConventions namingConventions = pmo.getIpsProject().getNamingConventions();
@@ -145,26 +145,6 @@ public class NewProdutCmptValidator {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-        return result;
-    }
-
-    public MessageList validateFolderAndPackage() {
-        MessageList result = new MessageList();
-        if ((result = validateTypeSelection()).containsErrorMsg()) {
-            // validation only makes sense if there are no error on type selection page.
-            return result;
-        }
-
-        if (pmo.getPackageRoot() == null) {
-            result.add(new Message(MSG_INVALID_PACKAGE_ROOT, Messages.NewProdutCmptValidator_msg_invalidPackageRoot,
-                    Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_PACKAGE_ROOT));
-        }
-
-        if (pmo.getIpsPackage() == null || !pmo.getIpsPackage().getRoot().equals(pmo.getPackageRoot())) {
-            result.add(new Message(MSG_INVALID_PACKAGE, Messages.NewProdutCmptValidator_msg_invalidPackage,
-                    Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_IPS_PACKAGE));
-        }
-
         return result;
     }
 
@@ -216,6 +196,11 @@ public class NewProdutCmptValidator {
             }
         }
         return result;
+    }
+
+    @Override
+    protected MessageList validateBeforeFolderAndPacke() {
+        return validateTypeSelection();
     }
 
 }

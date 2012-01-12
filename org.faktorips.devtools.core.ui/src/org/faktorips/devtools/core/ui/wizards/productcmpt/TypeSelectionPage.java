@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -28,6 +27,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.IpsProjectRefField;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionComposite;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.UiUpdater;
 import org.faktorips.util.message.MessageList;
 
 public class TypeSelectionPage extends WizardPage {
@@ -50,15 +51,6 @@ public class TypeSelectionPage extends WizardPage {
         setTitle(Messages.TypeSelectionPage_title);
         resourManager = new LocalResourceManager(JFaceResources.getResources());
         bindingContext = new BindingContext();
-        pmo.addPropertyChangeListener(new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (isCurrentPage()) {
-                    getContainer().updateButtons();
-                }
-            }
-        });
     }
 
     @Override
@@ -113,8 +105,18 @@ public class TypeSelectionPage extends WizardPage {
 
     private static class TypeSelectionUpdater extends UiUpdater {
 
+        private final NewProductCmptPMO pmo;
+
         public TypeSelectionUpdater(TypeSelectionPage page, NewProductCmptPMO pmo) {
-            super(page, pmo);
+            super(page);
+            this.pmo = pmo;
+        }
+
+        /**
+         * @return Returns the pmo.
+         */
+        public NewProductCmptPMO getPmo() {
+            return pmo;
         }
 
         /**
@@ -148,7 +150,7 @@ public class TypeSelectionPage extends WizardPage {
         }
 
         private void updateLabelAndDescription() {
-            getPage().typeSelectionComposite.setInput(getPmo().getSelectedBaseType());
+            getPage().typeSelectionComposite.setSelection(getPmo().getSelectedBaseType());
         }
 
         @Override

@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.tablecontents;
+package org.faktorips.devtools.core.ui.wizards.tablecontents_old;
 
 import org.eclipse.ui.INewWizard;
 import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;

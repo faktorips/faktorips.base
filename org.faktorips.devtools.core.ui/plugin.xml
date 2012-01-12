@@ -102,7 +102,7 @@
                label="%org.faktorips.devtools.actions.OpenNewTableContentsWizardAction.label"
                icon="icons/NewTableContentsWizard.gif"
                tooltip="%org.faktorips.devtools.actions.OpenNewTableContentsWizardAction.tooltip"
-               class="org.faktorips.devtools.core.ui.wizards.tablecontents.OpenNewTableContentsWizardAction"
+               class="org.faktorips.devtools.core.ui.wizards.tablecontents_old.OpenNewTableContentsWizardAction"
                toolbarPath="org.faktorips.devtools"
                id="org.faktorips.devtools.actions.OpenNewTableContentsWizardAction">
          </action>
@@ -290,7 +290,6 @@
          </commandParameter>
       </command>
       <command
-            defaultHandler="org.faktorips.devtools.core.ui.editors.productcmpt.AddProductCmptLinkCommand"
             id="org.faktorips.devtools.core.ui.commands.AddProductCmptLink"
             name="%NewProductCmptLinkCommand_name">
       </command>
@@ -1776,6 +1775,55 @@
          </activeWhen>
       </handler>
       <handler
+            commandId="org.faktorips.devtools.core.ui.commands.AddProductCmptLink">
+         <class
+               class="org.faktorips.devtools.core.ui.editors.productcmpt.AddProductCmptLinkCommand">
+         </class>
+         <activeWhen>
+            <or>
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="true"
+                        operator="or">
+                     <and>
+                        <adapt
+                              type="org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration">
+                           <test
+                                 property="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester.isPartEditable">
+                           </test>
+                        </adapt>
+                        <or>
+                           <instanceof
+                                 value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference">
+                           </instanceof>
+                           <instanceof
+                                 value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference">
+                           </instanceof>
+                        </or>
+                     </and>
+                  </iterate>
+               </with>
+               <and>
+                  <with
+                        variable="activeEditor">
+                     <test
+                           property="org.faktorips.devtools.core.ui.commands.ipsObjectEditorTester.isEditorEditable">
+                     </test>
+                  </with>
+                  <with
+                        variable="selection">
+                     <iterate>
+                        <instanceof
+                              value="java.lang.String">
+                        </instanceof>
+                     </iterate>
+                  </with>
+               </and>
+            </or>
+         </activeWhen>
+      </handler>
+      <handler
             commandId="org.faktorips.devtools.core.ui.openEditor">
          <class
                class="org.faktorips.devtools.core.ui.commands.OpenEditorHandler"></class>
@@ -2066,7 +2114,16 @@
                commandId="org.eclipse.ui.edit.delete"
                style="push">
             <visibleWhen
-                  checkEnabled="true">
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false">
+                     <instanceof
+                           value="org.faktorips.devtools.core.model.productcmpt.IProductCmptLink">
+                     </instanceof>
+                  </iterate>
+               </with>
             </visibleWhen>
          </command>
          <separator

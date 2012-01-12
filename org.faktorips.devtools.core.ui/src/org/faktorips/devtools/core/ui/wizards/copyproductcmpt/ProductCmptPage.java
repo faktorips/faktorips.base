@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.productcmpt_old;
+package org.faktorips.devtools.core.ui.wizards.copyproductcmpt;
 
 import java.util.GregorianCalendar;
 import java.util.Set;
@@ -51,7 +51,11 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- *
+ * Page for the {@link NewProductCmptWizard}.
+ * <p>
+ * This is the old wizard still used for copy product components. For every other creation of new
+ * product components we have the
+ * {@link org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductCmptWizard new wizard }
  */
 public class ProductCmptPage extends IpsObjectPage {
 

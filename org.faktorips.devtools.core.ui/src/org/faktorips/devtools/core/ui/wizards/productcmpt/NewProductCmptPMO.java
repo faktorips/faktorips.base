@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -38,20 +37,17 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
-import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
 import org.faktorips.devtools.core.util.QNameUtil;
 
-public class NewProductCmptPMO extends PresentationModelObject {
-
-    public static final String PROPERTY_IPS_PROJECT = "ipsProject"; //$NON-NLS-1$
-
-    public static final String PROPERTY_PACKAGE_ROOT = "packageRoot"; //$NON-NLS-1$
-
-    public static final String PROPERTY_IPS_PACKAGE = "ipsPackage"; //$NON-NLS-1$
+/**
+ * The presentation model object for the {@link NewProductCmptWizard}.
+ * 
+ * @author dirmeier
+ */
+public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     public static final String PROPERTY_SELECTED_BASE_TYPE = "selectedBaseType"; //$NON-NLS-1$
-
-    public static final String PROPERTY_CAN_EDIT_RUNTIME_ID = "canEditRuntimeId"; //$NON-NLS-1$
 
     public static final String PROPERTY_SELECTED_TYPE = "selectedType"; //$NON-NLS-1$
 
@@ -59,17 +55,7 @@ public class NewProductCmptPMO extends PresentationModelObject {
 
     public static final String PROPERTY_VERSION_ID = "versionId"; //$NON-NLS-1$
 
-    public static final String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
-
     public static final String PROPERTY_NEED_VERSION_ID = "needVersionId"; //$NON-NLS-1$
-
-    public static final String PROPERTY_OPEN_EDITOR = "openEditor"; //$NON-NLS-1$
-
-    private IIpsProject ipsProject;
-
-    private IIpsPackageFragmentRoot packageRoot;
-
-    private IIpsPackageFragment ipsPackage;
 
     private IProductCmptType selectedBaseType;
 
@@ -81,10 +67,6 @@ public class NewProductCmptPMO extends PresentationModelObject {
 
     private String versionId = StringUtils.EMPTY;
 
-    private String runtimeId = StringUtils.EMPTY;
-
-    private final GregorianCalendar workingDate;
-
     private IProductCmpt contextProductCmpt = null;
 
     private ArrayList<IProductCmptType> subtypes;
@@ -95,79 +77,48 @@ public class NewProductCmptPMO extends PresentationModelObject {
 
     private IProductCmptTypeAssociation addToAssociation;
 
-    private boolean openEditor;
-
-    public NewProductCmptPMO(GregorianCalendar workingDate) {
-        this.workingDate = workingDate;
+    /**
+     * 
+     */
+    public NewProductCmptPMO() {
+        super();
         validator = new NewProdutCmptValidator(this);
     }
 
-    /**
-     * @param ipsProject The ipsProject to set.
-     */
+    @Override
     public void setIpsProject(IIpsProject ipsProject) {
-        IIpsProject oldProject = ipsProject;
-        this.ipsProject = ipsProject;
-
-        updateBaseTypeList();
-        selectedBaseType = null;
-
-        IProductCmptNamingStrategy namingStrategy = ipsProject.getProductCmptNamingStrategy();
-        setVersionId(namingStrategy.getNextVersionId(contextProductCmpt, getWorkingDate()));
-
+        updateBaseTypeList(ipsProject);
         try {
-            setPackageRoot(ipsProject.getSourceIpsPackageFragmentRoots()[0]);
+            if (selectedBaseType != null
+                    && !selectedBaseType.equals(ipsProject.findProductCmptType(selectedBaseType.getQualifiedName()))) {
+                selectedBaseType = null;
+            }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_IPS_PROJECT, oldProject, ipsProject));
+        updateVersionId(ipsProject);
+        super.setIpsProject(ipsProject);
     }
 
-    public IIpsProject getIpsProject() {
-        return ipsProject;
+    @Override
+    public void setEffectiveDate(GregorianCalendar effectiveDate) {
+        super.setEffectiveDate(effectiveDate);
+        updateVersionId(getIpsProject());
+    }
+
+    private void updateVersionId(IIpsProject ipsProject) {
+        if (ipsProject != null) {
+            IProductCmptNamingStrategy namingStrategy = ipsProject.getProductCmptNamingStrategy();
+            setVersionId(namingStrategy.getNextVersionId(contextProductCmpt, getEffectiveDate()));
+        }
     }
 
     public boolean isNeedVersionId() {
-        if (ipsProject == null) {
+        if (getIpsProject() == null) {
             return true;
         }
-        IProductCmptNamingStrategy namingStrategy = ipsProject.getProductCmptNamingStrategy();
+        IProductCmptNamingStrategy namingStrategy = getIpsProject().getProductCmptNamingStrategy();
         return namingStrategy.supportsVersionId();
-    }
-
-    /**
-     * @param packageRoot The packageRoot to set.
-     */
-    public void setPackageRoot(IIpsPackageFragmentRoot packageRoot) {
-        IIpsPackageFragmentRoot oldValue = this.packageRoot;
-        this.packageRoot = packageRoot;
-        if (getIpsPackage() == null) {
-            setIpsPackage(packageRoot.getDefaultIpsPackageFragment());
-        }
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_PACKAGE_ROOT, oldValue, packageRoot));
-    }
-
-    /**
-     * @return Returns the packageRoot.
-     */
-    public IIpsPackageFragmentRoot getPackageRoot() {
-        return packageRoot;
-    }
-
-    /**
-     * @param ipsPackage The ipsPackage to set.
-     */
-    public void setIpsPackage(IIpsPackageFragment ipsPackage) {
-        IIpsPackageFragment oldPackage = this.ipsPackage;
-        this.ipsPackage = ipsPackage;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_IPS_PACKAGE, oldPackage, ipsPackage));
-    }
-
-    /**
-     * @return Returns the ipsPackage.
-     */
-    public IIpsPackageFragment getIpsPackage() {
-        return ipsPackage;
     }
 
     /**
@@ -177,15 +128,11 @@ public class NewProductCmptPMO extends PresentationModelObject {
      * Every type that has either no super type or which super type is an layer supertype is added
      * as an base type.
      */
-    private void updateBaseTypeList() {
+    void updateBaseTypeList(IIpsProject ipsProject) {
         if (ipsProject == null) {
             return;
         }
         baseTypes = new ArrayList<IProductCmptType>();
-        IIpsProject ipsProject = getIpsProject();
-        if (ipsProject == null) {
-            return;
-        }
         try {
             IIpsSrcFile[] findIpsSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
             for (IIpsSrcFile ipsSrcFile : findIpsSrcFiles) {
@@ -235,6 +182,13 @@ public class NewProductCmptPMO extends PresentationModelObject {
     }
 
     /**
+     * @return Returns the selectedBaseType.
+     */
+    public IProductCmptType getSelectedBaseType() {
+        return selectedBaseType;
+    }
+
+    /**
      * @param selectedBaseType The selectedBaseType to set.
      */
     public void setSelectedBaseType(IProductCmptType selectedBaseType) {
@@ -261,17 +215,6 @@ public class NewProductCmptPMO extends PresentationModelObject {
         return selectedType;
     }
 
-    /**
-     * @return Returns the selectedBaseType.
-     */
-    public IProductCmptType getSelectedBaseType() {
-        return selectedBaseType;
-    }
-
-    public boolean isCanEditRuntimeId() {
-        return IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId();
-    }
-
     public List<IProductCmptType> getSubtypes() {
         return subtypes;
     }
@@ -281,7 +224,7 @@ public class NewProductCmptPMO extends PresentationModelObject {
         if (selectedBaseType == null) {
             subtypes = result;
         } else {
-            List<IType> subtypesList = selectedBaseType.findSubtypes(true, true, ipsProject);
+            List<IType> subtypesList = selectedBaseType.findSubtypes(true, true, getIpsProject());
             for (IType type : subtypesList) {
                 if (!type.isAbstract()) {
                     result.add((IProductCmptType)type);
@@ -340,6 +283,7 @@ public class NewProductCmptPMO extends PresentationModelObject {
         }
     }
 
+    @Override
     public String getFullName() {
         if (StringUtils.isEmpty(kindId)) {
             return StringUtils.EMPTY;
@@ -350,22 +294,6 @@ public class NewProductCmptPMO extends PresentationModelObject {
 
     public String getQualifiedName() {
         return QNameUtil.concat(getIpsPackage().getName(), getFullName());
-    }
-
-    /**
-     * @param runtimeId The runtimeId to set.
-     */
-    public void setRuntimeId(String runtimeId) {
-        String oldRuntimeId = this.runtimeId;
-        this.runtimeId = runtimeId;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_RUNTIME_ID, oldRuntimeId, runtimeId));
-    }
-
-    /**
-     * @return Returns the runtimeId.
-     */
-    public String getRuntimeId() {
-        return runtimeId;
     }
 
     /**
@@ -419,15 +347,9 @@ public class NewProductCmptPMO extends PresentationModelObject {
     /**
      * @return Returns the validator.
      */
-    public NewProdutCmptValidator getValidator() {
+    @Override
+    protected NewProdutCmptValidator getValidator() {
         return validator;
-    }
-
-    /**
-     * @return Returns the workingDate.
-     */
-    public GregorianCalendar getWorkingDate() {
-        return workingDate;
     }
 
     /**
@@ -451,6 +373,7 @@ public class NewProductCmptPMO extends PresentationModelObject {
     public void setAddToAssociation(IProductCmptGeneration addToProductCmptGeneration,
             IProductCmptTypeAssociation addToAssociation) {
         this.addToProductCmptGeneration = addToProductCmptGeneration;
+        setEffectiveDate(addToProductCmptGeneration.getValidFrom());
         this.addToAssociation = addToAssociation;
         try {
             IProductCmptType targetProductCmptType = addToAssociation
@@ -481,22 +404,6 @@ public class NewProductCmptPMO extends PresentationModelObject {
      */
     public IProductCmptTypeAssociation getAddToAssociation() {
         return addToAssociation;
-    }
-
-    /**
-     * @param openEditor The openEditor to set.
-     */
-    public void setOpenEditor(boolean openEditor) {
-        boolean oldValue = this.openEditor;
-        this.openEditor = openEditor;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_OPEN_EDITOR, oldValue, openEditor));
-    }
-
-    /**
-     * @return Returns the openEditor.
-     */
-    public boolean isOpenEditor() {
-        return openEditor;
     }
 
     /**

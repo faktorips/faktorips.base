@@ -11,32 +11,26 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.productcmpt_old;
+package org.faktorips.devtools.core.ui.wizards.tablecontents_old;
 
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
 
 /**
- * Wizard to create a new product component.
+ *
  */
-public class NewProductCmptWizard extends NewIpsObjectWizard {
+public class NewTableContentsWizard extends NewIpsObjectWizard {
 
-    private ProductCmptPage productCmptPage;
-
-    public NewProductCmptWizard() {
-        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "wizards/NewProductCmptWizard.png")); //$NON-NLS-1$
-    }
+    private TableContentsPage page;
 
     /**
      * {@inheritDoc}
      */
     @Override
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
-        productCmptPage = new ProductCmptPage(selection);
-        return productCmptPage;
+        page = new TableContentsPage(selection);
+        return page;
     }
 }

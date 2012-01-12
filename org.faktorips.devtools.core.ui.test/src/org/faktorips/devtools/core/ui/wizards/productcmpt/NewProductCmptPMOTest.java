@@ -20,6 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.SingletonMockHelper;
@@ -54,7 +55,7 @@ public class NewProductCmptPMOTest {
 
     @Test
     public void testUpdateBaseTypeList_noProject() throws Exception {
-        NewProductCmptPMO pmo = new NewProductCmptPMO(null);
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
 
         IIpsPackageFragmentRoot ipsPackageFragmentRoot = mockPackageFragmentRoot();
 
@@ -77,7 +78,8 @@ public class NewProductCmptPMOTest {
 
     @Test
     public void testUpdateBaseTypeList_withProject() throws Exception {
-        NewProductCmptPMO pmo = new NewProductCmptPMO(null);
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        pmo.setEffectiveDate(new GregorianCalendar());
 
         IIpsPackageFragmentRoot packageFragmentRoot = mockPackageFragmentRoot();
         IIpsProject ipsProject = packageFragmentRoot.getIpsProject();
@@ -130,7 +132,8 @@ public class NewProductCmptPMOTest {
 
     @Test
     public void testUpdateTypeList() throws Exception {
-        NewProductCmptPMO pmo = new NewProductCmptPMO(null);
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        pmo.setEffectiveDate(new GregorianCalendar());
 
         IIpsPackageFragmentRoot packageFragmentRoot = mockPackageFragmentRoot();
         IIpsProject ipsProject = packageFragmentRoot.getIpsProject();
