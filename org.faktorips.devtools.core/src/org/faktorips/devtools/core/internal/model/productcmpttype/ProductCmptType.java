@@ -115,7 +115,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * meantime, finders must take this map into account to determine the correct
      * {@link IProductCmptCategory} of an {@link IProductCmptProperty}.
      */
-    private Map<IProductCmptProperty, String> pendingPolicyPropertyCategoryChanges = new HashMap<IProductCmptProperty, String>();
+    private Map<IProductCmptProperty, String> pendingPolicyChanges = new HashMap<IProductCmptProperty, String>();
 
     public ProductCmptType(IIpsSrcFile file) {
         super(file);
@@ -362,7 +362,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     protected void initFromXml(Element element, String id) {
-        pendingPolicyPropertyCategoryChanges.clear();
+        pendingPolicyChanges.clear();
         super.initFromXml(element, id);
     }
 
@@ -389,23 +389,29 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public Element toXml(Document doc) {
         Element element = super.toXml(doc);
-        if (!pendingPolicyPropertyCategoryChanges.isEmpty()) {
-            IProductCmptProperty[] policyProperties = pendingPolicyPropertyCategoryChanges.keySet().toArray(
-                    new IProductCmptProperty[pendingPolicyPropertyCategoryChanges.size()]);
-            IIpsSrcFile policySrcFile = policyProperties[0].getIpsSrcFile();
-            if (policySrcFile.isMutable()) {
-                for (IProductCmptProperty property : pendingPolicyPropertyCategoryChanges.keySet()) {
-                    property.setCategory(pendingPolicyPropertyCategoryChanges.get(property));
-                }
+        if (!pendingPolicyChanges.isEmpty()) {
+            savePendingPolicyChanges();
+        }
+        return element;
+    }
+
+    private void savePendingPolicyChanges() {
+        IProductCmptProperty[] policyProperties = pendingPolicyChanges.keySet().toArray(
+                new IProductCmptProperty[pendingPolicyChanges.size()]);
+        IIpsSrcFile policySrcFile = policyProperties[0].getIpsSrcFile();
+        if (policySrcFile.isMutable()) {
+            for (IProductCmptProperty property : pendingPolicyChanges.keySet()) {
+                property.setCategory(pendingPolicyChanges.get(property));
+            }
+            if (!policySrcFile.isDirty()) {
                 try {
                     policySrcFile.save(true, null);
                 } catch (CoreException e) {
                     throw new CoreRuntimeException(e);
                 }
-                pendingPolicyPropertyCategoryChanges.clear();
             }
         }
-        return element;
+        pendingPolicyChanges.clear();
     }
 
     @Override
@@ -1184,8 +1190,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                      * Look in the map of pending category changes for policy properties to see
                      * whether the property's current category has a pending change.
                      */
-                    String changedCategory = ((ProductCmptType)currentType).pendingPolicyPropertyCategoryChanges
-                            .get(property);
+                    String changedCategory = ((ProductCmptType)currentType).pendingPolicyChanges.get(property);
                     if (changedCategory != null) {
                         if (changedCategory.equals(category.getName())) {
                             properties.add(property);
@@ -1335,8 +1340,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
             // Immediately change product component type properties
             property.setCategory(category);
         } else {
-            pendingPolicyPropertyCategoryChanges.put(property, category);
-            objectHasChanged();
+            if (property.getType().getIpsSrcFile().isMutable()) {
+                pendingPolicyChanges.put(property, category);
+                objectHasChanged();
+            }
         }
     }
 

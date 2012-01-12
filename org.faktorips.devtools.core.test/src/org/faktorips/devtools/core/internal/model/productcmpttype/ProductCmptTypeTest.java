@@ -30,6 +30,11 @@ import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.ltk.core.refactoring.Change;
+import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
 import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
@@ -2340,6 +2345,45 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     /**
      * <strong>Scenario:</strong><br>
+     * If an {@link IProductCmptProperty} originating from an {@link IPolicyCmptType} is moved to
+     * another {@link IProductCmptCategory}. It happens that the {@link IIpsSrcFile} of the
+     * {@link IPolicyCmptType} is not mutable at the time the change is made.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The {@link IProductCmptProperty} should not be moved to the other
+     * {@link IProductCmptCategory}.
+     */
+    @Test
+    public void testChangeCategoryAndDeferPolicyChange_DoNotAddPolicyChangeToPendingChangesIfPolicySrcFileImmutable()
+            throws CoreException {
+
+        IProductCmptCategory beforeCategory = productCmptType.newCategory("beforeCategory");
+        IProductCmptCategory otherCategory = productCmptType.newCategory("otherCategory");
+
+        IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
+        policyProperty.setCategory(beforeCategory.getName());
+
+        /*
+         * Delete the policy component type so that the source file becomes immutable, then change
+         * the category of the policy property, and then undo the delete.
+         */
+        policyCmptType.getIpsSrcFile().save(true, null);
+        Change undoDeleteResourceChange = performDeleteResourceChange(policyCmptType.getIpsSrcFile(), null);
+        productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, otherCategory.getName());
+        undoDeleteResourceChange.perform(new NullProgressMonitor());
+
+        List<IProductCmptProperty> beforeCategoryProperties = productCmptType.findProductCmptPropertiesForCategory(
+                beforeCategory, false, ipsProject);
+        assertEquals(policyProperty.getId(), beforeCategoryProperties.get(0).getId());
+        assertEquals(1, beforeCategoryProperties.size());
+
+        List<IProductCmptProperty> otherCategoryProperties = productCmptType.findProductCmptPropertiesForCategory(
+                otherCategory, false, ipsProject);
+        assertTrue(otherCategoryProperties.isEmpty());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
      * The {@link IProductCmptCategory} of an {@link IProductCmptProperty} belonging to an
      * {@link IPolicyCmptType} is changed. Then, the {@link IProductCmptType} is reloaded without
      * first saving it.
@@ -2410,6 +2454,78 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 .contains(policyProperty));
     }
 
+    /**
+     * <strong>Scenario:</strong><br>
+     * When saving the {@link IProductCmptType}, category changes of {@link IProductCmptProperty
+     * product component properties} originating from the {@link IPolicyCmptType} are saved.
+     * However, now it happens that the {@link IIpsSrcFile} of the {@link IPolicyCmptType} is
+     * immutable.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * All category changes for the {@link IPolicyCmptType} should be reverted.
+     */
+    @Test
+    public void testChangeCategoryAndDeferPolicyChange_ClearPendingPolicyChangesUponSaveEvenIfPolicySrcFileIsImmutable()
+            throws CoreException {
+
+        IProductCmptCategory beforeCategory = productCmptType.newCategory("beforeCategory");
+        IProductCmptCategory afterCategory = productCmptType.newCategory("afterCategory");
+        IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
+        policyProperty.setCategory(beforeCategory.getName());
+
+        productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, afterCategory.getName());
+
+        /*
+         * Delete the policy component type so that the source file becomes immutable, then save the
+         * product component type, and then undo the delete.
+         */
+        policyCmptType.getIpsSrcFile().save(true, null);
+        Change undoDeleteResourceChange = performDeleteResourceChange(policyCmptType.getIpsSrcFile(), null);
+        productCmptType.getIpsSrcFile().save(true, null);
+        undoDeleteResourceChange.perform(new NullProgressMonitor());
+
+        List<IProductCmptProperty> beforeCategoryProperties = productCmptType.findProductCmptPropertiesForCategory(
+                beforeCategory, false, ipsProject);
+        assertEquals(policyProperty.getId(), beforeCategoryProperties.get(0).getId());
+        assertEquals(1, beforeCategoryProperties.size());
+
+        List<IProductCmptProperty> afterCategoryProperties = productCmptType.findProductCmptPropertiesForCategory(
+                afterCategory, false, ipsProject);
+        assertTrue(afterCategoryProperties.isEmpty());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * Normally, if {@link IProductCmptProperty product component properties} originating from the
+     * {@link IPolicyCmptType} are moved to another {@link IProductCmptCategory}, this change is
+     * saved in the {@link IPolicyCmptType} as soon as the {@link IProductCmptType} is saved. Now it
+     * happens that the {@link IPolicyCmptType} already is <em>dirty</em> at the moment the
+     * {@link IProductCmptType} is saved.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The {@link IPolicyCmptType} should not be saved but the pending policy changes should be
+     * transferred to the policy properties.
+     */
+    @Test
+    public void testChangeCategoryAndDeferPolicyChange_OnlySavePolicyUponProductSaveIfPolicyIsNotDirty()
+            throws CoreException {
+
+        IProductCmptCategory beforeCategory = productCmptType.newCategory("beforeCategory");
+        IProductCmptCategory afterCategory = productCmptType.newCategory("afterCategory");
+        IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
+        policyProperty.setCategory(beforeCategory.getName());
+
+        productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, afterCategory.getName());
+        policyCmptType.getIpsSrcFile().markAsDirty();
+        productCmptType.getIpsSrcFile().save(true, null);
+
+        // 1) the policy component type's source file must not have been saved
+        assertTrue(policyCmptType.getIpsSrcFile().isDirty());
+
+        // 2) the pending policy changes must still be pending
+        assertEquals(afterCategory.getName(), policyProperty.getCategory());
+    }
+
     @Test
     public void testChangeCategoryAndDeferPolicyChange_FireChangeEvent() {
         IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
@@ -2417,6 +2533,12 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, "otherCategory");
 
         assertWholeContentChangedEvent(productCmptType.getIpsSrcFile());
+    }
+
+    private Change performDeleteResourceChange(IIpsSrcFile ipsSrcFile, IProgressMonitor pm) throws CoreException {
+        IPath resourcePath = ipsSrcFile.getCorrespondingResource().getFullPath();
+        DeleteResourceChange deleteResourceChange = new DeleteResourceChange(resourcePath, true);
+        return deleteResourceChange.perform(pm);
     }
 
     /**

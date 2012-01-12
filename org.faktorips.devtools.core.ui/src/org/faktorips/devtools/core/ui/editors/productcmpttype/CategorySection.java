@@ -93,6 +93,7 @@ import org.faktorips.devtools.core.ui.dnd.IpsByteArrayTransfer;
 import org.faktorips.devtools.core.ui.editors.ViewerButtonComposite;
 import org.faktorips.devtools.core.ui.editors.productcmpttype.CategoryPage.CategoryCompositionSection;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * A section allowing the user to edit an {@link IProductCmptCategory}.
@@ -555,8 +556,7 @@ public class CategorySection extends IpsSection {
                     && !isFirstPropertyOfContextTypeSelected() && isPropertyOfContextTypeSelected());
             moveDownButton.setEnabled(categorySection.isContextTypeEditable() && isPropertySelected()
                     && !isLastPropertyOfContextTypeSelected() && isPropertyOfContextTypeSelected());
-            changeCategoryButton.setEnabled(categorySection.isContextTypeEditable() && isPropertySelected()
-                    && isPropertyOfContextTypeSelected());
+            changeCategoryButton.setEnabled(isSelectedPropertyAllowedToChangeCategory());
         }
 
         private boolean isFirstPropertyOfContextTypeSelected() {
@@ -603,6 +603,15 @@ public class CategorySection extends IpsSection {
 
         private boolean isPropertySelected() {
             return !getViewer().getSelection().isEmpty();
+        }
+
+        private boolean isTypeOfSelectedPropertyEditable() {
+            ArgumentCheck.isTrue(isPropertySelected());
+            return IpsUIPlugin.isEditable(getSelectedProperty().getIpsSrcFile());
+        }
+
+        private boolean isSelectedPropertyAllowedToChangeCategory() {
+            return isPropertySelected() && isPropertyOfContextTypeSelected() && isTypeOfSelectedPropertyEditable();
         }
 
         private Control getControl() {
@@ -667,8 +676,7 @@ public class CategorySection extends IpsSection {
 
             @Override
             public void dragStart(DragSourceEvent event) {
-                event.doit = isPropertySelected() && isPropertyOfContextTypeSelected()
-                        && categorySection.isContextTypeEditable();
+                event.doit = isSelectedPropertyAllowedToChangeCategory();
             }
 
             @Override
