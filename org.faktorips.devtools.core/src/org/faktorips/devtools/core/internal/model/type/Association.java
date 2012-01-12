@@ -316,8 +316,8 @@ public abstract class Association extends TypePart implements IAssociation {
         if (!javaStatus.isOK()) {
             String text = NLS.bind(Messages.Association_msg_TargetRoleSingularNotAValidJavaFieldName,
                     targetRoleSingular);
-            list.add(createMessageFromStatus(javaStatus, MSGCODE_TARGET_ROLE_SINGULAR_NOT_A_VALID_JAVA_FIELD_NAME,
-                    text, PROPERTY_TARGET_ROLE_SINGULAR));
+            list.newError(MSGCODE_TARGET_ROLE_SINGULAR_NOT_A_VALID_JAVA_FIELD_NAME, text, this,
+                    PROPERTY_TARGET_ROLE_SINGULAR);
         }
     }
 
@@ -327,8 +327,8 @@ public abstract class Association extends TypePart implements IAssociation {
             if (!javaStatus.isOK()) {
                 String text = NLS.bind(Messages.Association_msg_TargetRolePluralNotAValidJavaFieldName,
                         targetRolePlural);
-                list.add(createMessageFromStatus(javaStatus, MSGCODE_TARGET_ROLE_PLURAL_NOT_A_VALID_JAVA_FIELD_NAME,
-                        text, PROPERTY_TARGET_ROLE_PLURAL));
+                list.newError(MSGCODE_TARGET_ROLE_PLURAL_NOT_A_VALID_JAVA_FIELD_NAME, text, this,
+                        PROPERTY_TARGET_ROLE_PLURAL);
             }
 
             if (targetRolePlural.equals(targetRoleSingular)) {
@@ -363,25 +363,6 @@ public abstract class Association extends TypePart implements IAssociation {
             list.add(new Message(MSGCODE_MAX_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[] {
                     PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY }));
         }
-    }
-
-    private Message createMessageFromStatus(IStatus status, String code, String text, String invalidProperty) {
-        // TODO AW 03-01-2012: Move the conversion code to Message when the class is moved to core
-        int severity;
-        switch (status.getSeverity()) {
-            case IStatus.ERROR:
-                severity = Message.ERROR;
-                break;
-            case IStatus.WARNING:
-                severity = Message.WARNING;
-                break;
-            case IStatus.INFO:
-                severity = Message.INFO;
-                break;
-            default:
-                throw new RuntimeException();
-        }
-        return new Message(code, text, severity, this, invalidProperty);
     }
 
     private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) throws CoreException {
