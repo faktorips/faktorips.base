@@ -40,13 +40,13 @@ import org.faktorips.devtools.core.ui.search.product.conditions.types.Comparable
 import org.faktorips.devtools.core.ui.search.product.conditions.types.EqualitySearchOperatorType;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.IOperandProvider;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductAttributeCondition;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductAttributeConditionType;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ProductAttributeConditionTest extends AbstractIpsPluginTest {
 
-    private final ProductAttributeCondition condition = new ProductAttributeCondition();
+    private final ProductAttributeConditionType condition = new ProductAttributeConditionType();
     private IIpsProject ipsProject;
     private ProductCmptType productCmptType;
 

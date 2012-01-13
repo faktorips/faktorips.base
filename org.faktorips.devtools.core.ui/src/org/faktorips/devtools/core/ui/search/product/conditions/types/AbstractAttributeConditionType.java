@@ -22,11 +22,11 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 
 /**
- * Abstract implementation of {@link ICondition} for searching attribute values.
+ * Abstract implementation of {@link IConditionType} for searching attribute values.
  * 
  * @author dicker
  */
-public abstract class AbstractAttributeCondition extends AbstractCondition {
+public abstract class AbstractAttributeConditionType extends AbstractConditionType {
 
     @Override
     public ValueDatatype getValueDatatype(IIpsElement elementPart) {

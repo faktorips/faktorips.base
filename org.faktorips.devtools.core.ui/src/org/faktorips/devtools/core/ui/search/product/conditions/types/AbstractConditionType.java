@@ -14,13 +14,13 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 /**
- * Absrtact implementation of {@link ICondition}
+ * Abstract implementation of {@link IConditionType}
  * 
  * @author dicker
  */
-public abstract class AbstractCondition implements ICondition {
+public abstract class AbstractConditionType implements IConditionType {
 
-    public AbstractCondition() {
+    public AbstractConditionType() {
         super();
     }
 }

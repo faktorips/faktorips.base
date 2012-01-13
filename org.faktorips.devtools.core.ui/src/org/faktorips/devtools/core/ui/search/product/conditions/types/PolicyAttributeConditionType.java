@@ -41,7 +41,7 @@ import org.faktorips.runtime.IProductComponent;
  * 
  * @author dicker
  */
-public class PolicyAttributeCondition extends AbstractAttributeCondition {
+public class PolicyAttributeConditionType extends AbstractAttributeConditionType {
 
     private static final class PolicyAttributeConditionOperandProvider implements IOperandProvider {
 

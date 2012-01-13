@@ -39,13 +39,13 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.AllowanceSearchOperatorType;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.IOperandProvider;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.PolicyAttributeCondition;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.PolicyAttributeConditionType;
 import org.junit.Before;
 import org.junit.Test;
 
 public class PolicyAttributeConditionTest extends AbstractIpsPluginTest {
 
-    private final PolicyAttributeCondition condition = new PolicyAttributeCondition();
+    private final PolicyAttributeConditionType condition = new PolicyAttributeConditionType();
     private IIpsProject ipsProject;
     private IProductCmptType productCmptType;
     private PolicyCmptType policyCmptType;

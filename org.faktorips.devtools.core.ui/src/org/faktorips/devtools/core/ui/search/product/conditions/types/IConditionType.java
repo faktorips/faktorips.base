@@ -23,15 +23,16 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 
 /**
- * This Interface delivers the basic functions for the detailed conditions of the product search.
+ * This interface defines the type of a condition and delivers the basic functions for the product
+ * search.
  * 
  * @author dicker
  */
-public interface ICondition {
+public interface IConditionType {
 
     /**
      * Returns a List of {@link IIpsElement IIpsElements} of the specified {@link IProductCmptType},
-     * which can be searched with the implementation of ICondition.
+     * which can be searched with the implementation of IConditionType.
      */
     public List<IIpsElement> getSearchableElements(IProductCmptType productCmptType);
 
@@ -39,7 +40,7 @@ public interface ICondition {
      * Returns a List of {@link ISearchOperatorType ISearchOperatorTypes}, which can be used in a
      * condition for the specified {@link IIpsElement}.
      * <p>
-     * This method depends on the implementation of the ICondition and considers for example the
+     * This method depends on the implementation of the IConditionType and considers for example the
      * {@link ValueDatatype} of the specified IIpsElement. The result depends for example, whether
      * the ValueDatatype is a Comparable or not.
      */

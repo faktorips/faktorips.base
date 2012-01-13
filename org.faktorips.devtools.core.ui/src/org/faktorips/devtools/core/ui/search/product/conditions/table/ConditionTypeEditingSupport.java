@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ICondition;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.IConditionType;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 
@@ -36,11 +36,11 @@ class ConditionTypeEditingSupport extends EnhancedCellTrackingEditingSupport {
 
         ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
 
-        List<ICondition> conditionTypes = model.getConditionsWithSearchableElements();
+        List<IConditionType> conditionTypes = model.getConditionsWithSearchableElements();
         List<String> conditionTypeNames = new ArrayList<String>(conditionTypes.size());
 
-        for (ICondition condition : conditionTypes) {
-            conditionTypeNames.add(condition.getName());
+        for (IConditionType conditionType : conditionTypes) {
+            conditionTypeNames.add(conditionType.getName());
         }
 
         combo.setItems(conditionTypeNames.toArray(new String[0]));
@@ -59,7 +59,7 @@ class ConditionTypeEditingSupport extends EnhancedCellTrackingEditingSupport {
         return getCondition(element).getName();
     }
 
-    private ICondition getCondition(Object element) {
+    private IConditionType getCondition(Object element) {
         ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
 
         return model.getCondition();
@@ -73,10 +73,10 @@ class ConditionTypeEditingSupport extends EnhancedCellTrackingEditingSupport {
 
         ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
 
-        List<ICondition> conditionTypes = model.getConditionsWithSearchableElements();
-        for (ICondition condition : conditionTypes) {
-            if (condition.getName().equals(value)) {
-                model.setCondition(condition);
+        List<IConditionType> conditionTypes = model.getConditionsWithSearchableElements();
+        for (IConditionType conditionType : conditionTypes) {
+            if (conditionType.getName().equals(value)) {
+                model.setCondition(conditionType);
                 getViewer().refresh();
                 return;
             }

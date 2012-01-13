@@ -24,10 +24,10 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.search.AbstractSearchPresentationModel;
 import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ICondition;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.PolicyAttributeCondition;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductAttributeCondition;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductComponentAssociationCondition;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.IConditionType;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.PolicyAttributeConditionType;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductAttributeConditionType;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductComponentAssociationConditionType;
 
 /**
  * The ProductSearchPresentationModel is the implementation of the {@link PresentationModelObject}
@@ -41,8 +41,8 @@ import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductCom
  */
 public class ProductSearchPresentationModel extends AbstractSearchPresentationModel {
 
-    private static final ICondition[] CONDITION_TYPES = { new ProductAttributeCondition(),
-            new PolicyAttributeCondition(), new ProductComponentAssociationCondition() };
+    private static final IConditionType[] CONDITION_TYPES = { new ProductAttributeConditionType(),
+            new PolicyAttributeConditionType(), new ProductComponentAssociationConditionType() };
 
     private final List<ProductSearchConditionPresentationModel> productSearchConditionPresentationModels = new ArrayList<ProductSearchConditionPresentationModel>();
 
@@ -131,18 +131,18 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     }
 
     /**
-     * Returns a List with all available {@link ICondition IConditions}
+     * Returns a List with all available {@link IConditionType IConditions}
      */
-    public List<ICondition> getAvailableConditions() {
+    public List<IConditionType> getAvailableConditions() {
         if (productCmptType == null) {
             return Collections.emptyList();
         }
 
-        List<ICondition> conditionsWithSearchableElements = new ArrayList<ICondition>();
-        for (ICondition condition : CONDITION_TYPES) {
-            List<IIpsElement> searchableElements = condition.getSearchableElements(productCmptType);
+        List<IConditionType> conditionsWithSearchableElements = new ArrayList<IConditionType>();
+        for (IConditionType conditionType : CONDITION_TYPES) {
+            List<IIpsElement> searchableElements = conditionType.getSearchableElements(productCmptType);
             if (!searchableElements.isEmpty()) {
-                conditionsWithSearchableElements.add(condition);
+                conditionsWithSearchableElements.add(conditionType);
             }
         }
         return conditionsWithSearchableElements;

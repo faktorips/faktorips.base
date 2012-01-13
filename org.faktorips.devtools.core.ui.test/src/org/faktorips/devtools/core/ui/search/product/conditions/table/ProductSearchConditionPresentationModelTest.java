@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.search.product.ProductSearchPresentationModel;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.PolicyAttributeCondition;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.PolicyAttributeConditionType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -66,7 +66,7 @@ public class ProductSearchConditionPresentationModelTest {
 
     @Test
     public void testSetConditionWithoutSearchableElements() {
-        PolicyAttributeCondition condition = mock(PolicyAttributeCondition.class);
+        PolicyAttributeConditionType condition = mock(PolicyAttributeConditionType.class);
 
         List<IIpsElement> emptyList = Collections.emptyList();
         when(condition.getSearchableElements(any(IProductCmptType.class))).thenReturn(emptyList);
@@ -81,14 +81,14 @@ public class ProductSearchConditionPresentationModelTest {
 
     @Test
     public void testSetConditionWithSearchableElements() {
-        PolicyAttributeCondition condition = createConditionwithSearchableElements();
+        PolicyAttributeConditionType condition = createConditionwithSearchableElements();
 
         model.setCondition(condition);
     }
 
     @Test
     public void testValidityAfterSetCondition() {
-        PolicyAttributeCondition condition = createConditionwithSearchableElements();
+        PolicyAttributeConditionType condition = createConditionwithSearchableElements();
 
         model.setCondition(condition);
 
@@ -99,7 +99,7 @@ public class ProductSearchConditionPresentationModelTest {
 
     @Test
     public void testValidityAfterAllSetters() {
-        PolicyAttributeCondition condition = createConditionwithSearchableElements();
+        PolicyAttributeConditionType condition = createConditionwithSearchableElements();
 
         model.setCondition(condition);
 
@@ -129,7 +129,7 @@ public class ProductSearchConditionPresentationModelTest {
 
     @Test
     public void testValidityAfterSettingConditionTwice() {
-        PolicyAttributeCondition condition = createConditionwithSearchableElements();
+        PolicyAttributeConditionType condition = createConditionwithSearchableElements();
 
         model.setCondition(condition);
         model.setSearchedElement(ipsElement);
@@ -142,8 +142,8 @@ public class ProductSearchConditionPresentationModelTest {
         assertFalse(model.isValid());
     }
 
-    private PolicyAttributeCondition createConditionwithSearchableElements() {
-        PolicyAttributeCondition condition = mock(PolicyAttributeCondition.class);
+    private PolicyAttributeConditionType createConditionwithSearchableElements() {
+        PolicyAttributeConditionType condition = mock(PolicyAttributeConditionType.class);
 
         List<IIpsElement> list = new ArrayList<IIpsElement>();
         list.add(ipsElement);

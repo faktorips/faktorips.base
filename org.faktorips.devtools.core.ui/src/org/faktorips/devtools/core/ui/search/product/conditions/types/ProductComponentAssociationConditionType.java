@@ -43,12 +43,12 @@ import org.faktorips.runtime.IProductComponent;
  * The condition tests, whether the association of a IProductComponent (within a
  * {@link IProductCmptGeneration}) references another given {@link IProductComponent}.
  * <p>
- * The ProductAttributeCondition uses the {@link ReferenceSearchOperatorType
+ * The ProductAttributeConditionType uses the {@link ReferenceSearchOperatorType
  * ReferenceSearchOperatorTypes}.
  * 
  * @author dicker
  */
-public class ProductComponentAssociationCondition extends AbstractCondition {
+public class ProductComponentAssociationConditionType extends AbstractConditionType {
 
     private final static class ProductComponentAssociationOperandProvider implements IOperandProvider {
 

@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.search.IIpsSearchPartPresentationModel;
 import org.faktorips.devtools.core.ui.search.product.ProductSearchPresentationModel;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ICondition;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.IConditionType;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
 import org.faktorips.util.ArgumentCheck;
 
@@ -45,7 +45,7 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     private List<? extends IIpsElement> searchableElements;
     private List<? extends ISearchOperatorType> operatorTypes;
 
-    private ICondition condition = null;
+    private IConditionType conditionType = null;
     private IIpsElement searchedElement = null;
     private ISearchOperatorType operatorType = null;
     private String argument = null;
@@ -57,9 +57,9 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
         this.searchableElements = Collections.emptyList();
         this.operatorTypes = Collections.emptyList();
 
-        List<ICondition> conditionsWithSearchableElements = getConditionsWithSearchableElements();
+        List<IConditionType> conditionsWithSearchableElements = getConditionsWithSearchableElements();
         if (!conditionsWithSearchableElements.isEmpty()) {
-            condition = conditionsWithSearchableElements.get(0);
+            conditionType = conditionsWithSearchableElements.get(0);
             updateSearchableElements();
         }
     }
@@ -134,7 +134,7 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     }
 
     private void updateSearchableElements() {
-        searchableElements = condition.getSearchableElements(parentSearchPresentationModel.getProductCmptType());
+        searchableElements = conditionType.getSearchableElements(parentSearchPresentationModel.getProductCmptType());
     }
 
     public boolean isSearchedElementChosen() {
@@ -145,20 +145,20 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
         return searchableElements;
     }
 
-    public ICondition getCondition() {
-        return condition;
+    public IConditionType getCondition() {
+        return conditionType;
     }
 
-    public void setCondition(ICondition condition) {
-        ArgumentCheck.notNull(condition);
-        ArgumentCheck.isTrue(!condition.getSearchableElements(parentSearchPresentationModel.getProductCmptType())
+    public void setCondition(IConditionType conditionType) {
+        ArgumentCheck.notNull(conditionType);
+        ArgumentCheck.isTrue(!conditionType.getSearchableElements(parentSearchPresentationModel.getProductCmptType())
                 .isEmpty(), "Conditions are not allowed without elements, which can be searched."); //$NON-NLS-1$
 
-        if (condition.equals(this.condition)) {
+        if (conditionType.equals(this.conditionType)) {
             return;
         }
 
-        this.condition = condition;
+        this.conditionType = conditionType;
 
         updateSearchableElements();
         updateSearchedElement();
@@ -171,7 +171,7 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
         parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, StringUtils.EMPTY, null, null));
     }
 
-    protected List<ICondition> getConditionsWithSearchableElements() {
+    protected List<IConditionType> getConditionsWithSearchableElements() {
         return parentSearchPresentationModel.getAvailableConditions();
     }
 
@@ -227,5 +227,9 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
 
     private boolean isOperatorTypeChosen() {
         return operatorType != null;
+    }
+
+    public ProductSearchPresentationModel getParentSearchPresentationModel() {
+        return parentSearchPresentationModel;
     }
 }

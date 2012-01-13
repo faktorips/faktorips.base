@@ -33,7 +33,7 @@ import org.faktorips.runtime.IProductComponent;
  * The condition tests, whether the value of an attribute of a IProductComponent (within a
  * {@link IProductCmptGeneration}) matches a given argument.
  * <p>
- * The ProductAttributeCondition uses
+ * The ProductAttributeConditionType uses
  * <ul>
  * <li>the {@link EqualitySearchOperatorType EqualitySearchOperatorTypes}</li>
  * <li>the {@link LikeSearchOperatorType LikeSearchOperatorTypes}, if the {@link ValueDatatype} of
@@ -44,7 +44,7 @@ import org.faktorips.runtime.IProductComponent;
  * 
  * @author dicker
  */
-public class ProductAttributeCondition extends AbstractAttributeCondition {
+public class ProductAttributeConditionType extends AbstractAttributeConditionType {
 
     private static final class ProductAttributeArgumentProvider implements IOperandProvider {
         private final IAttribute attribute;

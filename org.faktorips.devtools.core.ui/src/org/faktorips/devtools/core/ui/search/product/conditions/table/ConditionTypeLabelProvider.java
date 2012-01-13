@@ -15,15 +15,15 @@ package org.faktorips.devtools.core.ui.search.product.conditions.table;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ICondition;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.IConditionType;
 
 final class ConditionTypeLabelProvider extends ColumnLabelProvider {
     @Override
     public String getText(Object element) {
-        ICondition condition = ((ProductSearchConditionPresentationModel)element).getCondition();
-        if (condition == null) {
+        IConditionType conditionType = ((ProductSearchConditionPresentationModel)element).getCondition();
+        if (conditionType == null) {
             return StringUtils.EMPTY;
         }
-        return condition.getName();
+        return conditionType.getName();
     }
 }

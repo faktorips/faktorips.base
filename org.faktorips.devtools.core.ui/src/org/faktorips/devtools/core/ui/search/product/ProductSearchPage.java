@@ -24,11 +24,12 @@ import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchPage;
 import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
@@ -97,23 +98,26 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
     }
 
     private void createConditionTable(Composite composite, UIToolkit toolkit) {
-        toolkit.createLabel(baseComposite, Messages.ProductSearchPage_labelSearchConditions);
+        Composite comp = toolkit.createGridComposite(composite, 3, false, false);
+
+        Label label = toolkit.createLabel(comp, Messages.ProductSearchPage_labelSearchConditions);
+        label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+
+        addConditionButtons(comp);
 
         ProductSearchConditionsTableViewerProvider productSearchConditionsTableViewerProvider = new ProductSearchConditionsTableViewerProvider(
                 getPresentationModel(), composite);
 
         conditionTableViewer = productSearchConditionsTableViewerProvider.getTableViewer();
-
-        addConditionButtons(toolkit, baseComposite);
     }
 
-    private void addConditionButtons(UIToolkit toolkit, Composite composite) {
+    private void addConditionButtons(Composite comp) {
 
-        Composite comp = toolkit.createComposite(composite);
+        Button btnAddCondition = new Button(comp, SWT.PUSH);
+        btnAddCondition.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 
-        comp.setLayout(new FillLayout(SWT.HORIZONTAL));
-
-        Button btnAddCondition = toolkit.createButton(comp, Messages.ProductSearchPage_labelAddConditionButton);
+        btnAddCondition.setToolTipText(Messages.ProductSearchPage_labelAddConditionButton);
+        btnAddCondition.setImage(IpsUIPlugin.getImageHandling().getSharedImage("Add.gif", true));
 
         btnAddCondition.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -125,7 +129,11 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
                 ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
         btnAddCondition.setEnabled(false);
 
-        Button btnRemoveCondition = toolkit.createButton(comp, Messages.ProductSearchPage_labelRemoveConditionButton);
+        Button btnRemoveCondition = new Button(comp, SWT.PUSH);
+        btnRemoveCondition.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+
+        btnRemoveCondition.setToolTipText(Messages.ProductSearchPage_labelRemoveConditionButton);
+        btnRemoveCondition.setImage(IpsUIPlugin.getImageHandling().getSharedImage("trash.gif", true));
 
         btnRemoveCondition.addSelectionListener(new SelectionAdapter() {
             @Override

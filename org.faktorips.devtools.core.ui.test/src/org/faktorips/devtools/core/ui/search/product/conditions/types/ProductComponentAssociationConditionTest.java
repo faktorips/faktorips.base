@@ -34,14 +34,14 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.IOperandProvider;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductComponentAssociationCondition;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductComponentAssociationConditionType;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ReferenceSearchOperatorType;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ProductComponentAssociationConditionTest extends AbstractIpsPluginTest {
 
-    private final ProductComponentAssociationCondition condition = new ProductComponentAssociationCondition();
+    private final ProductComponentAssociationConditionType condition = new ProductComponentAssociationConditionType();
     private IIpsProject ipsProject;
     private ProductCmptType productCmptType;
     private ProductCmptType linkedProductCmptType;
