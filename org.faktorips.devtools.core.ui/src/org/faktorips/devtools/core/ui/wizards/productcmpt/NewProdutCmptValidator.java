@@ -103,12 +103,12 @@ public class NewProdutCmptValidator extends NewProductDefinitionValidator {
         if (pmo.getKindId() != null && (!pmo.isNeedVersionId() || pmo.getVersionId() != null)) {
             IProductCmptNamingStrategy productCmptNamingStrategy = pmo.getIpsProject().getProductCmptNamingStrategy();
             try {
-                if (!pmo.getKindId().equals(productCmptNamingStrategy.getKindId(pmo.getFullName()))) {
+                if (!pmo.getKindId().equals(productCmptNamingStrategy.getKindId(pmo.getName()))) {
                     result.add(new Message(MSG_INVALID_KIND_ID, Messages.NewProdutCmptValidator_msg_invalidKindId,
                             Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_KIND_ID));
                 }
                 if (pmo.isNeedVersionId()
-                        && !pmo.getVersionId().equals(productCmptNamingStrategy.getVersionId(pmo.getFullName()))) {
+                        && !pmo.getVersionId().equals(productCmptNamingStrategy.getVersionId(pmo.getName()))) {
                     result.add(new Message(MSG_INVALID_VERSION_ID, NLS.bind(
                             Messages.NewProdutCmptValidator_msg_invalidVersionId,
                             convention.getVersionConceptNameSingular()), Message.ERROR, pmo,
@@ -136,7 +136,7 @@ public class NewProdutCmptValidator extends NewProductDefinitionValidator {
         MessageList result = new MessageList();
         IIpsProjectNamingConventions namingConventions = pmo.getIpsProject().getNamingConventions();
         try {
-            result.add(namingConventions.validateUnqualifiedIpsObjectName(IpsObjectType.PRODUCT_CMPT, pmo.getFullName()));
+            result.add(namingConventions.validateUnqualifiedIpsObjectName(IpsObjectType.PRODUCT_CMPT, pmo.getName()));
             IIpsSrcFile file = pmo.getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, pmo.getQualifiedName());
             if (file != null) {
                 result.add(new Message(MSG_SRC_FILE_EXISTS, Messages.NewProdutCmptValidator_msg_srcFileExists,

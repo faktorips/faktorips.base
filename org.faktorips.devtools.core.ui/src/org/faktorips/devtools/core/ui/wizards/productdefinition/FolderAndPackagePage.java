@@ -91,7 +91,7 @@ public class FolderAndPackagePage extends WizardPage {
         }
     }
 
-    private static class FolderAndPackageUiUpdater extends UiUpdater {
+    private static class FolderAndPackageUiUpdater extends PageUiUpdater {
 
         private final NewProductDefinitionPMO pmo;
 

@@ -41,7 +41,6 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.Messages;
@@ -91,11 +90,10 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
                 } else if (ipsElement instanceof IIpsPackageFragment) {
                     IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
                     initDefaults(packageFragment, null);
-                } else if (ipsElement instanceof IIpsSrcFile
-                        && ((IIpsSrcFile)ipsElement).getIpsObjectType().equals(getIpsObjectType())) {
+                } else if (ipsElement instanceof IIpsSrcFile) {
                     IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
-                    IProductCmpt defaultProductCmpt = (IProductCmpt)((IIpsSrcFile)ipsElement).getIpsObject();
-                    initDefaults(ipsSrcFile.getIpsPackageFragment(), defaultProductCmpt);
+                    IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
+                    initDefaults(ipsSrcFile.getIpsPackageFragment(), ipsObject);
                 } else {
                     IResource resource = (IResource)adaptableObject.getAdapter(IResource.class);
                     if (resource != null) {
@@ -169,7 +167,7 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
      * @throws CoreException In case of exceptions while creating the new file
      */
     protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
-        IIpsSrcFile ipsSrcFile = pmo.getIpsPackage().createIpsFile(getIpsObjectType(), pmo.getFullName(), true,
+        IIpsSrcFile ipsSrcFile = pmo.getIpsPackage().createIpsFile(getIpsObjectType(), pmo.getName(), true,
                 new SubProgressMonitor(monitor, 1));
         return ipsSrcFile;
     }
@@ -202,7 +200,7 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
     protected void afterFinishPerformed() {
         if (getPmo().isOpenEditor()) {
             IIpsSrcFile srcFile = getPmo().getIpsPackage().getIpsSrcFile(
-                    getIpsObjectType().getFileName(getPmo().getFullName()));
+                    getIpsObjectType().getFileName(getPmo().getName()));
             IpsUIPlugin.getDefault().openEditor(srcFile);
         }
         safeDialogSettings(getDialogSettings());

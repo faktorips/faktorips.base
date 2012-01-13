@@ -120,7 +120,9 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
     @Override
     protected void postProcess(IIpsSrcFile newProductCmpt, IProgressMonitor monitor) {
         monitor.beginTask(null, 2);
-        if (getPmo().getAddToProductCmptGeneration() != null && getPmo().getAddToAssociation() != null) {
+        if (getPmo().getAddToProductCmptGeneration() != null
+                && IpsUIPlugin.getDefault().isGenerationEditable(getPmo().getAddToProductCmptGeneration())
+                && getPmo().getAddToAssociation() != null) {
             IIpsSrcFile srcFile = getPmo().getAddToProductCmptGeneration().getIpsSrcFile();
             if (getPmo().getValidator().validateAddToGeneration().isEmpty()) {
                 boolean dirty = srcFile.isDirty();

@@ -16,10 +16,10 @@ package org.faktorips.devtools.core.ui.wizards.productdefinition;
 import java.beans.PropertyChangeEvent;
 import java.util.GregorianCalendar;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -37,8 +37,6 @@ public abstract class NewProductDefinitionPMO extends PresentationModelObject {
 
     public static final String PROPERTY_CAN_EDIT_RUNTIME_ID = "canEditRuntimeId"; //$NON-NLS-1$
 
-    public static final String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
-
     public static final String PROPERTY_EFFECTIVE_DATE = "effectiveDate"; //$NON-NLS-1$
 
     private IIpsProject ipsProject;
@@ -48,8 +46,6 @@ public abstract class NewProductDefinitionPMO extends PresentationModelObject {
     private IIpsPackageFragment ipsPackage;
 
     private boolean openEditor;
-
-    private String runtimeId = StringUtils.EMPTY;
 
     private GregorianCalendar effectiveDate;
 
@@ -133,22 +129,15 @@ public abstract class NewProductDefinitionPMO extends PresentationModelObject {
     }
 
     /**
-     * @param runtimeId The runtimeId to set.
+     * Returns the name of the new object. Name does not need to be a property in this pmo. It is
+     * used to create the new {@link IIpsSrcFile}.
+     * <p>
+     * The name ist not the qualified name. For example in product component the name is the
+     * composite of the kind id and the version id of the product component.
+     * 
+     * @return The name of the new object
      */
-    public void setRuntimeId(String runtimeId) {
-        String oldRuntimeId = this.runtimeId;
-        this.runtimeId = runtimeId;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_RUNTIME_ID, oldRuntimeId, runtimeId));
-    }
-
-    /**
-     * @return Returns the runtimeId.
-     */
-    public String getRuntimeId() {
-        return runtimeId;
-    }
-
-    public abstract String getFullName();
+    public abstract String getName();
 
     /**
      * Setting the effective date for the new product component. This may be different from current

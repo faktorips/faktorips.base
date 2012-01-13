@@ -102,7 +102,7 @@
                label="%org.faktorips.devtools.actions.OpenNewTableContentsWizardAction.label"
                icon="icons/NewTableContentsWizard.gif"
                tooltip="%org.faktorips.devtools.actions.OpenNewTableContentsWizardAction.tooltip"
-               class="org.faktorips.devtools.core.ui.wizards.tablecontents_old.OpenNewTableContentsWizardAction"
+               class="org.faktorips.devtools.core.ui.wizards.tablecontents.OpenNewTableContentsWizardAction"
                toolbarPath="org.faktorips.devtools"
                id="org.faktorips.devtools.actions.OpenNewTableContentsWizardAction">
          </action>

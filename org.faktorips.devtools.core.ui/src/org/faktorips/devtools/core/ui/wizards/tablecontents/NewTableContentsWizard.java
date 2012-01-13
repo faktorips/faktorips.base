@@ -20,21 +20,27 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.FolderAndPackagePage;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionWizard;
 
 public class NewTableContentsWizard extends NewProductDefinitionWizard {
 
     public static final String ID = "newTableContentsWizard"; //$NON-NLS-1$
+    private TableContentsPage tableContentsPage;
+    private FolderAndPackagePage folderAndPackagePage;
 
     public NewTableContentsWizard() {
         super(new NewTableContentsPMO());
+        setWindowTitle("New Table Contents");
+        setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
+                "wizards/NewTableContentsWizard.png")); //$NON-NLS-1$
     }
 
     @Override
@@ -82,7 +88,7 @@ public class NewTableContentsWizard extends NewProductDefinitionWizard {
             ITableContents table = (ITableContents)ipsObject;
             table.setTableStructure(getPmo().getSelectedStructure().getQualifiedName());
             GregorianCalendar date = getPmo().getEffectiveDate();
-            IIpsObjectGeneration generation = table.newGeneration();
+            ITableContentsGeneration generation = (ITableContentsGeneration)table.newGeneration();
             generation.setValidFrom(date);
             ITableStructure structure = getPmo().getSelectedStructure();
             if (structure != null) {
@@ -90,6 +96,7 @@ public class NewTableContentsWizard extends NewProductDefinitionWizard {
                     table.newColumn(StringUtils.EMPTY);
                 }
             }
+            generation.newRow();
         } else {
             throw new RuntimeException("Invalid object type created"); //$NON-NLS-1$
         }

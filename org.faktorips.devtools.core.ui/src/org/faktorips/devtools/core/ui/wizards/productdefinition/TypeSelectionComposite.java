@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -42,6 +44,8 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter;
 
@@ -107,6 +111,27 @@ public class TypeSelectionComposite extends Composite {
         descriptionLayoutData.heightHint = 50;
         descriptionLayoutData.widthHint = 50;
         description = toolkit.createLabel(descriptionComposite, StringUtils.EMPTY, SWT.WRAP, descriptionLayoutData);
+
+        bindContent();
+    }
+
+    private void bindContent() {
+        BindingContext bindingContext = new BindingContext();
+        final TypeSelectionPMO pmo = new TypeSelectionPMO();
+        bindingContext.bindContent(listViewerField, pmo, TypeSelectionPMO.PROPERTY_SELECTED_OBJECT);
+
+        pmo.addPropertyChangeListener(new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (TypeSelectionPMO.PROPERTY_SELECTED_OBJECT.equals(evt.getPropertyName())) {
+                    setSelection(pmo.getSelectedObject());
+                }
+
+            }
+        });
+
+        setSelection(pmo.getSelectedObject());
     }
 
     public void setTitle(String titleString) {
@@ -125,7 +150,7 @@ public class TypeSelectionComposite extends Composite {
         return listViewerField;
     }
 
-    public void setSelection(IIpsObject type) {
+    private void setSelection(IIpsObject type) {
         if (type == null) {
             setDescription(StringUtils.EMPTY);
         } else {
@@ -186,7 +211,7 @@ public class TypeSelectionComposite extends Composite {
 
     }
 
-    public static class ProductCmptWizardTypeLabelProvider extends LocalizedLabelProvider {
+    private static class ProductCmptWizardTypeLabelProvider extends LocalizedLabelProvider {
 
         private final ProductCmptWorkbenchAdapter productCmptWorkbenchAdapter = new ProductCmptWorkbenchAdapter();
 
@@ -200,6 +225,38 @@ public class TypeSelectionComposite extends Composite {
             }
 
             return super.getImage(element);
+        }
+
+    }
+
+    /**
+     * Little PMO to update the description by binding context.
+     * <p>
+     * Note: This class needs to be public for the binding context to call the methods by
+     * reflection!
+     * 
+     * @author dirmeier
+     */
+    public static class TypeSelectionPMO extends PresentationModelObject {
+
+        public static final String PROPERTY_SELECTED_OBJECT = "selectedObject"; //$NON-NLS-1$
+
+        private IIpsObject selectedObject;
+
+        /**
+         * @param selectedObject The selectedObject to set.
+         */
+        public void setSelectedObject(IIpsObject selectedObject) {
+            IDescribedElement oldSelection = this.selectedObject;
+            this.selectedObject = selectedObject;
+            notifyListeners(new PropertyChangeEvent(this, PROPERTY_SELECTED_OBJECT, oldSelection, selectedObject));
+        }
+
+        /**
+         * @return Returns the selectedObject.
+         */
+        public IIpsObject getSelectedObject() {
+            return selectedObject;
         }
 
     }

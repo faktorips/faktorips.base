@@ -18,7 +18,6 @@ import java.beans.PropertyChangeEvent;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -27,8 +26,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.IpsProjectRefField;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.PageUiUpdater;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionComposite;
-import org.faktorips.devtools.core.ui.wizards.productdefinition.UiUpdater;
 import org.faktorips.util.message.MessageList;
 
 public class TableContentsPage extends WizardPage {
@@ -45,12 +44,11 @@ public class TableContentsPage extends WizardPage {
 
     private Text nameText;
 
-    private Text runtimeId;
-
     private IpsProjectRefControl ipsProjectRefControl;
 
     public TableContentsPage(NewTableContentsPMO pmo) {
         super(Messages.TableContentsPage_title);
+        setTitle("Create new Table Contents");
         this.pmo = pmo;
         resourManager = new LocalResourceManager(JFaceResources.getResources());
         bindingContext = new BindingContext();
@@ -79,10 +77,6 @@ public class TableContentsPage extends WizardPage {
 
         nameText = toolkit.createText(nameAndIdComposite);
 
-        toolkit.createLabel(nameAndIdComposite, "Runtime ID:");
-        runtimeId = toolkit.createText(nameAndIdComposite);
-        runtimeId.setEnabled(pmo.isCanEditRuntimeId());
-
         setControl(composite);
 
         bindControls(structureSelectionComposite);
@@ -102,28 +96,15 @@ public class TableContentsPage extends WizardPage {
                 NewTableContentsPMO.PROPERTY_SELECTED_STRUCTURE);
 
         bindingContext.bindContent(nameText, pmo, NewTableContentsPMO.PROPERTY_NAME);
-        bindingContext.bindContent(runtimeId, pmo, NewTableContentsPMO.PROPERTY_RUNTIME_ID);
     }
 
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        fixPreviousPage();
         // setting the actual message if there is any but do not show as error
         setMessage(getMessage());
         nameText.selectAll();
         nameText.setFocus();
-    }
-
-    /**
-     * Previous page may be wrong if dialog was started by new menu.
-     */
-    private void fixPreviousPage() {
-        IWizardPage page0 = getWizard().getPages()[0];
-        if (getPreviousPage() != page0) {
-            page0.setPreviousPage(getPreviousPage());
-            setPreviousPage(page0);
-        }
     }
 
     @Override
@@ -136,7 +117,7 @@ public class TableContentsPage extends WizardPage {
         }
     }
 
-    private static class TableContentsPageUiUpdater extends UiUpdater {
+    private static class TableContentsPageUiUpdater extends PageUiUpdater {
 
         private final NewTableContentsPMO pmo;
 
@@ -162,7 +143,7 @@ public class TableContentsPage extends WizardPage {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
-            if (evt.getPropertyName().equals(NewTableContentsPMO.PROPERTY_IPS_PROJECT)) {
+            if (NewTableContentsPMO.PROPERTY_IPS_PROJECT.equals(evt.getPropertyName())) {
                 updateStructuresList();
             }
             super.propertyChange(evt);
@@ -180,8 +161,7 @@ public class TableContentsPage extends WizardPage {
 
         @Override
         protected MessageList validatePage() {
-            // TODO
-            MessageList messageList = new MessageList();
+            MessageList messageList = pmo.getValidator().validateTableContents();
             return messageList;
         }
     }

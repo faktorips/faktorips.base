@@ -27,8 +27,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.IpsProjectRefField;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.PageUiUpdater;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionComposite;
-import org.faktorips.devtools.core.ui.wizards.productdefinition.UiUpdater;
 import org.faktorips.util.message.MessageList;
 
 public class TypeSelectionPage extends WizardPage {
@@ -103,7 +103,7 @@ public class TypeSelectionPage extends WizardPage {
         }
     }
 
-    private static class TypeSelectionUpdater extends UiUpdater {
+    private static class TypeSelectionUpdater extends PageUiUpdater {
 
         private final NewProductCmptPMO pmo;
 
@@ -132,9 +132,6 @@ public class TypeSelectionPage extends WizardPage {
             if (evt.getPropertyName().equals(NewProductCmptPMO.PROPERTY_IPS_PROJECT)) {
                 updateListViewer();
             }
-            if (NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE.equals(evt.getPropertyName())) {
-                updateLabelAndDescription();
-            }
             super.propertyChange(evt);
         }
 
@@ -142,15 +139,10 @@ public class TypeSelectionPage extends WizardPage {
         public void updateUI() {
             super.updateUI();
             updateListViewer();
-            updateLabelAndDescription();
         }
 
         private void updateListViewer() {
             getPage().typeSelectionComposite.setListInput(getPmo().getBaseTypes());
-        }
-
-        private void updateLabelAndDescription() {
-            getPage().typeSelectionComposite.setSelection(getPmo().getSelectedBaseType());
         }
 
         @Override

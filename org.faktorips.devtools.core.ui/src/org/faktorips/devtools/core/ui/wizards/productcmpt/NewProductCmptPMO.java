@@ -55,6 +55,8 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     public static final String PROPERTY_VERSION_ID = "versionId"; //$NON-NLS-1$
 
+    public static final String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
+
     public static final String PROPERTY_NEED_VERSION_ID = "needVersionId"; //$NON-NLS-1$
 
     private IProductCmptType selectedBaseType;
@@ -76,6 +78,8 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     private IProductCmptGeneration addToProductCmptGeneration;
 
     private IProductCmptTypeAssociation addToAssociation;
+
+    private String runtimeId = StringUtils.EMPTY;
 
     /**
      * 
@@ -274,8 +278,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     private void updateRuntimeId() {
         try {
-            setRuntimeId(getIpsProject().getProductCmptNamingStrategy().getUniqueRuntimeId(getIpsProject(),
-                    getFullName()));
+            setRuntimeId(getIpsProject().getProductCmptNamingStrategy().getUniqueRuntimeId(getIpsProject(), getName()));
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         } catch (IllegalArgumentException e) {
@@ -284,7 +287,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     }
 
     @Override
-    public String getFullName() {
+    public String getName() {
         if (StringUtils.isEmpty(kindId)) {
             return StringUtils.EMPTY;
         } else {
@@ -293,7 +296,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     }
 
     public String getQualifiedName() {
-        return QNameUtil.concat(getIpsPackage().getName(), getFullName());
+        return QNameUtil.concat(getIpsPackage().getName(), getName());
     }
 
     /**
@@ -404,6 +407,22 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
      */
     public IProductCmptTypeAssociation getAddToAssociation() {
         return addToAssociation;
+    }
+
+    /**
+     * @param runtimeId The runtimeId to set.
+     */
+    public void setRuntimeId(String runtimeId) {
+        String oldRuntimeId = this.runtimeId;
+        this.runtimeId = runtimeId;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_RUNTIME_ID, oldRuntimeId, runtimeId));
+    }
+
+    /**
+     * @return Returns the runtimeId.
+     */
+    public String getRuntimeId() {
+        return runtimeId;
     }
 
     /**

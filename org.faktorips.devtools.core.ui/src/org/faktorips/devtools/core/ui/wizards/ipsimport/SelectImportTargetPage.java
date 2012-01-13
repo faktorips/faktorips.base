@@ -64,15 +64,16 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
      */
     public SelectImportTargetPage(IStructuredSelection selection, String pageName) throws JavaModelException {
         super(pageName);
-
-        if (selection.getFirstElement() instanceof IResource) {
-            selectedResource = (IResource)selection.getFirstElement();
-        } else if (selection.getFirstElement() instanceof IJavaElement) {
-            selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
-        } else if (selection.getFirstElement() instanceof IIpsElement) {
-            selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
-        } else {
-            selectedResource = null;
+        if (selection != null) {
+            if (selection.getFirstElement() instanceof IResource) {
+                selectedResource = (IResource)selection.getFirstElement();
+            } else if (selection.getFirstElement() instanceof IJavaElement) {
+                selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
+            } else if (selection.getFirstElement() instanceof IIpsElement) {
+                selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
+            } else {
+                selectedResource = null;
+            }
         }
         setPageComplete(false);
     }

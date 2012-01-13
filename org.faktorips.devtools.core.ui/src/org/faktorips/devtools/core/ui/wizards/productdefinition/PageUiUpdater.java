@@ -21,11 +21,11 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
-public abstract class UiUpdater implements PropertyChangeListener {
+public abstract class PageUiUpdater implements PropertyChangeListener {
 
     private final WizardPage page;
 
-    public UiUpdater(WizardPage page) {
+    public PageUiUpdater(WizardPage page) {
         this.page = page;
     }
 

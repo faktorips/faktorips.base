@@ -171,7 +171,7 @@ public class NewProdutCmptValidatorTest {
         assertNotNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_INVALID_KIND_ID));
 
         when(pmo.getKindId()).thenReturn("anyId");
-        when(pmo.getFullName()).thenReturn("anyFullName");
+        when(pmo.getName()).thenReturn("anyFullName");
         when(namingStrategy.getKindId("anyFullName")).thenReturn("anyId");
 
         msgList = newProdutCmptValidator.validateProductCmptPage();
@@ -211,7 +211,7 @@ public class NewProdutCmptValidatorTest {
         assertNotNull(msgList.getMessageByCode(NewProdutCmptValidator.MSG_INVALID_VERSION_ID));
 
         when(pmo.getVersionId()).thenReturn("anyId");
-        when(pmo.getFullName()).thenReturn("anyFullName");
+        when(pmo.getName()).thenReturn("anyFullName");
         when(namingStrategy.getVersionId("anyFullName")).thenReturn("anyId");
 
         msgList = newProdutCmptValidator.validateProductCmptPage();
@@ -235,7 +235,7 @@ public class NewProdutCmptValidatorTest {
         when(ipsProject.getProductCmptNamingStrategy()).thenReturn(namingStrategy);
 
         when(pmo.getKindId()).thenReturn("anyId");
-        when(pmo.getFullName()).thenReturn("anyFullName");
+        when(pmo.getName()).thenReturn("anyFullName");
         when(pmo.getQualifiedName()).thenReturn("qualifiedName");
         when(namingStrategy.getKindId("anyFullName")).thenReturn("anyId");
 

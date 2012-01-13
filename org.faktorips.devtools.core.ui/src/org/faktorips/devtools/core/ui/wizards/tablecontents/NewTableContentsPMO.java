@@ -17,6 +17,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -25,7 +26,6 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
-import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionValidator;
 
 public class NewTableContentsPMO extends NewProductDefinitionPMO {
 
@@ -37,7 +37,7 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
 
     private ITableStructure selectedStructure;
 
-    private String name;
+    private String name = StringUtils.EMPTY;
 
     private List<ITableStructure> structuresList = new ArrayList<ITableStructure>();
 
@@ -46,14 +46,14 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
     }
 
     @Override
-    protected NewProductDefinitionValidator getValidator() {
+    protected NewTableContentsValidator getValidator() {
         return validator;
     }
 
     @Override
     public void setIpsProject(IIpsProject ipsProject) {
+        updateStructuresList(ipsProject);
         super.setIpsProject(ipsProject);
-        updateStructuresList();
     }
 
     /**
@@ -84,22 +84,18 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
     /**
      * @return Returns the name.
      */
+    @Override
     public String getName() {
         return name;
     }
 
-    @Override
-    public String getFullName() {
-        return getName();
-    }
-
-    private void updateStructuresList() {
+    private void updateStructuresList(IIpsProject ipsProject) {
         structuresList = new ArrayList<ITableStructure>();
-        if (getIpsProject() == null) {
+        if (ipsProject == null) {
             return;
         }
         try {
-            IIpsSrcFile[] findIpsSrcFiles = getIpsProject().findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
+            IIpsSrcFile[] findIpsSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
             for (IIpsSrcFile ipsSrcFile : findIpsSrcFiles) {
                 structuresList.add((ITableStructure)ipsSrcFile.getIpsObject());
             }

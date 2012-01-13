@@ -35,8 +35,8 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
 import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
 import org.faktorips.devtools.core.ui.controls.DateControl;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.PageUiUpdater;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionComposite;
-import org.faktorips.devtools.core.ui.wizards.productdefinition.UiUpdater;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -175,7 +175,7 @@ public class ProductCmptPage extends WizardPage {
         }
     }
 
-    private static class ProductCmptPageUiUpdater extends UiUpdater {
+    private static class ProductCmptPageUiUpdater extends PageUiUpdater {
 
         private final NewProductCmptPMO pmo;
 
@@ -204,9 +204,6 @@ public class ProductCmptPage extends WizardPage {
             if (evt.getPropertyName().equals(NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE)) {
                 updateSelectedBaseType();
             }
-            if (NewProductCmptPMO.PROPERTY_SELECTED_TYPE.equals(evt.getPropertyName())) {
-                updateSelectedType();
-            }
             super.propertyChange(evt);
         }
 
@@ -214,19 +211,14 @@ public class ProductCmptPage extends WizardPage {
         public void updateUI() {
             super.updateUI();
             updateSelectedBaseType();
-            updateSelectedType();
         }
 
         @Override
         protected void updatePageMessages() {
             super.updatePageMessages();
-            if (StringUtils.isEmpty(getPage().getMessage()) && StringUtils.isNotEmpty(getPmo().getFullName())) {
-                getPage().setMessage(NLS.bind(Messages.ProductCmptPage_msg_fullName, getPmo().getFullName()));
+            if (StringUtils.isEmpty(getPage().getMessage()) && StringUtils.isNotEmpty(getPmo().getName())) {
+                getPage().setMessage(NLS.bind(Messages.ProductCmptPage_msg_fullName, getPmo().getName()));
             }
-        }
-
-        public void updateSelectedType() {
-            getPage().typeSelectionComposite.setSelection(getPmo().getSelectedType());
         }
 
         public void updateSelectedBaseType() {
