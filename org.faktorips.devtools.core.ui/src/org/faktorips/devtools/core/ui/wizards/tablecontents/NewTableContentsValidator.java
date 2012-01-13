@@ -41,16 +41,16 @@ public class NewTableContentsValidator extends NewProductDefinitionValidator {
     public MessageList validateTableContents() {
         MessageList result = new MessageList();
         if (pmo.getIpsProject() == null) {
-            result.add(new Message(MSG_NO_PROJECT, "Please select a valid Project", Message.ERROR));
+            result.add(new Message(MSG_NO_PROJECT, Messages.NewTableContentsValidator_msg_noProject, Message.ERROR));
         } else if (!pmo.getIpsProject().isProductDefinitionProject()) {
-            result.add(new Message(MSG_INVALID_PROJECT, "Please select a Product Definition Project", Message.ERROR));
+            result.add(new Message(MSG_INVALID_PROJECT, Messages.NewTableContentsValidator_msg_invalidProject, Message.ERROR));
         }
         if (pmo.getSelectedStructure() == null) {
-            result.add(new Message(MSG_NO_STRUCTURE, "Please select a valid Table Structure", Message.ERROR));
+            result.add(new Message(MSG_NO_STRUCTURE, Messages.NewTableContentsValidator_msg_noStructure, Message.ERROR));
         } else if (pmo.getSelectedStructure().getNumOfColumns() == 0) {
             result.add(new Message(
                     MSG_INVALID_STRUCTURE,
-                    "The selected table structure does not contains any colums, cannot create contents for this structure.",
+                    Messages.NewTableContentsValidator_msgInvalidStructure,
                     Message.ERROR));
         }
         if (pmo.getIpsProject() != null) {

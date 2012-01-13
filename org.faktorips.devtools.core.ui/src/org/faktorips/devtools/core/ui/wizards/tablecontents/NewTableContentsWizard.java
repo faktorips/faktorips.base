@@ -33,12 +33,10 @@ import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefini
 public class NewTableContentsWizard extends NewProductDefinitionWizard {
 
     public static final String ID = "newTableContentsWizard"; //$NON-NLS-1$
-    private TableContentsPage tableContentsPage;
-    private FolderAndPackagePage folderAndPackagePage;
 
     public NewTableContentsWizard() {
         super(new NewTableContentsPMO());
-        setWindowTitle("New Table Contents");
+        setWindowTitle(Messages.NewTableContentsWizard_title);
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "wizards/NewTableContentsWizard.png")); //$NON-NLS-1$
     }

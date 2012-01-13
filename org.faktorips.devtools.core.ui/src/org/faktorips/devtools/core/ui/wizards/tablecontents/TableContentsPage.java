@@ -48,7 +48,7 @@ public class TableContentsPage extends WizardPage {
 
     public TableContentsPage(NewTableContentsPMO pmo) {
         super(Messages.TableContentsPage_title);
-        setTitle("Create new Table Contents");
+        setTitle(Messages.TableContentsPage_pageTitle);
         this.pmo = pmo;
         resourManager = new LocalResourceManager(JFaceResources.getResources());
         bindingContext = new BindingContext();
@@ -62,7 +62,7 @@ public class TableContentsPage extends WizardPage {
         layout.verticalSpacing = 10;
 
         Composite twoColumnComposite = toolkit.createLabelEditColumnComposite(composite);
-        toolkit.createLabel(twoColumnComposite, "Project:");
+        toolkit.createLabel(twoColumnComposite, Messages.TableContentsPage_label_project);
         ipsProjectRefControl = toolkit.createIpsProjectRefControl(twoColumnComposite);
 
         toolkit.createHorizonzalLine(composite);
@@ -73,7 +73,7 @@ public class TableContentsPage extends WizardPage {
         toolkit.createHorizonzalLine(composite);
 
         Composite nameAndIdComposite = toolkit.createLabelEditColumnComposite(composite);
-        toolkit.createLabel(nameAndIdComposite, "Name:");
+        toolkit.createLabel(nameAndIdComposite, Messages.TableContentsPage_label_name);
 
         nameText = toolkit.createText(nameAndIdComposite);
 
