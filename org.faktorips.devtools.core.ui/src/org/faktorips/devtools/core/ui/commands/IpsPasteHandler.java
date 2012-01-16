@@ -111,14 +111,7 @@ public class IpsPasteHandler extends IpsAbstractHandler {
         String stored = (String)clipboard.getContents(TextTransfer.getInstance());
 
         // obtain the package fragment of the given part container
-        IIpsPackageFragment parentPackageFrgmt = null;
-        IIpsElement pack = parent.getParent();
-        while (pack != null && !(pack instanceof IIpsPackageFragment)) {
-            pack = pack.getParent();
-        }
-        if (pack != null) {
-            parentPackageFrgmt = (IIpsPackageFragment)pack;
-        }
+        IIpsPackageFragment parentPackageFrgmt = findParentPackageFragment(parent);
 
         if (stored == null && parentPackageFrgmt != null) {
             // the clipboard contains no string, try to paste resources
@@ -142,11 +135,29 @@ public class IpsPasteHandler extends IpsAbstractHandler {
     }
 
     /**
+     * obtain the package fragment of the given part container
+     * 
+     * @param parent a part container
+     * @return the package fragment of the given part container
+     */
+    protected IIpsPackageFragment findParentPackageFragment(IpsObjectPartContainer parent) {
+        IIpsPackageFragment parentPackageFrgmt = null;
+        IIpsElement pack = parent.getParent();
+        while (pack != null && !(pack instanceof IIpsPackageFragment)) {
+            pack = pack.getParent();
+        }
+        if (pack != null) {
+            parentPackageFrgmt = (IIpsPackageFragment)pack;
+        }
+        return parentPackageFrgmt;
+    }
+
+    /**
      * Try to paste an <code>IFolder</code> or <code>IFile</code> stored in the clipboard into the
      * given <code>IContainer</code>.
      */
     private void paste(IContainer parent) {
-        Object stored = getTransgeredObject();
+        Object stored = getTransferedObject();
         if (stored instanceof IResource[]) {
             IResource[] res = (IResource[])stored;
             for (IResource re : res) {
@@ -168,7 +179,7 @@ public class IpsPasteHandler extends IpsAbstractHandler {
      * Try to paste the <code>IResource</code> stored on the clipboard to the given parent.
      */
     private void paste(IIpsPackageFragment parent) {
-        Object stored = getTransgeredObject();
+        Object stored = getTransferedObject();
         if (stored instanceof IResource[]) {
             copyResources(parent, (IResource[])stored);
         } else if (stored instanceof String[]) {
@@ -180,7 +191,11 @@ public class IpsPasteHandler extends IpsAbstractHandler {
         pasteResourceLinks(parent, storedText);
     }
 
-    private Object getTransgeredObject() {
+    /**
+     * Returns the transfered objects (either a {@link IResource IResource[]} or a {@link String
+     * String[]}
+     */
+    protected Object getTransferedObject() {
         Object stored = clipboard.getContents(ResourceTransfer.getInstance());
         if (stored == null) {
             stored = clipboard.getContents(FileTransfer.getInstance());
@@ -437,11 +452,13 @@ public class IpsPasteHandler extends IpsAbstractHandler {
     /**
      * Copy the given resource to the given target path.
      * 
+     * @return the {@link IPath path} for the copied {@link IResource resource}.
+     * 
      * @throws CoreException If copy failed.
      */
-    private void copy(IResource target, IResource resource) throws CoreException {
+    protected IPath copy(IResource target, IResource resource) throws CoreException {
         if (target == null) {
-            return;
+            return null;
         }
         IPath targetPath = target.getFullPath();
 
@@ -465,13 +482,16 @@ public class IpsPasteHandler extends IpsAbstractHandler {
                     showExtension);
             if (newName != null) {
                 try {
-                    resource.copy(targetPath.append(newName), true, null);
+                    IPath destination = targetPath.append(newName);
+                    resource.copy(destination, true, null);
+                    return destination;
                 } catch (Exception e) {
                     IpsPlugin.showErrorDialog(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
                             Messages.IpsPasteAction_cannot_copy, e));
                 }
             }
         }
+        return null;
     }
 
     private void copyProductCmptByWizard(IProductCmpt productCmpt, IResource target) {
