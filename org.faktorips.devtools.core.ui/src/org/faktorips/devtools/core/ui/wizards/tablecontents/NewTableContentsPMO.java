@@ -23,7 +23,10 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
 
@@ -40,6 +43,8 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
     private String name = StringUtils.EMPTY;
 
     private List<ITableStructure> structuresList = new ArrayList<ITableStructure>();
+
+    private ITableContentUsage addToTableUsage;
 
     public NewTableContentsPMO() {
         validator = new NewTableContentsValidator(this);
@@ -106,6 +111,32 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
 
     public List<? extends IIpsObject> getStructuresList() {
         return structuresList;
+    }
+
+    public void setAddToTableUsage(ITableContentUsage tableUsage) {
+        try {
+            IIpsProject ipsProject = tableUsage.getIpsProject();
+            ITableStructureUsage tableStructureUsage = tableUsage.findTableStructureUsage(ipsProject);
+            String[] tableStructures = tableStructureUsage.getTableStructures();
+            structuresList = new ArrayList<ITableStructure>();
+            for (String structureName : tableStructures) {
+                QualifiedNameType qNameType = new QualifiedNameType(structureName, IpsObjectType.TABLE_STRUCTURE);
+                IIpsSrcFile tableStructureFile = ipsProject.findIpsSrcFile(qNameType);
+                if (tableStructureFile != null) {
+                    structuresList.add((ITableStructure)tableStructureFile.getIpsObject());
+                }
+            }
+            if (structuresList.size() > 0) {
+                setSelectedStructure(structuresList.get(0));
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        this.addToTableUsage = tableUsage;
+    }
+
+    public ITableContentUsage getAddToTableUsage() {
+        return addToTableUsage;
     }
 
 }

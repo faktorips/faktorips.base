@@ -54,6 +54,8 @@ import org.faktorips.util.memento.Memento;
  */
 public class AddProductCmptLinkCommand extends AbstractHandler {
 
+    public static final String COMMAND_ID = "org.faktorips.devtools.core.ui.commands.AddProductCmptLink"; //$NON-NLS-1$
+
     private Memento syncpoint;
 
     private boolean isDirty = true;

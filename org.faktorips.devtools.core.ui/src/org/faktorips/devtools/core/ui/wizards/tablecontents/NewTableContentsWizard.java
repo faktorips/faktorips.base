@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -74,6 +75,10 @@ public class NewTableContentsWizard extends NewProductDefinitionWizard {
         }
     }
 
+    public void setAddToTableUsage(ITableContentUsage tableUsage) {
+        getPmo().setAddToTableUsage(tableUsage);
+    }
+
     @Override
     protected IpsObjectType getIpsObjectType() {
         return IpsObjectType.TABLE_CONTENTS;
@@ -101,8 +106,22 @@ public class NewTableContentsWizard extends NewProductDefinitionWizard {
     }
 
     @Override
-    protected void postProcess(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) {
-        // TODO Auto-generated method stub
+    protected void postProcess(IIpsSrcFile newIpsSrcFile, IProgressMonitor monitor) {
+        if (getPmo().getAddToTableUsage() != null
+                && IpsUIPlugin.getDefault().isGenerationEditable(
+                        getPmo().getAddToTableUsage().getProductCmptGeneration())) {
+            IIpsSrcFile addToIpsSrcFile = getPmo().getAddToTableUsage().getIpsSrcFile();
+            boolean dirty = addToIpsSrcFile.isDirty();
+            ITableContentUsage tableContentUsage = getPmo().getAddToTableUsage();
+            tableContentUsage.setTableContentName(newIpsSrcFile.getQualifiedNameType().getName());
+            if (!dirty) {
+                try {
+                    addToIpsSrcFile.save(true, monitor);
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            }
+        }
     }
 
 }

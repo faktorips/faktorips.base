@@ -293,6 +293,16 @@
             id="org.faktorips.devtools.core.ui.commands.AddProductCmptLink"
             name="%NewProductCmptLinkCommand_name">
       </command>
+      <command
+            description="%newTableContent_description"
+            id="org.faktorips.devtools.core.ui.wizards.tablecontents.newTableContent"
+            name="%newTableContent_label">
+         <commandParameter
+               id="org.faktorips.devtools.core.ui.wizards.tablecontents.newTableContent.tableUsage"
+               name="tableUsage"
+               optional="false">
+         </commandParameter>
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -1824,6 +1834,12 @@
          </activeWhen>
       </handler>
       <handler
+            commandId="org.faktorips.devtools.core.ui.wizards.tablecontents.newTableContent">
+         <class
+               class="org.faktorips.devtools.core.ui.wizards.tablecontents.AddNewTableContentCommand">
+         </class>
+      </handler>
+      <handler
             commandId="org.faktorips.devtools.core.ui.openEditor">
          <class
                class="org.faktorips.devtools.core.ui.commands.OpenEditorHandler"></class>
@@ -2139,57 +2155,7 @@
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="popup:org.faktorips.devtools.core.ui.views.productStructureExplorer?after=edit">
-         <command
-               commandId="org.faktorips.devtools.core.ui.wizards.productcmpt.newProductCmpt"
-               icon="icons/Add_new.gif"
-               label="%newProductCmpt_label"
-               style="push"
-               tooltip="%newProductCmpt_description">
-            <visibleWhen
-                  checkEnabled="false">
-               <with
-                     variable="selection">
-                  <iterate
-                        ifEmpty="true"
-                        operator="and">
-                     <and>
-                        <adapt
-                              type="org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration">
-                        </adapt>
-                        <adapt
-                              type="org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation">
-                        </adapt>
-                     </and>
-                  </iterate>
-               </with>
-            </visibleWhen>
-         </command>
-         <command
-               commandId="org.faktorips.devtools.core.ui.commands.AddProductCmptLink"
-               icon="icons/Add.gif"
-               label="%NewProductCmptLinkCommand_name"
-               style="push">
-            <visibleWhen
-                  checkEnabled="false">
-               <with
-                     variable="selection">
-                  <iterate>
-                     <or>
-                        <instanceof
-                              value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference">
-                        </instanceof>
-                        <instanceof
-                              value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference">
-                        </instanceof>
-                     </or>
-                  </iterate>
-               </with>
-            </visibleWhen>
-         </command>
-      </menuContribution>
-      <menuContribution
-            class="org.faktorips.devtools.core.ui.views.productstructureexplorer.AddNewProductCmptLinkSubmenuFactory"
+            class="org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorerContributionFactory"
             locationURI="popup:org.faktorips.devtools.core.ui.views.productStructureExplorer?after=edit">
       </menuContribution>
    </extension>

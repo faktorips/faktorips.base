@@ -64,8 +64,6 @@ public class ProductCmptPage extends WizardPage {
 
     private Text nameText;
 
-    private Label fullNameLabel;
-
     private Text runtimeId;
 
     private Text versionIdText;
@@ -141,7 +139,6 @@ public class ProductCmptPage extends WizardPage {
                 effectiveDateField.getControl());
         bindingContext.bindVisible(versionIdText, pmo, NewProductCmptPMO.PROPERTY_NEED_VERSION_ID, true,
                 effectiveDateField.getControl());
-        bindingContext.bindVisible(fullNameLabel, pmo, NewProductCmptPMO.PROPERTY_NEED_VERSION_ID, false);
     }
 
     @Override

@@ -29,6 +29,10 @@ public class Messages extends NLS {
 
     public static String AddLinkAction_add;
     public static String AddLinkAction_selectDialogTitle;
+    public static String AddNewProductCmptLinkSubmenuFactory_addNewProductCmpt_for;
+    public static String AddNewProductCmptLinkSubmenuFactory_label_addNewProductCmpt;
+    public static String AddNewProductCmptLinkSubmenuFactory_label_newTableContent;
+    public static String AddNewProductCmptLinkSubmenuFactory_label_newTableContent_for;
     public static String ProductStructureExplorer_collectingAdjustmentDates;
     public static String ProductStructureExplorer_infoMessageEmptyView_1;
     public static String ProductStructureExplorer_label_NoGenerationForDate;
