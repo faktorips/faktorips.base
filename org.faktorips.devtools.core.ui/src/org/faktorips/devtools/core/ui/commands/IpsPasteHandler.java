@@ -62,7 +62,7 @@ import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.StringUtil;
 
 /**
- * A handler to cut IpsObjectPartContainer-objects out of the model into the clipboard.
+ * A handler to paste IpsObjectPartContainer-objects from the clipboard into the model.
  */
 public class IpsPasteHandler extends IpsAbstractHandler {
 
