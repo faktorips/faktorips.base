@@ -22,15 +22,18 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.IFilter;
 import org.eclipse.ui.dialogs.SearchPattern;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
-import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-public class IpsSrcFileContentProposalProvider implements IContentProposalProvider {
+/**
+ * A {@link IContentProposalProvider} for {@link IIpsSrcFile} proposals. The provider load all
+ * source files of a given type
+ * 
+ * @author dirmeier
+ */
+public class IpsSrcFileContentProposalProvider implements ICachedContentProposalProvider {
 
     private IIpsSrcFile[] ipsSrcFiles;
 
@@ -41,8 +44,6 @@ public class IpsSrcFileContentProposalProvider implements IContentProposalProvid
     private final IIpsProject ipsProject;
 
     private final IpsObjectType ipsObjectType;
-
-    private IIpsSrcFilesChangeListener listener;
 
     /**
      * A content proposal provider for IIpsSrcFiled. The proposal provider searches for all
@@ -59,14 +60,6 @@ public class IpsSrcFileContentProposalProvider implements IContentProposalProvid
     public IpsSrcFileContentProposalProvider(IIpsProject ipsProject, IpsObjectType ipsObjectType) {
         this.ipsProject = ipsProject;
         this.ipsObjectType = ipsObjectType;
-        listener = new IIpsSrcFilesChangeListener() {
-
-            @Override
-            public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
-                ipsSrcFiles = null;
-            }
-        };
-        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(listener);
     }
 
     public void setFilter(IFilter filter) {
@@ -89,17 +82,6 @@ public class IpsSrcFileContentProposalProvider implements IContentProposalProvid
             if (filter == null || filter.select(ipsSrcFile)) {
                 String unqualifiedName = ipsSrcFile.getIpsObjectName();
                 if (searchPattern.matches(unqualifiedName)) {
-                    String description = null;
-                    try {
-                        description = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(
-                                ipsSrcFile.getIpsObject());
-                        if (description.isEmpty()) {
-                            // better no description field but an empty description field
-                            description = null;
-                        }
-                    } catch (CoreException e) {
-                        // Ignore exception - we do not need the description necessarily
-                    }
                     IpsSrcFileContentProposal contentProposal = new IpsSrcFileContentProposal(ipsSrcFile);
                     result.add(contentProposal);
                 }
@@ -108,8 +90,9 @@ public class IpsSrcFileContentProposalProvider implements IContentProposalProvid
         return result.toArray(new IContentProposal[result.size()]);
     }
 
-    public void dispose() {
-        IpsPlugin.getDefault().getIpsModel().removeIpsSrcFilesChangedListener(listener);
+    @Override
+    public void clearCache() {
+        ipsSrcFiles = null;
     }
 
 }

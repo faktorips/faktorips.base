@@ -104,12 +104,6 @@ public class TableContentsUsageRefControl extends TextAndSecondControlComposite 
         });
     }
 
-    @Override
-    public void dispose() {
-        super.dispose();
-        proposalProvider.dispose();
-    }
-
     private void browseClicked() {
         SingleTypeSelectIpsObjectContext context = new SingleTypeSelectIpsObjectContext(project,
                 IpsObjectType.TABLE_CONTENTS, filter);

@@ -23,6 +23,7 @@ import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.fieldassist.IContentProposalListener2;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
@@ -65,6 +66,7 @@ import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
+import org.faktorips.devtools.core.ui.controls.contentproposal.ICachedContentProposalProvider;
 import org.faktorips.util.message.Message;
 
 /**
@@ -957,6 +959,21 @@ public class UIToolkit {
                 proposalProvider, keyStroke, null);
         contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
         contentProposalAdapter.setLabelProvider(labelProvider);
+        if (proposalProvider instanceof ICachedContentProposalProvider) {
+            final ICachedContentProposalProvider cachedContentProposalProvider = (ICachedContentProposalProvider)proposalProvider;
+            contentProposalAdapter.addContentProposalListener(new IContentProposalListener2() {
+
+                @Override
+                public void proposalPopupOpened(ContentProposalAdapter adapter) {
+                    cachedContentProposalProvider.clearCache();
+                }
+
+                @Override
+                public void proposalPopupClosed(ContentProposalAdapter adapter) {
+                    // nothing to do
+                }
+            });
+        }
         ControlDecoration controlDecoration = new ControlDecoration(control, SWT.TOP | SWT.LEFT);
         FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
                 FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
