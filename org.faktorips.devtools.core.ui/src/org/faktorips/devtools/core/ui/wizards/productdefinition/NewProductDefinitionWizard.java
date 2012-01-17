@@ -199,6 +199,7 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
      */
     protected void afterFinishPerformed() {
         if (getPmo().isOpenEditor()) {
+            IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(getPmo().getEffectiveDate());
             IIpsSrcFile srcFile = getPmo().getIpsPackage().getIpsSrcFile(
                     getIpsObjectType().getFileName(getPmo().getName()));
             IpsUIPlugin.getDefault().openEditor(srcFile);

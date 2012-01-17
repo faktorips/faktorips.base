@@ -94,8 +94,8 @@ public class TypeSelectionComposite extends Composite {
         listViewer.setContentProvider(new ArrayContentProvider());
         listViewer.setLabelProvider(new ProductCmptWizardTypeLabelProvider());
         GridData listLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        listLayoutData.heightHint = 50;
-        listLayoutData.widthHint = 50;
+        listLayoutData.heightHint = 200;
+        listLayoutData.widthHint = 300;
         listViewer.getControl().setLayoutData(listLayoutData);
         listViewerField = new StructuredViewerField<IIpsObject>(listViewer, IIpsObject.class);
 
