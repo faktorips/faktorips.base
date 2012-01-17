@@ -111,7 +111,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     }
 
     private void updateVersionId(IIpsProject ipsProject) {
-        if (ipsProject != null) {
+        if (ipsProject != null && getEffectiveDate() != null) {
             IProductCmptNamingStrategy namingStrategy = ipsProject.getProductCmptNamingStrategy();
             setVersionId(namingStrategy.getNextVersionId(contextProductCmpt, getEffectiveDate()));
         }

@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
-import org.faktorips.devtools.core.ui.wizards.productcmpt.Messages;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -24,6 +23,8 @@ public abstract class NewProductDefinitionValidator {
     public static final String MSG_INVALID_PACKAGE_ROOT = MSGCODE_PREFIX + "invalidPackageRoot"; //$NON-NLS-1$
 
     public static final String MSG_INVALID_PACKAGE = MSGCODE_PREFIX + "invalidPackage"; //$NON-NLS-1$
+
+    public static final String MSG_INVALID_EFFECTIVE_DATE = MSGCODE_PREFIX + "invalidEffectiveDate"; //$NON-NLS-1$
 
     private final NewProductDefinitionPMO pmo;
 
@@ -40,12 +41,13 @@ public abstract class NewProductDefinitionValidator {
         }
 
         if (pmo.getPackageRoot() == null) {
-            result.add(new Message(MSG_INVALID_PACKAGE_ROOT, Messages.NewProdutCmptValidator_msg_invalidPackageRoot,
-                    Message.ERROR, pmo, NewProductDefinitionPMO.PROPERTY_PACKAGE_ROOT));
+            result.add(new Message(MSG_INVALID_PACKAGE_ROOT,
+                    Messages.NewProductDefinitionValidator_msg_invalidPackageRoot, Message.ERROR, pmo,
+                    NewProductDefinitionPMO.PROPERTY_PACKAGE_ROOT));
         }
 
         if (pmo.getIpsPackage() == null || !pmo.getIpsPackage().getRoot().equals(pmo.getPackageRoot())) {
-            result.add(new Message(MSG_INVALID_PACKAGE, Messages.NewProdutCmptValidator_msg_invalidPackage,
+            result.add(new Message(MSG_INVALID_PACKAGE, Messages.NewProductDefinitionValidator_msg_invalidPackage,
                     Message.ERROR, pmo, NewProductDefinitionPMO.PROPERTY_IPS_PACKAGE));
         }
 

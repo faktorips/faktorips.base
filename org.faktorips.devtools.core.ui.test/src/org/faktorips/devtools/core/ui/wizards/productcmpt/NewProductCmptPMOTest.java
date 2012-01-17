@@ -25,6 +25,7 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -51,6 +52,8 @@ public class NewProductCmptPMOTest {
         singletonMockHelper = new SingletonMockHelper();
         singletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
         when(ipsPlugin.getIpsModel()).thenReturn(ipsModel);
+        IpsPreferences preferences = mock(IpsPreferences.class);
+        when(ipsPlugin.getIpsPreferences()).thenReturn(preferences);
     }
 
     @Test

@@ -51,6 +51,10 @@ public abstract class NewProductDefinitionPMO extends PresentationModelObject {
 
     public NewProductDefinitionPMO() {
         super();
+        // may be null in test cases :(
+        if (IpsPlugin.getDefault() != null) {
+            effectiveDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
+        }
     }
 
     /**
@@ -156,9 +160,6 @@ public abstract class NewProductDefinitionPMO extends PresentationModelObject {
      * @return Returns the effectiveDate.
      */
     public GregorianCalendar getEffectiveDate() {
-        if (effectiveDate == null) {
-            return IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        }
         return effectiveDate;
     }
 

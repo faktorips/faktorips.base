@@ -215,7 +215,7 @@ public class IpsPreferences {
     /**
      * Returns the working date preference.
      */
-    public final GregorianCalendar getWorkingDate() {
+    public GregorianCalendar getWorkingDate() {
         String date = prefStore.getString(WORKING_DATE);
         try {
             return XmlUtil.parseGregorianCalendar(date);
@@ -227,7 +227,7 @@ public class IpsPreferences {
     /**
      * Set the working date to the given one.
      */
-    public final void setWorkingDate(GregorianCalendar newDate) {
+    public void setWorkingDate(GregorianCalendar newDate) {
         prefStore.setValue(WORKING_DATE, XmlUtil.gregorianCalendarToXmlDateString(newDate));
     }
 

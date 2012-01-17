@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionValidator;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -118,6 +119,11 @@ public class NewProdutCmptValidator extends NewProductDefinitionValidator {
                 result.add(new Message(MSG_INVALID_FULL_NAME, Messages.NewProdutCmptValidator_msg_invalidFullName,
                         Message.ERROR, pmo, NewProductCmptPMO.PROPERTY_VERSION_ID, NewProductCmptPMO.PROPERTY_KIND_ID));
             }
+        }
+
+        if (pmo.getEffectiveDate() == null) {
+            result.newError(MSG_INVALID_EFFECTIVE_DATE, Messages.NewProdutCmptValidator_msg_invalidEffectiveDate, pmo,
+                    NewProductDefinitionPMO.PROPERTY_EFFECTIVE_DATE);
         }
 
         if (result.isEmpty()) {
