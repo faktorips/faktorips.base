@@ -46,7 +46,9 @@ public class IpsSrcFileContentProposalProviderTest {
 
         IIpsSrcFile[] srcFiles = new IIpsSrcFile[2];
         srcFiles[0] = mock(IIpsSrcFile.class);
+        when(srcFiles[0].exists()).thenReturn(true);
         srcFiles[1] = mock(IIpsSrcFile.class);
+        when(srcFiles[1].exists()).thenReturn(true);
         when(ipsProject.findIpsSrcFiles(ipsObjectType)).thenReturn(srcFiles);
 
         IpsSrcFileContentProposalProvider contentProposalProvider = new IpsSrcFileContentProposalProvider(ipsProject,
@@ -64,7 +66,9 @@ public class IpsSrcFileContentProposalProviderTest {
 
         final IIpsSrcFile[] srcFiles = new IIpsSrcFile[2];
         srcFiles[0] = mock(IIpsSrcFile.class);
+        when(srcFiles[0].exists()).thenReturn(true);
         srcFiles[1] = mock(IIpsSrcFile.class);
+        when(srcFiles[1].exists()).thenReturn(true);
         when(ipsProject.findIpsSrcFiles(ipsObjectType)).thenReturn(srcFiles);
 
         IpsSrcFileContentProposalProvider contentProposalProvider = new IpsSrcFileContentProposalProvider(ipsProject,
