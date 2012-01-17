@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controls.contentproposal.ContentProposalLabelProvider;
+import org.faktorips.devtools.core.ui.controls.contentproposal.IpsSrcFileContentProposalLabelProvider;
 import org.faktorips.devtools.core.ui.controls.contentproposal.IpsSrcFileContentProposalProvider;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.dialogs.SingleTypeSelectIpsObjectContext;
@@ -72,7 +72,7 @@ public class TableContentsUsageRefControl extends TextAndSecondControlComposite 
             throw new CoreRuntimeException(e);
         }
         proposalProvider.setFilter(filter);
-        toolkit.attachContentProposalAdapter(getTextControl(), proposalProvider, new ContentProposalLabelProvider());
+        toolkit.attachContentProposalAdapter(getTextControl(), proposalProvider, new IpsSrcFileContentProposalLabelProvider());
     }
 
     @Override

@@ -18,6 +18,12 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
+/**
+ * A content proposal for {@link IIpsSrcFile IPS source files}. The label and image of these
+ * proposals could be provided by the {@link IpsSrcFileContentProposalLabelProvider}.
+ * 
+ * @author dirmeier
+ */
 class IpsSrcFileContentProposal implements IContentProposal {
 
     private final IIpsSrcFile ipsSrcFile;

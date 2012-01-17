@@ -79,7 +79,7 @@ public class IpsSrcFileContentProposalProvider implements ICachedContentProposal
         searchPattern.setPattern(prefix);
         List<IContentProposal> result = new ArrayList<IContentProposal>();
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-            if (filter == null || filter.select(ipsSrcFile)) {
+            if (ipsSrcFile.exists() && (filter == null || filter.select(ipsSrcFile))) {
                 String unqualifiedName = ipsSrcFile.getIpsObjectName();
                 if (searchPattern.matches(unqualifiedName)) {
                     IpsSrcFileContentProposal contentProposal = new IpsSrcFileContentProposal(ipsSrcFile);
