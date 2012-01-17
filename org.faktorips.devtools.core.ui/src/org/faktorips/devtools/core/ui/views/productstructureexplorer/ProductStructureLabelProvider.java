@@ -42,6 +42,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
 
     /** need to know for decorations */
     private boolean showAssociationNodes = false;
+    private boolean showCardinalities = false;
 
     private GenerationDate generationDate;
 
@@ -152,10 +153,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
                     StyledString.QUALIFIER_STYLER);
 
             // show cardinality
-            // TODO 17.01.2012 RP - checkbox for showing cardinalities should be implemented
-            boolean isShowCardinalities = true;
-
-            if (productCmptReference.getLink() != null && isShowCardinalities) {
+            if (productCmptReference.getLink() != null && showCardinalities) {
                 int minCardinality = productCmptReference.getLink().getMinCardinality();
                 int maxCardinality = productCmptReference.getLink().getMaxCardinality();
                 String maxCardinalityString = String.valueOf(maxCardinality);
@@ -240,16 +238,14 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
         }
     }
 
-    /**
-     * @param showAssciations The showAssciations to set.
-     */
+    public void setShowCardinalities(boolean showCardinalities) {
+        this.showCardinalities = showCardinalities;
+    }
+
     public void setShowAssociationNodes(boolean showAssciations) {
         showAssociationNodes = showAssciations;
     }
 
-    /**
-     * @return Returns the showAssciations.
-     */
     public boolean isShowAssociationNodes() {
         return showAssociationNodes;
     }

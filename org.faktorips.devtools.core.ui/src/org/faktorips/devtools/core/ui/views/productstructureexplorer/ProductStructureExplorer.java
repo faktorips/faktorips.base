@@ -127,6 +127,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
     private Label errormsg;
 
     private boolean showAssociationNode = false;
+    private boolean showCardinalities = false;
     private boolean showTableStructureRoleName = false;
     private boolean showReferencedTable = true;
     private boolean showRules = true;
@@ -186,12 +187,19 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
     private void initMenu(IMenuManager menuManager) {
         menuManager.add(new Separator(MENU_INFO_GROUP));
+
         Action showAssociationNodeAction = createShowAssociationNodeAction();
         showAssociationNodeAction.setChecked(showAssociationNode);
         menuManager.appendToGroup(MENU_INFO_GROUP, showAssociationNodeAction);
+
+        Action showCardinalitiesAction = createShowCardinalitiesAction();
+        showCardinalitiesAction.setChecked(showCardinalities);
+        menuManager.appendToGroup(MENU_INFO_GROUP, showCardinalitiesAction);
+
         Action showAssociatedCmptsAction = createShowAssociatedCmptsAction();
         showAssociatedCmptsAction.setChecked(showAssociatedCmpts);
         menuManager.appendToGroup(MENU_INFO_GROUP, showAssociatedCmptsAction);
+
         Action showRoleNameAction = createShowTableRoleNameAction();
         showRoleNameAction.setChecked(showTableStructureRoleName);
         menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);
@@ -284,6 +292,28 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             @Override
             public String getToolTipText() {
                 return Messages.ProductStructureExplorer_tooltipToggleRelationTypeNodes;
+            }
+        };
+    }
+
+    private Action createShowCardinalitiesAction() {
+        return new Action(Messages.ProductStructureExplorer_menuShowCardinalities_name, IAction.AS_CHECK_BOX) {
+            @Override
+            public ImageDescriptor getImageDescriptor() {
+                // TODO 17.01.2012 RP - Image is missing at ShowCardinalities
+                // return IpsUIPlugin.getImageHandling().createImageDescriptor("ShowAssociationTypeNodes.gif"); //$NON-NLS-1$
+                return null;
+            }
+
+            @Override
+            public void run() {
+                setShowCardinalities(!showCardinalities);
+                refresh();
+            }
+
+            @Override
+            public String getToolTipText() {
+                return Messages.ProductStructureExplorer_tooltipToggleCardinalities;
             }
         };
     }
@@ -849,13 +879,16 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                     : 0)); //
     }
 
-    /**
-     * @param showAssociationNode The showAssociationNode to set.
-     */
     public void setShowAssociationNode(boolean showAssociationNode) {
         this.showAssociationNode = showAssociationNode;
         contentProvider.setShowAssociationNodes(showAssociationNode);
         labelProvider.setShowAssociationNodes(showAssociationNode);
+    }
+
+    public void setShowCardinalities(boolean showCardinalities) {
+        this.showCardinalities = showCardinalities;
+        // contentProvider is unnecessary because cardinalities have no impact on content
+        labelProvider.setShowCardinalities(showCardinalities);
     }
 
     /**

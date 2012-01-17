@@ -39,6 +39,7 @@ public class Messages extends NLS {
     public static String ProductStructureExplorer_menuShowReferencedTables_name;
     public static String ProductStructureExplorer_menuShowReferencedTables_tooltip;
     public static String ProductStructureExplorer_menuShowAssociationNodes_name;
+    public static String ProductStructureExplorer_menuShowCardinalities_name;
     public static String ProductStructureExplorer_menuShowTableRoleName_name;
     public static String ProductStructureExplorer_menuShowTableRoleName_tooltip;
     public static String ProductStructureLabelProvider_inactiveDecoration;
@@ -48,6 +49,7 @@ public class Messages extends NLS {
     public static String ProductStructureExplorer_prevAdjustmentToolTip;
     public static String ProductStructureExplorer_selectAdjustmentToolTip;
     public static String ProductStructureExplorer_tooltipToggleRelationTypeNodes;
+    public static String ProductStructureExplorer_tooltipToggleCardinalities;
     public static String ProductStructureExplorer_tooltipClear;
     public static String ProductStructureExplorer_tooltipRefreshContents;
     public static String ProductStructureExplorer_menuShowAssociatedCmpts_name;
