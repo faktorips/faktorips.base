@@ -39,5 +39,10 @@ public class Messages extends NLS {
     public static String SelectTableContentsPage_msgStructureNotValid;
     public static String SelectFileAndImportMethodPage_labelImportExisting;
     public static String SelectFileAndImportMethodPage_labelImportNew;
+    public static String TableContentsPage_title;
+    public static String TableContentsPage_labelStructure;
+    public static String TableContentsPage_msgMissingStructure;
+    public static String TableContentsPage_tableStructureHasntGotAnyColumns;
+    public static String TableContentsPage_msgStructureEmpty;
 
 }

@@ -75,8 +75,8 @@ public class NewTableContentsWizard extends NewProductDefinitionWizard {
         }
     }
 
-    public void setAddToTableUsage(ITableContentUsage tableUsage) {
-        getPmo().setAddToTableUsage(tableUsage);
+    public void setAddToTableUsage(ITableContentUsage tableUsage, boolean autosave) {
+        getPmo().setAddToTableUsage(tableUsage, autosave);
     }
 
     @Override
@@ -99,7 +99,9 @@ public class NewTableContentsWizard extends NewProductDefinitionWizard {
                     table.newColumn(StringUtils.EMPTY);
                 }
             }
-            generation.newRow();
+            if (getPmo().isOpenEditor()) {
+                generation.newRow();
+            }
         } else {
             throw new RuntimeException("Invalid object type created"); //$NON-NLS-1$
         }
@@ -114,7 +116,7 @@ public class NewTableContentsWizard extends NewProductDefinitionWizard {
             boolean dirty = addToIpsSrcFile.isDirty();
             ITableContentUsage tableContentUsage = getPmo().getAddToTableUsage();
             tableContentUsage.setTableContentName(newIpsSrcFile.getQualifiedNameType().getName());
-            if (!dirty) {
+            if (!dirty && getPmo().isAutoSaveAddToFile()) {
                 try {
                     addToIpsSrcFile.save(true, monitor);
                 } catch (CoreException e) {

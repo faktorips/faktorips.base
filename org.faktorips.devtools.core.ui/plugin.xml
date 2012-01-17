@@ -1836,7 +1836,7 @@
       <handler
             commandId="org.faktorips.devtools.core.ui.wizards.tablecontents.newTableContent">
          <class
-               class="org.faktorips.devtools.core.ui.wizards.tablecontents.AddNewTableContentCommand">
+               class="org.faktorips.devtools.core.ui.wizards.tablecontents.AddNewTableContentHandler">
          </class>
       </handler>
       <handler

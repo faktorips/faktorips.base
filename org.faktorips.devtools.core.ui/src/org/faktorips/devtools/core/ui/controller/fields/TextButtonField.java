@@ -18,16 +18,16 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
-import org.faktorips.devtools.core.ui.controls.TextButtonControl;
+import org.faktorips.devtools.core.ui.controls.TextAndSecondControlComposite;
 import org.faktorips.util.message.MessageList;
 
 public class TextButtonField extends StringValueEditField {
 
-    TextButtonControl control;
+    private TextAndSecondControlComposite control;
 
     protected boolean immediatelyNotifyListener = false;
 
-    public TextButtonField(TextButtonControl control) {
+    public TextButtonField(TextAndSecondControlComposite control) {
         super();
         this.control = control;
     }
@@ -37,7 +37,7 @@ public class TextButtonField extends StringValueEditField {
         return control;
     }
 
-    public TextButtonControl getTextButtonControl() {
+    public TextAndSecondControlComposite getTextButtonControl() {
         return control;
     }
 

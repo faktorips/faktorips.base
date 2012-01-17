@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.productcmpt.AddProductCmptLinkCommand;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.AddNewProductCmptCommand;
-import org.faktorips.devtools.core.ui.wizards.tablecontents.AddNewTableContentCommand;
+import org.faktorips.devtools.core.ui.wizards.tablecontents.AddNewTableContentHandler;
 
 public class ProductStructureExplorerContributionFactory extends ExtensionContributionFactory {
 
@@ -169,11 +169,11 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
             String label,
             boolean icon) {
         CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator,
-                StringUtils.EMPTY, AddNewTableContentCommand.COMMAND_ID, SWT.PUSH);
+                StringUtils.EMPTY, AddNewTableContentHandler.COMMAND_ID, SWT.PUSH);
         itemParameter.label = label;
         HashMap<String, String> parameters = new HashMap<String, String>();
         if (tableContentUsage != null) {
-            parameters.put(AddNewTableContentCommand.PARAMETER_TABLE_USAGE, tableContentUsage.getPropertyName());
+            parameters.put(AddNewTableContentHandler.PARAMETER_TABLE_USAGE, tableContentUsage.getPropertyName());
         }
         itemParameter.parameters = parameters;
         if (icon) {

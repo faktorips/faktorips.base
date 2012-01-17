@@ -18,9 +18,10 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
@@ -28,7 +29,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptR
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
-public class AddNewTableContentCommand extends AbstractHandler {
+public class AddNewTableContentHandler extends AbstractHandler {
 
     public static final String COMMAND_ID = "org.faktorips.devtools.core.ui.wizards.tablecontents.newTableContent"; //$NON-NLS-1$
 
@@ -42,7 +43,6 @@ public class AddNewTableContentCommand extends AbstractHandler {
         if (currentSelection instanceof IStructuredSelection) {
             structuredSelection = (IStructuredSelection)currentSelection;
         }
-        IEditorPart activeEditor = HandlerUtil.getActiveEditor(event);
         String tableUsageName = event.getParameter(PARAMETER_TABLE_USAGE);
         if (structuredSelection != null && structuredSelection.getFirstElement() instanceof IProductCmptReference
                 && tableUsageName != null) {
@@ -50,23 +50,37 @@ public class AddNewTableContentCommand extends AbstractHandler {
             IProductCmptGeneration activeGeneration = selectedReference.getProductCmpt().getGenerationByEffectiveDate(
                     selectedReference.getStructure().getValidAt());
             ITableContentUsage tableContentUsage = activeGeneration.getTableContentUsage(tableUsageName);
-            initWizard(tableContentUsage, shell);
+            initWizard(tableContentUsage, shell, true);
         }
         return null;
     }
 
-    private void initWizard(ITableContentUsage addToUsage, Shell shell) {
+    /**
+     * Opens the {@link NewTableContentsWizard} and set the defaults.
+     * 
+     * @param setToUsage The {@link ITableContentUsage} where the new table content should be set
+     *            to.
+     * @param shell The shell to open the wizard dialog
+     * @param autoSave true for automatically safe the product component where the table was added
+     *            to, false if the wizard dialog is opened from editor and you do not want to safe
+     *            automatically
+     * @return The wizard return value, @see {@link Window#open()}
+     */
+    public int initWizard(ITableContentUsage setToUsage, Shell shell, boolean autoSave) {
         NewTableContentsWizard newTableContentsWizard = new NewTableContentsWizard();
-        newTableContentsWizard.initDefaults(addToUsage.getIpsSrcFile().getIpsPackageFragment(), null);
-        newTableContentsWizard.setAddToTableUsage(addToUsage);
+        newTableContentsWizard.initDefaults(setToUsage.getIpsSrcFile().getIpsPackageFragment(), null);
+        newTableContentsWizard.setAddToTableUsage(setToUsage, autoSave);
         WizardDialog dialog = new WizardDialog(shell, newTableContentsWizard);
-        dialog.open();
+        return dialog.open();
     }
 
     @Override
     public void setEnabled(Object evaluationContext) {
-        ISelection selection = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getSelectionService()
-                .getSelection();
+        IWorkbenchWindow activeWorkbenchWindow = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+        if (activeWorkbenchWindow == null) {
+            return;
+        }
+        ISelection selection = activeWorkbenchWindow.getSelectionService().getSelection();
         TypedSelection<IProductCmptReference> typedSelection = new TypedSelection<IProductCmptReference>(
                 IProductCmptReference.class, selection);
         if (typedSelection.isValid()) {

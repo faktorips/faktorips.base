@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.tablecontents_old;
+package org.faktorips.devtools.core.ui.wizards.tableimport;
 
 import java.util.GregorianCalendar;
 import java.util.Set;

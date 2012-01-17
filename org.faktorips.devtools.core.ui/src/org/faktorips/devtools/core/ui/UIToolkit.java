@@ -16,10 +16,16 @@ package org.faktorips.devtools.core.ui;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.eclipse.jface.bindings.keys.KeyStroke;
+import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -917,10 +923,45 @@ public class UIToolkit {
             IContentProposalProvider proposalProvider,
             ILabelProvider labelProvider) {
 
+        KeyStroke keyStroke = null;
+        try {
+            keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
+        } catch (final ParseException e) {
+            throw new IllegalArgumentException("KeyStroke \"Ctrl+Space\" could not be parsed.", e); //$NON-NLS-1$
+        }
         ContentProposalAdapter contentProposalAdapter = new ContentProposalAdapter(control, contentAdapter,
-                proposalProvider, null, null);
+                proposalProvider, keyStroke, null);
         contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
         contentProposalAdapter.setLabelProvider(labelProvider);
+    }
+
+    /**
+     * Attaches a {@link ContentProposalAdapter} to the given control, thereby adding content
+     * proposal support.
+     * 
+     * @param control The control to add content proposal support to
+     * @param proposalProvider Provides content proposals as appropriate to the control's current
+     *            content
+     * @param labelProvider Specifies how the content proposals are shown to the user
+     */
+    public void attachContentProposalAdapter(Control control,
+            IContentProposalProvider proposalProvider,
+            ILabelProvider labelProvider) {
+        KeyStroke keyStroke = null;
+        try {
+            keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
+        } catch (final ParseException e) {
+            throw new IllegalArgumentException("KeyStroke \"Ctrl+Space\" could not be parsed.", e); //$NON-NLS-1$
+        }
+        ContentProposalAdapter contentProposalAdapter = new ContentProposalAdapter(control, new TextContentAdapter(),
+                proposalProvider, keyStroke, null);
+        contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
+        contentProposalAdapter.setLabelProvider(labelProvider);
+        ControlDecoration controlDecoration = new ControlDecoration(control, SWT.TOP | SWT.LEFT);
+        FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
+        controlDecoration.setImage(decoration.getImage());
+        controlDecoration.setDescriptionText(decoration.getDescription());
     }
 
     /**

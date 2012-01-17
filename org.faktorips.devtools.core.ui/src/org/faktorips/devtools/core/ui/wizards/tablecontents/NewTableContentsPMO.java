@@ -46,6 +46,8 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
 
     private ITableContentUsage addToTableUsage;
 
+    private boolean autosaveAddToFile;
+
     public NewTableContentsPMO() {
         validator = new NewTableContentsValidator(this);
     }
@@ -113,7 +115,8 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
         return structuresList;
     }
 
-    public void setAddToTableUsage(ITableContentUsage tableUsage) {
+    public void setAddToTableUsage(ITableContentUsage tableUsage, boolean autosafe) {
+        this.autosaveAddToFile = autosafe;
         try {
             IIpsProject ipsProject = tableUsage.getIpsProject();
             ITableStructureUsage tableStructureUsage = tableUsage.findTableStructureUsage(ipsProject);
@@ -139,4 +142,13 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
         return addToTableUsage;
     }
 
+    /**
+     * Returns true if the file where the new table is added to should be saved automatically after
+     * being modified
+     * 
+     * @return true to safe the product component where the table is added to automatically
+     */
+    public boolean isAutoSaveAddToFile() {
+        return autosaveAddToFile;
+    }
 }

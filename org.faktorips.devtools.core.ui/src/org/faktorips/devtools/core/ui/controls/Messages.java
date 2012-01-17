@@ -71,6 +71,8 @@ public class Messages extends NLS {
 
     public static String TableContentsRefControl_description;
 
+    public static String TableContentsUsageRefControl_button_new;
+
     public static String IpsPckFragmentRootRefControl_title;
 
     public static String DatatypeRefControl_title;
