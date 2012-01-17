@@ -141,7 +141,7 @@ public class IpsPasteHandler extends IpsAbstractHandler {
      * @param parent a part container
      * @return the package fragment of the given part container
      */
-    protected IIpsPackageFragment findParentPackageFragment(IIpsObjectPartContainer parent) {
+    private IIpsPackageFragment findParentPackageFragment(IIpsObjectPartContainer parent) {
         IIpsPackageFragment parentPackageFrgmt = null;
         IIpsElement pack = parent.getParent();
         while (pack != null && !(pack instanceof IIpsPackageFragment)) {
@@ -196,7 +196,7 @@ public class IpsPasteHandler extends IpsAbstractHandler {
      * Returns the transfered objects (either a {@link IResource IResource[]} or a {@link String
      * String[]}
      */
-    protected Object getTransferedObject() {
+    private Object getTransferedObject() {
         Object stored = clipboard.getContents(ResourceTransfer.getInstance());
         if (stored == null) {
             stored = clipboard.getContents(FileTransfer.getInstance());
@@ -285,7 +285,7 @@ public class IpsPasteHandler extends IpsAbstractHandler {
         return result;
     }
 
-    private String getContentsOfIpsObject(IIpsObject ipsObject) {
+    protected String getContentsOfIpsObject(IIpsObject ipsObject) {
         String encoding = ipsObject.getIpsProject().getXmlFileCharset();
         String contents;
         try {
@@ -453,15 +453,13 @@ public class IpsPasteHandler extends IpsAbstractHandler {
     /**
      * Copy the given resource to the given target path.
      * 
-     * @return the {@link IPath path} for the copied {@link IResource resource}.
-     * 
      * @throws CoreException If copy failed.
      */
-    protected IPath copy(IResource target, IResource resource) throws CoreException {
-        if (target == null) {
-            return null;
+    private void copy(IResource targetParent, IResource resource) throws CoreException {
+        if (targetParent == null) {
+            return;
         }
-        IPath targetPath = target.getFullPath();
+        IPath targetPath = targetParent.getFullPath();
 
         String name = resource.getName();
         String extension = StringUtil.getFileExtension(name);
@@ -476,23 +474,33 @@ public class IpsPasteHandler extends IpsAbstractHandler {
 
         if (isResourceProductCmpt(resource)) {
             IIpsElement source = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
-            copyProductCmptByWizard((IProductCmpt)((IIpsSrcFile)source).getIpsObject(), target);
+            copyProductCmptByWizard((IProductCmpt)((IIpsSrcFile)source).getIpsObject(), targetParent);
         } else {
             // non product cmpt
             String newName = getNewNameByDialogIfNecessary(resource.getType(), targetPath, suggestedName, extension,
                     showExtension);
-            if (newName != null) {
-                try {
-                    IPath destination = targetPath.append(newName);
-                    resource.copy(destination, true, null);
-                    return destination;
-                } catch (Exception e) {
-                    IpsPlugin.showErrorDialog(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
-                            Messages.IpsPasteAction_cannot_copy, e));
-                }
+            copyResource(resource, targetPath, newName);
+        }
+    }
+
+    /**
+     * Copies the {@link IResource resource} to a new file with the given name under the
+     * {@link IPath target path}.
+     * 
+     * @param resource the {@link IResource} to copy
+     * @param targetPath the {@link IPath} for the target directory
+     * @param newName the name for the new file
+     */
+    protected void copyResource(IResource resource, IPath targetPath, String newName) {
+        if (newName != null) {
+            try {
+                IPath destination = targetPath.append(newName);
+                resource.copy(destination, true, null);
+            } catch (Exception e) {
+                IpsPlugin.showErrorDialog(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
+                        Messages.IpsPasteAction_cannot_copy, e));
             }
         }
-        return null;
     }
 
     private void copyProductCmptByWizard(IProductCmpt productCmpt, IResource target) {
