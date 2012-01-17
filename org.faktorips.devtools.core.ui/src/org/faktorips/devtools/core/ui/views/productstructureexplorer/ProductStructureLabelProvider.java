@@ -139,15 +139,36 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
     public StyledString getStyledText(Object element) {
         StyledString styledString = new StyledString(getText(element));
         if (element instanceof IProductCmptReference) {
+            // Product component
             IProductCmptReference productCmptReference = (IProductCmptReference)element;
 
+            // show association nodes
             if (!isShowAssociationNodes()) {
                 styledString.append(getRolenameLabel(productCmptReference), StyledString.DECORATIONS_STYLER);
             }
 
+            // generation labels
             styledString.append(getGenerationLabel(productCmptReference.getProductCmpt()),
                     StyledString.QUALIFIER_STYLER);
+
+            // show cardinality
+            // TODO 17.01.2012 RP - checkbox for showing cardinalities should be implemented
+            boolean isShowCardinalities = true;
+
+            if (productCmptReference.getLink() != null && isShowCardinalities) {
+                int minCardinality = productCmptReference.getLink().getMinCardinality();
+                int maxCardinality = productCmptReference.getLink().getMaxCardinality();
+                String maxCardinalityString = String.valueOf(maxCardinality);
+                if (maxCardinality == IAssociation.CARDINALITY_MANY) {
+                    maxCardinalityString = "*"; //$NON-NLS-1$
+                }
+
+                styledString.append(
+                        " (" + minCardinality + ".." + maxCardinalityString + ")", StyledString.QUALIFIER_STYLER); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+
         } else if (element instanceof IProductCmptVRuleReference) {
+            // Rule
             IProductCmptVRuleReference vRuleRef = (IProductCmptVRuleReference)element;
             if (!vRuleRef.getValidationRuleConfig().isActive()) {
                 // gray-out inactive rules
