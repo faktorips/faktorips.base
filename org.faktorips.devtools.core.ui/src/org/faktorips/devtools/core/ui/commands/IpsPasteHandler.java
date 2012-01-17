@@ -51,6 +51,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -140,7 +141,7 @@ public class IpsPasteHandler extends IpsAbstractHandler {
      * @param parent a part container
      * @return the package fragment of the given part container
      */
-    protected IIpsPackageFragment findParentPackageFragment(IpsObjectPartContainer parent) {
+    protected IIpsPackageFragment findParentPackageFragment(IIpsObjectPartContainer parent) {
         IIpsPackageFragment parentPackageFrgmt = null;
         IIpsElement pack = parent.getParent();
         while (pack != null && !(pack instanceof IIpsPackageFragment)) {
