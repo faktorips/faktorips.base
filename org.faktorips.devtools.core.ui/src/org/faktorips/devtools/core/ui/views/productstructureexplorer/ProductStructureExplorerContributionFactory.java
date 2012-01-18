@@ -59,13 +59,18 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
     private void createAddNewProductCmpt(IServiceLocator serviceLocator,
             IContributionRoot additions,
             ISelection selection) {
-        TypedSelection<IProductCmptReference> typedSelection = new TypedSelection<IProductCmptReference>(
-                IProductCmptReference.class, selection);
-        if (typedSelection.isValid()) {
-            IProductCmptReference productCmptRef = typedSelection.getFirstElement();
-
-            IProductCmptTypeAssociationReference[] children = productCmptRef.getStructure()
-                    .getChildProductCmptTypeAssociationReferences(productCmptRef);
+        TypedSelection<IProductCmptStructureReference> typedSelection = new TypedSelection<IProductCmptStructureReference>(
+                IProductCmptStructureReference.class, selection);
+        if (typedSelection.isValid()
+                && (typedSelection.getFirstElement() instanceof IProductCmptReference || typedSelection
+                        .getFirstElement() instanceof IProductCmptTypeAssociationReference)) {
+            IProductCmptStructureReference reference = typedSelection.getFirstElement();
+            IProductCmptTypeAssociationReference[] children;
+            if (reference instanceof IProductCmptReference) {
+                children = reference.getStructure().getChildProductCmptTypeAssociationReferences(reference);
+            } else {
+                children = new IProductCmptTypeAssociationReference[] { (IProductCmptTypeAssociationReference)reference };
+            }
             if (children.length == 0) {
                 // also adding the command knowing that it is disabled because the handler is
                 // disabled
@@ -73,8 +78,8 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
             } else if (children.length == 1) {
                 IProductCmptTypeAssociationReference associationReference = children[0];
                 IProductCmptTypeAssociation association = associationReference.getAssociation();
-                String label = NLS.bind(Messages.AddNewProductCmptLinkSubmenuFactory_addNewProductCmpt_for,
-                        IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association));
+                String label = NLS.bind(Messages.AddNewProductCmptLinkSubmenuFactory_addNewProductCmpt_for, IpsPlugin
+                        .getMultiLanguageSupport().getLocalizedLabel(association));
                 addNewProductCmptCommand(serviceLocator, additions, label);
             } else {
                 createMultipleAddNewItem(serviceLocator, additions, children);
