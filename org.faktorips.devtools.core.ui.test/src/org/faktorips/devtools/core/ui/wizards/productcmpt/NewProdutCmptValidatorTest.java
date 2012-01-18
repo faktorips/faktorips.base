@@ -21,6 +21,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.GregorianCalendar;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -243,6 +245,11 @@ public class NewProdutCmptValidatorTest {
         when(ipsProject.getNamingConventions()).thenReturn(namingConventions);
 
         MessageList msgList = newProdutCmptValidator.validateProductCmptPage();
+        assertTrue(msgList.containsErrorMsg());
+
+        when(pmo.getEffectiveDate()).thenReturn(new GregorianCalendar());
+
+        msgList = newProdutCmptValidator.validateProductCmptPage();
         assertFalse(msgList.containsErrorMsg());
 
         Message msg = new Message("invalid name", "invalid name", Message.ERROR);
