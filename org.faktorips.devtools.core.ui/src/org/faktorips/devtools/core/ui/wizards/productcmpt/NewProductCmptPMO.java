@@ -425,6 +425,11 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         return runtimeId;
     }
 
+    @Override
+    public IpsObjectType getIpsObjectType() {
+        return IpsObjectType.PRODUCT_CMPT;
+    }
+
     /**
      * Searches the type hierarchy and looks for a supertype that is part of the base type list.
      * 

@@ -30,6 +30,7 @@ public class Messages extends NLS {
     public static String FolderAndPackagePage_check_openInEditor;
     public static String FolderAndPackagePage_label_package;
     public static String FolderAndPackagePage_label_rootFolder;
+    public static String FolderAndPackagePage_page_title;
     public static String FolderAndPackagePage_title;
     public static String TypeSelectionComposite_label_description;
     public static String TypeSelectionComposite_label_noDescriptionAvailable;

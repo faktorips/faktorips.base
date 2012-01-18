@@ -17,6 +17,7 @@ import java.beans.PropertyChangeEvent;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -43,6 +44,7 @@ public class FolderAndPackagePage extends WizardPage {
         super(Messages.FolderAndPackagePage_title);
         this.pmo = pmo;
         bindingContext = new BindingContext();
+        setTitle(NLS.bind(Messages.FolderAndPackagePage_page_title, pmo.getIpsObjectType().getDisplayName()));
     }
 
     @Override

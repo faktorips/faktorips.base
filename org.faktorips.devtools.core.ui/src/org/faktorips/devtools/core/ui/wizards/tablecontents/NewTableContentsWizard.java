@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -77,11 +76,6 @@ public class NewTableContentsWizard extends NewProductDefinitionWizard {
 
     public void setAddToTableUsage(ITableContentUsage tableUsage, boolean autosave) {
         getPmo().setAddToTableUsage(tableUsage, autosave);
-    }
-
-    @Override
-    protected IpsObjectType getIpsObjectType() {
-        return IpsObjectType.TABLE_CONTENTS;
     }
 
     @Override

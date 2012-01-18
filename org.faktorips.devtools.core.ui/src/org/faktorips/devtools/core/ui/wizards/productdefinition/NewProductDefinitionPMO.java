@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -142,6 +143,13 @@ public abstract class NewProductDefinitionPMO extends PresentationModelObject {
      * @return The name of the new object
      */
     public abstract String getName();
+
+    /**
+     * The IPS object type that should be created with the information of this PMO.
+     * 
+     * @return The type of the object that should be created, normally fixed for this PMO.
+     */
+    public abstract IpsObjectType getIpsObjectType();
 
     /**
      * Setting the effective date for the new product component. This may be different from current

@@ -37,7 +37,6 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -155,8 +154,6 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
         return true;
     }
 
-    protected abstract IpsObjectType getIpsObjectType();
-
     /**
      * Create a new {@link IIpsSrcFile} using the information given from the user. This method
      * returns the newly created file.
@@ -167,7 +164,7 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
      * @throws CoreException In case of exceptions while creating the new file
      */
     protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
-        IIpsSrcFile ipsSrcFile = pmo.getIpsPackage().createIpsFile(getIpsObjectType(), pmo.getName(), true,
+        IIpsSrcFile ipsSrcFile = pmo.getIpsPackage().createIpsFile(getPmo().getIpsObjectType(), pmo.getName(), true,
                 new SubProgressMonitor(monitor, 1));
         return ipsSrcFile;
     }
@@ -201,7 +198,7 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
         if (getPmo().isOpenEditor()) {
             IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(getPmo().getEffectiveDate());
             IIpsSrcFile srcFile = getPmo().getIpsPackage().getIpsSrcFile(
-                    getIpsObjectType().getFileName(getPmo().getName()));
+                    getPmo().getIpsObjectType().getFileName(getPmo().getName()));
             IpsUIPlugin.getDefault().openEditor(srcFile);
         }
         safeDialogSettings(getDialogSettings());

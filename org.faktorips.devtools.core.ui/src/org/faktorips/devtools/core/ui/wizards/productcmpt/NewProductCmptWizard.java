@@ -147,7 +147,7 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
         try {
             if (selectedIpsObject == null) {
                 initDefaults(selectedPackage, null, null);
-            } else if (selectedIpsObject.getIpsObjectType().equals(getIpsObjectType())) {
+            } else if (selectedIpsObject.getIpsObjectType().equals(getPmo().getIpsObjectType())) {
                 IProductCmptType cmptType = ((IProductCmpt)selectedIpsObject).findProductCmptType(selectedIpsObject
                         .getIpsProject());
                 initDefaults(selectedPackage, cmptType, (IProductCmpt)selectedIpsObject);
@@ -203,11 +203,6 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
     @Override
     public void dispose() {
         super.dispose();
-    }
-
-    @Override
-    public IpsObjectType getIpsObjectType() {
-        return IpsObjectType.PRODUCT_CMPT;
     }
 
 }

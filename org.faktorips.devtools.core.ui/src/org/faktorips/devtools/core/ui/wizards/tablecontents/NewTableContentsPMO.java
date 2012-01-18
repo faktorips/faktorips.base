@@ -151,4 +151,10 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
     public boolean isAutoSaveAddToFile() {
         return autosaveAddToFile;
     }
+
+    @Override
+    public IpsObjectType getIpsObjectType() {
+        return IpsObjectType.TABLE_CONTENTS;
+    }
+
 }
