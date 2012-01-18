@@ -16,12 +16,14 @@ package org.faktorips.devtools.core.ui;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
- * Some extension properties contain data that can not be displayed in a simple EditField as defined
- * in {@link IExtensionPropertyEditFieldFactory}. IExtensionPropertySectionFactory create whole
- * sections for extension properties which may be incorporated in appropriate parts of the UI, e.g.
+ * Some extension properties contain data that can not be displayed in a simple {@link EditField} as
+ * defined in {@link IExtensionPropertyEditFieldFactory}. {@link IExtensionPropertySectionFactory
+ * IExtensionPropertySectionFactories} create whole sections for extension properties which may be
+ * incorporated in appropriate parts of the UI, e.g.
  * {@link org.faktorips.devtools.core.ui.editors.productcmpt.GenerationPropertiesPage} (which is up
  * to October 2011 the only editor that supports these sections).
  * 
