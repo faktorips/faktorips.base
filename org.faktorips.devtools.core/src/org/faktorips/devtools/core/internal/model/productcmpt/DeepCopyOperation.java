@@ -18,15 +18,19 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SafeRunner;
+import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
@@ -58,6 +62,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     private final IProductCmptReference structureRoot;
     private final GregorianCalendar oldValidFrom;
     private final GregorianCalendar newValidFrom;
+    private List<DeepCopyOperationFixup> fixups;
 
     /**
      * Creates a new operation to copy the given product components.
@@ -102,11 +107,11 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         monitor.worked(1);
 
         // stores all objects which refers old targets instead of changing to the new one
-        Set<Object> objectsToRefer = collectObjectsToRefer();
+        final Set<Object> objectsToRefer = collectObjectsToRefer();
 
         // maps used to fix the targets (table usages or links) on the new productCmpt
-        HashMap<TblContentUsageData, String> tblContentData2newTableContentQName = new HashMap<TblContentUsageData, String>();
-        HashMap<LinkData, String> linkData2newProductCmptQName = new HashMap<LinkData, String>();
+        final Map<TblContentUsageData, String> tblContentData2newTableContentQName = new HashMap<TblContentUsageData, String>();
+        final Map<LinkData, String> linkData2newProductCmptQName = new HashMap<LinkData, String>();
 
         Hashtable<IProductCmpt, IProductCmpt> productNew2ProductOld = new Hashtable<IProductCmpt, IProductCmpt>();
         List<IIpsObject> newIpsObjects = new ArrayList<IIpsObject>();
@@ -130,7 +135,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
 
             monitor.worked(1);
         }
-
+        List<DeepCopyOperationFixup> additionalFixups = getAdditionalFixups();
         // fix links, on of the following options:
         // a) change target to new (copied) productCmpt's: if the target should also be copied ->
         // checked on the 1st wizard page and checked on the 2nd page
@@ -141,17 +146,27 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         // a) change table usage to the new (copied) tableContents -> see a) above
         // b) leave the table usage to the old tableContents -> see b) above
         // C) clear table usage (leave empty) -> see c) above
-        for (Iterator<IProductCmpt> iterator = productNew2ProductOld.keySet().iterator(); iterator.hasNext();) {
-            IIpsObject ipsObject = iterator.next();
-            if (!(ipsObject instanceof IProductCmpt)) {
-                continue;
-            }
-            IProductCmpt productCmptNew = (IProductCmpt)ipsObject.getIpsObject();
-            IProductCmpt productCmptTemplate = productNew2ProductOld.get(productCmptNew);
+        for (Entry<IProductCmpt, IProductCmpt> entry : productNew2ProductOld.entrySet()) {
+            final IProductCmpt productCmptNew = entry.getKey();
+            final IProductCmpt productCmptTemplate = entry.getValue();
 
             fixLinksToTableContents(productCmptNew, productCmptTemplate, tblContentData2newTableContentQName,
                     objectsToRefer);
             fixLinksToProductCmpt(productCmptNew, productCmptTemplate, linkData2newProductCmptQName, objectsToRefer);
+            for (final DeepCopyOperationFixup fixup : additionalFixups) {
+                ISafeRunnable runnable = new ISafeRunnable() {
+                    @Override
+                    public void handleException(Throwable exception) {
+                        IpsPlugin.log(exception);
+                    }
+
+                    @Override
+                    public void run() throws Exception {
+                        fixup.fix(productCmptNew, productCmptTemplate);
+                    }
+                };
+                SafeRunner.run(runnable);
+            }
         }
 
         // save all ipsSource files
@@ -165,6 +180,28 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             throw new RuntimeException("No copied root found!"); //$NON-NLS-1$
         }
         monitor.done();
+    }
+
+    /**
+     * Returns the {@link DeepCopyOperationFixup DeepCopyOperationFixups} defined in the extension
+     * point {@code org.faktorips.devtools.core.deepCopyOperation}.
+     * 
+     * @return the {@link DeepCopyOperationFixup DeepCopyOperationFixups}
+     */
+    public List<DeepCopyOperationFixup> getAdditionalFixups() {
+        if (fixups == null) {
+            ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.getDefault().getExtensionRegistry(),
+                    IpsPlugin.PLUGIN_ID);
+            IExtension[] extensions = extensionPoints
+                    .getExtension(DeepCopyOperationFixup.EXTENSION_POINT_ID_DEEP_COPY_OPERATION);
+            fixups = new ArrayList<DeepCopyOperationFixup>();
+            for (IExtension extension : extensions) {
+                fixups.addAll(ExtensionPoints.createExecutableExtensions(extension,
+                        DeepCopyOperationFixup.CONFIG_ELEMENT_ID_FIXUP,
+                        DeepCopyOperationFixup.CONFIG_ELEMENT_ATTRIBUTE_CLASS, DeepCopyOperationFixup.class));
+            }
+        }
+        return fixups;
     }
 
     private IIpsObject createNewIpsObjectIfNecessary(final IProductCmptStructureReference toCopyProductCmptStructureReference,
@@ -217,7 +254,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
 
     private void storeTableUsageToNewTableContents(IProductCmptStructureTblUsageReference productCmptStructureReference,
             String newTableContentsQName,
-            HashMap<TblContentUsageData, String> tblContentData2newTableContentQName) {
+            Map<TblContentUsageData, String> tblContentData2newTableContentQName) {
 
         ITableContentUsage tblContentUsageOld = productCmptStructureReference.getTableContentUsage();
         tblContentData2newTableContentQName.put(new TblContentUsageData(tblContentUsageOld), newTableContentsQName);
@@ -225,7 +262,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
 
     private void storeLinkToNewNewProductCmpt(IProductCmptReference productCmptStructureReference,
             String newProductCmptQName,
-            HashMap<LinkData, String> linkData2newProductCmptQName) {
+            Map<LinkData, String> linkData2newProductCmptQName) {
 
         IProductCmptStructureReference parent = productCmptStructureReference.getParent();
         IProductCmpt productCmpt = (productCmptStructureReference).getProductCmpt();
@@ -280,7 +317,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
      */
     private void fixLinksToTableContents(IProductCmpt productCmptNew,
             IProductCmpt productCmptTemplate,
-            HashMap<TblContentUsageData, String> tblContentData2newTableContentQName,
+            Map<TblContentUsageData, String> tblContentData2newTableContentQName,
             Set<Object> objectsToRefer) {
 
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmptNew.getGenerationsOrderedByValidDate()[0];
@@ -310,7 +347,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
      */
     private void fixLinksToProductCmpt(IProductCmpt productCmptNew,
             IProductCmpt productCmptTemplate,
-            HashMap<LinkData, String> linkData2newProductCmptQName,
+            Map<LinkData, String> linkData2newProductCmptQName,
             Set<Object> objectsToRefer) {
 
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmptNew.getGenerationsOrderedByValidDate()[0];
@@ -444,7 +481,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
      * Represents a tblContentUsage object, which is defined by productCmpt and the table usage name
      * (role of the table contents) inside the productCmpt.
      */
-    private class TblContentUsageData {
+    private static class TblContentUsageData {
 
         private IProductCmpt productCmpt;
 

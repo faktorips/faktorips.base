@@ -17,15 +17,31 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.SingletonMockHelper;
+import org.faktorips.abstracttest.TestConfigurationElement;
+import org.faktorips.abstracttest.TestExtensionRegistry;
+import org.faktorips.abstracttest.TestMockingUtils;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -33,9 +49,12 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
@@ -273,6 +292,61 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
+    public void testDeepCopyOperationFixups() throws CoreException, CycleInProductStructureException {
+        createTestContent();
+        IProductCmptTreeStructure structure = comfortMotorProduct.getStructure(
+                (GregorianCalendar)GregorianCalendar.getInstance(), ipsProject);
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
+        Set<IProductCmptStructureReference> toCopy = structure.toSet(true);
+
+        for (IProductCmptStructureReference element : toCopy) {
+            IIpsObject ipsObject = element.getWrappedIpsObject();
+            handles.put(
+                    element,
+                    ipsObject.getIpsPackageFragment().getIpsSrcFile(
+                            "DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
+        }
+
+        IProductCmptGeneration generation = (IProductCmptGeneration)comfortMotorProduct
+                .findGenerationEffectiveOn(new GregorianCalendar());
+        IConfigElement configElement = generation.newConfigElement(salesNameAttribute);
+        configElement.setValue("Foo");
+
+        IpsPlugin ipsPlugin = IpsPlugin.getDefault();
+        ipsPlugin = spy(ipsPlugin);
+        SingletonMockHelper singletonMockHelper = new SingletonMockHelper();
+        singletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
+        DeepCopyOperationFixup testDeepCopyOperationFixup = mock(DeepCopyOperationFixup.class);
+        Map<String, Object> executableExtensionMap = new HashMap<String, Object>();
+        executableExtensionMap.put("class", testDeepCopyOperationFixup);
+        IExtension extension = TestMockingUtils.mockExtension("TestDeepCopyOperationFixup",
+                new TestConfigurationElement(DeepCopyOperationFixup.CONFIG_ELEMENT_ID_FIXUP,
+                        new HashMap<String, String>(), null, new IConfigurationElement[0], executableExtensionMap));
+        IExtensionPoint extensionPoint = TestMockingUtils.mockExtensionPoint(IpsPlugin.PLUGIN_ID,
+                DeepCopyOperationFixup.EXTENSION_POINT_ID_DEEP_COPY_OPERATION, extension);
+        TestExtensionRegistry extensionRegistry = new TestExtensionRegistry(new IExtensionPoint[] { extensionPoint });
+        doReturn(extensionRegistry).when(ipsPlugin).getExtensionRegistry();
+
+        DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
+                new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(),
+                new GregorianCalendar());
+        dco.setIpsPackageFragmentRoot(comfortMotorProduct.getIpsPackageFragment().getRoot());
+        dco.run(null);
+
+        IProductCmptStructureReference srcProdCmptRef = structure.getRoot().findProductCmptReference(
+                comfortMotorProduct.getQualifiedName());
+        ProductCmpt copiedProductCmpt = (ProductCmpt)handles.get(srcProdCmptRef).getIpsObject();
+        generation = (IProductCmptGeneration)copiedProductCmpt.findGenerationEffectiveOn(new GregorianCalendar());
+        configElement = generation.getConfigElement("salesName");
+
+        verify(testDeepCopyOperationFixup, times(5)).fix(any(IProductCmpt.class), any(IProductCmpt.class)); // comfortMotorProduct
+                                                                                                            // +
+                                                                                                            // 4
+                                                                                                            // Links
+        singletonMockHelper.reset();
+    }
+
     private void createTestContent() throws CoreException {
         createModel();
         createProducts();
@@ -292,6 +366,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     private IProductCmpt comfortCollisionCoverageA;
     private IProductCmpt comfortCollisionCoverageB;
     private IProductCmpt standardTplCoverage;
+    private IPolicyCmptTypeAttribute salesNameAttribute;
 
     private void createModel() throws CoreException {
 
@@ -343,6 +418,9 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
                 "TplCoverage", "TplCoverages", 0, 1);
         createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject),
                 tplCoverage.findProductCmptType(ipsProject), "TplCoverageType", "TplCoverageTypes", 0, 1);
+
+        salesNameAttribute = motorContract.newPolicyCmptTypeAttribute("salesName");
+        salesNameAttribute.setProductRelevant(true);
     }
 
     private void createProducts() throws CoreException {

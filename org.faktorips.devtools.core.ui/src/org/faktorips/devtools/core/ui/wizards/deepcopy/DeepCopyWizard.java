@@ -14,21 +14,28 @@
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.productcmpt.DeepCopyOperation;
+import org.faktorips.devtools.core.internal.model.productcmpt.DeepCopyOperationFixup;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -60,6 +67,7 @@ public class DeepCopyWizard extends ResizableWizard {
 
     private IIpsSrcFile copyResultRoot;
     private int type;
+    private List<AdditionalDeepCopyWizardPage> additionalPages;
 
     /**
      * Creates a new wizard which can make a deep copy of the given product.
@@ -112,7 +120,47 @@ public class DeepCopyWizard extends ResizableWizard {
         super.addPage(sourcePage);
         ReferenceAndPreviewPage previewPage = new ReferenceAndPreviewPage(type);
         super.addPage(previewPage);
+        List<AdditionalDeepCopyWizardPage> additionalPages = getAdditionalPages();
+        for (AdditionalDeepCopyWizardPage additionalPage : additionalPages) {
+            super.addPage(additionalPage);
+        }
+    }
 
+    private List<AdditionalDeepCopyWizardPage> getAdditionalPages() {
+        if (additionalPages == null) {
+            ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.getDefault().getExtensionRegistry(),
+                    IpsPlugin.PLUGIN_ID);
+            IExtension[] extensions = extensionPoints
+                    .getExtension(AdditionalDeepCopyWizardPage.EXTENSION_POINT_ID_DEEP_COPY_WIZARD);
+            additionalPages = new ArrayList<AdditionalDeepCopyWizardPage>();
+            for (IExtension extension : extensions) {
+                additionalPages.addAll(ExtensionPoints
+                        .createExecutableExtensions(extension,
+                                AdditionalDeepCopyWizardPage.CONFIG_ELEMENT_ID_ADDITIONAL_PAGE,
+                                AdditionalDeepCopyWizardPage.CONFIG_ELEMENT_ATTRIBUTE_CLASS,
+                                AdditionalDeepCopyWizardPage.class));
+            }
+        }
+        return additionalPages;
+    }
+
+    private void configureFixups(DeepCopyOperation dco) {
+        final List<DeepCopyOperationFixup> additionalFixups = dco.getAdditionalFixups();
+        List<AdditionalDeepCopyWizardPage> additionalPages = getAdditionalPages();
+        for (final AdditionalDeepCopyWizardPage additionalPage : additionalPages) {
+            ISafeRunnable runnable = new ISafeRunnable() {
+                @Override
+                public void handleException(Throwable exception) {
+                    IpsPlugin.log(exception);
+                }
+
+                @Override
+                public void run() throws Exception {
+                    additionalPage.configureFixups(additionalFixups);
+                }
+            };
+            SafeRunner.run(runnable);
+        }
     }
 
     private void settingDefaults() {
@@ -178,6 +226,7 @@ public class DeepCopyWizard extends ResizableWizard {
                             getStructure().getValidAt(), presentationModel.getNewValidFrom());
                     dco.setIpsPackageFragmentRoot(presentationModel.getTargetPackageRoot());
                     dco.setCreateEmptyTableContents(createEmptyTableContents);
+                    configureFixups(dco);
                     dco.run(new SubProgressMonitor(monitor, 1));
                     copyResultRoot = dco.getCopiedRoot();
                 }
