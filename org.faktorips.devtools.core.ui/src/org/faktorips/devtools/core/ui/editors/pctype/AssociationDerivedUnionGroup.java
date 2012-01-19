@@ -195,7 +195,7 @@ public class AssociationDerivedUnionGroup extends Composite {
 
         public void setSubset(boolean newValue) {
             subset = newValue;
-            if (!subset) {
+            if (!subset || derivedUnionCombo.getItemCount() == 0) {
                 association.setSubsettedDerivedUnion(StringUtils.EMPTY);
             } else {
                 association.setSubsettedDerivedUnion(derivedUnionCombo.getItem(0));
