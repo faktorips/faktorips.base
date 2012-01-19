@@ -129,7 +129,7 @@ public class DeepCopyWizard extends ResizableWizard {
     private List<AdditionalDeepCopyWizardPage> getAdditionalPages() {
         if (additionalPages == null) {
             ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.getDefault().getExtensionRegistry(),
-                    IpsPlugin.PLUGIN_ID);
+                    IpsUIPlugin.PLUGIN_ID);
             IExtension[] extensions = extensionPoints
                     .getExtension(AdditionalDeepCopyWizardPage.EXTENSION_POINT_ID_DEEP_COPY_WIZARD);
             additionalPages = new ArrayList<AdditionalDeepCopyWizardPage>();
