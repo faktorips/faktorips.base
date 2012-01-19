@@ -128,8 +128,69 @@ public class NewProductCmptPMOTest {
         // refresh the list
         pmo.setIpsProject(ipsProject);
 
-        assertTrue(pmo.getBaseTypes().size() == 2);
+        assertEquals(2, pmo.getBaseTypes().size());
         assertTrue(pmo.getBaseTypes().contains(productCmptType2));
+        assertTrue(pmo.getBaseTypes().contains(productCmptType3));
+    }
+
+    /**
+     * Test for FIPS-899 <strong>Scenario:</strong><br>
+     * There are abstract product component types that do not have concrete types in the project.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * Types without concrete type in project scope should not be in the list of base types
+     */
+    @Test
+    public void testUpdateBaseTypeList_filterTypesWithoutConcreteTypes() throws Exception {
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        pmo.setEffectiveDate(new GregorianCalendar());
+
+        IIpsPackageFragmentRoot packageFragmentRoot = mockPackageFragmentRoot();
+        IIpsProject ipsProject = packageFragmentRoot.getIpsProject();
+
+        ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+
+        when(ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE)).thenReturn(
+                ipsSrcFiles.toArray(new IIpsSrcFile[0]));
+        when(ipsProject.getName()).thenReturn(PROJECT_NAME);
+
+        when(ipsModel.getIpsProject(PROJECT_NAME)).thenReturn(ipsProject);
+
+        pmo.setIpsProject(ipsProject);
+        assertTrue(pmo.getBaseTypes().isEmpty());
+
+        IIpsSrcFile ipsSrcFile1 = mock(IIpsSrcFile.class);
+        IProductCmptType productCmptType1 = mock(IProductCmptType.class);
+        when(productCmptType1.getName()).thenReturn("1");
+        IIpsSrcFile ipsSrcFile2 = mock(IIpsSrcFile.class);
+        IProductCmptType productCmptType2 = mock(IProductCmptType.class);
+        when(productCmptType2.getName()).thenReturn("1");
+        IIpsSrcFile ipsSrcFile3 = mock(IIpsSrcFile.class);
+        IProductCmptType productCmptType3 = mock(IProductCmptType.class);
+        when(productCmptType3.getName()).thenReturn("1");
+        ipsSrcFiles.add(ipsSrcFile1);
+        ipsSrcFiles.add(ipsSrcFile2);
+        ipsSrcFiles.add(ipsSrcFile3);
+        when(ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE)).thenReturn(
+                ipsSrcFiles.toArray(new IIpsSrcFile[0]));
+
+        when(ipsSrcFile1.getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE)).thenReturn("true");
+        when(ipsSrcFile1.getIpsObject()).thenReturn(productCmptType1);
+        when(ipsSrcFile2.getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE)).thenReturn("false");
+        when(ipsSrcFile2.getPropertyValue(IType.PROPERTY_ABSTRACT)).thenReturn("true");
+        when(ipsSrcFile2.getIpsObject()).thenReturn(productCmptType2);
+        when(ipsSrcFile3.getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE)).thenReturn(null);
+        when(ipsSrcFile3.getIpsObject()).thenReturn(productCmptType3);
+
+        when(ipsSrcFile3.getPropertyValue(IType.PROPERTY_SUPERTYPE)).thenReturn("findSuperType");
+
+        when(ipsProject.findIpsSrcFile(new QualifiedNameType("findSuperType", IpsObjectType.PRODUCT_CMPT_TYPE)))
+                .thenReturn(ipsSrcFile1);
+
+        // refresh the list
+        pmo.setIpsProject(ipsProject);
+
+        assertEquals(1, pmo.getBaseTypes().size());
         assertTrue(pmo.getBaseTypes().contains(productCmptType3));
     }
 

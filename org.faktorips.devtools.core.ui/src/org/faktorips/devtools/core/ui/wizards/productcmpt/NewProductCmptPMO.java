@@ -18,13 +18,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -63,7 +66,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     private IProductCmptType selectedType;
 
-    private List<IProductCmptType> baseTypes = new ArrayList<IProductCmptType>();
+    private Set<IProductCmptType> baseTypes = new HashSet<IProductCmptType>();
 
     private String kindId = StringUtils.EMPTY;
 
@@ -136,30 +139,48 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         if (ipsProject == null) {
             return;
         }
-        baseTypes = new ArrayList<IProductCmptType>();
+        baseTypes = new HashSet<IProductCmptType>();
         try {
             IIpsSrcFile[] findIpsSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
+            Set<IIpsSrcFile> concreteTypes = new HashSet<IIpsSrcFile>();
+            // 1. making a list containing all NOT ABSTRACT types
             for (IIpsSrcFile ipsSrcFile : findIpsSrcFiles) {
-                boolean layerSupertype = Boolean.valueOf(ipsSrcFile
-                        .getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE));
-                if (!layerSupertype) {
-                    String superType = ipsSrcFile.getPropertyValue(IType.PROPERTY_SUPERTYPE);
-                    if (StringUtils.isNotEmpty(superType)) {
-                        IIpsSrcFile superTypeIpsSrcFile = ipsProject.findIpsSrcFile(new QualifiedNameType(superType,
-                                IpsObjectType.PRODUCT_CMPT_TYPE));
-                        if (superTypeIpsSrcFile != null
-                                && Boolean.valueOf(superTypeIpsSrcFile
-                                        .getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE))) {
-                            baseTypes.add((IProductCmptType)ipsSrcFile.getIpsObject());
-                        }
-                    } else {
-                        baseTypes.add((IProductCmptType)ipsSrcFile.getIpsObject());
-                    }
+                if (!Boolean.valueOf(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_ABSTRACT))) {
+                    concreteTypes.add(ipsSrcFile);
                 }
             }
+            baseTypes = getBaseTypesFromConcreteTypes(concreteTypes, ipsProject);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    private Set<IProductCmptType> getBaseTypesFromConcreteTypes(Set<IIpsSrcFile> types, IIpsProject ipsProject)
+            throws CoreException {
+        Set<IIpsSrcFile> superTypes = new HashSet<IIpsSrcFile>();
+        Set<IProductCmptType> baseTypes = new HashSet<IProductCmptType>();
+        for (IIpsSrcFile ipsSrcFile : types) {
+            if (Boolean.parseBoolean(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE))) {
+                continue;
+            }
+            String superType = ipsSrcFile.getPropertyValue(ProductCmptType.PROPERTY_SUPERTYPE);
+            IIpsSrcFile superTypeIpsSrcFile = null;
+            if (StringUtils.isNotEmpty(superType)) {
+                superTypeIpsSrcFile = ipsProject.findIpsSrcFile(new QualifiedNameType(superType,
+                        IpsObjectType.PRODUCT_CMPT_TYPE));
+            }
+            if (superTypeIpsSrcFile != null
+                    && !Boolean.parseBoolean(superTypeIpsSrcFile
+                            .getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE))) {
+                superTypes.add(superTypeIpsSrcFile);
+            } else {
+                baseTypes.add((IProductCmptType)ipsSrcFile.getIpsObject());
+            }
+        }
+        if (!superTypes.isEmpty()) {
+            baseTypes.addAll(getBaseTypesFromConcreteTypes(superTypes, ipsProject));
+        }
+        return baseTypes;
     }
 
     /**

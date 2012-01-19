@@ -55,7 +55,7 @@ public class NewProdutCmptValidator extends NewProductDefinitionValidator {
 
     public static final String MSG_INVALID_ADD_TO_GENERATION = MSGCODE_PREFIX + "addToGeneration"; //$NON-NLS-1$
 
-    final NewProductCmptPMO pmo;
+    private final NewProductCmptPMO pmo;
 
     public NewProdutCmptValidator(NewProductCmptPMO pmo) {
         super(pmo);
