@@ -15,7 +15,13 @@ package org.faktorips.devtools.core.ui.search.product.conditions.table;
 
 import org.faktorips.devtools.core.ui.table.CellTrackingEditingSupport;
 import org.faktorips.devtools.core.ui.table.LinkedColumnsTraversalStrategy;
+import org.faktorips.devtools.core.ui.table.TraversalStrategy;
 
+/**
+ * This class is the {@link TraversalStrategy} for the table of search conditions.
+ * 
+ * @author dicker
+ */
 final class ConditionsTableTraversalStrategy extends LinkedColumnsTraversalStrategy {
 
     ConditionsTableTraversalStrategy(CellTrackingEditingSupport editingSupport) {

@@ -25,13 +25,16 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.AbstractTextField;
+import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectContext;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 
 /**
  * The ProductComponentTypeField is a field to choose a {@link IProductCmptType}.
  * <p>
- * It
+ * This class is necessary, because {@link ProductCmptType2RefControl} takes
+ * {@link IProductCmptType IProductCmptTypes} out of one given project. The search must provide all
+ * IProductCmptTypes within the workspace.
  * 
  * @author dicker
  */

@@ -15,6 +15,12 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
 
+/**
+ * This Enumeration contains {@link ISearchOperatorType ISearchOperatorTypes} to check with
+ * wildcards within the Product Search.
+ * 
+ * @author dicker
+ */
 public enum LikeSearchOperatorType implements ISearchOperatorType {
     LIKE(Messages.LikeSearchOperatorType_labelLike, true),
     NOT_LIKE(Messages.LikeSearchOperatorType_labelDoesNotLike, false);
@@ -32,12 +38,7 @@ public enum LikeSearchOperatorType implements ISearchOperatorType {
         return label;
     }
 
-    @Override
-    public int getArgumentCount() {
-        return 1;
-    }
-
-    public boolean isNegation() {
+    boolean isNegation() {
         return negation;
     }
 
@@ -46,7 +47,8 @@ public enum LikeSearchOperatorType implements ISearchOperatorType {
             ValueDatatype valueDatatype,
             String argument) {
 
-        // if argument is null, then just null as an allowed hit
+        // if argument is null, then just null as an allowed hit, which is checked by the
+        // EqualitySearchOperator.
         if (argument == null) {
             return new EqualitySearchOperator(valueDatatype, EqualitySearchOperatorType.EQUALITY, operandProvider, null);
         }

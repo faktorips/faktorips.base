@@ -18,9 +18,17 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 
-public class AllowanceSearchOperator extends AbstractSearchOperator<AllowanceSearchOperatorType> {
+/**
+ * The ValueSetSearchOperator checks, if the argument is or is not contained in the operand, which
+ * is in this case an {@link IValueSet}.
+ * <p>
+ * This Operator is used for searching the IValueSets for policy attributes.
+ * 
+ * @author dicker
+ */
+public class ValueSetSearchOperator extends AbstractSearchOperator<ValueSetSearchOperatorType> {
 
-    protected AllowanceSearchOperator(ValueDatatype valueDatatype, AllowanceSearchOperatorType searchOperatorType,
+    protected ValueSetSearchOperator(ValueDatatype valueDatatype, ValueSetSearchOperatorType searchOperatorType,
             IOperandProvider operandProvider, String argument) {
         super(valueDatatype, searchOperatorType, operandProvider, argument);
     }
@@ -29,9 +37,9 @@ public class AllowanceSearchOperator extends AbstractSearchOperator<AllowanceSea
     protected boolean check(Object searchOperand, IProductCmptGeneration productCmptGeneration) {
         try {
             IValueSet valueSet = (IValueSet)searchOperand;
-            boolean isContained = valueSet.containsValue(argument, productCmptGeneration.getIpsProject());
+            boolean isContained = valueSet.containsValue(getArgument(), productCmptGeneration.getIpsProject());
 
-            return isContained != searchOperatorType.isNegation();
+            return isContained != getSearchOperatorType().isNegation();
         } catch (CoreException e) {
             // TODO exception handlen
             throw new RuntimeException(e);

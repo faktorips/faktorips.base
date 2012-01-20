@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchPage;
 import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
-import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionsTableViewerProvider;
+import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionsTableViewer;
 
 /**
  * 
@@ -105,10 +105,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
 
         addConditionButtons(comp);
 
-        ProductSearchConditionsTableViewerProvider productSearchConditionsTableViewerProvider = new ProductSearchConditionsTableViewerProvider(
-                getPresentationModel(), composite);
-
-        conditionTableViewer = productSearchConditionsTableViewerProvider.getTableViewer();
+        conditionTableViewer = new ProductSearchConditionsTableViewer(getPresentationModel(), composite);
     }
 
     private void addConditionButtons(Composite comp) {
@@ -117,7 +114,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
         btnAddCondition.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 
         btnAddCondition.setToolTipText(Messages.ProductSearchPage_labelAddConditionButton);
-        btnAddCondition.setImage(IpsUIPlugin.getImageHandling().getSharedImage("Add.gif", true));
+        btnAddCondition.setImage(IpsUIPlugin.getImageHandling().getSharedImage("Add.gif", true)); //$NON-NLS-1$
 
         btnAddCondition.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -133,7 +130,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
         btnRemoveCondition.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 
         btnRemoveCondition.setToolTipText(Messages.ProductSearchPage_labelRemoveConditionButton);
-        btnRemoveCondition.setImage(IpsUIPlugin.getImageHandling().getSharedImage("elcl16/trash.gif", true));
+        btnRemoveCondition.setImage(IpsUIPlugin.getImageHandling().getSharedImage("elcl16/trash.gif", true)); //$NON-NLS-1$
 
         btnRemoveCondition.addSelectionListener(new SelectionAdapter() {
             @Override

@@ -15,12 +15,21 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
 
+/**
+ * The ISearchOperatorType defines the Type of an {@link ISearchOperator}.
+ * 
+ * @author dicker
+ */
 public interface ISearchOperatorType {
 
+    /**
+     * returns a String for Labels
+     */
     public String getLabel();
 
-    public int getArgumentCount();
-
+    /**
+     * returns an {@link ISearchOperator} for the given {@link IOperandProvider}
+     */
     public ISearchOperator createSearchOperator(IOperandProvider operandProvider,
             ValueDatatype valueDatatype,
             String argument);

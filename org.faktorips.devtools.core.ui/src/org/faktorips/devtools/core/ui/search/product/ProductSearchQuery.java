@@ -78,7 +78,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
 
     private ISearchOperator createSearchOperator(ProductSearchConditionPresentationModel conditionModel) {
 
-        IOperandProvider operandProvider = conditionModel.getCondition().createOperandProvider(
+        IOperandProvider operandProvider = conditionModel.getConditionType().createOperandProvider(
                 conditionModel.getSearchedElement());
         ISearchOperatorType operatorType = conditionModel.getOperatorType();
 

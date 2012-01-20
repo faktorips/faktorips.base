@@ -17,6 +17,7 @@ import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
@@ -25,10 +26,21 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.IConditionType;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TextCellEditor;
 
+/**
+ * This class is the {@link EditingSupport} for the column of arguments in the table of search
+ * conditions.
+ * <p>
+ * It chooses the control for editing of the argument depending on the {@link IConditionType} and
+ * the {@link ValueDatatype} of the searched element.
+ * 
+ * 
+ * @author dicker
+ */
 final class ArgumentEditingSupport extends EnhancedCellTrackingEditingSupport {
 
     public ArgumentEditingSupport(TableViewer viewer) {
@@ -39,7 +51,7 @@ final class ArgumentEditingSupport extends EnhancedCellTrackingEditingSupport {
     protected IpsCellEditor getCellEditorInternal(Object element) {
         ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
 
-        if (model.getCondition().isArgumentIpsObject()) {
+        if (model.getConditionType().isArgumentIpsObject()) {
             UIToolkit toolkit = new UIToolkit(null);
 
             Text textControl = toolkit.createText(((TableViewer)getViewer()).getTable());
@@ -59,8 +71,8 @@ final class ArgumentEditingSupport extends EnhancedCellTrackingEditingSupport {
             return new TextCellEditor(textControl);
         }
 
-        if (model.getCondition().hasValueSet()) {
-            ValueDatatype datatype = model.getCondition().getValueDatatype(model.getSearchedElement());
+        if (model.getConditionType().hasValueSet()) {
+            ValueDatatype datatype = model.getConditionType().getValueDatatype(model.getSearchedElement());
 
             return createValueDatatypeTableCellEditor(model, datatype);
         } else {
@@ -81,7 +93,7 @@ final class ArgumentEditingSupport extends EnhancedCellTrackingEditingSupport {
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                 valueDatatype);
 
-        IValueSet valueSet = model.getCondition().getValueSet(model.getSearchedElement());
+        IValueSet valueSet = model.getConditionType().getValueSet(model.getSearchedElement());
 
         tableCellEditor = controlFactory.createTableCellEditor(new UIToolkit(null), valueDatatype, valueSet,
                 (TableViewer)getViewer(), 3, model.getSearchedElement().getIpsProject());

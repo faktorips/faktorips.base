@@ -14,15 +14,22 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
 
-public enum AllowanceSearchOperatorType implements ISearchOperatorType {
+/**
+ * This Enumeration contains {@link ISearchOperatorType ISearchOperatorTypes} to check with
+ * {@link IValueSet IValueSet} within the Product Search.
+ * 
+ * @author dicker
+ */
+public enum ValueSetSearchOperatorType implements ISearchOperatorType {
     ALLOWED(Messages.AllowanceSearchOperatorType_allowed, false),
     NOT_ALLOWED(Messages.AllowanceSearchOperatorType_notAllowed, true);
 
     private final String label;
     private final boolean negation;
 
-    private AllowanceSearchOperatorType(String label, boolean negation) {
+    private ValueSetSearchOperatorType(String label, boolean negation) {
         this.label = label;
         this.negation = negation;
     }
@@ -33,18 +40,13 @@ public enum AllowanceSearchOperatorType implements ISearchOperatorType {
     }
 
     @Override
-    public int getArgumentCount() {
-        return 1;
-    }
-
-    @Override
     public ISearchOperator createSearchOperator(IOperandProvider operandProvider,
             ValueDatatype valueDatatype,
             String argument) {
-        return new AllowanceSearchOperator(valueDatatype, this, operandProvider, argument);
+        return new ValueSetSearchOperator(valueDatatype, this, operandProvider, argument);
     }
 
-    public boolean isNegation() {
+    boolean isNegation() {
         return negation;
     }
 

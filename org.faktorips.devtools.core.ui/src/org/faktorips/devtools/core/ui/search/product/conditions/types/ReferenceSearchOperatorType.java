@@ -15,6 +15,12 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
 
+/**
+ * This Enumeration contains {@link ISearchOperatorType ISearchOperatorTypes} to check references
+ * within the Product Search.
+ * 
+ * @author dicker
+ */
 public enum ReferenceSearchOperatorType implements ISearchOperatorType {
     REFERENCE(Messages.ReferenceSearchOperatorType_labelReferences, false),
     NO_REFERENCE(Messages.ReferenceSearchOperatorType_labelDoesNotReference, true);
@@ -33,18 +39,13 @@ public enum ReferenceSearchOperatorType implements ISearchOperatorType {
     }
 
     @Override
-    public int getArgumentCount() {
-        return 1;
-    }
-
-    @Override
     public ISearchOperator createSearchOperator(IOperandProvider operandProvider,
             ValueDatatype valueDatatype,
             String argument) {
         return new ReferenceSearchOperator(valueDatatype, this, operandProvider, argument);
     }
 
-    public boolean isNegation() {
+    boolean isNegation() {
         return negation;
     }
 }

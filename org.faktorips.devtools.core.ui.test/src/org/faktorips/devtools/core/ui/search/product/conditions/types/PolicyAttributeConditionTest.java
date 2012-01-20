@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -36,10 +37,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.AllowanceSearchOperatorType;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.IOperandProvider;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.PolicyAttributeConditionType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,7 +58,7 @@ public class PolicyAttributeConditionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetSearchableElements() throws CoreException {
+    public void testGetSearchableElements() {
 
         IPolicyCmptTypeAttribute zahlweiseAttribute = policyCmptType.newPolicyCmptTypeAttribute();
         zahlweiseAttribute.setProductRelevant(true);
@@ -113,13 +110,13 @@ public class PolicyAttributeConditionTest extends AbstractIpsPluginTest {
     public void testGetSearchOperatorTypes() {
         IPolicyCmptTypeAttribute attributComparable = policyCmptType.newPolicyCmptTypeAttribute();
 
-        AllowanceSearchOperatorType[] values = AllowanceSearchOperatorType.values();
+        ValueSetSearchOperatorType[] values = ValueSetSearchOperatorType.values();
 
         List<? extends ISearchOperatorType> searchOperatorTypes = condition.getSearchOperatorTypes(attributComparable);
 
         assertEquals(values.length, searchOperatorTypes.size());
-        for (AllowanceSearchOperatorType allowanceSearchOperatorType : values) {
-            assertTrue(searchOperatorTypes.contains(allowanceSearchOperatorType));
+        for (ValueSetSearchOperatorType valueSetSearchOperatorType : values) {
+            assertTrue(searchOperatorTypes.contains(valueSetSearchOperatorType));
         }
     }
 
@@ -143,7 +140,7 @@ public class PolicyAttributeConditionTest extends AbstractIpsPluginTest {
 
         RangeValueSet foundRangeSet = (RangeValueSet)operandProvider.getSearchOperand(generation);
 
-        assertTrue(foundRangeSet != null);
+        assertNotNull(foundRangeSet);
 
         assertEquals(lower, foundRangeSet.getLowerBound());
         assertEquals(upper, foundRangeSet.getUpperBound());

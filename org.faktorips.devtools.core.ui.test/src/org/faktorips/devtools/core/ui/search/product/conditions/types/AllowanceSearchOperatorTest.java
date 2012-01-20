@@ -27,8 +27,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.AllowanceSearchOperator;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.AllowanceSearchOperatorType;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.ValueSetSearchOperator;
+import org.faktorips.devtools.core.ui.search.product.conditions.types.ValueSetSearchOperatorType;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.IOperandProvider;
 import org.junit.Test;
 
@@ -49,14 +49,14 @@ public class AllowanceSearchOperatorTest {
         IValueSet notFittingBoundsValueSet = new RangeValueSet(valueSetOwner, partId, "7000", "9000", "1000");
         IValueSet notFittingStepsValueSet = new RangeValueSet(valueSetOwner, partId, "8000", "14000", "1500");
 
-        AllowanceSearchOperator operator = new AllowanceSearchOperator(new IntegerDatatype(),
-                AllowanceSearchOperatorType.ALLOWED, mock(IOperandProvider.class), argument);
+        ValueSetSearchOperator operator = new ValueSetSearchOperator(new IntegerDatatype(),
+                ValueSetSearchOperatorType.ALLOWED, mock(IOperandProvider.class), argument);
 
         assertTrue(operator.check(fittingValueSet, productCmptGeneration));
         assertFalse(operator.check(notFittingBoundsValueSet, productCmptGeneration));
         assertFalse(operator.check(notFittingStepsValueSet, productCmptGeneration));
 
-        operator = new AllowanceSearchOperator(new IntegerDatatype(), AllowanceSearchOperatorType.NOT_ALLOWED,
+        operator = new ValueSetSearchOperator(new IntegerDatatype(), ValueSetSearchOperatorType.NOT_ALLOWED,
                 mock(IOperandProvider.class), argument);
 
         assertFalse(operator.check(fittingValueSet, productCmptGeneration));

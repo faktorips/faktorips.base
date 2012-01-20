@@ -18,6 +18,11 @@ import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
 
+/**
+ * This is the {@link CellLabelProvider} for the column of the operators
+ * 
+ * @author dicker
+ */
 final class OperatorLabelProvider extends CellLabelProvider {
 
     @Override

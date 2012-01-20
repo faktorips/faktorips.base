@@ -19,6 +19,14 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.util.ArgumentCheck;
 
+/**
+ * 
+ * The ReferenceSearchOperator checks, if an argument is or is not member of the operand
+ * {@link List}.
+ * 
+ * 
+ * @author dicker
+ */
 public class ReferenceSearchOperator extends AbstractSearchOperator<ReferenceSearchOperatorType> {
 
     public ReferenceSearchOperator(ValueDatatype valueDatatype, ReferenceSearchOperatorType searchOperatorType,
@@ -30,13 +38,8 @@ public class ReferenceSearchOperator extends AbstractSearchOperator<ReferenceSea
     protected boolean check(Object operand, IProductCmptGeneration productCmptGeneration) {
         ArgumentCheck.notNull(operand);
         List<?> operandList = (List<?>)operand;
-        if (operandList.isEmpty()) {
-            return false;
-        }
 
-        // System.out.println(operand.getClass().getName() + " - " + operand.toString() + " - " +
-        // getArgument());
-        return operandList.contains(argument);
+        return operandList.contains(getArgument());
     }
 
 }

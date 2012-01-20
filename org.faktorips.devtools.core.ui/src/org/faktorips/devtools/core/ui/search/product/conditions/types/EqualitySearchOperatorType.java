@@ -15,6 +15,12 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
 
+/**
+ * This Enumeration contains {@link ISearchOperatorType ISearchOperatorTypes} to check equality
+ * within the Product Search.
+ * 
+ * @author dicker
+ */
 public enum EqualitySearchOperatorType implements ISearchOperatorType {
     EQUALITY(Messages.EqualitySearchOperatorType_equals, true),
     INEQUALITY(Messages.EqualitySearchOperatorType_notEquals, false);
@@ -32,12 +38,7 @@ public enum EqualitySearchOperatorType implements ISearchOperatorType {
         return label;
     }
 
-    @Override
-    public int getArgumentCount() {
-        return 1;
-    }
-
-    public boolean isEquality() {
+    boolean isEquality() {
         return equality;
     }
 

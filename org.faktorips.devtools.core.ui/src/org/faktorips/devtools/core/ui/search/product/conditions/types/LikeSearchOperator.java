@@ -17,6 +17,14 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
 
+/**
+ * The LikeSearchOperator checks, if the operand matches or matches not the argument as a wildcard
+ * expression.
+ * <p>
+ * This class uses the {@link WildcardMatcher}.
+ * 
+ * @author dicker
+ */
 public class LikeSearchOperator extends AbstractSearchOperator<LikeSearchOperatorType> {
 
     private final WildcardMatcher matcher;

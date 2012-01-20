@@ -15,6 +15,12 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
 
+/**
+ * The ComparableSearchOperator checks, if the operand and the argument compare to each other
+ * accourding to the given {@link ComparableSearchOperatorType}.
+ * 
+ * @author dicker
+ */
 public class ComparableSearchOperator extends AbstractStringSearchOperator<ComparableSearchOperatorType> {
 
     protected ComparableSearchOperator(ValueDatatype valueDatatype, ComparableSearchOperatorType searchOperatorType,
@@ -23,7 +29,7 @@ public class ComparableSearchOperator extends AbstractStringSearchOperator<Compa
     }
 
     @Override
-    public boolean checkInternal(String operand) {
+    boolean checkInternal(String operand) {
         if (operand == null || getArgument() == null) {
             return false;
         }
@@ -34,13 +40,8 @@ public class ComparableSearchOperator extends AbstractStringSearchOperator<Compa
             return true;
         }
 
-        boolean lowerAllowed = getSearchOperatorType().isLowerAllowed();
-        if (lowerAllowed && compare < 0) {
-            return true;
-        }
-        if (!lowerAllowed && compare > 0) {
-            return true;
-        }
-        return false;
+        boolean ascendingOrder = getSearchOperatorType().isAscendingOrder();
+
+        return ascendingOrder == compare < 0;
     }
 }

@@ -14,16 +14,28 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.table;
 
 import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.faktorips.devtools.core.ui.table.CellTrackingEditingSupport;
 
+/**
+ * An {@link EditingSupport} for the table of search conditions.
+ * 
+ * @author dicker
+ */
 public abstract class EnhancedCellTrackingEditingSupport extends CellTrackingEditingSupport {
 
     public EnhancedCellTrackingEditingSupport(ColumnViewer viewer) {
         super(viewer);
     }
 
+    /**
+     * returns the index of the column of this EditingSupport
+     */
     public abstract int getColumnIndex();
 
+    /**
+     * Enhance the visibility
+     */
     @Override
-    public abstract boolean canEdit(Object element);
+    protected abstract boolean canEdit(Object element);
 }

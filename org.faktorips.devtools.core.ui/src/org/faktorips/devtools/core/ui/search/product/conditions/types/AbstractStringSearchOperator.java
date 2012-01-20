@@ -16,6 +16,12 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 
+/**
+ * An implementation of {@link ISearchOperator} for String operands with a defined
+ * {@link ValueDatatype}
+ * 
+ * @author dicker
+ */
 public abstract class AbstractStringSearchOperator<S extends ISearchOperatorType> extends AbstractSearchOperator<S> {
 
     protected AbstractStringSearchOperator(ValueDatatype valueDatatype, S searchOperatorType,
@@ -31,5 +37,5 @@ public abstract class AbstractStringSearchOperator<S extends ISearchOperatorType
         return false;
     }
 
-    protected abstract boolean checkInternal(String operand);
+    abstract boolean checkInternal(String operand);
 }

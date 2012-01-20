@@ -36,11 +36,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ComparableSearchOperatorType;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.EqualitySearchOperatorType;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.IOperandProvider;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
-import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductAttributeConditionType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,7 +55,7 @@ public class ProductAttributeConditionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetSearchableElements() throws CoreException {
+    public void testGetSearchableElements() {
 
         IProductCmptTypeAttribute attributZahlweise = productCmptType.newProductCmptTypeAttribute("zahlweise");
         IProductCmptTypeAttribute attributeVersicherungssumme = productCmptType

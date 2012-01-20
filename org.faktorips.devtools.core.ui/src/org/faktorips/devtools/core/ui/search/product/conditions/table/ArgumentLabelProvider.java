@@ -19,6 +19,11 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
+/**
+ * This is the {@link CellLabelProvider} for the column of the arguments
+ * 
+ * @author dicker
+ */
 final class ArgumentLabelProvider extends CellLabelProvider {
     @Override
     public void update(ViewerCell cell) {
@@ -29,10 +34,10 @@ final class ArgumentLabelProvider extends CellLabelProvider {
     }
 
     private String createCellText(ProductSearchConditionPresentationModel model) {
-        if (model.getCondition() == null) {
+        if (model.getConditionType() == null) {
             return StringUtils.EMPTY;
         }
-        if (model.getCondition().hasValueSet()) {
+        if (model.getConditionType().hasValueSet()) {
             ValueDatatype datatype = getValueDatatype(model);
 
             if (datatype != null) {
@@ -50,6 +55,6 @@ final class ArgumentLabelProvider extends CellLabelProvider {
         if (model.getSearchedElement() == null) {
             return null;
         }
-        return model.getCondition().getValueDatatype(model.getSearchedElement());
+        return model.getConditionType().getValueDatatype(model.getSearchedElement());
     }
 }

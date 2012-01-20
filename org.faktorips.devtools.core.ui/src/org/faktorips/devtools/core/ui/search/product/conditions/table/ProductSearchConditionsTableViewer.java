@@ -21,54 +21,37 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.search.product.Messages;
 import org.faktorips.devtools.core.ui.search.product.ProductSearchPresentationModel;
 import org.faktorips.devtools.core.ui.table.LinkedColumnsTraversalStrategy;
 
-public class ProductSearchConditionsTableViewerProvider {
+/**
+ * The ProductSearchConditionsTableViewer is a {@link TableViewer} for the conditions of the
+ * Faktor-IPS Product Search
+ * 
+ * @author dicker
+ */
+public class ProductSearchConditionsTableViewer extends TableViewer {
 
-    private TableViewer tableViewer;
-    private final ProductSearchPresentationModel model;
-    private final Composite parent;
+    private ConditionTypeEditingSupport conditionTypeEditingSupport = new ConditionTypeEditingSupport(this);
+    private ElementEditingSupport elementEditingSupport = new ElementEditingSupport(this);
+    private OperatorEditingSupport operatorEditingSupport = new OperatorEditingSupport(this);
+    private ArgumentEditingSupport argumentEditingSupport = new ArgumentEditingSupport(this);
 
-    public ProductSearchConditionsTableViewerProvider(ProductSearchPresentationModel model, Composite parent) {
-        this.model = model;
-        this.parent = parent;
+    public ProductSearchConditionsTableViewer(ProductSearchPresentationModel model, Composite parent) {
+        super(new UIToolkit(null).createTable(parent, SWT.NONE));
 
-        createTableViewer();
+        setContentProvider(new ArrayContentProvider());
+        setInput(model.getProductSearchConditionPresentationModels());
+
+        createTableViewerColumn();
+        createTraversalStrategies();
+
+        layoutViewer();
     }
 
-    private void createTableViewer() {
-        UIToolkit toolkit = new UIToolkit(null);
-        Table table = toolkit.createTable(parent, SWT.NONE);
-
-        table.setHeaderVisible(true);
-        table.setLinesVisible(true);
-
-        tableViewer = new TableViewer(table);
-
-        tableViewer.setContentProvider(new ArrayContentProvider());
-        tableViewer.setInput(model.getProductSearchConditionPresentationModels());
-
-        ConditionTypeEditingSupport conditionTypeEditingSupport = new ConditionTypeEditingSupport(tableViewer);
-        ElementEditingSupport elementEditingSupport = new ElementEditingSupport(tableViewer);
-        OperatorEditingSupport operatorEditingSupport = new OperatorEditingSupport(tableViewer);
-        ArgumentEditingSupport argumentEditingSupport = new ArgumentEditingSupport(tableViewer);
-
-        LinkedColumnsTraversalStrategy conditionTraversalStrategy = new ConditionsTableTraversalStrategy(
-                conditionTypeEditingSupport);
-        LinkedColumnsTraversalStrategy elementTraversalStrategy = new ConditionsTableTraversalStrategy(
-                elementEditingSupport);
-        LinkedColumnsTraversalStrategy operatorTraversalStrategy = new ConditionsTableTraversalStrategy(
-                operatorEditingSupport);
-        LinkedColumnsTraversalStrategy argumentTraversalStrategy = new ConditionsTableTraversalStrategy(
-                argumentEditingSupport);
-
-        conditionTraversalStrategy.setFollower(elementTraversalStrategy);
-        elementTraversalStrategy.setFollower(operatorTraversalStrategy);
-        operatorTraversalStrategy.setFollower(argumentTraversalStrategy);
+    private void createTableViewerColumn() {
 
         createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_conditionType, 150,
                 new ConditionTypeLabelProvider(), conditionTypeEditingSupport);
@@ -82,14 +65,28 @@ public class ProductSearchConditionsTableViewerProvider {
         createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_argument, 170,
                 new ArgumentLabelProvider(), argumentEditingSupport);
 
-        layoutViewer();
+    }
+
+    private void createTraversalStrategies() {
+        LinkedColumnsTraversalStrategy conditionTraversalStrategy = new ConditionsTableTraversalStrategy(
+                conditionTypeEditingSupport);
+        LinkedColumnsTraversalStrategy elementTraversalStrategy = new ConditionsTableTraversalStrategy(
+                elementEditingSupport);
+        LinkedColumnsTraversalStrategy operatorTraversalStrategy = new ConditionsTableTraversalStrategy(
+                operatorEditingSupport);
+        LinkedColumnsTraversalStrategy argumentTraversalStrategy = new ConditionsTableTraversalStrategy(
+                argumentEditingSupport);
+
+        conditionTraversalStrategy.setFollower(elementTraversalStrategy);
+        elementTraversalStrategy.setFollower(operatorTraversalStrategy);
+        operatorTraversalStrategy.setFollower(argumentTraversalStrategy);
     }
 
     private void createTableViewerColumn(String string,
             int width,
             CellLabelProvider labelProvider,
             EditingSupport editingSupport) {
-        TableViewerColumn tableViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+        TableViewerColumn tableViewerColumn = new TableViewerColumn(this, SWT.NONE);
         tableViewerColumn.getColumn().setText(string);
         tableViewerColumn.getColumn().setWidth(width);
         tableViewerColumn.setLabelProvider(labelProvider);
@@ -107,10 +104,10 @@ public class ProductSearchConditionsTableViewerProvider {
         gridData.grabExcessHorizontalSpace = true;
         gridData.grabExcessVerticalSpace = true;
         gridData.heightHint = 150;
-        tableViewer.getControl().setLayoutData(gridData);
-    }
 
-    public TableViewer getTableViewer() {
-        return tableViewer;
+        getControl().setLayoutData(gridData);
+
+        getTable().setHeaderVisible(true);
+        getTable().setLinesVisible(true);
     }
 }

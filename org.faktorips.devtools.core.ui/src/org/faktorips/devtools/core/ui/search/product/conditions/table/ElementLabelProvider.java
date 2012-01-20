@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -16,8 +16,12 @@ package org.faktorips.devtools.core.ui.search.product.conditions.table;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.faktorips.devtools.core.model.IIpsElement;
 
+/**
+ * This is the {@link CellLabelProvider} for the column of the elements
+ * 
+ * @author dicker
+ */
 final class ElementLabelProvider extends CellLabelProvider {
     @Override
     public void update(ViewerCell cell) {
@@ -26,8 +30,7 @@ final class ElementLabelProvider extends CellLabelProvider {
         if (model.getSearchedElement() == null) {
             cell.setText(StringUtils.EMPTY);
         } else {
-            IIpsElement searchedElement = model.getSearchedElement();
-            cell.setText(searchedElement == null ? StringUtils.EMPTY : searchedElement.getName());
+            cell.setText(model.getSearchedElement().getName());
         }
 
     }

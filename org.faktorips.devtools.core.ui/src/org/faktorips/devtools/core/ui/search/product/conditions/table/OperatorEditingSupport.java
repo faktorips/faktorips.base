@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -24,6 +25,12 @@ import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOpe
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 
+/**
+ * This is the {@link EditingSupport} for the columns of operators. It provides a {@link Combo} for
+ * choosing the {@link ISearchOperatorType} for the condition.
+ * 
+ * @author dicker
+ */
 final class OperatorEditingSupport extends EnhancedCellTrackingEditingSupport {
 
     public OperatorEditingSupport(TableViewer viewer) {
@@ -34,7 +41,7 @@ final class OperatorEditingSupport extends EnhancedCellTrackingEditingSupport {
     protected IpsCellEditor getCellEditorInternal(Object element) {
         ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
 
-        List<? extends ISearchOperatorType> operatorTypes = model.getCondition().getSearchOperatorTypes(
+        List<? extends ISearchOperatorType> operatorTypes = model.getConditionType().getSearchOperatorTypes(
                 model.getSearchedElement());
 
         List<String> operatorTypesLabels = new ArrayList<String>();

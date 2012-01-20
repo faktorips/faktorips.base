@@ -15,9 +15,19 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 
+/**
+ * A ISearchOperator provides the core for the search
+ * <p>
+ * The method {@link #check(IProductCmptGeneration)} returns whether the given
+ * {@link IProductCmptGeneration} is a hit of of the search.
+ * 
+ * @author dicker
+ */
 public interface ISearchOperator {
 
+    /**
+     * returns true, if the given {@link IProductCmptGeneration} is a hit
+     */
     public boolean check(IProductCmptGeneration productCmptGeneration);
 
-    public String getLabel();
 }

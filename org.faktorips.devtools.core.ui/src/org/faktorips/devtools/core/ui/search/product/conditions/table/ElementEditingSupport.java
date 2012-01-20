@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.search.product.conditions.table;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -23,6 +24,12 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 
+/**
+ * This is the {@link EditingSupport} for the columns of elements. It provides a {@link Combo} for
+ * choosing the {@link IIpsElement} for the condition.
+ * 
+ * @author dicker
+ */
 final class ElementEditingSupport extends EnhancedCellTrackingEditingSupport {
 
     public ElementEditingSupport(TableViewer viewer) {
@@ -49,7 +56,7 @@ final class ElementEditingSupport extends EnhancedCellTrackingEditingSupport {
     @Override
     public boolean canEdit(Object element) {
         ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
-        return model.getCondition() != null;
+        return model.getConditionType() != null;
     }
 
     @Override

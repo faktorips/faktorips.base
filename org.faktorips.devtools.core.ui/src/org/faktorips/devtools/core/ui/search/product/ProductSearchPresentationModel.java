@@ -126,14 +126,14 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
      * searched. If there are no elements, which can be served, this method returns {@code false}
      * 
      */
-    public boolean isConditionAvailable() {
-        return !getAvailableConditions().isEmpty();
+    public boolean isConditionTypeAvailable() {
+        return !getAvailableConditionTypes().isEmpty();
     }
 
     /**
-     * Returns a List with all available {@link IConditionType IConditions}
+     * Returns a List with all available {@link IConditionType IConditionTypes}
      */
-    public List<IConditionType> getAvailableConditions() {
+    public List<IConditionType> getAvailableConditionTypes() {
         if (productCmptType == null) {
             return Collections.emptyList();
         }

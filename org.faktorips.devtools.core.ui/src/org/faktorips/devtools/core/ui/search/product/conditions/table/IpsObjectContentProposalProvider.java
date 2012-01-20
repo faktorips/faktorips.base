@@ -19,12 +19,32 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
+import org.faktorips.util.StringUtil;
 
+/**
+ * This is an {@link IContentProposalProvider} for {@link IIpsObject IIpsObjects}.
+ * <p>
+ * The possible proposals are within a List of Strings. Depending on the given content and given
+ * position in the method {@link #getProposals(String, int)} an element of this list can become a
+ * proposal:
+ * <ul>
+ * <li>If the content fits the beginning of the qualified name.</li>
+ * <li>If the content fits the beginning of the name.</li>
+ * </ul>
+ * The algorithm is case insensitive.
+ * 
+ * @author dicker
+ */
 final class IpsObjectContentProposalProvider implements IContentProposalProvider {
-    private static final String QUALIFICATION_SEPARATOR = "."; //$NON-NLS-1$
     private final List<String> ipsObjects;
 
+    /**
+     * The constructor of IpsObjectContentProposalProvider with a List of Strings as argument.
+     * 
+     * @param ipsObjects a List of Strings representing the qualified names of IIpsObjects.
+     */
     IpsObjectContentProposalProvider(List<String> ipsObjects) {
         this.ipsObjects = ipsObjects;
     }
@@ -36,9 +56,7 @@ final class IpsObjectContentProposalProvider implements IContentProposalProvider
         List<IContentProposal> proposals = new ArrayList<IContentProposal>();
 
         for (String value : ipsObjects) {
-            boolean startsWith = isFittingContent(value, content);
-
-            if (startsWith) {
+            if (isFittingContent(value, content)) {
                 proposals.add(new ContentProposal(value, value, value));
             }
         }
@@ -53,9 +71,6 @@ final class IpsObjectContentProposalProvider implements IContentProposalProvider
         if (valueLowerCase.startsWith(contentLowerCase)) {
             return true;
         }
-        if (valueLowerCase.contains(QUALIFICATION_SEPARATOR)) {
-            return StringUtils.substringAfterLast(valueLowerCase, QUALIFICATION_SEPARATOR).startsWith(contentLowerCase);
-        }
-        return false;
+        return StringUtil.unqualifiedName(valueLowerCase).startsWith(contentLowerCase);
     }
 }

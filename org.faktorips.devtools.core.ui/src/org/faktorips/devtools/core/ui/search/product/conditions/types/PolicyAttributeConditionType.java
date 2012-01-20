@@ -37,7 +37,7 @@ import org.faktorips.runtime.IProductComponent;
  * The condition tests, whether the argument matches the {@link IValueSet}, which is defined in the
  * {@link IProductComponent} for the product relevant Attribute of the {@link IPolicyCmptType}.
  * <p>
- * The conditions only uses the {@link AllowanceSearchOperatorType AllowanceSearchOperatorTypes}
+ * The conditions only uses the {@link ValueSetSearchOperatorType AllowanceSearchOperatorTypes}
  * 
  * @author dicker
  */
@@ -97,7 +97,7 @@ public class PolicyAttributeConditionType extends AbstractAttributeConditionType
 
     @Override
     public List<? extends ISearchOperatorType> getSearchOperatorTypes(IIpsElement searchableElement) {
-        AllowanceSearchOperatorType[] values = AllowanceSearchOperatorType.values();
+        ValueSetSearchOperatorType[] values = ValueSetSearchOperatorType.values();
         return Arrays.asList(values);
     }
 

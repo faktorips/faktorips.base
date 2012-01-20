@@ -15,6 +15,12 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
 
+/**
+ * This Enumeration contains {@link ISearchOperatorType ISearchOperatorTypes} to check
+ * {@link Comparable Comparables} within the Product Search.
+ * 
+ * @author dicker
+ */
 public enum ComparableSearchOperatorType implements ISearchOperatorType {
     LESS(Messages.ComparableSearchOperatorType_labelLess, false, true),
     LESS_OR_EQUALS(Messages.ComparableSearchOperatorType_labelLessOrEqual, true, true),
@@ -22,19 +28,13 @@ public enum ComparableSearchOperatorType implements ISearchOperatorType {
     GREATER_OR_EQUALS(Messages.ComparableSearchOperatorType_labelGreaterOrEqual, true, false);
 
     private final String label;
-    private final int argumentCount;
     private final boolean equalityAllowed;
-    private final boolean lowerAllowed;
+    private final boolean ascendingOrder;
 
-    private ComparableSearchOperatorType(String label, int argumentCount, boolean equality, boolean lower) {
+    private ComparableSearchOperatorType(String label, boolean equality, boolean ascendingOrder) {
         this.label = label;
-        this.argumentCount = argumentCount;
         this.equalityAllowed = equality;
-        this.lowerAllowed = lower;
-    }
-
-    private ComparableSearchOperatorType(String label, boolean equality, boolean lower) {
-        this(label, 1, equality, lower);
+        this.ascendingOrder = ascendingOrder;
     }
 
     @Override
@@ -42,23 +42,18 @@ public enum ComparableSearchOperatorType implements ISearchOperatorType {
         return label;
     }
 
-    @Override
-    public int getArgumentCount() {
-        return argumentCount;
-    }
-
-    public boolean isEqualityAllowed() {
+    boolean isEqualityAllowed() {
         return equalityAllowed;
     }
 
-    public boolean isLowerAllowed() {
-        return lowerAllowed;
+    boolean isAscendingOrder() {
+        return ascendingOrder;
     }
 
     @Override
-    public ISearchOperator createSearchOperator(IOperandProvider iOperandProvider,
+    public ISearchOperator createSearchOperator(IOperandProvider operandProvider,
             ValueDatatype valueDatatype,
             String argument) {
-        return new ComparableSearchOperator(valueDatatype, this, iOperandProvider, argument);
+        return new ComparableSearchOperator(valueDatatype, this, operandProvider, argument);
     }
 }

@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.search.IIpsSearchPartPresentationModel;
 import org.faktorips.devtools.core.ui.search.product.ProductSearchPresentationModel;
@@ -30,6 +31,13 @@ import org.faktorips.devtools.core.ui.search.product.conditions.types.ICondition
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
 import org.faktorips.util.ArgumentCheck;
 
+/**
+ * 
+ * The ProductSearchConditionPresentationModel represents one condition for the Product Search of
+ * Faktor-IPS
+ * 
+ * @author dicker
+ */
 public class ProductSearchConditionPresentationModel extends PresentationModelObject implements
         IIpsSearchPartPresentationModel {
 
@@ -92,7 +100,7 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
         if (getSearchedElement() == null) {
             operatorTypes = Collections.emptyList();
         }
-        operatorTypes = getCondition().getSearchOperatorTypes(getSearchedElement());
+        operatorTypes = getConditionType().getSearchOperatorTypes(getSearchedElement());
     }
 
     private void updateOperatorType() {
@@ -145,7 +153,7 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
         return searchableElements;
     }
 
-    public IConditionType getCondition() {
+    public IConditionType getConditionType() {
         return conditionType;
     }
 
@@ -171,12 +179,19 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
         parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, StringUtils.EMPTY, null, null));
     }
 
+    /**
+     * return a List of {@link IConditionType IConditionTypes}: For the given
+     * {@link IProductCmptType} all these IConditionTypes have elements, which can be searched.
+     */
     protected List<IConditionType> getConditionsWithSearchableElements() {
-        return parentSearchPresentationModel.getAvailableConditions();
+        return parentSearchPresentationModel.getAvailableConditionTypes();
     }
 
+    /**
+     * returns the {@link ValueDatatype} of the element, which is chosen for the search
+     */
     public ValueDatatype getValueDatatype() {
-        return getCondition().getValueDatatype(getSearchedElement());
+        return getConditionType().getValueDatatype(getSearchedElement());
     }
 
     public void setArgument(String newValue) {
@@ -194,10 +209,10 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     }
 
     /**
-     * @return a List<String> with allowed values
+     * Returns a List<String> with allowed values
      */
     protected List<String> getAllowedAttributeValues() {
-        if (getCondition().hasValueSet()) {
+        if (getConditionType().hasValueSet()) {
             return Collections.emptyList();
         }
 
@@ -208,11 +223,11 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     }
 
     private void updateAllowedAttributeValues() {
-        if (getCondition().hasValueSet()) {
+        if (getConditionType().hasValueSet()) {
             allowedValues = Collections.emptyList();
             return;
         }
-        Collection<?> allowedValuesInCondition = getCondition().getAllowedValues(getSearchedElement());
+        Collection<?> allowedValuesInCondition = getConditionType().getAllowedValues(getSearchedElement());
         allowedValues = new ArrayList<String>();
 
         for (Object object : allowedValuesInCondition) {
