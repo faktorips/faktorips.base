@@ -219,7 +219,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
     private void generateExtractValueFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.append("value = ");
         builder.appendClassName(ValueToXmlHelper.class);
-        builder.append(".getValueFromElement(configElement, \"Value\");");
+        builder.appendln(".getValueFromElement(configElement, \"Value\");");
         builder.append("this.").append(getMemberVarName());
         builder.append(" = ");
         if (getDatatypeHelper() instanceof EnumTypeDatatypeHelper) {

@@ -401,12 +401,52 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      *  repository.getEnumValue(Gender.class, &quot;m&quot;)
      * </pre>
      * 
+     * @param enumType The enum type to generate code for.
+     * @param expressionValue A Java source code expression that yields a String. Examples are a
+     *            constant String like <code>"FOO"</code>, a variable like <code>foo</code> or a
+     *            method call like <code>getÍd()</code>.
+     * @param repositoryExp An expression to access the FAKTOR-IPS runtime repository. Needed for
+     *            enum types with deferred contents.
      * 
      * @throws CoreException If an exception occurs while processing.
      * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
      */
     public JavaCodeFragment getCallGetValueByIdentifierCodeFragment(IEnumType enumType,
             String expressionValue,
+            JavaCodeFragment repositoryExp) throws CoreException {
+        return getCallGetValueByIdentifierCodeFragment(enumType, expressionValue, true, repositoryExp);
+    }
+
+    /**
+     * Returns the code fragment for a <code>getValueByXXX()</code> method call expression.<br />
+     * Code snippet:
+     * 
+     * <pre>
+     *  [Javadoc]
+     *  Gender.getValueById(&quot;male&quot;)
+     * </pre>
+     * 
+     * <pre>
+     *  [Javadoc]
+     *  repository.getEnumValue(Gender.class, &quot;m&quot;)
+     * </pre>
+     * 
+     * @param enumType The enum type to generate code for.
+     * @param expressionValue A Java source code expression that yields a String. Examples are a
+     *            constant String like <code>"FOO"</code>, a variable like <code>foo</code> or a
+     *            method call like <code>getÍd()</code>.
+     * @param checkExpressionForNullAndEmptyString <code>true</code> if this helper must check that
+     *            the given expression can yield <code>null</code> or the empty string. Can be used
+     *            for simpler code.
+     * @param repositoryExp An expression to access the Faktor-IPS runtime repository. Needed for
+     *            enum types with deferred contents.
+     * 
+     * @throws CoreException If an exception occurs while processing.
+     * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
+     */
+    public JavaCodeFragment getCallGetValueByIdentifierCodeFragment(IEnumType enumType,
+            String expressionValue,
+            boolean checkExpressionForNullAndEmptyString,
             JavaCodeFragment repositoryExp) throws CoreException {
 
         ArgumentCheck.notNull(enumType);
@@ -420,7 +460,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             fragment.append('.');
             fragment.append(getMethodNameGetValueBy(enumAttribute));
             fragment.append("("); //$NON-NLS-1$
-            fragment.append(idAttrDatatypeHelper.newInstanceFromExpression(expressionValue));
+            fragment.append(idAttrDatatypeHelper.newInstanceFromExpression(expressionValue,
+                    checkExpressionForNullAndEmptyString));
             fragment.append(")"); //$NON-NLS-1$
             return fragment;
         }
