@@ -20,7 +20,7 @@ import org.faktorips.values.NullObject;
 import org.faktorips.values.NullObjectSupport;
 
 /**
- * Abstract implementation of the <code>Range<code> interface. Implementations of this abstract
+ * Default implementation of the <code>Range<code> interface. Implementations of this
  * range that support incremental steps must provide public factory methods instead of public
  * constructors. Within the factory method the checkIfStepFitsIntoBounds() method has to be
  * called on the created object to ensure that the step increment and the bounds of the
@@ -29,7 +29,7 @@ import org.faktorips.values.NullObjectSupport;
  * @author Jan Ortmann, Peter Erzberger
  * @author Daniel Hohenberger conversion to Java5
  */
-public abstract class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
+public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
 
     private static final long serialVersionUID = -2886828952622682290L;
 
