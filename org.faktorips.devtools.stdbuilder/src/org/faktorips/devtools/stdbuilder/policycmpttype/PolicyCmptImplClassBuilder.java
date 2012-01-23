@@ -410,10 +410,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 new String[] { paramName, varCopyMap }, new String[] { IModelObject.class.getName(),
                         getHashMapFragment(false).getSourcecode() });
         methodsBuilder.openBracket();
+        boolean emptyBlock = true;
 
         if (getPcType().hasSupertype()) {
             methodsBuilder.appendln("super." + getMethodNameCopyProperties() + "(" + paramName + ", " + varCopyMap
                     + ");");
+            emptyBlock = false;
         }
 
         boolean concreteCopyDefined = false;
@@ -445,6 +447,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                         getConcreteCopyVar(methodsBuilder, concreteCopyDefined), varCopyMap, methodsBuilder);
             }
             concreteCopyDefined = true;
+        }
+        emptyBlock = emptyBlock & !concreteCopyDefined;
+        if (emptyBlock) {
+            methodsBuilder.singleLineComment(getLocalizedText(getPcType(), "NOTHING_TO_DO"));
         }
         methodsBuilder.closeBracket();
     }
@@ -501,9 +507,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 varAbstractCopy, varCopyMap }, new String[] { IModelObject.class.getName(),
                 getHashMapFragment(false).getSourcecode() });
 
+        boolean emptyBlock = true;
         if (getPcType().hasSupertype()) {
             methodsBuilder.appendln("super.").append(MethodNames.METHOD_COPY_ASSOCIATIONS) //
                     .append("(").append(varAbstractCopy).append(", ").append(varCopyMap).append(");");
+            emptyBlock = false;
         }
 
         // casted variable newCopy is only necessary if there is at least one association
@@ -512,6 +520,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             if (association.isAssoziation()) {
                 methodsBuilder.varDefinition(getUnqualifiedClassName(), varCopy, "(" + getUnqualifiedClassName() + ")"
                         + varAbstractCopy);
+                emptyBlock = false;
                 break;
             }
         }
@@ -528,6 +537,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             } else {
                 getGenerator(association).generateCodeForCopyComposition(varCopy, varCopyMap, methodsBuilder);
             }
+            emptyBlock = false;
+        }
+        if (emptyBlock) {
+            methodsBuilder.singleLineComment(getLocalizedText(getPcType(), "NOTHING_TO_DO"));
         }
         methodsBuilder.methodEnd();
     }
