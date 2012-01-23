@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.ui.controls.contentproposal.IpsSrcFileContent
 import org.faktorips.devtools.core.ui.controls.contentproposal.IpsSrcFileContentProposalProvider;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.dialogs.SingleTypeSelectIpsObjectContext;
-import org.faktorips.devtools.core.ui.wizards.tablecontents.AddNewTableContentHandler;
+import org.faktorips.devtools.core.ui.wizards.tablecontents.AddNewTableContentsHandler;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -131,8 +131,8 @@ public class TableContentsUsageRefControl extends TextAndSecondControlComposite 
 
     private void newClicked() {
         tableUsage.getIpsSrcFile().markAsDirty();
-        AddNewTableContentHandler addNewTableContentHandler = new AddNewTableContentHandler();
-        addNewTableContentHandler.initWizard(tableUsage, getShell(), false);
+        AddNewTableContentsHandler addNewTableContentHandler = new AddNewTableContentsHandler();
+        addNewTableContentHandler.openDialog(tableUsage, getShell(), false);
     }
 
     private static class IpsSrcFileFilter extends ViewerFilter implements IFilter {

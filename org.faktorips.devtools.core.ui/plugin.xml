@@ -295,11 +295,21 @@
             name="%NewProductCmptLinkCommand_name">
       </command>
       <command
-            description="%newTableContent_description"
-            id="org.faktorips.devtools.core.ui.wizards.tablecontents.newTableContent"
-            name="%newTableContent_label">
+            description="%newTableContents_description"
+            id="org.faktorips.devtools.core.ui.wizards.tablecontents.newTableContents"
+            name="%newTableContents_label">
          <commandParameter
-               id="org.faktorips.devtools.core.ui.wizards.tablecontents.newTableContent.tableUsage"
+               id="org.faktorips.devtools.core.ui.wizards.tablecontents.newTableContents.tableUsage"
+               name="tableUsage"
+               optional="false">
+         </commandParameter>
+      </command>
+      <command
+            description="%addTableContents_description"
+            id="org.faktorips.devtools.core.ui.wizards.tablecontents.addTableContents"
+            name="%addTableContents_labe">
+         <commandParameter
+               id="org.faktorips.devtools.core.ui.wizards.tablecontents.addTableContents.tableUsage"
                name="tableUsage"
                optional="false">
          </commandParameter>
@@ -1835,9 +1845,15 @@
          </activeWhen>
       </handler>
       <handler
-            commandId="org.faktorips.devtools.core.ui.wizards.tablecontents.newTableContent">
+            commandId="org.faktorips.devtools.core.ui.wizards.tablecontents.newTableContents">
          <class
-               class="org.faktorips.devtools.core.ui.wizards.tablecontents.AddNewTableContentHandler">
+               class="org.faktorips.devtools.core.ui.wizards.tablecontents.AddNewTableContentsHandler">
+         </class>
+      </handler>
+      <handler
+            commandId="org.faktorips.devtools.core.ui.wizards.tablecontents.addTableContents">
+         <class
+               class="org.faktorips.devtools.core.ui.wizards.tablecontents.SelectExistingTableContentsHandler">
          </class>
       </handler>
       <handler

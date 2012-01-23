@@ -29,10 +29,13 @@ public class Messages extends NLS {
 
     public static String AddLinkAction_add;
     public static String AddLinkAction_selectDialogTitle;
-    public static String AddNewProductCmptLinkSubmenuFactory_addNewProductCmpt_for;
-    public static String AddNewProductCmptLinkSubmenuFactory_label_addNewProductCmpt;
-    public static String AddNewProductCmptLinkSubmenuFactory_label_newTableContent;
-    public static String AddNewProductCmptLinkSubmenuFactory_label_newTableContent_for;
+    public static String ProductStructureExplorerContributionFactory_addNewProductCmpt_for;
+    public static String ProductStructureExplorerContributionFactory_label_addNewProductCmpt;
+    public static String ProductStructureExplorerContributionFactory_label_newTableContent;
+    public static String ProductStructureExplorerContributionFactory_label_newTableContent_for;
+    public static String ProductStructureExplorerContributionFactory_label_selectTable;
+    public static String ProductStructureExplorerContributionFactory_label_selectTableFor;
+    public static String ProductStructureExplorerContributionFactory_addExistingProductCmpt_for;
     public static String ProductStructureExplorer_collectingAdjustmentDates;
     public static String ProductStructureExplorer_infoMessageEmptyView_1;
     public static String ProductStructureExplorer_label_NoGenerationForDate;
@@ -56,6 +59,7 @@ public class Messages extends NLS {
     public static String ProductStructureExplorer_ShowRulesActionLabel;
     public static String ProductStructureExplorer_ShowRulesActionTooltip;
     public static String ProductStructureExplorer_tooltipToggleAssociatedCmptsNodes;
+    public static String SelectExistingTableContentsHandler_selectionDialogTitle;
     public static String ToggleRuleAction_Label_activate;
     public static String ToggleRuleAction_Label_deactivate;
     public static String ToggleRuleAction_TooltipActivate;

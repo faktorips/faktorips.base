@@ -18,8 +18,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.Window;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -29,11 +27,11 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptR
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
-public class AddNewTableContentHandler extends AbstractHandler {
+public abstract class AbstractAddTableContentsHandler extends AbstractHandler {
 
-    public static final String COMMAND_ID = "org.faktorips.devtools.core.ui.wizards.tablecontents.newTableContent"; //$NON-NLS-1$
-
-    public static final String PARAMETER_TABLE_USAGE = "org.faktorips.devtools.core.ui.wizards.tablecontents.newTableContent.tableUsage"; //$NON-NLS-1$
+    public AbstractAddTableContentsHandler() {
+        super();
+    }
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -43,36 +41,31 @@ public class AddNewTableContentHandler extends AbstractHandler {
         if (currentSelection instanceof IStructuredSelection) {
             structuredSelection = (IStructuredSelection)currentSelection;
         }
-        String tableUsageName = event.getParameter(PARAMETER_TABLE_USAGE);
+        String tableUsageName = event.getParameter(getTableUsageParameter());
         if (structuredSelection != null && structuredSelection.getFirstElement() instanceof IProductCmptReference
                 && tableUsageName != null) {
             IProductCmptReference selectedReference = (IProductCmptReference)structuredSelection.getFirstElement();
             IProductCmptGeneration activeGeneration = selectedReference.getProductCmpt().getGenerationByEffectiveDate(
                     selectedReference.getStructure().getValidAt());
             ITableContentUsage tableContentUsage = activeGeneration.getTableContentUsage(tableUsageName);
-            initWizard(tableContentUsage, shell, true);
+            openDialog(tableContentUsage, shell, true);
         }
         return null;
     }
 
+    protected abstract String getTableUsageParameter();
+
     /**
-     * Opens the {@link NewTableContentsWizard} and set the defaults.
+     * Opens the dialog to fulfill the command.
      * 
-     * @param setToUsage The {@link ITableContentUsage} where the new table content should be set
+     * @param tableContentUsage The {@link ITableContentUsage} where the table content should be set
      *            to.
      * @param shell The shell to open the wizard dialog
      * @param autoSave true for automatically safe the product component where the table was added
      *            to, false if the wizard dialog is opened from editor and you do not want to safe
      *            automatically
-     * @return The wizard return value, @see {@link Window#open()}
      */
-    public int initWizard(ITableContentUsage setToUsage, Shell shell, boolean autoSave) {
-        NewTableContentsWizard newTableContentsWizard = new NewTableContentsWizard();
-        newTableContentsWizard.initDefaults(setToUsage.getIpsSrcFile().getIpsPackageFragment(), null);
-        newTableContentsWizard.setAddToTableUsage(setToUsage, autoSave);
-        WizardDialog dialog = new WizardDialog(shell, newTableContentsWizard);
-        return dialog.open();
-    }
+    protected abstract void openDialog(ITableContentUsage tableContentUsage, Shell shell, boolean autoSave);
 
     @Override
     public void setEnabled(Object evaluationContext) {
@@ -93,4 +86,5 @@ public class AddNewTableContentHandler extends AbstractHandler {
         }
         super.setEnabled(evaluationContext);
     }
+
 }
