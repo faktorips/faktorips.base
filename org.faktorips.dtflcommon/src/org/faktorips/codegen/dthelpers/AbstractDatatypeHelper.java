@@ -65,11 +65,19 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
     protected abstract JavaCodeFragment valueOfExpression(String expression);
 
     public JavaCodeFragment newInstanceFromExpression(String expression) {
+        return newInstanceFromExpression(expression, true);
+    }
+
+    public JavaCodeFragment newInstanceFromExpression(String expression, boolean checkForNull) {
+
         if (expression == null || expression.length() == 0) {
             return nullExpression();
         }
         if (expression.startsWith("(")) { //$NON-NLS-1$
             expression = '(' + expression + ')';
+        }
+        if (!checkForNull) {
+            return valueOfExpression(expression);
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("("); //$NON-NLS-1$
@@ -81,7 +89,6 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
         fragment.append(nullExpression());
         fragment.append(" : "); //$NON-NLS-1$
         fragment.append(valueOfExpression(expression));
-
         return fragment;
     }
 
@@ -175,7 +182,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      * Helpers for immutable datatypes must override this method to create a copy of the value given
      * in the expression.
      */
-    protected JavaCodeFragment newSafeCopy(String expression) {
+    protected JavaCodeFragment newSafeCopy(@SuppressWarnings("unused") String expression) {
         throw new RuntimeException("The DatatypeHelper for datatype " + datatype //$NON-NLS-1$
                 + " does not override the method newSafeCopy!"); //$NON-NLS-1$
     }

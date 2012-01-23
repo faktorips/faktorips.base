@@ -100,9 +100,28 @@ public interface DatatypeHelper {
      * Returns a JavaCodeFragment with sourcecode that creates an instance of the datatype's Java
      * class with the given expression. If the expression is null the fragment's sourcecode is
      * either the String "null" or the sourcecode to get an instance of the apropriate null object.
-     * When evaluated the expression must return a string
+     * When evaluated the expression must return a string.
+     * 
+     * @param expression A Java source code expression that yields a String. Examples are a constant
+     *            String like <code>"FOO"</code>, a variable like <code>foo</code> or a method call
+     *            like <code>getÍd()</code>.
      */
     public JavaCodeFragment newInstanceFromExpression(String expression);
+
+    /**
+     * Returns a JavaCodeFragment with sourcecode that creates an instance of the datatype's Java
+     * class with the given expression. If the expression is null the fragment's sourcecode is
+     * either the String "null" or the sourcecode to get an instance of the apropriate null object.
+     * When evaluated the expression must return a string
+     * 
+     * @param expression A Java source code expression that yields a String. Examples are a constant
+     *            String like <code>"FOO"</code>, a variable like <code>foo</code> or a method call
+     *            like <code>getÍd()</code>.
+     * @param checkForNull <code>true</code> if this helper has to assume that the given expression
+     *            can yield <code>null</code> or the empty string. Can be used to generate simpler
+     *            code, if the null check is not necessary.
+     */
+    public JavaCodeFragment newInstanceFromExpression(String expression, boolean checkForNull);
 
     /**
      * If this is a helper for a mutable data type (like GregorianCalendar for example) this method
