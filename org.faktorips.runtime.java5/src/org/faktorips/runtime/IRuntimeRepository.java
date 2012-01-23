@@ -86,10 +86,11 @@ public interface IRuntimeRepository {
 
     /**
      * Returns the product component identified by the given id. Same as getProductComponent(String
-     * id) but throws an exception if the product component is not found.
+     * id) but throws an exception if the product component is not found. This method never returns
+     * null.
      * 
      * @param id The id of the product component to find.
-     * @return The product component identified by the id or <code>null</code>.
+     * @return The product component identified by the id
      * @throws ProductCmptNotFoundException if no product component with the given id exists.
      * 
      * @see #getProductComponent(String)
@@ -184,11 +185,11 @@ public interface IRuntimeRepository {
     /**
      * Returns the product component generation identified by the id and the effective date. Same as
      * getProductComponentGeneration(String id, Calendar effectiveDate) but throws an exception if
-     * the product component generation is not found.
+     * the product component generation is not found. This method never returns null.
      * 
      * @param id The product component's id.
      * @param effectiveDate The process' effective date
-     * @return The product component generation or <code>null</code>.
+     * @return The product component generation
      * @throws ProductCmptGenerationNotFoundException if no generation for the given effectiveDate.
      * 
      * @see #getProductComponentGeneration(String, Calendar)
