@@ -18,6 +18,7 @@ import java.beans.PropertyChangeEvent;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -51,6 +52,7 @@ public class FolderAndPackagePage extends WizardPage {
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         Composite composite = toolkit.createGridComposite(parent, 1, false, false);
+        ((GridLayout)composite.getLayout()).verticalSpacing = 15;
 
         Composite labelEditColumnComposite = toolkit.createLabelEditColumnComposite(composite);
 

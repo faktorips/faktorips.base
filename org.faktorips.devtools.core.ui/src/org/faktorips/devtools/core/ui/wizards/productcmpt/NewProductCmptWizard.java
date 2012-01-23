@@ -153,6 +153,8 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
                 initDefaults(selectedPackage, cmptType, (IProductCmpt)selectedIpsObject);
             } else if (selectedIpsObject.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE)) {
                 initDefaults(selectedPackage, (IProductCmptType)selectedIpsObject, null);
+            } else {
+                initDefaults(selectedPackage, null, null);
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
