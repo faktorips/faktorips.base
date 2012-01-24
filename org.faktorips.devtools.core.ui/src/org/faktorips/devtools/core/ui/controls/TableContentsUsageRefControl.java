@@ -72,7 +72,8 @@ public class TableContentsUsageRefControl extends TextAndSecondControlComposite 
             throw new CoreRuntimeException(e);
         }
         proposalProvider.setFilter(filter);
-        toolkit.attachContentProposalAdapter(getTextControl(), proposalProvider, new IpsSrcFileContentProposalLabelProvider());
+        toolkit.attachContentProposalAdapter(getTextControl(), proposalProvider,
+                new IpsSrcFileContentProposalLabelProvider());
     }
 
     @Override
@@ -140,7 +141,11 @@ public class TableContentsUsageRefControl extends TextAndSecondControlComposite 
         private String[] tableStructures;
 
         public IpsSrcFileFilter(ITableStructureUsage usage) {
-            tableStructures = usage.getTableStructures();
+            if (usage != null) {
+                tableStructures = usage.getTableStructures();
+            } else {
+                tableStructures = new String[0];
+            }
         }
 
         @Override
