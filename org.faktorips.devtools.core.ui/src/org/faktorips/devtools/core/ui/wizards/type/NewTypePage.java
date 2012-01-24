@@ -72,7 +72,7 @@ public abstract class NewTypePage extends IpsObjectPage {
 
     protected void addAbstractField(Composite nameComposite, UIToolkit toolkit) {
         toolkit.createLabel(nameComposite, ""); //$NON-NLS-1$
-        abstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, "Abstract")); //$NON-NLS-1$
+        abstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.NewTypePage_check_abstract));
         abstractField.addChangeListener(this);
     }
 

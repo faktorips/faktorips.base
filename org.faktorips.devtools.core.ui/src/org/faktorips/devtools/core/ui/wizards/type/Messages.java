@@ -27,6 +27,7 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String NewTypePage_check_abstract;
     public static String NewTypePage_msgNameConflicts;
     public static String NewTypePage_msgSupertypeDoesNotExist;
     public static String NewTypePage_superclass;
