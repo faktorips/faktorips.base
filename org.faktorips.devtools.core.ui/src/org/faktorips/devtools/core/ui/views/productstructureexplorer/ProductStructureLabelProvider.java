@@ -140,17 +140,9 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
     public StyledString getStyledText(Object element) {
         StyledString styledString = new StyledString(getText(element));
         if (element instanceof IProductCmptReference) {
+
             // Product component
             IProductCmptReference productCmptReference = (IProductCmptReference)element;
-
-            // show association nodes
-            if (!isShowAssociationNodes()) {
-                styledString.append(getRolenameLabel(productCmptReference), StyledString.DECORATIONS_STYLER);
-            }
-
-            // generation labels
-            styledString.append(getGenerationLabel(productCmptReference.getProductCmpt()),
-                    StyledString.QUALIFIER_STYLER);
 
             // show cardinality
             if (productCmptReference.getLink() != null && showCardinalities) {
@@ -162,8 +154,17 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
                 }
 
                 styledString.append(
-                        " (" + minCardinality + ".." + maxCardinalityString + ")", StyledString.QUALIFIER_STYLER); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        " [" + minCardinality + ".." + maxCardinalityString + "]", StyledString.COUNTER_STYLER); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
+
+            // show association nodes
+            if (!isShowAssociationNodes()) {
+                styledString.append(getRolenameLabel(productCmptReference), StyledString.DECORATIONS_STYLER);
+            }
+
+            // generation labels
+            styledString.append(getGenerationLabel(productCmptReference.getProductCmpt()),
+                    StyledString.QUALIFIER_STYLER);
 
         } else if (element instanceof IProductCmptVRuleReference) {
             // Rule

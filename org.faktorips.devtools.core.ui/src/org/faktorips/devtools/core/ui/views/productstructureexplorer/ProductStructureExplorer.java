@@ -105,6 +105,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
     private static String MENU_INFO_GROUP = "goup.info"; //$NON-NLS-1$
     private static String MENU_FILTER_GROUP = "goup.filter"; //$NON-NLS-1$
+    private static String MENU_RULE_GROUP = "goup.rule"; //$NON-NLS-1$
 
     // Used for saving the current layout style in a eclipse memento.
     private static final String LAYOUT_AND_FILTER_MEMENTO = "layoutandfilter"; //$NON-NLS-1$
@@ -192,25 +193,30 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         showAssociationNodeAction.setChecked(showAssociationNode);
         menuManager.appendToGroup(MENU_INFO_GROUP, showAssociationNodeAction);
 
-        Action showCardinalitiesAction = createShowCardinalitiesAction();
-        showCardinalitiesAction.setChecked(showCardinalities);
-        menuManager.appendToGroup(MENU_INFO_GROUP, showCardinalitiesAction);
-
         Action showAssociatedCmptsAction = createShowAssociatedCmptsAction();
         showAssociatedCmptsAction.setChecked(showAssociatedCmpts);
         menuManager.appendToGroup(MENU_INFO_GROUP, showAssociatedCmptsAction);
 
-        Action showRoleNameAction = createShowTableRoleNameAction();
-        showRoleNameAction.setChecked(showTableStructureRoleName);
-        menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);
+        Action showCardinalitiesAction = createShowCardinalitiesAction();
+        showCardinalitiesAction.setChecked(showCardinalities);
+        menuManager.appendToGroup(MENU_INFO_GROUP, showCardinalitiesAction);
 
         menuManager.add(new Separator(MENU_FILTER_GROUP));
-        Action showRulesAction = createShowRulesAction();
-        showRulesAction.setChecked(showRules);
-        menuManager.appendToGroup(MENU_FILTER_GROUP, showRulesAction);
+
         Action showReferencedTableAction = createShowReferencedTables();
         showReferencedTableAction.setChecked(showReferencedTable);
         menuManager.appendToGroup(MENU_FILTER_GROUP, showReferencedTableAction);
+
+        Action showRoleNameAction = createShowTableRoleNameAction();
+        showRoleNameAction.setChecked(showTableStructureRoleName);
+        menuManager.appendToGroup(MENU_FILTER_GROUP, showRoleNameAction);
+
+        menuManager.add(new Separator(MENU_RULE_GROUP));
+
+        Action showRulesAction = createShowRulesAction();
+        showRulesAction.setChecked(showRules);
+        menuManager.appendToGroup(MENU_RULE_GROUP, showRulesAction);
+
     }
 
     private Action createShowReferencedTables() {
@@ -300,9 +306,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         return new Action(Messages.ProductStructureExplorer_menuShowCardinalities_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
-                // TODO 17.01.2012 RP - Image is missing at ShowCardinalities
-                // return IpsUIPlugin.getImageHandling().createImageDescriptor("ShowAssociationTypeNodes.gif"); //$NON-NLS-1$
-                return null;
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("Cardinality.gif"); //$NON-NLS-1$
             }
 
             @Override
