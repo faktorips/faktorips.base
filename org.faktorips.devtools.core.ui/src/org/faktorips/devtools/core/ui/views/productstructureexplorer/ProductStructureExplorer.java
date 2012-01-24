@@ -795,10 +795,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         updateView();
     }
 
-    public IProductCmptTreeStructure getContent() {
-        return (IProductCmptTreeStructure)treeViewer.getInput();
-    }
-
     public void updateView() {
         if (treeViewer != null && !treeViewer.getControl().isDisposed()) {
             Object element = treeViewer.getInput();
