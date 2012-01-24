@@ -12,6 +12,8 @@ package org.faktorips.devtools.core.ui.commands;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
@@ -108,13 +110,15 @@ public class IpsPasteHandler extends IpsAbstractHandler {
      * 
      * @param parent The parent to paste to.
      */
-    protected IIpsObjectPart paste(IpsObjectPartContainer parent) {
+    protected List<IIpsObjectPart> paste(IpsObjectPartContainer parent) {
         String stored = (String)clipboard.getContents(TextTransfer.getInstance());
+        IpsObjectPartState[] states = (IpsObjectPartState[])clipboard.getContents(new IpsObjectPartStateListTransfer(
+                parent.getClass().getClassLoader()));
 
         // obtain the package fragment of the given part container
         IIpsPackageFragment parentPackageFrgmt = findParentPackageFragment(parent);
 
-        if (stored == null && parentPackageFrgmt != null) {
+        if (stored == null && states == null && parentPackageFrgmt != null) {
             // the clipboard contains no string, try to paste resources
             paste(parentPackageFrgmt);
         } else {
@@ -125,9 +129,13 @@ public class IpsPasteHandler extends IpsAbstractHandler {
             }
             // no links in string try to paste ips object parts
             try {
-                IpsObjectPartState state = new IpsObjectPartState(stored, parent.getClass().getClassLoader());
-                IIpsObjectPart newPart = state.newPart(parent);
-                return newPart;
+                List<IIpsObjectPart> newParts = new ArrayList<IIpsObjectPart>();
+                if (states != null) {
+                    for (IpsObjectPartState state : states) {
+                        newParts.add(state.newPart(parent));
+                    }
+                }
+                return newParts;
             } catch (RuntimeException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }

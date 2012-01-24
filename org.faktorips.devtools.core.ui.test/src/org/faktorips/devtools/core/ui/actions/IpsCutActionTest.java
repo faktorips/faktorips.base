@@ -20,7 +20,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
@@ -32,6 +31,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.ui.commands.IpsObjectPartStateListTransfer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -72,9 +72,10 @@ public class IpsCutActionTest extends AbstractIpsPluginTest {
         cutAction.run();
         Clipboard clipboard = new Clipboard(IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell()
                 .getDisplay());
-        String stored = (String)clipboard.getContents(TextTransfer.getInstance());
+        IpsObjectPartState[] states = (IpsObjectPartState[])clipboard.getContents(new IpsObjectPartStateListTransfer(
+                pcType.getClass().getClassLoader()));
 
-        assertEquals(current, stored);
+        assertEquals(current, states[0].toString());
 
         assertEquals(0, pcType.getNumOfAttributes());
     }

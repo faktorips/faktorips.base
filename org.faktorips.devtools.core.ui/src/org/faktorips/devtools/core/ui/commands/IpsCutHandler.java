@@ -39,13 +39,13 @@ public class IpsCutHandler extends IpsAbstractHandler {
     }
 
     public void cutToClipboard(IStructuredSelection selection, Clipboard clipboard) {
-        List<String> removedObjects = new ArrayList<String>();
+        List<IpsObjectPartState> removedObjects = new ArrayList<IpsObjectPartState>();
         IIpsObjectPart part;
         for (Iterator<Object> iter = getSelectionIterator(selection); iter.hasNext();) {
             Object selected = iter.next();
             if (selected instanceof IIpsObjectPart) {
                 part = (IIpsObjectPart)selected;
-                removedObjects.add(new IpsObjectPartState(part).toString());
+                removedObjects.add(new IpsObjectPartState(part));
                 part.delete();
             }
         }

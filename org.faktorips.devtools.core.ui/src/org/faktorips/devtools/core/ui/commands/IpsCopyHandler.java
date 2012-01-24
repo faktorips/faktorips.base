@@ -48,7 +48,7 @@ public class IpsCopyHandler extends IpsAbstractHandler {
     }
 
     public void copyToClipboard(IStructuredSelection selection, Clipboard clipboard) {
-        List<String> copiedObjects = new ArrayList<String>();
+        List<IpsObjectPartState> copiedObjects = new ArrayList<IpsObjectPartState>();
         List<IResource> copiedResources = new ArrayList<IResource>();
         List<String> copiedResourceLinks = new ArrayList<String>();
 
@@ -58,7 +58,7 @@ public class IpsCopyHandler extends IpsAbstractHandler {
 
             if (selected instanceof IIpsObjectPart) {
                 part = (IIpsObjectPart)selected;
-                copiedObjects.add(new IpsObjectPartState(part).toString());
+                copiedObjects.add(new IpsObjectPartState(part));
             } else if (selected instanceof IIpsElement) {
                 IIpsPackageFragmentRoot root = null;
                 IIpsArchive ipsArchive = null;

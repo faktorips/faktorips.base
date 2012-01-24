@@ -37,6 +37,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -115,12 +116,12 @@ public abstract class IpsAbstractHandler extends AbstractHandler {
 
     /**
      * Builds the data-array for clipboard operations (copy, drag,...).
-     * 
-     * @param stringItems The list of strings to put to the clipboard
+     * @param copiedObjects The list of {@link IpsObjectPartState IpsObjectPartStates}
+     *            to put to the clipboard
      * @param resourceItems The list of resources to put to the clipboard
      * @param copiedResourceLinks The list of resource links to put in the clipboard
      */
-    protected static Object[] getDataArray(List<String> stringItems,
+    protected static Object[] getDataArray(List<IpsObjectPartState> copiedObjects,
             List<IResource> resourceItems,
             List<String> copiedResourceLinks) {
         List<Object> result = new ArrayList<Object>();
@@ -129,8 +130,6 @@ public abstract class IpsAbstractHandler extends AbstractHandler {
             IResource[] res = new IResource[resourceItems.size()];
             result.add(resourceItems.toArray(res));
         }
-        // add copied text
-        result.addAll(stringItems);
         // add copied resource links (e.g. links to an object inside an archiv)
         // all links will be merged to one text inside the clipboard
         if (copiedResourceLinks != null) {
@@ -142,6 +141,10 @@ public abstract class IpsAbstractHandler extends AbstractHandler {
                 result.add(ARCHIVE_LINK + strReferences);
             }
         }
+        // add copied states
+        if (copiedObjects != null && !copiedObjects.isEmpty()) {
+            result.add(copiedObjects.toArray(new IpsObjectPartState[copiedObjects.size()]));
+        }
         return result.toArray();
     }
 
@@ -149,7 +152,7 @@ public abstract class IpsAbstractHandler extends AbstractHandler {
      * Returns the apropriate Transfer for every item in the given lists in the same order as the
      * data is returend in getDataArray.
      */
-    protected static Transfer[] getTypeArray(List<String> stringItems,
+    protected static Transfer[] getTypeArray(List<IpsObjectPartState> copiedObjects,
             List<IResource> resourceItems,
             List<String> copiedResourceLinks) {
 
@@ -157,12 +160,12 @@ public abstract class IpsAbstractHandler extends AbstractHandler {
         if (resourceItems.size() > 0) {
             resultList.add(ResourceTransfer.getInstance());
         }
-        for (int i = 0; i < stringItems.size(); i++) {
-            resultList.add(TextTransfer.getInstance());
-        }
         if (copiedResourceLinks != null && copiedResourceLinks.size() > 0) {
             // the links will be merged to one text inside the clipboard
             resultList.add(TextTransfer.getInstance());
+        }
+        if (copiedObjects != null && !copiedObjects.isEmpty()) {
+            resultList.add(IpsObjectPartStateListTransfer.getWriteInstance());
         }
         Transfer[] result = new Transfer[resultList.size()];
         return resultList.toArray(result);
