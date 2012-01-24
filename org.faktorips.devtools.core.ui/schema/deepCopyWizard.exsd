@@ -60,7 +60,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.ui.wizards.deepcopy.AdditionalDeepCopyWizardPage"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.ui.wizards.deepcopy.IAdditionalDeepCopyWizardPage"/>
                </appInfo>
             </annotation>
          </attribute>

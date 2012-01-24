@@ -60,7 +60,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.internal.model.productcmpt.DeepCopyOperationFixup"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.internal.model.productcmpt.IDeepCopyOperationFixup"/>
                </appInfo>
             </annotation>
          </attribute>

@@ -317,14 +317,14 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         ipsPlugin = spy(ipsPlugin);
         SingletonMockHelper singletonMockHelper = new SingletonMockHelper();
         singletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
-        DeepCopyOperationFixup testDeepCopyOperationFixup = mock(DeepCopyOperationFixup.class);
+        IDeepCopyOperationFixup testDeepCopyOperationFixup = mock(IDeepCopyOperationFixup.class);
         Map<String, Object> executableExtensionMap = new HashMap<String, Object>();
         executableExtensionMap.put("class", testDeepCopyOperationFixup);
         IExtension extension = TestMockingUtils.mockExtension("TestDeepCopyOperationFixup",
-                new TestConfigurationElement(DeepCopyOperationFixup.CONFIG_ELEMENT_ID_FIXUP,
+                new TestConfigurationElement(IDeepCopyOperationFixup.CONFIG_ELEMENT_ID_FIXUP,
                         new HashMap<String, String>(), null, new IConfigurationElement[0], executableExtensionMap));
         IExtensionPoint extensionPoint = TestMockingUtils.mockExtensionPoint(IpsPlugin.PLUGIN_ID,
-                DeepCopyOperationFixup.EXTENSION_POINT_ID_DEEP_COPY_OPERATION, extension);
+                IDeepCopyOperationFixup.EXTENSION_POINT_ID_DEEP_COPY_OPERATION, extension);
         TestExtensionRegistry extensionRegistry = new TestExtensionRegistry(new IExtensionPoint[] { extensionPoint });
         doReturn(extensionRegistry).when(ipsPlugin).getExtensionRegistry();
 

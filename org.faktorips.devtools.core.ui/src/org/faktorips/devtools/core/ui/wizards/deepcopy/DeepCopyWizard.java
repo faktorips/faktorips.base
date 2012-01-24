@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.productcmpt.DeepCopyOperation;
-import org.faktorips.devtools.core.internal.model.productcmpt.DeepCopyOperationFixup;
+import org.faktorips.devtools.core.internal.model.productcmpt.IDeepCopyOperationFixup;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -67,7 +67,7 @@ public class DeepCopyWizard extends ResizableWizard {
 
     private IIpsSrcFile copyResultRoot;
     private int type;
-    private List<AdditionalDeepCopyWizardPage> additionalPages;
+    private List<IAdditionalDeepCopyWizardPage> additionalPages;
 
     /**
      * Creates a new wizard which can make a deep copy of the given product.
@@ -120,34 +120,34 @@ public class DeepCopyWizard extends ResizableWizard {
         super.addPage(sourcePage);
         ReferenceAndPreviewPage previewPage = new ReferenceAndPreviewPage(type);
         super.addPage(previewPage);
-        List<AdditionalDeepCopyWizardPage> additionalPages = getAdditionalPages();
-        for (AdditionalDeepCopyWizardPage additionalPage : additionalPages) {
+        List<IAdditionalDeepCopyWizardPage> additionalPages = getAdditionalPages();
+        for (IAdditionalDeepCopyWizardPage additionalPage : additionalPages) {
             super.addPage(additionalPage);
         }
     }
 
-    private List<AdditionalDeepCopyWizardPage> getAdditionalPages() {
+    private List<IAdditionalDeepCopyWizardPage> getAdditionalPages() {
         if (additionalPages == null) {
             ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.getDefault().getExtensionRegistry(),
                     IpsUIPlugin.PLUGIN_ID);
             IExtension[] extensions = extensionPoints
-                    .getExtension(AdditionalDeepCopyWizardPage.EXTENSION_POINT_ID_DEEP_COPY_WIZARD);
-            additionalPages = new ArrayList<AdditionalDeepCopyWizardPage>();
+                    .getExtension(IAdditionalDeepCopyWizardPage.EXTENSION_POINT_ID_DEEP_COPY_WIZARD);
+            additionalPages = new ArrayList<IAdditionalDeepCopyWizardPage>();
             for (IExtension extension : extensions) {
                 additionalPages.addAll(ExtensionPoints
                         .createExecutableExtensions(extension,
-                                AdditionalDeepCopyWizardPage.CONFIG_ELEMENT_ID_ADDITIONAL_PAGE,
-                                AdditionalDeepCopyWizardPage.CONFIG_ELEMENT_ATTRIBUTE_CLASS,
-                                AdditionalDeepCopyWizardPage.class));
+                                IAdditionalDeepCopyWizardPage.CONFIG_ELEMENT_ID_ADDITIONAL_PAGE,
+                                IAdditionalDeepCopyWizardPage.CONFIG_ELEMENT_ATTRIBUTE_CLASS,
+                                IAdditionalDeepCopyWizardPage.class));
             }
         }
         return additionalPages;
     }
 
     private void configureFixups(DeepCopyOperation dco) {
-        final List<DeepCopyOperationFixup> additionalFixups = dco.getAdditionalFixups();
-        List<AdditionalDeepCopyWizardPage> additionalPages = getAdditionalPages();
-        for (final AdditionalDeepCopyWizardPage additionalPage : additionalPages) {
+        final List<IDeepCopyOperationFixup> additionalFixups = dco.getAdditionalFixups();
+        List<IAdditionalDeepCopyWizardPage> additionalPages = getAdditionalPages();
+        for (final IAdditionalDeepCopyWizardPage additionalPage : additionalPages) {
             ISafeRunnable runnable = new ISafeRunnable() {
                 @Override
                 public void handleException(Throwable exception) {

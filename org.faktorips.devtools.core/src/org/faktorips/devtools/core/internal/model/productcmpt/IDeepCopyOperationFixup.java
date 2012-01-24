@@ -4,7 +4,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 
 /**
- * A {@link DeepCopyOperationFixup} will be run at the end of the
+ * A {@link IDeepCopyOperationFixup} will be run at the end of the
  * {@link DeepCopyOperation#run(IProgressMonitor)} method to allow additional changes to the
  * copied objects by plugins.
  * <p>
@@ -14,7 +14,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
  * 
  * @since 3.6
  */
-public interface DeepCopyOperationFixup {
+public interface IDeepCopyOperationFixup {
     String CONFIG_ELEMENT_ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
     String CONFIG_ELEMENT_ID_FIXUP = "Fixup"; //$NON-NLS-1$
     String EXTENSION_POINT_ID_DEEP_COPY_OPERATION = "deepCopyOperation"; //$NON-NLS-1$

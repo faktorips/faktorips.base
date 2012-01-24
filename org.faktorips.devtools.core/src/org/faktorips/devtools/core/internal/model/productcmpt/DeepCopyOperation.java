@@ -62,7 +62,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     private final IProductCmptReference structureRoot;
     private final GregorianCalendar oldValidFrom;
     private final GregorianCalendar newValidFrom;
-    private List<DeepCopyOperationFixup> fixups;
+    private List<IDeepCopyOperationFixup> fixups;
 
     /**
      * Creates a new operation to copy the given product components.
@@ -135,7 +135,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
 
             monitor.worked(1);
         }
-        List<DeepCopyOperationFixup> additionalFixups = getAdditionalFixups();
+        List<IDeepCopyOperationFixup> additionalFixups = getAdditionalFixups();
         // fix links, on of the following options:
         // a) change target to new (copied) productCmpt's: if the target should also be copied ->
         // checked on the 1st wizard page and checked on the 2nd page
@@ -153,7 +153,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             fixLinksToTableContents(productCmptNew, productCmptTemplate, tblContentData2newTableContentQName,
                     objectsToRefer);
             fixLinksToProductCmpt(productCmptNew, productCmptTemplate, linkData2newProductCmptQName, objectsToRefer);
-            for (final DeepCopyOperationFixup fixup : additionalFixups) {
+            for (final IDeepCopyOperationFixup fixup : additionalFixups) {
                 ISafeRunnable runnable = new ISafeRunnable() {
                     @Override
                     public void handleException(Throwable exception) {
@@ -183,22 +183,22 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     }
 
     /**
-     * Returns the {@link DeepCopyOperationFixup DeepCopyOperationFixups} defined in the extension
+     * Returns the {@link IDeepCopyOperationFixup DeepCopyOperationFixups} defined in the extension
      * point {@code org.faktorips.devtools.core.deepCopyOperation}.
      * 
-     * @return the {@link DeepCopyOperationFixup DeepCopyOperationFixups}
+     * @return the {@link IDeepCopyOperationFixup DeepCopyOperationFixups}
      */
-    public List<DeepCopyOperationFixup> getAdditionalFixups() {
+    public List<IDeepCopyOperationFixup> getAdditionalFixups() {
         if (fixups == null) {
             ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.getDefault().getExtensionRegistry(),
                     IpsPlugin.PLUGIN_ID);
             IExtension[] extensions = extensionPoints
-                    .getExtension(DeepCopyOperationFixup.EXTENSION_POINT_ID_DEEP_COPY_OPERATION);
-            fixups = new ArrayList<DeepCopyOperationFixup>();
+                    .getExtension(IDeepCopyOperationFixup.EXTENSION_POINT_ID_DEEP_COPY_OPERATION);
+            fixups = new ArrayList<IDeepCopyOperationFixup>();
             for (IExtension extension : extensions) {
                 fixups.addAll(ExtensionPoints.createExecutableExtensions(extension,
-                        DeepCopyOperationFixup.CONFIG_ELEMENT_ID_FIXUP,
-                        DeepCopyOperationFixup.CONFIG_ELEMENT_ATTRIBUTE_CLASS, DeepCopyOperationFixup.class));
+                        IDeepCopyOperationFixup.CONFIG_ELEMENT_ID_FIXUP,
+                        IDeepCopyOperationFixup.CONFIG_ELEMENT_ATTRIBUTE_CLASS, IDeepCopyOperationFixup.class));
             }
         }
         return fixups;
