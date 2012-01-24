@@ -458,11 +458,15 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
     @Override
     public void generateCodeForMethodWriteReferencesToXml(IPolicyCmptTypeAssociation policyCmptTypeAssociation,
             JavaCodeFragmentBuilder builder) {
+        builder.appendln("if(");
+        builder.append(getFieldNameTo1Association());
+        builder.appendln("!=null){");
         builder.appendln("element.appendChild(((");
         builder.appendClassName(IXmlPersistenceSupport.class);
         builder.appendln(")");
         builder.append(getFieldNameTo1Association());
         builder.appendln(").toXml(element.getOwnerDocument()));");
+        builder.appendln("}");
     }
 
     /**
