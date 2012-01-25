@@ -24,9 +24,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.ArchiveIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.editors.IGotoIpsObjectPart;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorInput;
 
@@ -47,7 +49,10 @@ public class OpenEditorAction extends IpsAction {
 
     @Override
     public void run(IStructuredSelection selection) {
-        openEditor(selection);
+        IEditorPart editor = openEditor(selection);
+        if (selection.getFirstElement() instanceof IIpsObjectPart && editor instanceof IGotoIpsObjectPart) {
+            ((IGotoIpsObjectPart)editor).gotoIpsObjectPart((IIpsObjectPart)selection.getFirstElement());
+        }
     }
 
     public IEditorPart openEditor() {
