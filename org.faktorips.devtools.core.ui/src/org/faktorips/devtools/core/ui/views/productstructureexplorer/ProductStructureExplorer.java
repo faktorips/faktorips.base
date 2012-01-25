@@ -38,7 +38,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.dnd.DND;
@@ -1045,9 +1044,12 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
         @Override
         public void run() {
-            boolean shouldChangeCardinality = changeCardinality();
+            IIpsSrcFile ipsSrcFile = productCmptReference.getLink().getIpsSrcFile();
+            boolean dirty = ipsSrcFile.isDirty();
 
-            if (!productCmptReference.getLink().getIpsSrcFile().isDirty() && shouldChangeCardinality) {
+            changeCardinality();
+
+            if (!dirty && ipsSrcFile.isDirty()) {
                 try {
                     productCmptReference.getLink().getIpsSrcFile().save(false, new NullProgressMonitor());
                 } catch (CoreException e) {
@@ -1057,7 +1059,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             productStructureExplorer.refresh();
         }
 
-        protected abstract boolean changeCardinality();
+        protected abstract void changeCardinality();
 
     }
 
@@ -1069,10 +1071,10 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         }
 
         @Override
-        protected boolean changeCardinality() {
+        protected void changeCardinality() {
             Shell shell = getProductStructureExplorer().getViewSite().getShell();
             LinkEditDialog dialog = new LinkEditDialog(getProductCmptReference().getLink(), shell);
-            return dialog.open() == Window.OK;
+            dialog.open();
         }
     }
 
@@ -1091,12 +1093,11 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         }
 
         @Override
-        protected boolean changeCardinality() {
+        protected void changeCardinality() {
             IProductCmptReference productCmptReference = getProductCmptReference();
             productCmptReference.getLink().setMinCardinality(minCardinality);
             productCmptReference.getLink().setMaxCardinality(maxCardinality);
             productCmptReference.getLink().setDefaultCardinality(defaultCardinality);
-            return true;
         }
     }
 }
