@@ -743,8 +743,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 }
             }
         };
-        if (PlatformUI.isWorkbenchRunning()) {
-            PlatformUI.getWorkbench().getDisplay().syncExec(notifier);
+        if (PlatformUI.isWorkbenchRunning() && Display.getCurrent() == null) {
+            // only run notify in async display thread if we are not already in display thread.
+            PlatformUI.getWorkbench().getDisplay().asyncExec(notifier);
         } else {
             notifier.run();
         }
@@ -761,24 +762,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     private void notifyIpsSrcFileChangedListeners(final Map<IIpsSrcFile, IResourceDelta> changedIpsSrcFiles) {
-        if (changedIpsSrcFiles.isEmpty()) {
-            return;
-        }
-        final Runnable notifier = new Runnable() {
-            @Override
-            public void run() {
-                List<IIpsSrcFilesChangeListener> copy = new CopyOnWriteArrayList<IIpsSrcFilesChangeListener>(
-                        ipsSrcFilesChangeListeners);
-
-                for (IIpsSrcFilesChangeListener listener : copy) {
-                    listener.ipsSrcFilesChanged(new IpsSrcFilesChangedEvent(changedIpsSrcFiles));
-                }
-            }
-        };
-        if (PlatformUI.isWorkbenchRunning()) {
-            PlatformUI.getWorkbench().getDisplay().asyncExec(notifier);
-        } else {
-            notifier.run();
+        final List<IIpsSrcFilesChangeListener> copy = new CopyOnWriteArrayList<IIpsSrcFilesChangeListener>(
+                ipsSrcFilesChangeListeners);
+        for (IIpsSrcFilesChangeListener listener : copy) {
+            listener.ipsSrcFilesChanged(new IpsSrcFilesChangedEvent(changedIpsSrcFiles));
         }
     }
 
@@ -843,7 +830,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return;
     }
 
-    // TODO Jan: getDatatypesDefinedInProjectPropeties would be a better name
     public Map<String, Datatype> getDatatypesDefinedInProjectProperties(IIpsProject ipsProject) {
         reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
         Map<String, Datatype> map = projectDatatypesMap.get(ipsProject.getName());
@@ -1107,7 +1093,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     delta.accept(resourceDeltaVisitor);
                     IpsSrcFileChangeVisitor visitor = new IpsSrcFileChangeVisitor();
                     delta.accept(visitor);
-                    notifyIpsSrcFileChangedListeners(visitor.changedIpsSrcFiles);
+                    if (!visitor.changedIpsSrcFiles.isEmpty()) {
+                        notifyIpsSrcFileChangedListeners(visitor.changedIpsSrcFiles);
+                    }
                 } catch (Exception e) {
                     IpsPlugin.log(new IpsStatus("Error updating model objects in resurce changed event.", //$NON-NLS-1$
                             e));
@@ -1477,10 +1465,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             System.out.println("IpsModel.ipsSrcFileHasChanged(), file=" //$NON-NLS-1$
                     + event.getIpsSrcFile() + ", Thead: " + Thread.currentThread().getName());//$NON-NLS-1$
         }
-    }
-
-    public void ipsSrcFileModificationStatusHasChanged(ContentChangeEvent event) {
-        notifyChangeListeners(event);
     }
 
     /**
