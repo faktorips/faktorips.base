@@ -42,7 +42,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
 
     /** need to know for decorations */
     private boolean showAssociationNodes = false;
-    private boolean showCardinalities = false;
+    private boolean showCardinalities = true;
 
     private GenerationDate generationDate;
 
@@ -249,6 +249,10 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
 
     public boolean isShowAssociationNodes() {
         return showAssociationNodes;
+    }
+
+    public void toggleShowCardinalities() {
+        showCardinalities = !showCardinalities;
     }
 
 }

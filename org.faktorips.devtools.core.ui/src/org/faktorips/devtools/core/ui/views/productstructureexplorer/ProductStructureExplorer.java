@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -37,6 +38,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.dnd.DND;
@@ -49,6 +51,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IMemento;
@@ -57,6 +60,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -81,6 +85,7 @@ import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
+import org.faktorips.devtools.core.ui.editors.productcmpt.LinkEditDialog;
 import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
@@ -128,7 +133,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
     private Label errormsg;
 
     private boolean showAssociationNode = false;
-    private boolean showCardinalities = false;
     private boolean showTableStructureRoleName = false;
     private boolean showReferencedTable = true;
     private boolean showRules = true;
@@ -187,39 +191,47 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
     }
 
     private void initMenu(IMenuManager menuManager) {
-        menuManager.add(new Separator(MENU_INFO_GROUP));
-
+        // show association node
         Action showAssociationNodeAction = createShowAssociationNodeAction();
         showAssociationNodeAction.setChecked(showAssociationNode);
-        menuManager.appendToGroup(MENU_INFO_GROUP, showAssociationNodeAction);
 
+        // show associated components
         Action showAssociatedCmptsAction = createShowAssociatedCmptsAction();
         showAssociatedCmptsAction.setChecked(showAssociatedCmpts);
-        menuManager.appendToGroup(MENU_INFO_GROUP, showAssociatedCmptsAction);
 
+        // show cardinalities
         Action showCardinalitiesAction = createShowCardinalitiesAction();
-        showCardinalitiesAction.setChecked(showCardinalities);
-        menuManager.appendToGroup(MENU_INFO_GROUP, showCardinalitiesAction);
+        showCardinalitiesAction.setChecked(true);
 
-        menuManager.add(new Separator(MENU_FILTER_GROUP));
-
-        Action showReferencedTableAction = createShowReferencedTables();
-        showReferencedTableAction.setChecked(showReferencedTable);
-        menuManager.appendToGroup(MENU_FILTER_GROUP, showReferencedTableAction);
-
+        // show table role name
         Action showRoleNameAction = createShowTableRoleNameAction();
         showRoleNameAction.setChecked(showTableStructureRoleName);
-        menuManager.appendToGroup(MENU_FILTER_GROUP, showRoleNameAction);
 
-        menuManager.add(new Separator(MENU_RULE_GROUP));
+        // show referenced tables
+        Action showReferencedTableAction = createShowReferencedTables(showRoleNameAction);
+        showReferencedTableAction.setChecked(showReferencedTable);
 
+        // show rules
         Action showRulesAction = createShowRulesAction();
         showRulesAction.setChecked(showRules);
-        menuManager.appendToGroup(MENU_RULE_GROUP, showRulesAction);
 
+        // info group
+        menuManager.add(new Separator(MENU_INFO_GROUP));
+        menuManager.appendToGroup(MENU_INFO_GROUP, showAssociationNodeAction);
+        menuManager.appendToGroup(MENU_INFO_GROUP, showAssociatedCmptsAction);
+        menuManager.appendToGroup(MENU_INFO_GROUP, showCardinalitiesAction);
+
+        // filter group
+        menuManager.add(new Separator(MENU_FILTER_GROUP));
+        menuManager.appendToGroup(MENU_FILTER_GROUP, showReferencedTableAction);
+        menuManager.appendToGroup(MENU_FILTER_GROUP, showRoleNameAction);
+
+        // rule group
+        menuManager.add(new Separator(MENU_RULE_GROUP));
+        menuManager.appendToGroup(MENU_RULE_GROUP, showRulesAction);
     }
 
-    private Action createShowReferencedTables() {
+    private Action createShowReferencedTables(final Action showRoleNameAction) {
         return new Action(Messages.ProductStructureExplorer_menuShowReferencedTables_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
@@ -230,6 +242,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             public void run() {
                 contentProvider.setShowTableContents(!contentProvider.isShowTableContents());
                 showReferencedTable = contentProvider.isShowTableContents();
+
+                showRoleNameAction.setEnabled(showReferencedTable);
                 refresh();
             }
 
@@ -311,7 +325,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
             @Override
             public void run() {
-                setShowCardinalities(!showCardinalities);
+                labelProvider.toggleShowCardinalities();
                 refresh();
             }
 
@@ -506,6 +520,77 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             menumanager.add(new Separator("open")); //$NON-NLS-1$
             final IAction openAction = new OpenEditorAction(treeViewer);
             menumanager.add(openAction);
+        }
+
+        // change cardinalities
+        if (selectedRef instanceof IProductCmptReference) {
+            IProductCmptReference productCmptReference = (IProductCmptReference)selectedRef;
+
+            if (productCmptReference.getLink() != null) {
+                MenuManager cardinalitiesSub = new MenuManager(Messages.ProductStructureExplorer_setCardinalities);
+
+                boolean isOptionalExcluded = false;
+                boolean isOptionalIncluded = false;
+                boolean isMandatory = false;
+                boolean isOther = false;
+
+                int minCardinality = productCmptReference.getLink().getMinCardinality();
+                int maxCardinality = productCmptReference.getLink().getMaxCardinality();
+                int defaultCardinality = productCmptReference.getLink().getDefaultCardinality();
+
+                if (maxCardinality == 1) {
+                    if (minCardinality == 1) {
+                        isMandatory = true;
+                    } else if (minCardinality == 0) {
+                        if (defaultCardinality == 0) {
+                            isOptionalExcluded = true;
+                        } else if (defaultCardinality == 1) {
+                            isOptionalIncluded = true;
+                        }
+                    }
+                } else {
+                    isOther = true;
+                }
+
+                // Optional Excluded
+                final IAction cardinalitiesOptionalExcludedAction = new CardinalityDirectAction(productCmptReference,
+                        this, 0, 1, 0);
+                cardinalitiesOptionalExcludedAction.setChecked(isOptionalExcluded);
+                cardinalitiesSub.add(cardinalitiesOptionalExcludedAction);
+                cardinalitiesOptionalExcludedAction
+                        .setText(Messages.ProductStructureExplorer_setCardinalitiesOptionalExcluded);
+                cardinalitiesOptionalExcludedAction
+                        .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesOptionalExcluded_ToolTip);
+
+                // Optional Included
+                final IAction cardinalitiesOptionalIncludedAction = new CardinalityDirectAction(productCmptReference,
+                        this, 0, 1, 1);
+                cardinalitiesOptionalIncludedAction.setChecked(isOptionalIncluded);
+                cardinalitiesSub.add(cardinalitiesOptionalIncludedAction);
+                cardinalitiesOptionalIncludedAction
+                        .setText(Messages.ProductStructureExplorer_setCardinalitiesOptionalIncluded);
+                cardinalitiesOptionalIncludedAction
+                        .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesOptionalIncluded_ToolTip);
+
+                // Mandatory
+                final IAction cardinalitiesMandatoryAction = new CardinalityDirectAction(productCmptReference, this, 1,
+                        1, 1);
+                cardinalitiesMandatoryAction.setChecked(isMandatory);
+                cardinalitiesSub.add(cardinalitiesMandatoryAction);
+                cardinalitiesMandatoryAction.setText(Messages.ProductStructureExplorer_setCardinalitiesMandatory);
+                cardinalitiesMandatoryAction
+                        .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesMandatory_ToolTip);
+
+                // Other
+                final IAction cardinalitiesOtherAction = new CardinalityDialogAction(productCmptReference, this);
+                cardinalitiesOtherAction.setChecked(isOther);
+                cardinalitiesSub.add(cardinalitiesOtherAction);
+                cardinalitiesOtherAction.setText(Messages.ProductStructureExplorer_setCardinalitiesOther);
+                cardinalitiesOtherAction
+                        .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesOther_ToolTip);
+
+                menumanager.add(cardinalitiesSub);
+            }
         }
 
         menumanager.add(new Separator("edit")); //$NON-NLS-1$
@@ -885,12 +970,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         labelProvider.setShowAssociationNodes(showAssociationNode);
     }
 
-    public void setShowCardinalities(boolean showCardinalities) {
-        this.showCardinalities = showCardinalities;
-        // contentProvider is unnecessary because cardinalities have no impact on content
-        labelProvider.setShowCardinalities(showCardinalities);
-    }
-
     /**
      * @return Returns the showAssociationNode.
      */
@@ -942,5 +1021,82 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         IStructuredSelection selection = new StructuredSelection(refs);
 
         treeViewer.setSelection(selection, true);
+    }
+
+    private static abstract class AbstractCardinalityAction extends Action {
+
+        private final ProductStructureExplorer productStructureExplorer;
+
+        private final IProductCmptReference productCmptReference;
+
+        protected AbstractCardinalityAction(IProductCmptReference productCmptReference,
+                ProductStructureExplorer productStructureExplorer) {
+            this.productCmptReference = productCmptReference;
+            this.productStructureExplorer = productStructureExplorer;
+        }
+
+        public ProductStructureExplorer getProductStructureExplorer() {
+            return productStructureExplorer;
+        }
+
+        public IProductCmptReference getProductCmptReference() {
+            return productCmptReference;
+        }
+
+        @Override
+        public void run() {
+            boolean shouldChangeCardinality = changeCardinality();
+
+            if (!productCmptReference.getLink().getIpsSrcFile().isDirty() && shouldChangeCardinality) {
+                try {
+                    productCmptReference.getLink().getIpsSrcFile().save(false, new NullProgressMonitor());
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            }
+            productStructureExplorer.refresh();
+        }
+
+        protected abstract boolean changeCardinality();
+
+    }
+
+    private static class CardinalityDialogAction extends AbstractCardinalityAction {
+
+        protected CardinalityDialogAction(IProductCmptReference productCmptReference,
+                ProductStructureExplorer productStructureExplorer) {
+            super(productCmptReference, productStructureExplorer);
+        }
+
+        @Override
+        protected boolean changeCardinality() {
+            Shell shell = getProductStructureExplorer().getViewSite().getShell();
+            LinkEditDialog dialog = new LinkEditDialog(getProductCmptReference().getLink(), shell);
+            return dialog.open() == Window.OK;
+        }
+    }
+
+    private static class CardinalityDirectAction extends AbstractCardinalityAction {
+
+        private final int minCardinality;
+        private final int maxCardinality;
+        private final int defaultCardinality;
+
+        protected CardinalityDirectAction(IProductCmptReference productCmptReference, ProductStructureExplorer pse,
+                int minCardinality, int maxCardinality, int defaultCardinality) {
+            super(productCmptReference, pse);
+            this.minCardinality = minCardinality;
+            this.maxCardinality = maxCardinality;
+            this.defaultCardinality = defaultCardinality;
+        }
+
+        @Override
+        protected boolean changeCardinality() {
+            IProductCmptReference productCmptReference = getProductCmptReference();
+            productCmptReference.getLink().setMinCardinality(minCardinality);
+            productCmptReference.getLink().setMaxCardinality(maxCardinality);
+            productCmptReference.getLink().setDefaultCardinality(defaultCardinality);
+            return true;
+        }
     }
 }

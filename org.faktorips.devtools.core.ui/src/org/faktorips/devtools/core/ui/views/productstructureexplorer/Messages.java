@@ -56,6 +56,15 @@ public class Messages extends NLS {
     public static String ProductStructureExplorer_tooltipClear;
     public static String ProductStructureExplorer_tooltipRefreshContents;
     public static String ProductStructureExplorer_menuShowAssociatedCmpts_name;
+    public static String ProductStructureExplorer_setCardinalities;
+    public static String ProductStructureExplorer_setCardinalitiesOptionalExcluded;
+    public static String ProductStructureExplorer_setCardinalitiesOptionalExcluded_ToolTip;
+    public static String ProductStructureExplorer_setCardinalitiesOptionalIncluded;
+    public static String ProductStructureExplorer_setCardinalitiesOptionalIncluded_ToolTip;
+    public static String ProductStructureExplorer_setCardinalitiesMandatory;
+    public static String ProductStructureExplorer_setCardinalitiesMandatory_ToolTip;
+    public static String ProductStructureExplorer_setCardinalitiesOther;
+    public static String ProductStructureExplorer_setCardinalitiesOther_ToolTip;
     public static String ProductStructureExplorer_ShowRulesActionLabel;
     public static String ProductStructureExplorer_ShowRulesActionTooltip;
     public static String ProductStructureExplorer_tooltipToggleAssociatedCmptsNodes;
