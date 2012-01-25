@@ -42,6 +42,7 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
     private ExprCompiler compiler;
     private ITableContents tableContents;
     private String roleName;
+    private final IIpsProject ipsProject;
 
     /**
      * @param tableContents can be null. This indicates that it is a table access function for a
@@ -49,8 +50,9 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
      * @param fct the table access function
      */
     public TableUsageAccessFunctionFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction fct,
-            String roleName) {
+            String roleName, IIpsProject ipsProject) {
 
+        this.ipsProject = ipsProject;
         ArgumentCheck.notNull(fct);
         ArgumentCheck.notNull(tableContents);
         ArgumentCheck.notNull(roleName);
@@ -62,7 +64,7 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
     @Override
     public CompilationResult compile(CompilationResult[] argResults) {
         try {
-            IIpsArtefactBuilderSet builderSet = fct.getIpsProject().getIpsArtefactBuilderSet();
+            IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
             if (!builderSet.isSupportTableAccess()) {
                 CompilationResultImpl result = new CompilationResultImpl(Message.newError(
                         "", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess)); //$NON-NLS-1$
@@ -101,7 +103,7 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
     @Override
     public Datatype getType() {
         try {
-            return fct.getIpsProject().findValueDatatype(fct.getType());
+            return ipsProject.findValueDatatype(fct.getType());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -114,7 +116,7 @@ public class TableUsageAccessFunctionFlFunctionAdapter implements FlFunction {
 
     @Override
     public Datatype[] getArgTypes() {
-        IIpsProject project = fct.getIpsProject();
+        IIpsProject project = ipsProject;
         String[] argTypes = fct.getArgTypes();
         Datatype[] types = new Datatype[argTypes.length];
         for (int i = 0; i < argTypes.length; i++) {

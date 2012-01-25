@@ -92,7 +92,7 @@ public class TableUsageFunctionsResolver implements FunctionResolver {
             ITableAccessFunction function,
             String roleName) {
 
-        return new TableUsageAccessFunctionFlFunctionAdapter(tableContents, function, roleName);
+        return new TableUsageAccessFunctionFlFunctionAdapter(tableContents, function, roleName, ipsProject);
     }
 
 }
