@@ -178,7 +178,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             String filename = getIpsSrcFile() == null ? "null" : getIpsSrcFile().getName(); //$NON-NLS-1$
             return NLS.bind(Messages.ProductCmptEditor_msgFileOutOfSync, filename);
         }
-        return Messages.ProductCmptEditor_productComponent + getProductCmpt().getName();
+        String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getProductCmpt());
+        return localizedCaption + ": " + getProductCmpt().getName(); //$NON-NLS-1$
     }
 
     /**
@@ -203,7 +204,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 
         IProductCmpt prod = getProductCmpt();
         GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        IProductCmptGeneration generation = (IProductCmptGeneration)prod.getGenerationByEffectiveDate(workingDate);
+        IProductCmptGeneration generation = prod.getGenerationByEffectiveDate(workingDate);
 
         if (generation != null) {
             setWorkingDateUsedInEditor(workingDate);

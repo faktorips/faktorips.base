@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -266,6 +267,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         String oldId = this.runtimeId;
         this.runtimeId = runtimeId;
         valueChanged(oldId, runtimeId);
+    }
+
+    @Override
+    public String getCaption(Locale locale) throws CoreException {
+        IProductCmptType cmptType = findProductCmptType(getIpsProject());
+        return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(cmptType);
     }
 
     @Override
