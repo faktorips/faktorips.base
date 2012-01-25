@@ -350,19 +350,25 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
      */
     @Override
     public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
-        Set<IIpsSrcFile> changedIpsSrcFiles = event.getChangedIpsSrcFiles();
+        final Set<IIpsSrcFile> changedIpsSrcFiles = event.getChangedIpsSrcFiles();
         if (treeViewer == null) {
             return;
         }
-        ITypeHierarchy hierarchyTreeViewer = (ITypeHierarchy)treeViewer.getInput();
-        if (hierarchyTreeViewer != null) {
-            try {
-                if (changedIpsSrcFiles.size() > 0) {
-                    isNodeOfHierarchy(changedIpsSrcFiles, hierarchyTreeViewer);
+        if (changedIpsSrcFiles.size() > 0) {
+            Display.getDefault().asyncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    ITypeHierarchy hierarchyTree = (ITypeHierarchy)treeViewer.getInput();
+                    if (hierarchyTree != null) {
+                        try {
+                            isNodeOfHierarchy(changedIpsSrcFiles, hierarchyTree);
+                        } catch (CoreException e) {
+                            IpsPlugin.log(e);
+                        }
+                    }
                 }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
+            });
         }
 
     }

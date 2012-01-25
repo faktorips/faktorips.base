@@ -29,6 +29,7 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -126,7 +127,13 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
             return;
         }
         if (event.getChangedIpsSrcFiles().contains(ipsObject.getIpsSrcFile())) {
-            setDescriptionData();
+            Display.getDefault().asyncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    setDescriptionData();
+                }
+            });
         }
     }
 

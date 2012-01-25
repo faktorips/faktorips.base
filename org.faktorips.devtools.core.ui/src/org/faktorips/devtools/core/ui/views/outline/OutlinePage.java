@@ -19,6 +19,7 @@ import java.util.Iterator;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
@@ -48,11 +49,17 @@ public class OutlinePage extends ContentOutlinePage implements IIpsSrcFilesChang
     }
 
     @Override
-    public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
-        if (getTreeViewer() != null && !getTreeViewer().getTree().isDisposed()
-                && event.getChangedIpsSrcFiles().contains(ipsSrcFile)) {
-            getTreeViewer().refresh();
-        }
+    public void ipsSrcFilesChanged(final IpsSrcFilesChangedEvent event) {
+        Display.getDefault().asyncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                if (getTreeViewer() != null && !getTreeViewer().getTree().isDisposed()
+                        && event.getChangedIpsSrcFiles().contains(ipsSrcFile)) {
+                    getTreeViewer().refresh();
+                }
+            }
+        });
     }
 
     private class OutlineContentProvider extends WorkbenchContentProvider {
