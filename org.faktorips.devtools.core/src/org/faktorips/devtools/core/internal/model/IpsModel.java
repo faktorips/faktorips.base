@@ -776,7 +776,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
         };
         if (PlatformUI.isWorkbenchRunning()) {
-            PlatformUI.getWorkbench().getDisplay().syncExec(notifier);
+            PlatformUI.getWorkbench().getDisplay().asyncExec(notifier);
         } else {
             notifier.run();
         }
