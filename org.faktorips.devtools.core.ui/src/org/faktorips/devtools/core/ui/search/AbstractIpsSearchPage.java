@@ -182,6 +182,7 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
     @Override
     public void setContainer(ISearchPageContainer container) {
         this.container = container;
+        container.setPerformActionEnabled(getPresentationModel().isValid());
     }
 
     /**
