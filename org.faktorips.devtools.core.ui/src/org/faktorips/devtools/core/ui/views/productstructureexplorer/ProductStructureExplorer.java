@@ -48,6 +48,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -831,25 +832,31 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
     @Override
     public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
-        Set<IIpsSrcFile> ipsSrcFiles = event.getChangedIpsSrcFiles();
-        if (file != null) {
-            for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-                if (file.getName().equals(ipsSrcFile.getName()) && !ipsSrcFile.exists()) {
-                    treeViewer.setInput(null);
-                    return;
+        final Set<IIpsSrcFile> ipsSrcFiles = event.getChangedIpsSrcFiles();
+        Display.getDefault().asyncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                if (file != null) {
+                    for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                        if (file.getName().equals(ipsSrcFile.getName()) && !ipsSrcFile.exists()) {
+                            treeViewer.setInput(null);
+                            return;
+                        }
+                    }
+                }
+                /*
+                 * Refresh only if a IPS source file in the product component structure was changed
+                 * to avoid unnecessary rebuilding of the structure.
+                 */
+                for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                    if (contentProvider.isIpsSrcFilePartOfStructure(ipsSrcFile)) {
+                        postRefresh();
+                        return;
+                    }
                 }
             }
-        }
-        /*
-         * Refresh only if a IPS source file in the product component structure was changed to avoid
-         * unnecessary rebuilding of the structure.
-         */
-        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-            if (contentProvider.isIpsSrcFilePartOfStructure(ipsSrcFile)) {
-                postRefresh();
-                return;
-            }
-        }
+        });
     }
 
     private void postRefresh() {
