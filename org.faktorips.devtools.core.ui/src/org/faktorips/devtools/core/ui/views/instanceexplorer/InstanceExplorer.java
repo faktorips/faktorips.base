@@ -346,29 +346,35 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
 
     @Override
     public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
-        Set<IIpsSrcFile> changedIpsSrcFiles = event.getChangedIpsSrcFiles();
+        final Set<IIpsSrcFile> changedIpsSrcFiles = event.getChangedIpsSrcFiles();
         if (tableViewer == null) {
             return;
         }
-        try {
-            if (changedIpsSrcFiles.size() > 0) {
-                Object input = tableViewer.getInput();
-                if (input instanceof IIpsMetaClass) {
-                    IIpsMetaClass element = (IIpsMetaClass)input;
-                    if (!element.getIpsSrcFile().exists()) {
-                        setInputData(null);
-                        contentProvider.removeActualElement();
-                        return;
-                    }
-                    if (containsRootElement(changedIpsSrcFiles)
-                            || isDependendObjectChanged(element, changedIpsSrcFiles)
-                            || containsElement(changedIpsSrcFiles)) {
-                        showInstancesOf(contentProvider.getActualElement());
+        if (changedIpsSrcFiles.size() > 0) {
+            Display.getDefault().asyncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        Object input = tableViewer.getInput();
+                        if (input instanceof IIpsMetaClass) {
+                            IIpsMetaClass element = (IIpsMetaClass)input;
+                            if (!element.getIpsSrcFile().exists()) {
+                                setInputData(null);
+                                contentProvider.removeActualElement();
+                                return;
+                            }
+                            if (containsRootElement(changedIpsSrcFiles)
+                                    || isDependendObjectChanged(element, changedIpsSrcFiles)
+                                    || containsElement(changedIpsSrcFiles)) {
+                                showInstancesOf(contentProvider.getActualElement());
+                            }
+                        }
+                    } catch (CoreException e) {
+                        IpsPlugin.log(e);
                     }
                 }
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
+            });
         }
     }
 
