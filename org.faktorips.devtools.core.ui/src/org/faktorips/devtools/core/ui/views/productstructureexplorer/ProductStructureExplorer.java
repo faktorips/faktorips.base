@@ -529,33 +529,9 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             if (productCmptReference.getLink() != null) {
                 MenuManager cardinalitiesSub = new MenuManager(Messages.ProductStructureExplorer_setCardinalities);
 
-                boolean isOptionalExcluded = false;
-                boolean isOptionalIncluded = false;
-                boolean isMandatory = false;
-                boolean isOther = false;
-
-                int minCardinality = productCmptReference.getLink().getMinCardinality();
-                int maxCardinality = productCmptReference.getLink().getMaxCardinality();
-                int defaultCardinality = productCmptReference.getLink().getDefaultCardinality();
-
-                if (maxCardinality == 1) {
-                    if (minCardinality == 1) {
-                        isMandatory = true;
-                    } else if (minCardinality == 0) {
-                        if (defaultCardinality == 0) {
-                            isOptionalExcluded = true;
-                        } else if (defaultCardinality == 1) {
-                            isOptionalIncluded = true;
-                        }
-                    }
-                } else {
-                    isOther = true;
-                }
-
                 // Optional Excluded
                 final IAction cardinalitiesOptionalExcludedAction = new CardinalityDirectAction(productCmptReference,
                         this, 0, 1, 0);
-                cardinalitiesOptionalExcludedAction.setChecked(isOptionalExcluded);
                 cardinalitiesSub.add(cardinalitiesOptionalExcludedAction);
                 cardinalitiesOptionalExcludedAction
                         .setText(Messages.ProductStructureExplorer_setCardinalitiesOptionalExcluded);
@@ -565,7 +541,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                 // Optional Included
                 final IAction cardinalitiesOptionalIncludedAction = new CardinalityDirectAction(productCmptReference,
                         this, 0, 1, 1);
-                cardinalitiesOptionalIncludedAction.setChecked(isOptionalIncluded);
                 cardinalitiesSub.add(cardinalitiesOptionalIncludedAction);
                 cardinalitiesOptionalIncludedAction
                         .setText(Messages.ProductStructureExplorer_setCardinalitiesOptionalIncluded);
@@ -575,7 +550,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                 // Mandatory
                 final IAction cardinalitiesMandatoryAction = new CardinalityDirectAction(productCmptReference, this, 1,
                         1, 1);
-                cardinalitiesMandatoryAction.setChecked(isMandatory);
                 cardinalitiesSub.add(cardinalitiesMandatoryAction);
                 cardinalitiesMandatoryAction.setText(Messages.ProductStructureExplorer_setCardinalitiesMandatory);
                 cardinalitiesMandatoryAction
@@ -583,11 +557,28 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
                 // Other
                 final IAction cardinalitiesOtherAction = new CardinalityDialogAction(productCmptReference, this);
-                cardinalitiesOtherAction.setChecked(isOther);
                 cardinalitiesSub.add(cardinalitiesOtherAction);
                 cardinalitiesOtherAction.setText(Messages.ProductStructureExplorer_setCardinalitiesOther);
                 cardinalitiesOtherAction
                         .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesOther_ToolTip);
+
+                int minCardinality = productCmptReference.getLink().getMinCardinality();
+                int maxCardinality = productCmptReference.getLink().getMaxCardinality();
+                int defaultCardinality = productCmptReference.getLink().getDefaultCardinality();
+
+                if (maxCardinality == 1) {
+                    if (minCardinality == 1) {
+                        cardinalitiesMandatoryAction.setChecked(true);
+                    } else if (minCardinality == 0) {
+                        if (defaultCardinality == 0) {
+                            cardinalitiesOptionalExcludedAction.setChecked(true);
+                        } else if (defaultCardinality == 1) {
+                            cardinalitiesOptionalIncludedAction.setChecked(true);
+                        }
+                    }
+                } else {
+                    cardinalitiesOtherAction.setChecked(true);
+                }
 
                 menumanager.add(cardinalitiesSub);
             }
