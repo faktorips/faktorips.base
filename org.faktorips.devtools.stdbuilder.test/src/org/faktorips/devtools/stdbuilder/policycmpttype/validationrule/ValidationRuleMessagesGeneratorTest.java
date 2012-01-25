@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -34,6 +35,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRuleMessageText;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -151,7 +153,45 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
 
         verify(propertyFile).exists();
         verify(propertyFile).create(any(InputStream.class), anyBoolean(), any(IProgressMonitor.class));
+    }
 
+    @Test
+    public void testSafeIfModified_notModified() throws Exception {
+        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
+        IFile propertyFile = mock(IFile.class);
+        ValidationRuleMessagesGenerator messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile,
+                Locale.GERMAN, builder);
+
+        messagesGenerator.saveIfModified("");
+
+        verify(propertyFile).exists();
+        verifyNoMoreInteractions(propertyFile);
+
+        IPolicyCmptType pcType = mock(IPolicyCmptType.class);
+
+        List<IValidationRule> vRulesList = new ArrayList<IValidationRule>();
+        IValidationRule validationRule1 = mockValidationRule(pcType);
+        when(validationRule1.getName()).thenReturn("rule1");
+        when(validationRule1.getMessageText().get(any(Locale.class))).thenReturn(
+                new LocalizedString(Locale.GERMAN, "anyMessage"));
+
+        vRulesList.add(validationRule1);
+        when(pcType.getValidationRules()).thenReturn(vRulesList);
+        messagesGenerator.generate(pcType);
+
+        reset(propertyFile);
+
+        messagesGenerator.saveIfModified("");
+
+        verify(propertyFile).exists();
+        verify(propertyFile).create(any(InputStream.class), anyBoolean(), any(IProgressMonitor.class));
+
+        messagesGenerator.loadMessages();
+        messagesGenerator.generate(pcType);
+        messagesGenerator.saveIfModified("");
+
+        verify(propertyFile, never()).setContents(any(InputStream.class), anyBoolean(), anyBoolean(),
+                any(NullProgressMonitor.class));
     }
 
     @Test
