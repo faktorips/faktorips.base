@@ -181,8 +181,11 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
     /**
      * Helpers for immutable datatypes must override this method to create a copy of the value given
      * in the expression.
+     * 
+     * @param expression The expression of which you want to get the new safe copy code fragment
+     *            from
      */
-    protected JavaCodeFragment newSafeCopy(@SuppressWarnings("unused") String expression) {
+    protected JavaCodeFragment newSafeCopy(String expression) {
         throw new RuntimeException("The DatatypeHelper for datatype " + datatype //$NON-NLS-1$
                 + " does not override the method newSafeCopy!"); //$NON-NLS-1$
     }
