@@ -516,8 +516,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public boolean isChangingOverTimeContainer() {
-        return true;
+    public boolean isContainerFor(IProductCmptProperty property) {
+        return property.isChangingOverTime();
     }
 
     @Override

@@ -75,13 +75,18 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
     public IPropertyValue newPropertyValue(IProductCmptProperty property);
 
     /**
-     * Check whether this container contains values that change over time or only contains not
-     * changing values. If method returns true for all {@link IPropertyValue} in this container, the
-     * corresponding {@link IProductCmptProperty#isChangingOverTime()} have to return true.
+     * Returns true if this container is responsible for the given property. For example a
+     * {@link IProductCmpt} is only responsible for attributes that cannot change over time but not
+     * for changing attributes.
+     * <p>
+     * The container could use the property {@link IProductCmptProperty#isChangingOverTime()} to
+     * decide whether it is responsible for the given attribute or not.
      * 
-     * @return True if the values does change over time. False if it is constant
+     * @param property The property that should be checked by the container
+     * 
+     * @return true if the property could resist in this container, false otherwise.
      */
-    public boolean isChangingOverTimeContainer();
+    public boolean isContainerFor(IProductCmptProperty property);
 
     /**
      * Returns the qualified name of the product component type this property value container is

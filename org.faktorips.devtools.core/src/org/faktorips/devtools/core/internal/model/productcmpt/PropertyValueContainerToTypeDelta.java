@@ -94,7 +94,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
 
     private void checkForMissingPropertyValues(Map<String, IProductCmptProperty> propertiesMap) {
         for (IProductCmptProperty property : propertiesMap.values()) {
-            if (isRelevantProperty(property) && propertyValueContainer.getPropertyValue(property) == null) {
+            if (propertyValueContainer.isContainerFor(property) && propertyValueContainer.getPropertyValue(property) == null) {
                 // no value found for the property with the given type, but we might have a type
                 // mismatch
                 if (propertyValueContainer.getPropertyValue(property.getPropertyName()) == null) {
@@ -106,10 +106,6 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
                 // if we created it here, too, we would create two entries for the same aspect
             }
         }
-    }
-
-    protected boolean isRelevantProperty(IProductCmptProperty property) {
-        return property.isChangingOverTime() == propertyValueContainer.isChangingOverTimeContainer();
     }
 
     private void checkForInconsistentPropertyValues(Map<String, IProductCmptProperty> propertiesMap,
@@ -134,7 +130,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
                     addEntry(valueWithoutPropertyEntry);
                 }
             } else {
-                if (!isRelevantProperty(property)) {
+                if (!propertyValueContainer.isContainerFor(property)) {
                     // the relevance changed (changingOverTime selected or unselected)
                     ValueWithoutPropertyEntry deltaEntry = new ValueWithoutPropertyEntry(value);
                     addEntry(deltaEntry);

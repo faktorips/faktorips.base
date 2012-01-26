@@ -401,8 +401,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public boolean isChangingOverTimeContainer() {
-        return false;
+    public boolean isContainerFor(IProductCmptProperty property) {
+        return !property.isChangingOverTime();
     }
 
     @Override

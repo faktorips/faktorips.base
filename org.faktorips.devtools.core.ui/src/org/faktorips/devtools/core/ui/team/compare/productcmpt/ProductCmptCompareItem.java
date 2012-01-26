@@ -180,7 +180,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     protected void conditionalAppendGenerationDateAndTab(IPropertyValueContainer valueContainer, StringBuffer sb) {
-        if (valueContainer.isChangingOverTimeContainer()) {
+        if (valueContainer instanceof IIpsObjectGeneration) {
             sb.append(getGenerationDateText((IIpsObjectGeneration)valueContainer)).append(TAB);
         }
     }
