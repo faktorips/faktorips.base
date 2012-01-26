@@ -63,7 +63,7 @@ public class ExpressionBuilderHelper {
         try {
             IIpsProject ipsProject = formula.getIpsProject();
             ExtendedExprCompiler compiler = formula.newExprCompiler(ipsProject, formulaTest);
-            compiler.setRuntimeRepositoryExpression(new JavaCodeFragment(MethodNames.GET_THIS_REPOSITORY + "()"));
+            compiler.setRuntimeRepositoryExpression(getRepositoryExpression());
             CompilationResult result = compiler.compile(expression);
             if (result.successfull()) {
                 Datatype attributeDatatype = formulaSignature.findDatatype(ipsProject);
@@ -100,5 +100,9 @@ public class ExpressionBuilderHelper {
             fragment.append("// See the error log for details."); //$NON-NLS-1$
             return fragment;
         }
+    }
+
+    public static JavaCodeFragment getRepositoryExpression() {
+        return new JavaCodeFragment(MethodNames.GET_THIS_REPOSITORY + "()");
     }
 }

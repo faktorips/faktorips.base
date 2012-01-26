@@ -440,7 +440,11 @@ public class GenValidationRule extends GenTypePart {
     }
 
     public String getFieldNameForMsgCode() {
-        return getLocalizedText("FIELD_MSG_CODE_NAME", StringUtils.upperCase(getValidationRule().getName()));
+        String ruleName = getValidationRule().getName();
+        if (getBuilderSet().isGenerateSeparatedCamelCase()) {
+            ruleName = StringUtil.camelCaseToUnderscore(ruleName, false);
+        }
+        return getLocalizedText("FIELD_MSG_CODE_NAME", StringUtils.upperCase(ruleName));
     }
 
     private void generateFieldForRuleName(JavaCodeFragmentBuilder membersBuilder) {

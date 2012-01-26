@@ -100,6 +100,7 @@
          <builderSetPropertyDef
                defaultValue="Both"
                description="Specifies the kind of formula compiling."
+               disableValue="Both"
                label="Formula Compiling"
                name="formulaCompiling"
                type="enum">
@@ -130,6 +131,14 @@
                disableValue="false"
                label="Generate toXML Support"
                name="toXMLSupport"
+               type="boolean">
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+               defaultValue="true"
+               description="Separate constant names for camel case properties with an underscore"
+               disableValue="false"
+               label="CamelCase separation in constant names"
+               name="camelCaseSeparated"
                type="boolean">
          </builderSetPropertyDef>
       </builderSet>

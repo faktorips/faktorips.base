@@ -47,6 +47,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuil
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.StringUtil;
 
 /**
  * Code generator for a changeable attribute.
@@ -446,12 +447,16 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     }
 
     protected String getConstantName(IValueSet valueSet) {
+        String name = getAttribute().getName();
+        if (getBuilderSet().isGenerateSeparatedCamelCase()) {
+            name = StringUtil.camelCaseToUnderscore(name, false);
+        }
+        String constName = StringUtils.upperCase(name);
         if (valueSet.isEnum()) {
-            return getLocalizedText("FIELD_MAX_ALLOWED_VALUES_FOR_NAME",
-                    StringUtils.upperCase(getAttribute().getName()));
+            return getLocalizedText("FIELD_MAX_ALLOWED_VALUES_FOR_NAME", constName);
         }
         if (valueSet.isRange()) {
-            return getLocalizedText("FIELD_MAX_RANGE_FOR_NAME", StringUtils.upperCase(getAttribute().getName()));
+            return getLocalizedText("FIELD_MAX_RANGE_FOR_NAME", constName);
         }
         throw new RuntimeException("Can't handle value set" + valueSet);
     }

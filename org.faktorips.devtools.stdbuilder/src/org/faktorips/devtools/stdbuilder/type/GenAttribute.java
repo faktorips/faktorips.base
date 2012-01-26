@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.util.StringUtil;
 
 /**
  * Abstract base class for the generators for <tt>IPolicyCmptTypeAttribute</tt>s and
@@ -162,6 +163,10 @@ public abstract class GenAttribute extends GenTypePart {
     }
 
     public String getStaticConstantPropertyName() {
-        return getLocalizedText("FIELD_PROPERTY_NAME", StringUtils.upperCase(getAttribute().getName()));
+        String name = getAttribute().getName();
+        if (getBuilderSet().isGenerateSeparatedCamelCase()) {
+            name = StringUtil.camelCaseToUnderscore(name, false);
+        }
+        return getLocalizedText("FIELD_PROPERTY_NAME", StringUtils.upperCase(name));
     }
 }

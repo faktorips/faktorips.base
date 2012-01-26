@@ -73,7 +73,11 @@ public abstract class GenAssociation extends GenAbstractAssociation {
         targetInterfaceName = GenType.getQualifiedName(target, genPolicyCmptType.getBuilderSet(), true);
         targetImplClassName = GenType.getQualifiedName(target, genPolicyCmptType.getBuilderSet(), false);
         fieldName = computeFieldName();
-        staticConstantAssociationName = getLocalizedText("FIELD_ASSOCIATION_NAME", StringUtils.upperCase(fieldName));
+        String constName = fieldName;
+        if (getBuilderSet().isGenerateSeparatedCamelCase()) {
+            constName = StringUtil.camelCaseToUnderscore(constName, false);
+        }
+        staticConstantAssociationName = getLocalizedText("FIELD_ASSOCIATION_NAME", StringUtils.upperCase(constName));
     }
 
     /**
@@ -922,8 +926,12 @@ public abstract class GenAssociation extends GenAbstractAssociation {
      * association
      */
     public String getFieldNameGetMaxCardinalityFor() {
-        return getLocalizedText("FIELD_MAX_CARDINALITY_NAME",
-                StringUtils.upperCase(association.getTargetRoleSingular()));
+        String name = association.getTargetRoleSingular();
+
+        if (getBuilderSet().isGenerateSeparatedCamelCase()) {
+            name = StringUtil.camelCaseToUnderscore(name, false);
+        }
+        return getLocalizedText("FIELD_MAX_CARDINALITY_NAME", StringUtils.upperCase(name));
     }
 
     /**

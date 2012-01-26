@@ -160,6 +160,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public final static String CONFIG_PROPERTY_TO_XML_SUPPORT = "toXMLSupport"; //$NON-NLS-1$
 
+    /**
+     * Name of the configuration property that indicates whether to generate camel case constant
+     * names with underscore separator or without. For example if this property is true, the
+     * constant for the name checkAnythingRule would be generated as CHECK_ANYTHING_RULE, if the
+     * property is false the constant name would be CHECKANYTHINGRUL.
+     */
+    public final static String CONFIG_PROPERTY_CAMELCASE_SEPARATED = "camelCaseSeparated"; //$NON-NLS-1$
+
     private TableImplBuilder tableImplBuilder;
 
     private TableRowBuilder tableRowBuilder;
@@ -604,6 +612,17 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public boolean isGenerateToXmlSupport() {
         Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_TO_XML_SUPPORT);
+        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean.booleanValue();
+    }
+
+    /**
+     * Returns whether to generate camel case constant names with underscore separator or without.
+     * For example if this property is true, the constant for the property
+     * checkAnythingAndDoSomething would be generated as CHECK_ANYTHING_AND_DO_SOMETHING, if the
+     * property is false the constant name would be CHECKANYTHINGANDDOSOMETHING.
+     */
+    public boolean isGenerateSeparatedCamelCase() {
+        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_CAMELCASE_SEPARATED);
         return propertyValueAsBoolean == null ? false : propertyValueAsBoolean.booleanValue();
     }
 

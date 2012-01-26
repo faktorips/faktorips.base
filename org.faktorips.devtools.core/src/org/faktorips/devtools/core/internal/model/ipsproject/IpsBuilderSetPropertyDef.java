@@ -53,10 +53,6 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
     private List<String> supportedJdkVersions;
     private List<String> discretePropertyValues;
 
-    public IpsBuilderSetPropertyDef() {
-
-    }
-
     @Override
     public String getDefaultValue(IIpsProject ipsProject) {
         return defaultValue;
@@ -127,6 +123,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
                     return value;
                 }
             }
+            return disableValue;
         }
         throw new IllegalArgumentException("The provided value \"" + value //$NON-NLS-1$
                 + "\" cannot be converted into an instance of the type " + type + " of this IpsBuilderSetPropertyDef."); //$NON-NLS-1$ //$NON-NLS-2$
