@@ -672,6 +672,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract void getAllModelTypeImplementationClasses(Set<String> result);
 
+    @Deprecated
     public Object getEnumValue(String uniqueId) {
         int index = uniqueId.indexOf('#');
         if (index == -1) {
