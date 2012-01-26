@@ -272,7 +272,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public String getCaption(Locale locale) throws CoreException {
         IProductCmptType cmptType = findProductCmptType(getIpsProject());
-        return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(cmptType);
+        if (cmptType != null) {
+            return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(cmptType);
+        } else {
+            return getProductCmptType();
+        }
     }
 
     @Override
