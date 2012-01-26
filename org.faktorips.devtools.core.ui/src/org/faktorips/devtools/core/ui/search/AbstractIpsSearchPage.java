@@ -68,7 +68,12 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
         super(title, image);
     }
 
-    private IIpsSearchScope createSearchScope() {
+    /**
+     * Creates a {@link IIpsSearchScope} from the scope selected in the {@link ISearchPageContainer}
+     * 
+     * @return the {@link IIpsSearchScope} matching the selected scope
+     */
+    protected IIpsSearchScope createSearchScope() {
         int selectedScope = getSearchPageContainer().getSelectedScope();
 
         switch (selectedScope) {
