@@ -50,6 +50,8 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
     private ProductCmptRefControl targetControl;
     private IProductCmpt[] toExclude = new IProductCmpt[0];
 
+    private boolean targetSelectionEnabled = true;
+
     public LinkEditDialog(IProductCmptLink link, Shell parentShell) {
         super(link, parentShell, Messages.RelationEditDialog_editRelation, true);
         this.link = link;
@@ -86,6 +88,8 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
         }
 
         targetControl.setProductCmptsToExclude(toExclude);
+        targetControl.setEnabled(targetSelectionEnabled);
+        targetControl.setButtonEnabled(targetSelectionEnabled);
 
         boolean cardinalityEnabled;
         try {
@@ -130,6 +134,10 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
         } else {
             this.toExclude = toExclude;
         }
+    }
+
+    public void setTargetSelectionEnabled(boolean enabled) {
+        targetSelectionEnabled = enabled;
     }
 
 }
