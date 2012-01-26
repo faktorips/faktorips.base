@@ -78,32 +78,35 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
 
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
-        Object element = selection.getFirstElement();
-        if (element instanceof IAdaptable) {
-            IAdaptable adaptableObject = (IAdaptable)element;
-            try {
-                IIpsElement ipsElement = (IIpsElement)adaptableObject.getAdapter(IIpsElement.class);
-                if (ipsElement instanceof IIpsPackageFragmentRoot) {
-                    IIpsPackageFragmentRoot ipsPackageRoot = (IIpsPackageFragmentRoot)ipsElement;
-                    initDefaults(ipsPackageRoot.getDefaultIpsPackageFragment(), null);
-                } else if (ipsElement instanceof IIpsPackageFragment) {
-                    IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
-                    initDefaults(packageFragment, null);
-                } else if (ipsElement instanceof IIpsSrcFile) {
-                    IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
-                    IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
-                    initDefaults(ipsSrcFile.getIpsPackageFragment(), ipsObject);
-                } else {
-                    IResource resource = (IResource)adaptableObject.getAdapter(IResource.class);
-                    if (resource != null) {
-                        IProject project = resource.getProject();
-                        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
-                        IIpsPackageFragmentRoot ipsPackageFragmentRoot = ipsProject.getSourceIpsPackageFragmentRoots()[0];
-                        initDefaults(ipsPackageFragmentRoot.getDefaultIpsPackageFragment(), null);
+        if (selection != null) {
+            Object element = selection.getFirstElement();
+            if (element instanceof IAdaptable) {
+                IAdaptable adaptableObject = (IAdaptable)element;
+                try {
+                    IIpsElement ipsElement = (IIpsElement)adaptableObject.getAdapter(IIpsElement.class);
+                    if (ipsElement instanceof IIpsPackageFragmentRoot) {
+                        IIpsPackageFragmentRoot ipsPackageRoot = (IIpsPackageFragmentRoot)ipsElement;
+                        initDefaults(ipsPackageRoot.getDefaultIpsPackageFragment(), null);
+                    } else if (ipsElement instanceof IIpsPackageFragment) {
+                        IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
+                        initDefaults(packageFragment, null);
+                    } else if (ipsElement instanceof IIpsSrcFile) {
+                        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
+                        IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
+                        initDefaults(ipsSrcFile.getIpsPackageFragment(), ipsObject);
+                    } else {
+                        IResource resource = (IResource)adaptableObject.getAdapter(IResource.class);
+                        if (resource != null) {
+                            IProject project = resource.getProject();
+                            IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
+                            IIpsPackageFragmentRoot ipsPackageFragmentRoot = ipsProject
+                                    .getSourceIpsPackageFragmentRoots()[0];
+                            initDefaults(ipsPackageFragmentRoot.getDefaultIpsPackageFragment(), null);
+                        }
                     }
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
                 }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
             }
         }
     }
