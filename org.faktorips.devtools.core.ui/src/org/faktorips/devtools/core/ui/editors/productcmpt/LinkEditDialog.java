@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
+import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.ProductCmptRefControl;
@@ -50,12 +51,13 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
     private ProductCmptRefControl targetControl;
     private IProductCmpt[] toExclude = new IProductCmpt[0];
 
-    private boolean targetSelectionEnabled = true;
+    private LinkEditDialogPMO pmo;
 
     public LinkEditDialog(IProductCmptLink link, Shell parentShell) {
         super(link, parentShell, Messages.RelationEditDialog_editRelation, true);
         this.link = link;
         extFactory = new ExtensionPropertyControlFactory(link.getClass());
+        pmo = new LinkEditDialogPMO();
     }
 
     @Override
@@ -88,8 +90,6 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
         }
 
         targetControl.setProductCmptsToExclude(toExclude);
-        targetControl.setEnabled(targetSelectionEnabled);
-        targetControl.setButtonEnabled(targetSelectionEnabled);
 
         boolean cardinalityEnabled;
         try {
@@ -122,6 +122,8 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindContent(maxCardinalityField, link, IProductCmptLink.PROPERTY_MAX_CARDINALITY);
         getBindingContext().bindContent(defaultCardinalityField, link, IProductCmptLink.PROPERTY_DEFAULT_CARDINALITY);
 
+        getBindingContext().bindEnabled(targetControl, pmo, LinkEditDialogPMO.PROPERTY_TARGET_SELECTION_ENABLED);
+
         extFactory.createControls(workArea, getToolkit(), link);
         extFactory.bind(getBindingContext());
 
@@ -137,7 +139,29 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
     }
 
     public void setTargetSelectionEnabled(boolean enabled) {
-        targetSelectionEnabled = enabled;
+        pmo.setTargetSelectionEnabled(enabled);
+    }
+
+    public static class LinkEditDialogPMO extends PresentationModelObject {
+
+        public static final String PROPERTY_TARGET_SELECTION_ENABLED = "targetSelectionEnabled"; //$NON-NLS-1$
+
+        private boolean targetSelectionEnabled = true;
+
+        /**
+         * @param targetSelectionEnabled The targetSelectionEnabled to set.
+         */
+        public void setTargetSelectionEnabled(boolean targetSelectionEnabled) {
+            this.targetSelectionEnabled = targetSelectionEnabled;
+        }
+
+        /**
+         * @return Returns the targetSelectionEnabled.
+         */
+        public boolean isTargetSelectionEnabled() {
+            return targetSelectionEnabled;
+        }
+
     }
 
 }
