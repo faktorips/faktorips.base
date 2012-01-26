@@ -26,6 +26,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  */
 public class IpsProjectRefControl extends TextButtonControl {
 
+    private boolean onlyProductDefinitionProjects = false;
+
     public IpsProjectRefControl(Composite parent, UIToolkit toolkit) {
         super(parent, toolkit, Messages.IpsProjectRefControl_labelBrowse);
     }
@@ -50,7 +52,13 @@ public class IpsProjectRefControl extends TextButtonControl {
     protected void buttonClicked() {
         try {
             ElementListSelectionDialog dialog = new ElementListSelectionDialog(getShell(), new WorkbenchLabelProvider());
-            dialog.setElements(IpsPlugin.getDefault().getIpsModel().getIpsProjects());
+            IIpsProject[] projects;
+            if (isOnlyProductDefinitionProjects()) {
+                projects = IpsPlugin.getDefault().getIpsModel().getIpsProductDefinitionProjects();
+            } else {
+                projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
+            }
+            dialog.setElements(projects);
             dialog.setMultipleSelection(false);
             dialog.setMessage(Messages.IpsProjectRefControl_labelDialogMessage);
             dialog.setEmptyListMessage(Messages.IpsProjectRefControl_msgNoProjectsFound);
@@ -63,6 +71,20 @@ public class IpsProjectRefControl extends TextButtonControl {
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+    }
+
+    /**
+     * @param onlyProductDefinitionProjects The onlyProductDefinitionProjects to set.
+     */
+    public void setOnlyProductDefinitionProjects(boolean onlyProductDefinitionProjects) {
+        this.onlyProductDefinitionProjects = onlyProductDefinitionProjects;
+    }
+
+    /**
+     * @return Returns the onlyProductDefinitionProjects.
+     */
+    public boolean isOnlyProductDefinitionProjects() {
+        return onlyProductDefinitionProjects;
     }
 
 }

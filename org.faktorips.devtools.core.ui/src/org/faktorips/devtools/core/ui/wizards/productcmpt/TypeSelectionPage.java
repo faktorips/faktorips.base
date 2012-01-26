@@ -65,6 +65,7 @@ public class TypeSelectionPage extends WizardPage {
         // Select Project
         toolkit.createLabel(twoColumnComposite, Messages.TypeSelectionPage_label_project);
         ipsProjectRefControl = toolkit.createIpsProjectRefControl(twoColumnComposite);
+        ipsProjectRefControl.setOnlyProductDefinitionProjects(true);
 
         toolkit.createHorizonzalLine(composite);
 
