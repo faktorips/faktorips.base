@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
@@ -146,15 +147,16 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
 
             // show cardinality
             if (productCmptReference.getLink() != null && showCardinalities) {
-                int minCardinality = productCmptReference.getLink().getMinCardinality();
-                int maxCardinality = productCmptReference.getLink().getMaxCardinality();
+                IProductCmptLink link = productCmptReference.getLink();
+                int maxCardinality = link.getMaxCardinality();
+
                 String maxCardinalityString = String.valueOf(maxCardinality);
                 if (maxCardinality == IAssociation.CARDINALITY_MANY) {
                     maxCardinalityString = "*"; //$NON-NLS-1$
                 }
 
-                styledString.append(
-                        " [" + minCardinality + ".." + maxCardinalityString + "]", StyledString.COUNTER_STYLER); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                styledString
+                        .append(" [" + link.getMinCardinality() + ".." + maxCardinalityString + ", " + link.getDefaultCardinality() + "]", StyledString.COUNTER_STYLER); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             }
 
             // show association nodes
