@@ -308,10 +308,6 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         writeReferencesToXml(genElement);
         writeFormulaToXml(genElement);
         writeValidationRuleConfigsToXml(genElement);
-        /*
-         * SW 09.2011: Extension properties are never read from XML. Generations, it seems, will
-         * never be extended that way. Use code regardlessly.
-         */
         writeExtensionPropertiesToXml(genElement);
         return genElement;
     }
