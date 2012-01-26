@@ -526,41 +526,45 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         IProductCmptReference productCmptReference = (IProductCmptReference)selectedRef;
 
         if (selectedRef instanceof IProductCmptReference) {
-            MenuManager cardinalitiesSub = new MenuManager(Messages.ProductStructureExplorer_setCardinalities);
-
-            // Optional Excluded
-            final IAction cardinalitiesOptionalExcludedAction = new CardinalityDirectAction(productCmptReference, this,
-                    0, 1, 0);
-            cardinalitiesSub.add(cardinalitiesOptionalExcludedAction);
-            cardinalitiesOptionalExcludedAction
-                    .setText(Messages.ProductStructureExplorer_setCardinalitiesOptionalExcluded);
-            cardinalitiesOptionalExcludedAction
-                    .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesOptionalExcluded_ToolTip);
-
-            // Optional Included
-            final IAction cardinalitiesOptionalIncludedAction = new CardinalityDirectAction(productCmptReference, this,
-                    0, 1, 1);
-            cardinalitiesSub.add(cardinalitiesOptionalIncludedAction);
-            cardinalitiesOptionalIncludedAction
-                    .setText(Messages.ProductStructureExplorer_setCardinalitiesOptionalIncluded);
-            cardinalitiesOptionalIncludedAction
-                    .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesOptionalIncluded_ToolTip);
-
-            // Mandatory
-            final IAction cardinalitiesMandatoryAction = new CardinalityDirectAction(productCmptReference, this, 1, 1,
-                    1);
-            cardinalitiesSub.add(cardinalitiesMandatoryAction);
-            cardinalitiesMandatoryAction.setText(Messages.ProductStructureExplorer_setCardinalitiesMandatory);
-            cardinalitiesMandatoryAction
-                    .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesMandatory_ToolTip);
-
-            // Other
-            final IAction cardinalitiesOtherAction = new CardinalityDialogAction(productCmptReference, this);
-            cardinalitiesSub.add(cardinalitiesOtherAction);
-            cardinalitiesOtherAction.setText(Messages.ProductStructureExplorer_setCardinalitiesOther);
-            cardinalitiesOtherAction.setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesOther_ToolTip);
-
             if (productCmptReference.getLink() != null) {
+                MenuManager cardinalitiesSub = new MenuManager(Messages.ProductStructureExplorer_setCardinalities,
+                        IpsUIPlugin.getImageHandling().createImageDescriptor("Cardinality.gif"), null); //$NON-NLS-1$
+
+                // Optional Excluded
+                final IAction cardinalitiesOptionalExcludedAction = new CardinalityDirectAction(productCmptReference,
+                        this, 0, 1, 0);
+                cardinalitiesOptionalExcludedAction
+                        .setText(Messages.ProductStructureExplorer_setCardinalitiesOptionalExcluded);
+                cardinalitiesOptionalExcludedAction
+                        .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesOptionalExcluded_ToolTip);
+
+                // Optional Included
+                final IAction cardinalitiesOptionalIncludedAction = new CardinalityDirectAction(productCmptReference,
+                        this, 0, 1, 1);
+                cardinalitiesOptionalIncludedAction
+                        .setText(Messages.ProductStructureExplorer_setCardinalitiesOptionalIncluded);
+                cardinalitiesOptionalIncludedAction
+                        .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesOptionalIncluded_ToolTip);
+
+                // Mandatory
+                final IAction cardinalitiesMandatoryAction = new CardinalityDirectAction(productCmptReference, this, 1,
+                        1, 1);
+                cardinalitiesMandatoryAction.setText(Messages.ProductStructureExplorer_setCardinalitiesMandatory);
+                cardinalitiesMandatoryAction
+                        .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesMandatory_ToolTip);
+
+                // Other
+                final IAction cardinalitiesOtherAction = new CardinalityDialogAction(productCmptReference, this);
+                cardinalitiesOtherAction.setText(Messages.ProductStructureExplorer_setCardinalitiesOther);
+                cardinalitiesOtherAction
+                        .setToolTipText(Messages.ProductStructureExplorer_setCardinalitiesOther_ToolTip);
+
+                // Create menu
+                cardinalitiesSub.add(cardinalitiesOptionalExcludedAction);
+                cardinalitiesSub.add(cardinalitiesOptionalIncludedAction);
+                cardinalitiesSub.add(cardinalitiesMandatoryAction);
+                cardinalitiesSub.add(cardinalitiesOtherAction);
+
                 int minCardinality = productCmptReference.getLink().getMinCardinality();
                 int maxCardinality = productCmptReference.getLink().getMaxCardinality();
                 int defaultCardinality = productCmptReference.getLink().getDefaultCardinality();
@@ -578,14 +582,13 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                 } else {
                     cardinalitiesOtherAction.setChecked(true);
                 }
-            } else {
-                cardinalitiesOptionalExcludedAction.setEnabled(false);
-                cardinalitiesOptionalIncludedAction.setEnabled(false);
-                cardinalitiesMandatoryAction.setEnabled(false);
-                cardinalitiesOtherAction.setEnabled(false);
-            }
 
-            menumanager.add(cardinalitiesSub);
+                menumanager.add(cardinalitiesSub);
+            } else {
+                Action dummyCardinalityAction = createDummyCardinalityAction();
+                dummyCardinalityAction.setEnabled(false);
+                menumanager.add(dummyCardinalityAction);
+            }
         }
 
         menumanager.add(new Separator("edit")); //$NON-NLS-1$
@@ -1103,4 +1106,20 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             productCmptReference.getLink().setDefaultCardinality(defaultCardinality);
         }
     }
+
+    private Action createDummyCardinalityAction() {
+        return new Action(Messages.ProductStructureExplorer_setCardinalities, IAction.AS_CHECK_BOX) {
+
+            @Override
+            public ImageDescriptor getImageDescriptor() {
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("Cardinality.gif"); //$NON-NLS-1$
+            }
+
+            @Override
+            public String getToolTipText() {
+                return Messages.ProductStructureExplorer_setCardinalities;
+            }
+        };
+    }
+
 }
