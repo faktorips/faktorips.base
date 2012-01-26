@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -68,7 +67,6 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
                 .getIpsArtefactBuilderSetInfo("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
         assertNotNull(builderSetInfo);
         IIpsBuilderSetPropertyDef[] propertyDefs = builderSetInfo.getPropertyDefinitions();
-        assertEquals(13, propertyDefs.length);
 
         ArrayList<String> propertyDefNames = new ArrayList<String>();
         for (IIpsBuilderSetPropertyDef propertyDef : propertyDefs) {
