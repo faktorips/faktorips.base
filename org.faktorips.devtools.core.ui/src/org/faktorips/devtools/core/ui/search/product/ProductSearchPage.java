@@ -146,7 +146,13 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
 
     private void addCondition() {
         getPresentationModel().createProductSearchConditionPresentationModel();
-        conditionTableViewer.refresh();
+
+        // necessary, because no editing without selection if you don't click a text directly
+        conditionTableViewer.refresh(true, true);
+
+        int size = getPresentationModel().getProductSearchConditionPresentationModels().size();
+        conditionTableViewer.getTable().setSelection(size - 1);
+
     }
 
     private void removeConditions() {
