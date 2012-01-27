@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -160,6 +161,9 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
     private IResource getResource(Object object) {
         if (object instanceof IResource) {
             return (IResource)object;
+        }
+        if (object instanceof IIpsObjectPart) {
+            object = ((IIpsObjectPart)object).getIpsObject();
         }
         if (object instanceof IAdaptable) {
             IAdaptable adaptable = (IAdaptable)object;
