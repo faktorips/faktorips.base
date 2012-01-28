@@ -150,14 +150,18 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
         // necessary, because no editing without selection if you don't click a text directly
         conditionTableViewer.refresh(true, true);
 
-        int size = getPresentationModel().getProductSearchConditionPresentationModels().size();
-        conditionTableViewer.getTable().setSelection(size - 1);
+        if (getPresentationModel().getProductSearchConditionPresentationModels().size() == 1) {
+            conditionTableViewer.getTable().setSelection(0);
+        }
 
     }
 
     private void removeConditions() {
         ISelection selection = conditionTableViewer.getSelection();
         IStructuredSelection structuredSelection = (IStructuredSelection)selection;
+
+        int firstSelectedIndex = getPresentationModel().getProductSearchConditionPresentationModels().indexOf(
+                structuredSelection.getFirstElement());
 
         List<?> list = structuredSelection.toList();
         for (Object object : list) {
@@ -168,6 +172,17 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
             }
         }
         conditionTableViewer.refresh();
+
+        // Problem with editing after selection: A new selection is necessary
+        if (getPresentationModel().getProductSearchConditionPresentationModels().isEmpty() || firstSelectedIndex < 0) {
+            return;
+        }
+        if (getPresentationModel().getProductSearchConditionPresentationModels().size() >= firstSelectedIndex) {
+            conditionTableViewer.getTable().setSelection(firstSelectedIndex - 1);
+        } else {
+            conditionTableViewer.getTable().setSelection(0);
+        }
+
     }
 
     @Override

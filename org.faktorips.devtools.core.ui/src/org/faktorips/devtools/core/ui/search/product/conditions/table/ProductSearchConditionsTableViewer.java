@@ -19,8 +19,12 @@ import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.search.product.Messages;
 import org.faktorips.devtools.core.ui.search.product.ProductSearchPresentationModel;
@@ -110,4 +114,29 @@ public class ProductSearchConditionsTableViewer extends TableViewer {
         getTable().setHeaderVisible(true);
         getTable().setLinesVisible(true);
     }
+
+    @Override
+    protected Item getItemAt(Point p) {
+        Item itemAt = super.getItemAt(p);
+
+        if (itemAt == null) {
+            Rectangle tableBounds = getTable().getBounds();
+
+            if (tableBounds.width < p.x) {
+                return null;
+            }
+
+            TableItem[] items = getTable().getItems();
+            for (TableItem tableItem : items) {
+                Rectangle bounds = tableItem.getBounds();
+
+                if (bounds.y <= p.y && bounds.y + bounds.height >= p.y) {
+                    return tableItem;
+                }
+            }
+
+        }
+        return itemAt;
+    }
+
 }
