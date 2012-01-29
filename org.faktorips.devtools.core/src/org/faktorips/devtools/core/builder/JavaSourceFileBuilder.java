@@ -691,18 +691,17 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
 
         content = writeFeatureVersions(content);
-
-        String formattedContent = new IpsRemoveImportsOperation().removeUnusedImports(content);
-        formattedContent = format(formattedContent);
+        content = removeUnusedImports(content);
+        content = format(content);
 
         /*
-         * If merging is not activated and the content of the file is equal compared to the
-         * generated and formatted content then the new content is not written to the file.
+         * If merging is not activated and the old content of the file is equal compared to the new
+         * content, then the new content is not written to the file.
          */
-        if (formattedContent.equals(oldJavaFileContentsStr)) {
+        if (content.equals(oldJavaFileContentsStr)) {
             return;
         } else {
-            ByteArrayInputStream inputStream = transform(ipsSrcFile, formattedContent);
+            ByteArrayInputStream inputStream = transform(ipsSrcFile, content);
             writeToFile(javaFile, inputStream, true, false);
         }
     }
@@ -791,6 +790,10 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public void appendGenerics(JavaCodeFragmentBuilder fragmentBuilder, Class<?>... classes) {
         JavaGeneratorHelper.appendGenerics(fragmentBuilder, getIpsProject(), classes);
+    }
+
+    private String removeUnusedImports(String content) {
+        return new IpsRemoveImportsOperation().removeUnusedImports(content);
     }
 
     private String format(String content) {
