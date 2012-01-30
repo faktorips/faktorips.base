@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -47,37 +46,47 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
     @Test
     public void testImport() throws Exception {
+
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(TEST_FILE);
-        InputStream inputStreamSpy = spy(inputStream);
 
         IIpsPackageFragmentRoot root = mock(IIpsPackageFragmentRoot.class);
 
-        ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(
-                inputStreamSpy, root, Locale.GERMAN);
+        ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(inputStream,
+                root, Locale.GERMAN);
         IStatus status = importer.importPropertyFile(new NullProgressMonitor());
 
         assertEquals(IStatus.WARNING, status.getSeverity());
 
-        verify(inputStreamSpy).close();
         verify(root).findAllIpsSrcFiled(IpsObjectType.POLICY_CMPT_TYPE);
         verifyNoMoreInteractions(root);
+    }
+
+    @Test
+    public void testImputStreamClose() throws Exception {
+        InputStream inputStream = mock(InputStream.class);
+        IIpsPackageFragmentRoot root = mock(IIpsPackageFragmentRoot.class);
+        ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(inputStream,
+                root, Locale.GERMAN);
+        IStatus status = importer.importPropertyFile(new NullProgressMonitor());
+        assertEquals(IStatus.OK, status.getSeverity());
+
+        verify(inputStream).close();
+
     }
 
     @Test
     public void testNullImport() throws Exception {
 
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(TEST_FILE_NULL);
-        InputStream inputStreamSpy = spy(inputStream);
 
         IIpsPackageFragmentRoot root = mock(IIpsPackageFragmentRoot.class);
 
-        ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(
-                inputStreamSpy, root, Locale.GERMAN);
+        ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(inputStream,
+                root, Locale.GERMAN);
         IStatus status = importer.importPropertyFile(new NullProgressMonitor());
 
         assertEquals(IStatus.WARNING, status.getSeverity());
 
-        verify(inputStreamSpy).close();
         verify(root).findAllIpsSrcFiled(IpsObjectType.POLICY_CMPT_TYPE);
         verifyNoMoreInteractions(root);
     }
