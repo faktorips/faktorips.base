@@ -55,10 +55,6 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
             IProductCmptLink link = (IProductCmptLink)element;
             return super.getMessages(link);
         }
-        if (element instanceof String) {
-            String elementName = (String)element;
-            return generation.validate(generation.getIpsProject()).getMessagesFor(elementName);
-        }
         return super.getMessages(element);
     }
 
