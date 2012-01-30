@@ -76,13 +76,25 @@ import org.w3c.dom.NodeList;
  */
 public class IpsProjectProperties implements IIpsProjectProperties {
 
+    private static final String ADDITIONAL_SETTINGS_TAG_NAME = "AdditionalSettings"; //$NON-NLS-1$
+
+    private static final String SETTING_TAG_NAME = "Setting"; //$NON-NLS-1$
+
+    private static final String SETTING_ATTRIBUTE_ENABLE = "enable"; //$NON-NLS-1$
+
+    private static final String SETTING_ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
+
+    private static final String SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE = "referencedProductComponentsAreValidOnThisGenerationsValidFromDate"; //$NON-NLS-1$
+
+    private static final String SETTING_DERIVED_UNION_IS_IMPLEMENTED = "derivedUnionIsImplemented"; //$NON-NLS-1$
+
     private final static String ATTRIBUTE_PERSISTENT_PROJECT = "persistentProject"; //$NON-NLS-1$
 
-    private final static String OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE = "rulesWithoutReferencesAllowed"; //$NON-NLS-1$
+    private final static String SETTING_RULES_WITHOUT_REFERENCE = "rulesWithoutReferencesAllowed"; //$NON-NLS-1$
 
-    private final static String OPTIONAL_CONSTRAINT_SHARED_ASSOCIATIONS = "sharedDetailToMasterAssociations"; //$NON-NLS-1$
+    private final static String SETTING_SHARED_ASSOCIATIONS = "sharedDetailToMasterAssociations"; //$NON-NLS-1$
 
-    private final static String OPTIONAL_CONSTRAINT_ASSOCIATIONS_IN_FORMULAS = "associationsInFormulas"; //$NON-NLS-1$
+    private final static String SETTING_ASSOCIATIONS_IN_FORMULAS = "associationsInFormulas"; //$NON-NLS-1$
 
     public final static IpsProjectProperties createFromXml(IpsProject ipsProject, Element element) {
         IpsProjectProperties data = new IpsProjectProperties();
@@ -194,7 +206,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private void validatePersistenceOption(MessageList msgList) {
         if (isPersistenceSupportEnabled()) {
             String text = NLS.bind(Messages.IpsProjectProperties_error_persistenceAndSharedAssociationNotAllowed,
-                    OPTIONAL_CONSTRAINT_SHARED_ASSOCIATIONS, ATTRIBUTE_PERSISTENT_PROJECT);
+                    SETTING_SHARED_ASSOCIATIONS, ATTRIBUTE_PERSISTENT_PROJECT);
             if (isSharedDetailToMasterAssociations()) {
                 msgList.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_OPTIONAL_CONSTRAINT, text, Message.ERROR,
                         this));
@@ -511,24 +523,24 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         projectEl.appendChild(release);
 
         // optional constraints
-        createOptionalConstraintsDescriptionComment(projectEl);
-        Element optionalConstraintsEl = doc.createElement("OptionalConstraints"); //$NON-NLS-1$
+        createAdditionalSettingsDescriptionComment(projectEl);
+        Element optionalConstraintsEl = doc.createElement(ADDITIONAL_SETTINGS_TAG_NAME);
         projectEl.appendChild(optionalConstraintsEl);
 
-        optionalConstraintsEl.appendChild(createConstraintElement(doc, "derivedUnionIsImplemented", //$NON-NLS-1$
+        optionalConstraintsEl.appendChild(createSettingElement(doc, SETTING_DERIVED_UNION_IS_IMPLEMENTED,
                 derivedUnionIsImplementedRuleEnabled));
 
-        optionalConstraintsEl.appendChild(createConstraintElement(doc,
-                "referencedProductComponentsAreValidOnThisGenerationsValidFromDate", //$NON-NLS-1$
+        optionalConstraintsEl.appendChild(createSettingElement(doc,
+                SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE,
                 referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled));
 
-        optionalConstraintsEl.appendChild(createConstraintElement(doc, OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE,
+        optionalConstraintsEl.appendChild(createSettingElement(doc, SETTING_RULES_WITHOUT_REFERENCE,
                 rulesWithoutReferencesAllowed));
 
-        optionalConstraintsEl.appendChild(createConstraintElement(doc, OPTIONAL_CONSTRAINT_SHARED_ASSOCIATIONS,
+        optionalConstraintsEl.appendChild(createSettingElement(doc, SETTING_SHARED_ASSOCIATIONS,
                 isSharedDetailToMasterAssociations()));
 
-        optionalConstraintsEl.appendChild(createConstraintElement(doc, OPTIONAL_CONSTRAINT_ASSOCIATIONS_IN_FORMULAS,
+        optionalConstraintsEl.appendChild(createSettingElement(doc, SETTING_ASSOCIATIONS_IN_FORMULAS,
                 isAssociationsInFormulas()));
 
         // persistence options
@@ -572,10 +584,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         return projectEl;
     }
 
-    private Element createConstraintElement(Document doc, String name, boolean enable) {
-        Element constraintElement = doc.createElement("Constraint"); //$NON-NLS-1$
-        constraintElement.setAttribute("name", name); //$NON-NLS-1$
-        constraintElement.setAttribute("enable", "" + enable); //$NON-NLS-1$ //$NON-NLS-2$
+    private Element createSettingElement(Document doc, String name, boolean enable) {
+        Element constraintElement = doc.createElement(SETTING_TAG_NAME);
+        constraintElement.setAttribute(SETTING_ATTRIBUTE_NAME, name);
+        constraintElement.setAttribute(SETTING_ATTRIBUTE_ENABLE, Boolean.toString(enable));
         return constraintElement;
     }
 
@@ -626,7 +638,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         initProductRelease(XmlUtil.getFirstElement(element, PRODUCT_RELEASE));
 
-        initOptionalConstraints(element);
+        initAdditionalSettings(element);
 
         initPersistenceOptions(element);
 
@@ -730,7 +742,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      * 
      * @param element The &lt;IpsProject&gt; XML <code>Element</code>.
      */
-    private void initOptionalConstraints(Element element) {
+    private void initAdditionalSettings(Element element) {
         // migration for 1.0 files
         if (element.hasAttribute("containerRelationIsImplementedRuleEnabled")) { //$NON-NLS-1$
             derivedUnionIsImplementedRuleEnabled = Boolean.valueOf(
@@ -744,34 +756,34 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
 
         // since 2.0: read from <OptionalConstraints>
-        Element optionalConstraintsEl = XmlUtil.getFirstElement(element, "OptionalConstraints"); //$NON-NLS-1$
+        Element optionalConstraintsEl = XmlUtil.getFirstElement(element, ADDITIONAL_SETTINGS_TAG_NAME);
 
         // migration for pre-2.0 files
         if (optionalConstraintsEl == null) {
             return;
         }
 
-        NodeList nl = optionalConstraintsEl.getElementsByTagName("Constraint"); //$NON-NLS-1$
+        NodeList nl = optionalConstraintsEl.getElementsByTagName(SETTING_TAG_NAME);
         int length = nl.getLength();
         for (int i = 0; i < length; ++i) {
             Element child = (Element)nl.item(i);
-            if (!child.hasAttribute("name") || !child.hasAttribute("enable")) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (!child.hasAttribute(SETTING_ATTRIBUTE_NAME) || !child.hasAttribute(SETTING_ATTRIBUTE_ENABLE)) {
                 // ignore incomplete entries
                 continue;
             }
 
-            String name = child.getAttribute("name"); //$NON-NLS-1$
-            boolean enable = Boolean.valueOf(child.getAttribute("enable")).booleanValue(); //$NON-NLS-1$
+            String name = child.getAttribute(SETTING_ATTRIBUTE_NAME);
+            boolean enable = Boolean.valueOf(child.getAttribute(SETTING_ATTRIBUTE_ENABLE)).booleanValue();
 
-            if (name.equals("derivedUnionIsImplemented")) { //$NON-NLS-1$
+            if (name.equals(SETTING_DERIVED_UNION_IS_IMPLEMENTED)) {
                 derivedUnionIsImplementedRuleEnabled = enable;
-            } else if (name.equals("referencedProductComponentsAreValidOnThisGenerationsValidFromDate")) { //$NON-NLS-1$
+            } else if (name.equals(SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE)) {
                 referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = enable;
-            } else if (name.equals(OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE)) {
+            } else if (name.equals(SETTING_RULES_WITHOUT_REFERENCE)) {
                 rulesWithoutReferencesAllowed = enable;
-            } else if (name.equals(OPTIONAL_CONSTRAINT_SHARED_ASSOCIATIONS)) {
+            } else if (name.equals(SETTING_SHARED_ASSOCIATIONS)) {
                 setSharedDetailToMasterAssociations(enable);
-            } else if (name.equals(OPTIONAL_CONSTRAINT_ASSOCIATIONS_IN_FORMULAS)) {
+            } else if (name.equals(SETTING_ASSOCIATIONS_IN_FORMULAS)) {
                 setAssociationsInFormulas(enable);
             }
         }
@@ -1082,27 +1094,27 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createDescriptionComment(s, parentEl);
     }
 
-    private void createOptionalConstraintsDescriptionComment(Node parentEl) {
+    private void createAdditionalSettingsDescriptionComment(Node parentEl) {
         // @formatter:off
-        String s = "OptionalConstraints" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+        String s = ADDITIONAL_SETTINGS_TAG_NAME + SystemUtils.LINE_SEPARATOR
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "Some of the contraints defined in the Faktor-IPS metamodel are optional." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "In this section you can enable or disable these optional contraints." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "Some of the settings defined in the Faktor-IPS metamodel are optional." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "In this section you can enable or disable these additional settings." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "<OptionalConstraints>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "<"+ADDITIONAL_SETTINGS_TAG_NAME+">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
                 + "    <!-- True if Faktor-IPS checks if all derived unions are implemented in none abstract classes. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <Constraint name=\"derivedUnionIsImplemented\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <"+SETTING_TAG_NAME+" name=\""+SETTING_DERIVED_UNION_IS_IMPLEMENTED+"\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "    <!-- True if Faktor-IPS checks if referenced product components are valid on the effective date " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "		    of the referencing product component generation. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <Constraint name=\"referencedProductComponentsAreValidOnThisGenerationsValidFromDate\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <"+SETTING_TAG_NAME+" name=\""+SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE+"\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "    <!-- True to allow rules without references -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <Constraint name=\"" + OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
+                + "    <"+SETTING_TAG_NAME+" name=\"" + SETTING_RULES_WITHOUT_REFERENCE + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "    <!-- True to allow shared associations. Shared associations are detail-to-master associationis that can be used" //$NON-NLS-1$
                 + "         by multiple master-to-detail associations-->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <Constraint name=\"" + OPTIONAL_CONSTRAINT_SHARED_ASSOCIATIONS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$
+                + "    <"+SETTING_TAG_NAME+" name=\"" + SETTING_SHARED_ASSOCIATIONS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
                 + "    <!-- True to allow navigation via associations in formulas. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <Constraint name=\"" + OPTIONAL_CONSTRAINT_ASSOCIATIONS_IN_FORMULAS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$
+                + "    <"+SETTING_TAG_NAME+" name=\"" + SETTING_ASSOCIATIONS_IN_FORMULAS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
@@ -1116,7 +1128,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 // * inverse association for every subset of a derived union with an inverse
                 // association.
 
-                + "</OptionalConstraints>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
+                + "</"+ADDITIONAL_SETTINGS_TAG_NAME+">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
         createDescriptionComment(s, parentEl);
 //        @formatter:on
     }
