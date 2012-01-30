@@ -19,8 +19,8 @@ import org.faktorips.fl.AssociationNavigationFunctionsResolver;
 import org.faktorips.fl.FunctionResolver;
 
 /**
- * A function resolver factory that creates a function resolver for a set of functions for
- * association navigation.
+ * A {@link IFunctionResolverFactory function resolver factory} that creates a function resolver for
+ * a set of functions for association navigation.
  */
 public class AssociationNavigationFunctionsResolverFactory implements IFunctionResolverFactory {
 
