@@ -16,9 +16,9 @@ package org.faktorips.runtime;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Extension of {@link PropertyChangeSupport} providing special methods to fire
@@ -32,7 +32,7 @@ public class IpsPropertyChangeSupport extends PropertyChangeSupport {
 
     private final Object sourceBean;
 
-    private Vector<PropertyChangeListener> childChangeListeners;
+    private List<PropertyChangeListener> childChangeListeners = new ArrayList<PropertyChangeListener>(1);
 
     public IpsPropertyChangeSupport(Object sourceBean) {
         super(sourceBean);
@@ -106,9 +106,6 @@ public class IpsPropertyChangeSupport extends PropertyChangeSupport {
             boolean propagateEventsFromChildren) {
         super.addPropertyChangeListener(listener);
         if (propagateEventsFromChildren) {
-            if (childChangeListeners == null) {
-                childChangeListeners = new Vector<PropertyChangeListener>();
-            }
             childChangeListeners.add(listener);
         }
     }
@@ -119,22 +116,16 @@ public class IpsPropertyChangeSupport extends PropertyChangeSupport {
      */
     public void fireChildPropertyChange(PropertyChangeEvent evt) {
         List<PropertyChangeListener> targets = null;
-        synchronized (this) {
-            if (childChangeListeners != null) {
-                targets = Collections.unmodifiableList(childChangeListeners);
-            }
-        }
-        if (targets != null) {
-            for (PropertyChangeListener target : targets) {
-                target.propertyChange(evt);
-            }
+        targets = new CopyOnWriteArrayList<PropertyChangeListener>(childChangeListeners);
+        for (PropertyChangeListener target : targets) {
+            target.propertyChange(evt);
         }
     }
 
     @Override
     public synchronized void removePropertyChangeListener(PropertyChangeListener listener) {
         super.removePropertyChangeListener(listener);
-        if (childChangeListeners != null && childChangeListeners.contains(listener)) {
+        if (childChangeListeners.contains(listener)) {
             childChangeListeners.remove(listener);
         }
     }
