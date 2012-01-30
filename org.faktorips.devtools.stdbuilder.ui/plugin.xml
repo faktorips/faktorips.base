@@ -101,6 +101,16 @@
             name="%org.faktorips.devtools.stdbuilder.ui.commands.OpenJumpToSourceCodeContextMenu">
       </command>
    </extension>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.stdbuilder.ui.messagesimport.MessagesImportWizard"
+            icon="icons/importpref_obj.gif"
+            id="org.faktorips.devtools.stdbuilder.ui.messagesImportWizard"
+            name="MessagesImportWizard">
+      </wizard>
+   </extension>
    <!--
    <extension
          point="org.eclipse.ui.importWizards">

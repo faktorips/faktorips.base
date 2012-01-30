@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -50,23 +49,25 @@ public class ValidationRuleMessagesPropertiesImporter implements IWorkspaceRunna
 
     public static final int MSG_CODE_ILLEGAL_MESSAGE = 2;
 
-    private final IFile file;
+    private InputStream contents;
 
-    private final IIpsPackageFragmentRoot root;
+    private IIpsPackageFragmentRoot root;
 
-    private final Locale locale;
+    private Locale locale;
 
     private IStatus resultStatus = new Status(IStatus.OK, StdBuilderPlugin.PLUGIN_ID, "");
 
-    public ValidationRuleMessagesPropertiesImporter(IFile file, IIpsPackageFragmentRoot root, Locale locale) {
-        this.file = file;
+    public ValidationRuleMessagesPropertiesImporter(InputStream contents, IIpsPackageFragmentRoot root, Locale locale) {
+        this.contents = contents;
         this.root = root;
         this.locale = locale;
     }
 
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
+
         setResultStatus(importPropertyFile(monitor));
+
     }
 
     /**
@@ -74,11 +75,10 @@ public class ValidationRuleMessagesPropertiesImporter implements IWorkspaceRunna
      * {@link IIpsPackageFragmentRoot}. The messages are set for the specified locale.
      */
     IStatus importPropertyFile(IProgressMonitor monitor) {
-        InputStream contents = null;
         try {
-            contents = file.getContents();
             Properties properties = new Properties();
             properties.load(contents);
+
             return importProperties(properties, monitor);
         } catch (CoreException e) {
             return e.getStatus();
@@ -88,6 +88,7 @@ public class ValidationRuleMessagesPropertiesImporter implements IWorkspaceRunna
             IoUtil.close(contents);
             monitor.done();
         }
+
     }
 
     IStatus importProperties(Properties properties, IProgressMonitor monitor) throws CoreException {
@@ -106,7 +107,7 @@ public class ValidationRuleMessagesPropertiesImporter implements IWorkspaceRunna
             if (!ipsSrcFile.isMutable()) {
                 continue;
             }
-            boolean dirtyState = !ipsSrcFile.isDirty();
+            boolean dirtyState = ipsSrcFile.isDirty();
             List<IValidationRule> validationRules = pcType.getValidationRules();
             for (IValidationRule validationRule : validationRules) {
                 String messageKey = ValidationRuleMessagesGenerator.getMessageKey(validationRule);
@@ -122,7 +123,7 @@ public class ValidationRuleMessagesPropertiesImporter implements IWorkspaceRunna
                 readMessageKeys.add(messageKey);
             }
             monitor.worked(1);
-            if (dirtyState != ipsSrcFile.isDirty()) {
+            if (!dirtyState && ipsSrcFile.isDirty()) {
                 ipsSrcFile.save(false, new SubProgressMonitor(monitor, 1));
             }
         }

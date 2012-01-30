@@ -13,12 +13,12 @@
 
 package org.faktorips.devtools.stdbuilder.ui.messagesimport;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -69,10 +69,11 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
     @Override
     public boolean performFinish() {
         MessagesImportPMO pmo = page.getMessagesImportPMO();
-        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(pmo.getFileName()));
-        ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(file,
-                pmo.getIpsPackageFragmentRoot(), pmo.getLocale().getLocale());
+        File file = new File(pmo.getFileName());
         try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(
+                    fileInputStream, pmo.getIpsPackageFragmentRoot(), pmo.getLocale().getLocale());
             getContainer().run(true, false, new WorkbenchRunnableAdapter(importer));
             IStatus importStatus = importer.getResultStatus();
             if (!importStatus.isOK()) {
@@ -82,7 +83,11 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
             IpsPlugin.logAndShowErrorDialog(e);
         } catch (InterruptedException e) {
             IpsPlugin.logAndShowErrorDialog(e);
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         return true;
     }
+
 }
