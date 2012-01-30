@@ -210,7 +210,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         Datatype[] argTypes = function.getArgTypes();
         for (int i = 0; i < argTypes.length; i++) {
             if (i > 0) {
-                displayText.append(", "); //$NON-NLS-1$
+                displayText.append("; "); //$NON-NLS-1$
             }
             displayText.append(argTypes[i].getName());
         }
