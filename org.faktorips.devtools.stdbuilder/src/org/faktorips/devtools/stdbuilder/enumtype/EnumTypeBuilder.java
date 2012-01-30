@@ -33,6 +33,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.EnumUtil;
@@ -65,6 +66,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     /** The builder configuration property name that indicates whether to use Java 5 enum types. */
     private final static String USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY = "useJavaEnumTypes"; //$NON-NLS-1$
+    private ExtendedExprCompiler expressionCompiler;
 
     /**
      * Creates a new <code>EnumTypeBuilder</code> that will belong to the given IPS artefact builder
@@ -316,11 +318,13 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * @throws NullPointerException If <code>enumType</code> or <code>enumValue</code> is
      *             <code>null</code>.
      */
-    public JavaCodeFragment getNewInstanceCodeFragement(EnumTypeDatatypeAdapter enumTypeAdapter,
-            String value,
-            JavaCodeFragment repositoryExp) throws CoreException {
+    public JavaCodeFragment getNewInstanceCodeFragement(EnumTypeDatatypeAdapter enumTypeAdapter, String value)
+            throws CoreException {
 
         ArgumentCheck.notNull(enumTypeAdapter, this);
+
+        ExtendedExprCompiler expressionCompiler = getExpressionCompiler();
+        JavaCodeFragment repositoryExp = expressionCompiler.getRuntimeRepositoryExpression();
 
         JavaCodeFragment fragment = new JavaCodeFragment();
         if (enumTypeAdapter.getEnumType().isContainingValues()) {
@@ -342,6 +346,24 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
         return getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(enumTypeAdapter.getEnumType(), value, false,
                 repositoryExp);
+    }
+
+    /**
+     * Sets the {@link ExtendedExprCompiler} used to create code fragments containing repository
+     * access.
+     * 
+     * @param expressionCompiler the {@link ExtendedExprCompiler} used to create code fragments
+     *            containing repository access
+     */
+    public void setExtendedExprCompiler(ExtendedExprCompiler expressionCompiler) {
+        this.expressionCompiler = expressionCompiler;
+    }
+
+    private ExtendedExprCompiler getExpressionCompiler() {
+        if (expressionCompiler == null) {
+            expressionCompiler = getIpsProject().newExpressionCompiler();
+        }
+        return expressionCompiler;
     }
 
     /**

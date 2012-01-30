@@ -17,6 +17,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.internal.MethodNames;
 
 /**
  * An extension of the formula language compiler that provides additional properties.
@@ -25,7 +26,7 @@ import org.faktorips.runtime.IRuntimeRepository;
  */
 public class ExtendedExprCompiler extends ExprCompiler {
 
-    private JavaCodeFragment runtimeRepositoryExpression;
+    private JavaCodeFragment runtimeRepositoryExpression = new JavaCodeFragment(MethodNames.GET_THIS_REPOSITORY + "()"); //$NON-NLS-1$
 
     /**
      * Returns the expression to access the {@link IRuntimeRepository} which can be used by

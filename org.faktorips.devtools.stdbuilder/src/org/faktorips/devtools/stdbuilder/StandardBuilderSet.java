@@ -836,9 +836,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 EnumTypeDatatypeAdapter datatype,
                 ExprCompiler exprCompiler,
                 String value) throws CoreException {
-            ExtendedExprCompiler compiler = (ExtendedExprCompiler)exprCompiler;
-            fragment.append(enumTypeBuilder.getNewInstanceCodeFragement(datatype, value,
-                    compiler.getRuntimeRepositoryExpression()));
+            enumTypeBuilder.setExtendedExprCompiler((ExtendedExprCompiler)exprCompiler);
+            fragment.append(enumTypeBuilder.getNewInstanceCodeFragement(datatype, value));
         }
 
         @Override

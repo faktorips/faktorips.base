@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -63,7 +62,6 @@ public class ExpressionBuilderHelper {
         try {
             IIpsProject ipsProject = formula.getIpsProject();
             ExtendedExprCompiler compiler = formula.newExprCompiler(ipsProject, formulaTest);
-            compiler.setRuntimeRepositoryExpression(getRepositoryExpression());
             CompilationResult result = compiler.compile(expression);
             if (result.successfull()) {
                 Datatype attributeDatatype = formulaSignature.findDatatype(ipsProject);
@@ -100,9 +98,5 @@ public class ExpressionBuilderHelper {
             fragment.append("// See the error log for details."); //$NON-NLS-1$
             return fragment;
         }
-    }
-
-    public static JavaCodeFragment getRepositoryExpression() {
-        return new JavaCodeFragment(MethodNames.GET_THIS_REPOSITORY + "()");
     }
 }
