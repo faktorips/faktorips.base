@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.migration;
+package org.faktorips.devtools.core.internal.migrationextensions;
 
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -33,6 +34,10 @@ import org.w3c.dom.NodeList;
 
 /**
  * Migration to version 3.6.0.rc2
+ * <ul>
+ * <li>The OptionalConstraints section in the .ipsproject settings file is renamed to
+ * AdditionalSettings.</li>
+ * </ul>
  * 
  * @author Daniel Schwering
  */
@@ -123,5 +128,14 @@ public class Migration_3_6_0_rc2 extends AbstractIpsProjectMigrationOperation {
         data.setLastPersistentModificationTimestamp(new Long(file.getModificationStamp()));
         ipsProject.setProperties(data);
         return msgResultList;
+    }
+
+    public static class Factory implements IIpsProjectMigrationOperationFactory {
+        @Override
+        public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
+                String featureId) {
+
+            return new Migration_3_6_0_rc2(ipsProject, featureId);
+        }
     }
 }

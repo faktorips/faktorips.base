@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.migration;
+package org.faktorips.devtools.core.internal.migrationextensions;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
+import org.faktorips.devtools.core.internal.migrationextensions.Migration_3_6_0_rc2;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;

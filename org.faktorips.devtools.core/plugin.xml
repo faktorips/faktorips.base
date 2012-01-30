@@ -441,6 +441,10 @@
             class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_6_0$Factory"
             targetVersion="3.6.0">
       </migrationOperation>
+      <migrationOperation
+            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_6_0_rc2$Factory"
+            targetVersion="3.6.0.rc2">
+      </migrationOperation>
    </extension>
    <extension
          point="org.eclipse.jdt.core.classpathContainerInitializer">
