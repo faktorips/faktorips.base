@@ -42,7 +42,6 @@ import org.junit.Test;
 public class ValidationRuleMessagesPropertiesImporterTest {
 
     private final static String TEST_FILE = "org/faktorips/devtools/stdbuilder/policycmpttype/validationrule/validation-test-messages.properties";
-    private final static String TEST_FILE_NULL = "";
 
     @Test
     public void testImport() throws Exception {
@@ -69,26 +68,8 @@ public class ValidationRuleMessagesPropertiesImporterTest {
                 root, Locale.GERMAN);
         IStatus status = importer.importPropertyFile(new NullProgressMonitor());
         assertEquals(IStatus.OK, status.getSeverity());
-
         verify(inputStream).close();
 
-    }
-
-    @Test
-    public void testNullImport() throws Exception {
-
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(TEST_FILE_NULL);
-
-        IIpsPackageFragmentRoot root = mock(IIpsPackageFragmentRoot.class);
-
-        ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(inputStream,
-                root, Locale.GERMAN);
-        IStatus status = importer.importPropertyFile(new NullProgressMonitor());
-
-        assertEquals(IStatus.WARNING, status.getSeverity());
-
-        verify(root).findAllIpsSrcFiled(IpsObjectType.POLICY_CMPT_TYPE);
-        verifyNoMoreInteractions(root);
     }
 
     @Test
