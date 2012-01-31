@@ -48,6 +48,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -55,14 +56,18 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.ui.actions.Messages;
 import org.faktorips.devtools.core.ui.wizards.copyproductcmpt.CopyProductCmptWizard;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.StringUtil;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * A handler to paste IpsObjectPartContainer-objects from the clipboard into the model.
@@ -370,21 +375,23 @@ public class IpsPasteHandler extends IpsAbstractHandler {
         String nameWithoutExtension = ipsObject.getName();
         String extension = "." + StringUtil.getFileExtension(ipsObject.getIpsSrcFile().getName()); //$NON-NLS-1$
         IPath targetPath = parent.getFullPath();
-        return getNewNameByDialogIfNecessary(IResource.FILE, targetPath, nameWithoutExtension, extension, false);
+        return getNewNameByDialogIfNecessary(IResource.FILE, targetPath, nameWithoutExtension, extension, false,
+                ipsObject.getIpsSrcFile());
     }
 
     /**
      * Returns a new name for folder or files, returns null if the user aborts the get new name for
-     * duplicate souce file dialog.
+     * duplicate source file dialog.
      */
     private String getNewNameByDialogIfNecessary(int resourceType,
             IPath targetPath,
             String nameWithOrWithoutExtension,
             String extension,
-            boolean showExtension) {
+            boolean showExtension,
+            IIpsSrcFile sourceIpsSrcFile) {
 
         boolean dialogWasDisplayed = false;
-        Validator validator = new Validator(targetPath, resourceType, extension);
+        Validator validator = new Validator(targetPath, resourceType, extension, sourceIpsSrcFile);
         String suggestedName = nameWithOrWithoutExtension;
         int doCopy = Window.OK;
         boolean nameChangeRequired = validator.isValid(nameWithOrWithoutExtension) != null;
@@ -432,7 +439,7 @@ public class IpsPasteHandler extends IpsAbstractHandler {
 
         String packageName = sourcePackageFragment.getLastSegmentName();
         IPath targetPath = targetParentFolder.getFullPath();
-        packageName = getNewNameByDialogIfNecessary(IResource.FOLDER, targetPath, packageName, "", false); //$NON-NLS-1$
+        packageName = getNewNameByDialogIfNecessary(IResource.FOLDER, targetPath, packageName, "", false, null); //$NON-NLS-1$
         if (packageName == null) {
             return null;
         }
@@ -485,8 +492,9 @@ public class IpsPasteHandler extends IpsAbstractHandler {
             copyProductCmptByWizard((IProductCmpt)((IIpsSrcFile)source).getIpsObject(), targetParent);
         } else {
             // non product cmpt
+            IIpsElement source = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
             String newName = getNewNameByDialogIfNecessary(resource.getType(), targetPath, suggestedName, extension,
-                    showExtension);
+                    showExtension, source instanceof IIpsSrcFile ? (IIpsSrcFile)source : null);
             copyResource(resource, targetPath, newName);
         }
     }
@@ -549,11 +557,17 @@ public class IpsPasteHandler extends IpsAbstractHandler {
         IPath root;
         String extension;
         int resourceType;
+        private IIpsProjectNamingConventions namingConventions;
+        private IpsObjectType ipsObjectType;
 
-        public Validator(IPath root, int resourceType, String extension) {
+        public Validator(IPath root, int resourceType, String extension, IIpsSrcFile sourceIpsSrcFile) {
             this.root = root;
             this.extension = extension;
             this.resourceType = resourceType;
+            if (sourceIpsSrcFile != null) {
+                namingConventions = sourceIpsSrcFile.getIpsProject().getNamingConventions();
+                ipsObjectType = sourceIpsSrcFile.getIpsObjectType();
+            }
         }
 
         @Override
@@ -561,6 +575,17 @@ public class IpsPasteHandler extends IpsAbstractHandler {
             IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
             IResource test = null;
             if (resourceType == IResource.FILE) {
+                if (namingConventions != null) {
+                    try {
+                        MessageList messageList = namingConventions.validateUnqualifiedIpsObjectName(ipsObjectType,
+                                newText);
+                        if (messageList.containsErrorMsg()) {
+                            return messageList.getFirstMessage(Message.ERROR).getText();
+                        }
+                    } catch (CoreException e) {
+                        throw new CoreRuntimeException(e.getMessage(), e);
+                    }
+                }
                 test = wsRoot.getFile(root.append(newText + extension));
             } else if (resourceType == IResource.FOLDER) {
                 test = wsRoot.getFolder(root.append(newText));
