@@ -189,7 +189,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     /**
      * Gets the package name from the given ips package fragment root.
      */
-    public static String getRepPckNameFromPckFrgmtRoot(IIpsPackageFragmentRoot root) throws CoreException {
+    public static String getRepPckNameFromPckFrgmtRoot(IIpsPackageFragmentRoot root) {
         IIpsArtefactBuilderSet builderSet = root.getIpsProject().getIpsArtefactBuilderSet();
         return builderSet.getRuntimeRepositoryTocResourceName(root);
     }
