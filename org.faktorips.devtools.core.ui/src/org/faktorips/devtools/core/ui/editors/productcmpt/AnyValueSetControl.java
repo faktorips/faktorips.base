@@ -20,13 +20,11 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -72,6 +70,11 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
     private boolean dataChangeable;
 
     /**
+     * Provider for source and target enum value set.
+     */
+    private IEnumValueSetProvider enumValueSetProvider;
+
+    /**
      * Creates a new control to show and edit the value set owned by the config element.
      * 
      * @param parent The parent composite to add this control to.
@@ -88,6 +91,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         this.shell = shell;
         this.controller = controller;
         getTextControl().setEditable(false);
+        setEnumValueSetProvider(new DefaultEnumValueSetProvider(configElement));
     }
 
     @Override
@@ -141,12 +145,8 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         if (!configElement.getValueSet().isEnum()) {
             return null;
         }
-        if (attribute.getValueSet().canBeUsedAsSupersetForAnotherEnumValueSet()) {
-            IEnumValueSet sourceSet = (IEnumValueSet)attribute.getValueSet();
-            return new EnumSubsetEditDialog(sourceSet, configElement, datatype, shell, !dataChangeable);
-        }
-        if (datatype.isEnum()) {
-            return new EnumSubsetEditDialog(configElement, (EnumDatatype)datatype, shell, !dataChangeable);
+        if (attribute.getValueSet().canBeUsedAsSupersetForAnotherEnumValueSet() || datatype.isEnum()) {
+            return new EnumSubsetEditDialog(getEnumValueSetProvider(), datatype, shell, !dataChangeable);
         }
         return null;
     }
@@ -184,6 +184,14 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
     @Override
     public boolean isDataChangeable() {
         return dataChangeable;
+    }
+
+    public void setEnumValueSetProvider(IEnumValueSetProvider enumValueSetProvider) {
+        this.enumValueSetProvider = enumValueSetProvider;
+    }
+
+    public IEnumValueSetProvider getEnumValueSetProvider() {
+        return enumValueSetProvider;
     }
 
 }

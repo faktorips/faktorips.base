@@ -22,10 +22,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.ui.controls.valuesets.EnumSubsetChooser;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
@@ -39,22 +37,17 @@ import org.faktorips.util.message.MessageList;
  */
 public class EnumSubsetEditDialog extends IpsPartEditDialog {
 
-    private IConfigElement configElement;
-    private IEnumValueSet source;
     private ValueDatatype valueDatatype;
 
     private boolean viewOnly;
 
-    public EnumSubsetEditDialog(IConfigElement configEl, EnumDatatype datatype, Shell parentShell, boolean viewOnly) {
-        this(null, configEl, datatype, parentShell, viewOnly);
-    }
+    private final IEnumValueSetProvider enumValueSetProvider;
 
-    public EnumSubsetEditDialog(IEnumValueSet source, IConfigElement configEl, ValueDatatype datatype,
-            Shell parentShell, boolean viewOnly) {
+    public EnumSubsetEditDialog(IEnumValueSetProvider provider, ValueDatatype datatype, Shell parentShell,
+            boolean viewOnly) {
 
-        super(configEl, parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
-        configElement = configEl;
-        this.source = source;
+        super(provider.getTargetConfigElement(), parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
+        this.enumValueSetProvider = provider;
         valueDatatype = datatype;
         this.viewOnly = viewOnly;
         setDescriptionEnabled(!(viewOnly));
@@ -82,15 +75,16 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
 
     private Composite createEnumValueSetChooser(Composite workArea) {
         EnumSubsetChooser chooser = new Chooser(workArea);
-        chooser.setSourceLabel(Messages.DefaultsAndRangesEditDialog_additionalValuesDefinedInModel);
-        chooser.setTargetLabel(Messages.DefaultsAndRangesEditDialog_valueDefinedInProductCmpt);
+        chooser.setSourceLabel(enumValueSetProvider.getSourceLabel());
+        chooser.setTargetLabel(enumValueSetProvider.getTargetLabel());
         return chooser;
     }
 
     class Chooser extends EnumSubsetChooser {
 
         public Chooser(Composite parent) {
-            super(parent, uiToolkit, source, (IEnumValueSet)configElement.getValueSet(), valueDatatype, uiController);
+            super(parent, uiToolkit, enumValueSetProvider.getSourceEnumValueSet(), (IEnumValueSet)enumValueSetProvider
+                    .getTargetConfigElement().getValueSet(), valueDatatype, uiController);
         }
 
         @Override
