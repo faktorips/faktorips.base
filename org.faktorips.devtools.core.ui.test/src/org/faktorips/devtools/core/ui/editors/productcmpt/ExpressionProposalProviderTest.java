@@ -95,9 +95,9 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         for (IContentProposal result : results) {
             expectedValues.add(result.getLabel());
         }
-        assertTrue(expectedValues.contains("1"));
-        assertTrue(expectedValues.contains("2"));
-        assertTrue(expectedValues.contains("3"));
+        assertTrue(expectedValues.contains("1(first)"));
+        assertTrue(expectedValues.contains("2(second)"));
+        assertTrue(expectedValues.contains("3(third)"));
     }
 
     @Test

@@ -122,7 +122,8 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 String[] valueIds = enumType.getAllValueIds(false);
                 for (String valueId : valueIds) {
                     if (valueId.startsWith(enumValuePrefix)) {
-                        addEnumValueToResult(result, valueId, enumValuePrefix);
+                        String valueName = enumType.getValueName(valueId);
+                        addEnumValueToResult(result, valueId, enumValuePrefix, valueName);
                     }
                 }
                 return;
@@ -130,8 +131,9 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         }
     }
 
-    private void addEnumValueToResult(List<IContentProposal> result, String enumValue, String prefix) {
-        IContentProposal proposal = new ContentProposal(removePrefix(enumValue, prefix), enumValue, null);
+    private void addEnumValueToResult(List<IContentProposal> result, String enumValue, String prefix, String valueName) {
+        IContentProposal proposal = new ContentProposal(removePrefix(enumValue, prefix), enumValue + '(' + valueName
+                + ')', null);
         result.add(proposal);
     }
 
