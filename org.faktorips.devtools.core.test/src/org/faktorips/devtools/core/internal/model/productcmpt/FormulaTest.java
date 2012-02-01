@@ -30,6 +30,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -71,6 +72,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
     private IProductCmpt productCmpt;
     private IFormula formula;
     private IProductCmptTypeMethod formulaSignature;
+    private IProductCmptGeneration productCmptGen;
 
     @Override
     @Before
@@ -90,8 +92,8 @@ public class FormulaTest extends AbstractIpsPluginTest {
         formulaSignature.newParameter(policyCmptType.getQualifiedName(), "policy");
 
         productCmpt = newProductCmpt(productCmptType, "ProductA");
-        IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
-        formula = gen.newFormula();
+        productCmptGen = productCmpt.getProductCmptGeneration(0);
+        formula = productCmptGen.newFormula();
         formula.setFormulaSignature(formulaSignature.getFormulaName());
     }
 
@@ -250,6 +252,32 @@ public class FormulaTest extends AbstractIpsPluginTest {
         attribute.setDatatype(testType.getQualifiedName());
         attribute.setName("a");
 
+        enumtypes = formula.getEnumDatatypesAllowedInFormula();
+        assertEquals(1, enumtypes.length);
+        assertEquals(testType, enumtypes[0]);
+    }
+
+    @Test
+    public void testGetEnumDatatypesAllowedInFormulaWithAssociations() throws Exception {
+        newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
+        EnumDatatype testType = (EnumDatatype)ipsProject.findDatatype("TestEnumType");
+        assertNotNull(testType);
+
+        EnumDatatype[] enumtypes = formula.getEnumDatatypesAllowedInFormula();
+        assertEquals(0, enumtypes.length);
+
+        PolicyCmptType policyPartType = newPolicyCmptType(ipsProject, "PolicyPart");
+        newComposition(policyCmptType, policyPartType, true);
+        PolicyCmptType addressType = newPolicyCmptType(ipsProject, "Address");
+        IPolicyCmptTypeAttribute attribute = addressType.newPolicyCmptTypeAttribute("type");
+        attribute.setDatatype(testType.getQualifiedName());
+        attribute.setName("a");
+        newComposition(policyPartType, addressType, false);
+
+        enumtypes = formula.getEnumDatatypesAllowedInFormula();
+        assertEquals(0, enumtypes.length);
+
+        formula.setExpression("policy.PolicyPart[\"My.Part\"].Address.type=" + testType.getName() + ".1");
         enumtypes = formula.getEnumDatatypesAllowedInFormula();
         assertEquals(1, enumtypes.length);
         assertEquals(testType, enumtypes[0]);

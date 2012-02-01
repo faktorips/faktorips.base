@@ -37,11 +37,13 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
@@ -198,13 +200,73 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     private void collectEnumsAllowedInFormula(Map<String, EnumDatatype> nameToTypeMap) {
         collectEnumTypesFromAttributes(nameToTypeMap);
         collectEnumTypesFromMethod(nameToTypeMap);
+        collectEnumTypesFromAssociationNavigation(nameToTypeMap);
+    }
+
+    private void collectEnumTypesFromAssociationNavigation(final Map<String, EnumDatatype> nameToTypeMap) {
+        IIpsProject ipsProject = getIpsProject();
+        IMethod method = findFormulaSignature(ipsProject);
+        String expression = getExpression();
+        IParameter[] params = method.getParameters();
+        try {
+            for (IParameter param : params) {
+                Datatype datatype = ipsProject.findDatatype(param.getDatatype());
+                if (datatype instanceof IPolicyCmptType) {
+                    IPolicyCmptType policyCmptType = (IPolicyCmptType)datatype;
+                    String paramName = param.getName() + '.';
+                    if (expression.contains(paramName)) {
+                        String associationNavigations = expression.substring(expression.indexOf(paramName)
+                                + paramName.length());
+                        collectEnumTypesFromAssociationTarget(nameToTypeMap, ipsProject, policyCmptType,
+                                associationNavigations);
+                        // TODO more than once
+                    }
+                }
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e.getMessage(), e);
+        }
+    }
+
+    private void collectEnumTypesFromAssociationTarget(final Map<String, EnumDatatype> nameToTypeMap,
+            final IIpsProject ipsProject,
+            final IPolicyCmptType policyCmptType,
+            final String associationNavigations) throws CoreException {
+        int indexOfOpeningBracket = associationNavigations.indexOf('[');
+        int indexOfPeriod = associationNavigations.indexOf('.');
+        if (indexOfOpeningBracket < 0 && indexOfPeriod < 0) {
+            return;
+        }
+        String associationName = associationNavigations;
+        String remainingAssociationNavigations = StringUtils.EMPTY;
+        if (indexOfOpeningBracket > 0 && (indexOfPeriod > indexOfOpeningBracket || indexOfPeriod <= 0)) {
+            associationName = associationNavigations.substring(0, indexOfOpeningBracket);
+            remainingAssociationNavigations = associationNavigations.substring(associationNavigations.indexOf(']') + 1);
+            if (remainingAssociationNavigations.startsWith(".")) { //$NON-NLS-1$
+                remainingAssociationNavigations = remainingAssociationNavigations.substring(1);
+            }
+        } else if (indexOfPeriod > 0) {
+            associationName = associationNavigations.substring(0, indexOfPeriod);
+            remainingAssociationNavigations = associationNavigations.substring(indexOfPeriod + 1);
+        }
+        final IAssociation association = policyCmptType.findAssociation(associationName, ipsProject);
+        if (association instanceof IPolicyCmptTypeAssociation) {
+            final IPolicyCmptType targetPolicyCmptType = ((IPolicyCmptTypeAssociation)association)
+                    .findTargetPolicyCmptType(ipsProject);
+            final EnumDatatypesCollector collector = new EnumDatatypesCollector(ipsProject, nameToTypeMap);
+            collector.start(targetPolicyCmptType);
+            if (StringUtils.isNotBlank(remainingAssociationNavigations)) {
+                collectEnumTypesFromAssociationTarget(nameToTypeMap, ipsProject, targetPolicyCmptType,
+                        remainingAssociationNavigations);
+            }
+        }
     }
 
     protected abstract void collectEnumTypesFromAttributes(Map<String, EnumDatatype> enumTypes);
 
     private void collectEnumTypesFromMethod(Map<String, EnumDatatype> enumtypes) {
         IIpsProject ipsProject = getIpsProject();
-        IMethod method = findFormulaSignature(getIpsProject());
+        IMethod method = findFormulaSignature(ipsProject);
         if (method == null) {
             return;
         }
