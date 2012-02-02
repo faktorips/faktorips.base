@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><umlet_diagram><element><type>com.umlet.element.base.Class</type><coordinates><x>340</x><y>10</y><w>130</w><h>50</h></coordinates><panel_attributes>Deckung
---
-</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>10</x><y>10</y><w>130</w><h>50</h></coordinates><panel_attributes>Vertrag
---
-</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>120</x><y>10</y><w>240</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
-q1=Deckungstyp
-</panel_attributes><additional_attributes>20;20;220;20</additional_attributes></element></umlet_diagram>
