@@ -139,6 +139,10 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
 
         IIpsProject ipsProject = (IIpsProject)project.getAdapter(IIpsElement.class);
 
+        if (ipsProject == null) {
+            return null;
+        }
+
         IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsProject.getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot ipsPackageFragmentRoot : ipsPackageFragmentRoots) {
             if (ipsPackageFragmentRoot.isBasedOnIpsArchive()) {
