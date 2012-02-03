@@ -31,6 +31,7 @@ public class Or extends AbstractVarArgFunction {
     protected void compileInternal(CompilationResult returnValue,
             CompilationResult[] convertedArgs,
             JavaCodeFragment fragment) {
+        fragment.append('(');
         for (int i = 0; i < convertedArgs.length; i++) {
             fragment.append(convertedArgs[i].getCodeFragment());
 
@@ -38,6 +39,7 @@ public class Or extends AbstractVarArgFunction {
                 fragment.append("||"); //$NON-NLS-1$
             }
         }
+        fragment.append(')');
     }
 
 }
