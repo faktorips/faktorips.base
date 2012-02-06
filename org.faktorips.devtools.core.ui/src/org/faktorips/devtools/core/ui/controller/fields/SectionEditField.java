@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -31,6 +32,11 @@ public class SectionEditField extends StringValueEditField {
 
     public SectionEditField(Section section) {
         this.section = section;
+    }
+
+    @Override
+    protected int getMessageDecorationPosition() {
+        return SWT.LEFT | SWT.TOP;
     }
 
     @Override

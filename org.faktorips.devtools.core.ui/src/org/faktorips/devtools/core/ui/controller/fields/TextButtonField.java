@@ -19,7 +19,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.ui.controls.TextAndSecondControlComposite;
-import org.faktorips.util.message.MessageList;
 
 public class TextButtonField extends StringValueEditField {
 
@@ -42,8 +41,8 @@ public class TextButtonField extends StringValueEditField {
     }
 
     @Override
-    public void setMessages(MessageList list) {
-        MessageCueController.setMessageCue(control.getTextControl(), list);
+    protected Control getControlForDecoration() {
+        return control.getTextControl();
     }
 
     @Override

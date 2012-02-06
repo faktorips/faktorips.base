@@ -18,11 +18,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.MessageCueController;
+import org.faktorips.devtools.core.ui.controller.fields.MessageDecoration;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -45,6 +46,8 @@ public abstract class IpsObjectPartContainerSection extends IpsSection {
     private final Set<String> monitoredValidationMessageCodes = new HashSet<String>();
 
     private final IIpsObjectPartContainer ipsObjectPartContainer;
+
+    private MessageDecoration messageDecoration;
 
     protected IpsObjectPartContainerSection(String id, IIpsObjectPartContainer ipsObjectPartContainer,
             Composite parent, int layoutData, UIToolkit toolkit) {
@@ -80,7 +83,10 @@ public abstract class IpsObjectPartContainerSection extends IpsSection {
                     }
                 }
             }
-            MessageCueController.setMessageCue(getClientComposite(), filteredMessageList);
+            if (messageDecoration == null) {
+                messageDecoration = getToolkit().createMessageDecoration(getClientComposite(), SWT.LEFT | SWT.TOP);
+            }
+            messageDecoration.setMessageList(filteredMessageList);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

@@ -27,6 +27,7 @@ import org.faktorips.util.message.MessageList;
  * indicate a problem. The problem is triggered by setting a {@link MessageList}.
  * 
  * @author dirmeier
+ * @since 3.6
  */
 public class MessageDecoration {
 

@@ -78,7 +78,7 @@ import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
-import org.faktorips.devtools.core.ui.controller.fields.MessageCueController;
+import org.faktorips.devtools.core.ui.controller.fields.MessageDecoration;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
@@ -168,6 +168,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private Composite valueSetWorkArea;
 
+    private MessageDecoration validationRuleAddedDecoration;
+
     public AttributeEditDialog(IPolicyCmptTypeAttribute attribute, Shell parentShell) {
         super(attribute, parentShell, Messages.AttributeEditDialog_title, true);
         this.attribute = attribute;
@@ -251,17 +253,17 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             MessageList msgList;
             try {
                 if (rule.isDeleted()) {
-                    MessageCueController.setMessageCue(validationRuleAdded, null);
+                    validationRuleAddedDecoration.setMessageList(new MessageList());
                     return;
                 }
                 msgList = rule.validate(rule.getIpsProject());
                 msgList = msgList.getMessagesFor(rule, IValidationRule.PROPERTY_CHECK_AGAINST_VALUE_SET_RULE);
-                MessageCueController.setMessageCue(validationRuleAdded, msgList);
+                validationRuleAddedDecoration.setMessageList(msgList);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
         } else {
-            MessageCueController.setMessageCue(validationRuleAdded, null);
+            validationRuleAddedDecoration.setMessageList(new MessageList());
         }
         updateDialogErrorMessage();
     }
@@ -685,6 +687,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         Composite checkComposite = getToolkit().createGridComposite(workArea, 1, true, false);
         validationRuleAdded = getToolkit().createCheckbox(checkComposite,
                 Messages.AttributeEditDialog_labelActivateValidationRule);
+        validationRuleAddedDecoration = getToolkit().createMessageDecoration(validationRuleAdded);
         validationRuleAdded.setToolTipText(Messages.AttributeEditDialog_tooltipActivateValidationRule);
 
         ruleGroup = getToolkit().createGroup(checkComposite, Messages.AttributeEditDialog_ruleTitle);
