@@ -52,9 +52,8 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
 
     private final TypeSelectionPage typeSelectionPage;
     private final ProductCmptPage productCmptPage;
-    private FolderAndPackagePage folderAndPackagePage;
-    NewProdutCmptValidator validator;
-    private boolean skipFirstPage;
+    private final FolderAndPackagePage folderAndPackagePage;
+    private final NewProdutCmptValidator validator;
 
     /**
      * Creating a the new wizard.
@@ -88,13 +87,20 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
     }
 
     @Override
-    public IWizardPage getStartingPage() {
-        if (skipFirstPage) {
-            IWizardPage secondWizardPage = getPages()[1];
-            secondWizardPage.setPreviousPage(getPages()[0]);
-            return secondWizardPage;
+    public IWizardPage getPreviousPage(IWizardPage page) {
+        if (page == productCmptPage && getPmo().isAddToMode()) {
+            return null;
         } else {
-            return getPages()[0];
+            return super.getPreviousPage(page);
+        }
+    }
+
+    @Override
+    public IWizardPage getStartingPage() {
+        if (getPmo().isAddToMode()) {
+            return productCmptPage;
+        } else {
+            return super.getStartingPage();
         }
     }
 
@@ -180,7 +186,6 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
             IProductCmptType defaultType,
             IProductCmpt defaultProductCmpt) {
         getPmo().initDefaults(defaultPackage, defaultType, defaultProductCmpt);
-        skipFirstPage = defaultType != null;
     }
 
     /**

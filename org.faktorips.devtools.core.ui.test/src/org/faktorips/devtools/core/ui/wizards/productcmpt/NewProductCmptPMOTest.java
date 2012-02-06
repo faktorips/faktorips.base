@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -32,8 +33,10 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.junit.After;
 import org.junit.Before;
@@ -237,6 +240,28 @@ public class NewProductCmptPMOTest {
         pmo.setSelectedBaseType(baseType);
         assertEquals(1, pmo.getSubtypes().size());
         assertTrue(pmo.getSubtypes().contains(subtype1));
+    }
+
+    @Test
+    public void testIsAddToMode() throws Exception {
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        assertFalse(pmo.isAddToMode());
+
+        pmo.setAddToAssociation(null, null);
+        assertFalse(pmo.isAddToMode());
+
+        IProductCmptGeneration addToProductCmptGeneration = mock(IProductCmptGeneration.class);
+        pmo.setAddToAssociation(addToProductCmptGeneration, null);
+        assertFalse(pmo.isAddToMode());
+
+        IProductCmptTypeAssociation addToAssociation = mock(IProductCmptTypeAssociation.class);
+        pmo.setAddToAssociation(null, addToAssociation);
+        assertFalse(pmo.isAddToMode());
+
+        IProductCmptType productCmptType = mock(IProductCmptType.class);
+        when(addToProductCmptGeneration.findProductCmptType(any(IIpsProject.class))).thenReturn(productCmptType);
+        pmo.setAddToAssociation(addToProductCmptGeneration, addToAssociation);
+        assertTrue(pmo.isAddToMode());
     }
 
     @After

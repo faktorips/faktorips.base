@@ -396,14 +396,19 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
      */
     public void setAddToAssociation(IProductCmptGeneration addToProductCmptGeneration,
             IProductCmptTypeAssociation addToAssociation) {
-        this.addToProductCmptGeneration = addToProductCmptGeneration;
-        setEffectiveDate(addToProductCmptGeneration.getValidFrom());
-        this.addToAssociation = addToAssociation;
+        this.addToProductCmptGeneration = null;
+        this.addToAssociation = null;
+        if (addToProductCmptGeneration == null || addToAssociation == null) {
+            return;
+        }
         try {
             IProductCmptType targetProductCmptType = addToAssociation
                     .findTargetProductCmptType(addToProductCmptGeneration.getIpsProject());
+            this.addToProductCmptGeneration = addToProductCmptGeneration;
+            this.addToAssociation = addToAssociation;
+            setEffectiveDate(addToProductCmptGeneration.getValidFrom());
             setSelectedBaseType(targetProductCmptType);
-            if (!targetProductCmptType.isAbstract()) {
+            if (targetProductCmptType != null && !targetProductCmptType.isAbstract()) {
                 setSelectedType(targetProductCmptType);
             }
         } catch (CoreException e) {
@@ -428,6 +433,10 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
      */
     public IProductCmptTypeAssociation getAddToAssociation() {
         return addToAssociation;
+    }
+
+    public boolean isAddToMode() {
+        return getAddToAssociation() != null && getAddToProductCmptGeneration() != null;
     }
 
     /**
