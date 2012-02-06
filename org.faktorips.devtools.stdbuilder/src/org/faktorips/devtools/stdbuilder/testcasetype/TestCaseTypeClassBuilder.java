@@ -36,7 +36,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -116,9 +115,14 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     // contains all test parameters with at least one extension attribute
     private List<ITestPolicyCmptTypeParameter> policyTypeParamsWithExtensionAttr;
 
-    public TestCaseTypeClassBuilder(DefaultBuilderSet builderSet) {
+    public TestCaseTypeClassBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(TestCaseTypeClassBuilder.class));
         setMergeEnabled(true);
+    }
+
+    @Override
+    public StandardBuilderSet getBuilderSet() {
+        return (StandardBuilderSet)super.getBuilderSet();
     }
 
     @Override
@@ -938,17 +942,26 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private String generateTestAttributeConstant(ITestPolicyCmptTypeParameter parameter, String testAttribute) {
-        String constName = "TESTATTR_" + parameter.getName() + "_" + testAttribute;
-        // constName = constName.replaceAll("([a-z])([A-Z])", "1_2");
+        String constName = parameter.getName();
+        if (getBuilderSet().isGenerateSeparatedCamelCase()) {
+            constName = StringUtil.camelCaseToUnderscore(constName, false);
+        }
         constName = StringUtils.upperCase(constName);
+        String upperCasetestAttribute = testAttribute;
+        if (getBuilderSet().isGenerateSeparatedCamelCase()) {
+            upperCasetestAttribute = StringUtil.camelCaseToUnderscore(upperCasetestAttribute, false);
+        }
+        upperCasetestAttribute = StringUtils.upperCase(upperCasetestAttribute);
+        constName = "TESTATTR_" + constName + "_" + upperCasetestAttribute;
+        // constName = constName.replaceAll("([a-z])([A-Z])", "1_2");
         JavaCodeFragmentBuilder constantBuilder = getMainTypeSection().getConstantBuilder();
         constantBuilder.javaDoc("", ANNOTATION_GENERATED);
-        constantBuilder.varDefinition("public final static String", constName, "\"" + testAttribute + "\"");
+        constantBuilder.varDefinition("public final static String", constName, "\"" + upperCasetestAttribute + "\"");
         return constName;
     }
 
     private boolean isUseTypesafeCollections() {
-        return ((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections();
+        return getBuilderSet().isUseTypesafeCollections();
     }
 
     @Override

@@ -244,7 +244,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     private AddAction addAction;
 
-    Section structureSection;
+    private Section structureSection;
 
     public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
             TestCaseContentProvider contentProvider, final String title, String detailTitle, ScrolledForm form,
@@ -355,14 +355,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         configureToolBar();
 
         SashForm sashForm = new SashForm(client, SWT.NULL);
-        toolkit.getFormToolkit().adapt(sashForm, false, false);
-        sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
+        toolkit.getFormToolkit().adapt(sashForm, true, true);
+        sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        sashForm.setSashWidth(15);
 
         structureSection = toolkit.getFormToolkit().createSection(sashForm, ExpandableComposite.TITLE_BAR);
         structureSection.setLayoutData(new GridData(GridData.FILL_BOTH));
         structureSection.setText(sectionTreeStructureTitle);
 
         Composite structureComposite = toolkit.createGridComposite(structureSection, 1, true, true);
+        toolkit.paintBordersForComposite(structureComposite);
         structureSection.setClient(structureComposite);
         Tree tree = toolkit.getFormToolkit().createTree(structureComposite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
         tree.setLayoutData(new GridData(GridData.FILL_BOTH));
