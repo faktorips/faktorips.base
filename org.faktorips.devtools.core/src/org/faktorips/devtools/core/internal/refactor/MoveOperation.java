@@ -34,13 +34,13 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
 import org.eclipse.ui.actions.MoveFilesAndFoldersOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsproject.ArchiveIpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.ipsproject.ArchiveIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -340,9 +340,10 @@ public class MoveOperation implements IRunnableWithProgress {
 
     @Override
     public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-        Runnable run = new Runnable() {
+        IWorkspaceRunnable run = new IWorkspaceRunnable() {
+
             @Override
-            public void run() {
+            public void run(IProgressMonitor monitor) throws CoreException {
                 IProgressMonitor pm = monitor;
                 if (monitor == null) {
                     pm = new NullProgressMonitor();
@@ -367,11 +368,11 @@ public class MoveOperation implements IRunnableWithProgress {
                         } else if (toMove instanceof ITestCase) {
                             moveTestCase((ITestCase)toMove, targetNames[i], pm);
                         } else if (toMove instanceof IFile) {
-                            moveNoneIpsElement((IFile)sourceObjects[i], targetNames[i]);
+                            moveNoneIpsElement((IFile)sourceObjects[i], targetNames[i], pm);
                         } else if (toMove instanceof IIpsObject) {
                             moveIpsObject((IIpsObject)sourceObjects[i], targetNames[i], targetRoot, pm);
                         } else if (toMove instanceof File) {
-                            moveNoneIpsElement((File)sourceObjects[i], targetNames[i]);
+                            moveNoneIpsElement((File)sourceObjects[i], targetNames[i], pm);
                         }
                     } catch (CoreException e) {
                         IpsPlugin.logAndShowErrorDialog(e);
@@ -381,10 +382,10 @@ public class MoveOperation implements IRunnableWithProgress {
             }
         };
 
-        if (getDisplay() == null) {
-            Display.getDefault().asyncExec(run);
-        } else {
-            BusyIndicator.showWhile(getDisplay(), run);
+        try {
+            ResourcesPlugin.getWorkspace().run(run, monitor);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
     }
 
@@ -405,7 +406,7 @@ public class MoveOperation implements IRunnableWithProgress {
         ResourcesPlugin.getWorkspace().run(operation, pm);
     }
 
-    private void moveNoneIpsElement(File file, String targetName) {
+    private void moveNoneIpsElement(File file, String targetName, IProgressMonitor pm) {
         if (targetProject == null) {
             targetProject = targetRoot.getIpsProject().getProject();
         }
@@ -416,22 +417,22 @@ public class MoveOperation implements IRunnableWithProgress {
 
         IFile sourceFile = targetProject.getFile(fileName);
         if (sourceFile.exists()) {
-            moveNoneIpsElement(sourceFile, targetName);
+            moveNoneIpsElement(sourceFile, targetName, pm);
         } else {
-            copyNoneIpsElement(fileName, targetName);
+            copyNoneIpsElement(fileName, targetName, pm);
         }
     }
 
-    private void copyNoneIpsElement(String fileName, String targetName) {
+    private void copyNoneIpsElement(String fileName, String targetName, IProgressMonitor pm) {
         IContainer targetFolder = getTargetContainer(targetName);
         CopyFilesAndFoldersOperation operation = new CopyFilesAndFoldersOperation(getShell());
-        operation.copyFiles(new String[] { fileName }, targetFolder);
+        operation.copyFilesInCurrentThread(new String[] { fileName }, targetFolder, pm);
     }
 
-    private void moveNoneIpsElement(final IFile sourceFile, String targetName) {
+    private void moveNoneIpsElement(final IFile sourceFile, String targetName, IProgressMonitor pm) {
         final IContainer targetFolder = getTargetContainer(targetName);
         MoveFilesAndFoldersOperation operation = new MoveFilesAndFoldersOperation(getShell());
-        operation.copyResources(new IResource[] { sourceFile }, targetFolder);
+        operation.copyResourcesInCurrentThread(new IResource[] { sourceFile }, targetFolder, pm);
     }
 
     private IContainer getTargetContainer(String targetName) {
