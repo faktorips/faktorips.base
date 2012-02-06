@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.ui.controller.EditField;
 
@@ -37,6 +38,11 @@ public abstract class AbstractViewerField<T> extends DefaultEditField<T> {
     @Override
     public Control getControl() {
         return viewer.getControl();
+    }
+
+    @Override
+    protected int getMessageDecorationPosition() {
+        return SWT.LEFT | SWT.TOP;
     }
 
     @Override

@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.enums.EnumType;
@@ -50,6 +51,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.ui.controller.fields.MessageDecoration;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.EnumControl;
@@ -974,11 +976,49 @@ public class UIToolkit {
                 }
             });
         }
-        ControlDecoration controlDecoration = new ControlDecoration(control, SWT.TOP | SWT.LEFT);
+        // if the control is located in a section, we need to provide this section to the
+        // ControlDecoration, otherwise the decoration would also appear when section is closed
+        Section section = getSection(control.getParent());
+        ControlDecoration controlDecoration = new ControlDecoration(control, SWT.TOP | SWT.LEFT, section);
         FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
                 FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
         controlDecoration.setImage(decoration.getImage());
         controlDecoration.setDescriptionText(decoration.getDescription());
+    }
+
+    /**
+     * Create a new {@link MessageDecoration} for the given {@link Control}. Use the returned
+     * {@link MessageDecoration} to show error markers next to the control.
+     * <p>
+     * Note: The position of the marker is on the left-bottom side of the control. Use
+     * {@link #createMessageDecoration(Control, int)} to specify another position.
+     * 
+     * @param control the control on which to install the cue
+     */
+    public MessageDecoration createMessageDecoration(Control control) {
+        return createMessageDecoration(control, SWT.LEFT | SWT.BOTTOM);
+    }
+
+    /**
+     * Create a new {@link MessageDecoration} for the given {@link Control}. Use the returned
+     * {@link MessageDecoration} to show error markers next to the control.
+     * 
+     * @param control the control on which to install the cue
+     * @param position use {@link SWT#TOP}, {@link SWT#CENTER} or {@link SWT#BOTTOM} to trigger the
+     *            position of the marker
+     */
+    public MessageDecoration createMessageDecoration(Control control, int position) {
+        return new MessageDecoration(control, position);
+    }
+
+    private Section getSection(Composite composite) {
+        if (composite instanceof Section) {
+            return (Section)composite;
+        } else if (composite != null) {
+            return getSection(composite.getParent());
+        } else {
+            return null;
+        }
     }
 
     /**

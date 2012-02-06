@@ -16,6 +16,9 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -34,6 +37,7 @@ public abstract class DefaultEditField<T> implements EditField<T> {
     private boolean notifyChangeListeners = true;
     private List<ValueChangeListener> changeListeners;
     private boolean supportNullStringRepresentation = true;
+    private MessageDecoration messageDecoration;
 
     /**
      * Returns the value shown in the edit field's underlying control. If the control's content
@@ -67,7 +71,36 @@ public abstract class DefaultEditField<T> implements EditField<T> {
 
     @Override
     public void setMessages(MessageList list) {
-        MessageCueController.setMessageCue(getControl(), list);
+        if (messageDecoration == null) {
+            messageDecoration = new MessageDecoration(getControlForDecoration(), getMessageDecorationPosition());
+        }
+        messageDecoration.setMessageList(list);
+    }
+
+    /**
+     * Returns the position of the {@link MessageDecoration}.
+     * <p>
+     * Per default the position of the message decorations are at the left-bottom side of the
+     * control. Override this method to change the position.
+     * 
+     * @see ControlDecoration
+     * 
+     * @return The position of the message decoration
+     */
+    protected int getMessageDecorationPosition() {
+        return SWT.LEFT | SWT.BOTTOM;
+    }
+
+    /**
+     * Returns the control to which the message decorations are painted.
+     * <p>
+     * Normally this simply returns the {@link #getControl()} but you could override this message to
+     * paint the decorations to another control.
+     * 
+     * @return The control used for the {@link MessageDecoration}
+     */
+    protected Control getControlForDecoration() {
+        return getControl();
     }
 
     @Override

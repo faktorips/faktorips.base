@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -34,6 +35,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -43,9 +45,12 @@ import org.faktorips.util.message.MessageList;
  * The internal controller for cues and error messages on {@link Text} and {@link Combo} widgets.
  * <p>
  * An instance of the class is created per shell.
+ * 
+ * @deprecated This class uses nearly the same implementation as {@link ControlDecoration} which is
+ *             available since Eclipse 3.3. We implemented a {@link MessageDecoration} which could
+ *             be instantiated by {@link UIToolkit#createMessageDecoration(Control)}
  */
-// TODO CD 19.05.2011 This code seems to be copied from eclipse. The ControlDecoration seems to do
-// nearly the same, is very easy to use and available since eclipse 3.3.
+@Deprecated
 public class MessageCueController {
 
     /**
@@ -57,7 +62,11 @@ public class MessageCueController {
      * @param list the message list or <code>null</code> to uninstall the cue
      * 
      * @throws NullPointerException if control is null
+     * @deprecated This class uses nearly the same implementation as {@link ControlDecoration} which
+     *             is available since Eclipse 3.3. We implemented a {@link MessageDecoration} which
+     *             could be instantiated by {@link UIToolkit#createMessageDecoration(Control)}
      */
+    @Deprecated
     public static void setMessageCue(Control control, MessageList list) {
         Shell shell = control.getShell();
         MessageCueController controller = (MessageCueController)shell.getData(MESSAGE_CUE_CONTROLLER);
