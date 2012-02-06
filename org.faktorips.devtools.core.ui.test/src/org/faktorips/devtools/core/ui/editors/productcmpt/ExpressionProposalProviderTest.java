@@ -339,6 +339,55 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         assertEquals(1, results.length);
         proposal = results[0];
         assertEquals("arget3", proposal.getContent());
+    }
+
+    @Test
+    public void testDoComputeCompletionProposalsForPolicyCmptTypeAssociationWithQualifier() throws Exception {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setAssociationsInFormulas(true);
+        ipsProject.setProperties(properties);
+        PolicyCmptType cmptType1 = newPolicyAndProductCmptType(ipsProject, "TestPart1", "TestPartType1");
+        IProductCmptType productCmptType1 = cmptType1.findProductCmptType(ipsProject);
+        IAssociation association1 = cmptType.newAssociation();
+        association1.setTargetRoleSingular("target");
+        association1.setMaxCardinality(Integer.MAX_VALUE);
+        association1.setTarget(cmptType1.getQualifiedName());
+
+        newProductCmpt(productCmptType1, "pack.MyProduct1");
+
+        PolicyCmptType cmptType2 = newPolicyAndProductCmptType(ipsProject, "TestPart2", "TestPartType2");
+        cmptType2.setSupertype(cmptType1.getQualifiedName());
+        IProductCmptType productCmptType2 = cmptType2.findProductCmptType(ipsProject);
+        productCmptType2.setSupertype(productCmptType1.getQualifiedName());
+        IPolicyCmptTypeAttribute attribute = cmptType2.newPolicyCmptTypeAttribute("myAttr");
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+
+        newProductCmpt(productCmptType2, "pack2.MyProduct2");
+
+        formulaSignature.newParameter(cmptType.getQualifiedName(), "policy");
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("policy.t", 8);
+        assertEquals(4, results.length);
+        IContentProposal proposal = results[0];
+        assertEquals("arget", proposal.getContent());
+        proposal = results[1];
+        assertEquals("arget[0]", proposal.getContent());
+        proposal = results[2];
+        assertEquals("arget[\"MyProduct1\"]", proposal.getContent());
+        proposal = results[3];
+        assertEquals("arget[\"MyProduct2\"]", proposal.getContent());
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        results = proposalProvider.getProposals("policy.target[\"MyProduct1\"].m", 29);
+        assertEquals(0, results.length);
+
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        results = proposalProvider.getProposals("policy.target[\"MyProduct2\"].m", 29);
+        assertEquals(1, results.length);
+        proposal = results[0];
+        assertEquals("yAttr", proposal.getContent());
+
         properties = ipsProject.getProperties();
         properties.setAssociationsInFormulas(false);
         ipsProject.setProperties(properties);

@@ -417,12 +417,14 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             IProductCmptType productCmptType = ((IPolicyCmptType)target).findProductCmptType(ipsproject);
             IIpsSrcFile[] allProductCmptSrcFiles = ipsproject.findAllProductCmptSrcFiles(productCmptType, true);
             String runtimeId = null;
+            IPolicyCmptType policyCmptType = null;
             for (IIpsSrcFile ipsSrcFile : allProductCmptSrcFiles) {
                 if (qualifier.equals(ipsSrcFile.getIpsObjectName())) {
                     IIpsObject ipsObject = ipsSrcFile.getIpsObject();
                     if (ipsObject instanceof IProductCmpt) {
                         IProductCmpt productCmpt = (IProductCmpt)ipsObject;
                         runtimeId = productCmpt.getRuntimeId();
+                        policyCmptType = productCmpt.findPolicyCmptType(ipsSrcFile.getIpsProject());
                         break;
                     }
                 }
@@ -433,13 +435,23 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                 return new CompilationResultImpl(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, text));
             }
             JavaCodeFragment getQualifiedTargetCode = new JavaCodeFragment();
+            if (policyCmptType != null && !policyCmptType.equals(target)) {
+                getQualifiedTargetCode.append("(("); //$NON-NLS-1$
+                getQualifiedTargetCode.appendClassName(getJavaClassName(policyCmptType));
+                getQualifiedTargetCode.append(")"); //$NON-NLS-1$
+            }
             getQualifiedTargetCode.appendClassName(org.faktorips.runtime.formula.FormulaEvaluatorUtil.class);
             getQualifiedTargetCode.append(".getModelObjectById("); //$NON-NLS-1$
             getQualifiedTargetCode.append(associationIdentifier.getCodeFragment());
             getQualifiedTargetCode.append(", \""); //$NON-NLS-1$
             getQualifiedTargetCode.append(runtimeId);
             getQualifiedTargetCode.append("\")"); //$NON-NLS-1$
-            return new CompilationResultImpl(getQualifiedTargetCode, target);
+            if (policyCmptType != null && !policyCmptType.equals(target)) {
+                getQualifiedTargetCode.append(")"); //$NON-NLS-1$
+                return new CompilationResultImpl(getQualifiedTargetCode, policyCmptType);
+            } else {
+                return new CompilationResultImpl(getQualifiedTargetCode, target);
+            }
         }
     }
 

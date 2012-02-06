@@ -526,6 +526,54 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     /**
      * <strong>Scenario:</strong><br>
      * An {@link IExpression} has a parameter called {@code "twig"} of the {@link IPolicyCmptType}
+     * {@code "Twig"} which has a 1to1 association to the {@link IPolicyCmptType} {@code "Leaf"}
+     * with the name {@code "leaf"}. The resolver is called with {@code twig.leaf["MyLeaf"].color2}
+     * where {@code "MyLeaf"} is the name of a {@link IProductCmpt} configuring
+     * {@code "MultiColoredLeaf"}, which is a subclass of {@code "Leaf"} and has an attribute
+     * {@code "color2"} of type String.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>successful compilation
+     * <li>the result datatype is {@link Datatype#STRING}
+     * <li>the result's sourcecode uses the method the
+     * {@link GenAssociation#getMethodNameGetRefObject()} method returns and the
+     * {@link FormulaEvaluatorUtil#getModelObjectById(IModelObject, String)} method with the ID
+     * {@code "MyLeaf"}
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_qualifiedAssociationAndAttribute() throws CoreException {
+        method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
+        PolicyCmptType multiColoredLeafPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "MultiColoredLeaf",
+                "MultiColoredLeafType");
+        multiColoredLeafPolicyCmptType.setSupertype(leafPolicyCmptType.getQualifiedName());
+        IProductCmptType multiColoredLeafProductCmptType = multiColoredLeafPolicyCmptType
+                .findProductCmptType(ipsProject);
+        multiColoredLeafProductCmptType.setSupertype(leafPolicyCmptType.findProductCmptType(ipsProject)
+                .getQualifiedName());
+        IPolicyCmptTypeAttribute attributeColor2 = multiColoredLeafPolicyCmptType.newPolicyCmptTypeAttribute("color2");
+        attributeColor2.setDatatype(Datatype.STRING.getQualifiedName());
+        newProductCmpt(multiColoredLeafProductCmptType, "pack.MyLeaf");
+        CompilationResult result = resolver.compile("twig.leaf[\"MyLeaf\"].color2", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(Datatype.STRING, result.getDatatype());
+        String expected = "(("
+                + standardBuilderSet.getGenerator(multiColoredLeafPolicyCmptType).getUnqualifiedClassName(true)
+                + ")"
+                + FormulaEvaluatorUtil.class.getSimpleName()
+                + ".getModelObjectById(twig."
+                + standardBuilderSet.getGenerator(twigPolicyCmptType).getGenerator(associationTwigToLeaf)
+                        .getMethodNameGetRefObject()
+                + "(), \"MyLeaf\"))."
+                + standardBuilderSet.getGenerator(leafPolicyCmptType).getMethodNameGetPropertyValue(
+                        attributeColor2.getName(), Datatype.STRING) + "()";
+        assertEquals(expected, result.getCodeFragment().getSourcecode());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "twig"} of the {@link IPolicyCmptType}
      * {@code "Twig"} which has a 1to1 association to an unknown target with the name {@code "leaf"}
      * . The resolver is called with {@code "twig.leaf"}.
      * <p>

@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -260,7 +261,12 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             for (int i = 1; i < names.length; i++) {
                 String name = names[i];
                 boolean isIndexed = false;
+                String qualifier = null;
                 if (name.indexOf('[') > 0) {
+                    String index = name.substring(name.indexOf('[') + 1, name.indexOf(']'));
+                    if (index.indexOf('"') >= 0) {
+                        qualifier = index.substring(index.indexOf('"') + 1, index.indexOf('"', index.indexOf('"') + 1));
+                    }
                     name = name.substring(0, name.indexOf('['));
                     isIndexed = true;
                 }
@@ -270,6 +276,21 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 }
                 final IAssociation association = ((IType)target).findAssociation(name, ipsProject);
                 target = association.findTarget(ipsProject);
+                if (qualifier != null && target instanceof IPolicyCmptType) {
+                    IIpsSrcFile[] productCmptSrcFiles = ipsProject.findAllProductCmptSrcFiles(
+                            ((IPolicyCmptType)target).findProductCmptType(ipsProject), true);
+                    for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
+                        if (qualifier.equals(ipsSrcFile.getIpsObjectName())) {
+                            IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+                            if (productCmpt != null) {
+                                IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType(ipsProject);
+                                if (policyCmptType != null) {
+                                    target = policyCmptType;
+                                }
+                            }
+                        }
+                    }
+                }
                 if (!isIndexed && (isList || association.is1ToManyIgnoringQualifier())) {
                     target = new ListOfTypeDatatype(target);
                 }
