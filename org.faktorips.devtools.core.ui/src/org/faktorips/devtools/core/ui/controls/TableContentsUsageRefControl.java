@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IFilter;
 import org.eclipse.jface.viewers.Viewer;
@@ -32,6 +33,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.contentproposal.IpsSrcFileContentProposalLabelProvider;
 import org.faktorips.devtools.core.ui.controls.contentproposal.IpsSrcFileContentProposalProvider;
@@ -79,8 +81,10 @@ public class TableContentsUsageRefControl extends TextAndSecondControlComposite 
     @Override
     protected Control createSecondControl(UIToolkit toolkit) {
         buttonComposite = toolkit.createGridComposite(this, 2, false, false);
-        browseButton = toolkit.createButton(buttonComposite, Messages.IpsObjectRefControl_title);
-        newButton = toolkit.createButton(buttonComposite, Messages.TableContentsUsageRefControl_button_new);
+        browseButton = toolkit.createButton(buttonComposite, StringUtils.EMPTY);
+        browseButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("browse.gif", true)); //$NON-NLS-1$
+        newButton = toolkit.createButton(buttonComposite, StringUtils.EMPTY);
+        newButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("NewTableContentsWizard.gif", true)); //$NON-NLS-1$
         return buttonComposite;
     }
 
