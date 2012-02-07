@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.ui.controlfactories;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
-import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -34,7 +32,6 @@ import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
 import org.faktorips.devtools.core.ui.controller.fields.DateISOStringFormat;
 import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
-import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.TextCellEditor;
@@ -125,23 +122,6 @@ public class GregorianCalendarControlFactory extends ValueDatatypeControlFactory
         return cellEditor;
     }
 
-    /**
-     * Creates a {@link TextCellEditor} containing a {@link Text} control and configures it with a
-     * {@link GridTableViewerTraversalStrategy}.
-     */
-    @Override
-    public IpsCellEditor createGridTableCellEditor(UIToolkit toolkit,
-            ValueDatatype dataType,
-            IValueSet valueSet,
-            GridTableViewer gridViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-
-        IpsCellEditor cellEditor = createTextCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
-        cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
-        return cellEditor;
-    }
-
     private IpsCellEditor createTextCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
             IValueSet valueSet,
@@ -152,18 +132,6 @@ public class GregorianCalendarControlFactory extends ValueDatatypeControlFactory
         DateISOStringFormat format = DateISOStringFormat.newInstance();
         IpsCellEditor tableCellEditor = new FormattingTextCellEditor(textControl, format);
         return tableCellEditor;
-    }
-
-    @Override
-    public IpsCellEditor createGridTreeCellEditor(UIToolkit toolkit,
-            ValueDatatype dataType,
-            IValueSet valueSet,
-            GridTreeViewer gridViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-
-        IpsCellEditor cellEditor = createTextCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
-        return cellEditor;
     }
 
     @Override

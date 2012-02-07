@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.ui.controlfactories;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
-import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -28,7 +26,6 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.MoneyField;
 import org.faktorips.devtools.core.ui.table.EditFieldCellEditor;
-import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.TextCellEditor;
@@ -108,29 +105,6 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
         TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
         strat.setRowCreating(true);
         cellEditor.setTraversalStrategy(strat);
-        return cellEditor;
-    }
-
-    @Override
-    public IpsCellEditor createGridTableCellEditor(UIToolkit toolkit,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            GridTableViewer gridViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-        IpsCellEditor cellEditor = createMoneyCellEditor(toolkit, datatype, valueSet, gridViewer.getGrid(), ipsProject);
-        cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
-        return cellEditor;
-    }
-
-    @Override
-    public IpsCellEditor createGridTreeCellEditor(UIToolkit toolkit,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            GridTreeViewer gridViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-        IpsCellEditor cellEditor = createMoneyCellEditor(toolkit, datatype, valueSet, gridViewer.getGrid(), ipsProject);
         return cellEditor;
     }
 

@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.ui.controlfactories;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
-import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -33,7 +31,6 @@ import org.faktorips.devtools.core.ui.controller.fields.AbstractEnumDatatypeBase
 import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
-import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 
@@ -124,27 +121,6 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
         return cellEditor;
     }
 
-    /**
-     * Creates a <code>ComboCellEditor</code> for the given valueset and Datatype. The created
-     * CellEditor contains a <code>Combo</code> control that is filled with the corresponding values
-     * from the given <code>ValueSet</code>. If the given valueset is either not an
-     * <code>EnumValueSet</code> or <code>null</code> a <code>ComboCellEditor</code> is created with
-     * a <code>Combo</code> control for the given <code>DataType</code>. In this case the Combo
-     * contains the value IDs (not the names) of the given <code>EnumDatatype</code> {@inheritDoc}
-     */
-    @Override
-    public IpsCellEditor createGridTableCellEditor(UIToolkit toolkit,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            GridTableViewer gridViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-
-        ComboCellEditor cellEditor = createComboCellEditor(toolkit, datatype, valueSet, gridViewer.getGrid());
-        cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
-        return cellEditor;
-    }
-
     private ComboCellEditor createComboCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
             IValueSet valueSet,
@@ -168,18 +144,6 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
         // will be used to map between the displayed text and id
         EnumDatatypeField enumDatatypeField = new EnumDatatypeField(combo, datatype);
         combo.setData(enumDatatypeField);
-    }
-
-    @Override
-    public IpsCellEditor createGridTreeCellEditor(UIToolkit toolkit,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            GridTreeViewer gridViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-
-        ComboCellEditor cellEditor = createComboCellEditor(toolkit, datatype, valueSet, gridViewer.getGrid());
-        return cellEditor;
     }
 
     @Override

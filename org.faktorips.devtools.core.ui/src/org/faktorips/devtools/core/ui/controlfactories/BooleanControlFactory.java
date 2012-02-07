@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.ui.controlfactories;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
-import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -32,7 +30,6 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.BooleanComboField;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
-import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 
@@ -110,23 +107,6 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
         return cellEditor;
     }
 
-    /**
-     * Creates a <code>ComboCellEditor</code> containig a <code>Combo</code> using
-     * {@link #createControl(UIToolkit, Composite, ValueDatatype, IValueSet, IIpsProject)}.
-     */
-    @Override
-    public IpsCellEditor createGridTableCellEditor(UIToolkit toolkit,
-            ValueDatatype dataType,
-            IValueSet valueSet,
-            GridTableViewer gridViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-
-        IpsCellEditor cellEditor = createComboCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
-        cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
-        return cellEditor;
-    }
-
     private IpsCellEditor createComboCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
             IValueSet valueSet,
@@ -143,18 +123,6 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             comboControl.setData(new BooleanDatatype());
         }
         return tableCellEditor;
-    }
-
-    @Override
-    public IpsCellEditor createGridTreeCellEditor(UIToolkit toolkit,
-            ValueDatatype dataType,
-            IValueSet valueSet,
-            GridTreeViewer gridViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-
-        IpsCellEditor cellEditor = createComboCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
-        return cellEditor;
     }
 
     @Override

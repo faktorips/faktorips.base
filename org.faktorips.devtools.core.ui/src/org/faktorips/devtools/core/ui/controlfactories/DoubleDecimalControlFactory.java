@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.ui.controlfactories;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
-import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -30,7 +28,6 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.DecimalNumberFormat;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
-import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 
@@ -108,23 +105,6 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
         return cellEditor;
     }
 
-    /**
-     * Creates a <code>ComboCellEditor</code> containig a <code>Combo</code> using
-     * {@link #createControl(UIToolkit, Composite, ValueDatatype, IValueSet, IIpsProject)}.
-     */
-    @Override
-    public IpsCellEditor createGridTableCellEditor(UIToolkit toolkit,
-            ValueDatatype dataType,
-            IValueSet valueSet,
-            GridTableViewer gridViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-
-        IpsCellEditor cellEditor = createCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
-        cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
-        return cellEditor;
-    }
-
     private IpsCellEditor createCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
             IValueSet valueSet,
@@ -135,18 +115,6 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
         DecimalNumberFormat format = DecimalNumberFormat.newInstance(dataType);
         IpsCellEditor tableCellEditor = new FormattingTextCellEditor(textControl, format);
         return tableCellEditor;
-    }
-
-    @Override
-    public IpsCellEditor createGridTreeCellEditor(UIToolkit toolkit,
-            ValueDatatype dataType,
-            IValueSet valueSet,
-            GridTreeViewer gridViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-
-        IpsCellEditor cellEditor = createCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
-        return cellEditor;
     }
 
     @Override
