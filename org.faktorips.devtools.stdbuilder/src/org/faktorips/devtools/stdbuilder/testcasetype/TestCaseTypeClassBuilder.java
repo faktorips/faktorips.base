@@ -953,7 +953,6 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         }
         upperCasetestAttribute = StringUtils.upperCase(upperCasetestAttribute);
         constName = "TESTATTR_" + constName + "_" + upperCasetestAttribute;
-        // constName = constName.replaceAll("([a-z])([A-Z])", "1_2");
         JavaCodeFragmentBuilder constantBuilder = getMainTypeSection().getConstantBuilder();
         constantBuilder.javaDoc("", ANNOTATION_GENERATED);
         constantBuilder.varDefinition("public final static String", constName, "\"" + upperCasetestAttribute + "\"");
