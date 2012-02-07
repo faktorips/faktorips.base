@@ -67,7 +67,8 @@ public class TableContentsPage extends WizardPage {
 
         toolkit.createHorizonzalLine(composite);
 
-        structureSelectionComposite = new TypeSelectionComposite(composite, toolkit);
+        structureSelectionComposite = new TypeSelectionComposite(composite, toolkit, pmo,
+                NewTableContentsPMO.PROPERTY_SELECTED_STRUCTURE);
         structureSelectionComposite.setTitle(Messages.TableContentsPage_labelStructure);
 
         toolkit.createHorizonzalLine(composite);
@@ -79,21 +80,19 @@ public class TableContentsPage extends WizardPage {
 
         setControl(composite);
 
-        bindControls(structureSelectionComposite);
+        bindControls();
 
         uiUpdater.updateUI();
         bindingContext.updateUI();
     }
 
-    void bindControls(final TypeSelectionComposite typeSelectionComposite) {
+    void bindControls() {
         uiUpdater = new TableContentsPageUiUpdater(this, pmo);
         pmo.addPropertyChangeListener(uiUpdater);
         uiUpdater.updateStructuresList();
 
         IpsProjectRefField ipsProjectRefField = new IpsProjectRefField(ipsProjectRefControl);
         bindingContext.bindContent(ipsProjectRefField, pmo, NewTableContentsPMO.PROPERTY_IPS_PROJECT);
-        bindingContext.bindContent(typeSelectionComposite.getListViewerField(), pmo,
-                NewTableContentsPMO.PROPERTY_SELECTED_STRUCTURE);
 
         bindingContext.bindContent(nameText, pmo, NewTableContentsPMO.PROPERTY_NAME);
     }

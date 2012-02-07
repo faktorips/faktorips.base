@@ -49,6 +49,12 @@ import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter;
 
+/**
+ * This type selection composite contains of two columns. On the left hand you see a list of types
+ * you could select. On the right hand you see the description of the selected element.
+ * 
+ * @author dirmeier
+ */
 public class TypeSelectionComposite extends Composite {
 
     private final UIToolkit toolkit;
@@ -57,10 +63,23 @@ public class TypeSelectionComposite extends Composite {
     private TableViewer listViewer;
     private StructuredViewerField<IIpsObject> listViewerField;
     private Label description;
+    private final PresentationModelObject pmo;
+    private final String property;
+    private BindingContext bindingContext;
 
-    public TypeSelectionComposite(Composite parent, UIToolkit toolkit) {
+    /**
+     * Constructs a new type selection composite.
+     * 
+     * @param parent the parent composite
+     * @param toolkit the {@link UIToolkit} to create the internal controls
+     * @param pmo a presentation model object to bind the selected type
+     * @param property the property of the presentation model object
+     */
+    public TypeSelectionComposite(Composite parent, UIToolkit toolkit, PresentationModelObject pmo, String property) {
         super(parent, SWT.NONE);
         this.toolkit = toolkit;
+        this.pmo = pmo;
+        this.property = property;
         this.resourManager = new LocalResourceManager(JFaceResources.getResources());
 
         setLayoutAndLayoutData();
@@ -116,22 +135,25 @@ public class TypeSelectionComposite extends Composite {
     }
 
     private void bindContent() {
-        BindingContext bindingContext = new BindingContext();
-        final TypeSelectionPMO pmo = new TypeSelectionPMO();
-        bindingContext.bindContent(listViewerField, pmo, TypeSelectionPMO.PROPERTY_SELECTED_OBJECT);
+        bindingContext = new BindingContext();
+        bindingContext.bindContent(listViewerField, pmo, property);
 
         pmo.addPropertyChangeListener(new PropertyChangeListener() {
 
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                if (TypeSelectionPMO.PROPERTY_SELECTED_OBJECT.equals(evt.getPropertyName())) {
-                    setSelection(pmo.getSelectedObject());
+                if (property.equals(evt.getPropertyName())) {
+                    setSelection((IIpsObject)evt.getNewValue());
                 }
 
             }
         });
+    }
 
-        setSelection(pmo.getSelectedObject());
+    @Override
+    public void dispose() {
+        super.dispose();
+        bindingContext.dispose();
     }
 
     public void setTitle(String titleString) {
@@ -144,10 +166,6 @@ public class TypeSelectionComposite extends Composite {
 
     public void addDoubleClickListener(IDoubleClickListener listener) {
         listViewer.addDoubleClickListener(listener);
-    }
-
-    public StructuredViewerField<IIpsObject> getListViewerField() {
-        return listViewerField;
     }
 
     private void setSelection(IIpsObject type) {
@@ -225,38 +243,6 @@ public class TypeSelectionComposite extends Composite {
             }
 
             return super.getImage(element);
-        }
-
-    }
-
-    /**
-     * Little PMO to update the description by binding context.
-     * <p>
-     * Note: This class needs to be public for the binding context to call the methods by
-     * reflection!
-     * 
-     * @author dirmeier
-     */
-    public static class TypeSelectionPMO extends PresentationModelObject {
-
-        public static final String PROPERTY_SELECTED_OBJECT = "selectedObject"; //$NON-NLS-1$
-
-        private IIpsObject selectedObject;
-
-        /**
-         * @param selectedObject The selectedObject to set.
-         */
-        public void setSelectedObject(IIpsObject selectedObject) {
-            IDescribedElement oldSelection = this.selectedObject;
-            this.selectedObject = selectedObject;
-            notifyListeners(new PropertyChangeEvent(this, PROPERTY_SELECTED_OBJECT, oldSelection, selectedObject));
-        }
-
-        /**
-         * @return Returns the selectedObject.
-         */
-        public IIpsObject getSelectedObject() {
-            return selectedObject;
         }
 
     }

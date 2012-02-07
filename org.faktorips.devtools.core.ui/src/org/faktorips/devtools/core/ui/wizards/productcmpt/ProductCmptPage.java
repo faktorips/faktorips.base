@@ -85,7 +85,8 @@ public class ProductCmptPage extends WizardPage {
         GridLayout layout = (GridLayout)composite.getLayout();
         layout.verticalSpacing = 10;
 
-        typeSelectionComposite = new TypeSelectionComposite(composite, toolkit);
+        typeSelectionComposite = new TypeSelectionComposite(composite, toolkit, pmo,
+                NewProductCmptPMO.PROPERTY_SELECTED_TYPE);
         typeSelectionComposite.setTitle(Messages.ProductCmptPage_label_selectType);
 
         toolkit.createHorizonzalLine(composite);
@@ -115,19 +116,16 @@ public class ProductCmptPage extends WizardPage {
 
         setControl(composite);
 
-        bindControls(typeSelectionComposite);
+        bindControls();
 
         uiUpdater.updateUI();
         bindingContext.updateUI();
     }
 
-    void bindControls(final TypeSelectionComposite typeSelectionComposite) {
+    void bindControls() {
         uiUpdater = new ProductCmptPageUiUpdater(this, pmo);
         pmo.addPropertyChangeListener(uiUpdater);
         uiUpdater.updateSelectedBaseType();
-
-        bindingContext.bindContent(typeSelectionComposite.getListViewerField(), pmo,
-                NewProductCmptPMO.PROPERTY_SELECTED_TYPE);
 
         bindingContext.bindContent(nameText, pmo, NewProductCmptPMO.PROPERTY_KIND_ID);
         bindingContext.bindContent(effectiveDateField, pmo, NewProductCmptPMO.PROPERTY_EFFECTIVE_DATE);

@@ -69,7 +69,8 @@ public class TypeSelectionPage extends WizardPage {
 
         toolkit.createHorizonzalLine(composite);
 
-        typeSelectionComposite = new TypeSelectionComposite(composite, toolkit);
+        typeSelectionComposite = new TypeSelectionComposite(composite, toolkit, pmo,
+                NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE);
         typeSelectionComposite.setTitle(Messages.TypeSelectionPage_label_type);
 
         setControl(composite);
@@ -85,9 +86,6 @@ public class TypeSelectionPage extends WizardPage {
         typeSelectionComposite.addDoubleClickListener(new DoubleClickListener(this));
         typeSelectionUpdater = new TypeSelectionUpdater(this, pmo);
         pmo.addPropertyChangeListener(typeSelectionUpdater);
-
-        bindingContext.bindContent(typeSelectionComposite.getListViewerField(), pmo,
-                NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE);
 
         typeSelectionUpdater.updateUI();
         bindingContext.updateUI();
