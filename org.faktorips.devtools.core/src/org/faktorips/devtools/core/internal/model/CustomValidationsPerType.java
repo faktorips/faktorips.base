@@ -28,8 +28,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 /**
  * A kind of Map (so not implementing the {@link Map} interface) that manages custom validations per
  * type. This is a typesafe heterogeneous container as described in 'Effective Java, 2 Edition, Item
- * 29'. As descriped in Effective Java, Java's generics support doesn't allows to implement the
- * needed functionality wihout using unchecked assignments.
+ * 29'. As described in Effective Java, Java's generics support doesn't allow to implement the
+ * needed functionality without using unchecked assignments.
  * 
  * @author ortmann
  */
@@ -44,7 +44,7 @@ public class CustomValidationsPerType {
     private Map<Class<? extends IIpsObjectPartContainer>, Set> backingMap = new HashMap<Class<? extends IIpsObjectPartContainer>, Set>();
 
     // map with model types (T class<? extends IIpsOpsObjectPartContainer) as keys and sets of
-    // ICustomValidations<T> as values. The inheritance hierarhcy is resolved. The set of
+    // ICustomValidations<T> as values. The inheritance hierarchy is resolved. The set of
     // validations for a given type, contains all
     // validations for the type itself and all super types and interfaces.
     // see class Javadoc why suppress warnings is necessary
@@ -54,15 +54,22 @@ public class CustomValidationsPerType {
     // see class Javadoc why suppress warnings is necessary
     @SuppressWarnings("rawtypes")
     public static CustomValidationsPerType createFromExtensions() {
-        CustomValidationsPerType customValidationsPerType = new CustomValidationsPerType();
         ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.PLUGIN_ID);
         List<ICustomValidation> allValidations = extensionPoints.createExecutableExtensions(
                 ExtensionPoints.CUSTOM_VALIDATION, "customValidation", "validationClass", ICustomValidation.class); //$NON-NLS-1$ //$NON-NLS-2$
+        return createFromList(allValidations);
+    }
+
+    // see class Javadoc why suppress warnings is necessary
+    @SuppressWarnings("rawtypes")
+    public static CustomValidationsPerType createFromList(List<ICustomValidation> allValidations) {
+        CustomValidationsPerType customValidationsPerType = new CustomValidationsPerType();
         for (ICustomValidation validation : allValidations) {
             customValidationsPerType.addInternal(validation);
         }
         customValidationsPerType.resolveInheritanceHierarchy();
         return customValidationsPerType;
+
     }
 
     // see class Javadoc why suppress warnings is necessary
