@@ -305,7 +305,7 @@ public class BuilderSetContainer {
 
         tableViewer.getTable().setSortDirection(SWT.UP);
         tableViewer.getTable().setSortColumn(columns[PROPERTY_NAME_COLUMN_INDEX].getColumn());
-        tableViewer.setSorter(new BuilderSetPropertyDefSorter(ipsProject));
+        tableViewer.setSorter(new BuilderSetPropertyDefSorter(ipsProject, columns));
         tableViewer.setInput(builderSetId);
 
         ColumnViewerToolTipSupport.enableFor(tableViewer);
@@ -424,7 +424,7 @@ public class BuilderSetContainer {
 
         if (hasPropertyNameColumnSorter == false) {
             hasPropertyNameColumnSorter = true;
-            builderSetPropertyDefSorter = new BuilderSetPropertyDefSorter(ipsProject);
+            builderSetPropertyDefSorter = new BuilderSetPropertyDefSorter(ipsProject, columns);
             tableViewer.setSorter(builderSetPropertyDefSorter);
         }
     }
@@ -486,11 +486,13 @@ public class BuilderSetContainer {
      * Sorter for IIpsBuilderSetPropertyDef class. Note that only "Property name" is taken into
      * account (value, description, ... are omitted).
      */
-    private final class BuilderSetPropertyDefSorter extends ViewerSorter {
+    private static class BuilderSetPropertyDefSorter extends ViewerSorter {
 
         private IIpsProject ipsProject;
+        private final TableViewerColumn[] columns;
 
-        public BuilderSetPropertyDefSorter(IIpsProject ipsProject) {
+        public BuilderSetPropertyDefSorter(IIpsProject ipsProject, TableViewerColumn[] columns) {
+            this.columns = columns;
             ArgumentCheck.notNull(ipsProject);
             this.ipsProject = ipsProject;
         }

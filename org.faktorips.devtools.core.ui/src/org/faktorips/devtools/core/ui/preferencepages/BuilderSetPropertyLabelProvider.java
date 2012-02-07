@@ -45,8 +45,8 @@ public class BuilderSetPropertyLabelProvider extends ColumnLabelProvider {
             IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
             String propertyValue = model.getPropertyValue(propertyDef.getName());
             if (propertyValue == null || "".equals(propertyValue)) { //$NON-NLS-1$
-                // value not set in .ipsproject file, use default
-                propertyValue = propertyDef.getDefaultValue(ipsProject);
+                // value not set in .ipsproject file, use disabled value
+                propertyValue = propertyDef.getDisableValue(ipsProject);
             } else if (propertyDef.getName().equals("loggingFrameworkConnector")) { //$NON-NLS-1$
                 // Special treatment of qualified names:
                 // Prevent the table column to be too wide by removing package information from
