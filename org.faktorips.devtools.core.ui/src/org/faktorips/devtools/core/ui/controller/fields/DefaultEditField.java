@@ -21,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
 import org.faktorips.util.message.MessageList;
@@ -72,7 +73,8 @@ public abstract class DefaultEditField<T> implements EditField<T> {
     @Override
     public void setMessages(MessageList list) {
         if (messageDecoration == null) {
-            messageDecoration = new MessageDecoration(getControlForDecoration(), getMessageDecorationPosition());
+            messageDecoration = new UIToolkit(null).createMessageDecoration(getControlForDecoration(),
+                    getMessageDecorationPosition());
         }
         messageDecoration.setMessageList(list);
     }

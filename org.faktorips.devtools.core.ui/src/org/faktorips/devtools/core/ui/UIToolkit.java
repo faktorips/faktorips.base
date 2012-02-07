@@ -978,12 +978,13 @@ public class UIToolkit {
         }
         // if the control is located in a section, we need to provide this section to the
         // ControlDecoration, otherwise the decoration would also appear when section is closed
-        Section section = getSection(control.getParent());
+        Composite section = getSectionClientArea(control.getParent());
         ControlDecoration controlDecoration = new ControlDecoration(control, SWT.TOP | SWT.LEFT, section);
         FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
                 FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
         controlDecoration.setImage(decoration.getImage());
         controlDecoration.setDescriptionText(decoration.getDescription());
+        controlDecoration.setShowOnlyOnFocus(true);
     }
 
     /**
@@ -1008,14 +1009,14 @@ public class UIToolkit {
      *            position of the marker
      */
     public MessageDecoration createMessageDecoration(Control control, int position) {
-        return new MessageDecoration(control, position);
+        return new MessageDecoration(control, position, getSectionClientArea(control.getParent()));
     }
 
-    private Section getSection(Composite composite) {
-        if (composite instanceof Section) {
-            return (Section)composite;
+    private Composite getSectionClientArea(Composite composite) {
+        if (composite != null && composite.getParent() instanceof Section) {
+            return composite;
         } else if (composite != null) {
-            return getSection(composite.getParent());
+            return getSectionClientArea(composite.getParent());
         } else {
             return null;
         }

@@ -18,7 +18,6 @@ import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -38,10 +37,14 @@ public class MessageDecoration {
      * 
      * @param control The control used to paint the message decoration to.
      * @param position The position of the decoration
+     * @param composite The composite on which the decoration should be painted on. May be null but
+     *            should normally be the client area. This is important if the control is painted in
+     *            a expandable area like sections to avoid painting in collapsed state
+     * 
      * @see ControlDecoration
      */
-    public MessageDecoration(Control control, int position) {
-        controlDecoration = new ControlDecoration(control, position, getSection(control.getParent()));
+    public MessageDecoration(Control control, int position, Composite composite) {
+        controlDecoration = new ControlDecoration(control, position, composite);
     }
 
     /**
@@ -65,24 +68,6 @@ public class MessageDecoration {
             }
         }
         controlDecoration.hide();
-    }
-
-    /**
-     * Searching for a section where this control is painted in. We need to to get this section for
-     * not painting the marker if the section may be invisible (closed).
-     * 
-     * @param composite The composite where to start searching for a section.
-     * @return A Section which is the parent of the composite (recoursive) or null if there is no
-     *         section.
-     */
-    private Section getSection(Composite composite) {
-        if (composite instanceof Section) {
-            return (Section)composite;
-        } else if (composite != null) {
-            return getSection(composite.getParent());
-        } else {
-            return null;
-        }
     }
 
     /**
