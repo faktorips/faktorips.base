@@ -309,10 +309,14 @@ public class BindingContext {
     /**
      * Binds the given edit field to the given ips object's property.
      * 
+     * @return the newly created mapping
+     * 
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public void bindContent(EditField<?> field, Object object, String property) {
-        add(createMapping(field, object, property));
+    public FieldPropertyMapping bindContent(EditField<?> field, Object object, String property) {
+        FieldPropertyMapping mapping = createMapping(field, object, property);
+        add(mapping);
+        return mapping;
     }
 
     /**

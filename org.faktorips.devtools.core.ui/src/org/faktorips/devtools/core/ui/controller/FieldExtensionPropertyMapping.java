@@ -75,7 +75,8 @@ public class FieldExtensionPropertyMapping<T> implements FieldPropertyMapping {
         }
     }
 
-    private Object getPropertyValue() {
+    @Override
+    public Object getPropertyValue() {
         return object.getExtPropertyValue(propertyId);
     }
 

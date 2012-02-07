@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.core.ui.controller.FieldPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter;
 
@@ -136,7 +137,7 @@ public class TypeSelectionComposite extends Composite {
 
     private void bindContent() {
         bindingContext = new BindingContext();
-        bindingContext.bindContent(listViewerField, pmo, property);
+        FieldPropertyMapping mapping = bindingContext.bindContent(listViewerField, pmo, property);
 
         pmo.addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -148,6 +149,11 @@ public class TypeSelectionComposite extends Composite {
 
             }
         });
+
+        // first updating the control
+        mapping.setControlValue();
+        // then updating the property to get a change event
+        mapping.setPropertyValue();
     }
 
     @Override

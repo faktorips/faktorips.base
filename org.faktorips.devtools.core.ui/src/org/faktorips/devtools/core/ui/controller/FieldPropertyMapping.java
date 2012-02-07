@@ -45,4 +45,10 @@ public interface FieldPropertyMapping {
      */
     public void setControlValue();
 
+    /**
+     * Getting the current value of the property.
+     * 
+     * @return The current value of the property in the object
+     */
+    public Object getPropertyValue();
 }

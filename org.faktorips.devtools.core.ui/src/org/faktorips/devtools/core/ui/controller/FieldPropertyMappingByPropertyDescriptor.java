@@ -115,7 +115,8 @@ public class FieldPropertyMappingByPropertyDescriptor<T> implements FieldPropert
         }
     }
 
-    protected Object getPropertyValue() {
+    @Override
+    public Object getPropertyValue() {
         try {
             Method getter = property.getReadMethod();
             return getter.invoke(object, new Object[0]);
