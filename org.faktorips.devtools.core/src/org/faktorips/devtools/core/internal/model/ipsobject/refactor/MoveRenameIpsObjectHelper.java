@@ -96,6 +96,8 @@ public final class MoveRenameIpsObjectHelper {
         ignoredValidationMessageCodes.add(IEnumContent.MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT);
         ignoredValidationMessageCodes.add(IProductCmptLink.MSGCODE_UNKNWON_TARGET);
         ignoredValidationMessageCodes.add(IProductCmptLink.MSGCODE_INVALID_TARGET);
+        ignoredValidationMessageCodes.add("KorrespondenzenExtensionPropertyDefinition-FalscherProduktBaustein"); //$NON-NLS-1$
+        // TODO diesen miesen Hack entfernen wenn FIPS-965 behoben ist.
     }
 
     /**
