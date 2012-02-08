@@ -116,7 +116,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      */
     public void initFromXml(Element cmptElement) {
         Element validToNode = (Element)cmptElement.getElementsByTagName(VALID_TO).item(0);
-        if (Boolean.parseBoolean(validToNode.getAttribute("isNull"))) {
+        if (validToNode == null || Boolean.parseBoolean(validToNode.getAttribute("isNull"))) {
             validTo = null;
         } else {
             validTo = DateTime.parseIso(validToNode.getTextContent());
