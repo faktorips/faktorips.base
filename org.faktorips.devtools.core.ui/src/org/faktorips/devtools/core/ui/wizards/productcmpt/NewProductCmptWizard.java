@@ -207,9 +207,4 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
         getPmo().setAddToAssociation(addToproductCmptGen, addToAssociation);
     }
 
-    @Override
-    public void dispose() {
-        super.dispose();
-    }
-
 }

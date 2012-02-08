@@ -35,7 +35,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -48,6 +47,7 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter;
 
 /**
@@ -67,6 +67,7 @@ public class TypeSelectionComposite extends Composite {
     private final PresentationModelObject pmo;
     private final String property;
     private BindingContext bindingContext;
+    private FieldPropertyMapping listViewerMapping;
 
     /**
      * Constructs a new type selection composite.
@@ -82,6 +83,7 @@ public class TypeSelectionComposite extends Composite {
         this.pmo = pmo;
         this.property = property;
         this.resourManager = new LocalResourceManager(JFaceResources.getResources());
+        bindingContext = new BindingContext();
 
         setLayoutAndLayoutData();
 
@@ -91,6 +93,7 @@ public class TypeSelectionComposite extends Composite {
             @Override
             public void widgetDisposed(DisposeEvent e) {
                 resourManager.dispose();
+                bindingContext.dispose();
             }
         });
     }
@@ -136,30 +139,19 @@ public class TypeSelectionComposite extends Composite {
     }
 
     private void bindContent() {
-        bindingContext = new BindingContext();
-        FieldPropertyMapping mapping = bindingContext.bindContent(listViewerField, pmo, property);
+        listViewerMapping = bindingContext.bindContent(listViewerField, pmo, property);
 
         pmo.addPropertyChangeListener(new PropertyChangeListener() {
 
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (property.equals(evt.getPropertyName())) {
-                    setSelection((IIpsObject)evt.getNewValue());
+                    updateDescription((IIpsObject)evt.getNewValue());
                 }
 
             }
         });
 
-        // first updating the control
-        mapping.setControlValue();
-        // then updating the property to get a change event
-        mapping.setPropertyValue();
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        bindingContext.dispose();
     }
 
     public void setTitle(String titleString) {
@@ -168,17 +160,30 @@ public class TypeSelectionComposite extends Composite {
 
     public void setListInput(List<? extends IIpsObject> inputList) {
         listViewer.setInput(inputList);
+        bindingContext.updateUI();
+        TypedSelection<IIpsObject> selection = new TypedSelection<IIpsObject>(IIpsObject.class,
+                listViewer.getSelection());
+        if (selection.isValid()) {
+            updateDescription(selection.getFirstElement());
+        }
     }
 
     public void addDoubleClickListener(IDoubleClickListener listener) {
         listViewer.addDoubleClickListener(listener);
     }
 
-    private void setSelection(IIpsObject type) {
+    private void updateDescription(IIpsObject type) {
         if (type == null) {
-            setDescription(StringUtils.EMPTY);
+            description.setText(StringUtils.EMPTY);
         } else {
-            setDescription(getDescription(type));
+            String descriptionString = getDescription(type);
+            if (StringUtils.isEmpty(descriptionString)) {
+                description.setText(Messages.TypeSelectionComposite_label_noDescriptionAvailable);
+                description.setEnabled(false);
+            } else {
+                description.setText(descriptionString);
+                description.setEnabled(true);
+            }
         }
     }
 
@@ -188,20 +193,16 @@ public class TypeSelectionComposite extends Composite {
             descriptionFinder.start(element);
             return descriptionFinder.localizedDescription;
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            return StringUtils.EMPTY;
         }
     }
 
-    private void setDescription(String descriptionString) {
-        if (StringUtils.isEmpty(descriptionString)) {
-            description.setText(Messages.TypeSelectionComposite_label_noDescriptionAvailable);
-            description.setEnabled(false);
-        } else {
-            description.setText(descriptionString);
-            description.setEnabled(true);
-        }
-    }
-
+    /**
+     * Searching for a description in type hierarchy. If the description of the given type is empty
+     * this visitor searches for a not empty description in supertype.
+     * 
+     * @author dirmeier
+     */
     private static class DescriptionFinder extends TypeHierarchyVisitor<IType> {
 
         private String localizedDescription;

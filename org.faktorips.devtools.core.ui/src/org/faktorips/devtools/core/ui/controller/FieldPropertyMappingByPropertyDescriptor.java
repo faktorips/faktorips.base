@@ -77,6 +77,16 @@ public class FieldPropertyMappingByPropertyDescriptor<T> implements FieldPropert
     }
 
     @Override
+    public Object getPropertyValue() {
+        try {
+            Method getter = property.getReadMethod();
+            return getter.invoke(object, new Object[0]);
+        } catch (Exception e) {
+            throw new RuntimeException("Error getting property value " + property.getName()); //$NON-NLS-1$
+        }
+    }
+
+    @Override
     public void setControlValue() {
         try {
             if (field.getControl().isDisposed()) {
@@ -112,16 +122,6 @@ public class FieldPropertyMappingByPropertyDescriptor<T> implements FieldPropert
 
         } catch (Exception e) {
             throw new RuntimeException("Error setting value in control for property " + property.getName(), e); //$NON-NLS-1$
-        }
-    }
-
-    @Override
-    public Object getPropertyValue() {
-        try {
-            Method getter = property.getReadMethod();
-            return getter.invoke(object, new Object[0]);
-        } catch (Exception e) {
-            throw new RuntimeException("Error getting property value " + property.getName()); //$NON-NLS-1$
         }
     }
 
