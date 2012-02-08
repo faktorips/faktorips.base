@@ -955,7 +955,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         constName = "TESTATTR_" + constName + "_" + upperCasetestAttribute;
         JavaCodeFragmentBuilder constantBuilder = getMainTypeSection().getConstantBuilder();
         constantBuilder.javaDoc("", ANNOTATION_GENERATED);
-        constantBuilder.varDefinition("public final static String", constName, "\"" + upperCasetestAttribute + "\"");
+        constantBuilder.varDefinition("public final static String", constName, "\"" + testAttribute + "\"");
         return constName;
     }
 
