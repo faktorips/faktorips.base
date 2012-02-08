@@ -31,9 +31,11 @@ public class AndOrTest extends FunctionAbstractTest {
     @Test
     public void testCompile() throws Exception {
         execAndTestSuccessfull("AND(true; OR(true; false))", Boolean.TRUE, Datatype.PRIMITIVE_BOOLEAN);
+        execAndTestSuccessfull("AND(true; OR(false; true))", Boolean.TRUE, Datatype.PRIMITIVE_BOOLEAN);
         execAndTestSuccessfull("AND(false; OR(true; false))", Boolean.FALSE, Datatype.PRIMITIVE_BOOLEAN);
         execAndTestSuccessfull("AND(false; OR(false; true))", Boolean.FALSE, Datatype.PRIMITIVE_BOOLEAN);
         execAndTestSuccessfull("OR(true; AND(true; false))", Boolean.TRUE, Datatype.PRIMITIVE_BOOLEAN);
+        execAndTestSuccessfull("OR(true; AND(false; true))", Boolean.TRUE, Datatype.PRIMITIVE_BOOLEAN);
         execAndTestSuccessfull("OR(false; AND(true; false))", Boolean.FALSE, Datatype.PRIMITIVE_BOOLEAN);
         execAndTestSuccessfull("OR(false; AND(true; true))", Boolean.TRUE, Datatype.PRIMITIVE_BOOLEAN);
     }
