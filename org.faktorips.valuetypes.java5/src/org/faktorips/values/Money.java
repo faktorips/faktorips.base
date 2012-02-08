@@ -137,12 +137,16 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
                 }
             }
 
+            int fractionDigits = currency.getDefaultFractionDigits();
+            if (fractionDigits < fractionDigitsIn) {
+                throw new IllegalArgumentException("Too much fraction digits (is " + minorUnits + ")");
+            }
+
             // we can get leading zeros in the fraction part of the value, e.g "09".
             // this is different to "9" as fraction part, for example. The leading zero is lost
             // by converting the string to an int above, but the number of fractionDigits
             // of the input is saved in fractionDigitsIn.
             // we have to care about the correct amount in minorUnits, and that is done here:
-            int fractionDigits = currency.getDefaultFractionDigits();
             while (fractionDigits > 0 && fractionDigits > fractionDigitsIn && minorUnits > 0) {
                 minorUnits *= 10;
                 fractionDigitsIn++;

@@ -111,6 +111,13 @@ public class MoneyTest {
         } catch (IllegalArgumentException e) {
             // Expected exception.
         }
+
+        try {
+            Money.valueOf("1.001EUR");
+            fail();
+        } catch (IllegalArgumentException e) {
+            // Expected exception.
+        }
     }
 
     @Test
