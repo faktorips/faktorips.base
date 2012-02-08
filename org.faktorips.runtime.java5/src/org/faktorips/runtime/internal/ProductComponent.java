@@ -28,6 +28,8 @@ import org.w3c.dom.Element;
  */
 public abstract class ProductComponent extends RuntimeObject implements IProductComponent, IXmlPersistenceSupport {
 
+    private static final String VALID_TO = "validTo";
+
     // the component's id that identifies it in the repository
     private String id;
 
@@ -113,7 +115,12 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      * @throws NullPointerException if cmptElement is <code>null</code>.
      */
     public void initFromXml(Element cmptElement) {
-        validTo = DateTime.parseIso(cmptElement.getAttribute("validTo"));
+        Element validToNode = (Element)cmptElement.getElementsByTagName(VALID_TO).item(0);
+        if (Boolean.parseBoolean(validToNode.getAttribute("isNull"))) {
+            validTo = null;
+        } else {
+            validTo = DateTime.parseIso(validToNode.getTextContent());
+        }
         Map<String, Element> propertyElements = ProductComponentXmlUtil.getPropertyElements(cmptElement);
         doInitPropertiesFromXml(propertyElements);
         initExtensionPropertiesFromXml(cmptElement);
@@ -161,6 +168,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      */
     public Element toXml(Document document, boolean includeGenerations) {
         Element prodCmptElement = document.createElement("ProductComponent");
+        writeValidToToXml(prodCmptElement);
         writePropertiesToXml(prodCmptElement);
         writeExtensionPropertiesToXml(prodCmptElement);
         if (includeGenerations) {
@@ -171,6 +179,12 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
             }
         }
         return prodCmptElement;
+    }
+
+    private void writeValidToToXml(Element prodCmptElement) {
+        Element validToElement = prodCmptElement.getOwnerDocument().createElement(VALID_TO);
+        validToElement.setTextContent(validTo.toIsoFormat());
+        prodCmptElement.appendChild(validToElement);
     }
 
     /**
