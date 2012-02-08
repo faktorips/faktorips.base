@@ -27,7 +27,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
-import org.faktorips.devtools.core.internal.migrationextensions.Migration_3_6_0_rc2;
+import org.faktorips.devtools.core.internal.migrationextensions.Migration_3_6_0_rfinal;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class Migration_3_6_0_rc2Test extends XmlAbstractTestCase {
+public class Migration_3_6_0_rfinalTest extends XmlAbstractTestCase {
 
     private ArgumentCaptor<IIpsProjectProperties> propertiesCaptor;
 
@@ -54,7 +54,7 @@ public class Migration_3_6_0_rc2Test extends XmlAbstractTestCase {
         assertEquals(5, length);
 
         IpsProject ipsProject = mockProject();
-        Migration_3_6_0_rc2 migration = new Migration_3_6_0_rc2(ipsProject, "testFeatureId");
+        Migration_3_6_0_rfinal migration = new Migration_3_6_0_rfinal(ipsProject, "testFeatureId");
         migration.migrate(new NullProgressMonitor());
 
         verify(ipsProject, times(1)).setProperties(propertiesCaptor.capture());

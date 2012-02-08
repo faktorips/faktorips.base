@@ -442,8 +442,8 @@
             targetVersion="3.6.0">
       </migrationOperation>
       <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_6_0_rc2$Factory"
-            targetVersion="3.6.0.rc2">
+            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_6_0_rfinal$Factory"
+            targetVersion="3.6.0.rfinal">
       </migrationOperation>
    </extension>
    <extension

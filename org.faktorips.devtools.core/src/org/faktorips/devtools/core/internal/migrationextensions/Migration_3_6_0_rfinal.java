@@ -41,9 +41,9 @@ import org.w3c.dom.NodeList;
  * 
  * @author Daniel Schwering
  */
-public class Migration_3_6_0_rc2 extends AbstractIpsProjectMigrationOperation {
+public class Migration_3_6_0_rfinal extends AbstractIpsProjectMigrationOperation {
 
-    public Migration_3_6_0_rc2(IIpsProject projectToMigrate, String featureId) {
+    public Migration_3_6_0_rfinal(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
 
@@ -54,7 +54,7 @@ public class Migration_3_6_0_rc2 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public String getTargetVersion() {
-        return "3.6.0.rc2"; //$NON-NLS-1$
+        return "3.6.0.rfinal"; //$NON-NLS-1$
     }
 
     @Override
@@ -135,7 +135,7 @@ public class Migration_3_6_0_rc2 extends AbstractIpsProjectMigrationOperation {
         public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
                 String featureId) {
 
-            return new Migration_3_6_0_rc2(ipsProject, featureId);
+            return new Migration_3_6_0_rfinal(ipsProject, featureId);
         }
     }
 }
