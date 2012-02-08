@@ -49,7 +49,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
 
     private IFormulaEvaluator formulaEvaluator;
 
-    private Map<String, ValidationRuleConfiguration> nameToValidationRuleConfigMap;
+    private Map<String, ValidationRuleConfiguration> nameToValidationRuleConfigMap = new HashMap<String, ValidationRuleConfiguration>();
 
     public ProductComponentGeneration(ProductComponent productCmpt) {
         this.productCmpt = productCmpt;
@@ -197,17 +197,16 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * @throws NullPointerException if genElement is <code>null</code>.
      */
     protected void doInitValidationRuleConfigsFromXml(Element genElement) {
-        Map<String, ValidationRuleConfiguration> configMap = new HashMap<String, ValidationRuleConfiguration>();
+        nameToValidationRuleConfigMap.clear();
         NodeList nl = genElement.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE && "ValidationRuleConfig".equals(node.getNodeName())) {
                 Element childElement = (Element)nl.item(i);
                 ValidationRuleConfiguration config = new ValidationRuleConfiguration(childElement);
-                configMap.put(config.getRuleName(), config);
+                nameToValidationRuleConfigMap.put(config.getRuleName(), config);
             }
         }
-        nameToValidationRuleConfigMap = configMap;
     }
 
     /**
