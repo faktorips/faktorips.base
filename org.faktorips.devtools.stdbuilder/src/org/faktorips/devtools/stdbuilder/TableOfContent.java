@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.AbstractTocEntryFactory;
+import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.EnumXmlAdapterTocEntry;
 import org.faktorips.runtime.internal.toc.ITocEntryFactory;
@@ -33,13 +34,16 @@ import org.faktorips.runtime.internal.toc.ProductCmptTypeTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
-import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
  * Table of contents to create the toc-file - used by {@link TocFileBuilder}
+ * <p>
+ * <em>The table of contents can be extended to read toc entries for new object types by implementing
+ * and registering a {@link ITocEntryFactory}.</em>
+ * </p>
  * 
  * @author dirmeier
  */

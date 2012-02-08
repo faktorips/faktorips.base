@@ -30,6 +30,11 @@ import org.w3c.dom.NodeList;
  * <p>
  * The table of contents contains a list of toc entries that contain the information needed to
  * identify and load the objects stored in the repository.
+ * </p>
+ * <p>
+ * <em>The table of contents can be extended to read toc entries for new object types by implementing
+ * and registering a {@link ITocEntryFactory}.</em>
+ * </p>
  * 
  * @author Jan Ortmann
  */
