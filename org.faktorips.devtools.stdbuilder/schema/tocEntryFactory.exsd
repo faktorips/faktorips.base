@@ -6,7 +6,9 @@
          <meta.schema plugin="org.faktorips.devtools.stdbuilder" id="tocEntryFactory" name="TOC Entry Factory"/>
       </appInfo>
       <documentation>
-         [Enter description of this extension point.]
+         A ITocEntryFactory implementation is used to load TocEntryObjects of a given type identified by their XML tag.&lt;br /&gt;
+To make a ITocEntryFactory available during design time, it has to be registered with this extension point.
+See ITocEntryFactory&apos;s javadoc for details on making the ITocEntryFactory available at runtime.
       </documentation>
    </annotation>
 
@@ -72,7 +74,7 @@
          <meta.section type="since"/>
       </appInfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         3.6.0
       </documentation>
    </annotation>
 
