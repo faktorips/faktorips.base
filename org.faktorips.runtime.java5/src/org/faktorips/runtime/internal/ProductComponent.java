@@ -28,6 +28,8 @@ import org.w3c.dom.Element;
  */
 public abstract class ProductComponent extends RuntimeObject implements IProductComponent, IXmlPersistenceSupport {
 
+    private static final String IS_NULL = "isNull";
+
     private static final String VALID_TO = "validTo";
 
     // the component's id that identifies it in the repository
@@ -116,7 +118,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      */
     public void initFromXml(Element cmptElement) {
         Element validToNode = (Element)cmptElement.getElementsByTagName(VALID_TO).item(0);
-        if (validToNode == null || Boolean.parseBoolean(validToNode.getAttribute("isNull"))) {
+        if (validToNode == null || Boolean.parseBoolean(validToNode.getAttribute(IS_NULL))) {
             validTo = null;
         } else {
             validTo = DateTime.parseIso(validToNode.getTextContent());
@@ -183,8 +185,13 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     private void writeValidToToXml(Element prodCmptElement) {
         Element validToElement = prodCmptElement.getOwnerDocument().createElement(VALID_TO);
-        validToElement.setTextContent(validTo.toIsoFormat());
-        prodCmptElement.appendChild(validToElement);
+        if (validTo != null) {
+            validToElement.setAttribute(IS_NULL, Boolean.FALSE.toString());
+            validToElement.setTextContent(validTo.toIsoFormat());
+            prodCmptElement.appendChild(validToElement);
+        } else {
+            validToElement.setAttribute(IS_NULL, Boolean.TRUE.toString());
+        }
     }
 
     /**
