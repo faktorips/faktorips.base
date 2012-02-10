@@ -19,59 +19,48 @@ import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Item;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.search.product.Messages;
 import org.faktorips.devtools.core.ui.search.product.ProductSearchPresentationModel;
 import org.faktorips.devtools.core.ui.table.LinkedColumnsTraversalStrategy;
 
 /**
- * The ProductSearchConditionsTableViewer is a {@link TableViewer} for the conditions of the
- * Faktor-IPS Product Search
+ * The ProductSearchConditionsTableViewerCreator delivers a {@link TableViewer} for the conditions
+ * of the Faktor-IPS Product Search
  * 
  * @author dicker
  */
-public class ProductSearchConditionsTableViewer extends TableViewer {
+public class ProductSearchConditionsTableViewerCreator {
 
-    private ConditionTypeEditingSupport conditionTypeEditingSupport = new ConditionTypeEditingSupport(this);
-    private ElementEditingSupport elementEditingSupport = new ElementEditingSupport(this);
-    private OperatorEditingSupport operatorEditingSupport = new OperatorEditingSupport(this);
-    private ArgumentEditingSupport argumentEditingSupport = new ArgumentEditingSupport(this);
+    public TableViewer createTableViewer(ProductSearchPresentationModel model, Composite parent) {
+        Table table = new UIToolkit(null).createTable(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.SINGLE
+                | SWT.FULL_SELECTION);
 
-    public ProductSearchConditionsTableViewer(ProductSearchPresentationModel model, Composite parent) {
-        super(new UIToolkit(null).createTable(parent, SWT.NONE));
+        TableViewer tableViewer = new TableViewer(table);
 
-        setContentProvider(new ArrayContentProvider());
-        setInput(model.getProductSearchConditionPresentationModels());
+        tableViewer.setContentProvider(new ArrayContentProvider());
+        tableViewer.setInput(model.getProductSearchConditionPresentationModels());
 
-        createTableViewerColumn();
-        createTraversalStrategies();
-
-        layoutViewer();
-    }
-
-    private void createTableViewerColumn() {
+        ConditionTypeEditingSupport conditionTypeEditingSupport = new ConditionTypeEditingSupport(tableViewer);
+        ElementEditingSupport elementEditingSupport = new ElementEditingSupport(tableViewer);
+        OperatorEditingSupport operatorEditingSupport = new OperatorEditingSupport(tableViewer);
+        ArgumentEditingSupport argumentEditingSupport = new ArgumentEditingSupport(tableViewer);
 
         createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_conditionType, 150,
-                new ConditionTypeLabelProvider(), conditionTypeEditingSupport);
+                new ConditionTypeLabelProvider(), conditionTypeEditingSupport, tableViewer);
 
         createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_element, 180,
-                new ElementLabelProvider(), elementEditingSupport);
+                new ElementLabelProvider(), elementEditingSupport, tableViewer);
 
         createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_operator, 150,
-                new OperatorLabelProvider(), operatorEditingSupport);
+                new OperatorLabelProvider(), operatorEditingSupport, tableViewer);
 
         createTableViewerColumn(Messages.ProductSearchConditionsTableViewerProvider_argument, 170,
-                new ArgumentLabelProvider(), argumentEditingSupport);
+                new ArgumentLabelProvider(), argumentEditingSupport, tableViewer);
 
-    }
-
-    private void createTraversalStrategies() {
         LinkedColumnsTraversalStrategy conditionTraversalStrategy = new ConditionsTableTraversalStrategy(
                 conditionTypeEditingSupport);
         LinkedColumnsTraversalStrategy elementTraversalStrategy = new ConditionsTableTraversalStrategy(
@@ -84,13 +73,18 @@ public class ProductSearchConditionsTableViewer extends TableViewer {
         conditionTraversalStrategy.setFollower(elementTraversalStrategy);
         elementTraversalStrategy.setFollower(operatorTraversalStrategy);
         operatorTraversalStrategy.setFollower(argumentTraversalStrategy);
+
+        layoutViewer(tableViewer);
+
+        return tableViewer;
     }
 
     private void createTableViewerColumn(String string,
             int width,
             CellLabelProvider labelProvider,
-            EditingSupport editingSupport) {
-        TableViewerColumn tableViewerColumn = new TableViewerColumn(this, SWT.NONE);
+            EditingSupport editingSupport,
+            TableViewer tableViewer) {
+        TableViewerColumn tableViewerColumn = new TableViewerColumn(tableViewer, SWT.NONE);
         tableViewerColumn.getColumn().setText(string);
         tableViewerColumn.getColumn().setWidth(width);
         tableViewerColumn.setLabelProvider(labelProvider);
@@ -99,7 +93,7 @@ public class ProductSearchConditionsTableViewer extends TableViewer {
         }
     }
 
-    private void layoutViewer() {
+    private void layoutViewer(TableViewer tableViewer) {
         GridData gridData = new GridData();
         gridData.verticalAlignment = GridData.FILL;
         gridData.horizontalAlignment = GridData.FILL;
@@ -109,34 +103,9 @@ public class ProductSearchConditionsTableViewer extends TableViewer {
         gridData.grabExcessVerticalSpace = true;
         gridData.heightHint = 150;
 
-        getControl().setLayoutData(gridData);
+        tableViewer.getControl().setLayoutData(gridData);
 
-        getTable().setHeaderVisible(true);
-        getTable().setLinesVisible(true);
+        tableViewer.getTable().setHeaderVisible(true);
+        tableViewer.getTable().setLinesVisible(true);
     }
-
-    @Override
-    protected Item getItemAt(Point p) {
-        Item itemAt = super.getItemAt(p);
-
-        if (itemAt == null) {
-            Rectangle tableBounds = getTable().getBounds();
-
-            if (tableBounds.width < p.x) {
-                return null;
-            }
-
-            TableItem[] items = getTable().getItems();
-            for (TableItem tableItem : items) {
-                Rectangle bounds = tableItem.getBounds();
-
-                if (bounds.y <= p.y && bounds.y + bounds.height >= p.y) {
-                    return tableItem;
-                }
-            }
-
-        }
-        return itemAt;
-    }
-
 }

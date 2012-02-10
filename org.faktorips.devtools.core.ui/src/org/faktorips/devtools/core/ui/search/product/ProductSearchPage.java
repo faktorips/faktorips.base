@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchPage;
 import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
-import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionsTableViewer;
+import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionsTableViewerCreator;
 
 /**
  * 
@@ -105,7 +105,8 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
 
         addConditionButtons(comp);
 
-        conditionTableViewer = new ProductSearchConditionsTableViewer(getPresentationModel(), composite);
+        conditionTableViewer = new ProductSearchConditionsTableViewerCreator().createTableViewer(getPresentationModel(),
+                composite);
     }
 
     private void addConditionButtons(Composite comp) {
@@ -147,21 +148,12 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
     private void addCondition() {
         getPresentationModel().createProductSearchConditionPresentationModel();
 
-        // necessary, because no editing without selection if you don't click a text directly
-        conditionTableViewer.refresh(true, true);
-
-        if (getPresentationModel().getProductSearchConditionPresentationModels().size() == 1) {
-            conditionTableViewer.getTable().setSelection(0);
-        }
-
+        conditionTableViewer.refresh();
     }
 
     private void removeConditions() {
         ISelection selection = conditionTableViewer.getSelection();
         IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-
-        int firstSelectedIndex = getPresentationModel().getProductSearchConditionPresentationModels().indexOf(
-                structuredSelection.getFirstElement());
 
         List<?> list = structuredSelection.toList();
         for (Object object : list) {
@@ -172,17 +164,6 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
             }
         }
         conditionTableViewer.refresh();
-
-        // Problem with editing after selection: A new selection is necessary
-        if (getPresentationModel().getProductSearchConditionPresentationModels().isEmpty() || firstSelectedIndex < 0) {
-            return;
-        }
-        if (getPresentationModel().getProductSearchConditionPresentationModels().size() >= firstSelectedIndex) {
-            conditionTableViewer.getTable().setSelection(firstSelectedIndex - 1);
-        } else {
-            conditionTableViewer.getTable().setSelection(0);
-        }
-
     }
 
     @Override
