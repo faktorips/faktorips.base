@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
@@ -199,23 +200,26 @@ public class TestCaseDetailArea {
         try {
             notifyListener(testObjects);
 
+            ScrolledComposite scrolledComposite = createScrolledComposite(dynamicArea);
+            Composite container = new Composite(scrolledComposite, SWT.NONE);
+            container.setBackground(detailsArea.getBackground());
+            container.setLayoutData(new GridData(GridData.FILL_BOTH));
+            GridLayout layout = new GridLayout(1, false);
+            container.setLayout(layout);
             for (ITestObject testObject : testObjects) {
-                ScrolledComposite scrolledComposite = createScrolledComposite(dynamicArea);
-                Composite container = new Composite(scrolledComposite, SWT.NONE);
-                container.setBackground(detailsArea.getBackground());
-                container.setLayoutData(new GridData(GridData.FILL_BOTH));
-                GridLayout layout = new GridLayout(1, false);
-                container.setLayout(layout);
                 if (testObject instanceof ITestValue) {
-                    createTestValuesSection((ITestValue)testObject, container);
+                    Composite borderedComosite = createBorderComposite(container);
+                    createTestValuesSection((ITestValue)testObject, borderedComosite);
                 } else if (testObject instanceof ITestRule) {
-                    createTestRuleSection((ITestRule)testObject, container);
+                    Composite borderedComosite = createBorderComposite(container);
+                    createTestRuleSection((ITestRule)testObject, borderedComosite);
                 } else if (testObject instanceof ITestPolicyCmpt) {
-                    createPolicyCmptAndLinkSection((ITestPolicyCmpt)testObject, container);
+                    Composite borderedComosite = createBorderComposite(container);
+                    createPolicyCmptAndLinkSection((ITestPolicyCmpt)testObject, borderedComosite);
                 }
-                scrolledComposite.setContent(container);
-                scrolledComposite.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
             }
+            scrolledComposite.setContent(container);
+            scrolledComposite.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
             if (!testCaseSection.isDataChangeable()) {
                 toolkit.setDataChangeable(detailsArea, false);
@@ -231,11 +235,10 @@ public class TestCaseDetailArea {
         }
         final ScrolledComposite scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL
                 | SWT.BORDER);
-        applyHeight(scrolledComposite);
-
+        scrolledComposite.setShowFocusedControl(true);
         scrolledComposite.setExpandHorizontal(true);
         scrolledComposite.setExpandVertical(true);
-
+        applyHeight(scrolledComposite);
         testCaseSection.treeViewer.getTree().addListener(SWT.Resize, new Listener() {
             @Override
             public void handleEvent(Event event) {
@@ -250,8 +253,8 @@ public class TestCaseDetailArea {
     }
 
     private void applyHeight(ScrolledComposite scrolledComposite) {
-        GridDataFactory dataFactory = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL)
-                .hint(SWT.DEFAULT, computeScrolledCompositeHeight()).grab(true, true);
+        GridDataFactory dataFactory = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).hint(SWT.DEFAULT,
+                computeScrolledCompositeHeight()).grab(true, true);
         dataFactory.applyTo(scrolledComposite);
     }
 
@@ -359,8 +362,8 @@ public class TestCaseDetailArea {
             ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(Datatype.STRING);
         }
 
-        Label label = toolkit.createFormLabel(attributeComposite,
-                StringUtils.capitalize(attributeValue.getTestAttribute()));
+        Label label = toolkit.createFormLabel(attributeComposite, StringUtils.capitalize(attributeValue
+                .getTestAttribute()));
         if (testAttribute != null) {
             // use description of parameter as tooltip
             String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(testAttribute);
@@ -472,8 +475,8 @@ public class TestCaseDetailArea {
             addSectionSelectionListeners(null, label, currLink);
         } else {
             // target not found in current test case
-            Label label = toolkit.createLabel(hyperlinkArea,
-                    TestCaseHierarchyPath.unqualifiedName(currLink.getTarget()));
+            Label label = toolkit.createLabel(hyperlinkArea, TestCaseHierarchyPath
+                    .unqualifiedName(currLink.getTarget()));
             addSectionSelectionListeners(null, label, currLink);
             label = toolkit.createLabel(hyperlinkArea,
                     " (" + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currLink.getTarget()) + " ) "); //$NON-NLS-1$ //$NON-NLS-2$
@@ -618,8 +621,8 @@ public class TestCaseDetailArea {
             label.setToolTipText(localizedDescription);
             section.getChildren()[0].setToolTipText(localizedDescription);
         }
-        final EditField<?> editField = new EnumValueField(toolkit.createCombo(composite,
-                TestRuleViolationType.getEnumType()), TestRuleViolationType.getEnumType());
+        final EditField<?> editField = new EnumValueField(toolkit.createCombo(composite, TestRuleViolationType
+                .getEnumType()), TestRuleViolationType.getEnumType());
         addSectionSelectionListeners(editField, label, rule);
 
         editField.getControl().addFocusListener(new FocusAdapter() {
@@ -659,6 +662,30 @@ public class TestCaseDetailArea {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return true;
+    }
+
+    /**
+     * Create a bordered composite
+     */
+    private Composite createBorderComposite(Composite parent) {
+        if (parent.isDisposed()) {
+            return null;
+        }
+        Composite c1 = toolkit.createLabelEditColumnComposite(parent);
+        c1.setLayoutData(new GridData(GridData.FILL_BOTH));
+        c1.setLayout(new GridLayout(1, true));
+
+        Composite c2 = toolkit.getFormToolkit().createComposite(c1);
+        c2.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout detailLayout = new GridLayout(1, true);
+
+        detailLayout.horizontalSpacing = 10;
+        detailLayout.marginWidth = 10;
+        detailLayout.marginHeight = 10;
+        c2.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
+
+        c2.setLayout(detailLayout);
+        return c2;
     }
 
     /**
@@ -836,6 +863,10 @@ public class TestCaseDetailArea {
         if (editField == null) {
             // edit field not found, try to get the special edit value field
             editField = allEditFieldsCache.get((TestCaseSection.VALUESECTION + uniqueKey).toUpperCase());
+            if (editField == null) {
+                // fallback
+                editField = allEditFieldsCache.get(uniqueKey.toUpperCase());
+            }
         }
         return editField;
     }
@@ -888,4 +919,10 @@ public class TestCaseDetailArea {
         }
     }
 
+    public void selectSection(String uniquePath) {
+        Section sectionCtrl = getSection(uniquePath);
+        if (sectionCtrl != null) {
+            sectionCtrl.setBackground(testCaseSection.getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+        }
+    }
 }
