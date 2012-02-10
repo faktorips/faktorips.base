@@ -159,7 +159,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 
     private void checkMissingType() throws CoreException {
         // open the select template dialog if the template is missing and the data is changeable
-        if (getProductCmpt().findProductCmptType(getIpsProject()) == null && isDataChangeable()
+        if (getProductCmpt().findProductCmptType(getIpsProject()) == null && super.computeDataChangeableState()
                 && !IpsPlugin.getDefault().isTestMode()
                 && !getSettings().getBoolean(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE)) {
             String msg = NLS
