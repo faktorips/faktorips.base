@@ -58,6 +58,8 @@ public class Messages extends NLS {
     public static String IpsArchiveEntry_archiveDoesNotExist;
     public static String IpsArchiveEntry_archiveIsInvalid;
 
+    public static String IpsArtefactBuilderSetInfo_propertyInompatibleJDK;
+    public static String IpsArtefactBuilderSetInfo_propertyNotSupported;
     public static String IpsProjectRefEntry_noReferencedProjectSpecified;
     public static String IpsProjectRefEntry_msgMissingReferencedProject;
 

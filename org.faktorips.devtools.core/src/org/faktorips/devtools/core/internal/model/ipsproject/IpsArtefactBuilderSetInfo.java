@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
@@ -47,6 +48,7 @@ import org.faktorips.util.message.MessageList;
  */
 public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
 
+    private static final String BUILDER_SET_PROPERTY_DEF = "builderSetPropertyDef"; //$NON-NLS-1$
     private Class<?> builderSetClass;
     private String builderSetId;
     private String builderSetLabel;
@@ -175,12 +177,11 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
      * the propertyName. It returns <code>null</code> if validation is correct otherwise a
      * {@link Message} object is returned.
      */
-    // TODO translate messages
     @Override
     public Message validateIpsBuilderSetPropertyValue(IIpsProject ipsProject, String propertyName, String propertyValue) {
         IIpsBuilderSetPropertyDef propertyDef = propertyDefinitions.get(propertyName);
         if (propertyDef == null) {
-            String text = "The builder set " + builderSetId + " doesn't support the property " + propertyName;
+            String text = NLS.bind(Messages.IpsArtefactBuilderSetInfo_propertyNotSupported, builderSetId, propertyName);
             return new Message(MSG_CODE_PROPERTY_NOT_SUPPORTED, text, Message.ERROR);
         }
         Message msg = propertyDef.validateValue(propertyValue);
@@ -188,10 +189,9 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
             return msg;
         }
         String disableValue = propertyDef.getDisableValue(ipsProject);
-        if (!propertyDef.isAvailable(ipsProject)
-                && !((disableValue == null && propertyValue == null) || disableValue.equals(propertyValue))) {
-            return new Message(MSG_CODE_PROPERTY_NO_JDK_COMPLIANCE,
-                    "This property is not in accordance with the JDK compliance level of this java project.",
+        if (!propertyDef.isAvailable(ipsProject) && (disableValue != null && disableValue.equals(propertyValue))) {
+            return new Message(MSG_CODE_PROPERTY_NO_JDK_COMPLIANCE, NLS.bind(
+                    Messages.IpsArtefactBuilderSetInfo_propertyInompatibleJDK, propertyName, builderSetId),
                     Message.ERROR);
         }
         return null;
@@ -203,7 +203,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
             IConfigurationElement element,
             ILog logger) {
 
-        IConfigurationElement[] builderSetPropertyDefElements = element.getChildren("builderSetPropertyDef");
+        IConfigurationElement[] builderSetPropertyDefElements = element.getChildren(BUILDER_SET_PROPERTY_DEF);
         Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = new HashMap<String, IIpsBuilderSetPropertyDef>();
         for (IConfigurationElement builderSetPropertyDefElement : builderSetPropertyDefElements) {
             IIpsBuilderSetPropertyDef propertyDef = IpsBuilderSetPropertyDef.loadExtensions(
