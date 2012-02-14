@@ -17,9 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.ui.editors.tablecontents.Messages;
 
 /**
  * A page for presenting the properties of a {@link IPolicyCmptType}. This page is connected to a
@@ -38,13 +40,19 @@ public class PolicyCmtTypeDescriptionPage extends DefaultModelDescriptionPage {
     @Override
     protected List<DescriptionItem> createDescriptions() throws CoreException {
         List<DescriptionItem> descriptions = new ArrayList<DescriptionItem>();
-        List<IAttribute> attributes = getIpsObject().findAllAttributes(getIpsObject().getIpsProject());
-        for (IAttribute attribute : attributes) {
-            createDescriptionItem(attribute, descriptions);
-        }
-        List<IAssociation> associations = getIpsObject().findAllAssociations(getIpsObject().getIpsProject());
-        for (IAssociation association : associations) {
-            createDescriptionItem(association, descriptions);
+        if (getIpsObject() != null) {
+            String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(getIpsObject());
+            DescriptionItem structureDescription = new DescriptionItem(
+                    Messages.TableModelDescriptionPage_generalInformation, localizedDescription);
+            descriptions.add(structureDescription);
+            List<IAttribute> attributes = getIpsObject().findAllAttributes(getIpsObject().getIpsProject());
+            for (IAttribute attribute : attributes) {
+                createDescriptionItem(attribute, descriptions);
+            }
+            List<IAssociation> associations = getIpsObject().findAllAssociations(getIpsObject().getIpsProject());
+            for (IAssociation association : associations) {
+                createDescriptionItem(association, descriptions);
+            }
         }
         return descriptions;
     }

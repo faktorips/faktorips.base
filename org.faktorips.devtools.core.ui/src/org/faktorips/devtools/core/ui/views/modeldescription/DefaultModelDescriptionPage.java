@@ -45,6 +45,7 @@ import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
@@ -111,7 +112,15 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
      */
     protected void createDescriptionItem(IDescribedElement describedElement, List<DescriptionItem> descriptions) {
         String label;
-        if (describedElement instanceof ILabeledElement) {
+        if (describedElement instanceof IAssociation) {
+            IAssociation association = (IAssociation)describedElement;
+            if (association.is1ToMany()) {
+                label = IpsPlugin.getMultiLanguageSupport()
+                        .getLocalizedPluralLabel(((ILabeledElement)describedElement));
+            } else {
+                label = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(((ILabeledElement)describedElement));
+            }
+        } else if (describedElement instanceof ILabeledElement) {
             label = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(((ILabeledElement)describedElement));
         } else {
             label = describedElement.getName();
