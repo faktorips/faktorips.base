@@ -109,8 +109,8 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         EnumDatatype[] enumTypes = expression.getEnumDatatypesAllowedInFormula();
         for (EnumDatatype enumType : enumTypes) {
             if (enumType.getName().startsWith(enumTypePrefix)) {
-                IContentProposal proposal = new ContentProposal(enumType.getName(), enumType.getName(),
-                        enumType.getName());
+                IContentProposal proposal = new ContentProposal(removePrefix(enumType.getName(), enumTypePrefix),
+                        enumType.getName(), enumType.getName());
                 result.add(proposal);
             }
         }
