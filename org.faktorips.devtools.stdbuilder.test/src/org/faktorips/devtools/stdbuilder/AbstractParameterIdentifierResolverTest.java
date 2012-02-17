@@ -77,6 +77,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     private IPolicyCmptTypeAttribute attributeColor;
     private StandardBuilderSet standardBuilderSet;
     private PolicyCmptType treePolicyCmptType;
+    private IPolicyCmptTypeAssociation associationBranchToMoreLeafs;
 
     @Override
     @Before
@@ -113,6 +114,11 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         associationBranchToTwig.setTarget(twigPolicyCmptType.getQualifiedName());
         associationBranchToTwig.setTargetRoleSingular("twig");
         associationBranchToTwig.setMaxCardinality(IAssociation.CARDINALITY_ONE);
+        associationBranchToMoreLeafs = branchPolicyCmptType.newPolicyCmptTypeAssociation();
+        associationBranchToMoreLeafs.setTarget(leafPolicyCmptType.getQualifiedName());
+        associationBranchToMoreLeafs.setTargetRoleSingular("moreLeaf");
+        associationBranchToMoreLeafs.setTargetRolePlural("moreLeafs");
+        associationBranchToMoreLeafs.setMaxCardinality(IAssociation.CARDINALITY_MANY);
         associationTwigToLeaf = twigPolicyCmptType.newPolicyCmptTypeAssociation();
         associationTwigToLeaf.setTarget(leafPolicyCmptType.getQualifiedName());
         associationTwigToLeaf.setTargetRoleSingular("leaf");
@@ -689,6 +695,66 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         // FormulaEvaluatorUtil.getModelObjectById(new AssociationTo1Helper<IBranch,
         // ILeaf>(){@Override protected ILeaf getTargetInternal(IBranch sourceObject){return
         // sourceObject.getleaf();}}.getTargets(tree.getBranches()), "ALeaf")
+        assertEquals(expected, result.getCodeFragment().getSourcecode());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "tree"} of the {@link IPolicyCmptType}
+     * {@code "Tree"} which has a 1toMany association to the {@link IPolicyCmptType}
+     * {@code "Branch"} with the name {@code "branch"}. The {@code "Branch"} has a 1toMany
+     * association to {@code "Leaf"} called {@code "moreLeafs"}. The {@code "Leaf"} has an attribute
+     * {@code "color"} of type String. The resolver is called with
+     * {@code tree.branch.moreLeaf["MyLeaf"].color} where {@code "MyLeaf"} is the runtime name of a
+     * {@link IProductCmpt} configuring {@code "Leaf"}.
+     * <p>
+     * 
+     * <strong>Expected Outcome:</strong><br>
+     * <ul>
+     * <li>successful compilation
+     * <li>the result datatype is {@code String}
+     * <li>the result's sourcecode uses the method the
+     * {@link GenAssociation#getMethodNameGetAllRefObjects()} method returns and the
+     * {@link FormulaEvaluatorUtil#getModelObjectById(List, String)} method with the ID
+     * {@code "ALeaf"}
+     * </ul>
+     */
+    @Test
+    public void testCompileAssociations_1toManyChainQualifiedAndAttribute() throws CoreException {
+        method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
+        newProductCmpt(leafPolicyCmptType.findProductCmptType(ipsProject), "pack.MyLeaf");
+        CompilationResult result = resolver.compile("tree.branch.moreLeaf[\"MyLeaf\"].color", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(Datatype.STRING, result.getDatatype());
+        String iLeaf = standardBuilderSet.getGenerator(leafPolicyCmptType).getUnqualifiedClassName(true);
+        String iBranch = standardBuilderSet.getGenerator(branchPolicyCmptType).getUnqualifiedClassName(true);
+        String getBranches = standardBuilderSet.getGenerator(treePolicyCmptType)
+                .getGenerator(associationTreeToBranches).getMethodNameGetAllRefObjects();
+        String getMoreLeafs = standardBuilderSet.getGenerator(branchPolicyCmptType)
+                .getGenerator(associationBranchToMoreLeafs).getMethodNameGetAllRefObjects();
+        String expected = FormulaEvaluatorUtil.class.getSimpleName()
+                + ".getModelObjectById(new "
+                + FormulaEvaluatorUtil.AssociationToManyHelper.class.getSimpleName()
+                + "<"
+                + iBranch
+                + ", "
+                + iLeaf
+                + ">(){@Override protected "
+                + List.class.getSimpleName()
+                + '<'
+                + iLeaf
+                + "> getTargetsInternal("
+                + iBranch
+                + " sourceObject){return sourceObject."
+                + getMoreLeafs
+                + "();}}.getTargets(tree."
+                + getBranches
+                + "()), \"MyLeaf\")."
+                + standardBuilderSet.getGenerator(leafPolicyCmptType).getMethodNameGetPropertyValue(
+                        attributeColor.getName(), Datatype.STRING) + "()";
+        // FormulaEvaluatorUtil.getModelObjectById(new AssociationToManyHelper<IBranch,
+        // ILeaf>(){@Override protected List<ILeaf> getTargetsInternal(IBranch sourceObject){return
+        // sourceObject.getMoreLeafs();}}.getTargets(tree.getBranches()), "MyLeaf").getColor()
         assertEquals(expected, result.getCodeFragment().getSourcecode());
     }
 

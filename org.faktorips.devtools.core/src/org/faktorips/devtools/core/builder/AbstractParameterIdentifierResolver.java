@@ -551,24 +551,29 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                                     association, type.getName() })));
                 }
                 JavaCodeFragment getTargetCode = compileAssociationAccess(javaCodeFragment, type, association);
-                CompilationResult associationIdentifier;
-                if (index == null) {
+                if (index == null && qualifier == null) {
                     if (tail.isEmpty()) {
-                        associationIdentifier = new CompilationResultImpl(getTargetCode, new ListOfTypeDatatype(target));
+                        return new CompilationResultImpl(getTargetCode, new ListOfTypeDatatype(target));
                     } else {
-                        associationIdentifier = compileAssociationToManyChain(getTargetCode, new ListOfTypeDatatype(
-                                target), tail);
+                        return compileAssociationToManyChain(getTargetCode, new ListOfTypeDatatype(target), tail);
                     }
-                } else {
+                } else if (index != null) {
                     getTargetCode.append(".get(" + index.toString() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
                     if (tail.isEmpty()) {
-                        associationIdentifier = new CompilationResultImpl(getTargetCode, target);
+                        return new CompilationResultImpl(getTargetCode, target);
                     } else {
-                        associationIdentifier = compileTypeAttributeIdentifier(getTargetCode, target, tail);
+                        return compileTypeAttributeIdentifier(getTargetCode, target, tail);
+                    }
+                } else {
+                    CompilationResult compilationResult = compileAssociationQualifier(qualifier, target,
+                            new CompilationResultImpl(getTargetCode, target));
+                    if (tail.isEmpty()) {
+                        return compilationResult;
+                    } else {
+                        return compileTypeAttributeIdentifier(compilationResult.getCodeFragment(), target, tail);
                     }
                 }
 
-                return compileAssociationQualifier(qualifier, target, associationIdentifier);
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);
