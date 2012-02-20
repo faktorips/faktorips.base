@@ -108,13 +108,6 @@ public interface IProductCmptProperty extends ITypePart {
     public void setCategory(String category);
 
     /**
-     * Returns whether this part is assigned to a specific {@link IProductCmptCategory}.
-     * <p>
-     * This operation is a shortcut for {@code !getCategory().isEmpty()}.
-     */
-    public boolean hasCategory();
-
-    /**
      * Returns the {@link IProductCmptType} this {@link IProductCmptProperty} belongs to or null if
      * the referenced {@link IProductCmptType} could not be found.
      * 

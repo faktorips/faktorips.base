@@ -13,19 +13,27 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
-import org.faktorips.runtime.internal.StringUtils;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -68,14 +76,14 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     public boolean findIsContainingProperty(IProductCmptProperty property,
             IProductCmptType contextType,
             IIpsProject ipsProject) throws CoreException {
-
         // The queried property must be found by the context type
         if (contextType.findProductCmptProperty(property.getPropertyName(), ipsProject) == null) {
             return false;
         }
 
+        String categoryName = ((ProductCmptType)contextType).getCategoryNameFor(property);
         // The name of this category must not be empty and must equal the property's category
-        if (!name.isEmpty() && name.equals(property.getCategory())) {
+        if (StringUtils.isNotEmpty(categoryName) && categoryName.equals(name)) {
             return true;
         }
 
@@ -86,7 +94,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
              * category. In this case, if the property has no category or the property's category
              * cannot be found, the property belongs to this category.
              */
-            return !property.hasCategory() || !contextType.findHasCategory(property.getCategory(), ipsProject);
+            return StringUtils.isEmpty(categoryName) || !contextType.findHasCategory(categoryName, ipsProject);
         }
 
         return false;
@@ -122,11 +130,78 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
     @Override
     public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType,
-            boolean searchSupertypeHierarchy,
+            final boolean searchSupertypeHierarchy,
             IIpsProject ipsProject) throws CoreException {
 
-        return ((ProductCmptType)contextType).findProductCmptPropertiesForCategory(this, searchSupertypeHierarchy,
-                ipsProject);
+        class CategoryPropertyCollector extends TypeHierarchyVisitor<IProductCmptType> {
+
+            private final List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
+
+            /**
+             * {@link Set} that is used to store all property names of properties that overwrite
+             * another property from the supertype hierarchy.
+             * <p>
+             * When testing whether a given {@link IProductCmptProperty} shall be included in an
+             * {@link IProductCmptCategory}, it is first checked whether an
+             * {@link IProductCmptProperty} with the same property name is contained within this
+             * set. In this case, the {@link IProductCmptProperty} has been overwritten by a subtype
+             * which means that the supertype {@link IProductCmptProperty} is not to be added to the
+             * {@link IProductCmptCategory}.
+             */
+            private final Set<String> overwritingProperties = new HashSet<String>();
+
+            private CategoryPropertyCollector(IIpsProject ipsProject) {
+                super(ipsProject);
+            }
+
+            @Override
+            protected boolean visit(IProductCmptType currentType) throws CoreException {
+                for (IProductCmptProperty property : currentType.findProductCmptProperties(false, ipsProject)) {
+                    /*
+                     * First, check whether the property has been overwritten by a subtype - in this
+                     * case we do not add the property to the category.
+                     */
+                    if (overwritingProperties.contains(property.getPropertyName())) {
+                        continue;
+                    }
+
+                    /*
+                     * Memorize the property if it is overwriting another property from the
+                     * supertype hierarchy.
+                     */
+                    if (isOverwriteProperty(property)) {
+                        overwritingProperties.add(property.getPropertyName());
+                    }
+
+                    if (findIsContainingProperty(property, currentType, ipsProject) && !properties.contains(property)) {
+                        properties.add(property);
+                    }
+                }
+
+                return searchSupertypeHierarchy;
+            }
+
+            /**
+             * Returns whether the given {@link IProductCmptProperty} overwrites another
+             * {@link IProductCmptProperty} from the supertype hierarchy.
+             */
+            private boolean isOverwriteProperty(IProductCmptProperty property) {
+                if (property instanceof IPolicyCmptTypeAttribute) {
+                    return ((IPolicyCmptTypeAttribute)property).isOverwrite();
+                } else if (property instanceof IProductCmptTypeMethod) {
+                    return ((IProductCmptTypeMethod)property).isOverloadsFormula();
+                }
+                return false;
+            }
+
+        }
+
+        CategoryPropertyCollector collector = new CategoryPropertyCollector(ipsProject);
+        collector.start(contextType);
+
+        Collections.sort(collector.properties, new ProductCmptPropertyComparator(contextType));
+
+        return collector.properties;
     }
 
     @Override
@@ -465,6 +540,119 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(XML_TAG_NAME);
+    }
+
+    /**
+     * {@link Comparator} that can be used to sort product component properties according to the
+     * reference list stored in the {@link IProductCmptType}, with properties belonging to
+     * supertypes being sorted towards the beginning of the list by default.
+     */
+    static class ProductCmptPropertyComparator implements Comparator<IProductCmptProperty> {
+
+        private final IProductCmptType productCmptType;
+
+        ProductCmptPropertyComparator(IProductCmptType productCmptType) {
+            this.productCmptType = productCmptType;
+        }
+
+        @Override
+        public int compare(IProductCmptProperty property1, IProductCmptProperty property2) {
+            // First, try to sort properties of the supertype hierarchy to the top
+            int subtypeCompare = compareSubtypeRelationship(property1, property2);
+
+            // If the indices are equal, compare the indices of the properties in the reference list
+            return subtypeCompare != 0 ? subtypeCompare : comparePropertyIndices(property1, property2);
+        }
+
+        /**
+         * Compares the provided product component types according to their subtype/supertype
+         * relationship.
+         * <p>
+         * Subtypes are sorted towards the end.
+         */
+        private int compareSubtypeRelationship(IProductCmptProperty property1, IProductCmptProperty property2) {
+            // Search the product component types the properties belong to
+            IProductCmptType productCmptType1;
+            IProductCmptType productCmptType2;
+            try {
+                productCmptType1 = property1.findProductCmptType(productCmptType.getIpsProject());
+                productCmptType2 = property2.findProductCmptType(productCmptType.getIpsProject());
+            } catch (CoreException e) {
+                // Consider elements equal if the product component types cannot be found
+                IpsPlugin.log(e);
+                return 0;
+            }
+
+            // Consider elements equal if the product component types cannot be found
+            if (productCmptType1 == null || productCmptType2 == null) {
+                return 0;
+            }
+
+            // Consider elements equal if both properties belong to the same product component type
+            if (productCmptType1.equals(productCmptType2)) {
+                return 0;
+            }
+
+            // Sort supertypes towards the beginning
+            try {
+                if (productCmptType1.isSubtypeOf(productCmptType2, productCmptType.getIpsProject())) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            } catch (CoreException e) {
+                // Consider elements equal if it the subtype relationship cannot be determined
+                return 0;
+            }
+        }
+
+        /**
+         * Compares the indices of the given product component properties in the list of property
+         * references.
+         * <p>
+         * Properties whose indices are greater are sorted towards the end.
+         */
+        private int comparePropertyIndices(IProductCmptProperty property1, IProductCmptProperty property2) {
+            IProductCmptType contextType = null;
+            try {
+                contextType = property1.findProductCmptType(property1.getIpsProject());
+            } catch (CoreException e) {
+                /*
+                 * Consider the properties equal if the product component type containing the
+                 * references cannot be found.
+                 */
+                IpsPlugin.log(e);
+                return 0;
+            }
+
+            /*
+             * Consider the properties equal if the product component type containing the references
+             * cannot be found.
+             */
+            if (contextType == null) {
+                return 0;
+            }
+
+            int index1 = ((ProductCmptType)contextType).getReferencedPropertyIndex(property1);
+            int index2 = ((ProductCmptType)contextType).getReferencedPropertyIndex(property2);
+
+            // If no reference exists for a property, it is sorted towards the end
+            if (index1 == -1) {
+                index1 = Integer.MAX_VALUE;
+            }
+            if (index2 == -1) {
+                index2 = Integer.MAX_VALUE;
+            }
+
+            if (index1 == index2) {
+                return 0;
+            } else if (index1 < index2) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+
     }
 
     /**
