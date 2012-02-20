@@ -611,10 +611,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
         IIpsObject ipsObject = file.getIpsObject();
         MultiStatus newStatus = createInitialMultiStatus();
-        if (ipsObject.isValid(ipsProject)) {
-            // since FIPS 3.6.1 (FIPS-790) we only build IPS objects if they are valid
-            applyBuildCommand(ipsArtefactBuilderSet, newStatus, new BuildArtefactBuildCommand(file), monitor);
-        }
+        applyBuildCommand(ipsArtefactBuilderSet, newStatus, new BuildArtefactBuildCommand(file), monitor);
         if (!newStatus.isOK()) {
             fillMultiStatusWithMessageList(newStatus, ipsObject.validate(ipsProject));
             buildStatus.add(newStatus);
