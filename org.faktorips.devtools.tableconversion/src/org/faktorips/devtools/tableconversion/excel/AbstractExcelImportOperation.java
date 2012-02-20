@@ -17,10 +17,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.tableconversion.AbstractTableImportOperation;
 import org.faktorips.util.message.MessageList;
@@ -32,9 +33,9 @@ import org.faktorips.util.message.MessageList;
  */
 abstract class AbstractExcelImportOperation extends AbstractTableImportOperation {
 
-    protected HSSFWorkbook workbook;
+    protected Workbook workbook;
 
-    protected HSSFSheet sheet;
+    protected Sheet sheet;
 
     protected AbstractExcelImportOperation(String filename, ExcelTableFormat format, String nullRepresentationString,
             boolean ignoreColumnHeaderRow, MessageList messageList, boolean importIntoExisting) {
@@ -44,23 +45,23 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
 
     protected abstract void initDatatypes();
 
-    private HSSFWorkbook getWorkbook() throws IOException {
+    private Workbook getWorkbook() throws IOException {
         File importFile = new File(sourceFile);
         FileInputStream fis = null;
-        HSSFWorkbook workbook = null;
+        Workbook workbook = null;
         fis = new FileInputStream(importFile);
         workbook = new HSSFWorkbook(fis);
         fis.close();
         return workbook;
     }
 
-    protected String readCell(HSSFCell cell, Datatype datatype) {
-        if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-            if (HSSFDateUtil.isCellDateFormatted(cell)) {
+    protected String readCell(Cell cell, Datatype datatype) {
+        if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+            if (DateUtil.isCellDateFormatted(cell)) {
                 return format.getIpsValue(cell.getDateCellValue(), datatype, messageList);
             }
             return format.getIpsValue(new Double(cell.getNumericCellValue()), datatype, messageList);
-        } else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
+        } else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
             return format.getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, messageList);
         } else {
             String value = cell.getStringCellValue();

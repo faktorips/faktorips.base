@@ -208,7 +208,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             }
             int numberOfCells = sheetRow.getLastCellNum();
             String[] convertedLine = new String[numberOfCells];
-            for (short j = 0; j < numberOfCells; j++) {
+            for (int j = 0; j < numberOfCells; j++) {
                 HSSFCell cell = sheetRow.getCell(j);
                 String cellString = readCell(cell, datatypes[j], ml, nullRepresentation);
                 convertedLine[j] = cellString;

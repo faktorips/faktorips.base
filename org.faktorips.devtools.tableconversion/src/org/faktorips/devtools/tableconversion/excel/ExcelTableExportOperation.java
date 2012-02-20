@@ -124,7 +124,7 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
         }
         HSSFRow headerRow = sheet.createRow(0);
         for (int i = 0; i < columns.length; i++) {
-            headerRow.createCell((short)i).setCellValue(columns[i].getName());
+            headerRow.createCell(i).setCellValue(columns[i].getName());
         }
     }
 
@@ -159,7 +159,7 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
         for (int i = 0; i < contentRows.length; i++) {
             HSSFRow sheetRow = sheet.createRow(i + offset);
             for (int j = 0; j < contents.getNumOfColumns(); j++) {
-                HSSFCell cell = sheetRow.createCell((short)j);
+                HSSFCell cell = sheetRow.createCell(j);
                 fillCell(cell, contentRows[i].getValue(j), datatypes[j]);
             }
             if (monitor.isCanceled()) {

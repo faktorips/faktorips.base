@@ -16,9 +16,9 @@ package org.faktorips.devtools.tableconversion.excel;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -96,12 +96,12 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
         }
     }
 
-    private int getNumberOfExcelRows(HSSFSheet sheet) {
+    private int getNumberOfExcelRows(Sheet sheet) {
         int numberRows = 0;
         // Row 0 is the header if ignoreColumnHeaderRow is true, otherwise row 0 contains data.
         int startRow = ignoreColumnHeaderRow ? 1 : 0;
         for (int i = startRow;; i++) {
-            HSSFRow sheetRow = sheet.getRow(i);
+            Row sheetRow = sheet.getRow(i);
             if (sheetRow == null) { // No more rows.
                 break;
             }
@@ -110,7 +110,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
         return numberRows;
     }
 
-    private void fillEnum(IEnumValueContainer valueContainer, HSSFSheet sheet, IProgressMonitor monitor)
+    private void fillEnum(IEnumValueContainer valueContainer, Sheet sheet, IProgressMonitor monitor)
             throws CoreException {
 
         int startRow = ignoreColumnHeaderRow ? 1 : 0;
@@ -118,14 +118,14 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
         int expectedFields = enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType
                 .isCapableOfContainingValues());
         for (int i = startRow;; i++) {
-            HSSFRow sheetRow = sheet.getRow(i);
+            Row sheetRow = sheet.getRow(i);
             if (sheetRow == null) {
                 // No more rows, we are finished whit this sheet.
                 break;
             }
             IEnumValue enumValue = valueContainer.newEnumValue();
-            for (short j = 0; j < expectedFields; j++) {
-                HSSFCell cell = sheetRow.getCell(j);
+            for (int j = 0; j < expectedFields; j++) {
+                Cell cell = sheetRow.getCell(j);
                 IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValues().get(j);
                 if (cell == null) {
                     Object[] objects = new Object[3];
