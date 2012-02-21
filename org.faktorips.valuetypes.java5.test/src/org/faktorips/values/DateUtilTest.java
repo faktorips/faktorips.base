@@ -87,8 +87,17 @@ public class DateUtilTest {
         assertEquals(31, DateUtil.getDifferenceInYears(start, end));
         start.set(1980, 1, 29);
         assertEquals(32, DateUtil.getDifferenceInYears(start, end));
+        start.set(1979, 1, 28);
+        assertEquals(33, DateUtil.getDifferenceInYears(start, end));
+        start.set(1979, 2, 1);
+        assertEquals(32, DateUtil.getDifferenceInYears(start, end));
         end.set(1960, 10, 11);
-        assertEquals(19, DateUtil.getDifferenceInYears(start, end));
+        assertEquals(18, DateUtil.getDifferenceInYears(start, end));
+        start.set(1980, 1, 29);
+        end.set(2011, 1, 28);
+        assertEquals(30, DateUtil.getDifferenceInYears(start, end));
+        end.set(2011, 2, 1);
+        assertEquals(31, DateUtil.getDifferenceInYears(start, end));
 
         start = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         end = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
