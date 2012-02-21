@@ -769,9 +769,9 @@ checkoutPluginbuilderPartsAndDevtarget()
   # checkout devtarget
   checkoutModule $DEVTARGET_PLUGIN_PATH $_FETCH_TAG $DEVTARGET_PLUGIN_NAME $BRANCH
   if [ "$COPY_DROPINS_FROM" ] ; then
-    ADDITIONAL_DROPINS = $DEVTARGET_PLUGIN_PATH/eclipse/dropins/additionals
+    ADDITIONAL_DROPINS=$DEVTARGET_PLUGIN_PATH/eclipse/dropins/additionals
     mkdir $ADDITIONAL_DROPINS
-  	cp -r $COPY_FIPS_FROM $ADDITIONAL_DROPINS/
+  	cp -r $COPY_DROPINS_FROM $ADDITIONAL_DROPINS/
   fi
   
   # special case for custom build aok
