@@ -20,6 +20,7 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.swt.layout.GridData;
@@ -147,6 +148,32 @@ public class PropertyVisibleControllerTest {
         assertFalse(controller.addPropertyControlMapping(outerControl, property, control1));
         assertTrue(controller.addPropertyControlMapping(outerControl, property, control2));
         assertTrue(controller.addPropertyControlMapping(outerControl, property, control1, control2));
+    }
+
+    @Test
+    public void testAddPropertyControlMapping_settingVisibleState() {
+        IProductCmptProperty property = mock(IProductCmptProperty.class);
+        Control control1 = mockControl(null, new GridData());
+        Control control2 = mockControl(null, new GridData());
+
+        IProductCmptPropertyFilter filter = mock(IProductCmptPropertyFilter.class);
+        when(filter.isFiltered(property)).thenReturn(true);
+        controller.addFilter(filter);
+
+        controller.addPropertyControlMapping(outerControl, property, control1);
+        verify(control1).setVisible(false);
+
+        control1 = mockControl(null, new GridData());
+
+        controller.addPropertyControlMapping(outerControl, property, control2);
+        verifyZeroInteractions(control1);
+        verify(control2).setVisible(false);
+
+        control2 = mockControl(null, new GridData());
+
+        controller.addPropertyControlMapping(outerControl, property, control1, control2);
+        verify(control1).setVisible(false);
+        verify(control2).setVisible(false);
     }
 
     @Test(expected = IllegalArgumentException.class)

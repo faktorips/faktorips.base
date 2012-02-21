@@ -66,19 +66,23 @@ public class PropertyVisibleController implements IPropertyVisibleController {
     private void updateControlVisibility() {
         for (Control containerControl : propertyControlMappings.keySet()) {
             for (IProductCmptProperty property : propertyControlMappings.get(containerControl).keySet()) {
-                boolean filtered = false;
-                for (IProductCmptPropertyFilter filter : filters) {
-                    filtered = filter.isFiltered(property);
-                    if (filtered) {
-                        break;
-                    }
-                }
-                for (Control control : propertyControlMappings.get(containerControl).get(property)) {
-                    control.setVisible(!filtered);
-                    Object layoutData = control.getLayoutData();
-                    ((GridData)layoutData).exclude = filtered;
-                }
+                updateControlVisibility(containerControl, property);
             }
+        }
+    }
+
+    private void updateControlVisibility(Control containerControl, IProductCmptProperty property) {
+        boolean filtered = false;
+        for (IProductCmptPropertyFilter filter : filters) {
+            filtered = filter.isFiltered(property);
+            if (filtered) {
+                break;
+            }
+        }
+        for (Control control : propertyControlMappings.get(containerControl).get(property)) {
+            control.setVisible(!filtered);
+            Object layoutData = control.getLayoutData();
+            ((GridData)layoutData).exclude = filtered;
         }
     }
 
@@ -128,6 +132,7 @@ public class PropertyVisibleController implements IPropertyVisibleController {
 
         // Create the mapping
         propertyMappings.put(property, controlSet);
+        updateControlVisibility(containerControl, property);
         return true;
     }
 
