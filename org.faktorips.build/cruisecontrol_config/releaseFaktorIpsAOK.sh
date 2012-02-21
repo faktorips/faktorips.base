@@ -148,3 +148,6 @@ fi
 #mv org.faktorips.runtime.java5_3.5.0.rfinal.zip /var/www/update.faktorzehn.org/faktorips/aok/downloads/faktorips-3.5/
 #cd ..
 #rm -r runtime
+
+
+#./releaseFaktorIps.sh -version 3.6.0.rfinal -skipTest -forceBuild -skipTaggingCvs -buildProduct de.aoksystems.omc.faktorips.core  -customBuild aok -skipPublish -addDropins /home/ortmann2/tmp_fips_release/checkout_release/org.faktorips.devtarget.galileo/eclipse/deltapack/eclipse -devtarget org.faktorips.devtarget.galileo
