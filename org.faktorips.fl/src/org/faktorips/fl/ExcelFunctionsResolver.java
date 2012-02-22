@@ -37,6 +37,19 @@ import org.faktorips.fl.functions.WholeNumber;
  */
 public class ExcelFunctionsResolver extends LocalizedFunctionsResolver {
 
+    public static final String MIN = "min";
+    public static final String MAX = "max";
+    public static final String ISEMPTY = "isempty";
+    public static final String WHOLENUMBER = "wholenumber";
+    public static final String ROUNDDOWN = "rounddown";
+    public static final String ROUNDUP = "roundup";
+    public static final String ROUND = "round";
+    public static final String IF = "if";
+    public static final String ABS = "abs";
+    public static final String NOT = "not";
+    public static final String OR = "or";
+    public static final String AND = "and";
+
     /**
      * Creates a new resolver that contains a set of functions that are similiar by name and
      * argument list as those provided by Microsoft's Excel.
@@ -45,27 +58,27 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver {
      */
     public ExcelFunctionsResolver(Locale locale) {
         super(locale);
-        add(new Abs(getFctName("abs"), getFctDescription("abs"))); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new If(getFctName("if"), getFctDescription("if"))); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new Or(getFctName("or"), getFctDescription("or"))); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new And(getFctName("and"), getFctDescription("and"))); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new Round(getFctName("round"), getFctDescription("round"), BigDecimal.ROUND_HALF_UP)); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new Round(getFctName("roundup"), getFctDescription("roundup"), BigDecimal.ROUND_UP)); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new Round(getFctName("rounddown"), getFctDescription("rounddown"), BigDecimal.ROUND_UP)); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new WholeNumber(getFctName("wholenumber"), getFctDescription("wholenumber"))); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new IsEmpty(getFctName("isempty"), getFctDescription("isempty"))); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new Not(getFctName("not"), getFctDescription("not"))); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new NotBoolean(getFctName("not"), getFctDescription("not"))); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new MinMaxMoney(getFctName("max"), getFctDescription("max"), true)); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new MinMaxMoney(getFctName("min"), getFctDescription("min"), false)); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new MinMaxDecimal(getFctName("max"), getFctDescription("max"), true)); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new MinMaxDecimal(getFctName("min"), getFctDescription("min"), false)); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new MinMaxInt(getFctName("max"), getFctDescription("max"), true)); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new MinMaxInt(getFctName("min"), getFctDescription("min"), false)); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new MinMaxLong(getFctName("max"), getFctDescription("max"), true)); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new MinMaxLong(getFctName("min"), getFctDescription("min"), false)); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new MinMaxDouble(getFctName("max"), getFctDescription("max"), true)); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new MinMaxDouble(getFctName("min"), getFctDescription("min"), false)); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new Abs(getFctName(ABS), getFctDescription(ABS)));
+        add(new If(getFctName(IF), getFctDescription(IF)));
+        add(new Or(getFctName(OR), getFctDescription(OR)));
+        add(new And(getFctName(AND), getFctDescription(AND)));
+        add(new Round(getFctName(ROUND), getFctDescription(ROUND), BigDecimal.ROUND_HALF_UP));
+        add(new Round(getFctName(ROUNDUP), getFctDescription(ROUNDUP), BigDecimal.ROUND_UP));
+        add(new Round(getFctName(ROUNDDOWN), getFctDescription(ROUNDDOWN), BigDecimal.ROUND_UP));
+        add(new WholeNumber(getFctName(WHOLENUMBER), getFctDescription(WHOLENUMBER)));
+        add(new IsEmpty(getFctName(ISEMPTY), getFctDescription(ISEMPTY)));
+        add(new Not(getFctName(NOT), getFctDescription(NOT)));
+        add(new NotBoolean(getFctName(NOT), getFctDescription(NOT)));
+        add(new MinMaxMoney(getFctName(MAX), getFctDescription(MAX), true));
+        add(new MinMaxMoney(getFctName(MIN), getFctDescription(MIN), false));
+        add(new MinMaxDecimal(getFctName(MAX), getFctDescription(MAX), true));
+        add(new MinMaxDecimal(getFctName(MIN), getFctDescription(MIN), false));
+        add(new MinMaxInt(getFctName(MAX), getFctDescription(MAX), true));
+        add(new MinMaxInt(getFctName(MIN), getFctDescription(MIN), false));
+        add(new MinMaxLong(getFctName(MAX), getFctDescription(MAX), true));
+        add(new MinMaxLong(getFctName(MIN), getFctDescription(MIN), false));
+        add(new MinMaxDouble(getFctName(MAX), getFctDescription(MAX), true));
+        add(new MinMaxDouble(getFctName(MIN), getFctDescription(MIN), false));
     }
 
     @Override

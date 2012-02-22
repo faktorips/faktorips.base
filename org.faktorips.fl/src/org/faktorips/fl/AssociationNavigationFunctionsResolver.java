@@ -23,6 +23,8 @@ import org.faktorips.fl.functions.Exists;
  */
 public class AssociationNavigationFunctionsResolver extends LocalizedFunctionsResolver {
 
+    public static final String EXISTS = "exists";
+
     /**
      * Creates a new resolver that contains a set of functions that support association navigation.
      * 
@@ -30,12 +32,12 @@ public class AssociationNavigationFunctionsResolver extends LocalizedFunctionsRe
      */
     public AssociationNavigationFunctionsResolver(Locale locale) {
         super(locale);
-        add(new Exists(getFctName("exists"), getFctDescription("exists"))); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new Exists(getFctName(EXISTS), getFctDescription(EXISTS)));
     }
 
     @Override
     public String toString() {
-        return "AssociationNavigationFunctionsResolver"; //$NON-NLS-1$
+        return AssociationNavigationFunctionsResolver.class.getSimpleName();
     }
 
     @Override
