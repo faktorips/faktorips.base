@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.table;
 import java.util.Arrays;
 
 import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -35,13 +34,6 @@ public class ComboCellEditor extends IpsCellEditor {
     public ComboCellEditor(Combo comboControl) {
         super(comboControl);
         this.comboControl = comboControl;
-    }
-
-    /**
-     * Does NOT add a keylistener to the combo control, as up/down arrows are needed to navigate the
-     * list of items inside the combo. {@inheritDoc}
-     */
-    protected void initKeyListener(Control control) {
     }
 
     /**
