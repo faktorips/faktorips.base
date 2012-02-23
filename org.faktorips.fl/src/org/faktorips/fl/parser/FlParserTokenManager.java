@@ -749,13 +749,9 @@ public class FlParserTokenManager implements FlParserConstants {
                             jjCheckNAddStates(42, 45);
                             break;
                         case 21:
-                            if ((0x10000000100000L & l) == 0L) {
-                                break;
-                            }
-                            if (kind > 15) {
+                            if ((0x10000000100000L & l) != 0L && kind > 15) {
                                 kind = 15;
                             }
-                            jjCheckNAddStates(42, 45);
                             break;
                         case 22:
                             if ((0x100000001000L & l) != 0L) {
@@ -798,13 +794,9 @@ public class FlParserTokenManager implements FlParserConstants {
                             }
                             break;
                         case 31:
-                            if (curChar != 93) {
-                                break;
-                            }
-                            if (kind > 15) {
+                            if (curChar == 93 && kind > 15) {
                                 kind = 15;
                             }
-                            jjCheckNAddStates(42, 45);
                             break;
                         case 33:
                             if ((0xffffffffefffffffL & l) != 0L) {
