@@ -96,8 +96,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
         compareExpr();
         label_1: while (true) {
             switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
-                case 19:
                 case 20:
+                case 21:
                     ;
                     break;
                 default:
@@ -105,8 +105,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                     break label_1;
             }
             switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
-                case 19:
-                    jj_consume_token(19);
+                case 20:
+                    jj_consume_token(20);
                     ASTEQNode jjtn001 = new ASTEQNode(this, JJTEQNODE);
                     boolean jjtc001 = true;
                     jjtree.openNodeScope(jjtn001);
@@ -144,8 +144,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                         }
                     }
                     break;
-                case 20:
-                    jj_consume_token(20);
+                case 21:
+                    jj_consume_token(21);
                     ASTNotEQNode jjtn002 = new ASTNotEQNode(this, JJTNOTEQNODE);
                     boolean jjtc002 = true;
                     jjtree.openNodeScope(jjtn002);
@@ -195,10 +195,10 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
         addExpr();
         label_2: while (true) {
             switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
-                case 21:
                 case 22:
                 case 23:
                 case 24:
+                case 25:
                     ;
                     break;
                 default:
@@ -206,8 +206,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                     break label_2;
             }
             switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
-                case 21:
-                    jj_consume_token(21);
+                case 22:
+                    jj_consume_token(22);
                     ASTLTNode jjtn001 = new ASTLTNode(this, JJTLTNODE);
                     boolean jjtc001 = true;
                     jjtree.openNodeScope(jjtn001);
@@ -245,8 +245,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                         }
                     }
                     break;
-                case 22:
-                    jj_consume_token(22);
+                case 23:
+                    jj_consume_token(23);
                     ASTGTNode jjtn002 = new ASTGTNode(this, JJTGTNODE);
                     boolean jjtc002 = true;
                     jjtree.openNodeScope(jjtn002);
@@ -284,8 +284,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                         }
                     }
                     break;
-                case 23:
-                    jj_consume_token(23);
+                case 24:
+                    jj_consume_token(24);
                     ASTLENode jjtn003 = new ASTLENode(this, JJTLENODE);
                     boolean jjtc003 = true;
                     jjtree.openNodeScope(jjtn003);
@@ -323,8 +323,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                         }
                     }
                     break;
-                case 24:
-                    jj_consume_token(24);
+                case 25:
+                    jj_consume_token(25);
                     ASTGENode jjtn004 = new ASTGENode(this, JJTGENODE);
                     boolean jjtc004 = true;
                     jjtree.openNodeScope(jjtn004);
@@ -374,8 +374,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
         multExpr();
         label_3: while (true) {
             switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
-                case 25:
                 case 26:
+                case 27:
                     ;
                     break;
                 default:
@@ -383,8 +383,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                     break label_3;
             }
             switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
-                case 25:
-                    jj_consume_token(25);
+                case 26:
+                    jj_consume_token(26);
                     ASTAddNode jjtn001 = new ASTAddNode(this, JJTADDNODE);
                     boolean jjtc001 = true;
                     jjtree.openNodeScope(jjtn001);
@@ -422,8 +422,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                         }
                     }
                     break;
-                case 26:
-                    jj_consume_token(26);
+                case 27:
+                    jj_consume_token(27);
                     ASTSubNode jjtn002 = new ASTSubNode(this, JJTSUBNODE);
                     boolean jjtc002 = true;
                     jjtree.openNodeScope(jjtn002);
@@ -473,8 +473,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
         unaryExpr();
         label_4: while (true) {
             switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
-                case 27:
                 case 28:
+                case 29:
                     ;
                     break;
                 default:
@@ -482,8 +482,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                     break label_4;
             }
             switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
-                case 27:
-                    jj_consume_token(27);
+                case 28:
+                    jj_consume_token(28);
                     ASTMultNode jjtn001 = new ASTMultNode(this, JJTMULTNODE);
                     boolean jjtc001 = true;
                     jjtree.openNodeScope(jjtn001);
@@ -521,8 +521,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                         }
                     }
                     break;
-                case 28:
-                    jj_consume_token(28);
+                case 29:
+                    jj_consume_token(29);
                     ASTDivNode jjtn002 = new ASTDivNode(this, JJTDIVNODE);
                     boolean jjtc002 = true;
                     jjtree.openNodeScope(jjtn002);
@@ -570,12 +570,12 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
 
     final public void unaryExpr() throws ParseException {
         switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
-            case 25:
             case 26:
-            case 29:
+            case 27:
+            case 30:
                 switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
-                    case 25:
-                        jj_consume_token(25);
+                    case 26:
+                        jj_consume_token(26);
                         ASTPlusNode jjtn001 = new ASTPlusNode(this, JJTPLUSNODE);
                         boolean jjtc001 = true;
                         jjtree.openNodeScope(jjtn001);
@@ -613,8 +613,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                             }
                         }
                         break;
-                    case 26:
-                        jj_consume_token(26);
+                    case 27:
+                        jj_consume_token(27);
                         ASTMinusNode jjtn002 = new ASTMinusNode(this, JJTMINUSNODE);
                         boolean jjtc002 = true;
                         jjtree.openNodeScope(jjtn002);
@@ -652,8 +652,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                             }
                         }
                         break;
-                    case 29:
-                        jj_consume_token(29);
+                    case 30:
+                        jj_consume_token(30);
                         ASTNotNode jjtn003 = new ASTNotNode(this, JJTNOTNODE);
                         boolean jjtc003 = true;
                         jjtree.openNodeScope(jjtn003);
@@ -704,7 +704,7 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
             case MONEY_LITERAL:
             case NULL_LITERAL:
             case IDENTIFIER:
-            case 30:
+            case 31:
                 primitiveExpr();
                 break;
             default:
@@ -716,14 +716,14 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
 
     final public void primitiveExpr() throws ParseException {
         switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
-            case 30:
-                jj_consume_token(30);
+            case 31:
+                jj_consume_token(31);
                 expr();
                 ASTParenthesisNode jjtn001 = new ASTParenthesisNode(this, JJTPARENTHESISNODE);
                 boolean jjtc001 = true;
                 jjtree.openNodeScope(jjtn001);
                 try {
-                    jj_consume_token(31);
+                    jj_consume_token(32);
                 } finally {
                     if (jjtc001) {
                         jjtree.closeNodeScope(jjtn001, 1);
@@ -761,7 +761,7 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
         jjtree.openNodeScope(jjtn000);
         try {
             jj_consume_token(IDENTIFIER);
-            jj_consume_token(30);
+            jj_consume_token(31);
             switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
                 case BOOLEAN_LITERAL:
                 case INTEGER_LITERAL:
@@ -770,17 +770,17 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                 case MONEY_LITERAL:
                 case NULL_LITERAL:
                 case IDENTIFIER:
-                case 25:
                 case 26:
-                case 29:
+                case 27:
                 case 30:
+                case 31:
                     argumentList();
                     break;
                 default:
                     jj_la1[12] = jj_gen;
                     ;
             }
-            jj_consume_token(31);
+            jj_consume_token(32);
         } catch (Throwable jjte000) {
             if (jjtc000) {
                 jjtree.clearNodeScope(jjtn000);
@@ -823,14 +823,14 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
             expr();
             label_5: while (true) {
                 switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
-                    case 32:
+                    case 33:
                         ;
                         break;
                     default:
                         jj_la1[13] = jj_gen;
                         break label_5;
                 }
-                jj_consume_token(32);
+                jj_consume_token(33);
                 expr();
             }
         } catch (Throwable jjte000) {
@@ -982,7 +982,7 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
         if (jj_scan_token(IDENTIFIER)) {
             return true;
         }
-        if (jj_scan_token(30)) {
+        if (jj_scan_token(31)) {
             return true;
         }
         return false;
@@ -1005,12 +1005,12 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
     }
 
     private static void jj_la1_0() {
-        jj_la1_0 = new int[] { 0x180000, 0x180000, 0x1e00000, 0x1e00000, 0x6000000, 0x6000000, 0x18000000, 0x18000000,
-                0x26000000, 0x6600db80, 0x40000000, 0xdb80, 0x6600db80, 0x0, 0xdb80, };
+        jj_la1_0 = new int[] { 0x300000, 0x300000, 0x3c00000, 0x3c00000, 0xc000000, 0xc000000, 0x30000000, 0x30000000,
+                0x4c000000, 0xcc00db80, 0x80000000, 0xdb80, 0xcc00db80, 0x0, 0xdb80, };
     }
 
     private static void jj_la1_1() {
-        jj_la1_1 = new int[] { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0, };
+        jj_la1_1 = new int[] { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2, 0x0, };
     }
 
     final private JJCalls[] jj_2_rtns = new JJCalls[1];
@@ -1244,8 +1244,8 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
 
     public ParseException generateParseException() {
         jj_expentries.removeAllElements();
-        boolean[] la1tokens = new boolean[33];
-        for (int i = 0; i < 33; i++) {
+        boolean[] la1tokens = new boolean[34];
+        for (int i = 0; i < 34; i++) {
             la1tokens[i] = false;
         }
         if (jj_kind >= 0) {
@@ -1264,7 +1264,7 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                 }
             }
         }
-        for (int i = 0; i < 33; i++) {
+        for (int i = 0; i < 34; i++) {
             if (la1tokens[i]) {
                 jj_expentry = new int[1];
                 jj_expentry[0] = i;
