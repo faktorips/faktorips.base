@@ -16,9 +16,7 @@ package org.faktorips.devtools.core.ui.internal;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -30,7 +28,6 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.IProductCmptPropertyFilter;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -86,31 +83,6 @@ public class PropertyVisibleControllerTest {
         assertTrue(p1C2LayoutData.exclude);
         assertFalse(p2C1LayoutData.exclude);
         assertFalse(p2C2LayoutData.exclude);
-    }
-
-    /**
-     * TODO JN: Es ist mit Alex zu klären, was dieser Test eigentlich testen soll. Im Moment
-     * funktioniert er nicht mehr (seit dem addPropertyControlMapping direkt ein updateVisible
-     * aufruft)
-     */
-    @Ignore
-    @Test
-    public void testUpdateUI_PropertyControlMappingModified() {
-        IProductCmptProperty property = mock(IProductCmptProperty.class);
-        Control c1 = mockControl(null, new GridData());
-        Control c2 = mockControl(null, new GridData());
-        IProductCmptPropertyFilter filter = mock(IProductCmptPropertyFilter.class);
-
-        controller.addPropertyControlMapping(outerControl, property, c1);
-        controller.addPropertyControlMapping(outerControl, property, c2);
-        controller.addFilter(filter);
-
-        when(filter.isFiltered(property)).thenReturn(true);
-
-        controller.updateUI();
-
-        verify(c2).setVisible(false);
-        verify(c1, never()).setVisible(anyBoolean());
     }
 
     @Test
