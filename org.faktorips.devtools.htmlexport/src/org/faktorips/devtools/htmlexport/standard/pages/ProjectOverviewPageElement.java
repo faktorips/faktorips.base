@@ -31,8 +31,8 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -134,7 +134,8 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         for (IIpsProject ipsProject : objectPath.getReferencedIpsProjects()) {
             referencedIpsProjectsName.add(ipsProject.getName());
         }
-        ListPageElement referencedProjects = new ListPageElement(Arrays.asList(new PageElementUtils().createTextPageElements(referencedIpsProjectsName)));
+        ListPageElement referencedProjects = new ListPageElement(Arrays.asList(new PageElementUtils()
+                .createTextPageElements(referencedIpsProjectsName)));
         return wrapper.addPageElements(referencedProjects);
     }
 
@@ -165,7 +166,8 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
                     .getMessage("ProjectOverviewPageElement_noReferencingProjects"))); //$NON-NLS-1$
         }
 
-        ListPageElement referencingProjects = new ListPageElement(Arrays.asList(new PageElementUtils().createTextPageElements(referencingIpsProjectsName)));
+        ListPageElement referencingProjects = new ListPageElement(Arrays.asList(new PageElementUtils()
+                .createTextPageElements(referencingIpsProjectsName)));
         return wrapper.addPageElements(referencingProjects);
     }
 
@@ -182,7 +184,8 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         for (IIpsSrcFolderEntry folderEntry : objectPath.getSourceFolderEntries()) {
             sourceFolder.add(folderEntry.getSourceFolder().getName());
         }
-        ListPageElement referencedProjects = new ListPageElement(Arrays.asList(new PageElementUtils().createTextPageElements(sourceFolder)));
+        ListPageElement referencedProjects = new ListPageElement(Arrays.asList(new PageElementUtils()
+                .createTextPageElements(sourceFolder)));
         return wrapper.addPageElements(referencedProjects);
     }
 
@@ -230,5 +233,10 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
      */
     protected DocumentationContext getContext() {
         return context;
+    }
+
+    @Override
+    public boolean isContentUnit() {
+        return true;
     }
 }

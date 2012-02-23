@@ -23,9 +23,9 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
-import org.faktorips.devtools.htmlexport.helper.path.IHtmlPath;
 import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
+import org.faktorips.devtools.htmlexport.helper.path.IHtmlPath;
+import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
 
 /**
  * Utility for generating html
@@ -44,7 +44,7 @@ public class HtmlUtil {
     public String createDocFrame(String title, String colDefinition, String rowsDefinition) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(createHtmlHead(title, null).replaceFirst("<body>", "")); //$NON-NLS-1$ //$NON-NLS-2$
+        builder.append(createHtmlHead(title, null, false).replaceFirst("<body>", "")); //$NON-NLS-1$ //$NON-NLS-2$
         builder.append("<frameset cols=\""); //$NON-NLS-1$
         builder.append(colDefinition);
         builder.append("\"><frameset rows=\""); //$NON-NLS-1$
@@ -62,7 +62,7 @@ public class HtmlUtil {
      * @param title title of the page
      * @param stylePath relative path to the css-definitions
      */
-    public String createHtmlHead(String title, String stylePath) {
+    public String createHtmlHead(String title, String stylePath, boolean moveTitle) {
         StringBuilder builder = new StringBuilder();
 
         builder.append("<?xml version=\"1.0\" ?>\n"); //$NON-NLS-1$
@@ -78,7 +78,18 @@ public class HtmlUtil {
             builder.append("\" />"); //$NON-NLS-1$
         }
 
-        builder.append("</head><body>"); //$NON-NLS-1$
+        if (moveTitle) {
+            builder.append("\n<script type=\"text/javascript\">"); //$NON-NLS-1$
+            builder.append("\nfunction setWindowTitle() {"); //$NON-NLS-1$
+            builder.append("\n    parent.document.title=\""); //$NON-NLS-1$
+            builder.append(title);
+            builder.append("\";\n}\n</script>\n"); //$NON-NLS-1$
+        }
+        builder.append("</head><body"); //$NON-NLS-1$
+        if (moveTitle) {
+            builder.append(" onload=\"setWindowTitle();\""); //$NON-NLS-1$
+        }
+        builder.append(">"); //$NON-NLS-1$
 
         return builder.toString();
     }
