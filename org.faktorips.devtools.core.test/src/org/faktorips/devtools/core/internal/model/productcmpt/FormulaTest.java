@@ -281,6 +281,12 @@ public class FormulaTest extends AbstractIpsPluginTest {
         enumtypes = formula.getEnumDatatypesAllowedInFormula();
         assertEquals(1, enumtypes.length);
         assertEquals(testType, enumtypes[0]);
+
+        formula.setExpression("UND(EXISTIERT(policy.PolicyPart[\"My.Part\"].Address);policy.PolicyPart[\"My.Part\"].Address.type="
+                + testType.getName() + ".1)");
+        enumtypes = formula.getEnumDatatypesAllowedInFormula();
+        assertEquals(1, enumtypes.length);
+        assertEquals(testType, enumtypes[0]);
     }
 
     @Test
