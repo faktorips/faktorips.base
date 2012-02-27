@@ -20,7 +20,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.faktorips.devtools.core.IpsPlugin;
 
@@ -41,13 +40,13 @@ public class EclipseIOUtil {
      * {@link IWorkspace#validateEdit(IFile[], Object)} method before writing to the file and gives
      * a VCS the possibility to react for example by checking out the requested file.
      * <p>
-     * The method was introduced because of issue FIPS-754 
+     * The method was introduced because of issue FIPS-754
      * 
      * @param file The file you want to write to.
      * @param inputStream the input stream you want to write to the file
      * @param force whether you want to force the write
      * @param keepHistory keep the file history
-     * @param progressMonitor the progress monitor to visible the file writing status
+     * @param progressMonitor the progress monitor to visualize the file writing status
      * @throws CoreException In case of a core exception while writing to the file
      * 
      * @see IFile#setContents(InputStream, boolean, boolean, IProgressMonitor)
@@ -59,7 +58,7 @@ public class EclipseIOUtil {
             IProgressMonitor progressMonitor) throws CoreException {
         if (!file.isReadOnly()
                 || file.getWorkspace().validateEdit(new IFile[] { file }, IWorkspace.VALIDATE_PROMPT).isOK()) {
-            file.setContents(inputStream, force, keepHistory, new NullProgressMonitor());
+            file.setContents(inputStream, force, keepHistory, progressMonitor);
         } else {
             IpsPlugin.log(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
                     "Cannot write to file " + file.getFullPath() + ". Maybe it is locked or readonly.")); //$NON-NLS-1$ //$NON-NLS-2$
