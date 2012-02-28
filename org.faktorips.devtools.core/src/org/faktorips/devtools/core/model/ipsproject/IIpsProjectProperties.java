@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IFunctionResolverFactory;
-import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
@@ -425,16 +424,6 @@ public interface IIpsProjectProperties {
      * 
      */
     public void setResourcesPathExcludedFromTheProductDefiniton(Set<String> resourcesPathExcludedFromTheProductDefiniton);
-
-    /**
-     * Returns the assigned user group allowed for a question in the IPS project.
-     */
-    public EnumType getQuestionAssignedUserGroup();
-
-    /**
-     * Returns the question status allowed in the IPS project.
-     */
-    public EnumType getQuestionStatus();
 
     /**
      * Returns the persistence options for this IPS project, or <code>null</code> if the project
