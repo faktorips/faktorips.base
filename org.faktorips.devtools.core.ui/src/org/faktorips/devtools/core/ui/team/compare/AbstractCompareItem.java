@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.team.compare;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -31,8 +32,11 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator;
 
@@ -56,6 +60,7 @@ import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompar
  */
 public abstract class AbstractCompareItem implements IStreamContentAccessor, IStructureComparator, ITypedElement,
         IDocumentRange {
+
     protected static final String COLON_BLANK = ": "; //$NON-NLS-1$
     protected static final String COLON = ":"; //$NON-NLS-1$
     protected static final String BLANK = " "; //$NON-NLS-1$
@@ -112,7 +117,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
      * If this compareitem is the root of its structure, this document contains the string
      * representation of the <code>IIpsSrcfile</code> and the containes <code>IIpsObject</code>.
      */
-    private Document document;
+    private IDocument document;
 
     /**
      * String contents of this CompareItem (not including children). Used for displaying items in
@@ -217,21 +222,14 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     }
 
     /**
-     * This method is <em>not</em> called when comparing <code>AbstractCompareItem</code>s. The
-     * standard implementation of the <code>Differencer</code> calls this method to compare the
-     * leafs of structures by their content. The <code>StructureDiffViewer</code> (which is used in
-     * this compare viewer) subclasses <code>Differencer</code> and lets it use the
-     * <code>AbstractCompareItemCreator</code> method <code>getContents()</code> for comparing
-     * contents.
-     * <p>
-     * 
-     * @return null.
-     * 
-     * @see ProductCmptCompareItemCreator#getContents(Object, boolean)
+     * This method and the implementation of the interface {@link IStreamContentAccessor} should not
+     * be necessary because the content is received by {@link #getDocument()}. Because of a bug in
+     * eclipse 3.5 (and still 3.6 and 3.7) https://bugs.eclipse.org/bugs/show_bug.cgi?id=293926 we
+     * need to implement {@link IStreamContentAccessor} and return a non null value here.
      */
     @Override
     public InputStream getContents() throws CoreException {
-        return null;
+        return new ByteArrayInputStream(new byte[0]);
     }
 
     /**
@@ -278,29 +276,69 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     }
 
     /**
-     * Returns true if this compareitem and the given compareitem are equal in name,
-     * policycomponenttype and runtime id. Children are not included in the compare. {@inheritDoc}
+     * Equals if this and other compare item represents the same structural item.
+     * 
+     * @see IStructureComparator#equals(Object)
      */
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof AbstractCompareItem) {
-            if (isRoot() && ((AbstractCompareItem)o).isRoot()) {
-                return true;
-            }
-            AbstractCompareItem aci = (AbstractCompareItem)o;
-            return getContentStringWithoutWhiteSpace().equals(aci.getContentStringWithoutWhiteSpace());
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
         }
-        return false;
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        AbstractCompareItem other = (AbstractCompareItem)obj;
+        if (ipsElement == null) {
+            if (other.ipsElement != null) {
+                return false;
+            }
+        }
+        return isEqualIpsElementInStructure(ipsElement, other.ipsElement);
     }
 
-    @Override
-    public int hashCode() {
-        return getContentStringWithoutWhiteSpace().hashCode();
+    private boolean isEqualIpsElementInStructure(IIpsElement element1, IIpsElement element2) {
+        if (element1 == element2) {
+            return true;
+        } else if (element1 == null || element2 == null) {
+            return false;
+        } else if (element1.getClass() != element2.getClass()) {
+            return false;
+        } else if (element1 instanceof IIpsObject) {
+            IIpsObject object1 = (IIpsObject)element1;
+            IIpsObject object2 = (IIpsObject)element2;
+            // only compare type to allow compares of two different ips objects with each other
+            return object1.getIpsObjectType().equals(object2.getIpsObjectType());
+        } else if (element1 instanceof IIpsObjectPart) {
+            IIpsObjectPart part1 = (IIpsObjectPart)element1;
+            IIpsObjectPart part2 = (IIpsObjectPart)element2;
+            return isEqualIpsElementInStructure(part1.getParent(), part2.getParent())
+                    && part1.getId().equals(part2.getId());
+        } else {
+            return element1.getEnclosingResource().equals(element2.getEnclosingResource());
+        }
+
     }
 
     /**
      * {@inheritDoc}
+     * <p>
+     * This hashCode method is not very strong but there seems to be no way to improve with
+     * acceptable performance.
      */
+    @Override
+    public int hashCode() {
+        if (ipsElement instanceof IpsObjectPart) {
+            IpsObjectPart part = (IpsObjectPart)ipsElement;
+            return part.getId().hashCode();
+        } else {
+            return 0;
+        }
+    }
+
     @Override
     public Image getImage() {
         if (ipsElement != null) {
@@ -387,7 +425,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     }
 
     /**
-     * Inits the name, the contentString, and the contentStringWithoutWhitespace field of this
+     * Initializes the name, the contentString, and the contentStringWithoutWhitespace field of this
      * compare item and calls this method recursively on all its children.
      * 
      */

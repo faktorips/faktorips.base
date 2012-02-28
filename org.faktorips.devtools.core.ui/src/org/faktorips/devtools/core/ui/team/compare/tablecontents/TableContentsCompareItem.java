@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
@@ -31,6 +32,7 @@ import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
  * @author Stefan Widmaier
  */
 public class TableContentsCompareItem extends AbstractCompareItem {
+    private static final String IPSTABLECONTENTS_ELEMENT_TYPE = "ipstablecontentsElement"; //$NON-NLS-1$
     /**
      * Array containing the widths of all columns of the table counted in tabulators. The array has
      * a length of the tables' columnNumber plus one. The first entry defines the width of the
@@ -145,11 +147,18 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     }
 
     /**
-     * Returns "ipstablecontents". {@inheritDoc}
+     * For the root element we return the file extension. For all other elements we return the a
+     * constant that is also registered in the content merge viewer extension in attribute
+     * 'extensions'. This seems to be ugly because the attribute 'extensions' is documented as
+     * listing file name extensions, but JDT does the same for java elements.
      */
     @Override
     public String getType() {
-        return "ipstablecontents"; //$NON-NLS-1$
+        if (isRoot()) {
+            return IpsObjectType.TABLE_CONTENTS.getFileExtension();
+        } else {
+            return IPSTABLECONTENTS_ELEMENT_TYPE;
+        }
     }
 
     /**

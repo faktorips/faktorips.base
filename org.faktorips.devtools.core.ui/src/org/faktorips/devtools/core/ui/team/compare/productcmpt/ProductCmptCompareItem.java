@@ -61,6 +61,8 @@ import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
  */
 public class ProductCmptCompareItem extends AbstractCompareItem {
 
+    private static final String IPSPRODUCT_ELEMENT_TYPE = "ipsproductElement"; //$NON-NLS-1$
+
     /**
      * Creates a ProductCmptCompareItem with the given parent and the given content. If parent is
      * null this ProductCmptCompareItem is marked as a root element, as indicated by the method
@@ -479,11 +481,17 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     /**
-     * Returns "ipsproduct". {@inheritDoc}
+     * For the root element we return the file extension. For all other elements we return the a
+     * constant that is also registered in the content merge viewer extension in attribute
+     * 'extensions'. This seems to be ugly because the attribute 'extensions' is documented as
+     * listing file name extensions, but JDT does the same for java elements.
      */
     @Override
     public String getType() {
-        return IpsObjectType.PRODUCT_CMPT.getFileExtension();
+        if (isRoot()) {
+            return IpsObjectType.PRODUCT_CMPT.getFileExtension();
+        }
+        return IPSPRODUCT_ELEMENT_TYPE;
     }
 
     /**
