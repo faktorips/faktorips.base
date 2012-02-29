@@ -161,9 +161,17 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     /**
      * Initializes all formulas contained by genElement. If formula evaluation is supported, the map
      * contains the compiled expression for every formula.
-     * 
+     * <p>
+     * SW 29.02.2012: TODO ProductVariants call initFromXML() twice. As of yet no formulas can be
+     * varied and thus the formula-evaluator should not be overridden if it already exists. This is
+     * a rather dirty fix for the current problems. A clean solution would be to extend the
+     * {@link IFormulaEvaluator} interface with an updateExpression() method, that will then be
+     * called for each formula found in the XML. see FIPS-995
      */
     protected void doInitFormulaFromXml(Element genElement) {
+        if (formulaEvaluator != null) {
+            return;
+        }
         if (getRepository() != null) {
             IFormulaEvaluatorFactory factory = getRepository().getFormulaEvaluatorFactory();
             if (factory != null) {
