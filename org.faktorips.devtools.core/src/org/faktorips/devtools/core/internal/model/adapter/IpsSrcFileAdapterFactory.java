@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.adapter;
 
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -51,7 +50,7 @@ public class IpsSrcFileAdapterFactory extends AbstractIpsAdapterFactory {
     // The Eclipse API uses raw type
     @Override
     public Class[] getAdapterList() {
-        return new Class[] { ProductCmpt.class, IType.class, IIpsObject.class };
+        return new Class[] { IProductCmpt.class, IType.class, IIpsObject.class };
     }
 
 }
