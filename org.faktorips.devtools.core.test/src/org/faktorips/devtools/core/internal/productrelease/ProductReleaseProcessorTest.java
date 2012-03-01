@@ -133,38 +133,42 @@ public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
     public void testTeamOperationsFactory() throws InterruptedException, CoreException {
         IpsPlugin ipsPlugin = spy(IpsPlugin.getDefault());
         SingletonMockHelper singletonMockHelper = new SingletonMockHelper();
-        singletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
-        ITeamOperationsFactory teamOperationsFactory = mock(ITeamOperationsFactory.class);
-        when(ipsPlugin.getTeamOperationsFactories()).thenReturn(Collections.singleton(teamOperationsFactory));
+        try {
+            singletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
+            ITeamOperationsFactory teamOperationsFactory = mock(ITeamOperationsFactory.class);
+            when(ipsPlugin.getTeamOperationsFactories()).thenReturn(Collections.singleton(teamOperationsFactory));
 
-        releaseAndDeploymentOperation = mock(IReleaseAndDeploymentOperation.class);
-        when(releaseAndDeploymentOperation.customReleaseSettings(any(IIpsProject.class), any(IProgressMonitor.class)))
-                .thenReturn(true);
-        ArrayList<ITargetSystem> targetSystems = new ArrayList<ITargetSystem>();
-        targetSystems.add(new DefaultTargetSystem("test123"));
+            releaseAndDeploymentOperation = mock(IReleaseAndDeploymentOperation.class);
+            when(
+                    releaseAndDeploymentOperation.customReleaseSettings(any(IIpsProject.class),
+                            any(IProgressMonitor.class))).thenReturn(true);
+            ArrayList<ITargetSystem> targetSystems = new ArrayList<ITargetSystem>();
+            targetSystems.add(new DefaultTargetSystem("test123"));
 
-        productReleaseProcessor = spy(new ProductReleaseProcessor(ipsProject, observableMessages));
-        when(productReleaseProcessor.getReleaseAndDeploymentOperation()).thenReturn(releaseAndDeploymentOperation);
-        productReleaseProcessor.startReleaseBuilder("abc", targetSystems, new NullProgressMonitor());
+            productReleaseProcessor = spy(new ProductReleaseProcessor(ipsProject, observableMessages));
+            when(productReleaseProcessor.getReleaseAndDeploymentOperation()).thenReturn(releaseAndDeploymentOperation);
+            productReleaseProcessor.startReleaseBuilder("abc", targetSystems, new NullProgressMonitor());
 
-        verify(teamOperationsFactory).canCreateTeamOperationsFor(ipsProject);
-        verify(teamOperationsFactory, never()).createTeamOperations(any(ObservableProgressMessages.class));
+            verify(teamOperationsFactory).canCreateTeamOperationsFor(ipsProject);
+            verify(teamOperationsFactory, never()).createTeamOperations(any(ObservableProgressMessages.class));
 
-        when(teamOperationsFactory.canCreateTeamOperationsFor(ipsProject)).thenReturn(true);
-        ITeamOperations teamOperations = mock(ITeamOperations.class);
-        when(teamOperations.isProjectSynchronized(any(IProject.class), any(IProgressMonitor.class))).thenReturn(true);
-        when(teamOperationsFactory.createTeamOperations(any(ObservableProgressMessages.class))).thenReturn(
-                teamOperations);
+            when(teamOperationsFactory.canCreateTeamOperationsFor(ipsProject)).thenReturn(true);
+            ITeamOperations teamOperations = mock(ITeamOperations.class);
+            when(teamOperations.isProjectSynchronized(any(IProject.class), any(IProgressMonitor.class))).thenReturn(
+                    true);
+            when(teamOperationsFactory.createTeamOperations(any(ObservableProgressMessages.class))).thenReturn(
+                    teamOperations);
 
-        productReleaseProcessor = spy(new ProductReleaseProcessor(ipsProject, observableMessages));
-        when(productReleaseProcessor.getReleaseAndDeploymentOperation()).thenReturn(releaseAndDeploymentOperation);
-        productReleaseProcessor.startReleaseBuilder("abc", targetSystems, new NullProgressMonitor());
+            productReleaseProcessor = spy(new ProductReleaseProcessor(ipsProject, observableMessages));
+            when(productReleaseProcessor.getReleaseAndDeploymentOperation()).thenReturn(releaseAndDeploymentOperation);
+            productReleaseProcessor.startReleaseBuilder("abc", targetSystems, new NullProgressMonitor());
 
-        verify(teamOperationsFactory, atLeastOnce()).createTeamOperations(any(ObservableProgressMessages.class));
-        verify(teamOperations).commitFiles(any(IProject.class), (IResource[])any(), eq("update version to abc"),
-                any(IProgressMonitor.class));
-        verify(teamOperations).tagProject(any(IProject.class), eq("abc"), any(IProgressMonitor.class));
-
-        singletonMockHelper.reset();
+            verify(teamOperationsFactory, atLeastOnce()).createTeamOperations(any(ObservableProgressMessages.class));
+            verify(teamOperations).commitFiles(any(IProject.class), (IResource[])any(), eq("update version to abc"),
+                    any(IProgressMonitor.class));
+            verify(teamOperations).tagProject(any(IProject.class), eq("abc"), any(IProgressMonitor.class));
+        } finally {
+            singletonMockHelper.reset();
+        }
     }
 }

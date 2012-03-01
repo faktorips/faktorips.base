@@ -316,35 +316,39 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         IpsPlugin ipsPlugin = IpsPlugin.getDefault();
         ipsPlugin = spy(ipsPlugin);
         SingletonMockHelper singletonMockHelper = new SingletonMockHelper();
-        singletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
-        IDeepCopyOperationFixup testDeepCopyOperationFixup = mock(IDeepCopyOperationFixup.class);
-        Map<String, Object> executableExtensionMap = new HashMap<String, Object>();
-        executableExtensionMap.put("class", testDeepCopyOperationFixup);
-        IExtension extension = TestMockingUtils.mockExtension("TestDeepCopyOperationFixup",
-                new TestConfigurationElement(IDeepCopyOperationFixup.CONFIG_ELEMENT_ID_FIXUP,
-                        new HashMap<String, String>(), null, new IConfigurationElement[0], executableExtensionMap));
-        IExtensionPoint extensionPoint = TestMockingUtils.mockExtensionPoint(IpsPlugin.PLUGIN_ID,
-                IDeepCopyOperationFixup.EXTENSION_POINT_ID_DEEP_COPY_OPERATION, extension);
-        TestExtensionRegistry extensionRegistry = new TestExtensionRegistry(new IExtensionPoint[] { extensionPoint });
-        doReturn(extensionRegistry).when(ipsPlugin).getExtensionRegistry();
+        try {
+            singletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
+            IDeepCopyOperationFixup testDeepCopyOperationFixup = mock(IDeepCopyOperationFixup.class);
+            Map<String, Object> executableExtensionMap = new HashMap<String, Object>();
+            executableExtensionMap.put("class", testDeepCopyOperationFixup);
+            IExtension extension = TestMockingUtils.mockExtension("TestDeepCopyOperationFixup",
+                    new TestConfigurationElement(IDeepCopyOperationFixup.CONFIG_ELEMENT_ID_FIXUP,
+                            new HashMap<String, String>(), null, new IConfigurationElement[0], executableExtensionMap));
+            IExtensionPoint extensionPoint = TestMockingUtils.mockExtensionPoint(IpsPlugin.PLUGIN_ID,
+                    IDeepCopyOperationFixup.EXTENSION_POINT_ID_DEEP_COPY_OPERATION, extension);
+            TestExtensionRegistry extensionRegistry = new TestExtensionRegistry(
+                    new IExtensionPoint[] { extensionPoint });
+            doReturn(extensionRegistry).when(ipsPlugin).getExtensionRegistry();
 
-        DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
-                new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(),
-                new GregorianCalendar());
-        dco.setIpsPackageFragmentRoot(comfortMotorProduct.getIpsPackageFragment().getRoot());
-        dco.run(null);
+            DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
+                    new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(),
+                    new GregorianCalendar());
+            dco.setIpsPackageFragmentRoot(comfortMotorProduct.getIpsPackageFragment().getRoot());
+            dco.run(null);
 
-        IProductCmptStructureReference srcProdCmptRef = structure.getRoot().findProductCmptReference(
-                comfortMotorProduct.getQualifiedName());
-        ProductCmpt copiedProductCmpt = (ProductCmpt)handles.get(srcProdCmptRef).getIpsObject();
-        generation = (IProductCmptGeneration)copiedProductCmpt.findGenerationEffectiveOn(new GregorianCalendar());
-        configElement = generation.getConfigElement("salesName");
+            IProductCmptStructureReference srcProdCmptRef = structure.getRoot().findProductCmptReference(
+                    comfortMotorProduct.getQualifiedName());
+            ProductCmpt copiedProductCmpt = (ProductCmpt)handles.get(srcProdCmptRef).getIpsObject();
+            generation = (IProductCmptGeneration)copiedProductCmpt.findGenerationEffectiveOn(new GregorianCalendar());
+            configElement = generation.getConfigElement("salesName");
 
-        verify(testDeepCopyOperationFixup, times(5)).fix(any(IProductCmpt.class), any(IProductCmpt.class)); // comfortMotorProduct
-                                                                                                            // +
-                                                                                                            // 4
-                                                                                                            // Links
-        singletonMockHelper.reset();
+            verify(testDeepCopyOperationFixup, times(5)).fix(any(IProductCmpt.class), any(IProductCmpt.class)); // comfortMotorProduct
+                                                                                                                // +
+                                                                                                                // 4
+                                                                                                                // Links
+        } finally {
+            singletonMockHelper.reset();
+        }
     }
 
     private void createTestContent() throws CoreException {

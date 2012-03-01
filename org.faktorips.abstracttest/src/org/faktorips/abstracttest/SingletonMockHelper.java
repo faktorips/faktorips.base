@@ -27,8 +27,10 @@ import java.util.Map.Entry;
  * the singleton first before you use this helper in your test.
  * <p>
  * Consider that many tests run in the same static content. To avoid side effects you have to keep
- * the instance of this helper and call the {@link #reset()} method in your test tear down. Also
- * consider that it is not possible to run tests parallel when using this helper!
+ * the instance of this helper and call the {@link #reset()} method in your test tear down. If you
+ * want to use this helper only inside one test case, call the {@link #reset()} method in a
+ * {@code finally} block. Also consider that it is not possible to run tests parallel when using
+ * this helper!
  * 
  * @author Daniel Schwering, Faktor Zehn AG
  */
@@ -103,6 +105,9 @@ public class SingletonMockHelper {
         }
     }
 
+    /**
+     * Restores mocked singletons to their original values.
+     */
     public void reset() {
         for (Entry<Field, Object> entry : singletonMap.entrySet()) {
             Field singletonField = entry.getKey();
