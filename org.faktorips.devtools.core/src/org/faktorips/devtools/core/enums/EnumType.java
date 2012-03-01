@@ -16,8 +16,11 @@ package org.faktorips.devtools.core.enums;
 /**
  * An EnumType is a data type that represents an enumeration of values e.g. gender, payment mode.
  * 
+ * @deprecated Deprecated since we use Java 5 enums
+ * 
  * @author Jan Ortmann
  */
+@Deprecated
 public interface EnumType {
 
     /**
