@@ -21,6 +21,7 @@
    <extension-point id="productComponentNamingStrategy" name="Product Component Naming Strategy" schema="schema/productComponentNamingStrategy.exsd"/>
    <extension-point id="ipsObjectPathContainerType" name="IPS Object Path Container Type" schema="schema/ipsObjectPathContainerType.exsd"/>
    <extension-point id="deepCopyOperation" name="Deep Copy Operation" schema="schema/deepCopyOperation.exsd"/>
+   <extension-point id="teamOperationsFactory" name="TeamOperationsFactory" schema="schema/teamOperationsFactory.exsd"/>
    
 <!-- 
     Extensions to the Java perspective
@@ -459,5 +460,11 @@
             class="org.faktorips.devtools.core.internal.model.ipsproject.IpsContainer4JdtClasspathContainerType"
             typeId="JDTClasspathContainer">
       </containerType>
+   </extension>
+   <extension
+         point="org.faktorips.devtools.core.teamOperationsFactory">
+      <factory
+            class="org.faktorips.devtools.core.internal.productrelease.CvsTeamOperationsFactory">
+      </factory>
    </extension>
 </plugin>

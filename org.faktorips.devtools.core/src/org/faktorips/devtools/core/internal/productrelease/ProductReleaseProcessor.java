@@ -14,7 +14,9 @@
 package org.faktorips.devtools.core.internal.productrelease;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -22,11 +24,13 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
+import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -35,6 +39,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.productrelease.ITargetSystem;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
+import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
 import org.faktorips.devtools.core.productrelease.ObservableProgressMessages;
 import org.faktorips.util.message.MessageList;
 
@@ -42,21 +47,34 @@ public class ProductReleaseProcessor {
 
     private static final String RELEASE_EXTENSION_POINT_NAME = "productReleaseExtension"; //$NON-NLS-1$
     private static final String EXTENSION_OPERATION_PROPERTY = "operation"; //$NON-NLS-1$
+    private static final String EXTENSION_POINT_ID_TEAM_OPERATIONS_FACTORY = "teamOperationsFactory"; //$NON-NLS-1$
     private ITeamOperations teamOperation;
     private final IIpsProject ipsProject;
     private final IReleaseAndDeploymentOperation releaseAndDeploymentOperation;
+
+    private Set<ITeamOperationsFactory> teamOperationsFactories;
 
     private final ObservableProgressMessages observableProgressMessages;
 
     public ProductReleaseProcessor(IIpsProject ipsProject, ObservableProgressMessages observableProgressMessages)
             throws CoreException {
         this.ipsProject = ipsProject;
-        teamOperation = new CvsTeamOperations(observableProgressMessages);
+        teamOperation = getTeamOperations(ipsProject, observableProgressMessages);
         this.observableProgressMessages = observableProgressMessages;
         releaseAndDeploymentOperation = loadReleaseDeploymentOperation(ipsProject);
         if (releaseAndDeploymentOperation != null) {
             releaseAndDeploymentOperation.setObservableProgressMessages(observableProgressMessages);
         }
+    }
+
+    private ITeamOperations getTeamOperations(final IIpsProject ipsProject,
+            final ObservableProgressMessages observableProgressMessages) {
+        for (ITeamOperationsFactory factory : getTeamOperationsFactories()) {
+            if (factory.canCreateTeamOperationsFor(ipsProject)) {
+                return factory.createTeamOperations(observableProgressMessages);
+            }
+        }
+        return new NoVersionControlTeamOperations();
     }
 
     public IReleaseAndDeploymentOperation getReleaseAndDeploymentOperation() {
@@ -225,6 +243,25 @@ public class ProductReleaseProcessor {
             }
         }
         return null;
+    }
+
+    public Set<ITeamOperationsFactory> getTeamOperationsFactories() {
+        if (teamOperationsFactories == null) {
+            teamOperationsFactories = new HashSet<ITeamOperationsFactory>();
+            ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.getDefault().getExtensionRegistry(),
+                    IpsPlugin.PLUGIN_ID);
+            IExtension[] extensions = extensionPoints.getExtension(EXTENSION_POINT_ID_TEAM_OPERATIONS_FACTORY);
+            for (IExtension extension : extensions) {
+                for (IConfigurationElement configElement : extension.getConfigurationElements()) {
+                    ITeamOperationsFactory factory = ExtensionPoints.createExecutableExtension(extension,
+                            configElement, "class", ITeamOperationsFactory.class); //$NON-NLS-1$
+                    if (factory != null) {
+                        teamOperationsFactories.add(factory);
+                    }
+                }
+            }
+        }
+        return teamOperationsFactories;
     }
 
 }
