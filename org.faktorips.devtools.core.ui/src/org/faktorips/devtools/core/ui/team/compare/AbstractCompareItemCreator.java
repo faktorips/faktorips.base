@@ -24,6 +24,8 @@ import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileImmutable;
@@ -61,6 +63,16 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
      */
     @Override
     public IStructureComparator getStructure(Object input) {
+        if (input instanceof IAdaptable) {
+            IAdaptable adaptableInput = (IAdaptable)input;
+            IResource resource = (IResource)adaptableInput.getAdapter(IPath.class);
+            if (resource != null) {
+                IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
+                if (element instanceof IIpsSrcFile) {
+                    return getStructureForIpsSrcFile((IIpsSrcFile)element);
+                }
+            }
+        }
         if (input instanceof ResourceNode) {
             IResource file = ((ResourceNode)input).getResource();
             IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
@@ -72,10 +84,6 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
                 final IEncodedStreamContentAccessor remoteContent = (IEncodedStreamContentAccessor)input;
                 InputStream is = remoteContent.getContents();
                 String name = ((ITypedElement)input).getName();
-                if (input instanceof ITypedElement) {
-                    ITypedElement revision = (ITypedElement)input;
-                    name = revision.getName();
-                }
                 IpsSrcFileImmutable srcFile = new IpsSrcFileImmutable(name, is);
                 return getStructureForIpsSrcFile(srcFile);
             } catch (CoreException e) {

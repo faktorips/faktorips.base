@@ -23,7 +23,6 @@ import org.eclipse.core.resources.IFile;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -341,11 +340,6 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             sb.append(TAB).append(TAB).append(rule.getName()).append(COLON_BLANK);
             sb.append(rule.isActive() ? Messages.ProductCmptCompareItem_VRule_active
                     : Messages.ProductCmptCompareItem_VRule_inactive);
-        } else if (getIpsElement() instanceof ITableContentUsage) {
-            ITableContentUsage tableUsage = (ITableContentUsage)getIpsElement();
-            conditionalAppendGenerationDateAndTab(tableUsage.getPropertyValueContainer(), sb);
-            sb.append(TAB).append(TAB).append(getCaption(tableUsage)).append(COLON_BLANK);
-            sb.append(tableUsage.getPropertyValue());
         } else if (getIpsElement() instanceof IPropertyValue) {
             IPropertyValue value = (IPropertyValue)getIpsElement();
             conditionalAppendGenerationDateAndTab(value.getPropertyValueContainer(), sb);
@@ -433,35 +427,32 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         StringBuffer sb = new StringBuffer();
         if (getIpsElement() != null) {
             if (getIpsElement() instanceof IProductCmptLink) {
-                IProductCmptLink rel = (IProductCmptLink)getIpsElement();
+                IProductCmptLink link = (IProductCmptLink)getIpsElement();
                 sb.append(Messages.ProductCmptCompareItem_Relation).append(COLON_BLANK).append(QUOTE)
-                        .append(getCaption(rel)).append(QUOTE);
+                        .append(link.getAssociation()).append(QUOTE);
             } else if (getIpsElement() instanceof IAttributeValue) {
                 IAttributeValue attrValue = (IAttributeValue)getIpsElement();
                 sb.append(Messages.ProductCmptCompareItem_Attribute).append(COLON_BLANK).append(QUOTE)
-                        .append(getCaption(attrValue)).append(QUOTE);
+                        .append(attrValue.getPropertyName()).append(QUOTE);
             } else if (getIpsElement() instanceof IFormula) {
                 IFormula formula = (IFormula)getIpsElement();
                 sb.append(Messages.ProductCmptCompareItem_Formula).append(COLON_BLANK).append(QUOTE)
-                        .append(getCaption(formula)).append(QUOTE);
+                        .append(formula.getPropertyName()).append(QUOTE);
             } else if (getIpsElement() instanceof ITableContentUsage) {
                 ITableContentUsage tableUsage = (ITableContentUsage)getIpsElement();
-                sb.append(getCaption(tableUsage)).append(COLON_BLANK).append(QUOTE)
-                        .append(tableUsage.getPropertyValue()).append(QUOTE);
+                sb.append(Messages.ProductCmptCompareItem_TableContentsLabel).append(COLON_BLANK).append(QUOTE)
+                        .append(tableUsage.getPropertyName()).append(QUOTE);
             } else if (getIpsElement() instanceof IValidationRuleConfig) {
                 IValidationRuleConfig vRuleConfig = (IValidationRuleConfig)getIpsElement();
                 sb.append(Messages.ProductCmptCompareItem_RuleLabel).append(COLON_BLANK).append(QUOTE)
-                        .append(getCaption(vRuleConfig)).append(QUOTE);
+                        .append(vRuleConfig.getPropertyName()).append(QUOTE);
             } else if (getIpsElement() instanceof IIpsObjectGeneration) {
                 IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
                 sb.append(changingNamingConventionGenerationString).append(COLON_BLANK).append(QUOTE)
-                        .append(getCaption(gen)).append(QUOTE);
+                        .append(getGenerationDateText(gen)).append(QUOTE);
             } else if (getIpsElement() instanceof IProductCmpt) {
                 IProductCmpt product = (IProductCmpt)getIpsElement();
-                sb.append(
-                        org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductCmptEditor_productComponent)
-                        .append(QUOTE).append(IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(product))
-                        .append(QUOTE);
+                sb.append(product.getName());
             } else if (getIpsElement() instanceof IIpsSrcFile) {
                 IIpsSrcFile srcFile = (IIpsSrcFile)getIpsElement();
                 IFile file = srcFile.getCorrespondingFile();
@@ -474,10 +465,6 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             }
         }
         return sb.toString();
-    }
-
-    private String getCaption(IIpsObjectPart part) {
-        return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(part);
     }
 
     /**

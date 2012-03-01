@@ -75,7 +75,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
      * <code>ChangesOverTimeNamingConvention</code>. Since <code>AbstractCompareItem</code>s do not
      * change over time, an initialization in the constructor is sufficient.
      */
-    protected String changingNamingConventionGenerationString;
+    protected final String changingNamingConventionGenerationString;
 
     /**
      * The parent of this <code>AbstractCompareItem</code>. May be null if this CompareItem is root.
