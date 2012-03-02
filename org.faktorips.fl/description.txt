@@ -1,1 +1,0 @@
-This project contains the formula compiler. The formula compiler compile an expression written in an Excel like syntax to Java soucecode.
