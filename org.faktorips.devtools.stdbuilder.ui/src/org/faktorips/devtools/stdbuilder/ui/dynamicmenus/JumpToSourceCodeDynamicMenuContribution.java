@@ -63,6 +63,8 @@ import org.faktorips.devtools.stdbuilder.ui.StdBuilderUICommandId;
  */
 public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributionItem implements IWorkbenchContribution {
 
+    private static final String EDITOR_JUMP_TO_SOURCE_CODE_COMMAND = "org.faktorips.devtools.stdbuilder.ui.dynamicmenus.editorJumpToSourceCode"; //$NON-NLS-1$
+
     // Unfortunately JDT does not expose this ID via an enum or interface.
     private static final String JDT_COMMAND_ID_OPEN_ELEMENT_IN_JAVA_EDITOR = "org.eclipse.jdt.ui.commands.openElementInEditor"; //$NON-NLS-1$
 
@@ -233,16 +235,12 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     private IIpsElement getSelectedIpsElement() {
-        // First try to use the evaluation service.
-        IIpsElement selectedIpsElement = getSelectedIpsElementFromEvaluationService();
-        if (selectedIpsElement != null) {
-            return selectedIpsElement;
+        if (getParent() != null && !getParent().getItems()[0].getId().equals(EDITOR_JUMP_TO_SOURCE_CODE_COMMAND)) {
+            IIpsElement selectedIpsElement = getSelectedIpsElementFromEvaluationService();
+            if (selectedIpsElement != null) {
+                return selectedIpsElement;
+            }
         }
-
-        /*
-         * If the evaluation service doesn't provide a selection the user activated the menu via
-         * editor.
-         */
         return getSelectedIpsElementFromEditor();
     }
 
