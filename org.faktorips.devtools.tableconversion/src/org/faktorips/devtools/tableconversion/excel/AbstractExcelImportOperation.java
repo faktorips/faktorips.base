@@ -16,7 +16,11 @@ package org.faktorips.devtools.tableconversion.excel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
+import org.apache.poi.POIDocument;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -33,7 +37,11 @@ import org.faktorips.util.message.MessageList;
  */
 abstract class AbstractExcelImportOperation extends AbstractTableImportOperation {
 
+    private static final Date FIRST_OF_MARCH_1900 = new GregorianCalendar(1900, 2, 1).getTime();
+    private static final String MICROSOFT_EXCEL = "Microsoft Excel"; //$NON-NLS-1$
+
     protected Workbook workbook;
+    private boolean mightBeOpenOffice = false;
 
     protected Sheet sheet;
 
@@ -52,13 +60,21 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
         fis = new FileInputStream(importFile);
         workbook = new HSSFWorkbook(fis);
         fis.close();
+        if (((POIDocument)workbook).getSummaryInformation() == null
+                || !MICROSOFT_EXCEL.equals(((POIDocument)workbook).getSummaryInformation().getApplicationName())) {
+            mightBeOpenOffice = true;
+        }
         return workbook;
     }
 
     protected String readCell(Cell cell, Datatype datatype) {
         if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
             if (DateUtil.isCellDateFormatted(cell)) {
-                return format.getIpsValue(cell.getDateCellValue(), datatype, messageList);
+                Date dateCellValue = cell.getDateCellValue();
+                if (mightBeOpenOffice) {
+                    dateCellValue = correctOffset(dateCellValue);
+                }
+                return format.getIpsValue(dateCellValue, datatype, messageList);
             }
             return format.getIpsValue(new Double(cell.getNumericCellValue()), datatype, messageList);
         } else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
@@ -70,6 +86,19 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
             }
             return format.getIpsValue(value, datatype, messageList);
         }
+    }
+
+    /**
+     * Workaround for https://issues.apache.org/ooo/show_bug.cgi?id=80463
+     */
+    private Date correctOffset(final Date dateCellValue) {
+        if (dateCellValue.before(FIRST_OF_MARCH_1900)) {
+            GregorianCalendar calendar = new GregorianCalendar();
+            calendar.setTime(dateCellValue);
+            calendar.add(Calendar.DAY_OF_MONTH, -1);
+            return calendar.getTime();
+        }
+        return dateCellValue;
     }
 
     protected void initWorkbookAndSheet() throws IOException {

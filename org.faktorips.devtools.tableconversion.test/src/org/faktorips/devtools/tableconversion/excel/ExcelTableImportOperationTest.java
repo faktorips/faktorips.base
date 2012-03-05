@@ -142,6 +142,36 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         assertEquals(6, ml.size());
     }
 
+    @Test
+    public void testImportDateProblemOO() throws Exception {
+        MessageList ml = new MessageList();
+        structure = createTableStructure(ipsProject);
+        createProblemDate("");
+
+        ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
+                "NULL", false, ml, true);
+        op.run(new NullProgressMonitor());
+
+        assertEquals(2, importTarget.getRows().length);
+        assertEquals("1900-01-01", importTarget.getRow(0).getValue(3));
+        assertEquals("1900-03-01", importTarget.getRow(1).getValue(3));
+    }
+
+    @Test
+    public void testImportDateProblemExcel() throws Exception {
+        MessageList ml = new MessageList();
+        structure = createTableStructure(ipsProject);
+        createProblemDate("Microsoft Excel");
+
+        ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
+                "NULL", false, ml, true);
+        op.run(new NullProgressMonitor());
+
+        assertEquals(2, importTarget.getRows().length);
+        assertEquals("1900-01-02", importTarget.getRow(0).getValue(3));
+        assertEquals("1900-03-01", importTarget.getRow(1).getValue(3));
+    }
+
     private void createValid() throws Exception {
         HSSFWorkbook wb = new HSSFWorkbook();
         HSSFSheet sheet = wb.createSheet();
@@ -211,6 +241,45 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         row1.createCell(5).setCellValue("INVALID");
         row1.createCell(6).setCellValue("INVALID");
         row1.createCell(7).setCellValue("invalid is impossible");
+
+        FileOutputStream fos = new FileOutputStream(file);
+        wb.write(fos);
+        fos.close();
+    }
+
+    private void createProblemDate(String applicationName) throws Exception {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet();
+        wb.createInformationProperties();
+        wb.getSummaryInformation().setApplicationName(applicationName);
+
+        HSSFRow row0 = sheet.createRow(0);
+        HSSFRow row1 = sheet.createRow(1);
+
+        HSSFCellStyle dateStyle = wb.createCellStyle();
+        dateStyle.setDataFormat((short)0x15);
+
+        row0.createCell(0).setCellValue("NULL");
+        row0.createCell(1).setCellValue("NULL");
+        row0.createCell(2).setCellValue("NULL");
+        HSSFCell cell = row0.createCell(3);
+        cell.setCellValue(new GregorianCalendar(1900, 0, 2).getTime());
+        cell.setCellStyle(dateStyle);
+        row0.createCell(4).setCellValue("NULL");
+        row0.createCell(5).setCellValue("NULL");
+        row0.createCell(6).setCellValue("NULL");
+        row0.createCell(7).setCellValue("NULL");
+
+        row1.createCell(0).setCellValue("NULL");
+        row1.createCell(1).setCellValue("NULL");
+        row1.createCell(2).setCellValue("NULL");
+        cell = row1.createCell(3);
+        cell.setCellValue(new GregorianCalendar(1900, 2, 1).getTime());
+        cell.setCellStyle(dateStyle);
+        row1.createCell(4).setCellValue("NULL");
+        row1.createCell(5).setCellValue("NULL");
+        row1.createCell(6).setCellValue("NULL");
+        row1.createCell(7).setCellValue("NULL");
 
         FileOutputStream fos = new FileOutputStream(file);
         wb.write(fos);
