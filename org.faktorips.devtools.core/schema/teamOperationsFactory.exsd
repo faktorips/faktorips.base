@@ -48,11 +48,16 @@
    </element>
 
    <element name="factory">
+      <annotation>
+         <documentation>
+            On all ITeamOperationsFactories the canCreateTeamOperationsFor method will be called. The first one (in no defined order) returning true will be used.
+         </documentation>
+      </annotation>
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  A ITeamOperationsFactory will be asked to provide ITeamOperations for projects released via the ProductReleaseWizard.
                </documentation>
                <appInfo>
                   <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.productrelease.ITeamOperationsFactory"/>
@@ -67,7 +72,7 @@
          <meta.section type="since"/>
       </appInfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         3.6.1
       </documentation>
    </annotation>
 
@@ -76,27 +81,16 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         [Enter extension point usage example here.]
+         &lt;code&gt;&lt;br /&gt;
+&amp;lt;extension point=&quot;org.faktorips.devtools.core.teamOperationsFactory&quot;&amp;gt;&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;lt;factory class=&quot;org.faktorips.devtools.core.internal.productrelease.CvsTeamOperationsFactory&quot;&amp;gt;&lt;br /&gt;
+&amp;nbsp;&amp;nbsp;&amp;lt;/factory&amp;gt;&lt;br /&gt;
+&amp;lt;/extension&amp;gt;
+&lt;/code&gt;
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="apiinfo"/>
-      </appInfo>
-      <documentation>
-         [Enter API information here.]
-      </documentation>
-   </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="implementation"/>
-      </appInfo>
-      <documentation>
-         [Enter information about supplied implementation of this extension point.]
-      </documentation>
-   </annotation>
 
 
 </schema>
