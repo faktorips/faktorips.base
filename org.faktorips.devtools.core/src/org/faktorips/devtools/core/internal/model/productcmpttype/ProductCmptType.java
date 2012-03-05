@@ -400,10 +400,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 new IProductCmptProperty[pendingPolicyChanges.size()]);
         IIpsSrcFile policySrcFile = policyProperties[0].getIpsSrcFile();
         if (policySrcFile.isMutable()) {
+            boolean isDirtyState = policySrcFile.isDirty();
             for (IProductCmptProperty property : pendingPolicyChanges.keySet()) {
                 property.setCategory(pendingPolicyChanges.get(property));
             }
-            if (!policySrcFile.isDirty()) {
+            if (!isDirtyState) {
                 try {
                     policySrcFile.save(true, null);
                 } catch (CoreException e) {
