@@ -24,7 +24,7 @@ public class MoneyNull extends Money implements NullObject {
     private static final long serialVersionUID = -3546233368167459967L;
     static final String STRING_REPRESENTATION = "MoneyNull";
 
-    public MoneyNull() {
+    MoneyNull() {
         super(0, null);
     }
 
@@ -45,12 +45,12 @@ public class MoneyNull extends Money implements NullObject {
 
     @Override
     public Money max(Money value) {
-        return Money.NULL;
+        return NULL;
     }
 
     @Override
     public Money min(Money value) {
-        return Money.NULL;
+        return NULL;
     }
 
     /**
@@ -61,7 +61,7 @@ public class MoneyNull extends Money implements NullObject {
         if (m == null) {
             throw new NullPointerException();
         }
-        return this;
+        return NULL;
     }
 
     /**
@@ -72,22 +72,22 @@ public class MoneyNull extends Money implements NullObject {
         if (m == null) {
             throw new NullPointerException();
         }
-        return this;
+        return NULL;
     }
 
     @Override
     public Money multiply(int factor) {
-        return this;
+        return NULL;
     }
 
     @Override
     public Money multiply(Integer factor) {
-        return this;
+        return NULL;
     }
 
     @Override
     public Money multiply(long factor) {
-        return this;
+        return NULL;
     }
 
     @Override
@@ -100,12 +100,12 @@ public class MoneyNull extends Money implements NullObject {
 
     @Override
     public Money divide(int d, int roundingMode) {
-        return this;
+        return NULL;
     }
 
     @Override
     public Money divide(long d, int roundingMode) {
-        return this;
+        return NULL;
     }
 
     @Override
@@ -113,7 +113,7 @@ public class MoneyNull extends Money implements NullObject {
         if (d == null) {
             throw new NullPointerException();
         }
-        return this;
+        return NULL;
     }
 
     @Override
@@ -155,6 +155,9 @@ public class MoneyNull extends Money implements NullObject {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
         if (!(o instanceof Money)) {
             return false;
         }
