@@ -588,7 +588,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         projectEl.appendChild(defaultCurrencyElement);
 
         createDescriptionComment(
-                "the language in that the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German.", projectEl); //$NON-NLS-1$
+                "Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German. Only English (en) and German (de) are supported at the moment.", projectEl); //$NON-NLS-1$
         Element expressionLanguageFunctionsLanguageElement = doc.createElement(EXPRESSION_LANGUAGE_FUNCTIONS_LANGUAGE);
         expressionLanguageFunctionsLanguageElement.setAttribute(ATTRIBUTE_LOCALE,
                 expressionLanguageFunctionsLanguage.getLanguage());
