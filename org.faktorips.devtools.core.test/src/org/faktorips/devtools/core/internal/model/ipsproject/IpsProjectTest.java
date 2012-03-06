@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -2099,6 +2100,15 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
                 throws CoreException {
             throw new UnsupportedOperationException();
         }
+    }
+
+    @Test
+    public void testExpressionLanguageFunctionsLanguage() throws CoreException {
+        assertEquals(Locale.GERMAN, ipsProject.getExpressionLanguageFunctionsLanguage());
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setExpressionLanguageFunctionsLanguage(Locale.ENGLISH);
+        ipsProject.setProperties(properties);
+        assertEquals(Locale.ENGLISH, ipsProject.getExpressionLanguageFunctionsLanguage());
     }
 
 }

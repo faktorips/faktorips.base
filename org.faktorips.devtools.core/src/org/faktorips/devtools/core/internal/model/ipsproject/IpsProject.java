@@ -515,7 +515,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public void setIpsObjectPath(IIpsObjectPath newPath) throws CoreException {
-        IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
+        IIpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
         properties.setIpsObjectPath(newPath);
         saveProjectProperties(properties);
     }
@@ -644,12 +644,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public Locale getExpressionLanguageFunctionsLanguage() {
-        return Locale.GERMAN;
+        return getPropertiesInternal().getExpressionLanguageFunctionsLanguage();
     }
 
     @Override
     public IChangesOverTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode() {
-        IpsProjectProperties properties = getPropertiesInternal();
+        IIpsProjectProperties properties = getPropertiesInternal();
         return getIpsModel().getChangesOverTimeNamingConvention(
                 properties.getChangesOverTimeNamingConventionIdForGeneratedCode());
     }
@@ -1667,7 +1667,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    private void validateRequiredFeatures(MessageList ml, IpsProjectProperties props) {
+    private void validateRequiredFeatures(MessageList ml, IIpsProjectProperties props) {
         String features[] = props.getRequiredIpsFeatureIds();
 
         for (String feature : features) {
@@ -1841,7 +1841,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (resource == null) {
             return false;
         }
-        IpsProjectProperties props = getPropertiesInternal();
+        IIpsProjectProperties props = getPropertiesInternal();
         String projectPath = getProject().getLocation().toString();
         String resourcePath = resource.getLocation().toString();
         if (resourcePath.length() <= projectPath.length()) {

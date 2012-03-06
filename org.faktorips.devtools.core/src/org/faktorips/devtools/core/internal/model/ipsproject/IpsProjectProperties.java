@@ -76,6 +76,10 @@ import org.w3c.dom.NodeList;
  */
 public class IpsProjectProperties implements IIpsProjectProperties {
 
+    private static final String ATTRIBUTE_LOCALE = "locale"; //$NON-NLS-1$
+
+    private static final String EXPRESSION_LANGUAGE_FUNCTIONS_LANGUAGE = "ExpressionLanguageFunctionsLanguage"; //$NON-NLS-1$
+
     private static final String ADDITIONAL_SETTINGS_TAG_NAME = "AdditionalSettings"; //$NON-NLS-1$
 
     private static final String SETTING_TAG_NAME = "Setting"; //$NON-NLS-1$
@@ -163,6 +167,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     // default currency for this project - default is EUR
     private Currency defaultCurrency = Currency.getInstance("EUR"); //$NON-NLS-1$
+
+    private Locale expressionLanguageFunctionsLanguage = Locale.GERMAN;
 
     public IpsProjectProperties() {
         super();
@@ -581,6 +587,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         defaultCurrencyElement.setAttribute(DEFAULT_CURRENCY_VALUE_ATTR, defaultCurrency.getCurrencyCode());
         projectEl.appendChild(defaultCurrencyElement);
 
+        createDescriptionComment(
+                "the language in that the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German.", projectEl); //$NON-NLS-1$
+        Element expressionLanguageFunctionsLanguageElement = doc.createElement(EXPRESSION_LANGUAGE_FUNCTIONS_LANGUAGE);
+        expressionLanguageFunctionsLanguageElement.setAttribute(ATTRIBUTE_LOCALE,
+                expressionLanguageFunctionsLanguage.getLanguage());
+        projectEl.appendChild(expressionLanguageFunctionsLanguageElement);
+
         return projectEl;
     }
 
@@ -645,6 +658,17 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initSupportedLanguages(element);
 
         initDefaultCurrency(element);
+
+        initExpressionLanguageFunctionsLanguage(element);
+    }
+
+    private void initExpressionLanguageFunctionsLanguage(Element element) {
+        Element expressionLanguageFunctionsLanguageElement = XmlUtil.getFirstElement(element,
+                EXPRESSION_LANGUAGE_FUNCTIONS_LANGUAGE);
+        if (expressionLanguageFunctionsLanguageElement != null) {
+            expressionLanguageFunctionsLanguage = new Locale(
+                    expressionLanguageFunctionsLanguageElement.getAttribute(ATTRIBUTE_LOCALE));
+        }
     }
 
     private void initRequiredFeatures(Element el) {
@@ -1436,6 +1460,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             }
         }
         return true;
+    }
+
+    @Override
+    public Locale getExpressionLanguageFunctionsLanguage() {
+        return expressionLanguageFunctionsLanguage;
+    }
+
+    @Override
+    public void setExpressionLanguageFunctionsLanguage(Locale locale) {
+        expressionLanguageFunctionsLanguage = locale;
     }
 
 }

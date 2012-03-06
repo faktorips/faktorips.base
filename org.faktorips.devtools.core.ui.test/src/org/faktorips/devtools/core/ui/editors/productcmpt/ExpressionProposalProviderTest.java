@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -407,5 +408,24 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
         proposal = results[1];
         assertEquals("aConfigParam - aConfigtype", proposal.getLabel());
+    }
+
+    @Test
+    public void testDoComputeCompletionProposalsForFunctionsLanguageDependant() throws Exception {
+        proposalProvider = new ExpressionProposalProvider(configElement);
+        IContentProposal[] results = proposalProvider.getProposals("WE", 2);
+        IContentProposal proposal = results[0];
+        assertEquals("WENN(boolean; any; any) - any", proposal.getLabel());
+
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setExpressionLanguageFunctionsLanguage(Locale.ENGLISH);
+        ipsProject.setProperties(properties);
+
+        results = proposalProvider.getProposals("WE", 2);
+        assertEquals(0, results.length);
+
+        results = proposalProvider.getProposals("I", 1);
+        proposal = results[0];
+        assertEquals("IF(boolean; any; any) - any", proposal.getLabel());
     }
 }
