@@ -1136,7 +1136,12 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private String getJavaClassName(String keyName) throws CoreException {
-        return getDatatypeForKeyName(keyName).getJavaClassName();
+        Datatype datatypeForKeyName = getDatatypeForKeyName(keyName);
+        if (datatypeForKeyName != null) {
+            return datatypeForKeyName.getJavaClassName();
+        } else {
+            return null;
+        }
     }
 
     private Datatype findDatatype(String name) throws CoreException {
