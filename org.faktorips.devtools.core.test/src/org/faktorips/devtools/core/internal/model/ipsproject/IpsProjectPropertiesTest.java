@@ -88,7 +88,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_DefinedDatatypes() throws CoreException {
-        IpsProjectProperties props = new IpsProjectProperties();
+        IIpsProjectProperties props = new IpsProjectProperties();
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
         DynamicValueDatatype dynDatatype = new DynamicValueDatatype(ipsProject);
@@ -103,7 +103,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_PredefinedDatatypes() throws CoreException {
-        IpsProjectProperties props = new IpsProjectProperties();
+        IIpsProjectProperties props = new IpsProjectProperties();
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
         props.setPredefinedDatatypesUsed(ipsProject.getIpsModel().getPredefinedValueDatatypes());
@@ -120,7 +120,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_SupportedLanguagesIsoConformity() throws CoreException {
-        IpsProjectProperties props = new IpsProjectProperties();
+        IIpsProjectProperties props = new IpsProjectProperties();
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
 
@@ -138,7 +138,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_SupportedLanguagesDefaultLanguage() throws CoreException {
-        IpsProjectProperties props = new IpsProjectProperties();
+        IIpsProjectProperties props = new IpsProjectProperties();
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
 
@@ -287,7 +287,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testAddDefinedDatatype() {
-        IpsProjectProperties props = new IpsProjectProperties();
+        IIpsProjectProperties props = new IpsProjectProperties();
 
         DynamicValueDatatype type1 = new DynamicValueDatatype(ipsProject);
         type1.setQualifiedName("type1");

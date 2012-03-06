@@ -202,7 +202,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         MessageList ml = ipsProject.validate();
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
         IIpsProjectProperties props = ipsProject.getProperties();
-        IpsProjectProperties propsOrig = new IpsProjectProperties(ipsProject, (IpsProjectProperties)props);
+        IIpsProjectProperties propsOrig = new IpsProjectProperties(ipsProject, (IpsProjectProperties)props);
         props.setMinRequiredVersionNumber("unknown-feature", "1.0.0");
         ipsProject.setProperties(props);
 
@@ -1927,7 +1927,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertFalse(ipsProject.isResourceExcludedFromProductDefinition(file));
         assertFalse(ipsProject.isResourceExcludedFromProductDefinition(folder1));
 
-        IpsProjectProperties props = (IpsProjectProperties)ipsProject.getProperties();
+        IIpsProjectProperties props = ipsProject.getProperties();
         props.addResourcesPathExcludedFromTheProductDefiniton("exludedFolderWithFile/build.xml");
         props.addResourcesPathExcludedFromTheProductDefiniton("exludedFolder");
         ipsProject.setProperties(props);
