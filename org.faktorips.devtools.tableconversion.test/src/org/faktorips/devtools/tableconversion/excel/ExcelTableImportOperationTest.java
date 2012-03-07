@@ -172,6 +172,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         assertEquals(2, importTarget.getRows().length);
         assertEquals("1900-01-02", importTarget.getRow(0).getValue(3));
         assertEquals("1900-03-01", importTarget.getRow(1).getValue(3));
+        assertTrue(ml.isEmpty());
     }
 
     private void createValid() throws Exception {
