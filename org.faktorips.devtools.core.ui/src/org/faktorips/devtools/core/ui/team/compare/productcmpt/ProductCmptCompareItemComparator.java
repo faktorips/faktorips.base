@@ -58,10 +58,10 @@ public class ProductCmptCompareItemComparator implements Comparator<AbstractComp
             return 0;
         }
         if (element1 instanceof IProductCmptLink) {
-            return -1;
+            return 1;
         }
         if (element2 instanceof IProductCmptLink) {
-            return 1;
+            return -1;
         }
         return 0;
     }
