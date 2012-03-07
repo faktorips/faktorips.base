@@ -152,9 +152,11 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
                 "NULL", false, ml, true);
         op.run(new NullProgressMonitor());
 
-        assertEquals(2, importTarget.getRows().length);
+        assertEquals(4, importTarget.getRows().length);
         assertEquals("1900-01-01", importTarget.getRow(0).getValue(3));
         assertEquals("1900-03-01", importTarget.getRow(1).getValue(3));
+        assertEquals("1900-02-27", importTarget.getRow(2).getValue(3));
+        assertEquals("1900-02-28", importTarget.getRow(3).getValue(3));
         assertEquals(1, ml.size());
         assertTrue(ml.getMessageByCode(AbstractExcelImportOperation.MSG_CODE_FIXED_OPEN_OFFICE_DATE) != null);
     }
@@ -169,9 +171,11 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
                 "NULL", false, ml, true);
         op.run(new NullProgressMonitor());
 
-        assertEquals(2, importTarget.getRows().length);
+        assertEquals(4, importTarget.getRows().length);
         assertEquals("1900-01-02", importTarget.getRow(0).getValue(3));
         assertEquals("1900-03-01", importTarget.getRow(1).getValue(3));
+        assertEquals("1900-02-28", importTarget.getRow(2).getValue(3));
+        assertEquals("1900-03-01", importTarget.getRow(3).getValue(3));
         assertTrue(ml.isEmpty());
     }
 
@@ -258,6 +262,8 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
 
         HSSFRow row0 = sheet.createRow(0);
         HSSFRow row1 = sheet.createRow(1);
+        HSSFRow row2 = sheet.createRow(2);
+        HSSFRow row3 = sheet.createRow(3);
 
         HSSFCellStyle dateStyle = wb.createCellStyle();
         dateStyle.setDataFormat((short)0x15);
@@ -266,7 +272,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         row0.createCell(1).setCellValue("NULL");
         row0.createCell(2).setCellValue("NULL");
         HSSFCell cell = row0.createCell(3);
-        cell.setCellValue(new GregorianCalendar(1900, 0, 2).getTime());
+        cell.setCellValue(2.0);// 2.1.1900 in Excel, 1.1.1900 in OO
         cell.setCellStyle(dateStyle);
         row0.createCell(4).setCellValue("NULL");
         row0.createCell(5).setCellValue("NULL");
@@ -277,12 +283,34 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         row1.createCell(1).setCellValue("NULL");
         row1.createCell(2).setCellValue("NULL");
         cell = row1.createCell(3);
-        cell.setCellValue(new GregorianCalendar(1900, 2, 1).getTime());
+        cell.setCellValue(61.0);// 1.3.1900
         cell.setCellStyle(dateStyle);
         row1.createCell(4).setCellValue("NULL");
         row1.createCell(5).setCellValue("NULL");
         row1.createCell(6).setCellValue("NULL");
         row1.createCell(7).setCellValue("NULL");
+
+        row2.createCell(0).setCellValue("NULL");
+        row2.createCell(1).setCellValue("NULL");
+        row2.createCell(2).setCellValue("NULL");
+        cell = row2.createCell(3);
+        cell.setCellValue(59.0);// 28.2.1900 in Excel, 27.2.1900 in OO
+        cell.setCellStyle(dateStyle);
+        row2.createCell(4).setCellValue("NULL");
+        row2.createCell(5).setCellValue("NULL");
+        row2.createCell(6).setCellValue("NULL");
+        row2.createCell(7).setCellValue("NULL");
+
+        row3.createCell(0).setCellValue("NULL");
+        row3.createCell(1).setCellValue("NULL");
+        row3.createCell(2).setCellValue("NULL");
+        cell = row3.createCell(3);
+        cell.setCellValue(60.0);// 29.2.1900 in Excel, 28.2.1900 in OO
+        cell.setCellStyle(dateStyle);
+        row3.createCell(4).setCellValue("NULL");
+        row3.createCell(5).setCellValue("NULL");
+        row3.createCell(6).setCellValue("NULL");
+        row3.createCell(7).setCellValue("NULL");
 
         FileOutputStream fos = new FileOutputStream(file);
         wb.write(fos);

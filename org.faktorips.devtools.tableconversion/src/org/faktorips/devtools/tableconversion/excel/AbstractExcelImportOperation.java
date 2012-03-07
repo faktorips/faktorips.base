@@ -16,7 +16,6 @@ package org.faktorips.devtools.tableconversion.excel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -77,7 +76,7 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
             if (DateUtil.isCellDateFormatted(cell)) {
                 Date dateCellValue = cell.getDateCellValue();
                 if (mightBeOpenOffice) {
-                    dateCellValue = correctOffset(dateCellValue, messageList);
+                    dateCellValue = correctOffset(cell, messageList);
                 }
                 return format.getIpsValue(dateCellValue, datatype, messageList);
             }
@@ -96,19 +95,17 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
     /**
      * Workaround for https://issues.apache.org/ooo/show_bug.cgi?id=80463
      */
-    private Date correctOffset(final Date dateCellValue, MessageList messageList) {
-        if (dateCellValue.before(FIRST_OF_MARCH_1900)) {
-            GregorianCalendar calendar = new GregorianCalendar();
-            calendar.setTime(dateCellValue);
-            calendar.add(Calendar.DAY_OF_MONTH, -1);
+    private Date correctOffset(final Cell cell, MessageList messageList) {
+        double numericCellValue = cell.getNumericCellValue();
+        if (numericCellValue < 61) {
+            cell.setCellValue(numericCellValue - 1);
             if (!addedMessageForOffsetCorrection) {
                 messageList.add(new Message(MSG_CODE_FIXED_OPEN_OFFICE_DATE,
                         Messages.AbstractExcelImportOperation_FixedOpenOfficeDate, Message.INFO));
                 addedMessageForOffsetCorrection = true;
             }
-            return calendar.getTime();
         }
-        return dateCellValue;
+        return cell.getDateCellValue();
     }
 
     protected void initWorkbookAndSheet() throws IOException {
