@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.POIDocument;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -38,7 +39,6 @@ import org.faktorips.util.message.MessageList;
 abstract class AbstractExcelImportOperation extends AbstractTableImportOperation {
 
     private static final Date FIRST_OF_MARCH_1900 = new GregorianCalendar(1900, 2, 1).getTime();
-    private static final String MICROSOFT_EXCEL = "Microsoft Excel"; //$NON-NLS-1$
 
     protected Workbook workbook;
     private boolean mightBeOpenOffice = false;
@@ -61,7 +61,7 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
         workbook = new HSSFWorkbook(fis);
         fis.close();
         if (((POIDocument)workbook).getSummaryInformation() == null
-                || !MICROSOFT_EXCEL.equals(((POIDocument)workbook).getSummaryInformation().getApplicationName())) {
+                || StringUtils.isBlank(((POIDocument)workbook).getSummaryInformation().getApplicationName())) {
             mightBeOpenOffice = true;
         }
         return workbook;
