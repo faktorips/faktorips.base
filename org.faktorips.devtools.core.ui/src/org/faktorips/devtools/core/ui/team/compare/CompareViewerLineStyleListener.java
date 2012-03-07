@@ -74,6 +74,9 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
                 .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_attribute
                         + AbstractCompareItem.COLON_BLANK);
         linePatternList.add(attributesPattern);
+        Pattern configElementPattern = Pattern.compile(Messages.ProductCmptCompareItem_DefaultsAndValueSets
+                + AbstractCompareItem.COLON_BLANK);
+        linePatternList.add(configElementPattern);
         Pattern propertiesPattern = Pattern
                 .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PropertiesPage_relations
                         + AbstractCompareItem.COLON_BLANK);

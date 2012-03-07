@@ -121,6 +121,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         int startIndex = sb.length();
         sb.append(getContentString());
         List<ProductCmptCompareItem> attributes = getCompareItemsOfClass(children, IAttributeValue.class);
+        List<ProductCmptCompareItem> configElements = getCompareItemsOfClass(children, IConfigElement.class);
         List<ProductCmptCompareItem> relations = getCompareItemsOfClass(children, IProductCmptLink.class);
         List<ProductCmptCompareItem> tableUsages = getCompareItemsOfClass(children, ITableContentUsage.class);
         List<ProductCmptCompareItem> rules = getCompareItemsOfClass(children, IValidationRuleConfig.class);
@@ -130,6 +131,14 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             for (ProductCmptCompareItem attribute : attributes) {
                 sb.append(NEWLINE);
                 attribute.initTreeContentString(sb, sb.length() - startIndex + offset);
+            }
+        }
+        if (!configElements.isEmpty()) {
+            sb.append(NEWLINE);
+            sb.append(getConfigElementListHeader(valueContainer));
+            for (ProductCmptCompareItem configElement : configElements) {
+                sb.append(NEWLINE);
+                configElement.initTreeContentString(sb, sb.length() - startIndex + offset);
             }
         }
         if (!relations.isEmpty()) {
@@ -211,6 +220,13 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         String attrString = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_attribute;
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
         sb.append(TAB).append(attrString).append(COLON_BLANK);
+        return sb.toString();
+    }
+
+    private Object getConfigElementListHeader(IPropertyValueContainer valueContainer) {
+        StringBuffer sb = new StringBuffer();
+        conditionalAppendGenerationDateAndTab(valueContainer, sb);
+        sb.append(TAB).append(Messages.ProductCmptCompareItem_DefaultsAndValueSets).append(COLON_BLANK);
         return sb.toString();
     }
 
@@ -434,6 +450,10 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
                 IAttributeValue attrValue = (IAttributeValue)getIpsElement();
                 sb.append(Messages.ProductCmptCompareItem_Attribute).append(COLON_BLANK).append(QUOTE)
                         .append(attrValue.getPropertyName()).append(QUOTE);
+            } else if (getIpsElement() instanceof IConfigElement) {
+                IConfigElement configElement = (IConfigElement)getIpsElement();
+                sb.append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK).append(QUOTE)
+                        .append(configElement.getPropertyName()).append(QUOTE);
             } else if (getIpsElement() instanceof IFormula) {
                 IFormula formula = (IFormula)getIpsElement();
                 sb.append(Messages.ProductCmptCompareItem_Formula).append(COLON_BLANK).append(QUOTE)

@@ -60,4 +60,6 @@ public class Messages extends NLS {
 
     public static String ProductCmptCompareItem_TableUsagesHeader;
 
+    public static String ProductCmptCompareItem_DefaultsAndValueSets;
+
 }
