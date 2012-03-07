@@ -155,6 +155,8 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         assertEquals(2, importTarget.getRows().length);
         assertEquals("1900-01-01", importTarget.getRow(0).getValue(3));
         assertEquals("1900-03-01", importTarget.getRow(1).getValue(3));
+        assertEquals(1, ml.size());
+        assertTrue(ml.getMessageByCode(AbstractExcelImportOperation.MSG_CODE_FIXED_OPEN_OFFICE_DATE) != null);
     }
 
     @Test

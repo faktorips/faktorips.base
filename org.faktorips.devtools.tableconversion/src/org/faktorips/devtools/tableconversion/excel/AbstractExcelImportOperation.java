@@ -29,6 +29,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.tableconversion.AbstractTableImportOperation;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -38,12 +39,16 @@ import org.faktorips.util.message.MessageList;
  */
 abstract class AbstractExcelImportOperation extends AbstractTableImportOperation {
 
+    public static final String MSG_CODE_FIXED_OPEN_OFFICE_DATE = "fixedOpenOfficeDate"; //$NON-NLS-1$
+
     private static final Date FIRST_OF_MARCH_1900 = new GregorianCalendar(1900, 2, 1).getTime();
 
     protected Workbook workbook;
     private boolean mightBeOpenOffice = false;
 
     protected Sheet sheet;
+
+    private boolean addedMessageForOffsetCorrection;
 
     protected AbstractExcelImportOperation(String filename, ExcelTableFormat format, String nullRepresentationString,
             boolean ignoreColumnHeaderRow, MessageList messageList, boolean importIntoExisting) {
@@ -72,7 +77,7 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
             if (DateUtil.isCellDateFormatted(cell)) {
                 Date dateCellValue = cell.getDateCellValue();
                 if (mightBeOpenOffice) {
-                    dateCellValue = correctOffset(dateCellValue);
+                    dateCellValue = correctOffset(dateCellValue, messageList);
                 }
                 return format.getIpsValue(dateCellValue, datatype, messageList);
             }
@@ -91,11 +96,16 @@ abstract class AbstractExcelImportOperation extends AbstractTableImportOperation
     /**
      * Workaround for https://issues.apache.org/ooo/show_bug.cgi?id=80463
      */
-    private Date correctOffset(final Date dateCellValue) {
+    private Date correctOffset(final Date dateCellValue, MessageList messageList) {
         if (dateCellValue.before(FIRST_OF_MARCH_1900)) {
             GregorianCalendar calendar = new GregorianCalendar();
             calendar.setTime(dateCellValue);
             calendar.add(Calendar.DAY_OF_MONTH, -1);
+            if (!addedMessageForOffsetCorrection) {
+                messageList.add(new Message(MSG_CODE_FIXED_OPEN_OFFICE_DATE,
+                        Messages.AbstractExcelImportOperation_FixedOpenOfficeDate, Message.INFO));
+                addedMessageForOffsetCorrection = true;
+            }
             return calendar.getTime();
         }
         return dateCellValue;
