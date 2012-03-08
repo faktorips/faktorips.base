@@ -122,6 +122,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         sb.append(getContentString());
         List<ProductCmptCompareItem> attributes = getCompareItemsOfClass(children, IAttributeValue.class);
         List<ProductCmptCompareItem> configElements = getCompareItemsOfClass(children, IConfigElement.class);
+        List<ProductCmptCompareItem> formulas = getCompareItemsOfClass(children, IFormula.class);
         List<ProductCmptCompareItem> relations = getCompareItemsOfClass(children, IProductCmptLink.class);
         List<ProductCmptCompareItem> tableUsages = getCompareItemsOfClass(children, ITableContentUsage.class);
         List<ProductCmptCompareItem> rules = getCompareItemsOfClass(children, IValidationRuleConfig.class);
@@ -139,6 +140,14 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             for (ProductCmptCompareItem configElement : configElements) {
                 sb.append(NEWLINE);
                 configElement.initTreeContentString(sb, sb.length() - startIndex + offset);
+            }
+        }
+        if (!formulas.isEmpty()) {
+            sb.append(NEWLINE);
+            sb.append(getFormulaListHeader(valueContainer));
+            for (ProductCmptCompareItem formula : formulas) {
+                sb.append(NEWLINE);
+                formula.initTreeContentString(sb, sb.length() - startIndex + offset);
             }
         }
         if (!relations.isEmpty()) {
@@ -227,6 +236,13 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         StringBuffer sb = new StringBuffer();
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
         sb.append(TAB).append(Messages.ProductCmptCompareItem_DefaultsAndValueSets).append(COLON_BLANK);
+        return sb.toString();
+    }
+
+    private Object getFormulaListHeader(IPropertyValueContainer valueContainer) {
+        StringBuffer sb = new StringBuffer();
+        conditionalAppendGenerationDateAndTab(valueContainer, sb);
+        sb.append(TAB).append(Messages.ProductCmptCompareItem_FormulaHeader).append(COLON_BLANK);
         return sb.toString();
     }
 
