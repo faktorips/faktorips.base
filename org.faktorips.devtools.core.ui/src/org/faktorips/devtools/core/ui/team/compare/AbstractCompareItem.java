@@ -316,11 +316,15 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
             IIpsObjectPart part1 = (IIpsObjectPart)element1;
             IIpsObjectPart part2 = (IIpsObjectPart)element2;
             return isEqualIpsElementInStructure(part1.getParent(), part2.getParent())
-                    && part1.getId().equals(part2.getId());
+                    && isEqualIpsObjectPart(part1, part2);
         } else {
             return element1.getEnclosingResource().equals(element2.getEnclosingResource());
         }
 
+    }
+
+    protected boolean isEqualIpsObjectPart(IIpsObjectPart part1, IIpsObjectPart part2) {
+        return part1.getId().equals(part2.getId());
     }
 
     /**

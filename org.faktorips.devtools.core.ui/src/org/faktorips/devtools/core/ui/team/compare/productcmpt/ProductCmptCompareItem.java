@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IFile;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -337,21 +338,19 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             IProductCmptLink rel = (IProductCmptLink)getIpsElement();
             sb.append(getGenerationDateText(rel.getProductCmptGeneration()));
             sb.append(TAB).append(TAB).append(TAB).append(TAB).append(rel.getTarget());
-            sb.append(BLANK).append(BLANK).append("["); //$NON-NLS-1$
+            sb.append(BLANK).append(BLANK);
+            sb.append('[')
+                    .append(rel.getMinCardinality())
+                    .append("..").append(rel.getMaxCardinality()).append(COMMA).append(BLANK).append(rel.getDefaultCardinality()).append(']'); //$NON-NLS-1$
             if (rel.isMandatory()) {
-                sb.append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.CardinalityPanel_labelMandatory);
+                sb.append('(')
+                        .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.CardinalityPanel_labelMandatory)
+                        .append(')');
             } else if (rel.isOptional()) {
-                sb.append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.CardinalityPanel_labelOptional);
-            } else {
-                sb.append(Messages.ProductCmptCompareItem_RelationCardinalityOther_minimum).append(COLON)
-                        .append(rel.getMinCardinality()).append(COMMA).append(BLANK);
-                sb.append(Messages.ProductCmptCompareItem_RelationCardinalityOther_maximum).append(COLON)
-                        .append(rel.getMaxCardinality()).append(COMMA).append(BLANK);
-                sb.append(Messages.ProductCmptCompareItem_RelationCardinalityOther_default).append(COLON)
-                        .append(rel.getDefaultCardinality());
+                sb.append('(')
+                        .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.CardinalityPanel_labelOptional)
+                        .append(')');
             }
-            sb.append("]"); //$NON-NLS-1$
-            sb.append(BLANK).append(BLANK).append("(").append(rel.getId()).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
         } else if (getIpsElement() instanceof IConfigElement) {
             IConfigElement configElement = (IConfigElement)getIpsElement();
             conditionalAppendGenerationDateAndTab(configElement.getPropertyValueContainer(), sb);
@@ -543,6 +542,30 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         Collections.sort(children, new ProductCmptCompareItemComparator());
         for (AbstractCompareItem element : children) {
             ((ProductCmptCompareItem)element).sortChildren();
+        }
+    }
+
+    @Override
+    protected boolean isEqualIpsObjectPart(IIpsObjectPart part1, IIpsObjectPart part2) {
+        if (part1 instanceof IPropertyValue && part2 instanceof IPropertyValue) {
+            return ((IPropertyValue)part1).getPropertyName().equals(((IPropertyValue)part2).getPropertyName());
+        } else if (part1 instanceof IProductCmptLink && part2 instanceof IProductCmptLink) {
+            IProductCmptLink link1 = (IProductCmptLink)part1;
+            IProductCmptLink link2 = (IProductCmptLink)part2;
+            return link1.getAssociation().equals(link2.getAssociation()) && link1.getTarget().equals(link2.getTarget());
+        }
+        return super.isEqualIpsObjectPart(part1, part2);
+    }
+
+    @Override
+    public int hashCode() {
+        IIpsElement ipsElement = getIpsElement();
+        if (ipsElement instanceof IPropertyValue) {
+            return ((IPropertyValue)ipsElement).getPropertyName().hashCode();
+        } else if (ipsElement instanceof IProductCmptLink) {
+            return ((IProductCmptLink)ipsElement).getAssociation().hashCode();
+        } else {
+            return super.hashCode();
         }
     }
 }
