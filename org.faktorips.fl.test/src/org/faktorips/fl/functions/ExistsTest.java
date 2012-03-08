@@ -13,7 +13,11 @@
 
 package org.faktorips.fl.functions;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.faktorips.datatype.Datatype;
+import org.faktorips.fl.CompilationResult;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,59 +25,64 @@ import org.junit.Test;
  * 
  * @author Jan Ortmann
  */
-public class IsEmptyTest extends FunctionAbstractTest {
+public class ExistsTest extends FunctionAbstractTest {
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         compiler.setEnsureResultIsObject(false);
-        registerFunction(new IsEmpty("ISEMPTY", ""));
+        registerFunction(new Exists("EXISTS", ""));
+    }
+
+    /**
+     * Compiles the given expression and tests if the compilation was successfull and if the
+     * datatype is the expected one.
+     */
+    private void compileSuccessfull(String expression) throws Exception {
+        CompilationResult result = compiler.compile(expression);
+        if (result.failed()) {
+            System.out.println(result);
+        }
+        assertTrue(result.successfull());
+        assertEquals(Datatype.PRIMITIVE_BOOLEAN, result.getDatatype());
     }
 
     @Test
     public void testDecimal() throws Exception {
-        execAndTestSuccessfull("ISEMPTY(1.0)", false);
+        compileSuccessfull("EXISTS(1.0)");
         registerFunction(new DecimalNullFct());
-        execAndTestSuccessfull("ISEMPTY(DECIMALNULL())", true);
+        compileSuccessfull("EXISTS(DECIMALNULL())");
     }
 
     @Test
     public void testMoney() throws Exception {
-        execAndTestSuccessfull("ISEMPTY(10EUR)", false);
+        compileSuccessfull("EXISTS(10EUR)");
         registerFunction(new MoneyNullFct());
-        execAndTestSuccessfull("ISEMPTY(MONEYNULL())", true);
+        compileSuccessfull("EXISTS(MONEYNULL())");
     }
 
     @Test
     public void testString() throws Exception {
-        execAndTestSuccessfull("ISEMPTY(\"a\")", false);
+        compileSuccessfull("EXISTS(\"a\")");
     }
 
     @Test
     public void testInt() throws Exception {
-        execAndTestSuccessfull("ISEMPTY(1)", false);
+        execAndTestSuccessfull("EXISTS(1)", true);
     }
 
     @Test
     public void testBoolean() throws Exception {
         registerFunction(new BooleanFct("TRUEOBJ", Boolean.TRUE));
         registerFunction(new BooleanFct("BOOLEANNULL", null));
-        execAndTestSuccessfull("ISEMPTY(TRUEOBJ())", false);
-        execAndTestSuccessfull("ISEMPTY(BOOLEANNULL())", true);
+        compileSuccessfull("EXISTS(TRUEOBJ())");
+        compileSuccessfull("EXISTS(BOOLEANNULL())");
     }
 
     @Test
     public void testPrimitiveBoolean() throws Exception {
-        execAndTestSuccessfull("ISEMPTY(true)", false);
-    }
-
-    @Test
-    public void testParameter() throws Exception {
-        execAndTestSuccessfull("ISEMPTY(param)", true, new String[] { "param" }, new Datatype[] { Datatype.STRING },
-                new Object[] { null }, Datatype.PRIMITIVE_BOOLEAN);
-        execAndTestSuccessfull("ISEMPTY(param)", false, new String[] { "param" }, new Datatype[] { Datatype.STRING },
-                new Object[] { "Foo" }, Datatype.PRIMITIVE_BOOLEAN);
+        execAndTestSuccessfull("EXISTS(true)", true);
     }
 
 }

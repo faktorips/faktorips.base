@@ -172,6 +172,11 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         // with attributeName is the name of one of the type's attributes
         method.newParameter(policyCmptType.getQualifiedName(), "policy");
 
+        result = resolver.compile("policy", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(policyCmptType, result.getDatatype());
+        assertEquals("policy", result.getCodeFragment().getSourcecode());
+
         result = resolver.compile("policy.tax", null, locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.DECIMAL, result.getDatatype());

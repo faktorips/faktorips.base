@@ -146,7 +146,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         int pos = identifier.indexOf('.');
         if (pos == -1) {
             paramName = identifier;
-            attributeName = ""; //$NON-NLS-1$
+            attributeName = null;
         } else {
             paramName = identifier.substring(0, pos);
             attributeName = identifier.substring(pos + 1);
@@ -244,6 +244,9 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
             return new CompilationResultImpl(Message.newError(ExprCompiler.INTERNAL_ERROR, text));
         }
         if (datatype instanceof IType) {
+            if (attributeName == null) {
+                return new CompilationResultImpl(param.getName(), datatype);
+            }
             return compileTypeAttributeIdentifier(new JavaCodeFragment(param.getName()), (IType)datatype, attributeName);
         }
         if (datatype instanceof ValueDatatype) {
