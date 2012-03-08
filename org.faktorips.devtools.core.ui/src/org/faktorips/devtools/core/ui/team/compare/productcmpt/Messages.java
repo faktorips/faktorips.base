@@ -36,6 +36,8 @@ public class Messages extends NLS {
 
     public static String ProductCmptCompareItem_Formula;
 
+    public static String ProductCmptCompareItem_FormulaHeader;
+
     public static String ProductCmptCompareItem_Relation;
 
     public static String ProductCmptCompareItem_RelationCardinalityOther_default;
