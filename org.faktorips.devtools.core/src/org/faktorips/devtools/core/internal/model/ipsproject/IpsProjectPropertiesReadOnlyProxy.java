@@ -530,12 +530,12 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
-    public Locale getExpressionLanguageFunctionsLanguage() {
-        return propertiesInternal.getExpressionLanguageFunctionsLanguage();
+    public Locale getFunctionsLanguageLocale() {
+        return propertiesInternal.getFunctionsLanguageLocale();
     }
 
     @Override
-    public void setExpressionLanguageFunctionsLanguage(Locale locale) {
+    public void setFunctionsLanguageLocale(Locale locale) {
         throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
     }
 

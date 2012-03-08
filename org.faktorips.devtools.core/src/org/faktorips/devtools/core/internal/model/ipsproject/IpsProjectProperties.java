@@ -78,7 +78,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String ATTRIBUTE_LOCALE = "locale"; //$NON-NLS-1$
 
-    private static final String EXPRESSION_LANGUAGE_FUNCTIONS_LANGUAGE = "ExpressionLanguageFunctionsLanguage"; //$NON-NLS-1$
+    private static final String FUNCTIONS_LANGUAGE_LOCALE = "FunctionsLanguageLocale"; //$NON-NLS-1$
 
     private static final String ADDITIONAL_SETTINGS_TAG_NAME = "AdditionalSettings"; //$NON-NLS-1$
 
@@ -168,7 +168,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     // default currency for this project - default is EUR
     private Currency defaultCurrency = Currency.getInstance("EUR"); //$NON-NLS-1$
 
-    private Locale expressionLanguageFunctionsLanguage = Locale.GERMAN;
+    private Locale functionsLanguageLocale = Locale.GERMAN;
 
     public IpsProjectProperties() {
         super();
@@ -589,10 +589,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         createDescriptionComment(
                 "Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German. Only English (en) and German (de) are supported at the moment.", projectEl); //$NON-NLS-1$
-        Element expressionLanguageFunctionsLanguageElement = doc.createElement(EXPRESSION_LANGUAGE_FUNCTIONS_LANGUAGE);
-        expressionLanguageFunctionsLanguageElement.setAttribute(ATTRIBUTE_LOCALE,
-                expressionLanguageFunctionsLanguage.getLanguage());
-        projectEl.appendChild(expressionLanguageFunctionsLanguageElement);
+        Element functionsLanguageLocaleElement = doc.createElement(FUNCTIONS_LANGUAGE_LOCALE);
+        functionsLanguageLocaleElement
+                .setAttribute(ATTRIBUTE_LOCALE, functionsLanguageLocale.getLanguage());
+        projectEl.appendChild(functionsLanguageLocaleElement);
 
         return projectEl;
     }
@@ -659,15 +659,15 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         initDefaultCurrency(element);
 
-        initExpressionLanguageFunctionsLanguage(element);
+        initFunctionsLanguageLocale(element);
     }
 
-    private void initExpressionLanguageFunctionsLanguage(Element element) {
-        Element expressionLanguageFunctionsLanguageElement = XmlUtil.getFirstElement(element,
-                EXPRESSION_LANGUAGE_FUNCTIONS_LANGUAGE);
-        if (expressionLanguageFunctionsLanguageElement != null) {
-            expressionLanguageFunctionsLanguage = new Locale(
-                    expressionLanguageFunctionsLanguageElement.getAttribute(ATTRIBUTE_LOCALE));
+    private void initFunctionsLanguageLocale(Element element) {
+        Element functionsLanguageLocaleElement = XmlUtil
+                .getFirstElement(element, FUNCTIONS_LANGUAGE_LOCALE);
+        if (functionsLanguageLocaleElement != null) {
+            functionsLanguageLocale = new Locale(
+                    functionsLanguageLocaleElement.getAttribute(ATTRIBUTE_LOCALE));
         }
     }
 
@@ -1463,13 +1463,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public Locale getExpressionLanguageFunctionsLanguage() {
-        return expressionLanguageFunctionsLanguage;
+    public Locale getFunctionsLanguageLocale() {
+        return functionsLanguageLocale;
     }
 
     @Override
-    public void setExpressionLanguageFunctionsLanguage(Locale locale) {
-        expressionLanguageFunctionsLanguage = locale;
+    public void setFunctionsLanguageLocale(Locale locale) {
+        functionsLanguageLocale = locale;
     }
 
 }

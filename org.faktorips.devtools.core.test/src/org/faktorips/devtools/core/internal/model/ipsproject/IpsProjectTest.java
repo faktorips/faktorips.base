@@ -2103,12 +2103,12 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testExpressionLanguageFunctionsLanguage() throws CoreException {
-        assertEquals(Locale.GERMAN, ipsProject.getExpressionLanguageFunctionsLanguage());
+    public void testFunctionsLanguageLocale() throws CoreException {
+        assertEquals(Locale.GERMAN, ipsProject.getFunctionsLanguageLocale());
         IIpsProjectProperties properties = ipsProject.getProperties();
-        properties.setExpressionLanguageFunctionsLanguage(Locale.ENGLISH);
+        properties.setFunctionsLanguageLocale(Locale.ENGLISH);
         ipsProject.setProperties(properties);
-        assertEquals(Locale.ENGLISH, ipsProject.getExpressionLanguageFunctionsLanguage());
+        assertEquals(Locale.ENGLISH, ipsProject.getFunctionsLanguageLocale());
     }
 
 }
