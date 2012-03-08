@@ -127,8 +127,8 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
         Text text = toolkit.createText(composite);
         enumContentNameControl = new TextField(text);
-        enumContentNameControl.getTextControl()
-                .setEnabled(!(enumType.isAbstract()) && !(enumType.isContainingValues()));
+        enumContentNameControl.getTextControl().setEditable(
+                !(enumType.isAbstract()) && !(enumType.isContainingValues()));
         getBindingContext().bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
 
         // Register controls for focus handling
