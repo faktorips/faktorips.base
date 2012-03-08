@@ -16,10 +16,9 @@ package org.faktorips.devtools.core.ui.internal;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.swt.layout.GridData;
@@ -62,17 +61,16 @@ public class PropertyVisibleControllerTest {
         IProductCmptPropertyFilter filter1 = mock(IProductCmptPropertyFilter.class);
         IProductCmptPropertyFilter filter2 = mock(IProductCmptPropertyFilter.class);
 
-        controller.addPropertyControlMapping(outerControl, p1, p1C1, p1C2);
-        controller.addPropertyControlMapping(outerControl, p2, p2C1, p2C2);
-        controller.addFilter(filter1);
-        controller.addFilter(filter2);
-
         when(filter1.isFiltered(p1)).thenReturn(false);
         when(filter2.isFiltered(p1)).thenReturn(true);
         when(filter1.isFiltered(p2)).thenReturn(false);
         when(filter2.isFiltered(p2)).thenReturn(false);
 
-        controller.updateUI();
+        controller.addFilter(filter1);
+        controller.addFilter(filter2);
+
+        controller.addPropertyControlMapping(outerControl, p1, p1C1, p1C2);
+        controller.addPropertyControlMapping(outerControl, p2, p2C1, p2C2);
 
         // Check visibility
         verify(p1C1).setVisible(false);
@@ -85,25 +83,6 @@ public class PropertyVisibleControllerTest {
         assertTrue(p1C2LayoutData.exclude);
         assertFalse(p2C1LayoutData.exclude);
         assertFalse(p2C2LayoutData.exclude);
-    }
-
-    @Test
-    public void testUpdateUI_PropertyControlMappingModified() {
-        IProductCmptProperty property = mock(IProductCmptProperty.class);
-        Control c1 = mockControl(null, new GridData());
-        Control c2 = mockControl(null, new GridData());
-        IProductCmptPropertyFilter filter = mock(IProductCmptPropertyFilter.class);
-
-        controller.addPropertyControlMapping(outerControl, property, c1);
-        controller.addPropertyControlMapping(outerControl, property, c2);
-        controller.addFilter(filter);
-
-        when(filter.isFiltered(property)).thenReturn(true);
-
-        controller.updateUI();
-
-        verify(c2).setVisible(false);
-        verify(c1, never()).setVisible(anyBoolean());
     }
 
     @Test
@@ -147,6 +126,32 @@ public class PropertyVisibleControllerTest {
         assertFalse(controller.addPropertyControlMapping(outerControl, property, control1));
         assertTrue(controller.addPropertyControlMapping(outerControl, property, control2));
         assertTrue(controller.addPropertyControlMapping(outerControl, property, control1, control2));
+    }
+
+    @Test
+    public void testAddPropertyControlMapping_settingVisibleState() {
+        IProductCmptProperty property = mock(IProductCmptProperty.class);
+        Control control1 = mockControl(null, new GridData());
+        Control control2 = mockControl(null, new GridData());
+
+        IProductCmptPropertyFilter filter = mock(IProductCmptPropertyFilter.class);
+        when(filter.isFiltered(property)).thenReturn(true);
+        controller.addFilter(filter);
+
+        controller.addPropertyControlMapping(outerControl, property, control1);
+        verify(control1).setVisible(false);
+
+        control1 = mockControl(null, new GridData());
+
+        controller.addPropertyControlMapping(outerControl, property, control2);
+        verifyZeroInteractions(control1);
+        verify(control2).setVisible(false);
+
+        control2 = mockControl(null, new GridData());
+
+        controller.addPropertyControlMapping(outerControl, property, control1, control2);
+        verify(control1).setVisible(false);
+        verify(control2).setVisible(false);
     }
 
     @Test(expected = IllegalArgumentException.class)

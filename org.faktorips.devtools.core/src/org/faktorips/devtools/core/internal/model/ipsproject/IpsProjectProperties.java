@@ -36,8 +36,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.enums.DefaultEnumType;
-import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -54,8 +52,6 @@ import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategyFactory;
-import org.faktorips.devtools.core.model.question.QuestionAssignedUserGroup;
-import org.faktorips.devtools.core.model.question.QuestionStatus;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.fl.AssociationNavigationFunctionsResolver;
@@ -1274,29 +1270,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setLastPersistentModificationTimestamp(Long timestamp) {
         lastPersistentModificationTimestamp = timestamp;
-    }
-
-    @Override
-    public EnumType getQuestionAssignedUserGroup() {
-        DefaultEnumType type = new DefaultEnumType("QuestionAssignedUserGroup", QuestionAssignedUserGroup.class); //$NON-NLS-1$
-        new QuestionAssignedUserGroup(type,
-                "undefined", Messages.IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_UNDEFINED); //$NON-NLS-1$
-        new QuestionAssignedUserGroup(type,
-                "business", Messages.IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_BUSINESS); //$NON-NLS-1$
-        new QuestionAssignedUserGroup(type,
-                "implementation", Messages.IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_IMPLEMENTATION); //$NON-NLS-1$
-        new QuestionAssignedUserGroup(type,
-                "cooperate", Messages.IpsProjectProperties_ENUM_QUESTION_ASSIGNED_USERGROUP_COOPERATE); //$NON-NLS-1$
-        return type;
-    }
-
-    @Override
-    public EnumType getQuestionStatus() {
-        DefaultEnumType type = new DefaultEnumType("QuestionStatus", QuestionStatus.class); //$NON-NLS-1$
-        new QuestionStatus(type, "open", Messages.IpsProjectProperties_ENUM_QUESTION_STATUS_OPEN); //$NON-NLS-1$
-        new QuestionStatus(type, "closed", Messages.IpsProjectProperties_ENUM_QUESTION_STATUS_CLOSED); //$NON-NLS-1$
-        new QuestionStatus(type, "deferred", Messages.IpsProjectProperties_ENUM_QUESTION_STATUS_DEFERRED); //$NON-NLS-1$
-        return type;
     }
 
     @Override

@@ -45,6 +45,10 @@ public interface IPropertyVisibleController {
      * Returns {@code true} if no such mapping already existed, or if the mapping has changed trough
      * the invocation. Returns {@code false} otherwise.
      * <p>
+     * Adding a property control mapping automatically updates the visible state of all controls. So
+     * you have to make sure that all filters have been added before you add property control
+     * mappings.
+     * <p>
      * <strong>Important:</strong> Clients must not forget to remove the mapping as soon as all
      * controls associated to the {@link IProductCmptProperty} are disposed by means of the
      * {@link #removePropertyControlMapping(Control)} method.
@@ -74,6 +78,8 @@ public interface IPropertyVisibleController {
      * <p>
      * Returns {@code true} if the indicated {@link IProductCmptPropertyFilter} has not been added
      * to this controller before, {@code false} otherwise.
+     * <p>
+     * The filters should be added to the controller before the property control mappings are added
      * 
      * @param filter the {@link IProductCmptPropertyFilter} to add to this controller
      */
