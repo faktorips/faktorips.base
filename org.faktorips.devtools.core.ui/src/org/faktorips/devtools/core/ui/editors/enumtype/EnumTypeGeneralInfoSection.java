@@ -127,7 +127,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         toolkit.createFormLabel(composite, Messages.EnumTypeGeneralInfoSection_labelEnumContentPackageFragment);
         Text text = toolkit.createText(composite);
         enumContentNameControl = new TextField(text);
-        enumContentNameControl.getTextControl().setEditable(
+        toolkit.setDataChangeable(enumContentNameControl.getTextControl(),
                 !(enumType.isAbstract()) && !(enumType.isContainingValues()));
         getBindingContext().bindContent(enumContentNameControl, enumType, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
 
@@ -188,8 +188,15 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
     private void wholeContentChanged() {
         valuesArePartOfModelCheckbox.setEnabled(!(enumType.isAbstract()));
-        enumContentNameControl.getTextControl()
-                .setEnabled(!(enumType.isAbstract()) && !(enumType.isContainingValues()));
+        getToolkit().setDataChangeable(enumContentNameControl.getTextControl(),
+                !(enumType.isAbstract()) && !(enumType.isContainingValues()));
+    }
+
+    @Override
+    public void refresh() {
+        super.refresh();
+        getToolkit().setDataChangeable(enumContentNameControl.getTextControl(),
+                !(enumType.isAbstract()) && !(enumType.isContainingValues()));
     }
 
 }
