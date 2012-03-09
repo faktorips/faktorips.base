@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptCategory.ProductCmptPropertyComparator;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.DependencyType;
@@ -956,7 +958,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         productCmptType = newProductCmptType(ipsProject, productCmptType.getQualifiedName());
         productCmptType.initFromXml(xmlElement);
 
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(false, ipsProject);
+        List<IProductCmptProperty> properties = findProductCmptPropertiesInOrder(productCmptType, false, ipsProject);
         assertEquals(property2.getName(), properties.get(0).getName());
         assertEquals(property1.getName(), properties.get(1).getName());
         assertEquals(property3.getName(), properties.get(2).getName());
@@ -981,7 +983,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         // Re-create the property to test whether it is listed at the end again
         property2 = productCmptType.newProductCmptTypeAttribute("p2");
 
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(false, ipsProject);
+        List<IProductCmptProperty> properties = findProductCmptPropertiesInOrder(productCmptType, false, ipsProject);
         assertEquals(property3.getName(), properties.get(0).getName());
         assertEquals(property1.getName(), properties.get(1).getName());
         assertEquals(property2.getName(), properties.get(2).getName());
@@ -1367,15 +1369,14 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testFindProductCmptPropertiesForCategory() throws CoreException {
-        IProductCmptCategory category = superProductCmptType.newCategory("category");
+        ProductCmptCategory category = (ProductCmptCategory)superProductCmptType.newCategory("category");
 
         IProductCmptProperty superProperty = superProductCmptType.newProductCmptTypeAttribute("superProperty");
         superProperty.setCategory(category.getName());
         IProductCmptProperty property = productCmptType.newProductCmptTypeAttribute("property");
         property.setCategory(category.getName());
 
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesForCategory(category, true,
-                ipsProject);
+        List<IProductCmptProperty> properties = category.findProductCmptProperties(productCmptType, true, ipsProject);
         assertEquals(superProperty, properties.get(0));
         assertEquals(property, properties.get(1));
         assertEquals(2, properties.size());
@@ -1392,15 +1393,14 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindProductCmptPropertiesForCategory_NotSearchingSupertypeHierarchy() throws CoreException {
-        IProductCmptCategory category = superProductCmptType.newCategory("category");
+        ProductCmptCategory category = (ProductCmptCategory)superProductCmptType.newCategory("category");
 
         IProductCmptProperty superProperty = superProductCmptType.newProductCmptTypeAttribute("superProperty");
         superProperty.setCategory(category.getName());
         IProductCmptProperty property = productCmptType.newProductCmptTypeAttribute("property");
         property.setCategory(category.getName());
 
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesForCategory(category, false,
-                ipsProject);
+        List<IProductCmptProperty> properties = category.findProductCmptProperties(productCmptType, false, ipsProject);
         assertEquals(property, properties.get(0));
         assertEquals(1, properties.size());
     }
@@ -1419,13 +1419,12 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindProductCmptPropertiesForCategory_DefaultCategory() throws CoreException {
-        IProductCmptCategory defaultAttributeCategory = productCmptType
+        ProductCmptCategory defaultAttributeCategory = (ProductCmptCategory)productCmptType
                 .findDefaultCategoryForProductCmptTypeAttributes(ipsProject);
         IProductCmptProperty attribute = productCmptType.newProductCmptTypeAttribute("foo");
 
-        assertEquals(attribute,
-                productCmptType.findProductCmptPropertiesForCategory(defaultAttributeCategory, false, ipsProject)
-                        .get(0));
+        assertEquals(attribute, defaultAttributeCategory.findProductCmptProperties(productCmptType, false, ipsProject)
+                .get(0));
     }
 
     /**
@@ -1443,12 +1442,11 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 "overwrittenAttribute");
         attribute.setOverwrite(true);
 
-        IProductCmptCategory category = superProductCmptType.newCategory("myCategory");
+        ProductCmptCategory category = (ProductCmptCategory)superProductCmptType.newCategory("myCategory");
         superAttribute.setCategory(category.getName());
         attribute.setCategory(category.getName());
 
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesForCategory(category, true,
-                ipsProject);
+        List<IProductCmptProperty> properties = category.findProductCmptProperties(productCmptType, true, ipsProject);
         assertTrue(properties.contains(attribute));
         assertFalse(properties.contains(superAttribute));
     }
@@ -1474,19 +1472,15 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 "overwrittenAttribute");
         attribute.setOverwrite(true);
 
-        IProductCmptCategory category1 = superProductCmptType.newCategory("category1");
-        IProductCmptCategory category2 = superProductCmptType.newCategory("category2");
+        ProductCmptCategory category1 = (ProductCmptCategory)superProductCmptType.newCategory("category1");
+        ProductCmptCategory category2 = (ProductCmptCategory)superProductCmptType.newCategory("category2");
         superAttribute.setCategory(category1.getName());
         attribute.setCategory(category2.getName());
 
-        assertTrue(superProductCmptType.findProductCmptPropertiesForCategory(category1, true, ipsProject).contains(
-                superAttribute));
-        assertFalse(productCmptType.findProductCmptPropertiesForCategory(category1, true, ipsProject).contains(
-                superAttribute));
-        assertTrue(productCmptType.findProductCmptPropertiesForCategory(category2, true, ipsProject)
-                .contains(attribute));
-        assertFalse(productCmptType.findProductCmptPropertiesForCategory(category2, true, ipsProject).contains(
-                superAttribute));
+        assertTrue(category1.findProductCmptProperties(superProductCmptType, true, ipsProject).contains(superAttribute));
+        assertFalse(category1.findProductCmptProperties(productCmptType, true, ipsProject).contains(superAttribute));
+        assertTrue(category2.findProductCmptProperties(productCmptType, true, ipsProject).contains(attribute));
+        assertFalse(category2.findProductCmptProperties(productCmptType, true, ipsProject).contains(superAttribute));
     }
 
     /**
@@ -1504,12 +1498,11 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 "overloadedFormula");
         formula.setOverloadsFormula(true);
 
-        IProductCmptCategory category = superProductCmptType.newCategory("myCategory");
+        ProductCmptCategory category = (ProductCmptCategory)superProductCmptType.newCategory("myCategory");
         superFormula.setCategory(category.getName());
         formula.setCategory(category.getName());
 
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesForCategory(category, true,
-                ipsProject);
+        List<IProductCmptProperty> properties = category.findProductCmptProperties(productCmptType, true, ipsProject);
         assertTrue(properties.contains(formula));
         assertFalse(properties.contains(superFormula));
     }
@@ -1535,18 +1528,15 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 "overloadedFormula");
         formula.setOverloadsFormula(true);
 
-        IProductCmptCategory category1 = superProductCmptType.newCategory("category1");
-        IProductCmptCategory category2 = superProductCmptType.newCategory("category2");
+        ProductCmptCategory category1 = (ProductCmptCategory)superProductCmptType.newCategory("category1");
+        ProductCmptCategory category2 = (ProductCmptCategory)superProductCmptType.newCategory("category2");
         superFormula.setCategory(category1.getName());
         formula.setCategory(category2.getName());
 
-        assertTrue(superProductCmptType.findProductCmptPropertiesForCategory(category1, true, ipsProject).contains(
-                superFormula));
-        assertFalse(productCmptType.findProductCmptPropertiesForCategory(category1, true, ipsProject).contains(
-                superFormula));
-        assertTrue(productCmptType.findProductCmptPropertiesForCategory(category2, true, ipsProject).contains(formula));
-        assertFalse(productCmptType.findProductCmptPropertiesForCategory(category2, true, ipsProject).contains(
-                superFormula));
+        assertTrue(category1.findProductCmptProperties(superProductCmptType, true, ipsProject).contains(superFormula));
+        assertFalse(category1.findProductCmptProperties(productCmptType, true, ipsProject).contains(superFormula));
+        assertTrue(category2.findProductCmptProperties(productCmptType, true, ipsProject).contains(formula));
+        assertFalse(category2.findProductCmptProperties(productCmptType, true, ipsProject).contains(superFormula));
     }
 
     /**
@@ -1615,8 +1605,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     public void testFindProductCmptPropertiesForCategory_ConsiderChangedPolicyPropertiesFromSupertypes()
             throws CoreException {
 
-        IProductCmptCategory oldCategory = superProductCmptType.newCategory("oldCategory");
-        IProductCmptCategory newCategory = superProductCmptType.newCategory("newCategory");
+        ProductCmptCategory oldCategory = (ProductCmptCategory)superProductCmptType.newCategory("oldCategory");
+        ProductCmptCategory newCategory = (ProductCmptCategory)superProductCmptType.newCategory("newCategory");
 
         IProductCmptProperty superPolicyProperty = createPolicyAttributeProperty(superPolicyCmptType,
                 "superPolicyProperty");
@@ -1624,15 +1614,15 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         superProductCmptType.changeCategoryAndDeferPolicyChange(superPolicyProperty, newCategory.getName());
 
-        assertFalse(productCmptType.findProductCmptPropertiesForCategory(oldCategory, true, ipsProject).contains(
+        assertFalse(oldCategory.findProductCmptProperties(productCmptType, true, ipsProject).contains(
                 superPolicyProperty));
-        assertTrue(productCmptType.findProductCmptPropertiesForCategory(newCategory, true, ipsProject).contains(
+        assertTrue(newCategory.findProductCmptProperties(productCmptType, true, ipsProject).contains(
                 superPolicyProperty));
     }
 
     @Test
     public void testFindProductCmptPropertiesForCategory_SortPropertiesAccordingToReferenceList() throws CoreException {
-        IProductCmptCategory category = superProductCmptType.newCategory("category");
+        ProductCmptCategory category = (ProductCmptCategory)superProductCmptType.newCategory("category");
 
         IProductCmptProperty s1 = createProductAttributeProperty(superProductCmptType, "s1");
         IProductCmptProperty s2 = createProductAttributeProperty(superProductCmptType, "s2");
@@ -1647,15 +1637,14 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         superProductCmptType.movePropertyReferences(new int[] { 1 }, Arrays.asList(s1, s2), true);
         productCmptType.movePropertyReferences(new int[] { 1 }, Arrays.asList(p1, p2), true);
 
-        List<IProductCmptProperty> allProperties = productCmptType.findProductCmptPropertiesForCategory(category, true,
-                ipsProject);
+        List<IProductCmptProperty> allProperties = category
+                .findProductCmptProperties(productCmptType, true, ipsProject);
         assertEquals(s2, allProperties.get(0));
         assertEquals(s1, allProperties.get(1));
         assertEquals(p2, allProperties.get(2));
         assertEquals(p1, allProperties.get(3));
 
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesForCategory(category, false,
-                ipsProject);
+        List<IProductCmptProperty> properties = category.findProductCmptProperties(productCmptType, false, ipsProject);
         assertEquals(p2, properties.get(0));
         assertEquals(p1, properties.get(1));
         assertEquals(2, properties.size());
@@ -1674,7 +1663,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     public void testFindProductCmptPropertiesForCategory_SortPropertiesThatAreNotYetInReferenceListTowardsTheEnd()
             throws CoreException {
 
-        IProductCmptCategory category = productCmptType.newCategory("myCategory");
+        ProductCmptCategory category = (ProductCmptCategory)productCmptType.newCategory("myCategory");
 
         IProductCmptProperty p1 = createProductAttributeProperty(productCmptType, "p1");
         IProductCmptProperty p2 = createProductAttributeProperty(productCmptType, "p2");
@@ -1691,8 +1680,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptProperty newProperty = productCmptType.newProductCmptTypeAttribute("newProperty");
         newProperty.setCategory(category.getName());
 
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesForCategory(category, false,
-                ipsProject);
+        List<IProductCmptProperty> properties = category.findProductCmptProperties(productCmptType, false, ipsProject);
         assertEquals(p2, properties.get(0));
         assertEquals(p1, properties.get(1));
         assertEquals(p3, properties.get(2));
@@ -1706,7 +1694,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         productCmptType.movePropertyReferences(new int[] { 1 }, Arrays.asList(a1, a2), true);
 
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(true, ipsProject);
+        List<IProductCmptProperty> properties = findProductCmptPropertiesInOrder(productCmptType, true, ipsProject);
         assertEquals(a2, properties.get(0));
         assertEquals(a1, properties.get(1));
     }
@@ -1718,7 +1706,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         productCmptType.setSupertype("foo");
 
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(true, ipsProject);
+        List<IProductCmptProperty> properties = findProductCmptPropertiesInOrder(productCmptType, true, ipsProject);
         assertEquals(a, properties.get(0));
         assertEquals(1, properties.size());
     }
@@ -1732,7 +1720,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         policyCmptType.setProductCmptType("foo");
 
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(true, ipsProject);
+        List<IProductCmptProperty> properties = findProductCmptPropertiesInOrder(productCmptType, true, ipsProject);
         assertEquals(a1, properties.get(0));
         assertEquals(a2, properties.get(1));
         assertEquals(2, properties.size());
@@ -2035,7 +2023,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 new int[] { 1, 0 },
                 productCmptType.movePropertyReferences(new int[] { 2, 1 },
                         Arrays.asList(property1, property2, property3), true));
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(false, ipsProject);
+        List<IProductCmptProperty> properties = findProductCmptPropertiesInOrder(productCmptType, false, ipsProject);
         assertEquals(property2, properties.get(0));
         assertEquals(property3, properties.get(1));
         assertEquals(property1, properties.get(2));
@@ -2056,7 +2044,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 new int[] { 1, 2 },
                 productCmptType.movePropertyReferences(new int[] { 0, 1 },
                         Arrays.asList(property1, property2, property3), false));
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(false, ipsProject);
+        List<IProductCmptProperty> properties = findProductCmptPropertiesInOrder(productCmptType, false, ipsProject);
         assertEquals(property3, properties.get(0));
         assertEquals(property1, properties.get(1));
         assertEquals(property2, properties.get(2));
@@ -2087,7 +2075,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         assertArrayEquals(new int[] { 0 },
                 productCmptType.movePropertyReferences(new int[] { 1 }, Arrays.asList(property1, property2), true));
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(false, ipsProject);
+        List<IProductCmptProperty> properties = findProductCmptPropertiesInOrder(productCmptType, false, ipsProject);
         assertEquals(property2, properties.get(0));
         assertEquals(inBetweenProperty, properties.get(1));
         assertEquals(property1, properties.get(2));
@@ -2118,7 +2106,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         assertArrayEquals(new int[] { 1 },
                 productCmptType.movePropertyReferences(new int[] { 0 }, Arrays.asList(property1, property2), false));
-        List<IProductCmptProperty> properties = productCmptType.findProductCmptPropertiesInOrder(false, ipsProject);
+        List<IProductCmptProperty> properties = findProductCmptPropertiesInOrder(productCmptType, false, ipsProject);
         assertEquals(property2, properties.get(0));
         assertEquals(inBetweenProperty, properties.get(1));
         assertEquals(property1, properties.get(2));
@@ -2357,8 +2345,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     public void testChangeCategoryAndDeferPolicyChange_DoNotAddPolicyChangeToPendingChangesIfPolicySrcFileImmutable()
             throws CoreException {
 
-        IProductCmptCategory beforeCategory = productCmptType.newCategory("beforeCategory");
-        IProductCmptCategory otherCategory = productCmptType.newCategory("otherCategory");
+        ProductCmptCategory beforeCategory = (ProductCmptCategory)productCmptType.newCategory("beforeCategory");
+        ProductCmptCategory otherCategory = (ProductCmptCategory)productCmptType.newCategory("otherCategory");
 
         IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
         policyProperty.setCategory(beforeCategory.getName());
@@ -2372,13 +2360,13 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, otherCategory.getName());
         undoDeleteResourceChange.perform(new NullProgressMonitor());
 
-        List<IProductCmptProperty> beforeCategoryProperties = productCmptType.findProductCmptPropertiesForCategory(
-                beforeCategory, false, ipsProject);
+        List<IProductCmptProperty> beforeCategoryProperties = beforeCategory.findProductCmptProperties(productCmptType,
+                false, ipsProject);
         assertEquals(policyProperty.getId(), beforeCategoryProperties.get(0).getId());
         assertEquals(1, beforeCategoryProperties.size());
 
-        List<IProductCmptProperty> otherCategoryProperties = productCmptType.findProductCmptPropertiesForCategory(
-                otherCategory, false, ipsProject);
+        List<IProductCmptProperty> otherCategoryProperties = otherCategory.findProductCmptProperties(productCmptType,
+                false, ipsProject);
         assertTrue(otherCategoryProperties.isEmpty());
     }
 
@@ -2468,8 +2456,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     public void testChangeCategoryAndDeferPolicyChange_ClearPendingPolicyChangesUponSaveEvenIfPolicySrcFileIsImmutable()
             throws CoreException {
 
-        IProductCmptCategory beforeCategory = productCmptType.newCategory("beforeCategory");
-        IProductCmptCategory afterCategory = productCmptType.newCategory("afterCategory");
+        ProductCmptCategory beforeCategory = (ProductCmptCategory)productCmptType.newCategory("beforeCategory");
+        ProductCmptCategory afterCategory = (ProductCmptCategory)productCmptType.newCategory("afterCategory");
         IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
         policyProperty.setCategory(beforeCategory.getName());
 
@@ -2484,13 +2472,13 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         productCmptType.getIpsSrcFile().save(true, null);
         undoDeleteResourceChange.perform(new NullProgressMonitor());
 
-        List<IProductCmptProperty> beforeCategoryProperties = productCmptType.findProductCmptPropertiesForCategory(
-                beforeCategory, false, ipsProject);
+        List<IProductCmptProperty> beforeCategoryProperties = beforeCategory.findProductCmptProperties(productCmptType,
+                false, ipsProject);
         assertEquals(policyProperty.getId(), beforeCategoryProperties.get(0).getId());
         assertEquals(1, beforeCategoryProperties.size());
 
-        List<IProductCmptProperty> afterCategoryProperties = productCmptType.findProductCmptPropertiesForCategory(
-                afterCategory, false, ipsProject);
+        List<IProductCmptProperty> afterCategoryProperties = afterCategory.findProductCmptProperties(productCmptType,
+                false, ipsProject);
         assertTrue(afterCategoryProperties.isEmpty());
     }
 
@@ -2553,6 +2541,26 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 category.delete();
             }
         }
+    }
+
+    /**
+     * Returns a list containing the product component properties belonging to this
+     * {@link IProductCmptType} or the configured {@link IPolicyCmptType} in the order they are
+     * referenced by the categories of this {@link IProductCmptType}.
+     * 
+     * @param searchSupertypeHierarchy flag indicating whether to include product component
+     *            properties defined in the supertype hierarchy
+     * 
+     * @throws CoreException if an error occurs during the search
+     */
+    private List<IProductCmptProperty> findProductCmptPropertiesInOrder(final ProductCmptType contextType,
+            boolean searchSupertypeHierarchy,
+            IIpsProject ipsProject) throws CoreException {
+
+        List<IProductCmptProperty> properties = contextType.findProductCmptProperties(searchSupertypeHierarchy,
+                ipsProject);
+        Collections.sort(properties, new ProductCmptPropertyComparator(contextType));
+        return properties;
     }
 
 }

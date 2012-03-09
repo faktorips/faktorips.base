@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -156,6 +157,36 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     /**
+     * 
+     * <strong>Scenario:</strong><br>
+     * The category of policy cmpt attribute changes
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The findIsContainingProperty method should instantly find the new category although the
+     * category was not stored in the attribute
+     */
+    @Test
+    public void testFindIsContainingProperty_pendingChanges() throws CoreException {
+        IProductCmptCategory category = productType.newCategory("newCategory");
+        IProductCmptCategory defCategory = productType.newCategory("defCategory");
+        defCategory.setDefaultForPolicyCmptTypeAttributes(true);
+
+        IPolicyCmptTypeAttribute attribute = policyType.newPolicyCmptTypeAttribute();
+        attribute.setProductRelevant(true);
+
+        assertTrue(StringUtils.isEmpty(attribute.getCategory()));
+
+        assertFalse(category.findIsContainingProperty(attribute, productType, ipsProject));
+        assertTrue(defCategory.findIsContainingProperty(attribute, productType, ipsProject));
+
+        category.insertProductCmptProperty(attribute, null, true);
+        assertTrue(StringUtils.isEmpty(attribute.getCategory()));
+
+        assertTrue(category.findIsContainingProperty(attribute, productType, ipsProject));
+        assertFalse(defCategory.findIsContainingProperty(attribute, productType, ipsProject));
+    }
+
+    /**
      * <strong>Scenario:</strong><br>
      * An {@link IProductCmptProperty} that has no {@link IProductCmptCategory} is checked for
      * containment in the corresponding default {@link IProductCmptCategory}.
@@ -218,6 +249,32 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         attributeProperty.setCategory(superCategory.getName());
 
         assertFalse(defaultAttributeCategory.findIsContainingProperty(attributeProperty, productType, ipsProject));
+    }
+
+    /**
+     * 
+     * <strong>Scenario:</strong><br>
+     * A subtype of a product component type references the same policy component type. FIPS-969
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The policy cmpt attribute should be found only one times
+     */
+    @Test
+    public void testFindIsContainingProperty_supertypeWithSamePolicy() throws CoreException {
+        IProductCmptCategory defaultAttributeCategory = productType.newCategory("defaultAttribute");
+        defaultAttributeCategory.setDefaultForPolicyCmptTypeAttributes(true);
+
+        IProductCmptType superProdcutType = newProductCmptType(ipsProject, "SuperProdCmptType");
+        superProdcutType.setPolicyCmptType(policyType.getQualifiedName());
+        productType.setSupertype(superProdcutType.getQualifiedName());
+
+        IPolicyCmptTypeAttribute attribute = policyType.newPolicyCmptTypeAttribute();
+        attribute.setProductRelevant(true);
+
+        List<IProductCmptProperty> propertiesInCategory = defaultAttributeCategory.findProductCmptProperties(
+                productType, true, ipsProject);
+        assertEquals(1, propertiesInCategory.size());
+        assertTrue(propertiesInCategory.contains(attribute));
     }
 
     /**

@@ -364,7 +364,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the language in that the expression language's functions are used. E.g. the
      * <code>if</code> function is called IF in English, but WENN in German.
      */
-    public Locale getExpressionLanguageFunctionsLanguage();
+    public Locale getFunctionsLanguageLocale();
 
     /**
      * Returns the naming convention for changes over time used in the generated Java sourcecode.

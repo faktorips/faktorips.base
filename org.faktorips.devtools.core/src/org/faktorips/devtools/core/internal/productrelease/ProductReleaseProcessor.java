@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.productrelease.ITargetSystem;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
+import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
 import org.faktorips.devtools.core.productrelease.ObservableProgressMessages;
 import org.faktorips.util.message.MessageList;
 
@@ -51,12 +52,22 @@ public class ProductReleaseProcessor {
     public ProductReleaseProcessor(IIpsProject ipsProject, ObservableProgressMessages observableProgressMessages)
             throws CoreException {
         this.ipsProject = ipsProject;
-        teamOperation = new CvsTeamOperations(observableProgressMessages);
+        teamOperation = getTeamOperations(ipsProject, observableProgressMessages);
         this.observableProgressMessages = observableProgressMessages;
         releaseAndDeploymentOperation = loadReleaseDeploymentOperation(ipsProject);
         if (releaseAndDeploymentOperation != null) {
             releaseAndDeploymentOperation.setObservableProgressMessages(observableProgressMessages);
         }
+    }
+
+    private ITeamOperations getTeamOperations(final IIpsProject ipsProject,
+            final ObservableProgressMessages observableProgressMessages) {
+        for (ITeamOperationsFactory factory : IpsPlugin.getDefault().getTeamOperationsFactories()) {
+            if (factory.canCreateTeamOperationsFor(ipsProject)) {
+                return factory.createTeamOperations(observableProgressMessages);
+            }
+        }
+        return new NoVersionControlTeamOperations();
     }
 
     public IReleaseAndDeploymentOperation getReleaseAndDeploymentOperation() {

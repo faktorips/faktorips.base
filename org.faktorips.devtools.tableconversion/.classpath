@@ -4,6 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/opencsv-1.8.jar" sourcepath="lib/opencsv-1.8-src-with-libs.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/poi-2.5.1-final-20040804.jar" sourcepath="lib/poi-src-2.5.1-final-20040804.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-3.7-20101029.jar" sourcepath="lib/poi-src-3.7-20101029.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

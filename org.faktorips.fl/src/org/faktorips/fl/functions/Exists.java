@@ -41,7 +41,7 @@ public class Exists extends AbstractFlFunction {
         Datatype argType = argResults[0].getDatatype();
         if (argType.isPrimitive()) {
             // values of primitive types can never be null
-            return new CompilationResultImpl("false", Datatype.PRIMITIVE_BOOLEAN);
+            return new CompilationResultImpl("true", Datatype.PRIMITIVE_BOOLEAN);
         }
         JavaCodeFragment code = new JavaCodeFragment();
         code.append("new ");

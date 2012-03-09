@@ -141,16 +141,16 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
         HSSFCellStyle dateStyle = wb.createCellStyle();
         dateStyle.setDataFormat((short)27);
 
-        row1.createCell((short)0).setCellValue("INVALID BOOLEAN");
-        row1.createCell((short)1).setCellValue("INVALID");
-        row1.createCell((short)2).setCellValue("INVALID");
-        HSSFCell cell = row1.createCell((short)3);
+        row1.createCell(0).setCellValue("INVALID BOOLEAN");
+        row1.createCell(1).setCellValue("INVALID");
+        row1.createCell(2).setCellValue("INVALID");
+        HSSFCell cell = row1.createCell(3);
         cell.setCellValue("INVALID");
         cell.setCellStyle(dateStyle);
-        row1.createCell((short)4).setCellValue("INVALID");
-        row1.createCell((short)5).setCellValue("INVALID");
-        row1.createCell((short)6).setCellValue("INVALID");
-        row1.createCell((short)7).setCellValue("INVALID not a legal java identifier");
+        row1.createCell(4).setCellValue("INVALID");
+        row1.createCell(5).setCellValue("INVALID");
+        row1.createCell(6).setCellValue("INVALID");
+        row1.createCell(7).setCellValue("INVALID not a legal java identifier");
 
         FileOutputStream fos = new FileOutputStream(file);
         wb.write(fos);

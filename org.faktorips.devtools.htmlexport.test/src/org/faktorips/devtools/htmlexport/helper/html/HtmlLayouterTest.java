@@ -16,8 +16,8 @@ package org.faktorips.devtools.htmlexport.helper.html;
 import java.util.List;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
@@ -38,11 +38,16 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
                 return ""; //$NON-NLS-1$
             }
 
+            @Override
+            public boolean isContentUnit() {
+                return false;
+            }
+
         };
         pageElement.setTitle("Test"); //$NON-NLS-1$
 
         String[] containments = { "<html", "</html>", "<head>", "</head>", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                "<title>" + pageElement.getTitle() + "</title>", "<body>", "</body>" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                "<title>" + pageElement.getTitle() + " (", "<body>", "</body>" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         assertContains(layout(pageElement), containments);
     }
 

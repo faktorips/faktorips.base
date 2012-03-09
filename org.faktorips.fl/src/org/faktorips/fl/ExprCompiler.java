@@ -161,6 +161,15 @@ public class ExprCompiler {
     public final static String NO_INDEX_FOR_1TO1_ASSOCIATION = PREFIX + "NoIndexFor1to1Association"; //$NON-NLS-1$
 
     /**
+     * An identifier is resolved to an association with index and qualifier.
+     * <p>
+     * Example: a.b[0]["pack.MyB"]
+     * <p>
+     * In the expression a and b are identifiers. The identifier b is resolved to an association.
+     */
+    public final static String INDEX_AND_QUALIFIER_CAN_NOT_BE_COMBINED = PREFIX + "IndexAndQualifierCanNotBeCombined"; //$NON-NLS-1$
+
+    /**
      * The expression contains a call to an undefined function.
      */
     public final static String UNDEFINED_FUNCTION = PREFIX + "UndefinedFunction"; //$NON-NLS-1$

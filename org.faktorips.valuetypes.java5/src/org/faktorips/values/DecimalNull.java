@@ -26,7 +26,7 @@ public class DecimalNull extends Decimal implements NullObject {
     private static final long serialVersionUID = -662857878963625638L;
     static final String STRING_REPRESENTATION = "DecimalNull";
 
-    public DecimalNull() {
+    DecimalNull() {
         super(null);
     }
 
@@ -55,7 +55,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal add(Decimal d) {
-        return this;
+        return NULL;
     }
 
     /**
@@ -63,7 +63,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal add(Integer i) {
-        return this;
+        return NULL;
     }
 
     /**
@@ -71,7 +71,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal add(int i) {
-        return this;
+        return NULL;
     }
 
     /**
@@ -79,7 +79,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal max(Decimal value) {
-        return Decimal.NULL;
+        return NULL;
     }
 
     /**
@@ -87,7 +87,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal min(Decimal value) {
-        return Decimal.NULL;
+        return NULL;
     }
 
     /**
@@ -95,7 +95,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal subtract(Decimal d) {
-        return this;
+        return NULL;
     }
 
     /**
@@ -103,7 +103,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal subtract(int i) {
-        return this;
+        return NULL;
     }
 
     /**
@@ -111,7 +111,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal multiply(Decimal d) {
-        return this;
+        return NULL;
     }
 
     /**
@@ -127,7 +127,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal multiply(Integer i) {
-        return this;
+        return NULL;
     }
 
     /**
@@ -143,7 +143,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal multiply(long l) {
-        return this;
+        return NULL;
     }
 
     /**
@@ -151,7 +151,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal divide(Decimal d, int scale, int roundingMode) {
-        return this;
+        return NULL;
     }
 
     /**
@@ -159,7 +159,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal divide(int value, int scale, int roundingMode) {
-        return this;
+        return NULL;
     }
 
     /**
@@ -167,7 +167,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal divide(long value, int scale, int roundingMode) {
-        return this;
+        return NULL;
     }
 
     /**
@@ -175,7 +175,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal setScale(int scale, int roundingMode) {
-        return this;
+        return NULL;
     }
 
     /**
@@ -183,7 +183,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal round(int precision, int roundingMode) {
-        return this;
+        return NULL;
     }
 
     @Override
@@ -264,7 +264,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal abs() {
-        return this;
+        return NULL;
     }
 
     /**
@@ -272,7 +272,7 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public Decimal negate() {
-        return this;
+        return NULL;
     }
 
     @Override
@@ -290,6 +290,9 @@ public class DecimalNull extends Decimal implements NullObject {
      */
     @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
         if (!(o instanceof Decimal)) {
             return false;
         }

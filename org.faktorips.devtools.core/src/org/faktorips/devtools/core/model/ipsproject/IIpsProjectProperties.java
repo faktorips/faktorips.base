@@ -566,4 +566,15 @@ public interface IIpsProjectProperties {
      */
     boolean isActive(IFunctionResolverFactory factory);
 
+    /**
+     * Returns the language in which the expression language's functions are used. E.g. the
+     * <code>if</code> function is called IF in English, but WENN in German.
+     */
+    Locale getFunctionsLanguageLocale();
+
+    /**
+     * Sets the language in which the expression language's functions are used.
+     */
+    void setFunctionsLanguageLocale(Locale locale);
+
 }

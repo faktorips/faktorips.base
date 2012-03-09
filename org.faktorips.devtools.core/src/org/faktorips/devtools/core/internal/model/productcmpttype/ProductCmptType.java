@@ -400,10 +400,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 new IProductCmptProperty[pendingPolicyChanges.size()]);
         IIpsSrcFile policySrcFile = policyProperties[0].getIpsSrcFile();
         if (policySrcFile.isMutable()) {
+            boolean isDirtyState = policySrcFile.isDirty();
             for (IProductCmptProperty property : pendingPolicyChanges.keySet()) {
                 property.setCategory(pendingPolicyChanges.get(property));
             }
-            if (!policySrcFile.isDirty()) {
+            if (!isDirtyState) {
                 try {
                     policySrcFile.save(true, null);
                 } catch (CoreException e) {
@@ -995,6 +996,24 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return visitor.category;
     }
 
+    /**
+     * Gets the name of the category for the given property.
+     * <p>
+     * In contrast to only asking the property for its category, this method considers pending
+     * policy changes. The result may be an empty String or <code>null</code> if no category is set.
+     * 
+     * @param property The property you want to get the name of the category for
+     * @return The name of the category in respect to pending changes. May be <code>null</code> or
+     *         empty String if no category is set.
+     */
+    String getCategoryNameFor(IProductCmptProperty property) {
+        String pendingCategory = pendingPolicyChanges.get(property);
+        if (pendingCategory != null) {
+            return pendingCategory;
+        }
+        return property.getCategory();
+    }
+
     @Override
     public boolean moveCategories(List<IProductCmptCategory> categories, boolean up) {
         // Check that all categories to be moved belong to this type
@@ -1128,125 +1147,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return references;
     }
 
-    /**
-     * Returns a list containing the product component properties of the indicated
-     * {@link IProductCmptCategory} in the referenced order.
-     * <p>
-     * This method does consider product component properties of the supertype hierarchy if so
-     * desired.
-     * 
-     * @param category the {@link IProductCmptCategory} to search the product component properties
-     *            for
-     * @param searchSupertypeHierarchy flag indicating whether the supertype hierarchy shall be
-     *            included in the search
-     * 
-     * @throws CoreException if an error occurs during the search
-     */
-    List<IProductCmptProperty> findProductCmptPropertiesForCategory(final IProductCmptCategory category,
-            final boolean searchSupertypeHierarchy,
-            IIpsProject ipsProject) throws CoreException {
-
-        class CategoryPropertyCollector extends TypeHierarchyVisitor<IProductCmptType> {
-
-            private final List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
-
-            /**
-             * {@link Set} that is used to store all property names of properties that overwrite
-             * another property from the supertype hierarchy.
-             * <p>
-             * When testing whether a given {@link IProductCmptProperty} shall be included in an
-             * {@link IProductCmptCategory}, it is first checked whether an
-             * {@link IProductCmptProperty} with the same property name is contained within this
-             * set. In this case, the {@link IProductCmptProperty} has been overwritten by a subtype
-             * which means that the supertype {@link IProductCmptProperty} is not to be added to the
-             * {@link IProductCmptCategory}.
-             */
-            private final Set<String> overwritingProperties = new HashSet<String>();
-
-            private CategoryPropertyCollector(IIpsProject ipsProject) {
-                super(ipsProject);
-            }
-
-            @Override
-            protected boolean visit(IProductCmptType currentType) throws CoreException {
-                for (IProductCmptProperty property : currentType.findProductCmptProperties(false, ipsProject)) {
-                    /*
-                     * First, check whether the property has been overwritten by a subtype - in this
-                     * case we do not add the property to the category.
-                     */
-                    if (overwritingProperties.contains(property.getPropertyName())) {
-                        continue;
-                    }
-
-                    /*
-                     * Memorize the property if it is overwriting another property from the
-                     * supertype hierarchy.
-                     */
-                    if (isOverwriteProperty(property)) {
-                        overwritingProperties.add(property.getPropertyName());
-                    }
-
-                    /*
-                     * Look in the map of pending category changes for policy properties to see
-                     * whether the property's current category has a pending change.
-                     */
-                    String changedCategory = ((ProductCmptType)currentType).pendingPolicyChanges.get(property);
-                    if (changedCategory != null) {
-                        if (changedCategory.equals(category.getName())) {
-                            properties.add(property);
-                        }
-                        continue;
-                    }
-
-                    if (category.findIsContainingProperty(property, currentType, ipsProject)) {
-                        properties.add(property);
-                    }
-                }
-
-                return searchSupertypeHierarchy;
-            }
-
-            /**
-             * Returns whether the given {@link IProductCmptProperty} overwrites another
-             * {@link IProductCmptProperty} from the supertype hierarchy.
-             */
-            private boolean isOverwriteProperty(IProductCmptProperty property) {
-                if (property instanceof IPolicyCmptTypeAttribute) {
-                    return ((IPolicyCmptTypeAttribute)property).isOverwrite();
-                } else if (property instanceof IProductCmptTypeMethod) {
-                    return ((IProductCmptTypeMethod)property).isOverloadsFormula();
-                }
-                return false;
-            }
-
-        }
-
-        CategoryPropertyCollector collector = new CategoryPropertyCollector(ipsProject);
-        collector.start(this);
-
-        Collections.sort(collector.properties, new ProductCmptPropertyComparator(this));
-
-        return collector.properties;
-    }
-
-    /**
-     * Returns a list containing the product component properties belonging to this
-     * {@link IProductCmptType} or the configured {@link IPolicyCmptType} in the order they are
-     * referenced by the categories of this {@link IProductCmptType}.
-     * 
-     * @param searchSupertypeHierarchy flag indicating whether to include product component
-     *            properties defined in the supertype hierarchy
-     * 
-     * @throws CoreException if an error occurs during the search
-     */
-    List<IProductCmptProperty> findProductCmptPropertiesInOrder(boolean searchSupertypeHierarchy, IIpsProject ipsProject)
-            throws CoreException {
-
-        List<IProductCmptProperty> properties = findProductCmptProperties(searchSupertypeHierarchy, ipsProject);
-        Collections.sort(properties, new ProductCmptPropertyComparator(this));
-        return properties;
-    }
-
     @Override
     protected boolean isPartSavedToXml(IIpsObjectPart part) {
         if (part instanceof IProductCmptPropertyReference) {
@@ -1304,7 +1204,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
 
-    private int getReferencedPropertyIndex(IProductCmptProperty property) {
+    int getReferencedPropertyIndex(IProductCmptProperty property) {
         int index = 0;
         for (IProductCmptPropertyReference reference : propertyReferences) {
             if (reference.isReferencedProperty(property)) {
@@ -1359,119 +1259,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     List<IProductCmptPropertyReference> getPropertyReferences() {
         return new ArrayList<IProductCmptPropertyReference>(propertyReferences.getBackingList());
-    }
-
-    /**
-     * {@link Comparator} that can be used to sort product component properties according to the
-     * reference list stored in the {@link IProductCmptType}, with properties belonging to
-     * supertypes being sorted towards the beginning of the list by default.
-     */
-    private static class ProductCmptPropertyComparator implements Comparator<IProductCmptProperty> {
-
-        private final IProductCmptType productCmptType;
-
-        private ProductCmptPropertyComparator(IProductCmptType productCmptType) {
-            this.productCmptType = productCmptType;
-        }
-
-        @Override
-        public int compare(IProductCmptProperty property1, IProductCmptProperty property2) {
-            // First, try to sort properties of the supertype hierarchy to the top
-            int subtypeCompare = compareSubtypeRelationship(property1, property2);
-
-            // If the indices are equal, compare the indices of the properties in the reference list
-            return subtypeCompare != 0 ? subtypeCompare : comparePropertyIndices(property1, property2);
-        }
-
-        /**
-         * Compares the provided product component types according to their subtype/supertype
-         * relationship.
-         * <p>
-         * Subtypes are sorted towards the end.
-         */
-        private int compareSubtypeRelationship(IProductCmptProperty property1, IProductCmptProperty property2) {
-            // Search the product component types the properties belong to
-            IProductCmptType productCmptType1;
-            IProductCmptType productCmptType2;
-            try {
-                productCmptType1 = property1.findProductCmptType(productCmptType.getIpsProject());
-                productCmptType2 = property2.findProductCmptType(productCmptType.getIpsProject());
-            } catch (CoreException e) {
-                // Consider elements equal if the product component types cannot be found
-                IpsPlugin.log(e);
-                return 0;
-            }
-
-            // Consider elements equal if the product component types cannot be found
-            if (productCmptType1 == null || productCmptType2 == null) {
-                return 0;
-            }
-
-            // Consider elements equal if both properties belong to the same product component type
-            if (productCmptType1.equals(productCmptType2)) {
-                return 0;
-            }
-
-            // Sort supertypes towards the beginning
-            try {
-                if (productCmptType1.isSubtypeOf(productCmptType2, productCmptType.getIpsProject())) {
-                    return 1;
-                } else {
-                    return -1;
-                }
-            } catch (CoreException e) {
-                // Consider elements equal if it the subtype relationship cannot be determined
-                return 0;
-            }
-        }
-
-        /**
-         * Compares the indices of the given product component properties in the list of property
-         * references.
-         * <p>
-         * Properties whose indices are greater are sorted towards the end.
-         */
-        private int comparePropertyIndices(IProductCmptProperty property1, IProductCmptProperty property2) {
-            IProductCmptType contextType = null;
-            try {
-                contextType = property1.findProductCmptType(property1.getIpsProject());
-            } catch (CoreException e) {
-                /*
-                 * Consider the properties equal if the product component type containing the
-                 * references cannot be found.
-                 */
-                IpsPlugin.log(e);
-                return 0;
-            }
-
-            /*
-             * Consider the properties equal if the product component type containing the references
-             * cannot be found.
-             */
-            if (contextType == null) {
-                return 0;
-            }
-
-            int index1 = ((ProductCmptType)contextType).getReferencedPropertyIndex(property1);
-            int index2 = ((ProductCmptType)contextType).getReferencedPropertyIndex(property2);
-
-            // If no reference exists for a property, it is sorted towards the end
-            if (index1 == -1) {
-                index1 = Integer.MAX_VALUE;
-            }
-            if (index2 == -1) {
-                index2 = Integer.MAX_VALUE;
-            }
-
-            if (index1 == index2) {
-                return 0;
-            } else if (index1 < index2) {
-                return -1;
-            } else {
-                return 1;
-            }
-        }
-
     }
 
     /**

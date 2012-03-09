@@ -854,7 +854,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             return registerBuilderSet(project);
         }
 
-        IpsProjectProperties data = getIpsProjectProperties((IpsProject)project);
+        IIpsProjectProperties data = getIpsProjectProperties((IpsProject)project);
         if (!builderSet.getId().equals(data.getBuilderSetId())) {
             return registerBuilderSet(project);
         }
@@ -866,7 +866,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     private IIpsArtefactBuilderSet registerBuilderSet(IIpsProject project) {
-        IpsProjectProperties data = getIpsProjectProperties((IpsProject)project);
+        IIpsProjectProperties data = getIpsProjectProperties((IpsProject)project);
         IIpsArtefactBuilderSet builderSet = createIpsArtefactBuilderSet(data.getBuilderSetId(), project);
         if (builderSet == null || !initBuilderSet(builderSet, project, data)) {
             EmptyBuilderSet emptyBuilderSet = new EmptyBuilderSet();
@@ -1053,7 +1053,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         projectDatatypesMap.put(project.getName(), projectTypes);
         projectDatatypeHelpersMap.put(project.getName(), projectHelperMap);
 
-        IpsProjectProperties props = getIpsProjectProperties((IpsProject)project);
+        IIpsProjectProperties props = getIpsProjectProperties((IpsProject)project);
         String[] datatypeIds = props.getPredefinedDatatypesUsed();
         for (String datatypeId : datatypeIds) {
             Datatype datatype = datatypes.get(datatypeId);

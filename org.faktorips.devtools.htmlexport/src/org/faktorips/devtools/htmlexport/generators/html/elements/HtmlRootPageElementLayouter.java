@@ -26,8 +26,10 @@ public class HtmlRootPageElementLayouter extends AbstractHtmlPageElementLayouter
     protected void layoutInternal() {
         layouter.initRootPage(pageElement);
 
-        append(htmlUtil.createHtmlHead(pageElement.getTitle(),
-                layouter.getPathToRoot() + layouter.getStyleDefinitionPath()));
+        String title = pageElement.getTitle() + " (" + layouter.getContext().getIpsProject().getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+
+        append(htmlUtil.createHtmlHead(title, layouter.getPathToRoot() + layouter.getStyleDefinitionPath(),
+                pageElement.isContentUnit()));
 
         layouter.visitSubElements(pageElement);
 

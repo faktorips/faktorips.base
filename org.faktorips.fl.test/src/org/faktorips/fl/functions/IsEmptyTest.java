@@ -13,6 +13,7 @@
 
 package org.faktorips.fl.functions;
 
+import org.faktorips.datatype.Datatype;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -65,6 +66,14 @@ public class IsEmptyTest extends FunctionAbstractTest {
     @Test
     public void testPrimitiveBoolean() throws Exception {
         execAndTestSuccessfull("ISEMPTY(true)", false);
+    }
+
+    @Test
+    public void testParameter() throws Exception {
+        execAndTestSuccessfull("ISEMPTY(param)", true, new String[] { "param" }, new Datatype[] { Datatype.STRING },
+                new Object[] { null }, Datatype.PRIMITIVE_BOOLEAN);
+        execAndTestSuccessfull("ISEMPTY(param)", false, new String[] { "param" }, new Datatype[] { Datatype.STRING },
+                new Object[] { "Foo" }, Datatype.PRIMITIVE_BOOLEAN);
     }
 
 }

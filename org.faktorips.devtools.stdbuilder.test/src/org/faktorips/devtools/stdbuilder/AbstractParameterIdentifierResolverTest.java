@@ -172,6 +172,11 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         // with attributeName is the name of one of the type's attributes
         method.newParameter(policyCmptType.getQualifiedName(), "policy");
 
+        result = resolver.compile("policy", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(policyCmptType, result.getDatatype());
+        assertEquals("policy", result.getCodeFragment().getSourcecode());
+
         result = resolver.compile("policy.tax", null, locale);
         assertTrue(result.successfull());
         assertEquals(Datatype.DECIMAL, result.getDatatype());
@@ -266,6 +271,25 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
                 + standardBuilderSet.getGenerator(policyCmptType).getGenerator(associationTreeToBranches)
                         .getMethodNameGetAllRefObjects() + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IExpression} has a parameter called {@code "tree"} of the {@link IPolicyCmptType}
+     * {@code "Tree"} which has a 1toMany association to the {@link IPolicyCmptType}
+     * {@code "Branch"} with the name {@code "branch"}. The resolver is called with
+     * {@code "tree.branch[1]["Branch"]"}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * compilation fails because indexed and qualified access can't be combined
+     */
+    @Test
+    public void testDontCompileAssociations_1toManyIndexedAndQualified() {
+        method.newParameter(treePolicyCmptType.getQualifiedName(), "tree");
+        CompilationResult result = resolver.compile("tree.branch[1][\"Branch\"]", null, locale);
+        assertTrue(result.failed());
+        assertEquals(1, result.getMessages().size());
+        assertEquals(ExprCompiler.INDEX_AND_QUALIFIER_CAN_NOT_BE_COMBINED, result.getMessages().getMessage(0).getCode());
     }
 
     /**
@@ -806,7 +830,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
      * </ul>
      */
     @Test
-    public void testCompileAssociations_1to1QualifiedWithUnknownProduct() {
+    public void testDontCompileAssociations_1to1QualifiedWithUnknownProduct() {
         method.newParameter(twigPolicyCmptType.getQualifiedName(), "twig");
         CompilationResult result = resolver.compile("twig.leaf[\"UnknownLeaf\"]", null, locale);
         assertTrue(result.failed());

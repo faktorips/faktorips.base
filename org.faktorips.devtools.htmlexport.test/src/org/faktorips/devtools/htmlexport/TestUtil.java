@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.helper.IoHandler;
 
@@ -36,6 +37,13 @@ public class TestUtil {
     }
 
     public DocumentationContext createMockDocumentationContext() {
-        return mock(DocumentationContext.class);
+        DocumentationContext context = mock(DocumentationContext.class);
+
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(context.getIpsProject()).thenReturn(ipsProject);
+
+        when(ipsProject.getName()).thenReturn("Project Name");
+
+        return context;
     }
 }

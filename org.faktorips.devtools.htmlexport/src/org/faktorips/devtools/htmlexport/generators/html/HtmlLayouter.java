@@ -144,7 +144,7 @@ public class HtmlLayouter extends AbstractLayouter {
             addLayoutResource(cssResource);
 
         } catch (IOException e) {
-            context.addStatus(new IpsStatus(IStatus.WARNING, "Resources aren't loaded correctly", e)); //$NON-NLS-1$
+            getContext().addStatus(new IpsStatus(IStatus.WARNING, "Resources aren't loaded correctly", e)); //$NON-NLS-1$
         }
     }
 
@@ -165,5 +165,9 @@ public class HtmlLayouter extends AbstractLayouter {
 
     public String getResourcePath() {
         return resourcePath;
+    }
+
+    public DocumentationContext getContext() {
+        return context;
     }
 }

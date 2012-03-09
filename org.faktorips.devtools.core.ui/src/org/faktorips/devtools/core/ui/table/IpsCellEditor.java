@@ -161,4 +161,17 @@ public abstract class IpsCellEditor extends CellEditor {
     public TraversalStrategy getTraversalStrategy() {
         return traversalStrategy;
     }
+
+    // override for getting visible in DelegateCellEditor
+    @Override
+    protected abstract Object doGetValue();
+
+    // override for getting visible in DelegateCellEditor
+    @Override
+    protected abstract void doSetValue(Object value);
+
+    // override for getting visible in DelegateCellEditor
+    @Override
+    protected abstract void doSetFocus();
+
 }

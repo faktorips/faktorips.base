@@ -162,4 +162,8 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
         return context;
     }
 
+    @Override
+    public boolean isContentUnit() {
+        return false;
+    }
 }

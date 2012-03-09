@@ -15,9 +15,11 @@ package org.faktorips.devtools.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -38,6 +40,7 @@ import org.faktorips.devtools.core.builder.DependencyGraphPersistenceManager;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.internal.model.versionmanager.IpsFeatureMigrationOperation;
+import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.internal.refactor.IpsRefactoringFactory;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.bf.BFElementType;
@@ -49,6 +52,8 @@ import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrat
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.devtools.core.model.versionmanager.IpsFeatureVersionManagerSorter;
+import org.faktorips.devtools.core.productrelease.ITeamOperations;
+import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
 import org.faktorips.devtools.core.refactor.IIpsRefactoringFactory;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.tableconversion.ITableFormat;
@@ -81,6 +86,8 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     public final static boolean TRACE_UI = Boolean.valueOf(
             Platform.getDebugOption("org.faktorips.devtools.core/trace/ui")).booleanValue(); //$NON-NLS-1$
+
+    private static final String EXTENSION_POINT_ID_TEAM_OPERATIONS_FACTORY = "teamOperationsFactory"; //$NON-NLS-1$
 
     private final MultiLanguageSupport multiLanguageSupport = new MultiLanguageSupport();
 
@@ -144,6 +151,8 @@ public class IpsPlugin extends AbstractUIPlugin {
     private boolean suppressLoggingDuringTestExecution = false;
 
     private DependencyGraphPersistenceManager dependencyGraphPersistenceManager;
+
+    private Set<ITeamOperationsFactory> teamOperationsFactories;
 
     /**
      * Returns the number of the installed Faktor-IPS version.
@@ -677,6 +686,28 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public DependencyGraphPersistenceManager getDependencyGraphPersistenceManager() {
         return dependencyGraphPersistenceManager;
+    }
+
+    /**
+     * Returns the {@link ITeamOperationsFactory ITeamOperationsFactories} used to create
+     * {@link ITeamOperations} for the {@link ProductReleaseProcessor}.
+     */
+    public Set<ITeamOperationsFactory> getTeamOperationsFactories() {
+        if (teamOperationsFactories == null) {
+            teamOperationsFactories = new HashSet<ITeamOperationsFactory>();
+            ExtensionPoints extensionPoints = new ExtensionPoints(getExtensionRegistry(), PLUGIN_ID);
+            IExtension[] extensions = extensionPoints.getExtension(EXTENSION_POINT_ID_TEAM_OPERATIONS_FACTORY);
+            for (IExtension extension : extensions) {
+                for (IConfigurationElement configElement : extension.getConfigurationElements()) {
+                    ITeamOperationsFactory factory = ExtensionPoints.createExecutableExtension(extension,
+                            configElement, "class", ITeamOperationsFactory.class); //$NON-NLS-1$
+                    if (factory != null) {
+                        teamOperationsFactories.add(factory);
+                    }
+                }
+            }
+        }
+        return teamOperationsFactories;
     }
 
 }

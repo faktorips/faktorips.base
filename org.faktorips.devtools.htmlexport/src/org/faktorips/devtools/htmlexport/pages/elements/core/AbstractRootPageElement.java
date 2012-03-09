@@ -40,4 +40,9 @@ public abstract class AbstractRootPageElement extends AbstractCompositePageEleme
      * @return path to the root (used for setting the right relative path in links from the page
      */
     public abstract String getPathToRoot();
+
+    /**
+     * @return true, if this PageElement represents a unit of content
+     */
+    public abstract boolean isContentUnit();
 }

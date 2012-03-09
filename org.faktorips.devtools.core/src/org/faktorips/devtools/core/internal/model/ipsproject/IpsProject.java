@@ -196,7 +196,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         for (IFunctionResolverFactory factory : factories) {
             if (getProperties().isActive(factory)) {
                 try {
-                    compiler.add(factory.newFunctionResolver(getExpressionLanguageFunctionsLanguage()));
+                    compiler.add(factory.newFunctionResolver(getFunctionsLanguageLocale()));
                 } catch (Exception e) {
                     IpsPlugin.log(new IpsStatus("Unable to create the function resolver for the following factory: " //$NON-NLS-1$
                             + factory.getClass(), e));
@@ -515,7 +515,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public void setIpsObjectPath(IIpsObjectPath newPath) throws CoreException {
-        IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
+        IIpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
         properties.setIpsObjectPath(newPath);
         saveProjectProperties(properties);
     }
@@ -643,13 +643,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public Locale getExpressionLanguageFunctionsLanguage() {
-        return Locale.GERMAN;
+    public Locale getFunctionsLanguageLocale() {
+        return getPropertiesInternal().getFunctionsLanguageLocale();
     }
 
     @Override
     public IChangesOverTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode() {
-        IpsProjectProperties properties = getPropertiesInternal();
+        IIpsProjectProperties properties = getPropertiesInternal();
         return getIpsModel().getChangesOverTimeNamingConvention(
                 properties.getChangesOverTimeNamingConventionIdForGeneratedCode());
     }
@@ -1667,7 +1667,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    private void validateRequiredFeatures(MessageList ml, IpsProjectProperties props) {
+    private void validateRequiredFeatures(MessageList ml, IIpsProjectProperties props) {
         String features[] = props.getRequiredIpsFeatureIds();
 
         for (String feature : features) {
@@ -1841,7 +1841,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (resource == null) {
             return false;
         }
-        IpsProjectProperties props = getPropertiesInternal();
+        IIpsProjectProperties props = getPropertiesInternal();
         String projectPath = getProject().getLocation().toString();
         String resourcePath = resource.getLocation().toString();
         if (resourcePath.length() <= projectPath.length()) {

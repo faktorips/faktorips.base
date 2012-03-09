@@ -17,6 +17,7 @@ import java.util.Comparator;
 
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
 
@@ -52,6 +53,15 @@ public class ProductCmptCompareItemComparator implements Comparator<AbstractComp
         }
         if ((element1 instanceof IPropertyValue) && (element2 instanceof IPropertyValue)) {
             return ((IPropertyValue)element1).getPropertyType().compareTo(((IPropertyValue)element2).getPropertyType());
+        }
+        if (element1 instanceof IProductCmptLink && element2 instanceof IProductCmptLink) {
+            return 0;
+        }
+        if (element1 instanceof IProductCmptLink) {
+            return 1;
+        }
+        if (element2 instanceof IProductCmptLink) {
+            return -1;
         }
         return 0;
     }

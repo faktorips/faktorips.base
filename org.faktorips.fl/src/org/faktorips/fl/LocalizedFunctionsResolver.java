@@ -49,11 +49,23 @@ public abstract class LocalizedFunctionsResolver extends DefaultFunctionResolver
      */
     abstract protected String getLocalizationFileBaseName();
 
-    protected String getFctName(String key) {
+    /**
+     * Returns the localized name for the {@link FlFunction} identified by the key.
+     * 
+     * @param key the key of the {@link FlFunction}.
+     * @return the localized name for the {@link FlFunction}
+     */
+    public String getFctName(String key) {
         return localizedStrings.getString(key + ".name", locale); //$NON-NLS-1$
     }
 
-    protected String getFctDescription(String key) {
+    /**
+     * Returns the localized description for the {@link FlFunction} identified by the key.
+     * 
+     * @param key the key of the {@link FlFunction}.
+     * @return the localized description for the {@link FlFunction}
+     */
+    public String getFctDescription(String key) {
         return localizedStrings.getString(key + ".description", locale); //$NON-NLS-1$
     }
 

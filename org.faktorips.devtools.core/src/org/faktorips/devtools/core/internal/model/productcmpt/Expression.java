@@ -214,13 +214,15 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
                 if (datatype instanceof IPolicyCmptType) {
                     IPolicyCmptType policyCmptType = (IPolicyCmptType)datatype;
                     String paramName = param.getName() + '.';
-                    if (expression.contains(paramName)) {
-                        String associationNavigations = expression.substring(expression.indexOf(paramName)
-                                + paramName.length());
-                        collectEnumTypesFromAssociationTarget(nameToTypeMap, ipsProject, policyCmptType,
-                                associationNavigations);
-                        // TODO more than once
-                    }
+                    int index = -1;
+                    do {
+                        index = expression.indexOf(paramName, index + 1);
+                        if (index >= 0) {
+                            String associationNavigations = expression.substring(index + paramName.length());
+                            collectEnumTypesFromAssociationTarget(nameToTypeMap, ipsProject, policyCmptType,
+                                    associationNavigations);
+                        }
+                    } while (index >= 0);
                 }
             }
         } catch (CoreException e) {

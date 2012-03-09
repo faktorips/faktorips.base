@@ -88,7 +88,7 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetContents() throws CoreException {
-        assertNull(compareItemRoot.getContents());
+        assertNotNull(compareItemRoot.getContents());
     }
 
     @Test

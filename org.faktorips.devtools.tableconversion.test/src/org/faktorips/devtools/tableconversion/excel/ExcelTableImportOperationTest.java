@@ -142,6 +142,43 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         assertEquals(6, ml.size());
     }
 
+    @Test
+    public void testImportDateProblemOO() throws Exception {
+        MessageList ml = new MessageList();
+        structure = createTableStructure(ipsProject);
+        createProblemDate("");
+
+        ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
+                "NULL", false, ml, true);
+        op.run(new NullProgressMonitor());
+
+        assertEquals(4, importTarget.getRows().length);
+        assertEquals("1900-01-01", importTarget.getRow(0).getValue(3));
+        assertEquals("1900-03-01", importTarget.getRow(1).getValue(3));
+        assertEquals("1900-02-27", importTarget.getRow(2).getValue(3));
+        assertEquals("1900-02-28", importTarget.getRow(3).getValue(3));
+        assertEquals(1, ml.size());
+        assertTrue(ml.getMessageByCode(AbstractExcelImportOperation.MSG_CODE_FIXED_OPEN_OFFICE_DATE) != null);
+    }
+
+    @Test
+    public void testImportDateProblemExcel() throws Exception {
+        MessageList ml = new MessageList();
+        structure = createTableStructure(ipsProject);
+        createProblemDate("Microsoft Excel");
+
+        ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
+                "NULL", false, ml, true);
+        op.run(new NullProgressMonitor());
+
+        assertEquals(4, importTarget.getRows().length);
+        assertEquals("1900-01-02", importTarget.getRow(0).getValue(3));
+        assertEquals("1900-03-01", importTarget.getRow(1).getValue(3));
+        assertEquals("1900-02-28", importTarget.getRow(2).getValue(3));
+        assertEquals("1900-03-01", importTarget.getRow(3).getValue(3));
+        assertTrue(ml.isEmpty());
+    }
+
     private void createValid() throws Exception {
         HSSFWorkbook wb = new HSSFWorkbook();
         HSSFSheet sheet = wb.createSheet();
@@ -154,38 +191,38 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         HSSFCellStyle dateStyle = wb.createCellStyle();
         dateStyle.setDataFormat((short)27);
 
-        row1.createCell((short)0).setCellValue(true);
-        row1.createCell((short)1).setCellValue(12.3);
-        row1.createCell((short)2).setCellValue(Double.MAX_VALUE);
-        HSSFCell cell = row1.createCell((short)3);
+        row1.createCell(0).setCellValue(true);
+        row1.createCell(1).setCellValue(12.3);
+        row1.createCell(2).setCellValue(Double.MAX_VALUE);
+        HSSFCell cell = row1.createCell(3);
         cell.setCellValue(new GregorianCalendar(2001, 03, 26).getTime());
         cell.setCellStyle(dateStyle);
-        row1.createCell((short)4).setCellValue(Integer.MAX_VALUE);
-        row1.createCell((short)5).setCellValue(Long.MAX_VALUE);
-        row1.createCell((short)6).setCellValue("123.45 EUR");
-        row1.createCell((short)7).setCellValue("einfacher text");
+        row1.createCell(4).setCellValue(Integer.MAX_VALUE);
+        row1.createCell(5).setCellValue(Long.MAX_VALUE);
+        row1.createCell(6).setCellValue("123.45 EUR");
+        row1.createCell(7).setCellValue("einfacher text");
 
-        row2.createCell((short)0).setCellValue(false);
-        row2.createCell((short)1).setCellValue(12.3);
-        row2.createCell((short)2).setCellValue(Double.MIN_VALUE);
-        cell = row2.createCell((short)3);
+        row2.createCell(0).setCellValue(false);
+        row2.createCell(1).setCellValue(12.3);
+        row2.createCell(2).setCellValue(Double.MIN_VALUE);
+        cell = row2.createCell(3);
         cell.setCellValue(new GregorianCalendar(2001, 03, 26).getTime());
         cell.setCellStyle(dateStyle);
-        row2.createCell((short)4).setCellValue(Integer.MIN_VALUE);
-        row2.createCell((short)5).setCellValue(Long.MIN_VALUE);
-        row2.createCell((short)6).setCellValue("1EUR");
-        row2.createCell((short)7).setCellValue("�������{[]}");
+        row2.createCell(4).setCellValue(Integer.MIN_VALUE);
+        row2.createCell(5).setCellValue(Long.MIN_VALUE);
+        row2.createCell(6).setCellValue("1EUR");
+        row2.createCell(7).setCellValue("�������{[]}");
 
-        row3.createCell((short)0).setCellValue("NULL");
-        row3.createCell((short)1).setCellValue("NULL");
-        row3.createCell((short)2).setCellValue("NULL");
-        cell = row3.createCell((short)3);
+        row3.createCell(0).setCellValue("NULL");
+        row3.createCell(1).setCellValue("NULL");
+        row3.createCell(2).setCellValue("NULL");
+        cell = row3.createCell(3);
         cell.setCellValue("NULL");
         cell.setCellStyle(dateStyle);
-        row3.createCell((short)4).setCellValue("NULL");
-        row3.createCell((short)5).setCellValue("NULL");
-        row3.createCell((short)6).setCellValue("NULL");
-        row3.createCell((short)7).setCellValue("NULL");
+        row3.createCell(4).setCellValue("NULL");
+        row3.createCell(5).setCellValue("NULL");
+        row3.createCell(6).setCellValue("NULL");
+        row3.createCell(7).setCellValue("NULL");
 
         FileOutputStream fos = new FileOutputStream(file);
         wb.write(fos);
@@ -201,16 +238,79 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         HSSFCellStyle dateStyle = wb.createCellStyle();
         dateStyle.setDataFormat((short)27);
 
-        row1.createCell((short)0).setCellValue("invalid is impossible");
-        row1.createCell((short)1).setCellValue("INVALID");
-        row1.createCell((short)2).setCellValue("INVALID");
-        HSSFCell cell = row1.createCell((short)3);
+        row1.createCell(0).setCellValue("invalid is impossible");
+        row1.createCell(1).setCellValue("INVALID");
+        row1.createCell(2).setCellValue("INVALID");
+        HSSFCell cell = row1.createCell(3);
         cell.setCellValue("INVALID");
         cell.setCellStyle(dateStyle);
-        row1.createCell((short)4).setCellValue("INVALID");
-        row1.createCell((short)5).setCellValue("INVALID");
-        row1.createCell((short)6).setCellValue("INVALID");
-        row1.createCell((short)7).setCellValue("invalid is impossible");
+        row1.createCell(4).setCellValue("INVALID");
+        row1.createCell(5).setCellValue("INVALID");
+        row1.createCell(6).setCellValue("INVALID");
+        row1.createCell(7).setCellValue("invalid is impossible");
+
+        FileOutputStream fos = new FileOutputStream(file);
+        wb.write(fos);
+        fos.close();
+    }
+
+    private void createProblemDate(String applicationName) throws Exception {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet();
+        wb.createInformationProperties();
+        wb.getSummaryInformation().setApplicationName(applicationName);
+
+        HSSFRow row0 = sheet.createRow(0);
+        HSSFRow row1 = sheet.createRow(1);
+        HSSFRow row2 = sheet.createRow(2);
+        HSSFRow row3 = sheet.createRow(3);
+
+        HSSFCellStyle dateStyle = wb.createCellStyle();
+        dateStyle.setDataFormat((short)0x15);
+
+        row0.createCell(0).setCellValue("NULL");
+        row0.createCell(1).setCellValue("NULL");
+        row0.createCell(2).setCellValue("NULL");
+        HSSFCell cell = row0.createCell(3);
+        cell.setCellValue(2.0);// 2.1.1900 in Excel, 1.1.1900 in OO
+        cell.setCellStyle(dateStyle);
+        row0.createCell(4).setCellValue("NULL");
+        row0.createCell(5).setCellValue("NULL");
+        row0.createCell(6).setCellValue("NULL");
+        row0.createCell(7).setCellValue("NULL");
+
+        row1.createCell(0).setCellValue("NULL");
+        row1.createCell(1).setCellValue("NULL");
+        row1.createCell(2).setCellValue("NULL");
+        cell = row1.createCell(3);
+        cell.setCellValue(61.0);// 1.3.1900
+        cell.setCellStyle(dateStyle);
+        row1.createCell(4).setCellValue("NULL");
+        row1.createCell(5).setCellValue("NULL");
+        row1.createCell(6).setCellValue("NULL");
+        row1.createCell(7).setCellValue("NULL");
+
+        row2.createCell(0).setCellValue("NULL");
+        row2.createCell(1).setCellValue("NULL");
+        row2.createCell(2).setCellValue("NULL");
+        cell = row2.createCell(3);
+        cell.setCellValue(59.0);// 28.2.1900 in Excel, 27.2.1900 in OO
+        cell.setCellStyle(dateStyle);
+        row2.createCell(4).setCellValue("NULL");
+        row2.createCell(5).setCellValue("NULL");
+        row2.createCell(6).setCellValue("NULL");
+        row2.createCell(7).setCellValue("NULL");
+
+        row3.createCell(0).setCellValue("NULL");
+        row3.createCell(1).setCellValue("NULL");
+        row3.createCell(2).setCellValue("NULL");
+        cell = row3.createCell(3);
+        cell.setCellValue(60.0);// 29.2.1900 in Excel, 28.2.1900 in OO
+        cell.setCellStyle(dateStyle);
+        row3.createCell(4).setCellValue("NULL");
+        row3.createCell(5).setCellValue("NULL");
+        row3.createCell(6).setCellValue("NULL");
+        row3.createCell(7).setCellValue("NULL");
 
         FileOutputStream fos = new FileOutputStream(file);
         wb.write(fos);

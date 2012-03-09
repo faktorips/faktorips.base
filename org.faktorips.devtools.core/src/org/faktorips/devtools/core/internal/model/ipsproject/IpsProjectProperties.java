@@ -72,6 +72,10 @@ import org.w3c.dom.NodeList;
  */
 public class IpsProjectProperties implements IIpsProjectProperties {
 
+    private static final String ATTRIBUTE_LOCALE = "locale"; //$NON-NLS-1$
+
+    private static final String FUNCTIONS_LANGUAGE_LOCALE = "FunctionsLanguageLocale"; //$NON-NLS-1$
+
     private static final String ADDITIONAL_SETTINGS_TAG_NAME = "AdditionalSettings"; //$NON-NLS-1$
 
     private static final String SETTING_TAG_NAME = "Setting"; //$NON-NLS-1$
@@ -159,6 +163,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     // default currency for this project - default is EUR
     private Currency defaultCurrency = Currency.getInstance("EUR"); //$NON-NLS-1$
+
+    private Locale functionsLanguageLocale = Locale.GERMAN;
 
     public IpsProjectProperties() {
         super();
@@ -577,6 +583,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         defaultCurrencyElement.setAttribute(DEFAULT_CURRENCY_VALUE_ATTR, defaultCurrency.getCurrencyCode());
         projectEl.appendChild(defaultCurrencyElement);
 
+        createDescriptionComment(
+                "Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German. Only English (en) and German (de) are supported at the moment.", projectEl); //$NON-NLS-1$
+        Element functionsLanguageLocaleElement = doc.createElement(FUNCTIONS_LANGUAGE_LOCALE);
+        functionsLanguageLocaleElement
+                .setAttribute(ATTRIBUTE_LOCALE, functionsLanguageLocale.getLanguage());
+        projectEl.appendChild(functionsLanguageLocaleElement);
+
         return projectEl;
     }
 
@@ -641,6 +654,17 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initSupportedLanguages(element);
 
         initDefaultCurrency(element);
+
+        initFunctionsLanguageLocale(element);
+    }
+
+    private void initFunctionsLanguageLocale(Element element) {
+        Element functionsLanguageLocaleElement = XmlUtil
+                .getFirstElement(element, FUNCTIONS_LANGUAGE_LOCALE);
+        if (functionsLanguageLocaleElement != null) {
+            functionsLanguageLocale = new Locale(
+                    functionsLanguageLocaleElement.getAttribute(ATTRIBUTE_LOCALE));
+        }
     }
 
     private void initRequiredFeatures(Element el) {
@@ -1409,6 +1433,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             }
         }
         return true;
+    }
+
+    @Override
+    public Locale getFunctionsLanguageLocale() {
+        return functionsLanguageLocale;
+    }
+
+    @Override
+    public void setFunctionsLanguageLocale(Locale locale) {
+        functionsLanguageLocale = locale;
     }
 
 }

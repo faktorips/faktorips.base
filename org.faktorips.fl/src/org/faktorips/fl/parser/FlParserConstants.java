@@ -26,16 +26,17 @@ public interface FlParserConstants {
     int LETTER = 13;
     int NULL_LITERAL = 14;
     int IDENTIFIER = 15;
-    int LETTER_OR_UNDERSCORE_OR_DOT = 16;
-    int DIGIT = 17;
-    int DATE_IDENTIFIER = 18;
+    int IDENTIFIER_PART = 16;
+    int LETTER_OR_UNDERSCORE = 17;
+    int DIGIT = 18;
+    int DATE_IDENTIFIER = 19;
 
     int DEFAULT = 0;
 
     String[] tokenImage = { "<EOF>", "\" \"", "\"\\t\"", "\"\\n\"", "\"\\r\"", "<token of kind 5>",
             "<token of kind 6>", "<BOOLEAN_LITERAL>", "<INTEGER_LITERAL>", "<DECIMAL_LITERAL>", "<EXPONENT>",
-            "<STRING_LITERAL>", "<MONEY_LITERAL>", "<LETTER>", "<NULL_LITERAL>", "<IDENTIFIER>",
-            "<LETTER_OR_UNDERSCORE_OR_DOT>", "<DIGIT>", "<DATE_IDENTIFIER>", "\"=\"", "\"!=\"", "\"<\"", "\">\"",
-            "\"<=\"", "\">=\"", "\"+\"", "\"-\"", "\"*\"", "\"/\"", "\"!\"", "\"(\"", "\")\"", "\";\"", };
+            "<STRING_LITERAL>", "<MONEY_LITERAL>", "<LETTER>", "<NULL_LITERAL>", "<IDENTIFIER>", "<IDENTIFIER_PART>",
+            "<LETTER_OR_UNDERSCORE>", "<DIGIT>", "<DATE_IDENTIFIER>", "\"=\"", "\"!=\"", "\"<\"", "\">\"", "\"<=\"",
+            "\">=\"", "\"+\"", "\"-\"", "\"*\"", "\"/\"", "\"!\"", "\"(\"", "\")\"", "\";\"", };
 
 }

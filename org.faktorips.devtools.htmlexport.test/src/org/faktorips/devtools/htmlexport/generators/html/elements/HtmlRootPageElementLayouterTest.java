@@ -38,7 +38,7 @@ public class HtmlRootPageElementLayouterTest extends AbstractHtmlPageElementLayo
         assertXpathExists(layouter.generateText(), "/html/head/link[@rel='stylesheet'][@type='text/css'][@href]");
 
         // title
-        assertXpathExists(layouter.generateText(), "/html/head[title='" + title + "']");
+        assertXpathExists(layouter.generateText(), "/html/head[starts-with(title, '" + title + " (')]");
 
         // Inhalt
         assertXpathExists(layouter.generateText(), "/html/body[div='" + text + "']");
@@ -51,6 +51,11 @@ public class HtmlRootPageElementLayouterTest extends AbstractHtmlPageElementLayo
             @Override
             public String getPathToRoot() {
                 return "../";
+            }
+
+            @Override
+            public boolean isContentUnit() {
+                return false;
             }
         };
         return pageElement;

@@ -334,7 +334,7 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
             expandableContainer.dispose();
         }
 
-        if (form == null) {
+        if (form == null || form.isDisposed()) {
             return;
         }
 

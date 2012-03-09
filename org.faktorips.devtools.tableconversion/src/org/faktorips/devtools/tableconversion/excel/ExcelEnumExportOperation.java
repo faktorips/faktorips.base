@@ -118,7 +118,7 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
         }
         HSSFRow headerRow = sheet.createRow(0);
         for (int i = 0; i < enumAttributes.size(); i++) {
-            headerRow.createCell((short)i).setCellValue(enumAttributes.get(i).getName());
+            headerRow.createCell(i).setCellValue(enumAttributes.get(i).getName());
         }
 
     }
@@ -143,7 +143,7 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
             IEnumValue value = values.get(i);
             String[] fieldsToExport = getFieldsForEnumValue(value);
             for (int j = 0; j < value.getEnumAttributeValuesCount(); j++) {
-                HSSFCell cell = sheetRow.createCell((short)j);
+                HSSFCell cell = sheetRow.createCell(j);
                 fillCell(cell, fieldsToExport[j], datatypes[j]);
             }
             if (monitor.isCanceled()) {

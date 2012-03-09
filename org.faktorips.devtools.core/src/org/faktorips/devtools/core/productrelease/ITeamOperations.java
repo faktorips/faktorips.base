@@ -27,23 +27,22 @@ import org.eclipse.team.core.TeamException;
 public interface ITeamOperations {
 
     /**
-     * Check if the given project is synchronized with configured version control.
+     * Check if the given project is synchronized with the configured version control.
      * 
-     * @return true if synchrony or false when there are any changes
+     * @return true if synchronized or false if there are any changes
      */
     public boolean isProjectSynchronized(IProject ipsProject, IProgressMonitor monitor);
 
     /**
      * Commit the files in the project. All files have to be from the same project.
-     * 
      */
     public void commitFiles(IProject project, IResource[] resources, String comment, IProgressMonitor monitor)
             throws TeamException, InterruptedException;
 
     /**
-     * tag the project with the specified version. Because the version could contain invalid
-     * characters, maybe the tagging operation change the version to a valid tag name. This tag name
-     * is returned by this method
+     * Tag the project with the specified version. Because the version could contain invalid
+     * characters, the tagging operation may change the version to a valid tag name. This tag name
+     * is returned by this method.
      * 
      * @param project the project to tag
      * @param version the version which is used as tab name base
@@ -54,7 +53,7 @@ public interface ITeamOperations {
             InterruptedException;
 
     /**
-     * Return the name of the version system
+     * Returns the name of the version control system.
      * 
      * @return the name of the version control system
      */

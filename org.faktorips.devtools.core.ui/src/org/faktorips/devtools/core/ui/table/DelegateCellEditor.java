@@ -149,9 +149,6 @@ public class DelegateCellEditor extends CellEditor {
         return getCurrent().createControl(parent);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isMappedValue() {
         return getCurrent().isMappedValue();
     }
@@ -162,12 +159,7 @@ public class DelegateCellEditor extends CellEditor {
     @Override
     protected Object doGetValue() {
         IpsCellEditor current = getCurrent();
-        if (current instanceof TextCellEditor) {
-            return ((TextCellEditor)current).doGetValue();
-        } else if (current instanceof ComboCellEditor) {
-            return ((ComboCellEditor)current).doGetValue();
-        }
-        return null;
+        return current.doGetValue();
     }
 
     /**
@@ -176,11 +168,7 @@ public class DelegateCellEditor extends CellEditor {
     @Override
     protected void doSetFocus() {
         IpsCellEditor current = getCurrent();
-        if (current instanceof TextCellEditor) {
-            ((TextCellEditor)current).doSetFocus();
-        } else if (current instanceof ComboCellEditor) {
-            ((ComboCellEditor)current).doSetFocus();
-        }
+        current.doSetFocus();
     }
 
     /**
@@ -189,11 +177,7 @@ public class DelegateCellEditor extends CellEditor {
     @Override
     protected void doSetValue(Object value) {
         IpsCellEditor current = getCurrent();
-        if (current instanceof TextCellEditor) {
-            ((TextCellEditor)current).doSetValue(value);
-        } else if (current instanceof ComboCellEditor) {
-            ((ComboCellEditor)current).doSetValue(value);
-        }
+        current.doSetValue(value);
     }
 
     /**
