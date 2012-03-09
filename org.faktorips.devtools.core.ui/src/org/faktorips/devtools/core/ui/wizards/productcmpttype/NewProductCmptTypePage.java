@@ -151,23 +151,41 @@ public class NewProductCmptTypePage extends NewTypePage {
     private void associatePolicyCmptType(Set<IIpsObject> modifiedIpsObjects, IProductCmptType productCmptType)
             throws CoreException {
 
-        if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
+        String policyCmptTypeQualifiedName = policyCmptTypeField.getValue();
+        if (StringUtils.isEmpty(policyCmptTypeQualifiedName)) {
             productCmptType.setConfigurationForPolicyCmptType(false);
             return;
         }
 
-        IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(policyCmptTypeField.getValue());
+        IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(policyCmptTypeQualifiedName);
         if (policyCmptType == null) {
             productCmptType.setConfigurationForPolicyCmptType(false);
             return;
         }
 
-        policyCmptType.setConfigurableByProductCmptType(true);
-        policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
-        modifiedIpsObjects.add(policyCmptType);
+        boolean configuresSamePolicyCmptTypeAsSupertype = policyCmptTypeQualifiedName
+                .equals(findNextConfiguredSuperTypeQualifiedName());
+
+        if (!configuresSamePolicyCmptTypeAsSupertype) {
+            policyCmptType.setConfigurableByProductCmptType(true);
+            policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
+            modifiedIpsObjects.add(policyCmptType);
+        }
         productCmptType.setConfigurationForPolicyCmptType(true);
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         productCmptType.setAbstract(policyCmptType.isAbstract());
+    }
+
+    private String findNextConfiguredSuperTypeQualifiedName() throws CoreException {
+        String superTypeQualifiedName = getSuperType();
+        if (StringUtils.isBlank(superTypeQualifiedName)) {
+            return null;
+        }
+        IIpsProject ipsProject = getIpsProject();
+        FindNextConfiguredSuperType finder = new FindNextConfiguredSuperType(ipsProject);
+        IProductCmptType superType = ipsProject.findProductCmptType(superTypeQualifiedName);
+        finder.start(superType);
+        return finder.qualifiedNameOfConfiguredType;
     }
 
     /**
@@ -231,16 +249,13 @@ public class NewProductCmptTypePage extends NewTypePage {
                 return null;
             }
 
-            IPolicyCmptType configuableType = ipsProject.findPolicyCmptType(policyCmptTypeField.getValue());
-
-            FindNextConfiguredSuperType finder = new FindNextConfiguredSuperType(ipsProject);
-            IProductCmptType superType = ipsProject.findProductCmptType(getSuperType());
-            finder.start(superType);
-            if (finder.nextConfiguringSupertype != null) {
+            IPolicyCmptType configuredType = ipsProject.findPolicyCmptType(policyCmptTypeField.getValue());
+            String superTypePolicyCmptTypeQualifiedName = findNextConfiguredSuperTypeQualifiedName();
+            if (superTypePolicyCmptTypeQualifiedName != null) {
                 IPolicyCmptType superTypePolicyCmptType = ipsProject
-                        .findPolicyCmptType(finder.qualifiedNameOfConfiguredType);
+                        .findPolicyCmptType(superTypePolicyCmptTypeQualifiedName);
                 if (superTypePolicyCmptType != null) {
-                    IPolicyCmptType superPcType = (IPolicyCmptType)configuableType.findSupertype(ipsProject);
+                    IPolicyCmptType superPcType = (IPolicyCmptType)configuredType.findSupertype(ipsProject);
                     if (superPcType == null || !superPcType.equals(superTypePolicyCmptType)) {
                         String text = NLS.bind(Messages.NewProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX,
                                 superTypePolicyCmptType.getQualifiedName());
@@ -272,8 +287,6 @@ public class NewProductCmptTypePage extends NewTypePage {
 
     private static class FindNextConfiguredSuperType extends TypeHierarchyVisitor<IProductCmptType> {
 
-        private IProductCmptType nextConfiguringSupertype;
-
         private String qualifiedNameOfConfiguredType;
 
         public FindNextConfiguredSuperType(IIpsProject ipsProject) {
@@ -283,7 +296,6 @@ public class NewProductCmptTypePage extends NewTypePage {
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             if (!StringUtils.isEmpty(currentType.getPolicyCmptType())) {
-                nextConfiguringSupertype = currentType;
                 qualifiedNameOfConfiguredType = currentType.getPolicyCmptType();
                 return false;
             }
