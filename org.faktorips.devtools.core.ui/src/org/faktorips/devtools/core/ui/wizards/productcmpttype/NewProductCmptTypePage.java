@@ -228,10 +228,15 @@ public class NewProductCmptTypePage extends NewTypePage {
             if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }
+            String nextConfiguredSuperTypeQualifiedName = findNextConfiguredSuperTypeQualifiedName();
+            if (StringUtils.isNotBlank(nextConfiguredSuperTypeQualifiedName)
+                    && nextConfiguredSuperTypeQualifiedName.equals(policyCmptTypeField.getValue())) {
+                return new Message("", Messages.NewProductCmptTypePage_msgPcTypeConfiguredBySuperType, Message.INFO); //$NON-NLS-1$
+            }
 
-            IPolicyCmptType configuableType = ipsProject.findPolicyCmptType(policyCmptTypeField.getValue());
-            if (!StringUtils.isEmpty(configuableType.getProductCmptType())
-                    && !configuableType.getProductCmptType().equals(getQualifiedIpsObjectName())) {
+            IPolicyCmptType configuredType = ipsProject.findPolicyCmptType(policyCmptTypeField.getValue());
+            if (!StringUtils.isEmpty(configuredType.getProductCmptType())
+                    && !configuredType.getProductCmptType().equals(getQualifiedIpsObjectName())) {
                 return new Message("", Messages.NewProductCmptTypePage_msgPcTypeAlreadyConfigured, Message.ERROR); //$NON-NLS-1$
             }
 
@@ -256,7 +261,8 @@ public class NewProductCmptTypePage extends NewTypePage {
                         .findPolicyCmptType(superTypePolicyCmptTypeQualifiedName);
                 if (superTypePolicyCmptType != null) {
                     IPolicyCmptType superPcType = (IPolicyCmptType)configuredType.findSupertype(ipsProject);
-                    if (superPcType == null || !superPcType.equals(superTypePolicyCmptType)) {
+                    if (!configuredType.equals(superTypePolicyCmptType)
+                            && (superPcType == null || !superPcType.equals(superTypePolicyCmptType))) {
                         String text = NLS.bind(Messages.NewProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX,
                                 superTypePolicyCmptType.getQualifiedName());
                         return new Message("", text, Message.ERROR); //$NON-NLS-1$

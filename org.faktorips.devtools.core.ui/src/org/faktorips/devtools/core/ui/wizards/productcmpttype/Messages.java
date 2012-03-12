@@ -29,6 +29,7 @@ public class Messages extends NLS {
 
     public static String NewProductCmptTypePage_labelConfigures;
     public static String NewProductCmptTypePage_msgPcTypeAlreadyConfigured;
+    public static String NewProductCmptTypePage_msgPcTypeConfiguredBySuperType;
     public static String NewProductCmptTypePage_msgPcTypeDoesNotExist;
     public static String NewProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX;
     public static String NewProductCmptTypePage_title;
