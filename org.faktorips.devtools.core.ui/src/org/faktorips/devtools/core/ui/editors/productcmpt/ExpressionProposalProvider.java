@@ -30,10 +30,14 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.type.Parameter;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -61,6 +65,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     private IMethod signature;
     private IExpression expression;
     private IIpsProject ipsProject;
+    private MultiLanguageSupport multiLanguageSupport;
 
     public ExpressionProposalProvider(IExpression expression) {
         super();
@@ -68,6 +73,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         this.expression = expression;
         this.ipsProject = expression.getIpsProject();
         this.signature = expression.findFormulaSignature(ipsProject);
+        multiLanguageSupport = IpsPlugin.getMultiLanguageSupport();
     }
 
     @Override
@@ -150,7 +156,45 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     private void addPartToResult(List<IContentProposal> result, IIpsObjectPart part, String datatype, String prefix) {
         String name = part.getName();
         String displayText = name + " - " + datatype; //$NON-NLS-1$
-        IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText, null);
+        String description = null;
+        ILabeledElement labeledElement = null;
+        IDescribedElement describedElement = null;
+        if (part instanceof ILabeledElement) {
+            labeledElement = (ILabeledElement)part;
+        }
+        if (part instanceof IDescribedElement) {
+            describedElement = (IDescribedElement)part;
+        }
+        if (part instanceof Parameter) {
+            try {
+                Datatype type = ((Parameter)part).findDatatype(ipsProject);
+                if (type instanceof ILabeledElement) {
+                    labeledElement = (ILabeledElement)type;
+                }
+                if (type instanceof IDescribedElement) {
+                    describedElement = (IDescribedElement)type;
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e.getLocalizedMessage(), e);
+            }
+        }
+        if (labeledElement != null) {
+            String localizedLabel = multiLanguageSupport.getLocalizedLabel(labeledElement);
+            if (StringUtils.isNotBlank(localizedLabel)) {
+                description = localizedLabel;
+            }
+        }
+        if (describedElement != null) {
+            String localizedDescription = multiLanguageSupport.getLocalizedDescription(describedElement);
+            if (StringUtils.isNotBlank(localizedDescription)) {
+                if (StringUtils.isNotBlank(description)) {
+                    description = description + " - " + localizedDescription; //$NON-NLS-1$
+                } else {
+                    description = localizedDescription;
+                }
+            }
+        }
+        IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText, description);
         result.add(proposal);
     }
 
@@ -304,8 +348,21 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     private void addAttributeToResult(List<IContentProposal> result, IAttribute attribute, String prefix) {
         String name = attribute.getName();
         String displayText = name + " - " + attribute.getDatatype(); //$NON-NLS-1$
+        String localizedLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(attribute);
         String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(attribute);
-        IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText, localizedDescription);
+        String description = null;
+        if (StringUtils.isNotBlank(localizedLabel)) {
+            description = localizedLabel;
+        }
+        if (StringUtils.isNotBlank(localizedDescription)) {
+            if (StringUtils.isNotBlank(description)) {
+                description = description + " - " + localizedDescription; //$NON-NLS-1$
+            } else {
+                description = localizedDescription;
+            }
+        }
+
+        IContentProposal proposal = new ContentProposal(removePrefix(name, prefix), displayText, description);
         result.add(proposal);
     }
 

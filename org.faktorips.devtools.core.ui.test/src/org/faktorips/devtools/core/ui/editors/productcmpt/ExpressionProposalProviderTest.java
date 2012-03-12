@@ -26,6 +26,8 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -186,6 +188,9 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         IAttribute firstAttr = productCmptType.newAttribute();
         firstAttr.setName("firstAttr");
         firstAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        MultiLanguageSupport multiLanguageSupport = IpsPlugin.getMultiLanguageSupport();
+        firstAttr.setLabelValue(multiLanguageSupport.getLocalizationLocale(), "FirstAttrLabel");
+        firstAttr.setDescriptionText(multiLanguageSupport.getLocalizationLocale(), "FirstAttrDescription");
 
         IAttribute secondAttr = productCmptType.newAttribute();
         secondAttr.setName("secondAttr");
@@ -195,6 +200,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         IContentProposal[] results = proposalProvider.getProposals("f", 1);
         IContentProposal proposal = results[0];
         assertEquals("irstAttr", proposal.getContent());
+        assertEquals("FirstAttrLabel - FirstAttrDescription", proposal.getDescription());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("s", 1);
@@ -211,6 +217,9 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         IAttribute firstAttr = cmptType.newAttribute();
         firstAttr.setName("firstAttr");
         firstAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        MultiLanguageSupport multiLanguageSupport = IpsPlugin.getMultiLanguageSupport();
+        firstAttr.setLabelValue(multiLanguageSupport.getLocalizationLocale(), "FirstAttrLabel");
+        firstAttr.setDescriptionText(multiLanguageSupport.getLocalizationLocale(), "FirstAttrDescription");
 
         IAttribute secondAttr = cmptType.newAttribute();
         secondAttr.setName("secondAttr");
@@ -222,6 +231,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         IContentProposal[] results = proposalProvider.getProposals("policy.f", 8);
         IContentProposal proposal = results[0];
         assertEquals("irstAttr", proposal.getContent());
+        assertEquals("FirstAttrLabel - FirstAttrDescription", proposal.getDescription());
 
         proposalProvider = new ExpressionProposalProvider(configElement);
         results = proposalProvider.getProposals("policy.s", 8);
@@ -400,14 +410,21 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         ProductCmptType aConfig = (ProductCmptType)a.findProductCmptType(ipsProject);
         formulaSignature.newParameter(a.getQualifiedName(), "aParam");
         formulaSignature.newParameter(aConfig.getQualifiedName(), "aConfigParam");
+        MultiLanguageSupport multiLanguageSupport = IpsPlugin.getMultiLanguageSupport();
+        a.setLabelValue(multiLanguageSupport.getLocalizationLocale(), "PolicyCmptTypeLabel");
+        a.setDescriptionText(multiLanguageSupport.getLocalizationLocale(), "PolicyCmptTypeDescription");
+        aConfig.setLabelValue(multiLanguageSupport.getLocalizationLocale(), "ProductCmptTypeLabel");
+        aConfig.setDescriptionText(multiLanguageSupport.getLocalizationLocale(), "ProductCmptTypeDescription");
 
         proposalProvider = new ExpressionProposalProvider(configElement);
         IContentProposal[] results = proposalProvider.getProposals("", 0);
         IContentProposal proposal = results[0];
         assertEquals("aParam - a", proposal.getLabel());
+        assertEquals("PolicyCmptTypeLabel - PolicyCmptTypeDescription", proposal.getDescription());
 
         proposal = results[1];
         assertEquals("aConfigParam - aConfigtype", proposal.getLabel());
+        assertEquals("ProductCmptTypeLabel - ProductCmptTypeDescription", proposal.getDescription());
     }
 
     @Test
