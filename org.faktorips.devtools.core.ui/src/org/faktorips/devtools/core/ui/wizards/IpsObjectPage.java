@@ -465,8 +465,8 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
             }
             msg.append(' ');
             msg.append(Messages.IpsObjectPage_msgIpsObjectAlreadyExists4);
-            msg.append(' ');
             if (getIpsProject() != null && !getIpsProject().equals(file.getIpsProject())) {
+                msg.append(' ');
                 msg.append(Messages.IpsObjectPage_msgIpsObjectAlreadyExists5);
                 msg.append(' ');
                 msg.append(file.getIpsProject().getName());
