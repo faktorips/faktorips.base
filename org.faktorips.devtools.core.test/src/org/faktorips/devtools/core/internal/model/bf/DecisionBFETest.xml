@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessFunction>
+    <Decision id="16" name="" type="decision" datatype="String">
+        <Description/>
+        <Location xlocation="227" ylocation="544"/>
+        <Size height="50" width="100"/>
+    </Decision>
+</BusinessFunction>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnumContent enumType="gaa.TestEnum">
+    <Description/>
+    <EnumValue id="42753dba-fd68-4490-922a-626b0dc38820">
+        <EnumAttributeValue id="6b800d03-cc29-4c72-a4aa-a5d0069cfc6f" isNull="false">asf</EnumAttributeValue>
+        <EnumAttributeValue id="03ce3826-f154-400e-baa7-9067e54d0b21" isNull="false">asf</EnumAttributeValue>
+    </EnumValue>
+    <EnumValue id="ab963525-2f9f-4b84-9a15-ebdc327a0c44">
+        <EnumAttributeValue id="495e1660-3c5e-4c54-93ca-4e7903524504" isNull="false">afs</EnumAttributeValue>
+        <EnumAttributeValue id="dbf7928c-626b-47ff-bde1-42ae78453455" isNull="false">asd</EnumAttributeValue>
+    </EnumValue>
+    <EnumAttributeReference id="a8dec645-6c63-4f25-ac89-62078ac7931c" name="id"/>
+    <EnumAttributeReference id="c4a72061-a022-4ed5-baf0-0f4ec7e0c68f" name="name"/>
+</EnumContent>

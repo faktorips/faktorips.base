@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FormulaTestCase id="42" name="formulaTestCase" >
+	<ExpectedResult>4711</ExpectedResult>
+	<FormulaTestInputValue identifier="policy.premium1" parameter="parameter1">
+	</FormulaTestInputValue>
+	<FormulaTestInputValue identifier="policy.premium2" parameter="parameter1">
+	</FormulaTestInputValue>	
+</FormulaTestCase>

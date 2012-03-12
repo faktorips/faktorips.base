@@ -1,0 +1,38 @@
+/*******************************************************************************
+ * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ *******************************************************************************/
+
+package org.faktorips.runtime.internal;
+
+import static org.junit.Assert.assertEquals;
+
+import org.faktorips.runtime.XmlAbstractTestCase;
+import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
+import org.junit.Test;
+
+/**
+ * 
+ * @author Jan Ortmann
+ */
+public class ReadonlyTableOfContentsTest extends XmlAbstractTestCase {
+
+    @Test
+    public void testInitFromXml() {
+        AbstractReadonlyTableOfContents toc = new ReadonlyTableOfContents();
+        toc.initFromXml(getTestDocument().getDocumentElement());
+        assertEquals(1, toc.getProductCmptTocEntries().size());
+
+        assertEquals(2, toc.getModelTypeTocEntries().size());
+    }
+
+}

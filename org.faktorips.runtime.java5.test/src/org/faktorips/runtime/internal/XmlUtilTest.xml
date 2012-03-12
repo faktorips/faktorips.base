@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DocElement>
+	<TestElement value="öäüÖÄÜß">blabla</TestElement>
+	<DifferentElement/>
+	<TestElement value="2"/>
+    <!-- -->
+	<ChildA id="0" type="testtype1"/>
+	<ChildA id="1" type="testtype1"/>
+	<ChildA id="2" type="testtype2"/>
+	<ChildB>testValue</ChildB>
+</DocElement>

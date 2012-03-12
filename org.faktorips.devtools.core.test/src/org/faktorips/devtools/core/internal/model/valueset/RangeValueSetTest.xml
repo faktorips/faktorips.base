@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TestCases>
+
+	<!-- old format prio to 1.0.0.rc2 -->
+	<ValueSet>
+		<Range lowerBound="42" upperBound="trulala" step="4" containsNull="true"/>
+	</ValueSet>
+
+	<!-- new format since 1.0.0.rc2 -->
+	<ValueSet>
+		<Range containsNull="true">
+			<LowerBound isNull="false">1</LowerBound>
+			<UpperBound isNull="false">10</UpperBound>
+			<Step isNull="false">2</Step>
+		</Range>
+	</ValueSet>
+	
+</TestCases>

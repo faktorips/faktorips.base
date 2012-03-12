@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Test data for ForeignKeyImplTest.java
+-->
+<ForeignKey id="42" referencedTableStructure="RefTable" referencedUniqueKey="key">
+	<Item name="age"/>
+	<Item name="gender"/>
+</ForeignKey>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessFunction>
+    <ControlFlow id="23" name="" source="16" target="15">
+        <Description/>
+        <Bendpoint locationX="423" locationY="566"/>
+        <Bendpoint locationX="426" locationY="256"/>
+    </ControlFlow>
+</BusinessFunction>

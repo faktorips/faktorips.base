@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DocElement>
+	<ValidationRuleConfig ruleName="Regel1" active="true"/>
+	<ValidationRuleConfig ruleName="RegelZwei" active="false"/>
+</DocElement>

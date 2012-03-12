@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessFunction parameterRectangleWidth="100" parameterRectangleHeight="150" parameterRectangleX="10" parameterRectangleY="20">
+    <Description/>
+    <BFElement id="10" name="" type="start">
+        <Description/>
+        <Location xlocation="245" ylocation="51"/>
+        <Size height="30" width="30"/>
+        <ControlFlow id="17" type="out"/>
+    </BFElement>
+    <BFElement id="11" name="" type="end">
+        <Description/>
+        <Location xlocation="240" ylocation="645"/>
+        <Size height="30" width="30"/>
+        <ControlFlow id="22" type="in"/>
+    </BFElement>
+    <BFElement id="15" name="" type="merge">
+        <Description/>
+        <Location xlocation="226" ylocation="233"/>
+        <Size height="50" width="100"/>
+        <ControlFlow id="19" type="out"/>
+        <ControlFlow id="18" type="in"/>
+        <ControlFlow id="23" type="in"/>
+    </BFElement>
+    <Action id="12" name="" type="inlineAction">
+        <Description/>
+        <Location xlocation="217" ylocation="140"/>
+        <Size height="50" width="100"/>
+        <ControlFlow id="18" type="out"/>
+        <ControlFlow id="17" type="in"/>
+    </Action>
+    <Action id="13" name="" type="businessFunctionCallAction">
+        <Description/>
+        <Location xlocation="224" ylocation="327"/>
+        <Size height="50" width="100"/>
+        <ControlFlow id="20" type="out"/>
+        <ControlFlow id="19" type="in"/>
+    </Action>
+    <Action id="14" name="" type="methodCallAction">
+        <Description/>
+        <Location xlocation="218" ylocation="437"/>
+        <Size height="50" width="100"/>
+        <ControlFlow id="21" type="out"/>
+        <ControlFlow id="20" type="in"/>
+    </Action>
+    <Decision id="16" name="" type="decision">
+        <Description/>
+        <Location xlocation="227" ylocation="544"/>
+        <Size height="50" width="100"/>
+        <ControlFlow id="22" type="out"/>
+        <ControlFlow id="23" type="out"/>
+        <ControlFlow id="21" type="in"/>
+    </Decision>
+    <Parameter id="8" name="" type="parameter">
+        <Description/>
+        <Location xlocation="28" ylocation="27"/>
+        <Size height="50" width="100"/>
+    </Parameter>
+    <Parameter id="9" name="" type="parameter">
+        <Description/>
+        <Location xlocation="26" ylocation="112"/>
+        <Size height="57" width="109"/>
+    </Parameter>
+    <ControlFlow id="17" name="" source="10" target="12">
+        <Description/>
+    </ControlFlow>
+    <ControlFlow id="18" name="" source="12" target="15">
+        <Description/>
+    </ControlFlow>
+    <ControlFlow id="19" name="" source="15" target="13">
+        <Description/>
+    </ControlFlow>
+    <ControlFlow id="20" name="" source="13" target="14">
+        <Description/>
+    </ControlFlow>
+    <ControlFlow id="21" name="" source="14" target="16">
+        <Description/>
+    </ControlFlow>
+    <ControlFlow id="22" name="" source="16" target="11">
+        <Description/>
+    </ControlFlow>
+    <ControlFlow id="23" name="" source="16" target="15">
+        <Description/>
+        <Bendpoint locationX="423" locationY="566"/>
+        <Bendpoint locationX="426" locationY="256"/>
+    </ControlFlow>
+</BusinessFunction>

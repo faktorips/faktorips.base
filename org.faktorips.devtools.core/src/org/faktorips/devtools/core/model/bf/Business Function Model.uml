@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Package xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.eclipse.org/uml2/2.1.0/UML" xmi:id="_sO44YKl2Ed2wipkgBEw1HQ" name="Package">
+  <elementImport xmi:id="_sSdw0Kl2Ed2wipkgBEw1HQ">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+  </elementImport>
+  <elementImport xmi:id="_sSdw0al2Ed2wipkgBEw1HQ">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+  </elementImport>
+  <elementImport xmi:id="_sSdw0ql2Ed2wipkgBEw1HQ">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#UnlimitedNatural"/>
+  </elementImport>
+  <elementImport xmi:id="_sSdw06l2Ed2wipkgBEw1HQ">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+  </elementImport>
+  <packagedElement xmi:type="uml:Class" xmi:id="_xiVvAKl2Ed2wipkgBEw1HQ" name="BusinessFunction"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_zsn1QKl2Ed2wipkgBEw1HQ" name="BFElement"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_2eF3UKl2Ed2wipkgBEw1HQ" name="ActionBFE">
+    <generalization xmi:id="_Db8N0Kl3Ed2wipkgBEw1HQ" general="_zsn1QKl2Ed2wipkgBEw1HQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_5WavUKl2Ed2wipkgBEw1HQ" name="ControlFlow"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_67vuYKl2Ed2wipkgBEw1HQ" name="DecisionBFE">
+    <generalization xmi:id="_FeLLUKl3Ed2wipkgBEw1HQ" general="_zsn1QKl2Ed2wipkgBEw1HQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_8jw1EKl2Ed2wipkgBEw1HQ" name="ParameterBFE">
+    <generalization xmi:id="_EvYysKl3Ed2wipkgBEw1HQ" general="_zsn1QKl2Ed2wipkgBEw1HQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_dFKDsKl3Ed2wipkgBEw1HQ" memberEnd="_dFKDsal3Ed2wipkgBEw1HQ _dFKDtKl3Ed2wipkgBEw1HQ">
+    <ownedEnd xmi:id="_dFKDsal3Ed2wipkgBEw1HQ" name="src" type="_xiVvAKl2Ed2wipkgBEw1HQ" association="_dFKDsKl3Ed2wipkgBEw1HQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_dFKDs6l3Ed2wipkgBEw1HQ" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_dFKDsql3Ed2wipkgBEw1HQ" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_dFKDtKl3Ed2wipkgBEw1HQ" name="dst" type="_zsn1QKl2Ed2wipkgBEw1HQ" aggregation="composite" association="_dFKDsKl3Ed2wipkgBEw1HQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_dFKDtql3Ed2wipkgBEw1HQ" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_dFKDtal3Ed2wipkgBEw1HQ" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_LjRr4Kl4Ed2ip_b2RpwUpw" memberEnd="_Ljbc4Kl4Ed2ip_b2RpwUpw _Ljbc46l4Ed2ip_b2RpwUpw">
+    <ownedEnd xmi:id="_Ljbc4Kl4Ed2ip_b2RpwUpw" name="source" type="_zsn1QKl2Ed2wipkgBEw1HQ" association="_LjRr4Kl4Ed2ip_b2RpwUpw">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Ljbc4ql4Ed2ip_b2RpwUpw" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Ljbc4al4Ed2ip_b2RpwUpw" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_Ljbc46l4Ed2ip_b2RpwUpw" name="outgoingControlFlows" type="_5WavUKl2Ed2wipkgBEw1HQ" association="_LjRr4Kl4Ed2ip_b2RpwUpw">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Ljbc5al4Ed2ip_b2RpwUpw" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Ljbc5Kl4Ed2ip_b2RpwUpw" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_MmL6YKl4Ed2ip_b2RpwUpw" memberEnd="_MmL6Yal4Ed2ip_b2RpwUpw _MmL6ZKl4Ed2ip_b2RpwUpw">
+    <ownedEnd xmi:id="_MmL6Yal4Ed2ip_b2RpwUpw" name="target" type="_zsn1QKl2Ed2wipkgBEw1HQ" association="_MmL6YKl4Ed2ip_b2RpwUpw">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_MmL6Y6l4Ed2ip_b2RpwUpw" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_MmL6Yql4Ed2ip_b2RpwUpw" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_MmL6ZKl4Ed2ip_b2RpwUpw" name="incommingControlFlows" type="_5WavUKl2Ed2wipkgBEw1HQ" association="_MmL6YKl4Ed2ip_b2RpwUpw">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_MmL6Zql4Ed2ip_b2RpwUpw" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_MmL6Zal4Ed2ip_b2RpwUpw" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_beOFoKl4Ed2ip_b2RpwUpw" memberEnd="_beXPkKl4Ed2ip_b2RpwUpw _beXPk6l4Ed2ip_b2RpwUpw">
+    <ownedEnd xmi:id="_beXPkKl4Ed2ip_b2RpwUpw" name="src" type="_xiVvAKl2Ed2wipkgBEw1HQ" association="_beOFoKl4Ed2ip_b2RpwUpw">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_beXPkql4Ed2ip_b2RpwUpw" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_beXPkal4Ed2ip_b2RpwUpw" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_beXPk6l4Ed2ip_b2RpwUpw" name="dst" type="_5WavUKl2Ed2wipkgBEw1HQ" aggregation="composite" association="_beOFoKl4Ed2ip_b2RpwUpw">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_beXPlal4Ed2ip_b2RpwUpw" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_beXPlKl4Ed2ip_b2RpwUpw" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:DataType" xmi:id="_Z7c14Kl5Ed2ip_b2RpwUpw" name="BFElementType"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_gY9r4Kl5Ed2ip_b2RpwUpw" memberEnd="_gY9r4al5Ed2ip_b2RpwUpw _gY9r5Kl5Ed2ip_b2RpwUpw">
+    <ownedEnd xmi:id="_gY9r4al5Ed2ip_b2RpwUpw" name="src" type="_zsn1QKl2Ed2wipkgBEw1HQ" association="_gY9r4Kl5Ed2ip_b2RpwUpw">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_gY9r46l5Ed2ip_b2RpwUpw" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_gY9r4ql5Ed2ip_b2RpwUpw" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_gY9r5Kl5Ed2ip_b2RpwUpw" name="dst" type="_Z7c14Kl5Ed2ip_b2RpwUpw" aggregation="composite" association="_gY9r4Kl5Ed2ip_b2RpwUpw">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_gY9r5ql5Ed2ip_b2RpwUpw" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_gY9r5al5Ed2ip_b2RpwUpw" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+</uml:Package>

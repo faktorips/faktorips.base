@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+-->
+<testcases>
+
+	<PolicyCmptTypeObject name="policyCmptType1" 
+		testPolicyCmptType="base.Test1"
+		productCmpt="productCmpt1"
+		label="Label1">
+			<Link id="0" testPolicyCmptType="association1" target="base.target1"/>
+			<Link id="1" testPolicyCmptType="association2" target="">
+				<PolicyCmptTypeObject testPolicyCmptType="base.Test2">
+				</PolicyCmptTypeObject>
+			</Link>
+			
+			<AttributeValue id="2" name="attribute1" attribute="attribute1"/>
+			<AttributeValue id="3" name="attribute2" attribute="attribute2"/>
+			<AttributeValue id="4" name="attribute3" attribute="attribute3"/>
+	</PolicyCmptTypeObject>
+	
+</testcases>

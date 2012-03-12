@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.1">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>50</x>
+      <y>220</y>
+      <w>520</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Policy
+--
+ 
+--
+# blub(MessageList, IValidationContext) : boolean
+# createMessageForRuleBlub(IValidationContext) : Message
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Text</type>
+    <coordinates>
+      <x>30</x>
+      <y>20</y>
+      <w>530</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>Generated Java source code for a validation rule "blub" in PolicyCmptType "Policy"</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>190</x>
+      <y>60</y>
+      <w>220</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+IPolicy
+--
+_+ MSG_CODE_BLUB : String_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>30</x>
+      <y>180</y>
+      <w>560</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>Validated attributes NOT defined in source code</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>30</x>
+      <y>360</y>
+      <w>560</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>Validated attributes defined in source code</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>50</x>
+      <y>400</y>
+      <w>520</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Policy
+--
+ 
+--
+# blub(MessageList, IValidationContext) : boolean
+# createMessageForRuleBlub(IValidationContext, ObjectProperty[]) : Message
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

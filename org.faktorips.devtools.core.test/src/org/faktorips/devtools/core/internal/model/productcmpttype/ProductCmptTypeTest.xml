@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Test data for AttributeTest.java
+-->
+<testcases>
+
+	<!-- 
+		Type linked to a policy component type
+	-->
+	<ProductCmptType id="17" configurationForPolicyCmptType="true" policyCmptType="Policy">
+		<Attribute id="43" name="productName" datatype="String" modifier="public"/>
+		<Association id="42"
+	          relationType="ass" 
+	          target="pack1.CoverageType" 
+	          targetRoleSingular="CoverageType" 
+	          targetRolePlural="CoverageTypes" 
+	          minCardinality="1" 
+	          maxCardinality="*" 
+	          readOnlyContainer="true"
+	          implementedContainerRelation="BaseCoverageType">
+			<Description>blabla</Description>
+		</Association>
+	    <TableStructureUsage roleName="role1">
+    		<TableStructure tableStructure="tableStructure1" />
+    	</TableStructureUsage>
+		<Method id="44" name="calcPremium" datatype="Money" modifier="public" abstract="true" implementationType="formula">
+		</Method>
+	</ProductCmptType>
+
+</testcases>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><umlet_diagram><help_text>// Uncomment the following line to change the fontsize:
+// fontsize=14
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Welcome to UMLet!
+//
+// Double-click on UML elements to add them to the diagram, or to copy them
+// Edit elements by modifying the text in this panel
+// Hold Ctrl to select multiple elements
+// Use Ctrl+mouse to select via lasso
+//
+// Use ± or Ctrl+mouse wheel to zoom
+// Drag a whole relation at its central square icon
+//
+// Press Ctrl+C to copy the whole diagram to the system clipboard (then just paste it to, eg, Word)
+// Edit the files in the "palettes" directory to create your own element palettes
+//
+// Select "Custom Elements &gt; New..." to create new element types
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// This text will be stored with each diagram;  use it for notes.</help_text><zoom_level>10</zoom_level><element><type>com.umlet.element.base.UseCase</type><coordinates><x>450</x><y>60</y><w>120</w><h>40</h></coordinates><panel_attributes>P0
+</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.UseCase</type><coordinates><x>300</x><y>130</y><w>120</w><h>40</h></coordinates><panel_attributes>A0</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.UseCase</type><coordinates><x>110</x><y>290</y><w>120</w><h>40</h></coordinates><panel_attributes>A2</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.UseCase</type><coordinates><x>630</x><y>140</y><w>120</w><h>40</h></coordinates><panel_attributes>A1</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.UseCase</type><coordinates><x>120</x><y>210</y><w>120</w><h>40</h></coordinates><panel_attributes>P1</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.UseCase</type><coordinates><x>40</x><y>380</y><w>120</w><h>40</h></coordinates><panel_attributes>P4</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.UseCase</type><coordinates><x>410</x><y>390</y><w>120</w><h>40</h></coordinates><panel_attributes>P5</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.UseCase</type><coordinates><x>200</x><y>380</y><w>120</w><h>40</h></coordinates><panel_attributes>P2</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.UseCase</type><coordinates><x>410</x><y>300</y><w>120</w><h>40</h></coordinates><panel_attributes>A3</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.UseCase</type><coordinates><x>680</x><y>230</y><w>120</w><h>40</h></coordinates><panel_attributes>P3</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.UseCase</type><coordinates><x>410</x><y>210</y><w>120</w><h>40</h></coordinates><panel_attributes>P2</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.UseCase</type><coordinates><x>200</x><y>470</y><w>120</w><h>40</h></coordinates><panel_attributes>A3</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.UseCase</type><coordinates><x>200</x><y>560</y><w>120</w><h>40</h></coordinates><panel_attributes>P5</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>340</x><y>60</y><w>140</w><h>90</h></coordinates><panel_attributes>lt=&lt;
+</panel_attributes><additional_attributes>30;70;120;30</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>530</x><y>60</y><w>130</w><h>110</h></coordinates><panel_attributes>lt=&lt;
+</panel_attributes><additional_attributes>110;90;30;30</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>200</x><y>130</y><w>130</w><h>110</h></coordinates><panel_attributes>lt=&lt;
+L0</panel_attributes><additional_attributes>30;90;110;30</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>380</x><y>130</y><w>110</w><h>100</h></coordinates><panel_attributes>lt=&lt;
+L1</panel_attributes><additional_attributes>90;80;30;30</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>680</x><y>150</y><w>80</w><h>100</h></coordinates><panel_attributes>lt=&lt;
+L2</panel_attributes><additional_attributes>60;80;30;30</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>150</x><y>220</y><w>50</w><h>90</h></coordinates><panel_attributes>lt=&lt;</panel_attributes><additional_attributes>30;70;30;30</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>70</x><y>300</y><w>110</w><h>100</h></coordinates><panel_attributes>lt=&lt;
+L3</panel_attributes><additional_attributes>30;80;90;30</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>150</x><y>300</y><w>110</w><h>100</h></coordinates><panel_attributes>lt=&lt;
+L4</panel_attributes><additional_attributes>90;80;30;30</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>230</x><y>390</y><w>50</w><h>100</h></coordinates><panel_attributes>lt=&lt;
+</panel_attributes><additional_attributes>30;80;30;30</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>220</x><y>480</y><w>74</w><h>100</h></coordinates><panel_attributes>lt=&lt;
+L5</panel_attributes><additional_attributes>40;80;40;30</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>430</x><y>310</y><w>74</w><h>100</h></coordinates><panel_attributes>lt=&lt;
+L5</panel_attributes><additional_attributes>40;80;40;30</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>440</x><y>220</y><w>50</w><h>100</h></coordinates><panel_attributes>lt=&lt;</panel_attributes><additional_attributes>30;80;30;30</additional_attributes></element><element><type>com.umlet.element.base.Note</type><coordinates><x>190</x><y>350</y><w>140</w><h>260</h></coordinates><panel_attributes>Same subtree</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Note</type><coordinates><x>400</x><y>190</y><w>140</w><h>260</h></coordinates><panel_attributes>Same subtree</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Note</type><coordinates><x>20</x><y>20</y><w>330</w><h>70</h></coordinates><panel_attributes>This is the product tree ot the test case
+P0-P5 = ProductCmpt
+L0-L5 = Links
+A0-A3 = Associations
+
+bg=blue</panel_attributes><additional_attributes/></element></umlet_diagram>

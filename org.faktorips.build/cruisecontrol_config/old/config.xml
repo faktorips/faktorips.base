@@ -1,0 +1,908 @@
+<cruisecontrol>
+  
+        <!-- preconfigure plugins (aka "global settings") -->
+        
+
+    
+
+        
+        <!--start project definitions -->
+        
+        <project name="org.faktorips.util" buildafterfailed="false">
+	       <listeners>
+                 <currentbuildstatuslistener file="logs/${project.name}/buildStatus.txt" />
+	       </listeners>
+               
+               <modificationset>
+                 <cvs cvsroot="/usr/local/cvsroot" module="${project.name}" />
+               </modificationset>
+        
+	       <bootstrappers>
+	       </bootstrappers>
+               
+               <schedule interval="60">
+	               <ant buildfile="build-faktorips.xml"
+		      target="util"
+		      uselogger="true"
+		      usedebug="false"/>
+	       </schedule>
+        
+	       <log logdir="logs/org.faktorips.util/" >
+                 <merge dir="checkout/org.faktorips.util/build/logs/"/>
+               </log>
+        
+	       <publishers>
+                 <htmlemail 
+                        buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
+                        mailhost="62.245.204.82"
+                        username=""
+                        password=""
+                        returnaddress="cc@faktorips.org"
+                        skipusers="false" 
+                        spamwhilebroken="false"
+                        returnname="faktorips-buildqueue"
+                        subjectprefix="[CC ${project.name}]"
+                        reportsuccess="always"
+                        xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                        css="/opt/cc/docs/cruisecontrol.css"
+                        >
+                   
+                   <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
+                     
+                   <!-- define cvs-user mailaddresses -->
+                   <map alias="senf" address="marcel.senf@faktorzehn.de"/>
+                   <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+                   <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+                   <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                   <map alias="hums" address="renate.hums@faktorzehn.de"/>
+                   <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                   <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+		           <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
+                   <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+                 </htmlemail>
+          
+	       </publishers>
+	</project>
+        
+        
+        
+        
+        <project name="org.faktorips.valuetypes" buildafterfailed="false">
+          <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/buildStatus.txt" />
+
+          </listeners>
+          
+          <bootstrappers>
+          </bootstrappers>
+          
+          <modificationset quietperiod="10">
+            <buildstatus logdir="logs/org.faktorips.util/" />
+            <cvs  cvsroot="/usr/local/cvsroot"  module="${project.name}" />
+          </modificationset>
+          
+          <schedule interval="60">
+            <ant buildfile="build-faktorips.xml"
+                 target="valuetypes"
+                 uselogger="true"
+                 usedebug="false"/>
+          </schedule>
+          
+          <log logdir="logs/org.faktorips.valuetypes/" >
+            <merge dir="checkout/org.faktorips.valuetypes/build/logs/"/>
+          </log>
+          
+          <publishers>
+            <htmlemail 
+                   buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
+                   mailhost="62.245.204.82"
+                   username=""
+                   password=""
+                   returnaddress="cc@faktorips.org"
+                   skipusers="false" 
+                   spamwhilebroken="false"
+                   returnname="faktorips-buildqueue"
+                   subjectprefix="[CC ${project.name}]"
+                   reportsuccess="always"
+                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
+                   >
+              
+              <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
+                
+              <!-- define cvs-user mailaddresses -->
+              <map alias="senf" address="marcel.senf@faktorzehn.de"/>
+              <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+              <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+              <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+              <map alias="hums" address="renate.hums@faktorzehn.de"/>
+              <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+              <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+              <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
+              <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+	    </htmlemail>
+          
+          </publishers>
+        </project>
+
+        
+        <project name="org.faktorips.dtflcommon" buildafterfailed="false">
+          <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/buildStatus.txt" />
+
+          </listeners>
+          
+          <bootstrappers>
+          </bootstrappers>
+          
+          <modificationset quietperiod="10">
+            <cvs  cvsroot="/usr/local/cvsroot"  module="${project.name}" />
+            <buildstatus logdir="logs/org.faktorips.util/" />
+            <buildstatus logdir="logs/org.faktorips.valuetypes/" />
+          </modificationset>
+          
+          <schedule interval="60">
+            <ant buildfile="build-faktorips.xml"
+                 target="dtflcommon"
+                 uselogger="true"
+                 usedebug="false"/>
+          </schedule>
+          
+          <log logdir="logs/org.faktorips.dtflcommon/" >
+            <merge dir="checkout/org.faktorips.dtflcommon/build/logs/"/>
+          </log>
+          
+          <publishers>
+            <htmlemail 
+                   buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
+                   mailhost="62.245.204.82"
+                   username=""
+                   password=""
+                   returnaddress="cc@faktorips.org"
+                   skipusers="false" 
+                   spamwhilebroken="false"
+                   returnname="faktorips-buildqueue"
+                   subjectprefix="[CC ${project.name}]"
+                   reportsuccess="always"
+                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
+                   >
+              
+              <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
+                
+              <!-- define cvs-user mailaddresses -->
+              <map alias="senf" address="marcel.senf@faktorzehn.de"/>
+              <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+              <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+              <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+              <map alias="hums" address="renate.hums@faktorzehn.de"/>
+              <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+              <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+	      <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
+              <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+            </htmlemail>
+          
+          </publishers>
+        </project>
+        
+        
+        
+        <project name="org.faktorips.runtime" buildafterfailed="false">
+          <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/buildStatus.txt" />
+
+          </listeners>
+          
+          <bootstrappers>
+          </bootstrappers>
+          
+          <modificationset quietperiod="10">
+            <cvs  cvsroot="/usr/local/cvsroot"  module="${project.name}" />
+            <buildstatus logdir="logs/org.faktorips.valuetypes/" />
+            <buildstatus logdir="logs/org.faktorips.util/" />
+          </modificationset>
+          
+          <schedule interval="60">
+            <ant buildfile="build-faktorips.xml"
+                 target="runtime"
+                 uselogger="true"
+                 usedebug="false"/>
+          </schedule>
+          
+          <log logdir="logs/org.faktorips.runtime/" >
+                <merge dir="checkout/org.faktorips.runtime/build/logs/"/>
+          </log>
+          
+          <publishers>
+            <htmlemail 
+                   buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
+                   mailhost="62.245.204.82"
+                   username=""
+                   password=""
+                   returnaddress="cc@faktorips.org"
+                   skipusers="false" 
+                   spamwhilebroken="false"
+                   returnname="faktorips-buildqueue"
+                   subjectprefix="[CC ${project.name}]"
+                   reportsuccess="always"
+                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
+                   >
+              
+              <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
+                
+              <!-- define cvs-user mailaddresses -->
+              <map alias="senf" address="marcel.senf@faktorzehn.de"/>
+              <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+              <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+              <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+              <map alias="hums" address="renate.hums@faktorzehn.de"/>
+              <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+              <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+	      <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
+              <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+            </htmlemail>
+          
+          </publishers>
+        </project>
+        
+
+        <project name="org.faktorips.fl" buildafterfailed="false">
+          <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/buildStatus.txt" />
+
+          </listeners>
+          
+          <bootstrappers>
+          </bootstrappers>
+          
+          <modificationset quietperiod="10">
+            <cvs  cvsroot="/usr/local/cvsroot"  module="${project.name}" />
+            <buildstatus logdir="logs/org.faktorips.dtflcommon/" />
+            <buildstatus logdir="logs/org.faktorips.valuetypes/" />
+          </modificationset>
+          
+          <schedule interval="60">
+            <ant buildfile="build-faktorips.xml"
+                 target="fl"
+                 uselogger="true"
+                 usedebug="false"/>
+          </schedule>
+          
+          <log logdir="logs/org.faktorips.fl/" >
+            <merge dir="checkout/org.faktorips.fl/build/logs/"/>
+          </log>
+          
+          <publishers>
+            <htmlemail 
+                   buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
+                   mailhost="62.245.204.82"
+                   username=""
+                   password=""
+                   returnaddress="cc@faktorips.org"
+                   skipusers="false" 
+                   spamwhilebroken="false"
+                   returnname="faktorips-buildqueue"
+                   subjectprefix="[CC ${project.name}]"
+                   reportsuccess="always"
+                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
+                   >
+              
+              <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
+              
+              <!-- define cvs-user mailaddresses -->
+              <map alias="senf" address="marcel.senf@faktorzehn.de"/>
+              <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+              <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+              <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+              <map alias="hums" address="renate.hums@faktorzehn.de"/>
+              <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+              <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+	      <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
+              <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+            </htmlemail>
+          
+          </publishers>
+        </project>
+        
+        
+        <project name="org.faktorips.devtools.core" buildafterfailed="false">
+          <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/buildStatus.txt" />
+            
+          </listeners>
+          
+          <bootstrappers>
+          </bootstrappers>
+          
+          <modificationset quietperiod="10">
+            <cvs  cvsroot="/usr/local/cvsroot"  module="${project.name}" />
+            <buildstatus logdir="logs/org.faktorips.fl/" />
+            <buildstatus logdir="logs/org.faktorips.dtflcommon/" />
+          </modificationset>
+          
+          <schedule interval="60">
+            <ant buildfile="build-faktorips.xml"
+                 target="devtools.core"
+                 uselogger="true"
+                 usedebug="false"/>
+          </schedule>
+          
+          <log logdir="logs/org.faktorips.devtools.core/" >
+            <merge dir="checkout/org.faktorips.devtools.core/build/logs/"/>
+          </log>
+          
+          <publishers>
+            <htmlemail 
+                   buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
+                   mailhost="62.245.204.82"
+                   username=""
+                   password=""
+                   returnaddress="cc@faktorips.org"
+                   skipusers="false" 
+                   spamwhilebroken="false"
+                   returnname="faktorips-buildqueue"
+                   subjectprefix="[CC ${project.name}]"
+                   reportsuccess="always"
+                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
+                   >
+              
+              <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
+                
+                <!-- define cvs-user mailaddresses -->
+                <map alias="senf" address="marcel.senf@faktorzehn.de"/>
+                <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+                <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="hums" address="renate.hums@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+		<map alias="waertel" address="thorsten.waertel@kqv.de"/> 
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+              </htmlemail>
+              
+            </publishers>
+        </project>
+        
+        <project name="org.faktorips.devtools.stdbuilder" buildafterfailed="false">
+          <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/buildStatus.txt" />
+            
+          </listeners>
+          
+          <bootstrappers>
+          </bootstrappers>
+          
+          <modificationset quietperiod="10">
+            <cvs  cvsroot="/usr/local/cvsroot"  module="${project.name}" />
+            <buildstatus logdir="logs/org.faktorips.fl/" />
+            <buildstatus logdir="logs/org.faktorips.runtime/" />
+            <buildstatus logdir="logs/org.faktorips.devtools.core/" />
+          </modificationset>
+          
+          <schedule interval="60">
+            <ant buildfile="build-faktorips.xml"
+                 target="devtools.stdbuilder"
+                 uselogger="true"
+                 usedebug="false"/>
+          </schedule>
+          
+          <log logdir="logs/org.faktorips.devtools.stdbuilder/" >
+            <merge dir="checkout/org.faktorips.devtools.stdbuilder/build/logs/"/>
+          </log>
+          
+          <publishers>
+            <htmlemail 
+                   buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
+                   mailhost="62.245.204.82"
+                   username=""
+                   password=""
+                   returnaddress="cc@faktorips.org"
+                   skipusers="false" 
+                   spamwhilebroken="false"
+                   returnname="faktorips-buildqueue"
+                   subjectprefix="[CC ${project.name}]"
+                   reportsuccess="always"
+                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"                   css="/opt/cc/docs/cruisecontrol.css"
+                   >
+              
+              <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
+                
+                <!-- define cvs-user mailaddresses -->
+                <map alias="senf" address="marcel.senf@faktorzehn.de"/>
+                <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+                <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+                <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+                <map alias="hums" address="renate.hums@faktorzehn.de"/>
+                <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+                <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+		<map alias="waertel" address="thorsten.waertel@kqv.de"/> 
+                <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+              </htmlemail>
+              
+            </publishers>
+        </project>
+        
+	<project name="de.qv.faktorips" buildafterfailed="false">
+		<listeners>
+			<currentbuildstatuslistener file="logs/${project.name}/buildStatus.txt" />
+			
+		</listeners>
+		
+		<bootstrappers>
+		</bootstrappers>
+		
+		<modificationset quietperiod="10">
+			<cvs  cvsroot="/usr/local/cvsroot"  module="${project.name}" />
+			<buildstatus logdir="logs/org.faktorips.devtools.stdbuilder/" />
+			<buildstatus logdir="logs/org.faktorips.devtools.core/" />
+		</modificationset>
+		
+		<schedule interval="60">
+			<ant buildfile="build-faktorips.xml"
+			     target="${project.name}"
+			     uselogger="true"
+			     usedebug="false"/>
+		</schedule>
+		
+		<log logdir="logs/${project.name}/" >
+			<merge dir="checkout/${project.name}/build/logs/"/>
+		</log>
+		
+		<publishers>
+			<htmlemail 
+				   buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
+				   mailhost="62.245.204.82"
+				   username=""
+				   password=""
+				   returnaddress="cc@faktorips.org"
+				   skipusers="false" 
+				   spamwhilebroken="false"
+				   returnname="faktorips-buildqueue"
+				   subjectprefix="[CC ${project.name}]"
+				   reportsuccess="always"
+				   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
+				   >
+				
+				<failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
+				
+				<!-- define cvs-user mailaddresses -->
+				<map alias="senf" address="marcel.senf@faktorzehn.de"/>
+				<map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+				<map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+				<map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+				<map alias="hums" address="renate.hums@faktorzehn.de"/>
+				<map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+				<map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+				<map alias="waertel" address="thorsten.waertel@kqv.de"/> 
+				<map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+			</htmlemail>
+			
+		</publishers>
+        </project>
+	
+        
+        <project name="de.bbv.faktorips.runtime" buildafterfailed="false">
+          <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/buildStatus.txt" />
+            
+          </listeners>
+          
+          <bootstrappers>
+          </bootstrappers>
+          
+          <modificationset quietperiod="10">
+            <cvs  cvsroot="/usr/local/cvsroot"  module="${project.name}" />
+          </modificationset>
+          
+          <schedule interval="60">
+            <ant buildfile="build-faktorips.xml"
+                 target="de.bbv.faktorips.runtime"
+                 uselogger="true"
+                 usedebug="false"/>
+          </schedule>
+          
+          <log logdir="logs/de.bbv.faktorips.runtime/" >
+            <merge dir="checkout/de.bbv.faktorips.runtime/build/logs/"/>
+          </log>
+          
+          <publishers>
+            <htmlemail 
+                   buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
+                   mailhost="62.245.204.82"
+                   username=""
+                   password=""
+                   returnaddress="cc@faktorips.org"
+                   skipusers="false" 
+                   spamwhilebroken="false"
+                   returnname="faktorips-buildqueue"
+                   subjectprefix="[CC ${project.name}]"
+                   reportsuccess="always"
+                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/" 
+                   css="/opt/cc/docs/cruisecontrol.css"
+                   >
+              
+              <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
+              
+              <!-- define cvs-user mailaddresses -->
+              <map alias="senf" address="marcel.senf@faktorzehn.de"/>
+              <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+              <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+              <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+              <map alias="hums" address="renate.hums@faktorzehn.de"/>
+              <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+              <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+	      <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
+              <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+            </htmlemail>
+            
+          </publishers>
+        </project>
+        
+        <project name="de.bbv.faktorips.devtools" buildafterfailed="false">
+          <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/buildStatus.txt" />
+            
+          </listeners>
+          
+          <bootstrappers>
+          </bootstrappers>
+          
+          <modificationset quietperiod="10">
+            <cvs  cvsroot="/usr/local/cvsroot"  module="${project.name}" />
+          </modificationset>
+          
+          <schedule interval="60">
+            <ant buildfile="build-faktorips.xml"
+                 target="de.bbv.faktorips.devtools"
+                 uselogger="true"
+                 usedebug="false"/>
+          </schedule>
+          
+          <log logdir="logs/de.bbv.faktorips.devtools/" >
+            <merge dir="checkout/de.bbv.faktorips.devtools/build/logs/"/>
+          </log>
+          
+          <publishers>
+            <htmlemail 
+                   buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
+                   mailhost="62.245.204.82"
+                   username=""
+                   password=""
+                   returnaddress="cc@faktorips.org"
+                   skipusers="false" 
+                   spamwhilebroken="false"
+                   returnname="faktorips-buildqueue"
+                   subjectprefix="[CC ${project.name}]"
+                   reportsuccess="always"
+                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
+                   >
+              
+              <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
+              
+              <!-- define cvs-user mailaddresses -->
+              <map alias="senf" address="marcel.senf@faktorzehn.de"/>
+              <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+              <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+              <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+              <map alias="hums" address="renate.hums@faktorzehn.de"/>
+              <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+              <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+	      <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
+              <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+            </htmlemail>
+            
+          </publishers>
+        </project>   
+
+
+       
+        
+        <project name="org.faktorips.devtools.msgpm" buildafterfailed="false">
+          <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/buildStatus.txt" />
+            
+          </listeners>
+          
+          <bootstrappers>
+          </bootstrappers>
+          
+          <modificationset quietperiod="10">
+            <cvs  cvsroot="/usr/local/cvsroot"  module="${project.name}" />
+            <buildstatus logdir="logs/org.faktorips.fl/" />
+            <buildstatus logdir="logs/org.faktorips.runtime/" />
+            <buildstatus logdir="logs/org.faktorips.devtools.core/" />
+          </modificationset>
+          
+          <schedule interval="60">
+            <ant buildfile="build-faktorips.xml"
+                 target="devtools.msgpm"
+                 uselogger="true"
+                 usedebug="false"/>
+          </schedule>
+          
+          <log logdir="logs/org.faktorips.devtools.msgpm/" >
+            <merge dir="checkout/org.faktorips.devtools.msgpm//build/logs/"/>
+          </log>
+          
+          <publishers>
+            <htmlemail 
+                   buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
+                   mailhost="62.245.204.82"
+                   username=""
+                   password=""
+                   returnaddress="cc@faktorips.org"
+                   skipusers="false" 
+                   spamwhilebroken="false"
+                   returnname="faktorips-buildqueue"
+                   subjectprefix="[CC ${project.name}]"
+                   reportsuccess="always"
+                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
+                   >
+              
+              <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
+              
+              <!-- define cvs-user mailaddresses -->
+              <map alias="senf" address="marcel.senf@faktorzehn.de"/>
+              <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+              <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+              <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+              <map alias="hums" address="renate.hums@faktorzehn.de"/>
+              <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+              <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+	      <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
+              <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+              <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
+	      <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de" />
+              <map alias="mornau" address="franz.mornau@faktorzehn.de" />
+			     
+            </htmlemail>
+            
+          </publishers>
+        </project>     
+
+<!--
+        <project name="org.faktorips.eclipsetest" buildafterfailed="false">
+          <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/buildStatus.txt" />
+            
+          </listeners>
+          
+          <bootstrappers>
+          </bootstrappers>
+          
+          <modificationset quietperiod="60" requiremodification="true" >
+	       
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.core" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.stdbuilder" />
+           <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.fl" />
+           <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.runtime" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.util" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.valuetypes" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.dtflcommon" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.core.test" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.stdbuilder.test" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.feature" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.feature.test" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.updatesite" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.ant" /> 
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.integrationtest" />
+
+	       <!-- BBV-Projekt ->
+	       <cvs cvsroot="/usr/local/cvsroot/" module="de.bbv.faktorips.devtools" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="de.bbv.faktorips.runtime" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="de.bbv.faktorips.feature" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="de.bbv.cm.CMPlugin" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="de.bbv.faktorips.pm.filterapplication" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.msgpm" /!-->
+
+	
+		<!--timebuild time="0100" /-->
+          </modificationset>
+          
+          <schedule>
+            <ant buildfile="build-faktorips.xml"
+                 target="eclipsetest"
+                 usequiet="true"
+		 usedebug="no"
+		 uselogger="false"
+		 >
+		 	<property name="eclipsetest.logdir" value="eclipsetest/environment/results/xml/" />
+		 	</ant>
+          </schedule>
+          
+          <log logdir="logs/org.faktorips.eclipsetest/" >
+            <merge dir="eclipsetest/environment/results/xml/"/>
+          </log>
+          
+          <publishers>
+            <htmlemail 
+                   buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
+                   mailhost="62.245.204.82"
+                   username=""
+                   password=""
+                   returnaddress="cc@faktorips.org"
+                   spamwhilebroken="true"
+                   returnname="faktorips-buildqueue"
+                   subjectprefix="[CC ${project.name}]"
+                   reportsuccess="always"
+                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
+	      >
+              
+              <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
+	      
+  
+              <!-- define cvs-user mailaddresses -->
+	      <map alias="senf" address="marcel.senf@faktorzehn.de"/>
+	      <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+              <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+              <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+	      <map alias="hums" address="renate.hums@faktorzehn.de"/>
+	      <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+              <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+	      <map alias="waertel" address="thorsten.waertel@kqv.de"/>				
+	      <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+	      <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>
+	      <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de" />
+	      <map alias="mornau" address="franz.mornau@faktorzehn.de" />
+
+	   </htmlemail>
+            
+          </publishers>
+        </project>   
+		
+		
+		<project name="de.bbv.faktorips.eclipsetest" buildafterfailed="false">
+          <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/buildStatus.txt" />
+            
+          </listeners>
+          
+          <bootstrappers>
+          </bootstrappers>
+          
+          <modificationset quietperiod="60" requiremodification="true" >
+	       
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.core" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.stdbuilder" />
+               <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.fl" />
+               <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.runtime" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.util" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.valuetypes" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.dtflcommon" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.core.test" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.stdbuilder.test" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.feature" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.feature.test" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.updatesite" />
+	       <!-- BBV-Projekt -->
+	       <cvs cvsroot="/usr/local/cvsroot/" module="de.bbv.faktorips.devtools" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="de.bbv.faktorips.devtools.test" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="de.bbv.faktorips.runtime" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="de.bbv.faktorips.feature" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="de.bbv.cm.CMPlugin" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="de.bbv.faktorips.pm.filterapplication" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.msgpm" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.msgpm.test" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="de.bbv.faktorips.updatesite" /> 
+	
+		<!--timebuild time="0100" /-->
+          </modificationset>
+          
+          <schedule>
+            <ant buildfile="build-faktorips.xml"
+                 target="eclipsetest-bbv"
+                 usequiet="true"
+		 usedebug="no"
+		 uselogger="false"
+		 />
+          </schedule>
+          
+          <log logdir="logs/de.bbv.faktorips.eclipsetest/" >
+            <merge dir="eclipsetest_bbv/environment/results/xml/"/>
+          </log>
+          
+          <publishers>
+            <htmlemail 
+                   buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
+                   mailhost="62.245.204.82"
+                   username=""
+                   password=""
+                   returnaddress="cc@faktorips.org"
+                   spamwhilebroken="false"
+                   returnname="faktorips-buildqueue"
+                   subjectprefix="[CC ${project.name}]"
+                   reportsuccess="always"
+                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
+	      >
+              
+              <failure reportWhenFixed="true" address="faktorips-bbv-devel@faktorzehn.de" />
+	      
+  
+              <!-- define cvs-user mailaddresses -->
+	      <map alias="senf" address="marcel.senf@faktorzehn.de"/>
+	      <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+          <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+          <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+	      <map alias="hums" address="renate.hums@faktorzehn.de"/>
+	      <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+          <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+	      <map alias="waertel" address="thorsten.waertel@kqv.de"/>				
+	      <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+	      <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>
+	      <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de" />
+	      <map alias="mornau" address="franz.mornau@faktorzehn.de" />
+
+	   </htmlemail>
+            
+          </publishers>
+        </project>   
+        
+        
+        <project name="org.faktorips.devtools.ant" buildafterfailed="false">
+          <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/buildStatus.txt" />
+          </listeners>
+          
+          <bootstrappers>
+          </bootstrappers>
+          
+          <modificationset quietperiod="10">
+            <cvs  cvsroot="/usr/local/cvsroot"  module="${project.name}" />
+          </modificationset>
+          
+          <schedule interval="60">
+            <ant buildfile="build-faktorips.xml"
+                 target="devtools.ant"
+                 uselogger="true"
+                 usedebug="false"/>
+          </schedule>
+          
+          <log logdir="logs/${project.name}/" >
+            <merge dir="checkout/${project.name}/scripts/"/>
+          </log>
+          
+          <publishers>
+            <htmlemail 
+                   buildresultsurl="http://www.faktorzehn.org/cruisecontrol/buildresults/${project.name}"
+                   mailhost="62.245.204.82"
+                   username=""
+                   password=""
+                   returnaddress="cc@faktorips.org"
+                   skipusers="false" 
+                   spamwhilebroken="false"
+                   returnname="faktorips-buildqueue"
+                   subjectprefix="[CC ${project.name}]"
+                   reportsuccess="always"
+                   xsldir="/opt/cc/webapps/cruisecontrol/xsl/"
+                   css="/opt/cc/docs/cruisecontrol.css"
+                   >
+              
+              <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
+              
+              <!-- define cvs-user mailaddresses -->
+              <map alias="senf" address="marcel.senf@faktorzehn.de"/>
+              <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
+              <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+              <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+              <map alias="hums" address="renate.hums@faktorzehn.de"/>
+              <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
+              <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+	      <map alias="waertel" address="thorsten.waertel@kqv.de"/> 
+              <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
+              <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>               
+	      <map alias="ortmann2" address="joerg.ortmann@faktorzehn.de" />
+              <map alias="mornau" address="franz.mornau@faktorzehn.de" />
+			     
+            </htmlemail>
+            
+          </publishers>
+        </project>  
+</cruisecontrol>
