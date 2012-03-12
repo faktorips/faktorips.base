@@ -435,6 +435,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
                 String msgText = ml.getFirstMessage(ml.getSeverity()).getText();
                 if (ml.getSeverity() == Message.ERROR) {
                     setErrorMessage(msgText);
+                    return;
                 } else if (ml.getSeverity() == Message.WARNING) {
                     setMessage(msgText, IMessageProvider.WARNING);
                 } else if (ml.getSeverity() == Message.INFO) {
@@ -442,7 +443,6 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
                 } else {
                     setMessage(msgText, IMessageProvider.NONE);
                 }
-                return;
             }
         } catch (CoreException e) {
             // an error occurred while validating the name
