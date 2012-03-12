@@ -231,10 +231,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     @Override
     protected void generateAdditionalDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder,
             boolean reusableLocalVariablesGenerated) throws CoreException {
-        IPolicyCmptType policyCmptType = getPcType();
-        List<IPolicyCmptTypeAttribute> attributes = policyCmptType == null ? new ArrayList<IPolicyCmptTypeAttribute>()
-                : policyCmptType.getPolicyCmptTypeAttributes();
-        for (IPolicyCmptTypeAttribute attribute : attributes) {
+        for (IPolicyCmptTypeAttribute attribute : getPolicyCmptTypeAttributes()) {
             if (ignoreAttributeForXMLMethods(attribute)) {
                 continue;
             }

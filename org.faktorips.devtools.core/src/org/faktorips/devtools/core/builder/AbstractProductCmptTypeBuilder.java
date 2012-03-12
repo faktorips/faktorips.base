@@ -14,15 +14,18 @@
 package org.faktorips.devtools.core.builder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -32,6 +35,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -78,10 +82,7 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
      */
     @Override
     protected final void generateCodeForPolicyCmptTypeAttributes(TypeSection typeSection) throws CoreException {
-        IPolicyCmptType policyCmptType = getPcType();
-        List<IPolicyCmptTypeAttribute> attributes = policyCmptType == null ? new ArrayList<IPolicyCmptTypeAttribute>()
-                : policyCmptType.getPolicyCmptTypeAttributes();
-        for (IPolicyCmptTypeAttribute attribute : attributes) {
+        for (IPolicyCmptTypeAttribute attribute : getPolicyCmptTypeAttributes()) {
             IPolicyCmptTypeAttribute a = attribute;
             if (!a.isProductRelevant() || !a.isChangeable() || !a.isValid(a.getIpsProject())) {
                 continue;
@@ -99,6 +100,51 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
                         + " of " + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e)); //$NON-NLS-1$
             }
         }
+    }
+
+    /**
+     * Returns the list of {@link IPolicyCmptTypeAttribute attributes} configured by this
+     * {@link IProductCmptType}. If the same {@link IPolicyCmptType} is already configured by a
+     * super type, an empty list is returned as no code needs to be generated for this
+     * {@link IProductCmptType}.
+     */
+    protected List<IPolicyCmptTypeAttribute> getPolicyCmptTypeAttributes() {
+        try {
+            IPolicyCmptType policyCmptType = getPcType();
+            if (policyCmptType == null) {
+                return Collections.emptyList();
+            }
+            IIpsProject ipsProject = getIpsProject();
+            if (getProductCmptType().hasExistingSupertype(ipsProject)) {
+                FindNextConfiguredSuperType findNextConfiguredSuperType = new FindNextConfiguredSuperType(ipsProject);
+                findNextConfiguredSuperType.start(getProductCmptType().findSuperProductCmptType(ipsProject));
+                if (policyCmptType.equals(findNextConfiguredSuperType.policyCmptType)) {
+                    return Collections.emptyList();
+                }
+            }
+            return policyCmptType.getPolicyCmptTypeAttributes();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e.getLocalizedMessage(), e);
+        }
+    }
+
+    private static class FindNextConfiguredSuperType extends TypeHierarchyVisitor<IProductCmptType> {
+
+        private IPolicyCmptType policyCmptType;
+
+        public FindNextConfiguredSuperType(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            if (!StringUtils.isEmpty(currentType.getPolicyCmptType())) {
+                policyCmptType = currentType.findPolicyCmptType(ipsProject);
+                return false;
+            }
+            return true;
+        }
+
     }
 
     /**
