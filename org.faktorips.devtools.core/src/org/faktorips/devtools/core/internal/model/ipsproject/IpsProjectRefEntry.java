@@ -172,26 +172,50 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
      */
     public static String createNWDIProjectName(String refProjectName, String currProjectName) {
         String separator = "~"; //$NON-NLS-1$
-        Pattern p = Pattern.compile("(.*)~([0-9]+)~(.*)"); //$NON-NLS-1$
+        Pattern pInstance = Pattern.compile(".*[0-9]+~.*"); //$NON-NLS-1$
+        Pattern p = null;
+        boolean hasInstanceNumber = false;
+        if (pInstance.matcher(currProjectName).find()) {
+            // with instance number NWDS 72
+            p = Pattern.compile("(.*)~([0-9]+)~(.*)"); //$NON-NLS-1$
+            hasInstanceNumber = true;
+        } else {
+            // without instance number since NWDS 73
+            p = Pattern.compile("(.[^~]*)~(.*)"); //$NON-NLS-1$
+            hasInstanceNumber = false;
+        }
 
         Matcher mCurr = p.matcher(currProjectName);
         if (!mCurr.find()) {
+            // exit and don't fix project name, because current project doesn't match nwds project
+            // name pattern
             return refProjectName;
         }
-        if (!(mCurr.groupCount() == 3)) {
+        if (!((hasInstanceNumber && mCurr.groupCount() == 3) || !hasInstanceNumber && mCurr.groupCount() == 2)) {
+            // exit and don't fix project name, because current project doesn't match nwds project
+            // name pattern
             return refProjectName;
         }
-        String currTrackName;
-        String currInstance;
-        currTrackName = mCurr.group(1);
-        currInstance = mCurr.group(2);
 
+        // eval the nwds prefix (track name) and instance number
+        String currTrackName;
+        // note that the instance number is optional
+        String currInstance = null;
+        currTrackName = mCurr.group(1);
+        if (hasInstanceNumber) {
+            currInstance = mCurr.group(2);
+        }
+
+        // get ref project name without nwds prefix
         Matcher mRef = p.matcher(refProjectName);
         String refProjectNameRelative = refProjectName;
-        if (mRef.find() && mRef.groupCount() == 3) {
-            refProjectNameRelative = mRef.group(3);
+        if (mRef.find() && mRef.groupCount() == (hasInstanceNumber ? 3 : 2)) {
+            refProjectNameRelative = mRef.group((hasInstanceNumber ? 3 : 2));
         }
-        return currTrackName + separator + currInstance + separator + refProjectNameRelative;
+
+        // build the ref project name using the current nwds track prefix
+        return currTrackName + separator + (currInstance != null ? currInstance + separator : "") //$NON-NLS-1$
+                + refProjectNameRelative;
     }
 
     @Override
