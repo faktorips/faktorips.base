@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -138,7 +139,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         private OpenGenerationInEditorAction openAction;
 
         public GenerationsComposite(ITimedIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
-            super(ipsObject, parent, getSite(), false, true, true, false, true, false, false, false, toolkit);
+            super(ipsObject, parent, getSite(), true, true, true, false, true, false, false, false, toolkit);
 
             super.setEditDoubleClickListenerEnabled(false);
 
@@ -171,9 +172,29 @@ public class GenerationsSection extends SimpleIpsPartsSection {
             return new LabelProvider();
         }
 
+        /**
+         * Sets the new generation, if the "New" button in the editor was selected
+         * 
+         */
         @Override
         protected IIpsObjectPart newIpsPart() {
-            return null;
+            IProductCmptGeneration selectedGeneration = getActiveGeneration();
+            IIpsObjectGeneration newGeneration = page.getProductCmpt().newGeneration(selectedGeneration.getValidFrom());
+            newGeneration.setValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+            page.getProductCmptEditor().setActiveGeneration(newGeneration, true);
+
+            return newGeneration;
+        }
+
+        /**
+         * Sets the workingdate and selects new generation, if the "OK" button in the dialog was
+         * selected
+         * 
+         */
+        @Override
+        protected void newPartConfirmed() {
+            IProductCmptGeneration selectedGeneration = getActiveGeneration();
+            IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(selectedGeneration.getValidFrom());
         }
 
         @Override

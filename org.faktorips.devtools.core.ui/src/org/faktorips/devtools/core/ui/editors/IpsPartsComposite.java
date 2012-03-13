@@ -561,7 +561,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 }
                 editPartCanceled();
             } else if (dialog.getReturnCode() == Window.OK) {
-                editPartConfirmed();
+
+                newPartConfirmed();
             }
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -593,6 +594,10 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         }
 
         refresh();
+    }
+
+    protected void newPartConfirmed() {
+        // Empty default implementation
     }
 
     protected void editPartConfirmed() {
