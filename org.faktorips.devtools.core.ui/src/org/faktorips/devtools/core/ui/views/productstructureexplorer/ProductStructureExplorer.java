@@ -523,9 +523,9 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         }
 
         // change cardinalities
-        IProductCmptReference productCmptReference = (IProductCmptReference)selectedRef;
-
         if (selectedRef instanceof IProductCmptReference) {
+            IProductCmptReference productCmptReference = (IProductCmptReference)selectedRef;
+
             if (productCmptReference.getLink() != null) {
                 MenuManager cardinalitiesSub = new MenuManager(Messages.ProductStructureExplorer_setCardinalities,
                         IpsUIPlugin.getImageHandling().createImageDescriptor("Cardinality.gif"), null); //$NON-NLS-1$
