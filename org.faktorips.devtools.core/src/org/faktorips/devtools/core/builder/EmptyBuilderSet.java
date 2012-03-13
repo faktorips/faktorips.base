@@ -138,7 +138,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
         }
 
         @Override
-        protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
+        protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, Datatype datatype) {
             return ""; //$NON-NLS-1$
         }
 
