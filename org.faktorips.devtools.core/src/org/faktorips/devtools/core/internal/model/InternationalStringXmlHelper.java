@@ -21,7 +21,26 @@ import org.w3c.dom.NodeList;
 /**
  * Helper class to load {@link IInternationalString} from XML and sore the to XML.
  * <p>
- * The helper should not be initialized, just use the static util methods.
+ * The helper should not be initialized, just use the static utility methods.
+ * <p>
+ * With this helper you could use international strings in different manners. To achieve this you
+ * store every international string into an element describing the context. For example if you want
+ * to use an international string for the name and one international string for the description, you
+ * have two context elements (name and description) both containing an international string. The xml
+ * may look like this:
+ * 
+ * <pre>
+ * &lt;name&gt;
+ *   &lt;InternationalString&gt;
+ *     &lt;LocalizedString locale="de" text="Der Name"/&gt;
+ *   &lt;/InternationalString&gt;
+ * &lt;/name&gt;
+ * &lt;description&gt;
+ *   &lt;InternationalString&gt;
+ *     &lt;LocalizedString locale="de" text="Die Beschreibung"/&gt;
+ *   &lt;/InternationalString&gt;
+ * &lt;/description&gt;
+ * </pre>
  * 
  * @author dirmeier
  */
