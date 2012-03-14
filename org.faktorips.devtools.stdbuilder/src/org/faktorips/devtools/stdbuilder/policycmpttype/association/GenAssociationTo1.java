@@ -557,6 +557,8 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         if (isAlreadyDefinedInSupertype()) {
             appendOverrideAnnotation(methodsBuilder, getIpsProject(), Overrides.CLASS_METHOD);
+        } else {
+            appendOverrideAnnotation(methodsBuilder, getIpsProject(), Overrides.INTERFACE_METHOD);
         }
         generateSignatureGetRefObject(methodsBuilder);
         methodsBuilder.openBracket();
