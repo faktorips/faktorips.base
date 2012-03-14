@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * Copyright (c) 2005-2011 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
@@ -95,9 +95,14 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
 
     @Override
     public void modifyText(ModifyEvent e) {
-        // We need to validate here and "by hand" because this validation is not neccessary
+        // We need to validate here and "by hand" because this validation is not necessary
         // to be done during normal validation of a generation.
         GregorianCalendar value = dateField.getValue();
+
+        // Clear message area
+        setMessage(null);
+        setErrorMessage(null);
+
         if (value == null) {
             DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
             String formatDescription = format.format(new GregorianCalendar().getTime());
@@ -110,12 +115,13 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
             String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToEarly, IpsPlugin.getDefault()
                     .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
             super.setMessage(msg, IMessageProvider.WARNING);
+            getButton(OK).setEnabled(true);
         } else if (next != null && !next.getValidFrom().after(value)) {
             String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToLate, IpsPlugin.getDefault()
                     .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
             super.setMessage(msg, IMessageProvider.WARNING);
+            getButton(OK).setEnabled(true);
         } else {
-            super.setErrorMessage(null);
             getButton(OK).setEnabled(true);
         }
     }

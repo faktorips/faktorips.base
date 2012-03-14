@@ -597,7 +597,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     protected void newPartConfirmed() {
-        // Empty default implementation
+        editPartConfirmed();
     }
 
     protected void editPartConfirmed() {
