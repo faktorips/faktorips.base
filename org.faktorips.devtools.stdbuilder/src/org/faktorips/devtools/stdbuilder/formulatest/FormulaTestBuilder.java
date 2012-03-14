@@ -476,8 +476,9 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
                             String parameterName = identifierInFormula.replaceAll("\\.", "_");
                             if (!testParameterNames.contains(parameterName)) {
                                 testParameterNames.add(parameterName);
-                                testParameterTypes.add(datatypeOfParam.getQualifiedName());
-                                body.addImport(datatypeOfParam.getJavaClassName());
+                                String parameterClassName = datatypeOfParam.getJavaClassName();
+                                testParameterTypes.add(parameterClassName);
+                                body.addImport(parameterClassName);
                             }
                         }
                         if (!orderedInputValue.contains(formulaTestInputValues[l])) {
