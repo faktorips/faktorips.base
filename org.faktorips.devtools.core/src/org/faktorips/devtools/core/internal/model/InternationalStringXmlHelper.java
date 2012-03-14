@@ -18,12 +18,27 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+/**
+ * Helper class to load {@link IInternationalString} from XML and sore the to XML.
+ * <p>
+ * The helper should not be initialized, just use the static util methods.
+ * 
+ * @author dirmeier
+ */
 public final class InternationalStringXmlHelper {
 
     private InternationalStringXmlHelper() {
         // do not instatiate
     }
 
+    /**
+     * Stores the given {@link IInternationalString} to a new XML element that is a child of the
+     * given parent element. The name of the new element is given by the parameter xmlTagName
+     * 
+     * @param internationalString The international string to save
+     * @param parentElement the parent XML element
+     * @param xmlTagName the name of the new XML element holding the international string
+     */
     public static void toXml(IInternationalString internationalString, Element parentElement, String xmlTagName) {
         Document doc = parentElement.getOwnerDocument();
         Element msgTextElement = doc.createElement(xmlTagName);
@@ -31,6 +46,14 @@ public final class InternationalStringXmlHelper {
         msgTextElement.appendChild(internationalString.toXml(doc));
     }
 
+    /**
+     * Loads an {@link IInternationalString} from an XML element. This method loads the first child
+     * element with the XML tag name {@link InternationalString#XML_TAG}.
+     * 
+     * @param internationalString An instance of international string that will be initialized with
+     *            the XML content
+     * @param element The XML element holding the international string element
+     */
     public static void initFromXml(IInternationalString internationalString, Element element) {
         NodeList childNodes = element.getElementsByTagName(InternationalString.XML_TAG);
         for (int j = 0; j < childNodes.getLength(); j++) {
