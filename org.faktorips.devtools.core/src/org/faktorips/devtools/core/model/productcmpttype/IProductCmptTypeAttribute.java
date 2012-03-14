@@ -36,6 +36,21 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
     public final static String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
     /**
+     * This constant defines the multi value property.
+     * <p>
+     * If this attribute is marked as multi value attribute, the attribute value could hold a list
+     * of values. If it is not marked as multi valued, it is a single value attribute and could only
+     * hold one value. The concept of multi value attributes is described in FIPS-887.
+     * <p>
+     * For example a person has only one name (single value attribute) but may speak multiple
+     * foreign languages (multi value attribute).
+     * 
+     * @see #isMultiValueAttribute()
+     * @see #setMultiValueAttribute(boolean)
+     */
+    public final static String PROPERTY_MULTI_VALUE_ATTRIBUTE = "multiValueAttribute"; //$NON-NLS-1$
+
+    /**
      * Returns the product component type the attribute belongs to.
      */
     public IProductCmptType getProductCmptType();
@@ -66,5 +81,36 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * @param changesOverTime whether or not this attribute should change over time
      */
     public void setChangingOverTime(boolean changesOverTime);
+
+    /**
+     * Returns whether this attribute is a multi value attribute or not.
+     * <p>
+     * If this method returns false, this attribute defines a single value attribute. The attribute
+     * value could only have one value. In case of multi value attributes, the attribute value could
+     * hold a list of values. The concept of multi value attributes is described in FIPS-887.
+     * <p>
+     * For example a person has only one name (single value attribute) but may speak multiple
+     * foreign languages (multi value attribute).
+     * <p>
+     * The default value is false.
+     * 
+     * @return true if this attribute is a multi value attribute, false if not
+     */
+    boolean isMultiValueAttribute();
+
+    /**
+     * Setting the property multi value attribute for this attribute.
+     * <p>
+     * If this attribute is marked as multi value attribute, the attribute value could hold a list
+     * of values. If it is not marked as multi valued, it is a single value attribute and could only
+     * hold one value. The concept of multi value attributes is described in FIPS-887.
+     * <p>
+     * For example a person has only one name (single value attribute) but may speak multiple
+     * foreign languages (multi value attribute).
+     * 
+     * @param multiValueAttribute true to mark this attribute as multi value attribute, false to
+     *            mark as single value attribute
+     */
+    void setMultiValueAttribute(boolean multiValueAttribute);
 
 }

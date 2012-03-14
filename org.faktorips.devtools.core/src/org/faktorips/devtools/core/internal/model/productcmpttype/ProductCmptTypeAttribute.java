@@ -45,6 +45,8 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     private IValueSet valueSet;
 
+    private boolean multiValueAttribute = false;
+
     private boolean changingOverTime = true;
 
     public ProductCmptTypeAttribute(IProductCmptType parent, String id) {
@@ -157,6 +159,18 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     public boolean isChangingOverTime() {
         return changingOverTime;
+    }
+
+    @Override
+    public boolean isMultiValueAttribute() {
+        return multiValueAttribute;
+    }
+
+    @Override
+    public void setMultiValueAttribute(boolean multiValueAttribute) {
+        boolean oldValue = this.multiValueAttribute;
+        this.multiValueAttribute = multiValueAttribute;
+        valueChanged(oldValue, multiValueAttribute);
     }
 
     @Override
