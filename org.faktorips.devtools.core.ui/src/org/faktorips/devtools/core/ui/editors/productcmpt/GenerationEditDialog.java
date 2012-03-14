@@ -17,6 +17,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
+import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -104,6 +106,14 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
             }
             super.setErrorMessage(Messages.GenerationEditDialog_msgInvalidFormat + formatDescription);
             getButton(OK).setEnabled(false);
+        } else if (previous != null && !value.after(previous.getValidFrom())) {
+            String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToEarly, IpsPlugin.getDefault()
+                    .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
+            super.setMessage(msg, IMessageProvider.WARNING);
+        } else if (next != null && !next.getValidFrom().after(value)) {
+            String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToLate, IpsPlugin.getDefault()
+                    .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
+            super.setMessage(msg, IMessageProvider.WARNING);
         } else {
             super.setErrorMessage(null);
             getButton(OK).setEnabled(true);
