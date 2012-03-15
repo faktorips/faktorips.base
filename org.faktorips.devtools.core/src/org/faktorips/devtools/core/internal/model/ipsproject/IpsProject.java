@@ -196,7 +196,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         for (IFunctionResolverFactory factory : factories) {
             if (getProperties().isActive(factory)) {
                 try {
-                    compiler.add(factory.newFunctionResolver(getFunctionsLanguageLocale()));
+                    compiler.add(factory.newFunctionResolver(getFormulaLanguageLocale()));
                 } catch (Exception e) {
                     IpsPlugin.log(new IpsStatus("Unable to create the function resolver for the following factory: " //$NON-NLS-1$
                             + factory.getClass(), e));
@@ -643,8 +643,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public Locale getFunctionsLanguageLocale() {
-        return getPropertiesInternal().getFunctionsLanguageLocale();
+    public Locale getFormulaLanguageLocale() {
+        return getPropertiesInternal().getFormulaLanguageLocale();
     }
 
     @Override
