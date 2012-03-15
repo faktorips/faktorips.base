@@ -14,11 +14,14 @@
 package org.faktorips.codegen.dthelpers;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.DoubleDatatype;
 import org.faktorips.valueset.DoubleRange;
 
 /**
+ * {@link DatatypeHelper} for {@link DoubleDatatype}.
+ * 
  * 
  * @author Jan Ortmann
  */
@@ -38,10 +41,6 @@ public class DoubleHelper extends AbstractDatatypeHelper {
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         return newInstance(expression);
-    }
-
-    public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
     public JavaCodeFragment newInstance(String value) {

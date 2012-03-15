@@ -14,9 +14,13 @@
 package org.faktorips.codegen.dthelpers;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
 
+/**
+ * {@link DatatypeHelper} for {@link BooleanDatatype}.
+ */
 public class BooleanHelper extends AbstractDatatypeHelper {
 
     /**
@@ -55,10 +59,6 @@ public class BooleanHelper extends AbstractDatatypeHelper {
         fragment.append(expression);
         fragment.append(')');
         return fragment;
-    }
-
-    public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
 }

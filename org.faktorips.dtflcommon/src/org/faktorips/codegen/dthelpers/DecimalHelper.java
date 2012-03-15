@@ -14,13 +14,14 @@
 package org.faktorips.codegen.dthelpers;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.DecimalDatatype;
 import org.faktorips.values.Decimal;
 import org.faktorips.valueset.DecimalRange;
 
 /**
- * DatatypeHelper for datatype Decimal.
+ * {@link DatatypeHelper} for {@link DecimalDatatype}.
  */
 public class DecimalHelper extends AbstractDatatypeHelper {
 
@@ -71,6 +72,7 @@ public class DecimalHelper extends AbstractDatatypeHelper {
         return valueOfExpression(expression);
     }
 
+    @Override
     public JavaCodeFragment nullExpression() {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Decimal.class);

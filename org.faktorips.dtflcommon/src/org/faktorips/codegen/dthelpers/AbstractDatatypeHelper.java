@@ -199,4 +199,13 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
         return fragment;
     }
 
+    /**
+     * Returns {@code "null"}.
+     * 
+     * {@inheritDoc}
+     */
+    public JavaCodeFragment nullExpression() {
+        return new JavaCodeFragment("null"); //$NON-NLS-1$
+    }
+
 }

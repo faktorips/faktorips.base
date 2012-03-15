@@ -13,11 +13,12 @@
 
 package org.faktorips.codegen.dthelpers;
 
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.PrimitiveLongDatatype;
 
 /**
- * DatatypeHelper for datatype PrimitiveLong.
+ * {@link DatatypeHelper} for {@link PrimitiveLongDatatype}.
  */
 public class PrimitiveLongHelper extends AbstractPrimitiveDatatypeHelper {
 

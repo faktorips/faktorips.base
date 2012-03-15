@@ -13,9 +13,13 @@
 
 package org.faktorips.codegen.dthelpers;
 
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.GenericValueDatatype;
 
+/**
+ * {@link DatatypeHelper} for {@link GenericValueDatatype}.
+ */
 public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
 
     public GenericValueDatatypeHelper(GenericValueDatatype datatype) {
@@ -38,6 +42,7 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
         return code;
     }
 
+    @Override
     public JavaCodeFragment nullExpression() {
         GenericValueDatatype datatype = getGenericValueDatatype();
         JavaCodeFragment code = new JavaCodeFragment();

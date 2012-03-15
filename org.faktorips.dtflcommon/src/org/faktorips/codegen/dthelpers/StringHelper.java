@@ -15,9 +15,13 @@ package org.faktorips.codegen.dthelpers;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.StringDatatype;
 
+/**
+ * {@link DatatypeHelper} for {@link StringDatatype}.
+ */
 public class StringHelper extends AbstractDatatypeHelper {
 
     /**
@@ -58,10 +62,6 @@ public class StringHelper extends AbstractDatatypeHelper {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append(expression);
         return fragment;
-    }
-
-    public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
     @Override

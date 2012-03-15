@@ -16,13 +16,14 @@ package org.faktorips.codegen.dthelpers;
 import java.util.GregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
 import org.faktorips.values.DateUtil;
 
 /**
- * DatatypeHelper for datatype GregorianCalendarAsDate.
+ * {@link DatatypeHelper} for {@link GregorianCalendarAsDateDatatype}.
  */
 public class GregorianCalendarAsDateHelper extends AbstractDatatypeHelper {
 
@@ -71,10 +72,6 @@ public class GregorianCalendarAsDateHelper extends AbstractDatatypeHelper {
         fragment.append(expression);
         fragment.append(")"); //$NON-NLS-1$
         return fragment;
-    }
-
-    public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
     @Override

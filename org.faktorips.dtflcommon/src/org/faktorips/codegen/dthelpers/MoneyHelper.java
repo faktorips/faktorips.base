@@ -14,13 +14,14 @@
 package org.faktorips.codegen.dthelpers;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.MoneyDatatype;
 import org.faktorips.values.Money;
 import org.faktorips.valueset.MoneyRange;
 
 /**
- * DatatypeHelper for datatype Money.
+ * {@link DatatypeHelper} for {@link MoneyDatatype}.
  */
 public class MoneyHelper extends AbstractDatatypeHelper {
 
@@ -74,6 +75,7 @@ public class MoneyHelper extends AbstractDatatypeHelper {
         return valueOfExpression(expression);
     }
 
+    @Override
     public JavaCodeFragment nullExpression() {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Money.class);

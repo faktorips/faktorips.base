@@ -16,11 +16,14 @@ package org.faktorips.codegen.dthelpers;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.DateDatatype;
 import org.faktorips.values.DateUtil;
 
 /**
+ * {@link DatatypeHelper} for {@link DateDatatype}.
+ * 
  * 
  * @author Peter Erzberger
  */
@@ -48,10 +51,6 @@ public class DateHelper extends AbstractDatatypeHelper {
         fragment.append(expression);
         fragment.append(')');
         return fragment;
-    }
-
-    public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
     public JavaCodeFragment newInstance(String value) {

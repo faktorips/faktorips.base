@@ -16,12 +16,13 @@ package org.faktorips.codegen.dthelpers;
 import java.math.BigDecimal;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.BigDecimalDatatype;
 import org.faktorips.valueset.BigDecimalRange;
 
 /**
- * DatatypeHelper for {@link BigDecimal}.
+ * {@link DatatypeHelper} for {@link BigDecimalDatatype}.
  * 
  * 
  * @author Jan Ortmann
@@ -46,10 +47,6 @@ public class BigDecimalHelper extends AbstractDatatypeHelper {
         code.appendQuoted(value);
         code.append(')');
         return code;
-    }
-
-    public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
     @Override

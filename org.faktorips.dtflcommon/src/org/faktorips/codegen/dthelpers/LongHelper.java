@@ -14,12 +14,13 @@
 package org.faktorips.codegen.dthelpers;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.LongDatatype;
 import org.faktorips.valueset.LongRange;
 
 /**
- * DatatypeHelper for datatype Long.
+ * {@link DatatypeHelper} for {@link LongDatatype}.
  */
 public class LongHelper extends AbstractDatatypeHelper {
 
@@ -55,10 +56,6 @@ public class LongHelper extends AbstractDatatypeHelper {
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         return newInstance(expression);
-    }
-
-    public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
     @Override

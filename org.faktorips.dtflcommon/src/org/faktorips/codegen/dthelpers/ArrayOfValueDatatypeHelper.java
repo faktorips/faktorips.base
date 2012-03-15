@@ -14,11 +14,12 @@
 package org.faktorips.codegen.dthelpers;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 
 /**
- * A helpper class for <code>ArrayOfValueDatatype</code>. ValueOf and newInstance expressions are
- * not supported by this helper. A call to these method returns a "null" fragment.
+ * A helper class for {@link ArrayOfValueDatatype}. ValueOf and newInstance expressions are not
+ * supported by this helper. A call to these method returns a {@code "null"} fragment.
  * 
  * @author Peter Erzberger
  */
@@ -40,10 +41,6 @@ public class ArrayOfValueDatatypeHelper extends AbstractDatatypeHelper {
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         return nullExpression();
-    }
-
-    public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
     /**

@@ -14,12 +14,13 @@
 package org.faktorips.codegen.dthelpers;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.valueset.IntegerRange;
 
 /**
- * DatatypeHelper for datatype Integer.
+ * {@link DatatypeHelper} for {@link IntegerDatatype}.
  */
 public class IntegerHelper extends AbstractDatatypeHelper {
 
@@ -69,10 +70,6 @@ public class IntegerHelper extends AbstractDatatypeHelper {
         fragment.append(expression);
         fragment.append(')');
         return fragment;
-    }
-
-    public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("null"); //$NON-NLS-1$
     }
 
     @Override

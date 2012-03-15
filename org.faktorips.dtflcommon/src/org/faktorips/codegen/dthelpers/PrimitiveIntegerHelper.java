@@ -13,11 +13,12 @@
 
 package org.faktorips.codegen.dthelpers;
 
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.PrimitiveIntegerDatatype;
 
 /**
- * DatatypeHelper for datatype PrimitiveInteger.
+ * {@link DatatypeHelper} for {@link PrimitiveIntegerDatatype}.
  */
 public class PrimitiveIntegerHelper extends AbstractPrimitiveDatatypeHelper {
 
