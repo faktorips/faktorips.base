@@ -62,12 +62,18 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        String changingOverTimeAttribute = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
+            String changingOverTimeAttribute = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
             changingOverTime = Boolean.parseBoolean(changingOverTimeAttribute);
         } else {
             // compatibility to not yet migrated files
             changingOverTime = true;
+        }
+        if (element.hasAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE)) {
+            String multiValueAttributeElement = element.getAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE);
+            multiValueAttribute = Boolean.parseBoolean(multiValueAttributeElement);
+        } else {
+            multiValueAttribute = false;
         }
     }
 
@@ -75,6 +81,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(changingOverTime));
+        element.setAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE, String.valueOf(multiValueAttribute));
     }
 
     @Override
