@@ -13,6 +13,10 @@
 
 package org.faktorips.codegen.dthelpers;
 
+import org.faktorips.valueset.DefaultRange;
+import org.faktorips.valueset.OrderedValueSet;
+import org.faktorips.valueset.ValueSet;
+
 /**
  * Qualified and unqualified class names for classes in Java 5 projects. They can not be retrieved
  * via <code>getClass().getName()</code> because a reference from old code to those projects is not
@@ -22,23 +26,18 @@ package org.faktorips.codegen.dthelpers;
  */
 public interface Java5ClassNames {
 
-    public static final String ValuesetPackage = "org.faktorips.valueset"; //$NON-NLS-1$
-    public static final String ValueSet_UnqualifiedName = "ValueSet"; //$NON-NLS-1$
-    public static final String ValueSet_QualifiedName = ValuesetPackage + "." + ValueSet_UnqualifiedName; //$NON-NLS-1$
-    public static final String OrderedValueSet_UnqualifiedName = "OrderedValueSet"; //$NON-NLS-1$
-    public static final String OrderedValueSet_QualifiedName = ValuesetPackage + "." + OrderedValueSet_UnqualifiedName; //$NON-NLS-1$
-    public static final String DefaultRange_UnqualifiedName = "DefaultRange"; //$NON-NLS-1$
-    public static final String DefaultRange_QualifiedName = ValuesetPackage + "." + DefaultRange_UnqualifiedName; //$NON-NLS-1$
+    String ValueSet_QualifiedName = ValueSet.class.getName();
+    String OrderedValueSet_QualifiedName = OrderedValueSet.class.getName();
+    String DefaultRange_QualifiedName = DefaultRange.class.getName();
+    String RuntimePackage = "org.faktorips.runtime"; //$NON-NLS-1$
+    String ILink_UnqualifiedName = "IProductComponentLink"; //$NON-NLS-1$
+    String ILink_QualifiedName = RuntimePackage + "." + ILink_UnqualifiedName; //$NON-NLS-1$
 
-    public static final String RuntimePackage = "org.faktorips.runtime"; //$NON-NLS-1$
-    public static final String ILink_UnqualifiedName = "IProductComponentLink"; //$NON-NLS-1$
-    public static final String ILink_QualifiedName = RuntimePackage + "." + ILink_UnqualifiedName; //$NON-NLS-1$
-
-    public static final String RuntimePackageInternal = "org.faktorips.runtime.internal"; //$NON-NLS-1$
-    public static final String ReadOnlyBinaryRangeTreeKeyType_UnqualifiedName = "ReadOnlyBinaryRangeTree.KeyType"; //$NON-NLS-1$
-    public static final String ReadOnlyBinaryRangeTreeKeyType_QualifiedName = RuntimePackageInternal + "." //$NON-NLS-1$
+    String RuntimePackageInternal = "org.faktorips.runtime.internal"; //$NON-NLS-1$
+    String ReadOnlyBinaryRangeTreeKeyType_UnqualifiedName = "ReadOnlyBinaryRangeTree.KeyType"; //$NON-NLS-1$
+    String ReadOnlyBinaryRangeTreeKeyType_QualifiedName = RuntimePackageInternal + "." //$NON-NLS-1$
             + ReadOnlyBinaryRangeTreeKeyType_UnqualifiedName;
-    public static final String Link_UnqualifiedName = "ProductComponentLink"; //$NON-NLS-1$
-    public static final String Link_QualifiedName = RuntimePackageInternal + "." + Link_UnqualifiedName; //$NON-NLS-1$
+    String Link_UnqualifiedName = "ProductComponentLink"; //$NON-NLS-1$
+    String Link_QualifiedName = RuntimePackageInternal + "." + Link_UnqualifiedName; //$NON-NLS-1$
 
 }
