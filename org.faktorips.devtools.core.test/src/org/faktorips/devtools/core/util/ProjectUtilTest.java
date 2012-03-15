@@ -38,21 +38,21 @@ public class ProjectUtilTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCreateIpsProjectSetsFunctionsLanguageLocaleToEnglishIfDefaultIsNotGerman() throws CoreException {
+    public void testCreateIpsProjectSetsFormulaLanguageLocaleToEnglishIfDefaultIsNotGerman() throws CoreException {
         IProject platformProject = newPlatformProject("TestProjectItalian");
         IJavaProject javaProject = addJavaCapabilities(platformProject);
         IIpsProject ipsProject = ProjectUtil.createIpsProject(javaProject, "runtimeIdPrefix", true, true, false,
                 Arrays.asList(Locale.ITALIAN, Locale.GERMAN));
-        assertEquals(Locale.ENGLISH, ipsProject.getFunctionsLanguageLocale());
+        assertEquals(Locale.ENGLISH, ipsProject.getFormulaLanguageLocale());
     }
 
     @Test
-    public void testCreateIpsProjectSetsFunctionsLanguageLocaleToGermanIfDefaultIsGerman() throws CoreException {
+    public void testCreateIpsProjectSetsFormulaLanguageLocaleToGermanIfDefaultIsGerman() throws CoreException {
         IProject platformProject = newPlatformProject("TestProjectGerman");
         IJavaProject javaProject = addJavaCapabilities(platformProject);
         IIpsProject ipsProject = ProjectUtil.createIpsProject(javaProject, "runtimeIdPrefix", true, true, false,
                 Arrays.asList(Locale.GERMAN, Locale.ITALIAN, Locale.ENGLISH));
-        assertEquals(Locale.GERMAN, ipsProject.getFunctionsLanguageLocale());
+        assertEquals(Locale.GERMAN, ipsProject.getFormulaLanguageLocale());
     }
 
 }

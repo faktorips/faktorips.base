@@ -385,9 +385,9 @@ public class ProjectUtil {
     private static void setDefaultFunctionsLanguageLocale(IIpsProjectProperties properties) {
         ISupportedLanguage defaultLanguage = properties.getDefaultLanguage();
         if (defaultLanguage != null && defaultLanguage.getLocale().getLanguage().equals(Locale.GERMAN.getLanguage())) {
-            properties.setFunctionsLanguageLocale(Locale.GERMAN);
+            properties.setFormulaLanguageLocale(Locale.GERMAN);
         } else {
-            properties.setFunctionsLanguageLocale(Locale.ENGLISH);
+            properties.setFormulaLanguageLocale(Locale.ENGLISH);
         }
     }
 

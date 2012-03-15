@@ -435,7 +435,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         assertEquals("WENN(boolean; any; any) - any", proposal.getLabel());
 
         IIpsProjectProperties properties = ipsProject.getProperties();
-        properties.setFunctionsLanguageLocale(Locale.ENGLISH);
+        properties.setFormulaLanguageLocale(Locale.ENGLISH);
         ipsProject.setProperties(properties);
 
         results = proposalProvider.getProposals("WE", 2);
