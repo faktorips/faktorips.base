@@ -111,6 +111,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         return null;
     }
 
+    @Deprecated
     @Override
     public boolean isValid() throws CoreException {
         return getValidationResultSeverity() != Message.ERROR;
@@ -121,6 +122,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         return getValidationResultSeverity(ipsProject) != Message.ERROR;
     }
 
+    @Deprecated
     @Override
     public int getValidationResultSeverity() throws CoreException {
         return validate(getIpsProject()).getSeverity();
