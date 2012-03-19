@@ -75,11 +75,12 @@ public class Messages extends NLS {
 
     public static String IpsPasteAction_cannot_copy;
     public static String IpsPasteAction_errorTitle;
-    public static String IpsPasteAction_suggestedNamePrefixSimple;
-    public static String IpsPasteAction_suggestedNamePrefixComplex;
     public static String IpsPasteAction_titleNamingConflict;
     public static String IpsPasteAction_msgNamingConflict;
     public static String IpsPasteAction_msgFileAllreadyExists;
+
+    public static String NewResourceNameValidator_suggestedNamePrefixSimple;
+    public static String NewResourceNameValidator_suggestedNamePrefixComplex;
 
     public static String NewProductComponentAction_name;
 

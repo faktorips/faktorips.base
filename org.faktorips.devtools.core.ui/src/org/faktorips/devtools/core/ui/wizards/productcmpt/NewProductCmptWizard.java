@@ -13,12 +13,13 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import java.util.GregorianCalendar;
+import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.wizard.IWizardPage;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -32,7 +33,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.FolderAndPackagePage;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionWizard;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Element;
 
 /**
  * Wizard to create a new product component.
@@ -53,7 +56,7 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
     private final TypeSelectionPage typeSelectionPage;
     private final ProductCmptPage productCmptPage;
     private final FolderAndPackagePage folderAndPackagePage;
-    private final NewProdutCmptValidator validator;
+    private final NewProductCmptValidator validator;
 
     /**
      * Creating a the new wizard.
@@ -63,7 +66,7 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
         setWindowTitle(Messages.NewProductCmptWizard_title);
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "wizards/NewProductCmptWizard.png")); //$NON-NLS-1$
-        validator = new NewProdutCmptValidator(getPmo());
+        validator = new NewProductCmptValidator(getPmo());
         typeSelectionPage = new TypeSelectionPage(getPmo());
         productCmptPage = new ProductCmptPage(getPmo());
         folderAndPackagePage = new FolderAndPackagePage(getPmo());
@@ -88,7 +91,7 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
 
     @Override
     public IWizardPage getPreviousPage(IWizardPage page) {
-        if (page == productCmptPage && getPmo().isAddToMode()) {
+        if (page == productCmptPage && !getPmo().isFirstPageNeeded()) {
             return null;
         } else {
             return super.getPreviousPage(page);
@@ -97,7 +100,7 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
 
     @Override
     public IWizardPage getStartingPage() {
-        if (getPmo().isAddToMode()) {
+        if (!getPmo().isFirstPageNeeded()) {
             return productCmptPage;
         } else {
             return super.getStartingPage();
@@ -111,15 +114,45 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
     }
 
     @Override
+    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
+        if (getPmo().isCopyMode()) {
+            return copyIpsSrcFile(monitor);
+        } else {
+            return super.createIpsSrcFile(monitor);
+        }
+    }
+
+    private IIpsSrcFile copyIpsSrcFile(IProgressMonitor monitor) throws CoreException {
+        IIpsPackageFragment targetPackageFragment = getPmo().getIpsPackage();
+        String fileName = IpsObjectType.PRODUCT_CMPT.getFileName(getPmo().getName());
+        IIpsSrcFile ipsSrcFile = targetPackageFragment.createIpsFile(fileName, getContentsOfIpsObject(getPmo()
+                .getCopyProductCmpt()), true, new SubProgressMonitor(monitor, 1));
+        return ipsSrcFile;
+    }
+
+    private String getContentsOfIpsObject(IIpsObject ipsObject) {
+        String encoding = ipsObject.getIpsProject().getXmlFileCharset();
+        Element xml = ipsObject.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
+        try {
+            return XmlUtil.nodeToString(xml, encoding);
+        } catch (TransformerException e) {
+            // This is a programming error, re-throw as runtime exception
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreException {
         IProductCmpt newProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
         newProductCmpt.setProductCmptType(getPmo().getSelectedType().getQualifiedName());
-
-        GregorianCalendar date = getPmo().getEffectiveDate();
         newProductCmpt.setRuntimeId(getPmo().getRuntimeId());
-        IProductCmptGeneration generation = (IProductCmptGeneration)newProductCmpt.newGeneration();
-        generation.setValidFrom(date);
-        newProductCmpt.fixAllDifferencesToModel(getPmo().getIpsProject());
+
+        if (!getPmo().isCopyMode()) {
+            IProductCmptGeneration generation = (IProductCmptGeneration)newProductCmpt.newGeneration();
+            generation.setValidFrom(getPmo().getEffectiveDate());
+            newProductCmpt.fixAllDifferencesToModel(getPmo().getIpsProject());
+        }
+
         monitor.worked(1);
     }
 
@@ -205,6 +238,14 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
     public void setAddToAssociation(IProductCmptGeneration addToproductCmptGen,
             IProductCmptTypeAssociation addToAssociation) {
         getPmo().setAddToAssociation(addToproductCmptGen, addToAssociation);
+    }
+
+    /**
+     * Configures this wizard so that it can be used to copy the provided product component.
+     */
+    public void setCopyProductCmpt(IProductCmpt productCmptToCopy) {
+        getPmo().setCopyProductCmpt(productCmptToCopy);
+        setWindowTitle(Messages.NewProductCmptWizard_copyTitle);
     }
 
 }

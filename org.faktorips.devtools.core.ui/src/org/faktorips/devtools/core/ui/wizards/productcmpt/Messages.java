@@ -28,6 +28,7 @@ public class Messages extends NLS {
     }
 
     public static String NewProductCmptWizard_title;
+    public static String NewProductCmptWizard_copyTitle;
     public static String NewProdutCmptValidator_msg_emptyKindId;
     public static String NewProdutCmptValidator_msg_emptyVersionId;
     public static String NewProdutCmptValidator_msg_invalidAddGenerationInPast;
@@ -50,6 +51,7 @@ public class Messages extends NLS {
     public static String ProductCmptPage_msg_fullName;
     public static String ProductCmptPage_name;
     public static String ProductCmptPage_title;
+    public static String ProductCmptPage_copyTitle;
     public static String TypeSelectionPage_label_project;
     public static String TypeSelectionPage_label_type;
     public static String TypeSelectionPage_name;

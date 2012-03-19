@@ -47,6 +47,7 @@ import org.faktorips.util.message.MessageList;
  * type, the wizard would start with this page automatically.
  * 
  * @since 3.6
+ * 
  * @author dirmeier
  */
 public class ProductCmptPage extends WizardPage {
@@ -208,8 +209,9 @@ public class ProductCmptPage extends WizardPage {
             IProductCmptType selectedBaseType = getPmo().getSelectedBaseType();
             if (selectedBaseType != null) {
                 getPage().setTitle(
-                        NLS.bind(Messages.ProductCmptPage_title,
-                                IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(selectedBaseType)));
+                        NLS.bind(pmo.isCopyMode() ? Messages.ProductCmptPage_copyTitle
+                                : Messages.ProductCmptPage_title, IpsPlugin.getMultiLanguageSupport()
+                                .getLocalizedLabel(selectedBaseType)));
             } else {
                 getPage().setTitle(StringUtils.EMPTY);
             }

@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefini
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
-public class NewProdutCmptValidator extends NewProductDefinitionValidator {
+public class NewProductCmptValidator extends NewProductDefinitionValidator {
 
     public static final String MSG_INVALID_PROJECT = MSGCODE_PREFIX + "invalidProject"; //$NON-NLS-1$
 
@@ -57,7 +57,7 @@ public class NewProdutCmptValidator extends NewProductDefinitionValidator {
 
     private final NewProductCmptPMO pmo;
 
-    public NewProdutCmptValidator(NewProductCmptPMO pmo) {
+    public NewProductCmptValidator(NewProductCmptPMO pmo) {
         super(pmo);
         this.pmo = pmo;
     }

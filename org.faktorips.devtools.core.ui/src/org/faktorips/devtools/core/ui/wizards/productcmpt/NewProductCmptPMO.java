@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
@@ -23,11 +24,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -40,6 +42,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.core.ui.commands.NewResourceNameValidator;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
 import org.faktorips.devtools.core.util.QNameUtil;
 
@@ -62,6 +65,8 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     public static final String PROPERTY_NEED_VERSION_ID = "needVersionId"; //$NON-NLS-1$
 
+    private final NewProductCmptValidator validator;
+
     private IProductCmptType selectedBaseType;
 
     private IProductCmptType selectedType;
@@ -74,9 +79,11 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     private IProductCmpt contextProductCmpt = null;
 
-    private ArrayList<IProductCmptType> subtypes;
+    private IProductCmpt copyProductCmpt;
 
-    private final NewProdutCmptValidator validator;
+    private boolean copyValidProductCmpt;
+
+    private List<IProductCmptType> subtypes;
 
     private IProductCmptGeneration addToProductCmptGeneration;
 
@@ -84,12 +91,9 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     private String runtimeId = StringUtils.EMPTY;
 
-    /**
-     * 
-     */
     public NewProductCmptPMO() {
         super();
-        validator = new NewProdutCmptValidator(this);
+        validator = new NewProductCmptValidator(this);
     }
 
     @Override
@@ -104,6 +108,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
             throw new CoreRuntimeException(e);
         }
         updateVersionId(ipsProject);
+        updateRuntimeId(ipsProject);
         super.setIpsProject(ipsProject);
     }
 
@@ -163,7 +168,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
             if (Boolean.parseBoolean(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE))) {
                 continue;
             }
-            String superType = ipsSrcFile.getPropertyValue(ProductCmptType.PROPERTY_SUPERTYPE);
+            String superType = ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_SUPERTYPE);
             IIpsSrcFile superTypeIpsSrcFile = null;
             if (StringUtils.isNotEmpty(superType)) {
                 superTypeIpsSrcFile = ipsProject.findIpsSrcFile(new QualifiedNameType(superType,
@@ -245,6 +250,11 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     }
 
     private void updateSubtypeList() {
+        if (isCopyValidMode()) {
+            subtypes = Arrays.asList(selectedType);
+            return;
+        }
+
         ArrayList<IProductCmptType> result = new ArrayList<IProductCmptType>();
         if (selectedBaseType == null) {
             subtypes = result;
@@ -270,7 +280,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     public void setKindId(String name) {
         String oldName = this.kindId;
         this.kindId = name;
-        updateRuntimeId();
+        updateRuntimeId(getIpsProject());
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_KIND_ID, oldName, name));
     }
 
@@ -297,9 +307,9 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         return versionId;
     }
 
-    private void updateRuntimeId() {
+    private void updateRuntimeId(IIpsProject ipsProject) {
         try {
-            setRuntimeId(getIpsProject().getProductCmptNamingStrategy().getUniqueRuntimeId(getIpsProject(), getName()));
+            setRuntimeId(ipsProject.getProductCmptNamingStrategy().getUniqueRuntimeId(ipsProject, getName()));
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         } catch (IllegalArgumentException e) {
@@ -372,7 +382,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
      * @return Returns the validator.
      */
     @Override
-    protected NewProdutCmptValidator getValidator() {
+    protected NewProductCmptValidator getValidator() {
         return validator;
     }
 
@@ -417,6 +427,47 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     }
 
     /**
+     * Configures this PMO so that the product component to create is a copy of the given product
+     * component.
+     * 
+     * @throws IllegalStateException if no IPS project has been set using
+     *             {@link #setIpsProject(IIpsProject)}
+     */
+    public void setCopyProductCmpt(IProductCmpt productCmptToCopy) {
+        if (getIpsProject() == null) {
+            throw new IllegalStateException("IPS Project must be set before setting the product to be copied."); //$NON-NLS-1$
+        }
+        copyProductCmpt = productCmptToCopy;
+
+        initializeNameForProductCmptCopy();
+        initializeTypeAndBaseTypeForProductCmptCopy(productCmptToCopy);
+    }
+
+    private void initializeNameForProductCmptCopy() {
+        IPath targetPath = copyProductCmpt.getIpsPackageFragment().getCorrespondingResource().getFullPath();
+        NewResourceNameValidator resourceNameValidator = new NewResourceNameValidator(targetPath, IResource.FILE,
+                '.' + IpsObjectType.PRODUCT_CMPT.getFileExtension(), copyProductCmpt.getIpsSrcFile());
+        String nameOfCopy = resourceNameValidator.getValidResourceName(copyProductCmpt.getName());
+        setKindId(copyProductCmpt.getIpsProject().getProductCmptNamingStrategy().getKindId(nameOfCopy));
+    }
+
+    private void initializeTypeAndBaseTypeForProductCmptCopy(IProductCmpt productCmptToCopy) {
+        try {
+            IProductCmptType productCmptType = productCmptToCopy.findProductCmptType(productCmptToCopy.getIpsProject());
+            copyValidProductCmpt = productCmptType != null;
+            setSelectedType(productCmptType);
+
+            SelectedBaseTypeVisitor baseTypeVisitor = new SelectedBaseTypeVisitor(getBaseTypes(),
+                    productCmptToCopy.getIpsProject());
+            baseTypeVisitor.start(productCmptType);
+            setSelectedBaseType(baseTypeVisitor.selectedBaseType);
+
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    /**
      * Returns the product component generation to which the newly created product component will be
      * added
      * 
@@ -440,6 +491,39 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     }
 
     /**
+     * Returns whether the wizard is in copy mode or not.
+     * <p>
+     * When in copy mode, the product component provided via
+     * {@link #setCopyProductCmpt(IProductCmpt)} is being copied.
+     */
+    public boolean isCopyMode() {
+        return copyProductCmpt != null;
+    }
+
+    /**
+     * Returns true if the wizard is
+     * <ul>
+     * <li>in copy mode and
+     * <li>the product component type of the product component to be copied can be found
+     */
+    public boolean isCopyValidMode() {
+        return isCopyMode() && copyValidProductCmpt;
+    }
+
+    /**
+     * Returns whether the first wizard page (base type selection) is needed or not.
+     * <p>
+     * The page is not needed if
+     * <ul>
+     * <li>{@link #isAddToMode()} returns {@code true} or
+     * <li>{@link #isCopyMode()} returns {@code true} and the product component type of the product
+     * component being copied can be found
+     */
+    public boolean isFirstPageNeeded() {
+        return !isAddToMode() && !isCopyValidMode();
+    }
+
+    /**
      * @param runtimeId The runtimeId to set.
      */
     public void setRuntimeId(String runtimeId) {
@@ -458,6 +542,14 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     @Override
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.PRODUCT_CMPT;
+    }
+
+    /**
+     * Returns the product component being copied by this wizard or {@code null} if this wizard is
+     * used to create a new product component.
+     */
+    public IProductCmpt getCopyProductCmpt() {
+        return copyProductCmpt;
     }
 
     /**
