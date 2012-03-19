@@ -153,6 +153,9 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
             newProductCmpt.fixAllDifferencesToModel(getPmo().getIpsProject());
         }
 
+        // Update default working date
+        IpsUIPlugin.getDefault().setWorkingDate(getPmo().getEffectiveDate());
+
         monitor.worked(1);
     }
 

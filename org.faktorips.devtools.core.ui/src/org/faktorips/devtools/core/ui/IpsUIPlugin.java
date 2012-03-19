@@ -19,6 +19,7 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +44,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -175,6 +179,12 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * is constructed using the section ID plus this suffix.
      */
     public final static String PREFERENCE_ID_SUFFIX_SECTION_EXPANDED = "_expanded"; //$NON-NLS-1$
+
+    /**
+     * Preference key for the current working date, stored as milliseconds since start of the Unix
+     * epoch.
+     */
+    public final static String PREFERENCE_ID_WORKING_DATE = "workingDate"; //$NON-NLS-1$
 
     /**
      * Setting key for the open ips object history
@@ -1130,6 +1140,31 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         }
 
         return (IpsObjectEditor)activeEditor;
+    }
+
+    /**
+     * Returns the current working date which should be used as default date for the creation of new
+     * generations.
+     */
+    public GregorianCalendar getWorkingDate() {
+        IPreferencesService preferencesService = Platform.getPreferencesService();
+        String pluginId = getBundle().getSymbolicName();
+        long timeInMillis = preferencesService.getLong(pluginId, PREFERENCE_ID_WORKING_DATE,
+                new GregorianCalendar().getTimeInMillis(), null);
+
+        GregorianCalendar workingDate = new GregorianCalendar();
+        workingDate.setTimeInMillis(timeInMillis);
+        return workingDate;
+    }
+
+    /**
+     * Updates the working date to be used as default date for the creation of new generations with
+     * the given date.
+     */
+    public void setWorkingDate(GregorianCalendar workingDate) {
+        String pluginId = getBundle().getSymbolicName();
+        IEclipsePreferences node = new InstanceScope().getNode(pluginId);
+        node.putLong(PREFERENCE_ID_WORKING_DATE, workingDate.getTimeInMillis());
     }
 
     // ************************************************

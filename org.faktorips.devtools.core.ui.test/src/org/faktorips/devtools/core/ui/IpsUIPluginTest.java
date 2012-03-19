@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestConfigurationElement;
@@ -156,6 +159,25 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
         resultFactory = IpsUIPlugin.getDefault().getTableFormatPropertiesControlFactory(tableFormatWithoutFactory);
         assertNull(resultFactory);
+    }
+
+    @Test
+    public void testGetWorkingDate() {
+        GregorianCalendar workingDate = new GregorianCalendar(1986, 4, 16);
+        IpsUIPlugin.getDefault().setWorkingDate(workingDate);
+
+        assertEquals(workingDate, IpsUIPlugin.getDefault().getWorkingDate());
+    }
+
+    @Test
+    public void testGetWorkingDate_ReturnTodaysDateIfNotSet() {
+        // Clear preference
+        String pluginId = IpsPlugin.getDefault().getBundle().getSymbolicName();
+        IEclipsePreferences node = new InstanceScope().getNode(pluginId);
+        node.remove(IpsUIPlugin.PREFERENCE_ID_WORKING_DATE);
+
+        GregorianCalendar today = new GregorianCalendar();
+        assertEquals(today, IpsUIPlugin.getDefault().getWorkingDate());
     }
 
     // TODO test cases for loading extension points
