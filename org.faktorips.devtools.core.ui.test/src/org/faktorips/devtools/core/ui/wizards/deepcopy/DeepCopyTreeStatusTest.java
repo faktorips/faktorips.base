@@ -89,7 +89,7 @@ public class DeepCopyTreeStatusTest {
             ArrayList<IIpsObjectGeneration> generations = new ArrayList<IIpsObjectGeneration>();
             generations.add(productCmptsGenerations[i]);
             when(productCmpts[i].getGenerations()).thenReturn(generations);
-            when(productCmpts[i].findGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(
+            when(productCmpts[i].getGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(
                     productCmptsGenerations[i]);
             when(productCmpts[i].findProductCmptType(any(IIpsProject.class))).thenReturn(types[i]);
             when(productCmptsGenerations[i].getTableContentUsages()).thenReturn(new ITableContentUsage[0]);

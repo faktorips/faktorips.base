@@ -302,7 +302,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
             IProductCmpt cmpt = ((IProductCmpt)element);
             IProductCmptGeneration activeGeneration = null;
             if (workingDate != null) {
-                activeGeneration = (IProductCmptGeneration)cmpt.findGenerationEffectiveOn(workingDate);
+                activeGeneration = cmpt.getGenerationEffectiveOn(workingDate);
             } else {
                 IIpsObjectGeneration[] generations = cmpt.getGenerationsOrderedByValidDate();
                 if (generations.length > 0) {

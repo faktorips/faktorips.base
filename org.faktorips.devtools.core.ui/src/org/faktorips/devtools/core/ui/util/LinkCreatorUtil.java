@@ -101,7 +101,7 @@ public class LinkCreatorUtil {
         }
 
         IIpsProject ipsProject = target.getProductCmpt().getIpsProject();
-        IProductCmptGeneration generation = (IProductCmptGeneration)target.getProductCmpt().findGenerationEffectiveOn(
+        IProductCmptGeneration generation = target.getProductCmpt().getGenerationEffectiveOn(
                 target.getStructure().getValidAt());
         IProductCmptType cmptType = target.getProductCmpt().findProductCmptType(ipsProject);
         if (generation == null || cmptType == null) {
@@ -172,7 +172,7 @@ public class LinkCreatorUtil {
         if (!IpsUIPlugin.isEditable(parentCmpt.getIpsSrcFile())) {
             return false;
         }
-        generation = (IProductCmptGeneration)parentCmpt.findGenerationEffectiveOn(target.getStructure().getValidAt());
+        generation = parentCmpt.getGenerationEffectiveOn(target.getStructure().getValidAt());
         association = target.getAssociation();
         // should only return true if all dragged cmpts are valid
         boolean result = false;

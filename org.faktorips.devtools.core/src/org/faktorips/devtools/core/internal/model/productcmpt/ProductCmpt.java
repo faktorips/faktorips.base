@@ -456,6 +456,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
+    public IProductCmptGeneration getGenerationEffectiveOn(GregorianCalendar date) {
+        return (IProductCmptGeneration)super.getGenerationEffectiveOn(date);
+    }
+
+    @Override
     public IProductCmptGeneration getGenerationByEffectiveDate(GregorianCalendar date) {
         return (IProductCmptGeneration)super.getGenerationByEffectiveDate(date);
     }

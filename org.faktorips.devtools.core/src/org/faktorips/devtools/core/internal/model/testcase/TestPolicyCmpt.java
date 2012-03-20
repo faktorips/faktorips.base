@@ -520,7 +520,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         IProductCmpt productCmptObj = ipsProject.findProductCmpt(productCmpt);
         IProductCmptGeneration generation = null;
         if (productCmptObj != null) {
-            generation = (IProductCmptGeneration)productCmptObj.findGenerationEffectiveOn(workingDate);
+            generation = productCmptObj.getGenerationEffectiveOn(workingDate);
         }
         return generation;
     }

@@ -20,8 +20,6 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -37,7 +35,6 @@ import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.ProductCmptDeltaDialog;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.ProductCmptTypeDescriptionPage;
-import org.faktorips.values.DateUtil;
 
 /**
  * Editor to a edit a product component.
@@ -54,12 +51,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     private final static String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType"; //$NON-NLS-1$
 
     /**
-     * Setting key for the working date used in the editor. This might differ from the one defined
-     * in the preferences.
-     */
-    private final static String SETTING_WORKING_DATE = "workingDate"; //$NON-NLS-1$
-
-    /**
      * Setting key for user's decision not to choose a new product component type, because the old
      * can't be found.
      */
@@ -67,32 +58,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 
     private GenerationPropertiesPage generationPropertiesPage;
 
-    private boolean ignoreHandlingOfWorkingDateMismatch;
-
-    private boolean isHandlingWorkingDateMismatch;
-
-    @Override
-    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-        super.init(site, input);
-        /*
-         * No generation mismatch dialog should be displayed if the editor was opened by using the
-         * generation.
-         */
-        if (input instanceof ProductCmptEditorInput) {
-            ignoreHandlingOfWorkingDateMismatch = ((ProductCmptEditorInput)input).isIgnoreWorkingDateMismatch();
-        }
-    }
-
     @Override
     protected void addPagesForParsableSrcFile() throws PartInitException, CoreException {
         generationPropertiesPage = new GenerationPropertiesPage(this);
         addPage(generationPropertiesPage);
         addPage(new ProductCmptPropertiesPage(this));
-        IIpsObjectGeneration gen = getGenerationEffectiveOnCurrentEffectiveDate();
-        if (gen == null) {
-            gen = getProductCmpt().getGenerationsOrderedByValidDate()[getProductCmpt().getNumOfGenerations() - 1];
-        }
-        setActiveGeneration(gen, false);
+        setActiveGeneration(getLatestIpsObjectGeneration(), false);
     }
 
     private GenerationPropertiesPage getGenerationPropertiesPage() {
@@ -111,32 +82,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
             throw new RuntimeException(e);
-        }
-    }
-
-    private GregorianCalendar getWorkingDateUsedInEditor() {
-        String s = getSettings().get(getIpsSrcFile(), SETTING_WORKING_DATE);
-        try {
-            return DateUtil.parseIsoDateStringToGregorianCalendar(s);
-        } catch (IllegalArgumentException e) {
-            IpsPlugin.log(e); // if it can't be parsed we use null.
-            return null;
-        }
-    }
-
-    private void setWorkingDateUsedInEditor(GregorianCalendar date) {
-        getSettings().put(getIpsSrcFile(), SETTING_WORKING_DATE, DateUtil.gregorianCalendarToIsoDateString(date));
-    }
-
-    @Override
-    public void editorActivated() {
-        if (TRACE) {
-            logMethodStarted("editorActivated()"); //$NON-NLS-1$
-        }
-        updateChosenActiveGeneration();
-        super.editorActivated();
-        if (TRACE) {
-            logMethodFinished("editorActivated()"); //$NON-NLS-1$
         }
     }
 
@@ -182,61 +127,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         return localizedCaption + ": " + getProductCmpt().getName(); //$NON-NLS-1$
     }
 
-    /**
-     * Checks if the currently active generations valid-from-date matches exactly the currently set
-     * working date. If not so, a search for a matching generation is started. If nothing is found,
-     * the user is asked to create a new one.
-     */
-    private void updateChosenActiveGeneration() {
-        try {
-            if (!getIpsSrcFile().isContentParsable()) {
-                return;
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return;
-        }
-
-        if (ignoreHandlingOfWorkingDateMismatch) {
-            return;
-        }
-        ignoreHandlingOfWorkingDateMismatch = true;
-
-        IProductCmpt prod = getProductCmpt();
-        GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        IProductCmptGeneration generation = prod.getGenerationByEffectiveDate(workingDate);
-
-        if (generation != null) {
-            setWorkingDateUsedInEditor(workingDate);
-            if (!generation.equals(getActiveGeneration())) {
-                // we found a generation matching the working date, but the found one is not active,
-                // so make it active.
-                this.setActiveGeneration(generation, false);
-            }
-            return;
-        }
-        // no generation for the _exact_ current working date.
-        if (workingDate.equals(getWorkingDateUsedInEditor())) {
-            // check happned before and user decided not to create a new generation - dont bother
-            // the user with repeating questions.
-            return;
-        }
-        IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
-        if (prefs.isWorkingModeBrowse()) {
-            // just browsing - show the generation valid at working date
-            if (!getSettings().getBoolean(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET)) {
-                showGenerationEffectiveOn(prefs.getWorkingDate());
-            }
-            return;
-        }
-        if (!IpsUIPlugin.isEditable(getIpsSrcFile())) {
-            // no check of working date mismatch
-            // because product component is read only
-            return;
-        }
-        handleWorkingDateMissmatch();
-    }
-
     @Override
     public void propertyChange(PropertyChangeEvent event) {
         if (!isActive()) {
@@ -246,7 +136,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         String property = event.getProperty();
         if (property.equals(IpsPreferences.WORKING_DATE)) {
             getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
-            updateChosenActiveGeneration();
         } else if (property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
             refresh();
         } else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
@@ -312,64 +201,14 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     }
 
     /**
-     * Shows the generation wich is effective on the given date
+     * Shows the generation which is effective on the given date
      */
     public void showGenerationEffectiveOn(GregorianCalendar date) {
-        IIpsObjectGeneration generation = getProductCmpt().findGenerationEffectiveOn(date);
+        IIpsObjectGeneration generation = getProductCmpt().getGenerationEffectiveOn(date);
         if (generation == null) {
             generation = getProductCmpt().getFirstGeneration();
         }
         setActiveGeneration(generation, false);
-    }
-
-    private void handleWorkingDateMissmatch() {
-        IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
-
-        // following if statement is there as closing the dialog triggers a window activated event
-        // and handling the event calls this method.
-        if (isHandlingWorkingDateMismatch) {
-            return;
-        }
-        isHandlingWorkingDateMismatch = true;
-        IProductCmpt cmpt = getProductCmpt();
-
-        GenerationSelectionDialog dialog = new GenerationSelectionDialog(getContainer().getShell(), cmpt);
-
-        dialog.open(); // closing the dialog triggers an window activation event
-
-        isHandlingWorkingDateMismatch = false;
-        int choice = -1;
-        if (IpsPlugin.getDefault().isTestMode()) {
-            choice = IpsPlugin.getDefault().getTestAnswerProvider().getIntAnswer();
-        } else {
-            if (dialog.getReturnCode() == Window.OK) {
-                choice = dialog.getChoice();
-                prefs.setEditRecentGeneration(dialog.isCanEditRecentGenerations());
-            }
-        }
-        GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        setWorkingDateUsedInEditor(workingDate);
-        switch (choice) {
-            case GenerationSelectionDialog.CHOICE_BROWSE:
-                setActiveGeneration(dialog.getSelectedGeneration(), false);
-                break;
-            case GenerationSelectionDialog.CHOICE_CREATE:
-                setActiveGeneration(cmpt.newGeneration(workingDate), false);
-                break;
-            case GenerationSelectionDialog.CHOICE_SWITCH:
-                setActiveGeneration(dialog.getSelectedGeneration(), true);
-                prefs.setWorkingDate(dialog.getSelectedGeneration().getValidFrom());
-                break;
-            default:
-                // show generation valid on current working date or if there is no valid generation,
-                // show the first generation
-                IIpsObjectGeneration currGeneration = cmpt.findGenerationEffectiveOn(workingDate);
-                if (currGeneration == null) {
-                    currGeneration = cmpt.getFirstGeneration();
-                }
-                setActiveGeneration(currGeneration, false);
-                break;
-        }
     }
 
     @Override
@@ -389,7 +228,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     public void contentsChanged(final ContentChangeEvent event) {
         if (event.getIpsSrcFile().equals(getIpsSrcFile())) {
             if (event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
-                setWorkingDateUsedInEditor(null);
                 getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
             }
         }
@@ -400,7 +238,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     protected void refreshIncludingStructuralChanges() {
         try {
             getIpsSrcFile().getIpsObject(); // Updates cache
-            updateChosenActiveGeneration();
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
@@ -435,13 +272,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         } else {
             return null;
         }
-    }
-
-    /**
-     * Set if a mismatch of a working date will be handled or ignored.
-     */
-    public void setIgnoreHandlingOfWorkingDateMissmatch(boolean ignoreHandlingOfWorkingDateMissmatch) {
-        this.ignoreHandlingOfWorkingDateMismatch = ignoreHandlingOfWorkingDateMissmatch;
     }
 
 }

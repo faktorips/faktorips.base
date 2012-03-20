@@ -66,6 +66,7 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -102,7 +103,7 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
  * 
  */
 public class ProductStructureExplorer extends AbstractShowInSupportingViewPart implements ContentsChangeListener,
-        IIpsSrcFilesChangeListener {// , IPropertyChangeListener {
+        IIpsSrcFilesChangeListener {
     /**
      * The ID of this view extension
      */
@@ -154,27 +155,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
     private IWorkbenchAction deleteAction;
 
-    /**
-     * Class to handle double clicks. Doubleclicks of ProductCmptTypeAssociationReference will be
-     * ignored.
-     */
-    private class ProdStructExplTreeDoubleClickListener extends TreeViewerDoubleclickListener {
-        public ProdStructExplTreeDoubleClickListener(TreeViewer tree) {
-            super(tree);
-        }
-
-        @Override
-        public void doubleClick(DoubleClickEvent event) {
-            if (getSelectedObjectFromSelection(event.getSelection()) instanceof IProductCmptTypeAssociationReference) {
-                return;
-            }
-            super.doubleClick(event);
-        }
-    }
-
-    /**
-     * Default Constructor
-     */
     public ProductStructureExplorer() {
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
         IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
@@ -182,9 +162,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         // would not cause a model-changed-event otherwise.
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
@@ -403,9 +380,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         toolBarManager.add(clearAction);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createPartControl(Composite parent) {
         parent.setLayout(new GridLayout(1, true));
@@ -740,7 +714,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                                 handleCircle(e);
                                 return;
                             }
-                            // showTreeInput(structure);
                             treeViewer.refresh();
                         } else {
                             showEmptyMessage();
@@ -870,7 +843,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
     public void dispose() {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
         IpsPlugin.getDefault().getIpsModel().removeIpsSrcFilesChangedListener(this);
-        // IpsPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
         super.dispose();
     }
 
@@ -974,9 +946,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         labelProvider.setShowAssociationNodes(showAssociationNode);
     }
 
-    /**
-     * @return Returns the showAssociationNode.
-     */
     public boolean isShowAssociationNode() {
         return showAssociationNode;
     }
@@ -986,20 +955,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         contentProvider.setShowAssociatedCmpts(showAssociatedCmpts);
     }
 
-    /**
-     * @return Returns the showAssociations.
-     */
     public boolean isShowAssociatedCmpts() {
         return showAssociatedCmpts;
-    }
-
-    private enum MessageTableSwitch {
-        MESSAGE,
-        TABLE;
-
-        public boolean isMessage() {
-            return equals(MESSAGE);
-        }
     }
 
     public void expandToLevel(int level) {
@@ -1025,6 +982,21 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         IStructuredSelection selection = new StructuredSelection(refs);
 
         treeViewer.setSelection(selection, true);
+    }
+
+    private Action createDummyCardinalityAction() {
+        return new Action(Messages.ProductStructureExplorer_setCardinalities, IAction.AS_CHECK_BOX) {
+
+            @Override
+            public ImageDescriptor getImageDescriptor() {
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("Cardinality.gif"); //$NON-NLS-1$
+            }
+
+            @Override
+            public String getToolTipText() {
+                return Messages.ProductStructureExplorer_setCardinalities;
+            }
+        };
     }
 
     private static abstract class AbstractCardinalityAction extends Action {
@@ -1107,19 +1079,42 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         }
     }
 
-    private Action createDummyCardinalityAction() {
-        return new Action(Messages.ProductStructureExplorer_setCardinalities, IAction.AS_CHECK_BOX) {
+    /**
+     * Class to handle double clicks. Doubleclicks of ProductCmptTypeAssociationReference will be
+     * ignored.
+     */
+    private class ProdStructExplTreeDoubleClickListener extends TreeViewerDoubleclickListener {
 
-            @Override
-            public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("Cardinality.gif"); //$NON-NLS-1$
+        public ProdStructExplTreeDoubleClickListener(TreeViewer tree) {
+            super(tree);
+        }
+
+        @Override
+        public void doubleClick(DoubleClickEvent event) {
+            if (getSelectedObjectFromSelection(event.getSelection()) instanceof IProductCmptTypeAssociationReference) {
+                return;
             }
 
-            @Override
-            public String getToolTipText() {
-                return Messages.ProductStructureExplorer_setCardinalities;
-            }
-        };
+            // Modify selection so that the selected generation is opened
+            IProductCmptReference selectedProductCmptReference = (IProductCmptReference)getSelectedObjectFromSelection(event
+                    .getSelection());
+            GenerationDate selectedGenerationDate = generationDateViewer.getSelectedDate();
+            IIpsObjectGeneration selectedGeneration = selectedProductCmptReference.getProductCmpt()
+                    .getGenerationEffectiveOn(selectedGenerationDate.getValidFrom());
+
+            OpenEditorAction action = new OpenEditorAction(event.getViewer());
+            action.openEditor(new StructuredSelection(selectedGeneration));
+        }
+
+    }
+
+    private static enum MessageTableSwitch {
+        MESSAGE,
+        TABLE;
+
+        public boolean isMessage() {
+            return equals(MESSAGE);
+        }
     }
 
 }

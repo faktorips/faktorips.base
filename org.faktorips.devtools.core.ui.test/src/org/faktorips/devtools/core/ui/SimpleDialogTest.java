@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.ui.editors.productcmpt.GenerationSelectionDialog;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,7 +38,6 @@ import org.junit.Test;
 public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListener, ITestAnswerProvider {
 
     private IpsPlugin plugin;
-    private int answer = GenerationSelectionDialog.CHOICE_BROWSE;
 
     @Override
     @Before
@@ -98,6 +96,7 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
 
     @Override
     public int getIntAnswer() {
-        return answer;
+        return 0;
     }
+
 }

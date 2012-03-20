@@ -112,6 +112,8 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
 
     }
 
+    // Suppressed deprecation because a deprecated method is being tested
+    @SuppressWarnings("deprecation")
     @Test
     public void testFindGenerationEffectiveOn() {
         IIpsObjectGeneration gen1 = timedObject.newGeneration();
@@ -119,19 +121,42 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
         IIpsObjectGeneration gen2 = timedObject.newGeneration();
         gen2.setValidFrom(new GregorianCalendar(2005, 0, 1));
 
-        IIpsObjectGeneration genFound = timedObject.findGenerationEffectiveOn(new GregorianCalendar(2004, 0, 1));
+        IIpsObjectGeneration genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2004, 0, 1));
         assertEquals(gen1, genFound);
 
-        genFound = timedObject.findGenerationEffectiveOn(new GregorianCalendar(2004, 3, 1));
+        genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2004, 3, 1));
         assertEquals(gen1, genFound);
 
-        genFound = timedObject.findGenerationEffectiveOn(new GregorianCalendar(2005, 0, 1));
+        genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2005, 0, 1));
         assertEquals(gen2, genFound);
 
-        genFound = timedObject.findGenerationEffectiveOn(new GregorianCalendar(2003, 0, 1));
+        genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2003, 0, 1));
         assertNull(genFound);
 
-        genFound = timedObject.findGenerationEffectiveOn(null);
+        genFound = timedObject.getGenerationEffectiveOn(null);
+        assertNull(genFound);
+    }
+
+    @Test
+    public void testGetGenerationEffectiveOn() {
+        IIpsObjectGeneration gen1 = timedObject.newGeneration();
+        gen1.setValidFrom(new GregorianCalendar(2004, 0, 1));
+        IIpsObjectGeneration gen2 = timedObject.newGeneration();
+        gen2.setValidFrom(new GregorianCalendar(2005, 0, 1));
+
+        IIpsObjectGeneration genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2004, 0, 1));
+        assertEquals(gen1, genFound);
+
+        genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2004, 3, 1));
+        assertEquals(gen1, genFound);
+
+        genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2005, 0, 1));
+        assertEquals(gen2, genFound);
+
+        genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2003, 0, 1));
+        assertNull(genFound);
+
+        genFound = timedObject.getGenerationEffectiveOn(null);
         assertNull(genFound);
     }
 

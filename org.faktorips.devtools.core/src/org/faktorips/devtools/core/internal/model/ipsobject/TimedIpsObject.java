@@ -95,8 +95,18 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return gens;
     }
 
+    /**
+     * @deprecated deprecated since 3.7, use {@link #getGenerationEffectiveOn(GregorianCalendar)}
+     *             instead
+     */
+    @Deprecated
     @Override
     public IIpsObjectGeneration findGenerationEffectiveOn(GregorianCalendar date) {
+        return getGenerationEffectiveOn(date);
+    }
+
+    @Override
+    public IIpsObjectGeneration getGenerationEffectiveOn(GregorianCalendar date) {
         if (date == null) {
             return null;
         }
@@ -144,7 +154,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
 
     @Override
     public IIpsObjectGeneration newGeneration(GregorianCalendar validFrom) {
-        IIpsObjectGeneration oldGen = findGenerationEffectiveOn(validFrom);
+        IIpsObjectGeneration oldGen = getGenerationEffectiveOn(validFrom);
         return newGeneration(oldGen, validFrom);
     }
 

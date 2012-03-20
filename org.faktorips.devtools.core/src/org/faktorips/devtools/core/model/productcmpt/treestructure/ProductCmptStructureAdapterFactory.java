@@ -82,7 +82,7 @@ public class ProductCmptStructureAdapterFactory implements IAdapterFactory {
 
     Object getGeneration(IProductCmptReference cmptReference) {
         GregorianCalendar validAt = cmptReference.getStructure().getValidAt();
-        return cmptReference.getProductCmpt().findGenerationEffectiveOn(validAt);
+        return cmptReference.getProductCmpt().getGenerationEffectiveOn(validAt);
     }
 
     @SuppressWarnings("rawtypes")

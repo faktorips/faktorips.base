@@ -40,8 +40,8 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.productcmpt.AddProductCmptLinkCommand;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.AddNewProductCmptCommand;
-import org.faktorips.devtools.core.ui.wizards.tablecontents.SelectExistingTableContentsHandler;
 import org.faktorips.devtools.core.ui.wizards.tablecontents.AddNewTableContentsHandler;
+import org.faktorips.devtools.core.ui.wizards.tablecontents.SelectExistingTableContentsHandler;
 
 public class ProductStructureExplorerContributionFactory extends ExtensionContributionFactory {
 
@@ -181,8 +181,8 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
         if (typedSelection.isValid()) {
             IProductCmptReference productCmptRef = typedSelection.getFirstElement();
             IProductCmpt productCmpt = productCmptRef.getProductCmpt();
-            IProductCmptGeneration productCmptGen = (IProductCmptGeneration)productCmpt
-                    .findGenerationEffectiveOn(productCmptRef.getStructure().getValidAt());
+            IProductCmptGeneration productCmptGen = productCmpt.getGenerationEffectiveOn(productCmptRef.getStructure()
+                    .getValidAt());
             ITableContentUsage[] tableContentUsages = productCmptGen.getTableContentUsages();
             if (tableContentUsages.length == 0) {
                 CommandContributionItem itemNew = createAddNewTableCommand(serviceLocator, null, null, true);
@@ -195,17 +195,16 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
                         Messages.ProductStructureExplorerContributionFactory_label_newTableContent_for, IpsPlugin
                                 .getMultiLanguageSupport().getLocalizedCaption(tableContentUsage)), true);
                 additions.addContributionItem(itemNew, null);
-                CommandContributionItem itemExisting = createAddExistingTableCommand(
-                        serviceLocator,
-                        tableContentUsage,
-                        NLS.bind(Messages.ProductStructureExplorerContributionFactory_label_selectTableFor,
-                                IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(tableContentUsage)), true);
+                CommandContributionItem itemExisting = createAddExistingTableCommand(serviceLocator, tableContentUsage,
+                        NLS.bind(Messages.ProductStructureExplorerContributionFactory_label_selectTableFor, IpsPlugin
+                                .getMultiLanguageSupport().getLocalizedCaption(tableContentUsage)), true);
                 additions.addContributionItem(itemExisting, null);
             } else {
                 MenuManager menuManagerNew = new MenuManager(
                         Messages.ProductStructureExplorerContributionFactory_label_newTableContent,
                         getNewTableContentsImageDescriptor(), null);
-                MenuManager menuManagerExisting = new MenuManager(Messages.ProductStructureExplorerContributionFactory_label_selectTable,
+                MenuManager menuManagerExisting = new MenuManager(
+                        Messages.ProductStructureExplorerContributionFactory_label_selectTable,
                         getExistingTableContentsImageDescriptor(), null);
                 additions.addContributionItem(menuManagerNew, null);
                 additions.addContributionItem(menuManagerExisting, null);
@@ -251,7 +250,8 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
         itemParameter.label = label;
         HashMap<String, String> parameters = new HashMap<String, String>();
         if (tableContentUsage != null) {
-            parameters.put(SelectExistingTableContentsHandler.PARAMETER_TABLE_USAGE, tableContentUsage.getPropertyName());
+            parameters.put(SelectExistingTableContentsHandler.PARAMETER_TABLE_USAGE,
+                    tableContentUsage.getPropertyName());
         }
         itemParameter.parameters = parameters;
         if (icon) {

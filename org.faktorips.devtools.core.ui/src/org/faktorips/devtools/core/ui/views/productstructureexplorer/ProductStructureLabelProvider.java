@@ -224,9 +224,9 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
         if (getAdjustmentDate() != null) {
             date = getAdjustmentDate().getValidFrom();
         }
-        IIpsObjectGeneration generation = productCmpt.findGenerationEffectiveOn(date);
+        IIpsObjectGeneration generation = productCmpt.getGenerationEffectiveOn(date);
         if (generation == null) {
-            // no generations avaliable,
+            // no generations available,
             // show additional text to inform that no generations exists
             String generationText = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
                     .getGenerationConceptNameSingular();

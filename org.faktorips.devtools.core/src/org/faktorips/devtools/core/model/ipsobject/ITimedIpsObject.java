@@ -73,12 +73,21 @@ public interface ITimedIpsObject extends IIpsObject {
     public IIpsObjectGeneration getFirstGeneration();
 
     /**
+     * @see #getGenerationEffectiveOn(GregorianCalendar)
+     * 
+     * @deprecated Deprecated since 3.7, use {@link #getGenerationEffectiveOn(GregorianCalendar)}
+     *             instead
+     */
+    @Deprecated
+    public IIpsObjectGeneration findGenerationEffectiveOn(GregorianCalendar date);
+
+    /**
      * Returns the generation effective on the given date. That is the generation which's effective
      * date lies before the given date and among all generations with such an effective date, this
      * is the one with the most recent effective date. Returns <code>null</code> if no generation is
      * found. Returns null if date is <code>null</code>
      */
-    public IIpsObjectGeneration findGenerationEffectiveOn(GregorianCalendar date);
+    public IIpsObjectGeneration getGenerationEffectiveOn(GregorianCalendar date);
 
     /**
      * Returns the generation identified by the given effective date, that is the generation which

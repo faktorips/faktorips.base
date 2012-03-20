@@ -130,4 +130,12 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
         return object.getGenerationByEffectiveDate(workingDate);
     }
 
+    /**
+     * Returns the most recent object generation.
+     */
+    protected IIpsObjectGeneration getLatestIpsObjectGeneration() {
+        ITimedIpsObject object = (ITimedIpsObject)getIpsObject();
+        return object.getGenerationsOrderedByValidDate()[object.getNumOfGenerations() - 1];
+    }
+
 }

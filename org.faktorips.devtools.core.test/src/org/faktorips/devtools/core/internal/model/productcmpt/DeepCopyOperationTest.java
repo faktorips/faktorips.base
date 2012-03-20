@@ -308,8 +308,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
                             "DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
         }
 
-        IProductCmptGeneration generation = (IProductCmptGeneration)comfortMotorProduct
-                .findGenerationEffectiveOn(new GregorianCalendar());
+        IProductCmptGeneration generation = comfortMotorProduct.getGenerationEffectiveOn(new GregorianCalendar());
         IConfigElement configElement = generation.newConfigElement(salesNameAttribute);
         configElement.setValue("Foo");
 
@@ -339,7 +338,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
             IProductCmptStructureReference srcProdCmptRef = structure.getRoot().findProductCmptReference(
                     comfortMotorProduct.getQualifiedName());
             ProductCmpt copiedProductCmpt = (ProductCmpt)handles.get(srcProdCmptRef).getIpsObject();
-            generation = (IProductCmptGeneration)copiedProductCmpt.findGenerationEffectiveOn(new GregorianCalendar());
+            generation = copiedProductCmpt.getGenerationEffectiveOn(new GregorianCalendar());
             configElement = generation.getConfigElement("salesName");
 
             verify(testDeepCopyOperationFixup, times(5)).fix(any(IProductCmpt.class), any(IProductCmpt.class)); // comfortMotorProduct
@@ -448,8 +447,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         standardTplCoverage.setProductCmptType(tplCoverage.getProductCmptType());
 
         // link products
-        IProductCmptGeneration generation = (IProductCmptGeneration)comfortMotorProduct
-                .findGenerationEffectiveOn(new GregorianCalendar());
+        IProductCmptGeneration generation = comfortMotorProduct.getGenerationEffectiveOn(new GregorianCalendar());
         IProductCmptLink link = generation.newLink("VehicleType");
         link.setTarget("products.StandardVehicle");
 

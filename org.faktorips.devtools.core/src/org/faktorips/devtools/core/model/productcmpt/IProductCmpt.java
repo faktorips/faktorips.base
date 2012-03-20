@@ -252,4 +252,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProperty
             GregorianCalendar effectiveDate,
             IIpsProject ipsProject) throws CoreException;
 
+    @Override
+    public IProductCmptGeneration getGenerationEffectiveOn(GregorianCalendar date);
+
 }
