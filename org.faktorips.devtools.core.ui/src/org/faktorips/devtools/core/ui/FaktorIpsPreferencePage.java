@@ -36,7 +36,6 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
 
     @Override
     protected void createFieldEditors() {
-        createWorkingDateField();
         createNullRepresentationField();
         createProductCmptPostfixField();
         createChangesOverTimeField();
@@ -54,12 +53,6 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         createRefactoringModeField();
 
         createDatatypeFormattingField();
-    }
-
-    private void createWorkingDateField() {
-        StringFieldEditor field = new StringFieldEditor(IpsPreferences.WORKING_DATE,
-                Messages.FaktorIpsPreferencePage_labelWorkingDate, getFieldEditorParent());
-        addField(field);
     }
 
     private void createNullRepresentationField() {

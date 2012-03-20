@@ -26,8 +26,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.core.util.XmlParseException;
-import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -64,11 +62,6 @@ public class IpsPreferences {
      * Constant identifying the working mode browse
      */
     public final static String WORKING_MODE_BROWSE = "browse"; //$NON-NLS-1$
-
-    /**
-     * Constant identifying the working date preference
-     */
-    public final static String WORKING_DATE = IpsPlugin.PLUGIN_ID + ".workingdate"; //$NON-NLS-1$
 
     /**
      * Constant identifying the preference for null-value representation
@@ -167,9 +160,6 @@ public class IpsPreferences {
 
         setDefaultForDatatypeFormatting(prefStore);
 
-        if (IPreferenceStore.STRING_DEFAULT_DEFAULT.equals(prefStore.getString(WORKING_DATE))) {
-            setWorkingDate(new GregorianCalendar());
-        }
         datatypeFormatter = new DatatypeFormatter(this);
     }
 
@@ -210,25 +200,6 @@ public class IpsPreferences {
 
     public void removeChangeListener(IPropertyChangeListener listener) {
         prefStore.removePropertyChangeListener(listener);
-    }
-
-    /**
-     * Returns the working date preference.
-     */
-    public GregorianCalendar getWorkingDate() {
-        String date = prefStore.getString(WORKING_DATE);
-        try {
-            return XmlUtil.parseGregorianCalendar(date);
-        } catch (XmlParseException e) {
-            return new GregorianCalendar();
-        }
-    }
-
-    /**
-     * Set the working date to the given one.
-     */
-    public void setWorkingDate(GregorianCalendar newDate) {
-        prefStore.setValue(WORKING_DATE, XmlUtil.gregorianCalendarToXmlDateString(newDate));
     }
 
     /**
@@ -274,6 +245,14 @@ public class IpsPreferences {
     }
 
     /**
+     * Convenience method to get a formatted date using the format returned by
+     * {@link #getDateFormat()}
+     */
+    public String getFormattedDate(GregorianCalendar date) {
+        return getDateFormat().format(date.getTime());
+    }
+
+    /**
      * Returns date format to format dates in specified locale.
      */
     public DateFormat getDateFormat(Locale locale) {
@@ -292,14 +271,6 @@ public class IpsPreferences {
         }
         result.setLenient(false);
         return result;
-    }
-
-    /**
-     * Convenience method to get the formatted working date using the format returned by
-     * <code>getValidFromFormat</code>
-     */
-    public String getFormattedWorkingDate() {
-        return getDateFormat().format(getWorkingDate().getTime());
     }
 
     /**

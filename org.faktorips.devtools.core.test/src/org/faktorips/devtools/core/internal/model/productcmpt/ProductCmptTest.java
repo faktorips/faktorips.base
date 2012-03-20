@@ -682,7 +682,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void returnLatestGenerationNull() {
+    public void testGetLatestProductCmptGeneration() {
         GregorianCalendar today = new GregorianCalendar();
         today = new GregorianCalendar(today.get(Calendar.YEAR), today.get(Calendar.MONTH) + 1,
                 today.get(Calendar.DAY_OF_MONTH));

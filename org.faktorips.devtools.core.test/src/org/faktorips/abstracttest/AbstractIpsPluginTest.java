@@ -161,7 +161,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IpsPlugin.getDefault().setFeatureVersionManagers(
                 new IIpsFeatureVersionManager[] { new TestIpsFeatureVersionManager() });
         setAutoBuild(false);
-        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar());
 
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             @Override
@@ -889,7 +888,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IProductCmpt productCmpt = (IProductCmpt)newIpsObject(type.getIpsPackageFragment().getRoot(),
                 IpsObjectType.PRODUCT_CMPT, qualifiedName);
         productCmpt.setProductCmptType(type.getQualifiedName());
-        productCmpt.newGeneration(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+        productCmpt.newGeneration(new GregorianCalendar());
         productCmpt.getIpsSrcFile().save(true, null);
         return (ProductCmpt)productCmpt;
     }
@@ -947,7 +946,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         TableContents tableContents = (TableContents)newIpsObject(ts0.getIpsPackageFragment().getRoot(),
                 IpsObjectType.TABLE_CONTENTS, qualifiedName);
         tableContents.setTableStructure(ts0.getQualifiedName());
-        tableContents.newGeneration(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+        tableContents.newGeneration(new GregorianCalendar());
         tableContents.getIpsSrcFile().save(true, null);
         return tableContents;
     }
@@ -1489,30 +1488,25 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
         public TestBuilder() throws CoreException {
             super(new TestIpsArtefactBuilderSet());
-            // TODO Auto-generated constructor stub
         }
 
         @Override
         public String getName() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         @Override
         public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
-            // TODO Auto-generated method stub
 
         }
 
         @Override
         public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-            // TODO Auto-generated method stub
             return false;
         }
 
         @Override
         public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
-            // TODO Auto-generated method stub
 
         }
 

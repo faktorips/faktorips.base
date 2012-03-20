@@ -57,8 +57,6 @@ public class Messages extends NLS {
 
     public static String PdPackageSelectionDialog_description;
 
-    public static String FaktorIpsPreferencePage_labelWorkingDate;
-
     public static String FaktorIpsPreferencePage_labelNullValue;
 
     public static String FaktorIpsPreferencePage_labelProductTypePostfix;

@@ -15,8 +15,6 @@ package org.faktorips.devtools.core.ui;
 
 import static org.junit.Assert.fail;
 
-import java.util.GregorianCalendar;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
@@ -56,8 +54,6 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
 
     @Test
     public void testOpenProductCmptEditor() throws Exception {
-        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2003, 7, 1));
-
         IIpsProject ipsProject = newIpsProject();
         IProductCmptType type = newProductCmptType(ipsProject, "Type");
         IProductCmpt product1 = newProductCmpt(type, "Product1");

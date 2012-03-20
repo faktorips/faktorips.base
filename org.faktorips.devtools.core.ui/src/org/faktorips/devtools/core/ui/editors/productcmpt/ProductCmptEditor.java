@@ -63,7 +63,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         generationPropertiesPage = new GenerationPropertiesPage(this);
         addPage(generationPropertiesPage);
         addPage(new ProductCmptPropertiesPage(this));
-        setActiveGeneration(getLatestIpsObjectGeneration(), false);
+        setActiveGeneration(getProductCmpt().getLatestGeneration(), false);
     }
 
     private GenerationPropertiesPage getGenerationPropertiesPage() {
@@ -134,9 +134,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             return;
         }
         String property = event.getProperty();
-        if (property.equals(IpsPreferences.WORKING_DATE)) {
-            getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
-        } else if (property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
+        if (property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
             refresh();
         } else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
             getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
@@ -184,10 +182,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
      */
     public boolean isGenerationEditable(IProductCmptGeneration gen) {
         if (gen == null) {
-            return false;
-        }
-        // if generation is not effective in the current effective date, no editing is possible
-        if (!gen.equals(getGenerationEffectiveOnCurrentEffectiveDate())) {
             return false;
         }
         if (!IpsUIPlugin.isEditable(gen.getIpsSrcFile())) {

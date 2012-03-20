@@ -55,7 +55,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        ipsProject = newIpsProject("TestProject");
+        ipsProject = newIpsProject();
     }
 
     @Test

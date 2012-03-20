@@ -104,6 +104,11 @@ public interface ITimedIpsObject extends IIpsObject {
     public IIpsObjectGeneration getGenerationByEffectiveDate(GregorianCalendar date);
 
     /**
+     * Returns the latest generation of this object or {@code null}, if no generation exists.
+     */
+    public IIpsObjectGeneration getLatestGeneration();
+
+    /**
      * Creates a new, empty generation.
      */
     public IIpsObjectGeneration newGeneration();

@@ -35,7 +35,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.TestContentsChangeListener;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -343,8 +342,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCreateIpsFileFromTemplate() throws CoreException {
-        IpsPlugin.getDefault().getPreferenceStore().setValue(IpsPreferences.WORKING_DATE, "2006-01-01");
-        GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
+        GregorianCalendar date = new GregorianCalendar(2006, 0, 1);
         IProductCmpt template = (IProductCmpt)newIpsObject(rootPackage, IpsObjectType.PRODUCT_CMPT, "products.Bla");
         IProductCmptGeneration generation = (IProductCmptGeneration)template.newGeneration(date);
         generation.newLink("testRelation");
@@ -361,7 +359,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
 
         assertEquals("copy", copy.getName());
 
-        IProductCmptGeneration copyGen = (IProductCmptGeneration)copy.getGenerationByEffectiveDate(date);
+        IProductCmptGeneration copyGen = copy.getGenerationByEffectiveDate(date);
         assertEquals(generation.getValidFrom(), copyGen.getValidFrom());
 
         assertEquals(generation.getLinks().length, copyGen.getLinks().length);

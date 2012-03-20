@@ -91,11 +91,6 @@ public class Messages extends NLS {
 
     public static String NewPolicyComponentTypeAction_name;
 
-    public static String ChangeWorkingDateAction_title;
-    public static String ChangeWorkingDateAction_description;
-    public static String ChangeWorkingDateAction_errorFallbackMessageParameter;
-    public static String ChangeWorkingDateAction_errorPrefix;
-
     public static String IpsDeepCopyAction_name;
     public static String IpsDeepCopyAction_nameNewVersion;
     public static String IpsDeepCopyAction_titleNoVersion;
@@ -158,13 +153,6 @@ public class Messages extends NLS {
     public static String IpsPasteAction_Error_CannotPasteIntoSelectedElement;
 
     public static String MigrateProjectAction_text;
-
-    public static String ChangeWorkingDateAction_warningRecentGenerationReadOnlyRow1;
-    public static String ChangeWorkingDateAction_warningRecentGenerationReadOnlyRow2;
-    public static String ChangeWorkingDateAction_warningRecentGenerationReadOnlyRow3;
-    public static String ChangeWorkingDateAction_warningRecentGenerationReadOnlyRow4;
-    public static String ChangeWorkingDateAction_warningRecentGenerationReadOnlyRow5;
-    public static String ChangeWorkingDateAction_labelEditRecentGenerations;
 
     public static String CreateMissingEnumContentsAction_text;
 

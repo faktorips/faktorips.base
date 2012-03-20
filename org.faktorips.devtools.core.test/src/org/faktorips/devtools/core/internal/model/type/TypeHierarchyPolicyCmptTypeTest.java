@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.type.TypeHierarchy;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -53,7 +52,7 @@ public class TypeHierarchyPolicyCmptTypeTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        pdProject = this.newIpsProject("TestProject");
+        pdProject = newIpsProject();
         pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
         pdFolder = pdRootFolder.createPackageFragment("products.folder", true, null);
         pdSrcFile = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);

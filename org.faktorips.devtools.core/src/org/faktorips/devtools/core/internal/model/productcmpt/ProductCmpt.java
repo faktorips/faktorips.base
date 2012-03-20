@@ -93,11 +93,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public IProductCmptGeneration getLatestProductCmptGeneration() {
-        IIpsObjectGeneration[] generationsOrderedByValidDate = getGenerationsOrderedByValidDate();
-        if (generationsOrderedByValidDate.length > 0) {
-            return (IProductCmptGeneration)generationsOrderedByValidDate[generationsOrderedByValidDate.length - 1];
-        }
-        return null;
+        IIpsObjectGeneration latestGeneration = getLatestGeneration();
+        return latestGeneration == null ? null : (IProductCmptGeneration)latestGeneration;
     }
 
     @Override

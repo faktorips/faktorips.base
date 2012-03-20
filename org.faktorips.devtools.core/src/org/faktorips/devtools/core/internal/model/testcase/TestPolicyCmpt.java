@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.testcase;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -508,21 +507,22 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     /**
-     * Returns the product components generation depending on the current working date (current
-     * working generation). Returns <code>null</code> if the test policy cmpt is not product
-     * relevant, or the product cmpt wasn't found.
+     * Returns the latest product component generation.
+     * <p>
+     * Returns {@code null} if the test policy component is not product relevant or if the product
+     * component cannot be found.
      */
     public IProductCmptGeneration findProductCmpsCurrentGeneration(IIpsProject ipsProject) throws CoreException {
         if (StringUtils.isEmpty(productCmpt)) {
             return null;
         }
-        GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
+
         IProductCmpt productCmptObj = ipsProject.findProductCmpt(productCmpt);
-        IProductCmptGeneration generation = null;
-        if (productCmptObj != null) {
-            generation = productCmptObj.getGenerationEffectiveOn(workingDate);
+        if (productCmptObj == null) {
+            return null;
         }
-        return generation;
+
+        return productCmptObj.getLatestProductCmptGeneration();
     }
 
     /**

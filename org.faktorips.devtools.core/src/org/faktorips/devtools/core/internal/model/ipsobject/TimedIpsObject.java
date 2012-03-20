@@ -146,6 +146,15 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     @Override
+    public IIpsObjectGeneration getLatestGeneration() {
+        IIpsObjectGeneration[] generationsOrderedByValidDate = getGenerationsOrderedByValidDate();
+        if (generationsOrderedByValidDate.length > 0) {
+            return generationsOrderedByValidDate[generationsOrderedByValidDate.length - 1];
+        }
+        return null;
+    }
+
+    @Override
     public IIpsObjectGeneration newGeneration() {
         IpsObjectGeneration generation = newGenerationInternal(getNextPartId());
         objectHasChanged();

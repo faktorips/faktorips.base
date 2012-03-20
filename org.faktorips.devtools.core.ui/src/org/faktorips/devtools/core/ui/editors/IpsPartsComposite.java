@@ -320,8 +320,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     /**
-     * Open the element in a new editor if the CTRL key was pressed durring selection. Subclasses
-     * are indent to overwrite this method if this functionality is available.
+     * Open the element in a new editor if the CTRL key was pressed during selection. Subclasses are
+     * indent to overwrite this method if this functionality is available.
      */
     protected void openLink() {
         // nothing do do
