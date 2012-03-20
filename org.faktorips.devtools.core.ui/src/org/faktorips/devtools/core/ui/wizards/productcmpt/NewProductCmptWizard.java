@@ -154,7 +154,7 @@ public class NewProductCmptWizard extends NewProductDefinitionWizard {
         }
 
         // Update default working date
-        IpsUIPlugin.getDefault().setWorkingDate(getPmo().getEffectiveDate());
+        IpsUIPlugin.getDefault().setDefaultValidityDate(getPmo().getEffectiveDate());
 
         monitor.worked(1);
     }

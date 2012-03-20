@@ -180,7 +180,7 @@ public class DeepCopyWizard extends ResizableWizard {
                 packRoot = null;
             }
         }
-        getPresentationModel().setNewValidFrom(IpsUIPlugin.getDefault().getWorkingDate());
+        getPresentationModel().setNewValidFrom(IpsUIPlugin.getDefault().getDefaultValidityDate());
 
         getPresentationModel().setTargetPackageRoot(packRoot);
         getPresentationModel().setTargetPackage(defaultPackage);
@@ -236,7 +236,7 @@ public class DeepCopyWizard extends ResizableWizard {
         }
 
         // Setting the new working date of the created product component
-        IpsUIPlugin.getDefault().setWorkingDate(getPresentationModel().getNewValidFrom());
+        IpsUIPlugin.getDefault().setDefaultValidityDate(getPresentationModel().getNewValidFrom());
 
         // this implementation of this method should always return true since this causes the wizard
         // dialog to close.

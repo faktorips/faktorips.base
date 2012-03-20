@@ -184,7 +184,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * Preference key for the current working date, stored as milliseconds since start of the Unix
      * epoch.
      */
-    public final static String PREFERENCE_ID_WORKING_DATE = "workingDate"; //$NON-NLS-1$
+    public final static String PREFERENCE_ID_DEFAULT_VALIDITY_DATE = "defaultValidityDate"; //$NON-NLS-1$
 
     /**
      * Setting key for the open ips object history
@@ -1143,13 +1143,13 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the current working date which should be used as default date for the creation of new
-     * generations.
+     * Returns the current default validity date which should be used as default date for the
+     * creation of new generations.
      */
-    public GregorianCalendar getWorkingDate() {
+    public GregorianCalendar getDefaultValidityDate() {
         IPreferencesService preferencesService = Platform.getPreferencesService();
         String pluginId = getBundle().getSymbolicName();
-        long timeInMillis = preferencesService.getLong(pluginId, PREFERENCE_ID_WORKING_DATE,
+        long timeInMillis = preferencesService.getLong(pluginId, PREFERENCE_ID_DEFAULT_VALIDITY_DATE,
                 new GregorianCalendar().getTimeInMillis(), null);
 
         GregorianCalendar workingDate = new GregorianCalendar();
@@ -1158,13 +1158,13 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Updates the working date to be used as default date for the creation of new generations with
-     * the given date.
+     * Sets the default validity date to be used as default date for the creation of new generations
+     * to the given date.
      */
-    public void setWorkingDate(GregorianCalendar workingDate) {
+    public void setDefaultValidityDate(GregorianCalendar workingDate) {
         String pluginId = getBundle().getSymbolicName();
         IEclipsePreferences node = new InstanceScope().getNode(pluginId);
-        node.putLong(PREFERENCE_ID_WORKING_DATE, workingDate.getTimeInMillis());
+        node.putLong(PREFERENCE_ID_DEFAULT_VALIDITY_DATE, workingDate.getTimeInMillis());
     }
 
     // ************************************************

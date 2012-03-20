@@ -162,22 +162,22 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetWorkingDate() {
-        GregorianCalendar workingDate = new GregorianCalendar(1986, 4, 16);
-        IpsUIPlugin.getDefault().setWorkingDate(workingDate);
+    public void testGetDefaultValidityDate() {
+        GregorianCalendar date = new GregorianCalendar(1986, 4, 16);
+        IpsUIPlugin.getDefault().setDefaultValidityDate(date);
 
-        assertEquals(workingDate, IpsUIPlugin.getDefault().getWorkingDate());
+        assertEquals(date, IpsUIPlugin.getDefault().getDefaultValidityDate());
     }
 
     @Test
-    public void testGetWorkingDate_ReturnTodaysDateIfNotSet() {
+    public void testGetDefaultValidityDate_ReturnTodaysDateIfNotSet() {
         // Clear preference
         String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
         IEclipsePreferences node = new InstanceScope().getNode(pluginId);
-        node.remove(IpsUIPlugin.PREFERENCE_ID_WORKING_DATE);
+        node.remove(IpsUIPlugin.PREFERENCE_ID_DEFAULT_VALIDITY_DATE);
 
         GregorianCalendar today = new GregorianCalendar();
-        assertEquals(today, IpsUIPlugin.getDefault().getWorkingDate());
+        assertEquals(today, IpsUIPlugin.getDefault().getDefaultValidityDate());
     }
 
     // TODO test cases for loading extension points

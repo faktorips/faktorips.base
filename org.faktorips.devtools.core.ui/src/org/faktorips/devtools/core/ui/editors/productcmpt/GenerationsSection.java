@@ -181,7 +181,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 
             IProductCmptGeneration selectedGeneration = getActiveGeneration();
             IIpsObjectGeneration newGeneration = page.getProductCmpt().newGeneration(selectedGeneration.getValidFrom());
-            newGeneration.setValidFrom(IpsUIPlugin.getDefault().getWorkingDate());
+            newGeneration.setValidFrom(IpsUIPlugin.getDefault().getDefaultValidityDate());
             page.getProductCmptEditor().setActiveGeneration(newGeneration, true);
 
             return newGeneration;
@@ -195,7 +195,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         @Override
         protected void newPartConfirmed() {
             IProductCmptGeneration selectedGeneration = getActiveGeneration();
-            IpsUIPlugin.getDefault().setWorkingDate(selectedGeneration.getValidFrom());
+            IpsUIPlugin.getDefault().setDefaultValidityDate(selectedGeneration.getValidFrom());
         }
 
         @Override

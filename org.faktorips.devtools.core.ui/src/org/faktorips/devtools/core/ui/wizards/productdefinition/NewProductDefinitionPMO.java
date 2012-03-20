@@ -55,7 +55,7 @@ public abstract class NewProductDefinitionPMO extends PresentationModelObject {
         super();
         // may be null in test cases :(
         if (IpsPlugin.getDefault() != null) {
-            effectiveDate = IpsUIPlugin.getDefault().getWorkingDate();
+            effectiveDate = IpsUIPlugin.getDefault().getDefaultValidityDate();
         }
     }
 
