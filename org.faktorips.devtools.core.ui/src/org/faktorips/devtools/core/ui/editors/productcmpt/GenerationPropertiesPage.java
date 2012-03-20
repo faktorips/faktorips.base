@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.StackLayout;
@@ -88,9 +89,10 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
+
         pageRoot = formBody;
         this.toolkit = toolkit;
-
+        updatePageContent();
         createStack();
         createPageContent();
         createToolbar();
@@ -113,9 +115,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     private void createPageContent() {
         Composite left = createColumnComposite();
         Composite right = createColumnComposite();
-
         createSections(left, right);
-
         setFocusSuccessors();
         registerSelectionProviderActivation(stack.topControl);
 
@@ -155,6 +155,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         IProductCmptType productCmptType = null;
         try {
             productCmptType = getActiveGeneration().findProductCmptType(getActiveGeneration().getIpsProject());
+
         } catch (CoreException e) {
             /*
              * An error occurred while searching for the product component type. Recover by creating
@@ -292,6 +293,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     @Override
     public void refresh() {
+
         updateTabname();
         super.refresh();
     }
@@ -310,10 +312,32 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             createPageContent();
             updateTabname();
             resetDataChangeableState();
+            updatePageContent();
         }
 
         gotoPreviousGenerationAction.update();
         gotoNextGenerationAction.update();
+    }
+
+    private void updatePageContent() {
+        if (!isNewestGeneration()) {
+            getManagedForm().getForm().setMessage(getTabname(getActiveGeneration()), IMessageProvider.WARNING);
+
+        } else {
+            getManagedForm().getToolkit().decorateFormHeading(getManagedForm().getForm().getForm());
+            getManagedForm().getForm().setMessage(null, IMessageProvider.NONE);
+        }
+
+    }
+
+    private boolean isNewestGeneration() {
+        IIpsObjectGeneration newestGeneration = getProductCmpt().getGenerationsOrderedByValidDate()[getProductCmpt()
+                .getNumOfGenerations() - 1];
+        if (newestGeneration.equals(getActiveGeneration())) {
+            return true;
+        }
+
+        return false;
     }
 
     private void updateStack() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005-2011 Faktor Zehn AG und andere.
+ * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
@@ -46,20 +46,25 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
 
     private IProductCmptGeneration previous;
     private IProductCmptGeneration next;
+    private boolean newGenerationDialog = false;
 
     /**
-     * Creates a new dialog to edit a product cmpt generation
+     * Creates a new dialog to edit and create a product cmpt generation
      * 
      * @param generation The generation to edit
      * @param parentShell The shell to be used as parent for the dialog
+     * @param newGenerationDialog The flag indicates which the button in Editor was selected
+     *            (New=true,Edit=false)
+     * 
      */
-    public GenerationEditDialog(IProductCmptGeneration generation, Shell parentShell) {
+    public GenerationEditDialog(IProductCmptGeneration generation, Shell parentShell, boolean newGenerationDialog) {
         super(generation, parentShell, Messages.GenerationEditDialog_titleChangeValidFromDate, true);
 
         // we have to store previous and next here, because the evaulation of
         // previous and next depend on the valid-from date which we will modify...
         this.previous = (IProductCmptGeneration)generation.getPreviousByValidDate();
         this.next = (IProductCmptGeneration)generation.getNextByValidDate();
+        this.newGenerationDialog = newGenerationDialog;
     }
 
     @Override
@@ -111,12 +116,12 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
             }
             super.setErrorMessage(Messages.GenerationEditDialog_msgInvalidFormat + formatDescription);
             getButton(OK).setEnabled(false);
-        } else if (previous != null && !value.after(previous.getValidFrom())) {
+        } else if (previous != null && !value.after(previous.getValidFrom()) && !newGenerationDialog) {
             String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToEarly, IpsPlugin.getDefault()
                     .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
             super.setMessage(msg, IMessageProvider.WARNING);
             getButton(OK).setEnabled(true);
-        } else if (next != null && !next.getValidFrom().after(value)) {
+        } else if (next != null && !next.getValidFrom().after(value) && !newGenerationDialog) {
             String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToLate, IpsPlugin.getDefault()
                     .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
             super.setMessage(msg, IMessageProvider.WARNING);

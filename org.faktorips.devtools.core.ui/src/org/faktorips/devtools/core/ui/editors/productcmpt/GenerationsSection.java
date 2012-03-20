@@ -173,11 +173,12 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         }
 
         /**
-         * Sets the new generation, if the "New" button in the editor was selected
+         * Creates the new generation, if the "New" button in the editor was selected
          * 
          */
         @Override
         protected IIpsObjectPart newIpsPart() {
+
             IProductCmptGeneration selectedGeneration = getActiveGeneration();
             IIpsObjectGeneration newGeneration = page.getProductCmpt().newGeneration(selectedGeneration.getValidFrom());
             newGeneration.setValidFrom(IpsUIPlugin.getDefault().getWorkingDate());
@@ -198,8 +199,9 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         }
 
         @Override
-        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return new GenerationEditDialog((IProductCmptGeneration)part, shell);
+        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell, boolean newGenerationDialog) {
+
+            return new GenerationEditDialog((IProductCmptGeneration)part, shell, newGenerationDialog);
         }
 
         @Override
@@ -305,6 +307,13 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         protected void openLink() {
             openAction.run();
         }
+
+        @Override
+        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
+
+            return null;
+        }
+
     }
 
     private class OpenGenerationInEditorAction extends IpsAction {
