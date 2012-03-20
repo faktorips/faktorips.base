@@ -172,7 +172,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
     @Test
     public void testGetWorkingDate_ReturnTodaysDateIfNotSet() {
         // Clear preference
-        String pluginId = IpsPlugin.getDefault().getBundle().getSymbolicName();
+        String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
         IEclipsePreferences node = new InstanceScope().getNode(pluginId);
         node.remove(IpsUIPlugin.PREFERENCE_ID_WORKING_DATE);
 
