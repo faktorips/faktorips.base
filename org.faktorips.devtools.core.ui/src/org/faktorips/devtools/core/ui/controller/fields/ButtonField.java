@@ -18,12 +18,37 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 
+/**
+ * Field for checkbox-, toggle- and radio- {@link Button buttons}. Sets the selection of a button
+ * depending on a given value or text.
+ * <p>
+ * Can be configured to select the button on value <code>true</code> or de-select it in that case.
+ * In other words the selection may be "inverted" by specifying the flag "select if true" (as
+ * <code>false</code>) in {@link ButtonField#ButtonField(Button, boolean)}.
+ * 
+ * @author Stefan Widmaier
+ */
 public class ButtonField extends DefaultEditField<Boolean> {
 
     private final Button button;
+    private final boolean selectIfTrue;
 
-    public ButtonField(Button button) {
+    /**
+     * @param button the button this field sets the selection of
+     * @param selectIfTrue whether or not to select the button on value <code>true</code>
+     */
+    public ButtonField(Button button, boolean selectIfTrue) {
         this.button = button;
+        this.selectIfTrue = selectIfTrue;
+    }
+
+    /**
+     * Creates a button field that selects the given button in case of value <code>true</code>.
+     * 
+     * @param button the button this field sets the selection of
+     */
+    public ButtonField(Button button) {
+        this(button, true);
     }
 
     @Override
@@ -33,22 +58,39 @@ public class ButtonField extends DefaultEditField<Boolean> {
 
     @Override
     public Boolean parseContent() {
-        return new Boolean(button.getSelection());
+        Boolean content = new Boolean(button.getSelection());
+        content = invertBooleanIfNeccessary(content);
+        return content;
+    }
+
+    protected Boolean invertBooleanIfNeccessary(Boolean booleanObject) {
+        if (isSelectIfTrue()) {
+            return booleanObject;
+        } else {
+            return invertBoolean(booleanObject);
+        }
+    }
+
+    protected Boolean invertBoolean(Boolean booleanObject) {
+        booleanObject = new Boolean(!booleanObject.booleanValue());
+        return booleanObject;
     }
 
     @Override
     public void setValue(Boolean newValue) {
-        button.setSelection(newValue);
+        button.setSelection(invertBooleanIfNeccessary(newValue));
     }
 
     @Override
     public String getText() {
-        return Boolean.toString(button.getSelection());
+        Boolean selection = invertBooleanIfNeccessary(button.getSelection());
+        return Boolean.toString(selection);
     }
 
     @Override
     public void setText(String newText) {
-        button.setSelection(Boolean.valueOf(newText));
+        Boolean newSelection = invertBooleanIfNeccessary(Boolean.valueOf(newText));
+        button.setSelection(newSelection.booleanValue());
     }
 
     @Override
@@ -76,6 +118,14 @@ public class ButtonField extends DefaultEditField<Boolean> {
             }
 
         });
+    }
+
+    /**
+     * Returns whether or not the contained button is selected in case of the calls
+     * <code>setValue(Boolean.TRUE)</code> and <code>setText("true")</code>.
+     */
+    public boolean isSelectIfTrue() {
+        return selectIfTrue;
     }
 
 }

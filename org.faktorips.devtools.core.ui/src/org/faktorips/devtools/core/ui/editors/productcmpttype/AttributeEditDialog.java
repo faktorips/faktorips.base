@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -133,6 +134,17 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         getBindingContext().bindContent(datatypeControl, attribute, IAttribute.PROPERTY_DATATYPE);
+
+        getToolkit().createVerticalSpacer(workArea, 0);
+        Composite radioComposite = getToolkit().createGridComposite(workArea, 2, false, false);
+        ButtonField singleValueRadioButtonField = new ButtonField(getToolkit().createButton(radioComposite,
+                Messages.AttributeEditDialog_SingleValueRadioButton_Label, SWT.RADIO), false);
+        ButtonField multiValueRadioButtonField = new ButtonField(getToolkit().createButton(radioComposite,
+                Messages.AttributeEditDialog_MultiValueRadioButton_Label, SWT.RADIO), true);
+        getBindingContext().bindContent(singleValueRadioButtonField, attribute,
+                IProductCmptTypeAttribute.PROPERTY_MULTI_VALUE_ATTRIBUTE);
+        getBindingContext().bindContent(multiValueRadioButtonField, attribute,
+                IProductCmptTypeAttribute.PROPERTY_MULTI_VALUE_ATTRIBUTE);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_modifierLabel);
         Combo modifierCombo = getToolkit().createCombo(workArea);
