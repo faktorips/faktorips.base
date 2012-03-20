@@ -54,6 +54,7 @@ import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dialogs.DialogMementoHelper;
+import org.faktorips.devtools.core.ui.editors.productcmpt.GenerationsSection;
 import org.faktorips.devtools.core.ui.refactor.IpsPullUpHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
@@ -549,7 +550,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             boolean dirty = file.isDirty();
             Memento memento = ipsObject.newMemento();
             IIpsObjectPart newPart = newIpsPart();
-            EditDialog dialog = createEditDialog(newPart, getShell());
+            EditDialog dialog = createEditDialog(newPart, getShell(), true);
             if (dialog == null) {
                 return;
             }
@@ -579,7 +580,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         DialogMementoHelper dialogHelper = new DialogMementoHelper() {
             @Override
             protected Dialog createDialog() {
-                EditDialog editDialog = createEditDialog(getSelectedPart(), getShell());
+                EditDialog editDialog = createEditDialog(getSelectedPart(), getShell(), false);
                 if (editDialog != null) {
                     editDialog.setDataChangeable(isDataChangeable());
                 }
@@ -596,6 +597,10 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         refresh();
     }
 
+    /**
+     * Calls the {@link #editPartConfirmed()} , because {@link #newPartConfirmed()} is implemented
+     * in sub class {@link GenerationsSection}
+     */
     protected void newPartConfirmed() {
         editPartConfirmed();
     }
@@ -685,6 +690,18 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
      * Creates a dialog to edit the part.
      */
     protected abstract EditDialog createEditDialog(IIpsObjectPart part, Shell shell);
+
+    /**
+     * Creates a dialog to edit and create the part.
+     * 
+     * @param part The IpsObjectPart
+     * @param shell The shell to be used as parent for the dialog
+     * @param newGenerationDialog The flag indicates which the button in Editor was selected
+     *            (New=true,Edit=false)
+     */
+    protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell, boolean newGenerationDialog) {
+        return null;
+    }
 
     /**
      * Moves the parts identified by the indexes in the model object up or down.
