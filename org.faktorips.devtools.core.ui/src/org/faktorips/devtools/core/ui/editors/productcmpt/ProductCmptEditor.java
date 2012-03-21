@@ -133,10 +133,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             super.propertyChange(event);
             return;
         }
-        String property = event.getProperty();
-        if (property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
-            refresh();
-        } else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
+        if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
             getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
             // refresh is done in superclass
         }
@@ -174,24 +171,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
      * Returns <code>true</code> if the active generation is editable, otherwise <code>false</code>.
      */
     public boolean isActiveGenerationEditable() {
-        return isGenerationEditable((IProductCmptGeneration)getActiveGeneration());
-    }
-
-    /**
-     * Returns <code>true</code> if the given generation is editable, otherwise <code>false</code>.
-     */
-    public boolean isGenerationEditable(IProductCmptGeneration gen) {
-        if (gen == null) {
-            return false;
-        }
-        if (!IpsUIPlugin.isEditable(gen.getIpsSrcFile())) {
-            return false;
-        }
-        if (gen.isValidFromInPast() != null && gen.isValidFromInPast().booleanValue()) {
-            IpsPreferences pref = IpsPlugin.getDefault().getIpsPreferences();
-            return pref.canEditRecentGeneration();
-        }
-        return true;
+        return IpsUIPlugin.getDefault().isGenerationEditable((IProductCmptGeneration)getActiveGeneration());
     }
 
     /**

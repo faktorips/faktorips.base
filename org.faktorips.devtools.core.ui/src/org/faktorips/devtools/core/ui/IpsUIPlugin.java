@@ -380,11 +380,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Checks whether the given generation is editable, that means if the generation is valid in
-     * past the preference to edit these generations have to be enabled.
-     * <p>
-     * This method does not check if the given generation is active in respect to the current
-     * working date because this check is used in editors.
+     * Checks whether the given generation is editable.
      * <p>
      * This method is in ui module although it only uses information from core module. We put it in
      * here because the ips preferences should be an ui aspect and may be moved to ui.
@@ -397,9 +393,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         if (generation == null) {
             return false;
         }
-        return isEditable(generation.getIpsSrcFile())
-                && (!generation.isValidFromInPast() || IpsPlugin.getDefault().getIpsPreferences()
-                        .canEditRecentGeneration());
+        return isEditable(generation.getIpsSrcFile());
     }
 
     /**

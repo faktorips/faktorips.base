@@ -31,7 +31,6 @@ public class Messages extends NLS {
     public static String NewProductCmptWizard_copyTitle;
     public static String NewProdutCmptValidator_msg_emptyKindId;
     public static String NewProdutCmptValidator_msg_emptyVersionId;
-    public static String NewProdutCmptValidator_msg_invalidAddGenerationInPast;
     public static String NewProdutCmptValidator_msg_invalidAddToGeneration;
     public static String NewProdutCmptValidator_msg_invalidBaseType;
     public static String NewProdutCmptValidator_msg_invalidFullName;

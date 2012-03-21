@@ -69,12 +69,6 @@ public class IpsPreferences {
     public static final String NULL_REPRESENTATION_STRING = IpsPlugin.PLUGIN_ID + ".nullRepresentationString"; //$NON-NLS-1$
 
     /**
-     * Constant identifying the preference for editing generations with valid-from-dates in the
-     * past.
-     */
-    public static final String EDIT_RECENT_GENERATION = IpsPlugin.PLUGIN_ID + ".editRecentGeneration"; //$NON-NLS-1$
-
-    /**
      * Constant identifying the changes over time naming concept preference.
      */
     public final static String CHANGES_OVER_TIME_NAMING_CONCEPT = IpsPlugin.PLUGIN_ID + ".changesOverTimeConcept"; //$NON-NLS-1$
@@ -148,7 +142,6 @@ public class IpsPreferences {
         this.prefStore = prefStore;
         prefStore.setDefault(NULL_REPRESENTATION_STRING, "<null>"); //$NON-NLS-1$
         prefStore.setDefault(CHANGES_OVER_TIME_NAMING_CONCEPT, IChangesOverTimeNamingConvention.FAKTOR_IPS);
-        prefStore.setDefault(EDIT_RECENT_GENERATION, false);
         prefStore.setDefault(MODIFY_RUNTIME_ID, false);
         prefStore.setDefault(REFACTORING_MODE, REFACTORING_MODE_EXPLICIT);
         prefStore.setDefault(WORKING_MODE, WORKING_MODE_EDIT);
@@ -271,20 +264,6 @@ public class IpsPreferences {
         }
         result.setLenient(false);
         return result;
-    }
-
-    /**
-     * Returns whether generations with valid-from-date in the past can be edited or not.
-     */
-    public boolean canEditRecentGeneration() {
-        return prefStore.getBoolean(EDIT_RECENT_GENERATION);
-    }
-
-    /**
-     * Sets whether generations with valid-from-date in the past can be edited or not.
-     */
-    public void setEditRecentGeneration(boolean editRecentGeneration) {
-        prefStore.setValue(EDIT_RECENT_GENERATION, editRecentGeneration);
     }
 
     /**

@@ -19,7 +19,6 @@ import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.faktorips.devtools.core.EnumTypeDisplay;
@@ -42,7 +41,6 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         createEnumTypeDisplayField();
         createIpsTestRunnerMaxHeapSizeField();
 
-        createEditRecentGenerationsField();
         createEditRuntimeIdField();
         createEnableGeneratingField();
         createCanNavigateToModelField();
@@ -96,14 +94,6 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
     private void createIpsTestRunnerMaxHeapSizeField() {
         StringFieldEditor field = new StringFieldEditor(IpsPreferences.IPSTESTRUNNER_MAX_HEAP_SIZE,
                 Messages.FaktorIpsPreferencePage_labelMaxHeapSizeIpsTestRunner, getFieldEditorParent());
-        addField(field);
-    }
-
-    private void createEditRecentGenerationsField() {
-        String label = NLS.bind(Messages.FaktorIpsPreferencePage_labelEditRecentGenerations, IpsPlugin.getDefault()
-                .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural());
-        BooleanFieldEditor field = new BooleanFieldEditor(IpsPreferences.EDIT_RECENT_GENERATION, label,
-                getFieldEditorParent());
         addField(field);
     }
 

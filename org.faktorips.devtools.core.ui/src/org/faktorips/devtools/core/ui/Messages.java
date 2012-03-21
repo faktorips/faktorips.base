@@ -87,8 +87,6 @@ public class Messages extends NLS {
 
     public static String FaktorIpsPreferencePage_LabelFormattingOfValues;
 
-    public static String FaktorIpsPreferencePage_labelEditRecentGenerations;
-
     public static String FaktorIpsPreferencePage_labelCanNavigateToModelOrSourceCode;
 
     public static String FaktorIpsPreferencePage_titleWorkingMode;

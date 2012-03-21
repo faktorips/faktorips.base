@@ -29,8 +29,6 @@ public class Messages extends NLS {
 
     public static String ProductCmptDeltaDialog_labelSelectGeneration;
 
-    public static String ProductCmptDeltaDialog_messageWarningRecentGenerationCouldBeChanged;
-
     public static String ProductCmptDeltaDialog_labelSelectedDifferences;
 
     public static String ProductCmptDeltaDialog_title;

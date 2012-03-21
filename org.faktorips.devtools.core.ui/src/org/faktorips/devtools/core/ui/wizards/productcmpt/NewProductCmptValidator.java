@@ -17,7 +17,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -175,12 +174,6 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
                     .add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
                             Messages.NewProdutCmptValidator_msg_invalidAddToGeneration, ipsSrcFile.getName()),
                             Message.WARNING));
-        }
-        IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
-        if (generation.isValidFromInPast() && !ipsPreferences.canEditRecentGeneration()) {
-            messageList.add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
-                    Messages.NewProdutCmptValidator_msg_invalidAddGenerationInPast, generation.getProductCmpt()
-                            .getName()), Message.WARNING));
         }
         return messageList;
     }
