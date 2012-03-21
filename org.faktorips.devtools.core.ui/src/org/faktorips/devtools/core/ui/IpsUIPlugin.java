@@ -19,6 +19,7 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -229,6 +230,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private List<IIpsDropAdapterProvider> productCmptDnDHandler;
 
+    private GregorianCalendar defaultValidityDate;
+
     /**
      * This method is for test purposes only.
      */
@@ -262,6 +265,18 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         ipsElementWorkbenchAdapterAdapterFactory = new IpsElementWorkbenchAdapterAdapterFactory();
         datatypeFormatter = new UIDatatypeFormatter();
         Platform.getAdapterManager().registerAdapters(ipsElementWorkbenchAdapterAdapterFactory, IIpsElement.class);
+        initDefaultValidityDate();
+    }
+
+    private void initDefaultValidityDate() {
+        defaultValidityDate = new GregorianCalendar();
+
+        IPreferencesService preferencesService = Platform.getPreferencesService();
+        String pluginId = getBundle().getSymbolicName();
+        long timeInMillis = preferencesService.getLong(pluginId, PREFERENCE_ID_DEFAULT_VALIDITY_DATE,
+                new GregorianCalendar().getTimeInMillis(), null);
+
+        defaultValidityDate.setTimeInMillis(timeInMillis);
     }
 
     private IPropertyVisibleController createPropertyVisibleController() {
@@ -1141,14 +1156,14 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * creation of new generations.
      */
     public GregorianCalendar getDefaultValidityDate() {
-        IPreferencesService preferencesService = Platform.getPreferencesService();
-        String pluginId = getBundle().getSymbolicName();
-        long timeInMillis = preferencesService.getLong(pluginId, PREFERENCE_ID_DEFAULT_VALIDITY_DATE,
-                new GregorianCalendar().getTimeInMillis(), null);
-
-        GregorianCalendar workingDate = new GregorianCalendar();
-        workingDate.setTimeInMillis(timeInMillis);
-        return workingDate;
+        GregorianCalendar dateWithoutTime = new GregorianCalendar();
+        dateWithoutTime.setTimeInMillis(defaultValidityDate.getTimeInMillis());
+        dateWithoutTime.set(Calendar.SECOND, 0);
+        dateWithoutTime.set(Calendar.MINUTE, 0);
+        dateWithoutTime.set(Calendar.HOUR, 0);
+        dateWithoutTime.set(Calendar.HOUR_OF_DAY, 0);
+        dateWithoutTime.set(Calendar.MILLISECOND, 0);
+        return dateWithoutTime;
     }
 
     /**
@@ -1159,6 +1174,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         String pluginId = getBundle().getSymbolicName();
         IEclipsePreferences node = new InstanceScope().getNode(pluginId);
         node.putLong(PREFERENCE_ID_DEFAULT_VALIDITY_DATE, workingDate.getTimeInMillis());
+        defaultValidityDate.setTimeInMillis(workingDate.getTimeInMillis());
     }
 
     // ************************************************
