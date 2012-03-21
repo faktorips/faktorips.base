@@ -82,7 +82,7 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
         List<IActiveGenerationChangedListener> copy = new CopyOnWriteArrayList<IActiveGenerationChangedListener>(
                 activeGenerationChangedListeners);
         for (IActiveGenerationChangedListener listener : copy) {
-            // listener.activeGenerationChanged(generation);
+            listener.activeGenerationChanged(generation);
         }
     }
 
