@@ -37,6 +37,9 @@ public interface IProductCmptReference extends IProductCmptStructureReference {
      * 
      * Returns this {@link IProductCmptReference} if it references the searched product component's
      * qualified name. If not it searches all children in the same way and returns the result.
+     * <p>
+     * This method does only return the first occurrence in the structure. There may be more than
+     * one {@link IProductCmptReference} referencing the specified product component.
      * 
      * @param prodCmptQualifiedName the qualified name of the searched {@link IProductCmpt}
      * @return the {@link IProductCmptReference} referencing the indicated {@link IProductCmpt}, or
