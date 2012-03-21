@@ -79,6 +79,8 @@ public class GenerationsSection extends SimpleIpsPartsSection {
      */
     public class GenerationsComposite extends IpsPartsComposite implements IDeleteListener {
 
+        IIpsObjectGeneration newGeneration;
+
         public GenerationsComposite(ITimedIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
             super(ipsObject, parent, getSite(), true, true, true, false, true, false, false, false, toolkit);
 
@@ -117,9 +119,8 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         @Override
         protected IIpsObjectPart newIpsPart() {
             IProductCmptGeneration selectedGeneration = getActiveGeneration();
-            IIpsObjectGeneration newGeneration = page.getProductCmpt().newGeneration(selectedGeneration.getValidFrom());
-            newGeneration.setValidFrom(IpsUIPlugin.getDefault().getDefaultValidityDate());
-            page.getProductCmptEditor().setActiveGeneration(newGeneration, true);
+
+            newGeneration = page.getProductCmpt().newGeneration(selectedGeneration.getValidFrom());
 
             return newGeneration;
         }
@@ -130,14 +131,19 @@ public class GenerationsSection extends SimpleIpsPartsSection {
          */
         @Override
         protected void newPartConfirmed() {
+            page.getProductCmptEditor().setActiveGeneration(newGeneration, true);
             IProductCmptGeneration selectedGeneration = getActiveGeneration();
             IpsUIPlugin.getDefault().setDefaultValidityDate(selectedGeneration.getValidFrom());
         }
 
         @Override
-        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell, boolean newGenerationDialog) {
+        protected EditDialog createNewDialog(IIpsObjectPart part, Shell shell) {
+            return new GenerationEditDialog((IProductCmptGeneration)part, shell, true);
+        }
 
-            return new GenerationEditDialog((IProductCmptGeneration)part, shell, newGenerationDialog);
+        @Override
+        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
+            return new GenerationEditDialog((IProductCmptGeneration)part, shell, false);
         }
 
         @Override
@@ -216,11 +222,6 @@ public class GenerationsSection extends SimpleIpsPartsSection {
                 }
             }
 
-        }
-
-        @Override
-        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return null;
         }
 
     }

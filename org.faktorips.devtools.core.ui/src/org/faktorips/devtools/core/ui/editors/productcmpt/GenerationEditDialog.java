@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
@@ -65,6 +66,11 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
         this.previous = (IProductCmptGeneration)generation.getPreviousByValidDate();
         this.next = (IProductCmptGeneration)generation.getNextByValidDate();
         this.newGenerationDialog = newGenerationDialog;
+    }
+
+    @Override
+    public IProductCmptGeneration getIpsPart() {
+        return (IProductCmptGeneration)super.getIpsPart();
     }
 
     @Override
@@ -107,6 +113,7 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
         // Clear message area
         setMessage(null);
         setErrorMessage(null);
+        boolean exsistErrorMessage = true;
 
         if (value == null) {
             DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
@@ -115,20 +122,28 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
                 formatDescription = ((SimpleDateFormat)format).toPattern();
             }
             super.setErrorMessage(Messages.GenerationEditDialog_msgInvalidFormat + formatDescription);
-            getButton(OK).setEnabled(false);
+            exsistErrorMessage = false;
+
         } else if (previous != null && !value.after(previous.getValidFrom()) && !newGenerationDialog) {
             String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToEarly, IpsPlugin.getDefault()
                     .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
             super.setMessage(msg, IMessageProvider.WARNING);
-            getButton(OK).setEnabled(true);
+            exsistErrorMessage = true;
+
         } else if (next != null && !next.getValidFrom().after(value) && !newGenerationDialog) {
             String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToLate, IpsPlugin.getDefault()
                     .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
             super.setMessage(msg, IMessageProvider.WARNING);
-            getButton(OK).setEnabled(true);
-        } else {
-            getButton(OK).setEnabled(true);
+            exsistErrorMessage = true;
+
+        } else if (((IProductCmpt)getIpsPart().getIpsObject()).getGenerationByEffectiveDate(value) != null) {
+
+            super.setErrorMessage(Messages.GenerationEditDialog_msgDateAlreadyExists);
+            exsistErrorMessage = false;
+
         }
+        getButton(OK).setEnabled(exsistErrorMessage);
+
     }
 
 }
