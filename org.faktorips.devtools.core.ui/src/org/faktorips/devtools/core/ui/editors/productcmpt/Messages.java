@@ -131,8 +131,6 @@ public class Messages extends NLS {
 
     public static String GenerationEditDialog_msgDateToLate;
 
-    public static String GenerationEditDialog_msgDateAlreadyExists;
-
     public static String GenerationPropertiesPage_valueGenerationValidToUnlimited;
 
     public static String GenerationPropertiesPage_openModelDescView;

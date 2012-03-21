@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
@@ -92,7 +91,6 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
         // Text date = getToolkit().createText(workArea);
         DateControl dateControl = new DateControl(workArea, getToolkit());
         Text textControl = dateControl.getTextControl();
-        textControl.addModifyListener(this);
 
         dateField = new FormattingTextField<GregorianCalendar>(textControl, GregorianCalendarFormat.newInstance());
         return c;
@@ -102,6 +100,7 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
     protected void connectToModel() {
         super.connectToModel();
         uiController.add(dateField, IProductCmptGeneration.PROPERTY_VALID_FROM);
+        ((Text)dateField.getControl()).addModifyListener(this);
     }
 
     @Override
@@ -135,11 +134,6 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
                     .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
             super.setMessage(msg, IMessageProvider.WARNING);
             exsistErrorMessage = true;
-
-        } else if (((IProductCmpt)getIpsPart().getIpsObject()).getGenerationByEffectiveDate(value) != null) {
-
-            super.setErrorMessage(Messages.GenerationEditDialog_msgDateAlreadyExists);
-            exsistErrorMessage = false;
 
         }
         getButton(OK).setEnabled(exsistErrorMessage);

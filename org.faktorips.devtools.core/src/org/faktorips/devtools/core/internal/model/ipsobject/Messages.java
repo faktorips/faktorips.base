@@ -27,6 +27,7 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String IpsObjectGeneration_msgDuplicateGeneration;
     public static String IpsObjectPartContainer_msgInvalidDescriptionCount;
     public static String IpsObjectPartContainer_msgInvalidLabelCount;
 
