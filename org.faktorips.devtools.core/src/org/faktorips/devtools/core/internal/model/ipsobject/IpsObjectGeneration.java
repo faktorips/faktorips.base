@@ -206,13 +206,13 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 
             list.add(new Message(MSGCODE_INVALID_VALID_FROM, msg, Message.ERROR, this, PROPERTY_VALID_FROM));
         }
-
-        IIpsObjectGeneration duplicateGeneration = getTimedIpsObject().getGenerationByEffectiveDate(validFrom);
-        if (duplicateGeneration != this) {
-            String msg = NLS.bind(Messages.IpsObjectGeneration_msgDuplicateGeneration, IpsPlugin.getDefault()
-                    .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
-            list.add(new Message(MSGCODE_INVALID_VALID_FROM, msg, Message.ERROR, this, PROPERTY_VALID_FROM));
+        if (validFrom != null) {
+            IIpsObjectGeneration duplicateGeneration = getTimedIpsObject().getGenerationByEffectiveDate(validFrom);
+            if (duplicateGeneration != this) {
+                String msg = NLS.bind(Messages.IpsObjectGeneration_msgDuplicateGeneration, IpsPlugin.getDefault()
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
+                list.add(new Message(MSGCODE_INVALID_VALID_FROM, msg, Message.ERROR, this, PROPERTY_VALID_FROM));
+            }
         }
     }
-
 }
