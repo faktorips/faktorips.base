@@ -105,8 +105,8 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
 
         addConditionButtons(comp);
 
-        conditionTableViewer = new ProductSearchConditionsTableViewerCreator().createTableViewer(getPresentationModel(),
-                composite);
+        conditionTableViewer = new ProductSearchConditionsTableViewerCreator().createTableViewer(
+                getPresentationModel(), composite);
     }
 
     private void addConditionButtons(Composite comp) {
@@ -124,7 +124,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
             }
         });
         getBindingContext().bindEnabled(btnAddCondition, getPresentationModel(),
-                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
+                ProductSearchPresentationModel.CONDITION_TYPE_AVAILABLE);
         btnAddCondition.setEnabled(false);
 
         Button btnRemoveCondition = new Button(comp, SWT.PUSH);
@@ -141,7 +141,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
 
         });
         getBindingContext().bindEnabled(btnRemoveCondition, getPresentationModel(),
-                ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE_CHOSEN);
+                ProductSearchPresentationModel.CONDITION_DEFINED);
         btnRemoveCondition.setEnabled(false);
     }
 
