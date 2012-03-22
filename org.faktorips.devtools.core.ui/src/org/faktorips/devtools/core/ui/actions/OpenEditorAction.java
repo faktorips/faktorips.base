@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IGotoIpsObjectPart;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
-import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorInput;
 
 /**
  * Action for opening objects in the corresponding editor.
@@ -102,17 +101,8 @@ public class OpenEditorAction extends IpsAction {
                 IIpsSrcFile ipsSrcFile = generation.getIpsObject().getIpsSrcFile();
                 IEditorPart part = null;
                 if (!(ipsSrcFile instanceof ArchiveIpsSrcFile)) {
-                    /*
-                     * open the editor skipping the generation mismatch dialog. If the ipsSrcFile is
-                     * used instead of the productCmptEditorInput, we cannot decide if the dialog
-                     * should be shown or ignored
-                     */
-                    part = IpsUIPlugin.getDefault().openEditor(ProductCmptEditorInput.createWithGeneration(generation));
+                    part = IpsUIPlugin.getDefault().openEditor(generation);
                 } else {
-                    /*
-                     * open editor directly the generation mismatch dialog will never be displayed,
-                     * because objects within archives are always be opened in read-only mode
-                     */
                     part = IpsUIPlugin.getDefault().openEditor(ipsSrcFile);
                 }
                 if (part instanceof ProductCmptEditor) {

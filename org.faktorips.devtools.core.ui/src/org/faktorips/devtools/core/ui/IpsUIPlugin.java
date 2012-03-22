@@ -123,6 +123,8 @@ import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
+import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
+import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorInput;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.internal.PropertyVisibleController;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
@@ -672,6 +674,37 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return null;
+    }
+
+    /**
+     * Opens an editor for the given generation.
+     * <p>
+     * If an editor for the given {@link IProductCmptGeneration} is already open, this opened editor
+     * is advised to show the given generation.
+     * <p>
+     * Note that this is different from the standard Eclipse behavior, where a new editor would be
+     * opened for each different generation.
+     * 
+     * @param productCmptGeneration the generation to open in an editor or to show in an already
+     *            opened editor
+     */
+    public IEditorPart openEditor(IProductCmptGeneration productCmptGeneration) {
+        if (productCmptGeneration == null) {
+            return null;
+        }
+        // Open the editor
+        IEditorPart openedEditor = openEditor(ProductCmptEditorInput.createWithGeneration(productCmptGeneration));
+        if (openedEditor == null) {
+            return null;
+        }
+        // Update shown generation if product component editor was opened
+        if (openedEditor instanceof ProductCmptEditor) {
+            ProductCmptEditor productCmptEditor = (ProductCmptEditor)openedEditor;
+            if (!productCmptEditor.getActiveGeneration().equals(productCmptGeneration)) {
+                productCmptEditor.setActiveGeneration(productCmptGeneration, true);
+            }
+        }
+        return openedEditor;
     }
 
     /**

@@ -86,7 +86,6 @@ import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.editors.productcmpt.LinkEditDialog;
-import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorInput;
 import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
@@ -1101,7 +1100,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             IProductCmptGeneration generationToBeOpened = selectedProductCmptReference.getProductCmpt()
                     .getBestMatchingGenerationEffectiveOn(selectedGenerationDate.getValidFrom());
 
-            IpsUIPlugin.getDefault().openEditor(ProductCmptEditorInput.createWithGeneration(generationToBeOpened));
+            IpsUIPlugin.getDefault().openEditor(generationToBeOpened);
         }
 
     }

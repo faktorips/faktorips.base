@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorInput;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 public class OpenEditorHandler extends AbstractHandler {
@@ -64,7 +63,7 @@ public class OpenEditorHandler extends AbstractHandler {
     }
 
     private void openEditorForProductCmptGeneration(IProductCmptGeneration generation) {
-        IpsUIPlugin.getDefault().openEditor(ProductCmptEditorInput.createWithGeneration(generation));
+        IpsUIPlugin.getDefault().openEditor(generation);
     }
 
     private void openEditorForFile(IFile file) {
