@@ -645,6 +645,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * opened.
      */
     public IEditorPart openEditor(IFileEditorInput editorInput) {
+        if (editorInput == null) {
+            return null;
+        }
         try {
             IFile file = editorInput.getFile();
             IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();

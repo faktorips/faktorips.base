@@ -26,28 +26,32 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
  */
 public class ProductCmptEditorInput extends FileEditorInput {
 
-    private boolean ignoreWorkingDateMismatch;
-
     /**
      * Creates a product cmpt editor input with a given generation.<br>
      * Could be used to open a product cmpt and initially showing the given generation.
      */
     public static IFileEditorInput createWithGeneration(IProductCmptGeneration productCmptGeneration) {
-        return new ProductCmptEditorInput(productCmptGeneration.getIpsObject().getIpsSrcFile().getCorrespondingFile(),
-                true);
+        return new ProductCmptEditorInput(productCmptGeneration);
     }
 
-    private ProductCmptEditorInput(IFile file, boolean ignoreWorkingDateMissmatch) {
+    private final IProductCmptGeneration productCmptGeneration;
+
+    private ProductCmptEditorInput(IFile file) {
         super(file);
-        this.ignoreWorkingDateMismatch = ignoreWorkingDateMissmatch;
+        productCmptGeneration = null;
+    }
+
+    private ProductCmptEditorInput(IProductCmptGeneration productCmptGeneration) {
+        super(productCmptGeneration.getIpsObject().getIpsSrcFile().getCorrespondingFile());
+        this.productCmptGeneration = productCmptGeneration;
     }
 
     /**
-     * Returns <code>true</code> if a mismatch of the working date should be ignored by the editor
-     * (e.g. no mismatch dialog will be shown).
+     * Returns the {@link IProductCmptGeneration} to be initially opened by the editor or
+     * {@code null} if unspecified.
      */
-    public boolean isIgnoreWorkingDateMismatch() {
-        return ignoreWorkingDateMismatch;
+    public IProductCmptGeneration getProductCmptGeneration() {
+        return productCmptGeneration;
     }
 
 }

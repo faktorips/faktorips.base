@@ -20,14 +20,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorInput;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 public class OpenEditorHandler extends AbstractHandler {
@@ -39,16 +38,13 @@ public class OpenEditorHandler extends AbstractHandler {
         TypedSelection<IAdaptable> typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, selection);
         IAdaptable firstElement = typedSelection.getFirstElement();
 
-        // Modify selection as necessary
-        IStructuredSelection modifiedSelection = new StructuredSelection(firstElement.getAdapter(IFile.class));
         if (firstElement instanceof IProductCmptLink) {
-            IProductCmptLink link = (IProductCmptLink)firstElement;
-            modifiedSelection = new StructuredSelection(getTargetProductCmptGeneration(link));
+            IProductCmptGeneration targetGeneration = getTargetProductCmptGeneration((IProductCmptLink)firstElement);
+            openEditorForProductCmptGeneration(targetGeneration);
         }
 
-        // Open editor with appropriate selection
-        OpenEditorAction action = new OpenEditorAction(null);
-        action.openEditor(modifiedSelection);
+        IFile file = (IFile)typedSelection.getFirstElement().getAdapter(IFile.class);
+        openEditorForFile(file);
 
         return null;
     }
@@ -65,6 +61,14 @@ public class OpenEditorHandler extends AbstractHandler {
             throw new CoreRuntimeException(e);
         }
         return targetProductCmptGeneration;
+    }
+
+    private void openEditorForProductCmptGeneration(IProductCmptGeneration generation) {
+        IpsUIPlugin.getDefault().openEditor(ProductCmptEditorInput.createWithGeneration(generation));
+    }
+
+    private void openEditorForFile(IFile file) {
+        IpsUIPlugin.getDefault().openEditor(file);
     }
 
 }

@@ -63,7 +63,21 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         generationPropertiesPage = new GenerationPropertiesPage(this);
         addPage(generationPropertiesPage);
         addPage(new ProductCmptPropertiesPage(this));
-        setActiveGeneration(getProductCmpt().getLatestGeneration(), false);
+        if (getActiveGeneration() == null) {
+            setActiveGeneration(getInitialGeneration(), true);
+        }
+    }
+
+    private IProductCmptGeneration getInitialGeneration() {
+        IProductCmptGeneration initialGeneration = getProductCmpt().getLatestProductCmptGeneration();
+        if (getEditorInput() instanceof ProductCmptEditorInput) {
+            ProductCmptEditorInput productCmptEditorInput = (ProductCmptEditorInput)getEditorInput();
+            IProductCmptGeneration inputGeneration = productCmptEditorInput.getProductCmptGeneration();
+            if (inputGeneration != null) {
+                initialGeneration = inputGeneration;
+            }
+        }
+        return initialGeneration;
     }
 
     private GenerationPropertiesPage getGenerationPropertiesPage() {

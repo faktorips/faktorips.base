@@ -21,7 +21,6 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -40,9 +39,9 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.editors.ICompositeWithSelectableViewer;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.productcmpt.LinkSectionDropListener.MoveLinkDragListener;
@@ -194,8 +193,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             if (targetProductCmpt != null) {
                 IProductCmptGeneration targetGeneration = targetProductCmpt
                         .getGenerationEffectiveOn(getActiveGeneration().getValidFrom());
-                OpenEditorAction action = new OpenEditorAction(treeViewer);
-                action.openEditor(new StructuredSelection(targetGeneration));
+                IpsUIPlugin.getDefault().openEditor(ProductCmptEditorInput.createWithGeneration(targetGeneration));
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
