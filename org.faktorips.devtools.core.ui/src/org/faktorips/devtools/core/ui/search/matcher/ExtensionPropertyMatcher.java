@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 
 /**
- * ExtensionPropertyMatcher is a matcher to for Extension Properties.
+ * ExtensionPropertyMatcher is a matcher for Extension Properties.
  * <p>
  * The ExtensionPropertyMatcher uses a {@link WildcardMatcher} to check, whether the value of an
  * ExtensionProperty matches a given pattern. If there is no ExtensionProperty, the element does not

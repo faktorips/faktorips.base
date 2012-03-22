@@ -67,6 +67,7 @@ public class ModelSearchQueryTest {
         searchModel = mock(ModelSearchPresentationModel.class);
 
         ipsModel = mock(IIpsModel.class);
+
         when(ipsModel.getExtensionPropertyDefinitions(any(Class.class), anyBoolean())).thenReturn(
                 new IExtensionPropertyDefinition[0]);
 
@@ -517,5 +518,70 @@ public class ModelSearchQueryTest {
 
         assertEquals(1, searchResult.getMatchCount());
         assertObjectMatched(matchingAttribute);
+    }
+
+    @Test
+    public void testSearchExtensionPropertyOfType() throws CoreException {
+        String propertyId = "FSPM";
+
+        IExtensionPropertyDefinition extensionPropertyDefinition = mock(IExtensionPropertyDefinition.class);
+        when(extensionPropertyDefinition.getPropertyId()).thenReturn(propertyId);
+
+        when(ipsModel.getExtensionPropertyDefinitions(any(Class.class), anyBoolean())).thenReturn(
+                new IExtensionPropertyDefinition[] { extensionPropertyDefinition });
+
+        Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
+        set.add(IAttribute.class);
+        when(searchModel.getSearchedClazzes()).thenReturn(set);
+
+        IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
+        when(srcFile1.getIpsObjectName()).thenReturn("SrcFile1");
+        when(srcFile1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
+
+        IIpsSrcFile srcFile2 = mock(IpsSrcFile.class);
+        when(srcFile2.getIpsObjectName()).thenReturn("SourceFile2");
+        when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
+
+        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
+        srcFiles.add(srcFile1);
+        srcFiles.add(srcFile2);
+
+        when(scope.getSelectedIpsSrcFiles()).thenReturn(srcFiles);
+
+        IType type1 = mock(IType.class);
+        when(type1.getName()).thenReturn("SrcFile1");
+        when(type1.getChildren()).thenReturn(new IIpsElement[0]);
+        when(type1.isExtPropertyDefinitionAvailable(propertyId)).thenReturn(true);
+
+        IType type2 = mock(IType.class);
+        when(type2.getName()).thenReturn("SourceFile2");
+        when(type2.getChildren()).thenReturn(new IIpsElement[0]);
+        when(type2.isExtPropertyDefinitionAvailable(propertyId)).thenReturn(true);
+
+        when(srcFile1.getIpsObject()).thenReturn(type1);
+        when(srcFile2.getIpsObject()).thenReturn(type2);
+
+        when(type1.getExtPropertyValue(propertyId)).thenReturn("/PM0/ABDAPOLICY");
+
+        when(type2.getExtPropertyValue(propertyId)).thenReturn("XYZ");
+
+        when(searchModel.getSearchTerm()).thenReturn("/PM0*");
+
+        IStatus status = query.run(new NullProgressMonitor());
+
+        assertEquals(IStatus.OK, status.getSeverity());
+
+        assertEquals(1, searchResult.getMatchCount());
+        assertObjectMatched(type1);
+        assertObjectNotMatched(type2);
+
+        when(searchModel.getSearchTerm()).thenReturn("asddfsad");
+
+        status = query.run(new NullProgressMonitor());
+
+        assertEquals(IStatus.OK, status.getSeverity());
+
+        assertEquals(0, searchResult.getMatchCount());
+
     }
 }

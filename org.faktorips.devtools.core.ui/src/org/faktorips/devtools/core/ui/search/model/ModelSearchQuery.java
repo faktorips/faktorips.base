@@ -68,6 +68,11 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
         ExtensionPropertyMatcher extensionPropertyMatcher = new ExtensionPropertyMatcher(stringMatcher, getIpsModel());
 
         for (IType type : searchedTypes) {
+
+            if (extensionPropertyMatcher.isMatching(type)) {
+                getSearchResult().addMatch(new Match(type, 0, 0));
+            }
+
             IIpsElement[] children = type.getChildren();
             for (IIpsElement childElement : children) {
                 if (isMatchingElement(childElement, classMatcher, stringMatcher, extensionPropertyMatcher)) {

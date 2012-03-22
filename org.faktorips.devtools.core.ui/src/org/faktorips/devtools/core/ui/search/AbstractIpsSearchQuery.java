@@ -103,19 +103,20 @@ public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationMod
     protected Set<IIpsSrcFile> getMatchingSrcFiles() throws CoreException {
         Set<IIpsSrcFile> searchedSrcFiles = getSelectedSrcFiles();
 
-        if (StringUtils.isNotBlank(getSearchModel().getSrcFilePattern())) {
-            WildcardMatcher typeNameMatcher = new WildcardMatcher(getSearchModel().getSrcFilePattern());
-
-            Set<IIpsSrcFile> hits = new HashSet<IIpsSrcFile>();
-            for (IIpsSrcFile srcFile : searchedSrcFiles) {
-
-                if (typeNameMatcher.isMatching(srcFile.getIpsObjectName())) {
-                    hits.add(srcFile);
-                }
-            }
-            searchedSrcFiles = hits;
+        if (StringUtils.isBlank(getSearchModel().getSrcFilePattern())) {
+            return searchedSrcFiles;
         }
-        return searchedSrcFiles;
+
+        WildcardMatcher typeNameMatcher = new WildcardMatcher(getSearchModel().getSrcFilePattern());
+
+        Set<IIpsSrcFile> hits = new HashSet<IIpsSrcFile>();
+        for (IIpsSrcFile srcFile : searchedSrcFiles) {
+
+            if (typeNameMatcher.isMatching(srcFile.getIpsObjectName())) {
+                hits.add(srcFile);
+            }
+        }
+        return hits;
     }
 
     /**
