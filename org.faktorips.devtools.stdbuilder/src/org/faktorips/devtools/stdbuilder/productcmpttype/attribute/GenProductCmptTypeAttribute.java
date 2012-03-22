@@ -337,25 +337,27 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
     }
 
     private void generateWriteMultipleValuesToXml(JavaCodeFragmentBuilder builder) {
-        builder.append("{");
-        builder.appendClassName(List.class);
-        builder.appendGenerics(String.class);
-        builder.append(" stringList= new ");
-        builder.appendClassName(ArrayList.class);
-        builder.appendGenerics(String.class);
-        builder.append("();");
-        builder.append("for(");
-        builder.appendClassName(getObjectJavaClass());
-        builder.append(" value:");
-        builder.append("this.").append(getMemberVarName());
-        builder.append("){String stringValue= ");
-        builder.append((getDatatypeHelper()).getToStringExpression("value"));
-        builder.append(";");
-        builder.append("stringList.add(stringValue);");
-        builder.append("}");
-        builder.appendClassName(MultiValueXmlHelper.class);
-        builder.append(".addValuesToElement(attributeElement, stringList);");
-        builder.append("}");
+        if (getDatatype() instanceof StringDatatype) {
+            builder.appendClassName(MultiValueXmlHelper.class);
+            builder.append(".addValuesToElement(attributeElement, this.").append(getMemberVarName());
+            builder.append(");");
+        } else {
+            builder.append("stringList= new ");
+            builder.appendClassName(ArrayList.class);
+            builder.appendGenerics(String.class);
+            builder.append("();");
+            builder.append("for(");
+            builder.appendClassName(getObjectJavaClass());
+            builder.append(" value:");
+            builder.append("this.").append(getMemberVarName());
+            builder.append("){String stringValue= ");
+            builder.append((getDatatypeHelper()).getToStringExpression("value"));
+            builder.append(";");
+            builder.append("stringList.add(stringValue);");
+            builder.append("}");
+            builder.appendClassName(MultiValueXmlHelper.class);
+            builder.append(".addValuesToElement(attributeElement, stringList);");
+        }
     }
 
     protected String getObjectJavaClass() {

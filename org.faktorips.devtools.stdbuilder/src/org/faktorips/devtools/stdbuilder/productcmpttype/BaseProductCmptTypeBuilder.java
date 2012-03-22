@@ -236,6 +236,9 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
                     reusableLocalVariablesGenerated = true;
                     builder.appendClassName(Element.class);
                     builder.append(" attributeElement= null;");
+                    builder.appendClassName(List.class);
+                    builder.appendGenerics(String.class);
+                    builder.append(" stringList= null;");
                 }
                 attributeGenerator.generateWritePropertyToXml(builder);
             }
