@@ -79,8 +79,6 @@ public class GenerationsSection extends SimpleIpsPartsSection {
      */
     public class GenerationsComposite extends IpsPartsComposite implements IDeleteListener {
 
-        IIpsObjectGeneration newGeneration;
-
         public GenerationsComposite(ITimedIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
             super(ipsObject, parent, getSite(), true, true, true, false, true, false, false, false, toolkit);
 
@@ -119,19 +117,16 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         @Override
         protected IIpsObjectPart newIpsPart() {
             IProductCmptGeneration selectedGeneration = getActiveGeneration();
-
-            newGeneration = page.getProductCmpt().newGeneration(selectedGeneration.getValidFrom());
-
-            return newGeneration;
+            return page.getProductCmpt().newGeneration(selectedGeneration.getValidFrom());
         }
 
         /**
-         * Sets the default validity date and selects new generation, if the "OK" button in the
-         * dialog was selected.
+         * Sets the new generation as active generation, if the "OK" button in the dialog was
+         * selected.
          */
         @Override
-        protected void newPartConfirmed() {
-            page.getProductCmptEditor().setActiveGeneration(newGeneration, true);
+        protected void newPartConfirmed(IIpsObjectPart newPart) {
+            page.getProductCmptEditor().setActiveGeneration((IIpsObjectGeneration)newPart, true);
             IProductCmptGeneration selectedGeneration = getActiveGeneration();
             IpsUIPlugin.getDefault().setDefaultValidityDate(selectedGeneration.getValidFrom());
         }

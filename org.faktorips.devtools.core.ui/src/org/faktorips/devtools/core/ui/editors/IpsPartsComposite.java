@@ -562,7 +562,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 editPartCanceled();
             } else if (dialog.getReturnCode() == Window.OK) {
 
-                newPartConfirmed();
+                newPartConfirmed(newPart);
             }
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -597,15 +597,20 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     /**
-     * Creates a new part if ok button was clicked .
+     * Sets the newPart as active generation.The part was created by calling {@link #newIpsPart()}.
+     * The method will be called if the ok button in new dialog was pressed.
+     * 
      * <p>
-     * By default this method delegates to {@link #editPartConfirmed()}. If you want to create
-     * different parts, override this method. Othervise only override {@link #editPartConfirmed()}.
+     * 
+     * By default this method delegates to {@link #editPartConfirmed()}. Othervise only override
+     * {@link #editPartConfirmed()}.
      * <p>
+     * 
+     * @param newPart The part was created by calling {@link #newIpsPart()}.
      * 
      * @since 3.7
      */
-    protected void newPartConfirmed() {
+    protected void newPartConfirmed(IIpsObjectPart newPart) {
         editPartConfirmed();
     }
 

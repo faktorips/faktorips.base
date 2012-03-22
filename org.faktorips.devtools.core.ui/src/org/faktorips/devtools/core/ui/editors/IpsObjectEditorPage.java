@@ -107,10 +107,6 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         registerSelectionProviderActivation(getPartControl());
     }
 
-    protected String getUniformPageTitle() {
-        return getIpsObjectEditor().getUniformPageTitle();
-    }
-
     /**
      * Searches for composites that implement the {@link ICompositeWithSelectableViewer} interface
      * and registers them with the {@link SelectionProviderIntermediate} of the
