@@ -14,6 +14,7 @@
 package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
@@ -78,5 +79,20 @@ public class MultiValueXmlHelperTest extends XmlAbstractTestCase {
         assertNull(ValueToXmlHelper.getValueFromElement((Element)valueElementNodeList.item(1)));
         assertEquals("bar", ValueToXmlHelper.getValueFromElement((Element)valueElementNodeList.item(2)));
         assertEquals("4711", ValueToXmlHelper.getValueFromElement((Element)valueElementNodeList.item(3)));
+    }
+
+    @Test
+    public void roundTripTest() {
+        List<String> stringList = new ArrayList<String>();
+        stringList.add("foo");
+        stringList.add(null);
+        stringList.add("bar");
+        stringList.add("4711");
+
+        Element attrValueElement = getTestDocument().createElement("AttributeValue");
+        MultiValueXmlHelper.addValuesToElement(attrValueElement, stringList);
+        List<String> resultList = MultiValueXmlHelper.getValuesFromXML(attrValueElement);
+        assertNotSame(stringList, resultList);
+        assertEquals(stringList, resultList);
     }
 }

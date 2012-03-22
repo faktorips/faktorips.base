@@ -41,8 +41,9 @@ public final class MultiValueXmlHelper {
     }
 
     /**
-     * Reads String values from the a XML structure. Given the below XML (AttributeValue-Element
-     * expected), this method will return a List with three elements: {null, "foo", "bar"}.
+     * Reads String values from the a XML structure. Given the below XML (in this case an
+     * AttributeValue-Element), this method will return a List containing three strings: {null,
+     * "foo", "bar"}.
      * 
      * <pre>
      * &lt;AttributeValue&gt;
@@ -89,15 +90,15 @@ public final class MultiValueXmlHelper {
     }
 
     /**
-     * Adds all values in the given list as a multi-value element to the given element. A list
-     * containing the values {"foo", null, "bar"} will add the following elements to the given
+     * Adds all values in the given list as a "multi-value" child element to the given element. A
+     * list containing the values {"foo", null, "bar"} will add the following elements to the given
      * element.
      * 
      * <pre>
      * &lt;Value&gt;
      *     &lt;MultiValue&gt;
-     *         &lt;Value isNull="true"/&gt;
      *         &lt;Value isNull="false"/&gt; foo &lt;/Value&gt;
+     *         &lt;Value isNull="true"/&gt;
      *         &lt;Value isNull="false"/&gt; bar &lt;/Value&gt;
      *     &lt;/MultiValue&gt;
      * &lt;/Value&gt;

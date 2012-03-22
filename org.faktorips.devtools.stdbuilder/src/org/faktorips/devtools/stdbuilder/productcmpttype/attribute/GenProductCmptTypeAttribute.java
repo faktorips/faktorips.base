@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype.attribute;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,6 +26,8 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.codegen.dthelpers.ListOfValueDatatypeHelper;
+import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -36,6 +39,7 @@ import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.type.GenAttribute;
+import org.faktorips.runtime.internal.MultiValueXmlHelper;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.LocalizedStringsSet;
 import org.w3c.dom.Element;
@@ -66,7 +70,8 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
     protected void generateGetterSignature(JavaCodeFragmentBuilder methodsBuilder) {
         int modifier = java.lang.reflect.Modifier.PUBLIC;
         String methodName = getMethodNameGetPropertyValue(getAttribute().getName(), getDatatype());
-        methodsBuilder.signature(modifier, getJavaClassName(), methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
+        methodsBuilder.signature(modifier, getDeclarationJavaType(getDatatypeHelper()), methodName, EMPTY_STRING_ARRAY,
+                EMPTY_STRING_ARRAY);
     }
 
     @Override
@@ -155,7 +160,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
         appendLocalizedJavaDoc("METHOD_SET_VALUE", getAttribute().getName(), methodsBuilder);
         String methodName = getSetterMethodName();
         String[] paramNames = new String[] { "newValue" };
-        String[] paramTypes = new String[] { datatypeHelper.getJavaClassName() };
+        String[] paramTypes = new String[] { getDeclarationJavaType(datatypeHelper) };
         methodsBuilder.signature(Modifier.PUBLIC, "void", methodName, paramNames, paramTypes);
         methodsBuilder.openBracket();
         methodsBuilder.append(((GenProductCmptType)getGenType()).generateFragmentCheckIfRepositoryIsModifiable());
@@ -173,8 +178,17 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
      */
     void generateSignatureGetValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) {
         String methodName = getGetterMethodName();
-        builder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, EMPTY_STRING_ARRAY,
+        builder.signature(Modifier.PUBLIC, getDeclarationJavaType(datatypeHelper), methodName, EMPTY_STRING_ARRAY,
                 EMPTY_STRING_ARRAY);
+    }
+
+    protected String getDeclarationJavaType(DatatypeHelper datatypeHelper) {
+        if (getAttribute().isMultiValueAttribute()) {
+            ListOfValueDatatypeHelper listOfValueDatatypeHelper = new ListOfValueDatatypeHelper(getDatatype());
+            return listOfValueDatatypeHelper.getDeclarationJavaType();
+        } else {
+            return datatypeHelper.getJavaClassName();
+        }
     }
 
     /**
@@ -187,9 +201,17 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
      */
     private void generateFieldValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) {
         appendLocalizedJavaDoc("FIELD_VALUE", StringUtils.capitalize(getAttribute().getName()), builder);
-        JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(getAttribute().getDefaultValue());
-        builder.varDeclaration(Modifier.PRIVATE, datatypeHelper.getJavaClassName(), getMemberVarName(),
+        JavaCodeFragment defaultValueExpression = getInitialFieldValue(datatypeHelper);
+        builder.varDeclaration(Modifier.PRIVATE, getDeclarationJavaType(datatypeHelper), getMemberVarName(),
                 defaultValueExpression);
+    }
+
+    protected JavaCodeFragment getInitialFieldValue(DatatypeHelper datatypeHelper) {
+        if (getAttribute().isMultiValueAttribute()) {
+            return new ListOfValueDatatypeHelper(getDatatype()).newInstance();
+        } else {
+            return datatypeHelper.newInstance(getAttribute().getDefaultValue());
+        }
     }
 
     public boolean isValidAttribute() throws CoreException {
@@ -217,22 +239,85 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
     }
 
     private void generateExtractValueFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
+        if (getAttribute().isMultiValueAttribute()) {
+            generateExtractMultipleValuesFromXml(builder);
+        } else {
+            generateExtractSingleValueFromXml(builder);
+        }
+    }
+
+    /**
+     * Example code for String lists:
+     * 
+     * <pre>
+     * List&lt;String&gt; valueList = MultiValueXmlHelper.getValuesFromXML(configElement);
+     * this.multiValueString = valueList;
+     * </pre>
+     * 
+     * Example code for other lists:
+     * 
+     * <pre>
+     * List&lt;Integer&gt; valueList = new ArrayList&lt;Integer&gt;();
+     * List&lt;String&gt; stringList = MultiValueXmlHelper.getValuesFromXML(configElement);
+     * for (String stringValue : stringList) {
+     *     int convertedValue = Integer.parseInt(stringValue);
+     *     valueList.add(convertedValue);
+     * }
+     * this.multiInt = valueList;
+     * </pre>
+     */
+    private void generateExtractMultipleValuesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
+        builder.appendClassName(getDeclarationJavaType(getDatatypeHelper()));
+        builder.append(" valueList= ");
+        if (getDatatype() instanceof StringDatatype) {
+            /*
+             * Optimization/avoidance of redundant code, as strings do not need to be "converted" to
+             * another object.
+             */
+            builder.appendClassName(MultiValueXmlHelper.class);
+            builder.append(".getValuesFromXML(configElement);");
+        } else {
+            builder.append(new ListOfValueDatatypeHelper(getDatatype()).newInstance());
+            builder.append(";");
+            builder.appendClassName(List.class);
+            builder.appendGenerics(String.class);
+            builder.append(" stringList= ");
+            builder.appendClassName(MultiValueXmlHelper.class);
+            builder.append(".getValuesFromXML(configElement);");
+            builder.append("for(String stringValue:stringList){");
+            builder.appendClassName(getDatatypeHelper().getJavaClassName());
+            builder.append(" convertedValue= ");
+            generateConvertValueFromStringVariable(builder, "stringValue");
+            builder.append("valueList.add(convertedValue);");
+            builder.append("}");
+        }
+        builder.append("this.").append(getMemberVarName());
+        builder.append(" = valueList;");
+
+    }
+
+    protected void generateExtractSingleValueFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.append("value = ");
         builder.appendClassName(ValueToXmlHelper.class);
         builder.appendln(".getValueFromElement(configElement, \"Value\");");
         builder.append("this.").append(getMemberVarName());
         builder.append(" = ");
+        generateConvertValueFromStringVariable(builder, "value");
+    }
+
+    protected void generateConvertValueFromStringVariable(JavaCodeFragmentBuilder builder, String stringVariableName)
+            throws CoreException {
         if (getDatatypeHelper() instanceof EnumTypeDatatypeHelper) {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)getDatatypeHelper();
             IEnumType enumType = enumHelper.getEnumType();
             if (!enumType.isContainingValues()) {
                 builder.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(enumType,
-                        "value", new JavaCodeFragment("getRepository()")));
+                        stringVariableName, new JavaCodeFragment("getRepository()")));
                 builder.appendln(";");
                 return;
             }
         }
-        builder.append(getDatatypeHelper().newInstanceFromExpression("value"));
+        builder.append(getDatatypeHelper().newInstanceFromExpression(stringVariableName));
         builder.appendln(";");
     }
 
@@ -241,11 +326,51 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
         builder.append("attributeElement.setAttribute(\"attribute\", \"");
         builder.append(getAttribute().getName());
         builder.append("\");");
+
+        if (getAttribute().isMultiValueAttribute()) {
+            generateWriteMultipleValuesToXml(builder);
+        } else {
+            generateWriteSingleValueToXml(builder);
+        }
+
+        builder.append("element.appendChild(attributeElement);");
+    }
+
+    private void generateWriteMultipleValuesToXml(JavaCodeFragmentBuilder builder) {
+        builder.append("{");
+        builder.appendClassName(List.class);
+        builder.appendGenerics(String.class);
+        builder.append(" stringList= new ");
+        builder.appendClassName(ArrayList.class);
+        builder.appendGenerics(String.class);
+        builder.append("();");
+        builder.append("for(");
+        builder.appendClassName(getObjectJavaClass());
+        builder.append(" value:");
+        builder.append("this.").append(getMemberVarName());
+        builder.append("){String stringValue= ");
+        builder.append((getDatatypeHelper()).getToStringExpression("value"));
+        builder.append(";");
+        builder.append("stringList.add(stringValue);");
+        builder.append("}");
+        builder.appendClassName(MultiValueXmlHelper.class);
+        builder.append(".addValuesToElement(attributeElement, stringList);");
+        builder.append("}");
+    }
+
+    protected String getObjectJavaClass() {
+        if (getDatatype().isPrimitive()) {
+            return getDatatype().getWrapperType().getJavaClassName();
+        } else {
+            return getDatatype().getJavaClassName();
+        }
+    }
+
+    protected void generateWriteSingleValueToXml(JavaCodeFragmentBuilder builder) {
         builder.appendClassName(ValueToXmlHelper.class);
         builder.append(".addValueToElement(");
         builder.append((getDatatypeHelper()).getToStringExpression(getMemberVarName()));
         builder.append(", attributeElement, \"Value\");");
-        builder.append("element.appendChild(attributeElement);");
     }
 
     /**
