@@ -192,7 +192,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             IProductCmpt targetProductCmpt = link.findTarget(link.getIpsProject());
             if (targetProductCmpt != null) {
                 IProductCmptGeneration targetGeneration = targetProductCmpt
-                        .getGenerationEffectiveOn(getActiveGeneration().getValidFrom());
+                        .getGenerationEffectiveOnOrFirst(getActiveGeneration().getValidFrom());
                 IpsUIPlugin.getDefault().openEditor(ProductCmptEditorInput.createWithGeneration(targetGeneration));
             }
         } catch (CoreException e) {

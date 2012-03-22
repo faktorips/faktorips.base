@@ -66,7 +66,6 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -87,6 +86,7 @@ import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.editors.productcmpt.LinkEditDialog;
+import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorInput;
 import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
@@ -1095,15 +1095,13 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                 return;
             }
 
-            // Modify selection so that the selected generation is opened
             IProductCmptReference selectedProductCmptReference = (IProductCmptReference)getSelectedObjectFromSelection(event
                     .getSelection());
             GenerationDate selectedGenerationDate = generationDateViewer.getSelectedDate();
-            IIpsObjectGeneration selectedGeneration = selectedProductCmptReference.getProductCmpt()
-                    .getGenerationEffectiveOn(selectedGenerationDate.getValidFrom());
+            IProductCmptGeneration generationToBeOpened = selectedProductCmptReference.getProductCmpt()
+                    .getGenerationEffectiveOnOrFirst(selectedGenerationDate.getValidFrom());
 
-            OpenEditorAction action = new OpenEditorAction(event.getViewer());
-            action.openEditor(new StructuredSelection(selectedGeneration));
+            IpsUIPlugin.getDefault().openEditor(ProductCmptEditorInput.createWithGeneration(generationToBeOpened));
         }
 
     }

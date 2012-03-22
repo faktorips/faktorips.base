@@ -92,6 +92,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
+    public IProductCmptGeneration getFirstGeneration() {
+        return (IProductCmptGeneration)super.getFirstGeneration();
+    }
+
+    @Override
     public IProductCmptGeneration getLatestProductCmptGeneration() {
         IIpsObjectGeneration latestGeneration = getLatestGeneration();
         return latestGeneration == null ? null : (IProductCmptGeneration)latestGeneration;
@@ -455,6 +460,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public IProductCmptGeneration getGenerationEffectiveOn(GregorianCalendar date) {
         return (IProductCmptGeneration)super.getGenerationEffectiveOn(date);
+    }
+
+    @Override
+    public IProductCmptGeneration getGenerationEffectiveOnOrFirst(GregorianCalendar date) {
+        return (IProductCmptGeneration)super.getGenerationEffectiveOnOrFirst(date);
     }
 
     @Override

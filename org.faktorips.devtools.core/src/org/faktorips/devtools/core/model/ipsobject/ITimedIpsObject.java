@@ -90,6 +90,12 @@ public interface ITimedIpsObject extends IIpsObject {
     public IIpsObjectGeneration getGenerationEffectiveOn(GregorianCalendar date);
 
     /**
+     * Returns the generation effective on the given date or the first generation if there is no
+     * generation effective on the given date.
+     */
+    public IIpsObjectGeneration getGenerationEffectiveOnOrFirst(GregorianCalendar date);
+
+    /**
      * Returns the generation identified by the given effective date, that is the generation which
      * has the same effective date.
      * <p>

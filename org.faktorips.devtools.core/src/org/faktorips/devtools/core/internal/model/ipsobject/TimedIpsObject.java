@@ -133,6 +133,12 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     @Override
+    public IIpsObjectGeneration getGenerationEffectiveOnOrFirst(GregorianCalendar date) {
+        IIpsObjectGeneration generationEffectiveOn = getGenerationEffectiveOn(date);
+        return generationEffectiveOn != null ? generationEffectiveOn : getFirstGeneration();
+    }
+
+    @Override
     public IIpsObjectGeneration getGenerationByEffectiveDate(GregorianCalendar date) {
         if (date == null) {
             return null;

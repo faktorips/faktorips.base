@@ -112,8 +112,6 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
 
     }
 
-    // Suppressed deprecation because a deprecated method is being tested
-    @SuppressWarnings("deprecation")
     @Test
     public void testFindGenerationEffectiveOn() {
         IIpsObjectGeneration gen1 = timedObject.newGeneration();
@@ -158,6 +156,25 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
 
         genFound = timedObject.getGenerationEffectiveOn(null);
         assertNull(genFound);
+    }
+
+    @Test
+    public void testGetGenerationEffectiveOnOrFirst_ReturnFirstGenerationIfNoGenerationEffectiveOnAvailable() {
+        IIpsObjectGeneration generation = timedObject.newGeneration(new GregorianCalendar(2012, 0, 1));
+
+        GregorianCalendar effectiveDate = new GregorianCalendar(2010, 0, 1);
+        assertNull(timedObject.getGenerationEffectiveOn(effectiveDate));
+        assertEquals(generation, timedObject.getGenerationEffectiveOnOrFirst(effectiveDate));
+    }
+
+    @Test
+    public void testGetGenerationEffectiveOnOrFirst_ReturnEffectiveGenerationIfAvailable() {
+        timedObject.newGeneration(new GregorianCalendar(2011, 0, 1));
+        IIpsObjectGeneration generation = timedObject.newGeneration(new GregorianCalendar(2012, 0, 1));
+
+        GregorianCalendar effectiveDate = new GregorianCalendar(2014, 0, 1);
+        assertEquals(generation, timedObject.getGenerationEffectiveOn(effectiveDate));
+        assertEquals(generation, timedObject.getGenerationEffectiveOnOrFirst(effectiveDate));
     }
 
     @Test
