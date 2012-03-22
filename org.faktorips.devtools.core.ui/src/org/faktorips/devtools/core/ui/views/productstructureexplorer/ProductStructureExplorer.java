@@ -1099,7 +1099,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                     .getSelection());
             GenerationDate selectedGenerationDate = generationDateViewer.getSelectedDate();
             IProductCmptGeneration generationToBeOpened = selectedProductCmptReference.getProductCmpt()
-                    .getGenerationEffectiveOnOrFirst(selectedGenerationDate.getValidFrom());
+                    .getBestMatchingGenerationEffectiveOn(selectedGenerationDate.getValidFrom());
 
             IpsUIPlugin.getDefault().openEditor(ProductCmptEditorInput.createWithGeneration(generationToBeOpened));
         }

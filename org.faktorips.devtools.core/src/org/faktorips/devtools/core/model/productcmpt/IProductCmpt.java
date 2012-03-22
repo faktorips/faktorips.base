@@ -256,7 +256,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProperty
     public IProductCmptGeneration getGenerationEffectiveOn(GregorianCalendar date);
 
     @Override
-    public IProductCmptGeneration getGenerationEffectiveOnOrFirst(GregorianCalendar date);
+    public IProductCmptGeneration getBestMatchingGenerationEffectiveOn(GregorianCalendar date);
 
     @Override
     public IProductCmptGeneration getFirstGeneration();

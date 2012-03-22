@@ -54,7 +54,7 @@ public class OpenEditorHandler extends AbstractHandler {
         try {
             IProductCmpt targetProductCmpt = link.findTarget(link.getIpsProject());
             if (targetProductCmpt != null) {
-                targetProductCmptGeneration = targetProductCmpt.getGenerationEffectiveOnOrFirst(link
+                targetProductCmptGeneration = targetProductCmpt.getBestMatchingGenerationEffectiveOn(link
                         .getProductCmptGeneration().getValidFrom());
             }
         } catch (CoreException e) {

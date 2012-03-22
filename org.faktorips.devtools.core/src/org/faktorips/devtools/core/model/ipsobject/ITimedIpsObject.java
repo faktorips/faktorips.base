@@ -90,10 +90,20 @@ public interface ITimedIpsObject extends IIpsObject {
     public IIpsObjectGeneration getGenerationEffectiveOn(GregorianCalendar date);
 
     /**
-     * Returns the generation effective on the given date or the first generation if there is no
-     * generation effective on the given date.
+     * Returns the generation which is the best-matching generation for the given date.
+     * <p>
+     * If a generation exists that is effective on the given date, this generation is returned. If
+     * no such generation exists, there are two possibilities:
+     * <ul>
+     * <li>The given date is before the first generation: the first generation is returned
+     * <li>The given date is after the latest generation: the latest generation is returned
+     * </ul>
+     * <p>
+     * Returns null if no generation exists at all.
+     * 
+     * @param date the date for which to retrieve the best matching generation
      */
-    public IIpsObjectGeneration getGenerationEffectiveOnOrFirst(GregorianCalendar date);
+    public IIpsObjectGeneration getBestMatchingGenerationEffectiveOn(GregorianCalendar date);
 
     /**
      * Returns the generation identified by the given effective date, that is the generation which

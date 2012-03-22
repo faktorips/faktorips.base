@@ -159,22 +159,35 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetGenerationEffectiveOnOrFirst_ReturnFirstGenerationIfNoGenerationEffectiveOnAvailable() {
-        IIpsObjectGeneration generation = timedObject.newGeneration(new GregorianCalendar(2012, 0, 1));
+    public void testGetBestMatchingGenerationEffectiveOn_ReturnFirstGenerationIfDateBeforeFirstGeneration() {
+        IIpsObjectGeneration firstGeneration = timedObject.newGeneration(new GregorianCalendar(2012, 0, 1));
+        timedObject.newGeneration(new GregorianCalendar(2012, 3, 1));
 
         GregorianCalendar effectiveDate = new GregorianCalendar(2010, 0, 1);
         assertNull(timedObject.getGenerationEffectiveOn(effectiveDate));
-        assertEquals(generation, timedObject.getGenerationEffectiveOnOrFirst(effectiveDate));
+        assertEquals(firstGeneration, timedObject.getBestMatchingGenerationEffectiveOn(effectiveDate));
     }
 
     @Test
-    public void testGetGenerationEffectiveOnOrFirst_ReturnEffectiveGenerationIfAvailable() {
+    public void testGetBestMatchingGenerationEffectiveOn_ReturnLatestGenerationIfDateAfterLatestGeneration() {
+        timedObject.newGeneration(new GregorianCalendar(2012, 0, 1));
+        IIpsObjectGeneration latestGeneration = timedObject.newGeneration(new GregorianCalendar(2012, 3, 1));
+        timedObject.setValidTo(new GregorianCalendar(2013, 0, 1));
+
+        GregorianCalendar effectiveDate = new GregorianCalendar(2050, 0, 1);
+        // TODO AW 22-03-2012: Bug in Faktor-IPS, should return null
+        // assertNull(timedObject.getGenerationEffectiveOn(effectiveDate));
+        assertEquals(latestGeneration, timedObject.getBestMatchingGenerationEffectiveOn(effectiveDate));
+    }
+
+    @Test
+    public void testGetBestMatchingGenerationEffectiveOn_ReturnEffectiveGenerationIfAvailable() {
         timedObject.newGeneration(new GregorianCalendar(2011, 0, 1));
         IIpsObjectGeneration generation = timedObject.newGeneration(new GregorianCalendar(2012, 0, 1));
 
         GregorianCalendar effectiveDate = new GregorianCalendar(2014, 0, 1);
         assertEquals(generation, timedObject.getGenerationEffectiveOn(effectiveDate));
-        assertEquals(generation, timedObject.getGenerationEffectiveOnOrFirst(effectiveDate));
+        assertEquals(generation, timedObject.getBestMatchingGenerationEffectiveOn(effectiveDate));
     }
 
     @Test
