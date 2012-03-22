@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProductCmpt>
+	<ConfigElement>
+		<Value>
+			<MultiValue>
+				<Value isNull="false">foo</Value>
+				<Value isNull="true"/>
+				<Value isNull="false">bar</Value>
+			</MultiValue>
+		</Value>
+	</ConfigElement>
+	<ConfigElement>
+	</ConfigElement>
+	<ConfigElement>
+		<Value>
+		</Value>
+	</ConfigElement>
+</ProductCmpt>
