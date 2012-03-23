@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
 
 /**
@@ -48,15 +49,12 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
      */
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
-        JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new "); //$NON-NLS-1$
-        fragment.appendClassName(ArrayList.class);
-        fragment.append("<"); //$NON-NLS-1$
-        fragment.appendClassName(getElementJavaClassName());
-        fragment.append(">("); //$NON-NLS-1$
-        fragment.append(expression);
-        fragment.append(")"); //$NON-NLS-1$
-        return fragment;
+        JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
+        builder.append("new "); //$NON-NLS-1$
+        builder.appendClassName(ArrayList.class);
+        builder.appendGenerics(getElementJavaClassName());
+        builder.appendParameters(new String[] { expression });
+        return builder.getFragment();
     }
 
     public String getElementJavaClassName() {
@@ -68,19 +66,13 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
     }
 
     /**
-     * Returns code that creates an empty list. The given value will be ignored.
+     * Returns code that creates a list where the given expression is used as a constructor
+     * argument.
      * 
      * {@inheritDoc}
      */
-    public JavaCodeFragment newInstance(String value) {
-        return newInstance();
-    }
-
-    /**
-     * Returns code that creates an empty list.
-     */
-    public JavaCodeFragment newInstance() {
-        return valueOfExpression(""); //$NON-NLS-1$
+    public JavaCodeFragment newInstance(String expression) {
+        return valueOfExpression(expression);
     }
 
     /**
@@ -88,13 +80,13 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
      * ElementJavaClassName &gt
      */
     public String getDeclarationJavaType() {
-        JavaCodeFragment fragment = new JavaCodeFragment();
-        // Do not append class name deliberately. The qualified name is required at a later time,
-        // when appendClassName() is called.
-        fragment.append(List.class.getName());
-        fragment.append("<"); //$NON-NLS-1$
-        fragment.append(getElementJavaClassName());
-        fragment.append(">"); //$NON-NLS-1$
-        return fragment.getSourcecode();
+        JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
+        /*
+         * Do not append class name (via appendClassName()) deliberately. The qualified name is
+         * required at a later time, when appendClassName() is called.
+         */
+        builder.append(List.class.getName());
+        builder.appendGenerics(getElementJavaClassName());
+        return builder.getFragment().getSourcecode();
     }
 }

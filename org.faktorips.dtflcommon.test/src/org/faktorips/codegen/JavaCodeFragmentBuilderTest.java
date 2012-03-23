@@ -101,4 +101,13 @@ public class JavaCodeFragmentBuilderTest {
         assertTrue(builder.getFragment().getImportDeclaration().isCovered(List.class));
     }
 
+    @Test
+    public void testAddGenerics() {
+        JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
+        builder.appendGenerics(Integer.class.getName(), "xxx1234", String.class.getName());
+        assertEquals("<Integer, xxx1234, String>", builder.getFragment().getSourcecode());
+        assertTrue(builder.getFragment().getImportDeclaration().isCovered(Integer.class));
+        assertTrue(builder.getFragment().getImportDeclaration().isCovered(String.class));
+    }
+
 }

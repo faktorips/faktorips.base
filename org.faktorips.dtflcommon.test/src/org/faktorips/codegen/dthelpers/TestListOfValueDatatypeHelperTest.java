@@ -40,8 +40,7 @@ public class TestListOfValueDatatypeHelperTest {
     @Test
     public void testNewInstance() {
         when(elementDatatype.getJavaClassName()).thenReturn("Integer");
-
-        assertEquals("new ArrayList<Integer>()", listOfValueDatatypeHelper.newInstance().getSourcecode());
+        assertEquals("new ArrayList<Integer>(xxx)", listOfValueDatatypeHelper.newInstance("xxx").getSourcecode());
     }
 
     @Test

@@ -118,7 +118,11 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
         generateSignatureGetValue(datatypeHelper, methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return ");
-        methodsBuilder.append(getMemberVarName());
+        if (getAttribute().isMultiValueAttribute()) {
+            methodsBuilder.append(getNewInstanceExpression(datatypeHelper, getMemberVarName()));
+        } else {
+            methodsBuilder.append(getMemberVarName());
+        }
         methodsBuilder.append(';');
         methodsBuilder.closeBracket();
     }
@@ -165,7 +169,13 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
         methodsBuilder.openBracket();
         methodsBuilder.append(((GenProductCmptType)getGenType()).generateFragmentCheckIfRepositoryIsModifiable());
         methodsBuilder.append("this." + getMemberVarName());
-        methodsBuilder.appendln(" = newValue;");
+        methodsBuilder.append(" = ");
+        if (getAttribute().isMultiValueAttribute()) {
+            methodsBuilder.append(getNewInstanceExpression(datatypeHelper, "newValue"));
+        } else {
+            methodsBuilder.appendln("newValue");
+        }
+        methodsBuilder.appendln(";");
         methodsBuilder.closeBracket();
     }
 
@@ -201,14 +211,18 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
      */
     private void generateFieldValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) {
         appendLocalizedJavaDoc("FIELD_VALUE", StringUtils.capitalize(getAttribute().getName()), builder);
-        JavaCodeFragment defaultValueExpression = getInitialFieldValue(datatypeHelper);
+        JavaCodeFragment defaultValueExpression = getNewInstanceExpression(datatypeHelper);
         builder.varDeclaration(Modifier.PRIVATE, getDeclarationJavaType(datatypeHelper), getMemberVarName(),
                 defaultValueExpression);
     }
 
-    protected JavaCodeFragment getInitialFieldValue(DatatypeHelper datatypeHelper) {
+    protected JavaCodeFragment getNewInstanceExpression(DatatypeHelper datatypeHelper) {
+        return getNewInstanceExpression(datatypeHelper, "");
+    }
+
+    protected JavaCodeFragment getNewInstanceExpression(DatatypeHelper datatypeHelper, String expression) {
         if (getAttribute().isMultiValueAttribute()) {
-            return new ListOfValueDatatypeHelper(getDatatype()).newInstance();
+            return new ListOfValueDatatypeHelper(getDatatype()).newInstance(expression);
         } else {
             return datatypeHelper.newInstance(getAttribute().getDefaultValue());
         }
@@ -277,7 +291,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
             builder.appendClassName(MultiValueXmlHelper.class);
             builder.append(".getValuesFromXML(configElement);");
         } else {
-            builder.append(new ListOfValueDatatypeHelper(getDatatype()).newInstance());
+            builder.append(getNewInstanceExpression(getDatatypeHelper()));
             builder.append(";");
             builder.appendClassName(List.class);
             builder.appendGenerics(String.class);

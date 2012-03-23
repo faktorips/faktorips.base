@@ -1358,7 +1358,8 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
-     * Appends the generic parameters to the builder: <className1, className2, ...>
+     * Appends the generic parameters to the builder: <className1, className2, ...>. Import
+     * statements are added if a given class has not yet been imported.
      * <p>
      * Note: You have to make sure that generics are supported by target compiler
      */
@@ -1366,7 +1367,7 @@ public class JavaCodeFragmentBuilder {
         if (classNames.length > 0) {
             append('<');
             for (String className : classNames) {
-                append(className);
+                appendClassName(className);
                 if (!className.equals(classNames[classNames.length - 1])) {
                     append(", "); //$NON-NLS-1$
                 }
