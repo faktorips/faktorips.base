@@ -73,12 +73,37 @@ public interface ITimedIpsObject extends IIpsObject {
     public IIpsObjectGeneration getFirstGeneration();
 
     /**
+     * @see #getGenerationEffectiveOn(GregorianCalendar)
+     * 
+     * @deprecated Deprecated since 3.7, use {@link #getGenerationEffectiveOn(GregorianCalendar)}
+     *             instead
+     */
+    @Deprecated
+    public IIpsObjectGeneration findGenerationEffectiveOn(GregorianCalendar date);
+
+    /**
      * Returns the generation effective on the given date. That is the generation which's effective
      * date lies before the given date and among all generations with such an effective date, this
      * is the one with the most recent effective date. Returns <code>null</code> if no generation is
      * found. Returns null if date is <code>null</code>
      */
-    public IIpsObjectGeneration findGenerationEffectiveOn(GregorianCalendar date);
+    public IIpsObjectGeneration getGenerationEffectiveOn(GregorianCalendar date);
+
+    /**
+     * Returns the generation which is the best-matching generation for the given date.
+     * <p>
+     * If a generation exists that is effective on the given date, this generation is returned. If
+     * no such generation exists, there are two possibilities:
+     * <ul>
+     * <li>The given date is before the first generation: the first generation is returned
+     * <li>The given date is after the latest generation: the latest generation is returned
+     * </ul>
+     * <p>
+     * Returns null if no generation exists at all.
+     * 
+     * @param date the date for which to retrieve the best matching generation
+     */
+    public IIpsObjectGeneration getBestMatchingGenerationEffectiveOn(GregorianCalendar date);
 
     /**
      * Returns the generation identified by the given effective date, that is the generation which
@@ -93,6 +118,11 @@ public interface ITimedIpsObject extends IIpsObject {
      * return <code>null</code>
      */
     public IIpsObjectGeneration getGenerationByEffectiveDate(GregorianCalendar date);
+
+    /**
+     * Returns the latest generation of this object or {@code null}, if no generation exists.
+     */
+    public IIpsObjectGeneration getLatestGeneration();
 
     /**
      * Creates a new, empty generation.

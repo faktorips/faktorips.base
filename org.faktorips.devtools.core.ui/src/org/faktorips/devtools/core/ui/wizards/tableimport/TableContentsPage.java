@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.tableimport;
 
-import java.util.GregorianCalendar;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -26,7 +25,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -156,12 +154,7 @@ public class TableContentsPage extends IpsObjectPage {
 
         ITableContents table = (ITableContents)newIpsObject;
         table.setTableStructure(getTableStructureName());
-        GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        if (date == null) {
-            return;
-        }
-        IIpsObjectGeneration generation = table.newGeneration();
-        generation.setValidFrom(date);
+        table.newGeneration(IpsUIPlugin.getDefault().getDefaultValidityDate());
         ITableStructure structure = (ITableStructure)table.getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE,
                 table.getTableStructure());
         if (structure != null) {

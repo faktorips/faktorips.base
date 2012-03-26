@@ -13,34 +13,27 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.GregorianCalendar;
-
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IDeleteListener;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
@@ -76,55 +69,6 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         return new GenerationsComposite((ITimedIpsObject)getIpsObject(), parent, toolkit);
     }
 
-    /**
-     * Set the active generation (which means, the generation to show/edit) in the editor. If the
-     * generation to set would not be editable, the user is asked if a switch is really wanted.
-     */
-    private void setActiveGeneration(IProductCmptGeneration generation) {
-        if (generation == null) {
-            return;
-        }
-        if (generation == page.getProductCmptEditor().getGenerationEffectiveOnCurrentEffectiveDate()) {
-            page.getProductCmptEditor().setActiveGeneration(generation, false);
-            return;
-        }
-        if (IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse()) {
-            page.getProductCmptEditor().setActiveGeneration(generation, false);
-            return;
-        }
-        if (!IpsPlugin.getDefault().getIpsPreferences().canEditRecentGeneration()
-                && generation.getValidFrom().before(new GregorianCalendar())) {
-            page.getProductCmptEditor().setActiveGeneration(generation, false);
-            return;
-        }
-        String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                .getGenerationConceptNameSingular(true);
-        String title = NLS.bind(Messages.GenerationsSection_titleShowGeneration, genName);
-        Object[] args = new Object[3];
-        args[0] = genName;
-        args[1] = generation.getName();
-        args[2] = IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate();
-        String message = NLS.bind(Messages.GenerationsSection_msgShowGeneration, args);
-
-        MessageDialog dlg = new MessageDialog(
-                page.getSite().getShell(),
-                title,
-                null,
-                message,
-                MessageDialog.QUESTION,
-                new String[] { Messages.GenerationsSection_buttonChangeEffectiveDate,
-                        Messages.GenerationsSection_buttonKeepEffectiveDate, Messages.GenerationsSection_buttonCancel },
-                0);
-        int result = dlg.open();
-        if (result == 2) {
-            return; // cancel
-        }
-        if (result == 0) {
-            IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(generation.getValidFrom());
-        }
-        page.getProductCmptEditor().setActiveGeneration(generation, true);
-    }
-
     private IProductCmptGeneration getActiveGeneration() {
         return (IProductCmptGeneration)page.getProductCmptEditor().getActiveGeneration();
     }
@@ -135,10 +79,8 @@ public class GenerationsSection extends SimpleIpsPartsSection {
      */
     public class GenerationsComposite extends IpsPartsComposite implements IDeleteListener {
 
-        private OpenGenerationInEditorAction openAction;
-
         public GenerationsComposite(ITimedIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
-            super(ipsObject, parent, getSite(), false, true, true, false, true, false, false, false, toolkit);
+            super(ipsObject, parent, getSite(), true, true, true, false, true, false, false, false, toolkit);
 
             super.setEditDoubleClickListenerEnabled(false);
 
@@ -147,14 +89,12 @@ public class GenerationsSection extends SimpleIpsPartsSection {
                 public void mouseDoubleClick(MouseEvent e) {
                     Object selected = ((IStructuredSelection)getViewer().getSelection()).getFirstElement();
                     if (selected instanceof IProductCmptGeneration) {
-                        setActiveGeneration((IProductCmptGeneration)selected);
+                        page.getProductCmptEditor().setActiveGeneration((IProductCmptGeneration)selected, true);
                     }
                 }
             });
 
             addDeleteListener(this);
-
-            openAction = new OpenGenerationInEditorAction(getViewer());
         }
 
         public ITimedIpsObject getTimedIpsObject() {
@@ -171,14 +111,34 @@ public class GenerationsSection extends SimpleIpsPartsSection {
             return new LabelProvider();
         }
 
+        /**
+         * Creates the new generation, if the "New" button in the editor was selected
+         */
         @Override
         protected IIpsObjectPart newIpsPart() {
-            return null;
+            IProductCmptGeneration selectedGeneration = getActiveGeneration();
+            return page.getProductCmpt().newGeneration(selectedGeneration.getValidFrom());
+        }
+
+        /**
+         * Sets the new generation as active generation, if the "OK" button in the dialog was
+         * selected.
+         */
+        @Override
+        protected void newPartConfirmed(IIpsObjectPart newPart) {
+            page.getProductCmptEditor().setActiveGeneration((IIpsObjectGeneration)newPart, true);
+            IProductCmptGeneration selectedGeneration = getActiveGeneration();
+            IpsUIPlugin.getDefault().setDefaultValidityDate(selectedGeneration.getValidFrom());
+        }
+
+        @Override
+        protected EditDialog createNewDialog(IIpsObjectPart part, Shell shell) {
+            return new GenerationEditDialog((IProductCmptGeneration)part, shell, true);
         }
 
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return new GenerationEditDialog((IProductCmptGeneration)part, shell);
+            return new GenerationEditDialog((IProductCmptGeneration)part, shell, false);
         }
 
         @Override
@@ -242,28 +202,6 @@ public class GenerationsSection extends SimpleIpsPartsSection {
             }
 
             @Override
-            public String getText(Object element) {
-                if (!(element instanceof IProductCmptGeneration)) {
-                    return super.getText(element);
-                }
-                IProductCmptGeneration gen = (IProductCmptGeneration)element;
-                String comment = ""; //$NON-NLS-1$
-                if (page.getProductCmptEditor().isEffectiveOnCurrentEffectiveDate(gen)) {
-                    comment = comment + Messages.GenerationsSection_validFrom
-                            + IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate();
-                }
-                Boolean validFromInPast = gen.isValidFromInPast();
-                if ((validFromInPast == null || validFromInPast.booleanValue())
-                        && !IpsPlugin.getDefault().getIpsPreferences().canEditRecentGeneration()) {
-                    if (!comment.equals("")) { //$NON-NLS-1$
-                        comment = comment + ","; //$NON-NLS-1$
-                    }
-                    comment = comment + Messages.GenerationsSection_validFromInPast;
-                }
-                return super.getText(element) + comment;
-            }
-
-            @Override
             public Image getImage(Object element) {
                 if (!(element instanceof IProductCmptGeneration)) {
                     return super.getImage(element);
@@ -278,44 +216,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
                     return (Image)resourceManager.get(disableImageDescriptor);
                 }
             }
-        }
 
-        @Override
-        protected void openLink() {
-            openAction.run();
-        }
-    }
-
-    private class OpenGenerationInEditorAction extends IpsAction {
-        public OpenGenerationInEditorAction(ISelectionProvider selectionProvider) {
-            super(selectionProvider);
-        }
-
-        @Override
-        public void run(IStructuredSelection selection) {
-            Object selected = selection.getFirstElement();
-            if (selected instanceof IProductCmptGeneration) {
-                IProductCmptGeneration generation = (IProductCmptGeneration)selected;
-                try {
-                    IEditorPart editor = IpsUIPlugin.getDefault().openEditor(generation.getProductCmpt());
-                    if (editor instanceof ProductCmptEditor) {
-                        // set the selected generation
-                        ProductCmptEditor productCmptEditor = (ProductCmptEditor)editor;
-                        productCmptEditor.setActiveGeneration(generation, true);
-
-                        // edit generation: set working date to generations valid from date
-                        // only if the edit working mode is enabled and
-                        // recent generations could be changed
-                        // otherwise show generation read-only
-                        IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
-                        if (ipsPreferences.canEditRecentGeneration() && ipsPreferences.isWorkingModeEdit()) {
-                            ipsPreferences.setWorkingDate(generation.getValidFrom());
-                        }
-                    }
-                } catch (Exception e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                }
-            }
         }
 
     }

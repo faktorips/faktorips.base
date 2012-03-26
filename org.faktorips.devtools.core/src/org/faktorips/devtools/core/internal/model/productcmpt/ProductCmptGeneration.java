@@ -563,7 +563,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             }
             IProductCmpt productCmpt = link.findTarget(ipsProject);
             if (productCmpt != null) {
-                if (getValidFrom() != null && productCmpt.findGenerationEffectiveOn(getValidFrom()) == null) {
+                if (getValidFrom() != null && productCmpt.getGenerationEffectiveOn(getValidFrom()) == null) {
                     String dateString = IpsPlugin.getDefault().getIpsPreferences().getDateFormat()
                             .format(getValidFrom().getTime());
                     String generationName = IpsPlugin.getDefault().getIpsPreferences()

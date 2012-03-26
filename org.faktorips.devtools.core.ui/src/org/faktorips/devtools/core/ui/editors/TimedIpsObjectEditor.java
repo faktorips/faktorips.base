@@ -14,19 +14,14 @@
 package org.faktorips.devtools.core.ui.editors;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 
 /**
  * An abstract editor for timed objects.
@@ -45,18 +40,7 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
     @Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         super.init(site, input);
-        setContentDescription(Messages.TimedIpsObjectEditor_actualWorkingDate
-                + IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
-        IpsPlugin.getDefault().getIpsPreferences().addChangeListener(new IPropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent event) {
-                if (event.getProperty().equals(IpsPreferences.WORKING_DATE)) {
-                    setContentDescription(Messages.TimedIpsObjectEditor_actualWorkingDate
-                            + IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
-                }
-            }
-        });
+        setContentDescription(StringUtils.EMPTY);
     }
 
     /**
@@ -91,43 +75,15 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
             System.out.println("TimedIpsObjectEditor.setActiveGeneration(): New generation " + generation); //$NON-NLS-1$
         }
         this.generation = generation;
-
         notifyGenerationChanged();
     }
 
-    /**
-     *
-     */
     private void notifyGenerationChanged() {
         List<IActiveGenerationChangedListener> copy = new CopyOnWriteArrayList<IActiveGenerationChangedListener>(
                 activeGenerationChangedListeners);
         for (IActiveGenerationChangedListener listener : copy) {
             listener.activeGenerationChanged(generation);
         }
-    }
-
-    /**
-     * Returns <code>true</code> if the given generation is effective on the effective date
-     * currently set in the preferences.
-     */
-    public boolean isEffectiveOnCurrentEffectiveDate(IIpsObjectGeneration gen) {
-        if (gen == null) {
-            return false;
-        }
-        return gen.equals(getGenerationEffectiveOnCurrentEffectiveDate());
-    }
-
-    /**
-     * Returns the generation that is effective on the effective date currently set in the
-     * preferences.
-     */
-    public IIpsObjectGeneration getGenerationEffectiveOnCurrentEffectiveDate() {
-        GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        ITimedIpsObject object = (ITimedIpsObject)getIpsObject();
-        if (object == null) {
-            return null;
-        }
-        return object.getGenerationByEffectiveDate(workingDate);
     }
 
 }

@@ -101,7 +101,7 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement {
     public final static String MSGCODE_INVALID_TARGET = MSGCODE_PREFIX + "InvalidTarget"; //$NON-NLS-1$
 
     /**
-     * Returns the product component generation this configuration element belongs to.
+     * Returns the product component this configuration element belongs to.
      */
     public IProductCmpt getProductCmpt();
 

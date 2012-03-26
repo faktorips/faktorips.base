@@ -19,6 +19,8 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +45,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -118,6 +123,8 @@ import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
+import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
+import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorInput;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.internal.PropertyVisibleController;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
@@ -177,6 +184,12 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     public final static String PREFERENCE_ID_SUFFIX_SECTION_EXPANDED = "_expanded"; //$NON-NLS-1$
 
     /**
+     * Preference key for the current working date, stored as milliseconds since start of the Unix
+     * epoch.
+     */
+    public final static String PREFERENCE_ID_DEFAULT_VALIDITY_DATE = "defaultValidityDate"; //$NON-NLS-1$
+
+    /**
      * Setting key for the open ips object history
      */
     private static final String OPEN_IPS_OBJECT_HISTORY_SETTINGS = PLUGIN_ID + "OpenTypeHistory"; //$NON-NLS-1$
@@ -219,6 +232,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private List<IIpsDropAdapterProvider> productCmptDnDHandler;
 
+    private GregorianCalendar defaultValidityDate;
+
     /**
      * This method is for test purposes only.
      */
@@ -252,6 +267,18 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         ipsElementWorkbenchAdapterAdapterFactory = new IpsElementWorkbenchAdapterAdapterFactory();
         datatypeFormatter = new UIDatatypeFormatter();
         Platform.getAdapterManager().registerAdapters(ipsElementWorkbenchAdapterAdapterFactory, IIpsElement.class);
+        initDefaultValidityDate();
+    }
+
+    private void initDefaultValidityDate() {
+        defaultValidityDate = new GregorianCalendar();
+
+        IPreferencesService preferencesService = Platform.getPreferencesService();
+        String pluginId = getBundle().getSymbolicName();
+        long timeInMillis = preferencesService.getLong(pluginId, PREFERENCE_ID_DEFAULT_VALIDITY_DATE,
+                new GregorianCalendar().getTimeInMillis(), null);
+
+        defaultValidityDate.setTimeInMillis(timeInMillis);
     }
 
     private IPropertyVisibleController createPropertyVisibleController() {
@@ -370,11 +397,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Checks whether the given generation is editable, that means if the generation is valid in
-     * past the preference to edit these generations have to be enabled.
-     * <p>
-     * This method does not check if the given generation is active in respect to the current
-     * working date because this check is used in editors.
+     * Checks whether the given generation is editable.
      * <p>
      * This method is in ui module although it only uses information from core module. We put it in
      * here because the ips preferences should be an ui aspect and may be moved to ui.
@@ -387,9 +410,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         if (generation == null) {
             return false;
         }
-        return isEditable(generation.getIpsSrcFile())
-                && (!generation.isValidFromInPast() || IpsPlugin.getDefault().getIpsPreferences()
-                        .canEditRecentGeneration());
+        return isEditable(generation.getIpsSrcFile());
     }
 
     /**
@@ -626,6 +647,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * opened.
      */
     public IEditorPart openEditor(IFileEditorInput editorInput) {
+        if (editorInput == null) {
+            return null;
+        }
         try {
             IFile file = editorInput.getFile();
             IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
@@ -650,6 +674,37 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return null;
+    }
+
+    /**
+     * Opens an editor for the given generation.
+     * <p>
+     * If an editor for the given {@link IProductCmptGeneration} is already open, this opened editor
+     * is advised to show the given generation.
+     * <p>
+     * Note that this is different from the standard Eclipse behavior, where a new editor would be
+     * opened for each different generation.
+     * 
+     * @param productCmptGeneration the generation to open in an editor or to show in an already
+     *            opened editor
+     */
+    public IEditorPart openEditor(IProductCmptGeneration productCmptGeneration) {
+        if (productCmptGeneration == null) {
+            return null;
+        }
+        // Open the editor
+        IEditorPart openedEditor = openEditor(ProductCmptEditorInput.createWithGeneration(productCmptGeneration));
+        if (openedEditor == null) {
+            return null;
+        }
+        // Update shown generation if product component editor was opened
+        if (openedEditor instanceof ProductCmptEditor) {
+            ProductCmptEditor productCmptEditor = (ProductCmptEditor)openedEditor;
+            if (!productCmptEditor.getActiveGeneration().equals(productCmptGeneration)) {
+                productCmptEditor.setActiveGeneration(productCmptGeneration, true);
+            }
+        }
+        return openedEditor;
     }
 
     /**
@@ -1130,6 +1185,32 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         }
 
         return (IpsObjectEditor)activeEditor;
+    }
+
+    /**
+     * Returns the current default validity date which should be used as default date for the
+     * creation of new generations.
+     */
+    public GregorianCalendar getDefaultValidityDate() {
+        GregorianCalendar dateWithoutTime = new GregorianCalendar();
+        dateWithoutTime.setTimeInMillis(defaultValidityDate.getTimeInMillis());
+        dateWithoutTime.set(Calendar.SECOND, 0);
+        dateWithoutTime.set(Calendar.MINUTE, 0);
+        dateWithoutTime.set(Calendar.HOUR, 0);
+        dateWithoutTime.set(Calendar.HOUR_OF_DAY, 0);
+        dateWithoutTime.set(Calendar.MILLISECOND, 0);
+        return dateWithoutTime;
+    }
+
+    /**
+     * Sets the default validity date to be used as default date for the creation of new generations
+     * to the given date.
+     */
+    public void setDefaultValidityDate(GregorianCalendar workingDate) {
+        String pluginId = getBundle().getSymbolicName();
+        IEclipsePreferences node = new InstanceScope().getNode(pluginId);
+        node.putLong(PREFERENCE_ID_DEFAULT_VALIDITY_DATE, workingDate.getTimeInMillis());
+        defaultValidityDate.setTimeInMillis(workingDate.getTimeInMillis());
     }
 
     // ************************************************

@@ -134,11 +134,10 @@ public class DeepCopyWizard extends ResizableWizard {
                     .getExtension(IAdditionalDeepCopyWizardPage.EXTENSION_POINT_ID_DEEP_COPY_WIZARD);
             additionalPages = new ArrayList<IAdditionalDeepCopyWizardPage>();
             for (IExtension extension : extensions) {
-                additionalPages.addAll(ExtensionPoints
-                        .createExecutableExtensions(extension,
-                                IAdditionalDeepCopyWizardPage.CONFIG_ELEMENT_ID_ADDITIONAL_PAGE,
-                                IAdditionalDeepCopyWizardPage.CONFIG_ELEMENT_ATTRIBUTE_CLASS,
-                                IAdditionalDeepCopyWizardPage.class));
+                additionalPages.addAll(ExtensionPoints.createExecutableExtensions(extension,
+                        IAdditionalDeepCopyWizardPage.CONFIG_ELEMENT_ID_ADDITIONAL_PAGE,
+                        IAdditionalDeepCopyWizardPage.CONFIG_ELEMENT_ATTRIBUTE_CLASS,
+                        IAdditionalDeepCopyWizardPage.class));
             }
         }
         return additionalPages;
@@ -181,7 +180,7 @@ public class DeepCopyWizard extends ResizableWizard {
                 packRoot = null;
             }
         }
-        getPresentationModel().setNewValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+        getPresentationModel().setNewValidFrom(IpsUIPlugin.getDefault().getDefaultValidityDate());
 
         getPresentationModel().setTargetPackageRoot(packRoot);
         getPresentationModel().setTargetPackage(defaultPackage);
@@ -237,7 +236,7 @@ public class DeepCopyWizard extends ResizableWizard {
         }
 
         // Setting the new working date of the created product component
-        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(getPresentationModel().getNewValidFrom());
+        IpsUIPlugin.getDefault().setDefaultValidityDate(getPresentationModel().getNewValidFrom());
 
         // this implementation of this method should always return true since this causes the wizard
         // dialog to close.

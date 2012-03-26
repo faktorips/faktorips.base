@@ -319,8 +319,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     }
 
     /**
-     * Open the element in a new editor if the CTRL key was pressed durring selection. Subclasses
-     * are indent to overwrite this method if this functionality is available.
+     * Open the element in a new editor if the CTRL key was pressed during selection. Subclasses are
+     * indent to overwrite this method if this functionality is available.
      */
     protected void openLink() {
         // nothing do do
@@ -549,7 +549,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             boolean dirty = file.isDirty();
             Memento memento = ipsObject.newMemento();
             IIpsObjectPart newPart = newIpsPart();
-            EditDialog dialog = createEditDialog(newPart, getShell());
+            EditDialog dialog = createNewDialog(newPart, getShell());
             if (dialog == null) {
                 return;
             }
@@ -561,7 +561,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 }
                 editPartCanceled();
             } else if (dialog.getReturnCode() == Window.OK) {
-                editPartConfirmed();
+
+                newPartConfirmed(newPart);
             }
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -593,6 +594,24 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         }
 
         refresh();
+    }
+
+    /**
+     * Sets the newPart as active generation.The part was created by calling {@link #newIpsPart()}.
+     * The method will be called if the ok button in new dialog was pressed.
+     * 
+     * <p>
+     * 
+     * By default this method delegates to {@link #editPartConfirmed()}. Othervise only override
+     * {@link #editPartConfirmed()}.
+     * <p>
+     * 
+     * @param newPart The part was created by calling {@link #newIpsPart()}.
+     * 
+     * @since 3.7
+     */
+    protected void newPartConfirmed(IIpsObjectPart newPart) {
+        editPartConfirmed();
     }
 
     protected void editPartConfirmed() {
@@ -674,6 +693,21 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
      */
     protected void deleteIpsPart(IIpsObjectPart partToDelete) throws CoreException {
         partToDelete.delete();
+    }
+
+    /**
+     * Creates a dialog to edit a new part. The part was created by calling {@link #newIpsPart()}.
+     * <p>
+     * By default this method delegates to {@link #createEditDialog(IIpsObjectPart, Shell)}. If you
+     * want to create different dialogs or settings depending on new button or edit button was
+     * clicked, override this method. Othervise only override
+     * {@link #createEditDialog(IIpsObjectPart, Shell)}.
+     * <p>
+     * 
+     * @since 3.7
+     */
+    protected EditDialog createNewDialog(IIpsObjectPart part, Shell shell) {
+        return createEditDialog(part, shell);
     }
 
     /**

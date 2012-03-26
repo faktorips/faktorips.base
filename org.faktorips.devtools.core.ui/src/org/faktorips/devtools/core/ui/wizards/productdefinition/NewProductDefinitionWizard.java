@@ -198,12 +198,15 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
      * editor of the created object or you want to save some dialog settings here.
      */
     protected void afterFinishPerformed() {
-        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(getPmo().getEffectiveDate());
+        // Update default validity date
+        IpsUIPlugin.getDefault().setDefaultValidityDate(getPmo().getEffectiveDate());
+
         if (getPmo().isOpenEditor()) {
             IIpsSrcFile srcFile = getPmo().getIpsPackage().getIpsSrcFile(
                     getPmo().getIpsObjectType().getFileName(getPmo().getName()));
             IpsUIPlugin.getDefault().openEditor(srcFile);
         }
+
         safeDialogSettings(getDialogSettings());
     }
 

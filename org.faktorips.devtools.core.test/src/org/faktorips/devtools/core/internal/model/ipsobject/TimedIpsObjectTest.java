@@ -119,20 +119,75 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
         IIpsObjectGeneration gen2 = timedObject.newGeneration();
         gen2.setValidFrom(new GregorianCalendar(2005, 0, 1));
 
-        IIpsObjectGeneration genFound = timedObject.findGenerationEffectiveOn(new GregorianCalendar(2004, 0, 1));
+        IIpsObjectGeneration genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2004, 0, 1));
         assertEquals(gen1, genFound);
 
-        genFound = timedObject.findGenerationEffectiveOn(new GregorianCalendar(2004, 3, 1));
+        genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2004, 3, 1));
         assertEquals(gen1, genFound);
 
-        genFound = timedObject.findGenerationEffectiveOn(new GregorianCalendar(2005, 0, 1));
+        genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2005, 0, 1));
         assertEquals(gen2, genFound);
 
-        genFound = timedObject.findGenerationEffectiveOn(new GregorianCalendar(2003, 0, 1));
+        genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2003, 0, 1));
         assertNull(genFound);
 
-        genFound = timedObject.findGenerationEffectiveOn(null);
+        genFound = timedObject.getGenerationEffectiveOn(null);
         assertNull(genFound);
+    }
+
+    @Test
+    public void testGetGenerationEffectiveOn() {
+        IIpsObjectGeneration gen1 = timedObject.newGeneration();
+        gen1.setValidFrom(new GregorianCalendar(2004, 0, 1));
+        IIpsObjectGeneration gen2 = timedObject.newGeneration();
+        gen2.setValidFrom(new GregorianCalendar(2005, 0, 1));
+
+        IIpsObjectGeneration genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2004, 0, 1));
+        assertEquals(gen1, genFound);
+
+        genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2004, 3, 1));
+        assertEquals(gen1, genFound);
+
+        genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2005, 0, 1));
+        assertEquals(gen2, genFound);
+
+        genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2003, 0, 1));
+        assertNull(genFound);
+
+        genFound = timedObject.getGenerationEffectiveOn(null);
+        assertNull(genFound);
+    }
+
+    @Test
+    public void testGetBestMatchingGenerationEffectiveOn_ReturnFirstGenerationIfDateBeforeFirstGeneration() {
+        IIpsObjectGeneration firstGeneration = timedObject.newGeneration(new GregorianCalendar(2012, 0, 1));
+        timedObject.newGeneration(new GregorianCalendar(2012, 3, 1));
+
+        GregorianCalendar effectiveDate = new GregorianCalendar(2010, 0, 1);
+        assertNull(timedObject.getGenerationEffectiveOn(effectiveDate));
+        assertEquals(firstGeneration, timedObject.getBestMatchingGenerationEffectiveOn(effectiveDate));
+    }
+
+    @Test
+    public void testGetBestMatchingGenerationEffectiveOn_ReturnLatestGenerationIfDateAfterLatestGeneration() {
+        timedObject.newGeneration(new GregorianCalendar(2012, 0, 1));
+        IIpsObjectGeneration latestGeneration = timedObject.newGeneration(new GregorianCalendar(2012, 3, 1));
+        timedObject.setValidTo(new GregorianCalendar(2013, 0, 1));
+
+        GregorianCalendar effectiveDate = new GregorianCalendar(2050, 0, 1);
+        // TODO AW 22-03-2012: Bug in Faktor-IPS, should return null
+        // assertNull(timedObject.getGenerationEffectiveOn(effectiveDate));
+        assertEquals(latestGeneration, timedObject.getBestMatchingGenerationEffectiveOn(effectiveDate));
+    }
+
+    @Test
+    public void testGetBestMatchingGenerationEffectiveOn_ReturnEffectiveGenerationIfAvailable() {
+        timedObject.newGeneration(new GregorianCalendar(2011, 0, 1));
+        IIpsObjectGeneration generation = timedObject.newGeneration(new GregorianCalendar(2012, 0, 1));
+
+        GregorianCalendar effectiveDate = new GregorianCalendar(2014, 0, 1);
+        assertEquals(generation, timedObject.getGenerationEffectiveOn(effectiveDate));
+        assertEquals(generation, timedObject.getBestMatchingGenerationEffectiveOn(effectiveDate));
     }
 
     @Test

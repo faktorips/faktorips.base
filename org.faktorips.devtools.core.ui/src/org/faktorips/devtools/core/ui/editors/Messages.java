@@ -48,8 +48,6 @@ public class Messages extends NLS {
     public static String IpsPartsComposite_buttonUp;
     public static String IpsPartsComposite_buttonDown;
 
-    public static String TimedIpsObjectEditor_actualWorkingDate;
-
     public static String UnparsableFilePage_fileContentIsNotParsable;
 
     public static String UnreachableFilePage_msgUnreachableFile;

@@ -361,7 +361,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         }
         if (template instanceof ITimedIpsObject) {
             ITimedIpsObject copyProductCmpt = ((ITimedIpsObject)ipsSrcFile.getIpsObject());
-            IIpsObjectGeneration generationEffectiveOn = copyProductCmpt.findGenerationEffectiveOn(oldDate);
+            IIpsObjectGeneration generationEffectiveOn = copyProductCmpt.getGenerationEffectiveOn(oldDate);
             if (generationEffectiveOn == null) {
                 generationEffectiveOn = copyProductCmpt.getFirstGeneration();
             }

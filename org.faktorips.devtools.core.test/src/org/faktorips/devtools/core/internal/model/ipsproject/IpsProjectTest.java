@@ -1404,7 +1404,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         genNoref.setValidFrom(cal);
         genTobereferenced.setValidFrom(cal);
         gen1.newLink("xxx").setTarget(tobereferenced.getQualifiedName());
-        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(cal);
 
         result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedNameType());
         assertEquals(1, result.length);

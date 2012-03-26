@@ -509,8 +509,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IAttributeValue attributeValue1 = newProductCmpt.getAttributeValue(newAttribute.getName());
         assertNull(attributeValue1);
 
-        IAttributeValue attributeValue2 = ((IProductCmptGeneration)newProductCmpt.getFirstGeneration())
-                .getAttributeValue(newAttribute.getName());
+        IAttributeValue attributeValue2 = newProductCmpt.getFirstGeneration().getAttributeValue(newAttribute.getName());
         assertNotNull(attributeValue2);
 
         assertNotSame(attributeValue.getId().intern(), attributeValue2.getId().intern());
@@ -682,7 +681,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void returnLatestGenerationNull() {
+    public void testGetLatestProductCmptGeneration() {
         GregorianCalendar today = new GregorianCalendar();
         today = new GregorianCalendar(today.get(Calendar.YEAR), today.get(Calendar.MONTH) + 1,
                 today.get(Calendar.DAY_OF_MONTH));

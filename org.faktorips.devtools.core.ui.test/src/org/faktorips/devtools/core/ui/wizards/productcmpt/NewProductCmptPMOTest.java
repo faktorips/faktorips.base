@@ -15,15 +15,20 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
@@ -33,21 +38,24 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.commands.NewResourceNameValidator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class NewProductCmptPMOTest {
+public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
 
     private static final String PROJECT_NAME = "projectName";
     private SingletonMockHelper singletonMockHelper;
     private IIpsModel ipsModel;
 
+    @Override
     @Before
     public void setUp() {
         IpsPlugin ipsPlugin = mock(IpsPlugin.class);
@@ -57,6 +65,205 @@ public class NewProductCmptPMOTest {
         when(ipsPlugin.getIpsModel()).thenReturn(ipsModel);
         IpsPreferences preferences = mock(IpsPreferences.class);
         when(ipsPlugin.getIpsPreferences()).thenReturn(preferences);
+    }
+
+    @Test
+    public void testIsFirstPageNeeded_NotNeededWhenAddingToAssociation() {
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        pmo.setAddToAssociation(mock(IProductCmptGeneration.class), mock(IProductCmptTypeAssociation.class));
+
+        assertFalse(pmo.isFirstPageNeeded());
+    }
+
+    @Test
+    public void testIsFirstPageNeeded_NotNeededWhenCopyingValidProductCmpt() throws CoreException {
+        singletonMockHelper.reset();
+
+        IIpsProject ipsProject = newIpsProject();
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductCmptType");
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "ProductCmpt");
+
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        pmo.setIpsProject(ipsProject);
+        pmo.setCopyProductCmpt(productCmpt);
+
+        assertFalse(pmo.isFirstPageNeeded());
+    }
+
+    @Test
+    public void testIsFirstPageNeeded_NeededWhenNeitherCopyingProductCmptNorAddingToAssociation() {
+        assertTrue(new NewProductCmptPMO().isFirstPageNeeded());
+    }
+
+    @Test
+    public void testIsFirstPageNeeded_NeededWhenCopyingProductCmptButTypeNotFound() throws CoreException {
+        singletonMockHelper.reset();
+
+        IIpsProject ipsProject = newIpsProject();
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductCmptType");
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "ProductCmpt");
+        productCmpt.setProductCmptType("notExistingType");
+
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        pmo.setIpsProject(ipsProject);
+        pmo.setCopyProductCmpt(productCmpt);
+
+        assertTrue(pmo.isFirstPageNeeded());
+    }
+
+    @Test
+    public void testGetSubtypes_OnlyShowSelectedTypeWhenCopyingValidProductCmpt() throws CoreException {
+        singletonMockHelper.reset();
+
+        IIpsProject ipsProject = newIpsProject();
+        IProductCmptType baseType = newProductCmptType(ipsProject, "BaseType");
+        baseType.setAbstract(true);
+        IProductCmptType productCmptType1 = newProductCmptType(baseType, "ProductCmptType1");
+        IProductCmptType productCmptType2 = newProductCmptType(baseType, "ProductCmptType2");
+        IProductCmpt productCmpt = newProductCmpt(productCmptType1, "ProductCmpt");
+
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        pmo.setIpsProject(ipsProject);
+        pmo.setCopyProductCmpt(productCmpt);
+
+        assertTrue(pmo.getSubtypes().contains(productCmptType1));
+        assertFalse(pmo.getSubtypes().contains(productCmptType2));
+        assertEquals(1, pmo.getSubtypes().size());
+    }
+
+    @Test
+    public void testGetSubtypes_ShowAllSubtypesWhenCopyingProductCmptForWhichTypeIsNotFound() throws CoreException {
+        singletonMockHelper.reset();
+
+        IIpsProject ipsProject = newIpsProject();
+        IProductCmptType baseType = newProductCmptType(ipsProject, "BaseType");
+        baseType.setAbstract(true);
+        IProductCmptType productCmptType1 = newProductCmptType(baseType, "ProductCmptType1");
+        IProductCmptType productCmptType2 = newProductCmptType(baseType, "ProductCmptType2");
+        IProductCmpt productCmpt = newProductCmpt(productCmptType1, "ProductCmpt");
+        productCmpt.setProductCmptType("notExistingType");
+
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        pmo.setIpsProject(ipsProject);
+        pmo.setCopyProductCmpt(productCmpt);
+        pmo.setSelectedBaseType(baseType);
+
+        assertTrue(pmo.getSubtypes().contains(productCmptType1));
+        assertTrue(pmo.getSubtypes().contains(productCmptType2));
+        assertEquals(2, pmo.getSubtypes().size());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testSetCopyProductCmpt_IpsProjectNotSet() {
+        new NewProductCmptPMO().setCopyProductCmpt(mock(IProductCmpt.class));
+    }
+
+    @Test
+    public void testSetCopyProductCmpt() throws CoreException {
+        singletonMockHelper.reset();
+
+        // Create a small test model
+        IIpsProject ipsProject = newIpsProject();
+        IProductCmptType layerSupertype = newProductCmptType(ipsProject, "LayerSupertype");
+        layerSupertype.setLayerSupertype(true);
+        IProductCmptType baseType = newProductCmptType(ipsProject, "BaseType");
+        baseType.setSupertype(layerSupertype.getQualifiedName());
+        IProductCmptType concreteType = newProductCmptType(ipsProject, "ConcreteType");
+        concreteType.setSupertype(baseType.getQualifiedName());
+
+        // Create the product component to copy
+        IProductCmpt productCmptToCopy = newProductCmpt(concreteType, "ProductToCopy");
+
+        // Configure PMO to copy product component
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        pmo.setIpsProject(ipsProject);
+        pmo.setCopyProductCmpt(productCmptToCopy);
+
+        // Base product component type and product component type should be selected accordingly
+        assertEquals(baseType, pmo.getSelectedBaseType());
+        assertEquals(concreteType, pmo.getSelectedType());
+        assertTrue(pmo.isCopyMode());
+        assertTrue(pmo.isCopyValidMode());
+        assertEquals(productCmptToCopy, pmo.getCopyProductCmpt());
+    }
+
+    @Test
+    public void testSetCopyProductCmpt_ProductCmptTypeIsNull() throws CoreException {
+        singletonMockHelper.reset();
+
+        IIpsProject ipsProject = newIpsProject();
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductCmptType");
+        IProductCmpt productCmptToCopy = newProductCmpt(productCmptType, "ProductToCopy");
+        productCmptToCopy.setProductCmptType("notExistent");
+
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        pmo.setIpsProject(ipsProject);
+        pmo.setCopyProductCmpt(productCmptToCopy);
+
+        assertTrue(pmo.isCopyMode());
+        assertFalse(pmo.isCopyValidMode());
+        assertEquals(productCmptToCopy, pmo.getCopyProductCmpt());
+
+        assertNull(pmo.getSelectedBaseType());
+        assertNull(pmo.getSelectedType());
+        assertTrue(pmo.getBaseTypes().contains(productCmptType));
+        assertEquals(1, pmo.getBaseTypes().size());
+    }
+
+    @Test
+    public void testSetCopyProductCmpt_InitializeNameWithValidResourceName() throws CoreException {
+        singletonMockHelper.reset();
+
+        IIpsProject ipsProject = newIpsProject();
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductCmptType");
+        IProductCmpt productCmptToCopy = newProductCmpt(productCmptType, "ProductToCopy");
+        productCmptToCopy.setProductCmptType("notExistent");
+        productCmptToCopy.getIpsSrcFile().save(true, null);
+
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        pmo.setIpsProject(ipsProject);
+        pmo.setCopyProductCmpt(productCmptToCopy);
+
+        IPath targetPath = productCmptToCopy.getIpsPackageFragment().getCorrespondingResource().getFullPath();
+        NewResourceNameValidator resourceNameValidator = new NewResourceNameValidator(targetPath, IResource.FILE,
+                '.' + IpsObjectType.PRODUCT_CMPT.getFileExtension(), productCmptToCopy.getIpsSrcFile());
+        assertEquals(resourceNameValidator.getValidResourceName(productCmptToCopy.getName()), pmo.getName());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * An {@link IProductCmpt} is copied, but the user selects a different target
+     * {@link IIpsProject}.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The runtime id should be updated according to the {@link IProductCmptNamingStrategy} of the
+     * target {@link IIpsProject}.
+     */
+    @Test
+    public void testSetIpsProject_UpdateRuntimeId() throws CoreException {
+        singletonMockHelper.reset();
+
+        IIpsProject ipsProject = newIpsProject();
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "Product");
+
+        NewProductCmptPMO pmo = new NewProductCmptPMO();
+        pmo.setIpsProject(ipsProject);
+        pmo.setCopyProductCmpt(productCmpt);
+
+        IIpsProject otherIpsProject = mock(IIpsProject.class);
+        IIpsPackageFragmentRoot packageRoot = mock(IIpsPackageFragmentRoot.class);
+        when(otherIpsProject.getSourceIpsPackageFragmentRoots()).thenReturn(
+                new IIpsPackageFragmentRoot[] { packageRoot });
+        when(otherIpsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE)).thenReturn(new IIpsSrcFile[0]);
+        IProductCmptNamingStrategy productCmptNamingStrategy = mock(IProductCmptNamingStrategy.class);
+        when(otherIpsProject.getProductCmptNamingStrategy()).thenReturn(productCmptNamingStrategy);
+        when(productCmptNamingStrategy.getUniqueRuntimeId(any(IIpsProject.class), anyString())).thenReturn(
+                "Foo_Product");
+
+        pmo.setIpsProject(otherIpsProject);
+
+        assertEquals("Foo_Product", pmo.getRuntimeId());
     }
 
     @Test
@@ -264,18 +471,10 @@ public class NewProductCmptPMOTest {
         assertTrue(pmo.isAddToMode());
     }
 
+    @Override
     @After
     public void tearDown() {
         singletonMockHelper.reset();
-    }
-
-    @Test
-    public void testSetPackageRoot() {
-
-    }
-
-    @Test
-    public void testInitDefaults() {
     }
 
 }

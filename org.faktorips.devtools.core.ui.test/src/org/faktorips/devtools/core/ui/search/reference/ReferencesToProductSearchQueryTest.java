@@ -28,8 +28,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.ui.search.reference.ReferenceSearchResult;
-import org.faktorips.devtools.core.ui.search.reference.ReferencesToProductSearchQuery;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,10 +67,6 @@ public class ReferencesToProductSearchQueryTest extends AbstractIpsPluginTest {
         relation3.setTarget(prodCmptReferenced.getQualifiedName());
 
         prodCmptNoRef = newProductCmpt(root, "TestProductComponentNoRef");
-
-        calendar = (GregorianCalendar)Calendar.getInstance();
-        calendar.add(Calendar.DATE, 2);
-        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(calendar);
     }
 
     @Test

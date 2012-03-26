@@ -61,10 +61,6 @@ public class Messages extends NLS {
 
     public static String GenerationSelectionDialog_title;
 
-    public static String GenerationsSection_validFrom;
-
-    public static String GenerationsSection_validFromInPast;
-
     public static String PropertiesPage_relations;
 
     public static String PropertiesPage_noRelationsDefined;
@@ -100,16 +96,6 @@ public class Messages extends NLS {
     public static String RelationsLabelProvider_undefined;
 
     public static String ProductCmptEditor_title_GenerationMissmatch;
-
-    public static String GenerationsSection_titleShowGeneration;
-
-    public static String GenerationsSection_msgShowGeneration;
-
-    public static String GenerationsSection_buttonKeepEffectiveDate;
-
-    public static String GenerationsSection_buttonChangeEffectiveDate;
-
-    public static String GenerationsSection_buttonCancel;
 
     public static String CardinalityPanel_LabelDefaultCardinality;
 

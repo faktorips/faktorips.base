@@ -114,17 +114,7 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
         // adding data and behaviour
         getShell().setText(Messages.ProductCmptDeltaDialog_title);
 
-        if (isProductEditableInAllGenerations()) {
-            setMessage(Messages.ProductCmptDeltaDialog_message, IMessageProvider.INFORMATION);
-        } else {
-            // set warning to inform that recent generation could not be edit,
-            // but with this wizard recent generation could be changed
-            setMessage(
-                    Messages.ProductCmptDeltaDialog_message
-                            + "\n" //$NON-NLS-1$
-                            + NLS.bind(Messages.ProductCmptDeltaDialog_messageWarningRecentGenerationCouldBeChanged,
-                                    genTextPlural), IMessageProvider.WARNING);
-        }
+        setMessage(Messages.ProductCmptDeltaDialog_message, IMessageProvider.INFORMATION);
 
         tree.setContentProvider(new DeltaContentProvider());
         tree.setLabelProvider(new DeltaLabelProvider());
@@ -149,14 +139,6 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
         return root;
     }
 
-    /**
-     * Returns <code>true</code> if the user can edit recent generations, if recent generations
-     * couldn't be edit return <code>false</code>.
-     */
-    private boolean isProductEditableInAllGenerations() {
-        return IpsPlugin.getDefault().getIpsPreferences().canEditRecentGeneration();
-    }
-
     private void updateDeltaView() {
         TypedSelection<IFixDifferencesComposite> selection = new TypedSelection<IFixDifferencesComposite>(
                 IFixDifferencesComposite.class, productCmptGenTree.getSelection());
@@ -171,4 +153,5 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
     protected TreeViewer getTreeViewer() {
         return tree;
     }
+
 }

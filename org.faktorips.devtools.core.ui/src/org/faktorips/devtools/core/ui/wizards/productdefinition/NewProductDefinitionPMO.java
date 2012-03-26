@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 
 public abstract class NewProductDefinitionPMO extends PresentationModelObject {
@@ -54,7 +55,7 @@ public abstract class NewProductDefinitionPMO extends PresentationModelObject {
         super();
         // may be null in test cases :(
         if (IpsPlugin.getDefault() != null) {
-            effectiveDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
+            effectiveDate = IpsUIPlugin.getDefault().getDefaultValidityDate();
         }
     }
 

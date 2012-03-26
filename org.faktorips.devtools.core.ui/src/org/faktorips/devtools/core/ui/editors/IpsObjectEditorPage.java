@@ -97,7 +97,9 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
 
         ScrolledForm form = managedForm.getForm();
         form.setText(getIpsObjectEditor().getUniformPageTitle());
+        managedForm.getToolkit().decorateFormHeading(getManagedForm().getForm().getForm());
         createPageContent(form.getBody(), new UIToolkit(managedForm.getToolkit()));
+
         form.setExpandHorizontal(true);
         form.setExpandVertical(true);
         form.reflow(true);
@@ -138,6 +140,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * @param toolkit The layout conform toolkit to create widgets with.
      */
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
+
         IToolBarManager toolbarManager = getManagedForm().getForm().getToolBarManager();
         createToolbarActions(toolbarManager);
         getManagedForm().getForm().updateToolBar();

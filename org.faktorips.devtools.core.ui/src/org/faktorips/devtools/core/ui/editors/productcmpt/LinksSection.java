@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
@@ -36,6 +35,8 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -187,12 +188,20 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     private void openLink(IProductCmptLink link) {
-        IFile file = (IFile)link.getAdapter(IFile.class);
-        IpsUIPlugin.getDefault().openEditor(file);
+        try {
+            IProductCmpt targetProductCmpt = link.findTarget(link.getIpsProject());
+            if (targetProductCmpt != null) {
+                IProductCmptGeneration targetGeneration = targetProductCmpt
+                        .getBestMatchingGenerationEffectiveOn(getActiveGeneration().getValidFrom());
+                IpsUIPlugin.getDefault().openEditor(targetGeneration);
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     /**
-     * Creates the context menu for the treeview.
+     * Creates the context menu for the tree viewer.
      */
     private void buildContextMenu() {
         MenuManager menuManager = new MenuManager();
@@ -254,27 +263,6 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     /**
-     * Listener for updating the cardinality triggerd by the selection of another link.
-     */
-    private class SelectionChangedListener implements ISelectionChangedListener {
-
-        @Override
-        public void selectionChanged(SelectionChangedEvent event) {
-            Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
-
-            if (!isDataChangeable()) {
-                cardinalityPanel.setDataChangeable(false);
-            }
-            if (selected instanceof IProductCmptLink) {
-                cardinalityPanel.setProductCmptLinkToEdit((IProductCmptLink)selected);
-            } else {
-                cardinalityPanel.setProductCmptLinkToEdit(null);
-            }
-        }
-
-    }
-
-    /**
      * To get access to the informations which depend on the selections that can be made in this
      * section, only some parts can be disabled, other parts need special handling.
      */
@@ -296,6 +284,27 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     @Override
     public Viewer getViewer() {
         return treeViewer;
+    }
+
+    /**
+     * Listener for updating the cardinality triggerd by the selection of another link.
+     */
+    private class SelectionChangedListener implements ISelectionChangedListener {
+
+        @Override
+        public void selectionChanged(SelectionChangedEvent event) {
+            Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
+
+            if (!isDataChangeable()) {
+                cardinalityPanel.setDataChangeable(false);
+            }
+            if (selected instanceof IProductCmptLink) {
+                cardinalityPanel.setProductCmptLinkToEdit((IProductCmptLink)selected);
+            } else {
+                cardinalityPanel.setProductCmptLinkToEdit(null);
+            }
+        }
+
     }
 
 }

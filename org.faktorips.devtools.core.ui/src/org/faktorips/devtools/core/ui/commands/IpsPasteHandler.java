@@ -23,13 +23,11 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -48,7 +46,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -56,18 +53,14 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.ui.actions.Messages;
-import org.faktorips.devtools.core.ui.wizards.copyproductcmpt.CopyProductCmptWizard;
+import org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductCmptWizard;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.StringUtil;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 
 /**
  * A handler to paste IpsObjectPartContainer-objects from the clipboard into the model.
@@ -391,23 +384,15 @@ public class IpsPasteHandler extends IpsAbstractHandler {
             IIpsSrcFile sourceIpsSrcFile) {
 
         boolean dialogWasDisplayed = false;
-        Validator validator = new Validator(targetPath, resourceType, extension, sourceIpsSrcFile);
-        String suggestedName = nameWithOrWithoutExtension;
+        NewResourceNameValidator validator = new NewResourceNameValidator(targetPath, resourceType, extension,
+                sourceIpsSrcFile);
         int doCopy = Window.OK;
         boolean nameChangeRequired = validator.isValid(nameWithOrWithoutExtension) != null;
         if (nameChangeRequired) {
-            for (int count = 0; validator.isValid(suggestedName) != null; count++) {
-                if (count == 0) {
-                    suggestedName = Messages.IpsPasteAction_suggestedNamePrefixSimple + nameWithOrWithoutExtension;
-                } else {
-                    suggestedName = NLS.bind(Messages.IpsPasteAction_suggestedNamePrefixComplex, new Integer(count),
-                            nameWithOrWithoutExtension);
-                }
-            }
+            String suggestedName = validator.getValidResourceName(nameWithOrWithoutExtension);
             nameWithOrWithoutExtension = suggestedName;
 
-            // if force is true don't show dialog (for automated testing purposite force could be
-            // set to true)
+            // if force is true don't show dialog (could be true for automated testing purposes)
             if (!forceUseNameSuggestionIfFileExists) {
                 dialogWasDisplayed = true;
                 suggestedName += showExtension ? extension : ""; //$NON-NLS-1$
@@ -520,8 +505,10 @@ public class IpsPasteHandler extends IpsAbstractHandler {
     }
 
     private void copyProductCmptByWizard(IProductCmpt productCmpt, IResource target) {
-        CopyProductCmptWizard wizard = new CopyProductCmptWizard(productCmpt);
+        NewProductCmptWizard wizard = new NewProductCmptWizard();
         wizard.init(IpsPlugin.getDefault().getWorkbench(), new StructuredSelection(target));
+        wizard.setCopyProductCmpt(productCmpt);
+
         WizardDialog dialog = new WizardDialog(shell, wizard);
         dialog.open();
     }
@@ -545,57 +532,6 @@ public class IpsPasteHandler extends IpsAbstractHandler {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Validator for new resource name.
-     * 
-     * @author Thorsten Guenther
-     */
-    private class Validator implements IInputValidator {
-
-        IPath root;
-        String extension;
-        int resourceType;
-        private IIpsProjectNamingConventions namingConventions;
-        private IpsObjectType ipsObjectType;
-
-        public Validator(IPath root, int resourceType, String extension, IIpsSrcFile sourceIpsSrcFile) {
-            this.root = root;
-            this.extension = extension;
-            this.resourceType = resourceType;
-            if (sourceIpsSrcFile != null) {
-                namingConventions = sourceIpsSrcFile.getIpsProject().getNamingConventions();
-                ipsObjectType = sourceIpsSrcFile.getIpsObjectType();
-            }
-        }
-
-        @Override
-        public String isValid(String newText) {
-            IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
-            IResource test = null;
-            if (resourceType == IResource.FILE) {
-                if (namingConventions != null) {
-                    try {
-                        MessageList messageList = namingConventions.validateUnqualifiedIpsObjectName(ipsObjectType,
-                                newText);
-                        if (messageList.containsErrorMsg()) {
-                            return messageList.getFirstMessage(Message.ERROR).getText();
-                        }
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e.getMessage(), e);
-                    }
-                }
-                test = wsRoot.getFile(root.append(newText + extension));
-            } else if (resourceType == IResource.FOLDER) {
-                test = wsRoot.getFolder(root.append(newText));
-            }
-            if (test != null && test.exists()) {
-                return newText + extension + Messages.IpsPasteAction_msgFileAllreadyExists;
-            }
-
-            return null;
-        }
     }
 
 }

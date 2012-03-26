@@ -17,6 +17,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -45,20 +46,30 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
 
     private IProductCmptGeneration previous;
     private IProductCmptGeneration next;
+    private boolean newGenerationDialog = false;
 
     /**
-     * Creates a new dialog to edit a product cmpt generation
+     * Creates a new dialog to edit and create a product cmpt generation
      * 
      * @param generation The generation to edit
      * @param parentShell The shell to be used as parent for the dialog
+     * @param newGenerationDialog The flag indicates which the button in Editor was selected
+     *            (New=true,Edit=false)
+     * 
      */
-    public GenerationEditDialog(IProductCmptGeneration generation, Shell parentShell) {
+    public GenerationEditDialog(IProductCmptGeneration generation, Shell parentShell, boolean newGenerationDialog) {
         super(generation, parentShell, Messages.GenerationEditDialog_titleChangeValidFromDate, true);
 
         // we have to store previous and next here, because the evaulation of
         // previous and next depend on the valid-from date which we will modify...
         this.previous = (IProductCmptGeneration)generation.getPreviousByValidDate();
         this.next = (IProductCmptGeneration)generation.getNextByValidDate();
+        this.newGenerationDialog = newGenerationDialog;
+    }
+
+    @Override
+    public IProductCmptGeneration getIpsPart() {
+        return (IProductCmptGeneration)super.getIpsPart();
     }
 
     @Override
@@ -80,7 +91,6 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
         // Text date = getToolkit().createText(workArea);
         DateControl dateControl = new DateControl(workArea, getToolkit());
         Text textControl = dateControl.getTextControl();
-        textControl.addModifyListener(this);
 
         dateField = new FormattingTextField<GregorianCalendar>(textControl, GregorianCalendarFormat.newInstance());
         return c;
@@ -90,13 +100,20 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
     protected void connectToModel() {
         super.connectToModel();
         uiController.add(dateField, IProductCmptGeneration.PROPERTY_VALID_FROM);
+        ((Text)dateField.getControl()).addModifyListener(this);
     }
 
     @Override
     public void modifyText(ModifyEvent e) {
-        // We need to validate here and "by hand" because this validation is not neccessary
+        // We need to validate here and "by hand" because this validation is not necessary
         // to be done during normal validation of a generation.
         GregorianCalendar value = dateField.getValue();
+
+        // Clear message area
+        setMessage(null);
+        setErrorMessage(null);
+        boolean exsistErrorMessage = true;
+
         if (value == null) {
             DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
             String formatDescription = format.format(new GregorianCalendar().getTime());
@@ -104,21 +121,23 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
                 formatDescription = ((SimpleDateFormat)format).toPattern();
             }
             super.setErrorMessage(Messages.GenerationEditDialog_msgInvalidFormat + formatDescription);
-            getButton(OK).setEnabled(false);
-        } else if (previous != null && !value.after(previous.getValidFrom())) {
+            exsistErrorMessage = false;
+
+        } else if (previous != null && !value.after(previous.getValidFrom()) && !newGenerationDialog) {
             String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToEarly, IpsPlugin.getDefault()
                     .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
-            super.setErrorMessage(msg);
-            getButton(OK).setEnabled(false);
-        } else if (next != null && !next.getValidFrom().after(value)) {
+            super.setMessage(msg, IMessageProvider.WARNING);
+            exsistErrorMessage = true;
+
+        } else if (next != null && !next.getValidFrom().after(value) && !newGenerationDialog) {
             String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToLate, IpsPlugin.getDefault()
                     .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
-            super.setErrorMessage(msg);
-            getButton(OK).setEnabled(false);
-        } else {
-            super.setErrorMessage(null);
-            getButton(OK).setEnabled(true);
+            super.setMessage(msg, IMessageProvider.WARNING);
+            exsistErrorMessage = true;
+
         }
+        getButton(OK).setEnabled(exsistErrorMessage);
+
     }
 
 }

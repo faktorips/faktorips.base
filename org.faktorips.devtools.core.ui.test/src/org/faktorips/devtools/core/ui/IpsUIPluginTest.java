@@ -18,6 +18,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +27,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestConfigurationElement;
@@ -156,6 +160,55 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
         resultFactory = IpsUIPlugin.getDefault().getTableFormatPropertiesControlFactory(tableFormatWithoutFactory);
         assertNull(resultFactory);
+    }
+
+    @Test
+    public void testGetDefaultValidityDate() {
+        GregorianCalendar date = new GregorianCalendar(1986, 4, 16);
+        IpsUIPlugin.getDefault().setDefaultValidityDate(date);
+
+        assertEquals(date, IpsUIPlugin.getDefault().getDefaultValidityDate());
+    }
+
+    @Test
+    public void testGetDefaultValidityDate_ReturnSameDateTwiceIfNotSet() throws InterruptedException {
+        clearDefaultValidityDate();
+
+        GregorianCalendar defaultValidityDate = IpsUIPlugin.getDefault().getDefaultValidityDate();
+        Thread.sleep(5);
+
+        assertEquals(defaultValidityDate, defaultValidityDate);
+    }
+
+    @Test
+    public void testGetDefaultValidityDate_TimeIsSetToZero() {
+        clearDefaultValidityDate();
+
+        GregorianCalendar defaultValidityDate = IpsUIPlugin.getDefault().getDefaultValidityDate();
+        assertEquals(0, defaultValidityDate.get(Calendar.SECOND));
+        assertEquals(0, defaultValidityDate.get(Calendar.MINUTE));
+        assertEquals(0, defaultValidityDate.get(Calendar.HOUR));
+        assertEquals(0, defaultValidityDate.get(Calendar.HOUR_OF_DAY));
+        assertEquals(0, defaultValidityDate.get(Calendar.MILLISECOND));
+    }
+
+    @Test
+    public void testGetDefaultValidityDate_TimeIsSetToZeroEvenAfterDefaultValidityHasBeenChanged() {
+        GregorianCalendar now = new GregorianCalendar();
+        IpsUIPlugin.getDefault().setDefaultValidityDate(now);
+
+        GregorianCalendar defaultValidityDate = IpsUIPlugin.getDefault().getDefaultValidityDate();
+        assertEquals(0, defaultValidityDate.get(Calendar.SECOND));
+        assertEquals(0, defaultValidityDate.get(Calendar.MINUTE));
+        assertEquals(0, defaultValidityDate.get(Calendar.HOUR));
+        assertEquals(0, defaultValidityDate.get(Calendar.HOUR_OF_DAY));
+        assertEquals(0, defaultValidityDate.get(Calendar.MILLISECOND));
+    }
+
+    private void clearDefaultValidityDate() {
+        String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
+        IEclipsePreferences node = new InstanceScope().getNode(pluginId);
+        node.remove(IpsUIPlugin.PREFERENCE_ID_DEFAULT_VALIDITY_DATE);
     }
 
     // TODO test cases for loading extension points
