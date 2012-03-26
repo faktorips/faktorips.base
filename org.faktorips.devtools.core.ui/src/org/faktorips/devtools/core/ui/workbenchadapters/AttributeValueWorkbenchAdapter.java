@@ -47,13 +47,13 @@ public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapte
 
         String caption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(attributeValue);
 
-        String value = attributeValue.getValue();
+        String value = attributeValue.getPropertyValue();
         try {
             // try to get formatted value
             IProductCmptTypeAttribute attribute = attributeValue.findAttribute(attributeValue.getIpsProject());
             if (attribute != null) {
                 value = IpsUIPlugin.getDefault().getDatatypeFormatter()
-                        .formatValue(attribute.findDatatype(attributeValue.getIpsProject()), attributeValue.getValue());
+                        .formatValue(attribute.findDatatype(attributeValue.getIpsProject()), value);
             }
         } catch (CoreException e) {
             // ignore exceptions because we log a bunch of these if there is any

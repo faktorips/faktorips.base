@@ -20,6 +20,7 @@ import java.util.Locale;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
+import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -73,7 +74,8 @@ public class LanguageSupportTest extends AbstractHtmlExportPluginTest {
         attribute.setName(name);
 
         IAttributeValue value = new AttributeValue((IProductCmptGeneration)productCmpt.newGeneration(), "xxx",
-                attribute.getName(), "yxz");
+                attribute.getName());
+        value.setValueHolder(new SingleValueHolder(value, "yxz"));
         assertEquals(name, context.getCaption(value));
 
         context.setDocumentationLocale(Locale.GERMAN);

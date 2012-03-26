@@ -13,16 +13,21 @@
 
 package org.faktorips.devtools.core.model.type;
 
+import java.util.ArrayList;
+
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.internal.model.productcmpt.Formula;
+import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.TableContentUsage;
 import org.faktorips.devtools.core.internal.model.productcmpt.ValidationRuleConfig;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -30,6 +35,7 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
@@ -66,10 +72,38 @@ public enum ProductCmptPropertyType {
                 IProductCmptProperty property,
                 String partId) {
 
-            IAttributeValue attributeValue = new AttributeValue(container, partId,
+            AttributeValue attributeValue = new AttributeValue(container, partId,
                     property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
             IProductCmptTypeAttribute attribute = (IProductCmptTypeAttribute)property;
-            attributeValue.setValue(attribute != null ? attribute.getDefaultValue() : ""); //$NON-NLS-1$
+            AttributeValueType attributeValueType = AttributeValueType.getTypeFor(attribute);
+
+            String defaultStringValue;
+            if (attribute != null) {
+                defaultStringValue = attribute.getDefaultValue();
+            } else {
+                defaultStringValue = StringUtils.EMPTY;
+            }
+            // TODO the default value should also be a ValueHolder
+            Object defaultObject;
+            if (attributeValueType == AttributeValueType.MULTI_VALUE) {
+                SingleValueHolder defaultHolder = new SingleValueHolder(attributeValue, defaultStringValue);
+                ArrayList<SingleValueHolder> defaultList = new ArrayList<SingleValueHolder>();
+                defaultList.add(defaultHolder);
+                defaultObject = defaultList;
+            } else {
+                defaultObject = defaultStringValue;
+            }
+
+            IValueHolder<?> valueHolder = attributeValueType.newHolderInstance(attributeValue, defaultObject);
+
+            attributeValue.setValueHolderInternal(valueHolder);
+
+            // IAttributeValue attributeValue = new AttributeValue(container, partId,
+            //                    property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
+            // IProductCmptTypeAttribute attribute = (IProductCmptTypeAttribute)property;
+            // attributeValue.setValueHolder(new SingleValueHolder(attributeValue, attribute != null
+            // ? attribute
+            //                    .getDefaultValue() : "")); //$NON-NLS-1$
             return attributeValue;
         }
 

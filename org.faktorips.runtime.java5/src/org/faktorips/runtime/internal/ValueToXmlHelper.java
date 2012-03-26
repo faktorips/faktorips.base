@@ -14,16 +14,27 @@
 package org.faktorips.runtime.internal;
 
 import org.w3c.dom.CDATASection;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
- * Helper class to write values to xml and retrieve them from xml.
+ * Helper class to write values to XML and retrieve them from XML.
  * 
  * @author Jan Ortmann
  */
 public class ValueToXmlHelper {
+
+    private static final String XML_ELEMENT_DATA = "Data"; //$NON-NLS-1$
+    private static final String XML_ELEMENT_ENUM = "Enum"; //$NON-NLS-1$
+    private static final String XML_ELEMENT_STEP = "Step"; //$NON-NLS-1$
+    private static final String XML_ELEMENT_UPPER_BOUND = "UpperBound"; //$NON-NLS-1$
+    private static final String XML_ELEMENT_LOWER_BOUND = "LowerBound"; //$NON-NLS-1$
+    private static final String XML_ATTRIBUTE_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
+    private static final String XML_ELEMENT_RANGE = "Range"; //$NON-NLS-1$
+    public static final String XML_ATTRIBUTE_IS_NULL = "isNull"; //$NON-NLS-1$
+    public static final String XML_TAGNAME_VALUE = "Value"; //$NON-NLS-1$
 
     /**
      * Adds the value to the given xml element. Takes care of proper null handling. By value we mean
@@ -63,14 +74,23 @@ public class ValueToXmlHelper {
             Element el,
             String tagName,
             boolean useCDataSection) {
-        Element valueEl = el.getOwnerDocument().createElement(tagName);
+        Document ownerDocument = el.getOwnerDocument();
+        Element valueEl = createValueElement(value, tagName, ownerDocument, useCDataSection);
         el.appendChild(valueEl);
-        valueEl.setAttribute("isNull", value == null ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return valueEl;
+    }
+
+    public static Element createValueElement(String value,
+            String tagName,
+            Document ownerDocument,
+            boolean useCDataSection) {
+        Element valueEl = ownerDocument.createElement(tagName);
+        valueEl.setAttribute(XML_ATTRIBUTE_IS_NULL, value == null ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
         if (value != null) {
             if (useCDataSection) {
-                valueEl.appendChild(el.getOwnerDocument().createCDATASection(value));
+                valueEl.appendChild(ownerDocument.createCDATASection(value));
             } else {
-                valueEl.appendChild(el.getOwnerDocument().createTextNode(value));
+                valueEl.appendChild(ownerDocument.createTextNode(value));
             }
         }
         return valueEl;
@@ -123,7 +143,7 @@ public class ValueToXmlHelper {
      * @param valueEl The xml value element containing the value.
      */
     public final static String getValueFromElement(Element valueEl) {
-        if (Boolean.parseBoolean(valueEl.getAttribute("isNull"))) { //$NON-NLS-1$
+        if (Boolean.parseBoolean(valueEl.getAttribute(XML_ATTRIBUTE_IS_NULL))) {
             return null;
         }
         Text text = XmlUtil.getTextNode(valueEl);
@@ -147,14 +167,14 @@ public class ValueToXmlHelper {
         if (valueSetEl == null) {
             return null;
         }
-        Element rangeEl = XmlUtil.getFirstElement(valueSetEl, "Range");
+        Element rangeEl = XmlUtil.getFirstElement(valueSetEl, XML_ELEMENT_RANGE);
         if (rangeEl == null) {
             return null;
         }
-        boolean containsNull = Boolean.valueOf(rangeEl.getAttribute("containsNull")).booleanValue();
-        String lowerBound = getValueFromElement(rangeEl, "LowerBound");
-        String upperBound = getValueFromElement(rangeEl, "UpperBound");
-        String step = getValueFromElement(rangeEl, "Step");
+        boolean containsNull = Boolean.valueOf(rangeEl.getAttribute(XML_ATTRIBUTE_CONTAINS_NULL)).booleanValue();
+        String lowerBound = getValueFromElement(rangeEl, XML_ELEMENT_LOWER_BOUND);
+        String upperBound = getValueFromElement(rangeEl, XML_ELEMENT_UPPER_BOUND);
+        String step = getValueFromElement(rangeEl, XML_ELEMENT_STEP);
 
         return new Range(lowerBound, upperBound, step, containsNull);
     }
@@ -164,18 +184,18 @@ public class ValueToXmlHelper {
         if (valueSetEl == null) {
             return null;
         }
-        Element enumEl = XmlUtil.getFirstElement(valueSetEl, "Enum");
+        Element enumEl = XmlUtil.getFirstElement(valueSetEl, XML_ELEMENT_ENUM);
         if (enumEl == null) {
             return null;
         }
 
-        NodeList valueElements = enumEl.getElementsByTagName("Value");
+        NodeList valueElements = enumEl.getElementsByTagName(XML_TAGNAME_VALUE);
 
         String[] values = new String[valueElements.getLength()];
         boolean containsNull = false;
         for (int i = 0; i < valueElements.getLength(); i++) {
             Element valueEl = (Element)valueElements.item(i);
-            values[i] = getValueFromElement(valueEl, "Data");
+            values[i] = getValueFromElement(valueEl, XML_ELEMENT_DATA);
             if (values[i] == null) {
                 containsNull = true;
             }

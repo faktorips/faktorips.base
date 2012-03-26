@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -27,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.type.AttributeProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -45,9 +47,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     private IValueSet valueSet;
 
-    private boolean multiValueAttribute = false;
-
-    private boolean changingOverTime = true;
+    private EnumSet<AttributeProperty> properties = EnumSet.of(AttributeProperty.CHANGING_OVER_TIME);
 
     public ProductCmptTypeAttribute(IProductCmptType parent, String id) {
         super(parent, id);
@@ -62,26 +62,26 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
+        // setting defaults
+        properties = EnumSet.of(AttributeProperty.CHANGING_OVER_TIME);
+
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
             String changingOverTimeAttribute = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
-            changingOverTime = Boolean.parseBoolean(changingOverTimeAttribute);
-        } else {
-            // compatibility to not yet migrated files
-            changingOverTime = true;
+            setProperty(AttributeProperty.CHANGING_OVER_TIME, Boolean.parseBoolean(changingOverTimeAttribute));
         }
         if (element.hasAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE)) {
             String multiValueAttributeElement = element.getAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE);
-            multiValueAttribute = Boolean.parseBoolean(multiValueAttributeElement);
-        } else {
-            multiValueAttribute = false;
+            setProperty(AttributeProperty.MULTI_VALUE_ATTRIBUTE, Boolean.parseBoolean(multiValueAttributeElement));
         }
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(changingOverTime));
-        element.setAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE, String.valueOf(multiValueAttribute));
+        element.setAttribute(PROPERTY_CHANGING_OVER_TIME,
+                "" + properties.contains(AttributeProperty.CHANGING_OVER_TIME)); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE,
+                "" + properties.contains(AttributeProperty.MULTI_VALUE_ATTRIBUTE)); //$NON-NLS-1$
     }
 
     @Override
@@ -156,27 +156,39 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         valueChanged(oldset, valueSet);
     }
 
+    private void setProperty(AttributeProperty property, boolean state) {
+        if (state) {
+            properties.add(property);
+        } else {
+            properties.remove(property);
+        }
+    }
+
+    private boolean isPropertySet(AttributeProperty property) {
+        return properties.contains(property);
+    }
+
     @Override
     public void setChangingOverTime(boolean changesOverTime) {
-        boolean oldValue = this.changingOverTime;
-        this.changingOverTime = changesOverTime;
+        boolean oldValue = isPropertySet(AttributeProperty.CHANGING_OVER_TIME);
+        setProperty(AttributeProperty.CHANGING_OVER_TIME, changesOverTime);
         valueChanged(oldValue, changesOverTime);
     }
 
     @Override
     public boolean isChangingOverTime() {
-        return changingOverTime;
+        return isPropertySet(AttributeProperty.CHANGING_OVER_TIME);
     }
 
     @Override
     public boolean isMultiValueAttribute() {
-        return multiValueAttribute;
+        return isPropertySet(AttributeProperty.MULTI_VALUE_ATTRIBUTE);
     }
 
     @Override
     public void setMultiValueAttribute(boolean multiValueAttribute) {
-        boolean oldValue = this.multiValueAttribute;
-        this.multiValueAttribute = multiValueAttribute;
+        boolean oldValue = isPropertySet(AttributeProperty.MULTI_VALUE_ATTRIBUTE);
+        setProperty(AttributeProperty.MULTI_VALUE_ATTRIBUTE, multiValueAttribute);
         valueChanged(oldValue, multiValueAttribute);
     }
 

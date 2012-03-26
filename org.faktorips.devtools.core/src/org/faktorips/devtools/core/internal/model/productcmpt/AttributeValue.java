@@ -19,18 +19,18 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -46,21 +46,17 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     public final static String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
 
     private String attribute;
-    private String value;
+
+    private IValueHolder<?> valueHolder;
 
     public AttributeValue(IPropertyValueContainer parent, String id) {
-        this(parent, id, "", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        this(parent, id, ""); //$NON-NLS-1$ 
     }
 
-    public AttributeValue(IPropertyValueContainer parent, String id, String attributeName) {
-        this(parent, id, attributeName, ""); //$NON-NLS-1$
-    }
-
-    public AttributeValue(IPropertyValueContainer parent, String id, String attribute, String value) {
+    public AttributeValue(IPropertyValueContainer parent, String id, String attribute) {
         super(parent, id);
         ArgumentCheck.notNull(attribute);
         this.attribute = attribute;
-        this.value = value;
     }
 
     @Override
@@ -87,15 +83,39 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
+    @Deprecated
     public String getValue() {
-        return value;
+        return valueHolder.getStringValue();
     }
 
     @Override
-    public void setValue(String newValue) {
-        String oldValue = value;
-        value = newValue;
+    @Deprecated
+    public void setValue(String value) {
+        if (value == null) {
+            valueHolder = null;
+        }
+        if (valueHolder == null) {
+            valueHolder = new SingleValueHolder(this, value);
+        } else {
+            this.valueHolder.setStringValue(value);
+        }
+        objectHasChanged();
+    }
+
+    @Override
+    public IValueHolder<?> getValueHolder() {
+        return valueHolder;
+    }
+
+    @Override
+    public void setValueHolder(IValueHolder<?> newValue) {
+        IValueHolder<?> oldValue = valueHolder;
+        setValueHolderInternal(newValue);
         valueChanged(oldValue, newValue);
+    }
+
+    public void setValueHolderInternal(IValueHolder<?> newValue) {
+        valueHolder = newValue;
     }
 
     @Override
@@ -115,7 +135,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public String getPropertyValue() {
-        return value;
+        return valueHolder.getStringValue();
     }
 
     @Override
@@ -131,14 +151,19 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
-        value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
+        Element valueEl = XmlUtil.getFirstElement(element, ValueToXmlHelper.XML_TAGNAME_VALUE);
+        valueHolder = AbstractValueHolder.initValueHolder(this, valueEl);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_ATTRIBUTE, attribute);
-        ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
+        Document ownerDocument = element.getOwnerDocument();
+        if (valueHolder != null) {
+            Element valueElement = valueHolder.toXml(ownerDocument);
+            element.appendChild(valueElement);
+        }
     }
 
     @Override
@@ -155,17 +180,19 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
             list.add(new Message(MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_ATTRIBUTE));
             return;
         }
-        if (!ValidationUtils.checkValue(attr.getDatatype(), value, this, PROPERTY_VALUE, list)) {
-            return;
-        }
-        if (!attr.getValueSet().containsValue(value, ipsProject)) {
+        if (attr.isMultiValueAttribute() != (valueHolder instanceof MultiValueHolder)) {
             String text;
-            if (attr.getValueSet().getValueSetType() == ValueSetType.RANGE) {
-                text = NLS.bind(Messages.AttributeValue_AllowedValuesAre, value, attr.getValueSet().toShortString());
+            String hint = Messages.AttributeValue_msg_validateValueHolder_hint;
+            if (attr.isMultiValueAttribute()) {
+                text = Messages.AttributeValue_msg_validateValueHolder_multiValue + hint;
             } else {
-                text = NLS.bind(Messages.AttributeValue_ValueNotAllowed, value);
+                text = Messages.AttributeValue_msg_validateValueHolder_singleValue + hint;
             }
-            list.add(new Message(MSGCODE_VALUE_NOT_IN_SET, text, Message.ERROR, this, PROPERTY_VALUE));
+            list.add(new Message(MSGCODE_INVALID_VALUE_HOLDER, text, Message.ERROR, this, PROPERTY_ATTRIBUTE));
+        }
+        if (valueHolder != null) {
+            MessageList validateValue = valueHolder.validate(ipsProject);
+            list.add(validateValue);
         }
     }
 
@@ -193,7 +220,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public String toString() {
-        return attribute + "=" + value; //$NON-NLS-1$
+        return attribute + "=" + valueHolder.getStringValue(); //$NON-NLS-1$
     }
 
 }
