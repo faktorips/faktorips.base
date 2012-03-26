@@ -23,8 +23,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -50,12 +48,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
      */
     private final static String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType"; //$NON-NLS-1$
 
-    /**
-     * Setting key for user's decision not to choose a new product component type, because the old
-     * can't be found.
-     */
-    private final static String SETTING_ACTIVE_GENERATION_MANUALLY_SET = "activeGenerationManuallySet"; //$NON-NLS-1$
-
     private GenerationPropertiesPage generationPropertiesPage;
 
     @Override
@@ -64,7 +56,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         addPage(generationPropertiesPage);
         addPage(new ProductCmptPropertiesPage(this));
         if (getActiveGeneration() == null) {
-            setActiveGeneration(getInitialGeneration(), true);
+            setActiveGeneration(getInitialGeneration());
         }
     }
 
@@ -147,14 +139,11 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             super.propertyChange(event);
             return;
         }
-        if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
-            getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
-            // refresh is done in superclass
-        }
         super.propertyChange(event);
     }
 
-    public void setActiveGeneration(IIpsObjectGeneration generation, boolean manuallySet) {
+    @Override
+    public void setActiveGeneration(IIpsObjectGeneration generation) {
         if (generation == null) {
             return;
         }
@@ -165,7 +154,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             }
             refresh();
         }
-        getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, manuallySet);
     }
 
     @Override
@@ -196,7 +184,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         if (generation == null) {
             generation = getProductCmpt().getFirstGeneration();
         }
-        setActiveGeneration(generation, false);
+        setActiveGeneration(generation);
     }
 
     @Override
@@ -210,16 +198,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         IFixDifferencesComposite deltas = getProductCmpt().computeDeltaToModel(getIpsProject());
 
         return new ProductCmptDeltaDialog(deltas, getSite().getShell());
-    }
-
-    @Override
-    public void contentsChanged(final ContentChangeEvent event) {
-        if (event.getIpsSrcFile().equals(getIpsSrcFile())) {
-            if (event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
-                getSettings().put(getIpsSrcFile(), SETTING_ACTIVE_GENERATION_MANUALLY_SET, false);
-            }
-        }
-        super.contentsChanged(event);
     }
 
     @Override

@@ -701,7 +701,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         if (openedEditor instanceof ProductCmptEditor) {
             ProductCmptEditor productCmptEditor = (ProductCmptEditor)openedEditor;
             if (!productCmptEditor.getActiveGeneration().equals(productCmptGeneration)) {
-                productCmptEditor.setActiveGeneration(productCmptGeneration, true);
+                productCmptEditor.setActiveGeneration(productCmptGeneration);
             }
         }
         return openedEditor;

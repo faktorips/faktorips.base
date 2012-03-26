@@ -89,7 +89,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
                 public void mouseDoubleClick(MouseEvent e) {
                     Object selected = ((IStructuredSelection)getViewer().getSelection()).getFirstElement();
                     if (selected instanceof IProductCmptGeneration) {
-                        page.getProductCmptEditor().setActiveGeneration((IProductCmptGeneration)selected, true);
+                        page.getProductCmptEditor().setActiveGeneration((IProductCmptGeneration)selected);
                     }
                 }
             });
@@ -126,7 +126,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
          */
         @Override
         protected void newPartConfirmed(IIpsObjectPart newPart) {
-            page.getProductCmptEditor().setActiveGeneration((IIpsObjectGeneration)newPart, true);
+            page.getProductCmptEditor().setActiveGeneration((IIpsObjectGeneration)newPart);
             IProductCmptGeneration selectedGeneration = getActiveGeneration();
             IpsUIPlugin.getDefault().setDefaultValidityDate(selectedGeneration.getValidFrom());
         }
@@ -151,7 +151,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 
         @Override
         public void deleted(IIpsObjectPart part) {
-            page.getProductCmptEditor().setActiveGeneration(getSelectedGeneration(), true);
+            page.getProductCmptEditor().setActiveGeneration(getSelectedGeneration());
         }
 
         private IProductCmptGeneration getSelectedGeneration() {

@@ -481,7 +481,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             BusyIndicator.showWhile(pageRoot.getDisplay(), new Runnable() {
                 @Override
                 public void run() {
-                    (getEditor()).setActiveGeneration(getGeneration(), true);
+                    (getEditor()).setActiveGeneration(getGeneration());
                 }
             });
         }
