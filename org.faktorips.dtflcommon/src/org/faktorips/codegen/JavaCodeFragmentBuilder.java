@@ -1358,8 +1358,8 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
-     * Appends the generic parameters to the builder: <className1, className2, ...>. Import
-     * statements are added if a given class has not yet been imported.
+     * Appends the generic parameters to the builder: <className1, className2, ...>. An import
+     * statement is added if a given class has not yet been imported.
      * <p>
      * Note: You have to make sure that generics are supported by target compiler
      */
@@ -1378,7 +1378,8 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
-     * Appends the generic parameters to the builder: <class1, class2, ...>
+     * Appends the generic parameters to the builder: <class1, class2, ...>. An import statement is
+     * added if a given class has not yet been imported.
      * <p>
      * Note: You have to make sure that generics are supported by target compiler
      */

@@ -14,6 +14,7 @@
 package org.faktorips.codegen;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Modifier;
@@ -102,10 +103,29 @@ public class JavaCodeFragmentBuilderTest {
     }
 
     @Test
+    public void testOpenCloseBracket() {
+        JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder(true);
+        assertEquals(0, builder.getFragment().getIndentationLevel());
+        builder.openBracket();
+        assertEquals(1, builder.getFragment().getIndentationLevel());
+        builder.openBracket();
+        assertEquals(2, builder.getFragment().getIndentationLevel());
+        builder.append("blabla"); //$NON-NLS-1$
+        builder.closeBracket();
+        assertEquals(1, builder.getFragment().getIndentationLevel());
+        builder.closeBracket();
+        assertEquals(0, builder.getFragment().getIndentationLevel());
+        String expected = "{" + SystemUtils.LINE_SEPARATOR + "    {" + SystemUtils.LINE_SEPARATOR + "        blabla" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + SystemUtils.LINE_SEPARATOR + "    }" + SystemUtils.LINE_SEPARATOR + "}" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(expected, builder.getFragment().getSourcecode());
+    }
+
+    @Test
     public void testAddGenerics() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.appendGenerics(Integer.class.getName(), "xxx1234", String.class.getName());
         assertEquals("<Integer, xxx1234, String>", builder.getFragment().getSourcecode());
+        assertFalse(builder.getFragment().getImportDeclaration().isCovered("xxx1234"));
         assertTrue(builder.getFragment().getImportDeclaration().isCovered(Integer.class));
         assertTrue(builder.getFragment().getImportDeclaration().isCovered(String.class));
     }
