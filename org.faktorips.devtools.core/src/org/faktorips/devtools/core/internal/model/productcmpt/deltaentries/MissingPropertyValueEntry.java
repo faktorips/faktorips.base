@@ -40,11 +40,21 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
         this.property = property;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation receives the type from the property because there is no property value.
+     */
     @Override
     public ProductCmptPropertyType getPropertyType() {
         return property.getProductCmptPropertyType();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation receives the name from the property because there is no property value.
+     */
     @Override
     public String getPropertyName() {
         return property.getPropertyName();

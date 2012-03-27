@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
 /**
  * 
@@ -29,16 +28,6 @@ public class ValueWithoutPropertyEntry extends AbstractDeltaEntryForProperty {
     public ValueWithoutPropertyEntry(IPropertyValue value) {
         super(value);
         this.value = value;
-    }
-
-    @Override
-    public ProductCmptPropertyType getPropertyType() {
-        return value.getPropertyType();
-    }
-
-    @Override
-    public String getPropertyName() {
-        return value.getPropertyName();
     }
 
     @Override

@@ -18,7 +18,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
 /**
  * 
@@ -36,18 +35,8 @@ public class ValueSetMismatchEntry extends AbstractDeltaEntryForProperty {
     }
 
     @Override
-    public ProductCmptPropertyType getPropertyType() {
-        return ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE;
-    }
-
-    @Override
     public void fix() {
         element.setValueSetCopy(attribute.getValueSet());
-    }
-
-    @Override
-    public String getPropertyName() {
-        return element.getName();
     }
 
     @Override

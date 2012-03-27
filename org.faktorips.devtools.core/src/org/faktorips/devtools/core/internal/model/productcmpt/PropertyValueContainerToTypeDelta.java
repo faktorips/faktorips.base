@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractFixDifferencesComposite;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.PropertyTypeMismatchEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueSetMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -28,6 +29,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
@@ -94,7 +96,8 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
 
     private void checkForMissingPropertyValues(Map<String, IProductCmptProperty> propertiesMap) {
         for (IProductCmptProperty property : propertiesMap.values()) {
-            if (propertyValueContainer.isContainerFor(property) && propertyValueContainer.getPropertyValue(property) == null) {
+            if (propertyValueContainer.isContainerFor(property)
+                    && propertyValueContainer.getPropertyValue(property) == null) {
                 // no value found for the property with the given type, but we might have a type
                 // mismatch
                 if (propertyValueContainer.getPropertyValue(property.getPropertyName()) == null) {
@@ -138,6 +141,9 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
                 if (ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE.equals(propertyType)) {
                     checkForValueSetMismatch((IPolicyCmptTypeAttribute)property, (IConfigElement)value);
                 }
+                if (ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.equals(propertyType)) {
+                    checkForValueMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
+                }
             }
         }
     }
@@ -149,6 +155,12 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         if (!element.getValueSet().isSameTypeOfValueSet(attribute.getValueSet())) {
             ValueSetMismatchEntry valueSetMismatchEntry = new ValueSetMismatchEntry(attribute, element);
             addEntry(valueSetMismatchEntry);
+        }
+    }
+
+    /* private */void checkForValueMismatch(IProductCmptTypeAttribute attribute, IAttributeValue value) {
+        if (attribute.isMultiValueAttribute() != (value.getValueHolder() instanceof MultiValueHolder)) {
+            addEntry(new ValueMismatchEntry(value, attribute));
         }
     }
 

@@ -142,7 +142,8 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
     private void updateDeltaView() {
         TypedSelection<IFixDifferencesComposite> selection = new TypedSelection<IFixDifferencesComposite>(
                 IFixDifferencesComposite.class, productCmptGenTree.getSelection());
-        updateDeltaView(selection.getFirstElement());
+        if (selection.isValid())
+            updateDeltaView(selection.getFirstElement());
     }
 
     public IFixDifferencesComposite getDeltaComposite() {

@@ -31,6 +31,10 @@ public class Messages extends NLS {
 
     public static String PropertyTypeMismatchEntry_desc;
 
+    public static String ValueMismatchEntry_convertMultiToSingleValue;
+
+    public static String ValueMismatchEntry_convertSingleToMultiValue;
+
     public static String ValueSetMismatchEntry_desc;
 
 }

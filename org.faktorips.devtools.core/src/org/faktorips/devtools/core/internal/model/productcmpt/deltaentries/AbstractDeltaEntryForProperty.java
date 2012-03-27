@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
 /**
  * 
@@ -44,6 +45,26 @@ public abstract class AbstractDeltaEntryForProperty implements IDeltaEntryForPro
      */
     public IPropertyValue getPropertyValue() {
         return propertyValue;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation returns the property type received by the property value.
+     */
+    @Override
+    public ProductCmptPropertyType getPropertyType() {
+        return propertyValue.getPropertyType();
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation returns the name received by the property value.
+     */
+    @Override
+    public String getPropertyName() {
+        return getPropertyValue().getPropertyName();
     }
 
 }

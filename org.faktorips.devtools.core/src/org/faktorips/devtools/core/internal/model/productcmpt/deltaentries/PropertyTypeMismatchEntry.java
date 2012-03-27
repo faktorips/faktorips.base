@@ -19,7 +19,6 @@ import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
 /**
  * 
@@ -37,16 +36,6 @@ public class PropertyTypeMismatchEntry extends AbstractDeltaEntryForProperty {
         this.propertyValueContainer = poIPropertyValueContainer;
         this.property = property;
         this.value = value;
-    }
-
-    @Override
-    public ProductCmptPropertyType getPropertyType() {
-        return value.getPropertyType();
-    }
-
-    @Override
-    public String getPropertyName() {
-        return property.getPropertyName();
     }
 
     @Override

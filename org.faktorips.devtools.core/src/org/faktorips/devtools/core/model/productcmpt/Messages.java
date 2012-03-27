@@ -29,6 +29,8 @@ public class Messages extends NLS {
 
     public static String ConfigElementType_policyAttribute;
 
+    public static String DeltaType_valueMismatch;
+
     public static String DeltaType_LinksNotFoundInTheModel;
     public static String DeltaType_missingValue;
 

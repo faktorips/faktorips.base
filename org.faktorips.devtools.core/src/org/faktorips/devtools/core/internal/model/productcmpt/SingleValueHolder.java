@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
  */
 public class SingleValueHolder extends AbstractValueHolder<String> {
 
-    public static final String DEFAULT_XML_TYPE_NAME = "StringValue"; //$NON-NLS-1$
+    public static final String DEFAULT_XML_TYPE_NAME = "SingleValue"; //$NON-NLS-1$
 
     private final IAttributeValue attributeValue;
 
