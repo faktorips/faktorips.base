@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValueHolderFactory;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -39,6 +40,15 @@ import org.w3c.dom.NodeList;
 public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder>> {
 
     public static final String XML_TYPE_NAME = "MultiValue"; //$NON-NLS-1$
+
+    /** Prefix for all message codes of this class. */
+    public final static String MSGCODE_PREFIX = "MULTIVALUEHOLDER-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that there an error in any value of this multi value
+     * holder
+     */
+    public final static String MSGCODE_CONTAINS_INVALID_VALUE = MSGCODE_PREFIX + "ContainsInvalidValue"; //$NON-NLS-1$
 
     private List<SingleValueHolder> values;
 
@@ -127,8 +137,15 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
     @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
         MessageList messageList = new MessageList();
+        if (values == null) {
+            return messageList;
+        }
         for (SingleValueHolder valueHolder : values) {
             messageList.add(valueHolder.validate(ipsProject));
+        }
+        if (messageList.containsErrorMsg()) {
+            messageList.add(Message.newError(MSGCODE_CONTAINS_INVALID_VALUE, "There is at least one invalid value.",
+                    this, PROPERTY_VALUE));
         }
         return messageList;
     }

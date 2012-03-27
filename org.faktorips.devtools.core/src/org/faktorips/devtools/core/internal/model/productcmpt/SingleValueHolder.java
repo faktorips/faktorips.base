@@ -41,8 +41,6 @@ public class SingleValueHolder extends AbstractValueHolder<String> {
 
     public static final String DEFAULT_XML_TYPE_NAME = "StringValue"; //$NON-NLS-1$
 
-    public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
-
     private final IAttributeValue attributeValue;
 
     private String value;
@@ -84,7 +82,8 @@ public class SingleValueHolder extends AbstractValueHolder<String> {
         if (attribute == null) {
             return list;
         }
-        if (!ValidationUtils.checkValue(attribute.getDatatype(), getValue(), attributeValue, PROPERTY_VALUE, list)) {
+        if (!ValidationUtils.checkValue(attribute.findDatatype(attributeValue.getIpsProject()), getValue(), this,
+                PROPERTY_VALUE, list)) {
             return list;
         }
         if (!attribute.getValueSet().containsValue(getValue(), ipsProject)) {
@@ -95,8 +94,7 @@ public class SingleValueHolder extends AbstractValueHolder<String> {
             } else {
                 text = NLS.bind(Messages.AttributeValue_ValueNotAllowed, getValue());
             }
-            list.add(new Message(AttributeValue.MSGCODE_VALUE_NOT_IN_SET, text, Message.ERROR, attributeValue,
-                    PROPERTY_VALUE));
+            list.add(new Message(AttributeValue.MSGCODE_VALUE_NOT_IN_SET, text, Message.ERROR, this, PROPERTY_VALUE));
         }
         return list;
     }

@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
  */
 public interface IValueHolder<T> extends XmlSupport, Validatable, Comparable<IValueHolder<T>> {
 
+    public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
+
     /**
      * Returning the {@link IIpsObjectPart} of which this value holder is a child of. Every value
      * holder need to have a parent {@link IIpsObjectPart}. If anything within the value holder

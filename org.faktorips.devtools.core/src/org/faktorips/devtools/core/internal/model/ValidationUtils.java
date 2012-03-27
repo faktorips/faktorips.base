@@ -24,6 +24,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
+import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -243,7 +244,7 @@ public class ValidationUtils {
      */
     public final static boolean checkValue(ValueDatatype datatype,
             String value,
-            IIpsObjectPart part,
+            Validatable part,
             String propertyName,
             MessageList list) throws CoreException {
 
@@ -295,7 +296,7 @@ public class ValidationUtils {
      */
     public final static boolean checkStringPropertyNotEmpty(String propertyValue,
             String propertyDisplayName,
-            Object object,
+            Validatable object,
             String propertyName,
             String msgCode,
             MessageList list) {
