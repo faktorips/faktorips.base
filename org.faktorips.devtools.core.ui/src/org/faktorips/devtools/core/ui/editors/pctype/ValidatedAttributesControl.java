@@ -63,7 +63,6 @@ public class ValidatedAttributesControl extends EditTableControl {
             label = Messages.ValidatedAttributesControl_description;
         }
         super.initialize(modelObject, label);
-        initCellEditorsAndConfigureTableViewer();
         new MessageService(getTableViewer());
     }
 

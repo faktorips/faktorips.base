@@ -81,7 +81,6 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         GridLayout layout = (GridLayout)getLayout();
         layout.marginHeight = 10;
 
-        initCellEditorsAndConfigureTableViewer();
         new MessageService(getTableViewer());
     }
 

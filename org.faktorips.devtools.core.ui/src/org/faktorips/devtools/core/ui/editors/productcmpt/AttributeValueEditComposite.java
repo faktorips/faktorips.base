@@ -31,6 +31,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
+import org.faktorips.devtools.core.ui.controls.MultiValueAttributeControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -62,12 +64,22 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         ValueDatatype datatype = getProperty() == null ? null : getProperty().findDatatype(
                 getPropertyValue().getIpsProject());
         IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
-        ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-        EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, valueSet,
-                getPropertyValue().getIpsProject());
+        EditField<String> editField = null;
+        if (getProperty().isMultiValueAttribute()) {
+            MultiValueAttributeControl control = new MultiValueAttributeControl(this, getToolkit(), getPropertyValue());
+            editField = new TextButtonField(control);
+        } else {
+            ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
+                    datatype);
+            editField = controlFactory.createEditField(getToolkit(), this, datatype, valueSet, getPropertyValue()
+                    .getIpsProject());
+        }
+        registerAndBindEditField(editFields, editField);
+    }
+
+    protected void registerAndBindEditField(List<EditField<?>> editFields, EditField<String> editField) {
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE);
-
         if (getProperty() != null && !getProperty().isChangingOverTime()) {
             addNotChangingOverTimeControlDecoration(editField);
         }

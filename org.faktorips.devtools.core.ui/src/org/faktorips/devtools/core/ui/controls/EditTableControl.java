@@ -90,6 +90,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 
         createTable(this);
         createButtonComposite(this);
+        initCellEditorsAndConfigureTableViewer();
         tableViewer.setInput(modelObject);
     }
 
@@ -152,8 +153,8 @@ public abstract class EditTableControl extends Composite implements IDataChangea
     }
 
     /**
-     * Must be called by subclasses in their constructor to configure the {@link TableViewer} with
-     * the {@link CellEditor}s created by {@link #createCellEditors()}.
+     * Configures the {@link TableViewer} with the {@link CellEditor}s created by
+     * {@link #createCellEditors()}.
      * <p>
      * Therefore the overridable methods {@link #createContentProvider()},
      * {@link #createLabelProvider()}, {@link #getColumnPropertyNames()} and
@@ -179,7 +180,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
                 }
             }
         }
-        tableViewer.refresh();
+        // tableViewer.refresh();
     }
 
     private void addListenersToEditor(final CellEditor editor, final int editorColumn) {

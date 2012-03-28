@@ -121,4 +121,6 @@ public class Messages extends NLS {
 
     public static String EnumTypeRefControl_description;
 
+    public static String MultiValueEditTableControl_ColumnName;
+
 }

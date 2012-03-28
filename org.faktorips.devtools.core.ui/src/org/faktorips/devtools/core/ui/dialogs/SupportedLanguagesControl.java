@@ -49,7 +49,6 @@ public final class SupportedLanguagesControl extends EditTableControl {
     @Override
     public void initialize(Object modelObject, String label) {
         super.initialize(modelObject, label);
-        initCellEditorsAndConfigureTableViewer();
         setDataChangeable(true);
     }
 

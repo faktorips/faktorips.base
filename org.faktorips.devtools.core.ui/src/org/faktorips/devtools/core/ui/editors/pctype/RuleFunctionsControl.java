@@ -65,7 +65,6 @@ public class RuleFunctionsControl extends EditTableControl {
             label = Messages.RuleFunctionsControl_title;
         }
         super.initialize(modelObject, label);
-        initCellEditorsAndConfigureTableViewer();
         new MessageService(getTableViewer());
     }
 
