@@ -85,7 +85,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     @Override
     @Deprecated
     public String getValue() {
-        return valueHolder.getStringValue();
+        return getPropertyValue();
     }
 
     @Override
@@ -135,7 +135,11 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public String getPropertyValue() {
-        return valueHolder.getStringValue();
+        if (valueHolder != null) {
+            return valueHolder.getStringValue();
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -220,7 +224,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public String toString() {
-        return attribute + "=" + valueHolder.getStringValue(); //$NON-NLS-1$
+        return attribute + "=" + getPropertyValue(); //$NON-NLS-1$
     }
 
 }

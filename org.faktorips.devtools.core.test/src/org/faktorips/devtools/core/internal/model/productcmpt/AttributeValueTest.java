@@ -61,7 +61,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productCmpt = newProductCmpt(productCmptType, "ProductA");
         generation = productCmpt.getProductCmptGeneration(0);
-        attrValue = generation.newAttributeValue(attribute, "42");
+        attrValue = generation.newAttributeValue(attribute);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         assertNull(ml
                 .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
 
-        attrValue.setValue("abc");
+        attrValue.setValueHolder(new SingleValueHolder(attrValue, "abc"));
         ml = attrValue.validate(ipsProject);
         assertNotNull(ml
                 .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
@@ -103,26 +103,25 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         range.setLowerBound("0");
         range.setUpperBound("100");
 
-        attrValue.setValue("0");
+        attrValue.setValueHolder(new SingleValueHolder(attrValue, "0"));
         ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
 
-        attrValue.setValue("100");
+        attrValue.setValueHolder(new SingleValueHolder(attrValue, "100"));
         ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
 
-        attrValue.setValue("42");
+        attrValue.setValueHolder(new SingleValueHolder(attrValue, "42"));
         ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
 
-        attrValue.setValue("-1");
+        attrValue.setValueHolder(new SingleValueHolder(attrValue, "-1"));
         ml = attrValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
 
-        attrValue.setValue("101");
+        attrValue.setValueHolder(new SingleValueHolder(attrValue, "101"));
         ml = attrValue.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
-
     }
 
     @Test
@@ -131,9 +130,17 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
                 "premium");
     }
 
+    @SuppressWarnings("deprecation")
+    // testing the deprecated property
     @Test
     public void testSetValue() {
         super.testPropertyAccessReadWrite(IAttributeValue.class, IAttributeValue.PROPERTY_VALUE, attrValue, "newValue");
+    }
+
+    @Test
+    public void testSetValueHolder() {
+        super.testPropertyAccessReadWrite(IAttributeValue.class, IAttributeValue.PROPERTY_VALUE_HOLDER, attrValue,
+                new SingleValueHolder(attrValue, "newValue"));
     }
 
     @Test
@@ -141,20 +148,20 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         Element el = getTestDocument().getDocumentElement();
         attrValue.initFromXml(el);
         assertEquals("rate", attrValue.getAttribute());
-        assertEquals("42", attrValue.getValue());
+        assertEquals("42", attrValue.getPropertyValue());
     }
 
     @Test
     public void testToXml() {
         Document doc = newDocument();
-        attrValue.setValue("42");
+        attrValue.setValueHolder(new SingleValueHolder(attrValue, "42"));
         attrValue.setAttribute("rate");
         Element el = attrValue.toXml(doc);
 
         IAttributeValue copy = generation.newAttributeValue();
         copy.initFromXml(el);
         assertEquals("rate", copy.getAttribute());
-        assertEquals("42", copy.getValue());
+        assertEquals("42", copy.getPropertyValue());
     }
 
     @Test
@@ -181,6 +188,26 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     @Test
     public void testGetLastResortCaption() {
         assertEquals(StringUtils.capitalize(attrValue.getAttribute()), attrValue.getLastResortCaption());
+    }
+
+    @Test
+    public void testValueHolder_isNull() throws Exception {
+        assertNull(attrValue.getPropertyValue());
+        assertNull(attrValue.getValueHolder().getValue());
+
+        attrValue.setValueHolder(null);
+
+        assertNull(attrValue.getPropertyValue());
+        assertNull(attrValue.getValueHolder());
+    }
+
+    @Test
+    public void testGetPropertyValue() throws Exception {
+        assertNull(attrValue.getPropertyValue());
+
+        ((SingleValueHolder)attrValue.getValueHolder()).setValue("abc");
+
+        assertEquals("abc", attrValue.getPropertyValue());
     }
 
 }
