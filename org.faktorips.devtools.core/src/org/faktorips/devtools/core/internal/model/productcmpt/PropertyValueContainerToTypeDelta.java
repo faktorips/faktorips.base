@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractFixDifferencesComposite;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.PropertyTypeMismatchEntry;
-import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueMismatchEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueHolderMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueSetMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -160,7 +160,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
 
     /* private */void checkForValueMismatch(IProductCmptTypeAttribute attribute, IAttributeValue value) {
         if (attribute.isMultiValueAttribute() != (value.getValueHolder() instanceof MultiValueHolder)) {
-            addEntry(new ValueMismatchEntry(value, attribute));
+            addEntry(new ValueHolderMismatchEntry(value, attribute));
         }
     }
 

@@ -31,11 +31,11 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
  * 
  * @author dirmeier
  */
-public class ValueMismatchEntry extends AbstractDeltaEntryForProperty {
+public class ValueHolderMismatchEntry extends AbstractDeltaEntryForProperty {
 
     private final IProductCmptTypeAttribute attribute;
 
-    public ValueMismatchEntry(IAttributeValue attributeValue, IProductCmptTypeAttribute attribute) {
+    public ValueHolderMismatchEntry(IAttributeValue attributeValue, IProductCmptTypeAttribute attribute) {
         super(attributeValue);
         this.attribute = attribute;
     }
