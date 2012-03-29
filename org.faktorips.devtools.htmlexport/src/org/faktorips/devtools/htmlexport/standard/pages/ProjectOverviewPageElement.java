@@ -44,7 +44,7 @@ import org.faktorips.util.message.MessageList;
 
 public class ProjectOverviewPageElement extends AbstractRootPageElement {
 
-    private static final SimpleDateFormat CREATION_TIME_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm"); //$NON-NLS-1$
+    private static final String CREATION_TIME_DATE_FORMAT = "dd.MM.yyyy HH:mm"; //$NON-NLS-1$
     private DocumentationContext context;
 
     /**
@@ -79,7 +79,8 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     private void addCreationTime() {
         IPageElement createCreationTime = new TextPageElement(
                 context.getMessage("ProjectOverviewPageElement_created") + " " //$NON-NLS-1$ //$NON-NLS-2$
-                        + CREATION_TIME_DATE_FORMAT.format(new Date()), TextType.BLOCK).addStyles(Style.SMALL);
+                        + new SimpleDateFormat(CREATION_TIME_DATE_FORMAT).format(new Date()), TextType.BLOCK)
+                .addStyles(Style.SMALL);
         addPageElements(createCreationTime);
     }
 
