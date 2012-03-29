@@ -29,6 +29,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
+import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -125,7 +126,7 @@ public class ProductAttributeConditionTest extends AbstractIpsPluginTest {
         ProductCmpt productCmpt = newProductCmpt(productCmptType, "ich.bin.ein.Baustein");
         ProductCmptGeneration generation = (ProductCmptGeneration)productCmpt.newGeneration();
         IAttributeValue attributeValue = generation.newAttributeValue(attribut);
-        attributeValue.setValue(value);
+        attributeValue.setValueHolder(new SingleValueHolder(attributeValue, value));
 
         IOperandProvider operandProvider = condition.createOperandProvider(attribut);
 

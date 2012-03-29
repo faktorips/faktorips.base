@@ -202,7 +202,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Deprecated
     public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute, String value) {
         IAttributeValue attrValue = newAttributeValue(attribute);
-        attrValue.setValue(value);
+        attrValue.setValueHolder(new SingleValueHolder(attrValue, value));
         return attrValue;
     }
 

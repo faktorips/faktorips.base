@@ -26,6 +26,7 @@ import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -53,7 +54,7 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
     private IIpsPackageFragmentRoot root;
     private IConfigElement configElement1;
     private IConfigElement configElement2;
-    private IAttributeValue configElement3;
+    private IAttributeValue attributeValue;
     private IProductCmptLink relation1;
     private IProductCmptLink relation2;
 
@@ -81,9 +82,9 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         configElement2 = generation1.newConfigElement();
         configElement2.setPolicyCmptTypeAttribute("configElement2");
         configElement2.setValueSetType(ValueSetType.ENUM);
-        configElement3 = generation1.newAttributeValue();
-        configElement3.setAttribute("configElement3");
-        configElement3.setValue("TestWert");
+        attributeValue = generation1.newAttributeValue();
+        attributeValue.setAttribute("attributeValue");
+        attributeValue.setValueHolder(new SingleValueHolder(attributeValue, "TestWert"));
         relation1 = generation1.newLink(productReferenced.getQualifiedName());
         relation2 = generation1.newLink(productReferenced.getQualifiedName());
 
@@ -203,7 +204,7 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
 
         assertEquals(configElement1, compareItemConfigElement1.getIpsElement());
         assertEquals(configElement2, compareItemConfigElement2.getIpsElement());
-        assertEquals(configElement3, compareItemConfigElement3.getIpsElement());
+        assertEquals(attributeValue, compareItemConfigElement3.getIpsElement());
         assertEquals(relation1, compareItemRelation1.getIpsElement());
         assertEquals(relation2, compareItemRelation2.getIpsElement());
     }

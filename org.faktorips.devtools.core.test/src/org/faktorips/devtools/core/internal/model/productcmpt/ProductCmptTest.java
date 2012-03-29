@@ -372,7 +372,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt.initFromXml(getTestDocument().getDocumentElement());
         IAttributeValue attributeValue = productCmpt.getAttributeValue("bezeichnung");
         assertNotNull(attributeValue);
-        assertEquals("testtesttest", attributeValue.getValue());
+        assertEquals("testtesttest", attributeValue.getPropertyValue());
     }
 
     @Test

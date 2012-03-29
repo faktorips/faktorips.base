@@ -63,7 +63,7 @@ public class ProductAttributeConditionType extends AbstractAttributeConditionTyp
                 return null;
             }
 
-            return attributeValue.getValue();
+            return attributeValue.getPropertyValue();
         }
     }
 

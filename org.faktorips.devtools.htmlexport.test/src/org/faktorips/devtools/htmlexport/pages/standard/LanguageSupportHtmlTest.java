@@ -20,6 +20,7 @@ import java.util.Locale;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
+import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -62,7 +63,8 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         enDescription.setText(enBeschreibung);
 
         context.setDocumentationLocale(Locale.GERMANY);
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
         assertXPathExists(objectContentPage, deXPath);
 
         context.setDocumentationLocale(Locale.ENGLISH);
@@ -84,7 +86,7 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
 
         ProductCmptGeneration generation = (ProductCmptGeneration)productCmpt.getFirstGeneration();
         IAttributeValue value = generation.newAttributeValue(attribute);
-        value.setValue("yxz");
+        value.setValueHolder(new SingleValueHolder(value, "yxz"));
 
         String deXPath = "//table[@id='" + productCmpt.getName() + "_ProductGenerationAttributeTable']//tr/td[1][.='"
                 + deLabel + "']";

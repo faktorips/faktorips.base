@@ -184,11 +184,11 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         attribute.setName("premium");
         attribute.setDefaultValue("123");
         IAttributeValue value = generation.newAttributeValue(attribute);
-        assertEquals("123", value.getValue());
+        assertEquals("123", value.getPropertyValue());
         assertEquals("premium", value.getAttribute());
 
         value = generation.newAttributeValue();
-        assertEquals("", value.getValue());
+        assertEquals("", value.getPropertyValue());
         assertEquals("", value.getAttribute());
     }
 

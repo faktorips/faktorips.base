@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
@@ -18,6 +19,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -185,10 +187,13 @@ public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest
             GregorianCalendar cal = new GregorianCalendar(2010, 0, 1);
             IProductCmptGeneration krankenBvbBeitragXyzGeneration = (IProductCmptGeneration)krankenBvbBeitragXyz
                     .newGeneration(cal);
-            krankenBvbBeitragXyzGeneration.newAttributeValue(text3Attribute).setValue(
-                    "Ich bin der Text meiner Generation");
-            krankenBvbBeitragXyzGeneration.newAttributeValue(zahl2Attribute).setValue("234");
-            krankenBvbBeitragXyzGeneration.newAttributeValue(geld1Attribute).setValue("120 EUR");
+            IAttributeValue newAttributeValue = krankenBvbBeitragXyzGeneration.newAttributeValue(text3Attribute);
+            newAttributeValue.setValueHolder(new SingleValueHolder(newAttributeValue,
+                    "Ich bin der Text meiner Generation"));
+            IAttributeValue newAttributeValue2 = krankenBvbBeitragXyzGeneration.newAttributeValue(zahl2Attribute);
+            newAttributeValue2.setValueHolder(new SingleValueHolder(newAttributeValue2, "234"));
+            IAttributeValue newAttributeValue3 = krankenBvbBeitragXyzGeneration.newAttributeValue(geld1Attribute);
+            newAttributeValue3.setValueHolder(new SingleValueHolder(newAttributeValue3, "120 EUR"));
             krankenBvbBeitragXyzGeneration.newFormula(methodCompZahl3);
 
             IProductCmpt krankenBvbBeitragZyx = newProductCmpt(krankenBVBArt, "kranken.KrankenBVB-Beitrag-Zyx");
@@ -196,10 +201,13 @@ public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest
 
             IProductCmptGeneration krankenBvbBeitragZyxGeneration = (IProductCmptGeneration)krankenBvbBeitragZyx
                     .newGeneration(cal);
-            krankenBvbBeitragZyxGeneration.newAttributeValue(text3Attribute).setValue(
-                    "Ich bin der Text meiner Generation");
-            krankenBvbBeitragZyxGeneration.newAttributeValue(zahl2Attribute).setValue("254");
-            krankenBvbBeitragZyxGeneration.newAttributeValue(geld1Attribute).setValue("125 EUR");
+            IAttributeValue newAttributeValue4 = krankenBvbBeitragZyxGeneration.newAttributeValue(text3Attribute);
+            newAttributeValue4.setValueHolder(new SingleValueHolder(newAttributeValue4,
+                    "Ich bin der Text meiner Generation"));
+            IAttributeValue newAttributeValue5 = krankenBvbBeitragZyxGeneration.newAttributeValue(zahl2Attribute);
+            newAttributeValue5.setValueHolder(new SingleValueHolder(newAttributeValue5, "254"));
+            IAttributeValue newAttributeValue6 = krankenBvbBeitragZyxGeneration.newAttributeValue(geld1Attribute);
+            newAttributeValue6.setValueHolder(new SingleValueHolder(newAttributeValue6, "125 EUR"));
             krankenBvbBeitragZyxGeneration.newFormula(methodCompZahl3);
 
             newPolicyAndProductCmptType(ipsProject, "kranken.sub.KrankenSubBVB", "kranken.sub.KrankenSubBVBArt");
