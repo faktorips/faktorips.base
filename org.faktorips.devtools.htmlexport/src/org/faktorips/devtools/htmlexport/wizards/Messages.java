@@ -17,24 +17,25 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.htmlexport.wizards.messages"; //$NON-NLS-1$
-    public static String IpsProjectHtmlExportWizard_errorHtmlExport;
-    public static String IpsProjectHtmlExportWizard_messageErrorHtmlExport;
-    public static String IpsProjectHtmlExportWizard_messageWarningHtmlExport;
-    public static String IpsProjectHtmlExportWizard_warningHtmlExport;
-    public static String IpsProjectHtmlExportWizard_windowTitle;
-    public static String IpsProjectHtmlExportWizardPage_browse;
-    public static String IpsProjectHtmlExportWizardPage_description;
-    public static String IpsProjectHtmlExportWizardPage_destination;
-    public static String IpsProjectHtmlExportWizardPage_directoryDialogText;
-    public static String IpsProjectHtmlExportWizardPage_htmlExport;
-    public static String IpsProjectHtmlExportWizardPage_noProjectSelected;
-    public static String IpsProjectHtmlExportWizardPage_objectTypes;
-    public static String IpsProjectHtmlExportWizardPage_policy;
-    public static String IpsProjectHtmlExportWizardPage_product;
-    public static String IpsProjectHtmlExportWizardPage_project;
-    public static String IpsProjectHtmlExportWizardPage_projectName;
-    public static String IpsProjectHtmlExportWizardPage_showValidationErrors;
-    public static String IpsProjectHtmlExportWizardPage_supportedLanguage;
+    public static String HtmlExportWizardPage_inheritedObjectPartsWithinTable;
+    public static String HtmlExportWizard_errorHtmlExport;
+    public static String HtmlExportWizard_messageErrorHtmlExport;
+    public static String HtmlExportWizard_messageWarningHtmlExport;
+    public static String HtmlExportWizard_warningHtmlExport;
+    public static String HtmlExportWizard_windowTitle;
+    public static String HtmlExportWizardPage_browse;
+    public static String HtmlExportWizardPage_description;
+    public static String HtmlExportWizardPage_destination;
+    public static String HtmlExportWizardPage_directoryDialogText;
+    public static String HtmlExportWizardPage_htmlExport;
+    public static String HtmlExportWizardPage_noProjectSelected;
+    public static String HtmlExportWizardPage_objectTypes;
+    public static String HtmlExportWizardPage_policy;
+    public static String HtmlExportWizardPage_product;
+    public static String HtmlExportWizardPage_project;
+    public static String HtmlExportWizardPage_projectName;
+    public static String HtmlExportWizardPage_showValidationErrors;
+    public static String HtmlExportWizardPage_supportedLanguage;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

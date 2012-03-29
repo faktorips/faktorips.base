@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -98,7 +99,7 @@ public abstract class AbstractInheritedIpsObjectPartsPageElement<S extends IIpsE
     protected abstract List<? extends T> getIpsObjectParts(S ipsElement);
 
     protected IPageElement createRepresentation(T objectPart) {
-        return new PageElementUtils().createLinkPageElement(context, objectPart, "content", new Style[0]); //$NON-NLS-1$
+        return new PageElementUtils().createLinkPageElement(context, objectPart, TargetType.CONTENT, new Style[0]);
     }
 
     protected S getParentIpsElement() {

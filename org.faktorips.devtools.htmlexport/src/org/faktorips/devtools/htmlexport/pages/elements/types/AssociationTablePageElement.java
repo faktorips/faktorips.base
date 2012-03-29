@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
@@ -53,7 +54,7 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
     }
 
     @Override
-    protected List<? extends IPageElement> createRowWithIpsObjectPart(IAssociation association) {
+    protected List<IPageElement> createRowWithIpsObjectPart(IAssociation association) {
         List<String> values = new ArrayList<String>();
 
         values.add(context.getLabel(association));
@@ -79,7 +80,7 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
         try {
             IIpsObject target = type.getIpsProject().findIpsObject(type.getIpsObjectType(), association.getTarget());
             elements[linkElementIndex] = new PageElementUtils().createLinkPageElement(context, target,
-                    "content", target.getName(), true); //$NON-NLS-1$
+                    TargetType.CONTENT, target.getName(), true);
         } catch (CoreException e) {
             context.addStatus(new IpsStatus(IStatus.WARNING,
                     "Error setting Link to target of " + association.getName(), e)); //$NON-NLS-1$

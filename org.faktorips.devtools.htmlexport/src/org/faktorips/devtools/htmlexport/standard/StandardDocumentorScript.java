@@ -37,6 +37,7 @@ import org.faktorips.devtools.htmlexport.helper.IoHandler;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInIIpsPackageFilter;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsObjectTypeListPageElement;
@@ -159,7 +160,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
         }
         IpsObjectTypeListPageElement allClassesPage = new IpsObjectTypeListPageElement(ipsObjectType,
                 documentedSourceFiles, context);
-        allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
+        allClassesPage.setLinkTarget(TargetType.CONTENT);
         allClassesPage.build();
         ioHandler.writeFile(context,
                 STANDARD_PATH + htmlUtil.getPathFromRoot(ipsObjectType, LinkedFileType.OBJECT_TYPE_CLASSES_OVERVIEW),
@@ -187,7 +188,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
         boolean shownTypeChooser = false;
         IpsElementListPageElement allClassesPage = new IpsElementListPageElement(ipsPackageFragment, srcFiles,
                 new IpsElementInIIpsPackageFilter(ipsPackageFragment, context), context, shownTypeChooser);
-        allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
+        allClassesPage.setLinkTarget(TargetType.CONTENT);
         allClassesPage.build();
         ioHandler.writeFile(
                 context,
@@ -211,7 +212,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
         IpsElementListPageElement allClassesPage = new IpsElementListPageElement(context.getIpsProject(), srcFiles,
                 context);
-        allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
+        allClassesPage.setLinkTarget(TargetType.CONTENT);
         allClassesPage.build();
         ioHandler.writeFile(context, STANDARD_PATH + "classes.html", getPageContent(context, allClassesPage)); //$NON-NLS-1$
 
@@ -224,7 +225,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
         IpsPackagesListPageElement allPackagesPage = new IpsPackagesListPageElement(context.getIpsProject(), srcFiles,
                 context);
-        allPackagesPage.setLinkTarget("classes"); //$NON-NLS-1$
+        allPackagesPage.setLinkTarget(TargetType.CLASSES);
         allPackagesPage.build();
         writeFileWithOutput(context, allPackagesPage, STANDARD_PATH + "overview.html"); //$NON-NLS-1$
 

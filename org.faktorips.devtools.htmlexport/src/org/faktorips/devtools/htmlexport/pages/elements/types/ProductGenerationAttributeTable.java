@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -365,8 +366,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 continue;
             }
             IPageElement linkPageElement = new PageElementUtils().createLinkPageElement(context, tableContent,
-                    "content", //$NON-NLS-1$
-                    context.getLabel(tableContent), true);
+                    TargetType.CONTENT, context.getLabel(tableContent), true);
 
             cells[i + 1] = linkPageElement;
 
@@ -410,7 +410,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
         for (IAssociation association : notDerivedUnionAssociations) {
             IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
-            cells[0] = new PageElementUtils().createIpsElementRepresentation(association, context,
+            cells[0] = new PageElementUtils().createIpsElementRepresentation(context, association,
                     context.getLabel(association), true);
             for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
                 IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
@@ -457,8 +457,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         IProductCmpt target;
         target = productCmptLink.findTarget(productCmpt.getIpsProject());
 
-        IPageElement targetLink = new PageElementUtils().createLinkPageElement(context, target, "content", target //$NON-NLS-1$
-                .getName(), true);
+        IPageElement targetLink = new PageElementUtils().createLinkPageElement(context, target, TargetType.CONTENT,
+                target.getName(), true);
 
         Set<Style> cardinalityStyles = new HashSet<Style>();
         cardinalityStyles.add(Style.INDENTION);

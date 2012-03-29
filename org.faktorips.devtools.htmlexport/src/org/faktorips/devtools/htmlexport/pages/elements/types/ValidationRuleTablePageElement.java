@@ -49,7 +49,7 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
     }
 
     @Override
-    protected List<? extends IPageElement> createRowWithIpsObjectPart(IValidationRule rule) {
+    protected List<IPageElement> createRowWithIpsObjectPart(IValidationRule rule) {
         List<String> ruleData = new ArrayList<String>();
 
         ruleData.add(getContext().getLabel(rule));

@@ -28,6 +28,7 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.helper.IpsObjectTypeComparator;
 import org.faktorips.devtools.htmlexport.helper.filter.IIpsElementFilter;
 import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 
 /**
@@ -40,7 +41,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageEle
 public abstract class AbstractIpsElementListPageElement extends AbstractRootPageElement {
 
     protected IIpsElement baseIpsElement;
-    protected String linkTarget;
+    protected TargetType linkTarget;
     protected List<IIpsSrcFile> srcFiles;
     protected IIpsElementFilter filter = ALL_FILTER;
     private DocumentationContext context;
@@ -135,7 +136,7 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
     /**
      * @return the target for all links
      */
-    public String getLinkTarget() {
+    public TargetType getLinkTarget() {
         return linkTarget;
     }
 
@@ -143,7 +144,7 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
      * sets the target for all links
      * 
      */
-    public void setLinkTarget(String linkTarget) {
+    public void setLinkTarget(TargetType linkTarget) {
         this.linkTarget = linkTarget;
     }
 

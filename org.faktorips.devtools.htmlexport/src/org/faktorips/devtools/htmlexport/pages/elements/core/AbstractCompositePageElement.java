@@ -71,8 +71,8 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     }
 
     /**
-     * adds a {@link IPageElement}. Override to check restrictions for subelements (e.g. a table just
-     * should take tableRows)
+     * adds a {@link IPageElement}. Override to check restrictions for subelements (e.g. a table
+     * just should take tableRows)
      * 
      */
     protected void addSubElement(IPageElement pageElement) {
@@ -118,4 +118,15 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     public int size() {
         return subElements.size();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getName()).append(": "); //$NON-NLS-1$
+        for (IPageElement pageElement : getSubElements()) {
+            sb.append(pageElement).append(';');
+        }
+        return getClass().getName();
+    }
+
 }

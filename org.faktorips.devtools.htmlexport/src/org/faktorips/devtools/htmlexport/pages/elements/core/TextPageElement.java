@@ -113,4 +113,8 @@ public class TextPageElement extends AbstractPageElement {
         type = TextType.BLOCK;
     }
 
+    @Override
+    public String toString() {
+        return "TextPageElement:" + text; //$NON-NLS-1$
+    }
 }

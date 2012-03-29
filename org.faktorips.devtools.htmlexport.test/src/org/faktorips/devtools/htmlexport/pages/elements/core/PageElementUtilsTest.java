@@ -23,10 +23,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.junit.Test;
 
 public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
-    private static final String TARGET = "target"; //$NON-NLS-1$
+    private static final TargetType TARGET = TargetType.CONTENT;
 
     @Test
     public void testCreateLinkPageElementAllTypesDocumented() throws CoreException {

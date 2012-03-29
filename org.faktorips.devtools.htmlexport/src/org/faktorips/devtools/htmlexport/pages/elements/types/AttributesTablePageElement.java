@@ -36,20 +36,24 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
  */
 public abstract class AttributesTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IAttribute> {
 
-    protected IType type;
+    private IType type;
 
     /**
      * Creates an {@link AttributesTablePageElement} for the specified {@link IType}
      * 
      */
-    public AttributesTablePageElement(IType type, DocumentationContext context) {
-        super(type.getAttributes(), context);
-        this.type = type;
+    public AttributesTablePageElement(IType type, List<IAttribute> attributes, DocumentationContext context) {
+        super(attributes, context);
+        this.setType(type);
         setId(type.getName() + "_" + "attributes"); //$NON-NLS-1$//$NON-NLS-2$
     }
 
+    public AttributesTablePageElement(IType type, DocumentationContext context) {
+        this(type, type.getAttributes(), context);
+    }
+
     @Override
-    protected List<? extends IPageElement> createRowWithIpsObjectPart(IAttribute attribute) {
+    protected List<IPageElement> createRowWithIpsObjectPart(IAttribute attribute) {
         IPageElement[] textPageElements = new PageElementUtils().createTextPageElements(getAttributeData(attribute));
         textPageElements[0].setAnchor(new PageElementUtils().createAnchorId(attribute));
         return Arrays.asList(textPageElements);
@@ -94,6 +98,14 @@ public abstract class AttributesTablePageElement extends AbstractIpsObjectPartsC
         headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineDescription));
 
         return headline;
+    }
+
+    protected void setType(IType type) {
+        this.type = type;
+    }
+
+    protected IType getType() {
+        return type;
     }
 
 }

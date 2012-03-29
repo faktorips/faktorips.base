@@ -70,7 +70,7 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
     }
 
     @Override
-    protected List<? extends IPageElement> createRowWithIpsObjectPart(IEnumValue rowData) {
+    protected List<IPageElement> createRowWithIpsObjectPart(IEnumValue rowData) {
         List<String> valueData = new ArrayList<String>();
 
         for (IEnumAttribute enumAttribute : enumAttributes) {

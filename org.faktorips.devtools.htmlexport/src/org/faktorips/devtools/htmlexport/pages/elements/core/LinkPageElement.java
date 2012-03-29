@@ -14,6 +14,7 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 
 /**
  * {@link IPageElement} representing a link
@@ -26,7 +27,7 @@ public class LinkPageElement extends AbstractCompositePageElement {
     /**
      * the link target for e.g. the frame, where the linked file should be loaded
      */
-    private String target;
+    private TargetType target;
     /**
      * the path of the link
      */
@@ -34,16 +35,16 @@ public class LinkPageElement extends AbstractCompositePageElement {
 
     private String linkAnchor;
 
-    public LinkPageElement(String path, String target, IPageElement... pageElements) {
+    public LinkPageElement(String path, TargetType target, IPageElement... pageElements) {
         this(path, target);
         addPageElements(pageElements);
     }
 
-    public LinkPageElement(String path, String target, String text) {
+    public LinkPageElement(String path, TargetType target, String text) {
         this(path, target, new TextPageElement(text));
     }
 
-    private LinkPageElement(String path, String target) {
+    private LinkPageElement(String path, TargetType target) {
         this.path = path;
         this.target = target;
     }
@@ -51,7 +52,7 @@ public class LinkPageElement extends AbstractCompositePageElement {
     /**
      * @return the target
      */
-    public String getTarget() {
+    public TargetType getTarget() {
         return target;
     }
 
@@ -77,7 +78,7 @@ public class LinkPageElement extends AbstractCompositePageElement {
      * sets the target
      * 
      */
-    public void setTarget(String target) {
+    public void setTarget(TargetType target) {
         this.target = target;
     }
 

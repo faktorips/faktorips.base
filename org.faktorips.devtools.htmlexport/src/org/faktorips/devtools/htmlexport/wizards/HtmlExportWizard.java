@@ -33,19 +33,19 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
 
-public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard {
+public class HtmlExportWizard extends Wizard implements IExportWizard {
 
     private static String DIALOG_SETTINGS_KEY = "org.faktorips.devtools.htmlexport.ipsProjectHtmlExportWizard"; //$NON-NLS-1$
-    private IpsProjectHtmlExportWizardPage ipsProjectHtmlExportWizardPage;
+    private HtmlExportWizardPage ipsProjectHtmlExportWizardPage;
     /**
      * Create a new IpsArExportWizard
      */
     private IStructuredSelection selection;
     private boolean hasNewDialogSettings;
 
-    public IpsProjectHtmlExportWizard() {
+    public HtmlExportWizard() {
         super();
-        setWindowTitle(Messages.IpsProjectHtmlExportWizard_windowTitle);
+        setWindowTitle(Messages.HtmlExportWizard_windowTitle);
         setDefaultPageImageDescriptor(HtmlExportPlugin.getImageDescriptor("icons/HtmlExportWizard.png")); //$NON-NLS-1$
 
         IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();
@@ -83,6 +83,7 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
 
         context.setPath(ipsProjectHtmlExportWizardPage.getDestinationDirectory());
         context.setShowValidationErrors(ipsProjectHtmlExportWizardPage.getShowValidationErrors());
+        context.setShowInheritedObjectPartsInTable(ipsProjectHtmlExportWizardPage.getShowObjectPartsInTableCheckBox());
         context.setDocumentationLocale(ipsProjectHtmlExportWizardPage.getSupportedLanguage());
 
         context.setIpsProject(ipsProjectHtmlExportWizardPage.getSelectedIpsProject());
@@ -109,14 +110,14 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
         switch (exportStatus.getSeverity()) {
             case IStatus.ERROR:
                 ErrorDialog.openError(Display.getDefault().getActiveShell(),
-                        Messages.IpsProjectHtmlExportWizard_errorHtmlExport,
-                        Messages.IpsProjectHtmlExportWizard_messageErrorHtmlExport, exportStatus);
+                        Messages.HtmlExportWizard_errorHtmlExport,
+                        Messages.HtmlExportWizard_messageErrorHtmlExport, exportStatus);
                 return false;
 
             case IStatus.WARNING:
                 ErrorDialog.openError(Display.getDefault().getActiveShell(),
-                        Messages.IpsProjectHtmlExportWizard_warningHtmlExport,
-                        Messages.IpsProjectHtmlExportWizard_messageWarningHtmlExport, exportStatus);
+                        Messages.HtmlExportWizard_warningHtmlExport,
+                        Messages.HtmlExportWizard_messageWarningHtmlExport, exportStatus);
 
                 return true;
 
@@ -134,7 +135,7 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
     @Override
     public void addPages() {
         super.addPages();
-        ipsProjectHtmlExportWizardPage = new IpsProjectHtmlExportWizardPage(selection);
+        ipsProjectHtmlExportWizardPage = new HtmlExportWizardPage(selection);
         addPage(ipsProjectHtmlExportWizardPage);
     }
 

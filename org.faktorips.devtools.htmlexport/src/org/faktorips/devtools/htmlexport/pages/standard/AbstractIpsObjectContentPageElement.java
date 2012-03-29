@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
@@ -68,13 +69,13 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
     public void build() {
         super.build();
 
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new LinkPageElement("index", "_top", //$NON-NLS-1$ //$NON-NLS-2$
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new LinkPageElement("index", TargetType.OVERALL, //$NON-NLS-1$ 
                 getContext().getMessage(HtmlExportMessages.AbstractObjectContentPageElement_overviewProject)
                         + " " + getContext().getIpsProject().getName()))); //$NON-NLS-1$
 
         addPageElements(new PageElementUtils().createLinkPageElement(getContext(), getDocumentedIpsObject()
-                .getIpsPackageFragment(),
-                "classes", IpsUIPlugin.getLabel(getDocumentedIpsObject().getIpsPackageFragment()), true)); //$NON-NLS-1$
+                .getIpsPackageFragment(), TargetType.CLASSES, IpsUIPlugin.getLabel(getDocumentedIpsObject()
+                .getIpsPackageFragment()), true));
         addPageElements(new TextPageElement(getIpsObjectTypeDisplayName() + " " //$NON-NLS-1$
                 + context.getLabel(getDocumentedIpsObject()), TextType.HEADING_1));
 

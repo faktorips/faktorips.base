@@ -11,11 +11,17 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.pages.elements.types;
+package org.faktorips.devtools.htmlexport.helper.path;
 
-import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
+public enum TargetType {
+    CLASSES,
+    CONTENT,
+    OVERALL;
 
-public interface ILinkStrategy {
-    public LinkPageElement createLink(IPageElement... containedPageElements);
+    public String getId() {
+        if (this.equals(OVERALL)) {
+            return "_top"; //$NON-NLS-1$
+        }
+        return name().toLowerCase();
+    }
 }

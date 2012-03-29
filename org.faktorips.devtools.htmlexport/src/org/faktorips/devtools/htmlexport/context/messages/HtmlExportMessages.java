@@ -121,6 +121,7 @@ public interface HtmlExportMessages {
     public static final String PolicyCmptTypeContentPageElement_overwrite = "PolicyCmptTypeContentPageElement_overwrite";
     public static final String PolicyCmptTypeContentPageElement_productRelevant = "PolicyCmptTypeContentPageElement_productRelevant";
     public static final String PolicyCmptTypeContentPageElement_rules = "PolicyCmptTypeContentPageElement_rules";
+    public static final String PolicyCmptTypeContentPageElement_inheritedFrom = "PolicyCmptTypeContentPageElement_inheritedFrom";
 
     public static final String ProductCmptContentPageElement_attributes = "ProductCmptContentPageElement_attributes";
     public static final String ProductCmptContentPageElement_generations = "ProductCmptContentPageElement_generations";

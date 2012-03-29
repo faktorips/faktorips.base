@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -54,8 +55,8 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(
                 new TextPageElement(IpsObjectType.ENUM_TYPE.getDisplayName() + ": ")).addPageElements( //$NON-NLS-1$
-                new PageElementUtils().createLinkPageElement(getContext(), getEnumType(),
-                        "content", getEnumType().getQualifiedName(), true))); //$NON-NLS-1$
+                new PageElementUtils().createLinkPageElement(getContext(), getEnumType(), TargetType.CONTENT,
+                        getEnumType().getQualifiedName(), true)));
 
         addValuesTable();
     }
@@ -74,11 +75,11 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
             return;
         }
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(
-                getContext().getMessage(HtmlExportMessages.EnumContentContentPageElement_values), TextType.HEADING_2)); 
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                HtmlExportMessages.EnumContentContentPageElement_values), TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(tablePageElement,
-                getContext().getMessage(HtmlExportMessages.EnumContentContentPageElement_noValues))); 
+                getContext().getMessage(HtmlExportMessages.EnumContentContentPageElement_noValues)));
 
         addPageElements(wrapper);
     }

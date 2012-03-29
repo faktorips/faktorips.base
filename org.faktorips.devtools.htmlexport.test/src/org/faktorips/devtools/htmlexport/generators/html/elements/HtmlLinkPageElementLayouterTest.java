@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.htmlexport.generators.html.elements;
 
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.junit.Before;
@@ -33,7 +34,7 @@ public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayo
     @Test
     public void testLink() throws Exception {
         String path = "xyz/sub/file";
-        String target = "frame";
+        TargetType target = TargetType.CONTENT;
         String text = "Linktext";
 
         LinkPageElement pageElement = new LinkPageElement(path, target, text);
@@ -44,14 +45,14 @@ public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
         String generateText = layouter.generateText();
 
-        assertXpathExists(generateText, "/a[@target='" + target + "'][@href='" + PATH_TO_ROOT + path + FILE_EXTENSION
-                + "'][.='" + text + "']");
+        assertXpathExists(generateText, "/a[@target='" + target.getId() + "'][@href='" + PATH_TO_ROOT + path
+                + FILE_EXTENSION + "'][.='" + text + "']");
     }
 
     @Test
     public void testLinkMitStyle() throws Exception {
         String path = "xyz/sub/file";
-        String target = "frame";
+        TargetType target = TargetType.CONTENT;
         String text = "Linktext";
 
         LinkPageElement pageElement = new LinkPageElement(path, target, text);
@@ -67,7 +68,7 @@ public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayo
     @Test
     public void testLinkMitBlockStyle() throws Exception {
         String path = "xyz/sub/file";
-        String target = "frame";
+        TargetType target = TargetType.CONTENT;
         String text = "Linktext";
 
         LinkPageElement pageElement = new LinkPageElement(path, target, text);
@@ -83,7 +84,7 @@ public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayo
     @Test
     public void testLinkMitAnker() throws Exception {
         String path = "xyz/sub/file";
-        String target = "frame";
+        TargetType target = TargetType.CONTENT;
         String text = "Linktext";
         String linkAnchor = "anker";
 

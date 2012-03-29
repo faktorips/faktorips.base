@@ -30,10 +30,11 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -70,7 +71,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         }
 
         @Override
-        protected List<? extends IPageElement> createRowWithIpsObjectPart(IEnumAttribute enumAttribute) {
+        protected List<IPageElement> createRowWithIpsObjectPart(IEnumAttribute enumAttribute) {
             List<String> attributeData1 = new ArrayList<String>();
 
             attributeData1.add(getContext().getLabel(enumAttribute));
@@ -186,8 +187,8 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         }
 
         if (type.getSuperEnumType().equals(getDocumentedIpsObject().getQualifiedName())) {
-            subTypes.add(new PageElementUtils().createLinkPageElement(getContext(), type,
-                    "content", type.getQualifiedName(), true)); //$NON-NLS-1$
+            subTypes.add(new PageElementUtils().createLinkPageElement(getContext(), type, TargetType.CONTENT,
+                    type.getQualifiedName(), true));
         }
     }
 
@@ -213,8 +214,8 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         }
 
         TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(
-                new PageElementUtils().createLinkPageElement(getContext(), superTypes.get(0),
-                        "content", superTypes.get(0).getQualifiedName(), true))); //$NON-NLS-1$
+                new PageElementUtils().createLinkPageElement(getContext(), superTypes.get(0), TargetType.CONTENT,
+                        superTypes.get(0).getQualifiedName(), true)));
         TreeNodePageElement element = baseElement;
 
         for (int i = 1; i < superTypes.size(); i++) {
@@ -222,8 +223,9 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
                 element.addPageElements(new TextPageElement(getContext().getLabel(getDocumentedIpsObject())));
                 break;
             }
-            TreeNodePageElement subElement = new TreeNodePageElement(new PageElementUtils().createLinkPageElement(
-                    getContext(), superTypes.get(i), "content", getContext().getLabel(superTypes.get(i)), true)); //$NON-NLS-1$
+            TreeNodePageElement subElement = new TreeNodePageElement(
+                    new PageElementUtils().createLinkPageElement(getContext(), superTypes.get(i), TargetType.CONTENT,
+                            getContext().getLabel(superTypes.get(i)), true));
             element.addPageElements(subElement);
             element = subElement;
         }
@@ -290,8 +292,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
             return;
         }
         addPageElements(wrapper.addPageElements(new PageElementUtils().createLinkPageElement(getContext(), enumContent,
-                "content", enumContent //$NON-NLS-1$
-                        .getQualifiedName(), true)));
+                TargetType.CONTENT, enumContent.getQualifiedName(), true)));
 
     }
 

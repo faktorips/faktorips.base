@@ -28,8 +28,9 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInDocumentedSourceFileFilter;
-import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
 import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
+import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePageElement;
 
 /**
@@ -75,7 +76,7 @@ public class PageElementUtils {
      * @return {@link List} of {@link LinkPageElement}s
      */
     public List<IPageElement> createLinkPageElements(List<? extends IIpsSrcFile> srcFiles,
-            String target,
+            TargetType target,
             Set<Style> styles,
             DocumentationContext context) {
         List<IPageElement> liste = new ArrayList<IPageElement>();
@@ -95,13 +96,13 @@ public class PageElementUtils {
      */
     public IPageElement createLinkPageElement(DocumentationContext context,
             IIpsElement to,
-            String target,
+            TargetType target,
             String text,
             boolean useImage,
             Style... styles) {
         IpsElementInDocumentedSourceFileFilter filter = new IpsElementInDocumentedSourceFileFilter(context);
 
-        IPageElement element = createIpsElementRepresentation(to, context, text, useImage);
+        IPageElement element = createIpsElementRepresentation(context, to, text, useImage);
 
         if (filter.accept(to)) {
             return createLinkPageElementToIpsElement(to, target, element).addStyles(styles);
@@ -114,13 +115,13 @@ public class PageElementUtils {
      */
     public IPageElement createLinkPageElement(DocumentationContext context,
             IIpsObjectPartContainer to,
-            String target,
+            TargetType target,
             Style... styles) {
         IpsElementInDocumentedSourceFileFilter filter = new IpsElementInDocumentedSourceFileFilter(context);
 
         String text = getIpsObjectPartContainerText(context, to);
 
-        IPageElement element = createIpsElementRepresentation(to, context, text, false);
+        IPageElement element = createIpsElementRepresentation(context, to, text, false);
 
         if (filter.accept(to.getIpsSrcFile())) {
             LinkPageElement linkToIpsObjectPart = createLinkPageElementToIpsElement(to.getIpsSrcFile(),
@@ -139,8 +140,8 @@ public class PageElementUtils {
         return to.getName() + " (" + context.getLabel(to) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    public IPageElement createIpsElementRepresentation(IIpsElement ipsElement,
-            DocumentationContext context,
+    public IPageElement createIpsElementRepresentation(DocumentationContext context,
+            IIpsElement ipsElement,
             String text,
             boolean useImage) {
         if (useImage) {
@@ -160,19 +161,19 @@ public class PageElementUtils {
      */
     public IPageElement createLinkPageElement(DocumentationContext context,
             IIpsElement to,
-            String target,
+            TargetType target,
             String text,
             boolean useImage) {
         return createLinkPageElement(context, to, target, text, useImage, new Style[0]);
     }
 
-    private LinkPageElement createLinkPageElementToIpsElement(IIpsElement to, String target, IPageElement element) {
+    private LinkPageElement createLinkPageElementToIpsElement(IIpsElement to, TargetType target, IPageElement element) {
         return createLinkPageElementToIpsElement(to, null, target, element);
     }
 
     public LinkPageElement createLinkPageElementToIpsElement(IIpsElement to,
             String linkAnchor,
-            String target,
+            TargetType target,
             IPageElement element) {
         String path = HtmlPathFactory.createPathUtil(to).getPathFromRoot(
                 LinkedFileType.getLinkedFileTypeByIpsElement(to));

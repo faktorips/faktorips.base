@@ -73,6 +73,8 @@ public class DocumentationContext {
 
     private boolean showValidationErrors = true;
 
+    private boolean showInheritedObjectPartsInTable = true;
+
     private Locale documentationLocale;
 
     private MessagesManager messagesManager;
@@ -207,6 +209,14 @@ public class DocumentationContext {
 
     public boolean showsValidationErrors() {
         return showValidationErrors;
+    }
+
+    public boolean showInheritedObjectPartsInTable() {
+        return showInheritedObjectPartsInTable;
+    }
+
+    public void setShowInheritedObjectPartsInTable(boolean showInheritedObjectPartsInJavaDocStyle) {
+        this.showInheritedObjectPartsInTable = showInheritedObjectPartsInJavaDocStyle;
     }
 
     public void setShowValidationErrors(boolean outputMessages) {

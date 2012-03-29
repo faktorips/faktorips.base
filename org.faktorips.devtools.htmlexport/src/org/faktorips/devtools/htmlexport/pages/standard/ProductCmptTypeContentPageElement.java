@@ -26,14 +26,12 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -46,6 +44,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AttributesTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.ProductCmptTypeAttributesTablePageElement;
 
 /**
  * a page representing an {@link IProductCmptType}
@@ -54,36 +53,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageEl
  * 
  */
 public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageElement<IProductCmptType> {
-
-    public static class ProductCmptTypeAttributesTablePageElement extends AttributesTablePageElement {
-
-        public ProductCmptTypeAttributesTablePageElement(IType type, DocumentationContext context) {
-            super(type, context);
-        }
-
-        @Override
-        protected List<String> getAttributeData(IAttribute attribute) {
-            List<String> attributeData = super.getAttributeData(attribute);
-
-            IProductCmptTypeAttribute polAttribute = (IProductCmptTypeAttribute)attribute;
-
-            attributeData.add(polAttribute.isChangingOverTime() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-
-            return attributeData;
-        }
-
-        @Override
-        protected List<String> getHeadlineWithIpsObjectPart() {
-            List<String> headline = super.getHeadlineWithIpsObjectPart();
-
-            addHeadlineAndColumnLayout(headline,
-                    getContext()
-                            .getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_changeableInAdjustment),
-                    Style.CENTER);
-
-            return headline;
-        }
-    }
 
     /**
      * a table representing the table structures of the given productCmptType
@@ -98,7 +67,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         }
 
         @Override
-        protected List<? extends IPageElement> createRowWithIpsObjectPart(ITableStructureUsage tableStructureUsage) {
+        protected List<IPageElement> createRowWithIpsObjectPart(ITableStructureUsage tableStructureUsage) {
             List<IPageElement> pageElements = new ArrayList<IPageElement>();
 
             pageElements.add(new TextPageElement(tableStructureUsage.getRoleName()));
@@ -141,7 +110,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
                 return;
             }
             IPageElement link = new PageElementUtils().createLinkPageElement(getContext(), ipsObject,
-                    "content", tableStructure, true); //$NON-NLS-1$
+                    TargetType.CONTENT, tableStructure, true);
             links.add(link);
         }
 
@@ -221,8 +190,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         }
 
         List<IPageElement> linkPageElements = new PageElementUtils().createLinkPageElements(allProductCmptSrcFiles,
-                "content", //$NON-NLS-1$
-                new LinkedHashSet<Style>(), getContext());
+                TargetType.CONTENT, new LinkedHashSet<Style>(), getContext());
         ListPageElement liste = new ListPageElement(linkPageElements);
 
         wrapper.addPageElements(liste);
@@ -253,7 +221,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         addPageElements(new WrapperPageElement(
                 WrapperType.BLOCK,
                 new IPageElement[] {
-                        new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), new PageElementUtils().createLinkPageElement(getContext(), to, "content", getContext().getLabel(to), true) })); //$NON-NLS-1$ //$NON-NLS-2$
+                        new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), new PageElementUtils().createLinkPageElement(getContext(), to, TargetType.CONTENT, getContext().getLabel(to), true) })); //$NON-NLS-1$
 
     }
 

@@ -18,22 +18,22 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AttributesTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.PolicyCmptTypeAttributesTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.ValidationRuleTablePageElement;
 
 /**
@@ -73,39 +73,17 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 
     @Override
     AttributesTablePageElement getAttributesTablePageElement() {
-        return new AttributesTablePageElement(getDocumentedIpsObject(), getContext()) {
-
-            @Override
-            protected List<String> getAttributeData(IAttribute attribute) {
-                List<String> attributeData = super.getAttributeData(attribute);
-
-                PolicyCmptTypeAttribute polAttribute = (PolicyCmptTypeAttribute)attribute;
-
-                attributeData.add(polAttribute.isProductRelevant() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-                attributeData.add(polAttribute.getAttributeType().getName());
-                attributeData.add(polAttribute.isOverwrite() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-
-                return attributeData;
+        if (getContext().showInheritedObjectPartsInTable()) {
+            try {
+                List<IAttribute> attributes = getDocumentedIpsObject().findAllAttributes(getContext().getIpsProject());
+                return new PolicyCmptTypeAttributesTablePageElement(getDocumentedIpsObject(), attributes, getContext());
+            } catch (CoreException e) {
+                getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error getting attributes of " //$NON-NLS-1$
+                        + getDocumentedIpsObject().getQualifiedName(), e));
             }
+        }
 
-            @Override
-            protected List<String> getHeadlineWithIpsObjectPart() {
-                List<String> headline = super.getHeadlineWithIpsObjectPart();
-
-                addHeadlineAndColumnLayout(headline,
-                        getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_productRelevant),
-                        Style.CENTER);
-
-                headline.add(getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_attributeType));
-
-                addHeadlineAndColumnLayout(headline,
-                        getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_overwrite),
-                        Style.CENTER);
-
-                return headline;
-            }
-
-        };
+        return new PolicyCmptTypeAttributesTablePageElement(getDocumentedIpsObject(), getContext());
     }
 
     @Override
@@ -131,8 +109,8 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
         }
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new IPageElement[] {
                 new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), //$NON-NLS-1$
-                new PageElementUtils().createLinkPageElement(getContext(), to,
-                        "content", getContext().getLabel(to), true) })); //$NON-NLS-1$
+                new PageElementUtils().createLinkPageElement(getContext(), to, TargetType.CONTENT, getContext()
+                        .getLabel(to), true) }));
 
     }
 }

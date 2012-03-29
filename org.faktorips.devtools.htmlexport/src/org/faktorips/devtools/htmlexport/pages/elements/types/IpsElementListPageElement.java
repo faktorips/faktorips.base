@@ -23,9 +23,10 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.filter.IIpsElementFilter;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
@@ -65,8 +66,9 @@ public class IpsElementListPageElement extends AbstractIpsElementListPageElement
             addPageElements(new TypeChooserPageElement(getContext(), getRelatedObjectTypes()));
         }
 
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(new LinkPageElement(
-                "classes", "classes", getContext().getMessage(HtmlExportMessages.IpsObjectListPageElement_allObjects)))); //$NON-NLS-1$ //$NON-NLS-2$ 
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK)
+                .addPageElements(new LinkPageElement(
+                        "classes", TargetType.CLASSES, getContext().getMessage(HtmlExportMessages.IpsObjectListPageElement_allObjects)))); //$NON-NLS-1$ 
 
         List<IPageElement> classes = createClassesList();
 

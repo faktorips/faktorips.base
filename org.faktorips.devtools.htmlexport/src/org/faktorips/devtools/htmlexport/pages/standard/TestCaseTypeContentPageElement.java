@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -70,7 +71,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         }
 
         @Override
-        protected List<? extends IPageElement> createRowWithIpsObjectPart(ITestAttribute attribute) {
+        protected List<IPageElement> createRowWithIpsObjectPart(ITestAttribute attribute) {
             return Arrays.asList(getAttributeData(attribute));
         }
 
@@ -114,7 +115,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
             }
 
             attributeData.add(new PageElementUtils().createLinkPageElement(getContext(), policyCmptType,
-                    "content", correspondingPolicyCmptType, true)); //$NON-NLS-1$
+                    TargetType.CONTENT, correspondingPolicyCmptType, true));
             attributeData.add(new TextPageElement(policyCmptType.getAttribute(attribute.getAttribute()).getDatatype()));
         }
 
@@ -212,7 +213,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         IPolicyCmptType policyCmptType = testParameter.findPolicyCmptType(testParameter.getIpsProject());
 
         IPageElement linkPageElement = new PageElementUtils().createLinkPageElement(getContext(), policyCmptType,
-                "content", getContext().getLabel(policyCmptType), true); //$NON-NLS-1$
+                TargetType.CONTENT, getContext().getLabel(policyCmptType), true);
         TreeNodePageElement testParameterPageElement = new TreeNodePageElement(
                 new WrapperPageElement(WrapperType.BLOCK).addPageElements(linkPageElement).addPageElements(
                         new TextPageElement((" - " + testParameter.getTestParameterType().getName())))); //$NON-NLS-1$

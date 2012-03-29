@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -149,8 +150,8 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         }
 
         if (type.getSupertype().equals(getDocumentedIpsObject().getQualifiedName())) {
-            subTypes.add(new PageElementUtils().createLinkPageElement(getContext(), type,
-                    "content", type.getQualifiedName(), true)); //$NON-NLS-1$
+            subTypes.add(new PageElementUtils().createLinkPageElement(getContext(), type, TargetType.CONTENT,
+                    type.getQualifiedName(), true));
         }
     }
 
@@ -165,8 +166,8 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         }
 
         TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(
-                new PageElementUtils().createLinkPageElement(getContext(), superTypes.get(0),
-                        "content", superTypes.get(0).getQualifiedName(), true))); //$NON-NLS-1$
+                new PageElementUtils().createLinkPageElement(getContext(), superTypes.get(0), TargetType.CONTENT,
+                        superTypes.get(0).getQualifiedName(), true)));
         TreeNodePageElement element = baseElement;
 
         for (int i = 1; i < superTypes.size(); i++) {
@@ -174,8 +175,9 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
                 element.addPageElements(new TextPageElement(getContext().getLabel(getDocumentedIpsObject())));
                 break;
             }
-            TreeNodePageElement subElement = new TreeNodePageElement(new PageElementUtils().createLinkPageElement(
-                    getContext(), superTypes.get(i), "content", getContext().getLabel(superTypes.get(i)), true)); //$NON-NLS-1$
+            TreeNodePageElement subElement = new TreeNodePageElement(
+                    new PageElementUtils().createLinkPageElement(getContext(), superTypes.get(i), TargetType.CONTENT,
+                            getContext().getLabel(superTypes.get(i)), true));
             element.addPageElements(subElement);
             element = subElement;
         }
@@ -218,7 +220,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
                 new IPageElement[] {
                         new TextPageElement(getContext().getMessage(
                                 HtmlExportMessages.AbstractTypeContentPageElement_extends)
-                                + " "), new PageElementUtils().createLinkPageElement(getContext(), to, "content", getContext().getLabel(to), true) })); //$NON-NLS-1$//$NON-NLS-2$ 
+                                + " "), new PageElementUtils().createLinkPageElement(getContext(), to, TargetType.CONTENT, getContext().getLabel(to), true) })); //$NON-NLS-1$
     }
 
     /**
@@ -265,6 +267,10 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
     }
 
     protected void addInheritedAttributes(AbstractCompositePageElement wrapper) {
+        if (getContext().showInheritedObjectPartsInTable()) {
+            return;
+        }
+
         List<IType> revertedSuperTypes = new ArrayList<IType>(superTypes);
         Collections.reverse(revertedSuperTypes);
         wrapper.addPageElements(new InheritedTypeAttributesPageElement(getContext(), getDocumentedIpsObject(),

@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -71,7 +72,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         }
 
         @Override
-        protected List<? extends IPageElement> createRowWithIpsObjectPart(IRow rowData) {
+        protected List<IPageElement> createRowWithIpsObjectPart(IRow rowData) {
             return Arrays.asList(new PageElementUtils().createTextPageElements(getRowData(rowData)));
         }
 
@@ -123,8 +124,8 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new IPageElement[] {
                 new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayName() + ": "), //$NON-NLS-1$
-                new PageElementUtils().createLinkPageElement(getContext(), tableStructure,
-                        "content", getContext().getLabel(tableStructure), true) })); //$NON-NLS-1$
+                new PageElementUtils().createLinkPageElement(getContext(), tableStructure, TargetType.CONTENT,
+                        getContext().getLabel(tableStructure), true) }));
     }
 
     @Override

@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -68,8 +69,8 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(
                 new TextPageElement(IpsObjectType.TEST_CASE_TYPE.getDisplayName() + ": ")) //$NON-NLS-1$
                 .addPageElements(
-                        new PageElementUtils().createLinkPageElement(getContext(), testCaseType,
-                                "content", testCaseType.getQualifiedName(), true))); //$NON-NLS-1$
+                        new PageElementUtils().createLinkPageElement(getContext(), testCaseType, TargetType.CONTENT,
+                                testCaseType.getQualifiedName(), true)));
 
         addTestCaseTypeParameters();
     }

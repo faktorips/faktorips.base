@@ -22,13 +22,13 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
  * @author dicker
  * 
  */
-public class LinkedFileType {
-    public static final LinkedFileType PACKAGE_CLASSES_OVERVIEW = new LinkedFileType("package_classes_", "", "classes"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    public static final LinkedFileType OBJECT_TYPE_CLASSES_OVERVIEW = new LinkedFileType(
-            "object_type_classes_", "", "classes"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    public static final LinkedFileType ELEMENT_CONTENT = new LinkedFileType("element_", "", "content"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+public enum LinkedFileType {
 
-    private LinkedFileType(String prefix, String suffix, String target) {
+    PACKAGE_CLASSES_OVERVIEW("package_classes_", "", TargetType.CLASSES), //$NON-NLS-1$ //$NON-NLS-2$ 
+    OBJECT_TYPE_CLASSES_OVERVIEW("object_type_classes_", "", TargetType.CLASSES), //$NON-NLS-1$ //$NON-NLS-2$ 
+    ELEMENT_CONTENT("element_", "", TargetType.CONTENT); //$NON-NLS-1$ //$NON-NLS-2$ 
+
+    private LinkedFileType(String prefix, String suffix, TargetType target) {
         this.prefix = prefix;
         this.suffix = suffix;
         this.target = target;
@@ -36,7 +36,7 @@ public class LinkedFileType {
 
     private String prefix;
     private String suffix;
-    private String target;
+    private TargetType target;
 
     public String getPrefix() {
         return prefix;
@@ -46,7 +46,7 @@ public class LinkedFileType {
         return suffix;
     }
 
-    public String getTarget() {
+    public TargetType getTarget() {
         return target;
     }
 

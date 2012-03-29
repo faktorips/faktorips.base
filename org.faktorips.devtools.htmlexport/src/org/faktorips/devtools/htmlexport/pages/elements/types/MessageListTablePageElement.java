@@ -23,8 +23,9 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
-import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
@@ -89,7 +90,7 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
     protected IPageElement createInvalidObjectPropertiesItem(ObjectProperty objectProperty) {
         IIpsSrcFile srcFile = getLinkableSrcFile(objectProperty.getObject(), getContext());
         if (srcFile != null) {
-            return new PageElementUtils().createLinkPageElement(context, srcFile, "content", //$NON-NLS-1$
+            return new PageElementUtils().createLinkPageElement(context, srcFile, TargetType.CONTENT,
                     srcFile.getIpsObjectName(), true);
         }
         return new TextPageElement(objectProperty.getObject().toString());

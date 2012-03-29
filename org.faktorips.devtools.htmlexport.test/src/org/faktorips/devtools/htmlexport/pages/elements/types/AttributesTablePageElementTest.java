@@ -13,12 +13,17 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
+import java.util.List;
+import java.util.Locale;
+
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.AbstractXmlUnitHtmlExportTest;
 import org.faktorips.devtools.htmlexport.pages.standard.ContentPageUtil;
+import org.faktorips.devtools.htmlexport.pages.standard.PolicyCmptTypeContentPageElement;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,7 +52,8 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
         IAttribute attributeString = createStringAttribute();
         IAttribute attributeInteger = createIntegerAttribute();
 
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         assertXPathExists(objectContentPage, getXPathAttributeTable());
 
@@ -61,7 +67,8 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
     @Test
     public void testAttributesTableNichtVorhandenOhneAttribute() throws Exception {
 
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         assertXPathNotExists(objectContentPage, getXPathAttributeTable());
     }
@@ -71,7 +78,8 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
         IAttribute attributeString = createStringAttribute();
         createIntegerAttribute();
 
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         assertXPathFromTable(objectContentPage, "//tr[2][td='" + attributeString.getDatatype() + "']");
 
@@ -79,6 +87,80 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
 
         assertXPathFromTable(objectContentPage, "//tr[2][td='" + attributeString.getModifier().getId() + "']");
 
+    }
+
+    @Test
+    public void testInheritedAttributeJavaDocStyle() throws Exception {
+        PolicyCmptType superPolicy = newPolicyCmptType(ipsProject, "BasisVertrag");
+        IAttribute attribute = superPolicy.newAttribute();
+        attribute.setName("Geerbt");
+        attribute.setDatatype("String");
+        attribute.setDefaultValue("test");
+        attribute.setModifier(Modifier.PUBLIC);
+
+        policy.setSupertype(superPolicy.getQualifiedName());
+        createStringAttribute();
+
+        context.setShowInheritedObjectPartsInTable(false);
+
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
+
+        assertXPathNotExists(objectContentPage, getXPathAttributeTable() + "/tr[3]");
+
+        assertXPathNotExists(objectContentPage, getXPathAttributeTable() + "/tr[1]/td[. = 'inherited from']");
+
+        assertXPathExists(objectContentPage, "//h3[starts-with(., 'Geerbte Attribute')]");
+
+    }
+
+    @Test
+    public void testInheritedAttributeInTable() throws Exception {
+        PolicyCmptType superPolicy = newPolicyCmptType(ipsProject, "BasisVertrag");
+        IAttribute attribute = superPolicy.newAttribute();
+        attribute.setName("Geerbt");
+        attribute.setDatatype("String");
+        attribute.setDefaultValue("test");
+        attribute.setModifier(Modifier.PUBLIC);
+
+        policy.setSupertype(superPolicy.getQualifiedName());
+        createStringAttribute();
+
+        context.setShowInheritedObjectPartsInTable(true);
+        context.setDocumentationLocale(Locale.GERMANY);
+
+        PolicyCmptTypeContentPageElement objectContentPage = (PolicyCmptTypeContentPageElement)ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
+
+        objectContentPage.build();
+
+        int anzahlExtensionProperties = 0;
+        List<IPageElement> subElements = objectContentPage.getSubElements();
+
+        basis: for (IPageElement pageElement : subElements) {
+            if (pageElement instanceof WrapperPageElement) {
+                WrapperPageElement wrapperPageElement = (WrapperPageElement)pageElement;
+                for (IPageElement iPageElement : wrapperPageElement.getSubElements()) {
+                    if (iPageElement instanceof PolicyCmptTypeAttributesTablePageElement) {
+                        PolicyCmptTypeAttributesTablePageElement policyCmptTypeAttributesTablePageElement = (PolicyCmptTypeAttributesTablePageElement)iPageElement;
+                        anzahlExtensionProperties = policyCmptTypeAttributesTablePageElement.getPropertyDefinitions().length;
+                        break basis;
+                    }
+                }
+            }
+        }
+
+        assertXPathExists(objectContentPage, getXPathAttributeTable() + "/tr[3]");
+        assertXPathExists(objectContentPage, getXPathAttributeTable() + "/tr[1]/td[starts-with(., 'Geerbt')]");
+
+        assertXPathExists(objectContentPage, getXPathAttributeTable()
+                + "/tr[td/a/@id='Vertrag.PolicyCmptTypeAttribute.Stringname']/td[count(../td) - "
+                + anzahlExtensionProperties + "][. = '-']");
+        assertXPathExists(objectContentPage, getXPathAttributeTable()
+                + "/tr[td/a/@id='BasisVertrag.PolicyCmptTypeAttribute.Geerbt']/td[count(../td) - "
+                + anzahlExtensionProperties + "]/a[contains(., 'BasisVertrag')]");
+
+        assertXPathNotExists(objectContentPage, "//h3[starts-with(., 'Geerbte Attribute')]");
     }
 
     private IAttribute createIntegerAttribute() {

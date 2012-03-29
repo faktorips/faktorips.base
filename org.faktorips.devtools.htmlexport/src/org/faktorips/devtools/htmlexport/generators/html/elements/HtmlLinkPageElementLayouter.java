@@ -28,8 +28,8 @@ public class HtmlLinkPageElementLayouter extends AbstractHtmlPageElementLayouter
         if (pageElement.hasStyle(Style.BLOCK)) {
             append(htmlUtil.createHtmlElementOpenTag("div")); //$NON-NLS-1$
         }
-        append(htmlUtil.createLinkOpenTag(createLinkBase(), pageElement.getLinkAnchor(), pageElement.getTarget(),
-                getClasses(), pageElement.getTitle()));
+        append(htmlUtil.createLinkOpenTag(createLinkBase(), pageElement.getLinkAnchor(), pageElement.getTarget()
+                .getId(), getClasses(), pageElement.getTitle()));
 
         layouter.visitSubElements(pageElement);
 

@@ -30,8 +30,7 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
         AbstractStandardTablePageElement {
 
     private DocumentationContext context;
-    protected final List<? extends T> objectParts;
-    private IExtensionPropertyDefinition[] propertyDefinitions;
+    private final List<? extends T> objectParts;
 
     public AbstractIpsObjectPartsContainerTablePageElement(List<? extends T> objectParts, DocumentationContext context) {
         super();
@@ -41,7 +40,7 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
 
     @Override
     protected final void addDataRows() {
-        for (T rowData : objectParts) {
+        for (T rowData : getObjectParts()) {
             addRow(rowData);
 
         }
@@ -67,12 +66,8 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
     }
 
     private List<String> getHeadlineWithExtentionPropertiesData() {
-        if (isEmpty()) {
-            return Collections.emptyList();
-        }
 
-        IIpsElement rowData = objectParts.get(0);
-        propertyDefinitions = rowData.getIpsModel().getExtensionPropertyDefinitions(rowData.getClass(), true);
+        IExtensionPropertyDefinition[] propertyDefinitions = getPropertyDefinitions();
 
         if (ArrayUtils.isEmpty(propertyDefinitions)) {
             return Collections.emptyList();
@@ -85,22 +80,31 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
         return extensionPropertyNames;
     }
 
+    protected IExtensionPropertyDefinition[] getPropertyDefinitions() {
+        if (isEmpty()) {
+            return new IExtensionPropertyDefinition[0];
+        }
+
+        IIpsElement rowData = getObjectParts().get(0);
+        return rowData.getIpsModel().getExtensionPropertyDefinitions(rowData.getClass(), true);
+    }
+
     private List<IPageElement> createRowWithExtentionPropertiesData(T rowData) {
         List<IPageElement> extensionPropertyValues = new ArrayList<IPageElement>();
-        for (IExtensionPropertyDefinition property : propertyDefinitions) {
+        for (IExtensionPropertyDefinition property : getPropertyDefinitions()) {
             Object value = rowData.getExtPropertyValue(property.getPropertyId());
             extensionPropertyValues.add(new TextPageElement(value == null ? null : value.toString()));
         }
         return extensionPropertyValues;
     }
 
-    protected abstract List<? extends IPageElement> createRowWithIpsObjectPart(T rowData);
+    protected abstract List<IPageElement> createRowWithIpsObjectPart(T rowData);
 
     protected abstract List<String> getHeadlineWithIpsObjectPart();
 
     @Override
     public boolean isEmpty() {
-        return objectParts.isEmpty();
+        return getObjectParts().isEmpty();
     }
 
     public void setContext(DocumentationContext context) {
@@ -110,4 +114,9 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
     public DocumentationContext getContext() {
         return context;
     }
+
+    protected List<? extends T> getObjectParts() {
+        return objectParts;
+    }
+
 }

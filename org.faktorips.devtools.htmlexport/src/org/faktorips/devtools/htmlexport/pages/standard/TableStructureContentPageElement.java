@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
+import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -59,7 +60,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         @Override
-        protected List<? extends IPageElement> createRowWithIpsObjectPart(IForeignKey foreignKey) {
+        protected List<IPageElement> createRowWithIpsObjectPart(IForeignKey foreignKey) {
             List<IPageElement> cells = new ArrayList<IPageElement>();
 
             IPageElement link = getLinkToReferencedTableStructure(foreignKey);
@@ -86,8 +87,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             }
 
             return new PageElementUtils().createLinkPageElement(getContext(), findReferencedTableStructure,
-                    "content", foreignKey //$NON-NLS-1$
-                            .getReferencedTableStructure(), true);
+                    TargetType.CONTENT, foreignKey.getReferencedTableStructure(), true);
         }
 
         @Override
@@ -134,7 +134,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         @Override
-        protected List<? extends IPageElement> createRowWithIpsObjectPart(IColumnRange columnRange) {
+        protected List<IPageElement> createRowWithIpsObjectPart(IColumnRange columnRange) {
             return Arrays.asList(new PageElementUtils().createTextPageElements(getColumnRangeData(columnRange)));
         }
 
@@ -166,7 +166,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         @Override
-        protected List<? extends IPageElement> createRowWithIpsObjectPart(IColumn column) {
+        protected List<IPageElement> createRowWithIpsObjectPart(IColumn column) {
             return Arrays.asList(new PageElementUtils().createTextPageElements(getColumnData(column)));
         }
 
@@ -205,7 +205,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         @Override
-        protected List<? extends IPageElement> createRowWithIpsObjectPart(IUniqueKey uniqueKey) {
+        protected List<IPageElement> createRowWithIpsObjectPart(IUniqueKey uniqueKey) {
             return Arrays.asList(new PageElementUtils().createTextPageElements(getUniqueKeyData(uniqueKey)));
         }
 
@@ -342,7 +342,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         List<IPageElement> linkPageElements = new PageElementUtils().createLinkPageElements(new ArrayList<IIpsSrcFile>(
-                tableContentsSrcFiles), "content", new LinkedHashSet<Style>(), getContext()); //$NON-NLS-1$
+                tableContentsSrcFiles), TargetType.CONTENT, new LinkedHashSet<Style>(), getContext());
         ListPageElement liste = new ListPageElement(linkPageElements);
 
         wrapper.addPageElements(liste);
