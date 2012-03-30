@@ -18,9 +18,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
@@ -66,7 +63,7 @@ public class NewGenerationWizard extends Wizard {
     @Override
     public boolean performFinish() {
         try {
-            getContainer().run(true, true, new CreateGenerationsRunnable(pmo, timedIpsObjects));
+            getContainer().run(true, true, new NewGenerationRunnable(pmo, timedIpsObjects));
         } catch (InvocationTargetException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         } catch (InterruptedException e) {
@@ -124,47 +121,6 @@ public class NewGenerationWizard extends Wizard {
         public void dispose() {
             super.dispose();
             bindingContext.dispose();
-        }
-
-    }
-
-    private static class CreateGenerationsRunnable implements IRunnableWithProgress {
-
-        private final NewGenerationPMO pmo;
-
-        private final List<ITimedIpsObject> timedIpsObjects;
-
-        private CreateGenerationsRunnable(NewGenerationPMO pmo, List<ITimedIpsObject> timedIpsObjects) {
-            this.pmo = pmo;
-            this.timedIpsObjects = timedIpsObjects;
-        }
-
-        @Override
-        public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-            monitor.beginTask(Messages.CreateGenerationsRunnable_taskName, timedIpsObjects.size());
-            for (ITimedIpsObject timedIpsObject : timedIpsObjects) {
-                if (monitor.isCanceled()) {
-                    break;
-                }
-
-                boolean generationExists = timedIpsObject.getGenerationByEffectiveDate(pmo.getValidFrom()) != null;
-                if (pmo.isSkipExistingGenerations() && generationExists) {
-                    continue;
-                }
-
-                boolean wasDirty = timedIpsObject.getIpsSrcFile().isDirty();
-                timedIpsObject.newGeneration(pmo.getValidFrom());
-                if (!wasDirty) {
-                    try {
-                        timedIpsObject.getIpsSrcFile().save(true, monitor);
-                    } catch (CoreException e) {
-                        IpsPlugin.logAndShowErrorDialog(e);
-                    }
-                }
-
-                monitor.worked(1);
-            }
-            monitor.done();
         }
 
     }
