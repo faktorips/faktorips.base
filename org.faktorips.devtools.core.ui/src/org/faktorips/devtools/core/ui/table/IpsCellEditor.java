@@ -61,8 +61,21 @@ public abstract class IpsCellEditor extends CellEditor {
      * Registers the given {@link TraversalStrategy} with this {@link CellEditor}.
      */
     public void setTraversalStrategy(TraversalStrategy strategy) {
+        removeStrategyAsListener(traversalStrategy);
+        traversalStrategy = strategy;
+        addStrategyAsListener(traversalStrategy);
+    }
+
+    private void removeStrategyAsListener(TraversalStrategy strategy) {
         if (strategy != null) {
-            traversalStrategy = strategy;
+            getControl().removeKeyListener(strategy);
+            getControl().removeTraverseListener(strategy);
+            getControl().removeFocusListener(strategy);
+        }
+    }
+
+    protected void addStrategyAsListener(TraversalStrategy strategy) {
+        if (strategy != null) {
             getControl().addKeyListener(strategy);
             getControl().addTraverseListener(strategy);
             getControl().addFocusListener(strategy);

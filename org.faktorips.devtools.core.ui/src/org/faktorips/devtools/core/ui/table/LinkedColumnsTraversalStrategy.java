@@ -54,8 +54,10 @@ public abstract class LinkedColumnsTraversalStrategy extends AbstractPermanentTr
     @Override
     public void keyTraversed(TraverseEvent e) {
         if (e.detail == SWT.TRAVERSE_ESCAPE) {
-            getCurrentCellEditor().deactivate();
-            e.doit = false;
+            if (getCurrentCellEditor() != null) {
+                getCurrentCellEditor().deactivate();
+                e.doit = false;
+            }
         } else if (e.detail == SWT.TRAVERSE_RETURN) {
             editNextRow();
             e.doit = false;

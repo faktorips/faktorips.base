@@ -58,6 +58,9 @@ public class Messages extends NLS {
     public static String IpsPackageSortDefDialog_headlineText;
     public static String IpsPackageSortDefDialog_restore;
     public static String IpsPackageSortDefDialog_up;
+    public static String MultiValueDialog_ColumnText;
     public static String MultiValueDialog_TabelLabel;
+    public static String MultiValueDialog_TableDescription;
+    public static String MultiValueDialog_TitleText;
     public static String OpenIpsObjectSelectionDialog_Filter;
 }

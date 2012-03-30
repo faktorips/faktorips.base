@@ -68,6 +68,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         if (getProperty().isMultiValueAttribute()) {
             MultiValueAttributeControl control = new MultiValueAttributeControl(this, getToolkit(), getPropertyValue());
             editField = new TextButtonField(control);
+            control.getTextControl().setEditable(false);
         } else {
             ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     datatype);

@@ -13,12 +13,7 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
-import java.util.List;
-
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -37,9 +32,7 @@ public class MultiValueAttributeControl extends TextButtonControl {
     @Override
     protected void buttonClicked() {
         MultiValueDialog multiValueDialog = new MultiValueDialog(getParent().getShell(), attributeValue);
-        if (multiValueDialog.open() == Dialog.OK) {
-            List<SingleValueHolder> values = multiValueDialog.getValues();
-            attributeValue.setValueHolder(new MultiValueHolder(attributeValue, values));
-        }
+        multiValueDialog.open();
+        // values are applied in the dialog's okPressed() method
     }
 }

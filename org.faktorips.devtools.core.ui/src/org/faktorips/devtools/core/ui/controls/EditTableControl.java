@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controls.tableedit.EditTableControlViewer;
 
 /**
  * A control that contains a table on the left and buttons to add and remove rows and to move a row
@@ -51,6 +52,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * <p>
  * Some comments in this class were copied along with the code when "reusing" functionality from
  * eclipse. Thus bug numbers are eclipse bugs.
+ * 
+ * As of FIPS 3.7 use {@link EditTableControlViewer}.
  */
 public abstract class EditTableControl extends Composite implements IDataChangeableReadWriteAccess {
 

@@ -41,6 +41,14 @@ public class Messages extends NLS {
 
     public static String IpsPckFragmentRefControl_titleBrowse;
 
+    public static String EditTableControlUIBuilder_AddButtonLabel;
+
+    public static String EditTableControlUIBuilder_DownButtonLabel;
+
+    public static String EditTableControlUIBuilder_RemoveButtonLabel;
+
+    public static String EditTableControlUIBuilder_UpButtonLabel;
+
     public static String EnumRefControl_text;
 
     public static String EnumRefControl_title;

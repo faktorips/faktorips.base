@@ -13,44 +13,54 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.ui.controls.MultiValueEditTableControl;
+import org.faktorips.devtools.core.ui.controls.tableedit.EditTableControlFactory;
+import org.faktorips.devtools.core.ui.controls.tableedit.MultiValueLableModel;
+import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
-public class MultiValueDialog extends Dialog {
+public class MultiValueDialog extends IpsPartEditDialog2 {
 
     private final IAttributeValue attributeValue;
-    private MultiValueEditTableControl editTableControl;
+    private MultiValueLableModel tabelModel;
+    private ValueDatatype datatype;
 
     public MultiValueDialog(Shell parentShell, IAttributeValue attributeValue) {
-        super(parentShell);
+        super(attributeValue, parentShell, Messages.MultiValueDialog_TitleText);
         setShellStyle(getShellStyle() | SWT.RESIZE);
         Assert.isNotNull(attributeValue);
         this.attributeValue = attributeValue;
+        tabelModel = new MultiValueLableModel(attributeValue);
+        try {
+            IIpsProject ipsProject = attributeValue.getIpsProject();
+            datatype = attributeValue.findAttribute(ipsProject).findValueDatatype(ipsProject);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
-    protected Control createDialogArea(Composite parent) {
-        super.createDialogArea(parent);
-        editTableControl = new MultiValueEditTableControl(parent);
-        editTableControl.initialize(attributeValue, Messages.MultiValueDialog_TabelLabel);
-        return parent;
+    protected void okPressed() {
+        tabelModel.applyValueList();
+        super.okPressed();
     }
 
-    public List<SingleValueHolder> getValues() {
-        if (editTableControl != null) {
-            return editTableControl.getValues();
-        }
-        return new ArrayList<SingleValueHolder>();
+    @Override
+    protected Composite createWorkAreaThis(Composite parent) {
+        String description = NLS.bind(Messages.MultiValueDialog_TableDescription, attributeValue.getAttribute());
+        EditTableControlFactory.createListEditTable(getToolkit(), parent, attributeValue.getIpsProject(), datatype,
+                tabelModel, description, Messages.MultiValueDialog_ColumnText);
+        ((GridData)parent.getLayoutData()).heightHint = 300;
+        return parent;
     }
 
 }
