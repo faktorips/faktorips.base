@@ -35,8 +35,8 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DateControl;
 
 /**
- * Allows creation of new {@link IIpsObjectGeneration generations} to one or many
- * {@link ITimedIpsObject timed IPS objects}.
+ * Allows creation of new {@linkplain IIpsObjectGeneration IPS Object Generations} to one or many
+ * {@linkplain ITimedIpsObject Timed IPS Objects}.
  */
 public class NewGenerationWizard extends Wizard {
 
@@ -45,8 +45,8 @@ public class NewGenerationWizard extends Wizard {
     private final List<ITimedIpsObject> timedIpsObjects;
 
     /**
-     * @param timedIpsObjects a list containing all {@link ITimedIpsObject timed IPS objects} to
-     *            create new {@link IIpsObjectGeneration generations} for
+     * @param timedIpsObjects a list containing all {@linkplain ITimedIpsObject Timed IPS Objects}
+     *            to create new {@linkplain IIpsObjectGeneration IPS Object Generations} for
      */
     public NewGenerationWizard(List<ITimedIpsObject> timedIpsObjects) {
         this.timedIpsObjects = timedIpsObjects;
@@ -73,8 +73,8 @@ public class NewGenerationWizard extends Wizard {
     }
 
     /**
-     * Allows the user to select a validity date (valid from) for the new
-     * {@link IIpsObjectGeneration generations} to create.
+     * Allows the user to select a validity date (valid-from) for the new
+     * {@linkplain IIpsObjectGeneration IPS Object Generations} to create.
      */
     private static class ChooseValidityDatePage extends WizardPage {
 

@@ -32,8 +32,8 @@ import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewGenerationWizard;
 
 /**
- * Presents a wizard to the user that allows him to create a new {@link IIpsObjectGeneration
- * generation} for selected {@link IProductCmpt product components}.
+ * Presents a wizard to the user that allows to create a new {@linkplain IIpsObjectGeneration IPS
+ * Object Generation} for selected {@linkplain IProductCmpt Product Components}.
  */
 public class CreateNewGenerationAction extends IpsAction {
 

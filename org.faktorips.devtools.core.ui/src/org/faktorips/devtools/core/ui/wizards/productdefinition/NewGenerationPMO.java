@@ -19,7 +19,22 @@ import java.util.GregorianCalendar;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 
-// TODO AW 30-03-2012: Document this class!
+/**
+ * {@linkplain PresentationModelObject Presentation Model Object} that configures the
+ * {@linkplain NewGenerationWizard} and {@linkplain NewGenerationRunnable}.
+ * <p>
+ * This {@linkplain PresentationModelObject Presentation Model Object} stores
+ * <ul>
+ * <li>
+ * the date from which new generations are valid
+ * <li>a boolean flag controlling whether a new generation shall be created if a matching generation
+ * already exists in the target object
+ * </ul>
+ * 
+ * @see NewGenerationWizard
+ * @see NewGenerationRunnable
+ */
+// Must be public as otherwise binding contexts cannot do their job
 public class NewGenerationPMO extends PresentationModelObject {
 
     public static final String PROPERTY_VALID_FROM = "validFrom"; //$NON-NLS-1$
