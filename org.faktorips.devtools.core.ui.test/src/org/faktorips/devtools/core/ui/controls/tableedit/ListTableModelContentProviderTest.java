@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.core.ui.dialogs.MultiValueLableModel;
 import org.junit.Test;
 
 public class ListTableModelContentProviderTest {

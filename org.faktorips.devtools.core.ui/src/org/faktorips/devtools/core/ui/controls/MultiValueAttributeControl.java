@@ -19,6 +19,13 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueDialog;
 
+/**
+ * {@link TextButtonControl} for multi-value attributes. The text control cannot be edited. The
+ * button opens the {@link MultiValueDialog} to allow users to change the attribute's list of
+ * values.
+ * 
+ * @author Stefan Widmaier
+ */
 public class MultiValueAttributeControl extends TextButtonControl {
 
     private IAttributeValue attributeValue;
@@ -27,6 +34,7 @@ public class MultiValueAttributeControl extends TextButtonControl {
         super(parent, toolkit, ""); //$NON-NLS-1$
         setButtonImage(IpsUIPlugin.getImageHandling().getSharedImage("MultiValueAttribute.gif", true)); //$NON-NLS-1$
         this.attributeValue = attributeValue;
+        getTextControl().setEditable(false);
     }
 
     @Override
