@@ -159,4 +159,6 @@ public class Messages extends NLS {
     public static String CleanUpTranslationsAction_text;
     public static String CleanUpTranslationsAction_progressTask;
 
+    public static String CreateNewGenerationAction_title;
+
 }
