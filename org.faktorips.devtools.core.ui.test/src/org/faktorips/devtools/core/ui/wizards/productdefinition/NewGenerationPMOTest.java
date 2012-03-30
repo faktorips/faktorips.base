@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +37,8 @@ public class NewGenerationPMOTest {
 
     private PMOChangeListener pmoChangeListener;
 
+    private NewGenerationPMO pmo;
+
     @Before
     public void setUp() {
         defaultValidityDate = new GregorianCalendar(1986, 04, 16);
@@ -44,6 +48,13 @@ public class NewGenerationPMOTest {
         singletonHelper.setSingletonInstance(IpsUIPlugin.class, ipsUIPlugin);
 
         pmoChangeListener = new PMOChangeListener();
+        pmo = createPMO();
+    }
+
+    private NewGenerationPMO createPMO() {
+        NewGenerationPMO pmo = new NewGenerationPMO();
+        pmo.addPropertyChangeListener(pmoChangeListener);
+        return pmo;
     }
 
     @After
@@ -52,13 +63,7 @@ public class NewGenerationPMOTest {
     }
 
     @Test
-    public void testGetValidFrom_IsDefaultValidityDateAfterInitialization() {
-        assertEquals(defaultValidityDate, createPMO().getValidFrom());
-    }
-
-    @Test
     public void testSetValidFrom() {
-        NewGenerationPMO pmo = createPMO();
         GregorianCalendar validFrom = new GregorianCalendar(1986, 4, 16);
         pmo.setValidFrom(validFrom);
 
@@ -66,10 +71,25 @@ public class NewGenerationPMOTest {
         assertEquals(validFrom, pmo.getValidFrom());
     }
 
-    private NewGenerationPMO createPMO() {
-        NewGenerationPMO pmo = new NewGenerationPMO();
-        pmo.addPropertyChangeListener(pmoChangeListener);
-        return pmo;
+    @Test
+    public void testGetValidFrom_IsDefaultValidityDateAfterInitialization() {
+        assertEquals(defaultValidityDate, pmo.getValidFrom());
+    }
+
+    @Test
+    public void testIsSkipExistingGenerations() {
+        pmo.setSkipExistingGenerations(true);
+        assertPropertyChangeEvent(pmo, NewGenerationPMO.PROPERTY_SKIP_EXISTING_GENERATIONS, false, true);
+        assertTrue(pmo.isSkipExistingGenerations());
+
+        pmo.setSkipExistingGenerations(false);
+        assertPropertyChangeEvent(pmo, NewGenerationPMO.PROPERTY_SKIP_EXISTING_GENERATIONS, true, false);
+        assertFalse(pmo.isSkipExistingGenerations());
+    }
+
+    @Test
+    public void testIsSkipExistingGenerations_IsFalseAfterInitialization() {
+        assertFalse(pmo.isSkipExistingGenerations());
     }
 
     private void assertPropertyChangeEvent(Object source, String propertyName, Object oldValue, Object newValue) {

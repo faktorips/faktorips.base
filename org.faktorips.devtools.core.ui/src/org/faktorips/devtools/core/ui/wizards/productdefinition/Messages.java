@@ -38,9 +38,11 @@ public class Messages extends NLS {
     public static String NewProductDefinitionValidator_msg_invalidEffectiveDate;
     public static String NewProductDefinitionValidator_msg_invalidPackage;
     public static String NewGenerationWizard_title;
+    public static String CreateGenerationsRunnable_taskName;
     public static String ChooseValidityDatePage_pageTitle;
     public static String ChooseValidityDatePage_pageInfoSingular;
     public static String ChooseValidityDatePage_pageInfoPlural;
     public static String ChooseValidityDatePage_labelValidFrom;
+    public static String ChooseValidityDatePage_labelSkipExistingGenerations;
 
 }

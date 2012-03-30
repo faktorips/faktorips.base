@@ -13,14 +13,20 @@
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -28,6 +34,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DateControl;
 
 /**
@@ -58,8 +65,12 @@ public class NewGenerationWizard extends Wizard {
 
     @Override
     public boolean performFinish() {
-        for (ITimedIpsObject timedIpsObject : timedIpsObjects) {
-            timedIpsObject.newGeneration(pmo.getValidFrom());
+        try {
+            getContainer().run(true, true, new CreateGenerationsRunnable(pmo, timedIpsObjects));
+        } catch (InvocationTargetException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        } catch (InterruptedException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
         }
         return true;
     }
@@ -91,12 +102,20 @@ public class NewGenerationWizard extends Wizard {
             Composite pageControl = toolkit.createLabelEditColumnComposite(parent);
             setControl(pageControl);
 
+            // Valid from
             toolkit.createLabel(pageControl, Messages.ChooseValidityDatePage_labelValidFrom);
-            DateControl dateControl = new DateControl(pageControl, toolkit);
-            Text textControl = dateControl.getTextControl();
+            DateControl validFromDateControl = new DateControl(pageControl, toolkit);
+            Text textControl = validFromDateControl.getTextControl();
             bindingContext.bindContent(
                     new FormattingTextField<GregorianCalendar>(textControl, GregorianCalendarFormat.newInstance()),
                     pmo, NewGenerationPMO.PROPERTY_VALID_FROM);
+
+            // Skip existing generations
+            toolkit.createLabel(pageControl, StringUtils.EMPTY);
+            Checkbox skipExistingGenerationsCheckbox = toolkit.createCheckbox(pageControl,
+                    Messages.ChooseValidityDatePage_labelSkipExistingGenerations);
+            bindingContext.bindContent(skipExistingGenerationsCheckbox, pmo,
+                    NewGenerationPMO.PROPERTY_SKIP_EXISTING_GENERATIONS);
 
             bindingContext.updateUI();
         }
@@ -105,6 +124,47 @@ public class NewGenerationWizard extends Wizard {
         public void dispose() {
             super.dispose();
             bindingContext.dispose();
+        }
+
+    }
+
+    private static class CreateGenerationsRunnable implements IRunnableWithProgress {
+
+        private final NewGenerationPMO pmo;
+
+        private final List<ITimedIpsObject> timedIpsObjects;
+
+        private CreateGenerationsRunnable(NewGenerationPMO pmo, List<ITimedIpsObject> timedIpsObjects) {
+            this.pmo = pmo;
+            this.timedIpsObjects = timedIpsObjects;
+        }
+
+        @Override
+        public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+            monitor.beginTask(Messages.CreateGenerationsRunnable_taskName, timedIpsObjects.size());
+            for (ITimedIpsObject timedIpsObject : timedIpsObjects) {
+                if (monitor.isCanceled()) {
+                    break;
+                }
+
+                boolean generationExists = timedIpsObject.getGenerationByEffectiveDate(pmo.getValidFrom()) != null;
+                if (pmo.isSkipExistingGenerations() && generationExists) {
+                    continue;
+                }
+
+                boolean wasDirty = timedIpsObject.getIpsSrcFile().isDirty();
+                timedIpsObject.newGeneration(pmo.getValidFrom());
+                if (!wasDirty) {
+                    try {
+                        timedIpsObject.getIpsSrcFile().save(true, monitor);
+                    } catch (CoreException e) {
+                        IpsPlugin.logAndShowErrorDialog(e);
+                    }
+                }
+
+                monitor.worked(1);
+            }
+            monitor.done();
         }
 
     }

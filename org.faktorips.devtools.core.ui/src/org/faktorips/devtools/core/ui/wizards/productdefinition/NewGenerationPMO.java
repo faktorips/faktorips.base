@@ -19,11 +19,16 @@ import java.util.GregorianCalendar;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 
+// TODO AW 30-03-2012: Document this class!
 public class NewGenerationPMO extends PresentationModelObject {
 
     public static final String PROPERTY_VALID_FROM = "validFrom"; //$NON-NLS-1$
 
+    public static final String PROPERTY_SKIP_EXISTING_GENERATIONS = "skipExistingGenerations"; //$NON-NLS-1$
+
     private GregorianCalendar validFrom;
+
+    private boolean skipExistingGenerations;
 
     public NewGenerationPMO() {
         if (IpsUIPlugin.getDefault() != null) { // may be null in test cases :(
@@ -39,6 +44,17 @@ public class NewGenerationPMO extends PresentationModelObject {
         GregorianCalendar oldValue = this.validFrom;
         this.validFrom = validFrom;
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_VALID_FROM, oldValue, validFrom));
+    }
+
+    public boolean isSkipExistingGenerations() {
+        return skipExistingGenerations;
+    }
+
+    public void setSkipExistingGenerations(boolean skipExistingGenerations) {
+        boolean oldValue = this.skipExistingGenerations;
+        this.skipExistingGenerations = skipExistingGenerations;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_SKIP_EXISTING_GENERATIONS, oldValue,
+                skipExistingGenerations));
     }
 
 }
