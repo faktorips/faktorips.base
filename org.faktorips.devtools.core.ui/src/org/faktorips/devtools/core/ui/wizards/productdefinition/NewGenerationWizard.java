@@ -48,7 +48,7 @@ public class NewGenerationWizard extends Wizard {
         this.timedIpsObjects = timedIpsObjects;
         setWindowTitle(Messages.NewGenerationWizard_title);
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "wizards/CreateNewGenerationWizard.png")); //$NON-NLS-1$
+                "wizards/NewGenerationWizard.png")); //$NON-NLS-1$
     }
 
     @Override

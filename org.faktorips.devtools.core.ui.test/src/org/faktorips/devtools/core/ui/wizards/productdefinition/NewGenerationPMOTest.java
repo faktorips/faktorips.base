@@ -23,29 +23,37 @@ import java.util.GregorianCalendar;
 
 import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class NewGenerationPMOTest {
 
+    private final SingletonMockHelper singletonHelper = new SingletonMockHelper();
+
+    private GregorianCalendar defaultValidityDate;
+
     private PMOChangeListener pmoChangeListener;
 
     @Before
     public void setUp() {
+        defaultValidityDate = new GregorianCalendar(1986, 04, 16);
+
+        IpsUIPlugin ipsUIPlugin = mock(IpsUIPlugin.class);
+        when(ipsUIPlugin.getDefaultValidityDate()).thenReturn(defaultValidityDate);
+        singletonHelper.setSingletonInstance(IpsUIPlugin.class, ipsUIPlugin);
+
         pmoChangeListener = new PMOChangeListener();
+    }
+
+    @After
+    public void tearDown() {
+        singletonHelper.reset();
     }
 
     @Test
     public void testGetValidFrom_IsDefaultValidityDateAfterInitialization() {
-        GregorianCalendar defaultValidityDate = new GregorianCalendar(1986, 04, 16);
-        IpsUIPlugin ipsUIPlugin = mock(IpsUIPlugin.class);
-        when(ipsUIPlugin.getDefaultValidityDate()).thenReturn(defaultValidityDate);
-        SingletonMockHelper singletonHelper = new SingletonMockHelper();
-        singletonHelper.setSingletonInstance(IpsUIPlugin.class, ipsUIPlugin);
-
         assertEquals(defaultValidityDate, createPMO().getValidFrom());
-
-        singletonHelper.reset();
     }
 
     @Test
@@ -54,7 +62,7 @@ public class NewGenerationPMOTest {
         GregorianCalendar validFrom = new GregorianCalendar(1986, 4, 16);
         pmo.setValidFrom(validFrom);
 
-        assertPropertyChangeEvent(pmo, NewGenerationPMO.PROPERTY_VALID_FROM, null, validFrom);
+        assertPropertyChangeEvent(pmo, NewGenerationPMO.PROPERTY_VALID_FROM, defaultValidityDate, validFrom);
         assertEquals(validFrom, pmo.getValidFrom());
     }
 

@@ -43,7 +43,7 @@ public class CreateNewGenerationAction extends IpsAction {
         super(selectionProvider);
         this.shell = shell;
         setText(Messages.CreateNewGenerationAction_title);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("CreateNewGenerationWizard.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewGenerationWizard.gif")); //$NON-NLS-1$
     }
 
     @Override
