@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.actions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.dialogs.Dialog;
@@ -25,6 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewGenerationWizard;
@@ -52,7 +54,7 @@ public class CreateNewGenerationAction extends IpsAction {
         }
 
         for (IAdaptable selectedElement : typedSelection.getElements()) {
-            if (!(selectedElement instanceof IProductCmpt)) {
+            if (!(selectedElement instanceof IProductCmpt) && !(selectedElement instanceof IProductCmptReference)) {
                 // If the selection contains any other type of elements, it cannot be started
                 return false;
             }
@@ -67,9 +69,17 @@ public class CreateNewGenerationAction extends IpsAction {
             return;
         }
 
-        TypedSelection<ITimedIpsObject> typedSelection = TypedSelection
-                .createAnyCount(ITimedIpsObject.class, selection);
-        Wizard wizard = new NewGenerationWizard(new ArrayList<ITimedIpsObject>(typedSelection.getElements()));
+        TypedSelection<IAdaptable> typedSelection = TypedSelection.createAnyCount(IAdaptable.class, selection);
+        List<ITimedIpsObject> timedIpsObjects = new ArrayList<ITimedIpsObject>(typedSelection.getElementCount());
+        for (IAdaptable selectedElement : typedSelection.getElements()) {
+            if (selectedElement instanceof IProductCmpt) {
+                timedIpsObjects.add((IProductCmpt)selectedElement);
+            } else if (selectedElement instanceof IProductCmptReference) {
+                timedIpsObjects.add(((IProductCmptReference)selectedElement).getProductCmpt());
+            }
+        }
+
+        Wizard wizard = new NewGenerationWizard(timedIpsObjects);
         Dialog dialog = new WizardDialog(shell, wizard);
         dialog.open();
     }

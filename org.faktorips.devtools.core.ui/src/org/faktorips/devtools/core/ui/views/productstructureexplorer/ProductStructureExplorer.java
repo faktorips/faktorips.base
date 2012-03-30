@@ -82,7 +82,9 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptVRuleReference;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
+import org.faktorips.devtools.core.ui.actions.CreateNewGenerationAction;
 import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
+import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.editors.productcmpt.LinkEditDialog;
@@ -583,13 +585,16 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
         if (selectedRef instanceof IProductCmptReference) {
             menumanager.add(new Separator("copy")); //$NON-NLS-1$
-            final IpsDeepCopyAction copyNewVersionAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
+            IpsAction createNewGenerationAction = new CreateNewGenerationAction(getSite().getShell(), treeViewer);
+            menumanager.add(createNewGenerationAction);
+            IpsDeepCopyAction copyNewVersionAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
                     DeepCopyWizard.TYPE_NEW_VERSION);
             menumanager.add(copyNewVersionAction);
-            final IpsDeepCopyAction copyProductAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
+            IpsDeepCopyAction copyProductAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
                     DeepCopyWizard.TYPE_COPY_PRODUCT);
             menumanager.add(copyProductAction);
             boolean copyEnabled = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit();
+            createNewGenerationAction.setEnabled(copyEnabled);
             copyNewVersionAction.setEnabled(copyEnabled);
             copyProductAction.setEnabled(copyEnabled);
         }
