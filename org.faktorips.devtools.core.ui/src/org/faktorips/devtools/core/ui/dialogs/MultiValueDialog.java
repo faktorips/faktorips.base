@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.ui.controls.tableedit.EditTableControlFactory;
-import org.faktorips.devtools.core.ui.controls.tableedit.MultiValueLableModel;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
 public class MultiValueDialog extends IpsPartEditDialog2 {
