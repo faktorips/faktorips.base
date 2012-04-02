@@ -55,6 +55,7 @@ class NewGenerationRunnable extends WorkspaceModifyOperation {
             InterruptedException {
 
         monitor.beginTask(Messages.NewGenerationRunnable_taskName, timedIpsObjects.size());
+        monitor.setTaskName(Messages.NewGenerationRunnable_taskName);
 
         for (ITimedIpsObject timedIpsObject : timedIpsObjects) {
             // Check for the user pressing the cancel button, discontinue if so
