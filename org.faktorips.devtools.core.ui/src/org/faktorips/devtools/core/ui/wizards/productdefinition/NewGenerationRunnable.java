@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -54,8 +55,10 @@ class NewGenerationRunnable extends WorkspaceModifyOperation {
     protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
             InterruptedException {
 
-        monitor.beginTask(Messages.NewGenerationRunnable_taskName, timedIpsObjects.size());
-        monitor.setTaskName(Messages.NewGenerationRunnable_taskName);
+        String taskName = NLS.bind(Messages.NewGenerationRunnable_taskName, IpsPlugin.getDefault().getIpsPreferences()
+                .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(true));
+        monitor.beginTask(taskName, timedIpsObjects.size());
+        monitor.setTaskName(taskName);
 
         for (ITimedIpsObject timedIpsObject : timedIpsObjects) {
             // Check for the user pressing the cancel button, discontinue if so

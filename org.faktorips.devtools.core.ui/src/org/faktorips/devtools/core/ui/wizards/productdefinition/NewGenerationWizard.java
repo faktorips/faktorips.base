@@ -52,7 +52,8 @@ public class NewGenerationWizard extends Wizard {
      */
     public NewGenerationWizard(List<ITimedIpsObject> timedIpsObjects) {
         this.timedIpsObjects = timedIpsObjects;
-        setWindowTitle(Messages.NewGenerationWizard_title);
+        setWindowTitle(NLS.bind(Messages.NewGenerationWizard_title, IpsPlugin.getDefault().getIpsPreferences()
+                .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular()));
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "wizards/NewGenerationWizard.png")); //$NON-NLS-1$
         setNeedsProgressMonitor(true);
@@ -100,12 +101,19 @@ public class NewGenerationWizard extends Wizard {
             // Set info message
             if (timedIpsObjects.size() == 1) {
                 String objectName = timedIpsObjects.get(0).getName();
-                setMessage(NLS.bind(Messages.ChooseValidityDatePage_msgPageInfoSingular, objectName));
+                setMessage(NLS.bind(Messages.ChooseValidityDatePage_msgPageInfoSingular,
+                        getGenerationConceptNameSingular(true), objectName));
             } else {
-                setMessage(NLS.bind(Messages.ChooseValidityDatePage_msgPageInfoPlural, timedIpsObjects.size()));
+                setMessage(NLS.bind(Messages.ChooseValidityDatePage_msgPageInfoPlural,
+                        getGenerationConceptNameSingular(true), timedIpsObjects.size()));
             }
 
             addValidationListener();
+        }
+
+        private String getGenerationConceptNameSingular(boolean usageInsideSentence) {
+            return IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                    .getGenerationConceptNameSingular(usageInsideSentence);
         }
 
         private void addValidationListener() {
@@ -135,8 +143,9 @@ public class NewGenerationWizard extends Wizard {
 
             // Skip existing generations
             toolkit.createLabel(pageControl, StringUtils.EMPTY);
-            Checkbox skipExistingGenerationsCheckbox = toolkit.createCheckbox(pageControl,
-                    Messages.ChooseValidityDatePage_labelSkipExistingGenerations);
+            Checkbox skipExistingGenerationsCheckbox = toolkit.createCheckbox(pageControl, NLS.bind(
+                    Messages.ChooseValidityDatePage_labelSkipExistingGenerations,
+                    getGenerationConceptNameSingular(true)));
             bindingContext.bindContent(skipExistingGenerationsCheckbox, pmo,
                     NewGenerationPMO.PROPERTY_SKIP_EXISTING_GENERATIONS);
 

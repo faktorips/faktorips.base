@@ -23,7 +23,9 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -47,7 +49,8 @@ public class CreateNewGenerationAction extends IpsAction {
         super(selectionProvider);
         this.shell = shell;
 
-        setText(Messages.CreateNewGenerationAction_title);
+        setText(NLS.bind(Messages.CreateNewGenerationAction_title, IpsPlugin.getDefault().getIpsPreferences()
+                .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular()));
         setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewGenerationWizard.gif")); //$NON-NLS-1$
 
         updateEnabledProperty();
