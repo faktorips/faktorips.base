@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.wizards.productdefinition;
 import java.beans.PropertyChangeEvent;
 import java.util.GregorianCalendar;
 
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 
@@ -51,20 +52,35 @@ public class NewGenerationPMO extends PresentationModelObject {
         }
     }
 
+    /**
+     * Returns the date from which the new {@link IIpsObjectGeneration IPS Object Generations} shall
+     * be valid from.
+     */
     public GregorianCalendar getValidFrom() {
         return validFrom;
     }
 
+    /**
+     * @see #getValidFrom()
+     */
     public void setValidFrom(GregorianCalendar validFrom) {
         GregorianCalendar oldValue = this.validFrom;
         this.validFrom = validFrom;
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_VALID_FROM, oldValue, validFrom));
     }
 
+    /**
+     * Returns whether no new {@link IIpsObjectGeneration IPS Object Generation} shall be created
+     * for objects that already contain an {@link IIpsObjectGeneration IPS Object Generation} valid
+     * from the configured date.
+     */
     public boolean isSkipExistingGenerations() {
         return skipExistingGenerations;
     }
 
+    /**
+     * @see #isSkipExistingGenerations()
+     */
     public void setSkipExistingGenerations(boolean skipExistingGenerations) {
         boolean oldValue = this.skipExistingGenerations;
         this.skipExistingGenerations = skipExistingGenerations;

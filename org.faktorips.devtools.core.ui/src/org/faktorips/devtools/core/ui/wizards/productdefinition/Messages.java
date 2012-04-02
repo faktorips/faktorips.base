@@ -40,8 +40,9 @@ public class Messages extends NLS {
     public static String NewGenerationWizard_title;
     public static String NewGenerationRunnable_taskName;
     public static String ChooseValidityDatePage_pageTitle;
-    public static String ChooseValidityDatePage_pageInfoSingular;
-    public static String ChooseValidityDatePage_pageInfoPlural;
+    public static String ChooseValidityDatePage_msgPageInfoSingular;
+    public static String ChooseValidityDatePage_msgPageInfoPlural;
+    public static String ChooseValidityDatePage_msgValidFromInvalid;
     public static String ChooseValidityDatePage_labelValidFrom;
     public static String ChooseValidityDatePage_labelSkipExistingGenerations;
 

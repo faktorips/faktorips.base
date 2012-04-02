@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -85,12 +87,31 @@ public class NewGenerationWizard extends Wizard {
         protected ChooseValidityDatePage(NewGenerationPMO pmo, List<ITimedIpsObject> timedIpsObjects) {
             super("ChooseValidityDate"); //$NON-NLS-1$
             this.pmo = pmo;
+
+            // Set page title
             setTitle(Messages.ChooseValidityDatePage_pageTitle);
+
+            // Set info message
             if (timedIpsObjects.size() == 1) {
-                setMessage(NLS.bind(Messages.ChooseValidityDatePage_pageInfoSingular, timedIpsObjects.get(0).getName()));
+                String objectName = timedIpsObjects.get(0).getName();
+                setMessage(NLS.bind(Messages.ChooseValidityDatePage_msgPageInfoSingular, objectName));
             } else {
-                setMessage(NLS.bind(Messages.ChooseValidityDatePage_pageInfoPlural, timedIpsObjects.size()));
+                setMessage(NLS.bind(Messages.ChooseValidityDatePage_msgPageInfoPlural, timedIpsObjects.size()));
             }
+
+            addValidationListener();
+        }
+
+        private void addValidationListener() {
+            pmo.addPropertyChangeListener(new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    setErrorMessage(null); // Reset error message
+                    if (pmo.getValidFrom() == null) {
+                        setErrorMessage(Messages.ChooseValidityDatePage_msgValidFromInvalid);
+                    }
+                }
+            });
         }
 
         @Override
@@ -102,10 +123,9 @@ public class NewGenerationWizard extends Wizard {
             // Valid from
             toolkit.createLabel(pageControl, Messages.ChooseValidityDatePage_labelValidFrom);
             DateControl validFromDateControl = new DateControl(pageControl, toolkit);
-            Text textControl = validFromDateControl.getTextControl();
-            bindingContext.bindContent(
-                    new FormattingTextField<GregorianCalendar>(textControl, GregorianCalendarFormat.newInstance()),
-                    pmo, NewGenerationPMO.PROPERTY_VALID_FROM);
+            Text validFromTextControl = validFromDateControl.getTextControl();
+            bindingContext.bindContent(new FormattingTextField<GregorianCalendar>(validFromTextControl,
+                    GregorianCalendarFormat.newInstance()), pmo, NewGenerationPMO.PROPERTY_VALID_FROM);
 
             // Skip existing generations
             toolkit.createLabel(pageControl, StringUtils.EMPTY);
