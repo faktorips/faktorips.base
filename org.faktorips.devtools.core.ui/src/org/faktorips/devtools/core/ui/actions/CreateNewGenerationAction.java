@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -23,8 +24,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -42,8 +46,11 @@ public class CreateNewGenerationAction extends IpsAction {
     public CreateNewGenerationAction(Shell shell, ISelectionProvider selectionProvider) {
         super(selectionProvider);
         this.shell = shell;
+
         setText(Messages.CreateNewGenerationAction_title);
         setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewGenerationWizard.gif")); //$NON-NLS-1$
+
+        updateEnabledProperty();
     }
 
     @Override
@@ -54,9 +61,18 @@ public class CreateNewGenerationAction extends IpsAction {
         }
 
         for (IAdaptable selectedElement : typedSelection.getElements()) {
-            if (!(selectedElement instanceof IProductCmpt) && !(selectedElement instanceof IProductCmptReference)) {
-                // If the selection contains any other type of elements, it cannot be started
+            // If the selection contains any other type of elements, it cannot be started
+            if (!(selectedElement instanceof IProductCmpt) && !(selectedElement instanceof IProductCmptReference)
+                    && !(selectedElement instanceof IIpsSrcFile)) {
                 return false;
+            }
+
+            // If the selection contains a source file, it must contain a product component
+            if (selectedElement instanceof IIpsSrcFile) {
+                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)selectedElement;
+                if (!IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType())) {
+                    return false;
+                }
             }
         }
 
@@ -76,6 +92,13 @@ public class CreateNewGenerationAction extends IpsAction {
                 timedIpsObjects.add((IProductCmpt)selectedElement);
             } else if (selectedElement instanceof IProductCmptReference) {
                 timedIpsObjects.add(((IProductCmptReference)selectedElement).getProductCmpt());
+            } else if (selectedElement instanceof IIpsSrcFile) {
+                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)selectedElement;
+                try {
+                    timedIpsObjects.add((IProductCmpt)ipsSrcFile.getIpsObject());
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
             }
         }
 
