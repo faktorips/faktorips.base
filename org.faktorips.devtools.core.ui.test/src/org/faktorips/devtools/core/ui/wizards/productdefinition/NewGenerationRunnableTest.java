@@ -28,7 +28,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
@@ -90,7 +92,10 @@ public class NewGenerationRunnableTest extends AbstractIpsPluginTest {
         runnable.execute(monitor);
 
         InOrder inOrder = inOrder(monitor);
-        inOrder.verify(monitor).beginTask(Messages.NewGenerationRunnable_taskName, timedIpsObjects.size());
+        inOrder.verify(monitor).beginTask(
+                NLS.bind(Messages.NewGenerationRunnable_taskName, IpsPlugin.getDefault().getIpsPreferences()
+                        .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(true)),
+                timedIpsObjects.size());
         inOrder.verify(monitor).worked(1);
         inOrder.verify(monitor).worked(1);
         inOrder.verify(monitor).done();
