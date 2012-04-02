@@ -585,11 +585,11 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
         if (selectedRef instanceof IProductCmptReference) {
             menumanager.add(new Separator("copy")); //$NON-NLS-1$
-            IpsAction createNewGenerationAction = new CreateNewGenerationAction(getSite().getShell(), treeViewer);
-            menumanager.add(createNewGenerationAction);
             IpsDeepCopyAction copyNewVersionAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
                     DeepCopyWizard.TYPE_NEW_VERSION);
             menumanager.add(copyNewVersionAction);
+            IpsAction createNewGenerationAction = new CreateNewGenerationAction(getSite().getShell(), treeViewer);
+            menumanager.add(createNewGenerationAction);
             IpsDeepCopyAction copyProductAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
                     DeepCopyWizard.TYPE_COPY_PRODUCT);
             menumanager.add(copyProductAction);

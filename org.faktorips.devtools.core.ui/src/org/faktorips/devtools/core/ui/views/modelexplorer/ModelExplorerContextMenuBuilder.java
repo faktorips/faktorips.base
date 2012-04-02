@@ -185,8 +185,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         manager.add(new Separator("copy")); //$NON-NLS-1$
         // Add copy actions depending on selected ips object type
         if (selected instanceof IProductCmpt || selected instanceof IProductCmptGeneration) {
-            manager.add(new CreateNewGenerationAction(viewSite.getShell(), treeViewer));
             manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_NEW_VERSION));
+            manager.add(new CreateNewGenerationAction(viewSite.getShell(), treeViewer));
             manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_COPY_PRODUCT));
         } else if (selected instanceof ITestCase) {
             manager.add(new IpsTestCaseCopyAction(viewSite.getShell(), treeViewer));
