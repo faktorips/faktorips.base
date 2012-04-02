@@ -55,6 +55,7 @@ public class NewGenerationWizard extends Wizard {
         setWindowTitle(Messages.NewGenerationWizard_title);
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "wizards/NewGenerationWizard.png")); //$NON-NLS-1$
+        setNeedsProgressMonitor(true);
     }
 
     @Override
@@ -64,6 +65,7 @@ public class NewGenerationWizard extends Wizard {
 
     @Override
     public boolean performFinish() {
+        // Execute runnable
         try {
             getContainer().run(true, true, new NewGenerationRunnable(pmo, timedIpsObjects));
         } catch (InvocationTargetException e) {
@@ -71,6 +73,10 @@ public class NewGenerationWizard extends Wizard {
         } catch (InterruptedException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+
+        // Update default validity date
+        IpsUIPlugin.getDefault().setDefaultValidityDate(pmo.getValidFrom());
+
         return true;
     }
 
