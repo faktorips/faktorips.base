@@ -65,6 +65,7 @@ class NewGenerationRunnable extends WorkspaceModifyOperation {
             // Check whether such a generation already exists for this object, skip if desired
             boolean generationExists = timedIpsObject.getGenerationByEffectiveDate(pmo.getValidFrom()) != null;
             if (pmo.isSkipExistingGenerations() && generationExists) {
+                monitor.worked(1);
                 continue;
             }
 
