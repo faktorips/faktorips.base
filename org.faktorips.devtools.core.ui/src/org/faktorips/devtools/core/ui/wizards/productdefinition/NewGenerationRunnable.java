@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
@@ -80,7 +81,7 @@ class NewGenerationRunnable extends WorkspaceModifyOperation {
                 try {
                     timedIpsObject.getIpsSrcFile().save(true, monitor);
                 } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
+                    throw new CoreRuntimeException(e);
                 }
             }
 
