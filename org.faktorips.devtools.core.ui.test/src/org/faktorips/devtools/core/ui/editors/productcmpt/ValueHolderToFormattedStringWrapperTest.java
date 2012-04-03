@@ -22,14 +22,36 @@ import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class ValueHolderToFormattedStringWrapperTest {
+    private Locale formerLocale;
+
+    @Before
+    public void setUp() {
+        IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
+        formerLocale = ipsPreferences.getDatatypeFormattingLocale();
+        ipsPreferences.setDatatypeFormattingLocale(Locale.GERMANY);
+    }
+
+    @After
+    public void tearDown() {
+        IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
+        if (formerLocale != null) {
+            ipsPreferences.setDatatypeFormattingLocale(formerLocale);
+        }
+    }
+
     @Test
     public void returnFormattedValueIfSingleValue_Date() {
         IAttributeValue attrValue = mock(IAttributeValue.class);
