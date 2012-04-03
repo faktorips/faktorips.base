@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,7 +33,6 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -274,37 +272,6 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public final static void logAndShowErrorDialog(CoreException e) {
         logAndShowErrorDialog(e.getStatus());
-    }
-
-    /**
-     * Logs the exceptions and shows the status in a standard error dialog.
-     * <p>
-     * Note that the cause of the {@link InvocationTargetException} is shown to the user and not the
-     * exception itself (if a deeper cause exists). The reasoning behind this is, that it won't help
-     * much if the user reports an {@link InvocationTargetException} to the support team.
-     * <p>
-     * The provided message should be internationalized and is displayed to the user.
-     * 
-     * @param exception exception to log
-     * @param pluginId id of the plug-in that caused the exception
-     * @param message human-readable, internationalized message to show to the user
-     */
-    public final static void logAndShowErrorDialog(InvocationTargetException exception, String pluginId, String message) {
-        Throwable throwable = exception.getCause() != null ? exception.getCause() : (Throwable)exception;
-        logAndShowErrorDialog(throwable, pluginId, message);
-    }
-
-    /**
-     * Logs the exception and shows the status in a standard error dialog.
-     * <p>
-     * The provided message should be internationalized and is displayed to the user.
-     * 
-     * @param exception exception to log
-     * @param pluginId id of the plug-in that caused the exception
-     * @param message human-readable, internationalized message to show to the user
-     */
-    public final static void logAndShowErrorDialog(Throwable exception, String pluginId, String message) {
-        logAndShowErrorDialog(new Status(IStatus.ERROR, pluginId, message, exception));
     }
 
     /**
