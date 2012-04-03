@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.controls.tableedit;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -36,14 +35,16 @@ public class DatatypeEditingSupport extends CellTrackingEditingSupport {
     private final ValueDatatype datatype;
     private ValueDatatypeControlFactory controlFactory;
     private final IIpsProject ipsProject;
+    private final IElementModifier elementModifier;
 
     public DatatypeEditingSupport(UIToolkit toolkit, TableViewer tableViewer, IIpsProject ipsProject,
-            ValueDatatype datatype) {
+            ValueDatatype datatype, IElementModifier elementModifier) {
         super(tableViewer);
         this.toolkit = toolkit;
         this.tableViewer = tableViewer;
         this.ipsProject = ipsProject;
         this.datatype = datatype;
+        this.elementModifier = elementModifier;
         controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
     }
 
@@ -57,22 +58,25 @@ public class DatatypeEditingSupport extends CellTrackingEditingSupport {
         return true;
     }
 
-    /**
-     * Make publicly visible for use with label providers.
-     * 
-     * @see EditingSupportLabelProvider
-     */
     @Override
-    public Object getValue(Object element) {
-        SingleValueHolder holder = (SingleValueHolder)element;
-        return holder.getValue();
+    protected Object getValue(Object element) {
+        return elementModifier.getValue(element);
     }
 
     @Override
     protected void setValue(Object element, Object value) {
-        SingleValueHolder holder = (SingleValueHolder)element;
-        holder.setValue((String)value);
+        elementModifier.setValue(element, value);
         getViewer().refresh(element);
+    }
+
+    /**
+     * Returns the string representing the given element. The string is formated depending on the
+     * datatype and the current locale.
+     * 
+     * @param element the element to return a formatted string for
+     */
+    public String getFormattedValue(Object element) {
+        return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(datatype, (String)getValue(element));
     }
 
 }

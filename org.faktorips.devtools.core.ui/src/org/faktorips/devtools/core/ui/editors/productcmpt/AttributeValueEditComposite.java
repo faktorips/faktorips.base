@@ -68,18 +68,20 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         if (getProperty().isMultiValueAttribute()) {
             MultiValueAttributeControl control = new MultiValueAttributeControl(this, getToolkit(), getPropertyValue());
             editField = new TextButtonField(control);
+            ValueHolderToFormattedStringWrapper wrapper = ValueHolderToFormattedStringWrapper.createWrapperFor(getPropertyValue());
+            getBindingContext().bindContent(editField, wrapper, IAttributeValue.PROPERTY_VALUE);
         } else {
             ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     datatype);
             editField = controlFactory.createEditField(getToolkit(), this, datatype, valueSet, getPropertyValue()
                     .getIpsProject());
+            getBindingContext().bindContent(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE);
         }
         registerAndBindEditField(editFields, editField);
     }
 
     protected void registerAndBindEditField(List<EditField<?>> editFields, EditField<String> editField) {
         editFields.add(editField);
-        getBindingContext().bindContent(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE);
         if (getProperty() != null && !getProperty().isChangingOverTime()) {
             addNotChangingOverTimeControlDecoration(editField);
         }

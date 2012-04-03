@@ -16,21 +16,22 @@ package org.faktorips.devtools.core.ui.controls.tableedit;
 import org.eclipse.jface.viewers.LabelProvider;
 
 /**
- * Label provider for the {@link EditTableControlViewer} multi value attributes.
+ * Label provider for the table viewer of a {@link EditTableControlViewer}. Uses a
+ * {@link DatatypeEditingSupport} to format each value depending on datatype and current locale.
  * 
  * @author Stefan Widmaier
  */
-public class EditingSupportLabelProvider extends LabelProvider {
+public class DatatypeEditingSupportLabelProvider extends LabelProvider {
 
     private final DatatypeEditingSupport editingSupport;
 
-    public EditingSupportLabelProvider(DatatypeEditingSupport editingSupport) {
+    public DatatypeEditingSupportLabelProvider(DatatypeEditingSupport editingSupport) {
         this.editingSupport = editingSupport;
 
     }
 
     @Override
     public String getText(Object element) {
-        return (String)editingSupport.getValue(element);
+        return editingSupport.getFormattedValue(element);
     }
 }
