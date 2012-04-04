@@ -63,7 +63,7 @@ public class EditTableControlFactory {
         TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer.getTableViewer(),
                 ctrlFactory.getDefaultAlignment());
         // tableViewerColumn.getColumn().setText(columnText);
-        tableViewerColumn.getColumn().setResizable(false);
+        // tableViewerColumn.getColumn().setResizable(false);
         DatatypeEditingSupport datatypeEditingSupport = new DatatypeEditingSupport(uiToolkit, viewer.getTableViewer(),
                 ipsProject, valueDatatype, elementModifier);
         datatypeEditingSupport.setTraversalStrategy(new EditTableTraversalStrategy(datatypeEditingSupport, 0,

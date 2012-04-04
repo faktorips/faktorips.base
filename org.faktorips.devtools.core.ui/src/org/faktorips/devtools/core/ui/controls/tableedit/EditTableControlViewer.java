@@ -46,7 +46,12 @@ public class EditTableControlViewer {
      *            added
      */
     public EditTableControlViewer(Composite parent) {
-        uiBuilder = createUI(parent);
+        uiBuilder = new EditTableControlUIBuilder();
+        createUI(parent);
+    }
+
+    private void createUI(Composite parent) {
+        uiBuilder.createTableEditControl(parent);
         createViewers();
         addListeners();
     }
@@ -92,12 +97,6 @@ public class EditTableControlViewer {
         uiBuilder.getDownButton().setEnabled(uiBuilder.getTable().getSelectionCount() != 0);
     }
 
-    private EditTableControlUIBuilder createUI(Composite parent) {
-        EditTableControlUIBuilder builder = new EditTableControlUIBuilder();
-        builder.createTableEditControl(parent);
-        return builder;
-    }
-
     public void setTableDescription(String tableDescription) {
         uiBuilder.setTableDescription(tableDescription);
     }
@@ -127,25 +126,30 @@ public class EditTableControlViewer {
         restoreSelection(indices[0]);
     }
 
-    private void restoreSelection(int index) {
+    protected void restoreSelection(int index) {
         tableViewer.refresh();
         tableViewer.getControl().setFocus();
-        int itemCount = uiBuilder.getTable().getItemCount();
-        if (itemCount != 0 && index >= itemCount) {
-            index = itemCount - 1;
-            uiBuilder.getTable().setSelection(index);
+        int itemCount = tableViewer.getTable().getItemCount();
+        if (itemCount > 0) {
+            if (index < 0) {
+                index = 0;
+            }
+            if (index >= itemCount) {
+                index = itemCount - 1;
+            }
+            tableViewer.getTable().setSelection(index);
         }
         updateButtonsEnabledState();
     }
 
     private void addButtonClicked() {
-        tabelModel.addElement();
+        Object addedElement = tabelModel.addElement();
         tableViewer.refresh();
         tableViewer.getControl().setFocus();
-        int row = uiBuilder.getTable().getItemCount() - 1;
+        int row = tableViewer.getTable().getItemCount() - 1;
         uiBuilder.getTable().setSelection(row);
         updateButtonsEnabledState();
-        // editColumnOrNextPossible(0);
+        tableViewer.editElement(addedElement, 0);
     }
 
     private void upButtonClicked() {
@@ -157,17 +161,17 @@ public class EditTableControlViewer {
     }
 
     private void move(boolean up) {
-        if (uiBuilder.getTable().getSelectionCount() == 0) {
+        if (tableViewer.getTable().getSelectionCount() == 0) {
             return;
         }
         int[] newSelection;
         if (up) {
-            newSelection = moveUp(uiBuilder.getTable().getSelectionIndices());
+            newSelection = moveUp(tableViewer.getTable().getSelectionIndices());
         } else {
-            newSelection = moveDown(uiBuilder.getTable().getSelectionIndices());
+            newSelection = moveDown(tableViewer.getTable().getSelectionIndices());
         }
         tableViewer.refresh();
-        uiBuilder.getTable().setSelection(newSelection);
+        tableViewer.getTable().setSelection(newSelection);
         tableViewer.getControl().setFocus();
     }
 
