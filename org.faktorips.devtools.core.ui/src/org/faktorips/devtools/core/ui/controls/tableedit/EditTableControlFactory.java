@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.controls.tableedit;
 
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -44,7 +45,6 @@ public class EditTableControlFactory {
      * @param tableModel the model that contains the list of values that can be edited in the table
      * @param elementModifier object that allows to access and modify the table model's elements
      * @param description the description of the table. Is displayed directly above the table.
-     * @param columnText the header text of the single column
      * @return the created {@link EditTableControlViewer}
      */
     public static EditTableControlViewer createListEditTable(UIToolkit uiToolkit,
@@ -53,25 +53,28 @@ public class EditTableControlFactory {
             ValueDatatype valueDatatype,
             AbstractListTableModel<?> tableModel,
             IElementModifier elementModifier,
-            String description,
-            String columnText) {
+            String description) {
         EditTableControlViewer viewer = new EditTableControlViewer(parent);
         viewer.setTableDescription(description);
 
+        TableViewerColumn errorColumn = new TableViewerColumn(viewer.getTableViewer(), SWT.LEFT);
+        errorColumn.getColumn().setResizable(false);
+        errorColumn.setLabelProvider(new ErrorCellLabelProvider());
+
         ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault()
                 .getValueDatatypeControlFactory(valueDatatype);
-        TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer.getTableViewer(),
+        TableViewerColumn valueColumn = new TableViewerColumn(viewer.getTableViewer(),
                 ctrlFactory.getDefaultAlignment());
-        // tableViewerColumn.getColumn().setText(columnText);
-        // tableViewerColumn.getColumn().setResizable(false);
+        valueColumn.getColumn().setResizable(false);
+
         DatatypeEditingSupport datatypeEditingSupport = new DatatypeEditingSupport(uiToolkit, viewer.getTableViewer(),
                 ipsProject, valueDatatype, elementModifier);
-        datatypeEditingSupport.setTraversalStrategy(new EditTableTraversalStrategy(datatypeEditingSupport, 0,
+        datatypeEditingSupport.setTraversalStrategy(new EditTableTraversalStrategy(datatypeEditingSupport, 1,
                 tableModel));
-        tableViewerColumn.setEditingSupport(datatypeEditingSupport);
+        valueColumn.setEditingSupport(datatypeEditingSupport);
+        valueColumn.setLabelProvider(new DatatypeCellLabelProvider(datatypeEditingSupport));
 
         viewer.setContentProvider(new ListTableModelContentProvider());
-        viewer.setLabelProvider(new DatatypeEditingSupportLabelProvider(datatypeEditingSupport));
         viewer.setTabelModel(tableModel);
         return viewer;
     }

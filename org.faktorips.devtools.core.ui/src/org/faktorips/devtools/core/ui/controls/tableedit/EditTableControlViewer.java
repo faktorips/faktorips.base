@@ -149,7 +149,7 @@ public class EditTableControlViewer {
         int row = tableViewer.getTable().getItemCount() - 1;
         uiBuilder.getTable().setSelection(row);
         updateButtonsEnabledState();
-        tableViewer.editElement(addedElement, 0);
+        tableViewer.editElement(addedElement, 1);
     }
 
     private void upButtonClicked() {

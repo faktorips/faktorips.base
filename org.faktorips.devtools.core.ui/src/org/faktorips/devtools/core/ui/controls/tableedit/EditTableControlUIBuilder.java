@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.controls.tableedit;
 
+import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -89,7 +90,7 @@ public class EditTableControlUIBuilder {
      * @param layouter the composite that lays out the contained table
      */
     protected void addColumnLayoutData(TableLayoutComposite layouter) {
-        // layouter.addColumnData(new ColumnPixelData(15, false)); // message image
+        layouter.addColumnData(new ColumnPixelData(15, false)); // message image
         layouter.addColumnData(new ColumnWeightData(95, true));
     }
 

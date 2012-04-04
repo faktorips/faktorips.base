@@ -57,7 +57,7 @@ public class MultiValueDialog extends IpsPartEditDialog2 {
     protected Composite createWorkAreaThis(Composite parent) {
         String description = NLS.bind(Messages.MultiValueDialog_TableDescription, attributeValue.getAttribute());
         EditTableControlFactory.createListEditTable(getToolkit(), parent, attributeValue.getIpsProject(), datatype,
-                tabelModel, new MultiValueElementModifier(), description, Messages.MultiValueDialog_ColumnText);
+                tabelModel, new MultiValueElementModifier(), description);
         ((GridData)parent.getLayoutData()).heightHint = 300;
         return parent;
     }

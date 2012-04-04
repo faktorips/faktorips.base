@@ -13,25 +13,14 @@
 
 package org.faktorips.devtools.core.ui.controls.tableedit;
 
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ViewerCell;
 
-/**
- * Label provider for the table viewer of a {@link EditTableControlViewer}. Uses a
- * {@link DatatypeEditingSupport} to format each value depending on datatype and current locale.
- * 
- * @author Stefan Widmaier
- */
-public class DatatypeEditingSupportLabelProvider extends LabelProvider {
-
-    private final DatatypeEditingSupport editingSupport;
-
-    public DatatypeEditingSupportLabelProvider(DatatypeEditingSupport editingSupport) {
-        this.editingSupport = editingSupport;
-
-    }
+public class ErrorCellLabelProvider extends CellLabelProvider {
 
     @Override
-    public String getText(Object element) {
-        return editingSupport.getFormattedValue(element);
+    public void update(ViewerCell cell) {
+        // nothing to do
     }
+
 }
