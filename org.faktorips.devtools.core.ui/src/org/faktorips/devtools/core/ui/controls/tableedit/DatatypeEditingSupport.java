@@ -66,7 +66,7 @@ public class DatatypeEditingSupport extends CellTrackingEditingSupport {
     @Override
     protected void setValue(Object element, Object value) {
         elementModifier.setValue(element, value);
-        getViewer().refresh(element);
+        getViewer().refresh();
     }
 
     /**

@@ -15,10 +15,14 @@ package org.faktorips.devtools.core.ui.dialogs;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.ui.controls.tableedit.AbstractListTableModel;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Table model for a multi-value attribute. Manages the list of values the attribute contains.
@@ -69,4 +73,21 @@ public class MultiValueLableModel extends AbstractListTableModel<SingleValueHold
         return getMultiValueHolder(attributeValue);
     }
 
+    @Override
+    public MessageList validate(Object elementToValidate) {
+        if (elementToValidate instanceof SingleValueHolder && getList().contains(elementToValidate)) {
+            SingleValueHolder holder = (SingleValueHolder)elementToValidate;
+            IAttributeValue attrValue = (IAttributeValue)holder.getParent();
+            MessageList messageList;
+            try {
+                messageList = attrValue.validate(attrValue.getIpsProject());
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+            return messageList.getMessagesFor(holder);
+        } else {
+            throw new IllegalArgumentException(NLS.bind(
+                    "Cannot validate \"{0}\" as it is no element of this table model.", elementToValidate)); //$NON-NLS-1$
+        }
+    }
 }

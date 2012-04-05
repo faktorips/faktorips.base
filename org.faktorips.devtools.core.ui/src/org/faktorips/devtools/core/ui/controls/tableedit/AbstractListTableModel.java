@@ -18,6 +18,9 @@ import java.util.List;
 /**
  * Base class for list based table models. The {@link #swapElements(int, int)} method is implemented
  * by this class.
+ * <p>
+ * Provides the method {@link #validate(Object)} for validating elements of this model. The validate
+ * ensures each value is unique in this model.
  * 
  * @author Stefan Widmaier
  */

@@ -197,6 +197,15 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         if (valueHolder != null) {
             MessageList validateValue = valueHolder.validate(ipsProject);
             list.add(validateValue);
+            if (validateValue.containsErrorMsg()) {
+                String text;
+                if (attr.isMultiValueAttribute()) {
+                    text = Messages.AttributeValue_InvalidValues_multi;
+                } else {
+                    text = Messages.AttributeValue_InvalidValues_single;
+                }
+                list.add(new Message(MSGCODE_INVALID_VALUE_HOLDER, text, Message.ERROR, this, PROPERTY_VALUE_HOLDER));
+            }
         }
     }
 

@@ -15,12 +15,25 @@ package org.faktorips.devtools.core.ui.controls.tableedit;
 
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
+import org.faktorips.util.message.MessageList;
 
 public class ErrorCellLabelProvider extends CellLabelProvider {
 
+    private final AbstractListTableModel<?> tableModel;
+
+    public ErrorCellLabelProvider(AbstractListTableModel<?> tableModel) {
+        this.tableModel = tableModel;
+    }
+
     @Override
     public void update(ViewerCell cell) {
-        // nothing to do
+        MessageList list = tableModel.validate(cell.getElement());
+        Image image = IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()),
+                false);
+        cell.setImage(image);
     }
 
 }

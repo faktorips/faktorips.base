@@ -68,8 +68,11 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         if (getProperty().isMultiValueAttribute()) {
             MultiValueAttributeControl control = new MultiValueAttributeControl(this, getToolkit(), getPropertyValue());
             editField = new TextButtonField(control);
-            ValueHolderToFormattedStringWrapper wrapper = ValueHolderToFormattedStringWrapper.createWrapperFor(getPropertyValue());
-            getBindingContext().bindContent(editField, wrapper, IAttributeValue.PROPERTY_VALUE);
+            ValueHolderToFormattedStringWrapper wrapper = ValueHolderToFormattedStringWrapper
+                    .createWrapperFor(getPropertyValue());
+            getBindingContext().bindContent(editField, wrapper,
+                    ValueHolderToFormattedStringWrapper.PROPERTY_FORMATTED_VALUE);
+            getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE_HOLDER);
         } else {
             ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     datatype);

@@ -18,6 +18,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
@@ -34,6 +36,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -208,6 +211,30 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         ((SingleValueHolder)attrValue.getValueHolder()).setValue("abc");
 
         assertEquals("abc", attrValue.getPropertyValue());
+    }
+
+    @Test
+    public void testValidate() throws CoreException {
+        attribute.setMultiValueAttribute(true);
+        attribute.setDatatype("String");
+        MultiValueHolder multiValueHolder = new MultiValueHolder(attrValue);
+        attrValue.setValueHolder(multiValueHolder);
+
+        List<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
+        SingleValueHolder valueHolder = new SingleValueHolder(attrValue, "A");
+        values.add(valueHolder);
+        values.add(new SingleValueHolder(attrValue, "B"));
+        values.add(new SingleValueHolder(attrValue, "A"));
+        values.add(new SingleValueHolder(attrValue, "C"));
+        multiValueHolder.setValue(values);
+
+        MessageList messageList = attrValue.validate(ipsProject).getMessages(Message.ERROR);
+        assertEquals(3, messageList.getNoOfMessages(Message.ERROR));
+        assertEquals(valueHolder, messageList.getMessage(0).getInvalidObjectProperties()[0].getObject());
+        assertEquals(multiValueHolder, messageList.getMessage(1).getInvalidObjectProperties()[0].getObject());
+        assertEquals(attrValue, messageList.getMessage(2).getInvalidObjectProperties()[0].getObject());
+        assertEquals(IAttributeValue.PROPERTY_VALUE_HOLDER,
+                messageList.getMessage(2).getInvalidObjectProperties()[0].getProperty());
     }
 
 }

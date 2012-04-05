@@ -14,7 +14,9 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -49,6 +51,11 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
      * holder
      */
     public final static String MSGCODE_CONTAINS_INVALID_VALUE = MSGCODE_PREFIX + "ContainsInvalidValue"; //$NON-NLS-1$
+    /**
+     * Validation message code to indicate that this {@link MultiValueHolder value holder's} values
+     * are not unique. At least one value has a duplicate.
+     */
+    public final static String MSGCODE_CONTAINS_DUPLICATE_VALUE = MSGCODE_PREFIX + "ContainsDuplicateValue"; //$NON-NLS-1$
 
     private List<SingleValueHolder> values;
 
@@ -140,14 +147,32 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
         if (values == null) {
             return messageList;
         }
+        Set<SingleValueHolder> duplicateValueHolders = getDuplicateValueHolders();
+        for (SingleValueHolder duplicateValueHolder : duplicateValueHolders) {
+            messageList.add(Message.newError(MSGCODE_CONTAINS_DUPLICATE_VALUE,
+                    Messages.MultiValueHolder_DuplicateValueMessageText, duplicateValueHolder, PROPERTY_VALUE));
+        }
         for (SingleValueHolder valueHolder : values) {
             messageList.add(valueHolder.validate(ipsProject));
         }
         if (messageList.containsErrorMsg()) {
-            messageList.add(Message.newError(MSGCODE_CONTAINS_INVALID_VALUE, "There is at least one invalid value.",
-                    this, PROPERTY_VALUE));
+            messageList.add(Message.newError(MSGCODE_CONTAINS_INVALID_VALUE,
+                    Messages.MultiValueHolder_AtLeastOneInvalidValueMessageText, this, PROPERTY_VALUE));
         }
         return messageList;
+    }
+
+    private Set<SingleValueHolder> getDuplicateValueHolders() {
+        Set<SingleValueHolder> duplicates = new HashSet<SingleValueHolder>();
+        Set<SingleValueHolder> processedValues = new HashSet<SingleValueHolder>();
+        for (SingleValueHolder element : values) {
+            if (processedValues.contains(element)) {
+                duplicates.add(element);
+            } else {
+                processedValues.add(element);
+            }
+        }
+        return duplicates;
     }
 
     @Override

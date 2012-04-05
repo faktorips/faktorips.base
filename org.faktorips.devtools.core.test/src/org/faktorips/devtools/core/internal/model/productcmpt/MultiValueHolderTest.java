@@ -16,11 +16,16 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
@@ -128,6 +133,27 @@ public class MultiValueHolderTest {
         assertNotNull(messageByCode);
         assertEquals(multiValueHolder, messageByCode.getInvalidObjectProperties()[0].getObject());
         assertEquals(IValueHolder.PROPERTY_VALUE, messageByCode.getInvalidObjectProperties()[0].getProperty());
+    }
+
+    @Test
+    public void testValidateDuplicateValues() throws CoreException {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        IAttributeValue attributeValue = mock(IAttributeValue.class);
+        MultiValueHolder multiValueHolder = spy(new MultiValueHolder(attributeValue));
+        doNothing().when(multiValueHolder).objectHasChanged(anyObject(), anyObject());
+
+        List<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
+        SingleValueHolder valueHolder = new SingleValueHolder(attributeValue, "A");
+        values.add(valueHolder);
+        values.add(new SingleValueHolder(attributeValue, "B"));
+        values.add(new SingleValueHolder(attributeValue, "A"));
+        values.add(new SingleValueHolder(attributeValue, "C"));
+        multiValueHolder.setValue(values);
+
+        MessageList messageList = multiValueHolder.validate(ipsProject).getMessages(Message.ERROR);
+        assertEquals(2, messageList.getNoOfMessages(Message.ERROR));
+        assertEquals(valueHolder, messageList.getMessage(0).getInvalidObjectProperties()[0].getObject());
+        assertEquals(multiValueHolder, messageList.getMessage(1).getInvalidObjectProperties()[0].getObject());
     }
 
 }

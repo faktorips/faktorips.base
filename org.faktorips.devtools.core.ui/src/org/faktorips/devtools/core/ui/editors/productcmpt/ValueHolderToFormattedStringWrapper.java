@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 public class ValueHolderToFormattedStringWrapper {
 
     private static final String MULTI_VALUE_SEPARATOR = " | "; //$NON-NLS-1$
+    public static final String PROPERTY_FORMATTED_VALUE = "formattedValue"; //$NON-NLS-1$
     private final IAttributeValue attrValue;
     private final boolean isMultiValueAttribute;
     private final ValueDatatype datatype;
@@ -67,7 +68,7 @@ public class ValueHolderToFormattedStringWrapper {
         }
     }
 
-    public String getValue() {
+    public String getFormattedValue() {
         UIDatatypeFormatter datatypeFormatter = IpsUIPlugin.getDefault().getDatatypeFormatter();
         if (isMultiValueAttribute) {
             MultiValueHolder multiHolder = (MultiValueHolder)attrValue.getValueHolder();

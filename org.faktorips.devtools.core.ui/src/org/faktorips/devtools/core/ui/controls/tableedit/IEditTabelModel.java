@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.controls.tableedit;
 
+import org.faktorips.util.message.MessageList;
+
 /**
  * The model for an {@link EditTableControlViewer}. Provides methods for adding, removing and
  * swapping elements. Those methods are called to add, remove or reorder the table model's elements,
@@ -31,4 +33,10 @@ public interface IEditTabelModel {
 
     public void removeElement(int index);
 
+    /**
+     * Validates the given element. Returns a message list containing all errors and warnings.
+     * 
+     * @param elementToValidate the element to be validated
+     */
+    public MessageList validate(Object elementToValidate);
 }

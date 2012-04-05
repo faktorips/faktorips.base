@@ -59,7 +59,7 @@ public class EditTableControlFactory {
 
         TableViewerColumn errorColumn = new TableViewerColumn(viewer.getTableViewer(), SWT.LEFT);
         errorColumn.getColumn().setResizable(false);
-        errorColumn.setLabelProvider(new ErrorCellLabelProvider());
+        errorColumn.setLabelProvider(new ErrorCellLabelProvider(tableModel));
 
         ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault()
                 .getValueDatatypeControlFactory(valueDatatype);
