@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -318,13 +319,11 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testInitFromXml() {
-        Element docEl = getTestDocument().getDocumentElement();
-        IpsProjectProperties props = new IpsProjectProperties();
-        props.initFromXml(ipsProject, docEl);
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
         assertTrue(props.isModelProject());
         assertTrue(props.isProductDefinitionProject());
         assertTrue(props.isJavaProjectContainsClassesForDynamicDatatypes());
-        assertTrue(props.isDerivedUnionIsImplementedRuleEnabled());
+        assertFalse(props.isDerivedUnionIsImplementedRuleEnabled());
         assertTrue(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled());
         assertEquals("myConvention", props.getChangesOverTimeNamingConventionIdForGeneratedCode());
         assertEquals("testPrefix", props.getRuntimeIdPrefix());
@@ -481,4 +480,49 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         } catch (NullPointerException e) {
         }
     }
+
+    @Test
+    public void readFormulaLanguageLocaleFromAdditionalSettings() {
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
+        assertEquals(Locale.KOREAN, props.getFormulaLanguageLocale());
+    }
+
+    @Test
+    public void ignoreIncompleteSettings() {
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
+        assertFalse(props.isDerivedUnionIsImplementedRuleEnabled());
+    }
+
+    @Test
+    public void useOutdatedEnabledFlagAsValue() {
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
+        assertFalse(props.isDerivedUnionIsImplementedRuleEnabled());
+    }
+
+    @Test
+    public void ignoreEnabledFlagIfValueIsSet() {
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
+        assertTrue(props.isRulesWithoutReferencesAllowedEnabled());
+    }
+
+    @Test
+    public void persistEnableFlagAsValue() {
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
+        Element element = props.toXml(getTestDocument());
+        Element additionalSettingsElement = XmlUtil.getFirstElement(element, "AdditionalSettings");
+        NodeList settings = additionalSettingsElement.getElementsByTagName("Setting");
+        assertEquals(6, settings.getLength()); // 6 additional settings
+        Element deriveUnionSetting = (Element)settings.item(0);
+        assertFalse(deriveUnionSetting.hasAttribute("enable"));
+        assertTrue(deriveUnionSetting.hasAttribute("value"));
+        assertEquals("false", deriveUnionSetting.getAttribute("value"));
+    }
+
+    protected IpsProjectProperties initPropertiesWithDocumentElement() {
+        Element docEl = getTestDocument().getDocumentElement();
+        IpsProjectProperties props = new IpsProjectProperties();
+        props.initFromXml(ipsProject, docEl);
+        return props;
+    }
+
 }

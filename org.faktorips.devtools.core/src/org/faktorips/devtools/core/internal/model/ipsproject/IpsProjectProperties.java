@@ -72,15 +72,13 @@ import org.w3c.dom.NodeList;
  */
 public class IpsProjectProperties implements IIpsProjectProperties {
 
-    private static final String ATTRIBUTE_LOCALE = "locale"; //$NON-NLS-1$
-
-    private static final String FORMULA_LANGUAGE_LOCALE = "FormulaLanguageLocale"; //$NON-NLS-1$
-
     private static final String ADDITIONAL_SETTINGS_TAG_NAME = "AdditionalSettings"; //$NON-NLS-1$
 
     private static final String SETTING_TAG_NAME = "Setting"; //$NON-NLS-1$
 
     private static final String SETTING_ATTRIBUTE_ENABLE = "enable"; //$NON-NLS-1$
+
+    private static final String SETTING_ATTRIBUTE_VALUE = "value"; //$NON-NLS-1$
 
     private static final String SETTING_ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
 
@@ -95,6 +93,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private final static String SETTING_SHARED_ASSOCIATIONS = "sharedDetailToMasterAssociations"; //$NON-NLS-1$
 
     private final static String SETTING_ASSOCIATIONS_IN_FORMULAS = "associationsInFormulas"; //$NON-NLS-1$
+
+    private static final String SETTING_FORMULA_LANGUAGE_LOCALE = "formulaLanguageLocale"; //$NON-NLS-1$
 
     public final static IpsProjectProperties createFromXml(IpsProject ipsProject, Element element) {
         IpsProjectProperties data = new IpsProjectProperties();
@@ -526,24 +526,29 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         // optional constraints
         createAdditionalSettingsDescriptionComment(projectEl);
-        Element optionalConstraintsEl = doc.createElement(ADDITIONAL_SETTINGS_TAG_NAME);
-        projectEl.appendChild(optionalConstraintsEl);
+        Element additionalSettingsEl = doc.createElement(ADDITIONAL_SETTINGS_TAG_NAME);
+        projectEl.appendChild(additionalSettingsEl);
 
-        optionalConstraintsEl.appendChild(createSettingElement(doc, SETTING_DERIVED_UNION_IS_IMPLEMENTED,
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_DERIVED_UNION_IS_IMPLEMENTED,
                 derivedUnionIsImplementedRuleEnabled));
 
-        optionalConstraintsEl.appendChild(createSettingElement(doc,
+        additionalSettingsEl.appendChild(createSettingElement(doc,
                 SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE,
                 referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled));
 
-        optionalConstraintsEl.appendChild(createSettingElement(doc, SETTING_RULES_WITHOUT_REFERENCE,
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_RULES_WITHOUT_REFERENCE,
                 rulesWithoutReferencesAllowed));
 
-        optionalConstraintsEl.appendChild(createSettingElement(doc, SETTING_SHARED_ASSOCIATIONS,
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_SHARED_ASSOCIATIONS,
                 isSharedDetailToMasterAssociations()));
 
-        optionalConstraintsEl.appendChild(createSettingElement(doc, SETTING_ASSOCIATIONS_IN_FORMULAS,
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_ASSOCIATIONS_IN_FORMULAS,
                 isAssociationsInFormulas()));
+
+        createDescriptionComment(
+                "Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German. Only English (en) and German (de) are supported at the moment.", projectEl); //$NON-NLS-1$
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_FORMULA_LANGUAGE_LOCALE,
+                formulaLanguageLocale.getLanguage()));
 
         // persistence options
         createPersistenceOptionsDescriptionComment(projectEl);
@@ -583,19 +588,17 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         defaultCurrencyElement.setAttribute(DEFAULT_CURRENCY_VALUE_ATTR, defaultCurrency.getCurrencyCode());
         projectEl.appendChild(defaultCurrencyElement);
 
-        createDescriptionComment(
-                "Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German. Only English (en) and German (de) are supported at the moment.", projectEl); //$NON-NLS-1$
-        Element functionsLanguageLocaleElement = doc.createElement(FORMULA_LANGUAGE_LOCALE);
-        functionsLanguageLocaleElement.setAttribute(ATTRIBUTE_LOCALE, formulaLanguageLocale.getLanguage());
-        projectEl.appendChild(functionsLanguageLocaleElement);
-
         return projectEl;
     }
 
     private Element createSettingElement(Document doc, String name, boolean enable) {
+        return createSettingElement(doc, name, Boolean.toString(enable));
+    }
+
+    protected Element createSettingElement(Document doc, String name, String value) {
         Element constraintElement = doc.createElement(SETTING_TAG_NAME);
         constraintElement.setAttribute(SETTING_ATTRIBUTE_NAME, name);
-        constraintElement.setAttribute(SETTING_ATTRIBUTE_ENABLE, Boolean.toString(enable));
+        constraintElement.setAttribute(SETTING_ATTRIBUTE_VALUE, value);
         return constraintElement;
     }
 
@@ -653,15 +656,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initSupportedLanguages(element);
 
         initDefaultCurrency(element);
-
-        initFunctionsLanguageLocale(element);
-    }
-
-    private void initFunctionsLanguageLocale(Element element) {
-        Element functionsLanguageLocaleElement = XmlUtil.getFirstElement(element, FORMULA_LANGUAGE_LOCALE);
-        if (functionsLanguageLocaleElement != null) {
-            formulaLanguageLocale = new Locale(functionsLanguageLocaleElement.getAttribute(ATTRIBUTE_LOCALE));
-        }
     }
 
     private void initRequiredFeatures(Element el) {
@@ -772,25 +766,37 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                     element.getAttribute("derivedUnionIsImplementedRuleEnabled")).booleanValue(); //$NON-NLS-1$
         }
 
-        // since 2.0: read from <OptionalConstraints>
-        Element optionalConstraintsEl = XmlUtil.getFirstElement(element, ADDITIONAL_SETTINGS_TAG_NAME);
+        // since 2.0: read from <AdditionalSettings> (and not from <OptionalConstraints> anymore)
+        Element additionalSettingsEl = XmlUtil.getFirstElement(element, ADDITIONAL_SETTINGS_TAG_NAME);
 
         // migration for pre-2.0 files
-        if (optionalConstraintsEl == null) {
+        if (additionalSettingsEl == null) {
             return;
         }
 
-        NodeList nl = optionalConstraintsEl.getElementsByTagName(SETTING_TAG_NAME);
+        NodeList nl = additionalSettingsEl.getElementsByTagName(SETTING_TAG_NAME);
         int length = nl.getLength();
         for (int i = 0; i < length; ++i) {
             Element child = (Element)nl.item(i);
-            if (!child.hasAttribute(SETTING_ATTRIBUTE_NAME) || !child.hasAttribute(SETTING_ATTRIBUTE_ENABLE)) {
-                // ignore incomplete entries
+            String value = null;
+            if (!child.hasAttribute(SETTING_ATTRIBUTE_VALUE)) {
+                if (child.hasAttribute(SETTING_ATTRIBUTE_ENABLE)) {
+                    /*
+                     * Migration to FIPS 3.7: interpret out-dated enable flag as value string
+                     * (toXml() will also persist it as such)
+                     */
+                    value = child.getAttribute(SETTING_ATTRIBUTE_ENABLE);
+                }
+            } else {
+                value = child.getAttribute(SETTING_ATTRIBUTE_VALUE);
+            }
+            if (!child.hasAttribute(SETTING_ATTRIBUTE_NAME) || value == null) {
+                // ignore incomplete entries (no value and no enable flag)
                 continue;
             }
 
             String name = child.getAttribute(SETTING_ATTRIBUTE_NAME);
-            boolean enable = Boolean.valueOf(child.getAttribute(SETTING_ATTRIBUTE_ENABLE)).booleanValue();
+            boolean enable = Boolean.valueOf(value).booleanValue();
 
             if (name.equals(SETTING_DERIVED_UNION_IS_IMPLEMENTED)) {
                 derivedUnionIsImplementedRuleEnabled = enable;
@@ -803,6 +809,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             } else if (name.equals(SETTING_ASSOCIATIONS_IN_FORMULAS)) {
                 setAssociationsInFormulas(enable);
             }
+            initFunctionsLanguageLocale(name, value);
+        }
+    }
+
+    private void initFunctionsLanguageLocale(String name, String value) {
+        if (name.equals(SETTING_FORMULA_LANGUAGE_LOCALE) && value != null) {
+            formulaLanguageLocale = new Locale(value);
         }
     }
 
