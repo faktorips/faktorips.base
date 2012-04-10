@@ -59,7 +59,7 @@ public class ValueHolderToFormattedStringWrapperTest {
 
         ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue, false,
                 ValueDatatype.GREGORIAN_CALENDAR);
-        assertEquals("02.04.2012", wrapper.getValue());
+        assertEquals("02.04.2012", wrapper.getFormattedValue());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class ValueHolderToFormattedStringWrapperTest {
 
         ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue, false,
                 ValueDatatype.DECIMAL);
-        assertEquals("1,23456", wrapper.getValue());
+        assertEquals("1,23456", wrapper.getFormattedValue());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class ValueHolderToFormattedStringWrapperTest {
 
         ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue, true,
                 ValueDatatype.GREGORIAN_CALENDAR);
-        assertEquals("[02.04.2012 | 31.01.1999]", wrapper.getValue());
+        assertEquals("[02.04.2012 | 31.01.1999]", wrapper.getFormattedValue());
     }
 
     @Test
@@ -95,7 +95,7 @@ public class ValueHolderToFormattedStringWrapperTest {
 
         ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue, true,
                 ValueDatatype.DECIMAL);
-        assertEquals("[1,23456 | 23,42]", wrapper.getValue());
+        assertEquals("[1,23456 | 23,42]", wrapper.getFormattedValue());
     }
 
     @Test
