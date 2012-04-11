@@ -76,8 +76,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_TAG_NAME = "Setting"; //$NON-NLS-1$
 
-    private static final String SETTING_ATTRIBUTE_ENABLE = "enable"; //$NON-NLS-1$
-
     private static final String SETTING_ATTRIBUTE_VALUE = "value"; //$NON-NLS-1$
 
     private static final String SETTING_ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
@@ -778,24 +776,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         int length = nl.getLength();
         for (int i = 0; i < length; ++i) {
             Element child = (Element)nl.item(i);
-            String value = null;
-            if (!child.hasAttribute(SETTING_ATTRIBUTE_VALUE)) {
-                if (child.hasAttribute(SETTING_ATTRIBUTE_ENABLE)) {
-                    /*
-                     * Migration to FIPS 3.7: interpret out-dated enable flag as value string
-                     * (toXml() will also persist it as such)
-                     */
-                    value = child.getAttribute(SETTING_ATTRIBUTE_ENABLE);
-                }
-            } else {
-                value = child.getAttribute(SETTING_ATTRIBUTE_VALUE);
-            }
-            if (!child.hasAttribute(SETTING_ATTRIBUTE_NAME) || value == null) {
+            if (!child.hasAttribute(SETTING_ATTRIBUTE_NAME) || !child.hasAttribute(SETTING_ATTRIBUTE_VALUE)) {
                 // ignore incomplete entries (no value and no enable flag)
                 continue;
             }
 
             String name = child.getAttribute(SETTING_ATTRIBUTE_NAME);
+            String value = child.getAttribute(SETTING_ATTRIBUTE_VALUE);
             boolean enable = Boolean.valueOf(value).booleanValue();
 
             if (name.equals(SETTING_DERIVED_UNION_IS_IMPLEMENTED)) {
