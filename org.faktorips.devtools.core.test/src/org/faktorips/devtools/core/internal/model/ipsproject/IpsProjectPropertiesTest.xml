@@ -65,8 +65,7 @@
   </PersistenceOptions>
   <AdditionalSettings>
   	<Setting name="derivedUnionIsImplemented"/>
-  	<Setting name="derivedUnionIsImplemented" enable="false"/>
+  	<Setting name="derivedUnionIsImplemented" value="false"/>
   	<Setting name="formulaLanguageLocale" value="ko"/>
-  	<Setting name="rulesWithoutReferencesAllowed" enable="false" value="true"/>
   </AdditionalSettings>
 </IpsProject>
