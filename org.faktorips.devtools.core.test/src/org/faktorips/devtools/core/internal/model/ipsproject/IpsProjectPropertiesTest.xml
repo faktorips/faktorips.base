@@ -62,5 +62,11 @@
   <PersistenceOptions allowLazyFetchForSingleValuedAssociations="true" maxColumnNameLength="60" maxTableNameLength="30" maxTableColumnScale="10" maxTableColumnPrecision="11" maxTableColumnSize="4092">
     <TableNamingStrategy id="org.faktorips.devtools.core.CamelCaseToUpperUnderscoreTableNamingStrategy"/>
     <TableColumnNamingStrategy id="org.faktorips.devtools.core.CamelCaseToUpperUnderscoreColumnNamingStrategy"/>
-  </PersistenceOptions>	
+  </PersistenceOptions>
+  <AdditionalSettings>
+  	<Setting name="derivedUnionIsImplemented"/>
+  	<Setting name="derivedUnionIsImplemented" enable="false"/>
+  	<Setting name="formulaLanguageLocale" value="ko"/>
+  	<Setting name="rulesWithoutReferencesAllowed" enable="false" value="true"/>
+  </AdditionalSettings>
 </IpsProject>
