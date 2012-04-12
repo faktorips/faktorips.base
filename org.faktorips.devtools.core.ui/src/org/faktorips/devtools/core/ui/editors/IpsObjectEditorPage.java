@@ -31,6 +31,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSupport;
 import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
@@ -212,6 +213,8 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         if (!(getPartControl() instanceof Composite)) {
             return;
         }
+        // Refreshes the blueprint relevant attribute by start of the Product Analyzer
+        IpsUIPlugin.getDefault().getPropertyVisibleController().updateUI();
 
         refresh((Composite)getPartControl());
     }
