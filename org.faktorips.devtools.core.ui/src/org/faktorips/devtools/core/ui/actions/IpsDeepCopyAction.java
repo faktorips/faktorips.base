@@ -139,7 +139,15 @@ public class IpsDeepCopyAction extends IpsAction {
                             .find(ProductStructureExplorer.EXTENSION_ID).createView();
                 }
 
-                if (pe == null) {
+                /*
+                 * Do nothing if reference is null or if part has not yet been initialized/created
+                 * (site is null). Curiously the view's site may still be null even after both
+                 * IViewReference#getView(true) and IViewDescriptor#createView() have been called.
+                 * 
+                 * Calling showStructure() with a null site caused InvocationTargetExceptions when
+                 * creating new product versions. See FIPS-1040.
+                 */
+                if (pe == null || pe.getSite() == null) {
                     return;
                 }
 

@@ -631,7 +631,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                 file = product.getIpsSrcFile();
                 generationDateViewer.setInput(product);
                 generationDateViewer.setSelection(0);
-                // setting the adjustment date to null updates the treeViewer content with latest
+                // setting the adjustment date to null updates the treeViewer content with
+                // latest
                 // adjustment
                 // until the valid adjustment dates are collected
                 setAdjustmentDate(null);
@@ -780,14 +781,24 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                         }
                     }
                 }
+                refreshIfSourceFilesArePartOfCurrentStructure(ipsSrcFiles);
+            }
+
+            protected void refreshIfSourceFilesArePartOfCurrentStructure(final Set<IIpsSrcFile> ipsSrcFiles) {
                 /*
-                 * Refresh only if a IPS source file in the product component structure was changed
-                 * to avoid unnecessary rebuilding of the structure.
+                 * Source-file change may be processed by not yet initialized/visible product
+                 * structure explorer. Prevent NPE. See FIPS-1040.
                  */
-                for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-                    if (contentProvider.isIpsSrcFilePartOfStructure(ipsSrcFile)) {
-                        postRefresh();
-                        return;
+                if (contentProvider != null) {
+                    /*
+                     * Refresh only if an IPS source file in the product component structure was
+                     * changed to avoid unnecessary rebuilding of the structure.
+                     */
+                    for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                        if (contentProvider.isIpsSrcFilePartOfStructure(ipsSrcFile)) {
+                            postRefresh();
+                            return;
+                        }
                     }
                 }
             }
