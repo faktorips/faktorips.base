@@ -20,7 +20,7 @@
       </externalTableFormat>
    </extension>
    <extension
-         id="org.faktorips.devtools.core.externalValueConverter"
+         id="org.faktorips.devtools.core.defaultValueConverter"
          name="Contributed Value Converters for Table Formats"
          point="org.faktorips.devtools.core.externalValueConverter">
       <externalTableFormat tableFormatId="org.faktorips.devtools.tableconversion.excel.ExcelTableFormat">
