@@ -473,7 +473,6 @@ public class IpsPlugin extends AbstractUIPlugin {
                         IpsPlugin.log(e);
                     }
                 }
-                break;
             }
         }
     }
