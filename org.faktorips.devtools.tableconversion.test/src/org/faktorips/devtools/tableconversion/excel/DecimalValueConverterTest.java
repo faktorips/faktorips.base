@@ -15,7 +15,8 @@ package org.faktorips.devtools.tableconversion.excel;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
@@ -73,17 +74,45 @@ public class DecimalValueConverterTest {
         assertFalse(Datatype.DECIMAL.isParsable(INVALID));
 
         Object value = converter.getExternalDataValue(VALID, ml);
-        assertEquals(Decimal.valueOf(VALID), value);
+        assertEquals(Decimal.valueOf(VALID).doubleValue(), value);
         assertTrue(ml.isEmpty());
 
         value = converter.getExternalDataValue(null, ml);
         // do not use assertEquals because instances of Number are compared by getting longValue
-        assertSame(Decimal.NULL, value);
+        assertNull(value);
         assertTrue(ml.isEmpty());
 
         value = converter.getExternalDataValue(INVALID, ml);
         assertFalse(ml.isEmpty());
         assertEquals(INVALID, value);
+    }
+
+    @Test
+    public void testGetExternalDataValueForNull() {
+        MessageList ml = new MessageList();
+        DecimalValueConverter converter = new DecimalValueConverter();
+        final String EMPTY = "";
+        final String DECIMAL_NULL = "DecimalNull";
+        final String VALID = "1234";
+
+        assertTrue(Datatype.DECIMAL.isParsable(null));
+        assertFalse(Datatype.DECIMAL.isParsable(EMPTY));
+        assertTrue(Datatype.DECIMAL.isParsable(DECIMAL_NULL));
+        assertTrue(Datatype.DECIMAL.isParsable(VALID));
+
+        Object value;
+        value = converter.getExternalDataValue(null, ml);
+        assertNull(value);
+        assertTrue(ml.isEmpty());
+        value = converter.getExternalDataValue(EMPTY, ml);
+        assertNull(value);
+        assertTrue(ml.isEmpty());
+        value = converter.getExternalDataValue(DECIMAL_NULL, ml);
+        assertNull(value);
+        assertTrue(ml.isEmpty());
+        value = converter.getExternalDataValue(VALID, ml);
+        assertNotNull(value);
+        assertTrue(ml.isEmpty());
     }
 
 }

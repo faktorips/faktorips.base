@@ -54,7 +54,11 @@ public class DecimalValueConverter extends AbstractValueConverter {
     @Override
     public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         try {
-            return Decimal.valueOf(ipsValue).doubleValue();
+            Decimal decimal = Decimal.valueOf(ipsValue);
+            if (decimal == Decimal.NULL) {
+                return null;
+            }
+            return decimal.doubleValue();
         } catch (RuntimeException e) {
             messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, Decimal.class.getName(),
                     getSupportedDatatype().getQualifiedName()));
