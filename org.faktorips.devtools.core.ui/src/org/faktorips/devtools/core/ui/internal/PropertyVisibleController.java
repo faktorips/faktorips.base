@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.IProductCmptPropertyFilter;
-import org.faktorips.devtools.core.ui.IPropertyVisibleController;
+import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.util.ArgumentCheck;
 
 /**

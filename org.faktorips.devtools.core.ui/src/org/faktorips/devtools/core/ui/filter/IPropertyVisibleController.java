@@ -11,10 +11,11 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui;
+package org.faktorips.devtools.core.ui.filter;
 
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.ui.IProductCmptPropertyFilter;
 
 /**
  * Manages the visibility of UI elements that are based upon {@link IProductCmptProperty product

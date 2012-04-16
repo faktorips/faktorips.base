@@ -125,6 +125,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorInput;
+import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.internal.PropertyVisibleController;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;

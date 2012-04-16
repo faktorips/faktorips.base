@@ -11,9 +11,10 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui;
+package org.faktorips.devtools.core.ui.filter;
 
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.ui.IProductCmptPropertyFilter;
 
 /**
  * Base implementation of {@link IProductCmptPropertyFilter} that simplifies the implementation of

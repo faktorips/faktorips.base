@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui;
 
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 
 /**
  * Allows to filter {@link IProductCmptProperty product component properties} from UI elements.

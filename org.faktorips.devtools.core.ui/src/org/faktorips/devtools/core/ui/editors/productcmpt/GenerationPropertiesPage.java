@@ -295,6 +295,13 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     public void refresh() {
 
         updateTabname();
+        if (stack != null) {
+            ((Composite)stack.topControl).layout();
+        }
+
+        // Refreshes the blueprint relevant attributes by start of the Product Analyzer
+        IpsUIPlugin.getDefault().getPropertyVisibleController().updateUI();
+
         super.refresh();
     }
 
