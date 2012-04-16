@@ -521,6 +521,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     @Override
+    public boolean exists() {
+        return getCorrespondingResource() != null && getCorrespondingResource().exists();
+    }
+
+    @Override
     public IIpsElement[] getChildren() throws CoreException {
         return getIpsProjects();
     }
