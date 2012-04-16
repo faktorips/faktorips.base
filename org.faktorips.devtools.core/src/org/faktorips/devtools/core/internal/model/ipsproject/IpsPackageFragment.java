@@ -41,9 +41,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -54,7 +52,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentArbitrary
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.util.EclipseIOUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
@@ -356,9 +353,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         } catch (TransformerException e) {
             throw new RuntimeException(e);
         }
-        if (template instanceof ITableContents) {
-            initTableContentsFromTemplate((TableContents)ipsSrcFile.getIpsObject(), (TableContents)template);
-        }
         if (template instanceof ITimedIpsObject) {
             ITimedIpsObject copyProductCmpt = ((ITimedIpsObject)ipsSrcFile.getIpsObject());
             IIpsObjectGeneration generationEffectiveOn = copyProductCmpt.findGenerationEffectiveOn(oldDate);
@@ -378,15 +372,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         }
 
         return ipsSrcFile;
-    }
-
-    private void initTableContentsFromTemplate(TableContents newTableContents, TableContents template) {
-        newTableContents.setTableStructure(template.getTableStructure());
-        newTableContents.setNumOfColumnsInternal(template.getNumOfColumns());
-        for (IDescription description : template.getDescriptions()) {
-            IDescription newDescription = newTableContents.getDescription(description.getLocale());
-            newDescription.setText(description.getText());
-        }
     }
 
     @Override

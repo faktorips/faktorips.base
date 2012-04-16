@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -386,6 +387,40 @@ public class TableContentsTest extends AbstractDependencyTest {
 
         IIpsSrcFile typeSrcFile = table.findMetaClassSrcFile(project);
         assertEquals(structure.getIpsSrcFile(), typeSrcFile);
+    }
+
+    @Test
+    public void testFindGenerationEffectiveOn() throws Exception {
+        table.newGeneration();
+
+        assertEquals(1, table.getNumOfGenerations());
+
+        IIpsObjectGeneration generation = table.findGenerationEffectiveOn(null);
+        assertEquals(table.getFirstGeneration(), generation);
+
+        generation = table.findGenerationEffectiveOn((GregorianCalendar)GregorianCalendar.getInstance());
+        assertEquals(table.getFirstGeneration(), generation);
+
+        table.setValidTo(null);
+        generation = table.findGenerationEffectiveOn((GregorianCalendar)GregorianCalendar.getInstance());
+        assertEquals(table.getFirstGeneration(), generation);
+    }
+
+    @Test
+    public void testGetGenerationByEffectiveDate() throws Exception {
+        table.newGeneration();
+
+        assertEquals(1, table.getNumOfGenerations());
+
+        IIpsObjectGeneration generation = table.getGenerationByEffectiveDate(null);
+        assertEquals(table.getFirstGeneration(), generation);
+
+        generation = table.getGenerationByEffectiveDate((GregorianCalendar)GregorianCalendar.getInstance());
+        assertEquals(table.getFirstGeneration(), generation);
+
+        table.setValidTo(null);
+        generation = table.getGenerationByEffectiveDate((GregorianCalendar)GregorianCalendar.getInstance());
+        assertEquals(table.getFirstGeneration(), generation);
     }
 
 }
