@@ -843,14 +843,24 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                         }
                     }
                 }
+                refreshIfSourceFilesArePartOfCurrentStructure(ipsSrcFiles);
+            }
+
+            protected void refreshIfSourceFilesArePartOfCurrentStructure(final Set<IIpsSrcFile> ipsSrcFiles) {
                 /*
-                 * Refresh only if a IPS source file in the product component structure was changed
-                 * to avoid unnecessary rebuilding of the structure.
+                 * Source-file change may be processed by not yet initialized/visible product
+                 * structure explorer. Prevent NPE. See FIPS-1040.
                  */
-                for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-                    if (contentProvider.isIpsSrcFilePartOfStructure(ipsSrcFile)) {
-                        postRefresh();
-                        return;
+                if (contentProvider != null) {
+                    /*
+                     * Refresh only if an IPS source file in the product component structure was
+                     * changed to avoid unnecessary rebuilding of the structure.
+                     */
+                    for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                        if (contentProvider.isIpsSrcFilePartOfStructure(ipsSrcFile)) {
+                            postRefresh();
+                            return;
+                        }
                     }
                 }
             }
