@@ -194,7 +194,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
         }
 
         @Override
-        protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
+        protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, Datatype datatype) {
             return "getDefaultValue" + StringUtils.capitalize(attribute.getName()); //$NON-NLS-1$
         }
 

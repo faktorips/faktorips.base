@@ -62,11 +62,17 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
      */
     public void setProductCmptType(IProductCmptType newValue) {
         IProductCmptType oldValue = productCmptType;
+        boolean oldConditionTypeAvailable = isConditionTypeAvailable();
+        boolean oldConditionDefined = isConditionDefined();
+
         productCmptType = newValue;
 
         productSearchConditionPresentationModels.clear();
 
         notifyListeners(new PropertyChangeEvent(this, PRODUCT_COMPONENT_TYPE, oldValue, newValue));
+        notifyListeners(new PropertyChangeEvent(this, CONDITION_TYPE_AVAILABLE, oldConditionTypeAvailable,
+                isConditionTypeAvailable()));
+        notifyListeners(new PropertyChangeEvent(this, CONDITION_DEFINED, oldConditionDefined, isConditionDefined()));
     }
 
     public static final String PRODUCT_COMPONENT_TYPE_CHOSEN = "productCmptTypeChosen"; //$NON-NLS-1$
@@ -98,7 +104,10 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
      * ProductSearchConditionPresentationModel
      */
     public void createProductSearchConditionPresentationModel() {
+        boolean oldConditionDefined = isConditionDefined();
+
         productSearchConditionPresentationModels.add(new ProductSearchConditionPresentationModel(this));
+        notifyListeners(new PropertyChangeEvent(this, CONDITION_DEFINED, oldConditionDefined, isConditionDefined()));
     }
 
     /**
@@ -107,7 +116,13 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
      * @return true if the list contained the specified ProductSearchConditionPresentationModel
      */
     public boolean removeProductSearchConditionPresentationModels(ProductSearchConditionPresentationModel productSearchConditionPresentationModel) {
-        return productSearchConditionPresentationModels.remove(productSearchConditionPresentationModel);
+        boolean oldConditionDefined = isConditionDefined();
+
+        boolean remove = productSearchConditionPresentationModels.remove(productSearchConditionPresentationModel);
+
+        notifyListeners(new PropertyChangeEvent(this, CONDITION_DEFINED, oldConditionDefined, isConditionDefined()));
+
+        return remove;
     }
 
     private boolean areAllProductSearchConditionPresentationModelsValid() {
@@ -119,7 +134,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         return true;
     }
 
-    public static final String CONDITION_AVAILABLE = "conditionAvailable"; //$NON-NLS-1$
+    public static final String CONDITION_TYPE_AVAILABLE = "conditionTypeAvailable"; //$NON-NLS-1$
 
     /**
      * Returns {@code true}, if there is any element on the {@link #productCmptType}, which can be
@@ -128,6 +143,17 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
      */
     public boolean isConditionTypeAvailable() {
         return !getAvailableConditionTypes().isEmpty();
+    }
+
+    public static final String CONDITION_DEFINED = "conditionDefined"; //$NON-NLS-1$
+
+    /**
+     * Returns {@code true}, if there is any element on the {@link #productCmptType}, which can be
+     * searched. If there are no elements, which can be served, this method returns {@code false}
+     * 
+     */
+    public boolean isConditionDefined() {
+        return !productSearchConditionPresentationModels.isEmpty();
     }
 
     /**

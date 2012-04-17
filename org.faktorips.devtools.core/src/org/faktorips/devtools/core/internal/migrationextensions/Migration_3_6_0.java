@@ -13,11 +13,14 @@
 
 package org.faktorips.devtools.core.internal.migrationextensions;
 
+import java.util.Locale;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.migration.DefaultMigration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -46,8 +49,24 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOper
  */
 public class Migration_3_6_0 extends DefaultMigration {
 
+    private static final String CATEGORY_ATTRIBUTES = "Attributes"; //$NON-NLS-1$
+    private static final String CATEGORY_ATTRIBUTES_DE = "Eigenschaften"; //$NON-NLS-1$
+    private static final String CATEGORY_TABLES_FORMULAS = "Tables and Formulas"; //$NON-NLS-1$
+    private static final String CATEGORY_TABLES_FORMULAS_DE = "Tabellen und Berechnungsvorschriften"; //$NON-NLS-1$
+    private static final String CATEGORY_VALIDATION_RULES = "Validation Rules"; //$NON-NLS-1$
+    private static final String CATEGORY_VALIDATION_RULES_DE = "Validierungsregeln"; //$NON-NLS-1$
+    private static final String CATEGORY_DEFAULTS_VALUE_SETS = "Defaults and Value Sets"; //$NON-NLS-1$
+    private static final String CATEGORY_DEFAULTS_VALUE_SETS_DE = "Vorbelegungen und Wertebereiche"; //$NON-NLS-1$
+    private final boolean useGermanCategories;
+    private boolean useEnglishLabels;
+    private boolean useGermanLabels;
+
     public Migration_3_6_0(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
+        ISupportedLanguage defaultLanguage = projectToMigrate.getProperties().getDefaultLanguage();
+        useGermanCategories = Locale.GERMAN.getLanguage().equals(defaultLanguage.getLanguageName());
+        useGermanLabels = projectToMigrate.getProperties().getSupportedLanguage(Locale.GERMAN) != null;
+        useEnglishLabels = projectToMigrate.getProperties().getSupportedLanguage(Locale.ENGLISH) != null;
     }
 
     @Override
@@ -73,12 +92,26 @@ public class Migration_3_6_0 extends DefaultMigration {
         createDefaultCategoryDefaultsAndValueSets(productCmptType);
     }
 
+    private IProductCmptCategory createCategory(IProductCmptType productCmptType,
+            String label,
+            String germanLabel,
+            Position position) {
+        IProductCmptCategory category = productCmptType.newCategory((useGermanCategories ? germanLabel : label));
+        category.setPosition(position);
+        if (useEnglishLabels) {
+            category.setLabelValue(Locale.ENGLISH, label);
+        }
+        if (useGermanLabels) {
+            category.setLabelValue(Locale.GERMAN, germanLabel);
+        }
+        return category;
+    }
+
     private void createDefaultCategoryAttributes(IProductCmptType productCmptType) throws CoreException {
         if (productCmptType.findDefaultCategoryForProductCmptTypeAttributes(productCmptType.getIpsProject()) == null) {
-            IProductCmptCategory attributes = productCmptType
-                    .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryAttributes);
+            IProductCmptCategory attributes = createCategory(productCmptType, CATEGORY_ATTRIBUTES,
+                    CATEGORY_ATTRIBUTES_DE, Position.LEFT);
             attributes.setDefaultForProductCmptTypeAttributes(true);
-            attributes.setPosition(Position.LEFT);
         }
     }
 
@@ -88,29 +121,26 @@ public class Migration_3_6_0 extends DefaultMigration {
         boolean defaultFormulaSignatureDefinitionsExists = productCmptType
                 .findDefaultCategoryForFormulaSignatureDefinitions(productCmptType.getIpsProject()) != null;
         if (!defaultTableStructureUsagesExists || !defaultFormulaSignatureDefinitionsExists) {
-            IProductCmptCategory tablesAndFormulas = productCmptType
-                    .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryTablesAndFormulas);
+            IProductCmptCategory tablesAndFormulas = createCategory(productCmptType, CATEGORY_TABLES_FORMULAS,
+                    CATEGORY_TABLES_FORMULAS_DE, Position.LEFT);
             tablesAndFormulas.setDefaultForTableStructureUsages(!defaultTableStructureUsagesExists);
             tablesAndFormulas.setDefaultForFormulaSignatureDefinitions(!defaultFormulaSignatureDefinitionsExists);
-            tablesAndFormulas.setPosition(Position.LEFT);
         }
     }
 
     private void createDefaultCategoryValidationRules(IProductCmptType productCmptType) throws CoreException {
         if (productCmptType.findDefaultCategoryForValidationRules(productCmptType.getIpsProject()) == null) {
-            IProductCmptCategory validationRules = productCmptType
-                    .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryValidationRules);
+            IProductCmptCategory validationRules = createCategory(productCmptType, CATEGORY_VALIDATION_RULES,
+                    CATEGORY_VALIDATION_RULES_DE, Position.LEFT);
             validationRules.setDefaultForValidationRules(true);
-            validationRules.setPosition(Position.LEFT);
         }
     }
 
     private void createDefaultCategoryDefaultsAndValueSets(IProductCmptType productCmptType) throws CoreException {
         if (productCmptType.findDefaultCategoryForPolicyCmptTypeAttributes(productCmptType.getIpsProject()) == null) {
-            IProductCmptCategory defaultsAndValueSets = productCmptType
-                    .newCategory(Messages.Migration_3_6_0_nameDefaultCategoryDefaultsAndValueSets);
+            IProductCmptCategory defaultsAndValueSets = createCategory(productCmptType, CATEGORY_DEFAULTS_VALUE_SETS,
+                    CATEGORY_DEFAULTS_VALUE_SETS_DE, Position.RIGHT);
             defaultsAndValueSets.setDefaultForPolicyCmptTypeAttributes(true);
-            defaultsAndValueSets.setPosition(Position.RIGHT);
         }
     }
 

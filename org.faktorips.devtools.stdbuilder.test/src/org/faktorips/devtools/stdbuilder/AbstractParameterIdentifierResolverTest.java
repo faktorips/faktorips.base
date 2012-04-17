@@ -246,6 +246,19 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
         assertEquals("this.getA()", result.getCodeFragment().getSourcecode());
     }
 
+    @Test
+    public void testCompilePrimitiveBoolean() throws Exception {
+        method.newParameter(policyCmptType.getQualifiedName(), "policy");
+        IPolicyCmptTypeAttribute primitiveBooleanAttribute = policyCmptType.newPolicyCmptTypeAttribute("bug");
+        primitiveBooleanAttribute.setDatatype(Datatype.PRIMITIVE_BOOLEAN.getQualifiedName());
+
+        CompilationResult result = resolver.compile("policy.bug", null, locale);
+        assertTrue(result.successfull());
+        assertEquals(Datatype.PRIMITIVE_BOOLEAN, result.getDatatype());
+        String expected = "policy.isBug()";
+        assertEquals(expected, result.getCodeFragment().getSourcecode());
+    }
+
     /**
      * <strong>Scenario:</strong><br>
      * An {@link IExpression} has a parameter called {@code "tree"} of the {@link IPolicyCmptType}

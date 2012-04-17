@@ -92,7 +92,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
      * 
      * @since 3.6
      */
-    protected abstract String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type);
+    protected abstract String getParameterAttributDefaultValueGetterName(IAttribute attribute, Datatype datatype);
 
     /**
      * Provides the name of the getter method for a single target of the given association from the
@@ -211,7 +211,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                      * we interpret the code, we introduce a new parameter (thiz) and replace
                      * "this." with "thiz."
                      */
-                    String code = "this." + getParameterAttributGetterName(attribute, productCmptType) + "()"; //$NON-NLS-1$ //$NON-NLS-2$
+                    String code = "this." + getParameterAttributGetterName(attribute, attrDatatype) + "()"; //$NON-NLS-1$ //$NON-NLS-2$
                     return new CompilationResultImpl(code, attrDatatype);
                 }
             }
@@ -343,7 +343,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
                 return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
             }
             String parameterAttributGetterName = isDefaultValueAccess ? getParameterAttributDefaultValueGetterName(
-                    attribute, (IPolicyCmptType)type) : getParameterAttributGetterName(attribute, type);
+                    attribute, datatype) : getParameterAttributGetterName(attribute, datatype);
             javaCodeFragment.append('.' + parameterAttributGetterName + "()"); //$NON-NLS-1$
             return new CompilationResultImpl(javaCodeFragment, datatype);
         } catch (Exception e) {

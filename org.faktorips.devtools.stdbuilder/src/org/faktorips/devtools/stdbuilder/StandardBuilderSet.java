@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -789,13 +790,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         @Override
         protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
+            IType type = attribute.getType();
             try {
-                if (datatype instanceof IPolicyCmptType) {
-                    return getGenerator((IPolicyCmptType)datatype).getMethodNameGetPropertyValue(attribute.getName(),
+                if (type instanceof IPolicyCmptType) {
+                    return getGenerator((IPolicyCmptType)type).getMethodNameGetPropertyValue(attribute.getName(),
                             datatype);
                 }
-                if (datatype instanceof IProductCmptType) {
-                    return getGenerator((IProductCmptType)datatype).getMethodNameGetPropertyValue(attribute.getName(),
+                if (type instanceof IProductCmptType) {
+                    return getGenerator((IProductCmptType)type).getMethodNameGetPropertyValue(attribute.getName(),
                             datatype);
                 }
             } catch (CoreException e) {
@@ -842,13 +844,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         @Override
         protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
+            IType type = attribute.getType();
             try {
-                if (datatype instanceof IPolicyCmptType) {
-                    return getGenerator((IPolicyCmptType)datatype).getMethodNameGetPropertyValue(attribute.getName(),
+                if (type instanceof IPolicyCmptType) {
+                    return getGenerator((IPolicyCmptType)type).getMethodNameGetPropertyValue(attribute.getName(),
                             datatype);
                 }
-                if (datatype instanceof IProductCmptType) {
-                    GenProductCmptType generator = getGenerator((IProductCmptType)datatype);
+                if (type instanceof IProductCmptType) {
+                    GenProductCmptType generator = getGenerator((IProductCmptType)type);
                     String parameterAttributeGetter = generator.getMethodNameGetPropertyValue(attribute.getName(),
                             datatype);
                     if (attribute instanceof IProductCmptTypeAttribute) {
@@ -865,9 +868,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
 
         @Override
-        protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, IPolicyCmptType type) {
+        protected String getParameterAttributDefaultValueGetterName(IAttribute attribute, Datatype datatype) {
             try {
-                GenPolicyCmptType genPolicyCmptType = getGenerator(type);
+                GenPolicyCmptType genPolicyCmptType = getGenerator((PolicyCmptType)attribute.getType());
                 String getProductCmptGeneration = genPolicyCmptType.getGenProductCmptType()
                         .getMethodNameGetProductCmptGeneration();
                 GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = genPolicyCmptType

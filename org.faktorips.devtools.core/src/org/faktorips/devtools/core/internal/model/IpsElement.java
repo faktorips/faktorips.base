@@ -56,7 +56,7 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement {
 
     @Override
     public boolean exists() {
-        if (!getParent().exists()) {
+        if (getParent() == null || !getParent().exists()) {
             return false;
         }
         if (getCorrespondingResource() == null) {

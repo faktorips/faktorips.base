@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 
 /**
  * Utilities for the creation and modification of projects.
@@ -374,9 +375,20 @@ public class ProjectUtil {
             }
         }
 
+        setDefaultFunctionsLanguageLocale(props);
+
         ipsProject.setProperties(props);
 
         return ipsProject;
+    }
+
+    private static void setDefaultFunctionsLanguageLocale(IIpsProjectProperties properties) {
+        ISupportedLanguage defaultLanguage = properties.getDefaultLanguage();
+        if (defaultLanguage != null && defaultLanguage.getLocale().getLanguage().equals(Locale.GERMAN.getLanguage())) {
+            properties.setFormulaLanguageLocale(Locale.GERMAN);
+        } else {
+            properties.setFormulaLanguageLocale(Locale.ENGLISH);
+        }
     }
 
     private static void addIpsRuntimeLibraries(IJavaProject javaProject) throws JavaModelException {
