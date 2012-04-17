@@ -44,8 +44,6 @@ import org.w3c.dom.NodeList;
  */
 public class Migration_3_6_2 extends AbstractIpsProjectMigrationOperation {
 
-    private static final String TARGET_VERSION = "3.6.2"; //$NON-NLS-1$
-
     public Migration_3_6_2(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
@@ -57,7 +55,7 @@ public class Migration_3_6_2 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public String getTargetVersion() {
-        return TARGET_VERSION;
+        return "3.6.2"; //$NON-NLS-1$
     }
 
     @Override
