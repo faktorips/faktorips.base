@@ -21,7 +21,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.forms.IManagedForm;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.ui.IProductCmptPropertyFilter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 
@@ -39,11 +38,11 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
  * 
  * @see IProductCmptPropertyFilter
  */
-public abstract class AbstractPropertyFilter extends AbstractProductCmptPropertyFilter {
+public abstract class AbstractPropertyPerspectiveChangeFilter extends AbstractProductCmptPropertyFilter {
 
     private final LocalWindowListener localWindowListener;
 
-    public AbstractPropertyFilter() {
+    public AbstractPropertyPerspectiveChangeFilter() {
         localWindowListener = addWindowListener();
     }
 
@@ -61,26 +60,26 @@ public abstract class AbstractPropertyFilter extends AbstractProductCmptProperty
     }
 
     /**
-     * A listener that manages the {@link AnalysisPerspectiveActivatedOrDeactivatedListener} for
-     * each {@link IWorkbenchWindow} that is opened.
+     * A listener that manages the {@link PerspectiveActivatedOrDeactivatedListener} for each
+     * {@link IWorkbenchWindow} that is opened.
      */
     private static class LocalWindowListener implements IWindowListener {
 
-        private final AnalysisPerspectiveActivatedOrDeactivatedListener analysisPerspectiveActivatedOrDeactivatedListener;
+        private final PerspectiveActivatedOrDeactivatedListener perspectiveActivatedOrDeactivatedListener;
 
-        public LocalWindowListener(AbstractPropertyFilter abstractPropertyFilter) {
-            analysisPerspectiveActivatedOrDeactivatedListener = new AnalysisPerspectiveActivatedOrDeactivatedListener(
+        public LocalWindowListener(AbstractPropertyPerspectiveChangeFilter abstractPropertyFilter) {
+            perspectiveActivatedOrDeactivatedListener = new PerspectiveActivatedOrDeactivatedListener(
                     abstractPropertyFilter);
         }
 
         @Override
         public void windowOpened(IWorkbenchWindow window) {
-            window.addPerspectiveListener(analysisPerspectiveActivatedOrDeactivatedListener);
+            window.addPerspectiveListener(perspectiveActivatedOrDeactivatedListener);
         }
 
         @Override
         public void windowClosed(IWorkbenchWindow window) {
-            window.removePerspectiveListener(analysisPerspectiveActivatedOrDeactivatedListener);
+            window.removePerspectiveListener(perspectiveActivatedOrDeactivatedListener);
         }
 
         @Override
@@ -94,7 +93,7 @@ public abstract class AbstractPropertyFilter extends AbstractProductCmptProperty
         }
 
         public void setPerspectiveId(String perspectiveId) {
-            analysisPerspectiveActivatedOrDeactivatedListener.setPerspectiveId(perspectiveId);
+            perspectiveActivatedOrDeactivatedListener.setPerspectiveId(perspectiveId);
         }
 
     }
@@ -103,17 +102,17 @@ public abstract class AbstractPropertyFilter extends AbstractProductCmptProperty
      * A listener that notifies the {@link IPropertyVisibleController} on activation and
      * deactivation of the analysis perspective.
      */
-    private static class AnalysisPerspectiveActivatedOrDeactivatedListener implements IPerspectiveListener {
+    private static class PerspectiveActivatedOrDeactivatedListener implements IPerspectiveListener {
         /**
          * Flag to track whether the analysis perspective is currently active or not. This
          * information is required to be able to deduce whether the analysis perspective was the
          * last open perspective upon activating another perspective.
          */
         private Boolean perspectiveOpen;
-        private final AbstractPropertyFilter filter;
+        private final AbstractPropertyPerspectiveChangeFilter filter;
         private String perspectiveId;
 
-        public AnalysisPerspectiveActivatedOrDeactivatedListener(AbstractPropertyFilter abstractPropertyFilter) {
+        public PerspectiveActivatedOrDeactivatedListener(AbstractPropertyPerspectiveChangeFilter abstractPropertyFilter) {
             this.filter = abstractPropertyFilter;
         }
 

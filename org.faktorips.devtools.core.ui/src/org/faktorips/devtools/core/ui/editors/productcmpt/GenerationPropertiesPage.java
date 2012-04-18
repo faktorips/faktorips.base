@@ -299,7 +299,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             ((Composite)stack.topControl).layout();
         }
 
-        // Refreshes the blueprint relevant attributes by start of the Product Analyzer
+        // Refreshes the visible controller by application start
         IpsUIPlugin.getDefault().getPropertyVisibleController().updateUI();
 
         super.refresh();
