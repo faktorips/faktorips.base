@@ -50,7 +50,7 @@ public class Migration_3_6_2 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public String getDescription() {
-        return "The OptionalConstraints section in the .ipsproject settings file is renamed to AdditionalSettings."; //$NON-NLS-1$
+        return "The .ipsproject settings undergo a format change. For each Setting node in AdditionalSettings an attribute \"value\" is introduced that contains a string. The former boolean attribute \"enabled\" is removed. Its (boolean) value is persisted as a string representation (e.g. \"true\" or \"false\") in the \"value\" attribute."; //$NON-NLS-1$
     }
 
     @Override
