@@ -13,10 +13,11 @@
 
 package org.faktorips.values;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
@@ -29,6 +30,10 @@ import java.util.regex.Pattern;
  */
 public class DateUtil {
 
+    private static final SimpleDateFormat ISO_DATE_TIME_FORMAT = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+    private static final SimpleDateFormat ISO_TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
+    private static final SimpleDateFormat ISO_DATE_FORMAT = new SimpleDateFormat("yy-MM-dd");
+
     /**
      * Creates an ISO String of the date the given GregorianCalendar is set to or an empty String if
      * calendar is <code>null</code>.
@@ -37,14 +42,11 @@ public class DateUtil {
         if (calendar == null) {
             return "";
         }
-        int month = calendar.get(GregorianCalendar.MONTH) + 1;
-        int date = calendar.get(GregorianCalendar.DATE);
-        return calendar.get(GregorianCalendar.YEAR) + "-" + (month < 10 ? "0" + month : "" + month) + "-"
-                + (date < 10 ? "0" + date : "" + date);
+        return String.format("%tF", calendar);
     }
 
     /**
-     * Creates an ISO String of the given Date or an empty String if date is <code>null</code>.
+     * Creates an ISO date String of the given Date or an empty String if date is <code>null</code>.
      */
     public final static String dateToIsoDateString(Date date) {
         if (date == null) {
@@ -56,6 +58,27 @@ public class DateUtil {
     }
 
     /**
+     * Creates an ISO date/time String of the given Date or an empty String if date is
+     * <code>null</code>.
+     */
+    public final static String dateToIsoDateTimeString(Date date) {
+        if (date == null) {
+            return "";
+        }
+        return String.format("%1$tF %1$tT", date);
+    }
+
+    /**
+     * Creates an ISO time String of the given Date or an empty String if date is <code>null</code>.
+     */
+    public final static String dateToIsoTimeString(Date date) {
+        if (date == null) {
+            return "";
+        }
+        return String.format("%tT", date);
+    }
+
+    /**
      * Parses the given ISO-formatted date String to a Gregorian calendar.
      */
     public final static GregorianCalendar parseIsoDateStringToGregorianCalendar(String s) {
@@ -63,11 +86,9 @@ public class DateUtil {
             return null;
         }
         try {
-            StringTokenizer tokenizer = new StringTokenizer(s, "-");
-            int year = Integer.parseInt(tokenizer.nextToken());
-            int month = Integer.parseInt(tokenizer.nextToken());
-            int date = Integer.parseInt(tokenizer.nextToken());
-            return new GregorianCalendar(year, month - 1, date);
+            GregorianCalendar calendar = new GregorianCalendar();
+            calendar.setTime(parseIsoDateStringToDate(s));
+            return calendar;
         } catch (Exception e) {
             throw new IllegalArgumentException("Can't parse " + s + " to a date!");
         }
@@ -92,7 +113,39 @@ public class DateUtil {
         if (s == null || s.equals("")) {
             return null;
         }
-        return parseIsoDateStringToGregorianCalendar(s).getTime();
+        try {
+            return ISO_DATE_FORMAT.parse(s);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Can't parse " + s + " to a date!");
+        }
+    }
+
+    /**
+     * Parses the given ISO-formattted date/time String to a Date.
+     */
+    public final static Date parseIsoDateTimeStringToDate(String s) {
+        if (s == null || s.equals("")) {
+            return null;
+        }
+        try {
+            return ISO_DATE_TIME_FORMAT.parse(s);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Can't parse " + s + " to a date and time!");
+        }
+    }
+
+    /**
+     * Parses the given ISO-formattted time String to a Date.
+     */
+    public final static Date parseIsoTimeStringToDate(String s) {
+        if (s == null || s.equals("")) {
+            return null;
+        }
+        try {
+            return ISO_TIME_FORMAT.parse(s);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Can't parse " + s + " to a time!");
+        }
     }
 
     /**

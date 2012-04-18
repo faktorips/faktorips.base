@@ -123,6 +123,18 @@
             datatypeClass="org.faktorips.datatype.classtypes.BigDecimalDatatype"
             helperClass="org.faktorips.codegen.dthelpers.BigDecimalHelper">
       </datatypeDefinition>
+      <datatypeDefinition
+            datatypeClass="org.faktorips.datatype.joda.LocalDateDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.joda.LocalDateHelper">
+      </datatypeDefinition>
+      <datatypeDefinition
+            datatypeClass="org.faktorips.datatype.joda.LocalTimeDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.joda.LocalTimeHelper">
+      </datatypeDefinition>
+      <datatypeDefinition
+            datatypeClass="org.faktorips.datatype.joda.LocalDateTimeDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.joda.LocalDateTimeHelper">
+      </datatypeDefinition>
    </extension>
 
 <!-- 

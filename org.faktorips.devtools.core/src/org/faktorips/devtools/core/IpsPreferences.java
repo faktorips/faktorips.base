@@ -419,4 +419,32 @@ public class IpsPreferences {
         return datatypeFormatter;
     }
 
+    /**
+     * Returns date/time format for dates including the time of day.
+     * <p>
+     * To be consistent with other date formats and/or input fields this {@link DateFormat} uses the
+     * locale used for all data type specific formats/fields.
+     * 
+     * @see #getDatatypeFormattingLocale()
+     */
+    public DateFormat getDateTimeFormat() {
+        return getDateTimeFormat(getDatatypeFormattingLocale());
+    }
+
+    /**
+     * Returns date/time format to format dates including the time of day in specified locale.
+     */
+    public DateFormat getDateTimeFormat(Locale locale) {
+        DateFormat result;
+        if (Locale.UK.equals(locale)) {
+            result = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss"); //$NON-NLS-1$
+        } else if (Locale.US.equals(locale)) {
+            result = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a"); //$NON-NLS-1$
+        } else {
+            result = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, locale);
+        }
+        result.setLenient(false);
+        return result;
+    }
+
 }

@@ -2203,6 +2203,12 @@
          <ControlFactory
                class="org.faktorips.devtools.core.ui.controlfactories.MoneyControlFactory">
          </ControlFactory>
+         <ControlFactory
+               class="org.faktorips.devtools.core.ui.controlfactories.DateTimeControlFactory">
+         </ControlFactory>
+         <ControlFactory
+               class="org.faktorips.devtools.core.ui.controlfactories.TimeControlFactory">
+         </ControlFactory>
       </extension>
 
 	<!-- Extension Points Model Search -->

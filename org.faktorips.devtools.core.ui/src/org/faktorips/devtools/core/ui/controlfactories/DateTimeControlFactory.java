@@ -14,46 +14,38 @@
 package org.faktorips.devtools.core.ui.controlfactories;
 
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
-import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
-import org.faktorips.datatype.joda.LocalDateDatatype;
+import org.faktorips.datatype.joda.LocalDateTimeDatatype;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.AbstractInputFormat;
-import org.faktorips.devtools.core.ui.controller.fields.DateISOStringFormat;
+import org.faktorips.devtools.core.ui.controller.fields.DateTimeISOStringFormat;
 import org.faktorips.devtools.core.ui.controls.AbstractDateTimeControl;
-import org.faktorips.devtools.core.ui.controls.DateControl;
+import org.faktorips.devtools.core.ui.controls.DateTimeControl;
 
 /**
- * A factory for edit fields/controls for {@link GregorianCalendarDatatype},
- * {@link GregorianCalendarAsDateDatatype Date} and {@link LocalDateDatatype}.
+ * A factory for edit fields/controls for {@link LocalDateTimeDatatype}.
  * 
- * @author Stefan Widmaier
- * @since 3.2
+ * @since 3.7
  */
-public class GregorianCalendarControlFactory extends AbstractDateTimeControlFactory {
+public class DateTimeControlFactory extends AbstractDateTimeControlFactory {
 
-    public GregorianCalendarControlFactory() {
+    public DateTimeControlFactory() {
         super();
     }
 
-    @SuppressWarnings("deprecation")
-    // this is only for compatibility to this deprecation
     @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
-        return Datatype.GREGORIAN_CALENDAR.equals(datatype) || Datatype.GREGORIAN_CALENDAR_DATE.equals(datatype)
-                || LocalDateDatatype.DATATYPE.equals(datatype);
+        return LocalDateTimeDatatype.DATATYPE.equals(datatype);
     }
 
     @Override
     protected AbstractInputFormat<String> getFormat() {
-        return DateISOStringFormat.newInstance();
+        return DateTimeISOStringFormat.newInstance();
     }
 
     @Override
     protected AbstractDateTimeControl createDateTimeControl(Composite parent, UIToolkit toolkit) {
-        return new DateControl(parent, toolkit);
+        return new DateTimeControl(parent, toolkit);
     }
 
 }

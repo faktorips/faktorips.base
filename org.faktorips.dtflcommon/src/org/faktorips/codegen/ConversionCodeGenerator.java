@@ -22,10 +22,14 @@ import org.faktorips.codegen.conversion.DecimalToBigDecimalCg;
 import org.faktorips.codegen.conversion.DecimalToDoubleCg;
 import org.faktorips.codegen.conversion.DecimalToIntegerCg;
 import org.faktorips.codegen.conversion.DoubleToDecimalCg;
+import org.faktorips.codegen.conversion.GregorianCalendarToLocalDateCg;
+import org.faktorips.codegen.conversion.GregorianCalendarToLocalDateTimeCg;
 import org.faktorips.codegen.conversion.IntegerToBigDecimalCg;
 import org.faktorips.codegen.conversion.IntegerToDecimalCg;
 import org.faktorips.codegen.conversion.IntegerToLongCg;
 import org.faktorips.codegen.conversion.IntegerToPrimitiveIntCg;
+import org.faktorips.codegen.conversion.LocalDateTimeToGregorianCalendarCg;
+import org.faktorips.codegen.conversion.LocalDateToGregorianCalendarCg;
 import org.faktorips.codegen.conversion.LongToBigDecimalCg;
 import org.faktorips.codegen.conversion.LongToDecimalCg;
 import org.faktorips.codegen.conversion.LongToIntegerCg;
@@ -87,6 +91,10 @@ public class ConversionCodeGenerator implements ConversionMatrix {
         ccg.add(new DecimalToBigDecimalCg());
         ccg.add(new DoubleToDecimalCg());
         ccg.add(new DecimalToDoubleCg());
+        ccg.add(new LocalDateToGregorianCalendarCg());
+        ccg.add(new LocalDateTimeToGregorianCalendarCg());
+        ccg.add(new GregorianCalendarToLocalDateCg());
+        ccg.add(new GregorianCalendarToLocalDateTimeCg());
         return ccg;
     }
 

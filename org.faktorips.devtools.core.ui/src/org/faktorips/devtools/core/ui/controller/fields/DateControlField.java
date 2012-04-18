@@ -14,22 +14,21 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.swt.widgets.Control;
-import org.faktorips.devtools.core.ui.controls.DateControl;
+import org.faktorips.devtools.core.ui.controls.AbstractDateTimeControl;
 
 public class DateControlField<T> extends FormattingTextField<T> {
 
-    private final DateControl dateControl;
+    private final AbstractDateTimeControl dateControl;
 
-    public DateControlField(DateControl dateControl, AbstractInputFormat<T> format) {
+    public DateControlField(AbstractDateTimeControl dateControl, AbstractInputFormat<T> format) {
         this(dateControl, format, true);
     }
-    
-    public DateControlField(DateControl dateControl, AbstractInputFormat<T> format, boolean formatOnFocusLost) {
+
+    public DateControlField(AbstractDateTimeControl dateControl, AbstractInputFormat<T> format,
+            boolean formatOnFocusLost) {
         super(dateControl.getTextControl(), format, formatOnFocusLost);
         this.dateControl = dateControl;
     }
-    
-    
 
     @Override
     public Control getControl() {

@@ -33,7 +33,7 @@ public abstract class AbstractDateFormat<T> extends AbstractInputFormat<T> {
      * {@link AbstractDateFormat} used internally by this {@link AbstractInputFormat} to validate
      * given date strings.
      */
-    protected DateFormat dateFormat;
+    private DateFormat dateFormat;
 
     /**
      * String that is an example of a valid input string.
@@ -46,8 +46,8 @@ public abstract class AbstractDateFormat<T> extends AbstractInputFormat<T> {
 
     @Override
     protected void initFormat(Locale locale) {
-        dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat(locale);
-        exampleString = formatDate(new GregorianCalendar(2001, 6, 4).getTime());
+        setDateFormat(IpsPlugin.getDefault().getIpsPreferences().getDateFormat(locale));
+        setExampleString(formatDate(new GregorianCalendar(2001, 6, 4).getTime()));
     }
 
     @Override
@@ -131,12 +131,24 @@ public abstract class AbstractDateFormat<T> extends AbstractInputFormat<T> {
         // if (resultingText.length() > 9) {
         // e.doit = isParsable(dateFormat, resultingText);
         // } else {
-        e.doit = containsAllowedCharactersOnly(exampleString, resultingText);
+        e.doit = containsAllowedCharactersOnly(getExampleString(), resultingText);
         // }
     }
 
     protected DateFormat getDateFormat() {
         return dateFormat;
+    }
+
+    public void setExampleString(String exampleString) {
+        this.exampleString = exampleString;
+    }
+
+    public String getExampleString() {
+        return exampleString;
+    }
+
+    public void setDateFormat(DateFormat dateFormat) {
+        this.dateFormat = dateFormat;
     }
 
 }

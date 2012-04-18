@@ -83,6 +83,8 @@ public class Messages extends NLS {
 
     public static String DatatypeRefControl_title;
 
+    public static String DateTimeControl_Ok;
+
     public static String DescriptionControl_title;
 
     public static String IpsObjectCompletionProcessor_msgNoProject;
