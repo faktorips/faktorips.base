@@ -27,8 +27,10 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -39,13 +41,15 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.dialogs.SingleTypeSelectIpsObjectContext;
+import org.faktorips.devtools.core.ui.dialogs.StaticContentSelectIpsObjectContext;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.Messages;
-import org.faktorips.util.memento.Memento;
 
 /**
  * Opens the wizard to create a new product component relation.
@@ -55,10 +59,6 @@ import org.faktorips.util.memento.Memento;
 public class AddProductCmptLinkCommand extends AbstractHandler {
 
     public static final String COMMAND_ID = "org.faktorips.devtools.core.ui.commands.AddProductCmptLink"; //$NON-NLS-1$
-
-    private Memento syncpoint;
-
-    private boolean isDirty = true;
 
     public AddProductCmptLinkCommand() {
         super();
@@ -74,10 +74,114 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
                 return addLinkOnReference(selection, shell);
             } else {
                 IEditorPart editor = HandlerUtil.getActiveEditor(event);
-                return addLinkInEditor(selection, shell, (ProductCmptEditor)editor);
+                return getAddLinkDialog(selection, shell, (ProductCmptEditor)editor);
             }
         }
         return null;
+    }
+
+    private OpenIpsObjectSelectionDialog getAddLinkDialog(ISelection selection,
+            Shell shell,
+            ProductCmptEditor productCmptEditor) {
+        TypedSelection<String> typedSelection = new TypedSelection<String>(String.class, selection);
+
+        IProductCmptTypeAssociation typeRelation;
+
+        String associationName = typedSelection.getFirstElement();
+        IProductCmpt productCmpt = productCmptEditor.getProductCmpt();
+        try {
+            IProductCmptType productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
+
+            typeRelation = (IProductCmptTypeAssociation)productCmptType.findAssociation(associationName,
+                    productCmpt.getIpsProject());
+
+            IProductCmptType targetProductCmptType = typeRelation
+                    .findTargetProductCmptType(productCmpt.getIpsProject());
+            IIpsSrcFile[] ipsSrcFiles = productCmpt.getIpsProject().findAllProductCmptSrcFiles(targetProductCmptType,
+                    true);
+            final StaticContentSelectIpsObjectContext context = new StaticContentSelectIpsObjectContext();
+            context.setElements(ipsSrcFiles);
+            final OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(shell,
+                    Messages.AddLinkAction_selectDialogTitle, context, true);
+            int rc = dialog.open();
+            if (rc == Window.OK) {
+                if (dialog.getResult().length > 0) {
+                    addLinkInEditor(productCmptEditor, typeRelation, associationName, dialog);
+
+                }
+            }
+
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+
+        }
+        return null;
+    }
+
+    private void addLinkInEditor(ProductCmptEditor productCmptEditor,
+            IProductCmptTypeAssociation typeRelation,
+            String associationName,
+            final OpenIpsObjectSelectionDialog dialog) throws CoreException {
+        IProductCmptGeneration activeGeneration = (IProductCmptGeneration)productCmptEditor.getActiveGeneration();
+        IIpsElement[] result = dialog.getSelectedObjects();
+        for (IIpsElement element : result) {
+            if (element instanceof IIpsSrcFile) {
+                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
+                IProductCmpt selectedProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+                IProductCmptLink link = activeGeneration.newLink(typeRelation);
+                link.setAssociation(associationName);
+                link.setTarget(selectedProductCmpt.getQualifiedName());
+                link.setMaxCardinality(1);
+                link.setMinCardinality(0);
+
+            }
+        }
+    }
+
+    @Override
+    public boolean isEnabled() {
+        if (!super.isEnabled()) {
+            return false;
+        }
+
+        IWorkbenchWindow activeWorkbenchWindow = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+        ISelection selection = activeWorkbenchWindow.getSelectionService().getSelection();
+        TypedSelection<String> typedSelection = new TypedSelection<String>(String.class, selection);
+        if (!typedSelection.isValid()) {
+            return false;
+        }
+
+        IProductCmpt productCmpt = ((ProductCmptEditor)activeWorkbenchWindow.getActivePage().getActiveEditor())
+                .getProductCmpt();
+        IProductCmptType productCmptType = null;
+        try {
+            productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        if (productCmptType == null) {
+            return false;
+        }
+
+        String associationName = typedSelection.getFirstElement();
+        IProductCmptTypeAssociation typeRelation = null;
+        try {
+            typeRelation = (IProductCmptTypeAssociation)productCmptType.findAssociation(associationName,
+                    productCmpt.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        if (typeRelation == null) {
+            return false;
+        }
+
+        IProductCmptType targetProductCmptType = null;
+        try {
+            targetProductCmptType = typeRelation.findTargetProductCmptType(productCmpt.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        return targetProductCmptType != null;
     }
 
     @Override
@@ -92,60 +196,6 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
             setBaseEnabled(true);
         }
         super.setEnabled(evaluationContext);
-    }
-
-    private Object addLinkInEditor(ISelection selection, Shell shell, ProductCmptEditor productCmptEditor) {
-        TypedSelection<String> typedSelection = new TypedSelection<String>(String.class, selection);
-        if (typedSelection.isValid()) {
-            IProductCmptGeneration activeGeneration = (IProductCmptGeneration)productCmptEditor.getActiveGeneration();
-            String associationName = typedSelection.getFirstElement();
-            setSyncpoint(activeGeneration);
-            IProductCmptLink relation = activeGeneration.newLink(associationName);
-            relation.setMaxCardinality(1);
-            relation.setMinCardinality(0); // todo get min from modell
-            LinkEditDialog dialog = new LinkEditDialog(relation, shell);
-            dialog.setProductCmptsToExclude(getRelationTargetsFor(activeGeneration, associationName));
-            int rc = dialog.open();
-            if (rc == Window.CANCEL) {
-                reset(activeGeneration);
-            } else if (rc == Window.OK) {
-                // parent.refresh();
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns all targets for all relations defined with the given product component relation type.
-     * 
-     * @param associationName The type of the relations to find.
-     */
-    private IProductCmpt[] getRelationTargetsFor(IProductCmptGeneration activeGeneration, String associationName) {
-        IProductCmptLink[] links = activeGeneration.getLinks(associationName);
-        IProductCmpt[] targets = new IProductCmpt[links.length];
-        for (int i = 0; i < links.length; i++) {
-            try {
-                targets[i] = (IProductCmpt)activeGeneration.getIpsProject().findIpsObject(IpsObjectType.PRODUCT_CMPT,
-                        links[i].getTarget());
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-        }
-        return targets;
-    }
-
-    private void setSyncpoint(IProductCmptGeneration generation) {
-        syncpoint = generation.newMemento();
-        isDirty = generation.getIpsObject().getIpsSrcFile().isDirty();
-    }
-
-    private void reset(IProductCmptGeneration generation) {
-        if (syncpoint != null) {
-            generation.setState(syncpoint);
-        }
-        if (!isDirty) {
-            generation.getIpsObject().getIpsSrcFile().markAsClean();
-        }
     }
 
     private Object addLinkOnReference(ISelection currentSelection, Shell shell) {

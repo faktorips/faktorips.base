@@ -88,6 +88,52 @@ public class AddNewProductCmptCommand extends AbstractHandler {
         }
     }
 
+    @Override
+    public boolean isEnabled() {
+        if (!super.isEnabled()) {
+            return false;
+        }
+
+        IWorkbenchWindow activeWorkbenchWindow = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+        ISelection selection = activeWorkbenchWindow.getSelectionService().getSelection();
+        TypedSelection<String> typedSelection = new TypedSelection<String>(String.class, selection);
+        if (!typedSelection.isValid()) {
+            return false;
+        }
+
+        IProductCmpt productCmpt = ((ProductCmptEditor)activeWorkbenchWindow.getActivePage().getActiveEditor())
+                .getProductCmpt();
+        IProductCmptType productCmptType = null;
+        try {
+            productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        if (productCmptType == null) {
+            return false;
+        }
+
+        String associationName = typedSelection.getFirstElement();
+        IProductCmptTypeAssociation typeRelation = null;
+        try {
+            typeRelation = (IProductCmptTypeAssociation)productCmptType.findAssociation(associationName,
+                    productCmpt.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        if (typeRelation == null) {
+            return false;
+        }
+
+        IProductCmptType targetProductCmptType = null;
+        try {
+            targetProductCmptType = typeRelation.findTargetProductCmptType(productCmpt.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        return targetProductCmptType != null;
+    }
+
     private void addNewLinkOnReference(IProductCmptStructureReference structureReference, Shell shell) {
         IProductCmptGeneration generation = (IProductCmptGeneration)structureReference
                 .getAdapter(IProductCmptGeneration.class);
