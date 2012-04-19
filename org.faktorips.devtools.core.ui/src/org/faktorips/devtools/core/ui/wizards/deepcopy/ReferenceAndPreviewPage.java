@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -31,13 +32,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.AbstractInputFormat;
 import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
-import org.faktorips.util.StringUtil;
 
 /**
  * Page to preview the changes to the names of copied products and to switch between a copy or a
@@ -141,9 +142,16 @@ public class ReferenceAndPreviewPage extends WizardPage {
         super.setVisible(visible);
         if (visible) {
             if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-                String productCmptTypeName = StringUtil.unqualifiedName(getStructure().getRoot().getProductCmpt()
-                        .getProductCmptType());
-                setDescription(NLS.bind(Messages.ReferenceAndPreviewPage_descritionPreviewNewCopy, productCmptTypeName));
+                String productCmptTypeName;
+                try {
+                    productCmptTypeName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
+                            getStructure().getRoot().getProductCmpt()
+                                    .findProductCmptType(getStructure().getRoot().getProductCmpt().getIpsProject()));
+                    setDescription(NLS.bind(Messages.ReferenceAndPreviewPage_descritionPreviewNewCopy,
+                            productCmptTypeName));
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
             } else if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
                 String versionConceptNameSingular = IpsPlugin.getDefault().getIpsPreferences()
                         .getChangesOverTimeNamingConvention().getVersionConceptNameSingular();

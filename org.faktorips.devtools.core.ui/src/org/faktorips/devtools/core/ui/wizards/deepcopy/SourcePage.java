@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -75,7 +76,6 @@ import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
-import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -443,9 +443,15 @@ public class SourcePage extends WizardPage {
 
     private void setMessagePleaseEnterWorkingDate() {
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-            String productCmptTypeName = StringUtil.unqualifiedName(getStructure().getRoot().getProductCmpt()
-                    .getProductCmptType());
-            setDescription(NLS.bind(Messages.SourcePage_msgPleaseEnterNewWorkingDateNewCopy, productCmptTypeName));
+            String productCmptTypeName;
+            try {
+                productCmptTypeName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
+                        getStructure().getRoot().getProductCmpt()
+                                .findProductCmptType(getStructure().getRoot().getProductCmpt().getIpsProject()));
+                setDescription(NLS.bind(Messages.SourcePage_msgPleaseEnterNewWorkingDateNewCopy, productCmptTypeName));
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
         } else if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
             String versionConceptNameSingular = IpsPlugin.getDefault().getIpsPreferences()
                     .getChangesOverTimeNamingConvention().getVersionConceptNameSingular();
