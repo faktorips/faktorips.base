@@ -86,10 +86,10 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
         TypedSelection<String> typedSelection = new TypedSelection<String>(String.class, selection);
 
         IProductCmptTypeAssociation typeRelation;
-
-        String associationName = typedSelection.getFirstElement();
-        IProductCmpt productCmpt = productCmptEditor.getProductCmpt();
         try {
+
+            String associationName = typedSelection.getFirstElement();
+            IProductCmpt productCmpt = productCmptEditor.getProductCmpt();
             IProductCmptType productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
 
             typeRelation = (IProductCmptTypeAssociation)productCmptType.findAssociation(associationName,
@@ -123,7 +123,7 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
             String associationName,
             final OpenIpsObjectSelectionDialog dialog) throws CoreException {
         IProductCmptGeneration activeGeneration = (IProductCmptGeneration)productCmptEditor.getActiveGeneration();
-        IIpsElement[] result = dialog.getSelectedObjects();
+        ArrayList<IIpsElement> result = dialog.getSelectedObjects();
         for (IIpsElement element : result) {
             if (element instanceof IIpsSrcFile) {
                 IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
@@ -138,21 +138,34 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
         }
     }
 
-    @Override
-    public boolean isEnabled() {
+    private boolean isEnabledInternal() {
+
         if (!super.isEnabled()) {
             return false;
         }
 
         IWorkbenchWindow activeWorkbenchWindow = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
         ISelection selection = activeWorkbenchWindow.getSelectionService().getSelection();
-        TypedSelection<String> typedSelection = new TypedSelection<String>(String.class, selection);
-        if (!typedSelection.isValid()) {
+        if (selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
             return false;
         }
 
-        IProductCmpt productCmpt = ((ProductCmptEditor)activeWorkbenchWindow.getActivePage().getActiveEditor())
-                .getProductCmpt();
+        IStructuredSelection structuredSelection = (IStructuredSelection)selection;
+        Object selectedElement = structuredSelection.getFirstElement();
+
+        if (selectedElement instanceof String) {
+            String associationName = (String)selectedElement;
+            IProductCmpt productCmpt = ((ProductCmptEditor)activeWorkbenchWindow.getActivePage().getActiveEditor())
+                    .getProductCmpt();
+            return isEnabledString(associationName, productCmpt);
+        } else {
+            return false;
+        }
+
+    }
+
+    private boolean isEnabledString(String associationName, IProductCmpt productCmpt) {
+
         IProductCmptType productCmptType = null;
         try {
             productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
@@ -162,36 +175,53 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
         if (productCmptType == null) {
             return false;
         }
-
-        String associationName = typedSelection.getFirstElement();
-        IProductCmptTypeAssociation typeRelation = null;
+        IProductCmptTypeAssociation typeAssociation = null;
         try {
-            typeRelation = (IProductCmptTypeAssociation)productCmptType.findAssociation(associationName,
+            typeAssociation = (IProductCmptTypeAssociation)productCmptType.findAssociation(associationName,
                     productCmpt.getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-        if (typeRelation == null) {
+        if (typeAssociation == null) {
             return false;
         }
 
         IProductCmptType targetProductCmptType = null;
         try {
-            targetProductCmptType = typeRelation.findTargetProductCmptType(productCmpt.getIpsProject());
+            targetProductCmptType = typeAssociation.findTargetProductCmptType(productCmpt.getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
         return targetProductCmptType != null;
+
     }
 
     @Override
     public void setEnabled(Object evaluationContext) {
         ISelection selection = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getSelectionService()
                 .getSelection();
+        if (selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
+            setBaseEnabled(false);
+            return;
+        }
+
+        IStructuredSelection structuredSelection = (IStructuredSelection)selection;
+        Object selectedElement = structuredSelection.getFirstElement();
+        if (selectedElement instanceof IProductCmptReference) {
+            setBaseEnabled(((IProductCmptReference)selectedElement).hasAssociationChildren());
+        } else if (selectedElement instanceof String) {
+            if (isEnabledInternal()) {
+
+            }
+        }
+
         TypedSelection<IProductCmptReference> typedSelection = new TypedSelection<IProductCmptReference>(
                 IProductCmptReference.class, selection);
         if (typedSelection.isValid()) {
             setBaseEnabled(typedSelection.getFirstElement().hasAssociationChildren());
+        } else if (isEnabledInternal()) {
+            setBaseEnabled(true);
+
         } else {
             setBaseEnabled(true);
         }
