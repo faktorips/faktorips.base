@@ -19,7 +19,10 @@ import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
@@ -56,6 +59,7 @@ import org.faktorips.devtools.core.ui.views.productstructureexplorer.Messages;
  * 
  * @author Thorsten Guenther
  */
+// TODO VS: abstrakte basisklasse wegen dupliziertem code?
 public class AddProductCmptLinkCommand extends AbstractHandler {
 
     public static final String COMMAND_ID = "org.faktorips.devtools.core.ui.commands.AddProductCmptLink"; //$NON-NLS-1$
@@ -66,76 +70,79 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-        Shell shell = HandlerUtil.getActiveShell(event);
         ISelection selection = HandlerUtil.getCurrentSelection(event);
         if (selection instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection)selection;
             if (structuredSelection.getFirstElement() instanceof IProductCmptStructureReference) {
-                return addLinkOnReference(selection, shell);
+                addLinkOnReference(event);
+                return null;
             } else {
-                IEditorPart editor = HandlerUtil.getActiveEditor(event);
-                return getAddLinkDialog(selection, shell, (ProductCmptEditor)editor);
+                addLinksOnAssociation(event);
+                return null;
             }
         }
         return null;
     }
 
-    private OpenIpsObjectSelectionDialog getAddLinkDialog(ISelection selection,
-            Shell shell,
-            ProductCmptEditor productCmptEditor) {
+    private void addLinksOnAssociation(ExecutionEvent event) {
+        ISelection selection = HandlerUtil.getCurrentSelection(event);
         TypedSelection<String> typedSelection = new TypedSelection<String>(String.class, selection);
+        if (!typedSelection.isValid()) {
+            return;
+        }
 
-        IProductCmptTypeAssociation typeRelation;
+        IEditorPart editor = HandlerUtil.getActiveEditor(event);
+        if (!(editor instanceof ProductCmptEditor)) {
+            return;
+        }
+
+        ProductCmptEditor productCmptEditor = (ProductCmptEditor)editor;
+        IProductCmpt productCmpt = productCmptEditor.getProductCmpt();
         try {
-
-            String associationName = typedSelection.getFirstElement();
-            IProductCmpt productCmpt = productCmptEditor.getProductCmpt();
             IProductCmptType productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
 
-            typeRelation = (IProductCmptTypeAssociation)productCmptType.findAssociation(associationName,
-                    productCmpt.getIpsProject());
+            String associationName = typedSelection.getFirstElement();
+            IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)productCmptType.findAssociation(
+                    associationName, productCmpt.getIpsProject());
 
-            IProductCmptType targetProductCmptType = typeRelation
-                    .findTargetProductCmptType(productCmpt.getIpsProject());
+            IProductCmptType targetProductCmptType = association.findTargetProductCmptType(productCmpt.getIpsProject());
             IIpsSrcFile[] ipsSrcFiles = productCmpt.getIpsProject().findAllProductCmptSrcFiles(targetProductCmptType,
                     true);
             final StaticContentSelectIpsObjectContext context = new StaticContentSelectIpsObjectContext();
             context.setElements(ipsSrcFiles);
-            final OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(shell,
-                    Messages.AddLinkAction_selectDialogTitle, context, true);
+            final OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(
+                    HandlerUtil.getActiveShell(event), Messages.AddLinkAction_selectDialogTitle, context, true);
             int rc = dialog.open();
-            if (rc == Window.OK) {
-                if (dialog.getResult().length > 0) {
-                    addLinkInEditor(productCmptEditor, typeRelation, associationName, dialog);
-
-                }
+            if (rc == Window.OK && !dialog.getSelectedObjects().isEmpty()) {
+                addLinksToActiveProductCmptGeneration((IProductCmptGeneration)productCmptEditor.getActiveGeneration(),
+                        association, dialog.getSelectedObjects());
             }
 
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
-
         }
-        return null;
     }
 
-    private void addLinkInEditor(ProductCmptEditor productCmptEditor,
-            IProductCmptTypeAssociation typeRelation,
-            String associationName,
-            final OpenIpsObjectSelectionDialog dialog) throws CoreException {
-        IProductCmptGeneration activeGeneration = (IProductCmptGeneration)productCmptEditor.getActiveGeneration();
-        ArrayList<IIpsElement> result = dialog.getSelectedObjects();
-        for (IIpsElement element : result) {
-            if (element instanceof IIpsSrcFile) {
-                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
-                IProductCmpt selectedProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-                IProductCmptLink link = activeGeneration.newLink(typeRelation);
-                link.setAssociation(associationName);
-                link.setTarget(selectedProductCmpt.getQualifiedName());
-                link.setMaxCardinality(1);
-                link.setMinCardinality(0);
+    private void addLinksToActiveProductCmptGeneration(final IProductCmptGeneration activeProductCmptGeneration,
+            final IProductCmptTypeAssociation association,
+            final List<IIpsElement> selectedIpsElements) throws CoreException {
 
+        activeProductCmptGeneration.getIpsModel().runAndQueueChangeEvents(new IWorkspaceRunnable() {
+            @Override
+            public void run(IProgressMonitor monitor) throws CoreException {
+                for (IIpsElement element : selectedIpsElements) {
+                    if (element instanceof IIpsSrcFile) {
+                        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
+                        IProductCmpt selectedProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+                        IProductCmptLink link = activeProductCmptGeneration.newLink(association);
+                        link.setAssociation(association.getName());
+                        link.setTarget(selectedProductCmpt.getQualifiedName());
+                        link.setMaxCardinality(1);
+                        link.setMinCardinality(0);
+                    }
+                }
             }
-        }
+        }, new NullProgressMonitor());
     }
 
     @Override
@@ -152,7 +159,7 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
         if (selectedElement instanceof IProductCmptReference) {
             setBaseEnabled(((IProductCmptReference)selectedElement).hasAssociationChildren());
         } else if (selectedElement instanceof String) {
-            setBaseEnabled(isEnabledInternal(selectedElement, activeWorkbenchWindow));
+            setBaseEnabled(isValidAssociationName((String)selectedElement, activeWorkbenchWindow));
         } else {
             setBaseEnabled(true);
         }
@@ -162,8 +169,8 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
      * Queries to the target type of the selected element, target type must be found.
      * 
      */
-    private boolean isEnabledInternal(Object selectedElement, IWorkbenchWindow activeWorkbenchWindow) {
-
+    private boolean isValidAssociationName(String associationName, IWorkbenchWindow activeWorkbenchWindow) {
+        // TODO VS: was mit cast machen?
         IProductCmpt productCmpt = ((ProductCmptEditor)activeWorkbenchWindow.getActivePage().getActiveEditor())
                 .getProductCmpt();
 
@@ -178,7 +185,7 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
         }
         IProductCmptTypeAssociation typeAssociation = null;
         try {
-            typeAssociation = (IProductCmptTypeAssociation)productCmptType.findAssociation((String)selectedElement,
+            typeAssociation = (IProductCmptTypeAssociation)productCmptType.findAssociation(associationName,
                     productCmpt.getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
@@ -197,25 +204,26 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
 
     }
 
-    private Object addLinkOnReference(ISelection currentSelection, Shell shell) {
+    private void addLinkOnReference(ExecutionEvent event) {
         LinkCreatorUtil linkCreator = new LinkCreatorUtil(true);
+        ISelection selection = HandlerUtil.getCurrentSelection(event);
         TypedSelection<IProductCmptStructureReference> typedSelection = new TypedSelection<IProductCmptStructureReference>(
-                IProductCmptStructureReference.class, currentSelection);
+                IProductCmptStructureReference.class, selection);
         if (!typedSelection.isValid()) {
-            return null;
+            return;
         }
         try {
             IIpsProject ipsProject = null;
             IProductCmptStructureReference structureReference = typedSelection.getFirstElement();
             ipsProject = structureReference.getWrappedIpsObject().getIpsProject();
             if (ipsProject != null) {
-                List<IProductCmpt> selectedResults = selectProductCmpt(ipsProject, structureReference, shell);
+                List<IProductCmpt> selectedResults = selectProductCmpt(ipsProject, structureReference,
+                        HandlerUtil.getActiveShell(event));
                 linkCreator.createLinks(selectedResults, structureReference);
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
-        return null;
     }
 
     /**

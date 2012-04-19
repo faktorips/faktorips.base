@@ -59,13 +59,13 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.Messages;
 
 /**
- * Dialog showing a list of IpsObjects to select a single one or multi select. This object is used
+ * Dialog showing a list of IpsObjects to select a single or multiple objects. This object is used
  * for the open ips object shortcut as well as for selecting an object for any reference. The filter
  * supports camel case shortcuts. The dialog also supports a history function showing last opened
  * objects on top of the list. The history is implemented global for plugin in IpsUIPlugin to allow
  * other actions like open an editor to add objects to the history. The content of the dialog is
  * configured by an {@link ISelectIpsObjectContext}.
- * 
+ * <p>
  * NOTE: In eclipse 3.5 there are some new features for {@link FilteredItemsSelectionDialog}. The
  * new feature highlighting filter entries in the list is implemented in this dialog but not
  * activated until eclipse 3.5 support.
