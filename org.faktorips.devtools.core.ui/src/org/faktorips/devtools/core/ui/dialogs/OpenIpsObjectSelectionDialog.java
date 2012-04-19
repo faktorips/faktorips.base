@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -58,7 +59,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.Messages;
 
 /**
- * Dialog showing a list of IpsObjects to select a single one and multi select. This object is used
+ * Dialog showing a list of IpsObjects to select a single one or multi select. This object is used
  * for the open ips object shortcut as well as for selecting an object for any reference. The filter
  * supports camel case shortcuts. The dialog also supports a history function showing last opened
  * objects on top of the list. The history is implemented global for plugin in IpsUIPlugin to allow
@@ -86,15 +87,8 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
      * @param parent the parent widget.
      */
     public OpenIpsObjectSelectionDialog(Shell parent, String title, ISelectIpsObjectContext context) {
-        super(parent);
-        this.context = context;
-        setListLabelProvider(new OpenIpsObjectLabelProvider());
-        setDetailsLabelProvider(new PackageFragmentLabelProvider());
-        setTitle(title);
-        setMessage(Messages.OpenIpsObjectAction_dialogMessage);
-        if (context != null && context.getContextFilter() != null) {
-            addListFilter(context.getContextFilter());
-        }
+
+        this(parent, title, context, false);
     }
 
     /**
@@ -125,12 +119,11 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
         return (IIpsElement)getFirstResult();
     }
 
-    public IIpsElement[] getSelectedObjects() {
-        IIpsElement[] selectedElements = new IIpsElement[getResult().length];
-        int counter = 0;
+    public ArrayList<IIpsElement> getSelectedObjects() {
+        ArrayList<IIpsElement> selectedElements = new ArrayList<IIpsElement>();
+
         for (Object selectedElement : getResult()) {
-            selectedElements[counter] = (IIpsElement)selectedElement;
-            counter++;
+            selectedElements.add((IIpsElement)selectedElement);
         }
         return selectedElements;
     }

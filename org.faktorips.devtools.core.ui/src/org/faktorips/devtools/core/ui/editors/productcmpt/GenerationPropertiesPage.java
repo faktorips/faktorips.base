@@ -293,11 +293,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     @Override
     public void refresh() {
-
         updateTabname();
-        if (stack != null) {
-            ((Composite)stack.topControl).layout();
-        }
 
         // Refreshes the visible controller by application start
         IpsUIPlugin.getDefault().getPropertyVisibleController().updateUI();
