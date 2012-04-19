@@ -125,7 +125,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
 
         // exclude an (invalid) generation which has a valid-from date after the valid-to date
         // of this IpsObject.
-        if (generation != null && getValidTo() != null && generation.getValidFrom().after(getValidTo())) {
+        if (generation != null && getValidTo() != null && date.after(getValidTo())) {
             return null;
         }
 
@@ -135,7 +135,15 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     @Override
     public IIpsObjectGeneration getBestMatchingGenerationEffectiveOn(GregorianCalendar date) {
         IIpsObjectGeneration generationEffectiveOn = getGenerationEffectiveOn(date);
-        return generationEffectiveOn != null ? generationEffectiveOn : getFirstGeneration();
+        if (generationEffectiveOn == null) {
+            if (date.after(getValidTo())) {
+                return getLatestGeneration();
+            } else {
+                return getFirstGeneration();
+            }
+        } else {
+            return generationEffectiveOn;
+        }
     }
 
     @Override

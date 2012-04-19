@@ -159,6 +159,24 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testGetGenerationEffectiveOn_validTo() {
+        IIpsObjectGeneration gen1 = timedObject.newGeneration();
+        gen1.setValidFrom(new GregorianCalendar(2004, 0, 1));
+        IIpsObjectGeneration gen2 = timedObject.newGeneration();
+        gen2.setValidFrom(new GregorianCalendar(2005, 0, 1));
+        timedObject.setValidTo(new GregorianCalendar(2006, 0, 1));
+
+        IIpsObjectGeneration genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2005, 2, 1));
+        assertEquals(gen2, genFound);
+
+        genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2006, 0, 1));
+        assertEquals(gen2, genFound);
+
+        genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2006, 0, 2));
+        assertNull(genFound);
+    }
+
+    @Test
     public void testGetBestMatchingGenerationEffectiveOn_ReturnFirstGenerationIfDateBeforeFirstGeneration() {
         IIpsObjectGeneration firstGeneration = timedObject.newGeneration(new GregorianCalendar(2012, 0, 1));
         timedObject.newGeneration(new GregorianCalendar(2012, 3, 1));
@@ -175,8 +193,7 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
         timedObject.setValidTo(new GregorianCalendar(2013, 0, 1));
 
         GregorianCalendar effectiveDate = new GregorianCalendar(2050, 0, 1);
-        // TODO AW 22-03-2012: Bug in Faktor-IPS, should return null
-        // assertNull(timedObject.getGenerationEffectiveOn(effectiveDate));
+        assertNull(timedObject.getGenerationEffectiveOn(effectiveDate));
         assertEquals(latestGeneration, timedObject.getBestMatchingGenerationEffectiveOn(effectiveDate));
     }
 
