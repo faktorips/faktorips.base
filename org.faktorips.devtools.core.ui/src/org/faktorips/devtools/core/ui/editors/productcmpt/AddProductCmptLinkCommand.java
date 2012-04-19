@@ -138,33 +138,34 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
         }
     }
 
-    private boolean isEnabledInternal() {
-
-        if (!super.isEnabled()) {
-            return false;
-        }
-
+    @Override
+    public void setEnabled(Object evaluationContext) {
         IWorkbenchWindow activeWorkbenchWindow = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
         ISelection selection = activeWorkbenchWindow.getSelectionService().getSelection();
         if (selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
-            return false;
+            setBaseEnabled(false);
+            return;
         }
 
         IStructuredSelection structuredSelection = (IStructuredSelection)selection;
         Object selectedElement = structuredSelection.getFirstElement();
-
-        if (selectedElement instanceof String) {
-            String associationName = (String)selectedElement;
-            IProductCmpt productCmpt = ((ProductCmptEditor)activeWorkbenchWindow.getActivePage().getActiveEditor())
-                    .getProductCmpt();
-            return isEnabledString(associationName, productCmpt);
+        if (selectedElement instanceof IProductCmptReference) {
+            setBaseEnabled(((IProductCmptReference)selectedElement).hasAssociationChildren());
+        } else if (selectedElement instanceof String) {
+            setBaseEnabled(isEnabledInternal(selectedElement, activeWorkbenchWindow));
         } else {
-            return false;
+            setBaseEnabled(true);
         }
-
     }
 
-    private boolean isEnabledString(String associationName, IProductCmpt productCmpt) {
+    /**
+     * Queries to the target type of the selected element, target type must be found.
+     * 
+     */
+    private boolean isEnabledInternal(Object selectedElement, IWorkbenchWindow activeWorkbenchWindow) {
+
+        IProductCmpt productCmpt = ((ProductCmptEditor)activeWorkbenchWindow.getActivePage().getActiveEditor())
+                .getProductCmpt();
 
         IProductCmptType productCmptType = null;
         try {
@@ -177,7 +178,7 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
         }
         IProductCmptTypeAssociation typeAssociation = null;
         try {
-            typeAssociation = (IProductCmptTypeAssociation)productCmptType.findAssociation(associationName,
+            typeAssociation = (IProductCmptTypeAssociation)productCmptType.findAssociation((String)selectedElement,
                     productCmpt.getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
@@ -194,38 +195,6 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
         }
         return targetProductCmptType != null;
 
-    }
-
-    @Override
-    public void setEnabled(Object evaluationContext) {
-        ISelection selection = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getSelectionService()
-                .getSelection();
-        if (selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
-            setBaseEnabled(false);
-            return;
-        }
-
-        IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-        Object selectedElement = structuredSelection.getFirstElement();
-        if (selectedElement instanceof IProductCmptReference) {
-            setBaseEnabled(((IProductCmptReference)selectedElement).hasAssociationChildren());
-        } else if (selectedElement instanceof String) {
-            if (isEnabledInternal()) {
-
-            }
-        }
-
-        TypedSelection<IProductCmptReference> typedSelection = new TypedSelection<IProductCmptReference>(
-                IProductCmptReference.class, selection);
-        if (typedSelection.isValid()) {
-            setBaseEnabled(typedSelection.getFirstElement().hasAssociationChildren());
-        } else if (isEnabledInternal()) {
-            setBaseEnabled(true);
-
-        } else {
-            setBaseEnabled(true);
-        }
-        super.setEnabled(evaluationContext);
     }
 
     private Object addLinkOnReference(ISelection currentSelection, Shell shell) {

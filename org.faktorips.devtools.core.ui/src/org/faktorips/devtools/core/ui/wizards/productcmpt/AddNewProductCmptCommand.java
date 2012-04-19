@@ -33,7 +33,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
-import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 public class AddNewProductCmptCommand extends AbstractHandler {
 
@@ -86,52 +85,6 @@ public class AddNewProductCmptCommand extends AbstractHandler {
                 throw new CoreRuntimeException(e);
             }
         }
-    }
-
-    @Override
-    public boolean isEnabled() {
-        if (!super.isEnabled()) {
-            return false;
-        }
-
-        IWorkbenchWindow activeWorkbenchWindow = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-        ISelection selection = activeWorkbenchWindow.getSelectionService().getSelection();
-        TypedSelection<String> typedSelection = new TypedSelection<String>(String.class, selection);
-        if (!typedSelection.isValid()) {
-            return false;
-        }
-
-        IProductCmpt productCmpt = ((ProductCmptEditor)activeWorkbenchWindow.getActivePage().getActiveEditor())
-                .getProductCmpt();
-        IProductCmptType productCmptType = null;
-        try {
-            productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-        if (productCmptType == null) {
-            return false;
-        }
-
-        String associationName = typedSelection.getFirstElement();
-        IProductCmptTypeAssociation typeRelation = null;
-        try {
-            typeRelation = (IProductCmptTypeAssociation)productCmptType.findAssociation(associationName,
-                    productCmpt.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-        if (typeRelation == null) {
-            return false;
-        }
-
-        IProductCmptType targetProductCmptType = null;
-        try {
-            targetProductCmptType = typeRelation.findTargetProductCmptType(productCmpt.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-        return targetProductCmptType != null;
     }
 
     private void addNewLinkOnReference(IProductCmptStructureReference structureReference, Shell shell) {
@@ -193,15 +146,61 @@ public class AddNewProductCmptCommand extends AbstractHandler {
 
     @Override
     public void setEnabled(Object evaluationContext) {
-        ISelection selection = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getSelectionService()
-                .getSelection();
-        TypedSelection<IProductCmptReference> typedSelection = new TypedSelection<IProductCmptReference>(
-                IProductCmptReference.class, selection);
-        if (typedSelection.isValid()) {
-            setBaseEnabled(typedSelection.getFirstElement().hasAssociationChildren());
+        IWorkbenchWindow activeWorkbenchWindow = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+        ISelection selection = activeWorkbenchWindow.getSelectionService().getSelection();
+        if (selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
+            setBaseEnabled(false);
+            return;
+        }
+
+        IStructuredSelection structuredSelection = (IStructuredSelection)selection;
+        Object selectedElement = structuredSelection.getFirstElement();
+        if (selectedElement instanceof IProductCmptReference) {
+            setBaseEnabled(((IProductCmptReference)selectedElement).hasAssociationChildren());
+        } else if (selectedElement instanceof String) {
+            setBaseEnabled(isEnabledInternal(selectedElement, activeWorkbenchWindow));
         } else {
             setBaseEnabled(true);
         }
-        super.setEnabled(evaluationContext);
     }
+
+    /**
+     * Queries to the target type of the selected element, target type must be found.
+     * 
+     */
+    private boolean isEnabledInternal(Object selectedElement, IWorkbenchWindow activeWorkbenchWindow) {
+
+        IProductCmpt productCmpt = ((ProductCmptEditor)activeWorkbenchWindow.getActivePage().getActiveEditor())
+                .getProductCmpt();
+
+        IProductCmptType productCmptType = null;
+        try {
+            productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        if (productCmptType == null) {
+            return false;
+        }
+        IProductCmptTypeAssociation typeAssociation = null;
+        try {
+            typeAssociation = (IProductCmptTypeAssociation)productCmptType.findAssociation((String)selectedElement,
+                    productCmpt.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        if (typeAssociation == null) {
+            return false;
+        }
+
+        IProductCmptType targetProductCmptType = null;
+        try {
+            targetProductCmptType = typeAssociation.findTargetProductCmptType(productCmpt.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        return targetProductCmptType != null;
+
+    }
+
 }
