@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="C:/ws/runtime-integration/org.faktorips.integrationtest.java5/lib/faktorips-valuetypes.java5.jar"/>
+    <jar path="../runtime-integration/org.faktorips.integrationtest.java5/lib/faktorips-valuetypes.java5.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/org.faktorips.valuetypes.java5/faktorips-valuetypes.java5.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
