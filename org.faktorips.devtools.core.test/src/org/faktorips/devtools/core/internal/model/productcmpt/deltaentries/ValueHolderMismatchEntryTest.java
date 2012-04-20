@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -86,6 +87,23 @@ public class ValueHolderMismatchEntryTest {
 
         String result = ((SingleValueHolder)valueHolderCaptor.getValue()).getValue();
         assertEquals(TEST_VALUE, result);
+    }
+
+    @Test
+    public void testFix_multiToSingle_emptyMultiValueHolder() throws Exception {
+        List<SingleValueHolder> list = new ArrayList<SingleValueHolder>();
+        MultiValueHolder holder = new MultiValueHolder(value, list);
+        doReturn(holder).when(value).getValueHolder();
+        when(attribute.isMultiValueAttribute()).thenReturn(false);
+
+        ValueHolderMismatchEntry valueHolderMismatchEntry = new ValueHolderMismatchEntry(value, attribute);
+        valueHolderMismatchEntry.fix();
+
+        verify(value).setValueHolder(valueHolderCaptor.capture());
+        assertTrue(valueHolderCaptor.getValue() instanceof SingleValueHolder);
+
+        String result = ((SingleValueHolder)valueHolderCaptor.getValue()).getValue();
+        assertNull(result);
     }
 
     @Test
