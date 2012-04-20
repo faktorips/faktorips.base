@@ -51,12 +51,12 @@ import org.xml.sax.InputSource;
  * @author Peter Erzberger, Thorsten Waertel
  */
 // TODO change table model to generic?
-public abstract class Table implements ITable {
+public abstract class Table<T> implements ITable {
 
     /**
      * Contains all rows of this table.
      */
-    protected List rows;
+    protected List<T> rows;
 
     /**
      * Is used by the generated class to retrieve the values for a single row.
@@ -75,10 +75,10 @@ public abstract class Table implements ITable {
      * Initializes this object with the data stored in the xml element.
      */
     public void initFromXml(InputStream is, IRuntimeRepository productRepository) throws Exception {
-        rows = new ArrayList(200);
+        rows = new ArrayList<T>(200);
         SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
         saxParser.parse(new InputSource(is), new TableSaxHandler(this, productRepository));
-        ((ArrayList)rows).trimToSize();
+        ((ArrayList<T>)rows).trimToSize();
         initKeyMaps();
     }
 
@@ -209,7 +209,7 @@ public abstract class Table implements ITable {
     @Override
     public String toString() {
         StringBuffer output = new StringBuffer();
-        Iterator it = rows.iterator();
+        Iterator<T> it = rows.iterator();
         for (int i = 0; it.hasNext() && i < 10; i++) {
             if (i != 0) {
                 output.append("\n");

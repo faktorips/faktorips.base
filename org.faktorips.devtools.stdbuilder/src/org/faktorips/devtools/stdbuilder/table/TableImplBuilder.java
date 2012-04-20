@@ -285,7 +285,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         TypeSection mainSection = getMainTypeSection();
         mainSection.setClassModifier(Modifier.PUBLIC);
         mainSection.setUnqualifiedName(getTableStructure().getName());
-        mainSection.setSuperClass(Table.class.getName());
+        mainSection.setSuperClass(isUseTypesafeCollections() ? Table.class.getName() + "<" + qualifiedTableRowName
+                + ">" : Table.class.getName());
         mainSection.setClass(true);
 
         String description = getDescriptionInGeneratorLanguage(getIpsObject());
@@ -322,9 +323,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
     private void generateConstructorWithRowsParameter(JavaCodeFragmentBuilder code) throws CoreException {
         appendLocalizedJavaDoc("CONSTRUCTOR_WITH_ROWS", getTableStructure(), code);
-        if (isUseTypesafeCollections()) {
-            code.annotation(new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED });
-        }
         code.appendJavaModifier(Modifier.PUBLIC);
         code.append(' ');
         code.append(getUnqualifiedClassName());
@@ -339,6 +337,11 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         code.appendln("super();");
         code.append("rows = new ");
         code.appendClassName(ArrayList.class);
+        if (isUseTypesafeCollections()) {
+            code.append('<');
+            code.appendClassName(qualifiedTableRowName);
+            code.append('>');
+        }
         code.appendln("(content.size());");
         code.appendln("rows.addAll(content);");
         code.append(INIT_KEY_MAPS);
@@ -354,7 +357,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             methodBody.appendln(".unmodifiableList(rows);");
             codeBuilder.method(Modifier.PUBLIC, List.class.getName() + "<" + qualifiedTableRowName + ">", "getAllRows",
                     new String[0], new String[0], methodBody, getLocalizedText(getIpsObject(), GET_ALL_ROWS_JAVADOC),
-                    ANNOTATION_GENERATED, new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED });
+                    ANNOTATION_GENERATED, null);
         } else {
             methodBody.appendClassName(qualifiedTableRowName);
             methodBody.append("[] rowsArray  =  new ");
@@ -371,10 +374,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private void createGetInstanceMethodForSingleContent(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         String qualifiedClassName = getQualifiedClassName(getTableStructure().getIpsSrcFile());
         JavaCodeFragment methodBody = new JavaCodeFragment();
-        methodBody.append("return (");
-        methodBody.appendClassName(qualifiedClassName);
-        methodBody.append(")");
-        methodBody.append("repository.getTable(");
+        methodBody.append("return repository.getTable(");
         methodBody.appendClassName(qualifiedClassName);
         methodBody.append(".class");
         methodBody.append(");");
@@ -421,7 +421,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 methodBody.append(" ");
             }
             methodBody.append(valueName);
-            methodBody.append(" = (String)");
+            methodBody.append(" = ");
             methodBody.append("values.get(");
             methodBody.append(i);
             methodBody.append(");");
@@ -443,10 +443,10 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                     methodBody.append(enumHelper.getEnumTypeBuilder().getCallGetValueByIdentifierCodeFragment(
                             enumHelper.getEnumType(), valueName, new JavaCodeFragment("productRepository")));
                 } else {
-                    methodBody.append(helper.newInstanceFromExpression(valueName));
+                    methodBody.append(helper.newInstanceFromExpression(valueName, false));
                 }
             } else {
-                methodBody.append(helper.newInstanceFromExpression(valueName));
+                methodBody.append(helper.newInstanceFromExpression(valueName, false));
             }
             methodBody.append(';');
             methodBody.appendln();
@@ -466,11 +466,11 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.addImport(List.class.getName());
         codeBuilder.javaDoc(getLocalizedText(getIpsObject(), ADD_ROW_JAVADOC), ANNOTATION_GENERATED);
         appendOverrideAnnotation(codeBuilder, false);
-        if (isUseTypesafeCollections()) {
-            codeBuilder.annotation(new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED });
-        }
-        codeBuilder.methodBegin(Modifier.PROTECTED, Void.TYPE, "addRow",
-                new String[] { "values", "productRepository" }, new Class[] { List.class, IRuntimeRepository.class });
+        codeBuilder.methodBegin(Modifier.PROTECTED, Void.TYPE.getName(), "addRow", new String[] { "values",
+                "productRepository" },
+                new String[] {
+                        isUseTypesafeCollections() ? List.class.getName() + "<" + String.class.getName() + ">"
+                                : List.class.getName(), IRuntimeRepository.class.getName() });
         codeBuilder.append(methodBody);
         codeBuilder.methodEnd();
     }
@@ -556,8 +556,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
         codeBuilder.javaDoc(getLocalizedText(getIpsObject(), INIT_KEY_MAPS_JAVADOC), ANNOTATION_GENERATED);
         appendOverrideAnnotation(codeBuilder, false);
-        // TODO pk 12-08-2009: why is here a check agains <???
-        if (isUseTypesafeCollections() && methodBody.getSourcecode().indexOf("<") > 0) {
+        if (methodBody.getSourcecode().contains("getMap")) {
             codeBuilder.annotation(new String[] { ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED });
         }
         codeBuilder.methodBegin(Modifier.PROTECTED, Void.TYPE, INIT_KEY_MAPS, new String[0], new Class[0]);

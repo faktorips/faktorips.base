@@ -600,7 +600,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
             builder.append(getFieldNameSetOfAllowedValues());
             builder.append(" instanceof ");
             builder.appendClassName(org.faktorips.valueset.UnrestrictedValueSet.class);
-            builder.append(") {");
+            builder.append("<?>) {");
         }
         builder.appendClassName(Element.class);
         builder.append(" unrestrictedValueSetElement = element.getOwnerDocument().createElement(\"Unrestricted\");");
@@ -619,7 +619,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
             builder.append(getFieldNameSetOfAllowedValues());
             builder.append(" instanceof ");
             builder.appendClassName(org.faktorips.valueset.Range.class);
-            builder.append(") {");
+            builder.append("<?>) {");
             /*
              * Cast unrestricted valueSet to range to access its fields.
              */
@@ -682,7 +682,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
             builder.append(getFieldNameSetOfAllowedValues());
             builder.append(" instanceof ");
             builder.appendClassName(OrderedValueSet.class);
-            builder.append("){");
+            builder.append("<?>){");
         }
         builder.append("valueSetValuesElement = element.getOwnerDocument().createElement(\"Enum\");");
         builder.append("valueSetValuesElement.setAttribute(\"containsNull\", Boolean.toString(");

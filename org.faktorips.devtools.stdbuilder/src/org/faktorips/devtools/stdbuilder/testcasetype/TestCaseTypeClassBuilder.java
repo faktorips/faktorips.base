@@ -466,7 +466,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.appendln("} catch (Exception e){");
             body.append("throw new ");
             body.appendln("RuntimeException(e);");
-            body.appendln("};");
+            body.appendln("}");
         }
     }
 
@@ -906,7 +906,11 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
                 // generate a constant
                 String constName = generateTestAttributeConstant(parameter, testAttribute);
 
-                childCodeFragment.append(" value = (String) propMap.get(");
+                childCodeFragment.append(" value = ");
+                if (!isUseTypesafeCollections()) {
+                    childCodeFragment.append("(String) ");
+                }
+                childCodeFragment.append("propMap.get(");
                 childCodeFragment.append(constName);
                 childCodeFragment.appendln(");");
                 childCodeFragment.append("addExtensionAttribute(");

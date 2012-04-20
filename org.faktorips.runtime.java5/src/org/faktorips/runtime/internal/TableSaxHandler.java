@@ -31,7 +31,7 @@ public class TableSaxHandler extends DefaultHandler {
     private static final String ROW = "Row";
 
     // the table which will be filled
-    private Table table;
+    private Table<?> table;
 
     // contains all column values,
     private List<String> columns = new ArrayList<String>(20);
@@ -51,7 +51,7 @@ public class TableSaxHandler extends DefaultHandler {
     // the product repository to get product information from
     private IRuntimeRepository productRepository;
 
-    public TableSaxHandler(Table table, IRuntimeRepository productRepository) {
+    public TableSaxHandler(Table<?> table, IRuntimeRepository productRepository) {
         this.table = table;
         this.productRepository = productRepository;
     }

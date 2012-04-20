@@ -30,12 +30,12 @@ import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.productvariant.ProductVariantRuntimeHelper;
+import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
-import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.w3c.dom.Element;
@@ -212,10 +212,10 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     @Override
     protected ITable createTable(TableContentTocEntry tocEntry) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
-        Table table;
+        Table<?> table;
         try {
             Constructor<?> constructor = implClass.getConstructor(new Class[0]);
-            table = (Table)constructor.newInstance(new Object[0]);
+            table = (Table<?>)constructor.newInstance(new Object[0]);
         } catch (Exception e) {
             throw new RuntimeException("Can't create table instance for toc entry " + tocEntry, e);
         }
