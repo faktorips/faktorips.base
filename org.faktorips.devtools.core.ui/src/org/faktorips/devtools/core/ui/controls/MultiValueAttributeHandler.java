@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueDialog;
 
@@ -30,17 +29,8 @@ public class MultiValueAttributeHandler {
         this.valueSet = valueSet;
     }
 
-    private boolean isEnumValueSet() {
-        return valueSet instanceof IEnumValueSet;
-    }
-
     public void editValues() {
-        // if (isEnumValueSet()) {
-        // // TODO subsetChooser
-        // } else {
         MultiValueDialog multiValueDialog = new MultiValueDialog(shell, attributeValue);
         multiValueDialog.open();
-        // values are applied in the dialog's okPressed() method
-        // }
     }
 }

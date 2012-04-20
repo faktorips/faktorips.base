@@ -42,7 +42,8 @@ public class EditTableControlFactory {
      * @param parent the composite the table and button controls should be created in
      * @param ipsProject the IPS project the IPS object is contained in
      * @param valueDatatype the data type of the values
-     * @param tableModel the model that contains the list of values that can be edited in the table
+     * @param tableModel the model that contains the list of elements that can be edited using the
+     *            table
      * @param elementModifier object that allows to access and modify the table model's elements
      * @param description the description of the table. Is displayed directly above the table.
      * @return the created {@link EditTableControlViewer}
@@ -51,7 +52,7 @@ public class EditTableControlFactory {
             Composite parent,
             IIpsProject ipsProject,
             ValueDatatype valueDatatype,
-            AbstractListTableModel<?> tableModel,
+            IEditTabelModel tableModel,
             IElementModifier elementModifier,
             String description) {
         EditTableControlViewer viewer = new EditTableControlViewer(parent);

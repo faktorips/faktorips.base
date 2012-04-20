@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.ui.dialogs.MultiValueLableModel;
+import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
+import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
 import org.junit.Test;
 
 public class ListTableModelContentProviderTest {
@@ -29,15 +30,15 @@ public class ListTableModelContentProviderTest {
     @Test
     public void testGetElements() {
         ListTableModelContentProvider multiValueContentProvider = new ListTableModelContentProvider();
-        List<SingleValueHolder> list = new ArrayList<SingleValueHolder>();
-        MultiValueLableModel model = mock(MultiValueLableModel.class);
+        List<SingleValueViewItem> list = new ArrayList<SingleValueViewItem>();
+        MultiValueTableModel model = mock(MultiValueTableModel.class);
 
-        when(model.getList()).thenReturn(list);
+        when(model.getElements()).thenReturn(list);
         Object[] elements = multiValueContentProvider.getElements(model);
         assertEquals(0, elements.length);
 
-        list.add(new SingleValueHolder(null));
-        list.add(new SingleValueHolder(null));
+        list.add(new SingleValueViewItem(new SingleValueHolder(null)));
+        list.add(new SingleValueViewItem(new SingleValueHolder(null)));
         elements = multiValueContentProvider.getElements(model);
         assertEquals(2, elements.length);
     }

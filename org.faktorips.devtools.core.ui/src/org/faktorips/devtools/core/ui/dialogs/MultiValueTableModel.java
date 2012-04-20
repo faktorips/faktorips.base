@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -22,51 +23,64 @@ import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.ui.controls.tableedit.AbstractListTableModel;
+import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
 import org.faktorips.util.message.MessageList;
 
 /**
  * Table model for a multi-value attribute. Manages the list of values the attribute contains.
- * <p>
- * Initially the model contains the values in the given {@link IAttributeValue}. They may be changed
- * by user interaction however. To "commit" the changed list of values {@link #applyValueList()}
- * must be called.
  * 
  * @author Stefan Widmaier
  */
-public class MultiValueLableModel extends AbstractListTableModel<SingleValueHolder> {
+public class MultiValueTableModel extends AbstractListTableModel<SingleValueViewItem> {
 
     private final IAttributeValue attributeValue;
+    private List<SingleValueHolder> valueHolderList;
 
-    public MultiValueLableModel(IAttributeValue attributeValue) {
-        super(getValueList(attributeValue));
+    public MultiValueTableModel(IAttributeValue attributeValue) {
+        super(getItemList(attributeValue));
         this.attributeValue = attributeValue;
     }
 
-    private static List<SingleValueHolder> getValueList(IAttributeValue attributeValue) {
-        return getMultiValueHolder(attributeValue).getValue();
+    private static List<SingleValueViewItem> getItemList(IAttributeValue attributeValue) {
+        List<SingleValueViewItem> itemList = new ArrayList<MultiValueTableModel.SingleValueViewItem>();
+        for (SingleValueHolder holder : getMultiValueHolder(attributeValue).getValue()) {
+            itemList.add(new SingleValueViewItem(holder));
+        }
+        return itemList;
     }
 
     protected static MultiValueHolder getMultiValueHolder(IAttributeValue attributeValue) {
         return (MultiValueHolder)attributeValue.getValueHolder();
     }
 
+    private List<SingleValueHolder> getValueHolderList() {
+        List<SingleValueHolder> holderList = new ArrayList<SingleValueHolder>();
+        for (SingleValueViewItem item : getElements()) {
+            holderList.add(item.getSingleValueHolder());
+        }
+        return holderList;
+    }
+
     @Override
     public Object addElement() {
         SingleValueHolder holder = new SingleValueHolder(attributeValue);
-        getList().add(holder);
-        return holder;
+        SingleValueViewItem item = new SingleValueViewItem(holder);
+        getElements().add(item);
+        applyValueList();
+        return item;
     }
 
     @Override
     public void removeElement(int index) {
-        getList().remove(index);
+        getElements().remove(index);
+        applyValueList();
     }
 
     /**
      * Applies the current list this model holds to the attribute's multi-value holder.
      */
     public void applyValueList() {
-        getMultiValueHolder().setValue(getList());
+        getMultiValueHolder().setValue(getValueHolderList());
     }
 
     protected MultiValueHolder getMultiValueHolder() {
@@ -74,13 +88,18 @@ public class MultiValueLableModel extends AbstractListTableModel<SingleValueHold
     }
 
     @Override
+    public void swapElements(int index1, int index2) {
+        super.swapElements(index1, index2);
+        applyValueList();
+    }
+
+    @Override
     public MessageList validate(Object elementToValidate) {
-        if (elementToValidate instanceof SingleValueHolder && getList().contains(elementToValidate)) {
-            SingleValueHolder holder = (SingleValueHolder)elementToValidate;
-            IAttributeValue attrValue = (IAttributeValue)holder.getParent();
+        SingleValueHolder holder = ((SingleValueViewItem)elementToValidate).getSingleValueHolder();
+        if (getValueHolderList().contains(holder)) {
             MessageList messageList;
             try {
-                messageList = attrValue.validate(attrValue.getIpsProject());
+                messageList = attributeValue.validate(attributeValue.getIpsProject());
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
@@ -90,4 +109,25 @@ public class MultiValueLableModel extends AbstractListTableModel<SingleValueHold
                     "Cannot validate \"{0}\" as it is no element of this table model.", elementToValidate)); //$NON-NLS-1$
         }
     }
+
+    /**
+     * Wrapper class for {@link SingleValueHolder single value holders}. In contrast to
+     * {@link SingleValueHolder} instances of this class are not equal if they contain the same
+     * value or holder instance respectively. Using {@link SingleValueHolder}s directly caused
+     * problems when traversing in the table viewer as it may contain multiple equal values.
+     * 
+     * @author Stefan Widmaier
+     */
+    public static class SingleValueViewItem {
+        private final SingleValueHolder holder;
+
+        public SingleValueViewItem(SingleValueHolder holder) {
+            this.holder = holder;
+        }
+
+        public SingleValueHolder getSingleValueHolder() {
+            return holder;
+        }
+    }
+
 }

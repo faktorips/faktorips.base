@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.controls.tableedit;
 
+import java.util.List;
+
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -32,6 +34,8 @@ public interface IEditTabelModel {
     public Object addElement();
 
     public void removeElement(int index);
+
+    public List<?> getElements();
 
     /**
      * Validates the given element. Returns a message list containing all errors and warnings.

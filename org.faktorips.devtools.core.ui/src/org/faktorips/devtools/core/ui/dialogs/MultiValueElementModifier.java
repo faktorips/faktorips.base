@@ -13,12 +13,12 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.ui.controls.tableedit.IElementModifier;
+import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
 
 /**
- * Allows to access and modify the elements of a {@link MultiValueHolder}.
+ * Allows to access and modify {@link SingleValueHolder} instances.
  * 
  * @author Stefan Widmaier
  */
@@ -30,8 +30,8 @@ public class MultiValueElementModifier implements IElementModifier {
      */
     @Override
     public String getValue(Object element) {
-        SingleValueHolder holder = (SingleValueHolder)element;
-        return holder.getStringValue();
+        SingleValueViewItem item = (SingleValueViewItem)element;
+        return item.getSingleValueHolder().getStringValue();
     }
 
     /**
@@ -40,8 +40,8 @@ public class MultiValueElementModifier implements IElementModifier {
      */
     @Override
     public void setValue(Object element, Object value) {
-        SingleValueHolder holder = (SingleValueHolder)element;
-        holder.setValue((String)value);
+        SingleValueViewItem item = (SingleValueViewItem)element;
+        item.getSingleValueHolder().setValue((String)value);
     }
 
 }

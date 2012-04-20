@@ -22,9 +22,9 @@ import org.faktorips.util.message.MessageList;
 
 public class ErrorCellLabelProvider extends CellLabelProvider {
 
-    private final AbstractListTableModel<?> tableModel;
+    private final IEditTabelModel tableModel;
 
-    public ErrorCellLabelProvider(AbstractListTableModel<?> tableModel) {
+    public ErrorCellLabelProvider(IEditTabelModel tableModel) {
         this.tableModel = tableModel;
     }
 

@@ -17,7 +17,8 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
- * Content provider for a {@link EditTableControlViewer} that uses an {@link AbstractListTableModel}.
+ * Content provider for a {@link EditTableControlViewer} that uses an {@link AbstractListTableModel}
+ * .
  * 
  * @author Stefan Widmaier
  */
@@ -35,8 +36,8 @@ public class ListTableModelContentProvider implements IStructuredContentProvider
 
     @Override
     public Object[] getElements(Object inputElement) {
-        AbstractListTableModel<?> model = (AbstractListTableModel<?>)inputElement;
-        return model.getList().toArray();
+        IEditTabelModel model = (IEditTabelModel)inputElement;
+        return model.getElements().toArray();
     }
 
 }

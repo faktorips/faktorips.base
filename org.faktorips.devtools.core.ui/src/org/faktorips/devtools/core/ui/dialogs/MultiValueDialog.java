@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 public class MultiValueDialog extends IpsPartEditDialog2 {
 
     private final IAttributeValue attributeValue;
-    private MultiValueLableModel tabelModel;
+    private MultiValueTableModel tabelModel;
     private ValueDatatype datatype;
 
     public MultiValueDialog(Shell parentShell, IAttributeValue attributeValue) {
@@ -38,7 +38,7 @@ public class MultiValueDialog extends IpsPartEditDialog2 {
         setShellStyle(getShellStyle() | SWT.RESIZE);
         Assert.isNotNull(attributeValue);
         this.attributeValue = attributeValue;
-        tabelModel = new MultiValueLableModel(attributeValue);
+        tabelModel = new MultiValueTableModel(attributeValue);
         try {
             IIpsProject ipsProject = attributeValue.getIpsProject();
             datatype = attributeValue.findAttribute(ipsProject).findValueDatatype(ipsProject);

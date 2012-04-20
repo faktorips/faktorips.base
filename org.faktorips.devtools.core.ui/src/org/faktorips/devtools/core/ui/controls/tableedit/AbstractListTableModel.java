@@ -39,7 +39,8 @@ public abstract class AbstractListTableModel<T> implements IEditTabelModel {
         list.set(index2, element1);
     }
 
-    public List<T> getList() {
+    @Override
+    public List<T> getElements() {
         return list;
     }
 

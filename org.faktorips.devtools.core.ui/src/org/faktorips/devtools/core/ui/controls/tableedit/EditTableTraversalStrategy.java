@@ -21,10 +21,10 @@ import org.faktorips.devtools.core.ui.table.LinkedColumnsTraversalStrategy;
 public class EditTableTraversalStrategy extends LinkedColumnsTraversalStrategy {
 
     private final int columnIndex;
-    private final AbstractListTableModel<?> listTableModel;
+    private final IEditTabelModel listTableModel;
 
     public EditTableTraversalStrategy(CellTrackingEditingSupport editingSupport, int columnIndex,
-            AbstractListTableModel<?> listTableModel) {
+            IEditTabelModel listTableModel) {
         super(editingSupport);
         this.columnIndex = columnIndex;
         this.listTableModel = listTableModel;
@@ -47,8 +47,8 @@ public class EditTableTraversalStrategy extends LinkedColumnsTraversalStrategy {
      */
     @Override
     protected Object getPreviousVisibleViewItem(Object currentViewItem) {
-        List<?> list = listTableModel.getList();
-        int currentIndex = indexOf(list, currentViewItem);
+        List<?> list = listTableModel.getElements();
+        int currentIndex = list.indexOf(currentViewItem);
         if (currentIndex < 0) {
             return list.isEmpty() ? null : list.get(0);
         } else if (currentIndex == 0) {
@@ -58,15 +58,6 @@ public class EditTableTraversalStrategy extends LinkedColumnsTraversalStrategy {
         }
     }
 
-    private int indexOf(List<?> list, Object currentViewItem) {
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) == currentViewItem) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     /**
      * Returns the next item if there is one. Returns <code>null</code> otherwise. If the requested
      * view item does not exist in the model the first element is returned or <code>null</code> if
@@ -74,8 +65,8 @@ public class EditTableTraversalStrategy extends LinkedColumnsTraversalStrategy {
      */
     @Override
     protected Object getNextVisibleViewItem(Object currentViewItem) {
-        List<?> list = listTableModel.getList();
-        int currentIndex = indexOf(list, currentViewItem);
+        List<?> list = listTableModel.getElements();
+        int currentIndex = list.indexOf(currentViewItem);
         if (currentIndex < 0) {
             return list.isEmpty() ? null : list.get(0);
         } else if (currentIndex == list.size() - 1) {

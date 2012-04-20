@@ -42,7 +42,7 @@ public class EditTableTraversalStrategyTest {
         list = new ArrayList<String>();
         @SuppressWarnings("unchecked")
         AbstractListTableModel<String> model = mock(AbstractListTableModel.class);
-        doReturn(list).when(model).getList();
+        doReturn(list).when(model).getElements();
         strat = new EditTableTraversalStrategy(null, 0, model);
     }
 
@@ -55,7 +55,8 @@ public class EditTableTraversalStrategyTest {
         assertEquals(B1, strat.getNextVisibleViewItem(A));
         assertEquals(C, strat.getNextVisibleViewItem(B1));
         assertEquals(B2, strat.getNextVisibleViewItem(C));
-        assertNull(strat.getNextVisibleViewItem(B2));
+        // value "B" is found at index 1, next item is C
+        assertEquals(C, strat.getNextVisibleViewItem(B2));
         assertEquals(A, strat.getNextVisibleViewItem("inexistent"));
     }
 
@@ -73,7 +74,8 @@ public class EditTableTraversalStrategyTest {
         assertNull(strat.getPreviousVisibleViewItem(A));
         assertEquals(A, strat.getPreviousVisibleViewItem(B1));
         assertEquals(B1, strat.getPreviousVisibleViewItem(C));
-        assertEquals(C, strat.getPreviousVisibleViewItem(B2));
+        // value "B" is found at index 1, previous item is A
+        assertEquals(A, strat.getPreviousVisibleViewItem(B2));
         assertEquals(A, strat.getNextVisibleViewItem("inexistent"));
     }
 

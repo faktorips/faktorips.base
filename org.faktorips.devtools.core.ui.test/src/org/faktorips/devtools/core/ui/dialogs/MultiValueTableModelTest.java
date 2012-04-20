@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.dialogs;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
@@ -26,11 +27,11 @@ import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.ui.dialogs.MultiValueLableModel;
+import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MultiValueLableModelTest extends AbstractIpsPluginTest {
+public class MultiValueTableModelTest extends AbstractIpsPluginTest {
 
     private IAttributeValue attributeValue;
 
@@ -53,18 +54,18 @@ public class MultiValueLableModelTest extends AbstractIpsPluginTest {
 
     @Test
     public void applyValueList() {
-        MultiValueLableModel model = new MultiValueLableModel(attributeValue);
+        MultiValueTableModel model = new MultiValueTableModel(attributeValue);
         model.addElement();
-        assertEquals(3, getAttributeValueList().size());
-        assertEquals(4, model.getList().size());
+        assertEquals(4, getAttributeValueList().size());
+        assertEquals(4, model.getElements().size());
         model.addElement();
-        assertEquals(3, getAttributeValueList().size());
-        assertEquals(5, model.getList().size());
+        assertEquals(5, getAttributeValueList().size());
+        assertEquals(5, model.getElements().size());
 
         model.applyValueList();
         assertEquals(5, getAttributeValueList().size());
-        assertEquals(5, model.getList().size());
-        assertSame(getAttributeValueList().get(4), model.getList().get(4));
+        assertEquals(5, model.getElements().size());
+        assertSame(getAttributeValueList().get(4), model.getElements().get(4).getSingleValueHolder());
     }
 
     protected List<SingleValueHolder> getAttributeValueList() {
@@ -73,36 +74,57 @@ public class MultiValueLableModelTest extends AbstractIpsPluginTest {
 
     @Test
     public void swapElements() {
-        MultiValueLableModel model = new MultiValueLableModel(attributeValue);
+        MultiValueTableModel model = new MultiValueTableModel(attributeValue);
         model.swapElements(1, 2);
-        assertEquals(3, model.getList().size());
-        assertEquals("C", model.getList().get(1).getValue());
-        assertEquals("B", model.getList().get(2).getValue());
+        assertEquals(3, model.getElements().size());
+        assertEquals("C", model.getElements().get(1).getSingleValueHolder().getValue());
+        assertEquals("B", model.getElements().get(2).getSingleValueHolder().getValue());
         model.swapElements(1, 2);
-        assertEquals(3, model.getList().size());
-        assertEquals("B", model.getList().get(1).getValue());
-        assertEquals("C", model.getList().get(2).getValue());
+        assertEquals(3, model.getElements().size());
+        assertEquals("B", model.getElements().get(1).getSingleValueHolder().getValue());
+        assertEquals("C", model.getElements().get(2).getSingleValueHolder().getValue());
     }
 
     @Test
     public void addElement() {
-        MultiValueLableModel model = new MultiValueLableModel(attributeValue);
+        MultiValueTableModel model = new MultiValueTableModel(attributeValue);
         model.addElement();
-        assertEquals(4, model.getList().size());
-        assertEquals(null, model.getList().get(3).getValue());
+        assertEquals(4, model.getElements().size());
+        assertEquals(null, model.getElements().get(3).getSingleValueHolder().getValue());
         model.addElement();
-        assertEquals(5, model.getList().size());
-        assertEquals(null, model.getList().get(4).getValue());
+        assertEquals(5, model.getElements().size());
+        assertEquals(null, model.getElements().get(4).getSingleValueHolder().getValue());
     }
 
     @Test
     public void removeElement() {
-        MultiValueLableModel model = new MultiValueLableModel(attributeValue);
+        MultiValueTableModel model = new MultiValueTableModel(attributeValue);
         model.removeElement(1);
-        assertEquals(2, model.getList().size());
-        assertEquals("C", model.getList().get(1).getValue());
+        assertEquals(2, model.getElements().size());
+        assertEquals("C", model.getElements().get(1).getSingleValueHolder().getValue());
         model.removeElement(0);
-        assertEquals(1, model.getList().size());
-        assertEquals("C", model.getList().get(0).getValue());
+        assertEquals(1, model.getElements().size());
+        assertEquals("C", model.getElements().get(0).getSingleValueHolder().getValue());
+    }
+
+    @Test
+    public void treatViewItemsWithEqualValueAsNotEqual() {
+        SingleValueHolder holder = new SingleValueHolder(attributeValue, "value");
+        SingleValueViewItem item1 = new SingleValueViewItem(holder);
+        SingleValueViewItem item2 = new SingleValueViewItem(holder);
+        assertFalse(item1.equals(item2));
+    }
+
+    @Test
+    public void treatViewItemsAsNotEqual() {
+        SingleValueHolder holder = new SingleValueHolder(attributeValue, "value");
+        SingleValueViewItem item1 = new SingleValueViewItem(holder);
+        SingleValueViewItem item2 = new SingleValueViewItem(holder);
+        List<SingleValueViewItem> items = new ArrayList<MultiValueTableModel.SingleValueViewItem>();
+        items.add(item1);
+        items.add(item2);
+
+        assertEquals(0, items.indexOf(item1));
+        assertEquals(1, items.indexOf(item2));
     }
 }
