@@ -86,24 +86,18 @@ public enum ProductCmptPropertyType {
             // TODO the default value should also be a ValueHolder
             Object defaultObject;
             if (attributeValueType == AttributeValueType.MULTI_VALUE) {
-                SingleValueHolder defaultHolder = new SingleValueHolder(attributeValue, defaultStringValue);
                 ArrayList<SingleValueHolder> defaultList = new ArrayList<SingleValueHolder>();
-                defaultList.add(defaultHolder);
+                if (defaultStringValue != null) {
+                    SingleValueHolder defaultHolder = new SingleValueHolder(attributeValue, defaultStringValue);
+                    defaultList.add(defaultHolder);
+                }
                 defaultObject = defaultList;
             } else {
                 defaultObject = defaultStringValue;
             }
 
             IValueHolder<?> valueHolder = attributeValueType.newHolderInstance(attributeValue, defaultObject);
-
             attributeValue.setValueHolderInternal(valueHolder);
-
-            // IAttributeValue attributeValue = new AttributeValue(container, partId,
-            //                    property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
-            // IProductCmptTypeAttribute attribute = (IProductCmptTypeAttribute)property;
-            // attributeValue.setValueHolder(new SingleValueHolder(attributeValue, attribute != null
-            // ? attribute
-            //                    .getDefaultValue() : "")); //$NON-NLS-1$
             return attributeValue;
         }
 
