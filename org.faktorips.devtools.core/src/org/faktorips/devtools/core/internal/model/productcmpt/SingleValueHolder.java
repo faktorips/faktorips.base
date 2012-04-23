@@ -108,7 +108,7 @@ public class SingleValueHolder extends AbstractValueHolder<String> {
 
     @Override
     public void initFromXml(Element element) {
-        value = ValueToXmlHelper.getValueFromElement(element);
+        value = element == null ? null : ValueToXmlHelper.getValueFromElement(element);
     }
 
     @Override
@@ -124,11 +124,6 @@ public class SingleValueHolder extends AbstractValueHolder<String> {
     @Override
     public int compareTo(IValueHolder<String> o) {
         return value.compareTo(o.getValue());
-    }
-
-    @Override
-    public String toString() {
-        return getStringValue();
     }
 
     /**

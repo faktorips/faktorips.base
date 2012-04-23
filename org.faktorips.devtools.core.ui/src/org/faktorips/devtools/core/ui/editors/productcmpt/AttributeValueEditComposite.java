@@ -22,6 +22,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
+import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -70,7 +72,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
 
     protected EditField<String> createEditField(ValueDatatype datatype, IValueSet valueSet) {
         EditField<String> editField;
-        if (getProperty().isMultiValueAttribute()) {
+        if (getPropertyValue().getValueHolder() instanceof MultiValueHolder) {
             MultiValueAttributeControl control = new MultiValueAttributeControl(this, getToolkit(), getPropertyValue(),
                     valueSet);
             editField = new TextButtonField(control);
@@ -78,15 +80,19 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
                     .createWrapperFor(getPropertyValue());
             getBindingContext().bindContent(editField, wrapper,
                     ValueHolderToFormattedStringWrapper.PROPERTY_FORMATTED_VALUE);
-            getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE_HOLDER);
-        } else {
+            getBindingContext().bindProblemMarker(editField, getPropertyValue().getValueHolder(),
+                    MultiValueHolder.PROPERTY_VALUE);
+            return editField;
+        } else if (getPropertyValue().getValueHolder() instanceof SingleValueHolder) {
             ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     datatype);
             editField = controlFactory.createEditField(getToolkit(), this, datatype, valueSet, getPropertyValue()
                     .getIpsProject());
-            getBindingContext().bindContent(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE);
+            getBindingContext().bindContent(editField, getPropertyValue().getValueHolder(),
+                    SingleValueHolder.PROPERTY_VALUE);
+            return editField;
         }
-        return editField;
+        throw new RuntimeException("Illegal value holder isntance in attribute " + getProperty().getName()); //$NON-NLS-1$
     }
 
     protected void registerAndBindEditField(List<EditField<?>> editFields, EditField<String> editField) {

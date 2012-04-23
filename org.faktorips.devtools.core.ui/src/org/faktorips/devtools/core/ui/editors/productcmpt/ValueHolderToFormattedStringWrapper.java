@@ -28,11 +28,11 @@ import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 
 /**
- * A Wrapper for an {@link IAttributeValue}. Provides a {@link #getValue()} method. In case of a
- * single-value attribute {@link #getValue()} returns the attribute's value as a string formatted
- * depending on the datatype and the locale. In case of a multi-value attribute a list of formatted
- * values is be returned. e.g. a list of the ISO dates "2012-04-01" and "2012-04-02" will be
- * displayed as "[01.04.2012 | 02.04.2012]" in the german locale.
+ * A Wrapper for an {@link IAttributeValue}. Provides a {@link #getFormattedValue()} method. In case
+ * of a single-value attribute {@link #getFormattedValue()} returns the attribute's value as a
+ * string formatted depending on the datatype and the locale. In case of a multi-value attribute a
+ * list of formatted values is be returned. e.g. a list of the ISO dates "2012-04-01" and
+ * "2012-04-02" will be displayed as "[01.04.2012 | 02.04.2012]" in the German locale.
  * <p/>
  * Warning: this wrapper can only be used to display human readable values <em>not</em> to edit
  * them. If you want to edit a formatted value use {@link FormattingTextField}.
@@ -97,10 +97,6 @@ public class ValueHolderToFormattedStringWrapper {
         }
         sb.append("]"); //$NON-NLS-1$
         return sb.toString();
-    }
-
-    public void setValue(String newValue) {
-        // nothing to do
     }
 
 }

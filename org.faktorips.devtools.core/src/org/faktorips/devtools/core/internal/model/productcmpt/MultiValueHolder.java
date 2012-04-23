@@ -209,11 +209,6 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
         values.add(new SingleValueHolder(getParent(), value));
     }
 
-    @Override
-    public String toString() {
-        return getStringValue();
-    }
-
     /**
      * This factory creates {@link MultiValueHolder} objects
      * 

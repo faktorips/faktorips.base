@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -41,6 +42,7 @@ import org.faktorips.devtools.core.enums.DefaultEnumValue;
 import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -103,7 +105,7 @@ public class BindingContext {
      * because once binded, we need to access all binded containers, and this is faster with a list,
      * than a hashset or treeset.
      */
-    private List<IIpsObject> ipsObjects = new ArrayList<IIpsObject>(1);
+    private Set<Validatable> validatables = new HashSet<Validatable>(1);
 
     private List<ControlPropertyBinding> controlBindings = new ArrayList<ControlPropertyBinding>(2);
 
@@ -258,7 +260,10 @@ public class BindingContext {
      * @throws NullPointerException if any argument is <code>null</code>.
      * 
      * @see DefaultEnumValue
+     * 
+     * @deprecated This method is deprecated since the parameter type {@link EnumType} is deprecated
      */
+    @Deprecated
     public EnumValueField bindContent(Combo combo, Object object, String property, EnumType enumType) {
         checkPropertyType(object, property, DefaultEnumValue.class);
         EnumValueField field = new EnumValueField(combo, enumType);
@@ -455,11 +460,13 @@ public class BindingContext {
         mappings.add(mapping);
         Object object = mapping.getObject();
         if (object instanceof IIpsObjectPartContainer) {
+            // in case of IIpsObjectPartContainer we validate the whole IIpsObject
             IIpsObjectPartContainer container = (IIpsObjectPartContainer)object;
             IIpsObject ipsObject = container.getIpsObject();
-            if (!ipsObjects.contains(ipsObject)) {
-                ipsObjects.add(ipsObject);
-            }
+            validatables.add(ipsObject);
+        } else if (object instanceof Validatable) {
+            Validatable validatable = (Validatable)object;
+            validatables.add(validatable);
         }
         addListenerToObject(object);
     }
@@ -627,9 +634,9 @@ public class BindingContext {
      * properties.
      */
     protected void showValidationStatus(List<FieldPropertyMapping> propertyMappings) {
-        List<IIpsObject> copy = new CopyOnWriteArrayList<IIpsObject>(ipsObjects);
-        for (IIpsObject iIpsObject : copy) {
-            showValidationStatus(iIpsObject, propertyMappings);
+        Set<Validatable> copy = new CopyOnWriteArraySet<Validatable>(validatables);
+        for (Validatable validatable : copy) {
+            showValidationStatus(validatable, propertyMappings);
         }
     }
 
@@ -642,10 +649,10 @@ public class BindingContext {
      * 
      * @return the validation message list (never returns null)
      */
-    protected MessageList showValidationStatus(IIpsObject ipsObject, List<FieldPropertyMapping> propertyMappings) {
+    protected MessageList showValidationStatus(Validatable validatable, List<FieldPropertyMapping> propertyMappings) {
         MessageList allValidationMessages;
         try {
-            allValidationMessages = ipsObject.validate(ipsObject.getIpsProject());
+            allValidationMessages = validatable.validate(validatable.getIpsProject());
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return new MessageList();
@@ -848,12 +855,14 @@ public class BindingContext {
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("Ctx["); //$NON-NLS-1$
-        for (int i = 0; i < ipsObjects.size(); i++) {
+        int i = 0;
+        for (Validatable validatable : validatables) {
             if (i > 0) {
                 sb.append(", "); //$NON-NLS-1$
             }
-            IIpsObject ipsObject = ipsObjects.get(i);
-            sb.append(ipsObject.getName());
+            Validatable ipsObject = validatable;
+            sb.append(ipsObject.toString());
+            i++;
         }
         sb.append(']');
 

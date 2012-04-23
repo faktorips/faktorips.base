@@ -14,11 +14,8 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,15 +93,6 @@ public class ValueHolderToFormattedStringWrapperTest {
         ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue, true,
                 ValueDatatype.DECIMAL);
         assertEquals("[1,23456 | 23,42]", wrapper.getFormattedValue());
-    }
-
-    @Test
-    public void doNothingOnSetValue() {
-        IAttributeValue attrValue = mock(IAttributeValue.class);
-        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue, true,
-                ValueDatatype.DECIMAL);
-        wrapper.setValue("");
-        verify(attrValue, never()).setValue(anyString());
     }
 
     @Test

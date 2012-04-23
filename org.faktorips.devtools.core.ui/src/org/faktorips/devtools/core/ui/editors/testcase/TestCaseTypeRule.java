@@ -118,4 +118,9 @@ public class TestCaseTypeRule implements IDummyTestCaseObject {
     public ITestParameter getTestParameter() {
         return getTestRuleParameter();
     }
+
+    @Override
+    public IIpsProject getIpsProject() {
+        return testCase.getIpsProject();
+    }
 }

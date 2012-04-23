@@ -164,7 +164,7 @@ public enum AttributeValueType {
      * @see #getType(String)
      */
     public static AttributeValueType getType(Element valueEl) {
-        String valueType = valueEl.getAttribute(AbstractValueHolder.XML_ATTRIBUTE_VALUE_TYPE);
+        String valueType = valueEl == null ? null : valueEl.getAttribute(AbstractValueHolder.XML_ATTRIBUTE_VALUE_TYPE);
         return getType(valueType);
     }
 

@@ -74,7 +74,7 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
     @Deprecated
     @Override
     public boolean isValid() throws CoreException {
-        throw new RuntimeException("AbstractValueHolder could not be validated without project"); //$NON-NLS-1$
+        return isValid(getIpsProject());
     }
 
     @Override
@@ -82,10 +82,15 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
         return getValidationResultSeverity(ipsProject) != Message.ERROR;
     }
 
+    @Override
+    public IIpsProject getIpsProject() {
+        return parent.getIpsProject();
+    }
+
     @Deprecated
     @Override
     public int getValidationResultSeverity() throws CoreException {
-        throw new RuntimeException("AbstractValueHolder could not be validated without project"); //$NON-NLS-1$
+        return getValidationResultSeverity(getIpsProject());
     }
 
     @Override
@@ -134,13 +139,15 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
      * @return Returns the newly created value holder.
      */
     public static IValueHolder<?> initValueHolder(IAttributeValue attributeValue, Element valueEl) {
-        if (valueEl == null || Boolean.parseBoolean(valueEl.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL))) {
-            return null;
-        }
         AttributeValueType attributeValueType = AttributeValueType.getType(valueEl);
         IValueHolder<?> newValueInstance = attributeValueType.newHolderInstance(attributeValue);
         newValueInstance.initFromXml(valueEl);
         return newValueInstance;
+    }
+
+    @Override
+    public String toString() {
+        return "ValueHolder: " + getStringValue(); //$NON-NLS-1$
     }
 
 }

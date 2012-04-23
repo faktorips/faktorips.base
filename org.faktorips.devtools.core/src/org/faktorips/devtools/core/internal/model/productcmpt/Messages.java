@@ -29,8 +29,6 @@ public class Messages extends NLS {
 
     public static String AttributeValue_AllowedValuesAre;
     public static String AttributeValue_attributeNotFound;
-    public static String AttributeValue_InvalidValues_multi;
-    public static String AttributeValue_InvalidValues_single;
     public static String AttributeValue_msg_validateValueHolder_hint;
     public static String AttributeValue_msg_validateValueHolder_multiValue;
     public static String AttributeValue_msg_validateValueHolder_singleValue;

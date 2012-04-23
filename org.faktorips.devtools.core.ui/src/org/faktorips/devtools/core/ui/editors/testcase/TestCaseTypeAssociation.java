@@ -240,4 +240,9 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
     public ITestParameter getTestParameter() {
         return getTestPolicyCmptTypeParam();
     }
+
+    @Override
+    public IIpsProject getIpsProject() {
+        return testPolicyCmptTypeParameter.getIpsProject();
+    }
 }

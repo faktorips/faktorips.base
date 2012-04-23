@@ -116,4 +116,12 @@ public interface Validatable {
      */
     public MessageList validate(IIpsProject ipsProject) throws CoreException;
 
+    /**
+     * Returns the project this validatable object belongs to. This project is used to validate the
+     * object if no project is specified for validation.
+     * 
+     * @return The project this object belongs to.
+     */
+    public IIpsProject getIpsProject();
+
 }

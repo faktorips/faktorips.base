@@ -269,7 +269,7 @@ public class Message {
      * @param invalidObjectProperties A <code>ObjectProperty</code> array encapsulating all invalid
      *            properties of all the invalid objects to refer to.
      */
-    public Message(String code, String text, int severity, ObjectProperty[] invalidObjectProperties) {
+    public Message(String code, String text, int severity, ObjectProperty... invalidObjectProperties) {
         this(code, text, severity);
 
         invalidOp = new ObjectProperty[invalidObjectProperties.length];
