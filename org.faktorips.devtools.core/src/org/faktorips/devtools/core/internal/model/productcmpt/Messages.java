@@ -36,6 +36,7 @@ public class Messages extends NLS {
     public static String AttributeValue_msg_validateValueHolder_singleValue;
     public static String AttributeValue_ValueNotAllowed;
 
+    public static String ConfigElement_error_msg_abstractValueSet;
     public static String ConfigElement_msgTypeMismatch;
     public static String ConfigElement_policyCmptTypeNotFound;
     public static String ConfigElement_valueSetIsNotASubset;

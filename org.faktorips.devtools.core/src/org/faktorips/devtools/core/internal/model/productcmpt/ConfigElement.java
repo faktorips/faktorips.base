@@ -228,7 +228,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             return;
         }
         if (valueSet.isAbstract()) {
-            String text = "Must specify a concrete set of values!";
+            String text = Messages.ConfigElement_error_msg_abstractValueSet;
             list.add(new Message("", text, Message.ERROR, this, IConfigElement.PROPERTY_VALUE_SET)); //$NON-NLS-1$
             return;
         }
