@@ -72,6 +72,22 @@ public class ValueHolderMismatchEntryTest {
     }
 
     @Test
+    public void testFix_singleToMulti_null() throws Exception {
+        SingleValueHolder holder = new SingleValueHolder(value, null);
+        doReturn(holder).when(value).getValueHolder();
+        when(attribute.isMultiValueAttribute()).thenReturn(true);
+
+        ValueHolderMismatchEntry valueHolderMismatchEntry = new ValueHolderMismatchEntry(value, attribute);
+        valueHolderMismatchEntry.fix();
+
+        verify(value).setValueHolder(valueHolderCaptor.capture());
+        assertTrue(valueHolderCaptor.getValue() instanceof MultiValueHolder);
+
+        List<SingleValueHolder> list = ((MultiValueHolder)valueHolderCaptor.getValue()).getValue();
+        assertEquals(0, list.size());
+    }
+
+    @Test
     public void testFix_multiToSingle() throws Exception {
         List<SingleValueHolder> list = new ArrayList<SingleValueHolder>();
         list.add(new SingleValueHolder(value, TEST_VALUE));
