@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -30,7 +29,6 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -42,11 +40,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.commands.AbstractAddAndNewProductCmptCommand;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.dialogs.SingleTypeSelectIpsObjectContext;
 import org.faktorips.devtools.core.ui.dialogs.StaticContentSelectIpsObjectContext;
@@ -59,8 +56,7 @@ import org.faktorips.devtools.core.ui.views.productstructureexplorer.Messages;
  * 
  * @author Thorsten Guenther
  */
-// TODO VS: abstrakte basisklasse wegen dupliziertem code?
-public class AddProductCmptLinkCommand extends AbstractHandler {
+public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptCommand {
 
     public static final String COMMAND_ID = "org.faktorips.devtools.core.ui.commands.AddProductCmptLink"; //$NON-NLS-1$
 
@@ -76,9 +72,11 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
             if (structuredSelection.getFirstElement() instanceof IProductCmptStructureReference) {
                 addLinkOnReference(event);
                 return null;
-            } else {
+            } else if (structuredSelection.getFirstElement() instanceof String) {
                 addLinksOnAssociation(event);
                 return null;
+            } else {
+                throw new RuntimeException();
             }
         }
         return null;
@@ -100,7 +98,6 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
         IProductCmpt productCmpt = productCmptEditor.getProductCmpt();
         try {
             IProductCmptType productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
-
             String associationName = typedSelection.getFirstElement();
             IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)productCmptType.findAssociation(
                     associationName, productCmpt.getIpsProject());
@@ -143,65 +140,6 @@ public class AddProductCmptLinkCommand extends AbstractHandler {
                 }
             }
         }, new NullProgressMonitor());
-    }
-
-    @Override
-    public void setEnabled(Object evaluationContext) {
-        IWorkbenchWindow activeWorkbenchWindow = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-        ISelection selection = activeWorkbenchWindow.getSelectionService().getSelection();
-        if (selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
-            setBaseEnabled(false);
-            return;
-        }
-
-        IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-        Object selectedElement = structuredSelection.getFirstElement();
-        if (selectedElement instanceof IProductCmptReference) {
-            setBaseEnabled(((IProductCmptReference)selectedElement).hasAssociationChildren());
-        } else if (selectedElement instanceof String) {
-            setBaseEnabled(isValidAssociationName((String)selectedElement, activeWorkbenchWindow));
-        } else {
-            setBaseEnabled(true);
-        }
-    }
-
-    /**
-     * Queries to the target type of the selected element, target type must be found.
-     * 
-     */
-    private boolean isValidAssociationName(String associationName, IWorkbenchWindow activeWorkbenchWindow) {
-        // TODO VS: was mit cast machen?
-        IProductCmpt productCmpt = ((ProductCmptEditor)activeWorkbenchWindow.getActivePage().getActiveEditor())
-                .getProductCmpt();
-
-        IProductCmptType productCmptType = null;
-        try {
-            productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-        if (productCmptType == null) {
-            return false;
-        }
-        IProductCmptTypeAssociation typeAssociation = null;
-        try {
-            typeAssociation = (IProductCmptTypeAssociation)productCmptType.findAssociation(associationName,
-                    productCmpt.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-        if (typeAssociation == null) {
-            return false;
-        }
-
-        IProductCmptType targetProductCmptType = null;
-        try {
-            targetProductCmptType = typeAssociation.findTargetProductCmptType(productCmpt.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-        return targetProductCmptType != null;
-
     }
 
     private void addLinkOnReference(ExecutionEvent event) {

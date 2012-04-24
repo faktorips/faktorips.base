@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
@@ -22,19 +21,18 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.commands.AbstractAddAndNewProductCmptCommand;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 
-public class AddNewProductCmptCommand extends AbstractHandler {
+public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptCommand {
 
     public static final String COMMAND_ID = "org.faktorips.devtools.core.ui.wizards.productcmpt.newProductCmpt"; //$NON-NLS-1$
 
@@ -42,44 +40,43 @@ public class AddNewProductCmptCommand extends AbstractHandler {
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-        IWorkbenchWindow activeWorkbenchWindow = HandlerUtil.getActiveWorkbenchWindow(event);
-        // Getting selection by HandlerUtil.getCurrentSelection(event) often returns null also
-        // there is a selection
-        ISelection currentSelection = activeWorkbenchWindow.getSelectionService().getSelection();
-        if (currentSelection instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection)currentSelection;
+
+        ISelection selection = HandlerUtil.getCurrentSelection(event);
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection)selection;
             Object firstElement = structuredSelection.getFirstElement();
             if (firstElement instanceof String) {
-                IEditorPart activeEditor = HandlerUtil.getActiveEditor(event);
-                addNewLinkInEditor(activeEditor, activeWorkbenchWindow, firstElement);
+                addNewLinkInEditor(event);
+                return null;
             } else if (firstElement instanceof IProductCmptStructureReference) {
-                Shell shell = HandlerUtil.getActiveShell(event);
-                String selectedAssociationParameter = event.getParameter(PARAMETER_SELECTED_ASSOCIATION);
-                if (selectedAssociationParameter != null) {
-                    addNewLinkOnReference((IProductCmptStructureReference)firstElement, selectedAssociationParameter,
-                            shell);
-                } else {
-                    addNewLinkOnReference((IProductCmptStructureReference)firstElement, shell);
-                }
+                addNewLinkOnReference(event);
+                return null;
             }
         }
         return null;
     }
 
-    private void addNewLinkInEditor(IEditorPart activeEditor,
-            IWorkbenchWindow activeWorkbenchWindow,
-            Object firstElement) {
+    private void addNewLinkInEditor(ExecutionEvent event) {
         // association node in LinkSection
-        String associationName = (String)firstElement;
+        ISelection selection = HandlerUtil.getCurrentSelection(event);
+        TypedSelection<String> typedSelection = new TypedSelection<String>(String.class, selection);
+        if (!typedSelection.isValid()) {
+            return;
+        }
+
+        IEditorPart activeEditor = HandlerUtil.getActiveEditor(event);
+        if (!(activeEditor instanceof ProductCmptEditor)) {
+            return;
+        }
         IProductCmptGeneration sourceGeneration = getGenerationFromActiveEditor(activeEditor);
         if (sourceGeneration != null) {
             try {
                 IProductCmptType productCmptType = sourceGeneration.findProductCmptType(sourceGeneration
                         .getIpsProject());
                 IProductCmptTypeAssociation addToAssociation = (IProductCmptTypeAssociation)productCmptType
-                        .findAssociation(associationName, sourceGeneration.getIpsProject());
+                        .findAssociation(typedSelection.getFirstElement(), sourceGeneration.getIpsProject());
                 if (addToAssociation != null) {
-                    initWizard(sourceGeneration, addToAssociation, null, activeWorkbenchWindow.getShell());
+                    initWizard(sourceGeneration, addToAssociation, null, HandlerUtil.getActiveShell(event));
                 }
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
@@ -87,28 +84,31 @@ public class AddNewProductCmptCommand extends AbstractHandler {
         }
     }
 
-    private void addNewLinkOnReference(IProductCmptStructureReference structureReference, Shell shell) {
-        IProductCmptGeneration generation = (IProductCmptGeneration)structureReference
-                .getAdapter(IProductCmptGeneration.class);
-        IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)structureReference
-                .getAdapter(IProductCmptTypeAssociation.class);
-        if (generation != null && association != null) {
-            initWizard(generation, association, null, shell);
+    private void addNewLinkOnReference(ExecutionEvent event) {
+        ISelection selection = HandlerUtil.getCurrentSelection(event);
+        TypedSelection<IProductCmptStructureReference> typedSelection = new TypedSelection<IProductCmptStructureReference>(
+                IProductCmptStructureReference.class, selection);
+        if (!typedSelection.isValid()) {
+            return;
         }
-    }
 
-    private void addNewLinkOnReference(IProductCmptStructureReference structureReference,
-            String selectedAssociationParameter,
-            Shell shell) {
+        IProductCmptStructureReference structureReference = typedSelection.getFirstElement();
         try {
             IProductCmptGeneration generation = (IProductCmptGeneration)structureReference
                     .getAdapter(IProductCmptGeneration.class);
             if (generation != null) {
-                IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)generation.findProductCmptType(
-                        generation.getIpsProject()).findAssociation(selectedAssociationParameter,
-                        generation.getIpsProject());
-                if (association != null) {
-                    initWizard(generation, association, null, shell);
+                String selectedAssociationParameter = event.getParameter(PARAMETER_SELECTED_ASSOCIATION);
+                IProductCmptTypeAssociation association;
+                if (selectedAssociationParameter != null) {
+                    association = (IProductCmptTypeAssociation)generation.findProductCmptType(
+                            generation.getIpsProject()).findAssociation(selectedAssociationParameter,
+                            generation.getIpsProject());
+                } else {
+                    association = (IProductCmptTypeAssociation)structureReference
+                            .getAdapter(IProductCmptTypeAssociation.class);
+                    if (association != null) {
+                        initWizard(generation, association, null, HandlerUtil.getActiveShell(event));
+                    }
                 }
             }
         } catch (CoreException e) {
@@ -142,65 +142,6 @@ public class AddNewProductCmptCommand extends AbstractHandler {
         } else {
             return null;
         }
-    }
-
-    @Override
-    public void setEnabled(Object evaluationContext) {
-        IWorkbenchWindow activeWorkbenchWindow = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-        ISelection selection = activeWorkbenchWindow.getSelectionService().getSelection();
-        if (selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
-            setBaseEnabled(false);
-            return;
-        }
-
-        IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-        Object selectedElement = structuredSelection.getFirstElement();
-        if (selectedElement instanceof IProductCmptReference) {
-            setBaseEnabled(((IProductCmptReference)selectedElement).hasAssociationChildren());
-        } else if (selectedElement instanceof String) {
-            setBaseEnabled(isEnabledInternal(selectedElement, activeWorkbenchWindow));
-        } else {
-            setBaseEnabled(true);
-        }
-    }
-
-    /**
-     * Queries to the target type of the selected element, target type must be found.
-     * 
-     */
-    private boolean isEnabledInternal(Object selectedElement, IWorkbenchWindow activeWorkbenchWindow) {
-
-        IProductCmpt productCmpt = ((ProductCmptEditor)activeWorkbenchWindow.getActivePage().getActiveEditor())
-                .getProductCmpt();
-
-        IProductCmptType productCmptType = null;
-        try {
-            productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-        if (productCmptType == null) {
-            return false;
-        }
-        IProductCmptTypeAssociation typeAssociation = null;
-        try {
-            typeAssociation = (IProductCmptTypeAssociation)productCmptType.findAssociation((String)selectedElement,
-                    productCmpt.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-        if (typeAssociation == null) {
-            return false;
-        }
-
-        IProductCmptType targetProductCmptType = null;
-        try {
-            targetProductCmptType = typeAssociation.findTargetProductCmptType(productCmpt.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-        return targetProductCmptType != null;
-
     }
 
 }
