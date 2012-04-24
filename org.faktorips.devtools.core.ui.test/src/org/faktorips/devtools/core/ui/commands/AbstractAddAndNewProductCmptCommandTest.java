@@ -120,7 +120,7 @@ public class AbstractAddAndNewProductCmptCommandTest {
 
         testCommand.setEnabled(evaluationContext);
 
-        assertFalse(testCommand.isEnabled());
+        assertTrue(testCommand.isEnabled());
 
         singletonMockHelper.reset();
     }
