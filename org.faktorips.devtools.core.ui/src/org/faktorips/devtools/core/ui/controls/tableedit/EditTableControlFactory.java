@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.core.ui.controls.tableedit;
 
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.ValueDatatype;
@@ -61,6 +63,7 @@ public class EditTableControlFactory {
         TableViewerColumn errorColumn = new TableViewerColumn(viewer.getTableViewer(), SWT.LEFT);
         errorColumn.getColumn().setResizable(false);
         errorColumn.setLabelProvider(new ErrorCellLabelProvider(tableModel));
+        ColumnViewerToolTipSupport.enableFor(viewer.getTableViewer(), ToolTip.NO_RECREATE);
 
         ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault()
                 .getValueDatatypeControlFactory(valueDatatype);
