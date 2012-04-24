@@ -54,6 +54,15 @@ public class MultiValueDialog extends IpsPartEditDialog2 {
     }
 
     @Override
+    protected void setDataChangeableThis(boolean changeable) {
+        /*
+         * Do not set data changeable (or unchangeable respectively). This dialog can never be
+         * opened in browse mode, the Multi-Value button next to the attribute value's field is
+         * disabled in that case.
+         */
+    }
+
+    @Override
     protected Composite createWorkAreaThis(Composite parent) {
         String description = NLS.bind(Messages.MultiValueDialog_TableDescription, attributeValue.getAttribute());
         EditTableControlFactory.createListEditTable(getToolkit(), parent, attributeValue.getIpsProject(), datatype,

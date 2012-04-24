@@ -73,6 +73,7 @@ public class EditTableControlViewer {
     public void setTabelModel(IEditTabelModel tabelModel) {
         this.tabelModel = tabelModel;
         getTableViewer().setInput(tabelModel);
+        updateButtonsEnabledState();
     }
 
     public IEditTabelModel getTabelModel() {
