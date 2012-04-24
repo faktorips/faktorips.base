@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.internal;
+package org.faktorips.devtools.core.ui.internal.filter;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -26,7 +26,8 @@ import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.ui.IProductCmptPropertyFilter;
+import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
+import org.faktorips.devtools.core.ui.internal.filter.PropertyVisibleController;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

@@ -63,6 +63,7 @@ import org.faktorips.devtools.core.ui.actions.CleanUpTranslationsAction;
 import org.faktorips.devtools.core.ui.actions.CopyTableAction;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
 import org.faktorips.devtools.core.ui.actions.CreateMissingEnumContentsAction;
+import org.faktorips.devtools.core.ui.actions.CreateNewGenerationAction;
 import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
 import org.faktorips.devtools.core.ui.actions.FixDifferencesAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
@@ -185,6 +186,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         // Add copy actions depending on selected ips object type
         if (selected instanceof IProductCmpt || selected instanceof IProductCmptGeneration) {
             manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_NEW_VERSION));
+            manager.add(new CreateNewGenerationAction(viewSite.getShell(), treeViewer));
             manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_COPY_PRODUCT));
         } else if (selected instanceof ITestCase) {
             manager.add(new IpsTestCaseCopyAction(viewSite.getShell(), treeViewer));

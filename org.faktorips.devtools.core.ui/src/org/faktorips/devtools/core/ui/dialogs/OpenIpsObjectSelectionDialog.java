@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -58,13 +59,13 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.Messages;
 
 /**
- * Dialog showing a list of IpsObjects to select a single one. This object is used for the open ips
- * object shortcut as well as for selecting an object for any reference. The filter supports camel
- * case shortcuts. The dialog also supports a history function showing last opened objects on top of
- * the list. The history is implemented global for plugin in IpsUIPlugin to allow other actions like
- * open an editor to add objects to the history. The content of the dialog is configured by an
- * {@link ISelectIpsObjectContext}.
- * 
+ * Dialog showing a list of IpsObjects to select a single or multiple objects. This object is used
+ * for the open ips object shortcut as well as for selecting an object for any reference. The filter
+ * supports camel case shortcuts. The dialog also supports a history function showing last opened
+ * objects on top of the list. The history is implemented global for plugin in IpsUIPlugin to allow
+ * other actions like open an editor to add objects to the history. The content of the dialog is
+ * configured by an {@link ISelectIpsObjectContext}.
+ * <p>
  * NOTE: In eclipse 3.5 there are some new features for {@link FilteredItemsSelectionDialog}. The
  * new feature highlighting filter entries in the list is implemented in this dialog but not
  * activated until eclipse 3.5 support.
@@ -86,7 +87,18 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
      * @param parent the parent widget.
      */
     public OpenIpsObjectSelectionDialog(Shell parent, String title, ISelectIpsObjectContext context) {
-        super(parent);
+
+        this(parent, title, context, false);
+    }
+
+    /**
+     * Creates a list selection dialog and allowed the multi select of IpsObjects.
+     * 
+     * @param parent the parent widget.
+     * @param multi allowed the multi select in list.
+     */
+    public OpenIpsObjectSelectionDialog(Shell parent, String title, ISelectIpsObjectContext context, boolean multi) {
+        super(parent, multi);
         this.context = context;
         setListLabelProvider(new OpenIpsObjectLabelProvider());
         setDetailsLabelProvider(new PackageFragmentLabelProvider());
@@ -105,6 +117,15 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
     public IIpsElement getSelectedObject() {
         return (IIpsElement)getFirstResult();
+    }
+
+    public ArrayList<IIpsElement> getSelectedObjects() {
+        ArrayList<IIpsElement> selectedElements = new ArrayList<IIpsElement>();
+
+        for (Object selectedElement : getResult()) {
+            selectedElements.add((IIpsElement)selectedElement);
+        }
+        return selectedElements;
     }
 
     @Override

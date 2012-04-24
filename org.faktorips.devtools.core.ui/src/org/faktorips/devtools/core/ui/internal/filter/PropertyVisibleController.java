@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.internal;
+package org.faktorips.devtools.core.ui.internal.filter;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,8 +23,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.ui.IProductCmptPropertyFilter;
-import org.faktorips.devtools.core.ui.IPropertyVisibleController;
+import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
+import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.util.ArgumentCheck;
 
 /**
