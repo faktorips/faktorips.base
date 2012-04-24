@@ -569,7 +569,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     private void createMarkersFromMessageList(IResource resource, MessageList list, String markerType)
             throws CoreException {
 
-        resource.deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_ZERO);
+        resource.deleteMarkers(markerType, true, IResource.DEPTH_ZERO);
         for (int i = 0; i < list.size(); i++) {
             Message msg = list.getMessage(i);
             IMarker marker = resource.createMarker(markerType);
