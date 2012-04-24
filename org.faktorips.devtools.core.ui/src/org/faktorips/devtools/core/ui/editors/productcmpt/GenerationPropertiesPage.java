@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.StackLayout;
@@ -29,6 +30,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.forms.IMessage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -92,7 +94,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
         pageRoot = formBody;
         this.toolkit = toolkit;
-        updatePageContent();
+        updatePageMessage();
         createStack();
         createPageContent();
         createToolbar();
@@ -312,19 +314,53 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             createPageContent();
             updateTabname();
             resetDataChangeableState();
-            updatePageContent();
+            updatePageMessage();
         }
 
         gotoPreviousGenerationAction.update();
         gotoNextGenerationAction.update();
     }
 
-    private void updatePageContent() {
+    private void updatePageMessage() {
+        // getManagedForm().getToolkit().decorateFormHeading(getManagedForm().getForm().getForm());
         if (!isNewestGeneration()) {
-            getManagedForm().getForm().setMessage(getTabname(getActiveGeneration()), IMessageProvider.WARNING);
+            IMessage[] message = new IMessage[1];
+            message[0] = new IMessage() {
 
+                @Override
+                public int getMessageType() {
+                    return WARNING;
+                }
+
+                @Override
+                public String getMessage() {
+                    String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                            .getGenerationConceptNameSingular();
+                    return NLS.bind(Messages.GenerationPropertiesPage_msg_warning_notLatestGeneration, genName);
+                }
+
+                @Override
+                public String getPrefix() {
+                    return null;
+                }
+
+                @Override
+                public Object getKey() {
+                    return "WARNING_MSG_NOT_LATEST"; //$NON-NLS-1$
+                }
+
+                @Override
+                public Object getData() {
+                    return null;
+                }
+
+                @Override
+                public Control getControl() {
+                    return null;
+                }
+            };
+            getManagedForm().getForm().setMessage(getTabname(getActiveGeneration()), IMessageProvider.WARNING, message);
         } else {
-            getManagedForm().getToolkit().decorateFormHeading(getManagedForm().getForm().getForm());
             getManagedForm().getForm().setMessage(null, IMessageProvider.NONE);
         }
 

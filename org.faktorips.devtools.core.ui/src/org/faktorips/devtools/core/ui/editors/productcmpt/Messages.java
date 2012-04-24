@@ -137,6 +137,8 @@ public class Messages extends NLS {
 
     public static String GenerationPropertiesPage_fallbackSectionTitle;
 
+    public static String GenerationPropertiesPage_msg_warning_notLatestGeneration;
+
     public static String GenerationSelectionDialog_labelCreate;
 
     public static String GenerationSelectionDialog_labelSwitch;
