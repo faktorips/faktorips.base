@@ -103,6 +103,7 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
                     association = (IProductCmptTypeAssociation)generation.findProductCmptType(
                             generation.getIpsProject()).findAssociation(selectedAssociationParameter,
                             generation.getIpsProject());
+                    initWizard(generation, association, null, HandlerUtil.getActiveShell(event));
                 } else {
                     association = (IProductCmptTypeAssociation)structureReference
                             .getAdapter(IProductCmptTypeAssociation.class);
