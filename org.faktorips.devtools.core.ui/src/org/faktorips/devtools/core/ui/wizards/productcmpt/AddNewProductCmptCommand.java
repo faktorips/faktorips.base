@@ -51,6 +51,8 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
             } else if (firstElement instanceof IProductCmptStructureReference) {
                 addNewLinkOnReference(event);
                 return null;
+            } else {
+                throw new RuntimeException();
             }
         }
         return null;
