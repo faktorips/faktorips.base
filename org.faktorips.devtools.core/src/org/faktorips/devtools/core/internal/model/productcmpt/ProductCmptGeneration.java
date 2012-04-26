@@ -334,7 +334,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     private boolean isFirstRelationOfThisType(IAssociation association, IProductCmpt target, IIpsProject ipsProject)
             throws CoreException {
 
-        for (IProductCmptLink link : links) {
+        // Avoid concurrent modification by using toArray()
+        for (IProductCmptLink link : links.toArray(new IProductCmptLink[links.size()])) {
             if (link.findAssociation(ipsProject).equals(association)
                     && link.getTarget().equals(target.getQualifiedName())) {
                 return false;
