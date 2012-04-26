@@ -27,6 +27,7 @@ public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
 
     private int compareToCurrentVersion = 0;
     private boolean compatible = true;
+    private boolean requiredForAllProjects = true;
 
     public TestIpsFeatureVersionManager() {
 
@@ -89,6 +90,16 @@ public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
     @Override
     public void setPredecessorId(String predecessorId) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isRequiredForAllProjects() {
+        return requiredForAllProjects;
+    }
+
+    @Override
+    public void setRequiredForAllProjects(boolean requiredForAllProjects) {
+        this.requiredForAllProjects = requiredForAllProjects;
     }
 
 }

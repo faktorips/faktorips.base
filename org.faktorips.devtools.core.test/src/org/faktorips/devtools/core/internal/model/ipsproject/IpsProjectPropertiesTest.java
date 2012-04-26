@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.pctype.CamelCaseToUpperUnderscoreColumnNamingStrategy;
@@ -40,6 +41,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,6 +86,32 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertNotNull(properties.getProductCmptNamingStrategy());
         assertTrue(properties.getProductCmptNamingStrategy() instanceof NoVersionIdProductCmptNamingStrategy);
         assertNotNull(properties.getProductCmptNamingStrategy().getIpsProject());
+    }
+
+    @Test
+    public void testValidate_RequiredFeatures() throws CoreException {
+        IIpsProjectProperties props = new IpsProjectProperties();
+        MessageList ml = props.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+
+        props.setMinRequiredVersionNumber("org.faktorips.feature", "1.0.0");
+        ml = props.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+
+        IIpsFeatureVersionManager versionManager = mock(IIpsFeatureVersionManager.class);
+        when(versionManager.getFeatureId()).thenReturn("my.feature");
+        when(versionManager.isRequiredForAllProjects()).thenReturn(false);
+        IpsPlugin.getDefault().setFeatureVersionManagers(new IIpsFeatureVersionManager[] { versionManager });
+        ml = props.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+
+        when(versionManager.isRequiredForAllProjects()).thenReturn(true);
+        ml = props.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+
+        props.setMinRequiredVersionNumber("my.feature", "1.0.0");
+        ml = props.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
     }
 
     @Test

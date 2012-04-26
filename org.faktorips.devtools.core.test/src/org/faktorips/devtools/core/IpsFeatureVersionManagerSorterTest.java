@@ -139,6 +139,15 @@ public class IpsFeatureVersionManagerSorterTest {
             return null;
         }
 
+        @Override
+        public boolean isRequiredForAllProjects() {
+            return false;
+        }
+
+        @Override
+        public void setRequiredForAllProjects(boolean required) {
+        }
+
     }
 
 }

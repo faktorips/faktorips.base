@@ -233,7 +233,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private void validateRequiredFeatures(MessageList list) {
         IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
         for (IIpsFeatureVersionManager manager : managers) {
-            if (getMinRequiredVersionNumber(manager.getFeatureId()) == null) {
+            if (manager.isRequiredForAllProjects() && getMinRequiredVersionNumber(manager.getFeatureId()) == null) {
                 String text = NLS.bind(Messages.IpsProjectProperties_msgMissingMinFeatureId, manager.getFeatureId());
                 list.add(new Message(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID, text, Message.ERROR, this));
             }
@@ -586,8 +586,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createDescriptionComment(
                 "Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German. Only English (en) and German (de) are supported at the moment.", projectEl); //$NON-NLS-1$
         Element functionsLanguageLocaleElement = doc.createElement(FUNCTIONS_LANGUAGE_LOCALE);
-        functionsLanguageLocaleElement
-                .setAttribute(ATTRIBUTE_LOCALE, functionsLanguageLocale.getLanguage());
+        functionsLanguageLocaleElement.setAttribute(ATTRIBUTE_LOCALE, functionsLanguageLocale.getLanguage());
         projectEl.appendChild(functionsLanguageLocaleElement);
 
         return projectEl;
@@ -659,11 +658,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     private void initFunctionsLanguageLocale(Element element) {
-        Element functionsLanguageLocaleElement = XmlUtil
-                .getFirstElement(element, FUNCTIONS_LANGUAGE_LOCALE);
+        Element functionsLanguageLocaleElement = XmlUtil.getFirstElement(element, FUNCTIONS_LANGUAGE_LOCALE);
         if (functionsLanguageLocaleElement != null) {
-            functionsLanguageLocale = new Locale(
-                    functionsLanguageLocaleElement.getAttribute(ATTRIBUTE_LOCALE));
+            functionsLanguageLocale = new Locale(functionsLanguageLocaleElement.getAttribute(ATTRIBUTE_LOCALE));
         }
     }
 

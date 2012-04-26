@@ -80,8 +80,25 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="requiredForAllProjects" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  Defines whether a feature version must be required by all IPS projects in the workspace when this feature version manager is installed. If set to false, projects not using the feature managed by this version manager can exist alongside those using the feature in a workspace using the same Eclipse installation.
+Default is false for additional features and true for the core feature.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         [Enter API information here.]
+      </documentation>
+   </annotation>
 
    <annotation>
       <appInfo>
@@ -100,15 +117,6 @@
          &lt;extension point=&quot;org.faktorips.devtools.core.versionNumberManager&quot;&gt;
       &lt;faktorIPSVersionManager class=&quot;org.faktorips.devtools.core.DefaultVersionManager&quot;/&gt;
 &lt;/extension&gt;
-      </documentation>
-   </annotation>
-
-   <annotation>
-      <appInfo>
-         <meta.section type="apiInfo"/>
-      </appInfo>
-      <documentation>
-         [Enter API information here.]
       </documentation>
    </annotation>
 

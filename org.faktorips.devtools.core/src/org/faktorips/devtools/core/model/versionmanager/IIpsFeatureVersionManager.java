@@ -97,4 +97,22 @@ public interface IIpsFeatureVersionManager {
     public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
             throws CoreException;
 
+    /**
+     * Defines whether a feature version must be required by all projects in the workspace when this
+     * feature version manager is installed. If set to false, projects not using the feature managed
+     * by this version manager can exist alongside those using the feature in a workspace using the
+     * same Eclipse installation. Default is false for additional features and true for the core
+     * feature.
+     * 
+     * @return whether a feature version must be required by all projects
+     * @since 3.7.0
+     */
+    public boolean isRequiredForAllProjects();
+
+    /**
+     * @see IIpsFeatureVersionManager#isRequiredForAllProjects()
+     * @param required whether a feature version must be required by all projects
+     */
+    public void setRequiredForAllProjects(boolean required);
+
 }

@@ -583,6 +583,8 @@ public class IpsPlugin extends AbstractUIPlugin {
                     manager.setFeatureId(element.getAttribute("featureId")); //$NON-NLS-1$
                     manager.setId(element.getAttribute("id")); //$NON-NLS-1$
                     manager.setPredecessorId(element.getAttribute("basedOnFeatureManager")); //$NON-NLS-1$
+                    manager.setRequiredForAllProjects(Boolean.parseBoolean(element
+                            .getAttribute("requiredForAllProjects"))); //$NON-NLS-1$
                     result.add(manager);
                 } catch (CoreException e) {
                     log(e);
