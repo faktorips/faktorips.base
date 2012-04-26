@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<TestCase>
-	<Input>
-		<SumInsured value="42"/>
-	</Input>
-	<ExpectedResult>
-		<Premium value="43"/>
-	</ExpectedResult>
-</TestCase>

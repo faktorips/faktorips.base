@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ProductCmpt description="" policyCmptType="PnCPolicy">
-    <Generation description="" validFrom="2005-01-01">
-        <ConfigElement type="policyAttribute" pcTypeAttribute="taxRate" value="0.16"/>
-        <ConfigElement type="policyAttribute" pcTypeAttribute="fixedCosts" value="10EUR"/>
-    </Generation>
-</ProductCmpt>
-

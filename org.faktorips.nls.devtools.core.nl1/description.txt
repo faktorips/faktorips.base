@@ -1,1 +1,0 @@
-This project contains the German translation for the Faktor-IPS feature.

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="WINDOWS-1252"?>
-<TableOfContents>
-    <ProductComponent xmlResource="org/faktorips/sample/model/internal/motor/MotorProduct2005.xml" implementationClass="org.faktorips.sample.model.internal.motor.MotorPolicyPkImpl" ipsObjectId="motor.MotorProduct2005" policyCmptClass="org.faktorips.sample.model.motor.MotorPolicy">
-        <Generation xmlResource="org/faktorips/sample/model/internal/motor/MotorProduct2005.xml" implementationClass="" validFrom="2005-01-01"/>
-    </ProductComponent>
-    <PolicyCmptType xmlResource="MotorPolicy.xml" implementationClass="org.faktorips.sample.MotorPolicy" ipsObjectId="sample:MotorPolicy" ipsObjectQualifiedName="sample:MotorPolicy"/>    
-    <ProductCmptType xmlResource="MotorProduct.xml" implementationClass="org.faktorips.sample.MotorProduct" ipsObjectId="sample:MotorProduct" ipsObjectQualifiedName="sample.MotorProduct"/>    
-</TableOfContents>
-
