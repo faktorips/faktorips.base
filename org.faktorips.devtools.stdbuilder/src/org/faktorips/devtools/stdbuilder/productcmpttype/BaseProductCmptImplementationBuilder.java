@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
@@ -173,11 +172,8 @@ public abstract class BaseProductCmptImplementationBuilder extends BaseProductCm
                 getIpsProject());
         checkVisitor.start((IProductCmptType)getProductCmptType().findSupertype(getIpsProject()));
         appendOverrideAnnotation(methodsBuilder, checkVisitor.isInterfaceImplementation());
-        GenType genType = getGenType(getPcType());
-        // return covariant return type if the concrete type is present
-        String returnType = genType != null ? genType.getQualifiedName(true) : IConfigurableModelObject.class.getName();
-        methodsBuilder.signature(Modifier.PUBLIC, returnType, MethodNames.CREATE_POLICY_COMPONENT, new String[0],
-                new String[0]);
+        methodsBuilder.signature(Modifier.PUBLIC, IConfigurableModelObject.class.getName(),
+                MethodNames.CREATE_POLICY_COMPONENT, new String[0], new String[0]);
         generateMethodBodyCreatePolicyCmptBase(methodsBuilder);
     }
 
