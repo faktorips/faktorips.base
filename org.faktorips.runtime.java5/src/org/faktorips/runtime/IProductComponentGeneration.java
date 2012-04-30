@@ -30,6 +30,16 @@ import org.faktorips.runtime.internal.ProductComponent;
 public interface IProductComponentGeneration extends IRuntimeObject {
 
     /**
+     * Creates a new policy component that is configured by this product component generation. After
+     * creating the policy component it is automatically initialized. The new policy component is
+     * not added to any parent structure.
+     * <p>
+     * 
+     * @throws RuntimeException if this product component does not configure a policy component.
+     */
+    public IConfigurableModelObject createPolicyComponent();
+
+    /**
      * Returns the repository this product component generation belongs to. This method never
      * returns <code>null</code>.
      */

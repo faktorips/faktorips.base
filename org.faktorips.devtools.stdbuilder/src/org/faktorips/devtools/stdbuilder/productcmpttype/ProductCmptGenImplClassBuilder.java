@@ -15,6 +15,7 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +55,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
+public class ProductCmptGenImplClassBuilder extends BaseProductCmptImplementationBuilder {
 
     public static final String XML_ATTRIBUTE_TARGET_RUNTIME_ID = "targetRuntimeId"; //$NON-NLS-1$
 
@@ -170,6 +171,14 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             generateMethodWritePropertiesToXml(methodsBuilder);
             generateMethodWriteReferencesToXml(methodsBuilder);
             generateMethodWriteTableUsagesToXml(methodsBuilder);
+        }
+
+        IPolicyCmptType policyCmptType = getPcType();
+        if (policyCmptType != null && !policyCmptType.isAbstract()) {
+            generateFactoryMethodsForPolicyCmptType(policyCmptType, methodsBuilder, new HashSet<IPolicyCmptType>());
+        }
+        if (mustGenerateMethodCreatePolicyComponentBase(getProductCmptType())) {
+            generateMethodCreatePolicyCmptBase(methodsBuilder);
         }
 
         generateMethodGetLink(methodsBuilder);
@@ -692,4 +701,41 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         return false;
     }
 
+    @Override
+    protected boolean alwaysOverrideCreatePolicyComponentBase() {
+        return false;
+    }
+
+    /**
+     * Generating the body of the create&lt;PolicyComponent&gt; method.
+     * <p>
+     * Code sample:
+     * 
+     * <pre>
+     *     public ILifeContractComponent createLifeContractComponent() {
+     *         LifeContractComponent lifeContractComponent = new LifeContractComponent(getLifeElementarprodukt());
+     *         lifeContractComponent.setProductCmptGeneration(this);
+     *         lifeContractComponent.initialize();
+     *         return lifeContractComponent;
+     * }
+     * 
+     * <pre>
+     */
+    @Override
+    protected void generateMethodBodyCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String varName = "policy";
+        GenPolicyCmptType genPolicyCmptType = getBuilderSet().getGenerator(getPcType());
+        String policyQualifiedName = genPolicyCmptType.getQualifiedName(false);
+        GenProductCmptType genProductCmptType = getBuilderSet().getGenerator(getProductCmptType());
+        String getProproductMethodName = genProductCmptType.getMethodNameGetProductCmpt();
+
+        methodsBuilder.openBracket();
+        methodsBuilder.appendClassName(policyQualifiedName).append(" ").append(varName).append(" = new ") //
+                .appendClassName(policyQualifiedName).append("(").append(getProproductMethodName).appendln("());");
+        methodsBuilder.append(varName).append(".").append(MethodNames.SET_PRODUCT_CMPT_GENERATION).appendln("(this);");
+        methodsBuilder.append(varName).append(".").append(genPolicyCmptType.getMethodNameInitialize()).appendln("();");
+        methodsBuilder.append("return ").append(varName).appendln(";");
+        methodsBuilder.closeBracket();
+
+    }
 }

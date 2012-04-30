@@ -17,14 +17,12 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -32,10 +30,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.type.GenType;
-import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.internal.ProductComponent;
@@ -47,7 +43,7 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
+public class ProductCmptImplClassBuilder extends BaseProductCmptImplementationBuilder {
 
     public ProductCmptImplClassBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(ProductCmptImplClassBuilder.class));
@@ -128,23 +124,9 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         }
     }
 
-    private void generateFactoryMethodsForPolicyCmptType(IPolicyCmptType returnedTypeInSignature,
-            JavaCodeFragmentBuilder methodsBuilder,
-            Set<IPolicyCmptType> supertypesHandledSoFar) throws CoreException {
-        if (returnedTypeInSignature == null) {
-            return;
-        }
-        if (!returnedTypeInSignature.isAbstract()) {
-            generateMethodCreatePolicyCmpt(returnedTypeInSignature, methodsBuilder);
-        }
-        IPolicyCmptType supertype = (IPolicyCmptType)returnedTypeInSignature.findSupertype(getIpsProject());
-        if (supertype != null && !supertypesHandledSoFar.contains(supertype)) {
-            supertypesHandledSoFar.add(supertype);
-            generateFactoryMethodsForPolicyCmptType(supertype, methodsBuilder, supertypesHandledSoFar);
-        }
-    }
-
     /**
+     * Generating the body of the create&lt;PolicyComponent&gt; method.
+     * <p>
      * Code sample:
      * 
      * <pre>
@@ -154,21 +136,8 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
      * }
      * </pre>
      */
-    private void generateMethodCreatePolicyCmpt(IPolicyCmptType returnedTypeInSignature,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        IProductCmptType superType = getProductCmptType().findSuperProductCmptType(getIpsProject());
-        boolean interfaceMethodImplementation = true;
-        if (!returnedTypeInSignature.equals(getPcType())) {
-            interfaceMethodImplementation = false;
-        } else if (superType != null) {
-            IPolicyCmptType superPolicyCmptType = superType.findPolicyCmptType(getIpsProject());
-            if (superPolicyCmptType != null && superPolicyCmptType.equals(getPcType())) {
-                interfaceMethodImplementation = false;
-            }
-        }
-        appendOverrideAnnotation(methodsBuilder, interfaceMethodImplementation);
-        getBuilderSet().getGenerator(returnedTypeInSignature).generateSignatureCreatePolicyCmpt(methodsBuilder);
+    @Override
+    protected void generateMethodBodyCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.openBracket();
         methodsBuilder.append("return new ");
         methodsBuilder.appendClassName(getBuilderSet().getGenerator(getPcType()).getQualifiedName(false));
@@ -176,42 +145,9 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         methodsBuilder.closeBracket();
     }
 
-    /**
-     * Code sample:
-     * 
-     * <pre>
-     * [Javadoc]
-     * public IPolicyComponent createPolicyComponent() {
-     *     return createMotorPolicy();
-     * }
-     * </pre>
-     * 
-     * or
-     * 
-     * <pre>
-     * [Javadoc]
-     * public IPolicyComponent createPolicyComponent() {
-     *     return null;
-     * }
-     * </pre>
-     */
-    private void generateMethodCreatePolicyCmptBase(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod checkVisitor = new CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod(
-                getIpsProject());
-        checkVisitor.start((IProductCmptType)getProductCmptType().findSupertype(getIpsProject()));
-        appendOverrideAnnotation(methodsBuilder, checkVisitor.isInterfaceImplementation());
-        methodsBuilder.signature(Modifier.PUBLIC, IConfigurableModelObject.class.getName(),
-                MethodNames.CREATE_POLICY_COMPONENT, new String[0], new String[0]);
-        methodsBuilder.openBracket();
-        if (mustGenerateMethodCreatePolicyComponentAsReturnNull(getProductCmptType())) {
-            methodsBuilder.appendln("return null;");
-        } else {
-            methodsBuilder.append("return ");
-            methodsBuilder.append(getBuilderSet().getGenerator(getPcType()).getMethodNameCreatePolicyCmpt());
-            methodsBuilder.appendln("();");
-        }
-        methodsBuilder.closeBracket();
+    @Override
+    protected boolean alwaysOverrideCreatePolicyComponentBase() {
+        return true;
     }
 
     private void generateGetGenerationMethod(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -280,80 +216,9 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         // nothing to do
     }
 
-    /**
-     * Returns <code>true</code> if either the method <code>createPolicyComponent()</code> must
-     * return <code>null</code> or an instance of a PolicyComponentType associated with this product
-     * component type. The latter is the case if the following conditions hold <code>true</code>:
-     * <ul>
-     * <li>The corresponding policy component type is not abstract.</li>
-     * <li>This product component type is the first in it's type hierarchy that refers to that
-     * PolicyComponentType. Remember hat its possible to have something like Policy is based on
-     * AbstractProduct with concrete sub types ProductA and ProductB where Policy is not abstract.
-     * The implementation can be generated in the AbstractProduct class.</li>.
-     * </ul>
-     */
-    private boolean mustGenerateMethodCreatePolicyComponentBase(IProductCmptType productCmptType) throws CoreException {
-        if (mustGenerateMethodCreatePolicyComponentAsReturnNull(productCmptType)) {
-            return true;
-        }
-        IPolicyCmptType policyType = productCmptType.findPolicyCmptType(getIpsProject());
-        if (policyType == null || policyType.isAbstract()) {
-            return false;
-        }
-        IProductCmptType supertype = productCmptType.findSuperProductCmptType(getIpsProject());
-        if (supertype == null) {
-            return true;
-        }
-        // return true if the super type does not refer to the same policy component type
-        // no need to go up in the hierarchy, if the same policy component type is refered to
-        // in the type hierarchy it must be in the supertype, otherwise the hierachy is
-        // inconsistent.
-        return !policyType.getQualifiedName().equals(supertype.getPolicyCmptType());
-    }
-
-    /**
-     * Returns <code>true</code> if the method <code>createPolicyComponent</code> must be
-     * implemented as <code>return null;</code>, otherwise false. This is the case if
-     * <ul>
-     * <li>The product component type's corresponding policy component type is null and</li>
-     * <li>the product component type has no super type.</li>
-     * </ul>
-     */
-    private boolean mustGenerateMethodCreatePolicyComponentAsReturnNull(IProductCmptType productCmptType)
-            throws CoreException {
-        if (productCmptType.hasSupertype()) {
-            return false;
-        }
-        IPolicyCmptType policyType = productCmptType.findPolicyCmptType(getIpsProject());
-        return policyType == null;
-    }
-
     @Override
     public boolean isBuildingPublishedSourceFile() {
         return false;
-    }
-
-    private class CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod extends
-            TypeHierarchyVisitor<IProductCmptType> {
-
-        private boolean isInterfaceImplementation = true;
-
-        public CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod(IIpsProject ipsProject) {
-            super(ipsProject);
-        }
-
-        @Override
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
-            if (mustGenerateMethodCreatePolicyComponentBase(currentType)) {
-                isInterfaceImplementation = false;
-                return false;
-            }
-            return true;
-        }
-
-        public boolean isInterfaceImplementation() {
-            return isInterfaceImplementation;
-        }
     }
 
 }

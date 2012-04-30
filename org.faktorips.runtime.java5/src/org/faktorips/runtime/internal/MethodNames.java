@@ -50,6 +50,11 @@ public class MethodNames {
     public final static String SET_PRODUCT_COMPONENT = "setProductComponent";
 
     /**
+     * @see AbstractConfigurableModelObject#setProductCmptGeneration(org.faktorips.runtime.IProductComponentGeneration)
+     */
+    public final static String SET_PRODUCT_CMPT_GENERATION = "setProductCmptGeneration";
+
+    /**
      * @see org.faktorips.runtime.IRuntimeRepository#getExistingProductComponent(String)
      */
     public final static String GET_EXISTING_PRODUCT_COMPONENT = "getExistingProductComponent";
@@ -129,11 +134,6 @@ public class MethodNames {
     public final static String NOTIFIY_CHANGE_LISTENERS = "notifyChangeListeners";
 
     /**
-     * @see AbstractModelObject#existsChangeListenerToBeInformed()
-     */
-    public final static String EXISTS_CHANGE_LISTENER_TO_BE_INFORMED = "existsChangeListenerToBeInformed";
-
-    /**
      * @see ProductComponentGeneration#getValidFrom(java.util.TimeZone)
      */
     public final static String GET_VALID_FROM = "getValidFrom";
@@ -150,12 +150,27 @@ public class MethodNames {
     public final static String NEW_COPY = "newCopy";
 
     /**
-     * @see ModelObjectDelta#checkPropertyChange(..)
+     * @see org.faktorips.runtime.internal.ModelObjectDelta#checkPropertyChange(String, Object,
+     *      Object, org.faktorips.runtime.IDeltaComputationOptions)
+     * @see org.faktorips.runtime.internal.ModelObjectDelta#checkPropertyChange(String, int, int,
+     *      org.faktorips.runtime.IDeltaComputationOptions)
+     * @see org.faktorips.runtime.internal.ModelObjectDelta#checkPropertyChange(String, boolean,
+     *      boolean, org.faktorips.runtime.IDeltaComputationOptions)
+     * @see org.faktorips.runtime.internal.ModelObjectDelta#checkPropertyChange(String, double,
+     *      double, org.faktorips.runtime.IDeltaComputationOptions)
+     * @see org.faktorips.runtime.internal.ModelObjectDelta#checkPropertyChange(String, float,
+     *      float, org.faktorips.runtime.IDeltaComputationOptions)
+     * @see org.faktorips.runtime.internal.ModelObjectDelta#checkPropertyChange(String, char, char,
+     *      org.faktorips.runtime.IDeltaComputationOptions)
      */
     public final static String MODELOBJECTDELTA_CHECK_PROPERTY_CHANGE = "checkPropertyChange";
 
     /**
-     * @see org.faktorips.runtime.internal.ModelObjectDelta#createChildDeltas(..)
+     * @see org.faktorips.runtime.internal.ModelObjectDelta#createChildDeltas(org.faktorips.runtime.internal.ModelObjectDelta,
+     *      org.faktorips.runtime.IModelObject, org.faktorips.runtime.IModelObject, String,
+     *      org.faktorips.runtime.IDeltaComputationOptions)
+     * @see org.faktorips.runtime.internal.ModelObjectDelta#createChildDeltas(org.faktorips.runtime.internal.ModelObjectDelta,
+     *      java.util.List, java.util.List, String, org.faktorips.runtime.IDeltaComputationOptions)
      */
     public final static String MODELOBJECTDELTA_CREATE_CHILD_DELTAS = "createChildDeltas";
 

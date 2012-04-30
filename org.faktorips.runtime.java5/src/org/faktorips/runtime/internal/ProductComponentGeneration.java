@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 
+import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
@@ -53,6 +54,13 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
 
     public ProductComponentGeneration(ProductComponent productCmpt) {
         this.productCmpt = productCmpt;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IConfigurableModelObject createPolicyComponent() {
+        throw new RuntimeException("Product component does not configure a policy component.");
     }
 
     public final IProductComponent getProductComponent() {

@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -28,6 +29,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProductCmptTypeMethod;
 import org.faktorips.runtime.IProductComponentGeneration;
@@ -98,6 +100,9 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         generateMethodTypeSafeGetProductCmpt(methodsBuilder);
+        if (getPcType() != null && !getPcType().isAbstract()) {
+            generateMethodCreatePolicyCmpt(methodsBuilder);
+        }
     }
 
     @Override
@@ -140,6 +145,24 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     @Override
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         // nothing to do, building an interface.
+    }
+
+    /**
+     * Code sample:
+     * 
+     * <pre>
+     * [javadoc]
+     * public IPolicy createPolicy();
+     * </pre>
+     */
+    protected void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        IPolicyCmptType policyCmptType = getPcType();
+        GenPolicyCmptType genPcType = getBuilderSet().getGenerator(policyCmptType);
+        String policyCmptTypeName = genPcType.getPolicyCmptTypeName();
+        appendLocalizedJavaDoc("METHOD_CREATE_POLICY_CMPT", new String[] { policyCmptTypeName }, getIpsObject(),
+                methodsBuilder);
+        genPcType.generateSignatureCreatePolicyCmpt(methodsBuilder);
+        methodsBuilder.append(';');
     }
 
     @SuppressWarnings("unused")
