@@ -1574,6 +1574,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodBuilder.append(" = (");
         methodBuilder.appendClassName(getTargetQualifiedName(association, false));
         methodBuilder.appendln(") newParent;");
+        if (getPcType().isConfigurableByProductCmptType()) {
+            methodBuilder.append(MethodNames.EFFECTIVE_FROM_HAS_CHANGED).appendln("();");
+        }
         methodBuilder.methodEnd();
     }
 
