@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -69,6 +70,12 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         }
         DateFormat format = DateFormat.getDateInstance(DateFormat.DEFAULT);
         return format.format(validFrom.getTime());
+    }
+
+    @Override
+    public String getCaption(Locale locale) throws CoreException {
+        return IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                .getGenerationConceptNameSingular();
     }
 
     @Override

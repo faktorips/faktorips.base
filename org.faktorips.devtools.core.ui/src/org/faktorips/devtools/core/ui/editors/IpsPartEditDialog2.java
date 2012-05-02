@@ -55,10 +55,8 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     /**
      * The binding context to use to bind model object properties to ui controls.
      * 
-     * @deprecated use {@link IpsPartEditDialog2#getBindingContext()} instead
      */
-    @Deprecated
-    protected BindingContext bindingContext = new BindingContext();
+    private BindingContext bindingContext = new BindingContext();
 
     /**
      * Returns the binding context to use to bind model object properties to UI controls.

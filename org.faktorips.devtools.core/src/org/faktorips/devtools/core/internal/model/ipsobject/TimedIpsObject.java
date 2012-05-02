@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.util.XmlParseException;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -177,6 +178,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
 
     @Override
     public IIpsObjectGeneration newGeneration(GregorianCalendar validFrom) {
+        ArgumentCheck.notNull(validFrom);
         IIpsObjectGeneration oldGen = getGenerationEffectiveOn(validFrom);
         return newGeneration(oldGen, validFrom);
     }
