@@ -112,15 +112,15 @@ public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
 
         releaseAndDeploymentOperation = mock(IReleaseAndDeploymentOperation.class);
         when(productReleaseProcessor.getReleaseAndDeploymentOperation()).thenReturn(releaseAndDeploymentOperation);
-        when(releaseAndDeploymentOperation.customReleaseSettings(any(IIpsProject.class), any(IProgressMonitor.class)))
-                .thenReturn(true);
+        when(releaseAndDeploymentOperation.preCommit(any(IIpsProject.class), any(IProgressMonitor.class))).thenReturn(
+                true);
 
         ArrayList<ITargetSystem> targetSystems = new ArrayList<ITargetSystem>();
         targetSystems.add(new DefaultTargetSystem("test123"));
 
         productReleaseProcessor.startReleaseBuilder("abc", targetSystems, new NullProgressMonitor());
 
-        verify(releaseAndDeploymentOperation).customReleaseSettings(eq(ipsProject), any(IProgressMonitor.class));
+        verify(releaseAndDeploymentOperation).preCommit(eq(ipsProject), any(IProgressMonitor.class));
 
         verify(releaseAndDeploymentOperation).buildReleaseAndDeployment(eq(ipsProject), eq("abc"), eq(targetSystems),
                 any(IProgressMonitor.class));
@@ -139,9 +139,8 @@ public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
             when(ipsPlugin.getTeamOperationsFactories()).thenReturn(Collections.singleton(teamOperationsFactory));
 
             releaseAndDeploymentOperation = mock(IReleaseAndDeploymentOperation.class);
-            when(
-                    releaseAndDeploymentOperation.customReleaseSettings(any(IIpsProject.class),
-                            any(IProgressMonitor.class))).thenReturn(true);
+            when(releaseAndDeploymentOperation.preCommit(any(IIpsProject.class), any(IProgressMonitor.class)))
+                    .thenReturn(true);
             ArrayList<ITargetSystem> targetSystems = new ArrayList<ITargetSystem>();
             targetSystems.add(new DefaultTargetSystem("test123"));
 

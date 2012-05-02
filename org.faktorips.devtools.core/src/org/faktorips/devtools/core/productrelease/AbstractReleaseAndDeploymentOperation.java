@@ -35,8 +35,14 @@ public abstract class AbstractReleaseAndDeploymentOperation implements IReleaseA
     }
 
     @Override
+    @Deprecated
     public boolean customReleaseSettings(IIpsProject ipsProject, IProgressMonitor progressMonitor) {
         return true;
+    }
+
+    @Override
+    public boolean preCommit(IIpsProject ipsProject, IProgressMonitor progressMonitor) {
+        return customReleaseSettings(ipsProject, progressMonitor);
     }
 
     @Override

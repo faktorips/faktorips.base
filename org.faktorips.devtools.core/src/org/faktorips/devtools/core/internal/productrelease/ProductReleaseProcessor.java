@@ -127,8 +127,7 @@ public class ProductReleaseProcessor {
             checkProblemMarkers(ipsProject);
             monitor.worked(1);
 
-            if (!getReleaseAndDeploymentOperation().customReleaseSettings(ipsProject,
-                    new SubProgressMonitor(monitor, 5))) {
+            if (!getReleaseAndDeploymentOperation().preCommit(ipsProject, new SubProgressMonitor(monitor, 5))) {
                 throw new InterruptedException(Messages.ProductReleaseProcessor_error_custom_validation_failed);
             }
 

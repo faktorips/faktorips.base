@@ -47,14 +47,27 @@ public interface IReleaseAndDeploymentOperation {
     public List<IFile> additionalResourcesToCommit(IIpsProject ipsProject);
 
     /**
-     * This method is called by the release build processor just before commiting changed files. The
-     * new version is already set in the .ipsproject file and the project have been clean built.
+     * This method is called by the release build processor just before committing changed files.
+     * The new version is already set in the .ipsproject file and the project have been clean built.
+     * 
+     * @param ipsProject the project to release
+     * @param progressMonitor a {@link IProgressMonitor} to view sate of work
+     * @return true when everything was right, false to stop the release process
+     * 
+     * @deprecated Since 3.7 use {@link #preCommit(IIpsProject, IProgressMonitor)} instead
+     */
+    @Deprecated
+    public boolean customReleaseSettings(IIpsProject ipsProject, IProgressMonitor progressMonitor);
+
+    /**
+     * This method is called by the release build processor just before committing changed files.
+     * The new version is already set in the .ipsproject file and the project have been clean built.
      * 
      * @param ipsProject the project to release
      * @param progressMonitor a {@link IProgressMonitor} to view sate of work
      * @return true when everything was right, false to stop the release process
      */
-    public boolean customReleaseSettings(IIpsProject ipsProject, IProgressMonitor progressMonitor);
+    public boolean preCommit(IIpsProject ipsProject, IProgressMonitor progressMonitor);
 
     /**
      * This method should start the deployment on the selected target system. If this method does
