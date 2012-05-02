@@ -13,36 +13,30 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.ui.controls.tableedit.EditTableControlFactory;
+import org.faktorips.devtools.core.ui.controls.chooser.MultiValueSubsetChooserModel;
+import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserViewer;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
-public class MultiValueDialog extends IpsPartEditDialog2 {
+public class MultiValueSubsetDialog extends IpsPartEditDialog2 {
 
-    private final IAttributeValue attributeValue;
-    private MultiValueTableModel tabelModel;
-    private ValueDatatype datatype;
+    private MultiValueSubsetChooserModel model;
 
-    public MultiValueDialog(Shell parentShell, IAttributeValue attributeValue, ValueDatatype datatype) {
+    public MultiValueSubsetDialog(Shell parentShell, List<String> allValueIds, IAttributeValue attributeValue,
+            ValueDatatype datatype) {
         super(attributeValue, parentShell, Messages.MultiValueDialog_TitleText);
-        this.datatype = datatype;
         setShellStyle(getShellStyle() | SWT.RESIZE);
         Assert.isNotNull(attributeValue);
-        this.attributeValue = attributeValue;
-        tabelModel = new MultiValueTableModel(attributeValue);
-    }
-
-    @Override
-    protected void okPressed() {
-        tabelModel.applyValueList();
-        super.okPressed();
+        model = new MultiValueSubsetChooserModel(allValueIds, (MultiValueHolder)attributeValue.getValueHolder(),
+                datatype);
     }
 
     @Override
@@ -56,10 +50,8 @@ public class MultiValueDialog extends IpsPartEditDialog2 {
 
     @Override
     protected Composite createWorkAreaThis(Composite parent) {
-        String description = NLS.bind(Messages.MultiValueDialog_TableDescription, attributeValue.getAttribute());
-        EditTableControlFactory.createListEditTable(getToolkit(), parent, attributeValue.getIpsProject(), datatype,
-                tabelModel, new MultiValueElementModifier(), description);
-        ((GridData)parent.getLayoutData()).heightHint = 300;
+        SubsetChooserViewer viewer = new SubsetChooserViewer(parent, getToolkit());
+        viewer.init(model);
         return parent;
     }
 

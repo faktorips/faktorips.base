@@ -65,16 +65,16 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
     private void createValueEditField(List<EditField<?>> editFields) throws CoreException {
         ValueDatatype datatype = getProperty() == null ? null : getProperty().findDatatype(
                 getPropertyValue().getIpsProject());
-        IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
-        EditField<String> editField = createEditField(datatype, valueSet);
+        EditField<String> editField = createEditField(datatype);
         registerAndBindEditField(editFields, editField);
     }
 
-    protected EditField<String> createEditField(ValueDatatype datatype, IValueSet valueSet) {
+    protected EditField<String> createEditField(ValueDatatype datatype) {
         EditField<String> editField;
+        IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
         if (getPropertyValue().getValueHolder() instanceof MultiValueHolder) {
-            MultiValueAttributeControl control = new MultiValueAttributeControl(this, getToolkit(), getPropertyValue(),
-                    valueSet);
+            MultiValueAttributeControl control = new MultiValueAttributeControl(this, getToolkit(), getProperty(),
+                    getPropertyValue(), datatype);
             editField = new TextButtonField(control);
             ValueHolderToFormattedStringWrapper wrapper = ValueHolderToFormattedStringWrapper
                     .createWrapperFor(getPropertyValue());

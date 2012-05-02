@@ -14,8 +14,9 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueDialog;
@@ -31,10 +32,10 @@ public class MultiValueAttributeControl extends TextButtonControl {
 
     private MultiValueAttributeHandler handler;
 
-    public MultiValueAttributeControl(Composite parent, UIToolkit toolkit, IAttributeValue attributeValue,
-            IValueSet valueSet) {
+    public MultiValueAttributeControl(Composite parent, UIToolkit toolkit,
+            IProductCmptTypeAttribute productCmptTypeAttribute, IAttributeValue attributeValue, ValueDatatype datatype) {
         super(parent, toolkit, ""); //$NON-NLS-1$
-        handler = new MultiValueAttributeHandler(parent.getShell(), attributeValue, valueSet);
+        handler = new MultiValueAttributeHandler(parent.getShell(), productCmptTypeAttribute, attributeValue, datatype);
         setButtonImage(IpsUIPlugin.getImageHandling().getSharedImage("MultiValueAttribute.gif", true)); //$NON-NLS-1$
         getTextControl().setEditable(false);
     }

@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.controls.valuesets;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
@@ -23,6 +24,8 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.UIController;
+import org.faktorips.devtools.core.ui.controls.chooser.EnumValueSubsetChooserModel;
+import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserViewer;
 
 /**
  * Factory to create controls to edit a given value set. As the value set is given to the factory it
@@ -60,9 +63,11 @@ public class ValueSetEditControlFactory {
         if (valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
             IEnumValueSet enumValueSet = (IEnumValueSet)valueSet;
             if (valueDatatype.isEnum()) {
-                EnumSubsetChooser chooser = new EnumSubsetChooser(parent, toolkit, null, enumValueSet, valueDatatype,
-                        uiController);
-                return chooser;
+                SubsetChooserViewer subsetChooserViewer = new SubsetChooserViewer(parent, toolkit);
+                EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(
+                        ValueListExtractor.extractValues((EnumDatatype)valueDatatype), enumValueSet, valueDatatype);
+                subsetChooserViewer.init(model);
+                return subsetChooserViewer.getChooserComposite();
             }
             EnumValueSetEditControl enumValueSetEditControl = new EnumValueSetEditControl(parent, valueDatatype,
                     ipsProject);
@@ -72,5 +77,4 @@ public class ValueSetEditControlFactory {
         throw new RuntimeException("Can't create edit control for value set " + valueSet + " and datatype " //$NON-NLS-1$ //$NON-NLS-2$
                 + valueDatatype);
     }
-
 }

@@ -54,6 +54,7 @@ public class EditTableControlViewer {
         uiBuilder.createTableEditControl(parent);
         createViewers();
         addListeners();
+        updateButtonsEnabledState();
     }
 
     private void addListeners() {

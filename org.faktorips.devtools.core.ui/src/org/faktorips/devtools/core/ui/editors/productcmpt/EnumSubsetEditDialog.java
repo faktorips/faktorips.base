@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -23,12 +21,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.ui.controls.valuesets.EnumSubsetChooser;
+import org.faktorips.devtools.core.ui.controls.chooser.EnumValueSubsetChooserModel;
+import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserViewer;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 
 /**
  * A dialog that allows to specify a subset of values available in a given enum data type.
@@ -74,34 +70,14 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
     }
 
     private Composite createEnumValueSetChooser(Composite workArea) {
-        EnumSubsetChooser chooser = new Chooser(workArea);
-        chooser.setSourceLabel(enumValueSetProvider.getSourceLabel());
-        chooser.setTargetLabel(enumValueSetProvider.getTargetLabel());
-        return chooser;
-    }
-
-    class Chooser extends EnumSubsetChooser {
-
-        public Chooser(Composite parent) {
-            super(parent, getToolkit(), enumValueSetProvider.getSourceEnumValueSet(), (IEnumValueSet)enumValueSetProvider
-                    .getTargetConfigElement().getValueSet(), valueDatatype, uiController);
-        }
-
-        @Override
-        public MessageList getMessagesForValue(String valueId) {
-            MessageList list = new MessageList();
-            try {
-                if (!getSourceValueSet().containsValue(valueId, getSourceValueSet().getIpsProject())) {
-                    String text = NLS.bind(Messages.DefaultsAndRangesEditDialog_valueNotContainedInValueSet, valueId,
-                            getSourceValueSet().toShortString());
-                    list.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
-                }
-            } catch (CoreException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
-            return list;
-        }
-
+        SubsetChooserViewer viewer = new SubsetChooserViewer(workArea, getToolkit());
+        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(enumValueSetProvider
+                .getSourceEnumValueSet().getValuesAsList(), (IEnumValueSet)enumValueSetProvider
+                .getTargetConfigElement().getValueSet(), valueDatatype);
+        viewer.init(model);
+        viewer.setSourceLabel(enumValueSetProvider.getSourceLabel());
+        viewer.setTargetLabel(enumValueSetProvider.getTargetLabel());
+        return viewer.getChooserComposite();
     }
 
 }
