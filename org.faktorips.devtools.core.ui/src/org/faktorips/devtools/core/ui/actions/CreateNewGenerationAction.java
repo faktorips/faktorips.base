@@ -51,7 +51,7 @@ public class CreateNewGenerationAction extends IpsAction {
 
         setText(NLS.bind(Messages.CreateNewGenerationAction_title, IpsPlugin.getDefault().getIpsPreferences()
                 .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular()));
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewGenerationWizard.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewProductCmptGeneration.gif")); //$NON-NLS-1$
 
         updateEnabledProperty();
     }

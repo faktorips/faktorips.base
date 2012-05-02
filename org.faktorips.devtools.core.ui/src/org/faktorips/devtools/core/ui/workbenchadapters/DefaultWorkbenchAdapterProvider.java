@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.Formula;
 import org.faktorips.devtools.core.internal.model.productcmpt.FormulaTestCase;
 import org.faktorips.devtools.core.internal.model.productcmpt.FormulaTestInputValue;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptLink;
 import org.faktorips.devtools.core.internal.model.productcmpt.TableContentUsage;
 import org.faktorips.devtools.core.internal.model.productcmpt.ValidationRuleConfig;
@@ -171,7 +172,10 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
         // no Image for yet
         // register(EnumValue.class, defaultWorkbenchAdapter);
 
-        // generation
+        // ProductComponentGeneration
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ProductCmptGeneration.gif", true); //$NON-NLS-1$
+        register(ProductCmptGeneration.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
+        // IpsObjectGeneration (not ProductCmptGeneration)
         register(IpsObjectGeneration.class, new IpsObjectGenerationWorkbenchAdapter());
 
         // PolicyCmptType
