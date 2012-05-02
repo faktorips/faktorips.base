@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controller.fields.PaymentMode;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -50,13 +51,14 @@ public class MultiValueAttributeHandlerTest {
     private Shell shell;
     private IIpsProject ipsProject;
     private IpsObjectPart valueSetOwner;
+    private SingletonMockHelper singletonMockHelper;
 
     @Before
     public void setUp() throws Exception {
         IpsPlugin ipsPlugin = mock(IpsPlugin.class);
         IpsModel ipsModel = mock(IpsModel.class);
-        SingletonMockHelper helper = new SingletonMockHelper();
-        helper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
+        singletonMockHelper = new SingletonMockHelper();
+        singletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
         when(ipsPlugin.getIpsModel()).thenReturn(ipsModel);
         ipsProject = mock(IIpsProject.class);
         shell = mock(Shell.class);
@@ -65,6 +67,11 @@ public class MultiValueAttributeHandlerTest {
         mockIpsObjectPart(attrValue);
         valueSetOwner = mock(IpsObjectPart.class, withSettings().extraInterfaces(IValueSetOwner.class));
         mockIpsObjectPart(valueSetOwner);
+    }
+
+    @After
+    public void tearDown() {
+        singletonMockHelper.reset();
     }
 
     private void mockIpsObjectPart(IIpsObjectPart part) {
