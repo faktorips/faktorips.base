@@ -50,7 +50,7 @@ public class Migration_3_6_2 extends AbstractIpsProjectMigrationOperation {
 
     @Override
     public String getDescription() {
-        return "The OptionalConstraints section in the .ipsproject settings file is renamed to AdditionalSettings."; //$NON-NLS-1$
+        return "Cleanup the AdditionalSettings section in the .ipsproject."; //$NON-NLS-1$
     }
 
     @Override
