@@ -88,14 +88,6 @@ public abstract class BaseProductCmptImplementationBuilder extends BaseProductCm
             throws CoreException;
 
     /**
-     * Returns whether the method createPolicyComponent needs to be overridden always or only if a
-     * policy component is configured.
-     * 
-     * @return true to override the createPolicyComponent method always
-     */
-    protected abstract boolean alwaysOverrideCreatePolicyComponentBase();
-
-    /**
      * Returns <code>true</code> if either the method <code>createPolicyComponent()</code> must
      * return <code>null</code> or an instance of a PolicyComponentType associated with this product
      * component type. The latter is the case if the following conditions hold <code>true</code>:
@@ -110,7 +102,7 @@ public abstract class BaseProductCmptImplementationBuilder extends BaseProductCm
     protected boolean mustGenerateMethodCreatePolicyComponentBase(IProductCmptType productCmptType)
             throws CoreException {
         if (mustGenerateMethodCreatePolicyComponentAsReturnNull(productCmptType)) {
-            return alwaysOverrideCreatePolicyComponentBase();
+            return true;
         }
         IPolicyCmptType policyType = productCmptType.findPolicyCmptType(getIpsProject());
         if (policyType == null || policyType.isAbstract()) {

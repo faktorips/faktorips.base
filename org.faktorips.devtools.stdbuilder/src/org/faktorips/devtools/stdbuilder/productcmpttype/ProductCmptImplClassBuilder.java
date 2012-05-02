@@ -145,11 +145,6 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptImplementationBu
         methodsBuilder.closeBracket();
     }
 
-    @Override
-    protected boolean alwaysOverrideCreatePolicyComponentBase() {
-        return true;
-    }
-
     private void generateGetGenerationMethod(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_GENERATION", getIpsObject(), methodsBuilder);
         appendOverrideAnnotation(methodsBuilder, true);

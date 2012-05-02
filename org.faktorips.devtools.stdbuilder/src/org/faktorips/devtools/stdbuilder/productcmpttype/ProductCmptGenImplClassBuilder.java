@@ -701,11 +701,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptImplementatio
         return false;
     }
 
-    @Override
-    protected boolean alwaysOverrideCreatePolicyComponentBase() {
-        return false;
-    }
-
     /**
      * Generating the body of the create&lt;PolicyComponent&gt; method.
      * <p>
