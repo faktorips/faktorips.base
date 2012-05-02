@@ -189,7 +189,7 @@ public class MessageList implements Serializable, Iterable<Message> {
             return sublist;
         }
         for (Message msg : messages) {
-            if (msg.getCode().equals(code)) {
+            if (code.equals(msg.getCode())) {
                 sublist.add(msg);
             }
         }
