@@ -15,8 +15,10 @@ package org.faktorips.devtools.core.ui.controls;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,22 +27,20 @@ import static org.mockito.Mockito.withSettings;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controller.fields.PaymentMode;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -51,15 +51,9 @@ public class MultiValueAttributeHandlerTest {
     private Shell shell;
     private IIpsProject ipsProject;
     private IpsObjectPart valueSetOwner;
-    private SingletonMockHelper singletonMockHelper;
 
     @Before
     public void setUp() throws Exception {
-        IpsPlugin ipsPlugin = mock(IpsPlugin.class);
-        IpsModel ipsModel = mock(IpsModel.class);
-        singletonMockHelper = new SingletonMockHelper();
-        singletonMockHelper.setSingletonInstance(IpsPlugin.class, ipsPlugin);
-        when(ipsPlugin.getIpsModel()).thenReturn(ipsModel);
         ipsProject = mock(IIpsProject.class);
         shell = mock(Shell.class);
 
@@ -69,11 +63,6 @@ public class MultiValueAttributeHandlerTest {
         mockIpsObjectPart(valueSetOwner);
     }
 
-    @After
-    public void tearDown() {
-        singletonMockHelper.reset();
-    }
-
     private void mockIpsObjectPart(IIpsObjectPart part) {
         when(part.getIpsProject()).thenReturn(ipsProject);
         IIpsObject ipsObject = mock(IIpsObject.class);
@@ -81,17 +70,16 @@ public class MultiValueAttributeHandlerTest {
         when(ipsObject.getIpsSrcFile()).thenReturn(null);
     }
 
-    // Mockito does not support generic class arguments
-    @SuppressWarnings("unchecked")
     @Test
     public void editEnumValueSetWithSubsetChooser() {
         IProductCmptTypeAttribute prodAttr = mock(IProductCmptTypeAttribute.class);
         IEnumValueSet valueSet = mock(IEnumValueSet.class);
+        when(valueSet.isEnum()).thenReturn(true);
         when(prodAttr.getValueSet()).thenReturn(valueSet);
 
         MultiValueAttributeHandler handler = spy(new MultiValueAttributeHandler(shell, prodAttr, attrValue,
                 ValueDatatype.DECIMAL));
-        doNothing().when(handler).openMultiValueSubsetDialog(any(List.class));
+        doNothing().when(handler).openMultiValueSubsetDialog(anyListOf(String.class));
 
         handler.editValues();
         verify(handler).openMultiValueSubsetDialog(valueSet);
@@ -106,8 +94,11 @@ public class MultiValueAttributeHandlerTest {
         MultiValueAttributeHandler handler = spy(new MultiValueAttributeHandler(shell, prodAttr, attrValue,
                 enumDatatype));
 
+        IValueSet enumValueset = mock(IEnumValueSet.class);
+        when(enumValueset.isEnum()).thenReturn(true);
+        when(prodAttr.getValueSet()).thenReturn(enumValueset);
         ArgumentCaptor<List> ValueListCaptor = ArgumentCaptor.forClass(List.class);
-        doNothing().when(handler).openMultiValueSubsetDialog(any(List.class));
+        doNothing().when(handler).openMultiValueSubsetDialog(anyListOf(String.class));
         handler.editValues();
         verify(handler).openMultiValueSubsetDialog(ValueListCaptor.capture());
 
@@ -123,10 +114,34 @@ public class MultiValueAttributeHandlerTest {
         IProductCmptTypeAttribute prodAttr = mock(IProductCmptTypeAttribute.class);
         MultiValueAttributeHandler handler = spy(new MultiValueAttributeHandler(shell, prodAttr, attrValue, datatype));
 
+        IValueSet valueset = mock(UnrestrictedValueSet.class);
+        when(valueset.isEnum()).thenReturn(false);
+        when(prodAttr.getValueSet()).thenReturn(valueset);
         doNothing().when(handler).openMultiValueDialog();
 
         handler.editValues();
         verify(handler).openMultiValueDialog();
+    }
+
+    @Test
+    public void aquireValueSetDynamically() {
+        IProductCmptTypeAttribute prodAttr = mock(IProductCmptTypeAttribute.class);
+        MultiValueAttributeHandler handler = spy(new MultiValueAttributeHandler(shell, prodAttr, attrValue,
+                ValueDatatype.DECIMAL));
+        doNothing().when(handler).openMultiValueDialog();
+
+        IValueSet unrestrictedValueset = mock(UnrestrictedValueSet.class);
+        when(prodAttr.getValueSet()).thenReturn(unrestrictedValueset);
+        handler.editValues();
+        verify(handler).openMultiValueDialog();
+        reset(handler);
+
+        doNothing().when(handler).openMultiValueSubsetDialog(any(IEnumValueSet.class));
+        IValueSet enumValueset = mock(IEnumValueSet.class);
+        when(enumValueset.isEnum()).thenReturn(true);
+        when(prodAttr.getValueSet()).thenReturn(enumValueset);
+        handler.editValues();
+        verify(handler).openMultiValueSubsetDialog(any(IEnumValueSet.class));
     }
 
 }

@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.ui.binding;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -31,12 +33,20 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.Validatable;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMappingByPropertyDescriptor;
+import org.faktorips.devtools.core.ui.controller.ProblemMarkerPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -182,7 +192,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     public void removeMappingAndControlListeners() {
         Text textControl = mock(Text.class);
 
-        EditField field = mock(EditField.class);
+        EditField field = mockField();
         FieldPropertyMapping mapping = mock(FieldPropertyMapping.class);
         when(mapping.getField()).thenReturn(field);
         when(mapping.getObject()).thenReturn(pmo);
@@ -200,7 +210,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     public void removeMappingAndControlListeners2() {
         Text textControl = mock(Text.class);
 
-        EditField field = mock(EditField.class);
+        EditField field = mockField();
         FieldPropertyMapping mapping = mock(FieldPropertyMapping.class);
         when(mapping.getField()).thenReturn(field);
         when(mapping.getObject()).thenReturn(pmo);
@@ -297,5 +307,118 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         assertEquals(1, bindingContext.getNumberOfMappingsAndBindings());
         bindingContext.updateUI();
         assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
+    }
+
+    @Test
+    public void testErrorBinding_WithValidatable() throws CoreException {
+        Validatable validatable = mockValidatable();
+        EditField<?> field = mockField();
+        Validatable validatableWithError = mockValidatable();
+        EditField<?> fieldWithError = mockField();
+
+        MessageList list = new MessageList();
+        MessageList errorList = new MessageList();
+        errorList.add(new Message("code", "messageText", Message.ERROR, validatableWithError,
+                IValueHolder.PROPERTY_VALUE));
+        when(validatable.validate(any(IIpsProject.class))).thenReturn(list);
+        when(validatableWithError.validate(any(IIpsProject.class))).thenReturn(errorList);
+
+        bindingContext.bindProblemMarker(field, validatable, IValueHolder.PROPERTY_VALUE);
+        bindingContext.bindProblemMarker(fieldWithError, validatableWithError, IValueHolder.PROPERTY_VALUE);
+
+        bindingContext.updateUI();
+
+        verify(field).setMessages(list);
+        verify(field, never()).setMessages(errorList);
+        verify(fieldWithError).setMessages(errorList);
+        verify(fieldWithError, never()).setMessages(list);
+    }
+
+    protected Validatable mockValidatable() {
+        Validatable av = mock(IValueHolder.class);
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(av.getIpsProject()).thenReturn(ipsProject);
+        return av;
+    }
+
+    protected EditField<?> mockField() {
+        EditField<?> field = mock(EditField.class);
+        Control control = mock(Control.class);
+        when(field.getControl()).thenReturn(control);
+        when(field.isTextContentParsable()).thenReturn(true);
+        return field;
+    }
+
+    /**
+     * 
+     * <strong>Scenario:</strong><br>
+     * Two fields bind the same ipsObjectPart.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * TODO widmaier 03.05.2012: Explain expected test outcome
+     */
+    @Test
+    public void testErrorBinding_WithIpsObject() throws CoreException {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        IIpsObject ipsObject = mock(IIpsObject.class);
+        IIpsObjectPartContainer ipsObjectPart = mock(IAttributeValue.class);
+        when(ipsObject.getIpsProject()).thenReturn(ipsProject);
+        when(ipsObjectPart.getIpsObject()).thenReturn(ipsObject);
+        when(ipsObjectPart.getIpsProject()).thenReturn(ipsProject);
+
+        EditField<?> field = mockField();
+        EditField<?> field2 = mockField();
+
+        MessageList errorList = new MessageList();
+        errorList.add(new Message("code", "messageText", Message.ERROR, ipsObjectPart,
+                IAttributeValue.PROPERTY_VALUE_HOLDER));
+        when(ipsObject.validate(any(IIpsProject.class))).thenReturn(errorList);
+
+        bindingContext.bindProblemMarker(field, ipsObjectPart, IAttributeValue.PROPERTY_VALUE_HOLDER);
+        bindingContext.bindProblemMarker(field2, ipsObjectPart, IAttributeValue.PROPERTY_VALUE_HOLDER);
+
+        bindingContext.updateUI();
+
+        verify(ipsObject).validate(any(IIpsProject.class));
+        verify(field).setMessages(errorList);
+        verify(field2).setMessages(errorList);
+    }
+
+    @Test
+    public void testValidatableBelongsToMapping_IpsObjectPart() {
+        IIpsObject ipsObject = mock(IIpsObject.class);
+        IIpsObject ipsObject2 = mock(IIpsObject.class);
+        ProblemMarkerPropertyMapping<?> mapping = mock(ProblemMarkerPropertyMapping.class);
+        IIpsObjectPartContainer ipsObjectPart = mock(IIpsObjectPartContainer.class);
+
+        when(mapping.getObject()).thenReturn(ipsObjectPart);
+        when(ipsObjectPart.getIpsObject()).thenReturn(ipsObject);
+
+        assertTrue(bindingContext.validatableBelongsToMapping(ipsObject, mapping));
+        assertFalse(bindingContext.validatableBelongsToMapping(ipsObject2, mapping));
+    }
+
+    @Test
+    public void testValidatableBelongsToMapping_Validatable() {
+        Validatable validatable = mock(IValueHolder.class);
+        Validatable validatable2 = mock(IValueHolder.class);
+        ProblemMarkerPropertyMapping<?> mapping = mock(ProblemMarkerPropertyMapping.class);
+
+        when(mapping.getObject()).thenReturn(validatable);
+
+        assertTrue(bindingContext.validatableBelongsToMapping(validatable, mapping));
+        assertFalse(bindingContext.validatableBelongsToMapping(validatable2, mapping));
+
+    }
+
+    @Test
+    public void testValidatableBelongsToMapping_OtherObject() {
+        Validatable validatable = mock(IValueHolder.class);
+        String string = "String";
+        ProblemMarkerPropertyMapping<?> mapping = mock(ProblemMarkerPropertyMapping.class);
+
+        when(mapping.getObject()).thenReturn(string);
+
+        assertFalse(bindingContext.validatableBelongsToMapping(validatable, mapping));
     }
 }

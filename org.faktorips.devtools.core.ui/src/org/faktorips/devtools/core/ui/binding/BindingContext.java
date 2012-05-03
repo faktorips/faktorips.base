@@ -18,7 +18,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -658,23 +657,38 @@ public class BindingContext {
             return new MessageList();
         }
 
-        Map<EditField<?>, MessageList> messagesPerField = new HashMap<EditField<?>, MessageList>();
+        // Map<EditField<?>, MessageList> messagesPerField = new HashMap<EditField<?>,
+        // MessageList>();
         for (FieldPropertyMapping mapping : propertyMappings) {
             if (mapping.getField().getControl() == null || mapping.getField().getControl().isDisposed()) {
                 continue;
             }
-
-            MessageList fieldMessages = messagesPerField.get(mapping.getField());
-            if (fieldMessages == null) {
-                fieldMessages = new MessageList();
+            if (validatableBelongsToMapping(validatable, mapping)) {
+                MessageList mappingMessages = getMappingMessages(mapping, allValidationMessages);
+                mapping.getField().setMessages(mappingMessages);
             }
-            fieldMessages.add(getMappingMessages(mapping, allValidationMessages));
-            messagesPerField.put(mapping.getField(), fieldMessages);
+
+            // MessageList fieldMessages = messagesPerField.get(mapping.getField());
+            // if (fieldMessages == null) {
+            // fieldMessages = new MessageList();
+            // }
+            // fieldMessages.add(getMappingMessages(mapping, allValidationMessages));
+            // messagesPerField.put(mapping.getField(), fieldMessages);
         }
 
-        setFieldMessages(messagesPerField);
+        // setFieldMessages(messagesPerField);
 
         return allValidationMessages;
+    }
+
+    protected boolean validatableBelongsToMapping(Validatable validatable, FieldPropertyMapping mapping) {
+        Object object = mapping.getObject();
+        if (object instanceof IIpsObjectPartContainer) {
+            IIpsObject ipsObject = ((IIpsObjectPartContainer)object).getIpsObject();
+            return validatable.equals(ipsObject);
+        } else {
+            return validatable.equals(object);
+        }
     }
 
     private MessageList getMappingMessages(FieldPropertyMapping mapping, MessageList allValidationMessages) {

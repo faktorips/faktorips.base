@@ -30,22 +30,19 @@ public class MultiValueAttributeHandler {
     private final IAttributeValue attributeValue;
     private final Shell shell;
     private final ValueDatatype datatype;
-    private final IValueSet modelValueSet;
+    private final IProductCmptTypeAttribute productCmptTypeAttribute;
 
     public MultiValueAttributeHandler(Shell shell, IProductCmptTypeAttribute productCmptTypeAttribute,
             IAttributeValue attributeValue, ValueDatatype datatype) {
         this.shell = shell;
+        this.productCmptTypeAttribute = productCmptTypeAttribute;
         this.attributeValue = attributeValue;
         this.datatype = datatype;
-        modelValueSet = productCmptTypeAttribute.getValueSet();
-    }
-
-    private boolean isEnumValueSet() {
-        return modelValueSet instanceof IEnumValueSet;
     }
 
     public void editValues() {
-        if (isEnumValueSet()) {
+        IValueSet modelValueSet = productCmptTypeAttribute.getValueSet();
+        if (modelValueSet.isEnum()) {
             openMultiValueSubsetDialog((IEnumValueSet)modelValueSet);
         } else {
             if (datatype.isEnum()) {
