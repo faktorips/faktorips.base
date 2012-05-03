@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -657,8 +656,6 @@ public class BindingContext {
             return new MessageList();
         }
 
-        // Map<EditField<?>, MessageList> messagesPerField = new HashMap<EditField<?>,
-        // MessageList>();
         for (FieldPropertyMapping mapping : propertyMappings) {
             if (mapping.getField().getControl() == null || mapping.getField().getControl().isDisposed()) {
                 continue;
@@ -667,16 +664,7 @@ public class BindingContext {
                 MessageList mappingMessages = getMappingMessages(mapping, allValidationMessages);
                 mapping.getField().setMessages(mappingMessages);
             }
-
-            // MessageList fieldMessages = messagesPerField.get(mapping.getField());
-            // if (fieldMessages == null) {
-            // fieldMessages = new MessageList();
-            // }
-            // fieldMessages.add(getMappingMessages(mapping, allValidationMessages));
-            // messagesPerField.put(mapping.getField(), fieldMessages);
         }
-
-        // setFieldMessages(messagesPerField);
 
         return allValidationMessages;
     }
@@ -704,12 +692,6 @@ public class BindingContext {
                     Messages.IpsObjectPartContainerUIController_invalidValue));
         }
         return mappingMessages;
-    }
-
-    private void setFieldMessages(Map<EditField<?>, MessageList> messagesPerField) {
-        for (EditField<?> field : messagesPerField.keySet()) {
-            field.setMessages(messagesPerField.get(field));
-        }
     }
 
     private void applyControlBindings() {

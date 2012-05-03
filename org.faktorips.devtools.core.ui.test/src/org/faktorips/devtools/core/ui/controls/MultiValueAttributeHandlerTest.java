@@ -97,12 +97,12 @@ public class MultiValueAttributeHandlerTest {
         IValueSet enumValueset = mock(IEnumValueSet.class);
         when(enumValueset.isEnum()).thenReturn(true);
         when(prodAttr.getValueSet()).thenReturn(enumValueset);
-        ArgumentCaptor<List> ValueListCaptor = ArgumentCaptor.forClass(List.class);
+        ArgumentCaptor<List> valueListCaptor = ArgumentCaptor.forClass(List.class);
         doNothing().when(handler).openMultiValueSubsetDialog(anyListOf(String.class));
         handler.editValues();
-        verify(handler).openMultiValueSubsetDialog(ValueListCaptor.capture());
+        verify(handler).openMultiValueSubsetDialog(valueListCaptor.capture());
 
-        List<String> allValuesList = ValueListCaptor.getValue();
+        List<String> allValuesList = valueListCaptor.getValue();
         assertNotNull(allValuesList);
         allValuesList.contains(PaymentMode.ANNUAL_ID);
         allValuesList.contains(PaymentMode.MONTHLY_ID);

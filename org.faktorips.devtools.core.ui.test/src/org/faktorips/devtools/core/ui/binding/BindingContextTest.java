@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.binding;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -49,6 +50,7 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 public class BindingContextTest extends AbstractIpsPluginTest {
@@ -355,7 +357,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
      * Two fields bind the same ipsObjectPart.
      * <p>
      * <strong>Expected Outcome:</strong><br>
-     * TODO widmaier 03.05.2012: Explain expected test outcome
+     * Both fields have the same message list set.
      */
     @Test
     public void testErrorBinding_WithIpsObject() throws CoreException {
@@ -382,6 +384,55 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         verify(ipsObject).validate(any(IIpsProject.class));
         verify(field).setMessages(errorList);
         verify(field2).setMessages(errorList);
+    }
+
+    /**
+     * 
+     * <strong>Scenario:</strong><br>
+     * Two fields bind different ipsObjectParts of the same ipsObject.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * Both fields receive the message directed to them.
+     */
+    @Test
+    public void testErrorBinding_WithIpsObject_DifferentParts() throws CoreException {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        IIpsObject ipsObject = mock(IIpsObject.class);
+        IIpsObjectPartContainer ipsObjectPart = mock(IAttributeValue.class);
+        IIpsObjectPartContainer ipsObjectPart2 = mock(IAttributeValue.class);
+        when(ipsObject.getIpsProject()).thenReturn(ipsProject);
+        when(ipsObjectPart.getIpsObject()).thenReturn(ipsObject);
+        when(ipsObjectPart.getIpsProject()).thenReturn(ipsProject);
+        when(ipsObjectPart2.getIpsObject()).thenReturn(ipsObject);
+        when(ipsObjectPart2.getIpsProject()).thenReturn(ipsProject);
+
+        EditField<?> field = mockField();
+        EditField<?> field2 = mockField();
+
+        MessageList errorList = new MessageList();
+        Message msg1 = new Message("code", "messageText", Message.ERROR, ipsObjectPart,
+                IAttributeValue.PROPERTY_VALUE_HOLDER);
+        errorList.add(msg1);
+        Message msg2 = new Message("code2", "messageText2", Message.ERROR, ipsObjectPart2,
+                IAttributeValue.PROPERTY_VALUE_HOLDER);
+        errorList.add(msg2);
+        when(ipsObject.validate(any(IIpsProject.class))).thenReturn(errorList);
+        ArgumentCaptor<MessageList> messageListCaptor = ArgumentCaptor.forClass(MessageList.class);
+        ArgumentCaptor<MessageList> messageListCaptor2 = ArgumentCaptor.forClass(MessageList.class);
+
+        bindingContext.bindProblemMarker(field, ipsObjectPart, IAttributeValue.PROPERTY_VALUE_HOLDER);
+        bindingContext.bindProblemMarker(field2, ipsObjectPart2, IAttributeValue.PROPERTY_VALUE_HOLDER);
+
+        bindingContext.updateUI();
+
+        verify(ipsObject).validate(any(IIpsProject.class));
+        verify(field).setMessages(messageListCaptor.capture());
+        verify(field2).setMessages(messageListCaptor2.capture());
+        assertEquals(1, messageListCaptor.getValue().size());
+        assertSame(msg1, messageListCaptor.getValue().getMessage(0));
+        assertEquals(1, messageListCaptor2.getValue().size());
+        assertSame(msg2, messageListCaptor2.getValue().getMessage(0));
+
     }
 
     @Test
