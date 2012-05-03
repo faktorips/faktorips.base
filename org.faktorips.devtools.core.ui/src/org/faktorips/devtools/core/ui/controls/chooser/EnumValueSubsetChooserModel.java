@@ -74,7 +74,8 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
         if (!getAllValues().contains(value)) {
             String text = NLS.bind(Messages.DefaultsAndRangesEditDialog_valueNotContainedInValueSet, value.getValue(),
                     getAllValues().toString());
-            messageList.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
+            messageList.add(new Message(
+                    "EnumValueSubsetChooserModel_ValueNotContainedInPredefinedValues", text, Message.ERROR)); //$NON-NLS-1$
         }
     }
 

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -26,10 +27,12 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -68,6 +71,9 @@ public class SubsetChooserViewer {
     protected void initViewers() {
         preDefinedValuesTableViewer = new TableViewer(uiBuilder.getPreDefinedValuesTable());
         resultingValuesTableViewer = new TableViewer(uiBuilder.getResultingValuesTable());
+
+        ColumnViewerToolTipSupport.enableFor(preDefinedValuesTableViewer, ToolTip.NO_RECREATE);
+        ColumnViewerToolTipSupport.enableFor(resultingValuesTableViewer, ToolTip.NO_RECREATE);
     }
 
     protected void setUpListeners() {
@@ -283,6 +289,31 @@ public class SubsetChooserViewer {
             MessageList messages = model.validateValue(value);
             cell.setImage(IpsUIPlugin.getImageHandling().getImage(
                     IpsProblemOverlayIcon.getOverlay(messages.getSeverity()), false));
+        }
+
+        @Override
+        public String getToolTipText(Object element) {
+            MessageList messages = model.validateValue((ListChooserValue)element);
+            if (messages.isEmpty()) {
+                return super.getToolTipText(element);
+            } else {
+                return messages.getMessageWithHighestSeverity().getText();
+            }
+        }
+
+        @Override
+        public Point getToolTipShift(Object object) {
+            return new Point(5, 5);
+        }
+
+        @Override
+        public int getToolTipDisplayDelayTime(Object object) {
+            return 100;
+        }
+
+        @Override
+        public int getToolTipTimeDisplayed(Object object) {
+            return 5000;
         }
 
     }
