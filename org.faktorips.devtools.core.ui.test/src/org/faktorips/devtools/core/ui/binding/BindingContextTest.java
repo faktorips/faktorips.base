@@ -100,10 +100,10 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     @Test
     public void updateAllMappingsOnContentChange() throws CoreException {
         IProductCmpt prodCmpt = newProductCmpt(newIpsProject(), "ProdCmpt");
-        FieldPropertyMapping mapping = bindingContext.createMapping(editField, prodCmpt, "name"); // some
-                                                                                                  // valid
-                                                                                                  // property
-        FieldPropertyMapping spyMapping = spy(mapping);
+        FieldPropertyMapping<?> mapping = bindingContext.createMapping(editField, prodCmpt, "name"); // some
+                                                                                                     // valid
+                                                                                                     // property
+        FieldPropertyMapping<?> spyMapping = spy(mapping);
         bindingContext.add(spyMapping);
 
         // force property change
@@ -194,8 +194,9 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     public void removeMappingAndControlListeners() {
         Text textControl = mock(Text.class);
 
-        EditField field = mockField();
-        FieldPropertyMapping mapping = mock(FieldPropertyMapping.class);
+        EditField<Object> field = mockField();
+        @SuppressWarnings("unchecked")
+        FieldPropertyMapping<Object> mapping = mock(FieldPropertyMapping.class);
         when(mapping.getField()).thenReturn(field);
         when(mapping.getObject()).thenReturn(pmo);
         when(field.getControl()).thenReturn(textControl);
@@ -212,8 +213,9 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     public void removeMappingAndControlListeners2() {
         Text textControl = mock(Text.class);
 
-        EditField field = mockField();
-        FieldPropertyMapping mapping = mock(FieldPropertyMapping.class);
+        EditField<Object> field = mockField();
+        @SuppressWarnings("unchecked")
+        FieldPropertyMapping<Object> mapping = mock(FieldPropertyMapping.class);
         when(mapping.getField()).thenReturn(field);
         when(mapping.getObject()).thenReturn(pmo);
         when(field.getControl()).thenReturn(textControl);
@@ -227,8 +229,8 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     }
 
     protected void updateMappingsOnPropertyChange(String propertyName) {
-        FieldPropertyMapping mapping = bindingContext.createMapping(editField, pmo, propertyName);
-        FieldPropertyMapping spyMapping = spy(mapping);
+        FieldPropertyMapping<?> mapping = bindingContext.createMapping(editField, pmo, propertyName);
+        FieldPropertyMapping<?> spyMapping = spy(mapping);
         bindingContext.add(spyMapping);
 
         pmo.setEnabled(true);
@@ -255,8 +257,8 @@ public class BindingContextTest extends AbstractIpsPluginTest {
             notifyListeners(new PropertyChangeEvent(this, PROPERTY_ENABLED, oldValue, isEnabled()));
         }
 
-        public void setOtherProperty(String value) {
-
+        public void setOtherProperty(@SuppressWarnings("unused") String value) {
+            //
         }
 
         public String getOtherProperty() {
@@ -273,8 +275,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
 
         @Override
         public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-            // TODO Auto-generated method stub
-
+            //
         }
 
     }
@@ -343,8 +344,9 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         return av;
     }
 
-    protected EditField<?> mockField() {
-        EditField<?> field = mock(EditField.class);
+    protected EditField<Object> mockField() {
+        @SuppressWarnings("unchecked")
+        EditField<Object> field = mock(EditField.class);
         Control control = mock(Control.class);
         when(field.getControl()).thenReturn(control);
         when(field.isTextContentParsable()).thenReturn(true);

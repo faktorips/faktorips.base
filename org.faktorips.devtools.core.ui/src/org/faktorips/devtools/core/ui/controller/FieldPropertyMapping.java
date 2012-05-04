@@ -18,12 +18,12 @@ package org.faktorips.devtools.core.ui.controller;
  * 
  * @author Jan Ortmann
  */
-public interface FieldPropertyMapping {
+public interface FieldPropertyMapping<T> {
 
     /**
      * Returns the field this is a mapping for.
      */
-    public EditField<?> getField();
+    public EditField<T> getField();
 
     /**
      * Returns the object this is a mapping for one of it's properties.

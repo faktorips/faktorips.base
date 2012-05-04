@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.ui.controller;
 import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 
-public class FieldExtensionPropertyMapping<T> implements FieldPropertyMapping {
+public class FieldExtensionPropertyMapping<T> implements FieldPropertyMapping<T> {
 
     protected EditField<T> field;
     protected IExtensionPropertyAccess object;
@@ -29,7 +29,7 @@ public class FieldExtensionPropertyMapping<T> implements FieldPropertyMapping {
     }
 
     @Override
-    public EditField<?> getField() {
+    public EditField<T> getField() {
         return field;
     }
 

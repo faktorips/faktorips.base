@@ -21,7 +21,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.devtools.core.ui.controller.fields.AbstractEnumDatatypeBasedField;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 
-public class FieldPropertyMappingByPropertyDescriptor<T> implements FieldPropertyMapping {
+public class FieldPropertyMappingByPropertyDescriptor<T> implements FieldPropertyMapping<T> {
 
     protected EditField<T> field;
     protected Object object;

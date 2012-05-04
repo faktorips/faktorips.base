@@ -95,7 +95,7 @@ public class BindingContext {
     private Listener listener = new Listener();
 
     /** list of mappings between edit fields and properties of model objects. */
-    private List<FieldPropertyMapping> mappings = new ArrayList<FieldPropertyMapping>();
+    private List<FieldPropertyMapping<?>> mappings = new ArrayList<FieldPropertyMapping<?>>();
 
     /**
      * a list of the ips objects containing at least one binded ips part container each container is
@@ -114,8 +114,8 @@ public class BindingContext {
      */
     public void updateUI() {
         // defensive copy to avoid concurrent modification exceptions
-        List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings);
-        for (FieldPropertyMapping mapping : copy) {
+        List<FieldPropertyMapping<?>> copy = new ArrayList<FieldPropertyMapping<?>>(mappings);
+        for (FieldPropertyMapping<?> mapping : copy) {
             removeMappingIfControlIsDisposed(mapping);
             try {
                 mapping.setControlValue();
@@ -129,7 +129,7 @@ public class BindingContext {
         applyControlBindings();
     }
 
-    private void removeMappingIfControlIsDisposed(FieldPropertyMapping mapping) {
+    private void removeMappingIfControlIsDisposed(FieldPropertyMapping<?> mapping) {
         if (mapping.getField().getControl() == null || mapping.getField().getControl().isDisposed()) {
             removeMapping(mapping);
         }
@@ -316,8 +316,8 @@ public class BindingContext {
      * 
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public FieldPropertyMapping bindContent(EditField<?> field, Object object, String property) {
-        FieldPropertyMapping mapping = createMapping(field, object, property);
+    public <T> FieldPropertyMapping<T> bindContent(EditField<T> field, Object object, String property) {
+        FieldPropertyMapping<T> mapping = createMapping(field, object, property);
         add(mapping);
         return mapping;
     }
@@ -336,7 +336,7 @@ public class BindingContext {
         add(problemMarkerPropertyMapping);
     }
 
-    protected <T> FieldPropertyMapping createMapping(EditField<T> editField, Object object, String propertyName) {
+    protected <T> FieldPropertyMapping<T> createMapping(EditField<T> editField, Object object, String propertyName) {
         if (object instanceof IExtensionPropertyAccess) {
             IExtensionPropertyDefinition extProperty = IpsPlugin.getDefault().getIpsModel()
                     .getExtensionPropertyDefinition(object.getClass(), propertyName, true);
@@ -451,7 +451,7 @@ public class BindingContext {
         bindVisible(control, object, property, excludeWhenInvisible, null);
     }
 
-    protected void add(FieldPropertyMapping mapping) {
+    protected void add(FieldPropertyMapping<?> mapping) {
         registerIpsModelChangeListener();
         mapping.getField().addChangeListener(listener);
         mapping.getField().getControl().addFocusListener(listener);
@@ -514,8 +514,8 @@ public class BindingContext {
                 listenerRemoveCandidates.add(binding.getObject());
             }
         }
-        for (Iterator<FieldPropertyMapping> it = mappings.iterator(); it.hasNext();) {
-            FieldPropertyMapping mapping = it.next();
+        for (Iterator<FieldPropertyMapping<?>> it = mappings.iterator(); it.hasNext();) {
+            FieldPropertyMapping<?> mapping = it.next();
             if (mapping.getField().getControl() == control) {
                 it.remove();
                 mapping.getField().removeChangeListener(listener);
@@ -536,7 +536,7 @@ public class BindingContext {
         controlBindings.remove(binding);
     }
 
-    private void removeMapping(FieldPropertyMapping mapping) {
+    private void removeMapping(FieldPropertyMapping<?> mapping) {
         mappings.remove(mapping);
     }
 
@@ -546,7 +546,7 @@ public class BindingContext {
                 return true;
             }
         }
-        for (FieldPropertyMapping mapping : mappings) {
+        for (FieldPropertyMapping<?> mapping : mappings) {
             if (mapping.getObject() == candidate) {
                 return true;
             }
@@ -569,8 +569,8 @@ public class BindingContext {
                 it.remove();
             }
         }
-        for (Iterator<FieldPropertyMapping> it = mappings.iterator(); it.hasNext();) {
-            FieldPropertyMapping mapping = it.next();
+        for (Iterator<FieldPropertyMapping<?>> it = mappings.iterator(); it.hasNext();) {
+            FieldPropertyMapping<?> mapping = it.next();
             if (mapping.getObject() == object) {
                 it.remove();
                 mapping.getField().removeChangeListener(listener);
@@ -585,7 +585,7 @@ public class BindingContext {
      */
     public void clear() {
         controlBindings.clear();
-        for (FieldPropertyMapping mapping : mappings) {
+        for (FieldPropertyMapping<?> mapping : mappings) {
             mapping.getField().setMessages(new MessageList());
         }
         mappings.clear();
@@ -597,11 +597,11 @@ public class BindingContext {
     public void dispose() {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(listener);
         // defensive copy to avoid concurrent modification
-        List<FieldPropertyMapping> mappingsCopy = new CopyOnWriteArrayList<FieldPropertyMapping>(mappings);
+        List<FieldPropertyMapping<?>> mappingsCopy = new CopyOnWriteArrayList<FieldPropertyMapping<?>>(mappings);
 
         // exceptions
         Set<Object> disposedPmos = new HashSet<Object>();
-        for (FieldPropertyMapping mapping : mappingsCopy) {
+        for (FieldPropertyMapping<?> mapping : mappingsCopy) {
             mapping.getField().removeChangeListener(listener);
             if (!mapping.getField().getControl().isDisposed()) {
                 mapping.getField().getControl().removeFocusListener(listener);
@@ -631,7 +631,7 @@ public class BindingContext {
      * Validates all bound part containers and updates the fields that are associated with their
      * properties.
      */
-    protected void showValidationStatus(List<FieldPropertyMapping> propertyMappings) {
+    protected void showValidationStatus(List<FieldPropertyMapping<?>> propertyMappings) {
         Set<Validatable> copy = new CopyOnWriteArraySet<Validatable>(validatables);
         for (Validatable validatable : copy) {
             showValidationStatus(validatable, propertyMappings);
@@ -647,7 +647,7 @@ public class BindingContext {
      * 
      * @return the validation message list (never returns null)
      */
-    protected MessageList showValidationStatus(Validatable validatable, List<FieldPropertyMapping> propertyMappings) {
+    protected MessageList showValidationStatus(Validatable validatable, List<FieldPropertyMapping<?>> propertyMappings) {
         MessageList allValidationMessages;
         try {
             allValidationMessages = validatable.validate(validatable.getIpsProject());
@@ -656,7 +656,7 @@ public class BindingContext {
             return new MessageList();
         }
 
-        for (FieldPropertyMapping mapping : propertyMappings) {
+        for (FieldPropertyMapping<?> mapping : propertyMappings) {
             if (mapping.getField().getControl() == null || mapping.getField().getControl().isDisposed()) {
                 continue;
             }
@@ -669,7 +669,7 @@ public class BindingContext {
         return allValidationMessages;
     }
 
-    protected boolean validatableBelongsToMapping(Validatable validatable, FieldPropertyMapping mapping) {
+    protected boolean validatableBelongsToMapping(Validatable validatable, FieldPropertyMapping<?> mapping) {
         Object object = mapping.getObject();
         if (object instanceof IIpsObjectPartContainer) {
             IIpsObject ipsObject = ((IIpsObjectPartContainer)object).getIpsObject();
@@ -679,7 +679,7 @@ public class BindingContext {
         }
     }
 
-    private MessageList getMappingMessages(FieldPropertyMapping mapping, MessageList allValidationMessages) {
+    private MessageList getMappingMessages(FieldPropertyMapping<?> mapping, MessageList allValidationMessages) {
         MessageList mappingMessages = new MessageList();
         if (mapping.getField().isTextContentParsable()) {
             for (Message message : allValidationMessages.getMessagesFor(mapping.getObject(), mapping.getPropertyName())) {
@@ -731,10 +731,10 @@ public class BindingContext {
         @Override
         public void valueChanged(FieldValueChangedEvent e) {
             // defensive copy to avoid concurrent modification
-            List<FieldPropertyMapping> copy = new CopyOnWriteArrayList<FieldPropertyMapping>(mappings);
+            List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<FieldPropertyMapping<?>>(mappings);
 
             // exceptions
-            for (FieldPropertyMapping mapping : copy) {
+            for (FieldPropertyMapping<?> mapping : copy) {
                 if (e.field == mapping.getField()) {
                     try {
                         mapping.setPropertyValue();
@@ -760,10 +760,10 @@ public class BindingContext {
         @Override
         public void contentsChanged(ContentChangeEvent event) {
             // defensive copy to avoid concurrent modification
-            List<FieldPropertyMapping> copy = new CopyOnWriteArrayList<FieldPropertyMapping>(mappings);
+            List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<FieldPropertyMapping<?>>(mappings);
 
             // exceptions
-            for (FieldPropertyMapping mapping : copy) {
+            for (FieldPropertyMapping<?> mapping : copy) {
                 if (mapping.getObject() instanceof IIpsObjectPartContainer) {
                     if (event.isAffected((IIpsObjectPartContainer)mapping.getObject())) {
                         try {
@@ -783,10 +783,10 @@ public class BindingContext {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             // defensive copy to avoid concurrent modification
-            List<FieldPropertyMapping> copy = new CopyOnWriteArrayList<FieldPropertyMapping>(mappings);
+            List<FieldPropertyMapping<?>> copy = new CopyOnWriteArrayList<FieldPropertyMapping<?>>(mappings);
 
             // exceptions
-            for (FieldPropertyMapping mapping : copy) {
+            for (FieldPropertyMapping<?> mapping : copy) {
                 if (mapping.getObject() == evt.getSource()) {
                     try {
                         mapping.setControlValue();
