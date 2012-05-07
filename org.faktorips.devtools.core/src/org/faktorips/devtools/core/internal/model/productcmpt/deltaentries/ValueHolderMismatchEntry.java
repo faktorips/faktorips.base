@@ -47,7 +47,7 @@ public class ValueHolderMismatchEntry extends AbstractDeltaEntryForProperty {
 
     @Override
     public DeltaType getDeltaType() {
-        return DeltaType.VALUE_MISMATCH;
+        return DeltaType.VALUE_HOLDER_MISMATCH;
     }
 
     @Override

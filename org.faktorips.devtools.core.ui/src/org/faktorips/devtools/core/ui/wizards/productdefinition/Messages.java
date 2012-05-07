@@ -35,7 +35,6 @@ public class Messages extends NLS {
     public static String TypeSelectionComposite_label_description;
     public static String TypeSelectionComposite_label_noDescriptionAvailable;
     public static String NewProductDefinitionValidator_msg_invalidPackageRoot;
-    public static String NewProductDefinitionValidator_msg_invalidEffectiveDate;
     public static String NewProductDefinitionValidator_msg_invalidPackage;
     public static String NewGenerationWizard_title;
     public static String NewGenerationRunnable_taskName;

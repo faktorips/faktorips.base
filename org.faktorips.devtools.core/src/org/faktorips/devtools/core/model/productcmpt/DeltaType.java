@@ -24,7 +24,7 @@ public enum DeltaType {
     VALUE_WITHOUT_PROPERTY(Messages.DeltaType_propertiesNotFoundInTheModel),
     PROPERTY_TYPE_MISMATCH(Messages.DeltaType_propertiesWithTypeMismatch),
     VALUE_SET_MISMATCH(Messages.DeltaType_ValueSetMismatches),
-    VALUE_MISMATCH(Messages.DeltaType_valueMismatch),
+    VALUE_HOLDER_MISMATCH(Messages.DeltaType_valueHolderMismatch),
     LINK_WITHOUT_ASSOCIATION(Messages.DeltaType_LinksNotFoundInTheModel);
 
     private final String description;

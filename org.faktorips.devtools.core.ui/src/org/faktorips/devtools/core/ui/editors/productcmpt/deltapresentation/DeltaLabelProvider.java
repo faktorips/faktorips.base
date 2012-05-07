@@ -91,7 +91,7 @@ public class DeltaLabelProvider extends LabelProvider {
             return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueSetMismatch.gif"); //$NON-NLS-1$
         } else if (deltaType == DeltaType.LINK_WITHOUT_ASSOCIATION) {
             return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeLinkWithoutAssociation.gif"); //$NON-NLS-1$
-        } else if (deltaType == DeltaType.VALUE_MISMATCH) {
+        } else if (deltaType == DeltaType.VALUE_HOLDER_MISMATCH) {
             return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$
         } else {
             return null;

@@ -379,7 +379,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
         propertyValueContainerToTypeDelta.checkForValueMismatch(attribute, value);
         verify(propertyValueContainerToTypeDelta).addEntry(captor.capture());
-        assertEquals(DeltaType.VALUE_MISMATCH, captor.getValue().getDeltaType());
+        assertEquals(DeltaType.VALUE_HOLDER_MISMATCH, captor.getValue().getDeltaType());
     }
 
     @Test
@@ -398,7 +398,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
         propertyValueContainerToTypeDelta.checkForValueMismatch(attribute, value);
         verify(propertyValueContainerToTypeDelta).addEntry(captor.capture());
-        assertEquals(DeltaType.VALUE_MISMATCH, captor.getValue().getDeltaType());
+        assertEquals(DeltaType.VALUE_HOLDER_MISMATCH, captor.getValue().getDeltaType());
     }
 
     @Test
