@@ -160,11 +160,10 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
      * </pre>
      */
     private void generateMethodSetValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) {
-
         appendLocalizedJavaDoc("METHOD_SET_VALUE", getAttribute().getName(), methodsBuilder);
         String methodName = getSetterMethodName();
         String[] paramNames = new String[] { "newValue" };
-        String[] paramTypes = new String[] { getDeclarationJavaType(datatypeHelper) };
+        String[] paramTypes = new String[] { getDeclarationJavaType(datatypeHelper).getSourcecode() };
         methodsBuilder.signature(Modifier.PUBLIC, "void", methodName, paramNames, paramTypes);
         methodsBuilder.openBracket();
         methodsBuilder.append(((GenProductCmptType)getGenType()).generateFragmentCheckIfRepositoryIsModifiable());
@@ -192,12 +191,20 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
                 EMPTY_STRING_ARRAY);
     }
 
-    protected String getDeclarationJavaType(DatatypeHelper datatypeHelper) {
+    /**
+     * Returns the declaration for the datatype wrapped in the datatype helper.
+     * 
+     * @param datatypeHelper The datatype helper you need the declaration for
+     * @return the declaration of the java type wrapped in the helper
+     */
+    protected JavaCodeFragment getDeclarationJavaType(DatatypeHelper datatypeHelper) {
         if (getAttribute().isMultiValueAttribute()) {
             ListOfValueDatatypeHelper listOfValueDatatypeHelper = new ListOfValueDatatypeHelper(getDatatype());
-            return listOfValueDatatypeHelper.getDeclarationJavaType();
+            return listOfValueDatatypeHelper.getDeclarationJavaTypeFragment();
         } else {
-            return datatypeHelper.getJavaClassName();
+            JavaCodeFragment result = new JavaCodeFragment();
+            result.appendClassName(datatypeHelper.getJavaClassName());
+            return result;
         }
     }
 
@@ -212,8 +219,8 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
     private void generateFieldValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) {
         appendLocalizedJavaDoc("FIELD_VALUE", StringUtils.capitalize(getAttribute().getName()), builder);
         JavaCodeFragment defaultValueExpression = getNewInstanceExpression(datatypeHelper);
-        builder.varDeclaration(Modifier.PRIVATE, getDeclarationJavaType(datatypeHelper), getMemberVarName(),
-                defaultValueExpression);
+        builder.varDeclaration(Modifier.PRIVATE, getDeclarationJavaType(datatypeHelper).getSourcecode(),
+                getMemberVarName(), defaultValueExpression);
     }
 
     protected JavaCodeFragment getNewInstanceExpression(DatatypeHelper datatypeHelper) {
@@ -281,7 +288,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
      * </pre>
      */
     private void generateExtractMultipleValuesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
-        builder.appendClassName(getDeclarationJavaType(getDatatypeHelper()));
+        builder.append(getDeclarationJavaType(getDatatypeHelper()));
         builder.append(" valueList= ");
         if (getDatatype() instanceof StringDatatype) {
             /*

@@ -594,6 +594,25 @@ public class JavaCodeFragmentBuilder {
      *            no return type in case of a constructor.
      * @param argName Argument names.
      * @param argClass Argument classes.
+     */
+    public JavaCodeFragmentBuilder signature(int modifier,
+            JavaCodeFragment returnType,
+            String methodName,
+            String[] argName,
+            String[] argClass) {
+        signatureInternal(modifier, methodName, new StringAsParameterTypeSupport(argName, argClass, null, returnType),
+                false);
+        return this;
+    }
+
+    /**
+     * Creates the Java source code for a method signature.
+     * 
+     * @param modifier Access modifier according to java.lang.reflect.Modifier.
+     * @param returnType the className that the methods returns an instance of or null to indicate
+     *            no return type in case of a constructor.
+     * @param argName Argument names.
+     * @param argClass Argument classes.
      * @param argFinal indicates if the arguments are prefix be a final modifier
      */
     public JavaCodeFragmentBuilder signature(int modifier,
@@ -602,8 +621,13 @@ public class JavaCodeFragmentBuilder {
             String[] argName,
             String[] argClass,
             boolean argFinal) {
+        JavaCodeFragment returnCode = null;
+        if (returnType != null) {
+            returnCode = new JavaCodeFragment();
+            returnCode.appendClassName(returnType);
+        }
 
-        signatureInternal(modifier, methodName, new StringAsParameterTypeSupport(argName, argClass, null, returnType),
+        signatureInternal(modifier, methodName, new StringAsParameterTypeSupport(argName, argClass, null, returnCode),
                 argFinal);
         return this;
     }
@@ -660,6 +684,32 @@ public class JavaCodeFragmentBuilder {
      */
     public JavaCodeFragmentBuilder signature(int modifier,
             String returnType,
+            String methodName,
+            String[] argName,
+            String[] argClass,
+            String[] exceptionClasses) {
+        JavaCodeFragment returnCode = null;
+        if (returnType != null) {
+            returnCode = new JavaCodeFragment();
+            returnCode.appendClassName(returnType);
+        }
+        signatureInternal(modifier, methodName, new StringAsParameterTypeSupport(argName, argClass, exceptionClasses,
+                returnCode), false);
+        return this;
+    }
+
+    /**
+     * Creates the Java source code for a method signature.
+     * 
+     * @param modifier Access modifier according to java.lang.reflect.Modifier.
+     * @param returnType the className that the methods returns an instance of or null to indicate
+     *            no return type in case of a constructor.
+     * @param argName Argument names.
+     * @param argClass Argument classes.
+     * @param exceptionClasses the thrown exceptions
+     */
+    public JavaCodeFragmentBuilder signature(int modifier,
+            JavaCodeFragment returnType,
             String methodName,
             String[] argName,
             String[] argClass,
@@ -901,12 +951,29 @@ public class JavaCodeFragmentBuilder {
             String className,
             String varName,
             JavaCodeFragment expression) {
+        JavaCodeFragment code = new JavaCodeFragment();
+        code.appendClassName(className);
+        return varDeclaration(modifier, code, varName, expression);
+    }
+
+    /**
+     * Creates a new variable declaration.
+     * 
+     * @param modifier Access modifier according to java.lang.reflect.Modifier.
+     * @param className The class' name the variable is an instance of
+     * @param varName the variable's name.
+     * @param expression the initial value of the variable
+     */
+    public JavaCodeFragmentBuilder varDeclaration(int modifier,
+            JavaCodeFragment className,
+            String varName,
+            JavaCodeFragment expression) {
         if (modifier > 0) {
             fragment.append(Modifier.toString(modifier));
             fragment.append(' ');
         }
         if (className != null) {
-            appendClassName(className);
+            append(className);
             append(' ');
         }
         fragment.append(varName);
@@ -1495,13 +1562,13 @@ public class JavaCodeFragmentBuilder {
         private String[] parameterNames = null;
         private String[] parameterTypes = null;
         private String[] exceptionClasses = null;
-        private String returnType = null;
+        private JavaCodeFragment returnType = null;
 
         /**
          * 
          */
         public StringAsParameterTypeSupport(String[] parameterNames, String[] parameterTypes,
-                String[] exceptionClasses, String returnType) {
+                String[] exceptionClasses, JavaCodeFragment returnType) {
             check(parameterNames, parameterTypes);
             this.parameterNames = parameterNames;
             this.parameterTypes = parameterTypes;
@@ -1521,7 +1588,7 @@ public class JavaCodeFragmentBuilder {
 
         @Override
         public void appendReturnType() {
-            appendClassName(returnType);
+            append(returnType);
         }
 
         @Override

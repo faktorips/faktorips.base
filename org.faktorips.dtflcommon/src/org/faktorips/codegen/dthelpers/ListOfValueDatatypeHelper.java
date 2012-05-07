@@ -79,14 +79,10 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
      * Returns code for a list-variable or -argument declarations. e.g. List &lt
      * ElementJavaClassName &gt
      */
-    public String getDeclarationJavaType() {
+    public JavaCodeFragment getDeclarationJavaTypeFragment() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-        /*
-         * Do not append class name (via appendClassName()) deliberately. The qualified name is
-         * required at a later time, when appendClassName() is called.
-         */
-        builder.append(List.class.getName());
+        builder.appendClassName(List.class);
         builder.appendGenerics(getElementJavaClassName());
-        return builder.getFragment().getSourcecode();
+        return builder.getFragment();
     }
 }
