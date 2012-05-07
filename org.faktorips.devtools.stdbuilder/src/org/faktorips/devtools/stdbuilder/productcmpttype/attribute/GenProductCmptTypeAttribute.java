@@ -318,7 +318,8 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
     }
 
     protected void generateExtractSingleValueFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
-        builder.append("value = ");
+        builder.appendClassName(String.class);
+        builder.append(" value = ");
         builder.appendClassName(ValueToXmlHelper.class);
         builder.appendln(".getValueFromElement(configElement, \"Value\");");
         builder.append("this.").append(getMemberVarName());

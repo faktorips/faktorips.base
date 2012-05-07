@@ -195,8 +195,6 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
     protected void generateDefineLocalVariablesForXmlExtraction(JavaCodeFragmentBuilder builder) {
         builder.appendClassName(Element.class);
         builder.appendln(" configElement = null;"); //$NON-NLS-1$
-        builder.appendClassName(String.class);
-        builder.appendln(" value = null;"); //$NON-NLS-1$
     }
 
     /**

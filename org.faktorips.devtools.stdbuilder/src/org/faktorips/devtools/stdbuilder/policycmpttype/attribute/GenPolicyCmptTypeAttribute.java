@@ -366,8 +366,8 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
 
     private void generateExtractValueFromXml(String memberVar, DatatypeHelper helper, JavaCodeFragmentBuilder builder)
             throws CoreException {
-
-        builder.append("value = "); //$NON-NLS-1$
+        builder.appendClassName(String.class);
+        builder.append(" value = "); //$NON-NLS-1$
         builder.appendClassName(ValueToXmlHelper.class);
         builder.append(".getValueFromElement(configElement, \"Value\");"); //$NON-NLS-1$
         builder.append(memberVar);
