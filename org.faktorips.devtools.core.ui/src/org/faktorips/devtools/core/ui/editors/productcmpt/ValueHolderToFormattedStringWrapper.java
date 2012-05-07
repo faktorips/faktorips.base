@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
@@ -46,13 +47,10 @@ public class ValueHolderToFormattedStringWrapper {
     private static final String MULTI_VALUE_SEPARATOR = " | "; //$NON-NLS-1$
     public static final String PROPERTY_FORMATTED_VALUE = "formattedValue"; //$NON-NLS-1$
     private final IAttributeValue attrValue;
-    private final boolean isMultiValueAttribute;
     private final ValueDatatype datatype;
 
-    public ValueHolderToFormattedStringWrapper(IAttributeValue attrValue, boolean isMultiValueAttribute,
-            ValueDatatype datatype) {
+    public ValueHolderToFormattedStringWrapper(IAttributeValue attrValue, ValueDatatype datatype) {
         this.attrValue = attrValue;
-        this.isMultiValueAttribute = isMultiValueAttribute;
         this.datatype = datatype;
     }
 
@@ -60,9 +58,8 @@ public class ValueHolderToFormattedStringWrapper {
         IProductCmptTypeAttribute pctAttribute;
         try {
             pctAttribute = attrValue.findAttribute(attrValue.getIpsProject());
-            boolean isMultiValueAttribute = pctAttribute.isMultiValueAttribute();
             ValueDatatype datatype = pctAttribute.findDatatype(attrValue.getIpsProject());
-            return new ValueHolderToFormattedStringWrapper(attrValue, isMultiValueAttribute, datatype);
+            return new ValueHolderToFormattedStringWrapper(attrValue, datatype);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -70,8 +67,9 @@ public class ValueHolderToFormattedStringWrapper {
 
     public String getFormattedValue() {
         UIDatatypeFormatter datatypeFormatter = IpsUIPlugin.getDefault().getDatatypeFormatter();
-        if (isMultiValueAttribute) {
-            MultiValueHolder multiHolder = (MultiValueHolder)attrValue.getValueHolder();
+        IValueHolder<?> valueHolder = attrValue.getValueHolder();
+        if (valueHolder instanceof MultiValueHolder) {
+            MultiValueHolder multiHolder = (MultiValueHolder)valueHolder;
             List<String> stringValues = new ArrayList<String>();
             for (SingleValueHolder holder : multiHolder.getValue()) {
                 String formattedValue = datatypeFormatter.formatValue(datatype, holder.getStringValue());
@@ -79,8 +77,7 @@ public class ValueHolderToFormattedStringWrapper {
             }
             return convertToString(stringValues);
         } else {
-            return datatypeFormatter.formatValue(datatype,
-                    ((SingleValueHolder)attrValue.getValueHolder()).getStringValue());
+            return datatypeFormatter.formatValue(datatype, ((SingleValueHolder)valueHolder).getStringValue());
         }
     }
 

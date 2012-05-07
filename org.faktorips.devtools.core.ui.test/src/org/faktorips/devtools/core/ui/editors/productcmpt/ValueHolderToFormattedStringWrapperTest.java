@@ -54,7 +54,7 @@ public class ValueHolderToFormattedStringWrapperTest {
         IAttributeValue attrValue = mock(IAttributeValue.class);
         doReturn(new SingleValueHolder(attrValue, "2012-04-02")).when(attrValue).getValueHolder();
 
-        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue, false,
+        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue,
                 ValueDatatype.GREGORIAN_CALENDAR);
         assertEquals("02.04.2012", wrapper.getFormattedValue());
     }
@@ -64,7 +64,7 @@ public class ValueHolderToFormattedStringWrapperTest {
         IAttributeValue attrValue = mock(IAttributeValue.class);
         doReturn(new SingleValueHolder(attrValue, "1.23456")).when(attrValue).getValueHolder();
 
-        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue, false,
+        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue,
                 ValueDatatype.DECIMAL);
         assertEquals("1,23456", wrapper.getFormattedValue());
     }
@@ -77,7 +77,7 @@ public class ValueHolderToFormattedStringWrapperTest {
         holderList.add(new SingleValueHolder(attrValue, "1999-01-31"));
         doReturn(new MultiValueHolder(attrValue, holderList)).when(attrValue).getValueHolder();
 
-        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue, true,
+        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue,
                 ValueDatatype.GREGORIAN_CALENDAR);
         assertEquals("[02.04.2012 | 31.01.1999]", wrapper.getFormattedValue());
     }
@@ -90,7 +90,7 @@ public class ValueHolderToFormattedStringWrapperTest {
         holderList.add(new SingleValueHolder(attrValue, "23.42"));
         doReturn(new MultiValueHolder(attrValue, holderList)).when(attrValue).getValueHolder();
 
-        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue, true,
+        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue,
                 ValueDatatype.DECIMAL);
         assertEquals("[1,23456 | 23,42]", wrapper.getFormattedValue());
     }
@@ -98,7 +98,7 @@ public class ValueHolderToFormattedStringWrapperTest {
     @Test
     public void returnEmptyBracketsOnEmptyList() {
         IAttributeValue attrValue = mock(IAttributeValue.class);
-        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue, true,
+        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue,
                 ValueDatatype.DECIMAL);
         String convertedString = wrapper.convertToString(new ArrayList<String>());
         assertEquals("[]", convertedString);

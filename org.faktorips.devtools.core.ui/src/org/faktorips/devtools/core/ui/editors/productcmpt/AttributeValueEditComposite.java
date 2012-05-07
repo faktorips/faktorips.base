@@ -70,7 +70,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
     }
 
     protected EditField<String> createEditField(ValueDatatype datatype) {
-        EditField<String> editField;
+        EditField<String> editField = null;
         IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
         if (getPropertyValue().getValueHolder() instanceof MultiValueHolder) {
             MultiValueAttributeControl control = new MultiValueAttributeControl(this, getToolkit(), getProperty(),
@@ -82,7 +82,6 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
                     ValueHolderToFormattedStringWrapper.PROPERTY_FORMATTED_VALUE);
             getBindingContext().bindProblemMarker(editField, getPropertyValue().getValueHolder(),
                     MultiValueHolder.PROPERTY_VALUE);
-            return editField;
         } else if (getPropertyValue().getValueHolder() instanceof SingleValueHolder) {
             ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     datatype);
@@ -90,6 +89,10 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
                     .getIpsProject());
             getBindingContext().bindContent(editField, getPropertyValue().getValueHolder(),
                     SingleValueHolder.PROPERTY_VALUE);
+        }
+        if (editField != null) {
+            getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_ATTRIBUTE);
+            getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE_HOLDER);
             return editField;
         }
         throw new RuntimeException("Illegal value holder isntance in attribute " + getProperty().getName()); //$NON-NLS-1$
