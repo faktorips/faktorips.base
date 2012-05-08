@@ -53,7 +53,6 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.FieldExtensionPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMappingByPropertyDescriptor;
-import org.faktorips.devtools.core.ui.controller.Messages;
 import org.faktorips.devtools.core.ui.controller.ProblemMarkerPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
@@ -679,32 +678,6 @@ public class BindingContext {
         for (Entry<EditField<?>, MessageList> entry : fieldMessages.entrySet()) {
             entry.getKey().setMessages(entry.getValue());
         }
-    }
-
-    @Deprecated
-    protected boolean validatableBelongsToMapping(Validatable validatable, FieldPropertyMapping<?> mapping) {
-        Object object = mapping.getObject();
-        if (object instanceof IIpsObjectPartContainer) {
-            IIpsObject ipsObject = ((IIpsObjectPartContainer)object).getIpsObject();
-            return validatable.equals(ipsObject);
-        } else {
-            return validatable.equals(object);
-        }
-    }
-
-    private MessageList getMappingMessages(FieldPropertyMapping<?> mapping, MessageList allValidationMessages) {
-        MessageList mappingMessages = new MessageList();
-        if (mapping.getField().isTextContentParsable()) {
-            for (Message message : allValidationMessages.getMessagesFor(mapping.getObject(), mapping.getPropertyName())) {
-                if (!(ignoredMessageCodes.contains(message.getCode()))) {
-                    mappingMessages.add(message);
-                }
-            }
-        } else {
-            mappingMessages.add(Message.newError(EditField.INVALID_VALUE,
-                    Messages.IpsObjectPartContainerUIController_invalidValue));
-        }
-        return mappingMessages;
     }
 
     private void applyControlBindings() {

@@ -14,10 +14,8 @@
 package org.faktorips.devtools.core.ui.binding;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -45,7 +43,6 @@ import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMappingByPropertyDescriptor;
-import org.faktorips.devtools.core.ui.controller.ProblemMarkerPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -441,44 +438,6 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         assertEquals(1, messageListCaptor2.getValue().size());
         assertSame(msg2, messageListCaptor2.getValue().getMessage(0));
 
-    }
-
-    @Test
-    public void testValidatableBelongsToMapping_IpsObjectPart() {
-        IIpsObject ipsObject = mock(IIpsObject.class);
-        IIpsObject ipsObject2 = mock(IIpsObject.class);
-        ProblemMarkerPropertyMapping<?> mapping = mock(ProblemMarkerPropertyMapping.class);
-        IIpsObjectPartContainer ipsObjectPart = mock(IIpsObjectPartContainer.class);
-
-        when(mapping.getObject()).thenReturn(ipsObjectPart);
-        when(ipsObjectPart.getIpsObject()).thenReturn(ipsObject);
-
-        assertTrue(bindingContext.validatableBelongsToMapping(ipsObject, mapping));
-        assertFalse(bindingContext.validatableBelongsToMapping(ipsObject2, mapping));
-    }
-
-    @Test
-    public void testValidatableBelongsToMapping_Validatable() {
-        Validatable validatable = mock(IValueHolder.class);
-        Validatable validatable2 = mock(IValueHolder.class);
-        ProblemMarkerPropertyMapping<?> mapping = mock(ProblemMarkerPropertyMapping.class);
-
-        when(mapping.getObject()).thenReturn(validatable);
-
-        assertTrue(bindingContext.validatableBelongsToMapping(validatable, mapping));
-        assertFalse(bindingContext.validatableBelongsToMapping(validatable2, mapping));
-
-    }
-
-    @Test
-    public void testValidatableBelongsToMapping_OtherObject() {
-        Validatable validatable = mock(IValueHolder.class);
-        String string = "String";
-        ProblemMarkerPropertyMapping<?> mapping = mock(ProblemMarkerPropertyMapping.class);
-
-        when(mapping.getObject()).thenReturn(string);
-
-        assertFalse(bindingContext.validatableBelongsToMapping(validatable, mapping));
     }
 
     @Test
