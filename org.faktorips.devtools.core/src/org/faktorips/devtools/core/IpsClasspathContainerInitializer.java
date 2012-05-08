@@ -49,6 +49,29 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
     public static final String GROOVY_BUNDLE = "org.faktorips.runtime.groovy"; //$NON-NLS-1$
 
     /**
+     * Returns <code>true</code> if the given groovy support bundle is available, otherwise
+     * <code>false</code>.
+     */
+    public final static boolean isGroovySupportAvailable() {
+        return Platform.getBundle(GROOVY_BUNDLE) != null;
+    }
+
+    /**
+     * Returns <code>true</code> if the given JODA support bundle is available, otherwise
+     * <code>false</code>.
+     */
+    public final static boolean isJodaSupportAvailable() {
+        return Platform.getBundle(JODA_BUNDLE) != null;
+    }
+
+    /**
+     * Returns <code>true</code> if the given bundle is available, otherwise <code>false</code>.
+     */
+    public final static boolean isPluginAvailable(String bundleId) {
+        return Platform.getBundle(bundleId) != null;
+    }
+
+    /**
      * Returns <code>true</code> if container entry specifies that the support library for the JODA
      * library should be included, otherwise <code>false</code>.
      */
@@ -178,9 +201,14 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
             String[] addEntries = getAdditionalBundleIds(containerPath);
             for (String additionalEntry : addEntries) {
-                IClasspathEntry addEntry = JavaCore.newLibraryEntry(getBundlePath(additionalEntry, false),
-                        getBundlePath(additionalEntry, true), null);
-                entryList.add(addEntry);
+                if (isPluginAvailable(additionalEntry)) {
+                    IClasspathEntry addEntry = JavaCore.newLibraryEntry(getBundlePath(additionalEntry, false),
+                            getBundlePath(additionalEntry, true), null);
+                    entryList.add(addEntry);
+                } else {
+                    IpsPlugin.log(new IpsStatus("Can't create classpath entry for " + additionalEntry //$NON-NLS-1$
+                            + ", plugin is not available.")); //$NON-NLS-1$
+                }
             }
             entries = entryList.toArray(new IClasspathEntry[entryList.size()]);
         }
