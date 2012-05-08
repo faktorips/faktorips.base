@@ -16,6 +16,7 @@ package org.faktorips.devtools.core;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -28,6 +29,7 @@ import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.Bundle;
 
 public class IpsClasspathContainerInitializer extends ClasspathContainerInitializer {
@@ -42,6 +44,105 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
     public static final String VALUETYPES_BUNDLE = "org.faktorips.valuetypes.java5"; //$NON-NLS-1$
 
+    public static final String JODA_BUNDLE = "org.faktorips.valuetypes.joda"; //$NON-NLS-1$
+
+    public static final String GROOVY_BUNDLE = "org.faktorips.runtime.groovy"; //$NON-NLS-1$
+
+    /**
+     * Returns <code>true</code> if container entry specifies that the support library for the JODA
+     * library should be included, otherwise <code>false</code>.
+     */
+    public final static boolean isJodaSupportIncluded(IClasspathEntry containerEntry) {
+        return isAdditionalBundleIdsIncluded(containerEntry, JODA_BUNDLE);
+    }
+
+    /**
+     * Returns <code>true</code> if container entry specifies that the support library for
+     * evaluation formulas with Groovy should be included, otherwise <code>false</code>.
+     */
+    public final static boolean isGroovySupportIncluded(IClasspathEntry containerEntry) {
+        return isAdditionalBundleIdsIncluded(containerEntry, GROOVY_BUNDLE);
+    }
+
+    /**
+     * Returns <code>true</code> if container entry specifies that the given bundle should be
+     * included, otherwise <code>false</code>.
+     */
+    private final static boolean isAdditionalBundleIdsIncluded(IClasspathEntry containerEntry, String bundleId) {
+        ArgumentCheck.notNull(containerEntry);
+        ArgumentCheck.notNull(bundleId);
+        String[] bundleIds = getAdditionalBundleIds(containerEntry);
+        for (int i = 0; i < bundleIds.length; i++) {
+            if (bundleId.equals(bundleIds[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the additional bundleIds that are specified to be included by the container entry.
+     * 
+     * @throws NullPointerException if containerPath is <code>null</code>.
+     */
+    private final static String[] getAdditionalBundleIds(IClasspathEntry containerEntry) {
+        return getAdditionalBundleIds(containerEntry.getPath());
+    }
+
+    /**
+     * Returns the additional bundleIds that are specified to be included by the container path.
+     * 
+     * @throws NullPointerException if containerPath is <code>null</code>.
+     */
+    public final static String[] getAdditionalBundleIds(IPath containerPath) {
+        if (containerPath.segmentCount() == 2 && !containerPath.lastSegment().isEmpty()) {
+            String lastSegment = containerPath.lastSegment();
+            return lastSegment.split(","); //$NON-NLS-1$
+        }
+        return new String[0];
+    }
+
+    /**
+     * Creates a new container entry path for the Faktor-IPS runtime and valuetypes libraries and
+     * for additional optional libraries.
+     * 
+     * @param includeJoda <code>true</code> if the support library for JODA should be included.
+     * @param includeGroovy <code>true</code> if the support library for GROOVY should be included.
+     * 
+     * @return A Path like
+     *         "org.faktorips.devtools.core.ipsClasspathContainer/org.faktorips.valuetypes.joda,org.faktorips.runtime.groovy"
+     *         if both additional libraries are included.
+     */
+    public static final IPath newEntryPath(boolean includeJoda, boolean includeGroovy) {
+        List<String> bundleIds = new ArrayList<String>();
+        if (includeJoda) {
+            bundleIds.add(JODA_BUNDLE);
+        }
+        if (includeGroovy) {
+            bundleIds.add(GROOVY_BUNDLE);
+        }
+        return newEntryPath(bundleIds);
+    }
+
+    /**
+     * Creates a new container entry path for the Faktor-IPS runtime and valuetypes libraries and
+     * for additional optional libraries.
+     * 
+     * @return A Path like "org.faktorips.devtools.core.ipsClasspathContainer/bundleId1,bundleId2"
+     */
+    private static final IPath newEntryPath(List<String> additionalBundles) {
+        String path = CONTAINER_ID;
+        for (int i = 0; i < additionalBundles.size(); i++) {
+            if (i == 0) {
+                path = path + '/';
+            } else {
+                path = path + ',';
+            }
+            path = path + additionalBundles.get(i);
+        }
+        return new Path(path);
+    }
+
     public IpsClasspathContainerInitializer() {
         // empty constructor
     }
@@ -51,7 +152,6 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
         IClasspathContainer[] respectiveContainers = new IClasspathContainer[] { new IpsClasspathContainer(
                 containerPath) };
         JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, respectiveContainers, null);
-
     }
 
     class IpsClasspathContainer implements IClasspathContainer {
@@ -71,14 +171,11 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             entryList.add(runtime);
             entryList.add(valuetypes);
 
-            if (containerPath.segmentCount() == 2 && !containerPath.lastSegment().isEmpty()) {
-                String lastSegment = containerPath.lastSegment();
-                String[] addEntries = lastSegment.split(","); //$NON-NLS-1$
-                for (String additionalEntry : addEntries) {
-                    IClasspathEntry addEntry = JavaCore.newLibraryEntry(getBundlePath(additionalEntry, false),
-                            getBundlePath(additionalEntry, true), null);
-                    entryList.add(addEntry);
-                }
+            String[] addEntries = getAdditionalBundleIds(containerPath);
+            for (String additionalEntry : addEntries) {
+                IClasspathEntry addEntry = JavaCore.newLibraryEntry(getBundlePath(additionalEntry, false),
+                        getBundlePath(VALUETYPES_BUNDLE, true), null);
+                entryList.add(addEntry);
             }
             entries = entryList.toArray(new IClasspathEntry[entryList.size()]);
         }

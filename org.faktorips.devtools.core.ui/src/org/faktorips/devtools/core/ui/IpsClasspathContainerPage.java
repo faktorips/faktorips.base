@@ -33,12 +33,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.IpsClasspathContainerInitializer;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 
 public class IpsClasspathContainerPage extends NewElementWizardPage implements IClasspathContainerPage,
         IClasspathContainerPageExtension {
 
     private IClasspathEntry entry;
     private IJavaProject javaProject;
+
+    private Checkbox includeJodaCheckbox;
+    private Checkbox includeGroovyCheckbox;
 
     public IpsClasspathContainerPage() {
         super("Faktor-IPS Library"); //$NON-NLS-1$
@@ -51,12 +55,25 @@ public class IpsClasspathContainerPage extends NewElementWizardPage implements I
     public void createControl(Composite parent) {
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setFont(parent.getFont());
-        composite.setLayout(new GridLayout(2, false));
+        composite.setLayout(new GridLayout(1, false));
 
+        UIToolkit toolkit = new UIToolkit(null);
+        includeJodaCheckbox = toolkit.createCheckbox(composite, Messages.IpsClasspathContainerPage_1);
+        includeJodaCheckbox.setChecked(IpsClasspathContainerInitializer.isJodaSupportIncluded(entry));
+
+        includeGroovyCheckbox = toolkit.createCheckbox(composite, Messages.IpsClasspathContainerPage_2);
+        includeGroovyCheckbox.setChecked(IpsClasspathContainerInitializer.isGroovySupportIncluded(entry));
+
+        toolkit.createVerticalSpacer(composite, 8);
         Label label = new Label(composite, SWT.NONE);
         label.setFont(composite.getFont());
         label.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, false, false, 1, 1));
-        label.setText(Messages.IpsClasspathContainerPage_1);
+        label.setText(Messages.IpsClasspathContainerPage_3);
+
+        label = new Label(composite, SWT.NONE);
+        label.setFont(composite.getFont());
+        label.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, false, false, 1, 1));
+        label.setText(Messages.IpsClasspathContainerPage_4);
 
         setControl(composite);
     }
@@ -78,12 +95,9 @@ public class IpsClasspathContainerPage extends NewElementWizardPage implements I
         try {
             IClasspathContainer[] containers = { null };
             IPath entryPath;
-            if (entry == null) {
-                entryPath = IpsClasspathContainerInitializer.ENTRY_PATH;
-                entry = JavaCore.newContainerEntry(entryPath);
-            } else {
-                entryPath = entry.getPath();
-            }
+            entryPath = IpsClasspathContainerInitializer.newEntryPath(includeJodaCheckbox.isChecked(),
+                    includeGroovyCheckbox.isChecked());
+            entry = JavaCore.newContainerEntry(entryPath);
             // I expected that it would work to pass the "current" java project in the
             // setClasspathContainer(..) method,
             // however when you do this, Eclipse marks the classpath entry as unbound (you can see
