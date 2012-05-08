@@ -17,9 +17,22 @@ import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.junit.Test;
 
 public class IpsClasspathContainerInitializerTest {
+
+    @Test
+    public void testGetAdditionalBundleIds_NullBehaviour_for_ClasspathEntry() {
+        String[] ids = IpsClasspathContainerInitializer.getAdditionalBundleIds((IClasspathEntry)null);
+        assertEquals(0, ids.length);
+    }
+
+    @Test
+    public void testGetAdditionalBundleIds_NullBehaviour_for_Path() {
+        String[] ids = IpsClasspathContainerInitializer.getAdditionalBundleIds((IPath)null);
+        assertEquals(0, ids.length);
+    }
 
     @Test
     public void testGetAdditionalBundleIds() {

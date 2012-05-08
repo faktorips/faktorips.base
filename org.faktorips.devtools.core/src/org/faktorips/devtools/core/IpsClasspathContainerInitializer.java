@@ -58,7 +58,8 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
     /**
      * Returns <code>true</code> if container entry specifies that the support library for
-     * evaluation formulas with Groovy should be included, otherwise <code>false</code>.
+     * evaluation formulas with Groovy should be included, otherwise <code>false</code>. Returns
+     * <code>false</code> if containerEntry is <code>null</code>.
      */
     public final static boolean isGroovySupportIncluded(IClasspathEntry containerEntry) {
         return isAdditionalBundleIdsIncluded(containerEntry, GROOVY_BUNDLE);
@@ -66,10 +67,10 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
     /**
      * Returns <code>true</code> if container entry specifies that the given bundle should be
-     * included, otherwise <code>false</code>.
+     * included, otherwise <code>false</code>. Returns <code>false</code> if containerEntry is
+     * <code>null</code>.
      */
     private final static boolean isAdditionalBundleIdsIncluded(IClasspathEntry containerEntry, String bundleId) {
-        ArgumentCheck.notNull(containerEntry);
         ArgumentCheck.notNull(bundleId);
         String[] bundleIds = getAdditionalBundleIds(containerEntry);
         for (int i = 0; i < bundleIds.length; i++) {
@@ -82,19 +83,23 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
     /**
      * Returns the additional bundleIds that are specified to be included by the container entry.
-     * 
-     * @throws NullPointerException if containerPath is <code>null</code>.
+     * Returns an empty array if containerEntry is <code>null</code>.
      */
-    private final static String[] getAdditionalBundleIds(IClasspathEntry containerEntry) {
+    public final static String[] getAdditionalBundleIds(IClasspathEntry containerEntry) {
+        if (containerEntry == null) {
+            return new String[0];
+        }
         return getAdditionalBundleIds(containerEntry.getPath());
     }
 
     /**
      * Returns the additional bundleIds that are specified to be included by the container path.
-     * 
-     * @throws NullPointerException if containerPath is <code>null</code>.
+     * Returns an empty array if containerPath is <code>null</code>.
      */
     public final static String[] getAdditionalBundleIds(IPath containerPath) {
+        if (containerPath == null) {
+            return new String[0];
+        }
         if (containerPath.segmentCount() == 2 && !containerPath.lastSegment().isEmpty()) {
             String lastSegment = containerPath.lastSegment();
             return lastSegment.split(","); //$NON-NLS-1$
