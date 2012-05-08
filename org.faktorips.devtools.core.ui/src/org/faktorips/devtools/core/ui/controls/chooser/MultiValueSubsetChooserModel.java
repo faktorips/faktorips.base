@@ -92,8 +92,8 @@ public class MultiValueSubsetChooserModel extends AbstractSubsetChooserModel {
     }
 
     @Override
-    protected void removeFromResultingValues(ListChooserValue value) {
-        resultingValues.remove(value);
+    protected void removeFromResultingValues(List<ListChooserValue> values) {
+        resultingValues.removeAll(values);
         updateMultiValueHolder();
     }
 
@@ -107,8 +107,8 @@ public class MultiValueSubsetChooserModel extends AbstractSubsetChooserModel {
     }
 
     @Override
-    protected void addToResultingValues(ListChooserValue value) {
-        resultingValues.add(value);
+    protected void addToResultingValues(List<ListChooserValue> values) {
+        resultingValues.addAll(values);
         updateMultiValueHolder();
     }
 

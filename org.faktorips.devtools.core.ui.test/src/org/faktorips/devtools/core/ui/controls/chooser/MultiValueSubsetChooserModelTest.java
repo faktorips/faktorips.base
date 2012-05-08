@@ -102,7 +102,9 @@ public class MultiValueSubsetChooserModelTest {
     public void removeFromResultingValues() {
         model = spy(model);
 
-        model.removeFromResultingValues(new ListChooserValue("B"));
+        List<ListChooserValue> valueList = new ArrayList<ListChooserValue>();
+        valueList.add(new ListChooserValue("B"));
+        model.removeFromResultingValues(valueList);
         verify(model).updateMultiValueHolder();
         List<ListChooserValue> newValues = model.getResultingValues();
         assertEquals(4, newValues.size());
@@ -116,7 +118,9 @@ public class MultiValueSubsetChooserModelTest {
     public void addToResultingValues() {
         model = spy(model);
 
-        model.addToResultingValues(new ListChooserValue("X"));
+        List<ListChooserValue> valueList = new ArrayList<ListChooserValue>();
+        valueList.add(new ListChooserValue("X"));
+        model.addToResultingValues(valueList);
         verify(model).updateMultiValueHolder();
         List<ListChooserValue> newValues = model.getResultingValues();
         assertEquals(6, newValues.size());
@@ -135,7 +139,9 @@ public class MultiValueSubsetChooserModelTest {
         model = spy(model);
 
         ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-        model.addToResultingValues(new ListChooserValue("X"));
+        List<ListChooserValue> valueList = new ArrayList<ListChooserValue>();
+        valueList.add(new ListChooserValue("X"));
+        model.addToResultingValues(valueList);
 
         verify(multiValueHolder).setValue(captor.capture());
 

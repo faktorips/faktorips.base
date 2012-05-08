@@ -51,10 +51,16 @@ public interface IEnumValueSet extends IValueSet {
     public List<Integer> getPositions(String value);
 
     /**
-     * Adds the value to the set. Duplicate values are allowed but will lead to a message if
+     * Adds the value to the set. Duplicate values are allowed but will lead to an error message if
      * validated.
      */
     public void addValue(String val);
+
+    /**
+     * Adds all values in the list to this set. Duplicate values are allowed but will lead to an
+     * error message if validated.
+     */
+    public void addValues(List<String> values);
 
     /**
      * Removes the value at the given index from the value set.
@@ -67,6 +73,12 @@ public interface IEnumValueSet extends IValueSet {
      * Removes the given value. If the value is not contained, nothing happens.
      */
     public void removeValue(String string);
+
+    /**
+     * Removes the given values from this value set. If a value is not contained in this value set,
+     * it will be ignored.
+     */
+    public void removeValues(List<String> values);
 
     /**
      * Retrieves the value at the given index.

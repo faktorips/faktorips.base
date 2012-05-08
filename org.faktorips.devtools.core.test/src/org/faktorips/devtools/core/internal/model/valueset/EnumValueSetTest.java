@@ -18,6 +18,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +36,8 @@ import org.faktorips.datatype.PrimitiveIntegerDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.enums.DefaultEnumType;
 import org.faktorips.devtools.core.enums.DefaultEnumValue;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -722,4 +729,55 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertTrue(set.getContainsNull());
     }
 
+    @Test
+    public void testAddValues() {
+        EnumValueSet set = spy(new EnumValueSet(ce, "50"));
+        ContentsChangeListener mockedListener = mock(ContentsChangeListener.class);
+        set.getIpsModel().addChangeListener(mockedListener);
+        set.getIpsModel().addChangeListener(mockedListener);
+
+        set.addValue("1");
+        set.addValue("two");
+        set.addValue("THREE");
+        assertEquals(3, set.size());
+        verify(mockedListener, times(3)).contentsChanged(any(ContentChangeEvent.class));
+
+        List<String> values = new ArrayList<String>();
+        values.add("4");
+        values.add("five");
+        values.add("SIX");
+
+        set.addValues(values);
+        assertEquals(6, set.size());
+        verify(mockedListener, times(4)).contentsChanged(any(ContentChangeEvent.class));
+
+        set.getIpsModel().removeChangeListener(mockedListener);
+    }
+
+    @Test
+    public void testRemoveValues() {
+        EnumValueSet set = spy(new EnumValueSet(ce, "50"));
+        ContentsChangeListener mockedListener = mock(ContentsChangeListener.class);
+        set.getIpsModel().addChangeListener(mockedListener);
+
+        set.addValue("1");
+        set.addValue("two");
+        set.addValue("THREE");
+        set.addValue("4");
+        set.addValue("five");
+        set.addValue("SIX");
+        assertEquals(6, set.size());
+        verify(mockedListener, times(6)).contentsChanged(any(ContentChangeEvent.class));
+
+        List<String> values = new ArrayList<String>();
+        values.add("two");
+        values.add("4");
+        values.add("SIX");
+
+        set.removeValues(values);
+        assertEquals(3, set.size());
+        verify(mockedListener, times(7)).contentsChanged(any(ContentChangeEvent.class));
+
+        set.getIpsModel().removeChangeListener(mockedListener);
+    }
 }

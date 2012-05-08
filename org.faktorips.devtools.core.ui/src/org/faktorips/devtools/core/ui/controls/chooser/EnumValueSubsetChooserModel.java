@@ -50,13 +50,21 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
     }
 
     @Override
-    protected void removeFromResultingValues(ListChooserValue value) {
-        resultingEnumValueSet.removeValue(value.getValue());
+    protected void removeFromResultingValues(List<ListChooserValue> values) {
+        resultingEnumValueSet.removeValues(toStringList(values));
     }
 
     @Override
-    protected void addToResultingValues(ListChooserValue value) {
-        resultingEnumValueSet.addValue(value.getValue());
+    protected void addToResultingValues(List<ListChooserValue> values) {
+        resultingEnumValueSet.addValues(toStringList(values));
+    }
+
+    protected List<String> toStringList(List<ListChooserValue> values) {
+        List<String> stringValues = new ArrayList<String>();
+        for (ListChooserValue listChooserValue : values) {
+            stringValues.add(listChooserValue.getValue());
+        }
+        return stringValues;
     }
 
     @Override
@@ -81,7 +89,6 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
 
     @Override
     protected void moveInternal(List<ListChooserValue> selectedValues, boolean up) {
-
         List<Integer> indices = new ArrayList<Integer>();
         for (ListChooserValue value : selectedValues) {
             List<Integer> positions = resultingEnumValueSet.getPositions(value.getValue());

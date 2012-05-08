@@ -217,6 +217,14 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         objectHasChanged();
     }
 
+    @Override
+    public void addValues(List<String> values) {
+        for (String value : values) {
+            addValueWithoutTriggeringChangeEvent(value);
+        }
+        objectHasChanged();
+    }
+
     public void addValueWithoutTriggeringChangeEvent(String newValue) {
         values.add(newValue);
         Integer newIndex = values.size() - 1;
@@ -242,6 +250,14 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     @Override
     public void removeValue(String value) {
         removeWithoutTriggeringChangeEvents(value);
+        objectHasChanged();
+    }
+
+    @Override
+    public void removeValues(List<String> values) {
+        for (String value : values) {
+            removeWithoutTriggeringChangeEvents(value);
+        }
         objectHasChanged();
     }
 

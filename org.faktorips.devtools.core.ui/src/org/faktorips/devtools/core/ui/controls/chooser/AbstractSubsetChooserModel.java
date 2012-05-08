@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.util.message.MessageList;
 
@@ -65,9 +66,7 @@ public abstract class AbstractSubsetChooserModel extends PresentationModelObject
 
     public void moveValuesFromResultingToPredefined(List<ListChooserValue> values) {
         List<ListChooserValue> oldValues = getResultingValues();
-        for (ListChooserValue value : new CopyOnWriteArrayList<ListChooserValue>(values)) {
-            removeFromResultingValues(value);
-        }
+        removeFromResultingValues(new CopyOnWriteArrayList<ListChooserValue>(values));
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_RESULTING_VALUES, oldValues, getResultingValues()));
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_PREDEFINED_VALUES, oldValues, getResultingValues()));
     }
@@ -84,9 +83,7 @@ public abstract class AbstractSubsetChooserModel extends PresentationModelObject
      */
     public void moveValuesFromPreDefinedToResulting(List<ListChooserValue> values) {
         List<ListChooserValue> oldValues = getResultingValues();
-        for (ListChooserValue value : new CopyOnWriteArrayList<ListChooserValue>(values)) {
-            addToResultingValues(value);
-        }
+        addToResultingValues(new CopyOnWriteArrayList<ListChooserValue>(values));
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_RESULTING_VALUES, oldValues, getResultingValues()));
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_PREDEFINED_VALUES, oldValues, getResultingValues()));
     }
@@ -95,9 +92,22 @@ public abstract class AbstractSubsetChooserModel extends PresentationModelObject
 
     public abstract List<ListChooserValue> getResultingValues();
 
-    protected abstract void removeFromResultingValues(ListChooserValue value);
+    /**
+     * Removes all given values from the list of resulting values. Only one
+     * {@link ContentChangeEvent} should be fired during this operation to ensure UI performance and
+     * responsiveness.
+     * 
+     * @param values the list of values to be removed from the chooser's result.
+     */
+    protected abstract void removeFromResultingValues(List<ListChooserValue> values);
 
-    protected abstract void addToResultingValues(ListChooserValue value);
+    /**
+     * Add all given values to the list of resulting values. Only one {@link ContentChangeEvent}
+     * should be fired during this operation to ensure UI performance and responsiveness.
+     * 
+     * @param values the list of values to be removed from the chooser's result.
+     */
+    protected abstract void addToResultingValues(List<ListChooserValue> values);
 
     protected abstract void moveInternal(List<ListChooserValue> selectedValues, boolean up);
 
