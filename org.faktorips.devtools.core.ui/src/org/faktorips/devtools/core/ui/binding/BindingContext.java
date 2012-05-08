@@ -18,9 +18,12 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -69,6 +72,7 @@ import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 
 /**
  * A <code>BindingContext</code> provides binding between the user interface and a (domain or
@@ -633,42 +637,51 @@ public class BindingContext {
      */
     protected void showValidationStatus(List<FieldPropertyMapping<?>> propertyMappings) {
         Set<Validatable> copy = new CopyOnWriteArraySet<Validatable>(validatables);
+        Map<ObjectProperty, MessageList> validationMap = new HashMap<ObjectProperty, MessageList>();
+
         for (Validatable validatable : copy) {
-            showValidationStatus(validatable, propertyMappings);
+            try {
+                MessageList messageList = validatable.validate(validatable.getIpsProject());
+                for (Message message : messageList) {
+                    ObjectProperty[] invalidObjectProperties = message.getInvalidObjectProperties();
+                    for (ObjectProperty objectProperty : invalidObjectProperties) {
+                        MessageList propertyList = validationMap.get(objectProperty);
+                        if (propertyList == null) {
+                            propertyList = new MessageList();
+                            validationMap.put(objectProperty, propertyList);
+                        }
+                        propertyList.add(message);
+                    }
+                }
+            } catch (CoreException e) {
+                // goto next
+            }
         }
+        showValidationStatus(validationMap, propertyMappings);
     }
 
-    /**
-     * Validates the part container and updates the fields that are associated with attributes of
-     * the {@link IIpsObject}.
-     * <p>
-     * Returns the {@link MessageList} which is the result of the validation. This return value can
-     * be evaluated when overriding this method.
-     * 
-     * @return the validation message list (never returns null)
-     */
-    protected MessageList showValidationStatus(Validatable validatable, List<FieldPropertyMapping<?>> propertyMappings) {
-        MessageList allValidationMessages;
-        try {
-            allValidationMessages = validatable.validate(validatable.getIpsProject());
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return new MessageList();
-        }
-
+    private void showValidationStatus(Map<ObjectProperty, MessageList> validationMap,
+            List<FieldPropertyMapping<?>> propertyMappings) {
+        HashMap<EditField<?>, MessageList> fieldMessages = new HashMap<EditField<?>, MessageList>();
         for (FieldPropertyMapping<?> mapping : propertyMappings) {
             if (mapping.getField().getControl() == null || mapping.getField().getControl().isDisposed()) {
                 continue;
             }
-            if (validatableBelongsToMapping(validatable, mapping)) {
-                MessageList mappingMessages = getMappingMessages(mapping, allValidationMessages);
-                mapping.getField().setMessages(mappingMessages);
+            ObjectProperty objectProperty = new ObjectProperty(mapping.getObject(), mapping.getPropertyName());
+            MessageList messageList = validationMap.get(objectProperty);
+            MessageList listForField = fieldMessages.get(mapping.getField());
+            if (listForField == null) {
+                listForField = new MessageList();
+                fieldMessages.put(mapping.getField(), listForField);
             }
+            listForField.add(messageList);
         }
-
-        return allValidationMessages;
+        for (Entry<EditField<?>, MessageList> entry : fieldMessages.entrySet()) {
+            entry.getKey().setMessages(entry.getValue());
+        }
     }
 
+    @Deprecated
     protected boolean validatableBelongsToMapping(Validatable validatable, FieldPropertyMapping<?> mapping) {
         Object object = mapping.getObject();
         if (object instanceof IIpsObjectPartContainer) {

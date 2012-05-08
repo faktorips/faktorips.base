@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.binding;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -320,21 +321,26 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         EditField<?> fieldWithError = mockField();
 
         MessageList list = new MessageList();
-        MessageList errorList = new MessageList();
-        errorList.add(new Message("code", "messageText", Message.ERROR, validatableWithError,
-                IValueHolder.PROPERTY_VALUE));
+        MessageList msgList = new MessageList();
+        msgList.add(new Message("code", "messageText", Message.ERROR, validatableWithError, IValueHolder.PROPERTY_VALUE));
         when(validatable.validate(any(IIpsProject.class))).thenReturn(list);
-        when(validatableWithError.validate(any(IIpsProject.class))).thenReturn(errorList);
+        when(validatableWithError.validate(any(IIpsProject.class))).thenReturn(msgList);
 
         bindingContext.bindProblemMarker(field, validatable, IValueHolder.PROPERTY_VALUE);
         bindingContext.bindProblemMarker(fieldWithError, validatableWithError, IValueHolder.PROPERTY_VALUE);
 
         bindingContext.updateUI();
 
+        ArgumentCaptor<MessageList> captor = ArgumentCaptor.forClass(MessageList.class);
+
         verify(field).setMessages(list);
-        verify(field, never()).setMessages(errorList);
-        verify(fieldWithError).setMessages(errorList);
-        verify(fieldWithError, never()).setMessages(list);
+        verify(field).setMessages(captor.capture());
+        assertEquals(0, captor.getValue().size());
+
+        captor = ArgumentCaptor.forClass(MessageList.class);
+        verify(fieldWithError).setMessages(captor.capture());
+        assertEquals(1, captor.getValue().size());
+        assertNotNull(captor.getValue().getMessageByCode("code"));
     }
 
     protected Validatable mockValidatable() {
@@ -474,4 +480,55 @@ public class BindingContextTest extends AbstractIpsPluginTest {
 
         assertFalse(bindingContext.validatableBelongsToMapping(validatable, mapping));
     }
+
+    @Test
+    public void testMultipleProblemToOneField() throws Exception {
+        Validatable validatable1 = mockValidatable();
+        EditField<?> field = mockField();
+        Validatable validatable2 = mockValidatable();
+
+        MessageList list1 = new MessageList();
+        MessageList list2 = new MessageList();
+        list1.add(new Message("code1", "messageText", Message.ERROR, validatable1, IValueHolder.PROPERTY_VALUE));
+        list2.add(new Message("code2", "messageText", Message.ERROR, validatable2, IValueHolder.PROPERTY_VALUE));
+        when(validatable1.validate(any(IIpsProject.class))).thenReturn(list1);
+        when(validatable2.validate(any(IIpsProject.class))).thenReturn(list2);
+
+        bindingContext.bindProblemMarker(field, validatable1, IValueHolder.PROPERTY_VALUE);
+        bindingContext.bindProblemMarker(field, validatable2, IValueHolder.PROPERTY_VALUE);
+
+        bindingContext.updateUI();
+
+        ArgumentCaptor<MessageList> captor = ArgumentCaptor.forClass(MessageList.class);
+        verify(field).setMessages(captor.capture());
+        assertEquals(2, captor.getValue().size());
+        assertNotNull(captor.getValue().getMessageByCode("code1"));
+        assertNotNull(captor.getValue().getMessageByCode("code2"));
+    }
+
+    @Test
+    public void testMultipleProblemsInOneObjectPropertyToOneField() throws Exception {
+        Validatable validatable1 = mockValidatable();
+        EditField<?> field = mockField();
+        Validatable validatable2 = mockValidatable();
+
+        MessageList list1 = new MessageList();
+        MessageList list2 = new MessageList();
+        list1.add(new Message("code1", "messageText", Message.ERROR, validatable1, IValueHolder.PROPERTY_VALUE));
+        list2.add(new Message("code2", "messageText2", Message.ERROR, validatable1, IValueHolder.PROPERTY_VALUE));
+        when(validatable1.validate(any(IIpsProject.class))).thenReturn(list1);
+        when(validatable2.validate(any(IIpsProject.class))).thenReturn(list2);
+
+        bindingContext.bindProblemMarker(field, validatable1, IValueHolder.PROPERTY_VALUE);
+        bindingContext.bindProblemMarker(field, validatable2, IValueHolder.PROPERTY_VALUE);
+
+        bindingContext.updateUI();
+
+        ArgumentCaptor<MessageList> captor = ArgumentCaptor.forClass(MessageList.class);
+        verify(field).setMessages(captor.capture());
+        assertEquals(2, captor.getValue().size());
+        assertNotNull(captor.getValue().getMessageByCode("code1"));
+        assertNotNull(captor.getValue().getMessageByCode("code2"));
+    }
+
 }
