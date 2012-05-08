@@ -1555,13 +1555,17 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodBuilder.appendln("){");
         methodBuilder.appendln("return;");
         methodBuilder.appendln("}");
+        String internalParentVar = "parent";
+        if (parentObjectFieldName.equals(internalParentVar)) {
+            internalParentVar = "existingParent";
+        }
         methodBuilder.appendClassName(IModelObject.class);
-        methodBuilder.append(" parent = ");
+        methodBuilder.append(" ").append(internalParentVar).append(" = ");
         methodBuilder.append(MethodNames.GET_PARENT);
         methodBuilder.appendln("();");
         methodBuilder.appendln("if (");
         methodBuilder.append(paramName);
-        methodBuilder.append(" != null && parent != null) {");
+        methodBuilder.append(" != null && ").append(internalParentVar).append(" != null) {");
         String exceptionMessage = NLS.bind(
                 getLocalizedText(getPcType(), "RUNTIME_EXCEPTION_SET_PARENT_OBJECT_INTERNAL"), new String[] {
                         getPcType().getUnqualifiedName(), association.getTargetRoleSingular() });
@@ -1570,7 +1574,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodBuilder.appendln(");}");
 
         // set the new parent
-        methodBuilder.append(parentObjectFieldName);
+        methodBuilder.append("this.").append(parentObjectFieldName);
         methodBuilder.append(" = (");
         methodBuilder.appendClassName(getTargetQualifiedName(association, false));
         methodBuilder.appendln(") newParent;");
