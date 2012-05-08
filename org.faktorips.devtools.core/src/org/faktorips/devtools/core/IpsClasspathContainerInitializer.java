@@ -174,7 +174,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             String[] addEntries = getAdditionalBundleIds(containerPath);
             for (String additionalEntry : addEntries) {
                 IClasspathEntry addEntry = JavaCore.newLibraryEntry(getBundlePath(additionalEntry, false),
-                        getBundlePath(VALUETYPES_BUNDLE, true), null);
+                        getBundlePath(additionalEntry, true), null);
                 entryList.add(addEntry);
             }
             entries = entryList.toArray(new IClasspathEntry[entryList.size()]);
