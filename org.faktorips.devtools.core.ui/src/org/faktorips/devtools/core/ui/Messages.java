@@ -109,6 +109,8 @@ public class Messages extends NLS {
 
     public static String IpsClasspathContainerPage_4;
 
+    public static String IpsClasspathContainerPage_5;
+
     public static String LinkDropListener_selectAssociation;
 
 }

@@ -58,24 +58,33 @@ public class IpsClasspathContainerPage extends NewElementWizardPage implements I
         composite.setLayout(new GridLayout(1, false));
 
         UIToolkit toolkit = new UIToolkit(null);
-        includeJodaCheckbox = toolkit.createCheckbox(composite, Messages.IpsClasspathContainerPage_1);
+        String text = Messages.IpsClasspathContainerPage_1;
+        if (!IpsClasspathContainerInitializer.isJodaSupportAvailable()) {
+            text = text + Messages.IpsClasspathContainerPage_5;
+        }
+        includeJodaCheckbox = toolkit.createCheckbox(composite, text);
         includeJodaCheckbox.setChecked(IpsClasspathContainerInitializer.isJodaSupportIncluded(entry));
 
-        includeGroovyCheckbox = toolkit.createCheckbox(composite, Messages.IpsClasspathContainerPage_2);
+        text = Messages.IpsClasspathContainerPage_2;
+        if (!IpsClasspathContainerInitializer.isGroovySupportAvailable()) {
+            text = text + Messages.IpsClasspathContainerPage_5;
+        }
+        includeGroovyCheckbox = toolkit.createCheckbox(composite, text);
         includeGroovyCheckbox.setChecked(IpsClasspathContainerInitializer.isGroovySupportIncluded(entry));
 
         toolkit.createVerticalSpacer(composite, 8);
-        Label label = new Label(composite, SWT.NONE);
-        label.setFont(composite.getFont());
-        label.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, false, false, 1, 1));
-        label.setText(Messages.IpsClasspathContainerPage_3);
-
-        label = new Label(composite, SWT.NONE);
-        label.setFont(composite.getFont());
-        label.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, false, false, 1, 1));
-        label.setText(Messages.IpsClasspathContainerPage_4);
+        createLabel(composite, Messages.IpsClasspathContainerPage_3);
+        createLabel(composite, Messages.IpsClasspathContainerPage_4);
 
         setControl(composite);
+    }
+
+    private Label createLabel(Composite parent, String text) {
+        Label label = new Label(parent, SWT.NONE);
+        label.setFont(parent.getFont());
+        label.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, false, false, 1, 1));
+        label.setText(text);
+        return label;
     }
 
     public static IJavaProject getPlaceholderProject() {
