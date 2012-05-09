@@ -631,8 +631,12 @@ public class BindingContext {
     }
 
     /**
-     * Validates all bound part containers and updates the fields that are associated with their
-     * properties.
+     * Validates all bound objects (IPSObject part containers an validatables) and updates the
+     * fields that are associated with their properties.
+     * <p>
+     * Ensures that multiple bindings to the same field and/or same object are accumulated in a
+     * single error marker update. IOW error marker updates from different bindings (of the same
+     * field) will not overwrite each other.
      */
     protected void showValidationStatus(List<FieldPropertyMapping<?>> propertyMappings) {
         Set<Validatable> copy = new CopyOnWriteArraySet<Validatable>(validatables);
