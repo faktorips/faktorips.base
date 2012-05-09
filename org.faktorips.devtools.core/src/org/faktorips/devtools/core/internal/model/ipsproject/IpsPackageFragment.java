@@ -53,7 +53,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefin
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.util.EclipseIOUtil;
-import org.faktorips.devtools.core.util.EclipseIOUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;

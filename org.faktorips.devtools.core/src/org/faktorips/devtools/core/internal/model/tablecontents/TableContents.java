@@ -254,13 +254,13 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     }
 
     /**
-     * As far Tables only have one generation and the valide from date may no be specified correctly
+     * As far Tables only have one generation and the valid from date may no be specified correctly
      * we always return the same generation.
      * 
      * {@inheritDoc}
      */
     @Override
-    public IIpsObjectGeneration findGenerationEffectiveOn(GregorianCalendar date) {
+    public IIpsObjectGeneration getGenerationEffectiveOn(GregorianCalendar date) {
         return getFirstGeneration();
     }
 
