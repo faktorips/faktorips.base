@@ -1,3 +1,9 @@
+./releaseFaktorIps.sh -version 3.7.0.rfinal -skipTest -forceBuild -skipTaggingCvs -buildProduct de.aoksystems.omc.faktorips.core  -customBuild aok -skipPublish -addDropins /home/ortmann2/tmp_fips_release/checkout_release/org.faktorips.devtarget.galileo/eclipse/deltapack/eclipse -devtarget org.faktorips.devtarget.galileo
+
+cp /home/ortmann2/tmp_fips_release/pluginbuilder_release_tmp/org.faktorips.pluginbuilder_release/results/faktorips-3.7.0.rfinal-win32.win32.x86.zip /var/www/update.faktorzehn.org/faktorips/aok/downloads/faktorips-3.7/faktorips-3.7.0.rfinal-aok-win32.win32.x86.zip
+
+
+------
 #!/bin/bash
 
 SCRIPTNAME=$(basename $0)

@@ -775,7 +775,7 @@ checkoutPluginbuilderPartsAndDevtarget()
   fi
   
   # special case for custom build aok
-  if [ "$CUSTOM_BUILD" = "aok" ] ; then
+  if [ "$CUSTOM_BUILD" = "aok" -a ! -n "$BUILDPRODUCT" ] ; then
     checkoutModule $DEVTARGET_PLUGIN_PATH/eclipse/dropins/aok $_FETCH_TAG de.aoksystems.omc.tools.feature/dropins $BRANCH
   fi
 }
