@@ -139,8 +139,14 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
 
         for (String each : values) {
-            if (datatype.areValuesEqual(each, value) && datatype.isParsable(each)) {
-                return true;
+            try {
+                // for performance optimization we first check equality. If the value is not
+                // parsable, the equals check may throw an IllegalArgumentException
+                if (datatype.areValuesEqual(each, value) && datatype.isParsable(each)) {
+                    return true;
+                }
+            } catch (IllegalArgumentException e) {
+                continue;
             }
         }
 
