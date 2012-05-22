@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.valueset;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -138,7 +139,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
 
         for (String each : values) {
-            if (datatype.isParsable(each) && datatype.areValuesEqual(each, value)) {
+            if (datatype.areValuesEqual(each, value) && datatype.isParsable(each)) {
                 return true;
             }
         }
@@ -485,9 +486,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     @Override
     public void addValuesFromDatatype(EnumDatatype datatype) {
         String[] valueIds = datatype.getAllValueIds(true);
-        for (String valueId : valueIds) {
-            addValue(valueId);
-        }
+        addValues(Arrays.asList(valueIds));
     }
 
     @Override

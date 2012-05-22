@@ -159,15 +159,26 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         return result;
     }
 
+    private boolean isIdentifierAttributeValues(String value) {
+        try {
+            return getEnumValueContainer().findEnumValue(value, getEnumValueContainer().getIpsProject()) != null;
+        } catch (CoreException e) {
+            return false;
+        }
+    }
+
     @Override
     public boolean areValuesEqual(String valueA, String valueB) {
-        List<String> result = findAllIdentifierAttributeValues(true);
-        if (result.contains(valueA) && result.contains(valueB)) {
-            return ObjectUtils.equals(valueA, valueB);
+        if (ObjectUtils.equals(valueA, valueB)) {
+            if (isParsable(valueA)) {
+                return true;
+            } else {
+                throw new IllegalArgumentException("Either the value of parameter valueA=" + valueA //$NON-NLS-1$
+                        + " or the one of parameter valueB=" //$NON-NLS-1$
+                        + " is not part of this enumeration type. Therefore the equality cannot be determined."); //$NON-NLS-1$
+            }
         }
-        throw new IllegalArgumentException("Either the value of parameter valueA=" + valueA //$NON-NLS-1$
-                + " or the one of parameter valueB=" //$NON-NLS-1$
-                + " is not part of this enumeration type. Therefore the equality cannot be determined."); //$NON-NLS-1$
+        return false;
     }
 
     @Override
@@ -242,8 +253,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      */
     @Override
     public boolean isParsable(String value) {
-        List<String> result = findAllIdentifierAttributeValues(true);
-        return result.contains(value);
+        return value == null || isIdentifierAttributeValues(value);
     }
 
     /**
