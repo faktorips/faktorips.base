@@ -231,7 +231,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private void validateRequiredFeatures(MessageList list) {
         IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
         for (IIpsFeatureVersionManager manager : managers) {
-            if (getMinRequiredVersionNumber(manager.getFeatureId()) == null) {
+            if (manager.isRequiredForAllProjects() && getMinRequiredVersionNumber(manager.getFeatureId()) == null) {
                 String text = NLS.bind(Messages.IpsProjectProperties_msgMissingMinFeatureId, manager.getFeatureId());
                 list.add(new Message(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID, text, Message.ERROR, this));
             }

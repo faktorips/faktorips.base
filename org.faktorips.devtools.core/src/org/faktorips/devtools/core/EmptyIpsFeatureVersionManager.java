@@ -83,4 +83,14 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public boolean isRequiredForAllProjects() {
+        return true;
+    }
+
+    @Override
+    public void setRequiredForAllProjects(boolean required) {
+        throw new UnsupportedOperationException();
+    }
+
 }

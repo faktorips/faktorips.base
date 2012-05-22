@@ -297,7 +297,8 @@
             basedOnFeatureManager="org.faktorips.feature.versionmanagerv2"
             class="org.faktorips.devtools.core.internal.migrationextensions.IpsExtendableVersionManager"
             featureId="org.faktorips.feature"
-            id="org.faktorips.feature.versionmanagerV3">
+            id="org.faktorips.feature.versionmanagerV3"
+            requiredForAllProjects="true">
       </faktorIpsFeatureVersionManager>
    </extension>
    <extension

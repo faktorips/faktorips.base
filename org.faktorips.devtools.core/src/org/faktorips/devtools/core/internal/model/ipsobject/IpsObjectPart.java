@@ -162,7 +162,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + ((id == null) ? 0 : id.hashCode());
-        result = 31 * result + ((parent == null) ? 0 : parent.hashCode());
+        // result = 31 * result + ((parent == null) ? 0 : parent.hashCode());
         return result;
     }
 

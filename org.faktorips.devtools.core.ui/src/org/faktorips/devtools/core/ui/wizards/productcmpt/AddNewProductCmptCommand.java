@@ -51,6 +51,8 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
             } else if (firstElement instanceof IProductCmptStructureReference) {
                 addNewLinkOnReference(event);
                 return null;
+            } else {
+                throw new RuntimeException();
             }
         }
         return null;
@@ -103,6 +105,7 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
                     association = (IProductCmptTypeAssociation)generation.findProductCmptType(
                             generation.getIpsProject()).findAssociation(selectedAssociationParameter,
                             generation.getIpsProject());
+                    initWizard(generation, association, null, HandlerUtil.getActiveShell(event));
                 } else {
                     association = (IProductCmptTypeAssociation)structureReference
                             .getAdapter(IProductCmptTypeAssociation.class);

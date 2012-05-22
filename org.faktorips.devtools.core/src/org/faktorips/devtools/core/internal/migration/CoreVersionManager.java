@@ -39,6 +39,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     private String version;
     private String id;
     private String predecessorId;
+    private boolean requiredForAllProjects;
 
     /**
      * The class loader to be used if the migration-operations are loaded. This is only used for
@@ -166,6 +167,16 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     @Override
     public String getPredecessorId() {
         return predecessorId;
+    }
+
+    @Override
+    public boolean isRequiredForAllProjects() {
+        return requiredForAllProjects;
+    }
+
+    @Override
+    public void setRequiredForAllProjects(boolean requiredForAllProjects) {
+        this.requiredForAllProjects = requiredForAllProjects;
     }
 
 }

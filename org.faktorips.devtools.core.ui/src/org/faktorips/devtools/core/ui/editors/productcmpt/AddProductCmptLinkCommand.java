@@ -14,7 +14,9 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -103,10 +105,16 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
                     associationName, productCmpt.getIpsProject());
 
             IProductCmptType targetProductCmptType = association.findTargetProductCmptType(productCmpt.getIpsProject());
+            // Possible target product component source files
             IIpsSrcFile[] ipsSrcFiles = productCmpt.getIpsProject().findAllProductCmptSrcFiles(targetProductCmptType,
                     true);
+
+            // Existing links
+            IProductCmptLink[] links = ((IProductCmptGeneration)productCmptEditor.getActiveGeneration())
+                    .getLinks(associationName);
+            Set<IIpsSrcFile> result = getResult(ipsSrcFiles, links);
             final StaticContentSelectIpsObjectContext context = new StaticContentSelectIpsObjectContext();
-            context.setElements(ipsSrcFiles);
+            context.setElements(result.toArray(new IIpsSrcFile[ipsSrcFiles.length]));
             final OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(
                     HandlerUtil.getActiveShell(event), Messages.AddLinkAction_selectDialogTitle, context, true);
             int rc = dialog.open();
@@ -118,6 +126,27 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    /**
+     * Compares possible target product component source files and existing links and returns the
+     * different source files as result
+     */
+    private Set<IIpsSrcFile> getResult(IIpsSrcFile[] ipsSrcFiles, IProductCmptLink[] links) {
+        Set<IIpsSrcFile> result = new LinkedHashSet<IIpsSrcFile>();
+
+        for (int i = 0; i < ipsSrcFiles.length; i++) {
+            boolean exists = false;
+            for (int j = 0; j < links.length; j++) {
+                if ((ipsSrcFiles[i].getQualifiedNameType().getName()).equals(links[j].getTarget())) {
+                    exists = true;
+                }
+            }
+            if (!exists) {
+                result.add(ipsSrcFiles[i]);
+            }
+        }
+        return result;
     }
 
     private void addLinksToActiveProductCmptGeneration(final IProductCmptGeneration activeProductCmptGeneration,
@@ -173,14 +202,16 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
 
         List<IProductCmpt> selectedResults = new ArrayList<IProductCmpt>();
         OpenIpsObjectSelectionDialog dialog = getSelectDialog(ipsProject, linkTarget, shell);
-        // TODO set multi select in dialog
+
         if (dialog.open() == Window.OK) {
-            IIpsElement selectedResult = dialog.getSelectedObject();
-            if (selectedResult instanceof IIpsSrcFile) {
-                IIpsObject selectedIpsObject = ((IIpsSrcFile)selectedResult).getIpsObject();
-                if (selectedIpsObject instanceof IProductCmpt) {
-                    IProductCmpt selectResultCmpt = (IProductCmpt)selectedIpsObject;
-                    selectedResults.add(selectResultCmpt);
+            List<IIpsElement> selectedResult = dialog.getSelectedObjects();
+            for (IIpsElement selects : selectedResult) {
+                if (selects instanceof IIpsSrcFile) {
+                    IIpsObject selectedIpsObject = ((IIpsSrcFile)selects).getIpsObject();
+                    if (selectedIpsObject instanceof IProductCmpt) {
+                        IProductCmpt selectResultCmpt = (IProductCmpt)selectedIpsObject;
+                        selectedResults.add(selectResultCmpt);
+                    }
                 }
             }
         }
@@ -193,7 +224,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
         SingleTypeSelectIpsObjectContext context = new SingleTypeSelectIpsObjectContext(ipsProject,
                 IpsObjectType.PRODUCT_CMPT, new LinkViewerFilter(linkTarget));
         OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(shell,
-                Messages.AddLinkAction_selectDialogTitle, context);
+                Messages.AddLinkAction_selectDialogTitle, context, true);
         return dialog;
     }
 
@@ -215,7 +246,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
                     if (!srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
                         return false;
                     }
-                    List<IProductCmpt> productCmptList = new ArrayList<IProductCmpt>(1);
+                    List<IProductCmpt> productCmptList = new ArrayList<IProductCmpt>();
                     productCmptList.add((IProductCmpt)srcFile.getIpsObject());
                     return linkCreator.canCreateLinks(linkTarget, productCmptList);
                 } else {

@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -334,7 +335,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     private boolean isFirstRelationOfThisType(IAssociation association, IProductCmpt target, IIpsProject ipsProject)
             throws CoreException {
 
-        for (IProductCmptLink link : links) {
+        // TODO Sometimes there were concurrent modification when adding multiple links in the
+        // product component editor at once (add existing --> multi select). This fixes the problem
+        // but does not fix the root of the problem.
+        List<IProductCmptLink> copy = new CopyOnWriteArrayList<IProductCmptLink>(links);
+        for (IProductCmptLink link : copy) {
             if (link.findAssociation(ipsProject).equals(association)
                     && link.getTarget().equals(target.getQualifiedName())) {
                 return false;
