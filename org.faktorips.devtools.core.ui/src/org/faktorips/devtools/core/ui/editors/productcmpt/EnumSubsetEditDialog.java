@@ -71,9 +71,9 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
 
     private Composite createEnumValueSetChooser(Composite workArea) {
         SubsetChooserViewer viewer = new SubsetChooserViewer(workArea, getToolkit());
-        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(enumValueSetProvider
-                .getSourceEnumValueSet().getValuesAsList(), (IEnumValueSet)enumValueSetProvider
-                .getTargetConfigElement().getValueSet(), valueDatatype);
+        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(
+                enumValueSetProvider.getSourceEnumValueSet(), valueDatatype, (IEnumValueSet)enumValueSetProvider
+                        .getTargetConfigElement().getValueSet());
         viewer.init(model);
         viewer.setSourceLabel(enumValueSetProvider.getSourceLabel());
         viewer.setTargetLabel(enumValueSetProvider.getTargetLabel());

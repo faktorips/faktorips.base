@@ -64,8 +64,8 @@ public class ValueSetEditControlFactory {
             IEnumValueSet enumValueSet = (IEnumValueSet)valueSet;
             if (valueDatatype.isEnum()) {
                 SubsetChooserViewer subsetChooserViewer = new SubsetChooserViewer(parent, toolkit);
-                EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(
-                        ValueListExtractor.extractValues((EnumDatatype)valueDatatype), enumValueSet, valueDatatype);
+                EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel((EnumDatatype)valueDatatype,
+                        enumValueSet);
                 subsetChooserViewer.init(model);
                 return subsetChooserViewer.getChooserComposite();
             }

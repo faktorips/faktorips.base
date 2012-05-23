@@ -42,7 +42,7 @@ public class MultiValueAttributeHandler {
 
     public void editValues() {
         IValueSet modelValueSet = productCmptTypeAttribute.getValueSet();
-        if (modelValueSet.isEnum()) {
+        if (modelValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
             openMultiValueSubsetDialog((IEnumValueSet)modelValueSet);
         } else {
             if (datatype.isEnum()) {

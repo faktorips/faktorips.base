@@ -19,6 +19,7 @@ import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
 import java.util.ArrayList;
@@ -26,9 +27,13 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.classtypes.DecimalDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.ui.controls.chooser.EnumValueSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.ListChooserValue;
 import org.junit.Test;
@@ -176,4 +181,102 @@ public class EnumValueSubsetChooserModelTest {
         Assert.assertEquals("two", model.getResultingValues().get(2).getValue());
     }
 
+    @Test
+    public void testGetSourceValueIDs() throws Exception {
+        IEnumValueSet sourceValueSet = mockValueSet(true, false);
+        IEnumValueSet targetValueSet = mockEmptyValueSet();
+        EnumDatatype datatype = mockDatatype();
+
+        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(sourceValueSet, datatype, targetValueSet);
+        List<ListChooserValue> sourceValueIDs = model.getAllValues();
+        assertEquals(3, sourceValueIDs.size());
+        assertEquals("1", sourceValueIDs.get(0).getValue());
+        assertEquals("two", sourceValueIDs.get(1).getValue());
+        assertEquals("THREE", sourceValueIDs.get(2).getValue());
+    }
+
+    @Test
+    public void testGetSourceValueIDs_AbstractValueSet() throws Exception {
+        IEnumValueSet sourceValueSet = mockValueSet(true, true);
+        IEnumValueSet targetValueSet = mockEmptyValueSet();
+        EnumDatatype datatype = mockDatatype();
+
+        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(sourceValueSet, datatype, targetValueSet);
+        List<ListChooserValue> sourceValueIDs = model.getAllValues();
+        assertEquals(4, sourceValueIDs.size());
+        assertEquals("1", sourceValueIDs.get(0).getValue());
+        assertEquals("2", sourceValueIDs.get(1).getValue());
+        assertEquals("3", sourceValueIDs.get(2).getValue());
+        assertEquals("4", sourceValueIDs.get(3).getValue());
+    }
+
+    @Test
+    public void testGetSourceValueIDs_UnrestrictedValueSet() throws Exception {
+        IUnrestrictedValueSet sourceValueSet = mock(IUnrestrictedValueSet.class);
+        when(sourceValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(false);
+        IEnumValueSet targetValueSet = mockEmptyValueSet();
+        EnumDatatype datatype = mockDatatype();
+
+        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(sourceValueSet, datatype, targetValueSet);
+        List<ListChooserValue> sourceValueIDs = model.getAllValues();
+        assertEquals(4, sourceValueIDs.size());
+        assertEquals("1", sourceValueIDs.get(0).getValue());
+        assertEquals("2", sourceValueIDs.get(1).getValue());
+        assertEquals("3", sourceValueIDs.get(2).getValue());
+        assertEquals("4", sourceValueIDs.get(3).getValue());
+    }
+
+    @Test
+    public void testGetSourceValueIDs_Null() throws Exception {
+        IEnumValueSet targetValueSet = mockEmptyValueSet();
+        EnumDatatype datatype = mockDatatype();
+
+        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(null, datatype, targetValueSet);
+        List<ListChooserValue> sourceValueIDs = model.getAllValues();
+        assertEquals(4, sourceValueIDs.size());
+        assertEquals("1", sourceValueIDs.get(0).getValue());
+        assertEquals("2", sourceValueIDs.get(1).getValue());
+        assertEquals("3", sourceValueIDs.get(2).getValue());
+        assertEquals("4", sourceValueIDs.get(3).getValue());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetSourceValueIDs_Exception() throws Exception {
+        IEnumValueSet sourceValueSet = mockValueSet(true, true);
+        IEnumValueSet targetValueSet = mockEmptyValueSet();
+        DecimalDatatype datatype = mock(DecimalDatatype.class);
+
+        new EnumValueSubsetChooserModel(sourceValueSet, datatype, targetValueSet);
+    }
+
+    protected EnumDatatype mockDatatype() {
+        EnumDatatype datatype = mock(EnumDatatype.class);
+        when(datatype.getAllValueIds(true)).thenReturn(new String[] { "1", "2", "3", "4" });
+        when(datatype.isEnum()).thenReturn(true);
+        return datatype;
+    }
+
+    private IEnumValueSet mockEmptyValueSet() {
+        IEnumValueSet valueSet = mock(IEnumValueSet.class);
+
+        List<String> valueList = new ArrayList<String>();
+        when(valueSet.getValuesAsList()).thenReturn(valueList);
+        when(valueSet.isEnum()).thenReturn(true);
+        when(valueSet.isAbstract()).thenReturn(false);
+        return valueSet;
+    }
+
+    protected IEnumValueSet mockValueSet(boolean enumValueSet, boolean abstractValueSet) {
+        IEnumValueSet valueSet = mock(IEnumValueSet.class);
+
+        List<String> valueList = new ArrayList<String>();
+        valueList.add("1");
+        valueList.add("two");
+        valueList.add("THREE");
+        when(valueSet.getValuesAsList()).thenReturn(valueList);
+        when(valueSet.isEnum()).thenReturn(enumValueSet);
+        when(valueSet.isAbstract()).thenReturn(abstractValueSet);
+        when(valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(enumValueSet & !abstractValueSet);
+        return valueSet;
+    }
 }

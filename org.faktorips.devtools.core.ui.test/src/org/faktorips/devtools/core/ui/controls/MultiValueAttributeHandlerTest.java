@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.doNothing;
@@ -24,6 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Shell;
@@ -86,26 +89,69 @@ public class MultiValueAttributeHandlerTest {
     }
 
     @Test
+    public void editAbstractEnumValueSet_withEditTable() {
+        IProductCmptTypeAttribute prodAttr = mock(IProductCmptTypeAttribute.class);
+        IEnumValueSet valueSet = mock(IEnumValueSet.class);
+        when(valueSet.isEnum()).thenReturn(true);
+        when(valueSet.isAbstract()).thenReturn(true);
+        when(prodAttr.getValueSet()).thenReturn(valueSet);
+
+        MultiValueAttributeHandler handler = spy(new MultiValueAttributeHandler(shell, prodAttr, attrValue,
+                ValueDatatype.DECIMAL));
+        doNothing().when(handler).openMultiValueDialog();
+
+        handler.editValues();
+        verify(handler).openMultiValueDialog();
+    }
+
+    @Test
+    public void editAbstractEnumValueSetWithEnumDatatype_UsingSubsetChooser() {
+        MultiValueAttributeHandler handler = setUpEnumDatatypeAttributeWithEnumValueSet(true);
+
+        List<String> allValuesList = verifyOpenAndCaptureValues(handler);
+        assertEquals(3, allValuesList.size());
+        assertTrue(allValuesList.contains(null));
+        allValuesList.contains(PaymentMode.ANNUAL_ID);
+        allValuesList.contains(PaymentMode.MONTHLY_ID);
+    }
+
+    @Test
+    public void editEnumDatatypeWithSubsetChooser() {
+        MultiValueAttributeHandler handler = setUpEnumDatatypeAttributeWithEnumValueSet(false);
+
+        List<String> allValuesList = verifyOpenAndCaptureValues(handler);
+        assertEquals(1, allValuesList.size());
+        assertTrue(allValuesList.contains(PaymentMode.ANNUAL_ID));
+    }
+
     // ArgumentCaptor does not support generic classes
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void editEnumDatatypeWithSubsetChooser() {
-        IProductCmptTypeAttribute prodAttr = mock(IProductCmptTypeAttribute.class);
-        EnumDatatype enumDatatype = new PaymentMode();
-        MultiValueAttributeHandler handler = spy(new MultiValueAttributeHandler(shell, prodAttr, attrValue,
-                enumDatatype));
-
-        IValueSet enumValueset = mock(IEnumValueSet.class);
-        when(enumValueset.isEnum()).thenReturn(true);
-        when(prodAttr.getValueSet()).thenReturn(enumValueset);
+    protected List<String> verifyOpenAndCaptureValues(MultiValueAttributeHandler handler) {
         ArgumentCaptor<List> valueListCaptor = ArgumentCaptor.forClass(List.class);
-        doNothing().when(handler).openMultiValueSubsetDialog(anyListOf(String.class));
         handler.editValues();
         verify(handler).openMultiValueSubsetDialog(valueListCaptor.capture());
 
         List<String> allValuesList = valueListCaptor.getValue();
         assertNotNull(allValuesList);
-        allValuesList.contains(PaymentMode.ANNUAL_ID);
-        allValuesList.contains(PaymentMode.MONTHLY_ID);
+        return allValuesList;
+    }
+
+    protected MultiValueAttributeHandler setUpEnumDatatypeAttributeWithEnumValueSet(boolean abstractValueSet) {
+        IProductCmptTypeAttribute prodAttr = mock(IProductCmptTypeAttribute.class);
+        EnumDatatype enumDatatype = new PaymentMode();
+        MultiValueAttributeHandler handler = spy(new MultiValueAttributeHandler(shell, prodAttr, attrValue,
+                enumDatatype));
+
+        List<String> valueSetValues = new ArrayList<String>();
+        valueSetValues.add(PaymentMode.ANNUAL_ID);
+
+        IEnumValueSet enumValueset = mock(IEnumValueSet.class);
+        when(enumValueset.isEnum()).thenReturn(true);
+        when(enumValueset.isAbstract()).thenReturn(abstractValueSet);
+        when(prodAttr.getValueSet()).thenReturn(enumValueset);
+        when(enumValueset.getValuesAsList()).thenReturn(valueSetValues);
+        doNothing().when(handler).openMultiValueSubsetDialog(anyListOf(String.class));
+        return handler;
     }
 
     @Test
