@@ -250,4 +250,9 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         uiToolkit.setDataChangeable(stepfield.getControl(), changeable);
         uiToolkit.setDataChangeable(containsNullCB, changeable);
     }
+
+    @Override
+    public Composite getComposite() {
+        return this;
+    }
 }

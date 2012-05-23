@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.controls.valuesets;
 
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -25,6 +24,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.devtools.core.ui.controls.chooser.EnumValueSubsetChooserModel;
+import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserEditControl;
 import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserViewer;
 
 /**
@@ -50,7 +50,7 @@ public class ValueSetEditControlFactory {
      * 
      * @return The new composite.
      */
-    public Control newControl(IValueSet valueSet,
+    public IValueSetEditControl newControl(IValueSet valueSet,
             ValueDatatype valueDatatype,
             Composite parent,
             UIToolkit toolkit,
@@ -67,7 +67,7 @@ public class ValueSetEditControlFactory {
                 EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel((EnumDatatype)valueDatatype,
                         enumValueSet);
                 subsetChooserViewer.init(model);
-                return subsetChooserViewer.getChooserComposite();
+                return new SubsetChooserEditControl(subsetChooserViewer.getChooserComposite(), model);
             }
             EnumValueSetEditControl enumValueSetEditControl = new EnumValueSetEditControl(parent, valueDatatype,
                     ipsProject);

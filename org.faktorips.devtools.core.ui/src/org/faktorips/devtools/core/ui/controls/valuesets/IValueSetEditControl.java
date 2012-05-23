@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.controls.valuesets;
 
+import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -54,5 +55,12 @@ public interface IValueSetEditControl {
      * @param valueDatatype The datatype the values in the set are instances of.
      */
     public boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype);
+
+    /**
+     * Returns the composite this edit control uses to edit the value set. e.g. the
+     * {@link RangeEditControl} returns itself but other implementations do not combine UI and model
+     * in a single class.
+     */
+    public Composite getComposite();
 
 }

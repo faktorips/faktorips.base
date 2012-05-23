@@ -30,7 +30,7 @@ import org.faktorips.util.message.MessageList;
 
 public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
 
-    final IEnumValueSet resultingEnumValueSet;
+    private IEnumValueSet resultingEnumValueSet;
     private final List<ListChooserValue> sourceValues;
 
     /**
@@ -167,6 +167,16 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
             result.add(new ListChooserValue(stringValue));
         }
         return result;
+    }
+
+    public IEnumValueSet getResultingEnumValueSet() {
+        return resultingEnumValueSet;
+    }
+
+    public void setResultingEnumValueSet(IEnumValueSet newValueSet) {
+        List<ListChooserValue> oldValues = getResultingValues();
+        resultingEnumValueSet = newValueSet;
+        fireEvents(oldValues);
     }
 
 }

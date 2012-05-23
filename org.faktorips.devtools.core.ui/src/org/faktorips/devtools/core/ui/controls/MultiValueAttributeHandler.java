@@ -18,10 +18,12 @@ import java.util.List;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.ui.controls.chooser.MultiValueSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueListExtractor;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueDialog;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueSubsetDialog;
@@ -62,7 +64,9 @@ public class MultiValueAttributeHandler {
     }
 
     protected void openMultiValueSubsetDialog(List<String> sourceValues) {
-        new MultiValueSubsetDialog(shell, sourceValues, attributeValue, datatype).open();
+        MultiValueSubsetChooserModel model = new MultiValueSubsetChooserModel(sourceValues,
+                (MultiValueHolder)attributeValue.getValueHolder(), datatype);
+        new MultiValueSubsetDialog(shell, attributeValue, model).open();
         // changes are applied directly to the provided target value set
     }
 

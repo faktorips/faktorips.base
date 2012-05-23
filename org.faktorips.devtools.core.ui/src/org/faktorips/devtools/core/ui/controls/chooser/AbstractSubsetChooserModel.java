@@ -67,8 +67,12 @@ public abstract class AbstractSubsetChooserModel extends PresentationModelObject
     public void moveValuesFromResultingToPredefined(List<ListChooserValue> values) {
         List<ListChooserValue> oldValues = getResultingValues();
         removeFromResultingValues(new CopyOnWriteArrayList<ListChooserValue>(values));
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_RESULTING_VALUES, oldValues, getResultingValues()));
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_PREDEFINED_VALUES, oldValues, getResultingValues()));
+        fireEvents(oldValues);
+    }
+
+    protected void fireEvents(List<ListChooserValue> oldResultingValues) {
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_RESULTING_VALUES, oldResultingValues, getResultingValues()));
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_PREDEFINED_VALUES, oldResultingValues, getResultingValues()));
     }
 
     /**
@@ -84,8 +88,7 @@ public abstract class AbstractSubsetChooserModel extends PresentationModelObject
     public void moveValuesFromPreDefinedToResulting(List<ListChooserValue> values) {
         List<ListChooserValue> oldValues = getResultingValues();
         addToResultingValues(new CopyOnWriteArrayList<ListChooserValue>(values));
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_RESULTING_VALUES, oldValues, getResultingValues()));
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_PREDEFINED_VALUES, oldValues, getResultingValues()));
+        fireEvents(oldValues);
     }
 
     public abstract List<ListChooserValue> getAllValues();

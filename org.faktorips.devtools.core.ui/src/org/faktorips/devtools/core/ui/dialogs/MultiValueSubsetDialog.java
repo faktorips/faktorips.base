@@ -13,14 +13,10 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.ui.controls.chooser.MultiValueSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserViewer;
@@ -28,15 +24,13 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
 public class MultiValueSubsetDialog extends IpsPartEditDialog2 {
 
-    private MultiValueSubsetChooserModel model;
+    private final MultiValueSubsetChooserModel model;
 
-    public MultiValueSubsetDialog(Shell parentShell, List<String> allValueIds, IAttributeValue attributeValue,
-            ValueDatatype datatype) {
+    public MultiValueSubsetDialog(Shell parentShell, IAttributeValue attributeValue, MultiValueSubsetChooserModel model) {
         super(attributeValue, parentShell, Messages.MultiValueDialog_TitleText);
+        this.model = model;
         setShellStyle(getShellStyle() | SWT.RESIZE);
         Assert.isNotNull(attributeValue);
-        model = new MultiValueSubsetChooserModel(allValueIds, (MultiValueHolder)attributeValue.getValueHolder(),
-                datatype);
     }
 
     @Override

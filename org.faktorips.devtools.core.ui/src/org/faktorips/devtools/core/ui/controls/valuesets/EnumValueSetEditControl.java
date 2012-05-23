@@ -330,4 +330,9 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
 
     }
 
+    @Override
+    public Composite getComposite() {
+        return this;
+    }
+
 }

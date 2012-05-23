@@ -35,8 +35,8 @@ import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.ControlComposite;
@@ -62,7 +62,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private Checkbox concreteValueSetCheckbox = null;
     private CheckboxField concreteValueSetField = null;
 
-    private Control valueSetEditControl; // control showing the value set
+    private IValueSetEditControl valueSetEditControl; // control showing the value set
     // can be safely casted to IValueSetEditControl
 
     private Composite valueSetArea; // area around the value set, used to change the layout
@@ -197,17 +197,18 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         if (getValueSetEditControl() != null && getValueSetEditControl().canEdit(valueSet, valueDatatype)) {
             // the current composite can be reused to edit the current value set
             getValueSetEditControl().setValueSet(valueSet, valueDatatype);
-            return valueSetEditControl.getParent(); // have to return the parent here, as there is a
+            return valueSetEditControl.getComposite().getParent(); // have to return the parent
+                                                                   // here, as there is a
             // group control (see below) around the edit control. There has to be a better way to do
             // this!
         }
         // Creates a new composite to edit the current value set
         Group group = createGroupAroundValueSet(parent, valueSet.getValueSetType().getName());
         ValueSetEditControlFactory factory = new ValueSetEditControlFactory();
-        Control c = factory.newControl(valueSet, valueDatatype, group, toolkit, uiController,
+        valueSetEditControl = factory.newControl(valueSet, valueDatatype, group, toolkit, uiController,
                 valueSetOwner.getIpsProject());
-        c.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_BOTH));
-        setValueSetEditControl(c);
+        valueSetEditControl.getComposite().setLayoutData(
+                new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_BOTH));
         return group;
     }
 
@@ -216,15 +217,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
      * type Control is a class and not an interface.
      */
     private IValueSetEditControl getValueSetEditControl() {
-        return (IValueSetEditControl)valueSetEditControl;
-    }
-
-    /**
-     * Sets the value set control. Neccessary as the SWT type Control is a class and not an
-     * interface.
-     */
-    private void setValueSetEditControl(Control newValueSetEditControl) {
-        valueSetEditControl = newValueSetEditControl;
+        return valueSetEditControl;
     }
 
     private Group createGroupAroundValueSet(Composite parent, String title) {
@@ -389,7 +382,9 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
         toolkit.setDataChangeable(valueSetTypesCombo, changeable);
-        toolkit.setDataChangeable(valueSetEditControl, changeable);
+        if (valueSetEditControl != null) {
+            toolkit.setDataChangeable(valueSetEditControl.getComposite(), changeable);
+        }
         updateConcreteValueSetCheckboxDataChangeableState();
     }
 
@@ -415,7 +410,9 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         setEnabledIfExistent(valueSetTypeLabel, enable);
         setEnabledIfExistent(valueSetTypesCombo, enable);
         setEnabledIfExistent(concreteValueSetCheckbox, enable);
-        setEnabledIfExistent(valueSetEditControl, enable);
+        if (valueSetEditControl != null) {
+            setEnabledIfExistent(valueSetEditControl.getComposite(), enable);
+        }
         // TODO RangeEditControl#setEnabled() sauber implementieren
     }
 

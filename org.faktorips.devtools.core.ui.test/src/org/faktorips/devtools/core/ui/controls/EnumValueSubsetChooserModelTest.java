@@ -15,13 +15,18 @@ package org.faktorips.devtools.core.ui.controls;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -278,5 +283,20 @@ public class EnumValueSubsetChooserModelTest {
         when(valueSet.isAbstract()).thenReturn(abstractValueSet);
         when(valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(enumValueSet & !abstractValueSet);
         return valueSet;
+    }
+
+    @Test
+    public void testSetResultingEnumValueSet() {
+        IEnumValueSet valueSet = mock(IEnumValueSet.class);
+        IEnumValueSet targetValueSet = mockEmptyValueSet();
+        EnumDatatype datatype = mockDatatype();
+        PropertyChangeListener listener = mock(PropertyChangeListener.class);
+
+        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(valueSet, datatype, targetValueSet);
+        model.addPropertyChangeListener(listener);
+
+        IEnumValueSet newValueSet = mock(IEnumValueSet.class);
+        model.setResultingEnumValueSet(newValueSet);
+        verify(listener, times(2)).propertyChange(any(PropertyChangeEvent.class));
     }
 }
