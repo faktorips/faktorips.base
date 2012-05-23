@@ -77,7 +77,7 @@ public class MultiValueAttributeHandlerTest {
     public void editEnumValueSetWithSubsetChooser() {
         IProductCmptTypeAttribute prodAttr = mock(IProductCmptTypeAttribute.class);
         IEnumValueSet valueSet = mock(IEnumValueSet.class);
-        when(valueSet.isEnum()).thenReturn(true);
+        when(valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
         when(prodAttr.getValueSet()).thenReturn(valueSet);
 
         MultiValueAttributeHandler handler = spy(new MultiValueAttributeHandler(shell, prodAttr, attrValue,
@@ -148,6 +148,7 @@ public class MultiValueAttributeHandlerTest {
         IEnumValueSet enumValueset = mock(IEnumValueSet.class);
         when(enumValueset.isEnum()).thenReturn(true);
         when(enumValueset.isAbstract()).thenReturn(abstractValueSet);
+        when(enumValueset.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(!abstractValueSet);
         when(prodAttr.getValueSet()).thenReturn(enumValueset);
         when(enumValueset.getValuesAsList()).thenReturn(valueSetValues);
         doNothing().when(handler).openMultiValueSubsetDialog(anyListOf(String.class));
@@ -184,7 +185,7 @@ public class MultiValueAttributeHandlerTest {
 
         doNothing().when(handler).openMultiValueSubsetDialog(any(IEnumValueSet.class));
         IValueSet enumValueset = mock(IEnumValueSet.class);
-        when(enumValueset.isEnum()).thenReturn(true);
+        when(enumValueset.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
         when(prodAttr.getValueSet()).thenReturn(enumValueset);
         handler.editValues();
         verify(handler).openMultiValueSubsetDialog(any(IEnumValueSet.class));
