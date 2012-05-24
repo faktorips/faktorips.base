@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
@@ -52,24 +53,76 @@ public class IpsProjectRefControl extends TextButtonControl {
     protected void buttonClicked() {
         try {
             ElementListSelectionDialog dialog = new ElementListSelectionDialog(getShell(), new WorkbenchLabelProvider());
-            IIpsProject[] projects;
-            if (isOnlyProductDefinitionProjects()) {
-                projects = IpsPlugin.getDefault().getIpsModel().getIpsProductDefinitionProjects();
-            } else {
-                projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
-            }
-            dialog.setElements(projects);
+            dialog.setElements(collectIpsProjects());
             dialog.setMultipleSelection(false);
-            dialog.setMessage(Messages.IpsProjectRefControl_labelDialogMessage);
-            dialog.setEmptyListMessage(Messages.IpsProjectRefControl_msgNoProjectsFound);
-            dialog.setEmptySelectionMessage(Messages.IpsProjectRefControl_msgNoProjectSelected);
-            dialog.setTitle(Messages.IpsProjectRefControl_labelDialogTitle);
+            dialog.setMessage(getDialogMessage());
+            dialog.setEmptyListMessage(getDialogMessageEmptyList());
+            dialog.setEmptySelectionMessage(getDialogMessageEmptySelection());
+            dialog.setTitle(getDialogTitle());
             if (dialog.open() == Window.OK) {
                 IIpsProject selectedProject = (IIpsProject)dialog.getResult()[0];
                 setIpsProject(selectedProject);
             }
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
+        }
+    }
+
+    /**
+     * Returns the title that is shown in the title bar of the dialog that allows the user to select
+     * projects.
+     * <p>
+     * <strong>Subclassing:</strong> Subclasses may override as necessary.
+     */
+    protected String getDialogTitle() {
+        return Messages.IpsProjectRefControl_labelDialogTitle;
+    }
+
+    /**
+     * Returns the message that is shown in the dialog that allows the user to select projects in
+     * the situation that no project is selected.
+     * <p>
+     * <strong>Subclassing:</strong> Subclasses may override as necessary.
+     */
+    protected String getDialogMessageEmptySelection() {
+        return Messages.IpsProjectRefControl_msgNoProjectSelected;
+    }
+
+    /**
+     * Returns the message that is shown in the dialog that allows the user to select projects in
+     * the situation that no projects are available for selection.
+     * <p>
+     * <strong>Subclassing:</strong> Subclasses may override as necessary.
+     */
+    protected String getDialogMessageEmptyList() {
+        return Messages.IpsProjectRefControl_msgNoProjectsFound;
+    }
+
+    /**
+     * Returns the message that is shown in the dialog that allows the user to select projects.
+     * <p>
+     * <strong>Subclassing:</strong> Subclasses may override as necessary.
+     */
+    protected String getDialogMessage() {
+        return Messages.IpsProjectRefControl_labelDialogMessage;
+    }
+
+    /**
+     * Returns the list of {@link IIpsProject IPS projects} available for selection.
+     * <p>
+     * <strong>Subclassing:</strong> This implementation returns all {@link IIpsProject IPS
+     * projects} if {@link #isOnlyProductDefinitionProjects()} returns {@code false}. On the other
+     * hand, if {@link #isOnlyProductDefinitionProjects()} returns {@code true}, only product
+     * definition projects are returned.
+     * 
+     * @throws CoreException if an error occurs while collecting the {@link IIpsProject IPS
+     *             projects}
+     */
+    protected IIpsProject[] collectIpsProjects() throws CoreException {
+        if (isOnlyProductDefinitionProjects()) {
+            return IpsPlugin.getDefault().getIpsModel().getIpsProductDefinitionProjects();
+        } else {
+            return IpsPlugin.getDefault().getIpsModel().getIpsProjects();
         }
     }
 
