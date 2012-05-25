@@ -54,7 +54,7 @@ public class IpsExtendableVersionManager extends CoreVersionManager {
         }
 
         Version currentVersion = Version.parseVersion(getCurrentVersion());
-        Object otherVersionVersion = Version.parseVersion(otherVersion);
+        Version otherVersionVersion = Version.parseVersion(otherVersion);
         SortedSet<Version> versionsWithMigration = new TreeSet<Version>(getRegisteredMigrations().keySet());
         for (Version version : versionsWithMigration) {
             if (version.compareTo(otherVersionVersion) > 0 && version.compareTo(currentVersion) <= 0) {

@@ -31,7 +31,9 @@ import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.util.StringUtil;
 
 /**
- * Control to select a association.
+ * Control to select a association. Only "normal" associations (no aggregations) as well as
+ * master-to-detail compositions can be selected with this control. Derived unions can not be
+ * selected to prevent their use in test cases. See FIPS-594.
  * 
  * @author Joerg Ortmann
  */
@@ -88,13 +90,21 @@ public class AssociationRefControl extends TextButtonControl {
         while (currPolicyCmptType != null) {
             List<IPolicyCmptTypeAssociation> associations = currPolicyCmptType.getPolicyCmptTypeAssociations();
             for (IPolicyCmptTypeAssociation association : associations) {
-                if (association.isAssoziation() || association.isCompositionMasterToDetail()) {
+                if (isRelevantAssociation(association)) {
                     associationsToSelect.add(association);
                 }
             }
             currPolicyCmptType = (IPolicyCmptType)currPolicyCmptType.findSupertype(currPolicyCmptType.getIpsProject());
         }
         return associationsToSelect.toArray(new IPolicyCmptTypeAssociation[0]);
+    }
+
+    /**
+     * As in FIPS-594 no derive unions should be supported by test case types.
+     */
+    protected boolean isRelevantAssociation(IPolicyCmptTypeAssociation association) {
+        return (association.isAssoziation() || association.isCompositionMasterToDetail())
+                && !association.isDerivedUnion();
     }
 
     public IPolicyCmptTypeAssociation findAssociation() throws CoreException {
