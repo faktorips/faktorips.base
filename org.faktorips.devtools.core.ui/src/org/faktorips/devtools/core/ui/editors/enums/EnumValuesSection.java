@@ -282,6 +282,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         GridData tableGridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         tableGridData.widthHint = parent.getClientArea().width;
         tableGridData.heightHint = parent.getClientArea().height;
+        // Display at least 2,5 table rows
+        tableGridData.minimumHeight = 85;
         enumValuesTable.setLayoutData(tableGridData);
 
         createTableColumns();
