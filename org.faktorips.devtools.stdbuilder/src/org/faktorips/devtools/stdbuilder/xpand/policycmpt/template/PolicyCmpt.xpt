@@ -1,0 +1,94 @@
+«IMPORT org::faktorips::devtools::stdbuilder::xpand»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
+
+«DEFINE main FOR GPolicyCmpt»
+	«FILE fileName-»
+	package «packageName»;
+
+		«EXPAND CommonDefinitions::ImportBlock FOREACH builder.imports ONFILECLOSE»
+	
+		/**
+		 * @generated
+		 */
+		public class «simpleName» extends «superclassName-»
+			«IF generatePropertyChange && !hasSupertype()»implements «addImport("org.faktorips.runtime.INotificationSupport")»«ENDIF-»
+		 {
+
+		«EXPAND PolicyCmptAttribute::fieldProperties FOREACH attributes»
+
+		«EXPAND PropertyChangeSupport::fieldDefinition»
+
+		«EXPAND PolicyCmptAttribute::memberField FOREACH attributes»
+«REM»
+			CONSTRUCTORS
+«ENDREM»
+			
+			/**
+		     * Creates a new Police.
+		     * 
+		     * @generated
+		     */
+		    public «simpleName»() {
+		        super();
+		        «EXPAND initializeForOverrideAttributes-»
+		    }
+		    «IF configured»
+			/**
+		     * Creates a new Police.
+		     * 
+		     * @generated
+		     */
+		    public «simpleName»(«productCmptClassName» productCmpt) {
+		        super(productCmpt);
+		        «EXPAND initializeForOverrideAttributes-»
+		    }
+		    «ENDIF»
+		    
+«REM»
+			METHODS
+«ENDREM»
+
+		    «IF configured-»
+				/**
+				 *
+				 * 
+				 * @generated
+				 */
+				 «overrideAnnotation(false)»
+				 public «addImport("java.util.Calendar")» «getEffectiveFromAsCalendar()»() {
+				 	«IF aggregateRoot-»
+					 	«IF hasSupertype()-»
+					 		return super.getEffectiveFromAsCalendar();
+					 	«ELSE-»
+					 	    return null; // TODO 
+					 	«ENDIF-»
+					 «ELSE-»
+					        «addImport("org.faktorips.runtime.IModelObject")» parent = getParentModelObject();
+					        if (parent instanceof «addImport("org.faktorips.runtime.IConfigurableModelObject")») {
+					            return ((IConfigurableModelObject)parent).«getEffectiveFromAsCalendar()»();
+					        }
+					        return null;
+					 «ENDIF-»
+				 }
+		    «ENDIF-»
+			 
+
+			«EXPAND PropertyChangeSupport::generalMethods»
+			
+			«EXPAND PolicyCmptAttribute::getterAndSetter FOREACH attributes»
+
+		}
+	«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE initializeForOverrideAttributes FOR GPolicyCmpt-»
+	«FOREACH attributes AS this-»
+		«IF generateDefaultInitialize-»
+			«setterMethodName()»(«datatypeHelper.newInstance(defaultValue)»);
+		«ENDIF-»
+	«ENDFOREACH-»
+«ENDDEFINE»
+

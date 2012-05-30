@@ -1,0 +1,9 @@
+import org::faktorips::devtools::stdbuilder::xpand::model;
+
+extension org::faktorips::devtools::stdbuilder::xpand::MethodNames reexport;
+
+String camelCaseToUnderscore(String s) :
+	JAVA org.faktorips.util.StringUtil.camelCaseToUnderscore(java.lang.String); 
+
+overrideAnnotation(AbstractGeneratorModelObject this, boolean interfaceMethodImplementation) :
+	if needOverrideAnnotation(interfaceMethodImplementation) then "@Override";
