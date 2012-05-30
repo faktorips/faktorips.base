@@ -16,17 +16,9 @@ package org.faktorips.devtools.core.internal.application;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IAdapterFactory;
-import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -88,22 +80,7 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
     }
 
     private void registerWorkspaceAdapters() {
-        IAdapterManager manager = Platform.getAdapterManager();
-        IAdapterFactory factory = new ResourceAdapterFactory();
-        manager.registerAdapters(factory, IWorkspace.class);
-        manager.registerAdapters(factory, IWorkspaceRoot.class);
-        manager.registerAdapters(factory, IProject.class);
-        manager.registerAdapters(factory, IFolder.class);
-        manager.registerAdapters(factory, IFile.class);
-        manager.registerAdapters(factory, IMarker.class);
-
-        factory = new PropertyAdapterFactory();
-        manager.registerAdapters(factory, IWorkspace.class);
-        manager.registerAdapters(factory, IWorkspaceRoot.class);
-        manager.registerAdapters(factory, IProject.class);
-        manager.registerAdapters(factory, IFolder.class);
-        manager.registerAdapters(factory, IFile.class);
-        manager.registerAdapters(factory, IMarker.class);
+        IDE.registerAdapters();
     }
 
     @Override
@@ -269,6 +246,7 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
      * 
      * See Eclipse's IDEWorkbenchAdvisor for more details.
      */
+    @SuppressWarnings("restriction")
     private void disconnectFromWorkspace() {
         // save the workspace (this has to be coded as the rcp workbench advisor is not aware of the
         // workspace! The workspace is an IDE concept!
@@ -288,9 +266,9 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
             // functionality!
             new ProgressMonitorJobsDialog(null).run(true, false, runnable);
         } catch (InvocationTargetException e) {
-            status.merge(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, 1, "Internal Error", e.getTargetException()));
+            status.merge(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, 1, "Internal Error", e.getTargetException())); //$NON-NLS-1$
         } catch (InterruptedException e) {
-            status.merge(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, 1, "Internal Error", e));
+            status.merge(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, 1, "Internal Error", e)); //$NON-NLS-1$
         }
         ErrorDialog.openError(null, Messages.ProblemsSavingWorkspace, null, status, IStatus.ERROR | IStatus.WARNING);
         if (!status.isOK()) {
