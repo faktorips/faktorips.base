@@ -33,7 +33,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -208,9 +207,11 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
         editor.getSite().registerContextMenu(ID, menuManager, treeViewer);
 
-        // We do not want to have additions in this menu!
+        // We use whitelist menu cleaner to avoid any other actions
         MenuCleaner menuCleaner = new MenuCleaner();
-        menuCleaner.addFilteredMenuGroup(IWorkbenchActionConstants.MB_ADDITIONS);
+        menuCleaner.setWhiteListMode(true);
+        menuCleaner.addFilteredPrefix("org.faktorips"); //$NON-NLS-1$
+        menuCleaner.addFilteredPrefix("org.eclipse.ui.edit.delete"); //$NON-NLS-1$
         menuManager.addMenuListener(menuCleaner);
 
         treePopup = menuManager.createContextMenu(treeViewer.getControl());
