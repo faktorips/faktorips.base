@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.testcase;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.part.IPage;
@@ -43,11 +42,6 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
     TestCaseEditorPage editorPage;
 
     @Override
-    public void doSave(IProgressMonitor monitor) {
-        super.doSave(monitor);
-    }
-
-    @Override
     protected void disposeInternal() {
         if (editorPage != null) {
             editorPage.saveState();
@@ -64,7 +58,7 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
                 && !settings.getBoolean(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE)) {
             String msg = NLS
                     .bind(Messages.TestCaseEditor_Information_TemplateNotFound, getTestCase().getTestCaseType());
-            SetTemplateDialog d = new SetTemplateDialog(getTestCase(), getSite().getShell(), msg);
+            SetTestCaseTypeDialog d = new SetTestCaseTypeDialog(getTestCase(), getSite().getShell(), msg);
             int rc = d.open();
             if (rc == Dialog.CANCEL) {
                 getSettings().put(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE, true);
