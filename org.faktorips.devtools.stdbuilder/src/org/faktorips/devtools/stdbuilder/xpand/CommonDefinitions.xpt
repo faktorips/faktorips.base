@@ -1,5 +1,0 @@
-«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
-
-«DEFINE ImportBlock FOR Type-»
-	import «qualifiedName»;
-«ENDDEFINE»
