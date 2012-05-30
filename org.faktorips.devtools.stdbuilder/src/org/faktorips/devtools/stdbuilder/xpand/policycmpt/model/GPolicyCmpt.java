@@ -17,11 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelObject;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyXpandBuilder;
@@ -137,6 +141,38 @@ public class GPolicyCmpt extends AbstractGeneratorModelObject {
     public boolean isGeneratePropertyChange() {
         return getBuilder().getBuilderSet().getConfig()
                 .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER).booleanValue();
+    }
+
+    @Override
+    public List<IJavaElement> getGeneratedJavaElementsForImplementation(org.eclipse.jdt.core.IType generatedJavaType,
+            IIpsElement ipsElement) {
+        return null;
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * Searches and returns the Java type generated for the <tt>IProductCmptType</tt> configuring
+     * the <tt>IPolicyCmptType</tt> this generator is configured for.
+     * <p>
+     * Returns <tt>null</tt> if the <tt>IProductCmptType</tt> cannot be found.
+     * 
+     * @param forInterface Flag indicating whether to search for the published interface of the
+     *            <tt>IProductCmptType</tt> (<tt>true</tt>) or for it's implementation (
+     *            <tt>false</tt>).
+     * 
+     * @throws CoreException If an error occurs while searching for the <tt>IProductCmptType</tt>.
+     */
+    public org.eclipse.jdt.core.IType findGeneratedJavaTypeForProductCmptType(boolean forInterface)
+            throws CoreException {
+        BaseProductCmptTypeBuilder productCmptTypeBuilder = forInterface ? getBuilderSet()
+                .getProductCmptInterfaceBuilder() : getBuilderSet().getProductCmptImplClassBuilder();
+
+        IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(getPolicyCmptType().getIpsProject());
+        if (productCmptType == null) {
+            return null;
+        }
+        return productCmptTypeBuilder.getGeneratedJavaTypes(productCmptType).get(0);
     }
 
 }

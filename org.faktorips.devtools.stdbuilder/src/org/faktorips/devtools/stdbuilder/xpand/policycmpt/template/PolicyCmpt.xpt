@@ -58,24 +58,23 @@
 				 * @generated
 				 */
 				 «overrideAnnotation(false)»
-				 public «addImport("java.util.Calendar")» «getEffectiveFromAsCalendar()»() {
+				 public «addImport("java.util.Calendar")» «getEffectiveFromAsCalendar()» {
 				 	«IF aggregateRoot-»
 					 	«IF hasSupertype()-»
-					 		return super.getEffectiveFromAsCalendar();
+					 		return super.«getEffectiveFromAsCalendar()»;
 					 	«ELSE-»
 					 	    return null; // TODO 
 					 	«ENDIF-»
 					 «ELSE-»
-					        «addImport("org.faktorips.runtime.IModelObject")» parent = getParentModelObject();
-					        if (parent instanceof «addImport("org.faktorips.runtime.IConfigurableModelObject")») {
-					            return ((IConfigurableModelObject)parent).«getEffectiveFromAsCalendar()»();
+					        «IModelObject()» parent = «getParentModelObject()»;
+					        if (parent instanceof «IConfigurableModelObject()») {
+					            return ((«IConfigurableModelObject()»)parent).«getEffectiveFromAsCalendar()»;
 					        }
 					        return null;
 					 «ENDIF-»
 				 }
 		    «ENDIF-»
 			 
-
 			«EXPAND PropertyChangeSupport::generalMethods»
 			
 			«EXPAND PolicyCmptAttribute::getterAndSetter FOREACH attributes»
@@ -87,7 +86,7 @@
 «DEFINE initializeForOverrideAttributes FOR GPolicyCmpt-»
 	«FOREACH attributes AS this-»
 		«IF generateDefaultInitialize-»
-			«setterMethodName()»(«datatypeHelper.newInstance(defaultValue)»);
+			«setterMethodName()»(«defaultValueCode»);
 		«ENDIF-»
 	«ENDFOREACH-»
 «ENDDEFINE»

@@ -13,19 +13,25 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
+import java.util.List;
 import java.util.Locale;
 
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
+import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class AbstractGeneratorModelObject {
+public abstract class AbstractGeneratorModelObject {
 
     private final XpandBuilder builder;
 
@@ -46,10 +52,17 @@ public class AbstractGeneratorModelObject {
     }
 
     /**
-     * @return Returns the builderSet.
+     * @return Returns the builder
      */
     public XpandBuilder getBuilder() {
         return builder;
+    }
+
+    /**
+     * @return Returns the builderSet.
+     */
+    public StandardBuilderSet getBuilderSet() {
+        return builder.getBuilderSet();
     }
 
     /**
@@ -110,6 +123,23 @@ public class AbstractGeneratorModelObject {
         return segments[segments.length - 1];
     }
 
+    /**
+     * Add the qualified name to the list of import statements and return the unqualified name
+     * 
+     * @param importDeclaration The import declaration contains a set of imports
+     */
+    public void addImport(ImportDeclaration importDeclaration) {
+        for (String importStatement : importDeclaration.getImports()) {
+            if (ImportDeclaration.isPackageImport(importStatement)) {
+                // simply add additional .ALL because the package import already contains the
+                // complete statement
+                builder.addImport(importStatement + ".ALL");
+            } else {
+                builder.addImport(importStatement);
+            }
+        }
+    }
+
     public boolean removeImport(String importStatement) {
         return builder.removeImport(importStatement);
     }
@@ -166,5 +196,24 @@ public class AbstractGeneratorModelObject {
         }
         return false;
     }
+
+    /**
+     * Collects all <tt>IJavaElement</tt>s generated for the implementation by this generator into
+     * the provided list.
+     * <p>
+     * Subclasses must add the <tt>IJavaElement</tt>s they generate for the given
+     * <tt>IIpsElement</tt> to the provided list (collecting parameter pattern).
+     * <p>
+     * Only <tt>IJavaElement</tt>s generated for the implementation shall be added to the list.
+     * 
+     * @see #getGeneratedJavaElementsForPublishedInterface(List, IType, IIpsElement)
+     * 
+     * @param generatedJavaType The Java type that the calling builder is generating.
+     * @param ipsElement The <tt>IIpsElement</tt> for that the client requested the generated
+     *            <tt>IJavaElement</tt>s.
+     * @return The list containing the generated <tt>IJavaElement</tt>s to.
+     */
+    public abstract List<IJavaElement> getGeneratedJavaElementsForImplementation(org.eclipse.jdt.core.IType generatedJavaType,
+            IIpsElement ipsElement);
 
 }

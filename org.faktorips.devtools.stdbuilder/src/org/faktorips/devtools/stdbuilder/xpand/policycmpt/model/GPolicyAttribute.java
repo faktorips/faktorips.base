@@ -13,10 +13,16 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
@@ -92,8 +98,16 @@ public class GPolicyAttribute extends AbstractGeneratorModelObject {
         return isOverwrite() && getAttribute().isChangeable();
     }
 
-    public String getDefaultValue() {
-        return getAttribute().getDefaultValue();
+    public String getDefaultValueCode() {
+        JavaCodeFragment newInstance = getDatatypeHelper().newInstance(getAttribute().getDefaultValue());
+        addImport(newInstance.getImportDeclaration());
+        return newInstance.getSourcecode();
+    }
+
+    @Override
+    public List<IJavaElement> getGeneratedJavaElementsForImplementation(IType generatedJavaType, IIpsElement ipsElement) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
