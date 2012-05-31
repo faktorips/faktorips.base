@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.migrationextensions;
 
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -106,7 +107,7 @@ public class Migration_3_7_0 extends DefaultMigration {
                                 if (variableDeclaration.getName().getIdentifier().equals("propMap") && !type.isParameterizedType()) { //$NON-NLS-1$
                                     AST ast = astRoot.getAST();
                                     ParameterizedType newType = ast.newParameterizedType(ast.newSimpleType(ast
-                                            .newName(List.class.getSimpleName())));
+                                            .newName(Map.class.getSimpleName())));
                                     newType.typeArguments().add(
                                             ast.newSimpleType(ast.newName(String.class.getSimpleName())));
                                     newType.typeArguments().add(
