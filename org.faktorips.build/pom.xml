@@ -147,6 +147,7 @@
 		<module>../org.faktorips.valuetypes.java5.test</module>
 		<!-- p2 Repository and product -->
 		<module>../org.faktorips.updatesite</module>
+		<module>../org.faktorips.updatesite/test</module>
 		<!-- 
 		<module>../org.faktorips.product</module>
 		 -->

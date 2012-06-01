@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="Target for Faktor-IPS Base (Galileo)" sequenceNumber="82">
+<target name="Target for Faktor-IPS Base (Galileo)" sequenceNumber="83">
 <locations>
 <location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.commons.lang" version="0.0.0"/>
 <unit id="org.apache.openejb.javaee-api" version="0.0.0"/>
+<unit id="groovy-all" version="0.0.0"/>
 <repository location="https://update.faktorzehn.org/p2repositories/faktorips/deploy"/>
 </location>
 <location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.mockito.mockito-all" version="0.0.0"/>
 <repository location="https://update.faktorzehn.org/p2repositories/faktorips/test"/>
+</location>
+<location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="3.5.0.v20111128114305"/>
+<repository location="https://update.faktorzehn.org/p2repositories/babel-galileo"/>
 </location>
 <location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.cvs.feature.group" version="1.1.101.R35x_v20100125-7E79FGD9kKF67BPDZ7PKCE1911"/>
@@ -21,11 +26,8 @@
 <unit id="org.eclipse.emf.codegen.feature.group" version="2.5.0.v200906151043"/>
 <unit id="org.eclipse.emf.common.feature.group" version="2.5.0.v200906151043"/>
 <unit id="org.eclipse.gef.feature.group" version="3.5.2.v20100111-1352-777928194B66D5D476C33B2A"/>
+<unit id="org.eclipse.uml2.sdk.feature.group" version="0.0.0"/>
 <repository location="https://update.faktorzehn.org/p2repositories/galileo"/>
-</location>
-<location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="3.5.0.v20111128114305"/>
-<repository location="https://update.faktorzehn.org/p2repositories/babel-galileo"/>
 </location>
 </locations>
 <launcherArgs>
