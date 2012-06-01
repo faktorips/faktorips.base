@@ -14,8 +14,6 @@
 	<artifactId>org.faktorips.updatesite</artifactId>
 	<packaging>eclipse-repository</packaging>
 
-    <scm>
-    	<connection>scm:cvs:ext:faktorzehn.org:/usr/local/cvsroot:${project.artifactId}</connection>
-    </scm>
+    
 
 </project>

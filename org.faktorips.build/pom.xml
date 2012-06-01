@@ -31,9 +31,10 @@
 			<url>http://update.faktorzehn.org/p2repositories/galileo/</url>
 		</repository>
 	</repositories>
- 
+	
 	<build>
 		<plugins>
+			<!-- TARGER PLATFORM MUST REFERENCE FEATURES ONLY 
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
@@ -42,12 +43,13 @@
 					<target>
 						<artifact>
 							<groupId>org.faktorips</groupId>
-							<artifactId>org.faktorips.devtarget.galileo</artifactId>
-							<classifier>eclipse-3.5.2-galileo-online</classifier>
+							<artifactId>org.faktorips.build</artifactId>
+							<classifier>eclipse-galileo_online</classifier>
 						</artifact>
 					</target>
 				</configuration>
 			</plugin>
+			-->
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-source-plugin</artifactId>
@@ -180,9 +182,5 @@
 			</build>
 		</profile>
 	</profiles>
-
-	<scm>
-		<connection>scm:cvs:ext:faktorzehn.org:/usr/local/cvsroot:${project.artifactId}</connection>
-	</scm>
 
 </project>

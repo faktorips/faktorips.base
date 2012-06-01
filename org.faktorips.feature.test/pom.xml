@@ -13,8 +13,6 @@
 	
 	<artifactId>org.faktorips.feature.test</artifactId>
 	<packaging>eclipse-feature</packaging>
-    <scm>
-    	<connection>scm:cvs:ext:faktorzehn.org:/usr/local/cvsroot:${project.artifactId}</connection>
-    </scm>
+    
 
 </project>

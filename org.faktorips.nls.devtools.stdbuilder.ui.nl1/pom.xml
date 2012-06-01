@@ -14,8 +14,6 @@
   
     <packaging>eclipse-plugin</packaging>
   
-    <scm>
-    	<connection>scm:cvs:ext:faktorzehn.org:/usr/local/cvsroot:${project.artifactId}</connection>
-    </scm>
+    
 
 </project>
