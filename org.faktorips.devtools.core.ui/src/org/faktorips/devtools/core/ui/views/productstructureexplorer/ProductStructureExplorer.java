@@ -497,6 +497,47 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             menumanager.add(openAction);
         }
 
+        createCardinalityContextMenu(menumanager, selectedRef);
+
+        menumanager.add(new Separator("edit")); //$NON-NLS-1$
+
+        IProductCmptGeneration prodCmptGenToChange = (IProductCmptGeneration)selectedRef
+                .getAdapter(IProductCmptGeneration.class);
+        boolean editable = IpsUIPlugin.getDefault().isGenerationEditable(prodCmptGenToChange);
+
+        if (selectedRef instanceof IProductCmptReference) {
+            menumanager.add(deleteAction);
+        }
+
+        if (selectedRef instanceof IProductCmptVRuleReference) {
+            IProductCmptVRuleReference ruleRef = (IProductCmptVRuleReference)selectedRef;
+            final IAction toggleRuleAction = new ToggleRuleAction(ruleRef.getValidationRuleConfig());
+            toggleRuleAction.setEnabled(editable);
+            menumanager.add(toggleRuleAction);
+        }
+
+        if (selectedRef instanceof IProductCmptReference) {
+            menumanager.add(new Separator("copy")); //$NON-NLS-1$
+            IpsDeepCopyAction copyNewVersionAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
+                    DeepCopyWizard.TYPE_NEW_VERSION);
+            menumanager.add(copyNewVersionAction);
+            IpsAction createNewGenerationAction = new CreateNewGenerationAction(getSite().getShell(), treeViewer);
+            menumanager.add(createNewGenerationAction);
+            IpsDeepCopyAction copyProductAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
+                    DeepCopyWizard.TYPE_COPY_PRODUCT);
+            menumanager.add(copyProductAction);
+            boolean copyEnabled = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit();
+            createNewGenerationAction.setEnabled(copyEnabled);
+            copyNewVersionAction.setEnabled(copyEnabled);
+            copyProductAction.setEnabled(copyEnabled);
+        }
+
+        if (!(selectedRef instanceof IProductCmptVRuleReference || selectedRef instanceof IProductCmptTypeAssociationReference)) {
+            menumanager.add(new Separator(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
+        }
+    }
+
+    private void createCardinalityContextMenu(IMenuManager menumanager, IProductCmptStructureReference selectedRef) {
         // change cardinalities
         if (selectedRef instanceof IProductCmptReference) {
             IProductCmptReference productCmptReference = (IProductCmptReference)selectedRef;
@@ -564,43 +605,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                 dummyCardinalityAction.setEnabled(false);
                 menumanager.add(dummyCardinalityAction);
             }
-        }
-
-        menumanager.add(new Separator("edit")); //$NON-NLS-1$
-
-        IProductCmptGeneration prodCmptGenToChange = (IProductCmptGeneration)selectedRef
-                .getAdapter(IProductCmptGeneration.class);
-        boolean editable = IpsUIPlugin.getDefault().isGenerationEditable(prodCmptGenToChange);
-
-        if (selectedRef instanceof IProductCmptReference) {
-            menumanager.add(deleteAction);
-        }
-
-        if (selectedRef instanceof IProductCmptVRuleReference) {
-            IProductCmptVRuleReference ruleRef = (IProductCmptVRuleReference)selectedRef;
-            final IAction toggleRuleAction = new ToggleRuleAction(ruleRef.getValidationRuleConfig());
-            toggleRuleAction.setEnabled(editable);
-            menumanager.add(toggleRuleAction);
-        }
-
-        if (selectedRef instanceof IProductCmptReference) {
-            menumanager.add(new Separator("copy")); //$NON-NLS-1$
-            IpsDeepCopyAction copyNewVersionAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
-                    DeepCopyWizard.TYPE_NEW_VERSION);
-            menumanager.add(copyNewVersionAction);
-            IpsAction createNewGenerationAction = new CreateNewGenerationAction(getSite().getShell(), treeViewer);
-            menumanager.add(createNewGenerationAction);
-            IpsDeepCopyAction copyProductAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
-                    DeepCopyWizard.TYPE_COPY_PRODUCT);
-            menumanager.add(copyProductAction);
-            boolean copyEnabled = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit();
-            createNewGenerationAction.setEnabled(copyEnabled);
-            copyNewVersionAction.setEnabled(copyEnabled);
-            copyProductAction.setEnabled(copyEnabled);
-        }
-
-        if (!(selectedRef instanceof IProductCmptVRuleReference || selectedRef instanceof IProductCmptTypeAssociationReference)) {
-            menumanager.add(new Separator(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
         }
     }
 
@@ -1105,17 +1109,15 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
         @Override
         public void doubleClick(DoubleClickEvent event) {
-            if (getSelectedObjectFromSelection(event.getSelection()) instanceof IProductCmptTypeAssociationReference) {
-                return;
+            if (getSelectedObjectFromSelection(event.getSelection()) instanceof IProductCmptReference) {
+                IProductCmptReference selectedProductCmptReference = (IProductCmptReference)getSelectedObjectFromSelection(event
+                        .getSelection());
+                GenerationDate selectedGenerationDate = generationDateViewer.getSelectedDate();
+                IProductCmptGeneration generationToBeOpened = selectedProductCmptReference.getProductCmpt()
+                        .getBestMatchingGenerationEffectiveOn(selectedGenerationDate.getValidFrom());
+
+                IpsUIPlugin.getDefault().openEditor(generationToBeOpened);
             }
-
-            IProductCmptReference selectedProductCmptReference = (IProductCmptReference)getSelectedObjectFromSelection(event
-                    .getSelection());
-            GenerationDate selectedGenerationDate = generationDateViewer.getSelectedDate();
-            IProductCmptGeneration generationToBeOpened = selectedProductCmptReference.getProductCmpt()
-                    .getBestMatchingGenerationEffectiveOn(selectedGenerationDate.getValidFrom());
-
-            IpsUIPlugin.getDefault().openEditor(generationToBeOpened);
         }
 
     }
