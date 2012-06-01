@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.6"?>
+
+<target name="Target for Faktor-IPS Base (Galileo)" sequenceNumber="73">
+<locations>
+<location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.cvs.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.jdt.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.pde.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.rcp.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.emf.codegen.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.emf.common.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.gef.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.gmf.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.team.svn.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.uml2.sdk.feature.group" version="0.0.0"/>
+<repository location="http://update.faktorzehn.org/p2repositories/galileo"/>
+</location>
+<location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.babel.nls_technology.subversive_de.feature.group" version="0.0.0"/>
+<repository location="http://update.faktorzehn.org/p2repositories/babel-galileo"/>
+</location>
+<location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.apache.commons.lang" version="0.0.0"/>
+<unit id="org.apache.openejb.javaee-api" version="0.0.0"/>
+<repository location="http://update.faktorzehn.org/p2repositories/faktorips/deploy"/>
+</location>
+<location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.mockito.mockito-all" version="0.0.0"/>
+<repository location="http://update.faktorzehn.org/p2repositories/faktorips/test"/>
+</location>
+</locations>
+<environment>
+<arch>x86</arch>
+<nl>de_DE</nl>
+</environment>
+<launcherArgs>
+<vmArgs>-Dorg.eclipse.swt.browser.XULRunnerPath=/usr/lib/xulrunner/ -XX:MaxPermSize=256m</vmArgs>
+</launcherArgs>
+</target>
