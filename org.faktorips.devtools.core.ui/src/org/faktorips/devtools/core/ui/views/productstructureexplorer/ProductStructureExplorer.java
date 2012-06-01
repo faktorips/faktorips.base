@@ -77,9 +77,11 @@ import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptVRuleReference;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.CreateNewGenerationAction;
@@ -1117,6 +1119,19 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                         .getBestMatchingGenerationEffectiveOn(selectedGenerationDate.getValidFrom());
 
                 IpsUIPlugin.getDefault().openEditor(generationToBeOpened);
+            }
+            if (getSelectedObjectFromSelection(event.getSelection()) instanceof IProductCmptStructureTblUsageReference) {
+                IProductCmptStructureTblUsageReference selectedTableReference = (IProductCmptStructureTblUsageReference)getSelectedObjectFromSelection(event
+                        .getSelection());
+                try {
+                    ITableContents tableUsage = selectedTableReference.getTableContentUsage().findTableContents(
+                            selectedTableReference.getTableContentUsage().getIpsProject());
+                    if (tableUsage != null) {
+                        IpsUIPlugin.getDefault().openEditor(tableUsage);
+                    }
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
             }
         }
 
