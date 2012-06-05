@@ -1,0 +1,56 @@
+«IMPORT org::faktorips::devtools::stdbuilder::xpand»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
+
+«DEFINE fieldProperties FOR GPolicyAttribute»
+		/**
+		 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
+		 * @generated
+		 */
+		public static final String «fieldPropertyName()» = "«memberVarName()»";
+«ENDDEFINE»
+
+«DEFINE memberField FOR GPolicyAttribute»
+	«IF generateField»
+	/**
+	 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
+	 * @generated
+	 */
+	private «javaClassName» «memberVarName()»;
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE getterAndSetter FOR GPolicyAttribute»
+		«IF generateGetter-»
+			/**
+			 * «localizedJDoc("METHOD_GETVALUE", name, description)»
+			 * @generated
+			 */
+			«IF  overwrite»«overrideAnnotation(false)-»«ENDIF-»
+			public «javaClassName» «getterMethodName()»() {
+				«IF generateField-»
+					return «getReferenceOrSafeCopyIfNecessary(memberVarName())»;
+				«ELSE-»
+					«IF generateDefaultForDerivedAttribute-»
+						return «defaultValueCode»;
+					«ELSE-»
+«REM»TODO«ENDREM»						
+					«ENDIF-»
+				«ENDIF-»
+			}
+		«ENDIF»
+		«IF generateSetter-»
+			/**
+			 * «localizedJDoc("METHOD_SETVALUE", name, description)»
+			 * @generated
+			 */
+			«IF  overwrite»«overrideAnnotation(false)-»«ENDIF-»
+			public void «setterMethodName()»(«javaClassName» newValue) {
+				«EXPAND PropertyChangeSupport::storeOldValue-»
+				this.«memberVarName()» = newValue;
+				«EXPAND PropertyChangeSupport::notify-»
+			}
+		«ENDIF»
+«ENDDEFINE»

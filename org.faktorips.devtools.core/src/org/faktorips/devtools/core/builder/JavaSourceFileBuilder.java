@@ -28,8 +28,10 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.codegen.merge.java.JControlModel;
@@ -43,10 +45,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
-import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
@@ -151,10 +151,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     private JControlModel model;
 
-    private Integer javaOptionsSplitLength;
-
-    private Integer javaOptionsTabSize;
-
     private FacadeHelper facadeHelper;
 
     /**
@@ -168,31 +164,11 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public JavaSourceFileBuilder(DefaultBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
-        initJavaOptions();
     }
 
     @Override
     public DefaultBuilderSet getBuilderSet() {
         return (DefaultBuilderSet)super.getBuilderSet();
-    }
-
-    // TODO duplicate code in LocalizedTextHelper
-    private void initJavaOptions() {
-        try {
-            javaOptionsSplitLength = Integer.valueOf(JavaCore
-                    .getOption(DefaultCodeFormatterConstants.FORMATTER_LINE_SPLIT));
-            javaOptionsTabSize = Integer.valueOf(JavaCore.getOption(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE));
-        } catch (Exception e) {
-            IpsPlugin.log(new IpsStatus("Unable to apply the java formatter options.", e)); //$NON-NLS-1$
-        }
-    }
-
-    public Integer getJavaOptionsSplitLength() {
-        return javaOptionsSplitLength;
-    }
-
-    public Integer getJavaOptionsTabSize() {
-        return javaOptionsTabSize;
     }
 
     @Override
@@ -842,26 +818,32 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the IFile for the provided IIpsSrcFile.
      */
+    /**
+     * Returns the IFile for the provided IIpsSrcFile.
+     */
     public IFile getJavaFile(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFolder destinationFolder = getArtefactDestination(ipsSrcFile);
 
-        String name = getQualifiedClassName(ipsSrcFile);
-        int index = name.lastIndexOf('.');
+        IPath javaFile = getRelativeJavaFile(ipsSrcFile);
 
+        return destinationFolder.getFile(javaFile);
+    }
+
+    /**
+     * Return the path to the java file relative to the destination folder.
+     * <p>
+     * If the java class name is org.example.MyExample this method would return an {@link IPath} of
+     * <em>/org/example/MyExample.java</em>
+     */
+    public IPath getRelativeJavaFile(IIpsSrcFile ipsSrcFile) throws CoreException {
+        String name = getQualifiedClassName(ipsSrcFile);
+
+        int index = name.lastIndexOf('.');
         if (index == name.length()) {
             throw new RuntimeException("The qualified class name is not a valid java class name"); //$NON-NLS-1$
         }
-        if (index == -1) {
-            return destinationFolder.getFile(name + JAVA_EXTENSION);
-        }
-        String packageName = name.substring(0, index);
-        String fileName = name.substring(index + 1, name.length());
-        String[] packageFolders = packageName.split("\\."); //$NON-NLS-1$
-        IFolder folder = destinationFolder;
-        for (String packageFolder : packageFolders) {
-            folder = folder.getFolder(packageFolder);
-        }
-        return folder.getFile(fileName + JAVA_EXTENSION);
+        IPath javaFile = new Path(name.replace('.', '/') + JAVA_EXTENSION);
+        return javaFile;
     }
 
     private JControlModel getJControlModel() {

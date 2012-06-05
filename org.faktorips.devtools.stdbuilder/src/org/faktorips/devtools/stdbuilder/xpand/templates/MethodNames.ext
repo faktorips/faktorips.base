@@ -1,0 +1,15 @@
+extension org::faktorips::devtools::stdbuilder::xpand::templates::ClassNames reexport;
+
+getEffectiveFromAsCalendar() :
+	"getEffectiveFromAsCalendar()";
+	
+getParentModelObject() :
+	"getParentModelObject()";
+
+
+getParentModelObjectSig(String type1, String param1, String type2, String param2) :
+	"getParentModelObject2(" + type1 + " " + param1 + ", " + type2 + " " + param2 + ")";
+	
+getParentModelObjectCall(String param1, String param2) :
+	"getParentModelObject2(" + param1 + ", " + param2 + ")";
+	
