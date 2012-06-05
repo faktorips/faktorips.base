@@ -41,4 +41,3 @@ Import-Package: org.apache.commons.lang;version="[2.6,2.6]",
  org.eclipse.jdt.internal.corext.refactoring.structure,
  org.eclipse.jdt.internal.corext.refactoring.structure.constraints,
  org.eclipse.jdt.internal.ui.preferences
-Eclipse-ExtensibleAPI: true
