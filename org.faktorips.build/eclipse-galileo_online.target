@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="Target for Faktor-IPS Base (Galileo)" sequenceNumber="84">
+<target name="Target for Faktor-IPS Base (Galileo)" sequenceNumber="86">
 <locations>
 <location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.apache.commons.lang" version="0.0.0"/>
+<unit id="org.apache.commons.lang" version="2.6.0"/>
 <unit id="org.apache.openejb.javaee-api" version="0.0.0"/>
 <unit id="groovy-all" version="0.0.0"/>
 <repository location="https://update.faktorzehn.org/p2repositories/faktorips/deploy"/>
@@ -18,23 +18,32 @@
 <repository location="https://update.faktorzehn.org/p2repositories/babel-galileo"/>
 </location>
 <location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.cvs.feature.group" version="1.1.101.R35x_v20100125-7E79FGD9kKF67BPDZ7PKCE1911"/>
-<unit id="org.eclipse.jdt.feature.group" version="3.5.2.r352_v20100108-7r88FEwFI0WTuoBl0iaG0tyhfZH6"/>
-<unit id="org.eclipse.platform.feature.group" version="3.5.2.R35x_v20100210-0800-9hEiFzmFst-TiEn9hNYgDWg1XN8ulH_JvCNGB"/>
-<unit id="org.eclipse.pde.feature.group" version="3.5.2.R35x_v20100119-7Z7_FA2FDX-aXQYWqYDBz-z0qufo"/>
-<unit id="org.eclipse.rcp.feature.group" version="3.5.2.R35x_v20100119-9SA0FxwFnoCU5XxWItFdXXb27BA6"/>
-<unit id="org.eclipse.emf.codegen.feature.group" version="2.5.0.v200906151043"/>
-<unit id="org.eclipse.emf.common.feature.group" version="2.5.0.v200906151043"/>
-<unit id="org.eclipse.gef.feature.group" version="3.5.2.v20100111-1352-777928194B66D5D476C33B2A"/>
-<unit id="org.eclipse.uml2.sdk.feature.group" version="0.0.0"/>
-<repository location="https://update.faktorzehn.org/p2repositories/galileo"/>
-</location>
-<location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.xpand.source.feature.group" version="1.1.1.v201108020519"/>
 <unit id="org.eclipse.xtend.source.feature.group" version="1.1.1.v201108020519"/>
 <unit id="org.eclipse.xpand.feature.group" version="1.1.1.v201108020519"/>
 <unit id="org.eclipse.xtend.feature.group" version="1.1.1.v201108020519"/>
 <repository location="http://download.eclipse.org/modeling/m2t/xpand/updates/"/>
+</location>
+<location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.emf.mwe.core.feature.group" version="1.2.1.v201112070431"/>
+<unit id="org.eclipse.emf.mwe.core.source.feature.group" version="1.2.1.v201112070431"/>
+<repository location="http://download.eclipse.org/modeling/emft/mwe/updates/"/>
+</location>
+<location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.emf.ecoretools.feature.group" version="0.9.0.v200906221231"/>
+<unit id="org.eclipse.emf.codegen.ecore.feature.group" version="2.5.0.v200906151043"/>
+<unit id="org.eclipse.emf.mapping.ecore.feature.group" version="2.5.0.v200906151043"/>
+<unit id="org.eclipse.xsd.ecore.converter.feature.group" version="2.5.0.v200906151043"/>
+<unit id="org.eclipse.cvs.feature.group" version="1.1.101.R35x_v20100125-7E79FGD9kKF67BPDZ7PKCE1911"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.5.2.r352_v20100108-7r88FEwFI0WTuoBl0iaG0tyhfZH6"/>
+<unit id="org.eclipse.platform.feature.group" version="3.5.2.R35x_v20100210-0800-9hEiFzmFst-TiEn9hNYgDWg1XN8ulH_JvCNGB"/>
+<unit id="org.eclipse.pde.feature.group" version="3.5.2.R35x_v20100119-7Z7_FA2FDX-aXQYWqYDBz-z0qufo"/>
+<unit id="org.eclipse.rcp.feature.group" version="3.5.2.R35x_v20100119-9SA0FxwFnoCU5XxWItFdXXb27BA6"/>
+<unit id="org.eclipse.emf.common.feature.group" version="2.5.0.v200906151043"/>
+<unit id="org.eclipse.emf.codegen.feature.group" version="2.5.0.v200906151043"/>
+<unit id="org.eclipse.gef.feature.group" version="3.5.2.v20100111-1352-777928194B66D5D476C33B2A"/>
+<unit id="org.eclipse.uml2.sdk.feature.group" version="0.0.0"/>
+<repository location="https://update.faktorzehn.org/p2repositories/galileo"/>
 </location>
 </locations>
 <launcherArgs>
