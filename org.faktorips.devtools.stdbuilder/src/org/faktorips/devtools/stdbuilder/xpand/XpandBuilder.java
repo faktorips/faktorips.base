@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.internal.xpand2.model.XpandDefinition;
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
@@ -24,6 +25,7 @@ import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xpand2.XpandExecutionContextImpl;
 import org.eclipse.xtend.type.impl.java.JavaBeansMetaModel;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportStatement;
@@ -108,7 +110,13 @@ public abstract class XpandBuilder extends JavaSourceFileBuilder {
         StringOutlet outlet = (StringOutlet)out.getOutlet(null);
         templateDefinition.evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(), getGeneratorModel());
         return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
+    }
 
+    @Override
+    public IPath getRelativeJavaFile(IIpsSrcFile ipsSrcFile) throws CoreException {
+        IPath path = super.getRelativeJavaFile(ipsSrcFile);
+        IPath pathWithoutExtension = path.removeFileExtension();
+        return pathWithoutExtension.addFileExtension("X" + JAVA_EXTENSION);
     }
 
     /**
