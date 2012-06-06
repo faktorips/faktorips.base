@@ -25,10 +25,10 @@ import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.GPolicyCmpt;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class XpandProductCmptAdjBuilder extends XpandBuilder {
+public class ProductCmptInterfaceBuilder extends XpandBuilder {
 
-    public XpandProductCmptAdjBuilder(StandardBuilderSet builderSet) {
-        super(builderSet, new LocalizedStringsSet(XpandProductCmptAdjBuilder.class));
+    public ProductCmptInterfaceBuilder(StandardBuilderSet builderSet) {
+        super(builderSet, new LocalizedStringsSet(ProductCmptInterfaceBuilder.class));
     }
 
     @Override
