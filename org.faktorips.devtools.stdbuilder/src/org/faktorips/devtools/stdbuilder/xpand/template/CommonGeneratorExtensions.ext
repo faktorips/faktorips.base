@@ -1,6 +1,6 @@
 import org::faktorips::devtools::stdbuilder::xpand::model;
 
-extension org::faktorips::devtools::stdbuilder::xpand::templates::MethodNames reexport;
+extension org::faktorips::devtools::stdbuilder::xpand::template::MethodNames reexport;
 
 String camelCaseToUnderscore(String s) :
 	JAVA org.faktorips.util.StringUtil.camelCaseToUnderscore(java.lang.String); 

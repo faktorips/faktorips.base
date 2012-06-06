@@ -1,8 +1,8 @@
-«IMPORT org::faktorips::devtools::stdbuilder::xpand::templates»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 
-«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::templates::PolicyCmptExtension»
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
 
 «DEFINE main FOR GPolicyCmpt»
 	«FILE fileName-»
