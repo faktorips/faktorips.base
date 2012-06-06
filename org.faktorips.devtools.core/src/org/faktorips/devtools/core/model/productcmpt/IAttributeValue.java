@@ -74,7 +74,9 @@ public interface IAttributeValue extends IPropertyValue {
      * For multi valued attributes this method set a the string as the first and only element.
      * 
      * @deprecated Since 3.7 we support multi valued attributes. You should use
-     *             {@link #setValueHolder(IValueHolder)} instead.
+     *             {@link #setValueHolder(IValueHolder)} instead, for example:
+     *             {@code attributeValue.setValueHolder(AttributeValueType.SINGLE_VALUE.newHolderInstance(attributeValue, "myValue"));}
+     *             .
      */
     @Deprecated
     public void setValue(String newValue);
