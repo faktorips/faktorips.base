@@ -112,7 +112,7 @@
 		<module>../org.faktorips.feature</module>
 		<module>../org.faktorips.feature.source</module>
 		<module>../org.faktorips.feature.nls1</module>
-		<module>../org.faktorips.feature.test</module>
+		<module>../org.faktorips.testdependencies</module>
 		<!-- plugins of feature org.faktorips.feature -->
 		<module>../org.faktorips.abstracttest</module>
 		<module>../org.faktorips.devtools.ant</module>
