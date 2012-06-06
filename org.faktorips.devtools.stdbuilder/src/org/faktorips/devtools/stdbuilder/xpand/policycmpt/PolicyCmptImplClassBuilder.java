@@ -26,10 +26,10 @@ import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.GPolicyCmpt;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class PolicyXpandBuilder extends XpandBuilder {
+public class PolicyCmptImplClassBuilder extends XpandBuilder {
 
-    public PolicyXpandBuilder(StandardBuilderSet builderSet) {
-        super(builderSet, new LocalizedStringsSet(PolicyXpandBuilder.class));
+    public PolicyCmptImplClassBuilder(StandardBuilderSet builderSet) {
+        super(builderSet, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class));
     }
 
     @Override

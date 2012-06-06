@@ -26,7 +26,7 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelObject;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyXpandBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder;
 import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 
@@ -34,7 +34,7 @@ public class GPolicyCmpt extends AbstractGeneratorModelObject {
 
     private ArrayList<GPolicyAttribute> attributes;
 
-    public GPolicyCmpt(IPolicyCmptType policyCmptType, PolicyXpandBuilder policyBuilder) {
+    public GPolicyCmpt(IPolicyCmptType policyCmptType, PolicyCmptImplClassBuilder policyBuilder) {
         super(policyCmptType, policyBuilder);
     }
 
