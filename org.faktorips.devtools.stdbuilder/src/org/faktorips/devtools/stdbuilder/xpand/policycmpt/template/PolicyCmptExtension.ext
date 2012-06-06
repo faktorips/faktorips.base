@@ -1,6 +1,6 @@
 import org::faktorips::devtools::stdbuilder::xpand::policycmpt::model;
 
-extension org::faktorips::devtools::stdbuilder::xpand::templates::CommonGeneratorExtensions reexport;
+extension org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions reexport;
 
 fieldPropertyNameSuffix(GPolicyAttribute this) :
 	builder.builderSet.generateSeparatedCamelCase ? camelCaseToUnderscore(name).toUpperCase() : name.toUpperCase();

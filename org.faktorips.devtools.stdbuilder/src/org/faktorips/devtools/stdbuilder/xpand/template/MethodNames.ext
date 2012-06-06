@@ -1,4 +1,4 @@
-extension org::faktorips::devtools::stdbuilder::xpand::templates::ClassNames reexport;
+extension org::faktorips::devtools::stdbuilder::xpand::template::ClassNames reexport;
 
 getEffectiveFromAsCalendar() :
 	"getEffectiveFromAsCalendar()";
