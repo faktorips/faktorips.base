@@ -29,6 +29,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportStatement;
+import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutlet;
+import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutput;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
