@@ -12,6 +12,7 @@
 	<properties>
 		<tycho-version>0.13.0</tycho-version>
 		<build-type>ci</build-type>
+		<skipDeploy>true</skipDeploy>
 	</properties>
 
 	<repositories>
@@ -33,6 +34,13 @@
 	</repositories>
 	
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+				<version>1.0</version>
+			</extension>
+		</extensions>
 		<plugins>
 			<!-- TARGER PLATFORM MUST REFERENCE FEATURES ONLY 
 			<plugin>
@@ -76,9 +84,10 @@
 				<artifactId>tycho-packaging-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<format>'${build-type}_'yyyyMMdd-HHmm</format>
+					<format>yyyyMMdd-HHmm'_${build-type}'</format>
 				</configuration>
 			</plugin>
+			<!-- Tycho Test Settings -->
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
@@ -94,6 +103,7 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<!-- Release and Deploy settings -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -102,7 +112,47 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>wagon-maven-plugin</artifactId>
+				<version>1.0-beta-4</version>
+				<executions>
+					<execution>
+						<id>default-cli</id>
+						<goals>
+							<goal>upload</goal>
+						</goals>
+						<configuration>
+							<fromDir>target/repository/</fromDir>
+							<includes>**</includes>
+							<url>scp://${deployUser}@${deployServer}</url>
+							<toDir>${deployDir}/${deployVersion}</toDir>
+							<skip>${skipDeploy}</skip>
+							<serverId></serverId>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<configuration>
+					<executable>ssh</executable>
+					<commandlineArgs>${deployUser}@${deployServer} 'cd ${deployDir};bash' &lt; ${project.parent.basedir}/${scriptName}</commandlineArgs>
+					<skip>${skipDeploy}</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>update-composite-p2</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+	
 	</build>
 
 	<!-- These are all modules that are included in the Faktor-IPS build -->
