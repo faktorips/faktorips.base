@@ -22,21 +22,18 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelObject;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModel;
+import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.runtime.INotificationSupport;
 import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 
-public class XPolicyCmptClass extends AbstractGeneratorModelObject {
+public class XPolicyCmptClass extends XClass {
 
     private ArrayList<XPolicyAttribute> attributes;
 
-    public XPolicyCmptClass(IPolicyCmptType policyCmptType, PolicyCmptImplClassBuilder policyBuilder) {
-        super(policyCmptType, policyBuilder);
+    public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModel model) {
+        super(policyCmptType, model);
     }
 
     @Override
@@ -51,38 +48,6 @@ public class XPolicyCmptClass extends AbstractGeneratorModelObject {
         return getIpsObjectPartContainer();
     }
 
-    public String getFileName() {
-        try {
-            return getBuilder().getRelativeJavaFile(getBuilder().getIpsSrcFile()).toOSString();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
-    public String getSimpleName() {
-        try {
-            return getBuilder().getUnqualifiedClassName();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
-    public String getQualifiedName() {
-        try {
-            return getBuilder().getQualifiedClassName();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
-    public String getPackageName() {
-        try {
-            return getBuilder().getPackage();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
     public boolean hasSupertype() {
         return getPolicyCmptType().hasSupertype();
     }
@@ -91,12 +56,11 @@ public class XPolicyCmptClass extends AbstractGeneratorModelObject {
         return getPolicyCmptType().isConfigurableByProductCmptType();
     }
 
-    // TODO refactor
     public String getProductCmptClassName() {
         try {
-            GenProductCmptType generator = getBuilder().getBuilderSet().getGenerator(
-                    getPolicyCmptType().findProductCmptType(getIpsObjectPartContainer().getIpsProject()));
-            return addImport(generator.getQualifiedName(true));
+            IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(
+                    getIpsObjectPartContainer().getIpsProject());
+            return addImport(getModel().getQualifiedClassName(productCmptType));
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -125,8 +89,8 @@ public class XPolicyCmptClass extends AbstractGeneratorModelObject {
     public String getSuperclassName() {
         try {
             if (getPolicyCmptType().hasSupertype()) {
-                IType superType = getPolicyCmptType().findSupertype(getBuilder().getIpsProject());
-                return addImport(getBuilder().getQualifiedClassName(superType));
+                IType superType = getPolicyCmptType().findSupertype(getIpsProject());
+                return addImport(getModel().getQualifiedClassName(superType));
             } else {
                 if (isConfigured()) {
                     return addImport(AbstractConfigurableModelObject.class);
@@ -143,39 +107,10 @@ public class XPolicyCmptClass extends AbstractGeneratorModelObject {
         if (attributes == null) {
             attributes = new ArrayList<XPolicyAttribute>();
             for (IPolicyCmptTypeAttribute attribute : getPolicyCmptType().getPolicyCmptTypeAttributes()) {
-                attributes.add(new XPolicyAttribute(this, attribute, getBuilder()));
+                attributes.add(new XPolicyAttribute(this, attribute, getModel()));
             }
         }
         return attributes;
-    }
-
-    public boolean isGeneratePropertyChange() {
-        return getBuilder().getBuilderSet().getConfig()
-                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER).booleanValue();
-    }
-
-    /**
-     * Searches and returns the Java type generated for the <tt>IProductCmptType</tt> configuring
-     * the <tt>IPolicyCmptType</tt> this generator is configured for.
-     * <p>
-     * Returns <tt>null</tt> if the <tt>IProductCmptType</tt> cannot be found.
-     * 
-     * @param forInterface Flag indicating whether to search for the published interface of the
-     *            <tt>IProductCmptType</tt> (<tt>true</tt>) or for it's implementation (
-     *            <tt>false</tt>).
-     * 
-     * @throws CoreException If an error occurs while searching for the <tt>IProductCmptType</tt>.
-     */
-    public org.eclipse.jdt.core.IType findGeneratedJavaTypeForProductCmptType(boolean forInterface)
-            throws CoreException {
-        BaseProductCmptTypeBuilder productCmptTypeBuilder = forInterface ? getBuilderSet()
-                .getProductCmptInterfaceBuilder() : getBuilderSet().getProductCmptImplClassBuilder();
-
-        IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(getPolicyCmptType().getIpsProject());
-        if (productCmptType == null) {
-            return null;
-        }
-        return productCmptTypeBuilder.getGeneratedJavaTypes(productCmptType).get(0);
     }
 
 }

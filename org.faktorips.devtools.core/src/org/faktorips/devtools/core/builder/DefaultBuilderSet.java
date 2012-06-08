@@ -46,52 +46,11 @@ import org.faktorips.fl.IdentifierResolver;
  */
 public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJavaPackageStructure {
 
-    private final static String INTERNAL_PACKAGE = "internal"; //$NON-NLS-1$
-
-    /**
-     * Returns the name of the (Java) package that contains the artefacts specified by the
-     * parameters generated for the given ips source file.
-     * 
-     * @param publishedArtefact <code>true</code> if the artefacts are published (usable by
-     *            clients), <code>false</code> if they are internal.
-     * @param mergableArtefact <code>true</code> if the generated artefact is mergable (at the
-     *            moment this applies to Java Source files only). <code>false</code) if the artefact
-     *            is 100% generated and can't be modified by the user.
-     */
-    public String getPackageNameForGeneratedArtefacts(IIpsSrcFile ipsSrcFile,
-            boolean publishedArtefact,
-            boolean mergableArtefact) throws CoreException {
-
-        String basePackName = mergableArtefact ? ipsSrcFile.getBasePackageNameForMergableArtefacts() : ipsSrcFile
-                .getBasePackageNameForDerivedArtefacts();
-        String packageFragName = ipsSrcFile.getIpsPackageFragment().getName().toLowerCase();
-        if (!publishedArtefact) {
-            return getInternalPackage(basePackName, packageFragName);
-        } else {
-            return QNameUtil.concat(basePackName, packageFragName);
-        }
-    }
+    private JavaPackageStructureAdapter javaPackageStructureAdaptor = new JavaPackageStructureAdapter();
 
     @Override
     public String getInternalPackage(final String basePackName, final String subPackageFragment) {
-        String internalBasePack = QNameUtil.concat(basePackName, INTERNAL_PACKAGE);
-        return QNameUtil.concat(internalBasePack, subPackageFragment);
-    }
-
-    /**
-     * Returns the name of the (Java) package name that contains the published artefacts that are
-     * generated for the given IPS source file that (the artefacts) are also mergable.
-     */
-    public String getPackageNameForMergablePublishedArtefacts(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getPackageNameForGeneratedArtefacts(ipsSrcFile, true, true);
-    }
-
-    /**
-     * Returns the name of the (Java) package name that contains the internal artefacts that are
-     * generated for the given IPS source file that (the artefacts) are also mergable.
-     */
-    public String getPackageNameForMergableInternalArtefacts(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getPackageNameForGeneratedArtefacts(ipsSrcFile, false, true);
+        return JavaClassNaming.getInternalPackage(basePackName, subPackageFragment);
     }
 
     @Override
@@ -137,13 +96,8 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
 
     @Override
     public String getPackage(IIpsArtefactBuilder builder, IIpsSrcFile ipsSrcFile) throws CoreException {
-        if (builder instanceof JavaSourceFileBuilder) {
-
-            JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
-            return getPackageNameForGeneratedArtefacts(ipsSrcFile, javaBuilder.isBuildingPublishedSourceFile(),
-                    builder.buildsDerivedArtefacts());
-        }
-        return getPackageNameForGeneratedArtefacts(ipsSrcFile, false, builder.buildsDerivedArtefacts());
+        javaPackageStructureAdaptor = new JavaPackageStructureAdapter();
+        return javaPackageStructureAdaptor.getPackage(builder, ipsSrcFile);
     }
 
     @Override

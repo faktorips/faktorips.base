@@ -11,25 +11,14 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
+package org.faktorips.devtools.stdbuilder.xpand.model;
 
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModel;
+import org.faktorips.devtools.core.model.type.IAssociation;
 
-public class XProductCmptClass extends AbstractGeneratorModelNode {
+public class XAssociation extends AbstractGeneratorModelNode {
 
-    public XProductCmptClass(IProductCmptType ipsObjectPartContainer, GeneratorModel model) {
+    public XAssociation(IAssociation ipsObjectPartContainer, GeneratorModel model) {
         super(ipsObjectPartContainer, model);
-    }
-
-    @Override
-    public IProductCmptType getIpsObjectPartContainer() {
-        return (IProductCmptType)super.getIpsObjectPartContainer();
-    }
-
-    public IProductCmptType getProductCmptType() {
-        return getIpsObjectPartContainer();
     }
 
 }

@@ -153,6 +153,10 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     private FacadeHelper facadeHelper;
 
+    private JavaPackageStructureAdapter packageStructureAdapter = new JavaPackageStructureAdapter();
+
+    private JavaClassNaming javaClassNaming;
+
     /**
      * Creates a new JavaSourceFileBuilder.
      * 
@@ -164,6 +168,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public JavaSourceFileBuilder(DefaultBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
+        javaClassNaming = new JavaClassNaming(isBuildingPublishedSourceFile(), buildsDerivedArtefacts());
     }
 
     @Override
@@ -300,14 +305,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @throws CoreException is delegated from calls to other methods
      */
     public String getQualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        StringBuffer buf = new StringBuffer();
-        String packageName = getPackageStructure().getPackage(this, ipsSrcFile);
-        if (packageName != null) {
-            buf.append(packageName);
-            buf.append('.');
-        }
-        buf.append(getUnqualifiedClassName(ipsSrcFile));
-        return buf.toString();
+        return javaClassNaming.getQualifiedClassName(ipsSrcFile);
     }
 
     /**
@@ -341,7 +339,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @throws CoreException is delegated from calls to other methods
      */
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
+        return javaClassNaming.getUnqualifiedClassName(ipsSrcFile);
     }
 
     /**
@@ -392,7 +390,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Returns the java package structure available for this builder.
      */
     public IJavaPackageStructure getPackageStructure() {
-        return getBuilderSet();
+        return packageStructureAdapter;
     }
 
     /**

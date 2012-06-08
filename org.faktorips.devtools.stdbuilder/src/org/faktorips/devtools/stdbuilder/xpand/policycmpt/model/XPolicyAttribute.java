@@ -22,18 +22,18 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
-import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelObject;
+import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModel;
+import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
 
-public class XPolicyAttribute extends AbstractGeneratorModelObject {
+public class XPolicyAttribute extends XAttribute {
 
     private DatatypeHelper datatypeHelper;
     private DatatypeHelper valuesetDatatypeHelper;
-    private final XPolicyCmptClass gPolicyCmpt;
+    private final XPolicyCmptClass policyCmptClass;
 
-    public XPolicyAttribute(XPolicyCmptClass gPolicyCmpt, IPolicyCmptTypeAttribute attribute, XpandBuilder builder) {
-        super(attribute, builder);
-        this.gPolicyCmpt = gPolicyCmpt;
+    public XPolicyAttribute(XPolicyCmptClass policyCmptClass, IPolicyCmptTypeAttribute attribute, GeneratorModel model) {
+        super(attribute, model);
+        this.policyCmptClass = policyCmptClass;
         try {
             datatypeHelper = attribute.getIpsProject().findDatatypeHelper(attribute.getDatatype());
             valuesetDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(attribute.getIpsProject(),
@@ -52,7 +52,7 @@ public class XPolicyAttribute extends AbstractGeneratorModelObject {
      * @return Returns the gPolicyCmpt.
      */
     public XPolicyCmptClass getGPolicyCmpt() {
-        return gPolicyCmpt;
+        return policyCmptClass;
     }
 
     /**

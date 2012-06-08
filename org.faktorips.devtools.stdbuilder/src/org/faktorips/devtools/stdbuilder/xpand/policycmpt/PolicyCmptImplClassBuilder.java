@@ -17,12 +17,14 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.faktorips.devtools.core.builder.JavaClassNaming;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModel;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -38,13 +40,17 @@ public class PolicyCmptImplClassBuilder extends XpandBuilder {
     }
 
     @Override
-    protected Class<?> getGeneratorModelType() {
+    protected Class<?> getGeneratorModelNodeClass() {
         return XPolicyCmptClass.class;
     }
 
     @Override
-    protected Object getGeneratorModel() {
-        return new XPolicyCmptClass((IPolicyCmptType)getIpsObject(), this);
+    protected GeneratorModel initGeneratorModel(IIpsSrcFile ipsSrcFile) {
+        GeneratorModel model = new GeneratorModel(new JavaClassNaming(isBuildingPublishedSourceFile(),
+                buildsDerivedArtefacts()));
+        IPolicyCmptType type = (IPolicyCmptType)ipsSrcFile.getIpsObject();
+        model.setPolicyCmptClassClass(new XPolicyCmptClass(type, model));
+        return model;
     }
 
     @Override
@@ -56,7 +62,6 @@ public class PolicyCmptImplClassBuilder extends XpandBuilder {
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
-        // TODO
         return false;
     }
 

@@ -21,6 +21,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.builder.JavaClassNaming;
 import org.faktorips.devtools.core.builder.JavaGeneratorForIpsPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -73,14 +74,11 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
 
     private static String getPackageName(IType type, StandardBuilderSet builderSet, boolean forInterface) {
         if (type != null) {
-            try {
-                if (forInterface) {
-                    return builderSet.getPackageNameForMergablePublishedArtefacts(type.getIpsSrcFile());
-                }
-                return builderSet.getPackageNameForMergableInternalArtefacts(type.getIpsSrcFile());
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
+            if (forInterface) {
+                return JavaClassNaming.getPackageNameForMergablePublishedArtefacts(type.getIpsSrcFile());
             }
+            return JavaClassNaming.getPackageNameForMergableInternalArtefacts(type.getIpsSrcFile());
+
         }
         return null;
     }

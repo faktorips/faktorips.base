@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModel;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportStatement;
 import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutlet;
 import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutput;
@@ -71,7 +72,7 @@ public abstract class XpandBuilder extends JavaSourceFileBuilder {
         JavaBeansMetaModel mm = new JavaBeansMetaModel();
         xpandContext.registerMetaModel(mm);
 
-        final org.eclipse.xtend.typesystem.Type targetType = xpandContext.getTypeForName(getGeneratorModelType()
+        final org.eclipse.xtend.typesystem.Type targetType = xpandContext.getTypeForName(getGeneratorModelNodeClass()
                 .getName().replaceAll("\\.", SyntaxConstants.NS_DELIM));
         ArgumentCheck.notNull(targetType);
         final org.eclipse.xtend.typesystem.Type[] paramTypes = new org.eclipse.xtend.typesystem.Type[0];
@@ -129,18 +130,9 @@ public abstract class XpandBuilder extends JavaSourceFileBuilder {
      */
     protected abstract String getTemplate();
 
-    /**
-     * The class of the generator model type. This is the the top element of generator model used as
-     * parameter in the provided template.
-     * <p>
-     * This method is called when initializing the template in the constructor!
-     * 
-     * @see #getTemplate()
-     * @return The {@link Class} of the generator model.
-     */
-    protected abstract Class<?> getGeneratorModelType();
+    protected abstract GeneratorModel getGeneratorModel();
 
-    protected abstract Object getGeneratorModel();
+    protected abstract Class<?> getGeneratorModelNodeClass();
 
     /**
      * Getting the set of collected import statements.

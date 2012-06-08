@@ -24,8 +24,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -33,26 +31,25 @@ import org.faktorips.util.LocalizedStringsSet;
  * for localization and import statements and handles the common needs for every generator model
  * object.
  * 
- * @author dirmeier
+ * @author dirmeier, widmaier
  */
-public abstract class AbstractGeneratorModelObject {
-
-    private final XpandBuilder builder;
+public abstract class AbstractGeneratorModelNode {
 
     private final LocalizedStringsSet localizedStringSet = new LocalizedStringsSet(getClass());
 
     private final IIpsObjectPartContainer ipsObjectPartContainer;
 
+    private final GeneratorModel model;
+
     /**
      * Every generator model object is responsible for one {@link IIpsObjectPartContainer} and is
-     * referenced to one xpand builder.
+     * part of the given generatorModel
      * 
      * @param ipsObjectPartContainer The object this generator model object is responsible for
-     * @param builder the build object that referenced to this generator model object
      */
-    public AbstractGeneratorModelObject(IIpsObjectPartContainer ipsObjectPartContainer, XpandBuilder builder) {
+    public AbstractGeneratorModelNode(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModel model) {
         this.ipsObjectPartContainer = ipsObjectPartContainer;
-        this.builder = builder;
+        this.model = model;
     }
 
     /**
@@ -69,25 +66,6 @@ public abstract class AbstractGeneratorModelObject {
      */
     public IIpsProject getIpsProject() {
         return getIpsObjectPartContainer().getIpsProject();
-    }
-
-    /**
-     * Returns the builder that is referenced to this generator model object
-     * 
-     * @return Returns the builder
-     */
-    public XpandBuilder getBuilder() {
-        return builder;
-    }
-
-    /**
-     * Returns the builder set of the referenced builder.
-     * 
-     * @see #getBuilder()
-     * @return Returns the builderSet.
-     */
-    public StandardBuilderSet getBuilderSet() {
-        return builder.getBuilderSet();
     }
 
     /**
@@ -132,7 +110,7 @@ public abstract class AbstractGeneratorModelObject {
      * @return the unqualified name of the type
      */
     public String addImport(Class<?> clazz) {
-        builder.addImport(clazz.getName());
+        getModel().addImport(clazz.getName());
         return clazz.getSimpleName();
     }
 
@@ -143,7 +121,7 @@ public abstract class AbstractGeneratorModelObject {
      * @return the unqualified name of the type
      */
     public String addImport(String qName) {
-        builder.addImport(qName);
+        getModel().addImport(qName);
         String[] segments = qName.split("\\.");
         return segments[segments.length - 1];
     }
@@ -155,7 +133,7 @@ public abstract class AbstractGeneratorModelObject {
      */
     public void addImport(ImportDeclaration importDeclaration) {
         for (String importStatement : importDeclaration.getImports()) {
-            builder.addImport(importStatement);
+            getModel().addImport(importStatement);
         }
     }
 
@@ -167,7 +145,7 @@ public abstract class AbstractGeneratorModelObject {
      * @return true if remove was successful
      */
     public boolean removeImport(String importStatement) {
-        return builder.removeImport(importStatement);
+        return getModel().removeImport(importStatement);
     }
 
     /**
@@ -240,12 +218,12 @@ public abstract class AbstractGeneratorModelObject {
     }
 
     /**
-     * Returns the language in that variables, methods are named and and Java docs are written in.
+     * Returns the language that variables, methods are named and and Java docs are written in.
      * 
      * @see IIpsArtefactBuilderSet#getLanguageUsedInGeneratedSourceCode()
      */
     public Locale getLanguageUsedInGeneratedSourceCode() {
-        return getBuilder().getBuilderSet().getLanguageUsedInGeneratedSourceCode();
+        return getModel().getLanguageUsedInGeneratedSourceCode();
     }
 
     /**
@@ -278,6 +256,14 @@ public abstract class AbstractGeneratorModelObject {
             return true;
         }
         return false;
+    }
+
+    public GeneratorModel getModel() {
+        return model;
+    }
+
+    public boolean isGeneratePropertyChange() {
+        return getModel().isGeneratePropertyChange();
     }
 
 }

@@ -4,7 +4,7 @@
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
 
-«DEFINE main FOR GPolicyCmpt»
+«DEFINE main FOR XPolicyCmptClass»
 	«FILE fileName-»
 	package «packageName»;
 
