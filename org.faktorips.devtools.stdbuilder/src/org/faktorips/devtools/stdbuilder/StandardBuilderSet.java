@@ -29,10 +29,8 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.ExtensionPoints;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
-import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
@@ -414,63 +412,40 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         List<IIpsArtefactBuilder> extendingBuilders = getExtendingArtefactBuilders();
 
-        if (ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
-            ModelTypeXmlBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this);
-            ModelTypeXmlBuilder productModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.PRODUCT_CMPT_TYPE, this);
-            tocFileBuilder.setPolicyModelTypeXmlBuilder(policyModelTypeBuilder);
-            tocFileBuilder.setProductModelTypeXmlBuilder(productModelTypeBuilder);
-            tocFileBuilder.setGenerateEntriesForModelTypes(true);
+        ModelTypeXmlBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this);
+        ModelTypeXmlBuilder productModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.PRODUCT_CMPT_TYPE, this);
+        tocFileBuilder.setPolicyModelTypeXmlBuilder(policyModelTypeBuilder);
+        tocFileBuilder.setProductModelTypeXmlBuilder(productModelTypeBuilder);
+        tocFileBuilder.setGenerateEntriesForModelTypes(true);
 
-            List<IIpsArtefactBuilder> builders = new ArrayList<IIpsArtefactBuilder>();
-            builders.add(tableImplBuilder);
-            builders.add(tableRowBuilder);
-            builders.add(productCmptInterfaceBuilder);
-            builders.add(productCmptImplClassBuilder);
-            builders.add(productCmptGenInterfaceBuilder);
-            builders.add(productCmptGenImplClassBuilder);
-            builders.add(policyCmptImplClassBuilder);
-            builders.add(policyCmptInterfaceBuilder);
-            builders.add(productCmptGenerationImplBuilder);
-            builders.add(tableContentCopyBuilder);
-            builders.add(productCmptContentCopyBuilder);
-            builders.add(testCaseTypeClassBuilder);
-            builders.add(testCaseBuilder);
-            builders.add(formulaTestBuilder);
-            builders.add(tocFileBuilder);
-            builders.add(validationMessagesBuilder);
-            builders.add(policyModelTypeBuilder);
-            builders.add(productModelTypeBuilder);
-            builders.add(businessFunctionBuilder);
-            builders.add(enumTypeBuilder);
-            builders.add(enumContentBuilder);
-            builders.add(enumXmlAdapterBuilder);
-            builders.addAll(extendingBuilders);
-            return builders.toArray(new IIpsArtefactBuilder[builders.size()]);
-        } else {
-            tocFileBuilder.setGenerateEntriesForModelTypes(false);
-            List<IIpsArtefactBuilder> builders = new ArrayList<IIpsArtefactBuilder>();
-            builders.add(tableImplBuilder);
-            builders.add(tableRowBuilder);
-            builders.add(productCmptInterfaceBuilder);
-            builders.add(productCmptImplClassBuilder);
-            builders.add(productCmptGenInterfaceBuilder);
-            builders.add(productCmptGenImplClassBuilder);
-            builders.add(policyCmptImplClassBuilder);
-            builders.add(policyCmptInterfaceBuilder);
-            builders.add(productCmptGenerationImplBuilder);
-            builders.add(tableContentCopyBuilder);
-            builders.add(productCmptContentCopyBuilder);
-            builders.add(testCaseTypeClassBuilder);
-            builders.add(testCaseBuilder);
-            builders.add(formulaTestBuilder);
-            builders.add(tocFileBuilder);
-            builders.add(validationMessagesBuilder);
-            builders.add(businessFunctionBuilder);
-            builders.add(enumTypeBuilder);
-            builders.add(enumContentBuilder);
-            builders.addAll(extendingBuilders);
-            return builders.toArray(new IIpsArtefactBuilder[builders.size()]);
-        }
+        List<IIpsArtefactBuilder> builders = new ArrayList<IIpsArtefactBuilder>();
+        // TODO add XPAND builder for testing purposes
+        builders.add(new org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder(this));
+
+        builders.add(tableImplBuilder);
+        builders.add(tableRowBuilder);
+        builders.add(productCmptInterfaceBuilder);
+        builders.add(productCmptImplClassBuilder);
+        builders.add(productCmptGenInterfaceBuilder);
+        builders.add(productCmptGenImplClassBuilder);
+        builders.add(policyCmptImplClassBuilder);
+        builders.add(policyCmptInterfaceBuilder);
+        builders.add(productCmptGenerationImplBuilder);
+        builders.add(tableContentCopyBuilder);
+        builders.add(productCmptContentCopyBuilder);
+        builders.add(testCaseTypeClassBuilder);
+        builders.add(testCaseBuilder);
+        builders.add(formulaTestBuilder);
+        builders.add(tocFileBuilder);
+        builders.add(validationMessagesBuilder);
+        builders.add(policyModelTypeBuilder);
+        builders.add(productModelTypeBuilder);
+        builders.add(businessFunctionBuilder);
+        builders.add(enumTypeBuilder);
+        builders.add(enumContentBuilder);
+        builders.add(enumXmlAdapterBuilder);
+        builders.addAll(extendingBuilders);
+        return builders.toArray(new IIpsArtefactBuilder[builders.size()]);
     }
 
     /**
@@ -728,7 +703,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
                 }
             } catch (CoreException e) {
-                IpsPlugin.log(e);
+                throw new CoreRuntimeException(e);
             }
         }
 

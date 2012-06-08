@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.xpand.policycmpt;
+package org.faktorips.devtools.stdbuilder.xpand.productcmpt;
 
 import java.util.List;
 
@@ -20,21 +20,20 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.GPolicyCmpt;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class PolicyXpandBuilder extends XpandBuilder {
+public class ProductCmptGenerationImlClassBuilder extends XpandBuilder {
 
-    public PolicyXpandBuilder(StandardBuilderSet builderSet) {
-        super(builderSet, new LocalizedStringsSet(PolicyXpandBuilder.class));
+    public ProductCmptGenerationImlClassBuilder(StandardBuilderSet builderSet) {
+        super(builderSet, new LocalizedStringsSet(ProductCmptGenerationImlClassBuilder.class));
     }
 
     @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
+        return IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
     }
 
     @Override
@@ -44,7 +43,7 @@ public class PolicyXpandBuilder extends XpandBuilder {
 
     @Override
     protected Object getGeneratorModel() {
-        return new GPolicyCmpt((IPolicyCmptType)getIpsObject(), this);
+        return null;
     }
 
     @Override

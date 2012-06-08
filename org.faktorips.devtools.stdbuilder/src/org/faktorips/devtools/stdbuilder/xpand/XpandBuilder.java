@@ -24,9 +24,12 @@ import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xpand2.XpandExecutionContextImpl;
 import org.eclipse.xtend.type.impl.java.JavaBeansMetaModel;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportStatement;
+import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutlet;
+import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutput;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -108,7 +111,11 @@ public abstract class XpandBuilder extends JavaSourceFileBuilder {
         StringOutlet outlet = (StringOutlet)out.getOutlet(null);
         templateDefinition.evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(), getGeneratorModel());
         return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
+    }
 
+    @Override
+    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
+        return super.getUnqualifiedClassName(ipsSrcFile) + "_X";
     }
 
     /**

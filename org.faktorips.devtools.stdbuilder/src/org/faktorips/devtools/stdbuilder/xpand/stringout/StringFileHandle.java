@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.xpand;
+package org.faktorips.devtools.stdbuilder.xpand.stringout;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
