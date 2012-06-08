@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.GPolicyCmpt;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.util.LocalizedStringsSet;
 
 public class PolicyCmptImplClassBuilder extends XpandBuilder {
@@ -39,12 +39,12 @@ public class PolicyCmptImplClassBuilder extends XpandBuilder {
 
     @Override
     protected Class<?> getGeneratorModelType() {
-        return GPolicyCmpt.class;
+        return XPolicyCmptClass.class;
     }
 
     @Override
     protected Object getGeneratorModel() {
-        return new GPolicyCmpt((IPolicyCmptType)getIpsObject(), this);
+        return new XPolicyCmptClass((IPolicyCmptType)getIpsObject(), this);
     }
 
     @Override

@@ -31,11 +31,11 @@ import org.faktorips.runtime.INotificationSupport;
 import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 
-public class GPolicyCmpt extends AbstractGeneratorModelObject {
+public class XPolicyCmptClass extends AbstractGeneratorModelObject {
 
-    private ArrayList<GPolicyAttribute> attributes;
+    private ArrayList<XPolicyAttribute> attributes;
 
-    public GPolicyCmpt(IPolicyCmptType policyCmptType, PolicyCmptImplClassBuilder policyBuilder) {
+    public XPolicyCmptClass(IPolicyCmptType policyCmptType, PolicyCmptImplClassBuilder policyBuilder) {
         super(policyCmptType, policyBuilder);
     }
 
@@ -139,11 +139,11 @@ public class GPolicyCmpt extends AbstractGeneratorModelObject {
         }
     }
 
-    public List<GPolicyAttribute> getAttributes() {
+    public List<XPolicyAttribute> getAttributes() {
         if (attributes == null) {
-            attributes = new ArrayList<GPolicyAttribute>();
+            attributes = new ArrayList<XPolicyAttribute>();
             for (IPolicyCmptTypeAttribute attribute : getPolicyCmptType().getPolicyCmptTypeAttributes()) {
-                attributes.add(new GPolicyAttribute(this, attribute, getBuilder()));
+                attributes.add(new XPolicyAttribute(this, attribute, getBuilder()));
             }
         }
         return attributes;

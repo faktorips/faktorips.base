@@ -25,13 +25,13 @@ import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelObject;
 
-public class GPolicyAttribute extends AbstractGeneratorModelObject {
+public class XPolicyAttribute extends AbstractGeneratorModelObject {
 
     private DatatypeHelper datatypeHelper;
     private DatatypeHelper valuesetDatatypeHelper;
-    private final GPolicyCmpt gPolicyCmpt;
+    private final XPolicyCmptClass gPolicyCmpt;
 
-    public GPolicyAttribute(GPolicyCmpt gPolicyCmpt, IPolicyCmptTypeAttribute attribute, XpandBuilder builder) {
+    public XPolicyAttribute(XPolicyCmptClass gPolicyCmpt, IPolicyCmptTypeAttribute attribute, XpandBuilder builder) {
         super(attribute, builder);
         this.gPolicyCmpt = gPolicyCmpt;
         try {
@@ -51,7 +51,7 @@ public class GPolicyAttribute extends AbstractGeneratorModelObject {
     /**
      * @return Returns the gPolicyCmpt.
      */
-    public GPolicyCmpt getGPolicyCmpt() {
+    public XPolicyCmptClass getGPolicyCmpt() {
         return gPolicyCmpt;
     }
 
