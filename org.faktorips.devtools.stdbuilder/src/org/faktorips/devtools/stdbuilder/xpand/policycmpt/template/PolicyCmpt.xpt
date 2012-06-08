@@ -14,7 +14,10 @@
 		 * @generated
 		 */
 		public class «simpleName» extends «superclassName-»
-			«IF generatePropertyChange && !hasSupertype()»implements «addImport("org.faktorips.runtime.INotificationSupport")»«ENDIF-»
+			«IF implementsInterface-»implements«FOREACH implementedInterface AS interface-»
+				«interface»
+			«ENDFOREACH»
+			«ENDIF-»
 		 {
 
 		«EXPAND PolicyCmptAttribute::fieldProperties FOREACH attributes»

@@ -27,6 +27,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuil
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelObject;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder;
+import org.faktorips.runtime.INotificationSupport;
 import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 
@@ -107,6 +108,18 @@ public class GPolicyCmpt extends AbstractGeneratorModelObject {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    public boolean isImplementsInterface() {
+        return !getImplementedInterface().isEmpty();
+    }
+
+    public List<String> getImplementedInterface() {
+        ArrayList<String> list = new ArrayList<String>();
+        if (isGeneratePropertyChange() && !hasSupertype()) {
+            list.add(addImport(INotificationSupport.class));
+        }
+        return list;
     }
 
     public String getSuperclassName() {
