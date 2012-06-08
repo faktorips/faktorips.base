@@ -22,4 +22,3 @@ Import-Package: javax.xml.bind,
  javax.xml.bind.annotation,
  javax.xml.bind.annotation.adapters,
  javax.xml.stream
-Eclipse-ExtensibleAPI: true

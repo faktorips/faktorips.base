@@ -28,6 +28,5 @@ Export-Package: org.faktorips.devtools.htmlexport,
  org.faktorips.devtools.htmlexport.standard.pages,
  org.faktorips.devtools.htmlexport.wizards
 Bundle-Vendor: Faktor Zehn AG
-Eclipse-ExtensibleAPI: true
 Bundle-ClassPath: .
 Import-Package: org.apache.commons.lang;version="[2.6,2.6]"
