@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<properties>
+		<deploy.user>${user.name}</deploy.user>
+		<deploy.server>faktorzehn.org</deploy.server>
+		<deploy.dir>/var/www/update.faktorzehn.org/</deploy.dir>
+		<deploy.groupId>faktorips</deploy.groupId>
+		<deploy.artifactId>v${parsedVersion.majorVersion}_${parsedVersion.minorVersion}</deploy.artifactId>
+		<deploy.artifactVersion>${unqualifiedVersion}-${buildQualifier}</deploy.artifactVersion>
+		<deploy.skript.unzipAndBuildComposites>${project.basedir}/deploy.skript.unzipAndBuildComposites.sh</deploy.skript.unzipAndBuildComposites>
+	</properties>
+
+
+	<parent>
+		<groupId>org.faktorips</groupId>
+		<artifactId>org.faktorips.build</artifactId>
+		<version>3.7.2-SNAPSHOT</version>
+		<relativePath>../org.faktorips.build/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>org.faktorips.updatesite</artifactId>
+	<packaging>eclipse-repository</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<file>${project.build.directory}/${project.artifactId}.zip</file>
+					<repositoryId>ssh-repository</repositoryId>
+					<url>scp://${deploy.server}/${deploy.dir}</url>
+					<groupId>${deploy.groupId}</groupId>
+					<artifactId>${deploy.artifactId}</artifactId>
+					<version>${deploy.artifactVersion}</version>
+				</configuration>
+				<executions>
+					<execution>
+						<id>deploy-file</id>
+						<goals>
+							<goal>deploy-file</goal>
+						</goals>
+						<phase>deploy</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Unzip deployed update site and create composites -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<configuration>
+					<executable>ssh</executable>
+					<commandlineArgs>${deploy.user}@${deploy.server} bash -s -- ${deploy.dir}/${deploy.groupId} ${deploy.dir}/${deploy.groupId}/${deploy.artifactId}/${deploy.artifactVersion}/${deploy.artifactId}-${deploy.artifactVersion}.zip &lt; ${deploy.skript.unzipAndBuildComposites}</commandlineArgs>
+					<skip>${skipDeploy}</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>update-composite-p2</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<phase>deploy</phase>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>

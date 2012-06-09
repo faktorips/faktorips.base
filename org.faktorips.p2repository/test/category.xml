@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.faktorips.testdependencies_3.7.2.qualifier.jar" id="org.faktorips.testdependencies" version="3.7.2.qualifier">
+      <category name="faktor_ips"/>
+   </feature>
+   <category-def name="faktor_ips" label="Faktor-IPS Test">
+      <description>
+         In this category you get the Faktor-IPS test dependencies
+      </description>
+   </category-def>
+</site>
