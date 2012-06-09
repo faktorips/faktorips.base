@@ -8,40 +8,20 @@ parseArgs()
 	do case "$1" in
 	  -checkoutDir)	  CHECKOUT_DIR=$2 ; shift ;;
 	  -gitUser)       GIT_USERNAME=$2 ; shift ;;
-	  -gitBranch)	  GIT_BRANCH=$2 ; shift ;;
+	  -useBranch)	  BRANCH=$2 ; shift ;;
 	  -gitHost)	  GIT_HOST=$2 ; shift ;;
 	  -gitRepository) GIT_REPOSITORY=$2 ; shift ;;
 	  -gitUrl)	  GIT_URL=$2 ; shift ;;
-	  -versionType)   VERSION_TYPE=$2 ; shift ;;
+	  -versionType)   VERSION_KIND=$2 ; shift ;;
 	  -mavenCmd)	  MAVEN_CMD=$2 ; shift ;;
 	  -pom)		  BUILD_POM=$2 ; shift ;;
 	  -skipTag)	  SKIP_TAG=true ;;
 	  -skipTests)	  SKIP_TESTS=true ;;
 	  -newVersion)   NEW_VERSION=$2 ; shift ;;
 	  -onlySetVersion) ONLY_VERSION=true ;;
-
-	  -category)      BUILD_CATEGORY=$2 ; shift ;;
-	  -buildfile)     BUILDFILE=$2 ; shift ;;
-	  -workingdir)    WORKINGDIR=$2 ; shift ;;
-	  -projectsrootdir) PROJECTSROOTDIR=$2 ; shift ;;
-	  -useBranch)     BRANCH=$2 ; shift ;;
-	  -overwrite)     OVERWRITE=true ;;
-	  -skipTest)      RUNTESTS=false ;;
-	  -skipPublish)   SKIPPUBLISH=true ;;
-	  -skipTaggingCvs) SKIPTAGCVS=true ;;
-	  -forceTaggingCvs) FORCE_TAGCVS=true ;;
-	  -buildProduct)  BUILDPRODUCT=$2 ; shift ;;
-	  -customBuild)  CUSTOM_BUILD=$2 ; shift ;;
-	  -resultDir)     PUBLISH_DOWNLOAD_DIR=$2 ; shift ;;
-	  -updatesiteDir) PUBLISH_UPDATESITE_DIR=$2 ; shift ;;
-	  -updatesiteFile) PUBLISH_UPDATESITE_FILE=$2 ; shift ;;
-	  -noCvs)         NOCVS=true ;;
-	  -createBranch)  DO_CREATE_BRANCH=true ;;
-	  -branchRootTag) BRANCH_ROOT_TAG=$2 ; shift ;;
-	  -forceBuild)    FORCE_BUILD=true ;;
-      -devtarget)     DEVTARGET_PLUGIN_NAME=$2 ; shift ;;
-      -addDropins)    COPY_DROPINS_FROM=$2 ; shift ;;
-      -corePlugin)    FAKTORIPS_CORE_PLUGIN_NAME=$2 ; shift ;;
+	  -noNewVersion)  NO_NEW_VERSION=true;;
+	  -deployUser)	  DEPLOY_USER=$2 ; shift ;;
+	  -deployServer)  DEPLOY_SERVER=$2 ; shift ;;
 	  -?)             showUsageAndExit ;;
 	  --?)            showUsageAndExit ;;
 	  -h)             showUsageAndExit ;;
@@ -60,12 +40,13 @@ initDefaults()
 	BUILD_POM=${BUILD_POM:-'org.faktorips.build/pom.xml'}
 	MAVEN_CMD=${MAVEN_CMD:-'mvn'}
 	GIT_USERNAME=${GIT_USERNAME:-$USER}
-	GIT_BRANCH=${GIT_BRANCH:-'master'}
+	BRANCH=${BRANCH:-'master'}
 	GIT_HOST=${GIT_HOST:-'projekte.faktorzehn.de'}
 	GIT_REPOSITORY=${GIT_REPOSITORY:-'/projekte/faktorips/faktorips.base.git'}
 	GIT_URL=${GIT_URL:-'ssh://'${GIT_USERNAME}'@'${GIT_HOST}${GIT_REPOSITORY}}
-	VERSION_TYPE=${VERSION_TYPE:-'rfinal'}
+	VERSION_KIND=${VERSION_KIND:-'rfinal'}
 	ONLY_VERSION=${ONLY_VERSION:-'false'}
+	NO_NEW_VERSION=${NO_NEW_VERSION:-'false'}
 	SKIP_TAG=${SKIP_TAG:-'false'}
 	SKIP_TESTS=${SKIP_TESTS:-'false'}
 }
@@ -74,14 +55,14 @@ doAsserts()
 {
 	if [ -z "$NEW_VERSION" ]
 	then
-		echo "Please specify next version with -nextVersion x.x.x"
+		echo "Please specify next version with -nextVersion x.x.x or use argument -noNewVersion" 
 	fi
 }
 
 getVersionAndTag()
 {
 	BUILD_VERSION=`sed -n '0,/.*<version>\(.*\)<\/version>/s//\1/p' $BUILD_POM`
- 	TAG=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)-SNAPSHOT/v\1_\2_\3_${VERSION_TYPE}/g")
+ 	TAG=$(echo $BUILD_VERSION | sed -r "s/([0-9]*)\.([0-9]*)\.([0-9]*)-SNAPSHOT/v\1_\2_\3_${VERSION_KIND}/g")
 	assertVersionFormat
 }
 
@@ -119,7 +100,7 @@ showParameter()
   echo Release build parameter:
   echo "  --------------------------------------------------------------------------------------"
   echo -e "  Release Version=\e[35m$BUILD_VERSION\e[0m"
-  echo -e "  Version Type=\e[35m$VERSION_TYPE\e[0m"
+  echo -e "  Version Type=\e[35m$VERSION_KIND\e[0m"
   echo -e "  POM=\e[35m$BUILD_POM\e[0m"
   echo -e "  Git URL=\e[35m$GIT_URL\e[0m"
   echo "  --------------------------------------------------------------------------------------"
@@ -159,12 +140,12 @@ then
 		echo "Cancel"; exit 1
 	fi
 	cd ${CHECKOUT_DIR}
-	git checkout ${GIT_BRANCH}
 	git reset --hard
-	#git pull
+	git checkout ${BRANCH}
+	git pull
 else
-	echo -e "\nClone git branch: ${GIT_BRANCH}\n"
-	git clone $GIT_URL -b $GIT_BRANCH ./${CHECKOUT_DIR}
+	echo -e "\nClone git branch: ${BRANCH}\n"
+	git clone $GIT_URL -b $BRANCH ./${CHECKOUT_DIR}
 	cd ${CHECKOUT_DIR}
 fi
 
@@ -182,20 +163,27 @@ else
 	if [ ! $SKIP_TAG ]
 	then
 		echo -e "\nTagging git with Tag: ${TAG}\n"
-		git tag -a $TAG -m 'Tag for '$VERSION_TYPE' Version: '$BUILD_VERSION
+		git tag -a $TAG -m 'Tag for '$VERSION_KIND' Version: '$BUILD_VERSION
 		git push origin $TAG
 	fi
 
-	MAVEN_OPTIONS='-Dbuild-type='$VERSION_TYPE
+	MAVEN_OPTIONS='-Dversion.kind='$VERSION_KIND' -Ddeploy.user='$DEPLOY_USER
+	if [ $DEPLOY_SERVER ]
+	then
+		MAVEN_OPTIONS=${MAVEN_OPTIONS}' -Ddeploy.server='$DEPLOY_SERVER
+	fi
 	if [ $SKIP_TEST ]
 	then
 		MAVEN_OPTIONS=${MAVEN_OPTIONS}' -Dmaven.test.skip=true'
 	fi
 
 	echo -e "\nBuild...\n"
-	${MAVEN_CMD} -f $BUILD_POM $MAVEN_OPTIONS clean install
+	${MAVEN_CMD} -f $BUILD_POM $MAVEN_OPTIONS clean deploy
 
-	setVersion
+	if [ ! ${NO_NEW_VERSION} ]
+	then
+		setVersion
+	fi
 
 fi
 
