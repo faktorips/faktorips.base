@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.faktorips.testdependencies_0.0.0.qualifier.jar" id="org.faktorips.testdependencies" version="0.0.0.qualifier">
+   <feature url="features/org.faktorips.testdependencies_0.0.0.jar" id="org.faktorips.testdependencies" version="0.0.0">
       <category name="faktor_ips"/>
    </feature>
    <category-def name="faktor_ips" label="Faktor-IPS Test">
