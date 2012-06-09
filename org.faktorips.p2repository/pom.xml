@@ -12,6 +12,8 @@
 		<deploy.artifactId>v${parsedVersion.majorVersion}_${parsedVersion.minorVersion}</deploy.artifactId>
 		<deploy.artifactVersion>${unqualifiedVersion}-${buildQualifier}</deploy.artifactVersion>
 		<deploy.skript.unzipAndBuildComposites>${project.basedir}/deploy.skript.unzipAndBuildComposites.sh</deploy.skript.unzipAndBuildComposites>
+		<deploy.basedir>${deploy.dir}/${deploy.groupId}/${deploy.artifactId}</deploy.basedir>
+		<deploy.zipfile>${deploy.basedir}/${deploy.artifactVersion}/${deploy.artifactId}-${deploy.artifactVersion}.zip</deploy.zipfile>
 	</properties>
 
 
@@ -22,7 +24,7 @@
 		<relativePath>../org.faktorips.build/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>org.faktorips.updatesite</artifactId>
+	<artifactId>org.faktorips.p2repository</artifactId>
 	<packaging>eclipse-repository</packaging>
 
 	<build>
@@ -54,7 +56,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<configuration>
 					<executable>ssh</executable>
-					<commandlineArgs>${deploy.user}@${deploy.server} bash -s -- ${deploy.dir}/${deploy.groupId} ${deploy.dir}/${deploy.groupId}/${deploy.artifactId}/${deploy.artifactVersion}/${deploy.artifactId}-${deploy.artifactVersion}.zip &lt; ${deploy.skript.unzipAndBuildComposites}</commandlineArgs>
+					<commandlineArgs>${deploy.user}@${deploy.server} bash -s -- ${deploy.basedir} ${deploy.zipfile} &lt; ${deploy.skript.unzipAndBuildComposites}</commandlineArgs>
 					<skip>${skipDeploy}</skip>
 				</configuration>
 				<executions>
