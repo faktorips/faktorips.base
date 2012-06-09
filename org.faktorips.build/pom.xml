@@ -10,9 +10,8 @@
 
 	<!-- this is the parent POM from which all modules inherit common settings -->
 	<properties>
-		<tycho-version>0.13.0</tycho-version>
-		<build-type>ci</build-type>
-		<skipDeploy>true</skipDeploy>
+		<tycho-version>0.14.0</tycho-version>
+		<version.kind>ci</version.kind>
 	</properties>
 
 	<repositories>
@@ -32,7 +31,8 @@
 			<url>http://update.faktorzehn.org/p2repositories/galileo/</url>
 		</repository>
 	</repositories>
-	
+
+
 	<build>
 		<extensions>
 			<extension>
@@ -41,27 +41,54 @@
 				<version>1.0</version>
 			</extension>
 		</extensions>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-source-plugin</artifactId>
+					<version>${tycho-version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-maven-plugin</artifactId>
+					<version>${tycho-version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-packaging-plugin</artifactId>
+					<version>${tycho-version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-surefire-plugin</artifactId>
+					<version>${tycho-version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.7</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>1.7</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>1.2.1</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
-			<!-- TARGER PLATFORM MUST REFERENCE FEATURES ONLY 
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>target-platform-configuration</artifactId>
-				<version>${tycho-version}</version>
-				<configuration>
-					<target>
-						<artifact>
-							<groupId>org.faktorips</groupId>
-							<artifactId>org.faktorips.build</artifactId>
-							<classifier>eclipse-galileo_online</classifier>
-						</artifact>
-					</target>
-				</configuration>
-			</plugin>
-			-->
+			<!-- TARGER PLATFORM MUST REFERENCE FEATURES ONLY <plugin> <groupId>org.eclipse.tycho</groupId> 
+				<artifactId>target-platform-configuration</artifactId> <version>${tycho-version}</version> 
+				<configuration> <target> <artifact> <groupId>org.faktorips</groupId> <artifactId>org.faktorips.build</artifactId> 
+				<classifier>eclipse-galileo_online</classifier> </artifact> </target> </configuration> 
+				</plugin> -->
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-source-plugin</artifactId>
-				<version>${tycho-version}</version>
 				<executions>
 					<execution>
 						<id>plugin-source</id>
@@ -75,23 +102,19 @@
 				<!-- enable tycho build extension -->
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho-version}</version>
 				<extensions>true</extensions>
 			</plugin>
-			<!-- Funktioniert noch nicht!!! -->
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-packaging-plugin</artifactId>
-				<version>${tycho-version}</version>
 				<configuration>
-					<format>yyyyMMdd-HHmm'_${build-type}'</format>
+					<format>yyyyMMdd-HHmm'_${version.kind}'</format>
 				</configuration>
 			</plugin>
 			<!-- Tycho Test Settings -->
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
-				<version>${tycho-version}</version>
 				<configuration>
 					<!-- For Debug add these parameters: -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y -->
 					<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=256M</argLine>
@@ -103,56 +126,29 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<!-- Release and Deploy settings -->
+			<!-- Release and Deploy settings: Skip normal deploy plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.5</version>
+				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
-					<encoding>UTF-8</encoding>
+					<skip>true</skip>
 				</configuration>
 			</plugin>
+			<!-- Parse version to properties (used in file-deploy) -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>wagon-maven-plugin</artifactId>
-				<version>1.0-beta-4</version>
+				<artifactId>build-helper-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>default-cli</id>
+						<id>parse-version</id>
+						<phase>validate</phase>
 						<goals>
-							<goal>upload</goal>
-						</goals>
-						<configuration>
-							<fromDir>target/repository/</fromDir>
-							<includes>**</includes>
-							<url>scp://${deployUser}@${deployServer}</url>
-							<toDir>${deployDir}/${deployVersion}</toDir>
-							<skip>${skipDeploy}</skip>
-							<serverId></serverId>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.2.1</version>
-				<configuration>
-					<executable>ssh</executable>
-					<commandlineArgs>${deployUser}@${deployServer} 'cd ${deployDir};bash' &lt; ${project.parent.basedir}/${scriptName}</commandlineArgs>
-					<skip>${skipDeploy}</skip>
-				</configuration>
-				<executions>
-					<execution>
-						<id>update-composite-p2</id>
-						<goals>
-							<goal>exec</goal>
+							<goal>parse-version</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
-	
 	</build>
 
 	<!-- These are all modules that are included in the Faktor-IPS build -->
@@ -196,42 +192,9 @@
 		<module>../org.faktorips.valuetypes.java5</module>
 		<module>../org.faktorips.valuetypes.java5.test</module>
 		<!-- p2 Repository and product -->
-		<module>../org.faktorips.updatesite</module>
-		<module>../org.faktorips.updatesite/test</module>
-		<!-- 
-		<module>../org.faktorips.product</module>
-		 -->
+		<module>../org.faktorips.p2repository</module>
+		<module>../org.faktorips.p2repository/test</module>
+		<!-- <module>../org.faktorips.product</module> -->
 	</modules>
-
-	<profiles>
-		<profile>
-			<!-- as a workaround for TYCHO-520, only build mac binaries on macs -->
-			<id>macosx</id>
-			<activation>
-				<property>
-					<name>java.vendor.url</name>
-					<value>http://www.apple.com/</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.eclipse.tycho</groupId>
-						<artifactId>target-platform-configuration</artifactId>
-						<version>${tycho-version}</version>
-						<configuration>
-							<environments combine.children="append">
-								<environment>
-									<os>macosx</os>
-									<ws>cocoa</ws>
-									<arch>x86_64</arch>
-								</environment>
-							</environments>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 </project>
