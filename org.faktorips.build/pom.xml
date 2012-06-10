@@ -12,6 +12,7 @@
 	<properties>
 		<tycho-version>0.14.1</tycho-version>
 		<version.kind>ci</version.kind>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> 
 	</properties>
 
 	<repositories>
@@ -91,7 +92,6 @@
 				<artifactId>tycho-compiler-plugin</artifactId>
 				<configuration>
 					<useJDK>BREE</useJDK>
-					<showWarnings>true</showWarnings>
 				</configuration>
 			</plugin>
 			<!-- TARGER PLATFORM MUST REFERENCE FEATURES ONLY <plugin> <groupId>org.eclipse.tycho</groupId> 
