@@ -10,7 +10,7 @@
 
 	<!-- this is the parent POM from which all modules inherit common settings -->
 	<properties>
-		<tycho-version>0.13.0</tycho-version>
+		<tycho-version>0.14.1</tycho-version>
 		<version.kind>ci</version.kind>
 	</properties>
 
@@ -43,6 +43,11 @@
 		</extensions>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-compiler-plugin</artifactId>
+					<version>${tycho-version}</version>
+				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-source-plugin</artifactId>
@@ -81,6 +86,14 @@
 			</plugins>
 		</pluginManagement>
 		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<configuration>
+					<useJDK>BREE</useJDK>
+					<showWarnings>true</showWarnings>
+				</configuration>
+			</plugin>
 			<!-- TARGER PLATFORM MUST REFERENCE FEATURES ONLY <plugin> <groupId>org.eclipse.tycho</groupId> 
 				<artifactId>target-platform-configuration</artifactId> <version>${tycho-version}</version> 
 				<configuration> <target> <artifact> <groupId>org.faktorips</groupId> <artifactId>org.faktorips.build</artifactId> 
