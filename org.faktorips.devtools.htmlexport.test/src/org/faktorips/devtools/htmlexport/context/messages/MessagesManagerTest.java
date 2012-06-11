@@ -26,6 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class MessagesManagerTest {
+    private static final String MESSAGE_DE = "Projekt";
+    private static final String MESSAGE_EN = "Project";
     private DocumentationContext context;
     private static final String KEY = "ProjectOverviewPageElement_project";
 
@@ -33,12 +35,12 @@ public class MessagesManagerTest {
     public void setUp() throws Exception {
         MockPluginResourcesFacade pluginResources = new MockPluginResourcesFacade();
         Properties enMessages = new Properties();
-        enMessages.put(KEY, "Project");
+        enMessages.put(KEY, MESSAGE_EN);
         pluginResources.putMessageProperties("org/faktorips/devtools/htmlexport/context/messages/messages.properties",
                 enMessages);
 
         Properties deMessages = new Properties();
-        deMessages.put(KEY, "Projekt");
+        deMessages.put(KEY, MESSAGE_DE);
         pluginResources.putMessageProperties(
                 "org/faktorips/devtools/htmlexport/context/messages/messages_de.properties", deMessages);
 
@@ -51,7 +53,7 @@ public class MessagesManagerTest {
 
         MessagesManager manager = new MessagesManager(context);
 
-        assertEquals("Project", manager.getMessage(KEY));
+        assertEquals(MESSAGE_EN, manager.getMessage(KEY));
         assertTrue(context.getExportStatus().isOK());
     }
 
@@ -61,7 +63,7 @@ public class MessagesManagerTest {
 
         MessagesManager manager = new MessagesManager(context);
 
-        assertEquals("Projekt", manager.getMessage(KEY));
+        assertEquals(MESSAGE_DE, manager.getMessage(KEY));
         assertTrue(context.getExportStatus().isOK());
     }
 
@@ -71,9 +73,10 @@ public class MessagesManagerTest {
 
         MessagesManager manager = new MessagesManager(context);
 
-        String expectedResult = "Project";
+        String message = manager.getMessage(KEY);
+        boolean result = MESSAGE_EN.equals(message) || MESSAGE_DE.equals(message);
 
-        assertEquals(expectedResult, manager.getMessage(KEY));
+        assertTrue(result);
     }
 
     @Test
