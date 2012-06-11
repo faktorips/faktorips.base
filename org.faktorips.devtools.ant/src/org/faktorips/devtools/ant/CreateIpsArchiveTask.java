@@ -37,7 +37,7 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
     private boolean inclJavaBinaries = false;
     private File archiveFile;
     private String ipsProjectName;
-    private List fragmentRootRepresentations = new ArrayList();
+    private List<IIpsPackageFragmentRoot> fragmentRootRepresentations = new ArrayList<IIpsPackageFragmentRoot>();
 
     public CreateIpsArchiveTask() {
         super("CreateIpsArchiveTask");
@@ -49,6 +49,7 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
      * 
      * {@inheritDoc}
      */
+    @Override
     public void executeInternal() throws Exception {
 
         if (ipsProjectName == null) {
@@ -66,9 +67,9 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
             operation.setInclJavaSources(inclJavaSources);
             operation.run(null);
         } else {
-            List ipsPackageFragmentRoots = new ArrayList();
-            for (Iterator it = fragmentRootRepresentations.iterator(); it.hasNext();) {
-                IpsPackageFragmentRoot fragmentRoot = (IpsPackageFragmentRoot)it.next();
+            List<IIpsPackageFragmentRoot> ipsPackageFragmentRoots = new ArrayList<IIpsPackageFragmentRoot>();
+            for (Iterator<IIpsPackageFragmentRoot> it = fragmentRootRepresentations.iterator(); it.hasNext();) {
+                IIpsPackageFragmentRoot fragmentRoot = it.next();
                 IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoot(fragmentRoot.getName());
                 if (root == null) {
                     throw new BuildException("The IpsPackageFragmentRoot: " + fragmentRoot.getName()
@@ -76,7 +77,7 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
                 }
                 ipsPackageFragmentRoots.add(root);
             }
-            IIpsPackageFragmentRoot[] roots = (IIpsPackageFragmentRoot[])ipsPackageFragmentRoots
+            IIpsPackageFragmentRoot[] roots = ipsPackageFragmentRoots
                     .toArray(new IIpsPackageFragmentRoot[fragmentRootRepresentations.size()]);
             CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(roots, archiveFile);
             operation.setInclJavaBinaries(inclJavaBinaries);
@@ -104,7 +105,7 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
      * of an ips package fragment root of the ips project specified by the ips project name property
      * of this task.
      */
-    public void addFragmentRoot(IpsPackageFragmentRoot fragmentRoot) {
+    public void addFragmentRoot(IIpsPackageFragmentRoot fragmentRoot) {
         fragmentRootRepresentations.add(fragmentRoot);
     }
 

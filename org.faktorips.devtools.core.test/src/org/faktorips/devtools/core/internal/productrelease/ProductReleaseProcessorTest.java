@@ -163,8 +163,8 @@ public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
             productReleaseProcessor.startReleaseBuilder("abc", targetSystems, new NullProgressMonitor());
 
             verify(teamOperationsFactory, atLeastOnce()).createTeamOperations(any(ObservableProgressMessages.class));
-            verify(teamOperations).commitFiles(any(IProject.class), (IResource[])any(), eq("update version to abc"),
-                    any(IProgressMonitor.class));
+            verify(teamOperations).commitFiles(any(IProject.class), (IResource[])any(),
+                    eq(Messages.ReleaseAndDeploymentOperation_commit_comment + "abc"), any(IProgressMonitor.class));
             verify(teamOperations).tagProject(any(IProject.class), eq("abc"), any(IProgressMonitor.class));
         } finally {
             singletonMockHelper.reset();

@@ -2,10 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Runtime for Java5
 Bundle-SymbolicName: org.faktorips.runtime.java5
-Bundle-Version: 3.7.2.qualifier
+Bundle-Version: 3.8.0.qualifier
 Bundle-Vendor: Faktor Zehn AG
 Require-Bundle: org.faktorips.valuetypes.java5,
  org.junit;bundle-version="3.8.2"
+Comment-Require-Bundle: Better use Import-Package (see below) instead of 'org.apache.openejb.javaee-api' but we need to use this import because of a tycho bug in version 0.14
+ should be fixed in version 0.15.0
+ https://bugs.eclipse.org/bugs/show_bug.cgi?id=371565
 Export-Package: org.faktorips.runtime,
  org.faktorips.runtime.caching,
  org.faktorips.runtime.formula,
@@ -18,8 +21,7 @@ Export-Package: org.faktorips.runtime,
  org.faktorips.runtime.util
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Import-Package: javax.xml.bind,
+Comment-Import-Package: javax.xml.bind,
  javax.xml.bind.annotation,
  javax.xml.bind.annotation.adapters,
  javax.xml.stream
-Eclipse-ExtensibleAPI: true

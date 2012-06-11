@@ -18,7 +18,7 @@ import java.util.List;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.values.Decimal;
 
-public class TestTable extends Table {
+public class TestTable extends Table<TestTableRow> {
 
     @Override
     protected void initKeyMaps() {
@@ -26,10 +26,10 @@ public class TestTable extends Table {
     }
 
     @Override
-    protected void addRow(List columns, IRuntimeRepository repository) {
-        String company = (String)columns.get(0);
-        Integer gender = columns.get(1) == null ? null : new Integer((String)columns.get(1));
-        Decimal rate = columns.get(2) == null ? Decimal.NULL : Decimal.valueOf((String)columns.get(2));
+    protected void addRow(List<String> columns, IRuntimeRepository repository) {
+        String company = columns.get(0);
+        Integer gender = columns.get(1) == null ? null : new Integer(columns.get(1));
+        Decimal rate = columns.get(2) == null ? Decimal.NULL : Decimal.valueOf(columns.get(2));
         rows.add(new TestTableRow(company, gender, rate));
     }
 

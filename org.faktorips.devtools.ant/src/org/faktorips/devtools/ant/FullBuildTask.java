@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public class FullBuildTask extends AbstractIpsTask {
 
-    private List eclipseProjects = new ArrayList();
+    private List<EclipseProject> eclipseProjects = new ArrayList<EclipseProject>();
 
     public FullBuildTask() {
         super("FullBuildTask");
@@ -58,6 +58,7 @@ public class FullBuildTask extends AbstractIpsTask {
     /**
      * Excecutes the Ant-Task {@inheritDoc}
      */
+    @Override
     public void executeInternal() throws Exception {
 
         // Fetch Workspace
@@ -91,9 +92,9 @@ public class FullBuildTask extends AbstractIpsTask {
     }
 
     private IProject[] buildEclipseProjects(IWorkspace workspace) throws CoreException {
-        List existingProjects = new ArrayList();
-        for (Iterator it = eclipseProjects.iterator(); it.hasNext();) {
-            EclipseProject eclipseProject = (EclipseProject)it.next();
+        List<IProject> existingProjects = new ArrayList<IProject>();
+        for (Iterator<EclipseProject> it = eclipseProjects.iterator(); it.hasNext();) {
+            EclipseProject eclipseProject = it.next();
             String name = eclipseProject.getName();
             if (name != null) {
                 IProject project = workspace.getRoot().getProject(name);
@@ -116,7 +117,7 @@ public class FullBuildTask extends AbstractIpsTask {
                 }
             }
         }
-        return (IProject[])existingProjects.toArray(new IProject[existingProjects.size()]);
+        return existingProjects.toArray(new IProject[existingProjects.size()]);
 
     }
 
@@ -126,7 +127,7 @@ public class FullBuildTask extends AbstractIpsTask {
     }
 
     private void handleMarkers(IProject[] projects) throws CoreException {
-        Set projectsWithErrors = new HashSet();
+        Set<IProject> projectsWithErrors = new HashSet<IProject>();
         for (int i = 0; i < projects.length; i++) {
             IProject project = projects[i];
             IMarker markers[] = project.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
@@ -159,10 +160,10 @@ public class FullBuildTask extends AbstractIpsTask {
         throw new IllegalArgumentException("Unexpected severity: " + severity);
     }
 
-    private String getErroneousProjectsAsText(Set projectSet) {
+    private String getErroneousProjectsAsText(Set<IProject> projectSet) {
         StringBuffer buf = new StringBuffer();
-        for (Iterator it = projectSet.iterator(); it.hasNext();) {
-            IProject project = (IProject)it.next();
+        for (Iterator<IProject> it = projectSet.iterator(); it.hasNext();) {
+            IProject project = it.next();
             buf.append(project.getName());
             if (it.hasNext()) {
                 buf.append(", ");

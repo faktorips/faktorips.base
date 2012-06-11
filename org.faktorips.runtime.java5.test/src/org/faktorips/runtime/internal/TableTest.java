@@ -51,17 +51,17 @@ public class TableTest extends XmlAbstractTestCase {
 
         table.initFromXml(is, null);
 
-        TestTableRow row = (TestTableRow)table.rows.get(0);
+        TestTableRow row = table.rows.get(0);
         assertNull(row.getCompany());
         assertEquals(Integer.valueOf("0"), row.getGender());
         assertEquals(Decimal.valueOf("0.1"), row.getRate());
 
-        row = (TestTableRow)table.rows.get(1);
+        row = table.rows.get(1);
         assertEquals("KQV", row.getCompany());
         assertEquals(Integer.valueOf("1"), row.getGender());
         assertEquals(Decimal.valueOf("0.15"), row.getRate());
 
-        row = (TestTableRow)table.rows.get(5);
+        row = table.rows.get(5);
         assertEquals("BBV", row.getCompany());
         assertEquals(Integer.valueOf("1"), row.getGender());
         assertEquals(Decimal.valueOf("0.35"), row.getRate());

@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature"
       label="%label"
-      version="3.7.2.qualifier"
+      version="3.8.0.qualifier"
       provider-name="Faktor Zehn AG"
       plugin="org.faktorips.devtools.core">
    <install-handler/>
@@ -911,13 +911,6 @@ schutz” abgerufen und ausgedruckt werden.
 
    <plugin
          id="org.apache.commons.lang"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.nebula.widgets.grid"
          download-size="0"
          install-size="0"
          version="0.0.0"

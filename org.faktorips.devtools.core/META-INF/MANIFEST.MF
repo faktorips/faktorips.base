@@ -2,11 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Development Tools
 Bundle-SymbolicName: org.faktorips.devtools.core; singleton:=true
-Bundle-Version: 3.7.2.qualifier
+Bundle-Version: 3.8.0.qualifier
 Bundle-Activator: org.faktorips.devtools.core.IpsPlugin
 Bundle-Vendor: Faktor Zehn AG
 Bundle-Localization: plugin
-Eclipse-ExtensibleAPI: true
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime;visibility:=reexport,
  org.eclipse.core.resources;bundle-version="3.4.0";visibility:=reexport,
