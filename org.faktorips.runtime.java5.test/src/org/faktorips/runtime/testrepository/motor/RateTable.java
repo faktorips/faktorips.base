@@ -22,7 +22,7 @@ import org.faktorips.runtime.internal.Table;
  * 
  * @author Peter Erzberger
  */
-public class RateTable extends Table {
+public class RateTable extends Table<Object> {
 
     @Override
     protected void initKeyMaps() {
@@ -30,7 +30,7 @@ public class RateTable extends Table {
     }
 
     @Override
-    protected void addRow(List columns, IRuntimeRepository repository) {
+    protected void addRow(List<String> columns, IRuntimeRepository repository) {
         // do nothing
     }
 
