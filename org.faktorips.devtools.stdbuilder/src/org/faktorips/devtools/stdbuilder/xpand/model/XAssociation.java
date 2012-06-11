@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 
 public class XAssociation extends AbstractGeneratorModelNode {
 
-    public XAssociation(IAssociation ipsObjectPartContainer, GeneratorModel model) {
+    public XAssociation(IAssociation ipsObjectPartContainer, GeneratorModelContext model) {
         super(ipsObjectPartContainer, model);
     }
 

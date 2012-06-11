@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModel;
+import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.runtime.INotificationSupport;
 import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
@@ -32,8 +32,8 @@ public class XPolicyCmptClass extends XClass {
 
     private ArrayList<XPolicyAttribute> attributes;
 
-    public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModel model) {
-        super(policyCmptType, model);
+    public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context) {
+        super(policyCmptType, context);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class XPolicyCmptClass extends XClass {
         try {
             IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(
                     getIpsObjectPartContainer().getIpsProject());
-            return addImport(getModel().getQualifiedClassName(productCmptType));
+            return addImport(getContext().getQualifiedClassName(productCmptType));
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -80,7 +80,7 @@ public class XPolicyCmptClass extends XClass {
 
     public List<String> getImplementedInterface() {
         ArrayList<String> list = new ArrayList<String>();
-        if (isGeneratePropertyChange() && !hasSupertype()) {
+        if (getContext().isGeneratePropertyChange() && !hasSupertype()) {
             list.add(addImport(INotificationSupport.class));
         }
         return list;
@@ -90,7 +90,7 @@ public class XPolicyCmptClass extends XClass {
         try {
             if (getPolicyCmptType().hasSupertype()) {
                 IType superType = getPolicyCmptType().findSupertype(getIpsProject());
-                return addImport(getModel().getQualifiedClassName(superType));
+                return addImport(getContext().getQualifiedClassName(superType));
             } else {
                 if (isConfigured()) {
                     return addImport(AbstractConfigurableModelObject.class);
@@ -107,7 +107,7 @@ public class XPolicyCmptClass extends XClass {
         if (attributes == null) {
             attributes = new ArrayList<XPolicyAttribute>();
             for (IPolicyCmptTypeAttribute attribute : getPolicyCmptType().getPolicyCmptTypeAttributes()) {
-                attributes.add(new XPolicyAttribute(this, attribute, getModel()));
+                attributes.add(new XPolicyAttribute(attribute, getContext()));
             }
         }
         return attributes;

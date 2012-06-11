@@ -22,18 +22,16 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
-import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModel;
+import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
 
 public class XPolicyAttribute extends XAttribute {
 
     private DatatypeHelper datatypeHelper;
     private DatatypeHelper valuesetDatatypeHelper;
-    private final XPolicyCmptClass policyCmptClass;
 
-    public XPolicyAttribute(XPolicyCmptClass policyCmptClass, IPolicyCmptTypeAttribute attribute, GeneratorModel model) {
+    public XPolicyAttribute(IPolicyCmptTypeAttribute attribute, GeneratorModelContext model) {
         super(attribute, model);
-        this.policyCmptClass = policyCmptClass;
         try {
             datatypeHelper = attribute.getIpsProject().findDatatypeHelper(attribute.getDatatype());
             valuesetDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(attribute.getIpsProject(),
@@ -46,13 +44,6 @@ public class XPolicyAttribute extends XAttribute {
     @Override
     public IPolicyCmptTypeAttribute getIpsObjectPartContainer() {
         return (IPolicyCmptTypeAttribute)super.getIpsObjectPartContainer();
-    }
-
-    /**
-     * @return Returns the gPolicyCmpt.
-     */
-    public XPolicyCmptClass getGPolicyCmpt() {
-        return policyCmptClass;
     }
 
     /**

@@ -1,7 +1,7 @@
 import org::faktorips::devtools::stdbuilder::xpand::model;
 
-IModelObject(AbstractGeneratorModelObject this) :
+IModelObject(AbstractGeneratorModelNode this) :
 	addImport("org.faktorips.runtime.IModelObject");
 	
-IConfigurableModelObject(AbstractGeneratorModelObject this) :
+IConfigurableModelObject(AbstractGeneratorModelNode this) :
 	addImport("org.faktorips.runtime.IConfigurableModelObject");

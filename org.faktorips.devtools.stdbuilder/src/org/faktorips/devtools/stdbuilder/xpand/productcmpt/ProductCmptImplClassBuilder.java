@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -37,12 +38,12 @@ public class ProductCmptImplClassBuilder extends XpandBuilder {
     }
 
     @Override
-    protected Class<?> getGeneratorModelType() {
+    protected Class<?> getGeneratorModelNodeClass() {
         return XPolicyCmptClass.class;
     }
 
     @Override
-    protected Object getGeneratorModel() {
+    protected GeneratorModelContext getGeneratorModelRoot() {
         return null;
     }
 

@@ -8,7 +8,7 @@
 	«FILE fileName-»
 	package «packageName»;
 
-		«EXPAND CommonDefinitions::ImportBlock FOREACH builder.imports ONFILECLOSE»
+		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 	
 		/**
 		 * @generated
@@ -86,7 +86,7 @@
 	«ENDFILE»
 «ENDDEFINE»
 
-«DEFINE initializeForOverrideAttributes FOR GPolicyCmpt-»
+«DEFINE initializeForOverrideAttributes FOR XPolicyCmptClass-»
 	«FOREACH attributes AS this-»
 		«IF generateDefaultInitialize-»
 			«setterMethodName()»(«defaultValueCode»);

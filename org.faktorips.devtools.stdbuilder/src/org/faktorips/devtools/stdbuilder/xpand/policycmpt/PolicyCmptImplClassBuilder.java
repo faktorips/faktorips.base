@@ -17,18 +17,17 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
-import org.faktorips.devtools.core.builder.JavaClassNaming;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModel;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class PolicyCmptImplClassBuilder extends XpandBuilder {
+public class PolicyCmptImplClassBuilder extends XpandBuilder<XPolicyCmptClass> {
 
     public PolicyCmptImplClassBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class));
@@ -40,17 +39,18 @@ public class PolicyCmptImplClassBuilder extends XpandBuilder {
     }
 
     @Override
-    protected Class<?> getGeneratorModelNodeClass() {
+    protected Class<XPolicyCmptClass> getGeneratorModelNodeClass() {
         return XPolicyCmptClass.class;
     }
 
     @Override
-    protected GeneratorModel initGeneratorModel(IIpsSrcFile ipsSrcFile) {
-        GeneratorModel model = new GeneratorModel(new JavaClassNaming(isBuildingPublishedSourceFile(),
-                buildsDerivedArtefacts()));
-        IPolicyCmptType type = (IPolicyCmptType)ipsSrcFile.getIpsObject();
-        model.setPolicyCmptClassClass(new XPolicyCmptClass(type, model));
-        return model;
+    protected XPolicyCmptClass getGeneratorModelRoot() {
+        try {
+            IPolicyCmptType type = (IPolicyCmptType)getIpsSrcFile().getIpsObject();
+            return new XPolicyCmptClass(type, createGeneratorModelContext());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override

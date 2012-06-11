@@ -1,10 +1,9 @@
-«IMPORT org::faktorips::devtools::stdbuilder::xpand»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
 
-«DEFINE fieldProperties FOR GPolicyAttribute»
+«DEFINE fieldProperties FOR XPolicyAttribute»
 		/**
 		 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
 		 * @generated
@@ -12,7 +11,7 @@
 		public static final String «fieldPropertyName()» = "«memberVarName()»";
 «ENDDEFINE»
 
-«DEFINE memberField FOR GPolicyAttribute»
+«DEFINE memberField FOR XPolicyAttribute»
 	«IF generateField»
 	/**
 	 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
@@ -22,7 +21,7 @@
 	«ENDIF»
 «ENDDEFINE»
 
-«DEFINE getterAndSetter FOR GPolicyAttribute»
+«DEFINE getterAndSetter FOR XPolicyAttribute»
 		«IF generateGetter-»
 			/**
 			 * «localizedJDoc("METHOD_GETVALUE", name, description)»

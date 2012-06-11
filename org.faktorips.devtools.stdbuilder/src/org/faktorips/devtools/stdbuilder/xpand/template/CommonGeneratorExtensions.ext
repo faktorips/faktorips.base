@@ -5,5 +5,5 @@ extension org::faktorips::devtools::stdbuilder::xpand::template::MethodNames ree
 String camelCaseToUnderscore(String s) :
 	JAVA org.faktorips.util.StringUtil.camelCaseToUnderscore(java.lang.String); 
 
-overrideAnnotation(AbstractGeneratorModelObject this, boolean interfaceMethodImplementation) :
+overrideAnnotation(AbstractGeneratorModelNode this, boolean interfaceMethodImplementation) :
 	if needOverrideAnnotation(interfaceMethodImplementation) then "@Override";

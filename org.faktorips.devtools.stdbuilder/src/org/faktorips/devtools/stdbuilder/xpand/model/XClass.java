@@ -17,12 +17,12 @@ import org.faktorips.devtools.core.model.type.IType;
 
 public abstract class XClass extends AbstractGeneratorModelNode {
 
-    public XClass(IType ipsObjectPartContainer, GeneratorModel model) {
-        super(ipsObjectPartContainer, model);
+    public XClass(IType ipsObjectPartContainer, GeneratorModelContext context) {
+        super(ipsObjectPartContainer, context);
     }
 
     public String getFileName() {
-        return getModel().getRelativeJavaFile(getIpsObjectPartContainer().getIpsSrcFile()).toOSString();
+        return getContext().getRelativeJavaFile(getIpsObjectPartContainer().getIpsSrcFile()).toOSString();
     }
 
     @Override
@@ -35,14 +35,14 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     }
 
     public String getSimpleName() {
-        return getModel().getUnqualifiedClassName(getIType());
+        return getContext().getUnqualifiedClassName(getIType());
     }
 
     public String getQualifiedName() {
-        return getModel().getQualifiedClassName(getIType());
+        return getContext().getQualifiedClassName(getIType());
     }
 
     public String getPackageName() {
-        return getModel().getPackage(getIType());
+        return getContext().getPackage(getIType());
     }
 }

@@ -13,9 +13,6 @@
 
 package org.faktorips.devtools.stdbuilder.xpand;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.internal.xpand2.model.XpandDefinition;
@@ -23,12 +20,13 @@ import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
 import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xpand2.XpandExecutionContextImpl;
 import org.eclipse.xtend.type.impl.java.JavaBeansMetaModel;
+import org.faktorips.devtools.core.builder.JavaClassNaming;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModel;
-import org.faktorips.devtools.stdbuilder.xpand.model.ImportStatement;
+import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutlet;
 import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutput;
 import org.faktorips.util.ArgumentCheck;
@@ -40,7 +38,7 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author dirmeier
  */
-public abstract class XpandBuilder extends JavaSourceFileBuilder {
+public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends JavaSourceFileBuilder {
 
     /**
      * You can set tracing switch in the run configuration to reload the template on every builder's
@@ -49,9 +47,10 @@ public abstract class XpandBuilder extends JavaSourceFileBuilder {
     private static final boolean DEBUG = Boolean.valueOf(Platform
             .getDebugOption("org.faktorips.devtools.stdbuilder/debug/xpand")); //$NON-NLS-1$;
 
-    private final Set<ImportStatement> imports = new LinkedHashSet<ImportStatement>();
     private XpandDefinition templateDefinition;
+
     private XpandExecutionContextImpl xpandContext;
+
     private StringOutput out;
 
     /**
@@ -110,7 +109,8 @@ public abstract class XpandBuilder extends JavaSourceFileBuilder {
     @Override
     protected String generate() throws CoreException {
         StringOutlet outlet = (StringOutlet)out.getOutlet(null);
-        templateDefinition.evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(), getGeneratorModel());
+        templateDefinition.evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(),
+                getGeneratorModelRoot());
         return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
     }
 
@@ -130,31 +130,13 @@ public abstract class XpandBuilder extends JavaSourceFileBuilder {
      */
     protected abstract String getTemplate();
 
-    protected abstract GeneratorModel getGeneratorModel();
+    protected abstract T getGeneratorModelRoot();
 
-    protected abstract Class<?> getGeneratorModelNodeClass();
+    protected abstract Class<T> getGeneratorModelNodeClass();
 
-    /**
-     * Getting the set of collected import statements.
-     * 
-     * @return Returns the imports.
-     */
-    public Set<ImportStatement> getImports() {
-        return imports;
-    }
-
-    /**
-     * Adding a new import. The import statement should be the full qualified name of a class.
-     * 
-     * @param importStatement The full qualified name of a class that should be imported.
-     * @return true if the import was added and not already part of the set.
-     */
-    public boolean addImport(String importStatement) {
-        return imports.add(new ImportStatement(importStatement));
-    }
-
-    public boolean removeImport(String importStatement) {
-        return imports.remove(new ImportStatement(importStatement));
+    public GeneratorModelContext createGeneratorModelContext() {
+        return new GeneratorModelContext(getBuilderSet().getConfig(), new JavaClassNaming(
+                isBuildingPublishedSourceFile(), buildsDerivedArtefacts()));
     }
 
 }

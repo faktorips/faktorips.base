@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 
 public class XAttribute extends AbstractGeneratorModelNode {
 
-    public XAttribute(IAttribute ipsObjectPartContainer, GeneratorModel model) {
+    public XAttribute(IAttribute ipsObjectPartContainer, GeneratorModelContext model) {
         super(ipsObjectPartContainer, model);
     }
 

@@ -2,20 +2,20 @@ import org::faktorips::devtools::stdbuilder::xpand::policycmpt::model;
 
 extension org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions reexport;
 
-fieldPropertyNameSuffix(GPolicyAttribute this) :
-	builder.builderSet.generateSeparatedCamelCase ? camelCaseToUnderscore(name).toUpperCase() : name.toUpperCase();
+fieldPropertyNameSuffix(XPolicyAttribute this) :
+	^context.generateSeparatedCamelCase ? camelCaseToUnderscore(name).toUpperCase() : name.toUpperCase();
 
-memberVarName(GPolicyAttribute this) :
+memberVarName(XPolicyAttribute this) :
 	javaNamingConvention.getMemberVarName(name);
 	
-getterMethodName(GPolicyAttribute this) :
+getterMethodName(XPolicyAttribute this) :
 	javaNamingConvention.getGetterMethodName(name, datatype);
 
-setterMethodName(GPolicyAttribute this) :
+setterMethodName(XPolicyAttribute this) :
 	javaNamingConvention.getSetterMethodName(name);
 
-fieldPropertyName(GPolicyAttribute this) :
+fieldPropertyName(XPolicyAttribute this) :
 	"PROPERTY_" + fieldPropertyNameSuffix();
 
-propertyChangeSupport_oldValueVar(GPolicyAttribute this) :
+propertyChangeSupport_oldValueVar(XPolicyAttribute this) :
 	" old" + memberVarName().toFirstUpper();
