@@ -6,3 +6,4 @@ Bundle-Version: 3.8.0.qualifier
 Fragment-Host: org.faktorips.devtools.stdbuilder;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Faktor Zehn AG
+Bundle-ClassPath: .
