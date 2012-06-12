@@ -17,16 +17,17 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class ProductCmptGenerationImlClassBuilder extends XpandBuilder {
+public class ProductCmptGenerationImlClassBuilder extends XpandBuilder<XProductCmptGenerationClass> {
 
     public ProductCmptGenerationImlClassBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(ProductCmptGenerationImlClassBuilder.class));
@@ -38,13 +39,18 @@ public class ProductCmptGenerationImlClassBuilder extends XpandBuilder {
     }
 
     @Override
-    protected Class<?> getGeneratorModelNodeClass() {
-        return XPolicyCmptClass.class;
+    protected Class<XProductCmptGenerationClass> getGeneratorModelNodeClass() {
+        return XProductCmptGenerationClass.class;
     }
 
     @Override
-    protected GeneratorModelContext getGeneratorModelRoot() {
-        return null;
+    protected XProductCmptGenerationClass getGeneratorModelRoot() {
+        try {
+            IProductCmptType type = (IProductCmptType)getIpsSrcFile().getIpsObject();
+            return new XProductCmptGenerationClass(type, createGeneratorModelContext());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override

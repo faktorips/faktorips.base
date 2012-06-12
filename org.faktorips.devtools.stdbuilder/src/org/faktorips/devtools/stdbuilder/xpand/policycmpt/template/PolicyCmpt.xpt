@@ -8,7 +8,7 @@
 	«FILE fileName-»
 	package «packageName»;
 
-		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
+		«EXPAND CommonDefinitions::ImportBlock FOREACH modelContext.imports ONFILECLOSE»
 	
 		/**
 		 * @generated

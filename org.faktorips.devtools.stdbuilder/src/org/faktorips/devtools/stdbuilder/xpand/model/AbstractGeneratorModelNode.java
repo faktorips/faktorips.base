@@ -110,7 +110,7 @@ public abstract class AbstractGeneratorModelNode {
      * @return the unqualified name of the type
      */
     public String addImport(Class<?> clazz) {
-        getContext().addImport(clazz.getName());
+        getModelContext().addImport(clazz.getName());
         return clazz.getSimpleName();
     }
 
@@ -121,7 +121,7 @@ public abstract class AbstractGeneratorModelNode {
      * @return the unqualified name of the type
      */
     public String addImport(String qName) {
-        getContext().addImport(qName);
+        getModelContext().addImport(qName);
         String[] segments = qName.split("\\.");
         return segments[segments.length - 1];
     }
@@ -133,7 +133,7 @@ public abstract class AbstractGeneratorModelNode {
      */
     public void addImport(ImportDeclaration importDeclaration) {
         for (String importStatement : importDeclaration.getImports()) {
-            getContext().addImport(importStatement);
+            getModelContext().addImport(importStatement);
         }
     }
 
@@ -145,7 +145,7 @@ public abstract class AbstractGeneratorModelNode {
      * @return true if remove was successful
      */
     public boolean removeImport(String importStatement) {
-        return getContext().removeImport(importStatement);
+        return getModelContext().removeImport(importStatement);
     }
 
     /**
@@ -223,7 +223,7 @@ public abstract class AbstractGeneratorModelNode {
      * @see IIpsArtefactBuilderSet#getLanguageUsedInGeneratedSourceCode()
      */
     public Locale getLanguageUsedInGeneratedSourceCode() {
-        return getContext().getLanguageUsedInGeneratedSourceCode();
+        return getModelContext().getLanguageUsedInGeneratedSourceCode();
     }
 
     /**
@@ -258,7 +258,7 @@ public abstract class AbstractGeneratorModelNode {
         return false;
     }
 
-    public GeneratorModelContext getContext() {
+    public GeneratorModelContext getModelContext() {
         return context;
     }
 

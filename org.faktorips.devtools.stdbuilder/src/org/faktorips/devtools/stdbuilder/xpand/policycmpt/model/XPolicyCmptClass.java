@@ -60,7 +60,7 @@ public class XPolicyCmptClass extends XClass {
         try {
             IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(
                     getIpsObjectPartContainer().getIpsProject());
-            return addImport(getContext().getQualifiedClassName(productCmptType));
+            return addImport(getModelContext().getQualifiedClassName(productCmptType));
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -80,7 +80,7 @@ public class XPolicyCmptClass extends XClass {
 
     public List<String> getImplementedInterface() {
         ArrayList<String> list = new ArrayList<String>();
-        if (getContext().isGeneratePropertyChange() && !hasSupertype()) {
+        if (getModelContext().isGeneratePropertyChange() && !hasSupertype()) {
             list.add(addImport(INotificationSupport.class));
         }
         return list;
@@ -90,7 +90,7 @@ public class XPolicyCmptClass extends XClass {
         try {
             if (getPolicyCmptType().hasSupertype()) {
                 IType superType = getPolicyCmptType().findSupertype(getIpsProject());
-                return addImport(getContext().getQualifiedClassName(superType));
+                return addImport(getModelContext().getQualifiedClassName(superType));
             } else {
                 if (isConfigured()) {
                     return addImport(AbstractConfigurableModelObject.class);
@@ -107,7 +107,7 @@ public class XPolicyCmptClass extends XClass {
         if (attributes == null) {
             attributes = new ArrayList<XPolicyAttribute>();
             for (IPolicyCmptTypeAttribute attribute : getPolicyCmptType().getPolicyCmptTypeAttributes()) {
-                attributes.add(new XPolicyAttribute(attribute, getContext()));
+                attributes.add(new XPolicyAttribute(attribute, getModelContext()));
             }
         }
         return attributes;

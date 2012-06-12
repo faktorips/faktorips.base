@@ -22,7 +22,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     }
 
     public String getFileName() {
-        return getContext().getRelativeJavaFile(getIpsObjectPartContainer().getIpsSrcFile()).toOSString();
+        return getModelContext().getRelativeJavaFile(getIpsObjectPartContainer().getIpsSrcFile()).toOSString();
     }
 
     @Override
@@ -35,14 +35,14 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     }
 
     public String getSimpleName() {
-        return getContext().getUnqualifiedClassName(getIType());
+        return getModelContext().getUnqualifiedClassName(getIType());
     }
 
     public String getQualifiedName() {
-        return getContext().getQualifiedClassName(getIType());
+        return getModelContext().getQualifiedClassName(getIType());
     }
 
     public String getPackageName() {
-        return getContext().getPackage(getIType());
+        return getModelContext().getPackage(getIType());
     }
 }

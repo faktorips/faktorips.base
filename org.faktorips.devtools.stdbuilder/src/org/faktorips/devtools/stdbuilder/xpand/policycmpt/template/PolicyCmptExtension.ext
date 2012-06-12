@@ -3,7 +3,7 @@ import org::faktorips::devtools::stdbuilder::xpand::policycmpt::model;
 extension org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions reexport;
 
 fieldPropertyNameSuffix(XPolicyAttribute this) :
-	^context.generateSeparatedCamelCase ? camelCaseToUnderscore(name).toUpperCase() : name.toUpperCase();
+	modelContext.generateSeparatedCamelCase ? camelCaseToUnderscore(name).toUpperCase() : name.toUpperCase();
 
 memberVarName(XPolicyAttribute this) :
 	javaNamingConvention.getMemberVarName(name);
