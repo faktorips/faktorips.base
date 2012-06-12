@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
 
 public class XPolicyAttribute extends XAttribute {
@@ -30,8 +31,8 @@ public class XPolicyAttribute extends XAttribute {
     private DatatypeHelper datatypeHelper;
     private DatatypeHelper valuesetDatatypeHelper;
 
-    public XPolicyAttribute(IPolicyCmptTypeAttribute attribute, GeneratorModelContext model) {
-        super(attribute, model);
+    public XPolicyAttribute(IPolicyCmptTypeAttribute attribute, GeneratorModelContext model, ModelService modelService) {
+        super(attribute, model, modelService);
         try {
             datatypeHelper = attribute.getIpsProject().findDatatypeHelper(attribute.getDatatype());
             valuesetDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(attribute.getIpsProject(),

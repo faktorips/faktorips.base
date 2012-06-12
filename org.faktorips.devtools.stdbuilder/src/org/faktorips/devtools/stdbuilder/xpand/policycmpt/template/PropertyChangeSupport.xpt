@@ -4,7 +4,7 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
 
 «DEFINE fieldDefinition FOR XPolicyCmptClass-»
-	«IF context.generatePropertyChange && !hasSupertype()-»
+	«IF modelContext.generatePropertyChange && !hasSupertype()-»
 	    /**
 	     * «localizedJDoc("FIELD_PROPERTY_CHANGE_SUPPORT")»
 	     * 
@@ -15,7 +15,7 @@
 «ENDDEFINE»
 
 «DEFINE generalMethods FOR XPolicyCmptClass-»
-	«IF context.generatePropertyChange && !hasSupertype()-»
+	«IF modelContext.generatePropertyChange && !hasSupertype()-»
 	/**
 	* @generated
 	*/
@@ -91,13 +91,13 @@
 «ENDDEFINE»
 
 «DEFINE storeOldValue FOR XPolicyAttribute-»
-	«IF context.generatePropertyChange-»
+	«IF modelContext.generatePropertyChange-»
 		«javaClassName» «propertyChangeSupport_oldValueVar()» = «memberVarName()»;
 	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE notify FOR XPolicyAttribute-»
-	«IF context.generatePropertyChange-»
+	«IF modelContext.generatePropertyChange-»
 		notifyChangeListeners(new «addImport("java.beans.PropertyChangeEvent")» (this, «fieldPropertyName()», «propertyChangeSupport_oldValueVar()», «memberVarName()»));
 	«ENDIF-»
 «ENDDEFINE»

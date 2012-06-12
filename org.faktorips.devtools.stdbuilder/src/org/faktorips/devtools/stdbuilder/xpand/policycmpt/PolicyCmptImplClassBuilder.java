@@ -17,11 +17,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
@@ -41,16 +39,6 @@ public class PolicyCmptImplClassBuilder extends XpandBuilder<XPolicyCmptClass> {
     @Override
     protected Class<XPolicyCmptClass> getGeneratorModelNodeClass() {
         return XPolicyCmptClass.class;
-    }
-
-    @Override
-    protected XPolicyCmptClass getGeneratorModelRoot() {
-        try {
-            IPolicyCmptType type = (IPolicyCmptType)getIpsSrcFile().getIpsObject();
-            return new XPolicyCmptClass(type, createGeneratorModelContext());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
     }
 
     @Override

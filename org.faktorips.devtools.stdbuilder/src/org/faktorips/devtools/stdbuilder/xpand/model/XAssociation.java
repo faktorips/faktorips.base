@@ -13,12 +13,13 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
-import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 
 public class XAssociation extends AbstractGeneratorModelNode {
 
-    public XAssociation(IAssociation ipsObjectPartContainer, GeneratorModelContext model) {
-        super(ipsObjectPartContainer, model);
+    public XAssociation(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
+            ModelService modelService) {
+        super(ipsObjectPartContainer, context, modelService);
     }
 
 }

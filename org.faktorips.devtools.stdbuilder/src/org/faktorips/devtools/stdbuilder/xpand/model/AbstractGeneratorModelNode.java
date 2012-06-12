@@ -41,15 +41,24 @@ public abstract class AbstractGeneratorModelNode {
 
     private final GeneratorModelContext context;
 
+    private final ModelService modelService;
+
     /**
-     * Every generator model object is responsible for one {@link IIpsObjectPartContainer} and is
-     * part of the given generatorModel
+     * This constructor is required in every generator model node. It set the
+     * {@link IIpsObjectPartContainer} this node is responsible for as well as the
+     * {@link GeneratorModelContext} to handle additional generator information and the
+     * {@link ModelService} used to create new model node objects.
+     * <p>
+     * The instances should be created by {@link ModelService} only. If any subclass does not have
+     * this constructor, the {@link ModelService} will not be able to instantiate this object.
      * 
      * @param ipsObjectPartContainer The object this generator model object is responsible for
      */
-    public AbstractGeneratorModelNode(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context) {
+    public AbstractGeneratorModelNode(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
+            ModelService modelService) {
         this.ipsObjectPartContainer = ipsObjectPartContainer;
         this.context = context;
+        this.modelService = modelService;
     }
 
     /**
@@ -110,7 +119,7 @@ public abstract class AbstractGeneratorModelNode {
      * @return the unqualified name of the type
      */
     public String addImport(Class<?> clazz) {
-        getContext().addImport(clazz.getName());
+        getModelContext().addImport(clazz.getName());
         return clazz.getSimpleName();
     }
 
@@ -121,7 +130,7 @@ public abstract class AbstractGeneratorModelNode {
      * @return the unqualified name of the type
      */
     public String addImport(String qName) {
-        getContext().addImport(qName);
+        getModelContext().addImport(qName);
         String[] segments = qName.split("\\.");
         return segments[segments.length - 1];
     }
@@ -133,7 +142,7 @@ public abstract class AbstractGeneratorModelNode {
      */
     public void addImport(ImportDeclaration importDeclaration) {
         for (String importStatement : importDeclaration.getImports()) {
-            getContext().addImport(importStatement);
+            getModelContext().addImport(importStatement);
         }
     }
 
@@ -145,7 +154,7 @@ public abstract class AbstractGeneratorModelNode {
      * @return true if remove was successful
      */
     public boolean removeImport(String importStatement) {
-        return getContext().removeImport(importStatement);
+        return getModelContext().removeImport(importStatement);
     }
 
     /**
@@ -223,7 +232,7 @@ public abstract class AbstractGeneratorModelNode {
      * @see IIpsArtefactBuilderSet#getLanguageUsedInGeneratedSourceCode()
      */
     public Locale getLanguageUsedInGeneratedSourceCode() {
-        return getContext().getLanguageUsedInGeneratedSourceCode();
+        return getModelContext().getLanguageUsedInGeneratedSourceCode();
     }
 
     /**
@@ -258,8 +267,12 @@ public abstract class AbstractGeneratorModelNode {
         return false;
     }
 
-    public GeneratorModelContext getContext() {
+    public GeneratorModelContext getModelContext() {
         return context;
+    }
+
+    public ModelService getModelService() {
+        return modelService;
     }
 
 }

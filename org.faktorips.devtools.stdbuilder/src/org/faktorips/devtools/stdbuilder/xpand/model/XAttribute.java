@@ -13,12 +13,13 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
-import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 
 public class XAttribute extends AbstractGeneratorModelNode {
 
-    public XAttribute(IAttribute ipsObjectPartContainer, GeneratorModelContext model) {
-        super(ipsObjectPartContainer, model);
+    public XAttribute(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
+            ModelService modelService) {
+        super(ipsObjectPartContainer, context, modelService);
     }
 
 }

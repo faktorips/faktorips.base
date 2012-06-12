@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
-import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -32,8 +31,7 @@ public class GeneratorModelContext {
 
     private final JavaClassNaming classNaming;
 
-    // TODO move to ImportHandler
-    private final Set<ImportStatement> imports = new LinkedHashSet<ImportStatement>();
+    private ImportHandler importHandler = new ImportHandler();
 
     private final IIpsArtefactBuilderSetConfig config;
 
@@ -55,21 +53,21 @@ public class GeneratorModelContext {
      * @return Returns the imports.
      */
     public Set<ImportStatement> getImports() {
-        return imports;
+        return importHandler.getImports();
     }
 
     /**
-     * Adding a new import. The import statement should be the full qualified name of a class.
+     * Adds a new import. The import statement should be the full qualified name of a class.
      * 
      * @param importStatement The full qualified name of a class that should be imported.
      * @return true if the import was added and not already part of the set.
      */
     public boolean addImport(String importStatement) {
-        return imports.add(new ImportStatement(importStatement));
+        return importHandler.add(importStatement);
     }
 
     public boolean removeImport(String importStatement) {
-        return imports.remove(new ImportStatement(importStatement));
+        return importHandler.remove(importStatement);
     }
 
     public Locale getLanguageUsedInGeneratedSourceCode() {

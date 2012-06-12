@@ -16,13 +16,11 @@ package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 
-public class XProductCmptClass extends AbstractGeneratorModelNode {
+public class XProductCmptGenerationClass extends AbstractGeneratorModelNode {
 
-    public XProductCmptClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext model,
-            ModelService modelService) {
-        super(ipsObjectPartContainer, model, modelService);
+    public XProductCmptGenerationClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext model) {
+        super(ipsObjectPartContainer, model);
     }
 
     @Override

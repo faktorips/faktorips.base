@@ -14,7 +14,6 @@
 package org.faktorips.devtools.stdbuilder.xpand;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.internal.xpand2.model.XpandDefinition;
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
 import org.eclipse.xpand2.XpandExecutionContext;
@@ -22,11 +21,14 @@ import org.eclipse.xpand2.XpandExecutionContextImpl;
 import org.eclipse.xtend.type.impl.java.JavaBeansMetaModel;
 import org.faktorips.devtools.core.builder.JavaClassNaming;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutlet;
 import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutput;
 import org.faktorips.util.ArgumentCheck;
@@ -40,18 +42,13 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends JavaSourceFileBuilder {
 
-    /**
-     * You can set tracing switch in the run configuration to reload the template on every builder's
-     * run
-     */
-    private static final boolean DEBUG = Boolean.valueOf(Platform
-            .getDebugOption("org.faktorips.devtools.stdbuilder/debug/xpand")); //$NON-NLS-1$;
-
     private XpandDefinition templateDefinition;
 
     private XpandExecutionContextImpl xpandContext;
 
     private StringOutput out;
+
+    private final ModelService modelService;
 
     /**
      * The XPAND builder is associated to a builder set and need the {@link LocalizedStringsSet} for
@@ -62,24 +59,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
      */
     public XpandBuilder(StandardBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
-        initTemplate();
-    }
-
-    private void initTemplate() {
-        out = new StringOutput();
-        xpandContext = new XpandExecutionContextImpl(out, null);
-        JavaBeansMetaModel mm = new JavaBeansMetaModel();
-        xpandContext.registerMetaModel(mm);
-
-        final org.eclipse.xtend.typesystem.Type targetType = xpandContext.getTypeForName(getGeneratorModelNodeClass()
-                .getName().replaceAll("\\.", SyntaxConstants.NS_DELIM));
-        ArgumentCheck.notNull(targetType);
-        final org.eclipse.xtend.typesystem.Type[] paramTypes = new org.eclipse.xtend.typesystem.Type[0];
-        templateDefinition = xpandContext.findDefinition(getTemplate(), targetType, paramTypes);
-        ArgumentCheck.notNull(templateDefinition);
-
-        StringOutlet outlet = new StringOutlet("UTF-8", null);
-        out.addOutlet(outlet);
+        modelService = new ModelService();
     }
 
     @Override
@@ -90,15 +70,30 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     @Override
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.beforeBuildProcess(project, buildKind);
-        if (DEBUG) {
-            initTemplate();
-        }
+        initTemplate();
         String charset = project.getProject().getDefaultCharset();
         StringOutlet outlet = (StringOutlet)out.getOutlet(null);
         if (outlet == null || !outlet.getFileEncoding().equals(charset)) {
             outlet = new StringOutlet(charset, null);
             out.addOutlet(outlet);
         }
+    }
+
+    protected void initTemplate() {
+        out = new StringOutput();
+        xpandContext = new XpandExecutionContextImpl(out, null);
+        JavaBeansMetaModel mm = new JavaBeansMetaModel();
+        xpandContext.registerMetaModel(mm);
+    
+        final org.eclipse.xtend.typesystem.Type targetType = xpandContext.getTypeForName(getGeneratorModelNodeClass()
+                .getName().replaceAll("\\.", SyntaxConstants.NS_DELIM));
+        ArgumentCheck.notNull(targetType);
+        final org.eclipse.xtend.typesystem.Type[] paramTypes = new org.eclipse.xtend.typesystem.Type[0];
+        templateDefinition = xpandContext.findDefinition(getTemplate(), targetType, paramTypes);
+        ArgumentCheck.notNull(templateDefinition);
+    
+        StringOutlet outlet = new StringOutlet("UTF-8", null);
+        out.addOutlet(outlet);
     }
 
     /**
@@ -121,7 +116,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
 
     /**
      * Getting the name of the template. The template name should be a static information. This
-     * method is called when initializing the template in the constructor!
+     * method is called when initializing the template.
      * <p>
      * The templates name needs to be in the XPAND qualifier syntax for example:
      * org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmpt::main
@@ -130,11 +125,22 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
      */
     protected abstract String getTemplate();
 
-    protected abstract T getGeneratorModelRoot();
-
     protected abstract Class<T> getGeneratorModelNodeClass();
 
-    public GeneratorModelContext createGeneratorModelContext() {
+    protected T getGeneratorModelRoot() {
+        try {
+            IPolicyCmptType type = (IPolicyCmptType)getIpsSrcFile().getIpsObject();
+            return getModelService().createModelNode(type, getGeneratorModelNodeClass(), newGeneratorModelContext());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    public ModelService getModelService() {
+        return modelService;
+    }
+
+    public GeneratorModelContext newGeneratorModelContext() {
         return new GeneratorModelContext(getBuilderSet().getConfig(), new JavaClassNaming(
                 isBuildingPublishedSourceFile(), buildsDerivedArtefacts()));
     }
