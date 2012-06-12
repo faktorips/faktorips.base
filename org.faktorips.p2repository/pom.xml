@@ -5,15 +5,22 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<properties>
+		<qualifiedVersion>${unqualifiedVersion}.${buildQualifier}</qualifiedVersion>
+		<deploy.repositoryZipName>${project.artifactId}-${qualifiedVersion}</deploy.repositoryZipName>
+		<deploy.repositoryZip>${project.build.directory}/${deploy.repositoryZipName}.zip</deploy.repositoryZip>
+		<deploy.zipRuntimeAndValuetypes>${project.build.directory}/faktorips-runtime-valuetypes-${qualifiedVersion}.zip</deploy.zipRuntimeAndValuetypes>
 		<deploy.user>${user.name}</deploy.user>
 		<deploy.server>faktorzehn.org</deploy.server>
 		<deploy.dir>/var/www/update.faktorzehn.org/</deploy.dir>
+		<!-- currently only one word groupId supported (e.g. not org.faktorips) -->
 		<deploy.groupId>faktorips</deploy.groupId>
 		<deploy.artifactId>v${parsedVersion.majorVersion}_${parsedVersion.minorVersion}</deploy.artifactId>
-		<deploy.artifactVersion>${unqualifiedVersion}-${buildQualifier}</deploy.artifactVersion>
-		<deploy.skript.unzipAndBuildComposites>${project.basedir}/deploy.skript.unzipAndBuildComposites.sh</deploy.skript.unzipAndBuildComposites>
+		<deploy.artifactVersion>${qualifiedVersion}</deploy.artifactVersion>
+		<deploy.skript.unzipAndBuildComposites>${project.basedir}/unzipAndBuildComposites.sh</deploy.skript.unzipAndBuildComposites>
 		<deploy.basedir>${deploy.dir}/${deploy.groupId}/${deploy.artifactId}</deploy.basedir>
-		<deploy.zipfile>${deploy.basedir}/${deploy.artifactVersion}/${deploy.artifactId}-${deploy.artifactVersion}.zip</deploy.zipfile>
+		<deploy.deployedRepositoryZip>${deploy.basedir}/${deploy.artifactVersion}/${deploy.artifactId}-${deploy.artifactVersion}.zip</deploy.deployedRepositoryZip>
+		<deploy.license>Faktor-IPS_Lizenzvertrag.pdf</deploy.license>
+		<deploy.downloadDir>${deploy.dir}/${deploy.groupId}/${deploy.artifactId}/downloads/faktorips-${parsedVersion.majorVersion}.${parsedVersion.minorVersion}</deploy.downloadDir>
 	</properties>
 
 
@@ -29,36 +36,154 @@
 
 	<build>
 		<plugins>
+			<!-- 
+			NEED Tycho 0.15.0 to change name of output p2 repository
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<configuration>
+					<finalName>${deploy.repositoryZipName}</finalName>
+				</configuration>
+			</plugin>
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>copy-license</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.faktorips</groupId>
+									<artifactId>org.faktorips.license</artifactId>
+									<version>${project.version}</version>
+									<outputDirectory>${project.build.directory}/</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>create-runtimeAndValuetypes</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<unzip dest="${project.build.directory}/runtime-temp" >
+									<fileset dir="${project.build.directory}/repository/plugins/">
+										<include name="org.faktorips.runtime.java5*.jar" />
+									</fileset>
+								</unzip>
+										
+						    	<jar destfile="${project.build.directory}/runtime-temp/faktorips-runtime-client.java5.jar" >
+									<fileset dir="${project.build.directory}/runtime-temp" includes="**/MessageList*.class,**/Message*.class,**/MsgReplacementParameter*.class,**/ObjectProperty*.class,**/IEnumValue*.class" >
+									</fileset>
+									<manifest>
+										<attribute name="Implementation-Title" value="Faktor-IPS Runtime for Java5"/>
+										<attribute name="Implementation-Version" value="${qualifiedVersion}"/>
+										<attribute name="Implementation-Vendor" value="Faktor Zehn AG"/>
+									</manifest>
+						    	</jar>
+
+						    	<jar destfile="${project.build.directory}/runtime-temp/faktorips-runtime-client-src.java5.jar" >
+									<fileset dir="${project.build.directory}/runtime-temp" includes="**/MessageList*.java,**/Message*.java,**/MsgReplacementParameter*.java,**/ObjectProperty*.java,**/IEnumValue*.java" >
+									</fileset>
+									<manifest>
+										<attribute name="Implementation-Title" value="Faktor-IPS Runtime for Java5 Sources"/>
+										<attribute name="Implementation-Version" value="${qualifiedVersion}"/>
+										<attribute name="Implementation-Vendor" value="Faktor Zehn AG"/>
+									</manifest>
+						    	</jar>
+										
+								<zip update="true" destfile="${deploy.zipRuntimeAndValuetypes}">
+									<fileset dir="${project.build.directory}/repository/plugins"
+										includes="org.faktorips.runtime.java5*.jar" />
+									<fileset dir="${project.build.directory}/runtime-temp"
+										includes="faktorips-runtime-client*.jar" />
+									<fileset dir="${project.build.directory}/repository/plugins"
+										includes="org.faktorips.valuetypes.java5*.jar" />
+									<fileset dir="${project.build.directory}" includes="${deploy.license}" />
+								</zip>
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>add-license</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<!-- remove when switch to tycho 0.15.0 -->
+								<move file="${project.build.directory}/${project.artifactId}.zip" toFile="${project.build.directory}/${deploy.repositoryZipName}.zip" />
+								<zip update="true" destfile="${deploy.repositoryZip}">
+									<fileset dir="${project.build.directory}" includes="${deploy.license}" />
+								</zip>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<file>${project.build.directory}/${project.artifactId}.zip</file>
-					<repositoryId>ssh-repository</repositoryId>
-					<url>scp://${deploy.server}/${deploy.dir}</url>
-					<groupId>${deploy.groupId}</groupId>
-					<artifactId>${deploy.artifactId}</artifactId>
-					<version>${deploy.artifactVersion}</version>
-				</configuration>
 				<executions>
 					<execution>
-						<id>deploy-file</id>
+						<id>deploy-repository</id>
 						<goals>
 							<goal>deploy-file</goal>
 						</goals>
 						<phase>deploy</phase>
+						<configuration>
+							<file>${deploy.repositoryZip}</file>
+							<repositoryId>ssh-repository</repositoryId>
+							<url>scp://${deploy.server}/${deploy.dir}</url>
+							<groupId>${deploy.groupId}</groupId>
+							<artifactId>${deploy.artifactId}</artifactId>
+							<version>${deploy.artifactVersion}</version>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>wagon-maven-plugin</artifactId>
+				<version>1.0-beta-4</version>
+				<executions>
+					<execution>
+						<id>upload-downloads</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>upload</goal>
+						</goals>
+						<configuration>
+							<fromDir>${project.build.directory}</fromDir>
+							<includes>*.zip</includes>
+							<url>scp://${deploy.server}</url>
+							<toDir>${deploy.downloadDir}</toDir>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- Unzip deployed update site and create composites -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<configuration>
-					<executable>ssh</executable>
-					<commandlineArgs>${deploy.user}@${deploy.server} bash -s -- ${deploy.basedir} ${deploy.zipfile} &lt; ${deploy.skript.unzipAndBuildComposites}</commandlineArgs>
-					<skip>${skipDeploy}</skip>
-				</configuration>
 				<executions>
 					<execution>
 						<id>update-composite-p2</id>
@@ -66,6 +191,12 @@
 							<goal>exec</goal>
 						</goals>
 						<phase>deploy</phase>
+						<configuration>
+							<executable>ssh</executable>
+							<commandlineArgs>${deploy.user}@${deploy.server} bash -s --\
+								${deploy.basedir} ${deploy.deployedRepositoryZip} &lt;\
+								${deploy.skript.unzipAndBuildComposites}</commandlineArgs>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
