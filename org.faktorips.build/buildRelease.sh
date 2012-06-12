@@ -122,7 +122,7 @@ setVersion()
 {
 	echo -e "\nSetting new Version ${NEW_VERSION}\n"
 	$MAVEN_CMD -f ${BUILD_POM} org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${NEW_VERSION}-SNAPSHOT
-	git commit */pom.xml */META-INF/MANIFEST.MF -m "Setting new version ${NEW_VERSION}"
+	git commit */pom.xml */META-INF/MANIFEST.MF */feature.xml -m "Setting new version ${NEW_VERSION}"
 	git push
 }
 
@@ -167,7 +167,7 @@ else
 		git push origin $TAG
 	fi
 
-	MAVEN_OPTIONS='-Dversion.kind='$VERSION_KIND' -Ddeploy.user='$DEPLOY_USER
+	MAVEN_OPTIONS='-Dversion.kind='$VERSION_KIND' -Ddeploy.user='$DEPLOY_USER -P release
 	if [ $DEPLOY_SERVER ]
 	then
 		MAVEN_OPTIONS=${MAVEN_OPTIONS}' -Ddeploy.server='$DEPLOY_SERVER

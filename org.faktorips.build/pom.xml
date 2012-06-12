@@ -148,7 +148,7 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-packaging-plugin</artifactId>
 				<configuration>
-					<format>yyyyMMdd-HHmm'_${version.kind}'</format>
+					<format>'${version.kind}_'yyyyMMdd-HHmm</format>
 				</configuration>
 			</plugin>
 
