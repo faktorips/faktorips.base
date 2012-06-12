@@ -137,7 +137,12 @@ public class StringOutlet extends Outlet {
      * @return Returns the stringHandles.
      */
     public String getContent(IPath path) {
-        return stringHandles.get(path).getOutput();
+        StringFileHandle stringFileHandle = stringHandles.get(path);
+        if (stringFileHandle != null) {
+            return stringFileHandle.getOutput();
+        } else {
+            return null;
+        }
     }
 
 }

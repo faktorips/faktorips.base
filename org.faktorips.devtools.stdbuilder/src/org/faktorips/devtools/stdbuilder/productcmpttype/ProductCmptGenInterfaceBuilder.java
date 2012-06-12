@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -49,6 +50,17 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     public ProductCmptGenInterfaceBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(ProductCmptGenInterfaceBuilder.class));
         setMergeEnabled(true);
+        setJavaClassNaming(new JavaClassNaming(generatesInterface(), isBuildingPublishedSourceFile(),
+                !buildsDerivedArtefacts()) {
+
+            @Override
+            public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
+                String name = ipsSrcFile.getIpsObjectName() + getAbbreviationForGenerationConcept(ipsSrcFile);
+                return getJavaNamingConvention().getPublishedInterfaceName(name);
+            }
+
+        });
+
     }
 
     public ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
@@ -57,12 +69,6 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
 
     public void setProductCmptInterfaceBuilder(ProductCmptInterfaceBuilder productCmptInterfaceBuilder) {
         this.productCmptInterfaceBuilder = productCmptInterfaceBuilder;
-    }
-
-    @Override
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String name = ipsSrcFile.getIpsObjectName() + getAbbreviationForGenerationConcept(ipsSrcFile);
-        return getJavaNamingConvention().getPublishedInterfaceName(name);
     }
 
     @Override

@@ -221,6 +221,11 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             return buildingPublishedSourceFile;
         }
 
+        @Override
+        protected boolean generatesInterface() {
+            return false;
+        }
+
     }
 
 }

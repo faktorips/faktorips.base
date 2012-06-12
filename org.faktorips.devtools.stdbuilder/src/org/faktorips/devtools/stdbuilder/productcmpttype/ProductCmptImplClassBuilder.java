@@ -22,7 +22,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -48,11 +47,6 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptImplementationBu
     public ProductCmptImplClassBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(ProductCmptImplClassBuilder.class));
         setMergeEnabled(true);
-    }
-
-    @Override
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getJavaNamingConvention().getImplementationClassName(ipsSrcFile.getIpsObjectName());
     }
 
     @Override

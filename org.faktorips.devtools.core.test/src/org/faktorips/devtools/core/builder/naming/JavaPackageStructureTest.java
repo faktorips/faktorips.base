@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.builder;
+package org.faktorips.devtools.core.builder.naming;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -22,23 +22,25 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
-public class JavaPackageStructureAdapterTest {
+public class JavaPackageStructureTest {
 
     private IIpsArtefactBuilder builder;
     private IIpsSrcFile ipsSrcFile;
-    private JavaPackageStructureAdapter adaptor;
+    private JavaPackageStructure adaptor;
 
     @Before
     public void setUp() {
         builder = mock(IIpsArtefactBuilder.class);
         ipsSrcFile = mock(IIpsSrcFile.class);
 
-        adaptor = spy(new JavaPackageStructureAdapter());
+        adaptor = spy(new JavaPackageStructure());
         doReturn("").when(adaptor).getPackageName(any(IIpsSrcFile.class), anyBoolean(), anyBoolean());
     }
 

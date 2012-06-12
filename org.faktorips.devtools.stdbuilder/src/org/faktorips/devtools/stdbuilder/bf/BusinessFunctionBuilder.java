@@ -599,4 +599,9 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         // not supported, yet.
     }
 
+    @Override
+    protected boolean generatesInterface() {
+        return false;
+    }
+
 }

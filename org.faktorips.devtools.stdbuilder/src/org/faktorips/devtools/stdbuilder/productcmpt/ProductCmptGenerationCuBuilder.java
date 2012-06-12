@@ -29,8 +29,8 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -307,7 +307,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
             try {
                 String typeName = getUnqualifiedClassName(generationSrcFile);
                 ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName
-                        + JavaSourceFileBuilder.JAVA_EXTENSION);
+                        + JavaClassNaming.JAVA_EXTENSION);
                 javaTypes.add(compilationUnit.getType(typeName));
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e.getMessage(), e);
@@ -323,6 +323,11 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
+        return false;
+    }
+
+    @Override
+    protected boolean generatesInterface() {
         return false;
     }
 

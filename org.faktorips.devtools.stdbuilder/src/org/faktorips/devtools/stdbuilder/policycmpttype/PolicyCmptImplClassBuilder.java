@@ -103,11 +103,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     @Override
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getJavaNamingConvention().getImplementationClassName(ipsSrcFile.getIpsObjectName());
-    }
-
-    @Override
     protected String[] getExtendedInterfaces() throws CoreException {
         String publishedInterface = GenType.getQualifiedName(getPcType(), (StandardBuilderSet)getBuilderSet(), true);
         return new String[] { publishedInterface };

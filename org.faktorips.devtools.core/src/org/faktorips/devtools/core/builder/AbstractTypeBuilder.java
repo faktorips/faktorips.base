@@ -178,11 +178,6 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     /**
-     * Returns true if an interface is generated, false if a class is generated.
-     */
-    protected abstract boolean generatesInterface();
-
-    /**
      * Returns the class modifier.
      * 
      * @see java.lang.reflect.Modifier

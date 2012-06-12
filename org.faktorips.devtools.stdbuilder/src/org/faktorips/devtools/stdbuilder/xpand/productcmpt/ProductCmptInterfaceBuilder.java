@@ -22,11 +22,10 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class ProductCmptInterfaceBuilder extends XpandBuilder {
+public class ProductCmptInterfaceBuilder extends XpandBuilder<XProductCmptClass> {
 
     public ProductCmptInterfaceBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(ProductCmptInterfaceBuilder.class));
@@ -38,12 +37,12 @@ public class ProductCmptInterfaceBuilder extends XpandBuilder {
     }
 
     @Override
-    protected Class<?> getGeneratorModelNodeClass() {
-        return XPolicyCmptClass.class;
+    protected Class<XProductCmptClass> getGeneratorModelNodeClass() {
+        return XProductCmptClass.class;
     }
 
     @Override
-    protected GeneratorModelContext getGeneratorModelRoot() {
+    protected XProductCmptClass getGeneratorModelRoot() {
         return null;
     }
 
@@ -56,13 +55,17 @@ public class ProductCmptInterfaceBuilder extends XpandBuilder {
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
-        // TODO
-        return false;
+        return true;
     }
 
     @Override
     public String getTemplate() {
-        return "org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmpt::main";
+        return "org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::ProductComponent::main";
+    }
+
+    @Override
+    protected boolean generatesInterface() {
+        return true;
     }
 
 }

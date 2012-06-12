@@ -18,12 +18,12 @@ import java.util.Locale;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -39,7 +39,7 @@ public abstract class AbstractGeneratorModelNode {
 
     private final IIpsObjectPartContainer ipsObjectPartContainer;
 
-    private final GeneratorModelContext context;
+    private final GeneratorModelContext modelContext;
 
     private final ModelService modelService;
 
@@ -57,7 +57,7 @@ public abstract class AbstractGeneratorModelNode {
     public AbstractGeneratorModelNode(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
             ModelService modelService) {
         this.ipsObjectPartContainer = ipsObjectPartContainer;
-        this.context = context;
+        this.modelContext = context;
         this.modelService = modelService;
     }
 
@@ -236,15 +236,6 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     /**
-     * Returns the naming java convention configured in this project
-     * 
-     * @return The configured java naming convention
-     */
-    public IJavaNamingConvention getJavaNamingConvention() {
-        return getIpsObjectPartContainer().getIpsProject().getJavaNamingConvention();
-    }
-
-    /**
      * Checks whether or not an override annotation is needed respect to the different compliance
      * levels. Up to Java5 there was no override annotation at all (this case is not longer
      * supported). In Java5 there were only override annotations for real overrides not for
@@ -268,11 +259,24 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     public GeneratorModelContext getModelContext() {
-        return context;
+        return modelContext;
+    }
+
+    public JavaClassNaming getImplClassNaming() {
+        return getModelContext().getImplClassNaming();
+    }
+
+    public JavaClassNaming getInterfaceNaming() {
+        return getModelContext().getImplClassNaming();
     }
 
     public ModelService getModelService() {
         return modelService;
+    }
+
+    public <T extends AbstractGeneratorModelNode> T getModelNode(IIpsObjectPartContainer ipsObjectPartContainer,
+            Class<T> nodeClass) {
+        return getModelService().getModelNode(ipsObjectPartContainer, nodeClass, getModelContext());
     }
 
 }

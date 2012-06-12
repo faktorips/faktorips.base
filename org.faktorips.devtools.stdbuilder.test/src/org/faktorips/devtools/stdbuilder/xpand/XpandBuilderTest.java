@@ -13,35 +13,37 @@
 
 package org.faktorips.devtools.stdbuilder.xpand;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertNotNull;
 
-import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 public class XpandBuilderTest {
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private IIpsProject ipsProject;
 
-    @Mock
-    private IIpsProject project;
-
-    @Mock
-    private IJavaProject javaProject;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private StandardBuilderSet builderSet;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        when(project.getJavaProject()).thenReturn(javaProject);
     }
 
     @Test
-    public void testBeforeBuild() throws Exception {
-        XpandBuilder<?> xpandBuilder = mock(XpandBuilder.class, Mockito.CALLS_REAL_METHODS);
-        xpandBuilder.beforeBuildProcess(project, 0);
+    public void testBeforeBuildProcess() throws Exception {
+        // Using PolicyCmptImlClassBuilder as concrete instance knowing that this also tests this
+        // other class
+        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(builderSet);
+        policyCmptImplClassBuilder.beforeBuildProcess(ipsProject, 0);
+        assertNotNull(policyCmptImplClassBuilder.getOut());
+        assertNotNull(policyCmptImplClassBuilder.getTemplateDefinition());
     }
 
 }
