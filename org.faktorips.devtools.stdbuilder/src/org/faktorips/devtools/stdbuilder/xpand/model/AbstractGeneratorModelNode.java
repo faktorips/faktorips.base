@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -44,13 +46,26 @@ public abstract class AbstractGeneratorModelNode {
     private final ModelService modelService;
 
     /**
-     * This constructor is required in every generator model node. It set the
-     * {@link IIpsObjectPartContainer} this node is responsible for as well as the
-     * {@link GeneratorModelContext} to handle additional generator information and the
-     * {@link ModelService} used to create new model node objects.
+     * This constructor is required in every generator model node. It defines
+     * <ul>
+     * <li>the {@link IIpsObjectPartContainer} this node is responsible for (or represents
+     * respectively)</li>
+     * <li>the {@link GeneratorModelContext} to handle additional generator information</li>
+     * <li>the {@link ModelService} used to create new model node objects</li>
+     * </ul>
      * <p>
      * The instances should be created by {@link ModelService} only. If any subclass does not have
-     * this constructor, the {@link ModelService} will not be able to instantiate this object.
+     * this constructor, the {@link ModelService} will not be able to instantiate that class.
+     * <p>
+     * Model nodes create child nodes, one for each relevant IPS object part, in this constructor
+     * (using the model service). So a model node is fully initialized once it is instantiated. An
+     * {@link XPolicyCmptClass} for example creates model nodes for each attribute and association
+     * and saves them in the respective lists. It will not, however, create dependent
+     * {@link XProductCmptClass} nodes as a product component type is not a part (as in IPS object
+     * part) of a policy component type.
+     * <p>
+     * As a result of this model nodes are immutable and no further initialization is required by
+     * client code.
      * 
      * @param ipsObjectPartContainer The object this generator model object is responsible for
      */

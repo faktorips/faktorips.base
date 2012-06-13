@@ -31,10 +31,29 @@ import org.faktorips.runtime.internal.AbstractModelObject;
 
 public class XPolicyCmptClass extends XClass {
 
-    private ArrayList<XPolicyAttribute> attributes;
+    private final ArrayList<XPolicyAttribute> attributes;
 
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
+        attributes = new ArrayList<XPolicyAttribute>();
+        initAttributeNodes();
+        initAssociationNodes();
+    }
+
+    private void initAttributeNodes() {
+        List<IPolicyCmptTypeAttribute> policyAttributes = getPolicyCmptType().getPolicyCmptTypeAttributes();
+        for (IPolicyCmptTypeAttribute attr : policyAttributes) {
+            attributes.add(createAttributeNode(attr));
+        }
+    }
+
+    private XPolicyAttribute createAttributeNode(IPolicyCmptTypeAttribute attribute) {
+        return getModelService().createModelNode(attribute, XPolicyAttribute.class, getModelContext());
+    }
+
+    private void initAssociationNodes() {
+        // TODO Auto-generated method stub
+
     }
 
     @Override
@@ -105,13 +124,11 @@ public class XPolicyCmptClass extends XClass {
     }
 
     public List<XPolicyAttribute> getAttributes() {
-        if (attributes == null) {
-            attributes = new ArrayList<XPolicyAttribute>();
-            for (IPolicyCmptTypeAttribute attribute : getPolicyCmptType().getPolicyCmptTypeAttributes()) {
-                attributes.add(getModelService().createModelNode(attribute, XPolicyAttribute.class, getModelContext()));
-            }
-        }
-        return attributes;
+        return new ArrayList<XPolicyAttribute>(attributes);
     }
 
+    public List<XPolicyAssociation> getAssociations() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

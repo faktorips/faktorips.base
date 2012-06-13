@@ -11,13 +11,16 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.xpand.model;
+package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 
-public abstract class XAssociation extends AbstractGeneratorModelNode {
+public class XPolicyAssociation extends XAssociation {
 
-    public XAssociation(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
+    public XPolicyAssociation(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
             ModelService modelService) {
         super(ipsObjectPartContainer, context, modelService);
     }
