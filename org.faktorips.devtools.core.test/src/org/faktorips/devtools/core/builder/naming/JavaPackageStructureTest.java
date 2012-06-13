@@ -13,71 +13,94 @@
 
 package org.faktorips.devtools.core.builder.naming;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class JavaPackageStructureTest {
 
-    private IIpsArtefactBuilder builder;
+    @Mock
+    private JavaSourceFileBuilder builder;
+
+    @Mock
     private IIpsSrcFile ipsSrcFile;
-    private JavaPackageStructure adaptor;
+
+    private JavaPackageStructure packageStructure;
+
+    @Mock
+    private IIpsPackageFragment packageFragment;
 
     @Before
-    public void setUp() {
-        builder = mock(IIpsArtefactBuilder.class);
-        ipsSrcFile = mock(IIpsSrcFile.class);
+    public void setUp() throws CoreException {
+        MockitoAnnotations.initMocks(this);
+        packageStructure = new JavaPackageStructure();
 
-        adaptor = spy(new JavaPackageStructure());
-        doReturn("").when(adaptor).getPackageName(any(IIpsSrcFile.class), anyBoolean(), anyBoolean());
+        when(ipsSrcFile.getBasePackageNameForMergableArtefacts()).thenReturn("mergable");
+        when(ipsSrcFile.getBasePackageNameForDerivedArtefacts()).thenReturn("derived");
+        when(ipsSrcFile.getIpsPackageFragment()).thenReturn(packageFragment);
+        when(packageFragment.getName()).thenReturn("ubx");
     }
 
     @Test
-    public void testGetPackageMergable() throws Exception {
-        when(builder.buildsDerivedArtefacts()).thenReturn(true);
-        adaptor.getPackage(builder, ipsSrcFile);
-        verify(adaptor).getPackageName(ipsSrcFile, false, true);
-    }
-
-    @Test
-    public void testGetPackage() throws Exception {
-        when(builder.buildsDerivedArtefacts()).thenReturn(false);
-        adaptor.getPackage(builder, ipsSrcFile);
-        verify(adaptor).getPackageName(ipsSrcFile, false, false);
-    }
-
-    @Test
-    public void testGetPackage_JavaBuilder() throws Exception {
-        JavaSourceFileBuilder builder = mock(JavaSourceFileBuilder.class,
-                withSettings().extraInterfaces(IIpsArtefactBuilder.class));
-
-        when(builder.buildsDerivedArtefacts()).thenReturn(false);
-        when(builder.isBuildingPublishedSourceFile()).thenReturn(false);
-        adaptor.getPackage(builder, ipsSrcFile);
-        verify(adaptor).getPackageName(ipsSrcFile, false, false);
-    }
-
-    @Test
-    public void testGetPackage_JavaBuilder_publishedMergable() throws Exception {
-        JavaSourceFileBuilder builder = mock(JavaSourceFileBuilder.class,
-                withSettings().extraInterfaces(IIpsArtefactBuilder.class));
-
-        when(builder.buildsDerivedArtefacts()).thenReturn(true);
+    public void testGetPackageMergablePublished() throws Exception {
         when(builder.isBuildingPublishedSourceFile()).thenReturn(true);
-        adaptor.getPackage(builder, ipsSrcFile);
-        verify(adaptor).getPackageName(ipsSrcFile, true, true);
+        when(builder.buildsDerivedArtefacts()).thenReturn(false);
+
+        String package1 = packageStructure.getPackage(builder, ipsSrcFile);
+        assertEquals("mergable.ubx", package1);
+        String pacakge2 = JavaPackageStructure.getPackageName(ipsSrcFile, true, true);
+        assertEquals("mergable.ubx", pacakge2);
+        String pacakge3 = JavaPackageStructure.getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
+        assertEquals("mergable.ubx", pacakge3);
+    }
+
+    @Test
+    public void testGetPackageDerivedPublished() throws Exception {
+        when(builder.isBuildingPublishedSourceFile()).thenReturn(true);
+        when(builder.buildsDerivedArtefacts()).thenReturn(true);
+
+        String package1 = packageStructure.getPackage(builder, ipsSrcFile);
+        assertEquals("derived.ubx", package1);
+        String pacakge2 = JavaPackageStructure.getPackageName(ipsSrcFile, true, false);
+        assertEquals("derived.ubx", pacakge2);
+    }
+
+    @Test
+    public void testGetPackageMergableInternal() throws Exception {
+        when(builder.isBuildingPublishedSourceFile()).thenReturn(false);
+        when(builder.buildsDerivedArtefacts()).thenReturn(false);
+
+        String package1 = packageStructure.getPackage(builder, ipsSrcFile);
+        assertEquals("mergable.internal.ubx", package1);
+        String pacakge2 = JavaPackageStructure.getPackageName(ipsSrcFile, false, true);
+        assertEquals("mergable.internal.ubx", pacakge2);
+        String pacakge3 = JavaPackageStructure.getPackageNameForMergableInternalArtefacts(ipsSrcFile);
+        assertEquals("mergable.internal.ubx", pacakge3);
+    }
+
+    @Test
+    public void testGetPackageDerivedInternal() throws Exception {
+        when(builder.isBuildingPublishedSourceFile()).thenReturn(false);
+        when(builder.buildsDerivedArtefacts()).thenReturn(true);
+
+        String package1 = packageStructure.getPackage(builder, ipsSrcFile);
+        assertEquals("derived.internal.ubx", package1);
+        String pacakge2 = JavaPackageStructure.getPackageName(ipsSrcFile, false, false);
+        assertEquals("derived.internal.ubx", pacakge2);
+    }
+
+    @Test
+    public void testGetInternalPackage() throws Exception {
+        String package1 = JavaPackageStructure.getInternalPackage("base.pack", "sub.pack");
+        assertEquals("base.pack.internal.sub.pack", package1);
     }
 
 }
