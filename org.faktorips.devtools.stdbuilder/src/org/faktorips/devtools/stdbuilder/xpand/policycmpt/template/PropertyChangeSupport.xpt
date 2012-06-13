@@ -92,7 +92,7 @@
 
 «DEFINE storeOldValue FOR XPolicyAttribute-»
 	«IF modelContext.generatePropertyChange-»
-		«javaClassName» «propertyChangeSupport_oldValueVar()» = «memberVarName()»;
+		«javaClassName» «propertyChangeSupport_oldValueVar()» = «memberVarName»;
 	«ENDIF-»
 «ENDDEFINE»
 

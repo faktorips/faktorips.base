@@ -89,7 +89,7 @@
 «DEFINE initializeForOverrideAttributes FOR XPolicyCmptClass-»
 	«FOREACH attributes AS this-»
 		«IF generateDefaultInitialize-»
-			«setterMethodName()»(«defaultValueCode»);
+			«setterMethodName»(«defaultValueCode»);
 		«ENDIF-»
 	«ENDFOREACH-»
 «ENDDEFINE»
