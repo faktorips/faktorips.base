@@ -1354,4 +1354,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
+    @Override
+    protected boolean generatesInterface() {
+        return false;
+    }
+
 }

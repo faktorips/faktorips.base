@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
@@ -46,11 +47,11 @@ import org.faktorips.fl.IdentifierResolver;
  */
 public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJavaPackageStructure {
 
-    private JavaPackageStructureAdapter javaPackageStructureAdaptor = new JavaPackageStructureAdapter();
+    private JavaPackageStructure javaPackageStructure = new JavaPackageStructure();
 
     @Override
     public String getInternalPackage(final String basePackName, final String subPackageFragment) {
-        return JavaClassNaming.getInternalPackage(basePackName, subPackageFragment);
+        return JavaPackageStructure.getInternalPackage(basePackName, subPackageFragment);
     }
 
     @Override
@@ -96,8 +97,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
 
     @Override
     public String getPackage(IIpsArtefactBuilder builder, IIpsSrcFile ipsSrcFile) throws CoreException {
-        javaPackageStructureAdaptor = new JavaPackageStructureAdapter();
-        return javaPackageStructureAdaptor.getPackage(builder, ipsSrcFile);
+        return javaPackageStructure.getPackage(builder, ipsSrcFile);
     }
 
     @Override

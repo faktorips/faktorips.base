@@ -27,6 +27,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -44,6 +45,16 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
     public TableRowBuilder(DefaultBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(TableRowBuilder.class));
         setMergeEnabled(true);
+
+        setJavaClassNaming(new JavaClassNaming(generatesInterface(), isBuildingPublishedSourceFile(),
+                !buildsDerivedArtefacts()) {
+
+            @Override
+            public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
+                return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "Row";
+            }
+
+        });
     }
 
     @Override
@@ -216,11 +227,6 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "Row";
-    }
-
-    @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IIpsObjectPartContainer ipsObjectPartContainer) {
 
@@ -238,6 +244,11 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
 
     private ITableStructure getTableStructure() {
         return (ITableStructure)getIpsObject();
+    }
+
+    @Override
+    protected boolean generatesInterface() {
+        return false;
     }
 
 }

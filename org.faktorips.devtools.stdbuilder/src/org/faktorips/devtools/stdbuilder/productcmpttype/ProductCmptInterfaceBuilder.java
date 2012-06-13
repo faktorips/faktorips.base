@@ -45,11 +45,6 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
         setMergeEnabled(true);
     }
 
-    @Override
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getJavaNamingConvention().getPublishedInterfaceName(getConceptName(ipsSrcFile));
-    }
-
     public String getConceptName(IIpsSrcFile ipsSrcFile) {
         return ipsSrcFile.getIpsObjectName();
     }

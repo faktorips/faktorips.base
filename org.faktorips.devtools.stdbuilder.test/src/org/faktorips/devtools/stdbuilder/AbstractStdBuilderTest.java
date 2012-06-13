@@ -29,7 +29,7 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -117,7 +117,7 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
             String packageName = builderSet.getPackage(builder, ipsObject.getIpsSrcFile());
             IPackageFragment javaPackage = javaRoot.getPackageFragment(packageName);
             ICompilationUnit javaCompilationUnit = javaPackage.getCompilationUnit(javaTypeName
-                    + JavaSourceFileBuilder.JAVA_EXTENSION);
+                    + JavaClassNaming.JAVA_EXTENSION);
             return javaCompilationUnit.getType(javaTypeName);
         } catch (CoreException e) {
             throw new RuntimeException(e);

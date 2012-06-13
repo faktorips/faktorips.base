@@ -22,6 +22,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -66,6 +67,17 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptImplementatio
     public ProductCmptGenImplClassBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(ProductCmptGenImplClassBuilder.class));
         setMergeEnabled(true);
+        setJavaClassNaming(new JavaClassNaming(generatesInterface(), isBuildingPublishedSourceFile(),
+                !buildsDerivedArtefacts()) {
+
+            @Override
+            public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
+                String generationAbb = getAbbreviationForGenerationConcept(ipsSrcFile);
+                return getJavaNamingConvention().getImplementationClassName(
+                        ipsSrcFile.getIpsObjectName() + generationAbb);
+            }
+
+        });
     }
 
     public void setEnumTypeBuilder(EnumTypeBuilder enumTypeBuilder) {
@@ -107,12 +119,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptImplementatio
         GetClassModifierFunction fct = new GetClassModifierFunction(getIpsProject(), modifier);
         fct.start(getProductCmptType());
         return fct.getModifier();
-    }
-
-    @Override
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String generationAbb = getAbbreviationForGenerationConcept(ipsSrcFile);
-        return getJavaNamingConvention().getImplementationClassName(ipsSrcFile.getIpsObjectName() + generationAbb);
     }
 
     @Override

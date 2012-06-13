@@ -24,6 +24,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -47,6 +48,15 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     public EnumXmlAdapterBuilder(DefaultBuilderSet builderSet, EnumTypeBuilder enumTypeBuilder) {
         super(builderSet, new LocalizedStringsSet(EnumXmlAdapterBuilder.class));
         this.enumTypeBuilder = enumTypeBuilder;
+        setJavaClassNaming(new JavaClassNaming(false, isBuildingPublishedSourceFile(), !buildsDerivedArtefacts()) {
+
+            @Override
+            public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
+                return ipsSrcFile.getIpsProject().getJavaNamingConvention()
+                        .getImplementationClassName(getDefaultUnqualifiedName(ipsSrcFile) + "XmlAdapter"); //$NON-NLS-1$
+            }
+
+        });
     }
 
     @Override
@@ -74,16 +84,6 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
             return !enumType.isContainingValues() && !enumType.isAbstract();
         }
         return false;
-    }
-
-    @Override
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return super.getUnqualifiedClassName(ipsSrcFile) + "XmlAdapter"; //$NON-NLS-1$
-    }
-
-    @Override
-    public String getUnqualifiedClassName() throws CoreException {
-        return super.getUnqualifiedClassName() + "XmlAdapter"; //$NON-NLS-1$
     }
 
     @Override
@@ -218,6 +218,11 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
+        return false;
+    }
+
+    @Override
+    protected boolean generatesInterface() {
         return false;
     }
 

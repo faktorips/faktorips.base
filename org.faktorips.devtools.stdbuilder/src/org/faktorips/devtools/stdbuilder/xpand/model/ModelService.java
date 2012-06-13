@@ -15,6 +15,7 @@ package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 
@@ -25,10 +26,42 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
  */
 public class ModelService {
 
+    private HashMap<IIpsObjectPartContainer, AbstractGeneratorModelNode> generatorModelNodes = new HashMap<IIpsObjectPartContainer, AbstractGeneratorModelNode>();
+
     public ModelService() {
     }
 
-    public <T extends AbstractGeneratorModelNode> T createModelNode(IIpsObjectPartContainer ipsObjectPartContainer,
+    /**
+     * Getting the model node for the given {@link IIpsObjectPartContainer} of the given type. The
+     * object may be already instantiated and cached. If not this method will create a new object
+     * and store it in the cache.
+     * <p>
+     * This caching mechanism is NOT thread safe! That means you may get two instances for the same
+     * combination of {@link IIpsObjectPartContainer} and {@link Class node class}.
+     * 
+     * @param ipsObjectPartContainer The element associated with the model node
+     * @param nodeClass the type of the model node
+     * @param modelContext the {@link GeneratorModelContext} set in the model node (not reset when
+     *            already instantiated)
+     * @return The model node either newly instantiated or from cache.
+     */
+    public <T extends AbstractGeneratorModelNode> T getModelNode(IIpsObjectPartContainer ipsObjectPartContainer,
+            Class<T> nodeClass,
+            GeneratorModelContext modelContext) {
+        AbstractGeneratorModelNode generatorModelNode = generatorModelNodes.get(ipsObjectPartContainer);
+        if (generatorModelNode != null && nodeClass.isAssignableFrom(generatorModelNode.getClass())) {
+            @SuppressWarnings("unchecked")
+            // valid cast because checked before
+            T castedGeneratorModelNode = (T)generatorModelNode;
+            return castedGeneratorModelNode;
+        } else {
+            T newModelNode = newModelNode(ipsObjectPartContainer, nodeClass, modelContext);
+            generatorModelNodes.put(ipsObjectPartContainer, newModelNode);
+            return newModelNode;
+        }
+    }
+
+    private <T> T newModelNode(IIpsObjectPartContainer ipsObjectPartContainer,
             Class<T> nodeClass,
             GeneratorModelContext modelContext) {
         try {

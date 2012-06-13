@@ -16,11 +16,9 @@ package org.faktorips.devtools.stdbuilder.xpand.model;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IPath;
-import org.faktorips.devtools.core.builder.JavaClassNaming;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.builder.AbstractBuilderSet;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
@@ -29,7 +27,9 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
  */
 public class GeneratorModelContext {
 
-    private final JavaClassNaming classNaming;
+    private final JavaClassNaming implClassNaming;
+
+    private final JavaClassNaming interfaceNaming;
 
     private ImportHandler importHandler = new ImportHandler();
 
@@ -38,9 +38,10 @@ public class GeneratorModelContext {
     // Model Service
     // ImportHandler
 
-    public GeneratorModelContext(IIpsArtefactBuilderSetConfig config, JavaClassNaming classNaming) {
+    public GeneratorModelContext(IIpsArtefactBuilderSetConfig config) {
         this.config = config;
-        this.classNaming = classNaming;
+        this.implClassNaming = new JavaClassNaming(false, false, true);
+        this.interfaceNaming = new JavaClassNaming(true, true, true);
     }
 
     public IIpsArtefactBuilderSetConfig getConfig() {
@@ -71,29 +72,11 @@ public class GeneratorModelContext {
     }
 
     public Locale getLanguageUsedInGeneratedSourceCode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public IPath getRelativeJavaFile(IIpsSrcFile ipsSrcFile) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String getUnqualifiedClassName(IType type) {
-        return classNaming.getUnqualifiedClassName(type.getIpsSrcFile());
-    }
-
-    public String getPackage(IType type) {
-        return classNaming.getPackageName(type.getIpsSrcFile());
-    }
-
-    public String getQualifiedClassName(IType type) {
-        return classNaming.getQualifiedClassName(type.getIpsSrcFile());
-    }
-
-    public String getQualifiedClassNameForInterface(IType type) {
-        return classNaming.getUnqualifiedClassName(type.getIpsSrcFile());
+        String localeString = getConfig().getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATOR_LOCALE);
+        if (localeString == null) {
+            return Locale.ENGLISH;
+        }
+        return AbstractBuilderSet.getLocale(localeString);
     }
 
     public boolean isGeneratePropertyChange() {
@@ -105,6 +88,14 @@ public class GeneratorModelContext {
         Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
                 StandardBuilderSet.CONFIG_PROPERTY_CAMELCASE_SEPARATED);
         return propertyValueAsBoolean == null ? false : propertyValueAsBoolean.booleanValue();
+    }
+
+    public JavaClassNaming getImplClassNaming() {
+        return implClassNaming;
+    }
+
+    public JavaClassNaming getInterfaceNaming() {
+        return interfaceNaming;
     }
 
 }

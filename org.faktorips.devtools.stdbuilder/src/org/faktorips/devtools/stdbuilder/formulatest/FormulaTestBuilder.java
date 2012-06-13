@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -103,6 +104,30 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         project = builderSet.getIpsProject();
         productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
         productCmptNamingStrategy.setIpsProject(project);
+
+        setJavaClassNaming(new JavaClassNaming(generatesInterface(), isBuildingPublishedSourceFile(),
+                !buildsDerivedArtefacts()) {
+
+            @Override
+            public String getQualifiedClassName(IIpsSrcFile ipsSrcFile) {
+                IIpsSrcFile file = getVirtualIpsSrcFile(ipsSrcFile.getIpsObjectName());
+                String qualifiedClassName = super.getQualifiedClassName(file);
+                return qualifiedClassName;
+            }
+
+            private IIpsSrcFile getVirtualIpsSrcFile(String objectName) {
+                String name = productCmptNamingStrategy.getJavaClassIdentifier(objectName);
+                return productCmpt.getIpsSrcFile().getIpsPackageFragment()
+                        .getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
+            }
+
+            @Override
+            public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
+                return super.getUnqualifiedClassName(getVirtualIpsSrcFile(ipsSrcFile.getIpsObjectName()))
+                        + RUNTIME_EXTENSION;
+            }
+
+        });
     }
 
     /**
@@ -171,19 +196,6 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    public String getQualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IIpsSrcFile file = getVirtualIpsSrcFile(ipsSrcFile.getIpsObject());
-        String qualifiedClassName = super.getQualifiedClassName(file);
-        qualifiedClassName += RUNTIME_EXTENSION;
-        return qualifiedClassName;
-    }
-
-    @Override
-    public String getUnqualifiedClassName() throws CoreException {
-        return StringUtil.unqualifiedName(getQualifiedClassName());
-    }
-
-    @Override
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFile file = getFile(ipsSrcFile);
         if (file.exists()) {
@@ -209,12 +221,6 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         String packageString = getBuilderSet().getPackage(this, ipsSrcFile);
         IPath pathToPack = new Path(packageString.replace('.', '/'));
         return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFolder(pathToPack);
-    }
-
-    private IIpsSrcFile getVirtualIpsSrcFile(IIpsObject ipsObject) {
-        String name = productCmptNamingStrategy.getJavaClassIdentifier(ipsObject.getName());
-        return productCmpt.getIpsSrcFile().getIpsPackageFragment()
-                .getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
     }
 
     @Override
@@ -572,7 +578,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
             throws CoreException {
 
         String typeName = getUnqualifiedClassName(getVirtualIpsSrcFile((IProductCmpt)ipsObject));
-        ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + JAVA_EXTENSION);
+        ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + JavaClassNaming.JAVA_EXTENSION);
         javaTypes.add(compilationUnit.getType(typeName));
     }
 
@@ -584,6 +590,11 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
+        return false;
+    }
+
+    @Override
+    protected boolean generatesInterface() {
         return false;
     }
 

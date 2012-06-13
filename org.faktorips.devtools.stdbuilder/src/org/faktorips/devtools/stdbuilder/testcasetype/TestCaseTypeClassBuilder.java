@@ -987,4 +987,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     public boolean isBuildingPublishedSourceFile() {
         return false;
     }
+
+    @Override
+    protected boolean generatesInterface() {
+        return false;
+    }
 }

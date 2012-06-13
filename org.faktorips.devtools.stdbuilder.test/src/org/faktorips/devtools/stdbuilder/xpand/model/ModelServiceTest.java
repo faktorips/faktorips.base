@@ -41,12 +41,12 @@ public class ModelServiceTest {
     }
 
     @Test
-    public void testCreateModelNode() throws Exception {
-        ModelService modelService = new ModelService();
-        XPolicyCmptClass node = modelService.createModelNode(policyCmptType, XPolicyCmptClass.class, modelContext);
-        assertNotNull(node);
-        XProductCmptClass node2 = modelService.createModelNode(productCmptType, XProductCmptClass.class, modelContext);
-        assertNotNull(node2);
-    }
+        public void testGetModelNode() throws Exception {
+            ModelService modelService = new ModelService();
+            XPolicyCmptClass node = modelService.getModelNode(policyCmptType, XPolicyCmptClass.class, modelContext);
+            assertNotNull(node);
+            XProductCmptClass node2 = modelService.getModelNode(productCmptType, XProductCmptClass.class, modelContext);
+            assertNotNull(node2);
+        }
 
 }

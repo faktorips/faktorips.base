@@ -60,7 +60,12 @@ public class ProductCmptGenerationImlClassBuilder extends XpandBuilder<XProductC
 
     @Override
     public String getTemplate() {
-        return "org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::ProductCmpt::main";
+        return "org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::ProductComponent::main";
+    }
+
+    @Override
+    protected boolean generatesInterface() {
+        return false;
     }
 
 }

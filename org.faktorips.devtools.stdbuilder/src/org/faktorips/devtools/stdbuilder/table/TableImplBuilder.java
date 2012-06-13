@@ -1166,4 +1166,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         return false;
     }
 
+    @Override
+    protected boolean generatesInterface() {
+        return false;
+    }
+
 }

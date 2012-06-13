@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 
@@ -57,7 +57,7 @@ final class RefactoringTestUtil {
         }
         IPackageFragment javaPackage = javaRoot.getPackageFragment(basePackageName + packageName);
 
-        return javaPackage.getCompilationUnit(typeName + JavaSourceFileBuilder.JAVA_EXTENSION).getType(typeName);
+        return javaPackage.getCompilationUnit(typeName + JavaClassNaming.JAVA_EXTENSION).getType(typeName);
     }
 
     public static String getPublishedInterfaceName(String originalName, IIpsProject ipsProject) {

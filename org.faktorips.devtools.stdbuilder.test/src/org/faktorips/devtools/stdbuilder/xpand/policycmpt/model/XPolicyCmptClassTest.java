@@ -80,8 +80,8 @@ public class XPolicyCmptClassTest {
         attrList.add(attr1);
         attrList.add(attr2);
 
-        doReturn(attributeNode1).when(modelService).createModelNode(attr1, XPolicyAttribute.class, context);
-        doReturn(attributeNode2).when(modelService).createModelNode(attr2, XPolicyAttribute.class, context);
+        doReturn(attributeNode1).when(modelService).getModelNode(attr1, XPolicyAttribute.class, context);
+        doReturn(attributeNode2).when(modelService).getModelNode(attr2, XPolicyAttribute.class, context);
         when(type.getPolicyCmptTypeAttributes()).thenReturn(attrList);
     }
 

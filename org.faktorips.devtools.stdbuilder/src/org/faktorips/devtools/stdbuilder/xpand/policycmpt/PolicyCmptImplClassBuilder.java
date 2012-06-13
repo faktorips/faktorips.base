@@ -58,4 +58,9 @@ public class PolicyCmptImplClassBuilder extends XpandBuilder<XPolicyCmptClass> {
         return "org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmpt::main";
     }
 
+    @Override
+    protected boolean generatesInterface() {
+        return false;
+    }
+
 }

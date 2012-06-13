@@ -16,11 +16,10 @@ package org.faktorips.devtools.stdbuilder.xpand;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.internal.xpand2.model.XpandDefinition;
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
-import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xpand2.XpandExecutionContextImpl;
 import org.eclipse.xtend.type.impl.java.JavaBeansMetaModel;
-import org.faktorips.devtools.core.builder.JavaClassNaming;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -60,6 +59,16 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     public XpandBuilder(StandardBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
         modelService = new ModelService();
+        setJavaClassNaming(new JavaClassNaming(generatesInterface(), isBuildingPublishedSourceFile(),
+                !buildsDerivedArtefacts()) {
+
+            @Override
+            public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
+                // TODO this hack prevents overwriting old generated files - for development only!!!
+                return super.getUnqualifiedClassName(ipsSrcFile) + "_X";
+            }
+
+        });
     }
 
     @Override
@@ -72,28 +81,28 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
         super.beforeBuildProcess(project, buildKind);
         initTemplate();
         String charset = project.getProject().getDefaultCharset();
-        StringOutlet outlet = (StringOutlet)out.getOutlet(null);
+        StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
         if (outlet == null || !outlet.getFileEncoding().equals(charset)) {
             outlet = new StringOutlet(charset, null);
-            out.addOutlet(outlet);
+            getOut().addOutlet(outlet);
         }
     }
 
+    /**
+     * Initializes the template given by the concrete implementation of {@link #getTemplate()}.
+     */
     protected void initTemplate() {
-        out = new StringOutput();
-        xpandContext = new XpandExecutionContextImpl(out, null);
+        setOut(new StringOutput());
+        xpandContext = new XpandExecutionContextImpl(getOut(), null);
         JavaBeansMetaModel mm = new JavaBeansMetaModel();
         xpandContext.registerMetaModel(mm);
-    
+
         final org.eclipse.xtend.typesystem.Type targetType = xpandContext.getTypeForName(getGeneratorModelNodeClass()
                 .getName().replaceAll("\\.", SyntaxConstants.NS_DELIM));
         ArgumentCheck.notNull(targetType);
         final org.eclipse.xtend.typesystem.Type[] paramTypes = new org.eclipse.xtend.typesystem.Type[0];
-        templateDefinition = xpandContext.findDefinition(getTemplate(), targetType, paramTypes);
-        ArgumentCheck.notNull(templateDefinition);
-    
-        StringOutlet outlet = new StringOutlet("UTF-8", null);
-        out.addOutlet(outlet);
+        setTemplateDefinition(xpandContext.findDefinition(getTemplate(), targetType, paramTypes));
+        ArgumentCheck.notNull(getTemplateDefinition());
     }
 
     /**
@@ -103,15 +112,11 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
      */
     @Override
     protected String generate() throws CoreException {
-        StringOutlet outlet = (StringOutlet)out.getOutlet(null);
-        templateDefinition.evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(),
-                getGeneratorModelRoot());
-        return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
-    }
-
-    @Override
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return super.getUnqualifiedClassName(ipsSrcFile) + "_X";
+        // StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
+        // getTemplateDefinition().evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(),
+        // getGeneratorModelRoot());
+        // return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
+        return null;
     }
 
     /**
@@ -130,7 +135,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     protected T getGeneratorModelRoot() {
         try {
             IPolicyCmptType type = (IPolicyCmptType)getIpsSrcFile().getIpsObject();
-            return getModelService().createModelNode(type, getGeneratorModelNodeClass(), newGeneratorModelContext());
+            return getModelService().getModelNode(type, getGeneratorModelNodeClass(), newGeneratorModelContext());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -141,8 +146,23 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     }
 
     public GeneratorModelContext newGeneratorModelContext() {
-        return new GeneratorModelContext(getBuilderSet().getConfig(), new JavaClassNaming(
-                isBuildingPublishedSourceFile(), buildsDerivedArtefacts()));
+        return new GeneratorModelContext(getBuilderSet().getConfig());
+    }
+
+    public StringOutput getOut() {
+        return out;
+    }
+
+    public void setOut(StringOutput out) {
+        this.out = out;
+    }
+
+    public XpandDefinition getTemplateDefinition() {
+        return templateDefinition;
+    }
+
+    public void setTemplateDefinition(XpandDefinition templateDefinition) {
+        this.templateDefinition = templateDefinition;
     }
 
 }
