@@ -15,6 +15,7 @@ package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -31,10 +32,29 @@ import org.faktorips.runtime.internal.AbstractModelObject;
 
 public class XPolicyCmptClass extends XClass {
 
-    private ArrayList<XPolicyAttribute> attributes;
+    private final ArrayList<XPolicyAttribute> attributes;
 
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
+        attributes = new ArrayList<XPolicyAttribute>();
+        initAttributeNodes();
+        initAssociationNodes();
+    }
+
+    private void initAttributeNodes() {
+        List<IPolicyCmptTypeAttribute> policyAttributes = getPolicyCmptType().getPolicyCmptTypeAttributes();
+        for (IPolicyCmptTypeAttribute attr : policyAttributes) {
+            attributes.add(createAttributeNode(attr));
+        }
+    }
+
+    private XPolicyAttribute createAttributeNode(IPolicyCmptTypeAttribute attribute) {
+        return getModelService().getModelNode(attribute, XPolicyAttribute.class, getModelContext());
+    }
+
+    private void initAssociationNodes() {
+        // TODO Auto-generated method stub
+
     }
 
     @Override
@@ -95,13 +115,11 @@ public class XPolicyCmptClass extends XClass {
     }
 
     public List<XPolicyAttribute> getAttributes() {
-        if (attributes == null) {
-            attributes = new ArrayList<XPolicyAttribute>();
-            for (IPolicyCmptTypeAttribute attribute : getPolicyCmptType().getPolicyCmptTypeAttributes()) {
-                attributes.add(getModelNode(attribute, XPolicyAttribute.class));
-            }
-        }
-        return attributes;
+        return new CopyOnWriteArrayList<XPolicyAttribute>(attributes);
     }
 
+    public List<XPolicyAssociation> getAssociations() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
