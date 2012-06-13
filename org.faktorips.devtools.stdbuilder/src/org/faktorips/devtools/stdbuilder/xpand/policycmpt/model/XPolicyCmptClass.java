@@ -17,7 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -81,8 +83,12 @@ public class XPolicyCmptClass extends XClass {
         try {
             IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(
                     getIpsObjectPartContainer().getIpsProject());
-            XProductCmptClass xProductCmptClass = getModelNode(productCmptType, XProductCmptClass.class);
-            return addImport(xProductCmptClass.getQualifiedName());
+            if (productCmptType != null) {
+                XProductCmptClass xProductCmptClass = getModelNode(productCmptType, XProductCmptClass.class);
+                return addImport(xProductCmptClass.getQualifiedName(BuilderAspect.IMPLEMENTATION));
+            } else {
+                return StringUtils.EMPTY;
+            }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

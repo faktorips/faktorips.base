@@ -13,16 +13,33 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
+import java.util.Locale;
+
+import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenJavaClassNameProvider;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
+import org.faktorips.runtime.internal.ProductComponentGeneration;
 
-public class XProductCmptGenerationClass extends AbstractGeneratorModelNode {
+public class XProductCmptGenerationClass extends XClass {
+
+    private final IJavaClassNameProvider prodGenJavaClassNameProvider;
 
     public XProductCmptGenerationClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext model,
             ModelService modelService) {
         super(ipsObjectPartContainer, model, modelService);
+        prodGenJavaClassNameProvider = createProductCmptGenJavaClassNaming(getLanguageUsedInGeneratedSourceCode());
+    }
+
+    public static ProductCmptGenJavaClassNameProvider createProductCmptGenJavaClassNaming(Locale locale) {
+        return new ProductCmptGenJavaClassNameProvider(locale);
+    }
+
+    @Override
+    public IJavaClassNameProvider getJavaClassNameProvider() {
+        return prodGenJavaClassNameProvider;
     }
 
     @Override
@@ -32,6 +49,11 @@ public class XProductCmptGenerationClass extends AbstractGeneratorModelNode {
 
     public IProductCmptType getProductCmptType() {
         return getIpsObjectPartContainer();
+    }
+
+    @Override
+    protected String getBaseSuperclassName() {
+        return addImport(ProductComponentGeneration.class.getName());
     }
 
 }

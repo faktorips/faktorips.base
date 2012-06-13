@@ -1,3 +1,4 @@
+«IMPORT org::faktorips::devtools::core::builder::naming»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
@@ -5,7 +6,7 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
 
 «DEFINE main FOR XProductCmptClass»
-	«FILE fileName -»
+	«FILE getFileName(BuilderAspect::IMPLEMENTATION) -»
 	package «packageName»;
 
 		«EXPAND CommonDefinitions::ImportBlock FOREACH modelContext.imports ONFILECLOSE»
@@ -14,7 +15,7 @@
 		 * «localizedJDoc("CLASS")»
 		 * @generated
 		 */
-		public class «simpleName» extends «superclassName-»
+		public class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-»
 			«IF implementsInterface-»implements«FOREACH implementedInterface AS interface-»
 				«interface»
 			«ENDFOREACH»

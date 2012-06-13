@@ -40,7 +40,10 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
+import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
+import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -79,6 +82,8 @@ import org.faktorips.values.DateUtil;
  */
 public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
 
+    private IJavaClassNameProvider javaClassNameProvider;
+
     private static final String FORMULA_TEST_CASE_NAME = "formulaTestCaseName";
     public static final String RUNTIME_EXTENSION = "_formulaTest";
     private static final String TEST_METHOD_PREFIX = "test";
@@ -88,7 +93,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     private IProductCmpt productCmpt;
     private IProductCmptType productCmptType;
 
-    private IProductCmptNamingStrategy productCmptNamingStrategy;
+    private final IProductCmptNamingStrategy productCmptNamingStrategy;
 
     // wired builder
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
@@ -104,30 +109,34 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         project = builderSet.getIpsProject();
         productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
         productCmptNamingStrategy.setIpsProject(project);
-
-        setJavaClassNaming(new JavaClassNaming(generatesInterface(), isBuildingPublishedSourceFile(),
-                !buildsDerivedArtefacts()) {
-
+        javaClassNameProvider = new DefaultJavaClassNameProvider() {
             @Override
-            public String getQualifiedClassName(IIpsSrcFile ipsSrcFile) {
-                IIpsSrcFile file = getVirtualIpsSrcFile(ipsSrcFile.getIpsObjectName());
-                String qualifiedClassName = super.getQualifiedClassName(file);
-                return qualifiedClassName;
+            public String getImplClassName(IIpsSrcFile ipsSrcFile) {
+                try {
+                    return super.getImplClassName(getVirtualIpsSrcFile(ipsSrcFile.getIpsObject())) + RUNTIME_EXTENSION;
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
             }
+        };
+    }
 
-            private IIpsSrcFile getVirtualIpsSrcFile(String objectName) {
-                String name = productCmptNamingStrategy.getJavaClassIdentifier(objectName);
-                return productCmpt.getIpsSrcFile().getIpsPackageFragment()
-                        .getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
-            }
+    @Override
+    public IJavaClassNameProvider getJavaClassNameProvider() {
+        return javaClassNameProvider;
+    }
 
-            @Override
-            public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
-                return super.getUnqualifiedClassName(getVirtualIpsSrcFile(ipsSrcFile.getIpsObjectName()))
-                        + RUNTIME_EXTENSION;
-            }
+    @Override
+    public String getQualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
+        IIpsSrcFile file = getVirtualIpsSrcFile(ipsSrcFile.getIpsObject());
+        String qualifiedClassName = super.getQualifiedClassName(file);
+        return qualifiedClassName;
+    }
 
-        });
+    private IIpsSrcFile getVirtualIpsSrcFile(IIpsObject ipsObject) {
+        String name = ipsObject.getIpsProject().getProductCmptNamingStrategy()
+                .getJavaClassIdentifier(ipsObject.getName());
+        return ipsObject.getIpsPackageFragment().getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
     }
 
     /**
@@ -566,18 +575,10 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         return name.replaceAll(" ", "_").replaceAll("\\(", "_").replaceAll("\\)", "_");
     }
 
-    private IIpsSrcFile getVirtualIpsSrcFile(IProductCmpt productCmpt) {
-        String name = productCmpt.getIpsProject().getProductCmptNamingStrategy()
-                .getJavaClassIdentifier(productCmpt.getName());
-        return productCmpt.getIpsPackageFragment().getIpsSrcFile(
-                IpsObjectType.PRODUCT_CMPT.getFileName(name + RUNTIME_EXTENSION));
-    }
-
     @Override
     protected void getGeneratedJavaTypesThis(IIpsObject ipsObject, IPackageFragment fragment, List<IType> javaTypes)
             throws CoreException {
-
-        String typeName = getUnqualifiedClassName(getVirtualIpsSrcFile((IProductCmpt)ipsObject));
+        String typeName = getUnqualifiedClassName(getVirtualIpsSrcFile(ipsObject));
         ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + JavaClassNaming.JAVA_EXTENSION);
         javaTypes.add(compilationUnit.getType(typeName));
     }

@@ -3,7 +3,7 @@ import org::faktorips::devtools::stdbuilder::xpand::policycmpt::model;
 extension org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions reexport;
 
 fieldPropertyName(XPolicyAttribute this) :
-	"PROPERTY_" + fieldPropertyNameSuffix;
+	"PROPERTY_" + fieldPropertyNameSuffix();
 
 propertyChangeSupport_oldValueVar(XPolicyAttribute this) :
 	" old" + memberVarName.toFirstUpper();

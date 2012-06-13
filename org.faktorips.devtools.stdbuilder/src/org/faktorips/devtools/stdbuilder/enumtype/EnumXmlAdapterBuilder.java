@@ -24,7 +24,8 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
-import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
+import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -43,20 +44,24 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
+    private static final IJavaClassNameProvider JAVA_CLASS_NAMEING_PROVIDER = new DefaultJavaClassNameProvider() {
+        @Override
+        public String getImplClassName(IIpsSrcFile ipsSrcFile) {
+            return ipsSrcFile.getIpsProject().getJavaNamingConvention()
+                    .getImplementationClassName(ipsSrcFile.getIpsObjectName() + "XmlAdapter"); //$NON-NLS-1$
+        }
+    };
+
     public EnumTypeBuilder enumTypeBuilder;
 
     public EnumXmlAdapterBuilder(DefaultBuilderSet builderSet, EnumTypeBuilder enumTypeBuilder) {
         super(builderSet, new LocalizedStringsSet(EnumXmlAdapterBuilder.class));
         this.enumTypeBuilder = enumTypeBuilder;
-        setJavaClassNaming(new JavaClassNaming(false, isBuildingPublishedSourceFile(), !buildsDerivedArtefacts()) {
+    }
 
-            @Override
-            public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
-                return ipsSrcFile.getIpsProject().getJavaNamingConvention()
-                        .getImplementationClassName(getDefaultUnqualifiedName(ipsSrcFile) + "XmlAdapter"); //$NON-NLS-1$
-            }
-
-        });
+    @Override
+    public IJavaClassNameProvider getJavaClassNameProvider() {
+        return JAVA_CLASS_NAMEING_PROVIDER;
     }
 
     @Override

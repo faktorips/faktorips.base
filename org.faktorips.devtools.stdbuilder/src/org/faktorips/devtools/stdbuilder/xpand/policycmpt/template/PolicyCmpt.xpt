@@ -1,3 +1,4 @@
+«IMPORT org::faktorips::devtools::core::builder::naming»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
@@ -5,7 +6,7 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
 
 «DEFINE main FOR XPolicyCmptClass»
-	«FILE fileName-»
+	«FILE getFileName(BuilderAspect::IMPLEMENTATION)-»
 	package «packageName»;
 
 		«EXPAND CommonDefinitions::ImportBlock FOREACH modelContext.imports ONFILECLOSE»
@@ -13,7 +14,7 @@
 		/**
 		 * @generated
 		 */
-		public class «simpleName» extends «superclassName-»
+		public class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-»
 			«IF implementsInterface-»implements«FOREACH implementedInterface AS interface-»
 				«interface»
 			«ENDFOREACH»
@@ -34,7 +35,7 @@
 		     * 
 		     * @generated
 		     */
-		    public «simpleName»() {
+		    public «getSimpleName(BuilderAspect::IMPLEMENTATION)»() {
 		        super();
 		        «EXPAND initializeForOverrideAttributes-»
 		    }
@@ -44,7 +45,7 @@
 		     * 
 		     * @generated
 		     */
-		    public «simpleName»(«productCmptClassName» productCmpt) {
+		    public «getSimpleName(BuilderAspect::IMPLEMENTATION)»(«productCmptClassName» productCmpt) {
 		        super(productCmpt);
 		        «EXPAND initializeForOverrideAttributes-»
 		    }

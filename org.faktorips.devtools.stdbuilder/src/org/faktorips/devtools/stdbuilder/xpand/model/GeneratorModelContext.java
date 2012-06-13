@@ -27,9 +27,7 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
  */
 public class GeneratorModelContext {
 
-    private final JavaClassNaming implClassNaming;
-
-    private final JavaClassNaming interfaceNaming;
+    private final JavaClassNaming javaClassNaming;
 
     private ImportHandler importHandler = new ImportHandler();
 
@@ -40,8 +38,7 @@ public class GeneratorModelContext {
 
     public GeneratorModelContext(IIpsArtefactBuilderSetConfig config) {
         this.config = config;
-        this.implClassNaming = new JavaClassNaming(false, false, true);
-        this.interfaceNaming = new JavaClassNaming(true, true, true);
+        this.javaClassNaming = new JavaClassNaming(false, true);
     }
 
     public IIpsArtefactBuilderSetConfig getConfig() {
@@ -91,11 +88,7 @@ public class GeneratorModelContext {
     }
 
     public JavaClassNaming getImplClassNaming() {
-        return implClassNaming;
-    }
-
-    public JavaClassNaming getInterfaceNaming() {
-        return interfaceNaming;
+        return javaClassNaming;
     }
 
 }

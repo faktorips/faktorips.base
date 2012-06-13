@@ -34,11 +34,10 @@ public class JavaClassNaming {
     public final static String JAVA_EXTENSION = ".java"; //$NON-NLS-1$
 
     private final boolean publishedArtifacts;
-    private final boolean mergableArtifacts;
-    private final boolean buildsInterface;
 
-    public JavaClassNaming(boolean buildsInterface, boolean publishedArtifacts, boolean mergableArtifacts) {
-        this.buildsInterface = buildsInterface;
+    private final boolean mergableArtifacts;
+
+    public JavaClassNaming(boolean publishedArtifacts, boolean mergableArtifacts) {
         this.publishedArtifacts = publishedArtifacts;
         this.mergableArtifacts = mergableArtifacts;
     }
@@ -49,9 +48,11 @@ public class JavaClassNaming {
      * @param ipsSrcFile the IPS source file.
      * 
      */
-    public String getQualifiedClassName(IIpsSrcFile ipsSrcFile) {
+    public String getQualifiedClassName(IIpsSrcFile ipsSrcFile,
+            BuilderAspect aspect,
+            IJavaClassNameProvider javaClassNameProvider) {
         return getQualifiedName(JavaPackageStructure.getPackageName(ipsSrcFile, publishedArtifacts, mergableArtifacts),
-                getUnqualifiedClassName(ipsSrcFile));
+                getUnqualifiedClassName(ipsSrcFile, aspect, javaClassNameProvider));
     }
 
     private String getQualifiedName(String packageName, String className) {
@@ -70,22 +71,13 @@ public class JavaClassNaming {
      * 
      * @param ipsObject the IPS object.
      */
-    public String getQualifiedClassName(IIpsObject ipsObject) {
+    public String getQualifiedClassName(IIpsObject ipsObject,
+            BuilderAspect aspect,
+            IJavaClassNameProvider javaClassNameProvider) {
         if (ipsObject == null) {
             return null;
         }
-        return getQualifiedClassName(ipsObject.getIpsSrcFile());
-    }
-
-    /**
-     * Provides the unqualified default name for the given {@link IIpsSrcFile}
-     * 
-     * @param ipsSrcFile the {@link IIpsSrcFile} you want to have the default name for
-     * 
-     * @return the unqualified default name
-     */
-    protected String getDefaultUnqualifiedName(IIpsSrcFile ipsSrcFile) {
-        return ipsSrcFile.getIpsObjectName();
+        return getQualifiedClassName(ipsObject.getIpsSrcFile(), aspect, javaClassNameProvider);
     }
 
     /**
@@ -94,14 +86,10 @@ public class JavaClassNaming {
      * 
      * @param ipsSrcFile the IPS source file
      */
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
-        if (buildsInterface) {
-            return ipsSrcFile.getIpsProject().getJavaNamingConvention()
-                    .getPublishedInterfaceName(getDefaultUnqualifiedName(ipsSrcFile));
-        } else {
-            return ipsSrcFile.getIpsProject().getJavaNamingConvention()
-                    .getImplementationClassName(getDefaultUnqualifiedName(ipsSrcFile));
-        }
+    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile,
+            BuilderAspect aspect,
+            IJavaClassNameProvider javaClassNameProvider) {
+        return aspect.getJavaClassName(ipsSrcFile, javaClassNameProvider);
     }
 
     /**
@@ -110,8 +98,10 @@ public class JavaClassNaming {
      * If the java class name is org.example.MyExample this method would return an {@link IPath} of
      * <em>/org/example/MyExample.java</em>
      */
-    public IPath getRelativeJavaFile(IIpsSrcFile ipsSrcFile) {
-        String name = getQualifiedClassName(ipsSrcFile);
+    public IPath getRelativeJavaFile(IIpsSrcFile ipsSrcFile,
+            BuilderAspect aspect,
+            IJavaClassNameProvider javaClassNameProvider) {
+        String name = getQualifiedClassName(ipsSrcFile, aspect, javaClassNameProvider);
 
         int index = name.lastIndexOf('.');
         if (index == name.length()) {

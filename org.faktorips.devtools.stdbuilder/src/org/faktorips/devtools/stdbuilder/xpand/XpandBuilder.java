@@ -16,18 +16,18 @@ package org.faktorips.devtools.stdbuilder.xpand;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.internal.xpand2.model.XpandDefinition;
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
+import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xpand2.XpandExecutionContextImpl;
 import org.eclipse.xtend.type.impl.java.JavaBeansMetaModel;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutlet;
 import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutput;
 import org.faktorips.util.ArgumentCheck;
@@ -39,7 +39,9 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author dirmeier
  */
-public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends JavaSourceFileBuilder {
+public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuilder {
+
+    private final static IJavaClassNameProvider JAVA_CLASS_NAMEING_PROVIDER = XClass.createJavaClassNamingProvider();
 
     private XpandDefinition templateDefinition;
 
@@ -59,16 +61,11 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     public XpandBuilder(StandardBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
         modelService = new ModelService();
-        setJavaClassNaming(new JavaClassNaming(generatesInterface(), isBuildingPublishedSourceFile(),
-                !buildsDerivedArtefacts()) {
+    }
 
-            @Override
-            public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
-                // TODO this hack prevents overwriting old generated files - for development only!!!
-                return super.getUnqualifiedClassName(ipsSrcFile) + "_X";
-            }
-
-        });
+    @Override
+    public IJavaClassNameProvider getJavaClassNameProvider() {
+        return JAVA_CLASS_NAMEING_PROVIDER;
     }
 
     @Override
@@ -112,10 +109,10 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
      */
     @Override
     protected String generate() throws CoreException {
-        // StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
-        // getTemplateDefinition().evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(),
-        // getGeneratorModelRoot());
-        // return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
+        StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
+        getTemplateDefinition().evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(),
+                getGeneratorModelRoot());
+        // TODO return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
         return null;
     }
 
@@ -135,7 +132,8 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     protected T getGeneratorModelRoot() {
         try {
             IPolicyCmptType type = (IPolicyCmptType)getIpsSrcFile().getIpsObject();
-            return getModelService().getModelNode(type, getGeneratorModelNodeClass(), newGeneratorModelContext());
+            T xClass = getModelService().getModelNode(type, getGeneratorModelNodeClass(), newGeneratorModelContext());
+            return xClass;
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

@@ -27,7 +27,8 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
-import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
+import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -38,6 +39,13 @@ import org.faktorips.util.StringUtil;
 
 public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
 
+    private static final IJavaClassNameProvider JAVA_CLASS_NAMEING_PROVIDER = new DefaultJavaClassNameProvider() {
+        @Override
+        public String getImplClassName(IIpsSrcFile ipsSrcFile) {
+            return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "Row";
+        }
+    };
+
     private final String KEY_CLASS_JAVADOC = "TABLE_ROW_BUILDER_CLASS_JAVADOC";
 
     private final String KEY_CONSTRUCTOR_JAVADOC = "TABLE_ROW_BUILDER_CONSTRUCTOR_JAVADOC";
@@ -45,16 +53,11 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
     public TableRowBuilder(DefaultBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(TableRowBuilder.class));
         setMergeEnabled(true);
+    }
 
-        setJavaClassNaming(new JavaClassNaming(generatesInterface(), isBuildingPublishedSourceFile(),
-                !buildsDerivedArtefacts()) {
-
-            @Override
-            public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
-                return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "Row";
-            }
-
-        });
+    @Override
+    public IJavaClassNameProvider getJavaClassNameProvider() {
+        return JAVA_CLASS_NAMEING_PROVIDER;
     }
 
     @Override

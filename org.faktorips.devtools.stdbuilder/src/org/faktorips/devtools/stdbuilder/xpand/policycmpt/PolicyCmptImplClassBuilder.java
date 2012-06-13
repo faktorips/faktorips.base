@@ -45,7 +45,6 @@ public class PolicyCmptImplClassBuilder extends XpandBuilder<XPolicyCmptClass> {
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IIpsObjectPartContainer ipsObjectPartContainer) {
         // TODO Auto-generated method stub
-
     }
 
     @Override

@@ -22,8 +22,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
-import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -60,6 +59,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptImplementatio
 
     public static final String XML_ATTRIBUTE_TARGET_RUNTIME_ID = "targetRuntimeId"; //$NON-NLS-1$
 
+    private final IJavaClassNameProvider javaClassNameProvider;
+
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private EnumTypeBuilder enumTypeBuilder;
@@ -67,17 +68,12 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptImplementatio
     public ProductCmptGenImplClassBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(ProductCmptGenImplClassBuilder.class));
         setMergeEnabled(true);
-        setJavaClassNaming(new JavaClassNaming(generatesInterface(), isBuildingPublishedSourceFile(),
-                !buildsDerivedArtefacts()) {
+        javaClassNameProvider = new ProductCmptGenJavaClassNameProvider(getLanguageUsedInGeneratedSourceCode());
+    }
 
-            @Override
-            public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
-                String generationAbb = getAbbreviationForGenerationConcept(ipsSrcFile);
-                return getJavaNamingConvention().getImplementationClassName(
-                        ipsSrcFile.getIpsObjectName() + generationAbb);
-            }
-
-        });
+    @Override
+    public IJavaClassNameProvider getJavaClassNameProvider() {
+        return javaClassNameProvider;
     }
 
     public void setEnumTypeBuilder(EnumTypeBuilder enumTypeBuilder) {

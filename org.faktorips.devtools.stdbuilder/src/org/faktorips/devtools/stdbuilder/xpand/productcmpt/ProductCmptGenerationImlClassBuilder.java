@@ -17,18 +17,29 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.util.LocalizedStringsSet;
 
 public class ProductCmptGenerationImlClassBuilder extends XpandBuilder<XProductCmptClass> {
 
+    private final IJavaClassNameProvider javaClassNameProvider;
+
     public ProductCmptGenerationImlClassBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(ProductCmptGenerationImlClassBuilder.class));
+        javaClassNameProvider = XProductCmptGenerationClass
+                .createProductCmptGenJavaClassNaming(getLanguageUsedInGeneratedSourceCode());
+    }
+
+    @Override
+    public IJavaClassNameProvider getJavaClassNameProvider() {
+        return javaClassNameProvider;
     }
 
     @Override

@@ -18,7 +18,6 @@ import java.util.Locale;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
-import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -242,11 +241,13 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     /**
-     * Returns the language that variables, methods are named and and Java docs are written in.
+     * Returns the language that variables, methods are named and and JDoc are written in.
+     * <p>
+     * Do not overwrite this method because it may be used in constructors
      * 
      * @see IIpsArtefactBuilderSet#getLanguageUsedInGeneratedSourceCode()
      */
-    public Locale getLanguageUsedInGeneratedSourceCode() {
+    public final Locale getLanguageUsedInGeneratedSourceCode() {
         return getModelContext().getLanguageUsedInGeneratedSourceCode();
     }
 
@@ -275,14 +276,6 @@ public abstract class AbstractGeneratorModelNode {
 
     public GeneratorModelContext getModelContext() {
         return modelContext;
-    }
-
-    public JavaClassNaming getImplClassNaming() {
-        return getModelContext().getImplClassNaming();
-    }
-
-    public JavaClassNaming getInterfaceNaming() {
-        return getModelContext().getImplClassNaming();
     }
 
     public ModelService getModelService() {
