@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -40,8 +41,8 @@ public class XPolicyCmptClassTest {
     private GeneratorModelContext context;
     @Mock
     private ModelService modelService;
-    private XPolicyAttribute attributeNode1;
-    private XPolicyAttribute attributeNode2;
+    private XAttribute attributeNode1;
+    private XAttribute attributeNode2;
 
     @Before
     public void setUp() {

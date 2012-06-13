@@ -13,13 +13,93 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.util.StringUtil;
 
+/**
+ * Contains common behavior for product- and policy-attributes alike.
+ * 
+ * @author widmaier
+ */
 public abstract class XAttribute extends AbstractGeneratorModelNode {
 
-    public XAttribute(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
-            ModelService modelService) {
-        super(ipsObjectPartContainer, context, modelService);
+    private DatatypeHelper datatypeHelper;
+
+    public XAttribute(IAttribute attribute, GeneratorModelContext context, ModelService modelService) {
+        super(attribute, context, modelService);
+        try {
+            datatypeHelper = attribute.getIpsProject().findDatatypeHelper(attribute.getDatatype());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    @Override
+    public IAttribute getIpsObjectPartContainer() {
+        return (IAttribute)super.getIpsObjectPartContainer();
+    }
+
+    public IAttribute getAttribute() {
+        return getIpsObjectPartContainer();
+    }
+
+    public final DatatypeHelper getDatatypeHelper() {
+        return datatypeHelper;
+    }
+
+    public String getSetterMethodName() {
+        return getJavaNamingConvention().getSetterMethodName(getAttributeName());
+    }
+
+    public String getGetterMethodName() {
+        return getJavaNamingConvention().getGetterMethodName(getAttributeName(), getDatatype());
+    }
+
+    public String getMemberVarName() {
+        return getJavaNamingConvention().getMemberVarName(getAttributeName());
+    }
+
+    public String fieldPropertyNameSuffix() {
+        return getModelContext().isGenerateSeparatedCamelCase() ? StringUtil.camelCaseToUnderscore(getAttributeName())
+                .toUpperCase() : getAttributeName().toUpperCase();
+    }
+
+    private String getAttributeName() {
+        return getAttribute().getName();
+    }
+
+    public String getDefaultValueCode() {
+        JavaCodeFragment newInstance = getDatatypeHelper().newInstance(getAttribute().getDefaultValue());
+        addImport(newInstance.getImportDeclaration());
+        return newInstance.getSourcecode();
+    }
+
+    public final ValueDatatype getDatatype() {
+        return (ValueDatatype)getDatatypeHelper().getDatatype();
+    }
+
+    public String getJavaClassName() {
+        return addImport(getDatatypeHelper().getJavaClassName());
+    }
+
+    public final boolean isOverwrite() {
+        return getAttribute().isOverwrite();
+    }
+
+    public String getReferenceOrSafeCopyIfNecessary(String memberVarName) {
+        JavaCodeFragment fragment = getDatatypeHelper().referenceOrSafeCopyIfNeccessary(memberVarName);
+        addImport(fragment.getImportDeclaration());
+        return fragment.getSourcecode();
+    }
+
+    private IJavaNamingConvention getJavaNamingConvention() {
+        return getIpsProject().getJavaNamingConvention();
     }
 
 }

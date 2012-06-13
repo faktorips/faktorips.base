@@ -15,8 +15,6 @@ package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -28,18 +26,12 @@ import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
 
 public class XPolicyAttribute extends XAttribute {
 
-    private DatatypeHelper datatypeHelper;
     private DatatypeHelper valuesetDatatypeHelper;
 
     public XPolicyAttribute(IPolicyCmptTypeAttribute attribute, GeneratorModelContext model, ModelService modelService) {
         super(attribute, model, modelService);
-        try {
-            datatypeHelper = attribute.getIpsProject().findDatatypeHelper(attribute.getDatatype());
-            valuesetDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(attribute.getIpsProject(),
-                    datatypeHelper);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        valuesetDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(attribute.getIpsProject(),
+                getDatatypeHelper());
     }
 
     @Override
@@ -50,24 +42,9 @@ public class XPolicyAttribute extends XAttribute {
     /**
      * @return Returns the attribute.
      */
+    @Override
     public IPolicyCmptTypeAttribute getAttribute() {
         return getIpsObjectPartContainer();
-    }
-
-    public final DatatypeHelper getDatatypeHelper() {
-        return datatypeHelper;
-    }
-
-    public final ValueDatatype getDatatype() {
-        return (ValueDatatype)getDatatypeHelper().getDatatype();
-    }
-
-    public String getJavaClassName() {
-        return addImport(getDatatypeHelper().getJavaClassName());
-    }
-
-    public final boolean isOverwrite() {
-        return getAttribute().isOverwrite();
     }
 
     public boolean isGenerateField() {
@@ -94,18 +71,6 @@ public class XPolicyAttribute extends XAttribute {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-    }
-
-    public String getDefaultValueCode() {
-        JavaCodeFragment newInstance = getDatatypeHelper().newInstance(getAttribute().getDefaultValue());
-        addImport(newInstance.getImportDeclaration());
-        return newInstance.getSourcecode();
-    }
-
-    public String getReferenceOrSafeCopyIfNecessary(String memberVarName) {
-        JavaCodeFragment fragment = getDatatypeHelper().referenceOrSafeCopyIfNeccessary(memberVarName);
-        addImport(fragment.getImportDeclaration());
-        return fragment.getSourcecode();
     }
 
 }
