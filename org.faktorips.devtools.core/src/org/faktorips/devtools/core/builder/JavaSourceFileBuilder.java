@@ -172,7 +172,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public JavaSourceFileBuilder(DefaultBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
-        javaClassNaming = new JavaClassNaming(isBuildingPublishedSourceFile(), !buildsDerivedArtefacts());
+        setJavaClassNaming(new JavaClassNaming(isBuildingPublishedSourceFile(), !buildsDerivedArtefacts()));
     }
 
     @Override
@@ -194,6 +194,10 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     protected JavaClassNaming getJavaClassNaming() {
         return javaClassNaming;
+    }
+
+    protected void setJavaClassNaming(JavaClassNaming javaClassNaming) {
+        this.javaClassNaming = javaClassNaming;
     }
 
     @Override
