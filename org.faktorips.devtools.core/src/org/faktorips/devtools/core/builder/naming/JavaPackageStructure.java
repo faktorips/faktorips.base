@@ -36,9 +36,9 @@ public class JavaPackageStructure implements IJavaPackageStructure {
         if (builder instanceof JavaSourceFileBuilder) {
             JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
             return getPackageName(ipsSrcFile, javaBuilder.isBuildingPublishedSourceFile(),
-                    builder.buildsDerivedArtefacts());
+                    !builder.buildsDerivedArtefacts());
         }
-        return getPackageName(ipsSrcFile, false, builder.buildsDerivedArtefacts());
+        return getPackageName(ipsSrcFile, false, !builder.buildsDerivedArtefacts());
     }
 
     /**
