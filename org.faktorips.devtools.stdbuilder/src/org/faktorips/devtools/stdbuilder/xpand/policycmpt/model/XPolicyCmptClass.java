@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -22,7 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -34,29 +32,13 @@ import org.faktorips.runtime.internal.AbstractModelObject;
 
 public class XPolicyCmptClass extends XClass {
 
-    private final ArrayList<XPolicyAttribute> attributes;
+    private final List<XPolicyAttribute> attributes;
+    private final List<XPolicyAssociation> associations;
 
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
-        attributes = new ArrayList<XPolicyAttribute>();
-        initAttributeNodes();
-        initAssociationNodes();
-    }
-
-    private void initAttributeNodes() {
-        List<IPolicyCmptTypeAttribute> policyAttributes = getPolicyCmptType().getPolicyCmptTypeAttributes();
-        for (IPolicyCmptTypeAttribute attr : policyAttributes) {
-            attributes.add(createAttributeNode(attr));
-        }
-    }
-
-    private XPolicyAttribute createAttributeNode(IPolicyCmptTypeAttribute attribute) {
-        return getModelService().getModelNode(attribute, XPolicyAttribute.class, getModelContext());
-    }
-
-    private void initAssociationNodes() {
-        // TODO Auto-generated method stub
-
+        attributes = initNodes(getPolicyCmptType().getPolicyCmptTypeAttributes(), XPolicyAttribute.class);
+        associations = initNodes(getPolicyCmptType().getPolicyCmptTypeAssociations(), XPolicyAssociation.class);
     }
 
     @Override
@@ -125,7 +107,6 @@ public class XPolicyCmptClass extends XClass {
     }
 
     public List<XPolicyAssociation> getAssociations() {
-        // TODO Auto-generated method stub
-        return null;
+        return new CopyOnWriteArrayList<XPolicyAssociation>(associations);
     }
 }

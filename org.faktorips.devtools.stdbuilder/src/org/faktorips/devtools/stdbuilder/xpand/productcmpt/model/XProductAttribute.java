@@ -11,23 +11,17 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
+package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
 
-public class XPolicyAssociation extends XAssociation {
+public class XProductAttribute extends XAttribute {
 
-    public XPolicyAssociation(IPolicyCmptTypeAssociation ipsObjectPartContainer, GeneratorModelContext context,
-            ModelService modelService) {
-        super(ipsObjectPartContainer, context, modelService);
-    }
-
-    @Override
-    public IPolicyCmptTypeAssociation getAssociation() {
-        return (IPolicyCmptTypeAssociation)super.getAssociation();
+    public XProductAttribute(IAttribute attribute, GeneratorModelContext context, ModelService modelService) {
+        super(attribute, context, modelService);
     }
 
 }

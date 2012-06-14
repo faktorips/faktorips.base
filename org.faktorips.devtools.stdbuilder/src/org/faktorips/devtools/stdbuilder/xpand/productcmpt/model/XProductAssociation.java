@@ -11,31 +11,23 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.xpand.model;
+package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
-import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 
-public abstract class XAssociation extends AbstractGeneratorModelNode {
+public class XProductAssociation extends XAssociation {
 
-    public XAssociation(IAssociation association, GeneratorModelContext context, ModelService modelService) {
+    public XProductAssociation(IProductCmptTypeAssociation association, GeneratorModelContext context,
+            ModelService modelService) {
         super(association, context, modelService);
     }
 
     @Override
-    public IAssociation getIpsObjectPartContainer() {
-        return (IAssociation)super.getIpsObjectPartContainer();
-    }
-
-    public IAssociation getAssociation() {
-        return getIpsObjectPartContainer();
-    }
-
-    public boolean is1toMany() {
-        return getAssociation().is1ToMany();
-    }
-
-    public boolean isDerived() {
-        return getAssociation().isDerived();
+    public IProductCmptTypeAssociation getAssociation() {
+        return (IProductCmptTypeAssociation)super.getAssociation();
     }
 
 }
