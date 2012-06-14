@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -20,10 +23,23 @@ import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.runtime.internal.ProductComponent;
 
 public class XProductCmptClass extends XClass {
+    private final List<XProductAttribute> attributes;
+    private final List<XProductAssociation> associations;
 
     public XProductCmptClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext model,
             ModelService modelService) {
         super(ipsObjectPartContainer, model, modelService);
+
+        attributes = initNodes(getProductCmptType().getProductCmptTypeAttributes(), XProductAttribute.class);
+        associations = initNodes(getProductCmptType().getProductCmptTypeAssociations(), XProductAssociation.class);
+    }
+
+    public List<XProductAttribute> getAttributes() {
+        return new CopyOnWriteArrayList<XProductAttribute>(attributes);
+    }
+
+    public List<XProductAssociation> getAssociations() {
+        return new CopyOnWriteArrayList<XProductAssociation>(associations);
     }
 
     @Override

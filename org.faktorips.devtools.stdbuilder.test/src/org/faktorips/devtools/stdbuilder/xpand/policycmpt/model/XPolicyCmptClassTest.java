@@ -15,7 +15,6 @@ package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -24,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -43,6 +43,8 @@ public class XPolicyCmptClassTest {
     private ModelService modelService;
     private XAttribute attributeNode1;
     private XAttribute attributeNode2;
+    private XPolicyAssociation associationNode1;
+    private XPolicyAssociation associationNode2;
 
     @Before
     public void setUp() {
@@ -88,15 +90,39 @@ public class XPolicyCmptClassTest {
 
     @Test
     public void initAssociations() {
+        setupAssociationList();
 
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, context, modelService);
+        List<XPolicyAssociation> associationNodeList = policyCmptClass.getAssociations();
+        assertEquals(2, associationNodeList.size());
+        assertEquals(associationNode1, associationNodeList.get(0));
+        assertEquals(associationNode2, associationNodeList.get(1));
     }
 
     @Test
     public void initAssociationList() {
+        setupAssociationList();
+
         XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, context, modelService);
         List<XPolicyAssociation> assocList = policyCmptClass.getAssociations();
         List<XPolicyAssociation> secondAssocList = policyCmptClass.getAssociations();
-        assertSame(assocList, secondAssocList);
+        // returns copies of the same list
+        assertNotSame(assocList, secondAssocList);
+        assertEquals(assocList, secondAssocList);
+    }
+
+    private void setupAssociationList() {
+        associationNode1 = mock(XPolicyAssociation.class);
+        associationNode2 = mock(XPolicyAssociation.class);
+        IPolicyCmptTypeAssociation assoc1 = mock(IPolicyCmptTypeAssociation.class);
+        IPolicyCmptTypeAssociation assoc2 = mock(IPolicyCmptTypeAssociation.class);
+        List<IPolicyCmptTypeAssociation> assocList = new ArrayList<IPolicyCmptTypeAssociation>();
+        assocList.add(assoc1);
+        assocList.add(assoc2);
+
+        doReturn(associationNode1).when(modelService).getModelNode(assoc1, XPolicyAssociation.class, context);
+        doReturn(associationNode2).when(modelService).getModelNode(assoc2, XPolicyAssociation.class, context);
+        when(type.getPolicyCmptTypeAssociations()).thenReturn(assocList);
     }
 
 }

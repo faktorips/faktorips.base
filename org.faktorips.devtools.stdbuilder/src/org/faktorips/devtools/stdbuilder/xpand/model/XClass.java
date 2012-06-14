@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.type.IType;
@@ -34,6 +35,23 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     public XClass(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
             ModelService modelService) {
         super(ipsObjectPartContainer, context, modelService);
+    }
+
+    /**
+     * 
+     * @param parts the parts to create {@link AbstractGeneratorModelNode nodes} for
+     * @param nodeClass the expected concrete generator model class (subclass of
+     *            {@link AbstractGeneratorModelNode})
+     * @return a list containing one {@link AbstractGeneratorModelNode} for every
+     *         {@link IIpsObjectPart} in the given list.
+     */
+    protected <T extends AbstractGeneratorModelNode> List<T> initNodes(List<? extends IIpsObjectPart> parts,
+            Class<T> nodeClass) {
+        List<T> nodes = new ArrayList<T>();
+        for (IIpsObjectPart part : parts) {
+            nodes.add(getModelService().getModelNode(part, nodeClass, getModelContext()));
+        }
+        return nodes;
     }
 
     public static IJavaClassNameProvider createJavaClassNamingProvider() {
@@ -85,7 +103,8 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     }
 
     public String getSimpleName(BuilderAspect aspect) {
-        return getJavaClassNaming().getUnqualifiedClassName(getType().getIpsSrcFile(), aspect, JAVA_CLASS_NAMEING_PROVIDER);
+        return getJavaClassNaming().getUnqualifiedClassName(getType().getIpsSrcFile(), aspect,
+                JAVA_CLASS_NAMEING_PROVIDER);
     }
 
     public String getQualifiedName(BuilderAspect aspect) {
@@ -130,7 +149,8 @@ public abstract class XClass extends AbstractGeneratorModelNode {
 
     public List<String> getImplementedInterface() {
         ArrayList<String> list = new ArrayList<String>();
-        addImport(getInterfaceNaming().getQualifiedClassName(getType(), BuilderAspect.INTERFACE, JAVA_CLASS_NAMEING_PROVIDER));
+        addImport(getInterfaceNaming().getQualifiedClassName(getType(), BuilderAspect.INTERFACE,
+                JAVA_CLASS_NAMEING_PROVIDER));
         return list;
     }
 

@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -26,11 +28,16 @@ import org.faktorips.runtime.internal.ProductComponentGeneration;
 public class XProductCmptGenerationClass extends XClass {
 
     private final IJavaClassNameProvider prodGenJavaClassNameProvider;
+    private final List<XProductAttribute> attributes;
+    private final List<XProductAssociation> associations;
 
     public XProductCmptGenerationClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext model,
             ModelService modelService) {
         super(ipsObjectPartContainer, model, modelService);
         prodGenJavaClassNameProvider = createProductCmptGenJavaClassNaming(getLanguageUsedInGeneratedSourceCode());
+
+        attributes = initNodes(getProductCmptType().getProductCmptTypeAttributes(), XProductAttribute.class);
+        associations = initNodes(getProductCmptType().getProductCmptTypeAssociations(), XProductAssociation.class);
     }
 
     public static ProductCmptGenJavaClassNameProvider createProductCmptGenJavaClassNaming(Locale locale) {
@@ -54,6 +61,14 @@ public class XProductCmptGenerationClass extends XClass {
     @Override
     protected String getBaseSuperclassName() {
         return addImport(ProductComponentGeneration.class.getName());
+    }
+
+    public List<XProductAttribute> getAttributes() {
+        return new CopyOnWriteArrayList<XProductAttribute>(attributes);
+    }
+
+    public List<XProductAssociation> getAssociations() {
+        return new CopyOnWriteArrayList<XProductAssociation>(associations);
     }
 
 }
