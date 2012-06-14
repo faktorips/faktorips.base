@@ -37,8 +37,8 @@ public class XPolicyCmptClass extends XClass {
 
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
-        attributes = initNodes(getPolicyCmptType().getPolicyCmptTypeAttributes(), XPolicyAttribute.class);
-        associations = initNodes(getPolicyCmptType().getPolicyCmptTypeAssociations(), XPolicyAssociation.class);
+        attributes = initNodesForParts(getPolicyCmptType().getPolicyCmptTypeAttributes(), XPolicyAttribute.class);
+        associations = initNodesForParts(getPolicyCmptType().getPolicyCmptTypeAssociations(), XPolicyAssociation.class);
     }
 
     @Override
