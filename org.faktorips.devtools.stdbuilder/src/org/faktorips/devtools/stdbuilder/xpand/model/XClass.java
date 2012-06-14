@@ -45,7 +45,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      * @return a list containing one {@link AbstractGeneratorModelNode} for every
      *         {@link IIpsObjectPart} in the given list.
      */
-    protected <T extends AbstractGeneratorModelNode> List<T> initNodes(List<? extends IIpsObjectPart> parts,
+    protected <T extends AbstractGeneratorModelNode> List<T> initNodesForParts(List<? extends IIpsObjectPart> parts,
             Class<T> nodeClass) {
         List<T> nodes = new ArrayList<T>();
         for (IIpsObjectPart part : parts) {

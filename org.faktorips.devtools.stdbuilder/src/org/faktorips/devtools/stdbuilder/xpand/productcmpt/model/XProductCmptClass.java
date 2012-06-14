@@ -19,32 +19,33 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.runtime.internal.ProductComponent;
 
-public class XProductCmptClass extends XClass {
+public class XProductCmptClass extends XProductClass {
     private final List<XProductAttribute> attributes;
     private final List<XProductAssociation> associations;
 
-    public XProductCmptClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext model,
+    public XProductCmptClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext modelContext,
             ModelService modelService) {
-        super(ipsObjectPartContainer, model, modelService);
+        super(ipsObjectPartContainer, modelContext, modelService);
 
-        attributes = initNodes(getProductCmptType().getProductCmptTypeAttributes(), XProductAttribute.class);
-        associations = initNodes(getProductCmptType().getProductCmptTypeAssociations(), XProductAssociation.class);
+        attributes = initNodesForParts(getStaticAttributes(), XProductAttribute.class);
+        associations = initNodesForParts(getStaticAssociations(), XProductAssociation.class);
     }
 
+    @Override
     public List<XProductAttribute> getAttributes() {
         return new CopyOnWriteArrayList<XProductAttribute>(attributes);
     }
 
+    @Override
     public List<XProductAssociation> getAssociations() {
         return new CopyOnWriteArrayList<XProductAssociation>(associations);
     }
 
     @Override
     public IProductCmptType getIpsObjectPartContainer() {
-        return (IProductCmptType)super.getIpsObjectPartContainer();
+        return super.getIpsObjectPartContainer();
     }
 
     public IProductCmptType getProductCmptType() {

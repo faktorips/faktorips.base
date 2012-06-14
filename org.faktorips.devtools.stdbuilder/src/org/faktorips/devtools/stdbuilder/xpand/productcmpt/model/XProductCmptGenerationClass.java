@@ -22,22 +22,21 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenJavaClassNameProvider;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 
-public class XProductCmptGenerationClass extends XClass {
+public class XProductCmptGenerationClass extends XProductClass {
 
     private final IJavaClassNameProvider prodGenJavaClassNameProvider;
-    private final List<XProductAttribute> attributes;
-    private final List<XProductAssociation> associations;
+    protected final List<XProductAttribute> attributes;
+    protected final List<XProductAssociation> associations;
 
-    public XProductCmptGenerationClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext model,
+    public XProductCmptGenerationClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext modelContext,
             ModelService modelService) {
-        super(ipsObjectPartContainer, model, modelService);
+        super(ipsObjectPartContainer, modelContext, modelService);
         prodGenJavaClassNameProvider = createProductCmptGenJavaClassNaming(getLanguageUsedInGeneratedSourceCode());
 
-        attributes = initNodes(getProductCmptType().getProductCmptTypeAttributes(), XProductAttribute.class);
-        associations = initNodes(getProductCmptType().getProductCmptTypeAssociations(), XProductAssociation.class);
+        attributes = initNodesForParts(getChangeableAttributes(), XProductAttribute.class);
+        associations = initNodesForParts(getChangableAssociations(), XProductAssociation.class);
     }
 
     public static ProductCmptGenJavaClassNameProvider createProductCmptGenJavaClassNaming(Locale locale) {
@@ -51,7 +50,7 @@ public class XProductCmptGenerationClass extends XClass {
 
     @Override
     public IProductCmptType getIpsObjectPartContainer() {
-        return (IProductCmptType)super.getIpsObjectPartContainer();
+        return super.getIpsObjectPartContainer();
     }
 
     public IProductCmptType getProductCmptType() {
@@ -63,10 +62,12 @@ public class XProductCmptGenerationClass extends XClass {
         return addImport(ProductComponentGeneration.class.getName());
     }
 
+    @Override
     public List<XProductAttribute> getAttributes() {
         return new CopyOnWriteArrayList<XProductAttribute>(attributes);
     }
 
+    @Override
     public List<XProductAssociation> getAssociations() {
         return new CopyOnWriteArrayList<XProductAssociation>(associations);
     }
