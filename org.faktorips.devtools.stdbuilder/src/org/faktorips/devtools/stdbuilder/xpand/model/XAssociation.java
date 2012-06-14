@@ -13,13 +13,29 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.type.IAssociation;
 
 public abstract class XAssociation extends AbstractGeneratorModelNode {
 
-    public XAssociation(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
-            ModelService modelService) {
-        super(ipsObjectPartContainer, context, modelService);
+    public XAssociation(IAssociation association, GeneratorModelContext context, ModelService modelService) {
+        super(association, context, modelService);
+    }
+
+    @Override
+    public IAssociation getIpsObjectPartContainer() {
+        return (IAssociation)super.getIpsObjectPartContainer();
+    }
+
+    public IAssociation getAssociation() {
+        return getIpsObjectPartContainer();
+    }
+
+    public boolean is1toMany() {
+        return getAssociation().is1ToMany();
+    }
+
+    public boolean isDerived() {
+        return getAssociation().isDerived();
     }
 
 }

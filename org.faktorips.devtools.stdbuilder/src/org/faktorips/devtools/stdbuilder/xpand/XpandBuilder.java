@@ -112,8 +112,7 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
         StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
         getTemplateDefinition().evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(),
                 getGeneratorModelRoot());
-        // TODO return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
-        return null;
+        return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
     }
 
     /**

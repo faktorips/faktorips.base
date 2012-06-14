@@ -13,16 +13,21 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 
 public class XPolicyAssociation extends XAssociation {
 
-    public XPolicyAssociation(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
+    public XPolicyAssociation(IPolicyCmptTypeAssociation ipsObjectPartContainer, GeneratorModelContext context,
             ModelService modelService) {
         super(ipsObjectPartContainer, context, modelService);
+    }
+
+    @Override
+    public IPolicyCmptTypeAssociation getAssociation() {
+        return (IPolicyCmptTypeAssociation)super.getAssociation();
     }
 
 }

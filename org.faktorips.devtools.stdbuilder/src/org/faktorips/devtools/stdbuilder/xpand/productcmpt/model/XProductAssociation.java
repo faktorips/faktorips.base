@@ -13,16 +13,21 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 
 public class XProductAssociation extends XAssociation {
 
-    public XProductAssociation(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
+    public XProductAssociation(IProductCmptTypeAssociation association, GeneratorModelContext context,
             ModelService modelService) {
-        super(ipsObjectPartContainer, context, modelService);
+        super(association, context, modelService);
+    }
+
+    @Override
+    public IProductCmptTypeAssociation getAssociation() {
+        return (IProductCmptTypeAssociation)super.getAssociation();
     }
 
 }
