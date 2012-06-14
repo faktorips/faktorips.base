@@ -126,13 +126,6 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         return javaClassNameProvider;
     }
 
-    @Override
-    public String getQualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IIpsSrcFile file = getVirtualIpsSrcFile(ipsSrcFile.getIpsObject());
-        String qualifiedClassName = super.getQualifiedClassName(file);
-        return qualifiedClassName;
-    }
-
     private IIpsSrcFile getVirtualIpsSrcFile(IIpsObject ipsObject) {
         String name = ipsObject.getIpsProject().getProductCmptNamingStrategy()
                 .getJavaClassIdentifier(ipsObject.getName());

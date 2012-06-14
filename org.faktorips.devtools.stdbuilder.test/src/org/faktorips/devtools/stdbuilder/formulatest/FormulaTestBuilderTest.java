@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.formulatest;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -92,6 +93,15 @@ public class FormulaTestBuilderTest extends AbstractStdBuilderTest {
 
     private IType getGeneratedJavaClass() {
         return getGeneratedJavaClass(productCmpt, true, builder, PRODUCT_NAME + FormulaTestBuilder.RUNTIME_EXTENSION);
+    }
+
+    @Test
+    public void testGetNames() throws Exception {
+        assertEquals("org.faktorips.sample.model.internal.ProductCmpt_formulaTest",
+                builder.getQualifiedClassName(productCmpt));
+        assertEquals("org.faktorips.sample.model.internal.ProductCmpt_formulaTest",
+                builder.getQualifiedClassName(productCmpt.getIpsSrcFile()));
+        assertEquals("ProductCmpt_formulaTest", builder.getUnqualifiedClassName(productCmpt.getIpsSrcFile()));
     }
 
 }
