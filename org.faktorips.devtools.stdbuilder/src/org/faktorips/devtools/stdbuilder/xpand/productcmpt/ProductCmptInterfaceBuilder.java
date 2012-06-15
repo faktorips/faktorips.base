@@ -42,11 +42,6 @@ public class ProductCmptInterfaceBuilder extends XpandBuilder<XProductCmptClass>
     }
 
     @Override
-    protected XProductCmptClass getGeneratorModelRoot() {
-        return null;
-    }
-
-    @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IIpsObjectPartContainer ipsObjectPartContainer) {
         // TODO Auto-generated method stub
@@ -60,7 +55,7 @@ public class ProductCmptInterfaceBuilder extends XpandBuilder<XProductCmptClass>
 
     @Override
     public String getTemplate() {
-        return "org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::ProductComponent::main";
+        return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::IProductComponent::main";
     }
 
     @Override

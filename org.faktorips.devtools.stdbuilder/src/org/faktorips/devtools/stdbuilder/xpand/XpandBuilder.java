@@ -22,8 +22,8 @@ import org.eclipse.xtend.type.impl.java.JavaBeansMetaModel;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -130,7 +130,7 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
 
     protected T getGeneratorModelRoot() {
         try {
-            IPolicyCmptType type = (IPolicyCmptType)getIpsSrcFile().getIpsObject();
+            IIpsObject type = getIpsSrcFile().getIpsObject();
             T xClass = getModelService().getModelNode(type, getGeneratorModelNodeClass(), newGeneratorModelContext());
             return xClass;
         } catch (CoreException e) {

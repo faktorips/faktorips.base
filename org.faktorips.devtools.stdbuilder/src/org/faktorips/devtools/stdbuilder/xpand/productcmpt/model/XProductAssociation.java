@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 
 public class XProductAssociation extends XAssociation {
 
@@ -28,6 +29,11 @@ public class XProductAssociation extends XAssociation {
     @Override
     public IProductCmptTypeAssociation getAssociation() {
         return (IProductCmptTypeAssociation)super.getAssociation();
+    }
+
+    @Override
+    protected Class<XPolicyCmptClass> getTargetType() {
+        return XPolicyCmptClass.class;
     }
 
 }

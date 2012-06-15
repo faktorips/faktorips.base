@@ -13,7 +13,11 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IType;
 
 public abstract class XAssociation extends AbstractGeneratorModelNode {
 
@@ -30,12 +34,25 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getIpsObjectPartContainer();
     }
 
-    public boolean is1toMany() {
+    public boolean isOnetoMany() {
         return getAssociation().is1ToMany();
     }
 
     public boolean isDerived() {
         return getAssociation().isDerived();
     }
+
+    public String getTargetClassName() {
+        try {
+            IType target = getAssociation().findTarget(getIpsProject());
+            XClass modelNode = getModelNode(target, getTargetType());
+            // TODO FIPS-1059
+            return modelNode.getQualifiedName(BuilderAspect.INTERFACE);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    protected abstract Class<? extends XClass> getTargetType();
 
 }

@@ -30,4 +30,9 @@ public class XPolicyAssociation extends XAssociation {
         return (IPolicyCmptTypeAssociation)super.getAssociation();
     }
 
+    @Override
+    protected Class<XPolicyCmptClass> getTargetType() {
+        return XPolicyCmptClass.class;
+    }
+
 }

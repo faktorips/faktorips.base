@@ -421,6 +421,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         List<IIpsArtefactBuilder> builders = new ArrayList<IIpsArtefactBuilder>();
         // TODO add XPAND builder for testing purposes
         builders.add(new org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder(this));
+        builders.add(new org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptImplClassBuilder(this));
 
         builders.add(tableImplBuilder);
         builders.add(tableRowBuilder);
