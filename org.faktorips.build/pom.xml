@@ -10,8 +10,10 @@
 
 	<!-- this is the parent POM from which all modules inherit common settings -->
 	<properties>
-		<tycho-version>0.14.0</tycho-version>
+		<tycho-version>0.14.1</tycho-version>
+		<tycho-extras-version>0.14.0</tycho-extras-version>
 		<version.kind>ci</version.kind>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<repositories>
@@ -45,6 +47,11 @@
 			<plugins>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-compiler-plugin</artifactId>
+					<version>${tycho-version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-source-plugin</artifactId>
 					<version>${tycho-version}</version>
 				</plugin>
@@ -64,6 +71,21 @@
 					<version>${tycho-version}</version>
 				</plugin>
 				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-p2-plugin</artifactId>
+					<version>${tycho-version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-p2-repository-plugin</artifactId>
+					<version>${tycho-version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho.extras</groupId>
+					<artifactId>tycho-source-feature-plugin</artifactId>
+					<version>${tycho-extras-version}</version>
+				</plugin>
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
 					<version>2.7</version>
@@ -78,9 +100,27 @@
 					<artifactId>exec-maven-plugin</artifactId>
 					<version>1.2.1</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.7</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>latex-maven-plugin</artifactId>
+					<version>1.1</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<configuration>
+					<useJDK>BREE</useJDK>
+					<showWarnings>true</showWarnings>
+				</configuration>
+			</plugin>
 			<!-- TARGER PLATFORM MUST REFERENCE FEATURES ONLY <plugin> <groupId>org.eclipse.tycho</groupId> 
 				<artifactId>target-platform-configuration</artifactId> <version>${tycho-version}</version> 
 				<configuration> <target> <artifact> <groupId>org.faktorips</groupId> <artifactId>org.faktorips.build</artifactId> 
@@ -108,9 +148,10 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-packaging-plugin</artifactId>
 				<configuration>
-					<format>yyyyMMdd-HHmm'_${version.kind}'</format>
+					<format>'${version.kind}_'yyyyMMdd-HHmm</format>
 				</configuration>
 			</plugin>
+
 			<!-- Tycho Test Settings -->
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
@@ -155,8 +196,8 @@
 
 	<modules>
 		<!-- features org.faktorips.feature -->
+		<module>../org.faktorips.license</module>
 		<module>../org.faktorips.feature</module>
-		<module>../org.faktorips.feature.source</module>
 		<module>../org.faktorips.feature.nls1</module>
 		<module>../org.faktorips.testdependencies</module>
 		<!-- plugins of feature org.faktorips.feature -->
