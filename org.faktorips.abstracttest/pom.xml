@@ -12,6 +12,6 @@
   
   <artifactId>org.faktorips.abstracttest</artifactId>
   
-    <packaging>eclipse-test-plugin</packaging>
+    <packaging>eclipse-plugin</packaging>
   
 </project>
