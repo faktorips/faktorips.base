@@ -15,7 +15,7 @@
 		 * @generated
 		 */
 		public class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-»
-			«IF implementsInterface-»implements«FOREACH implementedInterface AS interface-»
+			«IF implementsInterface-»implements«FOREACH implementedInterfaces AS interface-»
 				«interface»
 			«ENDFOREACH»
 			«ENDIF-»
@@ -31,7 +31,7 @@
 «ENDREM»
 			
 			/**
-		     * Creates a new Police.
+		     * Creates a new Policy.
 		     * 
 		     * @generated
 		     */
@@ -41,7 +41,7 @@
 		    }
 		    «IF configured»
 			/**
-		     * Creates a new Police.
+		     * Creates a new Policy.
 		     * 
 		     * @generated
 		     */

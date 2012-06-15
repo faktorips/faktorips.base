@@ -53,10 +53,6 @@ public class XPolicyCmptClass extends XClass {
         return getIpsObjectPartContainer();
     }
 
-    public boolean hasSupertype() {
-        return getPolicyCmptType().hasSupertype();
-    }
-
     public boolean isConfigured() {
         return getPolicyCmptType().isConfigurableByProductCmptType();
     }
@@ -85,8 +81,8 @@ public class XPolicyCmptClass extends XClass {
     }
 
     @Override
-    public List<String> getImplementedInterface() {
-        List<String> list = super.getImplementedInterface();
+    public List<String> getImplementedInterfaces() {
+        List<String> list = super.getImplementedInterfaces();
         if (getModelContext().isGeneratePropertyChange() && !hasSupertype()) {
             list.add(addImport(INotificationSupport.class));
         }

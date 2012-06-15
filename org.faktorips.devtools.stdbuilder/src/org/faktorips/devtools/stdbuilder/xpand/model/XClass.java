@@ -27,10 +27,12 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.INotificationSupport;
 
 public abstract class XClass extends AbstractGeneratorModelNode {
 
-    private static final IJavaClassNameProvider JAVA_CLASS_NAMEING_PROVIDER = createJavaClassNamingProvider();
+    private static final IJavaClassNameProvider JAVA_CLASS_NAME_PROVIDER = createJavaClassNamingProvider();
 
     public XClass(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
             ModelService modelService) {
@@ -39,11 +41,12 @@ public abstract class XClass extends AbstractGeneratorModelNode {
 
     /**
      * 
+     * Creates a list containing one {@link AbstractGeneratorModelNode} (of the given class) for
+     * every {@link IIpsObjectPart} in the given list.
+     * 
      * @param parts the parts to create {@link AbstractGeneratorModelNode nodes} for
      * @param nodeClass the expected concrete generator model class (subclass of
-     *            {@link AbstractGeneratorModelNode})
-     * @return a list containing one {@link AbstractGeneratorModelNode} for every
-     *         {@link IIpsObjectPart} in the given list.
+     *            {@link AbstractGeneratorModelNode}) that will be created for each part
      */
     protected <T extends AbstractGeneratorModelNode> List<T> initNodesForParts(List<? extends IIpsObjectPart> parts,
             Class<T> nodeClass) {
@@ -69,6 +72,10 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         };
     }
 
+    public boolean hasSupertype() {
+        return getType().hasSupertype();
+    }
+
     /**
      * Getting the {@link IJavaClassNameProvider} providing the java class name generated for this
      * {@link XClass}
@@ -77,7 +84,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      *         this {@link XClass}
      */
     public IJavaClassNameProvider getJavaClassNameProvider() {
-        return JAVA_CLASS_NAMEING_PROVIDER;
+        return JAVA_CLASS_NAME_PROVIDER;
     }
 
     public JavaClassNaming getJavaClassNaming() {
@@ -90,7 +97,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
 
     public String getFileName(BuilderAspect aspect) {
         return getJavaClassNaming().getRelativeJavaFile(getIpsObjectPartContainer().getIpsSrcFile(), aspect,
-                JAVA_CLASS_NAMEING_PROVIDER).toOSString();
+                JAVA_CLASS_NAME_PROVIDER).toOSString();
     }
 
     @Override
@@ -103,12 +110,12 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     }
 
     public String getSimpleName(BuilderAspect aspect) {
-        return getJavaClassNaming().getUnqualifiedClassName(getType().getIpsSrcFile(), aspect,
-                JAVA_CLASS_NAMEING_PROVIDER);
+        return getJavaClassNaming()
+                .getUnqualifiedClassName(getType().getIpsSrcFile(), aspect, JAVA_CLASS_NAME_PROVIDER);
     }
 
     public String getQualifiedName(BuilderAspect aspect) {
-        return getJavaClassNaming().getQualifiedClassName(getType(), aspect, JAVA_CLASS_NAMEING_PROVIDER);
+        return getJavaClassNaming().getQualifiedClassName(getType(), aspect, JAVA_CLASS_NAME_PROVIDER);
     }
 
     public String getPackageName() {
@@ -116,12 +123,17 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     }
 
     public String getSuperclassName() {
+        return getSuperClassOrInterfaceName(BuilderAspect.IMPLEMENTATION);
+    }
+
+    private String getSuperClassOrInterfaceName(BuilderAspect aspect) {
+
         try {
             if (getType().hasSupertype()) {
                 IType superType = getType().findSupertype(getIpsProject());
                 if (superType != null) {
-                    return addImport(getJavaClassNaming().getQualifiedClassName(superType,
-                            BuilderAspect.IMPLEMENTATION, JAVA_CLASS_NAMEING_PROVIDER));
+                    return addImport(getJavaClassNaming().getQualifiedClassName(superType, aspect,
+                            JAVA_CLASS_NAME_PROVIDER));
                 } else {
                     return "";
                 }
@@ -131,6 +143,10 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    private String getSuperInterfaceName() {
+        return getSuperClassOrInterfaceName(BuilderAspect.INTERFACE);
     }
 
     /**
@@ -143,14 +159,47 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      */
     protected abstract String getBaseSuperclassName();
 
-    public boolean isImplementsInterface() {
-        return !getImplementedInterface().isEmpty();
+    /**
+     * Returns whether or not the published interface for this class extends other interfaces.
+     */
+    public boolean isExtendsInterface() {
+        return !getExtendedInterfaces().isEmpty();
     }
 
-    public List<String> getImplementedInterface() {
+    /**
+     * Returns all interfaces the (generated) published interface for this class extends.
+     */
+    private List<String> getExtendedInterfaces() {
         ArrayList<String> list = new ArrayList<String>();
-        addImport(getInterfaceNaming().getQualifiedClassName(getType(), BuilderAspect.INTERFACE,
-                JAVA_CLASS_NAMEING_PROVIDER));
+        // TODO FIPS-1059
+        // TODO Testcase, development suspended as we create the class methods first
+        if (hasSupertype()) {
+            String importStatement = addImport(getInterfaceNaming().getQualifiedClassName(getType(),
+                    BuilderAspect.INTERFACE, JAVA_CLASS_NAME_PROVIDER));
+            list.add(importStatement);
+        } else {
+            list.add(addImport(IConfigurableModelObject.class));
+            list.add(addImport(INotificationSupport.class));
+        }
+        return list;
+    }
+
+    /**
+     * Returns whether or not the generated class implements interfaces.
+     */
+    public boolean isImplementsInterface() {
+        return !getImplementedInterfaces().isEmpty();
+    }
+
+    /**
+     * Returns all interfaces the generated class implements.
+     */
+    public List<String> getImplementedInterfaces() {
+        // TODO FIPS-1059
+        ArrayList<String> list = new ArrayList<String>();
+        String importStatement = addImport(getInterfaceNaming().getQualifiedClassName(getType(),
+                BuilderAspect.INTERFACE, JAVA_CLASS_NAME_PROVIDER));
+        list.add(importStatement);
         return list;
     }
 
