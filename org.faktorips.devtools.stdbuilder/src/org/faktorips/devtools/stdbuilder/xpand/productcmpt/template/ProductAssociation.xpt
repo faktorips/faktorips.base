@@ -1,3 +1,4 @@
+«IMPORT java::util»
 «IMPORT org::faktorips::devtools::core::builder::naming»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
@@ -8,9 +9,29 @@
 «DEFINE field FOR XProductAssociation»
 
 	«IF onetoMany-»
-		private List<«targetType»> «name»;
+		private «Map()»<String, «IProductComponentLink()»<«targetClassName»>> «name.toFirstLower()»  = new «LinkedHashMap()»<String, «IProductComponentLink()»<«targetClassName»>>(0);
 	«ELSE»
-		private «targetType» «name»;
+		private «IProductComponentLink()»<«targetClassName»> «name.toFirstLower()»  = null;
+	«ENDIF»
+
+«ENDDEFINE»
+
+«DEFINE getter FOR XProductAssociation»
+
+	«IF onetoMany-»
+		private «Map()»<String, «IProductComponentLink()»<«targetClassName»>> «name»;
+	«ELSE»
+		private «IProductComponentLink()»<«targetClassName»> «name»;
+	«ENDIF»
+
+«ENDDEFINE»
+
+«DEFINE setter FOR XProductAssociation»
+
+	«IF onetoMany-»
+		private «Map()»<String, «IProductComponentLink()»<«targetClassName»>> «name»;
+	«ELSE»
+		private «IProductComponentLink()»<«targetClassName»> «name»;
 	«ENDIF»
 
 «ENDDEFINE»

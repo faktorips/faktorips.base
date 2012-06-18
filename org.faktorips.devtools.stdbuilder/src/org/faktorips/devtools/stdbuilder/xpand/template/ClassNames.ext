@@ -1,7 +1,18 @@
+import java::util;
+import org::faktorips::runtime;
 import org::faktorips::devtools::stdbuilder::xpand::model;
 
 IModelObject(AbstractGeneratorModelNode this) :
 	addImport("org.faktorips.runtime.IModelObject");
 	
 IConfigurableModelObject(AbstractGeneratorModelNode this) :
-	addImport("org.faktorips.runtime.IConfigurableModelObject");
+	addImport(IConfigurableModelObject.name);
+
+Map(AbstractGeneratorModelNode this) :
+	addImport(Map.name);
+
+LinkedHashMap(AbstractGeneratorModelNode this) :
+	addImport(LinkedHashMap.name);
+
+IProductComponentLink(AbstractGeneratorModelNode this) :
+	addImport(IProductComponentLink.name);

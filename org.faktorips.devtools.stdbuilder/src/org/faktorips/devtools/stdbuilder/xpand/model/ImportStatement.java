@@ -73,4 +73,9 @@ public class ImportStatement {
         return qualifiedName;
     }
 
+    @Override
+    public String toString() {
+        return "Import " + qualifiedName;
+    }
+
 }

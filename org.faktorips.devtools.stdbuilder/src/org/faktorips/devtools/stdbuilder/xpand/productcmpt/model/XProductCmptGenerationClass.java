@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenJavaClassNameProvider;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
@@ -40,7 +41,14 @@ public class XProductCmptGenerationClass extends XProductClass {
     }
 
     public static ProductCmptGenJavaClassNameProvider createProductCmptGenJavaClassNaming(Locale locale) {
-        return new ProductCmptGenJavaClassNameProvider(locale);
+        return new ProductCmptGenJavaClassNameProvider(locale) {
+
+            @Override
+            public String getImplClassName(IIpsSrcFile ipsSrcFile) {
+                return super.getImplClassName(ipsSrcFile) + "_X";
+            }
+
+        };
     }
 
     @Override

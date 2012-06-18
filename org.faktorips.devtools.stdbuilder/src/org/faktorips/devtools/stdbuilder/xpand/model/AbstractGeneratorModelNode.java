@@ -15,6 +15,7 @@ package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import java.util.Locale;
 
+import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
@@ -137,15 +138,29 @@ public abstract class AbstractGeneratorModelNode {
         return clazz.getSimpleName();
     }
 
+    public String addImport(org.eclipse.xtend.typesystem.Type type) {
+        return type.getName();
+    }
+
     /**
-     * Add the qualified name to the list of import statements and return the unqualified name
+     * Add the qualified name to the list of import statements and return the unqualified name.
+     * <p>
+     * To support qualified names provided by a template, this method is also able to handle xpand
+     * namespace syntax. For example the string <code>java::util::Map</code> is converted to
+     * <code>java.util.Map</code>
      * 
      * @param qName The qualified name of the type
      * @return the unqualified name of the type
      */
     public String addImport(String qName) {
-        getModelContext().addImport(qName);
-        String[] segments = qName.split("\\.");
+        String javaQName;
+        if (qName.indexOf(SyntaxConstants.NS_DELIM) != -1) {
+            javaQName = qName.replaceAll(SyntaxConstants.NS_DELIM, ".");
+        } else {
+            javaQName = qName;
+        }
+        getModelContext().addImport(javaQName);
+        String[] segments = javaQName.split("\\.");
         return segments[segments.length - 1];
     }
 

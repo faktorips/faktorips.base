@@ -23,11 +23,10 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class ProductCmptGenerationImlClassBuilder extends XpandBuilder<XProductCmptClass> {
+public class ProductCmptGenerationImlClassBuilder extends XpandBuilder<XProductCmptGenerationClass> {
 
     private final IJavaClassNameProvider javaClassNameProvider;
 
@@ -48,8 +47,8 @@ public class ProductCmptGenerationImlClassBuilder extends XpandBuilder<XProductC
     }
 
     @Override
-    protected Class<XProductCmptClass> getGeneratorModelNodeClass() {
-        return XProductCmptClass.class;
+    protected Class<XProductCmptGenerationClass> getGeneratorModelNodeClass() {
+        return XProductCmptGenerationClass.class;
     }
 
     @Override
@@ -66,7 +65,7 @@ public class ProductCmptGenerationImlClassBuilder extends XpandBuilder<XProductC
 
     @Override
     public String getTemplate() {
-        return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponent::main";
+        return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponentGen::main";
     }
 
     @Override

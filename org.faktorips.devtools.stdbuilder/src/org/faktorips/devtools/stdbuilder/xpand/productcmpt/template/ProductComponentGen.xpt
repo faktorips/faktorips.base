@@ -5,7 +5,7 @@
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
 
-«DEFINE main FOR XProductCmptClass»
+«DEFINE main FOR XProductCmptGenerationClass-»
 	«FILE getFileName(BuilderAspect::IMPLEMENTATION) -»
 	package «packageName»;
 
@@ -16,12 +16,12 @@
 		 * @generated
 		 */
 		public class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-»
-			«IF implementsInterface-»implements«FOREACH implementedInterfaces AS interface-»
-				«interface»
-			«ENDFOREACH»
+			«IF implementsInterface-» implements «FOREACH implementedInterfaces AS interface-»
+				«interface-»
+			«ENDFOREACH-»
 			«ENDIF-»
 		 {
 			«EXPAND ProductAssociation::field FOREACH associations»
-		}
+		 }
 	«ENDFILE»
 «ENDDEFINE»

@@ -16,11 +16,11 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 import java.util.Locale;
 
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
-public class ProductCmptGenJavaClassNameProvider implements IJavaClassNameProvider {
+public class ProductCmptGenJavaClassNameProvider extends DefaultJavaClassNameProvider {
 
     private final Locale locale;
 

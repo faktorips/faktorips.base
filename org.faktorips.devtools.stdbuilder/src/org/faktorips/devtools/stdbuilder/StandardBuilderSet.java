@@ -419,9 +419,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setGenerateEntriesForModelTypes(true);
 
         List<IIpsArtefactBuilder> builders = new ArrayList<IIpsArtefactBuilder>();
-        // TODO add XPAND builder for testing purposes
-        builders.add(new org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder(this));
-        builders.add(new org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptImplClassBuilder(this));
 
         builders.add(tableImplBuilder);
         builders.add(tableRowBuilder);
@@ -446,6 +443,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         builders.add(enumContentBuilder);
         builders.add(enumXmlAdapterBuilder);
         builders.addAll(extendingBuilders);
+
+        // TODO add XPAND builder for testing purposes
+        builders.add(new org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder(this));
+        builders.add(new org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationImlClassBuilder(this));
+
         return builders.toArray(new IIpsArtefactBuilder[builders.size()]);
     }
 

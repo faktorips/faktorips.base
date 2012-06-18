@@ -47,7 +47,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
             IType target = getAssociation().findTarget(getIpsProject());
             XClass modelNode = getModelNode(target, getTargetType());
             // TODO FIPS-1059
-            return modelNode.getQualifiedName(BuilderAspect.INTERFACE);
+            return addImport(modelNode.getQualifiedName(BuilderAspect.INTERFACE));
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

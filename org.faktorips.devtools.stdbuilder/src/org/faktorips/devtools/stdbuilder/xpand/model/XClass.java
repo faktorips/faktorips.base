@@ -32,6 +32,12 @@ import org.faktorips.runtime.INotificationSupport;
 
 public abstract class XClass extends AbstractGeneratorModelNode {
 
+    /**
+     * The default java class name provider used by this class.
+     * <p>
+     * Never use this constant except in the method {@link #getJavaClassNameProvider()} because
+     * {@link #getBaseSuperclassName()} may be overwritten in subclasses
+     */
     private static final IJavaClassNameProvider JAVA_CLASS_NAME_PROVIDER = createJavaClassNamingProvider();
 
     public XClass(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
@@ -65,10 +71,6 @@ public abstract class XClass extends AbstractGeneratorModelNode {
                 return super.getImplClassName(ipsSrcFile) + "_X";
             }
 
-            @Override
-            public String getInterfaceName(IIpsSrcFile ipsSrcFile) {
-                return super.getInterfaceName(ipsSrcFile) + "_X";
-            }
         };
     }
 
@@ -91,13 +93,9 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         return getModelContext().getImplClassNaming();
     }
 
-    public JavaClassNaming getInterfaceNaming() {
-        return getModelContext().getImplClassNaming();
-    }
-
     public String getFileName(BuilderAspect aspect) {
         return getJavaClassNaming().getRelativeJavaFile(getIpsObjectPartContainer().getIpsSrcFile(), aspect,
-                JAVA_CLASS_NAME_PROVIDER).toOSString();
+                getJavaClassNameProvider()).toOSString();
     }
 
     @Override
@@ -110,12 +108,12 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     }
 
     public String getSimpleName(BuilderAspect aspect) {
-        return getJavaClassNaming()
-                .getUnqualifiedClassName(getType().getIpsSrcFile(), aspect, JAVA_CLASS_NAME_PROVIDER);
+        return getJavaClassNaming().getUnqualifiedClassName(getType().getIpsSrcFile(), aspect,
+                getJavaClassNameProvider());
     }
 
     public String getQualifiedName(BuilderAspect aspect) {
-        return getJavaClassNaming().getQualifiedClassName(getType(), aspect, JAVA_CLASS_NAME_PROVIDER);
+        return getJavaClassNaming().getQualifiedClassName(getType(), aspect, getJavaClassNameProvider());
     }
 
     public String getPackageName() {
@@ -133,7 +131,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
                 IType superType = getType().findSupertype(getIpsProject());
                 if (superType != null) {
                     return addImport(getJavaClassNaming().getQualifiedClassName(superType, aspect,
-                            JAVA_CLASS_NAME_PROVIDER));
+                            getJavaClassNameProvider()));
                 } else {
                     return "";
                 }
@@ -143,10 +141,6 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-    }
-
-    private String getSuperInterfaceName() {
-        return getSuperClassOrInterfaceName(BuilderAspect.INTERFACE);
     }
 
     /**
@@ -174,8 +168,8 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         // TODO FIPS-1059
         // TODO Testcase, development suspended as we create the class methods first
         if (hasSupertype()) {
-            String importStatement = addImport(getInterfaceNaming().getQualifiedClassName(getType(),
-                    BuilderAspect.INTERFACE, JAVA_CLASS_NAME_PROVIDER));
+            String importStatement = addImport(getJavaClassNaming().getQualifiedClassName(getType(),
+                    BuilderAspect.INTERFACE, getJavaClassNameProvider()));
             list.add(importStatement);
         } else {
             list.add(addImport(IConfigurableModelObject.class));
@@ -197,8 +191,8 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     public List<String> getImplementedInterfaces() {
         // TODO FIPS-1059
         ArrayList<String> list = new ArrayList<String>();
-        String importStatement = addImport(getInterfaceNaming().getQualifiedClassName(getType(),
-                BuilderAspect.INTERFACE, JAVA_CLASS_NAME_PROVIDER));
+        String importStatement = addImport(getJavaClassNaming().getQualifiedClassName(getType(),
+                BuilderAspect.INTERFACE, getJavaClassNameProvider()));
         list.add(importStatement);
         return list;
     }

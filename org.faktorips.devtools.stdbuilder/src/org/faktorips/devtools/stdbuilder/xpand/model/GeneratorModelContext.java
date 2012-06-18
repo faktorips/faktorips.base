@@ -38,7 +38,8 @@ public class GeneratorModelContext {
 
     public GeneratorModelContext(IIpsArtefactBuilderSetConfig config) {
         this.config = config;
-        this.javaClassNaming = new JavaClassNaming(false, true);
+        // TODO FIPS-1059
+        this.javaClassNaming = new JavaClassNaming(true);
     }
 
     public IIpsArtefactBuilderSetConfig getConfig() {
