@@ -25,6 +25,10 @@ public interface IJavaClassNameProvider {
 
     public String getImplClassName(IIpsSrcFile ipsSrcFile);
 
+    public boolean isImplClassPublishedArtifact();
+
     public String getInterfaceName(IIpsSrcFile ipsSrcFile);
+
+    public boolean isInterfacePublishedArtifact();
 
 }

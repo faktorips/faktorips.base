@@ -24,9 +24,19 @@ public class DefaultJavaClassNameProvider implements IJavaClassNameProvider {
     }
 
     @Override
+    public boolean isImplClassPublishedArtifact() {
+        return false;
+    }
+
+    @Override
     public String getInterfaceName(IIpsSrcFile ipsSrcFile) {
         return ipsSrcFile.getIpsProject().getJavaNamingConvention()
                 .getPublishedInterfaceName(ipsSrcFile.getIpsObjectName());
+    }
+
+    @Override
+    public boolean isInterfacePublishedArtifact() {
+        return true;
     }
 
 }

@@ -22,6 +22,11 @@ public enum BuilderAspect {
         public String getJavaClassName(IIpsSrcFile ipsSrcFile, IJavaClassNameProvider javaClassNameProvider) {
             return javaClassNameProvider.getImplClassName(ipsSrcFile);
         }
+
+        @Override
+        public boolean isPublishedArtifact(IJavaClassNameProvider javaClassNameProvider) {
+            return javaClassNameProvider.isImplClassPublishedArtifact();
+        }
     },
 
     INTERFACE {
@@ -29,9 +34,16 @@ public enum BuilderAspect {
         public String getJavaClassName(IIpsSrcFile ipsSrcFile, IJavaClassNameProvider javaClassNameProvider) {
             return javaClassNameProvider.getInterfaceName(ipsSrcFile);
         }
+
+        @Override
+        public boolean isPublishedArtifact(IJavaClassNameProvider javaClassNameProvider) {
+            return javaClassNameProvider.isInterfacePublishedArtifact();
+        }
     };
 
     public abstract String getJavaClassName(IIpsSrcFile ipsSrcFile, IJavaClassNameProvider javaClassNameProvider);
+
+    public abstract boolean isPublishedArtifact(IJavaClassNameProvider javaClassNameProvider);
 
     public static BuilderAspect getValue(boolean isInterface) {
         if (isInterface) {

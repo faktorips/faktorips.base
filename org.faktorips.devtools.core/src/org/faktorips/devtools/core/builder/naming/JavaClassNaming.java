@@ -33,12 +33,9 @@ public class JavaClassNaming {
 
     public final static String JAVA_EXTENSION = ".java"; //$NON-NLS-1$
 
-    private final boolean publishedArtifacts;
-
     private final boolean mergableArtifacts;
 
-    public JavaClassNaming(boolean publishedArtifacts, boolean mergableArtifacts) {
-        this.publishedArtifacts = publishedArtifacts;
+    public JavaClassNaming(boolean mergableArtifacts) {
         this.mergableArtifacts = mergableArtifacts;
     }
 
@@ -51,7 +48,8 @@ public class JavaClassNaming {
     public String getQualifiedClassName(IIpsSrcFile ipsSrcFile,
             BuilderAspect aspect,
             IJavaClassNameProvider javaClassNameProvider) {
-        return getQualifiedName(JavaPackageStructure.getPackageName(ipsSrcFile, publishedArtifacts, mergableArtifacts),
+        return getQualifiedName(JavaPackageStructure.getPackageName(ipsSrcFile,
+                aspect.isPublishedArtifact(javaClassNameProvider), mergableArtifacts),
                 getUnqualifiedClassName(ipsSrcFile, aspect, javaClassNameProvider));
     }
 
