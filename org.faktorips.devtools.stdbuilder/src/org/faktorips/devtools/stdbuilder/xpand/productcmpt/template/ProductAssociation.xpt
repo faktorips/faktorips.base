@@ -1,6 +1,5 @@
 «IMPORT java::util»
 «IMPORT org::faktorips::devtools::core::builder::naming»
-«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 
@@ -27,6 +26,13 @@
 		«EXPAND getterProductCmpt»
 		«EXPAND getterProductCmptGen»
 		«EXPAND getterProductCmptPerIndex»
+		«EXPAND getterLinksFor»
+		«EXPAND getterSingleLinkFor»
+		«EXPAND addMethod»
+		«EXPAND addMethodWithCardinality»
+		«EXPAND setterMethodForToOne»
+		«EXPAND getCardinalityFor»
+		«EXPAND getNumOf»
     «ENDIF»
 «ENDDEFINE»
 
@@ -94,94 +100,129 @@
         } catch («NoSuchElementException()» e) {
             throw new IndexOutOfBoundsException(e.getLocalizedMessage());
         }
-		
 	}
 	«ENDIF»
 «ENDDEFINE»
 
-«REM»
-    @Override
-    public IDeckungsTyp getDeckungsTyp(int index) {
-        Iterator<IProductComponentLink<IDeckungsTyp>> it = deckungsTypen.values().iterator();
-        try {
-            for (int i = 0; i < index; i++) {
-                it.next();
-            }
-            return it.next().getTarget();
-        } catch (NoSuchElementException e) {
-            throw new IndexOutOfBoundsException(e.getLocalizedMessage());
-        }
-    }
-
+«DEFINE getterLinksFor FOR XProductAssociation-»
     /**
      * {@inheritDoc}
      * 
      * @generated
      */
-    @Override
-    public Collection<IProductComponentLink<IDeckungsTyp>> getLinksForDeckungsTypen() {
-        return Collections.unmodifiableCollection(deckungsTypen.values());
+     «overrideAnnotation(true)»
+	«IF onetoMany-»
+	    public «Collection_()»<«IProductComponentLink()»<«targetClassName»>> «getterMethodNameForLinks»() {
+    	    return «Collections()».unmodifiableCollection(«memberVarName».values());
+    «ELSE-»
+	    public «IProductComponentLink()»<«targetClassName»> «getterMethodNameForLinks»() {
+    		return «memberVarName»;
+	«ENDIF-»
     }
+«ENDDEFINE»
 
+«DEFINE getterSingleLinkFor FOR XProductAssociation-»
     /**
      * {@inheritDoc}
      * 
      * @generated
      */
-    @Override
-    public IProductComponentLink<IDeckungsTyp> getLinkForDeckungsTyp(IDeckungsTyp productComponent) {
-        return deckungsTypen.get(productComponent.getId());
+     «overrideAnnotation(true)»
+    public «IProductComponentLink()»<«targetClassName»> «getterMethodNameForSingleLink»(«targetClassName» productComponent) {
+		«IF onetoMany-»
+        	return «memberVarName».get(productComponent.getId());
+        «ELSE-»
+        	return «memberVarName».«getTargetId()».equals(productComponent.getId()) ? «memberVarName» : null;
+        «ENDIF-»
     }
+«ENDDEFINE»
 
+«DEFINE addMethod FOR XProductAssociation-»
+	«IF onetoMany-»
     /**
-     * Adds the given product component.
+     * «localizedJDoc("METHOD_ADD_RELATED_CMPT")»
      * 
      * @generated
      */
-    public void addDeckungsTyp(IDeckungsTyp target) {
-        if (getRepository() != null && !getRepository().isModifiable()) {
-            throw new IllegalRepositoryModificationException();
-        }
-        this.deckungsTypen.put(target.getId(), new ProductComponentLink<IDeckungsTyp>(this, target));
+    public void «addMethodName»(«targetClassName» target) {
+        «EXPAND ProductCommons::checkRepositoryModifyable-»
+        this.«memberVarName».put(target.getId(), new «ProductComponentLink()»<«targetClassName»>(this, target));
     }
+    «ENDIF»
+«ENDDEFINE»
 
+«DEFINE addMethodWithCardinality FOR XProductAssociation-»
+«REM» TODO FIPS-1141 «ENDREM» 
+	«IF onetoMany-»
     /**
-     * Adds the given product component with the given cardinality.
+     * «localizedJDoc("METHOD_ADD_RELATED_CMPT_WITH_CARDINALITY")»
      * 
      * @generated
      */
-    public void addDeckungsTyp(IDeckungsTyp target, CardinalityRange cardinality) {
-        if (getRepository() != null && !getRepository().isModifiable()) {
-            throw new IllegalRepositoryModificationException();
-        }
-        this.deckungsTypen.put(target.getId(), new ProductComponentLink<IDeckungsTyp>(this, target, cardinality));
+    public void «addMethodName»(«targetClassName» target, «CardinalityRange()» cardinality) {
+        «EXPAND ProductCommons::checkRepositoryModifyable-»
+        this.«memberVarName».put(target.getId(), new «ProductComponentLink()»<«targetClassName»>(this, target, cardinality));
     }
+    «ENDIF»
+«ENDDEFINE»
 
+«DEFINE setterMethodForToOne FOR XProductAssociation-»
+	«IF !onetoMany-»
+    /**
+     * «localizedJDoc("METHOD_SET_1_RELATED_CMPT", name)»
+     * 
+     * @generated
+     */
+    public void «setterMethodName»(«targetClassName» target) {
+        «EXPAND ProductCommons::checkRepositoryModifyable-»
+        «memberVarName» = (target == null ? null : new «ProductComponentLink()»<«targetClassName»>(this, target));
+    }
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE getCardinalityFor FOR XProductAssociation-»
+	«IF hasMatchingAssociation()-»
     /**
      * {@inheritDoc}
      * 
      * @generated
      */
-    @Override
-    public CardinalityRange getCardinalityForDeckung(IDeckungsTyp productCmpt) {
+    «overrideAnnotation(true)»
+    public «CardinalityRange()» «getterMethodCardinalityFor»(«targetClassName» productCmpt) {
         if (productCmpt != null) {
-            return deckungsTypen.containsKey(productCmpt.getId()) ? deckungsTypen.get(productCmpt.getId())
-                    .getCardinality() : null;
+    	«IF onetoMany-»
+            return «memberVarName».containsKey(productCmpt.«getId()») ? «memberVarName».get(productCmpt.«getId()»)
+                    .«getCardinality()» : null;
+        «ELSE-»
+            return «memberVarName» != null && «memberVarName».«getTargetId()».equals(productCmpt.«getId()») ? «memberVarName»
+                    .«getCardinality()» : null;
+        «ENDIF-»
         }
         return null;
     }
+    «ENDIF»
+«ENDDEFINE»
 
+«DEFINE getNumOf FOR XProductAssociation-»
+	«IF onetoMany-»
     /**
      * {@inheritDoc}
      * 
      * @generated
      */
-    @Override
-    public int getNumOfDeckungsTypen() {
-        return deckungsTypen.size();
+    «overrideAnnotation(true)»
+    public int «getterMethodNameNumOf»() {
+        return «memberVarName».size();
     }
+    «ENDIF»
+«ENDDEFINE»
+
+«REM»
+    
+    
+    TODO:	set for toOne
+    		Qualified association
+    		Derived Union?
+    		getLinks()
 «ENDREM»
 
-
-«DEFINE setter FOR XProductAssociation»
-«ENDDEFINE»

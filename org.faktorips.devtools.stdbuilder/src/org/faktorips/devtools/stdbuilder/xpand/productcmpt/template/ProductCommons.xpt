@@ -1,0 +1,12 @@
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
+
+
+«DEFINE checkRepositoryModifyable FOR AbstractGeneratorModelNode-»
+        if («getRepository()» != null && !«getRepository()».«isModifiable()») {
+            throw new «IllegalRepositoryModificationException()»();
+        }
+«ENDDEFINE»

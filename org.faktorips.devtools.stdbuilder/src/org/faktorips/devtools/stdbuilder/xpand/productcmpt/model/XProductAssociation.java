@@ -13,7 +13,10 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
@@ -53,6 +56,38 @@ public class XProductAssociation extends XAssociation {
     @Override
     protected Class<XProductCmptClass> getTargetModelNodeType() {
         return XProductCmptClass.class;
+    }
+
+    public String getGetterMethodNameForLinks() {
+        return getGetterMethodNameForLinks(isOnetoMany());
+    }
+
+    public String getGetterMethodNameForSingleLink() {
+        return getGetterMethodNameForLinks(false);
+    }
+
+    private String getGetterMethodNameForLinks(boolean plural) {
+        return getJavaNamingConvention().getMultiValueGetterMethodName(
+                "Link" + (plural ? "s" : "") + "For" + StringUtils.capitalize(getName(plural)));
+    }
+
+    public String getGetterMethodCardinalityFor() {
+        String matchingSingularName;
+        try {
+            matchingSingularName = StringUtils.capitalize(getAssociation().findMatchingPolicyCmptTypeAssociation(
+                    getIpsProject()).getTargetRoleSingular());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        return getJavaNamingConvention().getGetterMethodName("CardinalityFor" + matchingSingularName);
+    }
+
+    public boolean hasMatchingAssociation() {
+        try {
+            return getAssociation().constrainsPolicyCmptTypeAssociation(getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
 }

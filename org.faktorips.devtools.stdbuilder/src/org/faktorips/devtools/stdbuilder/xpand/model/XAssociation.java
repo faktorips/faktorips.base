@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -54,8 +55,18 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getJavaNamingConvention().getGetterMethodName(getName(toMany));
     }
 
+    /**
+     * The name of the adder method - only used for one-to-many associations.
+     */
+    public String getAddMethodName() {
+        return "add" + StringUtils.capitalize(getName(false));
+    }
+
+    /**
+     * The name of the setter method - only used for one-to-one associations.
+     */
     public String getSetterMethodName() {
-        return getJavaNamingConvention().getSetterMethodName(getName());
+        return getJavaNamingConvention().getSetterMethodName(getName(false));
     }
 
     /**
@@ -88,4 +99,8 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
 
     protected abstract Class<? extends XClass> getTargetModelNodeType();
 
+    public String getGetterMethodNameNumOf() {
+        return getJavaNamingConvention().getGetterMethodName(
+                "NumOf" + StringUtils.capitalize(getAssociation().getTargetRolePlural()));
+    }
 }
