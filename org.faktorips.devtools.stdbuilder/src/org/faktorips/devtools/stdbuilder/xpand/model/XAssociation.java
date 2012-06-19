@@ -34,6 +34,35 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getIpsObjectPartContainer();
     }
 
+    public String getName(boolean plural) {
+        if (plural) {
+            return getAssociation().getTargetRolePlural();
+        } else {
+            return getAssociation().getTargetRoleSingular();
+        }
+    }
+
+    public String getMemberVarName() {
+        return getJavaNamingConvention().getMemberVarName(getName(isOnetoMany()));
+    }
+
+    public String getGetterMethodName() {
+        return getGetterMethodName(isOnetoMany());
+    }
+
+    public String getGetterMethodName(boolean toMany) {
+        return getJavaNamingConvention().getGetterMethodName(getName(toMany));
+    }
+
+    public String getSetterMethodName() {
+        return getJavaNamingConvention().getSetterMethodName(getName());
+    }
+
+    /**
+     * Returns true if this association is a one to many association and false if it is one to one.
+     * 
+     * @return true fro one to many and false for one to one associations
+     */
     public boolean isOnetoMany() {
         return getAssociation().is1ToMany();
     }
@@ -42,17 +71,21 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getAssociation().isDerived();
     }
 
-    public String getTargetClassName() {
+    protected IType getTarget() {
         try {
-            IType target = getAssociation().findTarget(getIpsProject());
-            XClass modelNode = getModelNode(target, getTargetType());
-            // TODO FIPS-1059
-            return addImport(modelNode.getQualifiedName(BuilderAspect.INTERFACE));
+            return getAssociation().findTarget(getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
     }
 
-    protected abstract Class<? extends XClass> getTargetType();
+    public String getTargetClassName() {
+        IType target = getTarget();
+        XClass modelNode = getModelNode(target, getTargetModelNodeType());
+        // TODO FIPS-1059
+        return addImport(modelNode.getQualifiedName(BuilderAspect.INTERFACE));
+    }
+
+    protected abstract Class<? extends XClass> getTargetModelNodeType();
 
 }

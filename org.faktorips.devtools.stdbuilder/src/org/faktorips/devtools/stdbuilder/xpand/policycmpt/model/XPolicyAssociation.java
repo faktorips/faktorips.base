@@ -31,7 +31,7 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     @Override
-    protected Class<XPolicyCmptClass> getTargetType() {
+    protected Class<XPolicyCmptClass> getTargetModelNodeType() {
         return XPolicyCmptClass.class;
     }
 

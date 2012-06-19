@@ -65,6 +65,14 @@ public interface IJavaNamingConvention {
     public String getGetterMethodName(String propertyName, Datatype datatype);
 
     /**
+     * Returns the method name for the method with that the property is read. In contrast to
+     * {@link #getGetterMethodName(String, Class)} and
+     * {@link #getGetterMethodName(String, Datatype)} this method does not respect special cases for
+     * exaple for boolean datatype.
+     */
+    public String getGetterMethodName(String propertyName);
+
+    /**
      * Returns the method name for the method with that a multi value property is read.
      */
     public String getMultiValueGetterMethodName(String propertyNamePlural);

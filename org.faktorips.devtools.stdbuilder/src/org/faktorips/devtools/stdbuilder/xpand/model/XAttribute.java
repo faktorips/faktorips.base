@@ -18,7 +18,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.StringUtil;
 
@@ -54,24 +53,20 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
     }
 
     public String getSetterMethodName() {
-        return getJavaNamingConvention().getSetterMethodName(getAttributeName());
+        return getJavaNamingConvention().getSetterMethodName(getName());
     }
 
     public String getGetterMethodName() {
-        return getJavaNamingConvention().getGetterMethodName(getAttributeName(), getDatatype());
+        return getJavaNamingConvention().getGetterMethodName(getName(), getDatatype());
     }
 
     public String getMemberVarName() {
-        return getJavaNamingConvention().getMemberVarName(getAttributeName());
+        return getJavaNamingConvention().getMemberVarName(getName());
     }
 
     public String fieldPropertyNameSuffix() {
-        return getModelContext().isGenerateSeparatedCamelCase() ? StringUtil.camelCaseToUnderscore(getAttributeName())
-                .toUpperCase() : getAttributeName().toUpperCase();
-    }
-
-    private String getAttributeName() {
-        return getAttribute().getName();
+        return getModelContext().isGenerateSeparatedCamelCase() ? StringUtil.camelCaseToUnderscore(getName())
+                .toUpperCase() : getName().toUpperCase();
     }
 
     public String getDefaultValueCode() {
@@ -96,10 +91,6 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         JavaCodeFragment fragment = getDatatypeHelper().referenceOrSafeCopyIfNeccessary(memberVarName);
         addImport(fragment.getImportDeclaration());
         return fragment.getSourcecode();
-    }
-
-    private IJavaNamingConvention getJavaNamingConvention() {
-        return getIpsProject().getJavaNamingConvention();
     }
 
 }

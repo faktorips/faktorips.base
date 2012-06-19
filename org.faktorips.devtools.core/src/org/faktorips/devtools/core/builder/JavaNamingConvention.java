@@ -78,6 +78,11 @@ public class JavaNamingConvention implements IJavaNamingConvention {
     }
 
     @Override
+    public String getGetterMethodName(String propertyName) {
+        return "get" + StringUtils.capitalize(propertyName); //$NON-NLS-1$
+    }
+
+    @Override
     public String getSetterMethodName(String propertyName) {
         return "set" + StringUtils.capitalize(propertyName); //$NON-NLS-1$
     }

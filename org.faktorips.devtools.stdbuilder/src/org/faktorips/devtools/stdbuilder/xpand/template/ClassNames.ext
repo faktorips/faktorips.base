@@ -8,11 +8,29 @@ IModelObject(AbstractGeneratorModelNode this) :
 IConfigurableModelObject(AbstractGeneratorModelNode this) :
 	addImport(IConfigurableModelObject.name);
 
+// List is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
+List_(AbstractGeneratorModelNode this) :
+	addImport("java.util.List");
+
+// ArrayList.name does return List. Thats why we have to use the string reference in addImport
+ArrayList(AbstractGeneratorModelNode this) :
+	addImport("java.util.ArrayList");
+
 Map(AbstractGeneratorModelNode this) :
 	addImport(Map.name);
 
 LinkedHashMap(AbstractGeneratorModelNode this) :
 	addImport(LinkedHashMap.name);
+	
+Iterator(AbstractGeneratorModelNode this) :
+	addImport(Iterator.name);
+	
+Calendar(AbstractGeneratorModelNode this) :
+	addImport(Calendar.name);
 
 IProductComponentLink(AbstractGeneratorModelNode this) :
 	addImport(IProductComponentLink.name);
+	
+// EXECPTIONS
+NoSuchElementException(AbstractGeneratorModelNode this) :
+	addImport(NoSuchElementException.name);

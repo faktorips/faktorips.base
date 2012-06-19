@@ -13,10 +13,13 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 
 public class XProductAssociation extends XAssociation {
 
@@ -30,8 +33,25 @@ public class XProductAssociation extends XAssociation {
         return (IProductCmptTypeAssociation)super.getAssociation();
     }
 
+    public String getTargetClassGenerationName() {
+        IType target = getTarget();
+        if (target != null) {
+            XClass modelNode = getModelNode(target, XProductCmptGenerationClass.class);
+            // TODO FIPS-1059
+            return addImport(modelNode.getQualifiedName(BuilderAspect.INTERFACE));
+        } else {
+            return null;
+        }
+    }
+
+    public String getGetterNameForTargetGeneration() {
+        IType target = getTarget();
+        XProductCmptClass modelNode = getModelNode(target, XProductCmptClass.class);
+        return modelNode.getGetterMethodNameForGeneration();
+    }
+
     @Override
-    protected Class<XProductCmptClass> getTargetType() {
+    protected Class<XProductCmptClass> getTargetModelNodeType() {
         return XProductCmptClass.class;
     }
 

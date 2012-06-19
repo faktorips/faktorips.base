@@ -12,7 +12,7 @@
 		«EXPAND CommonDefinitions::ImportBlock FOREACH modelContext.imports ONFILECLOSE»
 	
 		/**
-		 * «localizedJDoc("CLASS")»
+		 * «localizedJDoc("CLASS", getSimpleName(BuilderAspect::INTERFACE))»
 		 * @generated
 		 */
 		public class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-»
@@ -22,6 +22,8 @@
 			«ENDIF-»
 		 {
 			«EXPAND ProductAssociation::field FOREACH associations»
+			
+			«EXPAND ProductAssociation::getterSetterAdder FOREACH  associations»
 		 }
 	«ENDFILE»
 «ENDDEFINE»

@@ -45,7 +45,7 @@ public class XProductCmptGenerationClass extends XProductClass {
 
             @Override
             public String getImplClassName(IIpsSrcFile ipsSrcFile) {
-                return super.getImplClassName(ipsSrcFile) + "_X";
+                return super.getImplClassName(ipsSrcFile);// + "_X";
             }
 
         };

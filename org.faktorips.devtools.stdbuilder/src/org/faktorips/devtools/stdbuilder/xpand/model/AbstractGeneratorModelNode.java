@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.util.LocalizedStringsSet;
@@ -300,6 +301,10 @@ public abstract class AbstractGeneratorModelNode {
     public <T extends AbstractGeneratorModelNode> T getModelNode(IIpsObjectPartContainer ipsObjectPartContainer,
             Class<T> nodeClass) {
         return getModelService().getModelNode(ipsObjectPartContainer, nodeClass, getModelContext());
+    }
+
+    protected IJavaNamingConvention getJavaNamingConvention() {
+        return getIpsProject().getJavaNamingConvention();
     }
 
 }
