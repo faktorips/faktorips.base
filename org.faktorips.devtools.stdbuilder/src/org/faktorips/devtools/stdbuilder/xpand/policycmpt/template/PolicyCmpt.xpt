@@ -15,73 +15,24 @@
 		 * @generated
 		 */
 		public class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-»
-			«IF implementsInterface-»implements«FOREACH implementedInterfaces AS interface-»
-				«interface»
-			«ENDFOREACH»
-			«ENDIF-»
-		 {
+			«EXPAND initImplementedInterfaces»
+		{
 
 		«EXPAND PolicyCmptAttribute::fieldProperties FOREACH attributes»
 
 		«EXPAND PropertyChangeSupport::fieldDefinition»
 
 		«EXPAND PolicyCmptAttribute::memberField FOREACH attributes»
-«REM»
-			CONSTRUCTORS
-«ENDREM»
 			
-			/**
-		     * Creates a new Policy.
-		     * 
-		     * @generated
-		     */
-		    public «getSimpleName(BuilderAspect::IMPLEMENTATION)»() {
-		        super();
-		        «EXPAND initializeForOverrideAttributes-»
-		    }
-		    «IF configured»
-			/**
-		     * Creates a new Policy.
-		     * 
-		     * @generated
-		     */
-		    public «getSimpleName(BuilderAspect::IMPLEMENTATION)»(«productCmptClassName» productCmpt) {
-		        super(productCmpt);
-		        «EXPAND initializeForOverrideAttributes-»
-		    }
-		    «ENDIF»
+		«EXPAND constructors»
+		
+		«EXPAND generalMethods»
 		    
-«REM»
-			METHODS
-«ENDREM»
-
-		    «IF configured-»
-				/**
-				 *
-				 * 
-				 * @generated
-				 */
-				 «overrideAnnotation(false)»
-				 public «addImport("java.util.Calendar")» «getEffectiveFromAsCalendar()» {
-				 	«IF aggregateRoot-»
-					 	«IF hasSupertype()-»
-					 		return super.«getEffectiveFromAsCalendar()»;
-					 	«ELSE-»
-					 	    return null; // TODO 
-					 	«ENDIF-»
-					 «ELSE-»
-					        «IModelObject()» parent = «getParentModelObject()»;
-					        if (parent instanceof «IConfigurableModelObject()») {
-					            return ((«IConfigurableModelObject()»)parent).«getEffectiveFromAsCalendar()»;
-					        }
-					        return null;
-					 «ENDIF-»
-				 }
-		    «ENDIF-»
-			 
-			«EXPAND PropertyChangeSupport::generalMethods»
-			
-			«EXPAND PolicyCmptAttribute::getterAndSetter FOREACH attributes»
+		«EXPAND PropertyChangeSupport::generalMethods»
+		
+		«EXPAND PolicyCmptAttribute::getter FOREACH attributes»
+		«EXPAND PolicyCmptAttribute::setter FOREACH attributes»
+		«EXPAND PolicyCmptAttribute::allowedValuesMethod FOREACH attributes»
 
 		}
 	«ENDFILE»
@@ -95,3 +46,59 @@
 	«ENDFOREACH-»
 «ENDDEFINE»
 
+«DEFINE initImplementedInterfaces FOR XPolicyCmptClass-»
+	«IF implementsInterface-»implements
+		«FOREACH implementedInterfaces AS interface SEPARATOR ","-»
+			«interface»
+		«ENDFOREACH»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE generalMethods FOR XPolicyCmptClass-»
+	«IF configured-»
+		/**
+		 *
+		 * 
+		 * @generated
+		 */
+		 «overrideAnnotation(false)»
+		 public «addImport("java.util.Calendar")» «getEffectiveFromAsCalendar()» {
+		 	«IF aggregateRoot-»
+			 	«IF hasSupertype()-»
+			 		return super.«getEffectiveFromAsCalendar()»;
+			 	«ELSE-»
+			 	    return null; // TODO 
+			 	«ENDIF-»
+			 «ELSE-»
+			        «IModelObject()» parent = «getParentModelObject()»;
+			        if (parent instanceof «IConfigurableModelObject()») {
+			            return ((«IConfigurableModelObject()»)parent).«getEffectiveFromAsCalendar()»;
+			        }
+			        return null;
+			 «ENDIF-»
+		 }
+    «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE constructors FOR XPolicyCmptClass-»
+	/**
+     * Creates a new Police.
+     * 
+     * @generated
+     */
+    public «getSimpleName(BuilderAspect::IMPLEMENTATION)»() {
+        super();
+        «EXPAND initializeForOverrideAttributes-»
+    }
+    «IF configured»
+	/**
+     * Creates a new Police.
+     * 
+     * @generated
+     */
+    public «getSimpleName(BuilderAspect::IMPLEMENTATION)»(«productCmptClassName» productCmpt) {
+        super(productCmpt);
+        «EXPAND initializeForOverrideAttributes-»
+    }
+    «ENDIF»
+«ENDDEFINE»

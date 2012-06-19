@@ -13,16 +13,22 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
+import org.faktorips.valueset.ValueSet;
 
 public class XPolicyAttribute extends XAttribute {
 
@@ -63,6 +69,14 @@ public class XPolicyAttribute extends XAttribute {
         return isOverwrite() && getAttribute().isChangeable();
     }
 
+    public String getValueSetClass() {
+        return addImport(ValueSet.class);
+    }
+
+    public String getDatatypeClass() {
+        return addImport(valuesetDatatypeHelper.getJavaClassName());
+    }
+
     public boolean isGenerateDefaultForDerivedAttribute() {
         try {
             IProductCmptTypeMethod formulaSignature = (getAttribute()).findComputationMethod(getIpsProject());
@@ -73,4 +87,15 @@ public class XPolicyAttribute extends XAttribute {
         }
     }
 
+    public String getProductGenerationGetterName() {
+        try {
+            IPolicyCmptType polType = getIpsObjectPartContainer().getPolicyCmptType();
+            IProductCmptType prodType = polType.findProductCmptType(getIpsProject());
+            XProductCmptGenerationClass xProductCmptGenClass = getModelNode(prodType, XProductCmptGenerationClass.class);
+            String simpleName = xProductCmptGenClass.getSimpleName(BuilderAspect.IMPLEMENTATION);
+            return "get" + StringUtils.capitalize(simpleName);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
 }
