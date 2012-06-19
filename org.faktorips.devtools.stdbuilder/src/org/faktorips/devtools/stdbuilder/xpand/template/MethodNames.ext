@@ -3,8 +3,36 @@ extension org::faktorips::devtools::stdbuilder::xpand::template::ClassNames reex
 getEffectiveFromAsCalendar() :
 	"getEffectiveFromAsCalendar()";
 	
+
 getParentModelObject() :
 	"getParentModelObject()";
 
+// ---------------------------------
+// Methods in IProductComponentLink
+// ---------------------------------
+
 getTarget() :
 	"getTarget()";
+	
+getTargetId() :
+	"getTargetId()";
+
+getCardinality() :
+	"getCardinality()";
+	
+// ---------------------------------
+// Methods in IProductComponent
+// ---------------------------------
+
+getId() :
+	"getId()";
+	
+getRepository() :
+	"getRepository()";
+	
+// ---------------------------------
+// Methods in IRuntimeRepository
+// ---------------------------------
+
+isModifiable() :
+	"isModifiable()";

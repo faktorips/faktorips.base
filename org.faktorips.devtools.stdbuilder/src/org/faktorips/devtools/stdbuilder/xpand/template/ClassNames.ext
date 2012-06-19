@@ -1,5 +1,6 @@
 import java::util;
 import org::faktorips::runtime;
+import org::faktorips::runtime::internal;
 import org::faktorips::devtools::stdbuilder::xpand::model;
 
 IModelObject(AbstractGeneratorModelNode this) :
@@ -7,6 +8,10 @@ IModelObject(AbstractGeneratorModelNode this) :
 	
 IConfigurableModelObject(AbstractGeneratorModelNode this) :
 	addImport(IConfigurableModelObject.name);
+
+// Collection is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
+Collection_(AbstractGeneratorModelNode this) :
+	addImport("java.util.Collection");
 
 // List is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
 List_(AbstractGeneratorModelNode this) :
@@ -25,12 +30,24 @@ LinkedHashMap(AbstractGeneratorModelNode this) :
 Iterator(AbstractGeneratorModelNode this) :
 	addImport(Iterator.name);
 	
+Collections(AbstractGeneratorModelNode this) :
+	addImport(Collections.name);
+
 Calendar(AbstractGeneratorModelNode this) :
 	addImport(Calendar.name);
+
+ProductComponentLink(AbstractGeneratorModelNode this) :
+	addImport(ProductComponentLink.name);
 
 IProductComponentLink(AbstractGeneratorModelNode this) :
 	addImport(IProductComponentLink.name);
 	
+CardinalityRange(AbstractGeneratorModelNode this) :
+	addImport(CardinalityRange.name);
+	
 // EXECPTIONS
 NoSuchElementException(AbstractGeneratorModelNode this) :
 	addImport(NoSuchElementException.name);
+
+IllegalRepositoryModificationException(AbstractGeneratorModelNode this) :
+	addImport(IllegalRepositoryModificationException.name);
