@@ -1,7 +1,9 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::runtime»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAttributeExtension»
 
 «DEFINE fieldProperties FOR XPolicyAttribute»
 		/**
@@ -21,35 +23,48 @@
 	«ENDIF»
 «ENDDEFINE»
 
-«DEFINE getterAndSetter FOR XPolicyAttribute»
-		«IF generateGetter-»
-			/**
-			 * «localizedJDoc("METHOD_GETVALUE", name, description)»
-			 * @generated
-			 */
-			«IF  overwrite»«overrideAnnotation(false)-»«ENDIF-»
-			public «javaClassName» «getterMethodName»() {
-				«IF generateField-»
-					return «getReferenceOrSafeCopyIfNecessary(memberVarName)»;
+«DEFINE getter FOR XPolicyAttribute»
+	«IF generateGetter-»
+		/**
+		 * «localizedJDoc("METHOD_GETVALUE", name, description)»
+		 * @generated
+		 */
+		«IF  overwrite»«overrideAnnotation(false)-»«ENDIF-»
+		public «javaClassName» «getterMethodName»() {
+			«IF generateField-»
+				return «getReferenceOrSafeCopyIfNecessary(memberVarName)»;
+			«ELSE-»
+				«IF generateDefaultForDerivedAttribute-»
+					return «defaultValueCode»;
 				«ELSE-»
-					«IF generateDefaultForDerivedAttribute-»
-						return «defaultValueCode»;
-					«ELSE-»
 «REM»TODO«ENDREM»						
-					«ENDIF-»
 				«ENDIF-»
-			}
-		«ENDIF»
-		«IF generateSetter-»
-			/**
-			 * «localizedJDoc("METHOD_SETVALUE", name, description)»
-			 * @generated
-			 */
-			«IF  overwrite»«overrideAnnotation(false)-»«ENDIF-»
-			public void «setterMethodName»(«javaClassName» newValue) {
-				«EXPAND PropertyChangeSupport::storeOldValue-»
-				this.«memberVarName» = newValue;
-				«EXPAND PropertyChangeSupport::notify-»
-			}
-		«ENDIF»
+			«ENDIF-»
+		}
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE setter FOR XPolicyAttribute»
+	«IF generateSetter-»
+		/**
+		 * «localizedJDoc("METHOD_SETVALUE", name, description)»
+		 * @generated
+		 */
+		«IF  overwrite»«overrideAnnotation(false)-»«ENDIF-»
+		public void «setterMethodName»(«javaClassName» newValue) {
+			«EXPAND PropertyChangeSupport::storeOldValue-»
+			this.«memberVarName» = newValue;
+			«EXPAND PropertyChangeSupport::notify-»
+		}
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE allowedValuesMethod FOR XPolicyAttribute»
+	/**
+	 * «localizedJDoc("METHOD_GET_ALLOWED_VALUES_FOR", name, description)»
+	 * @generated
+	 */
+	public «valueSetClass»<«datatypeClass»> «getAllowedValuesFor_MethodName()»(«IValidationContext.name» context) {
+		return «productGenerationGetterName»().«getAllowedValuesFor_MethodName()»(context);
+	}
 «ENDDEFINE»
