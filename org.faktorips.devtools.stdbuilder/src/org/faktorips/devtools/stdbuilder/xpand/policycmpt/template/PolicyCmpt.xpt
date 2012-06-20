@@ -18,7 +18,11 @@
 			«EXPAND initImplementedInterfaces-»
 		{
 
-		«EXPAND PolicyCmptAttribute::fieldProperties FOREACH attributes»
+		«FOREACH attributes AS this»
+			«IF !published-»
+				«EXPAND PolicyCmptAttribute::fieldProperties»
+			«ENDIF-»
+		«ENDFOREACH-»
 
 		«EXPAND PropertyChangeSupport::fieldDefinition»
 
@@ -97,7 +101,7 @@
 	 * @generated
 	 */
 	 «overrideAnnotation(false)»
-	 public «productComponentSetterName»(«productComponentClassOrInterfaceName» «productComponentArgumentName», boolean initPropertiesWithConfiguratedDefaults) {
+	 public void «productComponentSetterName»(«productComponentClassOrInterfaceName» «productComponentArgumentName», boolean initPropertiesWithConfiguratedDefaults) {
         «setProductComponent(productComponentArgumentName)»;
         if (initPropertiesWithConfiguratedDefaults) {
             «initialize()»;

@@ -64,6 +64,10 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return getJavaNamingConvention().getMemberVarName(getName());
     }
 
+    public String getConstantFieldName() {
+        return getJavaNamingConvention().getConstantClassVarName(getName());
+    }
+
     public String fieldPropertyNameSuffix() {
         return getModelContext().isGenerateSeparatedCamelCase() ? StringUtil.camelCaseToUnderscore(getName())
                 .toUpperCase() : getName().toUpperCase();

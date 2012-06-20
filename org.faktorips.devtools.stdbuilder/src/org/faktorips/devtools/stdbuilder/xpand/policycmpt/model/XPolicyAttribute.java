@@ -16,6 +16,7 @@ package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -54,12 +55,20 @@ public class XPolicyAttribute extends XAttribute {
         return getAttribute().getAttributeType() != AttributeType.DERIVED_ON_THE_FLY;
     }
 
+    public boolean isPublished() {
+        return getAttribute().getModifier() == Modifier.PUBLISHED;
+    }
+
     public boolean isGenerateGetter() {
         return true;
     }
 
     public boolean isGenerateSetter() {
         return !getAttribute().isDerived();
+    }
+
+    public boolean isConstant() {
+        return getAttribute().getAttributeType() == AttributeType.CONSTANT;
     }
 
     public boolean isGenerateDefaultInitialize() {
@@ -82,6 +91,10 @@ public class XPolicyAttribute extends XAttribute {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    public boolean isProductRelevant() {
+        return getAttribute().isProductRelevant();
     }
 
     public String getProductGenerationClassName() {

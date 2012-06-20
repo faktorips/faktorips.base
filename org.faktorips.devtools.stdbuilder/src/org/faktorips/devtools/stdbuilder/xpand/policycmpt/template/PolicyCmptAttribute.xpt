@@ -6,21 +6,25 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAttributeExtension»
 
 «DEFINE fieldProperties FOR XPolicyAttribute»
-		/**
-		 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
-		 * @generated
-		 */
-		public static final String «fieldPropertyName()» = "«memberVarName»";
+	/**
+	 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
+	 * @generated
+	 */
+	public static final String «fieldPropertyName()» = "«memberVarName»";
 «ENDDEFINE»
 
 «DEFINE memberField FOR XPolicyAttribute»
-	«IF generateField»
-	/**
-	 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
-	 * @generated
-	 */
-	private «javaClassName» «memberVarName»;
-	«ENDIF»
+	«IF generateField-»
+		/**
+		 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
+		 * @generated
+		 */
+		«IF constant-»
+			private static final «javaClassName» «constantFieldName»= «defaultValueCode»;
+		«ELSE-»
+			private «javaClassName» «memberVarName»;
+		«ENDIF-»
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE getter FOR XPolicyAttribute» 
@@ -29,7 +33,7 @@
 		 * «localizedJDoc("METHOD_GETVALUE", name, description)»
 		 * @generated
 		 */
-		«IF  overwrite»«overrideAnnotation(false)-»«ENDIF-»
+		«IF  overwrite»«overrideAnnotation(false)»«ENDIF-»
 		public «javaClassName» «getterMethodName»() {
 			«IF generateField-»
 				return «getReferenceOrSafeCopyIfNecessary(memberVarName)»;
@@ -41,7 +45,7 @@
 				«ENDIF-»
 			«ENDIF-»
 		}
-	«ENDIF»
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE setter FOR XPolicyAttribute»
@@ -56,10 +60,11 @@
 			this.«memberVarName» = newValue;
 			«EXPAND PropertyChangeSupport::notify-»
 		}
-	«ENDIF»
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE allowedValuesMethod FOR XPolicyAttribute»
+	«IF productRelevant-»
 	/**
 	 * «localizedJDoc("METHOD_GET_ALLOWED_VALUES_FOR", name, description)»
 	 * @generated
@@ -67,4 +72,5 @@
 	public «valueSetClass»<«datatypeClass»> «allowedValuesGetterName()»(«IValidationContext()» context) {
 		return «productGenerationGetterName»().«allowedValuesGetterName()»(context);
 	}
+	«ENDIF-»
 «ENDDEFINE»
