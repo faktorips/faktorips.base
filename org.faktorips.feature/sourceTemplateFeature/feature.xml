@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.faktorips.feature"
+      id="org.faktorips.feature.source"
       label="%label"
       version="3.8.0.qualifier"
       provider-name="Faktor Zehn AG"
-      plugin="org.faktorips.devtools.core"
       license-feature="org.faktorips.license">
    <install-handler/>
 
@@ -412,90 +411,90 @@ schutz” abgerufen und ausgedruckt werden.
 
    <includes
          id="org.faktorips.feature"
-         version="3.8.0.ci_20120620-1334"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.faktorips.dtflcommon.source"
          download-size="0"
          install-size="0"
-         version="3.8.0.ci_20120620-1334"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.fl.source"
          download-size="0"
          install-size="0"
-         version="3.8.0.ci_20120620-1334"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.util.source"
          download-size="0"
          install-size="0"
-         version="3.8.0.ci_20120620-1334"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.devtools.ant.source"
          download-size="0"
          install-size="0"
-         version="3.8.0.ci_20120620-1334"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.devtools.core.source"
          download-size="0"
          install-size="0"
-         version="3.8.0.ci_20120620-1334"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.devtools.stdbuilder.source"
          download-size="0"
          install-size="0"
-         version="3.8.0.ci_20120620-1334"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.runtime.java5.source"
          download-size="0"
          install-size="0"
-         version="3.8.0.ci_20120620-1334"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.valuetypes.java5.source"
          download-size="0"
          install-size="0"
-         version="3.8.0.ci_20120620-1334"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.devtools.core.ui.source"
          download-size="0"
          install-size="0"
-         version="3.8.0.ci_20120620-1334"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.devtools.tableconversion.source"
          download-size="0"
          install-size="0"
-         version="3.8.0.ci_20120620-1334"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.devtools.htmlexport.source"
          download-size="0"
          install-size="0"
-         version="3.8.0.ci_20120620-1334"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.devtools.stdbuilder.ui.source"
          download-size="0"
          install-size="0"
-         version="3.8.0.ci_20120620-1334"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>
