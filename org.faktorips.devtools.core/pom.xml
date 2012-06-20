@@ -7,15 +7,13 @@
 	<parent>
 		<groupId>org.faktorips</groupId>
 		<artifactId>org.faktorips.build</artifactId>
-		<version>3.7.2-SNAPSHOT</version>
-		<relativePath>../org.faktorips.build/pom.xml</relativePath>
+		<version>1.0.0</version>
 	</parent>
 
 	<artifactId>org.faktorips.devtools.core</artifactId>
+	<version>3.7.2-SNAPSHOT</version>
 
 	<packaging>eclipse-plugin</packaging>
-
-	
 
 	<build>
 		<plugins>
@@ -31,7 +29,6 @@
 						<phase>validate</phase>
 						<configuration>
 							<target>
-
 								<copy file="${basedir}/about.mappings" tofile="${basedir}/about.mappings.backup" />
 								<replace file="${basedir}/about.mappings">
 									<replacefilter token="@version@" value="${unqualifiedVersion}" />

@@ -8,11 +8,12 @@
 		<groupId>org.faktorips</groupId>
 		<artifactId>org.faktorips.build</artifactId>
 		<version>3.7.2-SNAPSHOT</version>
-		<relativePath>../org.faktorips.build/pom.xml</relativePath>
+
 	</parent>
 	
 	<artifactId>org.faktorips.feature.test</artifactId>
 	<packaging>eclipse-feature</packaging>
     
 
+	<version>3.7.2-SNAPSHOT</version>
 </project>

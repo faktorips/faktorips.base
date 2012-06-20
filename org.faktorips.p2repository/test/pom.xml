@@ -7,11 +7,10 @@
 	<parent>
 		<groupId>org.faktorips</groupId>
 		<artifactId>org.faktorips.build</artifactId>
-		<version>3.7.2-SNAPSHOT</version>
-		<relativePath>../../org.faktorips.build/pom.xml</relativePath>
+		<version>1.0.0</version>
 	</parent>
 
-	<artifactId>org.faktorips.updatesite.test</artifactId>
+	<artifactId>org.faktorips.p2repository.test</artifactId>
 	<packaging>eclipse-repository</packaging>
 
     

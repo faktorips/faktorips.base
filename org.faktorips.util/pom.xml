@@ -6,8 +6,7 @@
 	<parent>
 		<groupId>org.faktorips</groupId>
 		<artifactId>org.faktorips.build</artifactId>
-		<version>3.7.2-SNAPSHOT</version>
-		<relativePath>../org.faktorips.build/pom.xml</relativePath>
+		<version>1.0.0</version>
 	</parent>
   
   <artifactId>org.faktorips.util</artifactId>
@@ -16,4 +15,5 @@
   
     
 
+    <version>3.7.2-SNAPSHOT</version>
 </project>
