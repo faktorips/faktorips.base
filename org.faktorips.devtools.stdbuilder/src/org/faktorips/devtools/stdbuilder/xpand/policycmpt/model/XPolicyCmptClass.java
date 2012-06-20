@@ -19,6 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -26,6 +27,7 @@ import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.runtime.INotificationSupport;
 import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
@@ -104,5 +106,88 @@ public class XPolicyCmptClass extends XClass {
 
     public List<XPolicyAssociation> getAssociations() {
         return new CopyOnWriteArrayList<XPolicyAssociation>(associations);
+    }
+
+    /**
+     * Returns the simple name for the product component generation class associated with this
+     * policy component class. An import will be added automatically.
+     * 
+     */
+    public String getProductGenerationClassName() {
+        return getProductGenerationClassName(true);
+    }
+
+    /**
+     * Returns the simple name for the product component generation class or interface associated
+     * with this policy component class. An import will be added automatically.
+     * <p>
+     * This method lets the {@link GeneratorModelContext} and its {@link JavaClassNaming} decide
+     * whether the name of the published interface or the name of the implementing class - in case
+     * no published interface is generated - is returned.
+     * 
+     */
+    public String getProductGenerationClassOfInterfaceName() {
+        return getProductGenerationClassName(false);
+    }
+
+    /**
+     * Returns the simple name for the product component generation class or interface associated
+     * with this policy component class. An import will be added automatically.
+     * 
+     */
+    public String getProductGenerationClassName(boolean implementation) {
+        IProductCmptType prodType = getProductCmptType();
+        XProductCmptGenerationClass xProductCmptGenClass = getModelNode(prodType, XProductCmptGenerationClass.class);
+        String simpleName = xProductCmptGenClass.getSimpleName(implementation ? BuilderAspect.IMPLEMENTATION
+                : BuilderAspect.INTERFACE);
+        return simpleName;
+    }
+
+    /**
+     * Returns the simple name for the product component class or interface associated with this
+     * policy component class. An import will be added automatically.
+     * 
+     */
+    public String getProductClassName(boolean implementation) {
+        IProductCmptType prodType = getProductCmptType();
+        XProductCmptClass xProductCmptClass = getModelNode(prodType, XProductCmptClass.class);
+        String simpleName = xProductCmptClass.getSimpleName(implementation ? BuilderAspect.IMPLEMENTATION
+                : BuilderAspect.INTERFACE);
+        return simpleName;
+    }
+
+    /**
+     * Returns the simple name for the product component class associated with this policy component
+     * class. An import will be added automatically.
+     * 
+     */
+    public String getProductClassName() {
+        return getProductClassName(true);
+    }
+
+    /**
+     * Returns the simple name for the product component class or interface associated with this
+     * policy component class. An import will be added automatically.
+     * <p>
+     * This method lets the {@link GeneratorModelContext} and its {@link JavaClassNaming} decide
+     * whether the name of the published interface or the name of the implementing class - in case
+     * no published interface is generated - is returned .
+     * 
+     */
+    public String getProductClassOrInterfaceName() {
+        return getProductClassName(false);
+    }
+
+    /**
+     * Finds the product component type associated with this policy component type and returns it.
+     * Throws a {@link CoreRuntimeException} in case of a {@link CoreException}.
+     */
+    protected IProductCmptType getProductCmptType() {
+        try {
+            IProductCmptType prodType = getPolicyCmptType().findProductCmptType(getIpsProject());
+            return prodType;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 }

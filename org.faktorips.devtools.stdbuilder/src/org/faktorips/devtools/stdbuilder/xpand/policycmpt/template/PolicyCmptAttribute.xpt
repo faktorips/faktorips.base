@@ -23,7 +23,7 @@
 	«ENDIF»
 «ENDDEFINE»
 
-«DEFINE getter FOR XPolicyAttribute»
+«DEFINE getter FOR XPolicyAttribute» 
 	«IF generateGetter-»
 		/**
 		 * «localizedJDoc("METHOD_GETVALUE", name, description)»
@@ -64,7 +64,7 @@
 	 * «localizedJDoc("METHOD_GET_ALLOWED_VALUES_FOR", name, description)»
 	 * @generated
 	 */
-	public «valueSetClass»<«datatypeClass»> «getAllowedValuesFor_MethodName()»(«IValidationContext.name» context) {
-		return «productGenerationGetterName»().«getAllowedValuesFor_MethodName()»(context);
+	public «valueSetClass»<«datatypeClass»> «allowedValuesGetterName()»(«IValidationContext()» context) {
+		return «productGenerationGetterName()»().«allowedValuesGetterName()»(context);
 	}
 «ENDDEFINE»

@@ -15,30 +15,40 @@ package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
-import org.junit.Before;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class XPolicyCmptClassTest {
 
     @Mock
     private IPolicyCmptType type;
     @Mock
-    private GeneratorModelContext context;
+    private GeneratorModelContext modelContext;
     @Mock
     private ModelService modelService;
     private XAttribute attributeNode1;
@@ -46,16 +56,11 @@ public class XPolicyCmptClassTest {
     private XPolicyAssociation associationNode1;
     private XPolicyAssociation associationNode2;
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
-
     @Test
     public void initAttributes() {
         setupAttributeList();
 
-        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, context, modelService);
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
         List<XPolicyAttribute> attributeNodeList = policyCmptClass.getAttributes();
         assertEquals(2, attributeNodeList.size());
         assertEquals(attributeNode1, attributeNodeList.get(0));
@@ -66,7 +71,7 @@ public class XPolicyCmptClassTest {
     public void initAttributeList() {
         setupAttributeList();
 
-        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, context, modelService);
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
         List<XPolicyAttribute> attributeList = policyCmptClass.getAttributes();
         List<XPolicyAttribute> secondAttributeList = policyCmptClass.getAttributes();
         // returns copies of the same list
@@ -83,8 +88,8 @@ public class XPolicyCmptClassTest {
         attrList.add(attr1);
         attrList.add(attr2);
 
-        doReturn(attributeNode1).when(modelService).getModelNode(attr1, XPolicyAttribute.class, context);
-        doReturn(attributeNode2).when(modelService).getModelNode(attr2, XPolicyAttribute.class, context);
+        doReturn(attributeNode1).when(modelService).getModelNode(attr1, XPolicyAttribute.class, modelContext);
+        doReturn(attributeNode2).when(modelService).getModelNode(attr2, XPolicyAttribute.class, modelContext);
         when(type.getPolicyCmptTypeAttributes()).thenReturn(attrList);
     }
 
@@ -92,7 +97,7 @@ public class XPolicyCmptClassTest {
     public void initAssociations() {
         setupAssociationList();
 
-        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, context, modelService);
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
         List<XPolicyAssociation> associationNodeList = policyCmptClass.getAssociations();
         assertEquals(2, associationNodeList.size());
         assertEquals(associationNode1, associationNodeList.get(0));
@@ -103,7 +108,7 @@ public class XPolicyCmptClassTest {
     public void initAssociationList() {
         setupAssociationList();
 
-        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, context, modelService);
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
         List<XPolicyAssociation> assocList = policyCmptClass.getAssociations();
         List<XPolicyAssociation> secondAssocList = policyCmptClass.getAssociations();
         // returns copies of the same list
@@ -120,9 +125,43 @@ public class XPolicyCmptClassTest {
         assocList.add(assoc1);
         assocList.add(assoc2);
 
-        doReturn(associationNode1).when(modelService).getModelNode(assoc1, XPolicyAssociation.class, context);
-        doReturn(associationNode2).when(modelService).getModelNode(assoc2, XPolicyAssociation.class, context);
+        doReturn(associationNode1).when(modelService).getModelNode(assoc1, XPolicyAssociation.class, modelContext);
+        doReturn(associationNode2).when(modelService).getModelNode(assoc2, XPolicyAssociation.class, modelContext);
         when(type.getPolicyCmptTypeAssociations()).thenReturn(assocList);
+    }
+
+    @Test
+    public void returnProdGenerationClassName() throws CoreException {
+        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        IProductCmptType prodType = initProdType(policyCmptClass);
+
+        XProductCmptGenerationClass xProdGenClass = mock(XProductCmptGenerationClass.class);
+        when(modelService.getModelNode(prodType, XProductCmptGenerationClass.class, modelContext)).thenReturn(
+                xProdGenClass);
+
+        policyCmptClass.getProductGenerationClassName();
+        verify(xProdGenClass).getSimpleName(BuilderAspect.IMPLEMENTATION);
+    }
+
+    private IProductCmptType initProdType(XPolicyCmptClass policyCmptClass) throws CoreException {
+        IPolicyCmptType polType = mock(IPolicyCmptType.class);
+        when(policyCmptClass.getPolicyCmptType()).thenReturn(polType);
+
+        IProductCmptType prodType = mock(IProductCmptType.class);
+        when(polType.findProductCmptType(any(IIpsProject.class))).thenReturn(prodType);
+        return prodType;
+    }
+
+    @Test
+    public void returnProdClassName() throws CoreException {
+        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        IProductCmptType prodType = initProdType(policyCmptClass);
+
+        XProductCmptClass xProdClass = mock(XProductCmptClass.class);
+        when(modelService.getModelNode(prodType, XProductCmptClass.class, modelContext)).thenReturn(xProdClass);
+
+        policyCmptClass.getProductClassName();
+        verify(xProdClass).getSimpleName(BuilderAspect.IMPLEMENTATION);
     }
 
 }

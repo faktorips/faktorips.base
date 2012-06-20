@@ -26,7 +26,9 @@
 			
 		«EXPAND constructors»
 		
-		«EXPAND generalMethods»
+		«IF configured-»
+			«EXPAND generalMethodsForConfiguredPolicyCmpts»
+	    «ENDIF-»
 		    
 		«EXPAND PropertyChangeSupport::generalMethods»
 		
@@ -54,30 +56,54 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE generalMethods FOR XPolicyCmptClass-»
-	«IF configured-»
-		/**
-		 *
-		 * 
-		 * @generated
-		 */
-		 «overrideAnnotation(false)»
-		 public «addImport("java.util.Calendar")» «getEffectiveFromAsCalendar()» {
-		 	«IF aggregateRoot-»
-			 	«IF hasSupertype()-»
-			 		return super.«getEffectiveFromAsCalendar()»;
-			 	«ELSE-»
-			 	    return null; // TODO 
-			 	«ENDIF-»
-			 «ELSE-»
-			        «IModelObject()» parent = «getParentModelObject()»;
-			        if (parent instanceof «IConfigurableModelObject()») {
-			            return ((«IConfigurableModelObject()»)parent).«getEffectiveFromAsCalendar()»;
-			        }
-			        return null;
-			 «ENDIF-»
-		 }
-    «ENDIF-»
+«DEFINE generalMethodsForConfiguredPolicyCmpts FOR XPolicyCmptClass-»
+	/**
+	 * @generated
+	 */
+	 «overrideAnnotation(false)»
+	 public «addImport("java.util.Calendar")» «getEffectiveFromAsCalendar()» {
+	 	«IF aggregateRoot-»
+		 	«IF hasSupertype()-»
+		 		return super.«getEffectiveFromAsCalendar()»;
+		 	«ELSE-»
+		 	    return null; // TODO 
+		 	«ENDIF-»
+		 «ELSE-»
+		        «IModelObject()» parent = «getParentModelObject()»;
+		        if (parent instanceof «IConfigurableModelObject()») {
+		            return ((«IConfigurableModelObject()»)parent).«getEffectiveFromAsCalendar()»;
+		        }
+		        return null;
+		 «ENDIF-»
+	 }
+		
+	/**
+	 * @generated
+	 */
+	 «overrideAnnotation(false)»
+	 public «productGenerationClassName» «productCmptMethods_generationGetter()»() {
+	 	return («productGenerationClassName»)  «getProductCmptGeneration()»;
+	 }
+	 
+	/**
+	 * @generated
+	 */
+	 «overrideAnnotation(false)»
+	 public «productClassName» «productCmptMethods_componentGetter()»() {
+	 	return («productClassOrInterfaceName»)  «getProductComponent()»;
+	 }
+	 
+	/**
+	 * @generated
+	 */
+	 «overrideAnnotation(false)»
+	 public «productClassName» («productClassName» «productClassParameterName()», boolean initPropertiesWithConfiguratedDefaults) {
+        «setProductComponentMethodName()»(«productClassParameterName()»);
+        if (initPropertiesWithConfiguratedDefaults) {
+            «initialize()»;
+        }
+	 }
+		 
 «ENDDEFINE»
 
 «DEFINE constructors FOR XPolicyCmptClass-»

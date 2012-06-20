@@ -7,3 +7,15 @@ fieldPropertyName(XPolicyAttribute this) :
 
 propertyChangeSupport_oldValueVar(XPolicyAttribute this) :
 	" old" + memberVarName.toFirstUpper();
+	
+productCmptMethods_generationGetter(XPolicyCmptClass this) :
+	" get" + productGenerationClassName.toFirstUpper();
+	
+productCmptMethods_componentGetter(XPolicyCmptClass this) :
+	" get" + productCmptClassName.toFirstUpper();
+	
+productCmptMethods_componentSetter(XPolicyCmptClass this) :
+	" set" + productCmptClassName.toFirstUpper();
+	
+productClassParameterName(XPolicyCmptClass this) :
+	productCmptClassName.toFirstLower();

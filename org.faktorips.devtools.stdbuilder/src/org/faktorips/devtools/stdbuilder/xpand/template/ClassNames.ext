@@ -8,6 +8,9 @@ IModelObject(AbstractGeneratorModelNode this) :
 	
 IConfigurableModelObject(AbstractGeneratorModelNode this) :
 	addImport(IConfigurableModelObject.name);
+	
+IValidationContext(AbstractGeneratorModelNode this) :
+	addImport(IValidationContext.name);
 
 // Collection is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
 Collection_(AbstractGeneratorModelNode this) :

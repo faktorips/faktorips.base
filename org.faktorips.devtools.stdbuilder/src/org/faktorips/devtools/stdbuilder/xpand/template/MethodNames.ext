@@ -1,5 +1,6 @@
 extension org::faktorips::devtools::stdbuilder::xpand::template::ClassNames reexport;
 
+
 getEffectiveFromAsCalendar() :
 	"getEffectiveFromAsCalendar()";
 	
@@ -31,8 +32,32 @@ getRepository() :
 	"getRepository()";
 	
 // ---------------------------------
+// Methods in IPolicyComponent
+// ---------------------------------
+
+getProductComponent() :
+	"getProductComponent()";
+	
+getProductCmptGeneration() :
+	"getProductCmptGeneration()";
+
+setProductComponentMethodName() :
+	"setProductComponent";
+	
+initialize():
+	"initialize()";
+			
+// ---------------------------------
 // Methods in IRuntimeRepository
 // ---------------------------------
 
 isModifiable() :
 	"isModifiable()";
+	
+
+// ---------------------------------
+// Common Methods
+// ---------------------------------
+
+getterFor(String fieldName):
+	"get"+fieldName.toFirstUpper();

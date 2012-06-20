@@ -3,5 +3,8 @@ import org::faktorips::devtools::stdbuilder::xpand::policycmpt::model;
 extension org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions reexport;
 
 
-getAllowedValuesFor_MethodName(XPolicyAttribute attribute):
-	"getSetOfAllowedValuesFor"+attribute.memberVarName.toFirstUpper();
+allowedValuesGetterName(XPolicyAttribute this):
+	"getSetOfAllowedValuesFor"+memberVarName.toFirstUpper();
+	
+productGenerationGetterName(XPolicyAttribute this):
+	getterFor(productGenerationClassName);
