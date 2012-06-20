@@ -65,6 +65,6 @@
 	 * @generated
 	 */
 	public «valueSetClass»<«datatypeClass»> «allowedValuesGetterName()»(«IValidationContext()» context) {
-		return «productGenerationGetterName()»().«allowedValuesGetterName()»(context);
+		return «productGenerationGetterName»().«allowedValuesGetterName()»(context);
 	}
 «ENDDEFINE»

@@ -41,8 +41,8 @@ getProductComponent() :
 getProductCmptGeneration() :
 	"getProductCmptGeneration()";
 
-setProductComponentMethodName() :
-	"setProductComponent";
+setProductComponent(String argument) :
+	"setProductComponent("+argument+")";
 	
 initialize():
 	"initialize()";
@@ -54,10 +54,3 @@ initialize():
 isModifiable() :
 	"isModifiable()";
 	
-
-// ---------------------------------
-// Common Methods
-// ---------------------------------
-
-getterFor(String fieldName):
-	"get"+fieldName.toFirstUpper();

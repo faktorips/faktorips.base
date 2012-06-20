@@ -85,8 +85,18 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public String getProductGenerationClassName() {
+        XPolicyCmptClass xPolicyCmptClass = getXPolicyCmptClass();
+        return xPolicyCmptClass.getProductGenerationClassName();
+    }
+
+    public String getProductGenerationGetterName() {
+        XPolicyCmptClass xPolicyCmptClass = getXPolicyCmptClass();
+        return xPolicyCmptClass.getProductGenerationGetterName();
+    }
+
+    private XPolicyCmptClass getXPolicyCmptClass() {
         IPolicyCmptType polType = getIpsObjectPartContainer().getPolicyCmptType();
         XPolicyCmptClass xPolicyCmptClass = getModelNode(polType, XPolicyCmptClass.class);
-        return xPolicyCmptClass.getProductGenerationClassName();
+        return xPolicyCmptClass;
     }
 }

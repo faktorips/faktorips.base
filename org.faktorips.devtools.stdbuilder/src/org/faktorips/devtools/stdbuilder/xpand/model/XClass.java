@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.INotificationSupport;
@@ -64,14 +63,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     }
 
     public static IJavaClassNameProvider createJavaClassNamingProvider() {
-        return new DefaultJavaClassNameProvider() {
-            // TODO FOR DEVELOPMENT ONLY!!!
-            @Override
-            public String getImplClassName(IIpsSrcFile ipsSrcFile) {
-                return super.getImplClassName(ipsSrcFile) + "_X";
-            }
-
-        };
+        return new DefaultJavaClassNameProvider();
     }
 
     public boolean hasSupertype() {

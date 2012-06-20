@@ -113,8 +113,8 @@ public class XPolicyCmptClass extends XClass {
      * policy component class. An import will be added automatically.
      * 
      */
-    public String getProductGenerationClassName() {
-        return getProductGenerationClassName(true);
+    protected String getProductGenerationClassName() {
+        return getProductGenerationClassName(BuilderAspect.IMPLEMENTATION);
     }
 
     /**
@@ -125,9 +125,10 @@ public class XPolicyCmptClass extends XClass {
      * whether the name of the published interface or the name of the implementing class - in case
      * no published interface is generated - is returned.
      * 
+     * TODO FIPS-1059
      */
-    public String getProductGenerationClassOfInterfaceName() {
-        return getProductGenerationClassName(false);
+    public String getProductGenerationClassOrInterfaceName() {
+        return getProductGenerationClassName(BuilderAspect.IMPLEMENTATION);
     }
 
     /**
@@ -135,11 +136,10 @@ public class XPolicyCmptClass extends XClass {
      * with this policy component class. An import will be added automatically.
      * 
      */
-    public String getProductGenerationClassName(boolean implementation) {
+    protected String getProductGenerationClassName(BuilderAspect aspect) {
         IProductCmptType prodType = getProductCmptType();
         XProductCmptGenerationClass xProductCmptGenClass = getModelNode(prodType, XProductCmptGenerationClass.class);
-        String simpleName = xProductCmptGenClass.getSimpleName(implementation ? BuilderAspect.IMPLEMENTATION
-                : BuilderAspect.INTERFACE);
+        String simpleName = xProductCmptGenClass.getSimpleName(aspect);
         return simpleName;
     }
 
@@ -148,11 +148,10 @@ public class XPolicyCmptClass extends XClass {
      * policy component class. An import will be added automatically.
      * 
      */
-    public String getProductClassName(boolean implementation) {
+    public String getProductComponentClassName(BuilderAspect aspect) {
         IProductCmptType prodType = getProductCmptType();
         XProductCmptClass xProductCmptClass = getModelNode(prodType, XProductCmptClass.class);
-        String simpleName = xProductCmptClass.getSimpleName(implementation ? BuilderAspect.IMPLEMENTATION
-                : BuilderAspect.INTERFACE);
+        String simpleName = xProductCmptClass.getSimpleName(aspect);
         return simpleName;
     }
 
@@ -161,8 +160,8 @@ public class XPolicyCmptClass extends XClass {
      * class. An import will be added automatically.
      * 
      */
-    public String getProductClassName() {
-        return getProductClassName(true);
+    protected String getProductComponentClassName() {
+        return getProductComponentClassName(BuilderAspect.IMPLEMENTATION);
     }
 
     /**
@@ -173,9 +172,11 @@ public class XPolicyCmptClass extends XClass {
      * whether the name of the published interface or the name of the implementing class - in case
      * no published interface is generated - is returned .
      * 
+     * TODO FIPS-1059
+     * 
      */
-    public String getProductClassOrInterfaceName() {
-        return getProductClassName(false);
+    public String getProductComponentClassOrInterfaceName() {
+        return getProductComponentClassName(BuilderAspect.IMPLEMENTATION);
     }
 
     /**
@@ -189,5 +190,21 @@ public class XPolicyCmptClass extends XClass {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    public String getProductGenerationGetterName() {
+        return getJavaNamingConvention().getGetterMethodName(getProductGenerationClassName());
+    }
+
+    public String getProductComponentGetterName() {
+        return getJavaNamingConvention().getGetterMethodName(getProductComponentClassName());
+    }
+
+    public String getProductComponentSetterName() {
+        return getJavaNamingConvention().getSetterMethodName(getProductComponentClassName());
+    }
+
+    public String getProductComponentArgumentName() {
+        return getJavaNamingConvention().getMemberVarName(getProductComponentClassName());
     }
 }

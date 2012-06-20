@@ -15,7 +15,7 @@
 		 * @generated
 		 */
 		public class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-»
-			«EXPAND initImplementedInterfaces»
+			«EXPAND initImplementedInterfaces-»
 		{
 
 		«EXPAND PolicyCmptAttribute::fieldProperties FOREACH attributes»
@@ -81,24 +81,24 @@
 	 * @generated
 	 */
 	 «overrideAnnotation(false)»
-	 public «productGenerationClassName» «productCmptMethods_generationGetter()»() {
-	 	return («productGenerationClassName»)  «getProductCmptGeneration()»;
+	 public «productGenerationClassOrInterfaceName» «productGenerationGetterName»() {
+	 	return («productGenerationClassOrInterfaceName») «getProductCmptGeneration()»;
 	 }
 	 
 	/**
 	 * @generated
 	 */
 	 «overrideAnnotation(false)»
-	 public «productClassName» «productCmptMethods_componentGetter()»() {
-	 	return («productClassOrInterfaceName»)  «getProductComponent()»;
+	 public «productComponentClassOrInterfaceName» «productComponentGetterName»() {
+	 	return («productComponentClassOrInterfaceName») «getProductComponent()»;
 	 }
 	 
 	/**
 	 * @generated
 	 */
 	 «overrideAnnotation(false)»
-	 public «productClassName» («productClassName» «productClassParameterName()», boolean initPropertiesWithConfiguratedDefaults) {
-        «setProductComponentMethodName()»(«productClassParameterName()»);
+	 public «productComponentSetterName»(«productComponentClassOrInterfaceName» «productComponentArgumentName», boolean initPropertiesWithConfiguratedDefaults) {
+        «setProductComponent(productComponentArgumentName)»;
         if (initPropertiesWithConfiguratedDefaults) {
             «initialize()»;
         }
