@@ -11,6 +11,8 @@
 	</parent>
 
 	<artifactId>org.faktorips.p2repository.test</artifactId>
+	<version>3.8.0-SNAPSHOT</version>
+	
 	<packaging>eclipse-repository</packaging>
 
     
