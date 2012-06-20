@@ -37,7 +37,7 @@ parseArgs()
 initDefaults()
 {
 	CHECKOUT_DIR=${CHECKOUT_DIR:-'checkoutDir'}
-	BUILD_POM=${BUILD_POM:-'org.faktorips.build/pom.xml'}
+	BUILD_POM=${BUILD_POM:-'org.faktorips.aggregator/pom.xml'}
 	MAVEN_CMD=${MAVEN_CMD:-'mvn'}
 	GIT_USERNAME=${GIT_USERNAME:-$USER}
 	BRANCH=${BRANCH:-'master'}

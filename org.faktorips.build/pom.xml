@@ -5,8 +5,21 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.faktorips</groupId>
 	<artifactId>org.faktorips.build</artifactId>
-	<version>3.8.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
+
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<name>Faktor Zehn Releases</name>
+			<url>https://nexus.faktorzehn.de/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Faktor Zehn Snapshots</name>
+			<url>https://nexus.faktorzehn.de/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<!-- this is the parent POM from which all modules inherit common settings -->
 	<properties>
@@ -167,75 +180,39 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<!-- Release and Deploy settings: Skip normal deploy plugin -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<!-- Parse version to properties (used in file-deploy) -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>parse-version</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>parse-version</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 
-	<!-- These are all modules that are included in the Faktor-IPS build -->
-
-	<modules>
-		<!-- features org.faktorips.feature -->
-		<module>../org.faktorips.license</module>
-		<module>../org.faktorips.feature</module>
-		<module>../org.faktorips.feature.nls1</module>
-		<module>../org.faktorips.testdependencies</module>
-		<!-- plugins of feature org.faktorips.feature -->
-		<module>../org.faktorips.abstracttest</module>
-		<module>../org.faktorips.devtools.ant</module>
-		<module>../org.faktorips.devtools.ant.test</module>
-		<module>../org.faktorips.devtools.core</module>
-		<module>../org.faktorips.devtools.core.test</module>
-		<module>../org.faktorips.devtools.core.ui</module>
-		<module>../org.faktorips.devtools.core.ui.test</module>
-		<module>../org.faktorips.devtools.htmlexport</module>
-		<module>../org.faktorips.devtools.htmlexport.nl1</module>
-		<module>../org.faktorips.devtools.htmlexport.test</module>
-		<module>../org.faktorips.devtools.stdbuilder</module>
-		<module>../org.faktorips.devtools.stdbuilder.test</module>
-		<module>../org.faktorips.devtools.stdbuilder.ui</module>
-		<module>../org.faktorips.devtools.stdbuilder.ui.test</module>
-		<module>../org.faktorips.devtools.tableconversion</module>
-		<module>../org.faktorips.devtools.tableconversion.nl1</module>
-		<module>../org.faktorips.devtools.tableconversion.test</module>
-		<module>../org.faktorips.dtflcommon</module>
-		<module>../org.faktorips.dtflcommon.test</module>
-		<module>../org.faktorips.fl</module>
-		<module>../org.faktorips.fl.test</module>
-		<module>../org.faktorips.nls.devtools.core.nl1</module>
-		<module>../org.faktorips.nls.devtools.core.ui.nl1</module>
-		<module>../org.faktorips.nls.devtools.stdbuilder.nl1</module>
-		<module>../org.faktorips.nls.devtools.stdbuilder.ui.nl1</module>
-		<module>../org.faktorips.runtime.java5</module>
-		<module>../org.faktorips.runtime.java5.test</module>
-		<module>../org.faktorips.util</module>
-		<module>../org.faktorips.util.test</module>
-		<module>../org.faktorips.valuetypes.java5</module>
-		<module>../org.faktorips.valuetypes.java5.test</module>
-		<!-- p2 Repository and product -->
-		<module>../org.faktorips.p2repository</module>
-		<module>../org.faktorips.p2repository/test</module>
-		<!-- <module>../org.faktorips.product</module> -->
-	</modules>
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<!-- Release and Deploy settings: Skip normal deploy plugin -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-deploy-plugin</artifactId>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</plugin>
+					<!-- Parse version to properties (used in file-deploy) -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>parse-version</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>parse-version</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

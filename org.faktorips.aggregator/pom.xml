@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.faktorips</groupId>
+	<artifactId>org.faktorips.aggregator</artifactId>
+	<version>3.8.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<!-- These are all modules that are included in the Faktor-IPS build -->
+
+	<modules>
+		<!-- features org.faktorips.feature -->
+		<module>../org.faktorips.feature</module>
+		<module>../org.faktorips.feature.nls1</module>
+		<module>../org.faktorips.testdependencies</module>
+		<!-- plugins of feature org.faktorips.feature -->
+		<module>../org.faktorips.abstracttest</module>
+		<module>../org.faktorips.devtools.ant</module>
+		<module>../org.faktorips.devtools.ant.test</module>
+		<module>../org.faktorips.devtools.core</module>
+		<module>../org.faktorips.devtools.core.test</module>
+		<module>../org.faktorips.devtools.core.ui</module>
+		<module>../org.faktorips.devtools.core.ui.test</module>
+		<module>../org.faktorips.devtools.htmlexport</module>
+		<module>../org.faktorips.devtools.htmlexport.nl1</module>
+		<module>../org.faktorips.devtools.htmlexport.test</module>
+		<module>../org.faktorips.devtools.stdbuilder</module>
+		<module>../org.faktorips.devtools.stdbuilder.test</module>
+		<module>../org.faktorips.devtools.stdbuilder.ui</module>
+		<module>../org.faktorips.devtools.stdbuilder.ui.test</module>
+		<module>../org.faktorips.devtools.tableconversion</module>
+		<module>../org.faktorips.devtools.tableconversion.nl1</module>
+		<module>../org.faktorips.devtools.tableconversion.test</module>
+		<module>../org.faktorips.dtflcommon</module>
+		<module>../org.faktorips.dtflcommon.test</module>
+		<module>../org.faktorips.fl</module>
+		<module>../org.faktorips.fl.test</module>
+		<module>../org.faktorips.nls.devtools.core.nl1</module>
+		<module>../org.faktorips.nls.devtools.core.ui.nl1</module>
+		<module>../org.faktorips.nls.devtools.stdbuilder.nl1</module>
+		<module>../org.faktorips.nls.devtools.stdbuilder.ui.nl1</module>
+		<module>../org.faktorips.runtime.java5</module>
+		<module>../org.faktorips.runtime.java5.test</module>
+		<module>../org.faktorips.util</module>
+		<module>../org.faktorips.util.test</module>
+		<module>../org.faktorips.valuetypes.java5</module>
+		<module>../org.faktorips.valuetypes.java5.test</module>
+		<!-- p2 Repository and product -->
+		<module>../org.faktorips.updatesite</module>
+		<module>../org.faktorips.updatesite/test</module>
+		<!-- 
+		<module>../org.faktorips.product</module>
+		 -->
+	</modules>
+
+</project>
