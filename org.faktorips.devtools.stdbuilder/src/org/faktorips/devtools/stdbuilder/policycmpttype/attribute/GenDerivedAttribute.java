@@ -109,7 +109,7 @@ public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
         builder.openBracket();
 
         IProductCmptTypeMethod formulaSignature = (getAttribute()).findComputationMethod(ipsProject);
-        if (!(getAttribute()).isProductRelevant() || formulaSignature == null
+        if (!getAttribute().isProductRelevant() || formulaSignature == null
                 || formulaSignature.validate(ipsProject).containsErrorMsg()) {
             builder.append("return ");
             builder.append(getDatatypeHelper().newInstance(getAttribute().getDefaultValue()));

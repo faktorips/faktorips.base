@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
@@ -21,6 +23,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -305,6 +308,31 @@ public abstract class AbstractGeneratorModelNode {
 
     protected IJavaNamingConvention getJavaNamingConvention() {
         return getIpsProject().getJavaNamingConvention();
+    }
+
+    /**
+     * Returns whether or not published interfaces are generated.
+     */
+    public boolean isGeneratingPublishedInterfaces() {
+        // TODO FIPS-1059
+        return true;
+    }
+
+    /**
+     * 
+     * Creates a list containing one {@link AbstractGeneratorModelNode} (of the given class) for
+     * every {@link IIpsObjectPart} in the given list.
+     * 
+     * @param parts the parts to create {@link AbstractGeneratorModelNode nodes} for
+     * @param nodeClass the expected concrete generator model class (subclass of
+     *            {@link AbstractGeneratorModelNode}) that will be created for each part
+     */
+    protected <T extends AbstractGeneratorModelNode> List<T> initNodesForParts(List<? extends IIpsObjectPart> parts, Class<T> nodeClass) {
+        List<T> nodes = new ArrayList<T>();
+        for (IIpsObjectPart part : parts) {
+            nodes.add(getModelService().getModelNode(part, nodeClass, getModelContext()));
+        }
+        return nodes;
     }
 
 }

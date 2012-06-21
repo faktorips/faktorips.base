@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
@@ -39,7 +40,7 @@ import org.faktorips.util.LocalizedStringsSet;
  * 
  * @author dirmeier
  */
-public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuilder {
+public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends JavaSourceFileBuilder {
 
     private final static IJavaClassNameProvider JAVA_CLASS_NAMEING_PROVIDER = XClass.createJavaClassNamingProvider();
 
@@ -128,10 +129,10 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
 
     protected abstract Class<T> getGeneratorModelNodeClass();
 
-    protected T getGeneratorModelRoot() {
+    protected AbstractGeneratorModelNode getGeneratorModelRoot() {
         try {
             IIpsObject type = getIpsSrcFile().getIpsObject();
-            T xClass = getModelService().getModelNode(type, getGeneratorModelNodeClass(), newGeneratorModelContext());
+            AbstractGeneratorModelNode xClass = getModelService().getModelNode(type, getGeneratorModelNodeClass(), newGeneratorModelContext());
             return xClass;
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);

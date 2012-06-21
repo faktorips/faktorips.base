@@ -143,6 +143,10 @@ public class XPolicyCmptClass extends XClass {
         return simpleName;
     }
 
+    public String getProductGenerationArgumentName() {
+        return getJavaNamingConvention().getMemberVarName(getProductGenerationClassName());
+    }
+
     /**
      * Returns the simple name for the product component class or interface associated with this
      * policy component class. An import will be added automatically.

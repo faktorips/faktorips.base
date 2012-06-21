@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -42,24 +41,6 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     public XClass(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
             ModelService modelService) {
         super(ipsObjectPartContainer, context, modelService);
-    }
-
-    /**
-     * 
-     * Creates a list containing one {@link AbstractGeneratorModelNode} (of the given class) for
-     * every {@link IIpsObjectPart} in the given list.
-     * 
-     * @param parts the parts to create {@link AbstractGeneratorModelNode nodes} for
-     * @param nodeClass the expected concrete generator model class (subclass of
-     *            {@link AbstractGeneratorModelNode}) that will be created for each part
-     */
-    protected <T extends AbstractGeneratorModelNode> List<T> initNodesForParts(List<? extends IIpsObjectPart> parts,
-            Class<T> nodeClass) {
-        List<T> nodes = new ArrayList<T>();
-        for (IIpsObjectPart part : parts) {
-            nodes.add(getModelService().getModelNode(part, nodeClass, getModelContext()));
-        }
-        return nodes;
     }
 
     public static IJavaClassNameProvider createJavaClassNamingProvider() {

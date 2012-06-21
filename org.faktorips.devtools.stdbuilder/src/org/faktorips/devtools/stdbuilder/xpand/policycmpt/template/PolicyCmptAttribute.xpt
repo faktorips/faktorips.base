@@ -1,6 +1,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::runtime»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::template»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAttributeExtension»
@@ -41,11 +42,21 @@
 				«IF generateDefaultForDerivedAttribute-»
 					return «defaultValueCode»;
 				«ELSE-»
-«REM»TODO«ENDREM»						
+			        // TODO Belegung der Berechnungsparameter implementieren
+			        «EXPAND FormulaSignature::formulaParameterDeclaration FOR formulaSignature»
+			        return «EXPAND getProductGeneration».«EXPAND FormulaSignature::formulaCall FOR formulaSignature»;			
 				«ENDIF-»
 			«ENDIF-»
 		}
 	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE getProductGeneration FOR XPolicyAttribute»
+	«IF generatingPublishedInterfaces»
+		((«productGenerationClassName»)«productGenerationGetterName»())
+	«ELSE»
+		«productGenerationGetterName»()
+	«ENDIF»
 «ENDDEFINE»
 
 «DEFINE setter FOR XPolicyAttribute»

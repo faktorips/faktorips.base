@@ -1,0 +1,21 @@
+«IMPORT java::util»
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
+
+«DEFINE formulaParameterDeclaration FOR XFormulaSignature»
+	«FOREACH parameters AS parameter-»
+		«parameter.typeClassName» «parameter.name» = «parameter.nullExpression»;
+	«ENDFOREACH-»
+«ENDDEFINE»
+
+«DEFINE formulaCall FOR XFormulaSignature»
+	«methodName»(«EXPAND parameterListForCall»)
+«ENDDEFINE»
+
+«DEFINE parameterListForCall FOR XFormulaSignature»
+	«FOREACH parameters AS parameter SEPARATOR ","»«parameter.name»«ENDFOREACH-»
+«ENDDEFINE»
+

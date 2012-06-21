@@ -25,6 +25,7 @@ import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XFormulaSignature;
 import org.faktorips.valueset.ValueSet;
 
 public class XPolicyAttribute extends XAttribute {
@@ -86,8 +87,21 @@ public class XPolicyAttribute extends XAttribute {
     public boolean isGenerateDefaultForDerivedAttribute() {
         try {
             IProductCmptTypeMethod formulaSignature = (getAttribute()).findComputationMethod(getIpsProject());
-            return (!(getAttribute()).isProductRelevant() || formulaSignature == null || formulaSignature.validate(
-                    getIpsProject()).containsErrorMsg());
+            return !getAttribute().isProductRelevant() || formulaSignature == null
+                    || formulaSignature.validate(getIpsProject()).containsErrorMsg();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    public XFormulaSignature getFormulaSignature() {
+        IProductCmptTypeMethod method = getComputationMethod();
+        return getModelService().getModelNode(method, XFormulaSignature.class, getModelContext());
+    }
+
+    private IProductCmptTypeMethod getComputationMethod() {
+        try {
+            return getAttribute().findComputationMethod(getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -97,19 +111,29 @@ public class XPolicyAttribute extends XAttribute {
         return getAttribute().isProductRelevant();
     }
 
+    public String getProductGenerationClassOrInterfaceName() {
+        return getXPolicyCmptClass().getProductGenerationClassOrInterfaceName();
+    }
+
     public String getProductGenerationClassName() {
-        XPolicyCmptClass xPolicyCmptClass = getXPolicyCmptClass();
-        return xPolicyCmptClass.getProductGenerationClassName();
+        return getXPolicyCmptClass().getProductGenerationClassName();
+    }
+
+    public String getProductGenerationArgumentName() {
+        return getXPolicyCmptClass().getProductGenerationArgumentName();
     }
 
     public String getProductGenerationGetterName() {
-        XPolicyCmptClass xPolicyCmptClass = getXPolicyCmptClass();
-        return xPolicyCmptClass.getProductGenerationGetterName();
+        return getXPolicyCmptClass().getProductGenerationGetterName();
     }
 
     private XPolicyCmptClass getXPolicyCmptClass() {
         IPolicyCmptType polType = getIpsObjectPartContainer().getPolicyCmptType();
         XPolicyCmptClass xPolicyCmptClass = getModelNode(polType, XPolicyCmptClass.class);
         return xPolicyCmptClass;
+    }
+
+    public String getComputationMethodName() {
+        return getAttribute().getComputationMethodSignature();
     }
 }
