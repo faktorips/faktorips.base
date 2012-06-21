@@ -923,7 +923,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     private void initJControlModel(IIpsProject project) throws CoreException {
-        model = new org.eclipse.emf.codegen.merge.java.JControlModel();
+        model = new JControlModel();
         if (ComplianceCheck.isComplianceLevelAtLeast5(project)) {
             facadeHelper = new ASTFacadeHelper();
         } else {
@@ -931,7 +931,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
         try {
             model.initialize(facadeHelper, getJMergeConfigLocation(project));
-
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(e));
         }

@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -77,7 +78,33 @@ public class XProductCmptGenerationClass extends XProductClass {
 
     @Override
     public List<XProductAssociation> getAssociations() {
-        return new CopyOnWriteArrayList<XProductAssociation>(associations);
+        // TODO This sorting is only needed to get the exactly same code as in former code
+        // generator.
+
+        List<XProductAssociation> result = new ArrayList<XProductAssociation>();
+        for (XProductAssociation association : associations) {
+            if (association.isOnetoMany() && association.hasMatchingAssociation()) {
+                result.add(association);
+            }
+        }
+        for (XProductAssociation association : associations) {
+            if (!association.isOnetoMany() && association.hasMatchingAssociation()) {
+                result.add(association);
+            }
+        }
+        for (XProductAssociation association : associations) {
+            if (association.isOnetoMany() && !association.hasMatchingAssociation()) {
+                result.add(association);
+            }
+        }
+        for (XProductAssociation association : associations) {
+            if (!association.isOnetoMany() && !association.hasMatchingAssociation()) {
+                result.add(association);
+            }
+        }
+        return result;
+
+        // return new CopyOnWriteArrayList<XProductAssociation>(associations);
     }
 
 }
