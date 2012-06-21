@@ -16,7 +16,7 @@
 		 */
 		public interface «getSimpleName(BuilderAspect::INTERFACE)» 
 		«IF hasSupertype()-»
-		extends «superInterfaceName-»
+		«REM»extends «superInterfaceName-»«ENDREM»
 		«ENDIF-»
 		{
 			

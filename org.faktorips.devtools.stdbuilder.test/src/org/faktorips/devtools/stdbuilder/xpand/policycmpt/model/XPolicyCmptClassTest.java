@@ -160,7 +160,7 @@ public class XPolicyCmptClassTest {
         XProductCmptClass xProdClass = mock(XProductCmptClass.class);
         when(modelService.getModelNode(prodType, XProductCmptClass.class, modelContext)).thenReturn(xProdClass);
 
-        policyCmptClass.getProductClassName();
+        policyCmptClass.getProductCmptClassName();
         verify(xProdClass).getSimpleName(BuilderAspect.IMPLEMENTATION);
     }
 
