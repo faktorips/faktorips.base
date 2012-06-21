@@ -17,8 +17,11 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 
 public abstract class XAssociation extends AbstractGeneratorModelNode {
 
@@ -78,11 +81,32 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getAssociation().is1ToMany();
     }
 
-    public boolean isDerived() {
-        return getAssociation().isDerived();
+    public boolean isDerivedUnion() {
+        return getAssociation().isDerivedUnion();
     }
 
-    protected IType getTarget() {
+    public boolean isSubsetOf(XDerivedUnionAssociation derivedUnionAssociation) {
+        if (getAssociation().getSubsettedDerivedUnion().equals(derivedUnionAssociation.getName())) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Getting the type of the association
+     * 
+     * @return The IType that is the parent of the association
+     */
+    protected IType getAssociationType() {
+        return getAssociation().getType();
+    }
+
+    /**
+     * Getting the target type of the association
+     * 
+     * @return The IType that is the parent of the association
+     */
+    protected IType getTargetType() {
         try {
             return getAssociation().findTarget(getIpsProject());
         } catch (CoreException e) {
@@ -91,16 +115,27 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
     }
 
     public String getTargetClassName() {
-        IType target = getTarget();
+        IType target = getTargetType();
         XClass modelNode = getModelNode(target, getTargetModelNodeType());
         // TODO FIPS-1059
         return addImport(modelNode.getQualifiedName(BuilderAspect.INTERFACE));
     }
 
-    protected abstract Class<? extends XClass> getTargetModelNodeType();
+    protected Class<? extends XClass> getTargetModelNodeType() {
+        // TODO is there a better way?
+        Class<? extends IType> targetClass = getTargetType().getClass();
+        if (targetClass.equals(ProductCmptType.class)) {
+            return XProductCmptClass.class;
+        } else if (targetClass.equals(PolicyCmptType.class)) {
+            return XProductCmptClass.class;
+        } else {
+            throw new RuntimeException("Illegal association target type " + targetClass);
+        }
+    }
 
     public String getGetterMethodNameNumOf() {
         return getJavaNamingConvention().getGetterMethodName(
                 "NumOf" + StringUtils.capitalize(getAssociation().getTargetRolePlural()));
     }
+
 }

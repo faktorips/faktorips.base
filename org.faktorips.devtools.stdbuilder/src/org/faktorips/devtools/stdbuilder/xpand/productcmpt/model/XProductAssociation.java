@@ -37,7 +37,7 @@ public class XProductAssociation extends XAssociation {
     }
 
     public String getTargetClassGenerationName() {
-        IType target = getTarget();
+        IType target = getTargetType();
         if (target != null) {
             XClass modelNode = getModelNode(target, XProductCmptGenerationClass.class);
             // TODO FIPS-1059
@@ -48,14 +48,9 @@ public class XProductAssociation extends XAssociation {
     }
 
     public String getGetterNameForTargetGeneration() {
-        IType target = getTarget();
+        IType target = getTargetType();
         XProductCmptClass modelNode = getModelNode(target, XProductCmptClass.class);
         return modelNode.getGetterMethodNameForGeneration();
-    }
-
-    @Override
-    protected Class<XProductCmptClass> getTargetModelNodeType() {
-        return XProductCmptClass.class;
     }
 
     public String getGetterMethodNameForLinks() {

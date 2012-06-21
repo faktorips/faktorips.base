@@ -170,4 +170,8 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         return list;
     }
 
+    public abstract List<? extends XAttribute> getAttributes();
+
+    public abstract List<? extends XAssociation> getAssociations();
+
 }

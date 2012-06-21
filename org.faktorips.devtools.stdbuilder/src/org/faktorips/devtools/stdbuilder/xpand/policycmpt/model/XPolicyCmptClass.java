@@ -100,10 +100,12 @@ public class XPolicyCmptClass extends XClass {
         }
     }
 
+    @Override
     public List<XPolicyAttribute> getAttributes() {
         return new CopyOnWriteArrayList<XPolicyAttribute>(attributes);
     }
 
+    @Override
     public List<XPolicyAssociation> getAssociations() {
         return new CopyOnWriteArrayList<XPolicyAssociation>(associations);
     }
