@@ -13,6 +13,9 @@
 	<artifactId>org.faktorips.feature</artifactId>
 	<packaging>eclipse-feature</packaging>
 
+<!-- NOT FULLY SUPPORTED BY TYCHO (no label, no description ...
+https://bugs.eclipse.org/bugs/show_bug.cgi?id=374349
+
 	<build>
 		<plugins>
 			<plugin>
@@ -43,6 +46,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	 -->
 
 	<version>3.7.2-SNAPSHOT</version>
 </project>
