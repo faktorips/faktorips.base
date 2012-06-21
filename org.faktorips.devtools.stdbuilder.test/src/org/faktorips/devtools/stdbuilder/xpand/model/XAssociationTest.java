@@ -14,12 +14,15 @@
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -63,6 +66,43 @@ public class XAssociationTest {
         doReturn(new JavaNamingConvention()).when(xAssociation).getJavaNamingConvention();
         String methodName = xAssociation.getGetterMethodNameNumOf();
         assertEquals("getNumOfTestTargets", methodName);
+    }
+
+    @Test
+    public void testIsSubsetOf() throws Exception {
+        XAssociation xAssociation = mock(XAssociation.class, Mockito.CALLS_REAL_METHODS);
+        when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
+
+        XDerivedUnionAssociation xAssociation2 = mock(XDerivedUnionAssociation.class);
+        when(xAssociation2.getName()).thenReturn("abc123");
+
+        when(association.getSubsettedDerivedUnion()).thenReturn("other");
+        assertFalse(xAssociation.isSubsetOf(xAssociation2));
+
+        when(association.getSubsettedDerivedUnion()).thenReturn("abc123");
+        assertTrue(xAssociation.isSubsetOf(xAssociation2));
+    }
+
+    @Test
+    public void testIsDerivedUnion() throws Exception {
+        XAssociation xAssociation = mock(XAssociation.class, Mockito.CALLS_REAL_METHODS);
+        when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
+
+        when(association.isDerivedUnion()).thenReturn(true);
+        assertTrue(xAssociation.isDerivedUnion());
+
+        when(association.isDerivedUnion()).thenReturn(false);
+        assertFalse(xAssociation.isDerivedUnion());
+    }
+
+    @Test
+    public void testGetTargetType() throws Exception {
+        IType type = mock(IType.class);
+        XAssociation xAssociation = mock(XAssociation.class, Mockito.CALLS_REAL_METHODS);
+        when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
+        when(association.getType()).thenReturn(type);
+
+        assertEquals(type, association.getAssociationType());
     }
 
 }

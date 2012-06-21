@@ -6,9 +6,9 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
 
 «DEFINE field FOR XProductAssociation»
-	«IF !derived»
+	«IF !derivedUnion»
 	    /**
-	     * «localizedJDoc("FIELD_ASSOCIATION", getName(onetoMany))»
+	     * «localizedJDoc("FIELD_ASSOCIATION", getName(onetoMany).toFirstUpper())»
 	     * 
 	     * @generated
 	     */
@@ -22,7 +22,7 @@
 «ENDDEFINE»
 
 «DEFINE getterSetterAdder FOR XProductAssociation-»
-	«IF !derived»
+	«IF !derivedUnion»
 		«EXPAND getterProductCmpt»
 		«EXPAND getterProductCmptGen»
 		«EXPAND getterProductCmptPerIndex»
@@ -217,12 +217,51 @@
     «ENDIF»
 «ENDDEFINE»
 
+«DEFINE getterderivedUnion FOR XProductAssociation-»
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+     «overrideAnnotation(true)»
+     public List<«targetClassName»> «getterMethodName»() {
+     	«List_()»<«targetClassGenerationName» result = new «ArrayList()»<«targetClassName»>(«getterMethodNameNumOfInternal»());
+     	«FOREACH 
+     }
+«ENDDEFINE»
+
 «REM»
     
+    @Override
+    public List<IElementarProdukt> getDuElementarProdukte() {
+        List<IElementarProdukt> result = new ArrayList<IElementarProdukt>(getNumOfDuElementarProdukteInternal());
+        result.addAll(getSubElementarProdukte());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    @Override
+    public int getNumOfDuElementarProdukte() {
+        return getNumOfDuElementarProdukteInternal();
+    }
+
+    /**
+     * @generated
+     */
+    private int getNumOfDuElementarProdukteInternal() {
+        int num = 0;
+        num += getNumOfSubElementarProdukte();
+        return num;
+    }
     
-    TODO:	set for toOne
-    		Qualified association
-    		Derived Union?
+    
+    
+    TODO:	Qualified association
+    		derivedUnion?
     		getLinks()
 «ENDREM»
 

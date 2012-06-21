@@ -78,8 +78,10 @@ public abstract class XProductClass extends XClass {
         return (IProductCmptType)super.getIpsObjectPartContainer();
     }
 
+    @Override
     public abstract List<XProductAttribute> getAttributes();
 
+    @Override
     public abstract List<XProductAssociation> getAssociations();
 
 }
