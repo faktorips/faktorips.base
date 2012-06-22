@@ -26,8 +26,9 @@
 
 	<parent>
 		<groupId>org.faktorips</groupId>
-		<artifactId>org.faktorips.build</artifactId>
-		<version>1.0.0</version>
+		<artifactId>org.faktorips.aggregator.sites</artifactId>
+		<version>3.8.0-SNAPSHOT</version>
+		<relativePath>../org.faktorips.aggregator/sites/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>org.faktorips.p2repository</artifactId>
@@ -188,9 +189,7 @@
 								<phase>deploy</phase>
 								<configuration>
 									<executable>ssh</executable>
-									<commandlineArgs>${deploy.user}@${deploy.server} bash -s --\
-										${deploy.basedir} ${deploy.deployedRepositoryZip} &lt;\
-										${deploy.skript.unzipAndBuildComposites}</commandlineArgs>
+									<commandlineArgs>${deploy.user}@${deploy.server} bash -s -- ${deploy.basedir} ${deploy.deployedRepositoryZip} &lt; ${deploy.skript.unzipAndBuildComposites}</commandlineArgs>
 								</configuration>
 							</execution>
 						</executions>
@@ -200,5 +199,4 @@
 		</profile>
 	</profiles>
 
-	<version>3.8.0-SNAPSHOT</version>
 </project>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.faktorips</groupId>
+		<artifactId>org.faktorips.aggregator</artifactId>
+		<version>3.8.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<groupId>org.faktorips</groupId>
+	<artifactId>org.faktorips.aggregator.tests</artifactId>
+	<version>3.8.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+
+	<modules>
+		<module>../../org.faktorips.abstracttest</module>
+		<module>../../org.faktorips.devtools.ant.test</module>
+		<module>../../org.faktorips.devtools.core.test</module>
+		<module>../../org.faktorips.devtools.core.ui.test</module>
+		<module>../../org.faktorips.devtools.htmlexport.test</module>
+		<module>../../org.faktorips.devtools.stdbuilder.test</module>
+		<module>../../org.faktorips.devtools.stdbuilder.ui.test</module>
+		<module>../../org.faktorips.devtools.tableconversion.test</module>
+		<module>../../org.faktorips.dtflcommon.test</module>
+		<module>../../org.faktorips.fl.test</module>
+		<module>../../org.faktorips.runtime.java5.test</module>
+		<module>../../org.faktorips.util.test</module>
+		<module>../../org.faktorips.valuetypes.java5.test</module>
+	</modules>
+
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<!-- Release and Deploy settings: Skip normal deploy plugin -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-deploy-plugin</artifactId>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

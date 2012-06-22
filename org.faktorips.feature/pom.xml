@@ -6,8 +6,9 @@
 
 	<parent>
 		<groupId>org.faktorips</groupId>
-		<artifactId>org.faktorips.build</artifactId>
-		<version>1.0.0</version>
+		<artifactId>org.faktorips.aggregator.features</artifactId>
+		<version>3.8.0-SNAPSHOT</version>
+		<relativePath>../org.faktorips.aggregator/features/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>org.faktorips.feature</artifactId>
@@ -47,5 +48,4 @@ https://bugs.eclipse.org/bugs/show_bug.cgi?id=374349
 		</plugins>
 	</build>
 	 -->
-	<version>3.8.0-SNAPSHOT</version>
 </project>
