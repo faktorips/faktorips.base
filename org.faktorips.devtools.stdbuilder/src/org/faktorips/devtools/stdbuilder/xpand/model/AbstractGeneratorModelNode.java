@@ -322,12 +322,15 @@ public abstract class AbstractGeneratorModelNode {
      * 
      * Creates a list containing one {@link AbstractGeneratorModelNode} (of the given class) for
      * every {@link IIpsObjectPart} in the given list.
+     * <p>
+     * This method must be final because it may be called in constructor.
      * 
      * @param parts the parts to create {@link AbstractGeneratorModelNode nodes} for
      * @param nodeClass the expected concrete generator model class (subclass of
      *            {@link AbstractGeneratorModelNode}) that will be created for each part
      */
-    protected <T extends AbstractGeneratorModelNode> List<T> initNodesForParts(List<? extends IIpsObjectPart> parts, Class<T> nodeClass) {
+    protected final <T extends AbstractGeneratorModelNode> List<T> initNodesForParts(List<? extends IIpsObjectPart> parts,
+            Class<T> nodeClass) {
         List<T> nodes = new ArrayList<T>();
         for (IIpsObjectPart part : parts) {
             nodes.add(getModelService().getModelNode(part, nodeClass, getModelContext()));

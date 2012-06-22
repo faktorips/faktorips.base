@@ -31,34 +31,65 @@ public abstract class XProductClass extends XClass {
         super(ipsObjectPartContainer, modelContext, modelService);
     }
 
-    protected List<IProductCmptTypeAssociation> getChangableAssociations() {
-        return getProductAssociations(true);
+    /**
+     * Getting the list of associations defined in this type. With the parameter
+     * changableAssociations you could specify whether you want the associations that are changeable
+     * over time or not changeable (sometimes called static) associations.
+     * <p>
+     * This method does not return any derived union association.
+     * <p>
+     * This method needs to be final because it may be called in constructor
+     * 
+     * @see #getProductDerivedUnionAssociations(boolean)
+     * 
+     * @param changableAssociations true if you want only associations changeable over time, false
+     *            to get only not changeable over time associations
+     * @return The list of associations without derived unions
+     */
+    protected final List<IProductCmptTypeAssociation> getProductAssociations(boolean changableAssociations) {
+        return getProductAssociations(false, changableAssociations);
     }
 
-    protected List<IProductCmptTypeAssociation> getStaticAssociations() {
-        return getProductAssociations(false);
+    /**
+     * This method returns the derived union associations defined in this type. With the parameter
+     * changableAssociations you could specify whether you want the associations that are changeable
+     * over time or not changeable (sometimes called static) associations.
+     * <p>
+     * If you want to have not derived union associations, @see #getProductAssociations(boolean)
+     * <p>
+     * This method needs to be final because it may be called in constructor
+     * 
+     * @param changableAssociations true if you want only associations changeable over time, false
+     *            to get only not changeable over time associations
+     * @return The list of derived union associations
+     */
+    protected final List<IProductCmptTypeAssociation> getProductDerivedUnionAssociations(boolean changableAssociations) {
+        return getProductAssociations(true, changableAssociations);
     }
 
-    protected List<IProductCmptTypeAssociation> getProductAssociations(boolean changableAssociations) {
+    private List<IProductCmptTypeAssociation> getProductAssociations(boolean derivedUnion, boolean changableAssociations) {
         List<IProductCmptTypeAssociation> resultingAssociations = new ArrayList<IProductCmptTypeAssociation>();
         List<IProductCmptTypeAssociation> allAssociations = getProductCmptType().getProductCmptTypeAssociations();
         for (IProductCmptTypeAssociation assoc : allAssociations) {
-            if (changableAssociations) {
+            // TODO FIPS-989
+            if (assoc.isDerivedUnion() == derivedUnion && changableAssociations) {
                 resultingAssociations.add(assoc);
             }
         }
         return resultingAssociations;
     }
 
-    protected List<IProductCmptTypeAttribute> getChangeableAttributes() {
-        return getProductAttributes(true);
-    }
-
-    protected List<IProductCmptTypeAttribute> getStaticAttributes() {
-        return getProductAttributes(false);
-    }
-
-    protected List<IProductCmptTypeAttribute> getProductAttributes(boolean changableAttributes) {
+    /**
+     * Returns the list of attributes. With the parameter you could specify whether you want the
+     * attributes that change over time or attributes not changing over time.
+     * <p>
+     * This method needs to be final because it may be called in constructor
+     * 
+     * @param changableAttributes True to get attributes that change over time, false to get all
+     *            other attributes
+     * @return the list of attributes defined in this type
+     */
+    protected final List<IProductCmptTypeAttribute> getProductAttributes(boolean changableAttributes) {
         List<IProductCmptTypeAttribute> resultingAttributes = new ArrayList<IProductCmptTypeAttribute>();
         List<IProductCmptTypeAttribute> allAttributes = getProductCmptType().getProductCmptTypeAttributes();
         for (IProductCmptTypeAttribute attr : allAttributes) {

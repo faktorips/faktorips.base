@@ -1,0 +1,66 @@
+«IMPORT java::util»
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE getterDerivedUnion(XClass currentContextClass) FOR XDerivedUnionAssociation-»
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+     «overrideAnnotation(true)»
+     public List<«targetClassName»> «getterMethodName»() {
+     	«List_()»<«targetClassName» result = new «ArrayList()»<«targetClassName»>(«getterMethodNameNumOfInternal»());
+     	«IF isImplementedInSuperclass(currentContextClass)»
+     		result.addAll(super.«getterMethodName»());
+     	«ENDIF»
+     	«FOREACH (List[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation»
+ 			«IF subsetAssociation.onetoMany»
+     			result.addAll(«subsetAssociation.getterMethodName»);
+     		«ELSE»
+     			result.add(«subsetAssociation.getterMethodName»);
+     		«ENDIF»
+     	«ENDFOREACH»
+     	return result;
+     }
+«ENDDEFINE»
+
+
+«REM»
+    
+    @Override
+    public List<IElementarProdukt> getDuElementarProdukte() {
+        List<IElementarProdukt> result = new ArrayList<IElementarProdukt>(getNumOfDuElementarProdukteInternal());
+        result.addAll(getSubElementarProdukte());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    @Override
+    public int getNumOfDuElementarProdukte() {
+        return getNumOfDuElementarProdukteInternal();
+    }
+
+    /**
+     * @generated
+     */
+    private int getNumOfDuElementarProdukteInternal() {
+        int num = 0;
+        num += getNumOfSubElementarProdukte();
+        return num;
+    }
+    
+    
+    
+    TODO:	Qualified association
+    		derivedUnion?
+    		getLinks()
+«ENDREM»
+

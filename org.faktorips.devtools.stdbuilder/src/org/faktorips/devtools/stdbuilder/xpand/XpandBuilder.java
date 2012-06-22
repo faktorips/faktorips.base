@@ -50,7 +50,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
 
     private StringOutput out;
 
-    private final ModelService modelService;
+    private ModelService modelService;
 
     /**
      * The XPAND builder is associated to a builder set and need the {@link LocalizedStringsSet} for
@@ -61,7 +61,6 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
      */
     public XpandBuilder(StandardBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
-        modelService = new ModelService();
     }
 
     @Override
@@ -77,6 +76,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     @Override
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.beforeBuildProcess(project, buildKind);
+        modelService = new ModelService();
         initTemplate();
         String charset = project.getProject().getDefaultCharset();
         StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
@@ -132,7 +132,8 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     protected AbstractGeneratorModelNode getGeneratorModelRoot() {
         try {
             IIpsObject type = getIpsSrcFile().getIpsObject();
-            AbstractGeneratorModelNode xClass = getModelService().getModelNode(type, getGeneratorModelNodeClass(), newGeneratorModelContext());
+            AbstractGeneratorModelNode xClass = getModelService().getModelNode(type, getGeneratorModelNodeClass(),
+                    newGeneratorModelContext());
             return xClass;
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);

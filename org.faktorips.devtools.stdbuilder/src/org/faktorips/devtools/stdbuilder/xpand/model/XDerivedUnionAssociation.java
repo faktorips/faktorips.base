@@ -16,7 +16,12 @@ package org.faktorips.devtools.stdbuilder.xpand.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -81,7 +86,43 @@ public class XDerivedUnionAssociation extends XAssociation {
         if (getAssociationType().equals(xClass.getType())) {
             return false;
         }
-        return true;
+        try {
+            IType supertype = xClass.getType().findSupertype(getIpsProject());
+            FindSubsetOfDerivedUnion findSubsetOfDerivedUnionVisitor = new FindSubsetOfDerivedUnion(getAssociation(),
+                    getIpsProject());
+            findSubsetOfDerivedUnionVisitor.start(supertype);
+            return findSubsetOfDerivedUnionVisitor.foundSubset;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    private static class FindSubsetOfDerivedUnion extends TypeHierarchyVisitor<IType> {
+
+        private final IAssociation derivedUnion;
+
+        private boolean foundSubset = false;
+
+        public FindSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject ipsProject) {
+            super(ipsProject);
+            this.derivedUnion = derivedUnion;
+        }
+
+        @Override
+        protected boolean visit(IType currentType) throws CoreException {
+            List<IAssociation> associations = currentType.getAssociations();
+            for (IAssociation aAssociation : associations) {
+                if (aAssociation.getSubsettedDerivedUnion().equals(derivedUnion.getName())) {
+                    foundSubset = true;
+                    return false;
+                }
+            }
+            if (currentType.equals(derivedUnion.getType())) {
+                return false;
+            }
+            return true;
+        }
+
     }
 
 }

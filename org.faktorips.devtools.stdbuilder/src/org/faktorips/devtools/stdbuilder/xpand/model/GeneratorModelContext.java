@@ -42,7 +42,7 @@ public class GeneratorModelContext {
         this.javaClassNaming = new JavaClassNaming(true);
     }
 
-    public IIpsArtefactBuilderSetConfig getConfig() {
+    IIpsArtefactBuilderSetConfig getConfig() {
         return config;
     }
 

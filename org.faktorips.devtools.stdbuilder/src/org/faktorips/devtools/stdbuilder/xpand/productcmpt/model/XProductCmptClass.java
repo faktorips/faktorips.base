@@ -21,18 +21,27 @@ import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConven
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 import org.faktorips.runtime.internal.ProductComponent;
 
 public class XProductCmptClass extends XProductClass {
+
+    private static final boolean CHANGE_OVER_TIME = false;
+
     private final List<XProductAttribute> attributes;
+
     private final List<XProductAssociation> associations;
+
+    private final List<XDerivedUnionAssociation> derivedUnionAssociations;
 
     public XProductCmptClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext modelContext,
             ModelService modelService) {
         super(ipsObjectPartContainer, modelContext, modelService);
 
-        attributes = initNodesForParts(getStaticAttributes(), XProductAttribute.class);
-        associations = initNodesForParts(getStaticAssociations(), XProductAssociation.class);
+        attributes = initNodesForParts(getProductAttributes(CHANGE_OVER_TIME), XProductAttribute.class);
+        associations = initNodesForParts(getProductAssociations(CHANGE_OVER_TIME), XProductAssociation.class);
+        derivedUnionAssociations = initNodesForParts(getProductDerivedUnionAssociations(CHANGE_OVER_TIME),
+                XDerivedUnionAssociation.class);
     }
 
     @Override
@@ -43,6 +52,11 @@ public class XProductCmptClass extends XProductClass {
     @Override
     public List<XProductAssociation> getAssociations() {
         return new CopyOnWriteArrayList<XProductAssociation>(associations);
+    }
+
+    @Override
+    public List<XDerivedUnionAssociation> getDerivedUnionAssociations() {
+        return new CopyOnWriteArrayList<XDerivedUnionAssociation>(derivedUnionAssociations);
     }
 
     public IProductCmptType getProductCmptType() {
