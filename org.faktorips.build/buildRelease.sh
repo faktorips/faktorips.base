@@ -44,6 +44,7 @@ initDefaults()
 	GIT_HOST=${GIT_HOST:-'projekte.faktorzehn.de'}
 	GIT_REPOSITORY=${GIT_REPOSITORY:-'/projekte/faktorips/faktorips.base.git'}
 	GIT_URL=${GIT_URL:-'ssh://'${GIT_USERNAME}'@'${GIT_HOST}${GIT_REPOSITORY}}
+	DEPLOY_USER=${DEPLOY_USER:-$USER}
 	VERSION_KIND=${VERSION_KIND:-'rfinal'}
 	ONLY_VERSION=${ONLY_VERSION:-''}
 	NO_NEW_VERSION=${NO_NEW_VERSION:-''}
