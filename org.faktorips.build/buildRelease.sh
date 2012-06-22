@@ -172,7 +172,7 @@ else
 	then
 		MAVEN_OPTIONS=${MAVEN_OPTIONS}' -Ddeploy.server='$DEPLOY_SERVER
 	fi
-	if [ $SKIP_TEST ]
+	if [ $SKIP_TESTS ]
 	then
 		MAVEN_OPTIONS=${MAVEN_OPTIONS}' -Dmaven.test.skip=true'
 	fi
