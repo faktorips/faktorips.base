@@ -167,7 +167,7 @@ else
 		git push origin $TAG
 	fi
 
-	MAVEN_OPTIONS='-Dversion.kind='$VERSION_KIND' -Ddeploy.user='$DEPLOY_USER -P release
+	MAVEN_OPTIONS='-Dversion.kind='$VERSION_KIND' -Ddeploy.user='$DEPLOY_USER' -P release'
 	if [ $DEPLOY_SERVER ]
 	then
 		MAVEN_OPTIONS=${MAVEN_OPTIONS}' -Ddeploy.server='$DEPLOY_SERVER
