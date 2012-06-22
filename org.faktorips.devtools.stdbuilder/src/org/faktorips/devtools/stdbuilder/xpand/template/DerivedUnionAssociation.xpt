@@ -5,7 +5,13 @@
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
-«DEFINE getterDerivedUnion(XClass currentContextClass) FOR XDerivedUnionAssociation-»
+«DEFINE methodsForDerivedUnion(XClass currentContextClass) FOR XDerivedUnionAssociation-»
+	«EXPAND getter(currentContextClass)»
+	«EXPAND getterNumOf(currentContextClass)»
+	«EXPAND getterNumOfInternal(currentContextClass)»
+«ENDDEFINE»
+
+«DEFINE getter(XClass currentContextClass) FOR XDerivedUnionAssociation-»
     /**
      * {@inheritDoc}
      * 
@@ -13,52 +19,48 @@
      */
      «overrideAnnotation(true)»
      public List<«targetClassName»> «getterMethodName»() {
-     	«List_()»<«targetClassName» result = new «ArrayList()»<«targetClassName»>(«getterMethodNameNumOfInternal»());
-     	«IF isImplementedInSuperclass(currentContextClass)»
+     	«List_()»<«targetClassName»> result = new «ArrayList()»<«targetClassName»>(«getterMethodNameNumOfInternal»());
+     	«IF isImplementedInSuperclass(currentContextClass)-»
      		result.addAll(super.«getterMethodName»());
-     	«ENDIF»
-     	«FOREACH (List[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation»
- 			«IF subsetAssociation.onetoMany»
-     			result.addAll(«subsetAssociation.getterMethodName»);
-     		«ELSE»
-     			result.add(«subsetAssociation.getterMethodName»);
-     		«ENDIF»
-     	«ENDFOREACH»
+     	«ENDIF-»
+     	«FOREACH (List[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
+ 			«IF subsetAssociation.onetoMany-»
+     			result.addAll(«subsetAssociation.getterMethodName»());
+     		«ELSE-»
+     			result.add(«subsetAssociation.getterMethodName»());
+     		«ENDIF-»
+     	«ENDFOREACH-»
      	return result;
      }
 «ENDDEFINE»
 
-
-«REM»
-    
-    @Override
-    public List<IElementarProdukt> getDuElementarProdukte() {
-        List<IElementarProdukt> result = new ArrayList<IElementarProdukt>(getNumOfDuElementarProdukteInternal());
-        result.addAll(getSubElementarProdukte());
-        return result;
-    }
-
+«DEFINE getterNumOf(XClass currentContextClass) FOR XDerivedUnionAssociation-»
     /**
      * {@inheritDoc}
      * 
      * @generated
      */
-    @Override
-    public int getNumOfDuElementarProdukte() {
-        return getNumOfDuElementarProdukteInternal();
-    }
+     «overrideAnnotation(true)»
+     public int «getterMethodNameNumOf»() {
+     	return «getterMethodNameNumOfInternal»();
+     }
+«ENDDEFINE»
 
+«DEFINE getterNumOfInternal(XClass currentContextClass) FOR XDerivedUnionAssociation-»
     /**
      * @generated
      */
-    private int getNumOfDuElementarProdukteInternal() {
+     private int «getterMethodNameNumOfInternal»() {
         int num = 0;
-        num += getNumOfSubElementarProdukte();
+     	«FOREACH (List[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
+     		num += «subsetAssociation.getterMethodNameNumOf»();
+     	«ENDFOREACH-»
         return num;
-    }
-    
-    
-    
+     }
+«ENDDEFINE»
+
+«REM»
+
     TODO:	Qualified association
     		derivedUnion?
     		getLinks()

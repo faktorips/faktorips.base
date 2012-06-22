@@ -75,4 +75,5 @@ public class XProductCmptClass extends XProductClass {
         String generationConceptAbbreviation = convention.getGenerationConceptNameAbbreviation(locale);
         return "get" + getProductCmptType().getName() + generationConceptAbbreviation;
     }
+
 }

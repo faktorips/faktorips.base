@@ -39,6 +39,9 @@ Collections(AbstractGeneratorModelNode this) :
 Calendar(AbstractGeneratorModelNode this) :
 	addImport(Calendar.name);
 
+IProductComponent(AbstractGeneratorModelNode this) :
+	addImport(IProductComponent.name);
+
 ProductComponentLink(AbstractGeneratorModelNode this) :
 	addImport(ProductComponentLink.name);
 

@@ -31,6 +31,14 @@ public abstract class XProductClass extends XClass {
         super(ipsObjectPartContainer, modelContext, modelService);
     }
 
+    public String getMethodNameGetLink() {
+        return getJavaNamingConvention().getGetterMethodName("Link");
+    }
+
+    public String getMethodNameGetLinks() {
+        return getJavaNamingConvention().getGetterMethodName("Links");
+    }
+
     /**
      * Getting the list of associations defined in this type. With the parameter
      * changableAssociations you could specify whether you want the associations that are changeable
@@ -64,6 +72,9 @@ public abstract class XProductClass extends XClass {
      * @return The list of derived union associations
      */
     protected final List<IProductCmptTypeAssociation> getProductDerivedUnionAssociations(boolean changableAssociations) {
+        // TODO FALSCH. Wir brauchen hier alle Derived unions aus der ganzen Hierarchie, für die in
+        // dieser Klasse ein Subset defineirt wurde. Vorgehen also: Alle nicht-derived-unions
+        // durchgehen und wenn sie ein Subset ist die dazu passende derived union finden
         return getProductAssociations(true, changableAssociations);
     }
 

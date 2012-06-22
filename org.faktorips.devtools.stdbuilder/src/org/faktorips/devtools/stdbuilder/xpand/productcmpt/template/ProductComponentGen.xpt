@@ -23,12 +23,13 @@
 			«ENDFOREACH-»
 			«ENDIF-»
 		 {
-			«EXPAND ProductAssociation::field FOREACH associations»
+			«EXPAND ProductAssociation::field FOREACH associations-»
 			
 			«EXPAND ProductAssociation::getterSetterAdder FOREACH  associations»
 			
-			«EXPAND DerivedUnionAssociation::getterDerivedUnion(this) FOREACH  derivedUnionAssociations»
+			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH  derivedUnionAssociations»
 			
+			«EXPAND ProductAssociation::getLinkMethods»
 		 }
 	«ENDFILE»
 «ENDDEFINE»
