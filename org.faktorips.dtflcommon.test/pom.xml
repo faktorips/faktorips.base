@@ -5,8 +5,9 @@
   
 	<parent>
 		<groupId>org.faktorips</groupId>
-		<artifactId>org.faktorips.build</artifactId>
-		<version>1.0.0</version>
+		<artifactId>org.faktorips.aggregator.tests</artifactId>
+		<version>3.7.2-SNAPSHOT</version>
+		<relativePath>../org.faktorips.aggregator/tests/pom.xml</relativePath>
 	</parent>
   
   <artifactId>org.faktorips.dtflcommon.test</artifactId>
@@ -15,5 +16,4 @@
   
     
 
-    <version>3.7.2-SNAPSHOT</version>
-</project>
+    </project>

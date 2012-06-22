@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.faktorips</groupId>
+		<artifactId>org.faktorips.aggregator</artifactId>
+		<version>3.7.2-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<groupId>org.faktorips</groupId>
+	<artifactId>org.faktorips.aggregator.plugins</artifactId>
+	<packaging>pom</packaging>
+
+	<modules>
+		<!-- plugins of feature org.faktorips.feature -->
+		<module>../../org.faktorips.devtools.ant</module>
+		<module>../../org.faktorips.devtools.core</module>
+		<module>../../org.faktorips.devtools.core.ui</module>
+		<module>../../org.faktorips.devtools.htmlexport</module>
+		<module>../../org.faktorips.devtools.htmlexport.nl1</module>
+		<module>../../org.faktorips.devtools.stdbuilder</module>
+		<module>../../org.faktorips.devtools.stdbuilder.ui</module>
+		<module>../../org.faktorips.devtools.tableconversion</module>
+		<module>../../org.faktorips.devtools.tableconversion.nl1</module>
+		<module>../../org.faktorips.dtflcommon</module>
+		<module>../../org.faktorips.fl</module>
+		<module>../../org.faktorips.nls.devtools.core.nl1</module>
+		<module>../../org.faktorips.nls.devtools.core.ui.nl1</module>
+		<module>../../org.faktorips.nls.devtools.stdbuilder.nl1</module>
+		<module>../../org.faktorips.nls.devtools.stdbuilder.ui.nl1</module>
+		<module>../../org.faktorips.runtime.java5</module>
+		<module>../../org.faktorips.util</module>
+		<module>../../org.faktorips.valuetypes.java5</module>
+	</modules>
+
+</project>

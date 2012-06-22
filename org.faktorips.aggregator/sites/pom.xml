@@ -6,13 +6,19 @@
 
 	<parent>
 		<groupId>org.faktorips</groupId>
-		<artifactId>org.faktorips.aggregator.tests</artifactId>
+		<artifactId>org.faktorips.aggregator</artifactId>
 		<version>3.7.2-SNAPSHOT</version>
-		<relativePath>../org.faktorips.aggregator/tests/pom.xml</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>org.faktorips.devtools.ant.test</artifactId>
-	
-	<packaging>eclipse-test-plugin</packaging>
+	<groupId>org.faktorips</groupId>
+	<artifactId>org.faktorips.aggregator.sites</artifactId>
+	<packaging>pom</packaging>
+
+	<modules>
+		<!-- p2 Repository and product -->
+		<module>../../org.faktorips.p2repository</module>
+		<module>../../org.faktorips.p2repository/test</module>
+	</modules>
 
 </project>

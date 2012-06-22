@@ -12,8 +12,9 @@
 
 	<parent>
 		<groupId>org.faktorips</groupId>
-		<artifactId>org.faktorips.build</artifactId>
-		<version>1.0.0</version>
+		<artifactId>org.faktorips.aggregator.features</artifactId>
+		<version>3.7.2-SNAPSHOT</version>
+		<relativePath>../org.faktorips.aggregator/features/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>org.faktorips.license</artifactId>
@@ -76,5 +77,4 @@
 
 	<packaging>eclipse-feature</packaging>
 
-	<version>3.7.2-SNAPSHOT</version>
-</project>
+	</project>
