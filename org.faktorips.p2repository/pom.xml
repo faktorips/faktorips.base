@@ -188,9 +188,7 @@
 								<phase>deploy</phase>
 								<configuration>
 									<executable>ssh</executable>
-									<commandlineArgs>${deploy.user}@${deploy.server} bash -s --\
-										${deploy.basedir} ${deploy.deployedRepositoryZip} &lt;\
-										${deploy.skript.unzipAndBuildComposites}</commandlineArgs>
+									<commandlineArgs>${deploy.user}@${deploy.server} bash -s -- ${deploy.basedir} ${deploy.deployedRepositoryZip} &lt;\ ${deploy.skript.unzipAndBuildComposites}</commandlineArgs>
 								</configuration>
 							</execution>
 						</executions>
