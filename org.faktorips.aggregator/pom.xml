@@ -12,7 +12,7 @@
 	
 	<groupId>org.faktorips</groupId>
 	<artifactId>org.faktorips.aggregator</artifactId>
-	<version>3.7.2-SNAPSHOT</version>
+	<version>3.7.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<!-- These are all modules that are included in the Faktor-IPS build -->
