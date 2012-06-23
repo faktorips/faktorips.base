@@ -37,18 +37,19 @@ parseArgs()
 initDefaults()
 {
 	CHECKOUT_DIR=${CHECKOUT_DIR:-'checkoutDir'}
-	BUILD_POM=${BUILD_POM:-'org.faktorips.build/pom.xml'}
+	BUILD_POM=${BUILD_POM:-'org.faktorips.aggregator/pom.xml'}
 	MAVEN_CMD=${MAVEN_CMD:-'mvn'}
 	GIT_USERNAME=${GIT_USERNAME:-$USER}
 	BRANCH=${BRANCH:-'master'}
 	GIT_HOST=${GIT_HOST:-'projekte.faktorzehn.de'}
 	GIT_REPOSITORY=${GIT_REPOSITORY:-'/projekte/faktorips/faktorips.base.git'}
 	GIT_URL=${GIT_URL:-'ssh://'${GIT_USERNAME}'@'${GIT_HOST}${GIT_REPOSITORY}}
+	DEPLOY_USER=${DEPLOY_USER:-$USER}
 	VERSION_KIND=${VERSION_KIND:-'rfinal'}
-	ONLY_VERSION=${ONLY_VERSION:-'false'}
-	NO_NEW_VERSION=${NO_NEW_VERSION:-'false'}
-	SKIP_TAG=${SKIP_TAG:-'false'}
-	SKIP_TESTS=${SKIP_TESTS:-'false'}
+	ONLY_VERSION=${ONLY_VERSION:-''}
+	NO_NEW_VERSION=${NO_NEW_VERSION:-''}
+	SKIP_TAG=${SKIP_TAG:-''}
+	SKIP_TESTS=${SKIP_TESTS:-''}
 }
 
 doAsserts()
@@ -122,7 +123,7 @@ setVersion()
 {
 	echo -e "\nSetting new Version ${NEW_VERSION}\n"
 	$MAVEN_CMD -f ${BUILD_POM} org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${NEW_VERSION}-SNAPSHOT
-	git commit -m "Setting new version ${NEW_VERSION}" -- */pom.xml */META-INF/MANIFEST.MF
+	git commit -m "Setting new version ${NEW_VERSION}" -- */pom.xml */META-INF/MANIFEST.MF */feature.xml
 	git push
 }
 
@@ -151,7 +152,7 @@ fi
 
 # START DOING ANYTHING USEFUL
 
-if [ ONLY_SET_VERSION ]
+if [ $ONLY_VERSION ]
 then
 	setVersion
 else
@@ -160,19 +161,19 @@ else
 
 	showParameter
 
-	if [ ! $SKIP_TAG ]
+	if [ -z $SKIP_TAG ]
 	then
 		echo -e "\nTagging git with Tag: ${TAG}\n"
 		git tag -a $TAG -m 'Tag for '$VERSION_KIND' Version: '$BUILD_VERSION
 		git push origin $TAG
 	fi
 
-	MAVEN_OPTIONS='-Dversion.kind='$VERSION_KIND' -Ddeploy.user='$DEPLOY_USER
+	MAVEN_OPTIONS='-Dversion.kind='$VERSION_KIND' -Ddeploy.user='$DEPLOY_USER' -P release'
 	if [ $DEPLOY_SERVER ]
 	then
 		MAVEN_OPTIONS=${MAVEN_OPTIONS}' -Ddeploy.server='$DEPLOY_SERVER
 	fi
-	if [ $SKIP_TEST ]
+	if [ $SKIP_TESTS ]
 	then
 		MAVEN_OPTIONS=${MAVEN_OPTIONS}' -Dmaven.test.skip=true'
 	fi
@@ -180,7 +181,7 @@ else
 	echo -e "\nBuild...\n"
 	${MAVEN_CMD} -f $BUILD_POM $MAVEN_OPTIONS clean deploy
 
-	if [ ! ${NO_NEW_VERSION} ]
+	if [ -z ${NO_NEW_VERSION} ]
 	then
 		setVersion
 	fi
