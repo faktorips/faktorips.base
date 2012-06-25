@@ -30,6 +30,26 @@ getId() :
 	
 getRepository() :
 	"getRepository()";
+
+// ---------------------------------
+// Methods in ProductComponentGeneration
+// ---------------------------------
+
+doInitPropertiesFromXml(String paramMap) :
+	"doInitPropertiesFromXml(" + paramMap + ")";
+
+writePropertiesToXml(String paramElement) :
+	"writePropertiesToXml(" + paramElement + ")";
+
+// ---------------------------------
+// Methods in IProductComponentGeneration
+// ---------------------------------
+
+getLink(String paramLinkName, String paramTarget) :
+	"getLink(" + paramLinkName + "," + paramTarget +")";
+
+getLinks() :
+	"getLinks()";
 	
 // ---------------------------------
 // Methods in IPolicyComponent

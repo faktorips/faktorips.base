@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -77,6 +78,15 @@ public class XProductCmptGenerationClass extends XProductClass {
     @Override
     protected String getBaseSuperclassName() {
         return addImport(ProductComponentGeneration.class.getName());
+    }
+
+    public String getProductCmptClassName(BuilderAspect aspect) {
+        XProductCmptClass modelNode = getModelNode(getProductCmptType(), XProductCmptClass.class);
+        return addImport(modelNode.getQualifiedName(aspect));
+    }
+
+    public String getMethodNameGetProductCmpt() {
+        return getJavaNamingConvention().getGetterMethodName(getName());
     }
 
     @Override

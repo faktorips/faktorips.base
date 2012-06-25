@@ -17,6 +17,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -30,14 +32,6 @@ public abstract class XProductClass extends XClass {
     public XProductClass(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext modelContext,
             ModelService modelService) {
         super(ipsObjectPartContainer, modelContext, modelService);
-    }
-
-    public String getMethodNameGetLink() {
-        return getJavaNamingConvention().getGetterMethodName("Link");
-    }
-
-    public String getMethodNameGetLinks() {
-        return getJavaNamingConvention().getGetterMethodName("Links");
     }
 
     /**
@@ -73,10 +67,20 @@ public abstract class XProductClass extends XClass {
      * @return The list of derived union associations
      */
     protected final Set<IProductCmptTypeAssociation> getProductDerivedUnionAssociations(boolean changableAssociations) {
-        // TODO FALSCH. Wir brauchen hier alle Derived unions aus der ganzen Hierarchie, für die in
-        // dieser Klasse ein Subset defineirt wurde. Vorgehen also: Alle nicht-derived-unions
-        // durchgehen und wenn sie ein Subset ist die dazu passende derived union finden
-        return getProductAssociations(true, changableAssociations);
+        Set<IProductCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IProductCmptTypeAssociation>();
+        Set<IProductCmptTypeAssociation> notDerivedUnionAssociations = getProductAssociations(changableAssociations);
+        for (IProductCmptTypeAssociation association : notDerivedUnionAssociations) {
+            try {
+                if (association.isSubsetOfADerivedUnion()) {
+                    IProductCmptTypeAssociation subsettedDerivedUnion = (IProductCmptTypeAssociation)association
+                            .findSubsettedDerivedUnion(getIpsProject());
+                    resultingAssociations.add(subsettedDerivedUnion);
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return resultingAssociations;
     }
 
     private Set<IProductCmptTypeAssociation> getProductAssociations(boolean derivedUnion, boolean changableAssociations) {

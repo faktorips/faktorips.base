@@ -99,7 +99,6 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     }
 
     private String getSuperClassOrInterfaceName(BuilderAspect aspect) {
-
         try {
             if (getType().hasSupertype()) {
                 IType superType = getType().findSupertype(getIpsProject());

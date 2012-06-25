@@ -51,8 +51,11 @@ public class XPolicyCmptClass extends XClass {
                 new LinkedHashSet<IPolicyCmptTypeAttribute>(policyCmptType.getPolicyCmptTypeAttributes()),
                 XPolicyAttribute.class);
         associations = initNodesForParts(getPolicyAssociations(policyCmptType, false), XPolicyAssociation.class);
-        derivedUnionAssociations = initNodesForParts(getPolicyAssociations(policyCmptType, false),
-                XDerivedUnionAssociation.class);
+        // TODO derived unions müssen noch richtig "berechnet" werden siehe product side
+        derivedUnionAssociations = new LinkedHashSet<XDerivedUnionAssociation>();
+        // derivedUnionAssociations = initNodesForParts(getPolicyAssociations(policyCmptType,
+        // false),
+        // XDerivedUnionAssociation.class);
     }
 
     private Set<IPolicyCmptTypeAssociation> getPolicyAssociations(IPolicyCmptType policyCmptType, boolean derivedUnion) {

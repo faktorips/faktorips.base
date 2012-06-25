@@ -222,107 +222,59 @@
 «ENDDEFINE»
 
 «DEFINE getLinkMethod FOR XProductClass-»
-	«IF associations.size > 0 || !hasSupertype()-»
 	    /**
 	     * {@inheritDoc}
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotation(true)»
-	    public «IProductComponentLink()»<? extends «IProductComponent()»> «methodNameGetLink»(String linkName, «IProductComponent()» target) {
+	    «overrideAnnotation(false)»
+	    public «IProductComponentLink()»<? extends «IProductComponent()»> «getLink("String linkName", IProductComponent() + " target")» {
 	    	«FOREACH associations AS this-»
 		        if ("«name»".equals(linkName)) {
 		            return «getterMethodNameForSingleLink»((«targetClassName»)target);
 		        }
 		    «ENDFOREACH-»
-		    «IF associations.size > 0 -»
-		        return super.«methodNameGetLink»(linkName, target);
-		    «ELSEIF !hasSupertype()-»
+		    «IF hasSupertype() -»
+		        return super.«getLink("linkName", "target")»;
+		    «ELSE-»
 	   	        return null;
 		    «ENDIF-»
 	    }
-    «ENDIF»
 «ENDDEFINE»
 
 «DEFINE getLinksMethod FOR XProductClass»
-	«IF associations.size > 0 || !hasSupertype()-»
     /**
      * {@inheritDoc}
      * 
      * @generated
      */
-    «overrideAnnotation(true)»
-    public «List_()»<«IProductComponentLink()»<? extends «IProductComponent()»>> «methodNameGetLinks»() {
-    	«IF associations.size > 0-»
-        	«List_()»<«IProductComponentLink()»<? extends «IProductComponent()»>> list = super.«methodNameGetLinks»();
+    «overrideAnnotation(false)»
+    public «List_()»<«IProductComponentLink()»<? extends «IProductComponent()»>> «getLinks()» {
+	    «List_()»<«IProductComponentLink()»<? extends «IProductComponent()»>> list = 
+	    «IF hasSupertype()-»
+        	super.«getLinks()»;
+        «ELSE-»
+			new «ArrayList()»<«IProductComponentLink()»<? extends «IProductComponent()»>>();        	
         «ENDIF-»
     	«FOREACH associations AS this-»
-    	«IF onetoMany-»
-    		list.addAll(«getterMethodNameForLinks»());
-    	«ELSE-»
-    		if («getterMethodNameForLinks»() != null) {
-    			list.add(«getterMethodNameForLinks»());
-    		}
-    	«ENDIF-»
+	    	«IF onetoMany-»
+	    		list.addAll(«getterMethodNameForLinks»());
+	    	«ELSE-»
+	    		if («getterMethodNameForLinks»() != null) {
+	    			list.add(«getterMethodNameForLinks»());
+	    		}
+	    	«ENDIF-»
         «ENDFOREACH-»
-	    «IF associations.size > 0 -»
+	    «IF hasSupertype() -»
 	        return list;
-	    «ELSEIF !hasSupertype()-»
-   	        return null;
+	    «ELSE-»
+	        return list;
 	    «ENDIF-»
     }
-    «ENDIF-»
 «ENDDEFINE»
 
-«REM»
-    
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-    @Override
-    public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target) {
-        if ("DeckungsTyp".equals(linkName)) {
-            return getLinkForDeckungsTyp((IDeckungsTyp)target);
-        }
-        if ("SubElementarProdukt".equals(linkName)) {
-            return getLinkForSubElementarProdukt((IElementarProdukt)target);
-        }
-        if ("oneToOneElementarProdukt".equals(linkName)) {
-            return getLinkForOneToOneElementarProdukt((IElementarProdukt)target);
-        }
-        if ("AElementarProdukt".equals(linkName)) {
-            return getLinkForAElementarProdukt((IElementarProdukt)target);
-        }
-        if ("NichtKonfiguriertesElp".equals(linkName)) {
-            return getLinkForNichtKonfiguriertesElp((IElementarProdukt)target);
-        }
-        return super.getLink(linkName, target);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-    @Override
-    public List<IProductComponentLink<? extends IProductComponent>> getLinks() {
-        List<IProductComponentLink<? extends IProductComponent>> list = super.getLinks();
-        list.addAll(getLinksForDeckungsTypen());
-        list.addAll(getLinksForSubElementarProdukte());
-        if (getLinkForOneToOneElementarProdukt() != null) {
-            list.add(getLinkForOneToOneElementarProdukt());
-        }
-        list.addAll(getLinksForAElementarProdukte());
-        list.addAll(getLinksForNichtKonfiguriertesElps());
-        return list;
-    }
-
-    
+«REM»    
     
     TODO:	Qualified association
-    		derivedUnion?
-    		getLinks()
 «ENDREM»
 
