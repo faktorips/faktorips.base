@@ -13,8 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -63,9 +64,9 @@ public class XDerivedUnionAssociation extends XAssociation {
      * @param xClass The type in which context you generate code
      * @return the list of associations that subsets this derived union
      */
-    public List<XAssociation> getSubsetAssociations(XClass xClass) {
-        ArrayList<XAssociation> result = new ArrayList<XAssociation>();
-        List<? extends XAssociation> associations = xClass.getAssociations();
+    public Set<XAssociation> getSubsetAssociations(XClass xClass) {
+        Set<XAssociation> result = new LinkedHashSet<XAssociation>();
+        Set<? extends XAssociation> associations = xClass.getAssociations();
         for (XAssociation xAssociation : associations) {
             if (xAssociation.isSubsetOf(this)) {
                 result.add(xAssociation);

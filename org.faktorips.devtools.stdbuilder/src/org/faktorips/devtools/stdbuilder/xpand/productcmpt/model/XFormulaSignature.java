@@ -14,9 +14,12 @@
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
@@ -24,11 +27,12 @@ import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 
 public class XFormulaSignature extends AbstractGeneratorModelNode {
 
-    private final List<XFormulaParameter> parameters;
+    private final Set<XFormulaParameter> parameters;
 
     public XFormulaSignature(IProductCmptTypeMethod method, GeneratorModelContext context, ModelService modelService) {
         super(method, context, modelService);
-        parameters = initNodesForParts(Arrays.asList(method.getParameters()), XFormulaParameter.class);
+        parameters = initNodesForParts(new LinkedHashSet<IIpsObjectPart>(Arrays.asList(method.getParameters())),
+                XFormulaParameter.class);
     }
 
     @Override

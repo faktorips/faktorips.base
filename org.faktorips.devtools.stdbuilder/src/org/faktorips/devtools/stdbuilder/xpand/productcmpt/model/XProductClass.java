@@ -13,8 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -54,7 +55,7 @@ public abstract class XProductClass extends XClass {
      *            to get only not changeable over time associations
      * @return The list of associations without derived unions
      */
-    protected final List<IProductCmptTypeAssociation> getProductAssociations(boolean changableAssociations) {
+    protected final Set<IProductCmptTypeAssociation> getProductAssociations(boolean changableAssociations) {
         return getProductAssociations(false, changableAssociations);
     }
 
@@ -71,15 +72,15 @@ public abstract class XProductClass extends XClass {
      *            to get only not changeable over time associations
      * @return The list of derived union associations
      */
-    protected final List<IProductCmptTypeAssociation> getProductDerivedUnionAssociations(boolean changableAssociations) {
+    protected final Set<IProductCmptTypeAssociation> getProductDerivedUnionAssociations(boolean changableAssociations) {
         // TODO FALSCH. Wir brauchen hier alle Derived unions aus der ganzen Hierarchie, für die in
         // dieser Klasse ein Subset defineirt wurde. Vorgehen also: Alle nicht-derived-unions
         // durchgehen und wenn sie ein Subset ist die dazu passende derived union finden
         return getProductAssociations(true, changableAssociations);
     }
 
-    private List<IProductCmptTypeAssociation> getProductAssociations(boolean derivedUnion, boolean changableAssociations) {
-        List<IProductCmptTypeAssociation> resultingAssociations = new ArrayList<IProductCmptTypeAssociation>();
+    private Set<IProductCmptTypeAssociation> getProductAssociations(boolean derivedUnion, boolean changableAssociations) {
+        Set<IProductCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IProductCmptTypeAssociation>();
         List<IProductCmptTypeAssociation> allAssociations = getProductCmptType().getProductCmptTypeAssociations();
         for (IProductCmptTypeAssociation assoc : allAssociations) {
             // TODO FIPS-989
@@ -100,8 +101,8 @@ public abstract class XProductClass extends XClass {
      *            other attributes
      * @return the list of attributes defined in this type
      */
-    protected final List<IProductCmptTypeAttribute> getProductAttributes(boolean changableAttributes) {
-        List<IProductCmptTypeAttribute> resultingAttributes = new ArrayList<IProductCmptTypeAttribute>();
+    protected final Set<IProductCmptTypeAttribute> getProductAttributes(boolean changableAttributes) {
+        Set<IProductCmptTypeAttribute> resultingAttributes = new LinkedHashSet<IProductCmptTypeAttribute>();
         List<IProductCmptTypeAttribute> allAttributes = getProductCmptType().getProductCmptTypeAttributes();
         for (IProductCmptTypeAttribute attr : allAttributes) {
             if (changableAttributes == attr.isChangingOverTime()) {
@@ -121,9 +122,9 @@ public abstract class XProductClass extends XClass {
     }
 
     @Override
-    public abstract List<XProductAttribute> getAttributes();
+    public abstract Set<XProductAttribute> getAttributes();
 
     @Override
-    public abstract List<XProductAssociation> getAssociations();
+    public abstract Set<XProductAssociation> getAssociations();
 
 }

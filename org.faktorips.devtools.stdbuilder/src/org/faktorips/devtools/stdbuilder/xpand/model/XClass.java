@@ -15,6 +15,7 @@ package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
@@ -170,7 +171,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         return list;
     }
 
-    public abstract List<? extends XAttribute> getAttributes();
+    public abstract Set<? extends XAttribute> getAttributes();
 
     /**
      * Returns the list of associations in the current type. Does not add derived union
@@ -180,7 +181,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      * 
      * @return The list of associations in this type except derived unions
      */
-    public abstract List<? extends XAssociation> getAssociations();
+    public abstract Set<? extends XAssociation> getAssociations();
 
     /**
      * Getting the list of every derived union needs to be implemented. That means it is either
@@ -188,6 +189,6 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      * 
      * @return The list of derived unions you need to implement in this class
      */
-    public abstract List<XDerivedUnionAssociation> getDerivedUnionAssociations();
+    public abstract Set<XDerivedUnionAssociation> getDerivedUnionAssociations();
 
 }

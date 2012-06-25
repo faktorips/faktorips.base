@@ -15,6 +15,8 @@ package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -24,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
@@ -34,7 +37,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.junit.Test;
@@ -51,8 +53,8 @@ public class XPolicyCmptClassTest {
     private GeneratorModelContext modelContext;
     @Mock
     private ModelService modelService;
-    private XAttribute attributeNode1;
-    private XAttribute attributeNode2;
+    private XPolicyAttribute attributeNode1;
+    private XPolicyAttribute attributeNode2;
     private XPolicyAssociation associationNode1;
     private XPolicyAssociation associationNode2;
 
@@ -61,10 +63,9 @@ public class XPolicyCmptClassTest {
         setupAttributeList();
 
         XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
-        List<XPolicyAttribute> attributeNodeList = policyCmptClass.getAttributes();
-        assertEquals(2, attributeNodeList.size());
-        assertEquals(attributeNode1, attributeNodeList.get(0));
-        assertEquals(attributeNode2, attributeNodeList.get(1));
+        Set<XPolicyAttribute> attributeNodeSet = policyCmptClass.getAttributes();
+        assertEquals(2, attributeNodeSet.size());
+        assertThat(attributeNodeSet, hasItems(attributeNode1, attributeNode2));
     }
 
     @Test
@@ -72,8 +73,8 @@ public class XPolicyCmptClassTest {
         setupAttributeList();
 
         XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
-        List<XPolicyAttribute> attributeList = policyCmptClass.getAttributes();
-        List<XPolicyAttribute> secondAttributeList = policyCmptClass.getAttributes();
+        Set<XPolicyAttribute> attributeList = policyCmptClass.getAttributes();
+        Set<XPolicyAttribute> secondAttributeList = policyCmptClass.getAttributes();
         // returns copies of the same list
         assertNotSame(attributeList, secondAttributeList);
         assertEquals(attributeList, secondAttributeList);
@@ -98,10 +99,9 @@ public class XPolicyCmptClassTest {
         setupAssociationList();
 
         XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
-        List<XPolicyAssociation> associationNodeList = policyCmptClass.getAssociations();
-        assertEquals(2, associationNodeList.size());
-        assertEquals(associationNode1, associationNodeList.get(0));
-        assertEquals(associationNode2, associationNodeList.get(1));
+        Set<XPolicyAssociation> associationNodeSet = policyCmptClass.getAssociations();
+        assertEquals(2, associationNodeSet.size());
+        assertThat(associationNodeSet, hasItems(associationNode1, associationNode2));
     }
 
     @Test
@@ -109,8 +109,8 @@ public class XPolicyCmptClassTest {
         setupAssociationList();
 
         XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
-        List<XPolicyAssociation> assocList = policyCmptClass.getAssociations();
-        List<XPolicyAssociation> secondAssocList = policyCmptClass.getAssociations();
+        Set<XPolicyAssociation> assocList = policyCmptClass.getAssociations();
+        Set<XPolicyAssociation> secondAssocList = policyCmptClass.getAssociations();
         // returns copies of the same list
         assertNotSame(assocList, secondAssocList);
         assertEquals(assocList, secondAssocList);
@@ -158,10 +158,12 @@ public class XPolicyCmptClassTest {
         IProductCmptType prodType = initProdType(policyCmptClass);
 
         XProductCmptClass xProdClass = mock(XProductCmptClass.class);
+        when(xProdClass.getQualifiedName(BuilderAspect.IMPLEMENTATION)).thenReturn("test.ProductName");
         when(modelService.getModelNode(prodType, XProductCmptClass.class, modelContext)).thenReturn(xProdClass);
 
-        policyCmptClass.getProductCmptClassName();
-        verify(xProdClass).getSimpleName(BuilderAspect.IMPLEMENTATION);
+        assertEquals("ProductName", policyCmptClass.getProductCmptClassName());
+        verify(xProdClass).getQualifiedName(BuilderAspect.IMPLEMENTATION);
+        verify(modelContext).addImport("test.ProductName");
     }
 
 }

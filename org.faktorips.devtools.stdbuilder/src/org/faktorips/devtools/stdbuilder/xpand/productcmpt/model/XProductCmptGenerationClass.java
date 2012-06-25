@@ -13,9 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
-import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -32,11 +32,11 @@ public class XProductCmptGenerationClass extends XProductClass {
 
     private final IJavaClassNameProvider prodGenJavaClassNameProvider;
 
-    protected final List<XProductAttribute> attributes;
+    protected final Set<XProductAttribute> attributes;
 
-    protected final List<XProductAssociation> associations;
+    protected final Set<XProductAssociation> associations;
 
-    private final List<XDerivedUnionAssociation> derivedUnionAssociations;
+    private final Set<XDerivedUnionAssociation> derivedUnionAssociations;
 
     public XProductCmptGenerationClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext modelContext,
             ModelService modelService) {
@@ -80,18 +80,18 @@ public class XProductCmptGenerationClass extends XProductClass {
     }
 
     @Override
-    public List<XProductAttribute> getAttributes() {
-        return new CopyOnWriteArrayList<XProductAttribute>(attributes);
+    public Set<XProductAttribute> getAttributes() {
+        return new CopyOnWriteArraySet<XProductAttribute>(attributes);
     }
 
     @Override
-    public List<XProductAssociation> getAssociations() {
-        return new CopyOnWriteArrayList<XProductAssociation>(associations);
+    public Set<XProductAssociation> getAssociations() {
+        return new CopyOnWriteArraySet<XProductAssociation>(associations);
     }
 
     @Override
-    public List<XDerivedUnionAssociation> getDerivedUnionAssociations() {
-        return new CopyOnWriteArrayList<XDerivedUnionAssociation>(derivedUnionAssociations);
+    public Set<XDerivedUnionAssociation> getDerivedUnionAssociations() {
+        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnionAssociations);
     }
 
 }

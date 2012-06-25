@@ -14,11 +14,15 @@
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -95,35 +99,32 @@ public class XProductClassTest {
     @Test
     public void getChangableProductAttributes() {
         XProductCmptClass productClass = new XProductCmptClass(type, modelContext, modelService);
-        List<XProductAttribute> attributes = productClass.getAttributes();
+        Set<XProductAttribute> attributes = productClass.getAttributes();
         assertEquals(1, attributes.size());
-        assertEquals(attrNode2, attributes.get(0));
+        assertThat(attributes, hasItem(attrNode2));
     }
 
     @Test
     public void getStaticProductAttributes() {
         XProductCmptGenerationClass productClass = new XProductCmptGenerationClass(type, modelContext, modelService);
-        List<XProductAttribute> attributes = productClass.getAttributes();
+        Set<XProductAttribute> attributes = productClass.getAttributes();
         assertEquals(2, attributes.size());
-        assertEquals(attrNode1, attributes.get(0));
-        assertEquals(attrNode3, attributes.get(1));
+        assertThat(attributes, hasItems(attrNode1, attrNode3));
     }
 
     @Test
     public void getChangableProductAssociations() {
         XProductCmptClass productClass = new XProductCmptClass(type, modelContext, modelService);
-        List<XProductAssociation> associations = productClass.getAssociations();
+        Set<XProductAssociation> associations = productClass.getAssociations();
         assertEquals(0, associations.size());
     }
 
     @Test
     public void getStaticProductAssociations() {
         XProductCmptGenerationClass productClass = new XProductCmptGenerationClass(type, modelContext, modelService);
-        List<XProductAssociation> associations = productClass.getAssociations();
+        Set<XProductAssociation> associations = productClass.getAssociations();
         assertEquals(3, associations.size());
-        assertEquals(assocNode1, associations.get(0));
-        assertEquals(assocNode2, associations.get(1));
-        assertEquals(assocNode3, associations.get(2));
+        assertThat(associations, hasItems(assocNode1, assocNode2, assocNode3));
     }
 
 }

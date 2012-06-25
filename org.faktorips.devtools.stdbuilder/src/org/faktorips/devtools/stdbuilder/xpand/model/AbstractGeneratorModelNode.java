@@ -13,9 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.Set;
 
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
 import org.faktorips.codegen.ImportDeclaration;
@@ -329,9 +329,9 @@ public abstract class AbstractGeneratorModelNode {
      * @param nodeClass the expected concrete generator model class (subclass of
      *            {@link AbstractGeneratorModelNode}) that will be created for each part
      */
-    protected final <T extends AbstractGeneratorModelNode> List<T> initNodesForParts(List<? extends IIpsObjectPart> parts,
+    protected final <T extends AbstractGeneratorModelNode> Set<T> initNodesForParts(Set<? extends IIpsObjectPart> parts,
             Class<T> nodeClass) {
-        List<T> nodes = new ArrayList<T>();
+        Set<T> nodes = new LinkedHashSet<T>();
         for (IIpsObjectPart part : parts) {
             nodes.add(getModelService().getModelNode(part, nodeClass, getModelContext()));
         }

@@ -22,7 +22,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -67,12 +68,12 @@ public class XDerivedUnionAssociationTest {
         XAssociation association2 = mock(XAssociation.class);
         when(association2.isSubsetOf(xDerivedUnionAssociation)).thenReturn(false);
 
-        List<XAssociation> list = new ArrayList<XAssociation>();
-        list.add(association1);
-        list.add(association2);
-        doReturn(list).when(xClass).getAssociations();
+        Set<XAssociation> associations = new LinkedHashSet<XAssociation>();
+        associations.add(association1);
+        associations.add(association2);
+        doReturn(associations).when(xClass).getAssociations();
 
-        List<XAssociation> subsetAssociations = xDerivedUnionAssociation.getSubsetAssociations(xClass);
+        Set<XAssociation> subsetAssociations = xDerivedUnionAssociation.getSubsetAssociations(xClass);
         assertEquals(1, subsetAssociations.size());
         assertTrue(subsetAssociations.contains(association1));
     }

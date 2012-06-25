@@ -13,9 +13,10 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -24,6 +25,7 @@ import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -37,22 +39,24 @@ import org.faktorips.runtime.internal.AbstractModelObject;
 
 public class XPolicyCmptClass extends XClass {
 
-    private final List<XPolicyAttribute> attributes;
+    private final Set<XPolicyAttribute> attributes;
 
-    private final List<XPolicyAssociation> associations;
+    private final Set<XPolicyAssociation> associations;
 
-    private final List<XDerivedUnionAssociation> derivedUnionAssociations;
+    private final Set<XDerivedUnionAssociation> derivedUnionAssociations;
 
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
-        attributes = initNodesForParts(policyCmptType.getPolicyCmptTypeAttributes(), XPolicyAttribute.class);
+        attributes = initNodesForParts(
+                new LinkedHashSet<IPolicyCmptTypeAttribute>(policyCmptType.getPolicyCmptTypeAttributes()),
+                XPolicyAttribute.class);
         associations = initNodesForParts(getPolicyAssociations(policyCmptType, false), XPolicyAssociation.class);
         derivedUnionAssociations = initNodesForParts(getPolicyAssociations(policyCmptType, false),
                 XDerivedUnionAssociation.class);
     }
 
-    private List<IPolicyCmptTypeAssociation> getPolicyAssociations(IPolicyCmptType policyCmptType, boolean derivedUnion) {
-        List<IPolicyCmptTypeAssociation> result = new ArrayList<IPolicyCmptTypeAssociation>();
+    private Set<IPolicyCmptTypeAssociation> getPolicyAssociations(IPolicyCmptType policyCmptType, boolean derivedUnion) {
+        Set<IPolicyCmptTypeAssociation> result = new LinkedHashSet<IPolicyCmptTypeAssociation>();
         List<IPolicyCmptTypeAssociation> policyCmptTypeAssociations = policyCmptType.getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyCmptTypeAssociations) {
             if (policyCmptTypeAssociation.isDerivedUnion() == derivedUnion) {
@@ -120,18 +124,18 @@ public class XPolicyCmptClass extends XClass {
     }
 
     @Override
-    public List<XPolicyAttribute> getAttributes() {
-        return new CopyOnWriteArrayList<XPolicyAttribute>(attributes);
+    public Set<XPolicyAttribute> getAttributes() {
+        return new CopyOnWriteArraySet<XPolicyAttribute>(attributes);
     }
 
     @Override
-    public List<XPolicyAssociation> getAssociations() {
-        return new CopyOnWriteArrayList<XPolicyAssociation>(associations);
+    public Set<XPolicyAssociation> getAssociations() {
+        return new CopyOnWriteArraySet<XPolicyAssociation>(associations);
     }
 
     @Override
-    public List<XDerivedUnionAssociation> getDerivedUnionAssociations() {
-        return derivedUnionAssociations;
+    public Set<XDerivedUnionAssociation> getDerivedUnionAssociations() {
+        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnionAssociations);
     }
 
     /**

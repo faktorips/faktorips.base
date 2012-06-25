@@ -23,7 +23,7 @@
      	«IF isImplementedInSuperclass(currentContextClass)-»
      		result.addAll(super.«getterMethodName»());
      	«ENDIF-»
-     	«FOREACH (List[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
+     	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
  			«IF subsetAssociation.onetoMany-»
      			result.addAll(«subsetAssociation.getterMethodName»());
      		«ELSE-»
@@ -52,7 +52,7 @@
      */
      private int «getterMethodNameNumOfInternal»() {
         int num = 0;
-     	«FOREACH (List[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
+     	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
      		num += «subsetAssociation.getterMethodNameNumOf»();
      	«ENDFOREACH-»
         return num;

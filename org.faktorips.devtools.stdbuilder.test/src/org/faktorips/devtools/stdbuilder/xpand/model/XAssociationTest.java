@@ -102,7 +102,7 @@ public class XAssociationTest {
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
         when(association.getType()).thenReturn(type);
 
-        assertEquals(type, association.getAssociationType());
+        assertEquals(type, xAssociation.getAssociationType());
     }
 
 }
