@@ -25,11 +25,11 @@ List_(AbstractGeneratorModelNode this) :
 ArrayList(AbstractGeneratorModelNode this) :
 	addImport("java.util.ArrayList");
 
-Map(AbstractGeneratorModelNode this) :
-	addImport(Map.name);
+Map(AbstractGeneratorModelNode this, String genericKey, String genericValue) :
+	addImport(Map.name) + "<"+ genericKey + ", " + genericValue + ">";
 
-LinkedHashMap(AbstractGeneratorModelNode this) :
-	addImport(LinkedHashMap.name);
+LinkedHashMap(AbstractGeneratorModelNode this, String genericKey, String genericValue) :
+	addImport(LinkedHashMap.name) + "<"+ genericKey + ", " + genericValue + ">";
 	
 Iterator(AbstractGeneratorModelNode this) :
 	addImport(Iterator.name);
@@ -46,11 +46,11 @@ Element(AbstractGeneratorModelNode this) :
 IProductComponent(AbstractGeneratorModelNode this) :
 	addImport(IProductComponent.name);
 
-ProductComponentLink(AbstractGeneratorModelNode this) :
-	addImport(ProductComponentLink.name);
+ProductComponentLink(AbstractGeneratorModelNode this, String genericType) :
+	addImport(ProductComponentLink.name) + "<" + genericType + ">";
 
-IProductComponentLink(AbstractGeneratorModelNode this) :
-	addImport(IProductComponentLink.name);
+IProductComponentLink(AbstractGeneratorModelNode this, String genericType) :
+	addImport(IProductComponentLink.name) + "<" + genericType + ">";
 	
 CardinalityRange(AbstractGeneratorModelNode this) :
 	addImport(CardinalityRange.name);

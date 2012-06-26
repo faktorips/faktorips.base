@@ -164,7 +164,7 @@
      * @generated
      */
 	 «overrideAnnotation(false)»
-    protected void initPropertiesFromXml(«Map()»<String, String> propMap, «IRuntimeRepository()» productRepository) {
+    protected void initPropertiesFromXml(«Map("String", "String")» propMap, «IRuntimeRepository()» productRepository) {
         super.initPropertiesFromXml(propMap, productRepository);    	
         «FOREACH attributes AS this-»
 			«EXPAND PolicyCmptAttribute::initAttributeFromXML-»

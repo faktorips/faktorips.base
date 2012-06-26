@@ -40,15 +40,21 @@ getRepository() :
 doInitPropertiesFromXml(String paramMap) :
 	"doInitPropertiesFromXml(" + paramMap + ")";
 
+doInitReferencesFromXml(String paramMap) :
+	"doInitReferencesFromXml(" + paramMap + ")";
+
 writePropertiesToXml(String paramElement) :
 	"writePropertiesToXml(" + paramElement + ")";
+
+writeReferencesToXml(String paramElement) :
+	"writeReferencesToXml(" + paramElement + ")";
 
 // ---------------------------------
 // Methods in IProductComponentGeneration
 // ---------------------------------
 
 getLink(String paramLinkName, String paramTarget) :
-	"getLink(" + paramLinkName + "," + paramTarget +")";
+	"getLink(" + paramLinkName + ", " + paramTarget +")";
 
 getLinks() :
 	"getLinks()";
