@@ -43,8 +43,8 @@
      */
      «overrideAnnotation(true)»
    	«IF onetoMany-»
-	    public «List_()»<«targetClassName»> «getterMethodName»() {
-        	«List_()»<«targetClassName»> result = new «ArrayList()»<«targetClassName»>(«memberVarName».size());
+	    public «List_(targetClassName)» «getterMethodName»() {
+        	«List_(targetClassName)» result = new «ArrayList(targetClassName)»(«memberVarName».size());
 			for («IProductComponentLink(targetClassName)» «name.toFirstLower()» : «memberVarName».values()) {
 	            result.add(«name.toFirstLower()».«getTarget()»);
     	    }
@@ -64,9 +64,9 @@
      */
      «overrideAnnotation(true)»
    	«IF onetoMany-»
-	    public «List_()»<«targetClassGenerationName»> «getterMethodName»(«Calendar()» effectiveDate) {
-        	«List_()»<«targetClassName»> targets = «getterMethodName»();
-        	«List_()»<«targetClassGenerationName»> result = new «ArrayList()»<«targetClassGenerationName»>();
+	    public «List_(targetClassGenerationName)» «getterMethodName»(«Calendar()» effectiveDate) {
+        	«List_(targetClassName)» targets = «getterMethodName»();
+        	«List_(targetClassGenerationName)» result = new «ArrayList(targetClassGenerationName)»();
 			for («targetClassName» target : targets) {
 				«targetClassGenerationName» gen = target.«getterNameForTargetGeneration»(effectiveDate);
 				if (gen != null) {
@@ -90,7 +90,7 @@
      */
      «overrideAnnotation(true)»
 	public «targetClassName» «getGetterMethodName(false)»(int index) {
-		«Iterator()»<«IProductComponentLink(targetClassName)»> it = «memberVarName».values().iterator();
+		«Iterator(IProductComponentLink(targetClassName))» it = «memberVarName».values().iterator();
         try {
             for (int i = 0; i < index; i++) {
                 it.next();
@@ -111,7 +111,7 @@
      */
      «overrideAnnotation(true)»
 	«IF onetoMany-»
-	    public «Collection_()»<«IProductComponentLink(targetClassName)»> «getterMethodNameForLinks»() {
+	    public «Collection_(IProductComponentLink(targetClassName))» «getterMethodNameForLinks»() {
     	    return «Collections()».unmodifiableCollection(«memberVarName».values());
     «ELSE-»
 	    public «IProductComponentLink(targetClassName)» «getterMethodNameForLinks»() {
@@ -249,12 +249,12 @@
      * @generated
      */
     «overrideAnnotation(false)»
-    public «List_()»<«IProductComponentLink("? extends " + IProductComponent())»> «getLinks()» {
-	    «List_()»<«IProductComponentLink("? extends " + IProductComponent())»> list = 
+    public «List_(IProductComponentLink("? extends " + IProductComponent()))» «getLinks()» {
+	    «List_(IProductComponentLink("? extends " + IProductComponent()))» list = 
 	    «IF hasSupertype()-»
         	super.«getLinks()»;
         «ELSE-»
-			new «ArrayList()»<«IProductComponentLink("? extends " + IProductComponent())»>();        	
+			new «ArrayList(IProductComponentLink("? extends " + IProductComponent()))»();        	
         «ENDIF-»
     	«FOREACH associations AS this-»
 	    	«IF onetoMany-»

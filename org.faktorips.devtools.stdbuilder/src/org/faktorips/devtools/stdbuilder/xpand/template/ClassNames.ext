@@ -14,16 +14,16 @@ IValidationContext(AbstractGeneratorModelNode this) :
 	addImport(IValidationContext.name);
 
 // Collection is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
-Collection_(AbstractGeneratorModelNode this) :
-	addImport("java.util.Collection");
+Collection_(AbstractGeneratorModelNode this, String genericType) :
+	addImport("java.util.Collection") + "<" + genericType + ">";
 
 // List is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
-List_(AbstractGeneratorModelNode this) :
-	addImport("java.util.List");
+List_(AbstractGeneratorModelNode this, String genericType) :
+	addImport("java.util.List") + "<" + genericType + ">";
 
 // ArrayList.name does return List. Thats why we have to use the string reference in addImport
-ArrayList(AbstractGeneratorModelNode this) :
-	addImport("java.util.ArrayList");
+ArrayList(AbstractGeneratorModelNode this, String genericType) :
+	addImport("java.util.ArrayList") + "<" + genericType + ">";
 
 Map(AbstractGeneratorModelNode this, String genericKey, String genericValue) :
 	addImport(Map.name) + "<"+ genericKey + ", " + genericValue + ">";
@@ -31,8 +31,8 @@ Map(AbstractGeneratorModelNode this, String genericKey, String genericValue) :
 LinkedHashMap(AbstractGeneratorModelNode this, String genericKey, String genericValue) :
 	addImport(LinkedHashMap.name) + "<"+ genericKey + ", " + genericValue + ">";
 	
-Iterator(AbstractGeneratorModelNode this) :
-	addImport(Iterator.name);
+Iterator(AbstractGeneratorModelNode this, String genericType) :
+	addImport(Iterator.name) + "<" + genericType + ">";
 	
 Collections(AbstractGeneratorModelNode this) :
 	addImport(Collections.name);
