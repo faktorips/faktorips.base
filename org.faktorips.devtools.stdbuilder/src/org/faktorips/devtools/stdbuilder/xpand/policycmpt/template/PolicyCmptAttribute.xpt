@@ -3,7 +3,6 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::template»
 
-«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAttributeExtension»
 
 «DEFINE fieldProperties FOR XPolicyAttribute»
@@ -11,7 +10,7 @@
 	 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
 	 * @generated
 	 */
-	public static final String «fieldPropertyName()» = "«memberVarName»";
+	public static final String «fieldPropertyName» = "«memberVarName»";
 «ENDDEFINE»
 
 «DEFINE memberField FOR XPolicyAttribute»
@@ -23,7 +22,7 @@
 		«IF constant-»
 			private static final «javaClassName» «constantFieldName»= «defaultValueCode»;
 		«ELSE-»
-			private «javaClassName» «memberVarName»;
+			private «javaClassName» «memberVarName»= «defaultValueCode»;
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
@@ -37,14 +36,14 @@
 		«IF  overwrite»«overrideAnnotation(false)»«ENDIF-»
 		public «javaClassName» «getterMethodName»() {
 			«IF generateField-»
-				return «getReferenceOrSafeCopyIfNecessary(memberVarName)»;
+				return «IF constant»«constantFieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(memberVarName)»«ENDIF»;
 			«ELSE-»
 				«IF generateDefaultForDerivedAttribute-»
 					return «defaultValueCode»;
 				«ELSE-»
 			        // TODO Belegung der Berechnungsparameter implementieren
-			        «EXPAND FormulaSignature::formulaParameterDeclaration FOR formulaSignature»
-			        return «EXPAND getProductGeneration».«EXPAND FormulaSignature::formulaCall FOR formulaSignature»;			
+			        «EXPAND FormulaSignature::formulaParameterDeclaration FOR formulaSignature-»
+			        return «EXPAND getProductGeneration».«EXPAND FormulaSignature::formulaCall FOR formulaSignature-»;			
 				«ENDIF-»
 			«ENDIF-»
 		}
@@ -84,4 +83,17 @@
 		return «productGenerationGetterName»().«allowedValuesGetterName()»(context);
 	}
 	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE initConfigurableAttribute FOR XPolicyAttribute»
+	«IF requiringInitWithProductData-»
+        «memberVarName» = «productGenerationGetterName»().«getterMethodName»();
+    «ENDIF-»
+«ENDDEFINE»
+«DEFINE initAttributeFromXML FOR XPolicyAttribute»
+	«IF requiringInitFromXML-»
+        if (propMap.containsKey("«attributeName»")) {
+            this.«memberVarName» = «newInstanceExpression»;
+        }
+    «ENDIF-»
 «ENDDEFINE»

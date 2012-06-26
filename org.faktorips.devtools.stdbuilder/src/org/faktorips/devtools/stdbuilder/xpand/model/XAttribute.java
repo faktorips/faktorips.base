@@ -64,6 +64,14 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return getJavaNamingConvention().getMemberVarName(getName());
     }
 
+    /**
+     * Returns the "raw" name of the attribute in contrast to {@link #getMemberVarName()}, which
+     * uses the java naming convention to calculate the name.
+     */
+    public String getAttributeName() {
+        return getAttribute().getName();
+    }
+
     public String getConstantFieldName() {
         return getJavaNamingConvention().getConstantClassVarName(getName());
     }
@@ -83,8 +91,23 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return (ValueDatatype)getDatatypeHelper().getDatatype();
     }
 
+    /**
+     * Returns a string representing the java datatype for this attribute. This datatype may however
+     * be a primitive or a complex type. In case of a complex type (e.g. BigDecimal) an import is
+     * added and the unqualified type name is returned. In case of a primitive the name of the type
+     * is returned without adding an import.
+     */
     public String getJavaClassName() {
-        return addImport(getDatatypeHelper().getJavaClassName());
+        String javaClassName = getDatatypeHelper().getJavaClassName();
+        if (isPrimitiveDatatype()) {
+            return javaClassName;
+        } else {
+            return addImport(javaClassName);
+        }
+    }
+
+    private boolean isPrimitiveDatatype() {
+        return getDatatype().isPrimitive();
     }
 
     public final boolean isOverwrite() {

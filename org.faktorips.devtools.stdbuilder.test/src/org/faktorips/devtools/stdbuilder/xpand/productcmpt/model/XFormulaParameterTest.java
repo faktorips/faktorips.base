@@ -67,8 +67,7 @@ public class XFormulaParameterTest {
 
     @Test
     public void returnVoidForVoidDatatype() {
-        xParameter = spy(xParameter);
-        doReturn(Datatype.VOID).when(xParameter).getDatatype();
+        setUpXParameterWithDatatype(Datatype.VOID);
         String className = xParameter.getTypeClassName();
 
         assertEquals("void", className);
@@ -77,8 +76,7 @@ public class XFormulaParameterTest {
 
     @Test
     public void returnValueClassNameForValueDatatype() {
-        xParameter = spy(xParameter);
-        doReturn(Datatype.DECIMAL).when(xParameter).getDatatype();
+        setUpXParameterWithDatatype(Datatype.DECIMAL);
         doReturn("").when(xParameter).getClassNameForDatatypeOrThrowException(any(Datatype.class));
 
         xParameter.getTypeClassName();
@@ -88,8 +86,7 @@ public class XFormulaParameterTest {
 
     @Test
     public void returnValueClassNameForValueDatatype2() throws CoreException {
-        xParameter = spy(xParameter);
-        doReturn(Datatype.DECIMAL).when(xParameter).getDatatype();
+        setUpXParameterWithDatatype(Datatype.DECIMAL);
 
         doReturn(ipsProject).when(xParameter).getIpsProject();
         when(ipsProject.findDatatypeHelper(anyString())).thenReturn(DatatypeHelper.DECIMAL);
@@ -101,27 +98,32 @@ public class XFormulaParameterTest {
 
     @Test
     public void returnValueClassNameForPolicyCmptType() {
-        xParameter = spy(xParameter);
-        doReturn(polCmptType).when(xParameter).getDatatype();
+        setUpXParameterWithDatatype(polCmptType);
 
-        when(xClass.getQualifiedName(any(BuilderAspect.class))).thenReturn("polQName");
+        when(xClass.getQualifiedName(any(BuilderAspect.class))).thenReturn("package.polQName");
         when(modelService.getModelNode(polCmptType, XClass.class, context)).thenReturn(xClass);
 
-        xParameter.getTypeClassName();
+        String typeClassName = xParameter.getTypeClassName();
         verify(xClass).getQualifiedName(any(BuilderAspect.class));
-        verify(xParameter).addImport("polQName");
+        verify(xParameter).addImport("package.polQName");
+        assertEquals("polQName", typeClassName);
     }
 
     @Test
     public void returnValueClassNameForProductCmptType() {
-        xParameter = spy(xParameter);
-        doReturn(prodCmptType).when(xParameter).getDatatype();
+        setUpXParameterWithDatatype(prodCmptType);
 
-        when(xClass.getQualifiedName(any(BuilderAspect.class))).thenReturn("prodQName");
+        when(xClass.getQualifiedName(any(BuilderAspect.class))).thenReturn("package.prodQName");
         when(modelService.getModelNode(prodCmptType, XClass.class, context)).thenReturn(xClass);
 
-        xParameter.getTypeClassName();
+        String typeClassName = xParameter.getTypeClassName();
         verify(xClass).getQualifiedName(any(BuilderAspect.class));
-        verify(xParameter).addImport("prodQName");
+        verify(xParameter).addImport("package.prodQName");
+        assertEquals("prodQName", typeClassName);
+    }
+
+    private void setUpXParameterWithDatatype(Datatype datatype) {
+        xParameter = spy(xParameter);
+        doReturn(datatype).when(xParameter).getDatatype();
     }
 }

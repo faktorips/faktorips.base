@@ -161,7 +161,7 @@ public class XPolicyCmptClass extends XClass {
      * TODO FIPS-1059
      */
     public String getProductGenerationClassOrInterfaceName() {
-        return getProductGenerationClassName(BuilderAspect.IMPLEMENTATION);
+        return getProductGenerationClassName(getBuilderAspectDependingOnSettings());
     }
 
     /**
@@ -213,7 +213,7 @@ public class XPolicyCmptClass extends XClass {
      * 
      */
     public String getProductComponentClassOrInterfaceName() {
-        return getProductComponentClassName(BuilderAspect.IMPLEMENTATION);
+        return getProductComponentClassName(getBuilderAspectDependingOnSettings());
     }
 
     /**

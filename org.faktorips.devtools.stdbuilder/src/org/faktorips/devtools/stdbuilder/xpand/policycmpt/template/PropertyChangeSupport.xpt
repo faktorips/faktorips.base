@@ -1,8 +1,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 
-«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
-
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 «DEFINE fieldDefinition FOR XPolicyCmptClass-»
 	«IF modelContext.generatePropertyChange && !hasSupertype()-»
 	    /**
@@ -19,7 +18,7 @@
 	/**
 	* @generated
 	*/
-	«overrideAnnotation(true)-»
+	«overrideAnnotation(false)-»
 	public void notifyChangeListeners(«addImport("java.beans.PropertyChangeEvent")» event) {
         if (event instanceof «addImport("org.faktorips.runtime.AssociationChangedEvent")») {
             propertyChangeSupport.fireAssociationChange((AssociationChangedEvent)event);
@@ -33,7 +32,7 @@
      * 
      * @generated
      */
-	«overrideAnnotation(true)-»
+	«overrideAnnotation(false)-»
     public void addPropertyChangeListener(«addImport("java.beans.PropertyChangeListener")» listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
@@ -43,7 +42,7 @@
      * 
      * @generated
      */
-	«overrideAnnotation(true)-»
+	«overrideAnnotation(false)-»
     public void addPropertyChangeListener(PropertyChangeListener listener, boolean propagateEventsFromChildren) {
         propertyChangeSupport.addPropertyChangeListener(listener, propagateEventsFromChildren);
     }
@@ -53,7 +52,7 @@
      * 
      * @generated
      */
-	«overrideAnnotation(true)-»
+	«overrideAnnotation(false)-»
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
     }
@@ -63,7 +62,7 @@
      * 
      * @generated
      */
-	«overrideAnnotation(true)-»
+	«overrideAnnotation(false)-»
     public boolean hasListeners(String propertyName) {
         return propertyChangeSupport.hasListeners(propertyName);
     }
@@ -73,7 +72,7 @@
      * 
      * @generated
      */
-	«overrideAnnotation(true)-»
+	«overrideAnnotation(false)-»
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
@@ -83,7 +82,7 @@
      * 
      * @generated
      */
-	«overrideAnnotation(true)-»
+	«overrideAnnotation(false)-»
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
     }
@@ -92,12 +91,12 @@
 
 «DEFINE storeOldValue FOR XPolicyAttribute-»
 	«IF modelContext.generatePropertyChange-»
-		«javaClassName» «propertyChangeSupport_oldValueVar()» = «memberVarName»;
+		«javaClassName» «oldValueVariable» = «memberVarName»;
 	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE notify FOR XPolicyAttribute-»
 	«IF modelContext.generatePropertyChange-»
-		notifyChangeListeners(new «addImport("java.beans.PropertyChangeEvent")» (this, «fieldPropertyName()», «propertyChangeSupport_oldValueVar()», «memberVarName»));
+		notifyChangeListeners(new «addImport("java.beans.PropertyChangeEvent")» (this, «fieldPropertyName», «oldValueVariable», «memberVarName»));
 	«ENDIF-»
 «ENDDEFINE»

@@ -55,6 +55,9 @@ IProductComponentLink(AbstractGeneratorModelNode this) :
 CardinalityRange(AbstractGeneratorModelNode this) :
 	addImport(CardinalityRange.name);
 	
+IRuntimeRepository(AbstractGeneratorModelNode this) :
+	addImport(IRuntimeRepository.name);
+	
 // EXECPTIONS
 NoSuchElementException(AbstractGeneratorModelNode this) :
 	addImport(NoSuchElementException.name);

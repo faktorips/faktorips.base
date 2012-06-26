@@ -3,7 +3,6 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 
-«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
 
 «DEFINE main FOR XPolicyCmptClass»
 	«FILE getFileName(BuilderAspect::INTERFACE)-»
