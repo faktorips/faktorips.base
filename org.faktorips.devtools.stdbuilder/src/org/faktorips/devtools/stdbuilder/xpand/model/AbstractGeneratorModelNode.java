@@ -153,6 +153,10 @@ public abstract class AbstractGeneratorModelNode {
      * To support qualified names provided by a template, this method is also able to handle xpand
      * namespace syntax. For example the string <code>java::util::Map</code> is converted to
      * <code>java.util.Map</code>
+     * <p>
+     * To avoid the import of classes in the default package and the import of primitive data types
+     * ("int", "boolean") qualified class names without package (or without "." respectively) will
+     * not be added as an imported. The given qualified name will still be returned, however.
      * 
      * @param qName The qualified name of the type
      * @return the unqualified name of the type
@@ -163,6 +167,10 @@ public abstract class AbstractGeneratorModelNode {
             javaQName = qName.replaceAll(SyntaxConstants.NS_DELIM, ".");
         } else {
             javaQName = qName;
+        }
+        if (!javaQName.contains(".")) {
+            // return default package and primitive class names without importing them
+            return javaQName;
         }
         getModelContext().addImport(javaQName);
         String[] segments = javaQName.split("\\.");

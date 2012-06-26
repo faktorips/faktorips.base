@@ -63,7 +63,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateGetter() {
-        return true;
+        return !isConstant();
     }
 
     public boolean isGenerateSetter() {
