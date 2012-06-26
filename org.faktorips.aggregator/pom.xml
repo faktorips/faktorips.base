@@ -4,17 +4,17 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	
+	<groupId>org.faktorips</groupId>
+	<artifactId>org.faktorips.aggregator</artifactId>
+	<version>3.8.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
 	<parent>
 		<groupId>org.faktorips</groupId>
 		<artifactId>org.faktorips.build</artifactId>
 		<version>1.0.0</version>
 	</parent>
 	
-	<groupId>org.faktorips</groupId>
-	<artifactId>org.faktorips.aggregator</artifactId>
-	<version>3.8.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
-
 	<!-- These are all modules that are included in the Faktor-IPS build -->
 
 	<modules>
