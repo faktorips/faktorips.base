@@ -50,23 +50,23 @@ public class XProductAssociation extends XAssociation {
     public String getGetterNameForTargetGeneration() {
         IType target = getTargetType();
         XProductCmptClass modelNode = getModelNode(target, XProductCmptClass.class);
-        return modelNode.getGetterMethodNameForGeneration();
+        return modelNode.getMethodNameGetProductComponentGeneration();
     }
 
-    public String getGetterMethodNameForLinks() {
-        return getGetterMethodNameForLinks(isOnetoMany());
+    public String getMethodNameGetLinksFor() {
+        return getMethodNameGetLinksFor(isOnetoMany());
     }
 
-    public String getGetterMethodNameForSingleLink() {
-        return getGetterMethodNameForLinks(false);
+    public String getMethodNameGetLinkFor() {
+        return getMethodNameGetLinksFor(false);
     }
 
-    private String getGetterMethodNameForLinks(boolean plural) {
+    private String getMethodNameGetLinksFor(boolean plural) {
         return getJavaNamingConvention().getMultiValueGetterMethodName(
                 "Link" + (plural ? "s" : "") + "For" + StringUtils.capitalize(getName(plural)));
     }
 
-    public String getGetterMethodCardinalityFor() {
+    public String getMethodGetCardinalityFor() {
         String matchingSingularName;
         try {
             matchingSingularName = StringUtils.capitalize(getAssociation().findMatchingPolicyCmptTypeAssociation(

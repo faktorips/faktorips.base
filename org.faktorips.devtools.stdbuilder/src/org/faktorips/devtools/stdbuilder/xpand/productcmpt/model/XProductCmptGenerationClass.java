@@ -86,7 +86,9 @@ public class XProductCmptGenerationClass extends XProductClass {
     }
 
     public String getMethodNameGetProductCmpt() {
-        return getJavaNamingConvention().getGetterMethodName(getName());
+        XProductCmptClass productCmptClass = getModelNode(getType(), XProductCmptClass.class);
+        return getJavaNamingConvention().getGetterMethodName(
+                productCmptClass.getSimpleName(BuilderAspect.IMPLEMENTATION));
     }
 
     @Override

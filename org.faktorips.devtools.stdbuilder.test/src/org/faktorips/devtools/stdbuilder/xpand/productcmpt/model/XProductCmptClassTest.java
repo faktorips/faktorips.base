@@ -62,10 +62,10 @@ public class XProductCmptClassTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetGetterMethodNameForGeneration() throws Exception {
-        XProductCmptClass xProductCmptClass = new XProductCmptClass(productCmptType, modelContext, modelService);
-        String getterMethodNameForGeneration = xProductCmptClass.getGetterMethodNameForGeneration();
-        assertEquals("getTestTypeGen", getterMethodNameForGeneration);
-    }
+            public void testGetMethodNameGetProductComponentGeneration() throws Exception {
+                XProductCmptClass xProductCmptClass = new XProductCmptClass(productCmptType, modelContext, modelService);
+                String getterMethodNameForGeneration = xProductCmptClass.getMethodNameGetProductComponentGeneration();
+                assertEquals("getTestTypeGen", getterMethodNameForGeneration);
+            }
 
 }

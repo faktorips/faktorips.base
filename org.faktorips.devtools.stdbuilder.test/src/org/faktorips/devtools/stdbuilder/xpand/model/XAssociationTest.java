@@ -36,37 +36,37 @@ public class XAssociationTest {
     private IAssociation association;
 
     @Test
-    public void testGetAddMethodName() throws Exception {
-        when(association.getTargetRoleSingular()).thenReturn("testTarget");
-        XAssociation xAssociation = mock(XAssociation.class, Mockito.CALLS_REAL_METHODS);
-        when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
-        String addMethodName = xAssociation.getAddMethodName();
-        assertEquals("addTestTarget", addMethodName);
-
-        association.setTargetRoleSingular("TestTarget");
-        addMethodName = xAssociation.getAddMethodName();
-        assertEquals("addTestTarget", addMethodName);
-    }
-
-    @Test
-    public void testGetSetterMethodName() throws Exception {
-        when(association.getTargetRoleSingular()).thenReturn("testTarget");
-        XAssociation xAssociation = mock(XAssociation.class, Mockito.CALLS_REAL_METHODS);
-        when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
-        doReturn(new JavaNamingConvention()).when(xAssociation).getJavaNamingConvention();
-        String methodName = xAssociation.getSetterMethodName();
-        assertEquals("setTestTarget", methodName);
-    }
+        public void testGetMethodNameAdd() throws Exception {
+            when(association.getTargetRoleSingular()).thenReturn("testTarget");
+            XAssociation xAssociation = mock(XAssociation.class, Mockito.CALLS_REAL_METHODS);
+            when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
+            String addMethodName = xAssociation.getMethodNameAdd();
+            assertEquals("addTestTarget", addMethodName);
+    
+            association.setTargetRoleSingular("TestTarget");
+            addMethodName = xAssociation.getMethodNameAdd();
+            assertEquals("addTestTarget", addMethodName);
+        }
 
     @Test
-    public void testGetGetterMethodNameNumOf() throws Exception {
-        when(association.getTargetRolePlural()).thenReturn("testTargets");
-        XAssociation xAssociation = mock(XAssociation.class, Mockito.CALLS_REAL_METHODS);
-        when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
-        doReturn(new JavaNamingConvention()).when(xAssociation).getJavaNamingConvention();
-        String methodName = xAssociation.getGetterMethodNameNumOf();
-        assertEquals("getNumOfTestTargets", methodName);
-    }
+            public void testGetMethodNameSetter() throws Exception {
+                when(association.getTargetRoleSingular()).thenReturn("testTarget");
+                XAssociation xAssociation = mock(XAssociation.class, Mockito.CALLS_REAL_METHODS);
+                when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
+                doReturn(new JavaNamingConvention()).when(xAssociation).getJavaNamingConvention();
+                String methodName = xAssociation.getMethodNameSetter();
+                assertEquals("setTestTarget", methodName);
+            }
+
+    @Test
+                public void testGetMethodNameGetterterNumOf() throws Exception {
+                    when(association.getTargetRolePlural()).thenReturn("testTargets");
+                    XAssociation xAssociation = mock(XAssociation.class, Mockito.CALLS_REAL_METHODS);
+                    when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
+                    doReturn(new JavaNamingConvention()).when(xAssociation).getJavaNamingConvention();
+                    String methodName = xAssociation.getMethodNameGetNumOf();
+                    assertEquals("getNumOfTestTargets", methodName);
+                }
 
     @Test
     public void testIsSubsetOf() throws Exception {

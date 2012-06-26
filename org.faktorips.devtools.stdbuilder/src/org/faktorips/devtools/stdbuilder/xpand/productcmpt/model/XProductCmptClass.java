@@ -13,11 +13,10 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
-import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -68,12 +67,11 @@ public class XProductCmptClass extends XProductClass {
         return addImport(ProductComponent.class);
     }
 
-    public String getGetterMethodNameForGeneration() {
-        IChangesOverTimeNamingConvention convention = getProductCmptType().getIpsProject()
-                .getChangesInTimeNamingConventionForGeneratedCode();
-        Locale locale = getLanguageUsedInGeneratedSourceCode();
-        String generationConceptAbbreviation = convention.getGenerationConceptNameAbbreviation(locale);
-        return "get" + getProductCmptType().getName() + generationConceptAbbreviation;
+    public String getMethodNameGetProductComponentGeneration() {
+        XProductCmptGenerationClass productCmptGenerationClass = getModelNode(getType(),
+                XProductCmptGenerationClass.class);
+        return getJavaNamingConvention().getGetterMethodName(
+                productCmptGenerationClass.getSimpleName(BuilderAspect.IMPLEMENTATION));
     }
 
 }

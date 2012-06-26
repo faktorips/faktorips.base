@@ -18,16 +18,16 @@
      * @generated
      */
      «overrideAnnotation(true)»
-     public «List_(targetClassName)» «getterMethodName»() {
-     	«List_(targetClassName)» result = new «ArrayList(targetClassName)»(«getterMethodNameNumOfInternal»());
+     public «List_(targetClassName)» «methodNameGetter»() {
+     	«List_(targetClassName)» result = new «ArrayList(targetClassName)»(«methodNameGetNumOfInternal»());
      	«IF isImplementedInSuperclass(currentContextClass)-»
-     		result.addAll(super.«getterMethodName»());
+     		result.addAll(super.«methodNameGetter»());
      	«ENDIF-»
      	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
  			«IF subsetAssociation.onetoMany-»
-     			result.addAll(«subsetAssociation.getterMethodName»());
+     			result.addAll(«subsetAssociation.methodNameGetter»());
      		«ELSE-»
-     			result.add(«subsetAssociation.getterMethodName»());
+     			result.add(«subsetAssociation.methodNameGetter»());
      		«ENDIF-»
      	«ENDFOREACH-»
      	return result;
@@ -41,8 +41,8 @@
      * @generated
      */
      «overrideAnnotation(true)»
-     public int «getterMethodNameNumOf»() {
-     	return «getterMethodNameNumOfInternal»();
+     public int «methodNameGetNumOf»() {
+     	return «methodNameGetNumOfInternal»();
      }
 «ENDDEFINE»
 
@@ -50,10 +50,10 @@
     /**
      * @generated
      */
-     private int «getterMethodNameNumOfInternal»() {
+     private int «methodNameGetNumOfInternal»() {
         int num = 0;
      	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
-     		num += «subsetAssociation.getterMethodNameNumOf»();
+     		num += «subsetAssociation.methodNameGetNumOf»();
      	«ENDFOREACH-»
         return num;
      }
