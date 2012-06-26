@@ -13,33 +13,54 @@
 		«EXPAND CommonDefinitions::ImportBlock FOREACH modelContext.imports ONFILECLOSE»
 	
 		/**
+		 «IF generatingPublishedInterfaces-»* Implementation of «getSimpleName(BuilderAspect::INTERFACE)».«ENDIF»
 		 * @generated
 		 */
 		public class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-»
 			«EXPAND implementedInterfaces-»
 		{
 
-		«FOREACH attributes AS this»
+		«FOREACH attributes AS this-»
 			«IF !published-»
 				«EXPAND PolicyCmptAttribute::fieldProperties»
 			«ENDIF-»
 		«ENDFOREACH-»
-
+		
+		«FOREACH attributes AS this-»
+			«IF constant-»
+				«EXPAND PolicyCmptAttribute::memberField»
+			«ENDIF-»
+		«ENDFOREACH-»
+		
 		«EXPAND PropertyChangeSupport::fieldDefinition»
 
-		«EXPAND PolicyCmptAttribute::memberField FOREACH attributes»
+		«FOREACH attributes AS this-»
+			«IF !constant-»
+				«EXPAND PolicyCmptAttribute::memberField»
+			«ENDIF-»
+		«ENDFOREACH-»
 			
 		«EXPAND constructors»
-		
+
+		«FOREACH attributes AS this-»
+			«IF productRelevant-»
+				«EXPAND PolicyCmptAttribute::allowedValuesMethod»
+			«ENDIF-»
+			«IF generateSetter-»
+				«EXPAND PolicyCmptAttribute::setter»
+			«ENDIF-»
+			«IF generateGetter-»
+				«EXPAND PolicyCmptAttribute::getter»
+			«ENDIF-»
+		«ENDFOREACH-»
+
 		«IF configured-»
 			«EXPAND generalMethodsForConfiguredPolicyCmpts»
 	    «ENDIF-»
-		    
+	   
 		«EXPAND PropertyChangeSupport::generalMethods»
 		
-		«EXPAND PolicyCmptAttribute::getter FOREACH attributes»
-		«EXPAND PolicyCmptAttribute::setter FOREACH attributes»
-		«EXPAND PolicyCmptAttribute::allowedValuesMethod FOREACH attributes»
+		«EXPAND generalMethods»
 
 		}
 	«ENDFILE»
@@ -53,7 +74,7 @@
 
 «DEFINE constructors FOR XPolicyCmptClass-»
 	/**
-     * Creates a new Police.
+     * Creates a new «getSimpleName(BuilderAspect::IMPLEMENTATION)».
      * 
      * @generated
      */
@@ -63,7 +84,7 @@
     }
     «IF configured»
 	/**
-     * Creates a new Police.
+     * Creates a new «getSimpleName(BuilderAspect::IMPLEMENTATION)».
      * 
      * @generated
      */
@@ -84,7 +105,51 @@
 «ENDDEFINE»
 
 «DEFINE generalMethodsForConfiguredPolicyCmpts FOR XPolicyCmptClass-»
+		
     /**
+     * Initializes the object with the configured defaults.
+     * 
+     * @restrainedmodifiable
+     */
+	 «overrideAnnotation(false)»
+    public void «initialize()» {
+        if («productGenerationGetterName»() == null) {
+            return;
+        }
+        «FOREACH attributes AS this-»
+			«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
+        «ENDFOREACH-»
+        // begin-user-code
+        // end-user-code
+    }
+	 
+	/**
+	 * @generated
+	 */
+	 «overrideAnnotation(false)»
+	 public «productComponentClassOrInterfaceName» «productComponentGetterName»() {
+	 	return («productComponentClassOrInterfaceName») «getProductComponent()»;
+	 }
+	 
+	/**
+	 * @generated
+	 */
+	 «overrideAnnotation(false)»
+	 public «productGenerationClassOrInterfaceName» «productGenerationGetterName»() {
+	 	return («productGenerationClassOrInterfaceName») «getProductCmptGeneration()»;
+	 }
+
+	/**
+	 * @generated
+	 */
+	 «overrideAnnotation(false)»
+	 public void «productComponentSetterName»(«productComponentClassOrInterfaceName» «productComponentArgumentName», boolean initPropertiesWithConfiguratedDefaults) {
+        «setProductComponent(productComponentArgumentName)»;
+        if (initPropertiesWithConfiguratedDefaults) {
+            «initialize()»;
+        }
+	 }
+	 /**
      * @generated
      */
 	 «overrideAnnotation(false)»
@@ -113,51 +178,10 @@
 		        return null;
 		 «ENDIF-»
 	 }
-		
-	/**
-	 * @generated
-	 */
-	 «overrideAnnotation(false)»
-	 public «productGenerationClassOrInterfaceName» «productGenerationGetterName»() {
-	 	return («productGenerationClassOrInterfaceName») «getProductCmptGeneration()»;
-	 }
-	 
-	/**
-	 * @generated
-	 */
-	 «overrideAnnotation(false)»
-	 public «productComponentClassOrInterfaceName» «productComponentGetterName»() {
-	 	return («productComponentClassOrInterfaceName») «getProductComponent()»;
-	 }
-	 
-	/**
-	 * @generated
-	 */
-	 «overrideAnnotation(false)»
-	 public void «productComponentSetterName»(«productComponentClassOrInterfaceName» «productComponentArgumentName», boolean initPropertiesWithConfiguratedDefaults) {
-        «setProductComponent(productComponentArgumentName)»;
-        if (initPropertiesWithConfiguratedDefaults) {
-            «initialize()»;
-        }
-	 }
-	 
-    /**
-     * Initializes the object with the configured defaults.
-     * 
-     * @restrainedmodifiable
-     */
-	 «overrideAnnotation(false)»
-    public void «initialize()» {
-        if («productGenerationGetterName»() == null) {
-            return;
-        }
-        «FOREACH attributes AS this-»
-			«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
-        «ENDFOREACH-»
-        // begin-user-code
-        // end-user-code
-    }
     
+«ENDDEFINE»
+
+«DEFINE generalMethods FOR XPolicyCmptClass-»
     /**
      * {@inheritDoc}
      * 
@@ -165,6 +189,7 @@
      */
 	 «overrideAnnotation(false)»
     protected void initPropertiesFromXml(«Map()»<String, String> propMap, «IRuntimeRepository()» productRepository) {
+   «REM» initPropertiesFromXml() in Extension auslager und mit 1 oder 2 argumenten definieren «ENDREM»
         super.initPropertiesFromXml(propMap, productRepository);    	
         «FOREACH attributes AS this-»
 			«EXPAND PolicyCmptAttribute::initAttributeFromXML-»

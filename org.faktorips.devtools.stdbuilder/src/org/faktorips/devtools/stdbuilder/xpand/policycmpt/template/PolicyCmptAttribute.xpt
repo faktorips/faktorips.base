@@ -20,7 +20,7 @@
 		 * @generated
 		 */
 		«IF constant-»
-			private static final «javaClassName» «constantFieldName»= «defaultValueCode»;
+			public static final «javaClassName» «constantFieldName»= «defaultValueCode»;
 		«ELSE-»
 			private «javaClassName» «memberVarName»= «defaultValueCode»;
 		«ENDIF-»
