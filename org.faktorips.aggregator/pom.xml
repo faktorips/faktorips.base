@@ -6,7 +6,7 @@
 
 	<groupId>org.faktorips</groupId>
 	<artifactId>org.faktorips.aggregator</artifactId>
-	<version>3.7.3-SNAPSHOT</version>
+	<version>3.7.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
