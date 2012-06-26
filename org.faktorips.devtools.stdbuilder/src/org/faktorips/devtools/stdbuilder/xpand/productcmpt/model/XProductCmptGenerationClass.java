@@ -13,31 +13,41 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
-import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenJavaClassNameProvider;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 
 public class XProductCmptGenerationClass extends XProductClass {
 
+    private static final boolean CHANGE_OVER_TIME = true;
+
     private final IJavaClassNameProvider prodGenJavaClassNameProvider;
-    protected final List<XProductAttribute> attributes;
-    protected final List<XProductAssociation> associations;
+
+    protected final Set<XProductAttribute> attributes;
+
+    protected final Set<XProductAssociation> associations;
+
+    private final Set<XDerivedUnionAssociation> derivedUnionAssociations;
 
     public XProductCmptGenerationClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext modelContext,
             ModelService modelService) {
         super(ipsObjectPartContainer, modelContext, modelService);
         prodGenJavaClassNameProvider = createProductCmptGenJavaClassNaming(getLanguageUsedInGeneratedSourceCode());
 
-        attributes = initNodesForParts(getChangeableAttributes(), XProductAttribute.class);
-        associations = initNodesForParts(getChangableAssociations(), XProductAssociation.class);
+        attributes = initNodesForParts(getProductAttributes(CHANGE_OVER_TIME), XProductAttribute.class);
+        associations = initNodesForParts(getProductAssociations(CHANGE_OVER_TIME), XProductAssociation.class);
+        derivedUnionAssociations = initNodesForParts(getProductDerivedUnionAssociations(CHANGE_OVER_TIME),
+                XDerivedUnionAssociation.class);
     }
 
     public static ProductCmptGenJavaClassNameProvider createProductCmptGenJavaClassNaming(Locale locale) {
@@ -70,14 +80,28 @@ public class XProductCmptGenerationClass extends XProductClass {
         return addImport(ProductComponentGeneration.class.getName());
     }
 
-    @Override
-    public List<XProductAttribute> getAttributes() {
-        return new CopyOnWriteArrayList<XProductAttribute>(attributes);
+    public String getProductCmptClassName(BuilderAspect aspect) {
+        XProductCmptClass modelNode = getModelNode(getProductCmptType(), XProductCmptClass.class);
+        return addImport(modelNode.getQualifiedName(aspect));
+    }
+
+    public String getMethodNameGetProductCmpt() {
+        return getJavaNamingConvention().getGetterMethodName(getName());
     }
 
     @Override
-    public List<XProductAssociation> getAssociations() {
-        return new CopyOnWriteArrayList<XProductAssociation>(associations);
+    public Set<XProductAttribute> getAttributes() {
+        return new CopyOnWriteArraySet<XProductAttribute>(attributes);
+    }
+
+    @Override
+    public Set<XProductAssociation> getAssociations() {
+        return new CopyOnWriteArraySet<XProductAssociation>(associations);
+    }
+
+    @Override
+    public Set<XDerivedUnionAssociation> getDerivedUnionAssociations() {
+        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnionAssociations);
     }
 
 }

@@ -15,6 +15,7 @@ package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
@@ -98,7 +99,6 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     }
 
     private String getSuperClassOrInterfaceName(BuilderAspect aspect) {
-
         try {
             if (getType().hasSupertype()) {
                 IType superType = getType().findSupertype(getIpsProject());
@@ -164,14 +164,30 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     public List<String> getImplementedInterfaces() {
         // TODO FIPS-1059
         ArrayList<String> list = new ArrayList<String>();
-        String importStatement = addImport(getJavaClassNaming().getQualifiedClassName(getType(),
-                BuilderAspect.INTERFACE, getJavaClassNameProvider()));
-        list.add(importStatement);
+        String name = getJavaClassNaming().getQualifiedClassName(getType(), BuilderAspect.INTERFACE,
+                getJavaClassNameProvider());
+        list.add(name);
         return list;
     }
 
-    public abstract List<? extends XAttribute> getAttributes();
+    public abstract Set<? extends XAttribute> getAttributes();
 
-    public abstract List<? extends XAssociation> getAssociations();
+    /**
+     * Returns the list of associations in the current type. Does not add derived union
+     * associations!
+     * 
+     * @see #getDerivedUnionAssociations()
+     * 
+     * @return The list of associations in this type except derived unions
+     */
+    public abstract Set<? extends XAssociation> getAssociations();
+
+    /**
+     * Getting the list of every derived union needs to be implemented. That means it is either
+     * defined in this type or in any super type and this type defines a subset of it.
+     * 
+     * @return The list of derived unions you need to implement in this class
+     */
+    public abstract Set<XDerivedUnionAssociation> getDerivedUnionAssociations();
 
 }

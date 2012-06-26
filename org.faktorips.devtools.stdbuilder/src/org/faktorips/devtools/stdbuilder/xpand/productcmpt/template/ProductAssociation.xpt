@@ -3,7 +3,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 
-«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
 «DEFINE field FOR XProductAssociation»
 	«IF !derivedUnion»
@@ -225,10 +225,10 @@
      */
      «overrideAnnotation(true)»
      public List<«targetClassName»> «getterMethodName»() {
-     	«List_()»<«targetClassGenerationName» result = new «ArrayList()»<«targetClassName»>(«getterMethodNameNumOfInternal»());
-     	«FOREACH 
+     	«List_()»<«targetClassGenerationName» result = new «ArrayList()»<«targetClassName»>(«REM»«getterMethodNameNumOfInternal»()«ENDREM»);
+     	«REM»«FOREACH »«ENDREM»
      }
-«ENDDEFINE»
+«ENDDEFINE» 
 
 «REM»
     

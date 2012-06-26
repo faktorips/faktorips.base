@@ -13,8 +13,10 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -65,11 +67,23 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateSetter() {
-        return !getAttribute().isDerived();
+        return !isDerived() && !isConstant();
+    }
+
+    private boolean isDerived() {
+        return getAttribute().isDerived();
     }
 
     public boolean isConstant() {
         return getAttribute().getAttributeType() == AttributeType.CONSTANT;
+    }
+
+    public boolean isRequiringInitWithProductData() {
+        return isProductRelevant() && !isDerived();
+    }
+
+    public boolean isRequiringInitFromXML() {
+        return !isDerived() && !isConstant();
     }
 
     public boolean isGenerateDefaultInitialize() {
@@ -133,7 +147,22 @@ public class XPolicyAttribute extends XAttribute {
         return xPolicyCmptClass;
     }
 
+    public String getFieldPropertyName() {
+        return "PROPERTY_" + StringUtils.upperCase(getMemberVarName());
+    }
+
+    public String getOldValueVariable() {
+        return " old" + StringUtils.capitalize(getMemberVarName());
+    }
+
     public String getComputationMethodName() {
         return getAttribute().getComputationMethodSignature();
+    }
+
+    public String getNewInstanceExpression() {
+        JavaCodeFragment fragment = getDatatypeHelper().newInstanceFromExpression(
+                "propMap.get(\"" + getAttributeName() + "\")");
+        addImport(fragment.getImportDeclaration());
+        return fragment.getSourcecode();
     }
 }

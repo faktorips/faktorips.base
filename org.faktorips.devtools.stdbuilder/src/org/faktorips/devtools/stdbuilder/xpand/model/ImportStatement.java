@@ -22,6 +22,18 @@ public class ImportStatement {
 
     private final String qualifiedName;
 
+    public static ImportStatement newInstance(String qName) {
+        return new ImportStatement(qName);
+    }
+
+    public ImportStatement(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+    }
+
+    public ImportStatement(Class<?> clazz) {
+        this.qualifiedName = clazz.getName();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -56,14 +68,6 @@ public class ImportStatement {
             return false;
         }
         return true;
-    }
-
-    public ImportStatement(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-    }
-
-    public ImportStatement(Class<?> clazz) {
-        this.qualifiedName = clazz.getName();
     }
 
     /**

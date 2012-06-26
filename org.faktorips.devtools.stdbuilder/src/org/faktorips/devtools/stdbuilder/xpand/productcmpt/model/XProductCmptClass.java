@@ -13,36 +13,50 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
-import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 import org.faktorips.runtime.internal.ProductComponent;
 
 public class XProductCmptClass extends XProductClass {
-    private final List<XProductAttribute> attributes;
-    private final List<XProductAssociation> associations;
+
+    private static final boolean CHANGE_OVER_TIME = false;
+
+    private final Set<XProductAttribute> attributes;
+
+    private final Set<XProductAssociation> associations;
+
+    private final Set<XDerivedUnionAssociation> derivedUnionAssociations;
 
     public XProductCmptClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext modelContext,
             ModelService modelService) {
         super(ipsObjectPartContainer, modelContext, modelService);
 
-        attributes = initNodesForParts(getStaticAttributes(), XProductAttribute.class);
-        associations = initNodesForParts(getStaticAssociations(), XProductAssociation.class);
+        attributes = initNodesForParts(getProductAttributes(CHANGE_OVER_TIME), XProductAttribute.class);
+        associations = initNodesForParts(getProductAssociations(CHANGE_OVER_TIME), XProductAssociation.class);
+        derivedUnionAssociations = initNodesForParts(getProductDerivedUnionAssociations(CHANGE_OVER_TIME),
+                XDerivedUnionAssociation.class);
     }
 
     @Override
-    public List<XProductAttribute> getAttributes() {
-        return new CopyOnWriteArrayList<XProductAttribute>(attributes);
+    public Set<XProductAttribute> getAttributes() {
+        return new CopyOnWriteArraySet<XProductAttribute>(attributes);
     }
 
     @Override
-    public List<XProductAssociation> getAssociations() {
-        return new CopyOnWriteArrayList<XProductAssociation>(associations);
+    public Set<XProductAssociation> getAssociations() {
+        return new CopyOnWriteArraySet<XProductAssociation>(associations);
+    }
+
+    @Override
+    public Set<XDerivedUnionAssociation> getDerivedUnionAssociations() {
+        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnionAssociations);
     }
 
     public IProductCmptType getProductCmptType() {
@@ -61,4 +75,5 @@ public class XProductCmptClass extends XProductClass {
         String generationConceptAbbreviation = convention.getGenerationConceptNameAbbreviation(locale);
         return "get" + getProductCmptType().getName() + generationConceptAbbreviation;
     }
+
 }

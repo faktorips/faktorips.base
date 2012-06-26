@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -78,9 +77,7 @@ public class XFormulaParameter extends AbstractGeneratorModelNode {
         if (datatype instanceof PolicyCmptType || datatype instanceof ProductCmptType) {
             Type type = (Type)datatype;
             XClass xClass = getModelService().getModelNode(type, XClass.class, getModelContext());
-            String nameOfGeneratedClass = xClass
-                    .getQualifiedName(isGeneratingPublishedInterfaces() ? BuilderAspect.INTERFACE
-                            : BuilderAspect.IMPLEMENTATION);
+            String nameOfGeneratedClass = xClass.getQualifiedName(getBuilderAspectDependingOnSettings());
             return addImport(nameOfGeneratedClass);
         }
         throw new RuntimeException("Can't get Java class name for datatype " + datatype.getQualifiedName());

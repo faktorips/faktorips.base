@@ -4,6 +4,8 @@ extension org::faktorips::devtools::stdbuilder::xpand::template::ClassNames reex
 getEffectiveFromAsCalendar() :
 	"getEffectiveFromAsCalendar()";
 	
+effectiveFromHasChanged() :
+	"effectiveFromHasChanged()";
 
 getParentModelObject() :
 	"getParentModelObject()";

@@ -3,7 +3,8 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 
-«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptExtension»
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::MethodNames»
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
 «DEFINE main FOR XPolicyCmptClass»
 	«FILE getFileName(BuilderAspect::IMPLEMENTATION)-»
@@ -15,7 +16,7 @@
 		 * @generated
 		 */
 		public class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-»
-			«EXPAND initImplementedInterfaces-»
+			«EXPAND implementedInterfaces-»
 		{
 
 		«FOREACH attributes AS this»
@@ -44,7 +45,37 @@
 	«ENDFILE»
 «ENDDEFINE»
 
-«DEFINE initializeForOverrideAttributes FOR XPolicyCmptClass-»
+«DEFINE implementedInterfaces FOR XPolicyCmptClass-»
+	«IF implementsInterface-»
+ implements «FOREACH implementedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE constructors FOR XPolicyCmptClass-»
+	/**
+     * Creates a new Police.
+     * 
+     * @generated
+     */
+    public «getSimpleName(BuilderAspect::IMPLEMENTATION)»() {
+        super();
+        «EXPAND initializationForOverrideAttributes-»
+    }
+    «IF configured»
+	/**
+     * Creates a new Police.
+     * 
+     * @generated
+     */
+    public «getSimpleName(BuilderAspect::IMPLEMENTATION)»(«productComponentClassOrInterfaceName» productCmpt) {
+        super(productCmpt);
+        «EXPAND initializationForOverrideAttributes-»
+    }
+    «ENDIF»
+«ENDDEFINE»
+
+
+«DEFINE initializationForOverrideAttributes FOR XPolicyCmptClass-»
 	«FOREACH attributes AS this-»
 		«IF generateDefaultInitialize-»
 			«setterMethodName»(«defaultValueCode»);
@@ -52,15 +83,15 @@
 	«ENDFOREACH-»
 «ENDDEFINE»
 
-«DEFINE initImplementedInterfaces FOR XPolicyCmptClass-»
-	«IF implementsInterface-»implements
-		«FOREACH implementedInterfaces AS interface SEPARATOR ","-»
-			«interface»
-		«ENDFOREACH»
-	«ENDIF-»
-«ENDDEFINE»
-
 «DEFINE generalMethodsForConfiguredPolicyCmpts FOR XPolicyCmptClass-»
+    /**
+     * @generated
+     */
+	 «overrideAnnotation(false)»
+    public void «effectiveFromHasChanged()» {
+        super.«effectiveFromHasChanged()»;
+    }
+    
 	/**
 	 * @generated
 	 */
@@ -70,7 +101,9 @@
 		 	«IF hasSupertype()-»
 		 		return super.«getEffectiveFromAsCalendar()»;
 		 	«ELSE-»
-		 	    return null; // TODO 
+		 	    return null; // TODO Implement access to effective from.
+        // To avoid that the generator overwrites the implementation,
+        // you must add "NOT" after @generated in the Javadoc!
 		 	«ENDIF-»
 		 «ELSE-»
 		        «IModelObject()» parent = «getParentModelObject()»;
@@ -107,28 +140,34 @@
             «initialize()»;
         }
 	 }
-		 
-«ENDDEFINE»
-
-«DEFINE constructors FOR XPolicyCmptClass-»
-	/**
-     * Creates a new Police.
+	 
+    /**
+     * Initializes the object with the configured defaults.
+     * 
+     * @restrainedmodifiable
+     */
+	 «overrideAnnotation(false)»
+    public void «initialize()» {
+        if («productGenerationGetterName»() == null) {
+            return;
+        }
+        «FOREACH attributes AS this-»
+			«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
+        «ENDFOREACH-»
+        // begin-user-code
+        // end-user-code
+    }
+    
+    /**
+     * {@inheritDoc}
      * 
      * @generated
      */
-    public «getSimpleName(BuilderAspect::IMPLEMENTATION)»() {
-        super();
-        «EXPAND initializeForOverrideAttributes-»
+	 «overrideAnnotation(false)»
+    protected void initPropertiesFromXml(«Map()»<String, String> propMap, «IRuntimeRepository()» productRepository) {
+        super.initPropertiesFromXml(propMap, productRepository);    	
+        «FOREACH attributes AS this-»
+			«EXPAND PolicyCmptAttribute::initAttributeFromXML-»
+        «ENDFOREACH-»
     }
-    «IF configured»
-	/**
-     * Creates a new Police.
-     * 
-     * @generated
-     */
-    public «getSimpleName(BuilderAspect::IMPLEMENTATION)»(«productCmptClassName» productCmpt) {
-        super(productCmpt);
-        «EXPAND initializeForOverrideAttributes-»
-    }
-    «ENDIF»
 «ENDDEFINE»

@@ -22,7 +22,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -35,6 +36,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class XDerivedUnionAssociationTest {
+
+    private static final String DERIVED_UNION_NAME = "derivedUnion";
 
     @Mock
     private IAssociation association;
@@ -53,6 +56,7 @@ public class XDerivedUnionAssociationTest {
     @Before
     public void setUp() throws Exception {
         when(association.isDerivedUnion()).thenReturn(true);
+        when(association.getName()).thenReturn(DERIVED_UNION_NAME);
         xDerivedUnionAssociation = new XDerivedUnionAssociation(association, context, modelService);
     }
 
@@ -64,12 +68,12 @@ public class XDerivedUnionAssociationTest {
         XAssociation association2 = mock(XAssociation.class);
         when(association2.isSubsetOf(xDerivedUnionAssociation)).thenReturn(false);
 
-        List<XAssociation> list = new ArrayList<XAssociation>();
-        list.add(association1);
-        list.add(association2);
-        doReturn(list).when(xClass).getAssociations();
+        Set<XAssociation> associations = new LinkedHashSet<XAssociation>();
+        associations.add(association1);
+        associations.add(association2);
+        doReturn(associations).when(xClass).getAssociations();
 
-        List<XAssociation> subsetAssociations = xDerivedUnionAssociation.getSubsetAssociations(xClass);
+        Set<XAssociation> subsetAssociations = xDerivedUnionAssociation.getSubsetAssociations(xClass);
         assertEquals(1, subsetAssociations.size());
         assertTrue(subsetAssociations.contains(association1));
     }
@@ -84,7 +88,10 @@ public class XDerivedUnionAssociationTest {
     }
 
     @Test
-    public void testIsImplementedInSuperclass_superClass() throws Exception {
+    public void testIsImplementedInSuperclass_superClassNotImplemented() throws Exception {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(association.getIpsProject()).thenReturn(ipsProject);
+
         IType superType = mock(IType.class);
         when(xDerivedUnionAssociation.getAssociationType()).thenReturn(superType);
 
@@ -93,16 +100,67 @@ public class XDerivedUnionAssociationTest {
         when(xClass.getType()).thenReturn(type);
 
         assertFalse(xDerivedUnionAssociation.isImplementedInSuperclass(xClass));
+    }
 
-        // TODO zweiter Test: Derived Union wird in SuperKlasse bereits implementiert --> assertTrue
+    @Test
+    public void testIsImplementedInSuperclass_superClassImplemented() throws Exception {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(association.getIpsProject()).thenReturn(ipsProject);
+
+        IType superType = mock(IType.class);
+        when(xDerivedUnionAssociation.getAssociationType()).thenReturn(superType);
+
+        IType type = mock(IType.class);
+        when(type.findSupertype(any(IIpsProject.class))).thenReturn(superType);
+        when(xClass.getType()).thenReturn(type);
+
+        IAssociation association2 = mock(IAssociation.class);
+        when(association2.getSubsettedDerivedUnion()).thenReturn(DERIVED_UNION_NAME);
+        ArrayList<IAssociation> associations = new ArrayList<IAssociation>();
+        associations.add(association2);
+
+        assertFalse(xDerivedUnionAssociation.isImplementedInSuperclass(xClass));
+
+        // derived union subset implemented in subtype should not matter at all
+        when(type.getAssociations()).thenReturn(associations);
+        assertFalse(xDerivedUnionAssociation.isImplementedInSuperclass(xClass));
+
+        when(superType.getAssociations()).thenReturn(associations);
+
+        assertTrue(xDerivedUnionAssociation.isImplementedInSuperclass(xClass));
     }
 
     @Test
     public void testIsImplementedInSuperclass_transitiv() throws Exception {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(association.getIpsProject()).thenReturn(ipsProject);
+
         IType type = mock(IType.class);
         IType superType = mock(IType.class);
-        when(type.findSupertype(any(IIpsProject.class))).thenReturn(superType);
+        IType superSuperType = mock(IType.class);
+        IType superSuperSuperType = mock(IType.class);
 
-        // when(modelService.getModelNode(ipsObjectPartContainer, nodeClass, modelContext))
+        when(xDerivedUnionAssociation.getAssociationType()).thenReturn(superSuperSuperType);
+
+        when(xClass.getType()).thenReturn(type);
+        when(type.findSupertype(any(IIpsProject.class))).thenReturn(superType);
+        when(superType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperType);
+        when(superSuperType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperSuperType);
+
+        IAssociation association2 = mock(IAssociation.class);
+        when(association2.getSubsettedDerivedUnion()).thenReturn(DERIVED_UNION_NAME);
+        ArrayList<IAssociation> associations = new ArrayList<IAssociation>();
+        associations.add(association2);
+
+        assertFalse(xDerivedUnionAssociation.isImplementedInSuperclass(xClass));
+
+        when(superSuperType.getAssociations()).thenReturn(associations);
+
+        assertTrue(xDerivedUnionAssociation.isImplementedInSuperclass(xClass));
+
+        when(superSuperType.getAssociations()).thenReturn(new ArrayList<IAssociation>());
+        when(superSuperSuperType.getAssociations()).thenReturn(associations);
+
+        assertTrue(xDerivedUnionAssociation.isImplementedInSuperclass(xClass));
     }
 }

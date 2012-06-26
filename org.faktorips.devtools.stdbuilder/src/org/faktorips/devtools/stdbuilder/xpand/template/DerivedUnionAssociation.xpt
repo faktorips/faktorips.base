@@ -1,0 +1,68 @@
+«IMPORT java::util»
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE methodsForDerivedUnion(XClass currentContextClass) FOR XDerivedUnionAssociation-»
+	«EXPAND getter(currentContextClass)»
+	«EXPAND getterNumOf(currentContextClass)»
+	«EXPAND getterNumOfInternal(currentContextClass)»
+«ENDDEFINE»
+
+«DEFINE getter(XClass currentContextClass) FOR XDerivedUnionAssociation-»
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+     «overrideAnnotation(true)»
+     public List<«targetClassName»> «getterMethodName»() {
+     	«List_()»<«targetClassName»> result = new «ArrayList()»<«targetClassName»>(«getterMethodNameNumOfInternal»());
+     	«IF isImplementedInSuperclass(currentContextClass)-»
+     		result.addAll(super.«getterMethodName»());
+     	«ENDIF-»
+     	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
+ 			«IF subsetAssociation.onetoMany-»
+     			result.addAll(«subsetAssociation.getterMethodName»());
+     		«ELSE-»
+     			result.add(«subsetAssociation.getterMethodName»());
+     		«ENDIF-»
+     	«ENDFOREACH-»
+     	return result;
+     }
+«ENDDEFINE»
+
+«DEFINE getterNumOf(XClass currentContextClass) FOR XDerivedUnionAssociation-»
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+     «overrideAnnotation(true)»
+     public int «getterMethodNameNumOf»() {
+     	return «getterMethodNameNumOfInternal»();
+     }
+«ENDDEFINE»
+
+«DEFINE getterNumOfInternal(XClass currentContextClass) FOR XDerivedUnionAssociation-»
+    /**
+     * @generated
+     */
+     private int «getterMethodNameNumOfInternal»() {
+        int num = 0;
+     	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
+     		num += «subsetAssociation.getterMethodNameNumOf»();
+     	«ENDFOREACH-»
+        return num;
+     }
+«ENDDEFINE»
+
+«REM»
+
+    TODO:	Qualified association
+    		derivedUnion?
+    		getLinks()
+«ENDREM»
+
