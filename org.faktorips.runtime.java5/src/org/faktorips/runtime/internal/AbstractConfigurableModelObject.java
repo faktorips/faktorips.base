@@ -110,18 +110,14 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
     }
 
     /**
-     * This method should be called when effective from date has changed, so that the reference to
-     * the product component generation could be cleared. If this policy component contains child
-     * components, this method should also clear the reference to their product component
-     * generations.
+     * This method is called when the effective from date has changed, so that the reference to the
+     * product component generation can be cleared. If this policy component contains child
+     * components, this method will also clear the reference to their product component generations.
      * <p>
-     * The product component generation is only cleared if there is a new effective from date. If
-     * {@link #getEffectiveFromAsCalendar()} returns <code>null</code> we do not want to reset the
-     * product component generation. We assume in this case that this object was removed from parent
-     * and it should be possible to get information from already loaded product component
-     * generation. If you need information from product component generation after removing the
-     * object form its parent you have to ensure that the product component generation was already
-     * loaded.
+     * The product component generation is cleared if and only if there is a new effective from
+     * date. If {@link #getEffectiveFromAsCalendar()} returns <code>null</code> the product
+     * component generation is not reset, for example if this model object was removed from its
+     * parent.
      * <p>
      * Resetting the product component generation is done via
      * {@link #resetProductCmptGenerationAfterEffectiveFromHasChanged()}. If you want to change the
