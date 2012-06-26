@@ -166,7 +166,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         ArrayList<String> list = new ArrayList<String>();
         String name = getJavaClassNaming().getQualifiedClassName(getType(), BuilderAspect.INTERFACE,
                 getJavaClassNameProvider());
-        list.add(name);
+        list.add(addImport(name));
         return list;
     }
 

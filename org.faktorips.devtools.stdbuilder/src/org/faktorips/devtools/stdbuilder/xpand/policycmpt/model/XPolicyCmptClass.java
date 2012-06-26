@@ -244,4 +244,8 @@ public class XPolicyCmptClass extends XClass {
     public String getProductComponentArgumentName() {
         return getJavaNamingConvention().getMemberVarName(getProductComponentClassName());
     }
+
+    public boolean isAbstract() {
+        return getPolicyCmptType().isAbstract();
+    }
 }

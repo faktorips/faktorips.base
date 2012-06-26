@@ -16,8 +16,7 @@
 		 «IF generatingPublishedInterfaces-»* Implementation of «getSimpleName(BuilderAspect::INTERFACE)».«ENDIF»
 		 * @generated
 		 */
-		public class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-»
-			«EXPAND implementedInterfaces-»
+		public «EXPAND potentialAbstract» class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-» «EXPAND implementedInterfaces-»
 		{
 
 		«FOREACH attributes AS this-»
@@ -71,6 +70,12 @@
  implements «FOREACH implementedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH-»
 	«ENDIF-»
 «ENDDEFINE»
+
+«DEFINE potentialAbstract FOR XPolicyCmptClass-»
+	«IF abstract» abstract «ENDIF-»
+«ENDDEFINE»
+
+
 
 «DEFINE constructors FOR XPolicyCmptClass-»
 	/**

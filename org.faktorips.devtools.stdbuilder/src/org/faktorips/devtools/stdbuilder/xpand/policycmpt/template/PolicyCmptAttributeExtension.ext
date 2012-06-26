@@ -6,3 +6,9 @@ extension org::faktorips::devtools::stdbuilder::xpand::template::CommonGenerator
 allowedValuesGetterName(XPolicyAttribute this):
 	"getSetOfAllowedValuesFor"+memberVarName.toFirstUpper();
 	
+inheritDocOrJavaDoc(XPolicyAttribute this, String jDoc):
+	generatingPublishedInterfaces?"{inheritdoc}":localizedJDoc(jDoc);
+
+inheritDocOrJavaDoc(XPolicyAttribute this, String jDoc, Object param):
+	generatingPublishedInterfaces?"{inheritdoc}":localizedJDoc(jDoc, param);
+	
