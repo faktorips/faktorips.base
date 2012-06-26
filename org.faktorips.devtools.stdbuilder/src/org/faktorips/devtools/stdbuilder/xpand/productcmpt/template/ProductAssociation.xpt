@@ -5,20 +5,19 @@
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
-«DEFINE field FOR XProductAssociation»
-	«IF !derivedUnion»
+«DEFINE field FOR XProductAssociation-»
+	«IF !derivedUnion-»
 	    /**
 	     * «localizedJDoc("FIELD_ASSOCIATION", getName(onetoMany).toFirstUpper())»
 	     * 
 	     * @generated
 	     */
-		«IF onetoMany»
+		«IF onetoMany-»
 			private «Map()»<String, «IProductComponentLink()»<«targetClassName»>> «memberVarName»  = new «LinkedHashMap()»<String, «IProductComponentLink()»<«targetClassName»>>(0);
-		«ELSE»
+		«ELSE-»
 			private «IProductComponentLink()»<«targetClassName»> «name.toFirstLower()» = null;
-		«ENDIF»
-	«ENDIF»
-	
+		«ENDIF-»
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE getterSetterAdder FOR XProductAssociation-»
@@ -26,11 +25,11 @@
 		«EXPAND getterProductCmpt»
 		«EXPAND getterProductCmptGen»
 		«EXPAND getterProductCmptPerIndex»
+		«EXPAND setterMethodForToOne»
 		«EXPAND getterLinksFor»
 		«EXPAND getterSingleLinkFor»
 		«EXPAND addMethod»
 		«EXPAND addMethodWithCardinality»
-		«EXPAND setterMethodForToOne»
 		«EXPAND getCardinalityFor»
 		«EXPAND getNumOf»
     «ENDIF»
@@ -217,51 +216,65 @@
     «ENDIF»
 «ENDDEFINE»
 
-«DEFINE getterderivedUnion FOR XProductAssociation-»
+«DEFINE getLinkMethods FOR XProductClass»
+	«EXPAND getLinkMethod»
+	«EXPAND getLinksMethod»
+«ENDDEFINE»
+
+«DEFINE getLinkMethod FOR XProductClass-»
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotation(false)»
+	    public «IProductComponentLink()»<? extends «IProductComponent()»> «getLink("String linkName", IProductComponent() + " target")» {
+	    	«FOREACH associations AS this-»
+		        if ("«name»".equals(linkName)) {
+		            return «getterMethodNameForSingleLink»((«targetClassName»)target);
+		        }
+		    «ENDFOREACH-»
+		    «IF hasSupertype() -»
+		        return super.«getLink("linkName", "target")»;
+		    «ELSE-»
+	   	        return null;
+		    «ENDIF-»
+	    }
+«ENDDEFINE»
+
+«DEFINE getLinksMethod FOR XProductClass»
     /**
      * {@inheritDoc}
      * 
      * @generated
      */
-     «overrideAnnotation(true)»
-     public List<«targetClassName»> «getterMethodName»() {
-     	«List_()»<«targetClassGenerationName» result = new «ArrayList()»<«targetClassName»>(«REM»«getterMethodNameNumOfInternal»()«ENDREM»);
-     	«REM»«FOREACH »«ENDREM»
-     }
-«ENDDEFINE» 
-
-«REM»
-    
-    @Override
-    public List<IElementarProdukt> getDuElementarProdukte() {
-        List<IElementarProdukt> result = new ArrayList<IElementarProdukt>(getNumOfDuElementarProdukteInternal());
-        result.addAll(getSubElementarProdukte());
-        return result;
+    «overrideAnnotation(false)»
+    public «List_()»<«IProductComponentLink()»<? extends «IProductComponent()»>> «getLinks()» {
+	    «List_()»<«IProductComponentLink()»<? extends «IProductComponent()»>> list = 
+	    «IF hasSupertype()-»
+        	super.«getLinks()»;
+        «ELSE-»
+			new «ArrayList()»<«IProductComponentLink()»<? extends «IProductComponent()»>>();        	
+        «ENDIF-»
+    	«FOREACH associations AS this-»
+	    	«IF onetoMany-»
+	    		list.addAll(«getterMethodNameForLinks»());
+	    	«ELSE-»
+	    		if («getterMethodNameForLinks»() != null) {
+	    			list.add(«getterMethodNameForLinks»());
+	    		}
+	    	«ENDIF-»
+        «ENDFOREACH-»
+	    «IF hasSupertype() -»
+	        return list;
+	    «ELSE-»
+	        return list;
+	    «ENDIF-»
     }
+«ENDDEFINE»
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-    @Override
-    public int getNumOfDuElementarProdukte() {
-        return getNumOfDuElementarProdukteInternal();
-    }
-
-    /**
-     * @generated
-     */
-    private int getNumOfDuElementarProdukteInternal() {
-        int num = 0;
-        num += getNumOfSubElementarProdukte();
-        return num;
-    }
-    
-    
+«REM»    
     
     TODO:	Qualified association
-    		derivedUnion?
-    		getLinks()
 «ENDREM»
 

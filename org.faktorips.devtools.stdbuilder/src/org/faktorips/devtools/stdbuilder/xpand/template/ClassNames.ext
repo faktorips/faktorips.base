@@ -1,4 +1,5 @@
 import java::util;
+import org::w3c::dom;
 import org::faktorips::runtime;
 import org::faktorips::runtime::internal;
 import org::faktorips::devtools::stdbuilder::xpand::model;
@@ -38,6 +39,12 @@ Collections(AbstractGeneratorModelNode this) :
 
 Calendar(AbstractGeneratorModelNode this) :
 	addImport(Calendar.name);
+
+Element(AbstractGeneratorModelNode this) :
+	addImport(Element.name);
+
+IProductComponent(AbstractGeneratorModelNode this) :
+	addImport(IProductComponent.name);
 
 ProductComponentLink(AbstractGeneratorModelNode this) :
 	addImport(ProductComponentLink.name);

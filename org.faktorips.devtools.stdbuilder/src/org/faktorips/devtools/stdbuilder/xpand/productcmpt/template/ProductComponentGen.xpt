@@ -8,7 +8,9 @@
 «DEFINE main FOR XProductCmptGenerationClass-»
 	«FILE getFileName(BuilderAspect::IMPLEMENTATION) -»
 	package «packageName»;
+	
 
+		«EXPAND CommonDefinitions::ImportBlock FOREACH imported() ONFILECLOSE»
 		«EXPAND CommonDefinitions::ImportBlock FOREACH modelContext.imports ONFILECLOSE»
 	
 		/**
@@ -16,14 +18,108 @@
 		 * @generated
 		 */
 		public class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-»
-			«IF implementsInterface-» implements «FOREACH implementedInterfaces AS interface-»
-				«interface-»
+			«IF implementsInterface-» implements «FOREACH implementedInterfaces AS interface SEPARATOR ","-»
+				«addImport(interface)»
 			«ENDFOREACH-»
 			«ENDIF-»
 		 {
-			«EXPAND ProductAssociation::field FOREACH associations»
+			«EXPAND ProductAssociation::field FOREACH associations-»
+			
+		    /**
+		     * «localizedJDoc("CONSTRUCTOR", getSimpleName(BuilderAspect::IMPLEMENTATION))»
+		     * 
+		     * @generated
+		     */
+			public «getSimpleName(BuilderAspect::IMPLEMENTATION)»(«getProductCmptClassName(BuilderAspect::IMPLEMENTATION)» productCmpt) {
+				super(productCmpt);
+			}
+			
+		    /**
+		     * {@inheritDoc}
+		     * 
+		     * @generated
+		     */
+		    «overrideAnnotation(true)»
+			«REM» TODO FIPS-1059 «ENDREM»
+		    public «getProductCmptClassName(BuilderAspect::INTERFACE)» «methodNameGetProductCmpt»() {
+		        return («getProductCmptClassName(BuilderAspect::INTERFACE)»)«getProductComponent()»;
+		    }
 			
 			«EXPAND ProductAssociation::getterSetterAdder FOREACH  associations»
+			
+			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH  derivedUnionAssociations»
+
+«REM» TODO Implementierung «ENDREM»
+		    /**
+		     * {@inheritDoc}
+		     * 
+		     * @generated
+		     */
+		    @Override
+		    protected void «doInitPropertiesFromXml(Map() + "<String, " + Element() + "> configMap")» {
+		        super.«doInitPropertiesFromXml("configMap")»;
+		    }
+			
+
+«REM» TODO Implementierung «ENDREM»
+		    /**
+		     * {@inheritDoc}
+		     * 
+		     * @generated
+		     */
+		    @Override
+		    protected void «writePropertiesToXml(Element() + " element")» {
+		        super.«writePropertiesToXml("element")»;
+		    }
+
+
+«REM»
+TODO
+
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    @Override
+    public ISubPolicy createSubPolicy() {
+        SubPolicy policy = new SubPolicy(getSubPolicyType());
+        policy.setProductCmptGeneration(this);
+        policy.initialize();
+        return policy;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    @Override
+    public IPolicy createPolicy() {
+        SubPolicy policy = new SubPolicy(getSubPolicyType());
+        policy.setProductCmptGeneration(this);
+        policy.initialize();
+        return policy;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    @Override
+    public IConfigurableModelObject createPolicyComponent() {
+        return createSubPolicy();
+    }
+
+«ENDREM»			
+			
+			«EXPAND ProductAssociation::getLinkMethods»
 		 }
 	«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE addImport(String import) FOR XClass»
+	«imported().add(newImport(import)) -> import.split(".").last()-»
 «ENDDEFINE»
