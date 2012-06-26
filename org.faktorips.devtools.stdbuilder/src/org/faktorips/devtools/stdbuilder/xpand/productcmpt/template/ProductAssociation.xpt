@@ -291,6 +291,28 @@
 	    }
 «ENDDEFINE»
 
+«DEFINE writeReferencesToXmlPart FOR XProductAssociation-»
+		«IF onetoMany-»
+		    for («IProductComponentLink(targetClassName)» link : «memberVarName».values()) {
+		        element.appendChild(((«IXmlPersistenceSupport()»)link).«toXml("element.getOwnerDocument()")»);
+		    }
+		«ELSE-»
+
+		«ENDIF-»
+	   associationElements = elementsMap.get("«name»");
+	    if (associationElements != null) {
+			        this.«memberVarName» = new «LinkedHashMap("String", IProductComponentLink(targetClassName))»(associationElements.size());
+			        for (Element element : associationElements) {
+			            «IProductComponentLink(targetClassName)» link = new «ProductComponentLink(targetClassName)»(this);
+			            link.initFromXml(element);
+			            this.«memberVarName».put(link.getTargetId(), link);
+	        }
+	            Element element = associationElements.get(0);
+	            «memberVarName» = new «ProductComponentLink(targetClassName)»(this);
+	            «memberVarName».initFromXml(element);
+	    }
+«ENDDEFINE»
+
 «REM»    
     
     TODO:	Qualified association

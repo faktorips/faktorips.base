@@ -81,4 +81,10 @@ initialize():
 
 isModifiable() :
 	"isModifiable()";
+
+// ---------------------------------
+// Methods in IXmlPersistenceSupport
+// ---------------------------------
 	
+toXml(String paramDocument) :
+	"toXml(" + paramDocument + ")";

@@ -58,6 +58,9 @@ CardinalityRange(AbstractGeneratorModelNode this) :
 IRuntimeRepository(AbstractGeneratorModelNode this) :
 	addImport(IRuntimeRepository.name);
 	
+IXmlPersistenceSupport(AbstractGeneratorModelNode this) :
+	addImport(IXmlPersistenceSupport.name);
+
 // EXECPTIONS
 NoSuchElementException(AbstractGeneratorModelNode this) :
 	addImport(NoSuchElementException.name);
