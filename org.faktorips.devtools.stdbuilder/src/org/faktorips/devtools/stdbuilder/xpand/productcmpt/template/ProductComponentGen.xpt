@@ -72,6 +72,7 @@
 		    }
 «ENDIF»
 
+«IF attributes.size > 0»
 «REM» TODO Implementierung «ENDREM»
 		    /**
 		     * {@inheritDoc}
@@ -86,6 +87,7 @@
  «REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification. 
 		        «ENDIF-»
 		    }
+«ENDIF»
 		   
 «IF associations.size > 0»
 		    /**
@@ -94,17 +96,9 @@
 		    «overrideAnnotation(false)»
 		    protected void «writeReferencesToXml(Element() + " element")» {
 		        super.«writeReferencesToXml("element")»;
-		        «REM»
-		        for («IProductComponentLink()» link : childrenProducts.values()) {
-		            element.appendChild(((IXmlPersistenceSupport)link).toXml(element.getOwnerDocument()));
-		        }
-		        «ENDREM»
+		        «EXPAND ProductAssociation::writeReferencesToXmlPart FOREACH associations-»
 		    }
 «ENDIF»
-
-«REM»
-TODO
-
 
     /**
      * {@inheritDoc}
@@ -112,12 +106,17 @@ TODO
      * @generated
      */
     @Override
-    public ISubPolicy createSubPolicy() {
+    public «getSimpleName(BuilderAspect::INTERFACE)» createSubPolicy() {
         SubPolicy policy = new SubPolicy(getSubPolicyType());
         policy.setProductCmptGeneration(this);
         policy.initialize();
         return policy;
     }
+
+«REM»
+TODO
+
+
 
     /**
      * {@inheritDoc}
