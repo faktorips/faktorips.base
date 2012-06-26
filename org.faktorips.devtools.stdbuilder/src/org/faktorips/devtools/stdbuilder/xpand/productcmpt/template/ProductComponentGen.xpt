@@ -69,7 +69,11 @@
 		     */
 		    @Override
 		    protected void «writePropertiesToXml(Element() + " element")» {
-		        super.«writePropertiesToXml("element")»;
+		    	«IF hasSupertype()-»
+		        	super.«writePropertiesToXml("element")»;
+		        «ELSE-»
+ «REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification. 
+		        «ENDIF-»
 		    }
 
 
