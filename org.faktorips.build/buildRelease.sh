@@ -56,7 +56,7 @@ doAsserts()
 {
 	if [ -z "$NEW_VERSION" ]
 	then
-		echo "Please specify next version with -nextVersion x.x.x or use argument -noNewVersion" 
+		echo "Please specify new version with -newVersion x.x.x or use argument -noNewVersion" 
 	fi
 }
 
