@@ -100,18 +100,17 @@
 		    }
 «ENDIF»
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-    @Override
-    public «getSimpleName(BuilderAspect::INTERFACE)» createSubPolicy() {
-        SubPolicy policy = new SubPolicy(getSubPolicyType());
-        policy.setProductCmptGeneration(this);
-        policy.initialize();
-        return policy;
-    }
+		«EXPAND createPolicyCmpt FOREACH classHierarchy»
+
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+	    @Override
+	    public «IConfigurableModelObject()» «createPolicyComponent()» {
+	        return «methodNameCreatePolicyCmpt»();
+	    }
 
 «REM»
 TODO
@@ -148,6 +147,17 @@ TODO
 	«ENDFILE»
 «ENDDEFINE»
 
-«DEFINE addImport(String import) FOR XClass»
-	«imported().add(newImport(import)) -> import.split(".").last()-»
+«DEFINE createPolicyCmpt FOR XProductCmptGenerationClass»
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    @Override
+    public «policyInterfaceName» «methodNameCreatePolicyCmpt»() {
+        «policyImplClassName» policy = new «policyImplClassName»(«methodNameGetProductCmpt»());
+        policy.«setProductCmptGeneration("this")»;
+        policy.«initialize()»;
+        return policy;
+    }
 «ENDDEFINE»

@@ -18,20 +18,35 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 
 public abstract class XProductClass extends XClass {
 
     public XProductClass(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext modelContext,
             ModelService modelService) {
         super(ipsObjectPartContainer, modelContext, modelService);
+    }
+
+    @Override
+    public IProductCmptType getIpsObjectPartContainer() {
+        return (IProductCmptType)super.getIpsObjectPartContainer();
+    }
+
+    @Override
+    public IProductCmptType getType() {
+        return getIpsObjectPartContainer();
     }
 
     /**
@@ -85,7 +100,7 @@ public abstract class XProductClass extends XClass {
 
     private Set<IProductCmptTypeAssociation> getProductAssociations(boolean derivedUnion, boolean changableAssociations) {
         Set<IProductCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IProductCmptTypeAssociation>();
-        List<IProductCmptTypeAssociation> allAssociations = getProductCmptType().getProductCmptTypeAssociations();
+        List<IProductCmptTypeAssociation> allAssociations = getType().getProductCmptTypeAssociations();
         for (IProductCmptTypeAssociation assoc : allAssociations) {
             // TODO FIPS-989
             if (assoc.isDerivedUnion() == derivedUnion && changableAssociations) {
@@ -107,7 +122,7 @@ public abstract class XProductClass extends XClass {
      */
     protected final Set<IProductCmptTypeAttribute> getProductAttributes(boolean changableAttributes) {
         Set<IProductCmptTypeAttribute> resultingAttributes = new LinkedHashSet<IProductCmptTypeAttribute>();
-        List<IProductCmptTypeAttribute> allAttributes = getProductCmptType().getProductCmptTypeAttributes();
+        List<IProductCmptTypeAttribute> allAttributes = getType().getProductCmptTypeAttributes();
         for (IProductCmptTypeAttribute attr : allAttributes) {
             if (changableAttributes == attr.isChangingOverTime()) {
                 resultingAttributes.add(attr);
@@ -116,19 +131,67 @@ public abstract class XProductClass extends XClass {
         return resultingAttributes;
     }
 
-    private IProductCmptType getProductCmptType() {
-        return getIpsObjectPartContainer();
+    public String getPolicyInterfaceName() {
+        return getPolicyName(BuilderAspect.INTERFACE);
     }
 
-    @Override
-    public IProductCmptType getIpsObjectPartContainer() {
-        return (IProductCmptType)super.getIpsObjectPartContainer();
+    public String getPolicyImplClassName() {
+        return getPolicyName(BuilderAspect.IMPLEMENTATION);
     }
+
+    protected String getPolicyName(BuilderAspect aspect) {
+        try {
+            IPolicyCmptType policyCmptType = getType().findPolicyCmptType(getIpsProject());
+            XPolicyCmptClass xPolicyCmptClass = getModelNode(policyCmptType, XPolicyCmptClass.class);
+            return xPolicyCmptClass.getSimpleName(aspect);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    public String getMethodNameCreatePolicyCmpt() {
+        return "create" + getPolicyImplClassName();
+    }
+
+    public <T extends XProductClass> Set<T> getClassHierarchy(Class<T> concreteClass) {
+        try {
+            SuperclassCollector<T> superclassCollector = new SuperclassCollector<T>(getIpsProject(), concreteClass);
+            superclassCollector.start(getType());
+            return superclassCollector.getSuperclasses();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    public abstract Set<? extends XProductClass> getClassHierarchy();
 
     @Override
     public abstract Set<XProductAttribute> getAttributes();
 
     @Override
     public abstract Set<XProductAssociation> getAssociations();
+
+    protected class SuperclassCollector<T extends XProductClass> extends TypeHierarchyVisitor<IProductCmptType> {
+
+        private final Class<T> nodeClass;
+
+        private final Set<T> superclasses = new LinkedHashSet<T>();
+
+        public SuperclassCollector(IIpsProject ipsProject, Class<T> nodeClass) {
+            super(ipsProject);
+            this.nodeClass = nodeClass;
+        }
+
+        @Override
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            getSuperclasses().add(getModelNode(currentType, nodeClass));
+            return true;
+        }
+
+        public Set<T> getSuperclasses() {
+            return superclasses;
+        }
+
+    }
 
 }

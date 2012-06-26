@@ -67,6 +67,11 @@ public class XProductCmptClass extends XProductClass {
         return addImport(ProductComponent.class);
     }
 
+    @Override
+    public Set<XProductCmptClass> getClassHierarchy() {
+        return super.getClassHierarchy(XProductCmptClass.class);
+    }
+
     public String getMethodNameGetProductComponentGeneration() {
         XProductCmptGenerationClass productCmptGenerationClass = getModelNode(getType(),
                 XProductCmptGenerationClass.class);

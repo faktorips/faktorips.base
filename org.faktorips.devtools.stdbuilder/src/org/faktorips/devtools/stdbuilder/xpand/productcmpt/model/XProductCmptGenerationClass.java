@@ -80,6 +80,11 @@ public class XProductCmptGenerationClass extends XProductClass {
         return addImport(ProductComponentGeneration.class.getName());
     }
 
+    @Override
+    public Set<XProductCmptGenerationClass> getClassHierarchy() {
+        return super.getClassHierarchy(XProductCmptGenerationClass.class);
+    }
+
     public String getProductCmptClassName(BuilderAspect aspect) {
         XProductCmptClass modelNode = getModelNode(getProductCmptType(), XProductCmptClass.class);
         return addImport(modelNode.getQualifiedName(aspect));

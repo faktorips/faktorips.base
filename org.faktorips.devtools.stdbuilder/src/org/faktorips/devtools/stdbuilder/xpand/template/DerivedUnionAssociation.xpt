@@ -59,10 +59,3 @@
      }
 «ENDDEFINE»
 
-«REM»
-
-    TODO:	Qualified association
-    		derivedUnion?
-    		getLinks()
-«ENDREM»
-

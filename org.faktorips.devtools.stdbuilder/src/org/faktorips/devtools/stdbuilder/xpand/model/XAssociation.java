@@ -54,7 +54,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getMethodNameGetter(isOnetoMany());
     }
 
-    protected String getMethodNameGetSingle() {
+    public String getMethodNameGetSingle() {
         return getJavaNamingConvention().getGetterMethodName(getName(false));
     }
 

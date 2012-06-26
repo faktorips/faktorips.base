@@ -14,58 +14,94 @@
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItems;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import java.util.Set;
+
+import org.faktorips.devtools.core.builder.JavaNamingConvention;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.model.ImportStatement;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
-public class XProductCmptClassTest extends AbstractIpsPluginTest {
+@RunWith(MockitoJUnitRunner.class)
+public class XProductCmptClassTest {
 
+    @Mock
     private IProductCmptType productCmptType;
 
     @Mock
-    private IIpsArtefactBuilderSetConfig config;
-
     private GeneratorModelContext modelContext;
 
+    @Mock
     private ModelService modelService;
 
+    @Mock
     private IIpsProject ipsProject;
 
-    @Override
+    @Mock
+    private IProductCmptType superType;
+
+    @Mock
+    private IProductCmptType superSuperType;
+
+    @Mock
+    private XProductCmptGenerationClass xProductCmptGenerationClass;
+
+    private XProductCmptClass xProductCmptClass;
+
     @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        MockitoAnnotations.initMocks(this);
-        modelContext = new GeneratorModelContext(config);
-        modelService = new ModelService();
-        ipsProject = newIpsProject();
-        productCmptType = newProductCmptType(ipsProject, "test.TestType");
+    public void initMocks() throws Exception {
+        when(productCmptType.getIpsProject()).thenReturn(ipsProject);
+        when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
+        when(productCmptType.findSupertype(ipsProject)).thenReturn(superType);
+        when(superType.findSupertype(ipsProject)).thenReturn(superSuperType);
+    }
+
+    @Before
+    public void createXProductCmptClass() {
+        xProductCmptClass = new XProductCmptClass(productCmptType, modelContext, modelService);
     }
 
     @Test
     public void testGetBaseSuperclassName() throws Exception {
-        XProductCmptClass xProductCmptClass = new XProductCmptClass(productCmptType, modelContext, modelService);
         String baseSuperclassName = xProductCmptClass.getBaseSuperclassName();
         assertEquals(ProductComponent.class.getSimpleName(), baseSuperclassName);
-        assertTrue(modelContext.getImports().contains(new ImportStatement(ProductComponent.class)));
+        verify(modelContext).addImport(ProductComponent.class.getName());
     }
 
     @Test
-            public void testGetMethodNameGetProductComponentGeneration() throws Exception {
-                XProductCmptClass xProductCmptClass = new XProductCmptClass(productCmptType, modelContext, modelService);
-                String getterMethodNameForGeneration = xProductCmptClass.getMethodNameGetProductComponentGeneration();
-                assertEquals("getTestTypeGen", getterMethodNameForGeneration);
-            }
+    public void testGetMethodNameGetProductComponentGeneration() throws Exception {
+        when(modelService.getModelNode(productCmptType, XProductCmptGenerationClass.class, modelContext)).thenReturn(
+                xProductCmptGenerationClass);
+        when(xProductCmptGenerationClass.getSimpleName(BuilderAspect.IMPLEMENTATION)).thenReturn("TestTypeGen");
+
+        String getterMethodNameForGeneration = xProductCmptClass.getMethodNameGetProductComponentGeneration();
+        assertEquals("getTestTypeGen", getterMethodNameForGeneration);
+    }
+
+    @Test
+    public void testGetClassHierarchy_productCmptClass() throws Exception {
+        XProductCmptClass xSuperType = mock(XProductCmptClass.class);
+        XProductCmptClass xSuperSuperType = mock(XProductCmptClass.class);
+        when(modelService.getModelNode(superType, XProductCmptClass.class, modelContext)).thenReturn(xSuperType);
+        when(modelService.getModelNode(superSuperType, XProductCmptClass.class, modelContext)).thenReturn(
+                xSuperSuperType);
+
+        Set<XProductCmptClass> superclasses = xProductCmptClass.getClassHierarchy();
+        assertEquals(3, superclasses.size());
+        assertThat(superclasses, hasItems(xSuperType, xSuperSuperType));
+    }
 
 }
