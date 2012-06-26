@@ -14,25 +14,25 @@ IValidationContext(AbstractGeneratorModelNode this) :
 	addImport(IValidationContext.name);
 
 // Collection is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
-Collection_(AbstractGeneratorModelNode this) :
-	addImport("java.util.Collection");
+Collection_(AbstractGeneratorModelNode this, String genericType) :
+	addImport("java.util.Collection") + "<" + genericType + ">";
 
 // List is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
-List_(AbstractGeneratorModelNode this) :
-	addImport("java.util.List");
+List_(AbstractGeneratorModelNode this, String genericType) :
+	addImport("java.util.List") + "<" + genericType + ">";
 
 // ArrayList.name does return List. Thats why we have to use the string reference in addImport
-ArrayList(AbstractGeneratorModelNode this) :
-	addImport("java.util.ArrayList");
+ArrayList(AbstractGeneratorModelNode this, String genericType) :
+	addImport("java.util.ArrayList") + "<" + genericType + ">";
 
-Map(AbstractGeneratorModelNode this) :
-	addImport(Map.name);
+Map(AbstractGeneratorModelNode this, String genericKey, String genericValue) :
+	addImport(Map.name) + "<"+ genericKey + ", " + genericValue + ">";
 
-LinkedHashMap(AbstractGeneratorModelNode this) :
-	addImport(LinkedHashMap.name);
+LinkedHashMap(AbstractGeneratorModelNode this, String genericKey, String genericValue) :
+	addImport(LinkedHashMap.name) + "<"+ genericKey + ", " + genericValue + ">";
 	
-Iterator(AbstractGeneratorModelNode this) :
-	addImport(Iterator.name);
+Iterator(AbstractGeneratorModelNode this, String genericType) :
+	addImport(Iterator.name) + "<" + genericType + ">";
 	
 Collections(AbstractGeneratorModelNode this) :
 	addImport(Collections.name);
@@ -46,11 +46,11 @@ Element(AbstractGeneratorModelNode this) :
 IProductComponent(AbstractGeneratorModelNode this) :
 	addImport(IProductComponent.name);
 
-ProductComponentLink(AbstractGeneratorModelNode this) :
-	addImport(ProductComponentLink.name);
+ProductComponentLink(AbstractGeneratorModelNode this, String genericType) :
+	addImport(ProductComponentLink.name) + "<" + genericType + ">";
 
-IProductComponentLink(AbstractGeneratorModelNode this) :
-	addImport(IProductComponentLink.name);
+IProductComponentLink(AbstractGeneratorModelNode this, String genericType) :
+	addImport(IProductComponentLink.name) + "<" + genericType + ">";
 	
 CardinalityRange(AbstractGeneratorModelNode this) :
 	addImport(CardinalityRange.name);
@@ -58,6 +58,9 @@ CardinalityRange(AbstractGeneratorModelNode this) :
 IRuntimeRepository(AbstractGeneratorModelNode this) :
 	addImport(IRuntimeRepository.name);
 	
+IXmlPersistenceSupport(AbstractGeneratorModelNode this) :
+	addImport(IXmlPersistenceSupport.name);
+
 // EXECPTIONS
 NoSuchElementException(AbstractGeneratorModelNode this) :
 	addImport(NoSuchElementException.name);

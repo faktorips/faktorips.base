@@ -193,7 +193,7 @@
      * @generated
      */
 	 «overrideAnnotation(false)»
-    protected void initPropertiesFromXml(«Map()»<String, String> propMap, «IRuntimeRepository()» productRepository) {
+    protected void initPropertiesFromXml(«Map("String", "String")» propMap, «IRuntimeRepository()» productRepository) {
    «REM» initPropertiesFromXml() in Extension auslager und mit 1 oder 2 argumenten definieren «ENDREM»
         super.initPropertiesFromXml(propMap, productRepository);    	
         «FOREACH attributes AS this-»

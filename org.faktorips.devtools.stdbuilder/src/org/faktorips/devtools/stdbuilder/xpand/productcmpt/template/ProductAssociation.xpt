@@ -13,9 +13,9 @@
 	     * @generated
 	     */
 		«IF onetoMany-»
-			private «Map()»<String, «IProductComponentLink()»<«targetClassName»>> «memberVarName»  = new «LinkedHashMap()»<String, «IProductComponentLink()»<«targetClassName»>>(0);
+			private «Map("String", IProductComponentLink(targetClassName))» «memberVarName»  = new «LinkedHashMap("String", IProductComponentLink(targetClassName))»(0);
 		«ELSE-»
-			private «IProductComponentLink()»<«targetClassName»> «name.toFirstLower()» = null;
+			private «IProductComponentLink(targetClassName)» «name.toFirstLower()» = null;
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
@@ -43,9 +43,9 @@
      */
      «overrideAnnotation(true)»
    	«IF onetoMany-»
-	    public «List_()»<«targetClassName»> «getterMethodName»() {
-        	«List_()»<«targetClassName»> result = new «ArrayList()»<«targetClassName»>(«memberVarName».size());
-			for («IProductComponentLink()»<«targetClassName»> «name.toFirstLower()» : «memberVarName».values()) {
+	    public «List_(targetClassName)» «getterMethodName»() {
+        	«List_(targetClassName)» result = new «ArrayList(targetClassName)»(«memberVarName».size());
+			for («IProductComponentLink(targetClassName)» «name.toFirstLower()» : «memberVarName».values()) {
 	            result.add(«name.toFirstLower()».«getTarget()»);
     	    }
         	return result;
@@ -64,9 +64,9 @@
      */
      «overrideAnnotation(true)»
    	«IF onetoMany-»
-	    public «List_()»<«targetClassGenerationName»> «getterMethodName»(«Calendar()» effectiveDate) {
-        	«List_()»<«targetClassName»> targets = «getterMethodName»();
-        	«List_()»<«targetClassGenerationName»> result = new «ArrayList()»<«targetClassGenerationName»>();
+	    public «List_(targetClassGenerationName)» «getterMethodName»(«Calendar()» effectiveDate) {
+        	«List_(targetClassName)» targets = «getterMethodName»();
+        	«List_(targetClassGenerationName)» result = new «ArrayList(targetClassGenerationName)»();
 			for («targetClassName» target : targets) {
 				«targetClassGenerationName» gen = target.«getterNameForTargetGeneration»(effectiveDate);
 				if (gen != null) {
@@ -90,7 +90,7 @@
      */
      «overrideAnnotation(true)»
 	public «targetClassName» «getGetterMethodName(false)»(int index) {
-		«Iterator()»<«IProductComponentLink()»<«targetClassName»>> it = «memberVarName».values().iterator();
+		«Iterator(IProductComponentLink(targetClassName))» it = «memberVarName».values().iterator();
         try {
             for (int i = 0; i < index; i++) {
                 it.next();
@@ -111,10 +111,10 @@
      */
      «overrideAnnotation(true)»
 	«IF onetoMany-»
-	    public «Collection_()»<«IProductComponentLink()»<«targetClassName»>> «getterMethodNameForLinks»() {
+	    public «Collection_(IProductComponentLink(targetClassName))» «getterMethodNameForLinks»() {
     	    return «Collections()».unmodifiableCollection(«memberVarName».values());
     «ELSE-»
-	    public «IProductComponentLink()»<«targetClassName»> «getterMethodNameForLinks»() {
+	    public «IProductComponentLink(targetClassName)» «getterMethodNameForLinks»() {
     		return «memberVarName»;
 	«ENDIF-»
     }
@@ -127,7 +127,7 @@
      * @generated
      */
      «overrideAnnotation(true)»
-    public «IProductComponentLink()»<«targetClassName»> «getterMethodNameForSingleLink»(«targetClassName» productComponent) {
+    public «IProductComponentLink(targetClassName)» «getterMethodNameForSingleLink»(«targetClassName» productComponent) {
 		«IF onetoMany-»
         	return «memberVarName».get(productComponent.getId());
         «ELSE-»
@@ -145,7 +145,7 @@
      */
     public void «addMethodName»(«targetClassName» target) {
         «EXPAND ProductCommons::checkRepositoryModifyable-»
-        this.«memberVarName».put(target.getId(), new «ProductComponentLink()»<«targetClassName»>(this, target));
+        this.«memberVarName».put(target.getId(), new «ProductComponentLink(targetClassName)»(this, target));
     }
     «ENDIF»
 «ENDDEFINE»
@@ -160,7 +160,7 @@
      */
     public void «addMethodName»(«targetClassName» target, «CardinalityRange()» cardinality) {
         «EXPAND ProductCommons::checkRepositoryModifyable-»
-        this.«memberVarName».put(target.getId(), new «ProductComponentLink()»<«targetClassName»>(this, target, cardinality));
+        this.«memberVarName».put(target.getId(), new «ProductComponentLink(targetClassName)»(this, target, cardinality));
     }
     «ENDIF»
 «ENDDEFINE»
@@ -174,7 +174,7 @@
      */
     public void «setterMethodName»(«targetClassName» target) {
         «EXPAND ProductCommons::checkRepositoryModifyable-»
-        «memberVarName» = (target == null ? null : new «ProductComponentLink()»<«targetClassName»>(this, target));
+        «memberVarName» = (target == null ? null : new «ProductComponentLink(targetClassName)»(this, target));
     }
 	«ENDIF»
 «ENDDEFINE»
@@ -228,7 +228,7 @@
 	     * @generated
 	     */
 	    «overrideAnnotation(false)»
-	    public «IProductComponentLink()»<? extends «IProductComponent()»> «getLink("String linkName", IProductComponent() + " target")» {
+	    public «IProductComponentLink("? extends " + IProductComponent())» «getLink("String linkName", IProductComponent() + " target")» {
 	    	«FOREACH associations AS this-»
 		        if ("«name»".equals(linkName)) {
 		            return «getterMethodNameForSingleLink»((«targetClassName»)target);
@@ -249,12 +249,12 @@
      * @generated
      */
     «overrideAnnotation(false)»
-    public «List_()»<«IProductComponentLink()»<? extends «IProductComponent()»>> «getLinks()» {
-	    «List_()»<«IProductComponentLink()»<? extends «IProductComponent()»>> list = 
+    public «List_(IProductComponentLink("? extends " + IProductComponent()))» «getLinks()» {
+	    «List_(IProductComponentLink("? extends " + IProductComponent()))» list = 
 	    «IF hasSupertype()-»
         	super.«getLinks()»;
         «ELSE-»
-			new «ArrayList()»<«IProductComponentLink()»<? extends «IProductComponent()»>>();        	
+			new «ArrayList(IProductComponentLink("? extends " + IProductComponent()))»();        	
         «ENDIF-»
     	«FOREACH associations AS this-»
 	    	«IF onetoMany-»
@@ -271,6 +271,46 @@
 	        return list;
 	    «ENDIF-»
     }
+«ENDDEFINE»
+
+«DEFINE doInitReferencesFromXmlPart FOR XProductAssociation-»
+	   associationElements = elementsMap.get("«name»");
+	    if (associationElements != null) {
+			«IF onetoMany-»
+			        this.«memberVarName» = new «LinkedHashMap("String", IProductComponentLink(targetClassName))»(associationElements.size());
+			        for (Element element : associationElements) {
+			            «IProductComponentLink(targetClassName)» link = new «ProductComponentLink(targetClassName)»(this);
+			            link.initFromXml(element);
+			            this.«memberVarName».put(link.getTargetId(), link);
+	        }
+			«ELSE-»
+	            Element element = associationElements.get(0);
+	            «memberVarName» = new «ProductComponentLink(targetClassName)»(this);
+	            «memberVarName».initFromXml(element);
+			«ENDIF-»
+	    }
+«ENDDEFINE»
+
+«DEFINE writeReferencesToXmlPart FOR XProductAssociation-»
+		«IF onetoMany-»
+		    for («IProductComponentLink(targetClassName)» link : «memberVarName».values()) {
+		        element.appendChild(((«IXmlPersistenceSupport()»)link).«toXml("element.getOwnerDocument()")»);
+		    }
+		«ELSE-»
+
+		«ENDIF-»
+	   associationElements = elementsMap.get("«name»");
+	    if (associationElements != null) {
+			        this.«memberVarName» = new «LinkedHashMap("String", IProductComponentLink(targetClassName))»(associationElements.size());
+			        for (Element element : associationElements) {
+			            «IProductComponentLink(targetClassName)» link = new «ProductComponentLink(targetClassName)»(this);
+			            link.initFromXml(element);
+			            this.«memberVarName».put(link.getTargetId(), link);
+	        }
+	            Element element = associationElements.get(0);
+	            «memberVarName» = new «ProductComponentLink(targetClassName)»(this);
+	            «memberVarName».initFromXml(element);
+	    }
 «ENDDEFINE»
 
 «REM»    

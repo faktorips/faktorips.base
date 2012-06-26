@@ -8,7 +8,6 @@
 «DEFINE main FOR XProductCmptGenerationClass-»
 	«FILE getFileName(BuilderAspect::IMPLEMENTATION) -»
 	package «packageName»;
-	
 
 		«EXPAND CommonDefinitions::ImportBlock FOREACH imported() ONFILECLOSE»
 		«EXPAND CommonDefinitions::ImportBlock FOREACH modelContext.imports ONFILECLOSE»
@@ -23,6 +22,7 @@
 			«ENDFOREACH-»
 			«ENDIF-»
 		 {
+		 
 			«EXPAND ProductAssociation::field FOREACH associations-»
 			
 		    /**
@@ -34,6 +34,11 @@
 				super(productCmpt);
 			}
 			
+			«EXPAND ProductAssociation::getterSetterAdder FOREACH  associations»
+			
+			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH  derivedUnionAssociations»
+
+«REM» GET PRODUCT COMPONENT METHOD «ENDREM»			
 		    /**
 		     * {@inheritDoc}
 		     * 
@@ -44,10 +49,6 @@
 		    public «getProductCmptClassName(BuilderAspect::INTERFACE)» «methodNameGetProductCmpt»() {
 		        return («getProductCmptClassName(BuilderAspect::INTERFACE)»)«getProductComponent()»;
 		    }
-			
-			«EXPAND ProductAssociation::getterSetterAdder FOREACH  associations»
-			
-			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH  derivedUnionAssociations»
 
 «REM» TODO Implementierung «ENDREM»
 		    /**
@@ -55,11 +56,21 @@
 		     * 
 		     * @generated
 		     */
-		    @Override
-		    protected void «doInitPropertiesFromXml(Map() + "<String, " + Element() + "> configMap")» {
+		    «overrideAnnotation(false)»
+		    protected void «doInitPropertiesFromXml(Map("String", Element()) + " configMap")» {
 		        super.«doInitPropertiesFromXml("configMap")»;
 		    }
 			
+«IF associations.size > 0»
+		    /**
+		     * @generated
+		     */
+		    «overrideAnnotation(false)»
+		    protected void «doInitReferencesFromXml(Map("String", List_(Element())) + " elementsMap")» {
+		        super.«doInitReferencesFromXml("elementsMap")»;
+		         «List_(Element())» «EXPAND ProductAssociation::doInitReferencesFromXmlPart FOREACH associations-»
+		    }
+«ENDIF»
 
 «REM» TODO Implementierung «ENDREM»
 		    /**
@@ -67,7 +78,7 @@
 		     * 
 		     * @generated
 		     */
-		    @Override
+		    «overrideAnnotation(false)»
 		    protected void «writePropertiesToXml(Element() + " element")» {
 		    	«IF hasSupertype()-»
 		        	super.«writePropertiesToXml("element")»;
@@ -75,7 +86,21 @@
  «REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification. 
 		        «ENDIF-»
 		    }
-
+		   
+«IF associations.size > 0»
+		    /**
+		     * @generated
+		     */
+		    «overrideAnnotation(false)»
+		    protected void «writeReferencesToXml(Element() + " element")» {
+		        super.«writeReferencesToXml("element")»;
+		        «REM»
+		        for («IProductComponentLink()» link : childrenProducts.values()) {
+		            element.appendChild(((IXmlPersistenceSupport)link).toXml(element.getOwnerDocument()));
+		        }
+		        «ENDREM»
+		    }
+«ENDIF»
 
 «REM»
 TODO
