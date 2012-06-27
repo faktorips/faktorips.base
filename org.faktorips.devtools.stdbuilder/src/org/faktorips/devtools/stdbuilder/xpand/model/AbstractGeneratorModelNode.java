@@ -351,7 +351,7 @@ public abstract class AbstractGeneratorModelNode {
             Class<T> nodeClass) {
         Set<T> nodes = new LinkedHashSet<T>();
         for (IIpsObjectPart part : parts) {
-            nodes.add(getModelService().getModelNode(part, nodeClass, getModelContext()));
+            nodes.add(getModelNode(part, nodeClass));
         }
         return nodes;
     }

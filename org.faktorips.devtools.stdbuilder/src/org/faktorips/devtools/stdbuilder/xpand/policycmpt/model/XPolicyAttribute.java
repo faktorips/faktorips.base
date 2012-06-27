@@ -110,7 +110,7 @@ public class XPolicyAttribute extends XAttribute {
 
     public XFormulaSignature getFormulaSignature() {
         IProductCmptTypeMethod method = getComputationMethod();
-        return getModelService().getModelNode(method, XFormulaSignature.class, getModelContext());
+        return getModelNode(method, XFormulaSignature.class);
     }
 
     private IProductCmptTypeMethod getComputationMethod() {
