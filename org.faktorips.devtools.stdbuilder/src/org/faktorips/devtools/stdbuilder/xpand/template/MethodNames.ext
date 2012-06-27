@@ -85,6 +85,8 @@ setProductCmptGeneration(String argument) :
 setProductComponent(String argument) :
 	"setProductComponent("+argument+")";
 	
+initPropertiesFromXml(String arg1, String arg2):
+	"initPropertiesFromXml("+arg1+","+arg2+")";
 			
 // ---------------------------------
 // Methods in IRuntimeRepository

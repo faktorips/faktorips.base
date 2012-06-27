@@ -8,11 +8,11 @@
 «DEFINE field FOR XProductAssociation-»
 	«IF !derivedUnion-»
 	    /**
-	     * «localizedJDoc("FIELD_ASSOCIATION", getName(onetoMany).toFirstUpper())»
+	     * «localizedJDoc("FIELD_ASSOCIATION", getName(oneToMany).toFirstUpper())»
 	     * 
 	     * @generated
 	     */
-		«IF onetoMany-»
+		«IF oneToMany-»
 			private «Map("String", IProductComponentLink(targetClassName))» «fieldName»  = new «LinkedHashMap("String", IProductComponentLink(targetClassName))»(0);
 		«ELSE-»
 			private «IProductComponentLink(targetClassName)» «fieldName» = null;
@@ -42,7 +42,7 @@
      * @generated
      */
      «overrideAnnotation(true)»
-   	«IF onetoMany-»
+   	«IF oneToMany-»
 	    public «List_(targetClassName)» «methodNameGetter»() {
         	«List_(targetClassName)» result = new «ArrayList(targetClassName)»(«fieldName».size());
 			for («IProductComponentLink(targetClassName)» «name.toFirstLower()» : «fieldName».values()) {
@@ -63,12 +63,12 @@
      * @generated
      */
      «overrideAnnotation(true)»
-   	«IF onetoMany-»
+   	«IF oneToMany-»
 	    public «List_(targetClassGenerationName)» «methodNameGetter»(«Calendar()» effectiveDate) {
         	«List_(targetClassName)» targets = «methodNameGetter»();
         	«List_(targetClassGenerationName)» result = new «ArrayList(targetClassGenerationName)»();
 			for («targetClassName» target : targets) {
-				«targetClassGenerationName» gen = target.«getterNameForTargetGeneration»(effectiveDate);
+				«targetClassGenerationName» gen = target.«methodNameGetTargetGeneration»(effectiveDate);
 				if (gen != null) {
 	                result.add(gen);
             }
@@ -76,13 +76,13 @@
         return result;
     «ELSE-»
 	    public «targetClassGenerationName» «methodNameGetter»(«Calendar()» effectiveDate) {
-			return «fieldName» != null ? «fieldName».«getTarget()».«getterNameForTargetGeneration»(effectiveDate) : null;
+			return «fieldName» != null ? «fieldName».«getTarget()».«methodNameGetTargetGeneration»(effectiveDate) : null;
     «ENDIF-»
     }
 «ENDDEFINE»
 
 «DEFINE getterProductCmptPerIndex FOR XProductAssociation-»
-	«IF onetoMany-»
+	«IF oneToMany-»
     /**
      * {@inheritDoc}
      * 
@@ -110,7 +110,7 @@
      * @generated
      */
      «overrideAnnotation(true)»
-	«IF onetoMany-»
+	«IF oneToMany-»
 	    public «Collection_(IProductComponentLink(targetClassName))» «methodNameGetLinksFor»() {
     	    return «Collections()».unmodifiableCollection(«fieldName».values());
     «ELSE-»
@@ -128,7 +128,7 @@
      */
      «overrideAnnotation(true)»
     public «IProductComponentLink(targetClassName)» «methodNameGetLinkFor»(«targetClassName» productComponent) {
-		«IF onetoMany-»
+		«IF oneToMany-»
         	return «fieldName».get(productComponent.getId());
         «ELSE-»
         	return «fieldName».«getTargetId()».equals(productComponent.getId()) ? «fieldName» : null;
@@ -137,7 +137,7 @@
 «ENDDEFINE»
 
 «DEFINE addMethod FOR XProductAssociation-»
-	«IF onetoMany-»
+	«IF oneToMany-»
     /**
      * «localizedJDoc("METHOD_ADD_RELATED_CMPT")»
      * 
@@ -152,7 +152,7 @@
 
 «DEFINE addMethodWithCardinality FOR XProductAssociation-»
 «REM» TODO FIPS-1141 «ENDREM» 
-	«IF onetoMany-»
+	«IF oneToMany-»
     /**
      * «localizedJDoc("METHOD_ADD_RELATED_CMPT_WITH_CARDINALITY")»
      * 
@@ -166,7 +166,7 @@
 «ENDDEFINE»
 
 «DEFINE setterMethodForToOne FOR XProductAssociation-»
-	«IF !onetoMany-»
+	«IF !oneToMany-»
     /**
      * «localizedJDoc("METHOD_SET_1_RELATED_CMPT", name)»
      * 
@@ -187,9 +187,9 @@
      * @generated
      */
     «overrideAnnotation(true)»
-    public «CardinalityRange()» «methodGetCardinalityFor»(«targetClassName» productCmpt) {
+    public «CardinalityRange()» «methodNameGetCardinalityFor»(«targetClassName» productCmpt) {
         if (productCmpt != null) {
-    	«IF onetoMany-»
+    	«IF oneToMany-»
             return «fieldName».containsKey(productCmpt.«getId()») ? «fieldName».get(productCmpt.«getId()»)
                     .«getCardinality()» : null;
         «ELSE-»
@@ -203,7 +203,7 @@
 «ENDDEFINE»
 
 «DEFINE getNumOf FOR XProductAssociation-»
-	«IF onetoMany-»
+	«IF oneToMany-»
     /**
      * {@inheritDoc}
      * 
@@ -257,7 +257,7 @@
 			new «ArrayList(IProductComponentLink("? extends " + IProductComponent()))»();        	
         «ENDIF-»
     	«FOREACH associations AS this-»
-	    	«IF onetoMany-»
+	    	«IF oneToMany-»
 	    		list.addAll(«methodNameGetLinksFor»());
 	    	«ELSE-»
 	    		if («methodNameGetLinksFor»() != null) {
@@ -276,7 +276,7 @@
 «DEFINE doInitReferencesFromXmlPart FOR XProductAssociation-»
 	   associationElements = elementsMap.get("«name»");
 	    if (associationElements != null) {
-			«IF onetoMany-»
+			«IF oneToMany-»
 			        this.«fieldName» = new «LinkedHashMap("String", IProductComponentLink(targetClassName))»(associationElements.size());
 			        for (Element element : associationElements) {
 			            «IProductComponentLink(targetClassName)» link = new «ProductComponentLink(targetClassName)»(this);
@@ -292,7 +292,7 @@
 «ENDDEFINE»
 
 «DEFINE writeReferencesToXmlPart FOR XProductAssociation-»
-		«IF onetoMany-»
+		«IF oneToMany-»
 		    for («IProductComponentLink(targetClassName)» link : «fieldName».values()) {
 		        element.appendChild(((«IXmlPersistenceSupport()»)link).«toXml("element.getOwnerDocument()")»);
 		    }

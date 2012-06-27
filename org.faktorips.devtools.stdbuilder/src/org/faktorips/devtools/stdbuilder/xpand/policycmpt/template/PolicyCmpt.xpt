@@ -21,21 +21,21 @@
 
 		«FOREACH attributes AS this-»
 			«IF !published-»
-				«EXPAND PolicyCmptAttribute::fieldProperties»
+				«EXPAND PolicyCmptAttribute::fieldForPropertyName-»
 			«ENDIF-»
 		«ENDFOREACH-»
 		
 		«FOREACH attributes AS this-»
 			«IF constant-»
-				«EXPAND PolicyCmptAttribute::memberField»
+				«EXPAND PolicyCmptAttribute::memberField-»
 			«ENDIF-»
 		«ENDFOREACH-»
 		
-		«EXPAND PropertyChangeSupport::fieldDefinition»
+		«EXPAND PropertyChangeSupport::fieldDefinition-»
 
 		«FOREACH attributes AS this-»
 			«IF !constant-»
-				«EXPAND PolicyCmptAttribute::memberField»
+				«EXPAND PolicyCmptAttribute::memberField-»
 			«ENDIF-»
 		«ENDFOREACH-»
 			
@@ -43,23 +43,23 @@
 
 		«FOREACH attributes AS this-»
 			«IF productRelevant-»
-				«EXPAND PolicyCmptAttribute::allowedValuesMethod»
+				«EXPAND PolicyCmptAttribute::allowedValuesMethod-»
 			«ENDIF-»
 			«IF generateSetter-»
-				«EXPAND PolicyCmptAttribute::setter»
+				«EXPAND PolicyCmptAttribute::setter-»
 			«ENDIF-»
 			«IF generateGetter-»
-				«EXPAND PolicyCmptAttribute::getter»
+				«EXPAND PolicyCmptAttribute::getter-»
 			«ENDIF-»
 		«ENDFOREACH-»
 
 		«IF configured-»
-			«EXPAND generalMethodsForConfiguredPolicyCmpts»
+			«EXPAND generalMethodsForConfiguredPolicyCmpts-»
 	    «ENDIF-»
 	   
-		«EXPAND PropertyChangeSupport::generalMethods»
+		«EXPAND PropertyChangeSupport::generalMethods-»
 		
-		«EXPAND generalMethods»
+		«EXPAND generalMethods-»
 
 		}
 	«ENDFILE»
@@ -104,7 +104,7 @@
 «DEFINE initializationForOverrideAttributes FOR XPolicyCmptClass-»
 	«FOREACH attributes AS this-»
 		«IF generateDefaultInitialize-»
-			«setterMethodName»(«defaultValueCode»);
+			«methodNameSetter»(«defaultValueCode»);
 		«ENDIF-»
 	«ENDFOREACH-»
 «ENDDEFINE»
@@ -118,7 +118,7 @@
      */
 	 «overrideAnnotation(false)»
     public void «initialize()» {
-        if («productGenerationGetterName»() == null) {
+        if («methodNameGetProductCmptGeneration»() == null) {
             return;
         }
         «FOREACH attributes AS this-»
@@ -132,7 +132,7 @@
 	 * @generated
 	 */
 	 «overrideAnnotation(false)»
-	 public «productComponentClassOrInterfaceName» «productComponentGetterName»() {
+	 public «productComponentClassOrInterfaceName» «methodNameGetProductComponent»() {
 	 	return («productComponentClassOrInterfaceName») «getProductComponent()»;
 	 }
 	 
@@ -140,7 +140,7 @@
 	 * @generated
 	 */
 	 «overrideAnnotation(false)»
-	 public «productGenerationClassOrInterfaceName» «productGenerationGetterName»() {
+	 public «productGenerationClassOrInterfaceName» «methodNameGetProductCmptGeneration»() {
 	 	return («productGenerationClassOrInterfaceName») «getProductCmptGeneration()»;
 	 }
 
@@ -148,7 +148,7 @@
 	 * @generated
 	 */
 	 «overrideAnnotation(false)»
-	 public void «productComponentSetterName»(«productComponentClassOrInterfaceName» «productComponentArgumentName», boolean initPropertiesWithConfiguratedDefaults) {
+	 public void «methodNameSetProductComponent»(«productComponentClassOrInterfaceName» «productComponentArgumentName», boolean initPropertiesWithConfiguratedDefaults) {
         «setProductComponent(productComponentArgumentName)»;
         if (initPropertiesWithConfiguratedDefaults) {
             «initialize()»;
@@ -193,9 +193,8 @@
      * @generated
      */
 	 «overrideAnnotation(false)»
-    protected void initPropertiesFromXml(«Map("String", "String")» propMap, «IRuntimeRepository()» productRepository) {
-   «REM» initPropertiesFromXml() in Extension auslager und mit 1 oder 2 argumenten definieren «ENDREM»
-        super.initPropertiesFromXml(propMap, productRepository);    	
+    protected void «initPropertiesFromXml(Map("String", "String")+" propMap", IRuntimeRepository()+" productRepository")» {
+        super.«initPropertiesFromXml("propMap", "productRepository")»;
         «FOREACH attributes AS this-»
 			«EXPAND PolicyCmptAttribute::initAttributeFromXML-»
         «ENDFOREACH-»

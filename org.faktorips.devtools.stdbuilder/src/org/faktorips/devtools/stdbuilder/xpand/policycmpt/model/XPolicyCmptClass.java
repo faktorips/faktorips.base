@@ -229,15 +229,15 @@ public class XPolicyCmptClass extends XClass {
         }
     }
 
-    public String getProductGenerationGetterName() {
+    public String getMethodNameGetProductCmptGeneration() {
         return getJavaNamingConvention().getGetterMethodName(getProductGenerationClassName());
     }
 
-    public String getProductComponentGetterName() {
+    public String getMethodNameGetProductComponent() {
         return getJavaNamingConvention().getGetterMethodName(getProductComponentClassName());
     }
 
-    public String getProductComponentSetterName() {
+    public String getMethodNameSetProductComponent() {
         return getJavaNamingConvention().getSetterMethodName(getProductComponentClassName());
     }
 

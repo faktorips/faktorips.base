@@ -47,11 +47,11 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
     }
 
     public String getFieldName() {
-        return getJavaNamingConvention().getMemberVarName(getName(isOnetoMany()));
+        return getJavaNamingConvention().getMemberVarName(getName(isOneToMany()));
     }
 
     public String getMethodNameGetter() {
-        return getMethodNameGetter(isOnetoMany());
+        return getMethodNameGetter(isOneToMany());
     }
 
     public String getMethodNameGetSingle() {
@@ -81,7 +81,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
      * 
      * @return true fro one to many and false for one to one associations
      */
-    public boolean isOnetoMany() {
+    public boolean isOneToMany() {
         return getAssociation().is1ToMany();
     }
 

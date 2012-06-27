@@ -5,38 +5,38 @@
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAttributeExtension»
 
-«DEFINE fieldProperties FOR XPolicyAttribute»
+«DEFINE fieldForPropertyName FOR XPolicyAttribute-»
 	/**
 	 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
 	 * @generated
 	 */
-	public static final String «fieldPropertyName» = "«name»";
+	public final static String «fieldPropertyName» = "«name»";
 «ENDDEFINE»
 
-«DEFINE memberField FOR XPolicyAttribute»
+«DEFINE memberField FOR XPolicyAttribute-»
 	«IF generateField-»
 		/**
-		 * «inheritDocOrJavaDoc("FIELD_ATTRIBUTE_VALUE", name)»
+		 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
 		 * @generated
 		 */
 		«IF constant-»
-			public final static «javaClassName» «constantFieldName»= «defaultValueCode»;
+			public static final «javaClassName» «constantFieldName»= «defaultValueCode»;
 		«ELSE-»
-			private «javaClassName» «memberVarName»= «defaultValueCode»;
+			private «javaClassName» «fieldName»= «defaultValueCode»;
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE getter FOR XPolicyAttribute» 
+«DEFINE getter FOR XPolicyAttribute-» 
 	«IF generateGetter-»
 		/**
 		 * «localizedJDoc("METHOD_GETVALUE", name, description)»
 		 * @generated
 		 */
 		«IF  overwrite»«overrideAnnotation(false)»«ENDIF-»
-		public «javaClassName» «getterMethodName»() {
+		public «javaClassName» «methodNameGetter»() {
 			«IF generateField-»
-				return «IF constant»«constantFieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(memberVarName)»«ENDIF»;
+				return «IF constant»«constantFieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(fieldName)»«ENDIF»;
 			«ELSE-»
 				«IF generateDefaultForDerivedAttribute-»
 					return «defaultValueCode»;
@@ -50,50 +50,52 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE getProductGeneration FOR XPolicyAttribute»
-	«IF generatingPublishedInterfaces»
-		((«productGenerationClassName»)«productGenerationGetterName»())
-	«ELSE»
-		«productGenerationGetterName»()
-	«ENDIF»
+«DEFINE getProductGeneration FOR XPolicyAttribute-»
+	«IF generatingPublishedInterfaces-»
+		((«productGenerationClassName»)«methodNameGetProductCmptGeneration»())
+	«ELSE-»
+		«methodNameGetProductCmptGeneration»()
+	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE setter FOR XPolicyAttribute»
+«DEFINE setter FOR XPolicyAttribute-»
 	«IF generateSetter-»
 		/**
-		 * «localizedJDoc("METHOD_SETVALUE", name, description)»
+		 * «inheritDocOrJavaDoc("METHOD_SETVALUE", name, description)»
 		 * @generated
 		 */
-		«IF  overwrite»«overrideAnnotation(false)-»«ENDIF-»
-		public void «setterMethodName»(«javaClassName» newValue) {
+		«IF  overwrite»«overrideAnnotation(true)»«ENDIF-»
+		public void «methodNameSetter»(«javaClassName» newValue) {
 			«EXPAND PropertyChangeSupport::storeOldValue-»
-			this.«memberVarName» = newValue;
+			this.«fieldName» = newValue;
 			«EXPAND PropertyChangeSupport::notify-»
 		}
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE allowedValuesMethod FOR XPolicyAttribute»
+«DEFINE allowedValuesMethod FOR XPolicyAttribute-»
 	«IF productRelevant-»
 	/**
-	 * «localizedJDoc("METHOD_GET_ALLOWED_VALUES_FOR", name, description)»
+	 * «inheritDocOrJavaDoc("METHOD_GET_ALLOWED_VALUES_FOR", name, description)»
 	 * @generated
 	 */
-	public «valueSetClass»<«datatypeClass»> «allowedValuesGetterName()»(«IValidationContext()» context) {
-		return «productGenerationGetterName»().«allowedValuesGetterName()»(context);
+	 «overrideAnnotation(true)»
+	public «valueSetClass»<«datatypeClass»> «methodNameGetAllowedValuesFor»(«IValidationContext()» context) {
+		return «methodNameGetProductCmptGeneration»().«methodNameGetAllowedValuesFor»(context);
 	}
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE initConfigurableAttribute FOR XPolicyAttribute»
+«DEFINE initConfigurableAttribute FOR XPolicyAttribute-»
 	«IF requiringInitWithProductData-»
-        «memberVarName» = «productGenerationGetterName»().«getterMethodName»();
+        «fieldName» = «methodNameGetProductCmptGeneration»().«methodNameGetter»();
     «ENDIF-»
 «ENDDEFINE»
-«DEFINE initAttributeFromXML FOR XPolicyAttribute»
+
+«DEFINE initAttributeFromXML FOR XPolicyAttribute-»
 	«IF requiringInitFromXML-»
         if (propMap.containsKey("«attributeName»")) {
-            this.«memberVarName» = «newInstanceExpression»;
+            this.«fieldName» = «newInstanceExpression»;
         }
     «ENDIF-»
 «ENDDEFINE»

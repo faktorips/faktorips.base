@@ -24,7 +24,7 @@
      		result.addAll(super.«methodNameGetter»());
      	«ENDIF-»
      	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
- 			«IF subsetAssociation.onetoMany-»
+ 			«IF subsetAssociation.oneToMany-»
      			result.addAll(«subsetAssociation.methodNameGetter»());
      		«ELSE-»
      			result.add(«subsetAssociation.methodNameGetter»());
