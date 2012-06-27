@@ -1,4 +1,5 @@
 import org::faktorips::devtools::stdbuilder::xpand::model;
+import org::faktorips::devtools::stdbuilder::xpand::policycmpt::model;
 
 extension org::faktorips::devtools::stdbuilder::xpand::template::MethodNames reexport;
 
@@ -16,4 +17,7 @@ String camelCaseToUnderscore(String s) :
 
 overrideAnnotation(AbstractGeneratorModelNode this, boolean interfaceMethodImplementation) :
 	if needOverrideAnnotation(interfaceMethodImplementation) then "@Override";
+	
+overrideAnnotation(XPolicyAttribute this, boolean interfaceMethodImplementation) :
+	if overwrite || needOverrideAnnotation(interfaceMethodImplementation) then "@Override";
 	

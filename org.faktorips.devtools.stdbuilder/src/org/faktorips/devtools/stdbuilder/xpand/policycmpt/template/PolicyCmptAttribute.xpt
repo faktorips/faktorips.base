@@ -30,10 +30,10 @@
 «DEFINE getter FOR XPolicyAttribute-» 
 	«IF generateGetter-»
 		/**
-		 * «localizedJDoc("METHOD_GETVALUE", name, description)»
+		 * «inheritDocOrJavaDoc("METHOD_GETVALUE", name, description)»
 		 * @generated
 		 */
-		«IF  overwrite»«overrideAnnotation(false)»«ENDIF-»
+		«overrideAnnotation(true)»
 		public «javaClassName» «methodNameGetter»() {
 			«IF generateField-»
 				return «IF constant»«constantFieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(fieldName)»«ENDIF»;
@@ -64,7 +64,7 @@
 		 * «inheritDocOrJavaDoc("METHOD_SETVALUE", name, description)»
 		 * @generated
 		 */
-		«IF  overwrite»«overrideAnnotation(true)»«ENDIF-»
+		«overrideAnnotation(true)»
 		public void «methodNameSetter»(«javaClassName» newValue) {
 			«EXPAND PropertyChangeSupport::storeOldValue-»
 			this.«fieldName» = newValue;
@@ -74,13 +74,13 @@
 «ENDDEFINE»
 
 «DEFINE allowedValuesMethod FOR XPolicyAttribute-»
-	«IF productRelevant-»
+	«IF generateMethodGetAllowedValuesFor-»
 	/**
 	 * «inheritDocOrJavaDoc("METHOD_GET_ALLOWED_VALUES_FOR", name, description)»
 	 * @generated
 	 */
 	 «overrideAnnotation(true)»
-	public «valueSetClass»<«datatypeClass»> «methodNameGetAllowedValuesFor»(«IValidationContext()» context) {
+	public «ValueSet()»<«datatypeClass»> «methodNameGetAllowedValuesFor»(«IValidationContext()» context) {
 		return «methodNameGetProductCmptGeneration»().«methodNameGetAllowedValuesFor»(context);
 	}
 	«ENDIF-»

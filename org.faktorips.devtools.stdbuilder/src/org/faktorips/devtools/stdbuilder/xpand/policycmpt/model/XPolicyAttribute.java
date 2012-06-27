@@ -18,17 +18,18 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XFormulaSignature;
-import org.faktorips.valueset.ValueSet;
 
 public class XPolicyAttribute extends XAttribute {
 
@@ -78,20 +79,16 @@ public class XPolicyAttribute extends XAttribute {
         return getAttribute().getAttributeType() == AttributeType.CONSTANT;
     }
 
-    public boolean isRequiringInitWithProductData() {
+    public boolean isGenerateInitWithProductData() {
         return isProductRelevant() && !isDerived();
     }
 
-    public boolean isRequiringInitFromXML() {
+    public boolean isGenerateInitFromXML() {
         return !isDerived() && !isConstant();
     }
 
     public boolean isGenerateDefaultInitialize() {
         return isOverwrite() && getAttribute().isChangeable();
-    }
-
-    private String getValueSetClass() {
-        return addImport(ValueSet.class);
     }
 
     public String getDatatypeClass() {
@@ -123,6 +120,32 @@ public class XPolicyAttribute extends XAttribute {
 
     public boolean isProductRelevant() {
         return getAttribute().isProductRelevant();
+    }
+
+    public boolean isGenerateGetAllowedValuesFor() {
+        if (isValueSetUnrestricted() && !isProductRelevant()) {
+            return false;
+        }
+        if (isValueSetEnum() && isDatatypeContentSeperatedEnum()) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean isDatatypeContentSeperatedEnum() {
+        return DatatypeUtil.isEnumTypeWithSeparateContent(getDatatype());
+    }
+
+    protected boolean isValueSetEnum() {
+        return isValueSetOfType(ValueSetType.ENUM);
+    }
+
+    protected boolean isValueSetUnrestricted() {
+        return isValueSetOfType(ValueSetType.UNRESTRICTED);
+    }
+
+    private boolean isValueSetOfType(ValueSetType valueSetType) {
+        return getAttribute().getValueSet().getValueSetType() == valueSetType;
     }
 
     public String getProductGenerationClassOrInterfaceName() {

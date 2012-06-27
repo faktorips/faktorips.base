@@ -42,15 +42,9 @@
 		«EXPAND constructors»
 
 		«FOREACH attributes AS this-»
-			«IF productRelevant-»
-				«EXPAND PolicyCmptAttribute::allowedValuesMethod-»
-			«ENDIF-»
-			«IF generateSetter-»
-				«EXPAND PolicyCmptAttribute::setter-»
-			«ENDIF-»
-			«IF generateGetter-»
-				«EXPAND PolicyCmptAttribute::getter-»
-			«ENDIF-»
+			«EXPAND PolicyCmptAttribute::allowedValuesMethod-»
+			«EXPAND PolicyCmptAttribute::getter-»
+			«EXPAND PolicyCmptAttribute::setter-»
 		«ENDFOREACH-»
 
 		«IF configured-»

@@ -13,8 +13,12 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -69,4 +73,71 @@ public class XPolicyAttributeTest {
         xPolicyAttribute.getProductGenerationClassName();
         verify(policyClass).getProductGenerationClassName();
     }
+
+    @Test
+    public void testIsGenerateAllowedValuesFor() throws Exception {
+        xPolicyAttribute = spy(xPolicyAttribute);
+
+        doReturn(true).when(xPolicyAttribute).isValueSetUnrestricted();
+        doReturn(false).when(xPolicyAttribute).isProductRelevant();
+
+        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesFor();
+        assertEquals(false, generatedMethod);
+
+        verify(xPolicyAttribute, never()).isValueSetEnum();
+    }
+
+    @Test
+    public void testIsGenerateAllowedValuesForContentSeperatedEnum() throws Exception {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(false).when(xPolicyAttribute).isValueSetUnrestricted();
+        doReturn(true).when(xPolicyAttribute).isProductRelevant();
+
+        doReturn(true).when(xPolicyAttribute).isValueSetEnum();
+        doReturn(true).when(xPolicyAttribute).isDatatypeContentSeperatedEnum();
+
+        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesFor();
+        assertEquals(false, generatedMethod);
+    }
+
+    @Test
+    public void testIsGenerateAllowedValuesProductRelevantAndUnrestricted() throws Exception {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(true).when(xPolicyAttribute).isValueSetUnrestricted();
+        doReturn(true).when(xPolicyAttribute).isProductRelevant();
+
+        doReturn(false).when(xPolicyAttribute).isValueSetEnum();
+        doReturn(false).when(xPolicyAttribute).isDatatypeContentSeperatedEnum();
+
+        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesFor();
+        assertEquals(true, generatedMethod);
+    }
+
+    @Test
+    public void testIsGenerateAllowedValuesProductRelevantAndRestricted() throws Exception {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(false).when(xPolicyAttribute).isValueSetUnrestricted();
+        doReturn(true).when(xPolicyAttribute).isProductRelevant();
+
+        doReturn(false).when(xPolicyAttribute).isValueSetEnum();
+        doReturn(false).when(xPolicyAttribute).isDatatypeContentSeperatedEnum();
+
+        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesFor();
+        assertEquals(true, generatedMethod);
+        verify(xPolicyAttribute, never()).isDatatypeContentSeperatedEnum();
+    }
+
+    @Test
+    public void testIsGenerateAllowedValuesProductRelevantAndEnumButNotContentSeperated() throws Exception {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(false).when(xPolicyAttribute).isValueSetUnrestricted();
+        doReturn(true).when(xPolicyAttribute).isProductRelevant();
+
+        doReturn(true).when(xPolicyAttribute).isValueSetEnum();
+        doReturn(false).when(xPolicyAttribute).isDatatypeContentSeperatedEnum();
+
+        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesFor();
+        assertEquals(true, generatedMethod);
+    }
+
 }
