@@ -76,7 +76,7 @@ public class XFormulaParameter extends AbstractGeneratorModelNode {
         }
         if (datatype instanceof PolicyCmptType || datatype instanceof ProductCmptType) {
             Type type = (Type)datatype;
-            XClass xClass = getModelService().getModelNode(type, XClass.class, getModelContext());
+            XClass xClass = getModelNode(type, XClass.class);
             String nameOfGeneratedClass = xClass.getQualifiedName(getBuilderAspectDependingOnSettings());
             return addImport(nameOfGeneratedClass);
         }

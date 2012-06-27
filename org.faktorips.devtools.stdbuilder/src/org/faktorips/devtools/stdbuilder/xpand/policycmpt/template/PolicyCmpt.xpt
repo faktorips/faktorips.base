@@ -13,15 +13,17 @@
 		«EXPAND CommonDefinitions::ImportBlock FOREACH modelContext.imports ONFILECLOSE»
 	
 		/**
-		 «IF generatingPublishedInterfaces-»* Implementation of «getSimpleName(BuilderAspect::INTERFACE)».«ENDIF»
+		 «IF generatingPublishedInterfaces-»
+		 *	«localizedJDoc("CLASS", getSimpleName(BuilderAspect::INTERFACE))»
+		 «ENDIF-»
 		 * @generated
 		 */
-		public «EXPAND potentialAbstract» class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-» «EXPAND implementedInterfaces-»
+		public «abstract()» class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
 		{
 
 		«FOREACH attributes AS this-»
 			«IF !published-»
-				«EXPAND PolicyCmptAttribute::fieldForPropertyName-»
+				«EXPAND PolicyCmptAttribute::constantForPropertyName-»
 			«ENDIF-»
 		«ENDFOREACH-»
 		
@@ -59,21 +61,9 @@
 	«ENDFILE»
 «ENDDEFINE»
 
-«DEFINE implementedInterfaces FOR XPolicyCmptClass-»
-	«IF implementsInterface-»
- implements «FOREACH implementedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH-»
-	«ENDIF-»
-«ENDDEFINE»
-
-«DEFINE potentialAbstract FOR XPolicyCmptClass-»
-	«IF abstract» abstract «ENDIF-»
-«ENDDEFINE»
-
-
-
 «DEFINE constructors FOR XPolicyCmptClass-»
 	/**
-     * Creates a new «getSimpleName(BuilderAspect::IMPLEMENTATION)».
+     * «localizedJDoc("CONSTRUCTOR", getSimpleName(BuilderAspect::IMPLEMENTATION))»
      * 
      * @generated
      */
@@ -83,7 +73,7 @@
     }
     «IF configured»
 	/**
-     * Creates a new «getSimpleName(BuilderAspect::IMPLEMENTATION)».
+     * «localizedJDoc("CONSTRUCTOR", getSimpleName(BuilderAspect::IMPLEMENTATION))»
      * 
      * @generated
      */
@@ -106,7 +96,7 @@
 «DEFINE generalMethodsForConfiguredPolicyCmpts FOR XPolicyCmptClass-»
 		
     /**
-     * Initializes the object with the configured defaults.
+     * «localizedJDoc("METHOD_INITIALIZE")»
      * 
      * @restrainedmodifiable
      */
@@ -160,7 +150,7 @@
 	 * @generated
 	 */
 	 «overrideAnnotation(false)»
-	 public «addImport("java.util.Calendar")» «getEffectiveFromAsCalendar()» {
+	 public «Calendar()» «getEffectiveFromAsCalendar()» {
 	 	«IF aggregateRoot-»
 		 	«IF hasSupertype()-»
 		 		return super.«getEffectiveFromAsCalendar()»;

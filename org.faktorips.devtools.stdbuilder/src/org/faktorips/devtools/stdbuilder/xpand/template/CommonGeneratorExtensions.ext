@@ -21,3 +21,5 @@ overrideAnnotation(AbstractGeneratorModelNode this, boolean interfaceMethodImple
 overrideAnnotation(XPolicyAttribute this, boolean interfaceMethodImplementation) :
 	if overwrite || needOverrideAnnotation(interfaceMethodImplementation) then "@Override";
 	
+abstract(XClass this) :
+	if abstract then "abstract";

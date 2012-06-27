@@ -34,7 +34,7 @@ public class AbstractGeneratorModelNodeTest {
     private GeneratorModelContext modelContext;
     @Mock
     private IPolicyCmptType type;
-    private XPolicyCmptClass xClass;
+    private XClass xClass;
 
     @Before
     public void setUp() throws Exception {

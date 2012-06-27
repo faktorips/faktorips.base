@@ -55,6 +55,15 @@ public class XPolicyAttribute extends XAttribute {
         return getIpsObjectPartContainer();
     }
 
+    @Override
+    public String getFieldName() {
+        if (isConstant()) {
+            return getJavaNamingConvention().getConstantClassVarName(getName());
+        } else {
+            return super.getFieldName();
+        }
+    }
+
     public boolean isGenerateField() {
         return getAttribute().getAttributeType() != AttributeType.DERIVED_ON_THE_FLY;
     }
@@ -107,7 +116,7 @@ public class XPolicyAttribute extends XAttribute {
 
     public XFormulaSignature getFormulaSignature() {
         IProductCmptTypeMethod method = getComputationMethod();
-        return getModelService().getModelNode(method, XFormulaSignature.class, getModelContext());
+        return getModelNode(method, XFormulaSignature.class);
     }
 
     private IProductCmptTypeMethod getComputationMethod() {
@@ -170,7 +179,7 @@ public class XPolicyAttribute extends XAttribute {
         return xPolicyCmptClass;
     }
 
-    public String getFieldPropertyName() {
+    public String getConstantNamePropertyName() {
         return "PROPERTY_" + StringUtils.upperCase(getFieldName());
     }
 
@@ -187,8 +196,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public String getNewInstanceExpression() {
-        JavaCodeFragment fragment = getDatatypeHelper().newInstanceFromExpression(
-                "propMap.get(\"" + getAttributeName() + "\")");
+        JavaCodeFragment fragment = getDatatypeHelper().newInstanceFromExpression("propMap.get(\"" + getName() + "\")");
         addImport(fragment.getImportDeclaration());
         return fragment.getSourcecode();
     }

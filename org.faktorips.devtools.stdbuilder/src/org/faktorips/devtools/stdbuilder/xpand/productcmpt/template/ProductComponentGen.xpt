@@ -16,11 +16,7 @@
 		 * «localizedJDoc("CLASS", getSimpleName(BuilderAspect::INTERFACE))»
 		 * @generated
 		 */
-		public class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-»
-			«IF implementsInterface-» implements «FOREACH implementedInterfaces AS interface SEPARATOR ","-»
-				«addImport(interface)»
-			«ENDFOREACH-»
-			«ENDIF-»
+		public «abstract()» class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
 		 {
 		 
 			«EXPAND ProductAssociation::field FOREACH associations-»

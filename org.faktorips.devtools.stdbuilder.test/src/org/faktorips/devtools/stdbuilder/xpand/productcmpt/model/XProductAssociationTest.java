@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportStatement;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.junit.Before;
@@ -62,6 +63,7 @@ public class XProductAssociationTest extends AbstractIpsPluginTest {
         super.setUp();
         MockitoAnnotations.initMocks(this);
         modelContext = new GeneratorModelContext(config);
+        modelContext.setImportHandler(new ImportHandler());
         modelService = new ModelService();
         ipsProject = newIpsProject();
         productCmptType = newProductCmptType(ipsProject, "test.TestType");
