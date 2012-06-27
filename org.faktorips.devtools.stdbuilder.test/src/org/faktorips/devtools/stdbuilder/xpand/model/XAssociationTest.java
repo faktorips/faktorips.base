@@ -18,15 +18,20 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -35,42 +40,48 @@ public class XAssociationTest {
     @Mock
     private IAssociation association;
 
-    @Test
-        public void testGetMethodNameAdd() throws Exception {
-            when(association.getTargetRoleSingular()).thenReturn("testTarget");
-            XAssociation xAssociation = mock(XAssociation.class, Mockito.CALLS_REAL_METHODS);
-            when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
-            String addMethodName = xAssociation.getMethodNameAdd();
-            assertEquals("addTestTarget", addMethodName);
-    
-            association.setTargetRoleSingular("TestTarget");
-            addMethodName = xAssociation.getMethodNameAdd();
-            assertEquals("addTestTarget", addMethodName);
-        }
+    @Mock
+    private GeneratorModelContext modelContext;
+
+    @Mock(answer = Answers.CALLS_REAL_METHODS)
+    private XAssociation xAssociation;
+
+    @Before
+    public void initMocks() {
+        when(association.getTargetRoleSingular()).thenReturn("testTarget");
+        when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
+        doReturn(new JavaNamingConvention()).when(xAssociation).getJavaNamingConvention();
+        doReturn(modelContext).when(xAssociation).getModelContext();
+    }
 
     @Test
-            public void testGetMethodNameSetter() throws Exception {
-                when(association.getTargetRoleSingular()).thenReturn("testTarget");
-                XAssociation xAssociation = mock(XAssociation.class, Mockito.CALLS_REAL_METHODS);
-                when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
-                doReturn(new JavaNamingConvention()).when(xAssociation).getJavaNamingConvention();
-                String methodName = xAssociation.getMethodNameSetter();
-                assertEquals("setTestTarget", methodName);
-            }
+    public void testGetMethodNameAdd() throws Exception {
+        initMocks();
+        String addMethodName = xAssociation.getMethodNameAdd();
+        assertEquals("addTestTarget", addMethodName);
+
+        association.setTargetRoleSingular("TestTarget");
+        addMethodName = xAssociation.getMethodNameAdd();
+        assertEquals("addTestTarget", addMethodName);
+    }
 
     @Test
-                public void testGetMethodNameGetterterNumOf() throws Exception {
-                    when(association.getTargetRolePlural()).thenReturn("testTargets");
-                    XAssociation xAssociation = mock(XAssociation.class, Mockito.CALLS_REAL_METHODS);
-                    when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
-                    doReturn(new JavaNamingConvention()).when(xAssociation).getJavaNamingConvention();
-                    String methodName = xAssociation.getMethodNameGetNumOf();
-                    assertEquals("getNumOfTestTargets", methodName);
-                }
+    public void testGetMethodNameSetter() throws Exception {
+        initMocks();
+        String methodName = xAssociation.getMethodNameSetter();
+        assertEquals("setTestTarget", methodName);
+    }
+
+    @Test
+    public void testGetMethodNameGetterterNumOf() throws Exception {
+        when(association.getTargetRolePlural()).thenReturn("testTargets");
+        when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
+        String methodName = xAssociation.getMethodNameGetNumOf();
+        assertEquals("getNumOfTestTargets", methodName);
+    }
 
     @Test
     public void testIsSubsetOf() throws Exception {
-        XAssociation xAssociation = mock(XAssociation.class, Mockito.CALLS_REAL_METHODS);
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
 
         XDerivedUnionAssociation xAssociation2 = mock(XDerivedUnionAssociation.class);
@@ -85,7 +96,6 @@ public class XAssociationTest {
 
     @Test
     public void testIsDerivedUnion() throws Exception {
-        XAssociation xAssociation = mock(XAssociation.class, Mockito.CALLS_REAL_METHODS);
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
 
         when(association.isDerivedUnion()).thenReturn(true);
@@ -98,11 +108,25 @@ public class XAssociationTest {
     @Test
     public void testGetTargetType() throws Exception {
         IType type = mock(IType.class);
-        XAssociation xAssociation = mock(XAssociation.class, Mockito.CALLS_REAL_METHODS);
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
         when(association.getType()).thenReturn(type);
 
         assertEquals(type, xAssociation.getAssociationType());
+    }
+
+    @Test
+    public void testGetTargetClassName() throws Exception {
+        IProductCmptType productCmptType = mock(IProductCmptType.class);
+        XProductCmptClass xProductCmptClass = mock(XProductCmptClass.class);
+        doReturn("org.faktorips.sample.model.test.ITargetType").when(xProductCmptClass).getQualifiedName(
+                BuilderAspect.INTERFACE);
+        doReturn(xProductCmptClass).when(xAssociation).getModelNode(productCmptType, XProductCmptClass.class);
+        doReturn(productCmptType).when(xAssociation).getTargetType();
+
+        // doReturn(XProductCmptClass.class).when(xAssociation).getTargetModelNodeType();
+        String targetClassGenerationName = xAssociation.getTargetClassName();
+        assertEquals("ITargetType", targetClassGenerationName);
+        verify(xAssociation).addImport("org.faktorips.sample.model.test.ITargetType");
     }
 
 }

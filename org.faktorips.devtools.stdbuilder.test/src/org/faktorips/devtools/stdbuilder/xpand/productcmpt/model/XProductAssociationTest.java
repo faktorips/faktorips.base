@@ -18,75 +18,82 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
-import org.faktorips.devtools.stdbuilder.xpand.model.ImportStatement;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
-public class XProductAssociationTest extends AbstractIpsPluginTest {
-
-    @Mock
-    private IProductCmptTypeAssociation mockAssociation;
+@RunWith(MockitoJUnitRunner.class)
+public class XProductAssociationTest {
 
     @Mock
-    private IIpsProject mockProject;
-
-    @Mock
-    private IIpsArtefactBuilderSetConfig config;
-
     private GeneratorModelContext modelContext;
 
+    @Mock
     private ModelService modelService;
 
+    @Mock
     private IIpsProject ipsProject;
 
+    @Mock
     private ProductCmptType productCmptType;
 
+    @Mock
+    private ProductCmptType targetCmptType;
+
+    @Mock
     private IProductCmptTypeAssociation association;
 
-    @Override
+    @Mock
+    private XProductCmptClass xTargetCmptClass;
+
+    @Mock
+    private XProductCmptGenerationClass xTargetGenerationClass;
+
+    private XProductAssociation xProductAssociation;
+
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-        MockitoAnnotations.initMocks(this);
-        modelContext = new GeneratorModelContext(config);
-        modelContext.setImportHandler(new ImportHandler());
-        modelService = new ModelService();
-        ipsProject = newIpsProject();
-        productCmptType = newProductCmptType(ipsProject, "test.TestType");
-        association = productCmptType.newProductCmptTypeAssociation();
-        newProductCmptType(ipsProject, "test.TargetType");
+        when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
+        when(productCmptType.getIpsProject()).thenReturn(ipsProject);
+        when(association.getIpsProject()).thenReturn(ipsProject);
+        when(association.findTarget(ipsProject)).thenReturn(targetCmptType);
+        when(modelService.getModelNode(targetCmptType, XProductCmptGenerationClass.class, modelContext)).thenReturn(
+                xTargetGenerationClass);
+        when(xTargetGenerationClass.getQualifiedName(BuilderAspect.INTERFACE)).thenReturn(
+                "org.faktorips.sample.model.test.ITargetTypeGen");
+        when(modelService.getModelNode(targetCmptType, XProductCmptClass.class, modelContext)).thenReturn(
+                xTargetCmptClass);
+    }
 
-        when(mockAssociation.getIpsProject()).thenReturn(mockProject);
-        when(mockProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
+    @Before
+    public void createXProductAssociation() {
+        xProductAssociation = new XProductAssociation(association, modelContext, modelService);
     }
 
     @Test
     public void testGetTargetClassGenerationName() {
-        association.setTarget("test.TargetType");
-        XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
         String targetClassGenerationName = xProductAssociation.getTargetClassGenerationName();
         assertEquals("ITargetTypeGen", targetClassGenerationName);
-        assertTrue(modelContext.getImports().contains(
-                new ImportStatement("org.faktorips.sample.model.test.ITargetTypeGen")));
+        verify(modelContext).addImport("org.faktorips.sample.model.test.ITargetTypeGen");
     }
 
     @Test
     public void testGetGetterNameForTargetGeneration() throws Exception {
         association.setTarget("test.TargetType");
+        when(xTargetCmptClass.getMethodNameGetProductComponentGeneration()).thenReturn("getTargetTypeGen");
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
         String getterNameForTargetGeneration = xProductAssociation.getMethodNameGetTargetGeneration();
         assertEquals("getTargetTypeGen", getterNameForTargetGeneration);
@@ -94,7 +101,8 @@ public class XProductAssociationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetMethodNameGetLinksFor_plural() throws Exception {
-        association.setTargetRolePlural("testTargets");
+        when(association.getTargetRolePlural()).thenReturn("testTargets");
+        when(association.is1ToMany()).thenReturn(true);
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
         String methodName = xProductAssociation.getMethodNameGetLinksFor();
         assertEquals("getLinksForTestTargets", methodName);
@@ -102,8 +110,8 @@ public class XProductAssociationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetMethodNameGetLinksFor_singular() throws Exception {
-        association.setTargetRoleSingular("testTarget");
-        association.setMaxCardinality(1);
+        when(association.getTargetRoleSingular()).thenReturn("testTarget");
+        when(association.is1ToMany()).thenReturn(false);
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
         String methodName = xProductAssociation.getMethodNameGetLinksFor();
         assertEquals("getLinkForTestTarget", methodName);
@@ -111,12 +119,14 @@ public class XProductAssociationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetMethodNameGetLinkFor() throws Exception {
-        association.setTargetRoleSingular("testTarget");
-        association.setTargetRolePlural("testTargets");
+        when(association.getTargetRoleSingular()).thenReturn("testTarget");
+        when(association.getTargetRolePlural()).thenReturn("testTargets");
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
         String methodName = xProductAssociation.getMethodNameGetLinkFor();
+
         assertEquals("getLinkForTestTarget", methodName);
-        association.setMaxCardinality(1);
+
+        when(association.is1ToMany()).thenReturn(true);
         methodName = xProductAssociation.getMethodNameGetLinkFor();
         assertEquals("getLinkForTestTarget", methodName);
     }
@@ -125,20 +135,20 @@ public class XProductAssociationTest extends AbstractIpsPluginTest {
     public void testGetMethodGetCardinalityFor() throws Exception {
         IPolicyCmptTypeAssociation mockPolicyAsso = mock(IPolicyCmptTypeAssociation.class);
         when(mockPolicyAsso.getTargetRoleSingular()).thenReturn("polTarget");
-        when(mockAssociation.findMatchingPolicyCmptTypeAssociation(mockProject)).thenReturn(mockPolicyAsso);
-        XProductAssociation xProductAssociation = new XProductAssociation(mockAssociation, modelContext, modelService);
+        when(association.findMatchingPolicyCmptTypeAssociation(ipsProject)).thenReturn(mockPolicyAsso);
+        XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
         String methodName = xProductAssociation.getMethodNameGetCardinalityFor();
         assertEquals("getCardinalityForPolTarget", methodName);
     }
 
     @Test
     public void testHasMatchingAssociation() throws Exception {
-        XProductAssociation xProductAssociation = new XProductAssociation(mockAssociation, modelContext, modelService);
+        XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
 
-        when(mockAssociation.constrainsPolicyCmptTypeAssociation(any(IIpsProject.class))).thenReturn(true);
+        when(association.constrainsPolicyCmptTypeAssociation(any(IIpsProject.class))).thenReturn(true);
         assertTrue(xProductAssociation.hasMatchingAssociation());
 
-        when(mockAssociation.constrainsPolicyCmptTypeAssociation(any(IIpsProject.class))).thenReturn(false);
+        when(association.constrainsPolicyCmptTypeAssociation(any(IIpsProject.class))).thenReturn(false);
         assertFalse(xProductAssociation.hasMatchingAssociation());
     }
 
