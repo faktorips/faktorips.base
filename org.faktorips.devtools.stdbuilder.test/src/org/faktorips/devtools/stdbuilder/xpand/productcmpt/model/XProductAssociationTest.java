@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportStatement;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.junit.Before;
@@ -62,6 +63,7 @@ public class XProductAssociationTest extends AbstractIpsPluginTest {
         super.setUp();
         MockitoAnnotations.initMocks(this);
         modelContext = new GeneratorModelContext(config);
+        modelContext.setImportHandler(new ImportHandler());
         modelService = new ModelService();
         ipsProject = newIpsProject();
         productCmptType = newProductCmptType(ipsProject, "test.TestType");
@@ -91,43 +93,43 @@ public class XProductAssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-        public void testGetMethodNameGetLinksFor_plural() throws Exception {
-            association.setTargetRolePlural("testTargets");
-            XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
-            String methodName = xProductAssociation.getMethodNameGetLinksFor();
-            assertEquals("getLinksForTestTargets", methodName);
-        }
+    public void testGetMethodNameGetLinksFor_plural() throws Exception {
+        association.setTargetRolePlural("testTargets");
+        XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
+        String methodName = xProductAssociation.getMethodNameGetLinksFor();
+        assertEquals("getLinksForTestTargets", methodName);
+    }
 
     @Test
-        public void testGetMethodNameGetLinksFor_singular() throws Exception {
-            association.setTargetRoleSingular("testTarget");
-            association.setMaxCardinality(1);
-            XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
-            String methodName = xProductAssociation.getMethodNameGetLinksFor();
-            assertEquals("getLinkForTestTarget", methodName);
-        }
+    public void testGetMethodNameGetLinksFor_singular() throws Exception {
+        association.setTargetRoleSingular("testTarget");
+        association.setMaxCardinality(1);
+        XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
+        String methodName = xProductAssociation.getMethodNameGetLinksFor();
+        assertEquals("getLinkForTestTarget", methodName);
+    }
 
     @Test
-        public void testGetMethodNameGetLinkFor() throws Exception {
-            association.setTargetRoleSingular("testTarget");
-            association.setTargetRolePlural("testTargets");
-            XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
-            String methodName = xProductAssociation.getMethodNameGetLinkFor();
-            assertEquals("getLinkForTestTarget", methodName);
-            association.setMaxCardinality(1);
-            methodName = xProductAssociation.getMethodNameGetLinkFor();
-            assertEquals("getLinkForTestTarget", methodName);
-        }
+    public void testGetMethodNameGetLinkFor() throws Exception {
+        association.setTargetRoleSingular("testTarget");
+        association.setTargetRolePlural("testTargets");
+        XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
+        String methodName = xProductAssociation.getMethodNameGetLinkFor();
+        assertEquals("getLinkForTestTarget", methodName);
+        association.setMaxCardinality(1);
+        methodName = xProductAssociation.getMethodNameGetLinkFor();
+        assertEquals("getLinkForTestTarget", methodName);
+    }
 
     @Test
-        public void testGetMethodGetCardinalityFor() throws Exception {
-            IPolicyCmptTypeAssociation mockPolicyAsso = mock(IPolicyCmptTypeAssociation.class);
-            when(mockPolicyAsso.getTargetRoleSingular()).thenReturn("polTarget");
-            when(mockAssociation.findMatchingPolicyCmptTypeAssociation(mockProject)).thenReturn(mockPolicyAsso);
-            XProductAssociation xProductAssociation = new XProductAssociation(mockAssociation, modelContext, modelService);
-            String methodName = xProductAssociation.getMethodGetCardinalityFor();
-            assertEquals("getCardinalityForPolTarget", methodName);
-        }
+    public void testGetMethodGetCardinalityFor() throws Exception {
+        IPolicyCmptTypeAssociation mockPolicyAsso = mock(IPolicyCmptTypeAssociation.class);
+        when(mockPolicyAsso.getTargetRoleSingular()).thenReturn("polTarget");
+        when(mockAssociation.findMatchingPolicyCmptTypeAssociation(mockProject)).thenReturn(mockPolicyAsso);
+        XProductAssociation xProductAssociation = new XProductAssociation(mockAssociation, modelContext, modelService);
+        String methodName = xProductAssociation.getMethodGetCardinalityFor();
+        assertEquals("getCardinalityForPolTarget", methodName);
+    }
 
     @Test
     public void testHasMatchingAssociation() throws Exception {

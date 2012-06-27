@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder.xpand;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.internal.xpand2.model.XpandDefinition;
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
 import org.eclipse.xpand2.XpandExecutionContext;
@@ -23,10 +24,12 @@ import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutlet;
@@ -51,6 +54,8 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     private StringOutput out;
 
     private ModelService modelService;
+
+    private GeneratorModelContext generatorModelContext;
 
     /**
      * The XPAND builder is associated to a builder set and need the {@link LocalizedStringsSet} for
@@ -77,6 +82,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.beforeBuildProcess(project, buildKind);
         modelService = new ModelService();
+        generatorModelContext = new GeneratorModelContext(getBuilderSet().getConfig());
         initTemplate();
         String charset = project.getProject().getDefaultCharset();
         StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
@@ -101,6 +107,12 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
         final org.eclipse.xtend.typesystem.Type[] paramTypes = new org.eclipse.xtend.typesystem.Type[0];
         setTemplateDefinition(xpandContext.findDefinition(getTemplate(), targetType, paramTypes));
         ArgumentCheck.notNull(getTemplateDefinition());
+    }
+
+    @Override
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
+        super.beforeBuild(ipsSrcFile, status);
+        generatorModelContext.setImportHandler(new ImportHandler());
     }
 
     /**
@@ -133,7 +145,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
         try {
             IIpsObject type = getIpsSrcFile().getIpsObject();
             AbstractGeneratorModelNode xClass = getModelService().getModelNode(type, getGeneratorModelNodeClass(),
-                    newGeneratorModelContext());
+                    getGeneratorModelContext());
             return xClass;
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
@@ -144,8 +156,8 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
         return modelService;
     }
 
-    public GeneratorModelContext newGeneratorModelContext() {
-        return new GeneratorModelContext(getBuilderSet().getConfig());
+    public GeneratorModelContext getGeneratorModelContext() {
+        return generatorModelContext;
     }
 
     public StringOutput getOut() {

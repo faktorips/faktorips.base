@@ -29,7 +29,7 @@ public class GeneratorModelContext {
 
     private final JavaClassNaming javaClassNaming;
 
-    private ImportHandler importHandler = new ImportHandler();
+    private final ThreadLocal<ImportHandler> importHandlerThreadLocal = new ThreadLocal<ImportHandler>();
 
     private final IIpsArtefactBuilderSetConfig config;
 
@@ -47,12 +47,38 @@ public class GeneratorModelContext {
     }
 
     /**
+     * Gets the thread local import handler. The import handler stores all import statements needed
+     * in the generated class file.
+     * <p>
+     * The import handler is stored as {@link ThreadLocal} variable to have the ability to generate
+     * different files in different threads
+     * 
+     * @return The thread local import handler
+     */
+    public ImportHandler getImportHandler() {
+        return importHandlerThreadLocal.get();
+    }
+
+    /**
+     * Sets the thread local import handler. The import handler stores all import statements needed
+     * in the generated class file.
+     * <p>
+     * The import handler is stored as {@link ThreadLocal} variable to have the ability to generate
+     * different files in different threads
+     * 
+     * @param importHandler The thread local import handler
+     */
+    public void setImportHandler(ImportHandler importHandler) {
+        this.importHandlerThreadLocal.set(importHandler);
+    }
+
+    /**
      * Getting the set of collected import statements.
      * 
      * @return Returns the imports.
      */
     public Set<ImportStatement> getImports() {
-        return importHandler.getImports();
+        return getImportHandler().getImports();
     }
 
     /**
@@ -62,11 +88,11 @@ public class GeneratorModelContext {
      * @return true if the import was added and not already part of the set.
      */
     public boolean addImport(String importStatement) {
-        return importHandler.add(importStatement);
+        return getImportHandler().add(importStatement);
     }
 
     public boolean removeImport(String importStatement) {
-        return importHandler.remove(importStatement);
+        return getImportHandler().remove(importStatement);
     }
 
     public Locale getLanguageUsedInGeneratedSourceCode() {
