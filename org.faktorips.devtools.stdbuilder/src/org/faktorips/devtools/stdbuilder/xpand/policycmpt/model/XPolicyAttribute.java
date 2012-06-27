@@ -90,7 +90,7 @@ public class XPolicyAttribute extends XAttribute {
         return isOverwrite() && getAttribute().isChangeable();
     }
 
-    public String getValueSetClass() {
+    private String getValueSetClass() {
         return addImport(ValueSet.class);
     }
 
@@ -137,8 +137,8 @@ public class XPolicyAttribute extends XAttribute {
         return getXPolicyCmptClass().getProductGenerationArgumentName();
     }
 
-    public String getProductGenerationGetterName() {
-        return getXPolicyCmptClass().getProductGenerationGetterName();
+    public String getMethodNameGetProductCmptGeneration() {
+        return getXPolicyCmptClass().getMethodNameGetProductCmptGeneration();
     }
 
     private XPolicyCmptClass getXPolicyCmptClass() {
@@ -148,14 +148,18 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public String getFieldPropertyName() {
-        return "PROPERTY_" + StringUtils.upperCase(getMemberVarName());
+        return "PROPERTY_" + StringUtils.upperCase(getFieldName());
     }
 
     public String getOldValueVariable() {
-        return " old" + StringUtils.capitalize(getMemberVarName());
+        return " old" + StringUtils.capitalize(getFieldName());
     }
 
-    public String getComputationMethodName() {
+    public String getMethodNameGetAllowedValuesFor() {
+        return "getSetOfAllowedValuesFor" + StringUtils.capitalize(getFieldName());
+    }
+
+    public String getMethodNameComputeAttribute() {
         return getAttribute().getComputationMethodSignature();
     }
 
@@ -165,4 +169,5 @@ public class XPolicyAttribute extends XAttribute {
         addImport(fragment.getImportDeclaration());
         return fragment.getSourcecode();
     }
+
 }

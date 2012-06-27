@@ -91,12 +91,12 @@
 
 «DEFINE storeOldValue FOR XPolicyAttribute-»
 	«IF modelContext.generatePropertyChange-»
-		«javaClassName» «oldValueVariable» = «memberVarName»;
+		«javaClassName» «oldValueVariable» = «fieldName»;
 	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE notify FOR XPolicyAttribute-»
 	«IF modelContext.generatePropertyChange-»
-		notifyChangeListeners(new «addImport("java.beans.PropertyChangeEvent")» (this, «fieldPropertyName», «oldValueVariable», «memberVarName»));
+		notifyChangeListeners(new «addImport("java.beans.PropertyChangeEvent")» (this, «fieldPropertyName», «oldValueVariable», «fieldName»));
 	«ENDIF-»
 «ENDDEFINE»

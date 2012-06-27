@@ -104,7 +104,7 @@
 «DEFINE initializationForOverrideAttributes FOR XPolicyCmptClass-»
 	«FOREACH attributes AS this-»
 		«IF generateDefaultInitialize-»
-			«setterMethodName»(«defaultValueCode»);
+			«methodNameSetter»(«defaultValueCode»);
 		«ENDIF-»
 	«ENDFOREACH-»
 «ENDDEFINE»
@@ -118,7 +118,7 @@
      */
 	 «overrideAnnotation(false)»
     public void «initialize()» {
-        if («productGenerationGetterName»() == null) {
+        if («methodNameGetProductCmptGeneration»() == null) {
             return;
         }
         «FOREACH attributes AS this-»
@@ -132,7 +132,7 @@
 	 * @generated
 	 */
 	 «overrideAnnotation(false)»
-	 public «productComponentClassOrInterfaceName» «productComponentGetterName»() {
+	 public «productComponentClassOrInterfaceName» «methodNameGetProductComponent»() {
 	 	return («productComponentClassOrInterfaceName») «getProductComponent()»;
 	 }
 	 
@@ -140,7 +140,7 @@
 	 * @generated
 	 */
 	 «overrideAnnotation(false)»
-	 public «productGenerationClassOrInterfaceName» «productGenerationGetterName»() {
+	 public «productGenerationClassOrInterfaceName» «methodNameGetProductCmptGeneration»() {
 	 	return («productGenerationClassOrInterfaceName») «getProductCmptGeneration()»;
 	 }
 
@@ -148,7 +148,7 @@
 	 * @generated
 	 */
 	 «overrideAnnotation(false)»
-	 public void «productComponentSetterName»(«productComponentClassOrInterfaceName» «productComponentArgumentName», boolean initPropertiesWithConfiguratedDefaults) {
+	 public void «methodNameSetProductComponent»(«productComponentClassOrInterfaceName» «productComponentArgumentName», boolean initPropertiesWithConfiguratedDefaults) {
         «setProductComponent(productComponentArgumentName)»;
         if (initPropertiesWithConfiguratedDefaults) {
             «initialize()»;

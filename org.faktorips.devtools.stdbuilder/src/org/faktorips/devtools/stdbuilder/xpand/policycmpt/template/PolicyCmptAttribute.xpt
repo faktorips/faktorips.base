@@ -22,7 +22,7 @@
 		«IF constant-»
 			public static final «javaClassName» «constantFieldName»= «defaultValueCode»;
 		«ELSE-»
-			private «javaClassName» «memberVarName»= «defaultValueCode»;
+			private «javaClassName» «fieldName»= «defaultValueCode»;
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
@@ -34,9 +34,9 @@
 		 * @generated
 		 */
 		«IF  overwrite»«overrideAnnotation(false)»«ENDIF-»
-		public «javaClassName» «getterMethodName»() {
+		public «javaClassName» «methodNameGetter»() {
 			«IF generateField-»
-				return «IF constant»«constantFieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(memberVarName)»«ENDIF»;
+				return «IF constant»«constantFieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(fieldName)»«ENDIF»;
 			«ELSE-»
 				«IF generateDefaultForDerivedAttribute-»
 					return «defaultValueCode»;
@@ -52,9 +52,9 @@
 
 «DEFINE getProductGeneration FOR XPolicyAttribute-»
 	«IF generatingPublishedInterfaces-»
-		((«productGenerationClassName»)«productGenerationGetterName»())
+		((«productGenerationClassName»)«methodNameGetProductCmptGeneration»())
 	«ELSE-»
-		«productGenerationGetterName»()
+		«methodNameGetProductCmptGeneration»()
 	«ENDIF-»
 «ENDDEFINE»
 
@@ -65,9 +65,9 @@
 		 * @generated
 		 */
 		«IF  overwrite»«overrideAnnotation(true)»«ENDIF-»
-		public void «setterMethodName»(«javaClassName» newValue) {
+		public void «methodNameSetter»(«javaClassName» newValue) {
 			«EXPAND PropertyChangeSupport::storeOldValue-»
-			this.«memberVarName» = newValue;
+			this.«fieldName» = newValue;
 			«EXPAND PropertyChangeSupport::notify-»
 		}
 	«ENDIF-»
@@ -80,22 +80,22 @@
 	 * @generated
 	 */
 	 «overrideAnnotation(true)»
-	public «valueSetClass»<«datatypeClass»> «allowedValuesGetterName()»(«IValidationContext()» context) {
-		return «productGenerationGetterName»().«allowedValuesGetterName()»(context);
+	public «valueSetClass»<«datatypeClass»> «methodNameGetAllowedValuesFor»(«IValidationContext()» context) {
+		return «methodNameGetProductCmptGeneration»().«methodNameGetAllowedValuesFor»(context);
 	}
 	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE initConfigurableAttribute FOR XPolicyAttribute-»
 	«IF requiringInitWithProductData-»
-        «memberVarName» = «productGenerationGetterName»().«getterMethodName»();
+        «fieldName» = «methodNameGetProductCmptGeneration»().«methodNameGetter»();
     «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE initAttributeFromXML FOR XPolicyAttribute-»
 	«IF requiringInitFromXML-»
         if (propMap.containsKey("«attributeName»")) {
-            this.«memberVarName» = «newInstanceExpression»;
+            this.«fieldName» = «newInstanceExpression»;
         }
     «ENDIF-»
 «ENDDEFINE»

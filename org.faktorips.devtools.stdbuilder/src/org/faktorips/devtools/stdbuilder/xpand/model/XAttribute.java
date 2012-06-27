@@ -52,15 +52,15 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return datatypeHelper;
     }
 
-    public String getSetterMethodName() {
+    public String getMethodNameSetter() {
         return getJavaNamingConvention().getSetterMethodName(getName());
     }
 
-    public String getGetterMethodName() {
+    public String getMethodNameGetter() {
         return getJavaNamingConvention().getGetterMethodName(getName(), getDatatype());
     }
 
-    public String getMemberVarName() {
+    public String getFieldName() {
         return getJavaNamingConvention().getMemberVarName(getName());
     }
 
