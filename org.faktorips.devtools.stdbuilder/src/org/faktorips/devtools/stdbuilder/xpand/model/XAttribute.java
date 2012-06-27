@@ -64,18 +64,6 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return getJavaNamingConvention().getMemberVarName(getName());
     }
 
-    /**
-     * Returns the "raw" name of the attribute in contrast to {@link #getMemberVarName()}, which
-     * uses the java naming convention to calculate the name.
-     */
-    public String getAttributeName() {
-        return getAttribute().getName();
-    }
-
-    public String getConstantFieldName() {
-        return getJavaNamingConvention().getConstantClassVarName(getName());
-    }
-
     public String fieldPropertyNameSuffix() {
         return getModelContext().isGenerateSeparatedCamelCase() ? StringUtil.camelCaseToUnderscore(getName())
                 .toUpperCase() : getName().toUpperCase();

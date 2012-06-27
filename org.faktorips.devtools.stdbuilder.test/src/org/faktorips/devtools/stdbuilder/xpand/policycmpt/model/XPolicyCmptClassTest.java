@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.junit.Test;
@@ -62,7 +63,7 @@ public class XPolicyCmptClassTest {
     public void initAttributes() {
         setupAttributeList();
 
-        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+        XClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
         Set<XPolicyAttribute> attributeNodeSet = policyCmptClass.getAttributes();
         assertEquals(2, attributeNodeSet.size());
         assertThat(attributeNodeSet, hasItems(attributeNode1, attributeNode2));
@@ -72,7 +73,7 @@ public class XPolicyCmptClassTest {
     public void initAttributeList() {
         setupAttributeList();
 
-        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+        XClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
         Set<XPolicyAttribute> attributeList = policyCmptClass.getAttributes();
         Set<XPolicyAttribute> secondAttributeList = policyCmptClass.getAttributes();
         // returns copies of the same list
@@ -98,7 +99,7 @@ public class XPolicyCmptClassTest {
     public void initAssociations() {
         setupAssociationList();
 
-        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+        XClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
         Set<XPolicyAssociation> associationNodeSet = policyCmptClass.getAssociations();
         assertEquals(2, associationNodeSet.size());
         assertThat(associationNodeSet, hasItems(associationNode1, associationNode2));
@@ -108,7 +109,7 @@ public class XPolicyCmptClassTest {
     public void initAssociationList() {
         setupAssociationList();
 
-        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+        XClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
         Set<XPolicyAssociation> assocList = policyCmptClass.getAssociations();
         Set<XPolicyAssociation> secondAssocList = policyCmptClass.getAssociations();
         // returns copies of the same list

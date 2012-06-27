@@ -142,7 +142,7 @@ public abstract class XProductClass extends XClass {
     protected String getPolicyName(BuilderAspect aspect) {
         try {
             IPolicyCmptType policyCmptType = getType().findPolicyCmptType(getIpsProject());
-            XPolicyCmptClass xPolicyCmptClass = getModelNode(policyCmptType, XPolicyCmptClass.class);
+            XClass xPolicyCmptClass = getModelNode(policyCmptType, XPolicyCmptClass.class);
             return xPolicyCmptClass.getSimpleName(aspect);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);

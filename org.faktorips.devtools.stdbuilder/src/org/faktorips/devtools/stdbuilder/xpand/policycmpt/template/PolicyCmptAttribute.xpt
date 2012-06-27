@@ -5,12 +5,12 @@
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAttributeExtension»
 
-«DEFINE fieldForPropertyName FOR XPolicyAttribute-»
+«DEFINE constantForPropertyName FOR XPolicyAttribute-»
 	/**
 	 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
 	 * @generated
 	 */
-	public final static String «fieldPropertyName» = "«name»";
+	public final static String «constantNamePropertyName» = "«name»";
 «ENDDEFINE»
 
 «DEFINE memberField FOR XPolicyAttribute-»
@@ -20,9 +20,9 @@
 		 * @generated
 		 */
 		«IF constant-»
-			public static final «javaClassName» «constantFieldName»= «defaultValueCode»;
+			public static final «javaClassName» «fieldName» = «defaultValueCode»;
 		«ELSE-»
-			private «javaClassName» «fieldName»= «defaultValueCode»;
+			private «javaClassName» «fieldName» = «defaultValueCode»;
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
@@ -36,7 +36,7 @@
 		«IF  overwrite»«overrideAnnotation(false)»«ENDIF-»
 		public «javaClassName» «methodNameGetter»() {
 			«IF generateField-»
-				return «IF constant»«constantFieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(fieldName)»«ENDIF»;
+				return «IF constant»«fieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(fieldName)»«ENDIF»;
 			«ELSE-»
 				«IF generateDefaultForDerivedAttribute-»
 					return «defaultValueCode»;
@@ -94,7 +94,7 @@
 
 «DEFINE initAttributeFromXML FOR XPolicyAttribute-»
 	«IF requiringInitFromXML-»
-        if (propMap.containsKey("«attributeName»")) {
+        if (propMap.containsKey("«name»")) {
             this.«fieldName» = «newInstanceExpression»;
         }
     «ENDIF-»

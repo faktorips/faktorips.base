@@ -97,6 +97,6 @@
 
 «DEFINE notify FOR XPolicyAttribute-»
 	«IF modelContext.generatePropertyChange-»
-		notifyChangeListeners(new «addImport("java.beans.PropertyChangeEvent")» (this, «fieldPropertyName», «oldValueVariable», «fieldName»));
+		notifyChangeListeners(new «addImport("java.beans.PropertyChangeEvent")» (this, «constantNamePropertyName», «oldValueVariable», «fieldName»));
 	«ENDIF-»
 «ENDDEFINE»

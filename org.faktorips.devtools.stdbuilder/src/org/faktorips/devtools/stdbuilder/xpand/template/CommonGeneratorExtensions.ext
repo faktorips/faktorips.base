@@ -17,3 +17,5 @@ String camelCaseToUnderscore(String s) :
 overrideAnnotation(AbstractGeneratorModelNode this, boolean interfaceMethodImplementation) :
 	if needOverrideAnnotation(interfaceMethodImplementation) then "@Override";
 	
+abstract(XClass this) :
+	if abstract then "abstract";

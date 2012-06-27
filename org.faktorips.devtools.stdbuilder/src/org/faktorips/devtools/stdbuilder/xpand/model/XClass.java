@@ -190,4 +190,8 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      */
     public abstract Set<XDerivedUnionAssociation> getDerivedUnionAssociations();
 
+    public boolean isAbstract() {
+        return getType().isAbstract();
+    }
+
 }
