@@ -80,7 +80,7 @@ public class XPolicyAttribute extends XAttribute {
         return !isDerived() && !isConstant();
     }
 
-    private boolean isDerived() {
+    public boolean isDerived() {
         return getAttribute().isDerived();
     }
 
@@ -132,6 +132,9 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateGetAllowedValuesFor() {
+        if (isDerived()) {
+            return false;
+        }
         if (isValueSetUnrestricted() && !isProductRelevant()) {
             return false;
         }
@@ -189,6 +192,10 @@ public class XPolicyAttribute extends XAttribute {
 
     public String getMethodNameGetAllowedValuesFor() {
         return "getSetOfAllowedValuesFor" + StringUtils.capitalize(getFieldName());
+    }
+
+    public String getMethodNameGetDefaultValue() {
+        return "getDefaultValue" + StringUtils.capitalize(getFieldName());
     }
 
     public String getMethodNameComputeAttribute() {

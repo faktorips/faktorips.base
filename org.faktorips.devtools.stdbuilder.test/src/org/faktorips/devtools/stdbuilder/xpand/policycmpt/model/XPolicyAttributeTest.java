@@ -140,4 +140,16 @@ public class XPolicyAttributeTest {
         assertEquals(true, generatedMethod);
     }
 
+    @Test
+    public void testIsGenerateAllowedValuesDerived() throws Exception {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(true).when(xPolicyAttribute).isDerived();
+        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesFor();
+        assertEquals(false, generatedMethod);
+        verify(xPolicyAttribute, never()).isValueSetEnum();
+        verify(xPolicyAttribute, never()).isValueSetUnrestricted();
+        verify(xPolicyAttribute, never()).isProductRelevant();
+        verify(xPolicyAttribute, never()).isDatatypeContentSeperatedEnum();
+    }
+
 }

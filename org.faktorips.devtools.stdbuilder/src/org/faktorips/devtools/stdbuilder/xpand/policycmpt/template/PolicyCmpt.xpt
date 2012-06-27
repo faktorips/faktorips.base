@@ -113,6 +113,8 @@
     }
 	 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * @generated
 	 */
 	 «overrideAnnotation(false)»
@@ -121,6 +123,8 @@
 	 }
 	 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * @generated
 	 */
 	 «overrideAnnotation(false)»
@@ -129,6 +133,8 @@
 	 }
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * @generated
 	 */
 	 «overrideAnnotation(false)»
@@ -139,6 +145,8 @@
         }
 	 }
 	 /**
+	 * {@inheritDoc}
+	 *
      * @generated
      */
 	 «overrideAnnotation(false)»
@@ -147,6 +155,8 @@
     }
     
 	/**
+	 * {@inheritDoc}
+	 *
 	 * @generated
 	 */
 	 «overrideAnnotation(false)»
@@ -157,7 +167,7 @@
 		 	«ELSE-»
 		 	    return null; // TODO Implement access to effective from.
         // To avoid that the generator overwrites the implementation,
-        // you must add "NOT" after @generated in the Javadoc!
+        // you have to add NOT after @annotation in the Javadoc!
 		 	«ENDIF-»
 		 «ELSE-»
 		        «IModelObject()» parent = «getParentModelObject()»;

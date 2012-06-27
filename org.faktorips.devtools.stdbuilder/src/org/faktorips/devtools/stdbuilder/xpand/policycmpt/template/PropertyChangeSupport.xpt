@@ -16,8 +16,10 @@
 «DEFINE generalMethods FOR XPolicyCmptClass-»
 	«IF modelContext.generatePropertyChange && !hasSupertype()-»
 	/**
-	* @generated
-	*/
+     * {@inheritDoc}
+     * 
+	 * @generated
+	 */
 	«overrideAnnotation(false)-»
 	public void notifyChangeListeners(«addImport("java.beans.PropertyChangeEvent")» event) {
         if (event instanceof «addImport("org.faktorips.runtime.AssociationChangedEvent")») {
@@ -97,6 +99,6 @@
 
 «DEFINE notify FOR XPolicyAttribute-»
 	«IF modelContext.generatePropertyChange-»
-		notifyChangeListeners(new «addImport("java.beans.PropertyChangeEvent")» (this, «constantNamePropertyName», «oldValueVariable», «fieldName»));
+		notifyChangeListeners(new «addImport("java.beans.PropertyChangeEvent")» (this, «constantNamePropertyName», «getReferenceOrSafeCopyIfNecessary(oldValueVariable)», «getReferenceOrSafeCopyIfNecessary(fieldName)»));
 	«ENDIF-»
 «ENDDEFINE»

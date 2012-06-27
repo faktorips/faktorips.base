@@ -21,5 +21,14 @@ overrideAnnotation(AbstractGeneratorModelNode this, boolean interfaceMethodImple
 overrideAnnotation(XPolicyAttribute this, boolean interfaceMethodImplementation) :
 	if overwrite || needOverrideAnnotation(interfaceMethodImplementation) then "@Override";
 	
+inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String jDoc):
+	generatingPublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc);
+
+inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String jDoc, Object param):
+	generatingPublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc, param);
+	
+inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String jDoc, Object param, Object desc):
+	generatingPublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc, param, desc);
+	
 abstract(XClass this) :
 	if abstract then "abstract";

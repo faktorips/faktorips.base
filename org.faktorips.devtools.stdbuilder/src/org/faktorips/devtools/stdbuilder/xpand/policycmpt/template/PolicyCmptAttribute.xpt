@@ -50,13 +50,6 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE getProductGeneration FOR XPolicyAttribute-»
-	«IF generatingPublishedInterfaces-»
-		((«productGenerationClassName»)«methodNameGetProductCmptGeneration»())
-	«ELSE-»
-		«methodNameGetProductCmptGeneration»()
-	«ENDIF-»
-«ENDDEFINE»
 
 «DEFINE setter FOR XPolicyAttribute-»
 	«IF generateSetter-»
@@ -86,9 +79,17 @@
 	«ENDIF-»
 «ENDDEFINE»
 
+«DEFINE getProductGeneration FOR XPolicyAttribute-»
+	«IF generatingPublishedInterfaces-»
+		((«productGenerationClassName»)«methodNameGetProductCmptGeneration»())
+	«ELSE-»
+		«methodNameGetProductCmptGeneration»()
+	«ENDIF-»
+«ENDDEFINE»
+
 «DEFINE initConfigurableAttribute FOR XPolicyAttribute-»
 	«IF generateInitWithProductData-»
-        «fieldName» = «methodNameGetProductCmptGeneration»().«methodNameGetter»();
+        «fieldName» = «methodNameGetProductCmptGeneration»().«methodNameGetDefaultValue»();
     «ENDIF-»
 «ENDDEFINE»
 
