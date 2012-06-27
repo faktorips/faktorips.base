@@ -88,7 +88,7 @@ public class XProductAssociationTest extends AbstractIpsPluginTest {
     public void testGetGetterNameForTargetGeneration() throws Exception {
         association.setTarget("test.TargetType");
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
-        String getterNameForTargetGeneration = xProductAssociation.getGetterNameForTargetGeneration();
+        String getterNameForTargetGeneration = xProductAssociation.getMethodNameGetTargetGeneration();
         assertEquals("getTargetTypeGen", getterNameForTargetGeneration);
     }
 
@@ -127,7 +127,7 @@ public class XProductAssociationTest extends AbstractIpsPluginTest {
         when(mockPolicyAsso.getTargetRoleSingular()).thenReturn("polTarget");
         when(mockAssociation.findMatchingPolicyCmptTypeAssociation(mockProject)).thenReturn(mockPolicyAsso);
         XProductAssociation xProductAssociation = new XProductAssociation(mockAssociation, modelContext, modelService);
-        String methodName = xProductAssociation.getMethodGetCardinalityFor();
+        String methodName = xProductAssociation.getMethodNameGetCardinalityFor();
         assertEquals("getCardinalityForPolTarget", methodName);
     }
 
