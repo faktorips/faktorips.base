@@ -74,6 +74,9 @@ setProductComponent(String argument) :
 	
 initialize():
 	"initialize()";
+	
+initPropertiesFromXml(String arg1, String arg2):
+	"initPropertiesFromXml("+arg1+","+arg2+")";
 			
 // ---------------------------------
 // Methods in IRuntimeRepository

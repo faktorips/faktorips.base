@@ -7,8 +7,11 @@ allowedValuesGetterName(XPolicyAttribute this):
 	"getSetOfAllowedValuesFor"+memberVarName.toFirstUpper();
 	
 inheritDocOrJavaDoc(XPolicyAttribute this, String jDoc):
-	generatingPublishedInterfaces?"{inheritdoc}":localizedJDoc(jDoc);
+	generatingPublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc);
 
 inheritDocOrJavaDoc(XPolicyAttribute this, String jDoc, Object param):
-	generatingPublishedInterfaces?"{inheritdoc}":localizedJDoc(jDoc, param);
+	generatingPublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc, param);
+	
+inheritDocOrJavaDoc(XPolicyAttribute this, String jDoc, Object param, Object desc):
+	generatingPublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc, param, desc);
 	

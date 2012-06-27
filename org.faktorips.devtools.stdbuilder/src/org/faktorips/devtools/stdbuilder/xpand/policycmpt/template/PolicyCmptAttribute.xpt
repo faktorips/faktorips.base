@@ -5,29 +5,29 @@
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAttributeExtension»
 
-«DEFINE fieldProperties FOR XPolicyAttribute»
+«DEFINE fieldForPropertyName FOR XPolicyAttribute-»
 	/**
 	 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
 	 * @generated
 	 */
-	public static final String «fieldPropertyName» = "«name»";
+	public final static String «fieldPropertyName» = "«name»";
 «ENDDEFINE»
 
-«DEFINE memberField FOR XPolicyAttribute»
+«DEFINE memberField FOR XPolicyAttribute-»
 	«IF generateField-»
 		/**
-		 * «inheritDocOrJavaDoc("FIELD_ATTRIBUTE_VALUE", name)»
+		 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
 		 * @generated
 		 */
 		«IF constant-»
-			public final static «javaClassName» «constantFieldName»= «defaultValueCode»;
+			public static final «javaClassName» «constantFieldName»= «defaultValueCode»;
 		«ELSE-»
 			private «javaClassName» «memberVarName»= «defaultValueCode»;
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE getter FOR XPolicyAttribute» 
+«DEFINE getter FOR XPolicyAttribute-» 
 	«IF generateGetter-»
 		/**
 		 * «localizedJDoc("METHOD_GETVALUE", name, description)»
@@ -50,21 +50,21 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE getProductGeneration FOR XPolicyAttribute»
-	«IF generatingPublishedInterfaces»
+«DEFINE getProductGeneration FOR XPolicyAttribute-»
+	«IF generatingPublishedInterfaces-»
 		((«productGenerationClassName»)«productGenerationGetterName»())
-	«ELSE»
+	«ELSE-»
 		«productGenerationGetterName»()
-	«ENDIF»
+	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE setter FOR XPolicyAttribute»
+«DEFINE setter FOR XPolicyAttribute-»
 	«IF generateSetter-»
 		/**
-		 * «localizedJDoc("METHOD_SETVALUE", name, description)»
+		 * «inheritDocOrJavaDoc("METHOD_SETVALUE", name, description)»
 		 * @generated
 		 */
-		«IF  overwrite»«overrideAnnotation(false)-»«ENDIF-»
+		«IF  overwrite»«overrideAnnotation(true)»«ENDIF-»
 		public void «setterMethodName»(«javaClassName» newValue) {
 			«EXPAND PropertyChangeSupport::storeOldValue-»
 			this.«memberVarName» = newValue;
@@ -73,24 +73,26 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE allowedValuesMethod FOR XPolicyAttribute»
+«DEFINE allowedValuesMethod FOR XPolicyAttribute-»
 	«IF productRelevant-»
 	/**
-	 * «localizedJDoc("METHOD_GET_ALLOWED_VALUES_FOR", name, description)»
+	 * «inheritDocOrJavaDoc("METHOD_GET_ALLOWED_VALUES_FOR", name, description)»
 	 * @generated
 	 */
+	 «overrideAnnotation(true)»
 	public «valueSetClass»<«datatypeClass»> «allowedValuesGetterName()»(«IValidationContext()» context) {
 		return «productGenerationGetterName»().«allowedValuesGetterName()»(context);
 	}
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE initConfigurableAttribute FOR XPolicyAttribute»
+«DEFINE initConfigurableAttribute FOR XPolicyAttribute-»
 	«IF requiringInitWithProductData-»
         «memberVarName» = «productGenerationGetterName»().«getterMethodName»();
     «ENDIF-»
 «ENDDEFINE»
-«DEFINE initAttributeFromXML FOR XPolicyAttribute»
+
+«DEFINE initAttributeFromXML FOR XPolicyAttribute-»
 	«IF requiringInitFromXML-»
         if (propMap.containsKey("«attributeName»")) {
             this.«memberVarName» = «newInstanceExpression»;
