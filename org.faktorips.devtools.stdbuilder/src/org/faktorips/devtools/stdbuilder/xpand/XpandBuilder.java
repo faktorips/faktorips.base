@@ -122,10 +122,14 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
      */
     @Override
     protected String generate() throws CoreException {
-        StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
-        getTemplateDefinition().evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(),
-                getGeneratorModelRoot());
-        return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
+        if (getIpsObject().isValid(getIpsProject())) {
+            StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
+            getTemplateDefinition().evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(),
+                    getGeneratorModelRoot());
+            return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
+        } else {
+            return null;
+        }
     }
 
     /**
