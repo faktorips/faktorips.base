@@ -21,21 +21,21 @@
 
 		«FOREACH attributes AS this-»
 			«IF !published-»
-				«EXPAND PolicyCmptAttribute::fieldForPropertyName»
+				«EXPAND PolicyCmptAttribute::fieldForPropertyName-»
 			«ENDIF-»
 		«ENDFOREACH-»
 		
 		«FOREACH attributes AS this-»
 			«IF constant-»
-				«EXPAND PolicyCmptAttribute::memberField»
+				«EXPAND PolicyCmptAttribute::memberField-»
 			«ENDIF-»
 		«ENDFOREACH-»
 		
-		«EXPAND PropertyChangeSupport::fieldDefinition»
+		«EXPAND PropertyChangeSupport::fieldDefinition-»
 
 		«FOREACH attributes AS this-»
 			«IF !constant-»
-				«EXPAND PolicyCmptAttribute::memberField»
+				«EXPAND PolicyCmptAttribute::memberField-»
 			«ENDIF-»
 		«ENDFOREACH-»
 			
@@ -43,23 +43,23 @@
 
 		«FOREACH attributes AS this-»
 			«IF productRelevant-»
-				«EXPAND PolicyCmptAttribute::allowedValuesMethod»
+				«EXPAND PolicyCmptAttribute::allowedValuesMethod-»
 			«ENDIF-»
 			«IF generateSetter-»
-				«EXPAND PolicyCmptAttribute::setter»
+				«EXPAND PolicyCmptAttribute::setter-»
 			«ENDIF-»
 			«IF generateGetter-»
-				«EXPAND PolicyCmptAttribute::getter»
+				«EXPAND PolicyCmptAttribute::getter-»
 			«ENDIF-»
 		«ENDFOREACH-»
 
 		«IF configured-»
-			«EXPAND generalMethodsForConfiguredPolicyCmpts»
+			«EXPAND generalMethodsForConfiguredPolicyCmpts-»
 	    «ENDIF-»
 	   
-		«EXPAND PropertyChangeSupport::generalMethods»
+		«EXPAND PropertyChangeSupport::generalMethods-»
 		
-		«EXPAND generalMethods»
+		«EXPAND generalMethods-»
 
 		}
 	«ENDFILE»

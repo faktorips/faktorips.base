@@ -47,14 +47,14 @@ public class XProductAssociation extends XAssociation {
         }
     }
 
-    public String getGetterNameForTargetGeneration() {
+    public String getMethodNameGetTargetGeneration() {
         IType target = getTargetType();
         XProductCmptClass modelNode = getModelNode(target, XProductCmptClass.class);
         return modelNode.getMethodNameGetProductComponentGeneration();
     }
 
     public String getMethodNameGetLinksFor() {
-        return getMethodNameGetLinksFor(isOnetoMany());
+        return getMethodNameGetLinksFor(isOneToMany());
     }
 
     public String getMethodNameGetLinkFor() {
@@ -66,7 +66,7 @@ public class XProductAssociation extends XAssociation {
                 "Link" + (plural ? "s" : "") + "For" + StringUtils.capitalize(getName(plural)));
     }
 
-    public String getMethodGetCardinalityFor() {
+    public String getMethodNameGetCardinalityFor() {
         String matchingSingularName;
         try {
             matchingSingularName = StringUtils.capitalize(getAssociation().findMatchingPolicyCmptTypeAssociation(

@@ -68,7 +68,7 @@
 		    «overrideAnnotation(false)»
 		    protected void «doInitReferencesFromXml(Map("String", List_(Element())) + " elementsMap")» {
 		        super.«doInitReferencesFromXml("elementsMap")»;
-		         «List_(Element())» «EXPAND ProductAssociation::doInitReferencesFromXmlPart FOREACH associations-»
+		        «List_(Element())» «EXPAND ProductAssociation::doInitReferencesFromXmlPart FOREACH associations-»
 		    }
 «ENDIF»
 
