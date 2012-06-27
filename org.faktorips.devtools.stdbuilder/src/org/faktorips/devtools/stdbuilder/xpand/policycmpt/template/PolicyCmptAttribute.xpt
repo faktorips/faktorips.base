@@ -10,17 +10,17 @@
 	 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
 	 * @generated
 	 */
-	public static final String «fieldPropertyName» = "«memberVarName»";
+	public static final String «fieldPropertyName» = "«name»";
 «ENDDEFINE»
 
 «DEFINE memberField FOR XPolicyAttribute»
 	«IF generateField-»
 		/**
-		 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
+		 * «inheritDocOrJavaDoc("FIELD_ATTRIBUTE_VALUE", name)»
 		 * @generated
 		 */
 		«IF constant-»
-			public static final «javaClassName» «constantFieldName»= «defaultValueCode»;
+			public final static «javaClassName» «constantFieldName»= «defaultValueCode»;
 		«ELSE-»
 			private «javaClassName» «memberVarName»= «defaultValueCode»;
 		«ENDIF-»
