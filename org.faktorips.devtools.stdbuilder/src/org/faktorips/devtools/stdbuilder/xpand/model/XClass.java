@@ -95,10 +95,10 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     }
 
     public String getSuperclassName() {
-        return getSuperClassOrInterfaceName(BuilderAspect.IMPLEMENTATION);
+        return getSuperclassName(BuilderAspect.IMPLEMENTATION);
     }
 
-    private String getSuperClassOrInterfaceName(BuilderAspect aspect) {
+    private String getSuperclassName(BuilderAspect aspect) {
         try {
             if (getType().hasSupertype()) {
                 IType superType = getType().findSupertype(getIpsProject());

@@ -18,6 +18,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,24 +27,41 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Answers;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class XProductClassTest {
+
+    @Mock
+    private IIpsProject ipsProject;
+
     @Mock
     private IProductCmptType type;
 
     @Mock
+    private IPolicyCmptType policyType;
+
+    @Mock
+    private XPolicyCmptClass xPolicyCmpt;
+
+    @Mock
     private IProductCmptType superType;
+
+    @Mock
+    private IProductCmptType superSuperType;
 
     @Mock
     private GeneratorModelContext modelContext;
@@ -81,18 +99,27 @@ public class XProductClassTest {
     @Mock
     private IProductCmptTypeAssociation subset2;
 
-    @Mock(answer = Answers.CALLS_REAL_METHODS)
-    private XProductClass productClass;
+    private XProductClass xProductClass;
 
     @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-        setUpAttributes();
-        setUpAssociations();
+    public void createProductClass() {
+        xProductClass = mock(XProductClass.class, CALLS_REAL_METHODS);
+        when(xProductClass.getModelService()).thenReturn(modelService);
+        when(xProductClass.getModelContext()).thenReturn(modelContext);
+        when(xProductClass.getIpsObjectPartContainer()).thenReturn(type);
     }
 
-    private void setUpAssociations() {
+    @Before
+    public void createTypes() throws CoreException {
+        when(type.getIpsProject()).thenReturn(ipsProject);
+        when(superType.getIpsProject()).thenReturn(ipsProject);
+        when(superSuperType.getIpsProject()).thenReturn(ipsProject);
+        when(type.findSupertype(any(IIpsProject.class))).thenReturn(superType);
+        when(superType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperType);
+    }
+
+    @Before
+    public void setUpAssociations() {
         List<IProductCmptTypeAssociation> assocList = new ArrayList<IProductCmptTypeAssociation>();
         IProductCmptTypeAssociation assoc1 = mock(IProductCmptTypeAssociation.class);
         IProductCmptTypeAssociation assoc2 = mock(IProductCmptTypeAssociation.class);
@@ -107,7 +134,8 @@ public class XProductClassTest {
         when(modelService.getModelNode(assoc3, XProductAssociation.class, modelContext)).thenReturn(assocNode3);
     }
 
-    private void setUpAttributes() {
+    @Before
+    public void setUpAttributes() {
         List<IProductCmptTypeAttribute> attrList = new ArrayList<IProductCmptTypeAttribute>();
         IProductCmptTypeAttribute attr1 = mock(IProductCmptTypeAttribute.class);
         IProductCmptTypeAttribute attr2 = mock(IProductCmptTypeAttribute.class);
@@ -171,7 +199,7 @@ public class XProductClassTest {
         when(type.getProductCmptTypeAssociations()).thenReturn(associations);
         when(superType.getProductCmptTypeAssociations()).thenReturn(associations2);
 
-        Set<IProductCmptTypeAssociation> derivedUnionAssociations = productClass
+        Set<IProductCmptTypeAssociation> derivedUnionAssociations = xProductClass
                 .getProductDerivedUnionAssociations(true);
         assertEquals(1, derivedUnionAssociations.size());
         assertThat(derivedUnionAssociations, hasItem(derivedUnion));
@@ -191,7 +219,7 @@ public class XProductClassTest {
         when(type.getProductCmptTypeAssociations()).thenReturn(associations);
         when(superType.getProductCmptTypeAssociations()).thenReturn(associations2);
 
-        Set<IProductCmptTypeAssociation> derivedUnionAssociations = productClass
+        Set<IProductCmptTypeAssociation> derivedUnionAssociations = xProductClass
                 .getProductDerivedUnionAssociations(true);
         assertEquals(1, derivedUnionAssociations.size());
         assertThat(derivedUnionAssociations, hasItem(derivedUnion));
@@ -210,7 +238,7 @@ public class XProductClassTest {
         when(type.getProductCmptTypeAssociations()).thenReturn(associations);
         when(superType.getProductCmptTypeAssociations()).thenReturn(associations2);
 
-        Set<IProductCmptTypeAssociation> derivedUnionAssociations = productClass
+        Set<IProductCmptTypeAssociation> derivedUnionAssociations = xProductClass
                 .getProductDerivedUnionAssociations(true);
         assertEquals(1, derivedUnionAssociations.size());
         assertThat(derivedUnionAssociations, hasItem(derivedUnion));
@@ -230,21 +258,34 @@ public class XProductClassTest {
         when(type.getProductCmptTypeAssociations()).thenReturn(associations);
         when(superType.getProductCmptTypeAssociations()).thenReturn(associations2);
 
-        Set<IProductCmptTypeAssociation> derivedUnionAssociations = productClass
+        Set<IProductCmptTypeAssociation> derivedUnionAssociations = xProductClass
                 .getProductDerivedUnionAssociations(true);
         assertEquals(2, derivedUnionAssociations.size());
         assertThat(derivedUnionAssociations, hasItems(derivedUnion, derivedUnion2));
     }
 
     private void initMocksForGetProductDerivedUnionsAssociations() throws CoreException {
-        when(productClass.getIpsObjectPartContainer()).thenReturn(type);
-        when(type.findSupertype(any(IIpsProject.class))).thenReturn(superType);
         when(derivedUnion.isDerivedUnion()).thenReturn(true);
         when(derivedUnion2.isDerivedUnion()).thenReturn(true);
         when(subset.isSubsetOfADerivedUnion()).thenReturn(true);
         when(subset.findSubsettedDerivedUnion(any(IIpsProject.class))).thenReturn(derivedUnion);
         when(subset2.isSubsetOfADerivedUnion()).thenReturn(true);
         when(subset2.findSubsettedDerivedUnion(any(IIpsProject.class))).thenReturn(derivedUnion2);
+    }
+
+    @Test
+    public void testGetPolicyName() throws Exception {
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
+        when(modelService.getModelNode(policyType, XPolicyCmptClass.class, modelContext)).thenReturn(xPolicyCmpt);
+
+        when(xPolicyCmpt.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("IPolicyCmpt");
+        when(xPolicyCmpt.getSimpleName(BuilderAspect.IMPLEMENTATION)).thenReturn("PolicyCmpt");
+
+        assertEquals("IPolicyCmpt", xProductClass.getPolicyName(BuilderAspect.INTERFACE));
+        assertEquals("PolicyCmpt", xProductClass.getPolicyName(BuilderAspect.IMPLEMENTATION));
+
+        assertEquals("IPolicyCmpt", xProductClass.getPolicyInterfaceName());
+        assertEquals("PolicyCmpt", xProductClass.getPolicyImplClassName());
     }
 
 }

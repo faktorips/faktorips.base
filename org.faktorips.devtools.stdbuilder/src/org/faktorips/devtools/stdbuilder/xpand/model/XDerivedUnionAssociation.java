@@ -53,8 +53,8 @@ public class XDerivedUnionAssociation extends XAssociation {
      * 
      * @return The name of the getNumOf...Internal method
      */
-    public String getGetterMethodNameNumOfInternal() {
-        return getGetterMethodNameNumOf() + "Internal";
+    public String getMethodNameGetNumOfInternal() {
+        return getMethodNameGetNumOf() + "Internal";
     }
 
     /**

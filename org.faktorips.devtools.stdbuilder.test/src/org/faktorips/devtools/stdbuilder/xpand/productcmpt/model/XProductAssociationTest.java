@@ -91,43 +91,43 @@ public class XProductAssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetGetterMethodNameForLinks_plural() throws Exception {
-        association.setTargetRolePlural("testTargets");
-        XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
-        String methodName = xProductAssociation.getGetterMethodNameForLinks();
-        assertEquals("getLinksForTestTargets", methodName);
-    }
+        public void testGetMethodNameGetLinksFor_plural() throws Exception {
+            association.setTargetRolePlural("testTargets");
+            XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
+            String methodName = xProductAssociation.getMethodNameGetLinksFor();
+            assertEquals("getLinksForTestTargets", methodName);
+        }
 
     @Test
-    public void testGetGetterMethodNameForLinks_singular() throws Exception {
-        association.setTargetRoleSingular("testTarget");
-        association.setMaxCardinality(1);
-        XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
-        String methodName = xProductAssociation.getGetterMethodNameForLinks();
-        assertEquals("getLinkForTestTarget", methodName);
-    }
+        public void testGetMethodNameGetLinksFor_singular() throws Exception {
+            association.setTargetRoleSingular("testTarget");
+            association.setMaxCardinality(1);
+            XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
+            String methodName = xProductAssociation.getMethodNameGetLinksFor();
+            assertEquals("getLinkForTestTarget", methodName);
+        }
 
     @Test
-    public void testGetGetterMethodNameForSingleLink() throws Exception {
-        association.setTargetRoleSingular("testTarget");
-        association.setTargetRolePlural("testTargets");
-        XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
-        String methodName = xProductAssociation.getGetterMethodNameForSingleLink();
-        assertEquals("getLinkForTestTarget", methodName);
-        association.setMaxCardinality(1);
-        methodName = xProductAssociation.getGetterMethodNameForSingleLink();
-        assertEquals("getLinkForTestTarget", methodName);
-    }
+        public void testGetMethodNameGetLinkFor() throws Exception {
+            association.setTargetRoleSingular("testTarget");
+            association.setTargetRolePlural("testTargets");
+            XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
+            String methodName = xProductAssociation.getMethodNameGetLinkFor();
+            assertEquals("getLinkForTestTarget", methodName);
+            association.setMaxCardinality(1);
+            methodName = xProductAssociation.getMethodNameGetLinkFor();
+            assertEquals("getLinkForTestTarget", methodName);
+        }
 
     @Test
-    public void testGetGetterMethodCardinalityFor() throws Exception {
-        IPolicyCmptTypeAssociation mockPolicyAsso = mock(IPolicyCmptTypeAssociation.class);
-        when(mockPolicyAsso.getTargetRoleSingular()).thenReturn("polTarget");
-        when(mockAssociation.findMatchingPolicyCmptTypeAssociation(mockProject)).thenReturn(mockPolicyAsso);
-        XProductAssociation xProductAssociation = new XProductAssociation(mockAssociation, modelContext, modelService);
-        String methodName = xProductAssociation.getGetterMethodCardinalityFor();
-        assertEquals("getCardinalityForPolTarget", methodName);
-    }
+        public void testGetMethodGetCardinalityFor() throws Exception {
+            IPolicyCmptTypeAssociation mockPolicyAsso = mock(IPolicyCmptTypeAssociation.class);
+            when(mockPolicyAsso.getTargetRoleSingular()).thenReturn("polTarget");
+            when(mockAssociation.findMatchingPolicyCmptTypeAssociation(mockProject)).thenReturn(mockPolicyAsso);
+            XProductAssociation xProductAssociation = new XProductAssociation(mockAssociation, modelContext, modelService);
+            String methodName = xProductAssociation.getMethodGetCardinalityFor();
+            assertEquals("getCardinalityForPolTarget", methodName);
+        }
 
     @Test
     public void testHasMatchingAssociation() throws Exception {

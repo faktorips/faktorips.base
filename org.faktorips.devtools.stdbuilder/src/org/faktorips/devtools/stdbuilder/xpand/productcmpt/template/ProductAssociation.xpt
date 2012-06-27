@@ -13,9 +13,9 @@
 	     * @generated
 	     */
 		«IF onetoMany-»
-			private «Map("String", IProductComponentLink(targetClassName))» «memberVarName»  = new «LinkedHashMap("String", IProductComponentLink(targetClassName))»(0);
+			private «Map("String", IProductComponentLink(targetClassName))» «fieldName»  = new «LinkedHashMap("String", IProductComponentLink(targetClassName))»(0);
 		«ELSE-»
-			private «IProductComponentLink(targetClassName)» «name.toFirstLower()» = null;
+			private «IProductComponentLink(targetClassName)» «fieldName» = null;
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
@@ -43,15 +43,15 @@
      */
      «overrideAnnotation(true)»
    	«IF onetoMany-»
-	    public «List_(targetClassName)» «getterMethodName»() {
-        	«List_(targetClassName)» result = new «ArrayList(targetClassName)»(«memberVarName».size());
-			for («IProductComponentLink(targetClassName)» «name.toFirstLower()» : «memberVarName».values()) {
+	    public «List_(targetClassName)» «methodNameGetter»() {
+        	«List_(targetClassName)» result = new «ArrayList(targetClassName)»(«fieldName».size());
+			for («IProductComponentLink(targetClassName)» «name.toFirstLower()» : «fieldName».values()) {
 	            result.add(«name.toFirstLower()».«getTarget()»);
     	    }
         	return result;
     «ELSE-»
-	    public «targetClassName» «getterMethodName»() {
-			return «memberVarName» != null ? «memberVarName».«getTarget()» : null;
+	    public «targetClassName» «methodNameGetter»() {
+			return «fieldName» != null ? «fieldName».«getTarget()» : null;
     «ENDIF-»
     }
 «ENDDEFINE»
@@ -64,8 +64,8 @@
      */
      «overrideAnnotation(true)»
    	«IF onetoMany-»
-	    public «List_(targetClassGenerationName)» «getterMethodName»(«Calendar()» effectiveDate) {
-        	«List_(targetClassName)» targets = «getterMethodName»();
+	    public «List_(targetClassGenerationName)» «methodNameGetter»(«Calendar()» effectiveDate) {
+        	«List_(targetClassName)» targets = «methodNameGetter»();
         	«List_(targetClassGenerationName)» result = new «ArrayList(targetClassGenerationName)»();
 			for («targetClassName» target : targets) {
 				«targetClassGenerationName» gen = target.«getterNameForTargetGeneration»(effectiveDate);
@@ -75,8 +75,8 @@
         }
         return result;
     «ELSE-»
-	    public «targetClassGenerationName» «getterMethodName»(«Calendar()» effectiveDate) {
-			return «memberVarName» != null ? «memberVarName».«getTarget()».«getterNameForTargetGeneration»(effectiveDate) : null;
+	    public «targetClassGenerationName» «methodNameGetter»(«Calendar()» effectiveDate) {
+			return «fieldName» != null ? «fieldName».«getTarget()».«getterNameForTargetGeneration»(effectiveDate) : null;
     «ENDIF-»
     }
 «ENDDEFINE»
@@ -89,8 +89,8 @@
      * @generated
      */
      «overrideAnnotation(true)»
-	public «targetClassName» «getGetterMethodName(false)»(int index) {
-		«Iterator(IProductComponentLink(targetClassName))» it = «memberVarName».values().iterator();
+	public «targetClassName» «methodNameGetSingle»(int index) {
+		«Iterator(IProductComponentLink(targetClassName))» it = «fieldName».values().iterator();
         try {
             for (int i = 0; i < index; i++) {
                 it.next();
@@ -111,11 +111,11 @@
      */
      «overrideAnnotation(true)»
 	«IF onetoMany-»
-	    public «Collection_(IProductComponentLink(targetClassName))» «getterMethodNameForLinks»() {
-    	    return «Collections()».unmodifiableCollection(«memberVarName».values());
+	    public «Collection_(IProductComponentLink(targetClassName))» «methodNameGetLinksFor»() {
+    	    return «Collections()».unmodifiableCollection(«fieldName».values());
     «ELSE-»
-	    public «IProductComponentLink(targetClassName)» «getterMethodNameForLinks»() {
-    		return «memberVarName»;
+	    public «IProductComponentLink(targetClassName)» «methodNameGetLinksFor»() {
+    		return «fieldName»;
 	«ENDIF-»
     }
 «ENDDEFINE»
@@ -127,11 +127,11 @@
      * @generated
      */
      «overrideAnnotation(true)»
-    public «IProductComponentLink(targetClassName)» «getterMethodNameForSingleLink»(«targetClassName» productComponent) {
+    public «IProductComponentLink(targetClassName)» «methodNameGetLinkFor»(«targetClassName» productComponent) {
 		«IF onetoMany-»
-        	return «memberVarName».get(productComponent.getId());
+        	return «fieldName».get(productComponent.getId());
         «ELSE-»
-        	return «memberVarName».«getTargetId()».equals(productComponent.getId()) ? «memberVarName» : null;
+        	return «fieldName».«getTargetId()».equals(productComponent.getId()) ? «fieldName» : null;
         «ENDIF-»
     }
 «ENDDEFINE»
@@ -143,9 +143,9 @@
      * 
      * @generated
      */
-    public void «addMethodName»(«targetClassName» target) {
+    public void «methodNameAdd»(«targetClassName» target) {
         «EXPAND ProductCommons::checkRepositoryModifyable-»
-        this.«memberVarName».put(target.getId(), new «ProductComponentLink(targetClassName)»(this, target));
+        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetClassName)»(this, target));
     }
     «ENDIF»
 «ENDDEFINE»
@@ -158,9 +158,9 @@
      * 
      * @generated
      */
-    public void «addMethodName»(«targetClassName» target, «CardinalityRange()» cardinality) {
+    public void «methodNameAdd»(«targetClassName» target, «CardinalityRange()» cardinality) {
         «EXPAND ProductCommons::checkRepositoryModifyable-»
-        this.«memberVarName».put(target.getId(), new «ProductComponentLink(targetClassName)»(this, target, cardinality));
+        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetClassName)»(this, target, cardinality));
     }
     «ENDIF»
 «ENDDEFINE»
@@ -172,9 +172,9 @@
      * 
      * @generated
      */
-    public void «setterMethodName»(«targetClassName» target) {
+    public void «methodNameSetter»(«targetClassName» target) {
         «EXPAND ProductCommons::checkRepositoryModifyable-»
-        «memberVarName» = (target == null ? null : new «ProductComponentLink(targetClassName)»(this, target));
+        «fieldName» = (target == null ? null : new «ProductComponentLink(targetClassName)»(this, target));
     }
 	«ENDIF»
 «ENDDEFINE»
@@ -187,13 +187,13 @@
      * @generated
      */
     «overrideAnnotation(true)»
-    public «CardinalityRange()» «getterMethodCardinalityFor»(«targetClassName» productCmpt) {
+    public «CardinalityRange()» «methodGetCardinalityFor»(«targetClassName» productCmpt) {
         if (productCmpt != null) {
     	«IF onetoMany-»
-            return «memberVarName».containsKey(productCmpt.«getId()») ? «memberVarName».get(productCmpt.«getId()»)
+            return «fieldName».containsKey(productCmpt.«getId()») ? «fieldName».get(productCmpt.«getId()»)
                     .«getCardinality()» : null;
         «ELSE-»
-            return «memberVarName» != null && «memberVarName».«getTargetId()».equals(productCmpt.«getId()») ? «memberVarName»
+            return «fieldName» != null && «fieldName».«getTargetId()».equals(productCmpt.«getId()») ? «fieldName»
                     .«getCardinality()» : null;
         «ENDIF-»
         }
@@ -210,8 +210,8 @@
      * @generated
      */
     «overrideAnnotation(true)»
-    public int «getterMethodNameNumOf»() {
-        return «memberVarName».size();
+    public int «methodNameGetNumOf»() {
+        return «fieldName».size();
     }
     «ENDIF»
 «ENDDEFINE»
@@ -231,7 +231,7 @@
 	    public «IProductComponentLink("? extends " + IProductComponent())» «getLink("String linkName", IProductComponent() + " target")» {
 	    	«FOREACH associations AS this-»
 		        if ("«name»".equals(linkName)) {
-		            return «getterMethodNameForSingleLink»((«targetClassName»)target);
+		            return «methodNameGetLinkFor»((«targetClassName»)target);
 		        }
 		    «ENDFOREACH-»
 		    «IF hasSupertype() -»
@@ -258,10 +258,10 @@
         «ENDIF-»
     	«FOREACH associations AS this-»
 	    	«IF onetoMany-»
-	    		list.addAll(«getterMethodNameForLinks»());
+	    		list.addAll(«methodNameGetLinksFor»());
 	    	«ELSE-»
-	    		if («getterMethodNameForLinks»() != null) {
-	    			list.add(«getterMethodNameForLinks»());
+	    		if («methodNameGetLinksFor»() != null) {
+	    			list.add(«methodNameGetLinksFor»());
 	    		}
 	    	«ENDIF-»
         «ENDFOREACH-»
@@ -277,40 +277,28 @@
 	   associationElements = elementsMap.get("«name»");
 	    if (associationElements != null) {
 			«IF onetoMany-»
-			        this.«memberVarName» = new «LinkedHashMap("String", IProductComponentLink(targetClassName))»(associationElements.size());
+			        this.«fieldName» = new «LinkedHashMap("String", IProductComponentLink(targetClassName))»(associationElements.size());
 			        for (Element element : associationElements) {
 			            «IProductComponentLink(targetClassName)» link = new «ProductComponentLink(targetClassName)»(this);
 			            link.initFromXml(element);
-			            this.«memberVarName».put(link.getTargetId(), link);
+			            this.«fieldName».put(link.getTargetId(), link);
 	        }
 			«ELSE-»
 	            Element element = associationElements.get(0);
-	            «memberVarName» = new «ProductComponentLink(targetClassName)»(this);
-	            «memberVarName».initFromXml(element);
+	            «fieldName» = new «ProductComponentLink(targetClassName)»(this);
+	            «fieldName».initFromXml(element);
 			«ENDIF-»
 	    }
 «ENDDEFINE»
 
 «DEFINE writeReferencesToXmlPart FOR XProductAssociation-»
 		«IF onetoMany-»
-		    for («IProductComponentLink(targetClassName)» link : «memberVarName».values()) {
+		    for («IProductComponentLink(targetClassName)» link : «fieldName».values()) {
 		        element.appendChild(((«IXmlPersistenceSupport()»)link).«toXml("element.getOwnerDocument()")»);
 		    }
 		«ELSE-»
-
+			element.appendChild(((«IXmlPersistenceSupport()»)«fieldName»).«toXml("element.getOwnerDocument()")»);
 		«ENDIF-»
-	   associationElements = elementsMap.get("«name»");
-	    if (associationElements != null) {
-			        this.«memberVarName» = new «LinkedHashMap("String", IProductComponentLink(targetClassName))»(associationElements.size());
-			        for (Element element : associationElements) {
-			            «IProductComponentLink(targetClassName)» link = new «ProductComponentLink(targetClassName)»(this);
-			            link.initFromXml(element);
-			            this.«memberVarName».put(link.getTargetId(), link);
-	        }
-	            Element element = associationElements.get(0);
-	            «memberVarName» = new «ProductComponentLink(targetClassName)»(this);
-	            «memberVarName».initFromXml(element);
-	    }
 «ENDDEFINE»
 
 «REM»    

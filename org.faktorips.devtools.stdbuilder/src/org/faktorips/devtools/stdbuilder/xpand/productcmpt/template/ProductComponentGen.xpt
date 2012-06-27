@@ -72,6 +72,7 @@
 		    }
 «ENDIF»
 
+«IF attributes.size > 0»
 «REM» TODO Implementierung «ENDREM»
 		    /**
 		     * {@inheritDoc}
@@ -86,6 +87,7 @@
  «REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification. 
 		        «ENDIF-»
 		    }
+«ENDIF»
 		   
 «IF associations.size > 0»
 		    /**
@@ -94,30 +96,26 @@
 		    «overrideAnnotation(false)»
 		    protected void «writeReferencesToXml(Element() + " element")» {
 		        super.«writeReferencesToXml("element")»;
-		        «REM»
-		        for («IProductComponentLink()» link : childrenProducts.values()) {
-		            element.appendChild(((IXmlPersistenceSupport)link).toXml(element.getOwnerDocument()));
-		        }
-		        «ENDREM»
+		        «EXPAND ProductAssociation::writeReferencesToXmlPart FOREACH associations-»
 		    }
 «ENDIF»
+
+		«EXPAND createPolicyCmpt FOREACH classHierarchy»
+
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+	    @Override
+	    public «IConfigurableModelObject()» «createPolicyComponent()» {
+	        return «methodNameCreatePolicyCmpt»();
+	    }
 
 «REM»
 TODO
 
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-    @Override
-    public ISubPolicy createSubPolicy() {
-        SubPolicy policy = new SubPolicy(getSubPolicyType());
-        policy.setProductCmptGeneration(this);
-        policy.initialize();
-        return policy;
-    }
 
     /**
      * {@inheritDoc}
@@ -149,6 +147,17 @@ TODO
 	«ENDFILE»
 «ENDDEFINE»
 
-«DEFINE addImport(String import) FOR XClass»
-	«imported().add(newImport(import)) -> import.split(".").last()-»
+«DEFINE createPolicyCmpt FOR XProductCmptGenerationClass»
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    @Override
+    public «policyInterfaceName» «methodNameCreatePolicyCmpt»() {
+        «policyImplClassName» policy = new «policyImplClassName»(«methodNameGetProductCmpt»());
+        policy.«setProductCmptGeneration("this")»;
+        policy.«initialize()»;
+        return policy;
+    }
 «ENDDEFINE»

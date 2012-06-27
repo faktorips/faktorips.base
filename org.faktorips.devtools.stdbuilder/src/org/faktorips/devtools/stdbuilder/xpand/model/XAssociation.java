@@ -46,29 +46,33 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         }
     }
 
-    public String getMemberVarName() {
+    public String getFieldName() {
         return getJavaNamingConvention().getMemberVarName(getName(isOnetoMany()));
     }
 
-    public String getGetterMethodName() {
-        return getGetterMethodName(isOnetoMany());
+    public String getMethodNameGetter() {
+        return getMethodNameGetter(isOnetoMany());
     }
 
-    public String getGetterMethodName(boolean toMany) {
+    public String getMethodNameGetSingle() {
+        return getJavaNamingConvention().getGetterMethodName(getName(false));
+    }
+
+    protected String getMethodNameGetter(boolean toMany) {
         return getJavaNamingConvention().getGetterMethodName(getName(toMany));
     }
 
     /**
      * The name of the adder method - only used for one-to-many associations.
      */
-    public String getAddMethodName() {
+    public String getMethodNameAdd() {
         return "add" + StringUtils.capitalize(getName(false));
     }
 
     /**
      * The name of the setter method - only used for one-to-one associations.
      */
-    public String getSetterMethodName() {
+    public String getMethodNameSetter() {
         return getJavaNamingConvention().getSetterMethodName(getName(false));
     }
 
@@ -133,7 +137,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         }
     }
 
-    public String getGetterMethodNameNumOf() {
+    public String getMethodNameGetNumOf() {
         return getJavaNamingConvention().getGetterMethodName(
                 "NumOf" + StringUtils.capitalize(getAssociation().getTargetRolePlural()));
     }

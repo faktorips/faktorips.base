@@ -23,6 +23,9 @@ getTargetId() :
 getCardinality() :
 	"getCardinality()";
 	
+createPolicyComponent() :
+	"createPolicyComponent()";
+	
 // ---------------------------------
 // Methods in IProductComponent
 // ---------------------------------
@@ -60,7 +63,7 @@ getLinks() :
 	"getLinks()";
 	
 // ---------------------------------
-// Methods in IPolicyComponent
+// Methods in IConfigurableModelObject
 // ---------------------------------
 
 getProductComponent() :
@@ -69,11 +72,18 @@ getProductComponent() :
 getProductCmptGeneration() :
 	"getProductCmptGeneration()";
 
-setProductComponent(String argument) :
-	"setProductComponent("+argument+")";
-	
 initialize():
 	"initialize()";
+			
+// ---------------------------------
+// Methods in AbstractConfigurableModelObject
+// ---------------------------------
+
+setProductCmptGeneration(String argument) :
+	"setProductCmptGeneration(" + argument + ")";
+
+setProductComponent(String argument) :
+	"setProductComponent("+argument+")";
 	
 initPropertiesFromXml(String arg1, String arg2):
 	"initPropertiesFromXml("+arg1+","+arg2+")";
