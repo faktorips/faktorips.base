@@ -197,9 +197,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public StandardBuilderSet() {
         ipsObjectTypeGenerators = new HashMap<IType, GenType>(1000);
 
-        annotationGeneratorFactories = new AnnotationGeneratorFactory[] {
-                new PolicyCmptImplClassJpaAnnGenFactory(this), // JPA support
-                new PolicyCmptImplClassJaxbAnnGenFactory(this) }; // Jaxb support
+        annotationGeneratorFactories = new AnnotationGeneratorFactory[] { new PolicyCmptImplClassJpaAnnGenFactory(), // JPA
+                                                                                                                     // support
+                new PolicyCmptImplClassJaxbAnnGenFactory() }; // Jaxb support
 
         initSupportedPersistenceProviderMap();
 
@@ -518,7 +518,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             return code;
         }
         for (IAnnotationGenerator generator : generators) {
-            code.append(generator.createAnnotation(ipsElement));
+            // TODO remove the not needed part of annotation handling
+            // code.append(generator.createAnnotation(ipsElement));
         }
         return code;
     }
@@ -554,7 +555,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             if (!generator.isGenerateAnnotationFor(ipsElement)) {
                 continue;
             }
-            builder.append(generator.createAnnotation(ipsElement));
+            // TODO remove the not needed part of annotation handling
+            // builder.append(generator.createAnnotation(ipsElement));
             builder.appendln();
         }
         return;

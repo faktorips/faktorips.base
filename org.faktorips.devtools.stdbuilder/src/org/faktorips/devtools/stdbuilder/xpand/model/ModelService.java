@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * This model service is used to create any {@link AbstractGeneratorModelNode} object.
@@ -65,20 +66,26 @@ public class ModelService {
             Class<T> nodeClass,
             GeneratorModelContext modelContext) {
         try {
+            ArgumentCheck.notNull(ipsObjectPartContainer);
+            ArgumentCheck.notNull(nodeClass);
             Constructor<?>[] constructors = nodeClass.getConstructors();
             for (Constructor<?> constructor : constructors) {
                 Class<?>[] parameterTypes = constructor.getParameterTypes();
-                if (parameterTypes[0].isAssignableFrom(ipsObjectPartContainer.getClass())
-                        && parameterTypes[1].isAssignableFrom(GeneratorModelContext.class)
-                        && parameterTypes[2].isAssignableFrom(ModelService.class)) {
-                    @SuppressWarnings("unchecked")
-                    // safe cast, have a look at java doc of getConstructors()
-                    T newInstance = (T)constructor.newInstance(ipsObjectPartContainer, modelContext, this);
-                    return newInstance;
+                if (parameterTypes.length == 3) {
+                    if (parameterTypes[0].isAssignableFrom(ipsObjectPartContainer.getClass())
+                            && parameterTypes[1].isAssignableFrom(GeneratorModelContext.class)
+                            && parameterTypes[2].isAssignableFrom(ModelService.class)) {
+                        @SuppressWarnings("unchecked")
+                        // safe cast, have a look at java doc of getConstructors()
+                        T newInstance = (T)constructor.newInstance(ipsObjectPartContainer, modelContext, this);
+                        return newInstance;
+                    }
                 }
             }
             throw new RuntimeException(
-                    "No matching constructor found for "
+                    "No matching constructor found for element "
+                            + ipsObjectPartContainer
+                            + " and class "
                             + nodeClass
                             + ".\nNeed Constructor with following arguments: IIpsObjectPartContainer, GeneratorModelContext, ModelService ");
         } catch (InstantiationException e) {

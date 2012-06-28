@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 
 /**
  * This class generates the @Transient JPA annotation for fields of policy component types.
@@ -32,12 +32,8 @@ public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractAnnotati
     private static final String IMPORT_TRANSIENT = "javax.persistence.Transient";
     private static final String ANNOTATION_TRANSIENT = "@Transient";
 
-    public PolicyCmptImplClassTransientFieldJpaAnnGen(StandardBuilderSet builderSet) {
-        super(builderSet);
-    }
-
     @Override
-    public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
+    public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendln(ANNOTATION_TRANSIENT);
         fragment.addImport(IMPORT_TRANSIENT);
@@ -63,7 +59,7 @@ public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractAnnotati
             if (!association.getPolicyCmptType().isPersistentEnabled()) {
                 return false;
             }
-            if (!PolicyCmptImplClassAssociationJpaAnnGen.isTargetPolicyCmptTypePersistenceEnabled(this, association)) {
+            if (!PolicyCmptImplClassAssociationJpaAnnGen.isTargetPolicyCmptTypePersistenceEnabled(association)) {
                 return true;
             }
 

@@ -384,7 +384,7 @@ public abstract class AbstractGeneratorModelNode {
                 continue;
             }
             // TODO add import
-            JavaCodeFragment annotationFragment = generator.createAnnotation(ipsElement);
+            JavaCodeFragment annotationFragment = generator.createAnnotation(this);
             addImport(annotationFragment.getImportDeclaration());
             result += annotationFragment.getSourcecode() + "\n";
         }
