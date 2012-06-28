@@ -322,24 +322,21 @@ public abstract class AbstractGeneratorModelNode {
      * Returns whether or not methods for delta-support should be added to generated classes.
      */
     public boolean isGenerateDeltaSupport() {
-        // TODO FIPS-1059
-        return true;
+        return getModelContext().isGenerateDeltaSupport();
     }
 
     /**
      * Returns whether or not methods for copy-support should be added to generated classes.
      */
     public boolean isGenerateCopySupport() {
-        // TODO FIPS-1059
-        return true;
+        return getModelContext().isGenerateCopySupport();
     }
 
     /**
      * Returns whether or not published interfaces should be generated.
      */
     public boolean isGeneratingPublishedInterfaces() {
-        // TODO FIPS-1059
-        return true;
+        return getModelContext().isGeneratingPublishedInterfaces();
     }
 
     /**
@@ -382,7 +379,6 @@ public abstract class AbstractGeneratorModelNode {
             if (!generator.isGenerateAnnotationFor(ipsElement)) {
                 continue;
             }
-            // TODO add import
             JavaCodeFragment annotationFragment = generator.createAnnotation(this);
             addImport(annotationFragment.getImportDeclaration());
             result += annotationFragment.getSourcecode() + "\n";

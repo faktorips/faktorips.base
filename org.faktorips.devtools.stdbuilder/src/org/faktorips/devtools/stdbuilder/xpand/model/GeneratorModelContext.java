@@ -112,21 +112,6 @@ public class GeneratorModelContext {
         return AbstractBuilderSet.getLocale(localeString);
     }
 
-    public boolean isGeneratePropertyChange() {
-        return config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER)
-                .booleanValue();
-    }
-
-    public boolean isGenerateSeparatedCamelCase() {
-        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_CAMELCASE_SEPARATED);
-        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean.booleanValue();
-    }
-
-    public JavaClassNaming getJavaClassNaming() {
-        return javaClassNaming;
-    }
-
     /**
      * Returns the list of annotation generators for the given type. This method never returns null.
      * If there is no annotation generator for the specified type an empty list will be returned.
@@ -141,6 +126,38 @@ public class GeneratorModelContext {
             result = new ArrayList<IAnnotationGenerator>();
         }
         return result;
+    }
+
+    public JavaClassNaming getJavaClassNaming() {
+        return javaClassNaming;
+    }
+
+    public boolean isGeneratePropertyChange() {
+        return config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER)
+                .booleanValue();
+    }
+
+    public boolean isGenerateSeparatedCamelCase() {
+        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_CAMELCASE_SEPARATED);
+        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean.booleanValue();
+    }
+
+    public boolean isGenerateDeltaSupport() {
+        return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT);
+    }
+
+    public boolean isGenerateCopySupport() {
+        return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT);
+    }
+
+    public boolean isGenerateVisitorSupport() {
+        return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT);
+    }
+
+    public boolean isGeneratingPublishedInterfaces() {
+        // TODO FIPS-1059
+        return false;
     }
 
 }
