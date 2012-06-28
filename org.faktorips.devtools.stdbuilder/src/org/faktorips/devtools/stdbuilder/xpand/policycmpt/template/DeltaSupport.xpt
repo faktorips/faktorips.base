@@ -1,0 +1,48 @@
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE computeDeltaMethod FOR XPolicyCmptClass-»
+	/**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    «overrideAnnotation(true)»
+    public «IModelObjectDelta()» «computeDelta(IModelObject() +" otherObject", IDeltaComputationOptions()+" options")» {
+    	«IF hasSupertype()-»
+        	«ModelObjectDelta()» delta = («ModelObjectDelta()») super.computeDelta(otherObject, options);
+        «ELSE-»
+        	«ModelObjectDelta()» delta = «ModelObjectDelta()».newDelta(this, otherObject, options);
+        «ENDIF-»
+        if (!«className».class.isAssignableFrom(otherObject.getClass())) {
+            return delta;
+        }
+        «className» otherAbstractVertrag = («className»)otherObject;
+		«EXPAND DeltaSupport::deltaCheckForAttribute(this) FOREACH attributes-»
+		«REM»
+		«EXPAND DeltaSupport::deltaCheckForRelatedClasses(this) FOREACH associations-»
+		«ENDREM»
+        return delta;
+    }
+«ENDDEFINE»
+
+«DEFINE deltaCheckForAttribute(XPolicyCmptClass policyClass) FOR XPolicyAttribute-»
+	«IF considerForDeltaComputation-»
+        delta.checkPropertyChange(«policyClass.classOrInterfaceName».«constantNamePropertyName», «fieldName», otherAbstractVertrag.«fieldName», options);
+    «ENDIF-»
+«ENDDEFINE»
+
+		«REM»
+«DEFINE deltaCheckForRelatedClasses(XPolicyCmptClass policyClass) FOR XPolicyAssociation-»
+	«IF considerForDeltaComputation-»
+		BeispielCode aus "maxspec.Vertrag"
+		ModelObjectDelta.createChildDeltas(delta, deckungen, otherVertrag.deckungen, "deckungen", options);
+        ModelObjectDelta.createChildDeltas(delta, subVertragsTeile, otherVertrag.subVertragsTeile, "subVertragsTeile",
+                options);
+        ModelObjectDelta.createChildDeltas(delta, oneToOneVertragsTeil, otherVertrag.oneToOneVertragsTeil,
+                "oneToOneVertragsTeil", options);
+    «ENDIF-»
+«ENDDEFINE»
+		«ENDREM»

@@ -65,7 +65,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateField() {
-        return getAttribute().getAttributeType() != AttributeType.DERIVED_ON_THE_FLY;
+        return !isDerivedOnTheFly();
     }
 
     public boolean isPublished() {
@@ -158,6 +158,27 @@ public class XPolicyAttribute extends XAttribute {
 
     private boolean isValueSetOfType(ValueSetType valueSetType) {
         return getAttribute().getValueSet().getValueSetType() == valueSetType;
+    }
+
+    public boolean isConsiderForDeltaComputation() {
+        return isPublished() && isFieldRequired();
+    }
+
+    /**
+     * Returns <code>true</code> if a member variable is required for the type of attribute. This is
+     * currently the case for changeable attributes and attributes that are derived by an explicit
+     * method call.
+     */
+    public boolean isFieldRequired() {
+        return ((getAttribute()).isChangeable() || isDerivedByExplicitMethodCall()) && !isOverwrite();
+    }
+
+    private boolean isDerivedByExplicitMethodCall() {
+        return getAttribute().getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL;
+    }
+
+    private boolean isDerivedOnTheFly() {
+        return getAttribute().getAttributeType() == AttributeType.DERIVED_ON_THE_FLY;
     }
 
     public String getProductGenerationClassOrInterfaceName() {
