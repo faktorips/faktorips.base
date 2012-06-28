@@ -297,7 +297,9 @@
 		        element.appendChild(((«IXmlPersistenceSupport()»)link).«toXml("element.getOwnerDocument()")»);
 		    }
 		«ELSE-»
-			element.appendChild(((«IXmlPersistenceSupport()»)«fieldName»).«toXml("element.getOwnerDocument()")»);
+		    if («fieldName» != null) {
+				element.appendChild(((«IXmlPersistenceSupport()»)«fieldName»).«toXml("element.getOwnerDocument()")»);
+			}
 		«ENDIF-»
 «ENDDEFINE»
 
