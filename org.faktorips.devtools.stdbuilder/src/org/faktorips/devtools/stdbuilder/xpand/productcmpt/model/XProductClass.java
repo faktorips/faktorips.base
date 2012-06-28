@@ -131,6 +131,10 @@ public abstract class XProductClass extends XClass {
         return resultingAttributes;
     }
 
+    public boolean isConfigurationForPolicyCmptType() {
+        return getType().isConfigurationForPolicyCmptType();
+    }
+
     public String getPolicyInterfaceName() {
         return getPolicyName(BuilderAspect.INTERFACE);
     }
