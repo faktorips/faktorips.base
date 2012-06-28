@@ -115,15 +115,30 @@ public class XAssociationTest {
 
     @Test
     public void testGetTargetClassName() throws Exception {
-        IProductCmptType productCmptType = mock(IProductCmptType.class);
-        XProductCmptClass xProductCmptClass = mock(XProductCmptClass.class);
-        doReturn("ITargetType").when(xProductCmptClass).getSimpleName(BuilderAspect.INTERFACE);
-        doReturn(xProductCmptClass).when(xAssociation).getModelNode(productCmptType, XProductCmptClass.class);
-        doReturn(productCmptType).when(xAssociation).getTargetType();
+        XProductCmptClass xProductCmptClass = initMocksForGetNameTests();
+        doReturn("TargetType").when(xProductCmptClass).getSimpleName(BuilderAspect.IMPLEMENTATION);
 
         // doReturn(XProductCmptClass.class).when(xAssociation).getTargetModelNodeType();
         String targetClassName = xAssociation.getTargetClassName();
+        assertEquals("TargetType", targetClassName);
+    }
+
+    @Test
+    public void testGetTargetInterfaceName() throws Exception {
+        XProductCmptClass xProductCmptClass = initMocksForGetNameTests();
+        doReturn("ITargetType").when(xProductCmptClass).getSimpleName(BuilderAspect.INTERFACE);
+
+        // doReturn(XProductCmptClass.class).when(xAssociation).getTargetModelNodeType();
+        String targetClassName = xAssociation.getTargetInterfaceName();
         assertEquals("ITargetType", targetClassName);
+    }
+
+    private XProductCmptClass initMocksForGetNameTests() {
+        IProductCmptType productCmptType = mock(IProductCmptType.class);
+        XProductCmptClass xProductCmptClass = mock(XProductCmptClass.class);
+        doReturn(xProductCmptClass).when(xAssociation).getModelNode(productCmptType, XProductCmptClass.class);
+        doReturn(productCmptType).when(xAssociation).getTargetType();
+        return xProductCmptClass;
     }
 
 }
