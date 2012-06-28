@@ -16,6 +16,8 @@ package org.faktorips.devtools.stdbuilder.xpand.model;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Handles the imports for generated java files. Imports can be added using {@link #add(String)}.
  * All added statements can be retrieved using the {@link #getImports()} method.
@@ -23,9 +25,15 @@ import java.util.Set;
  * @author widmaier
  */
 public class ImportHandler {
+
+    private final static String JAVA_LANG_PACKAGE = "java.lang"; //$NON-NLS-1$
+
     private Set<ImportStatement> imports;
 
-    public ImportHandler() {
+    private final String ownPackage;
+
+    public ImportHandler(String ownPackage) {
+        this.ownPackage = ownPackage;
         this.imports = new LinkedHashSet<ImportStatement>();
     }
 
@@ -33,11 +41,21 @@ public class ImportHandler {
         return new LinkedHashSet<ImportStatement>(imports);
     }
 
-    public boolean add(String importStatement) {
-        return imports.add(new ImportStatement(importStatement));
+    public ImportStatement add(String qualifiedName) {
+        ImportStatement importStatement = new ImportStatement(qualifiedName);
+        String packageName = importStatement.getPackage();
+        if (StringUtils.isNotEmpty(packageName) && !packageName.equals(ownPackage)
+                && !packageName.equals(JAVA_LANG_PACKAGE)) {
+            imports.add(importStatement);
+        }
+        return importStatement;
     }
 
     public boolean remove(String importStatement) {
         return imports.remove(new ImportStatement(importStatement));
+    }
+
+    public String getOwnPackage() {
+        return ownPackage;
     }
 }

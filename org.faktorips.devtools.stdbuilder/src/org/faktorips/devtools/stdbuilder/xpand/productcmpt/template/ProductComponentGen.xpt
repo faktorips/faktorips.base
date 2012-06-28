@@ -68,7 +68,6 @@
 		    }
 «ENDIF»
 
-«IF attributes.size > 0»
 «REM» TODO Implementierung «ENDREM»
 		    /**
 		     * {@inheritDoc}
@@ -83,7 +82,6 @@
  «REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification. 
 		        «ENDIF-»
 		    }
-«ENDIF»
 		   
 «IF associations.size > 0»
 		    /**

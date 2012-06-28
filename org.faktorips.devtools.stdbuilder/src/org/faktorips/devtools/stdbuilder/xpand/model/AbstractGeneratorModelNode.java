@@ -168,13 +168,8 @@ public abstract class AbstractGeneratorModelNode {
         } else {
             javaQName = qName;
         }
-        if (!javaQName.contains(".")) {
-            // return default package and primitive class names without importing them
-            return javaQName;
-        }
-        getModelContext().addImport(javaQName);
-        String[] segments = javaQName.split("\\.");
-        return segments[segments.length - 1];
+        ImportStatement importStatement = getModelContext().addImport(javaQName);
+        return importStatement.getUnqualifiedName();
     }
 
     /**

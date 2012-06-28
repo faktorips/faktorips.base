@@ -48,11 +48,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class XPolicyCmptClassTest {
 
     @Mock
-    private IPolicyCmptType type;
-    @Mock
     private GeneratorModelContext modelContext;
+
     @Mock
     private ModelService modelService;
+
+    @Mock
+    private IPolicyCmptType type;
+
     private XPolicyAttribute attributeNode1;
     private XPolicyAttribute attributeNode2;
     private XPolicyAssociation associationNode1;
@@ -158,12 +161,10 @@ public class XPolicyCmptClassTest {
         IProductCmptType prodType = initProdType(policyCmptClass);
 
         XProductCmptClass xProdClass = mock(XProductCmptClass.class);
-        when(xProdClass.getQualifiedName(BuilderAspect.IMPLEMENTATION)).thenReturn("test.ProductName");
+        when(xProdClass.getSimpleName(BuilderAspect.IMPLEMENTATION)).thenReturn("ProductName");
         when(modelService.getModelNode(prodType, XProductCmptClass.class, modelContext)).thenReturn(xProdClass);
 
         assertEquals("ProductName", policyCmptClass.getProductCmptClassName());
-        verify(xProdClass).getQualifiedName(BuilderAspect.IMPLEMENTATION);
-        verify(modelContext).addImport("test.ProductName");
     }
 
 }

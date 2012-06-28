@@ -17,10 +17,11 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 
 public abstract class XAssociation extends AbstractGeneratorModelNode {
@@ -122,16 +123,16 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         IType target = getTargetType();
         XClass modelNode = getModelNode(target, getTargetModelNodeType());
         // TODO FIPS-1059
-        return addImport(modelNode.getQualifiedName(BuilderAspect.INTERFACE));
+        return modelNode.getSimpleName(BuilderAspect.INTERFACE);
     }
 
     protected Class<? extends XClass> getTargetModelNodeType() {
-        // TODO is there a better way?
+        // TODO is there a better way? Cannot move to subclass because of derived unions
         Class<? extends IType> targetClass = getTargetType().getClass();
-        if (targetClass.equals(ProductCmptType.class)) {
+        if (IProductCmptType.class.isAssignableFrom(targetClass)) {
             return XProductCmptClass.class;
-        } else if (targetClass.equals(PolicyCmptType.class)) {
-            return XProductCmptClass.class;
+        } else if (IPolicyCmptType.class.isAssignableFrom(targetClass)) {
+            return XPolicyCmptClass.class;
         } else {
             throw new RuntimeException("Illegal association target type " + targetClass);
         }

@@ -112,7 +112,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
-        generatorModelContext.setImportHandler(new ImportHandler());
+        generatorModelContext.setImportHandler(new ImportHandler(getPackage()));
     }
 
     /**
@@ -122,10 +122,14 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
      */
     @Override
     protected String generate() throws CoreException {
-        StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
-        getTemplateDefinition().evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(),
-                getGeneratorModelRoot());
-        return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
+        if (getIpsObject().isValid(getIpsProject())) {
+            StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
+            getTemplateDefinition().evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(),
+                    getGeneratorModelRoot());
+            return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
+        } else {
+            return null;
+        }
     }
 
     /**

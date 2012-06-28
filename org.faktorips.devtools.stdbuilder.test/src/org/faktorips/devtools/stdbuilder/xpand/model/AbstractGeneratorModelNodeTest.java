@@ -14,8 +14,9 @@
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
@@ -29,16 +30,21 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class AbstractGeneratorModelNodeTest {
 
     @Mock
-    private ModelService modelService;
-    @Mock
     private GeneratorModelContext modelContext;
+
+    @Mock
+    private ModelService modelService;
+
     @Mock
     private IPolicyCmptType type;
+
     private XClass xClass;
 
     @Before
     public void setUp() throws Exception {
         xClass = new XPolicyCmptClass(type, modelContext, modelService);
+        ImportStatement importStatement = mock(ImportStatement.class);
+        when(modelContext.addImport(anyString())).thenReturn(importStatement);
     }
 
     @Test
@@ -53,20 +59,6 @@ public class AbstractGeneratorModelNodeTest {
         xClass.addImport("package.subpackage.ClassName");
         verify(modelContext).addImport("java.util.Map");
         verify(modelContext).addImport("package.subpackage.ClassName");
-    }
-
-    @Test
-    public void addDefaultPackageImport() {
-        xClass.addImport("SomeJavaClass");
-        xClass.addImport("AnotherJavaClass");
-        verify(modelContext, never()).addImport(anyString());
-    }
-
-    @Test
-    public void addPrimitiveImport() {
-        xClass.addImport("boolean");
-        xClass.addImport("int");
-        verify(modelContext, never()).addImport(anyString());
     }
 
 }
