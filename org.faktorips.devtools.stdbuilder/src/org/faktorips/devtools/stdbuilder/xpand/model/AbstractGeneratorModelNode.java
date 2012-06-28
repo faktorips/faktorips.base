@@ -13,12 +13,15 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -53,6 +56,10 @@ public abstract class AbstractGeneratorModelNode {
     private final GeneratorModelContext modelContext;
 
     private final ModelService modelService;
+
+    private final List<String> generatedFields = new ArrayList<String>();
+
+    private final List<MethodSignature> generatedMethods = new ArrayList<MethodSignature>();
 
     /**
      * This constructor is required in every generator model node. It defines
@@ -397,6 +404,22 @@ public abstract class AbstractGeneratorModelNode {
      */
     public String getAnnotations(AnnotatedJavaElementType type) {
         return getAnnotations(type, getIpsObjectPartContainer());
+    }
+
+    public List<IJavaElement> getGeneratedJavaElements(IType javaType) {
+        List<IJavaElement> result = new ArrayList<IJavaElement>();
+        for (String field : generatedFields) {
+            result.add(javaType.getField(field));
+        }
+        for (MethodSignature methodSignature : generatedMethods) {
+            result.add(javaType.getMethod(methodSignature.getName(), methodSignature.getParameters()));
+        }
+        return result;
+    }
+
+    public String field(String fieldName) {
+        generatedFields.add(fieldName);
+        return fieldName;
     }
 
 }

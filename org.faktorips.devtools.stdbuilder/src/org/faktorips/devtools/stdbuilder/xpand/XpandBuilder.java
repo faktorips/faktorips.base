@@ -13,17 +13,22 @@
 
 package org.faktorips.devtools.stdbuilder.xpand;
 
+import java.util.List;
+import java.util.Set;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.internal.xpand2.model.XpandDefinition;
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xpand2.XpandExecutionContextImpl;
 import org.eclipse.xtend.type.impl.java.JavaBeansMetaModel;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -53,9 +58,9 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
 
     private StringOutput out;
 
-    private ModelService modelService;
+    private final ModelService modelService;
 
-    private GeneratorModelContext generatorModelContext;
+    private final GeneratorModelContext generatorModelContext;
 
     /**
      * The XPAND builder is associated to a builder set and need the {@link LocalizedStringsSet} for
@@ -66,6 +71,9 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
      */
     public XpandBuilder(StandardBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
+        modelService = new ModelService();
+        generatorModelContext = new GeneratorModelContext(getBuilderSet().getConfig(), getBuilderSet()
+                .getAnnotationGenerators());
     }
 
     @Override
@@ -81,9 +89,6 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     @Override
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.beforeBuildProcess(project, buildKind);
-        modelService = new ModelService();
-        generatorModelContext = new GeneratorModelContext(getBuilderSet().getConfig(), getBuilderSet()
-                .getAnnotationGenerators());
         initTemplate();
         String charset = project.getProject().getDefaultCharset();
         StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
@@ -125,12 +130,16 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     protected String generate() throws CoreException {
         if (getIpsObject().isValid(getIpsProject())) {
             StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
-            getTemplateDefinition().evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(),
-                    getGeneratorModelRoot());
+            evaluateTemplate(getIpsSrcFile().getIpsObject());
             return outlet.getContent(getRelativeJavaFile(getIpsSrcFile()));
         } else {
             return null;
         }
+    }
+
+    private void evaluateTemplate(IIpsObject ipsObject) {
+        getTemplateDefinition().evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(),
+                getGeneratorModelRoot(ipsObject));
     }
 
     /**
@@ -146,15 +155,10 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
 
     protected abstract Class<T> getGeneratorModelNodeClass();
 
-    protected AbstractGeneratorModelNode getGeneratorModelRoot() {
-        try {
-            IIpsObject type = getIpsSrcFile().getIpsObject();
-            AbstractGeneratorModelNode xClass = getModelService().getModelNode(type, getGeneratorModelNodeClass(),
-                    getGeneratorModelContext());
-            return xClass;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+    protected AbstractGeneratorModelNode getGeneratorModelRoot(IIpsObject ipsObject) {
+        AbstractGeneratorModelNode xClass = getModelService().getModelNode(ipsObject, getGeneratorModelNodeClass(),
+                getGeneratorModelContext());
+        return xClass;
     }
 
     public ModelService getModelService() {
@@ -179,6 +183,28 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
 
     public void setTemplateDefinition(XpandDefinition templateDefinition) {
         this.templateDefinition = templateDefinition;
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IIpsObjectPartContainer ipsObjectPartContainer) {
+        if (templateDefinition == null) {
+            initTemplate();
+            // TODO increase performance by creating a NullOutlet
+            StringOutlet outlet = new StringOutlet("UTF-8", null);
+            getOut().addOutlet(outlet);
+        }
+        // TODO NullImportHandler??
+        generatorModelContext.setImportHandler(new ImportHandler(""));
+        evaluateTemplate(ipsObjectPartContainer.getIpsObject());
+
+        // TODO verschiedene Types?
+        List<IType> javaTypes = getGeneratedJavaTypes(ipsObjectPartContainer.getIpsObject());
+
+        Set<AbstractGeneratorModelNode> allModelNodes = modelService.getAllModelNodes(ipsObjectPartContainer);
+        for (AbstractGeneratorModelNode generatorModelNode : allModelNodes) {
+            javaElements.addAll(generatorModelNode.getGeneratedJavaElements(javaTypes.get(0)));
+        }
     }
 
 }

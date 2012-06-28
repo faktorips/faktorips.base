@@ -14,11 +14,13 @@
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -41,12 +43,23 @@ public class ModelServiceTest {
     }
 
     @Test
-        public void testGetModelNode() throws Exception {
-            ModelService modelService = new ModelService();
-            XClass node = modelService.getModelNode(policyCmptType, XPolicyCmptClass.class, modelContext);
-            assertNotNull(node);
-            XProductCmptClass node2 = modelService.getModelNode(productCmptType, XProductCmptClass.class, modelContext);
-            assertNotNull(node2);
-        }
+    public void testGetModelNode() throws Exception {
+        ModelService modelService = new ModelService();
+        XClass node = modelService.getModelNode(policyCmptType, XPolicyCmptClass.class, modelContext);
+        assertNotNull(node);
+        XProductCmptClass node2 = modelService.getModelNode(productCmptType, XProductCmptClass.class, modelContext);
+        assertNotNull(node2);
+
+        // repeatable
+        assertSame(node, modelService.getModelNode(policyCmptType, XPolicyCmptClass.class, modelContext));
+        assertSame(node2, modelService.getModelNode(productCmptType, XProductCmptClass.class, modelContext));
+
+        // same ipsObjectPart other type
+        XProductCmptGenerationClass node3 = modelService.getModelNode(productCmptType,
+                XProductCmptGenerationClass.class, modelContext);
+        assertNotNull(node3);
+        assertSame(node, modelService.getModelNode(policyCmptType, XPolicyCmptClass.class, modelContext));
+        assertSame(node2, modelService.getModelNode(productCmptType, XProductCmptClass.class, modelContext));
+    }
 
 }

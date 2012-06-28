@@ -13,9 +13,9 @@
 	     * @generated
 	     */
 		«IF oneToMany-»
-			private «Map("String", IProductComponentLink(targetInterfaceName))» «fieldName»  = new «LinkedHashMap("String", IProductComponentLink(targetInterfaceName))»(0);
+			private «Map("String", IProductComponentLink(targetInterfaceName))» «field(fieldName)»  = new «LinkedHashMap("String", IProductComponentLink(targetInterfaceName))»(0);
 		«ELSE-»
-			private «IProductComponentLink(targetInterfaceName)» «fieldName» = null;
+			private «IProductComponentLink(targetInterfaceName)» «field(fieldName)» = null;
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»

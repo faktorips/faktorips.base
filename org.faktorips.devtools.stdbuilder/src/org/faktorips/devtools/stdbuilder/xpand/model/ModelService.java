@@ -16,6 +16,8 @@ package org.faktorips.devtools.stdbuilder.xpand.model;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.util.ArgumentCheck;
@@ -27,7 +29,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ModelService {
 
-    private HashMap<IIpsObjectPartContainer, AbstractGeneratorModelNode> generatorModelNodes = new HashMap<IIpsObjectPartContainer, AbstractGeneratorModelNode>();
+    private HashMap<IIpsObjectPartContainer, Set<AbstractGeneratorModelNode>> generatorModelNodes = new HashMap<IIpsObjectPartContainer, Set<AbstractGeneratorModelNode>>();
 
     public ModelService() {
     }
@@ -49,17 +51,23 @@ public class ModelService {
     public <T extends AbstractGeneratorModelNode> T getModelNode(IIpsObjectPartContainer ipsObjectPartContainer,
             Class<T> nodeClass,
             GeneratorModelContext modelContext) {
-        AbstractGeneratorModelNode generatorModelNode = generatorModelNodes.get(ipsObjectPartContainer);
-        if (generatorModelNode != null && nodeClass.isAssignableFrom(generatorModelNode.getClass())) {
-            @SuppressWarnings("unchecked")
-            // valid cast because checked before
-            T castedGeneratorModelNode = (T)generatorModelNode;
-            return castedGeneratorModelNode;
-        } else {
-            T newModelNode = newModelNode(ipsObjectPartContainer, nodeClass, modelContext);
-            generatorModelNodes.put(ipsObjectPartContainer, newModelNode);
-            return newModelNode;
+        Set<AbstractGeneratorModelNode> nodes = generatorModelNodes.get(ipsObjectPartContainer);
+        if (nodes == null) {
+            nodes = new HashSet<AbstractGeneratorModelNode>();
+            generatorModelNodes.put(ipsObjectPartContainer, nodes);
         }
+        for (AbstractGeneratorModelNode generatorModelNode : nodes) {
+            if (nodeClass.isAssignableFrom(generatorModelNode.getClass())) {
+                @SuppressWarnings("unchecked")
+                // valid cast because checked before
+                T castedGeneratorModelNode = (T)generatorModelNode;
+                return castedGeneratorModelNode;
+            }
+        }
+
+        T newModelNode = newModelNode(ipsObjectPartContainer, nodeClass, modelContext);
+        nodes.add(newModelNode);
+        return newModelNode;
     }
 
     private <T> T newModelNode(IIpsObjectPartContainer ipsObjectPartContainer,
@@ -95,5 +103,10 @@ public class ModelService {
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Set<AbstractGeneratorModelNode> getAllModelNodes(IIpsObjectPartContainer ipsObjectPartContainer) {
+        Set<AbstractGeneratorModelNode> nodes = generatorModelNodes.get(ipsObjectPartContainer);
+        return nodes;
     }
 }
