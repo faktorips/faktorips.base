@@ -21,7 +21,6 @@ import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -318,6 +317,15 @@ public abstract class AbstractGeneratorModelNode {
      * Returns whether or not methods for delta-support should be added to generated classes.
      */
     public boolean isGenerateDeltaSupport() {
+        // TODO FIPS-1059
+        return true;
+    }
+
+    /**
+     * Returns whether or not methods for copy-support should be added to generated classes.
+     */
+    public boolean isGenerateCopySupport() {
+        // TODO FIPS-1059
         return true;
     }
 
@@ -327,15 +335,6 @@ public abstract class AbstractGeneratorModelNode {
     public boolean isGeneratingPublishedInterfaces() {
         // TODO FIPS-1059
         return true;
-    }
-
-    /**
-     * Returns a {@link BuilderAspect} depending on whether or not published interfaces shall be
-     * generated. If published interfaces shall be generated this method return
-     * {@link BuilderAspect#INTERFACE}, else {@link BuilderAspect#IMPLEMENTATION}.
-     */
-    protected BuilderAspect getBuilderAspectDependingOnSettings() {
-        return isGeneratingPublishedInterfaces() ? BuilderAspect.INTERFACE : BuilderAspect.IMPLEMENTATION;
     }
 
     /**

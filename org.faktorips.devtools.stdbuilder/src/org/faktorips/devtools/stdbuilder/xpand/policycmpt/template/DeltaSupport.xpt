@@ -29,8 +29,8 @@
 «ENDDEFINE»
 
 «DEFINE deltaCheckForAttribute(XPolicyCmptClass policyClass) FOR XPolicyAttribute-»
-	«IF considerForDeltaComputation-»
-        delta.checkPropertyChange(«policyClass.classOrInterfaceName».«constantNamePropertyName», «fieldName», otherAbstractVertrag.«fieldName», options);
+	«IF considerInDeltaComputation-»
+        delta.checkPropertyChange(«policyClass.publishedInterfaceName».«constantNamePropertyName», «fieldName», otherAbstractVertrag.«fieldName», options);
     «ENDIF-»
 «ENDDEFINE»
 

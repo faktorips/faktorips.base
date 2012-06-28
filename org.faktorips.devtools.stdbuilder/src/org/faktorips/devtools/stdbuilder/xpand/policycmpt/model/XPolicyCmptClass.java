@@ -97,16 +97,12 @@ public class XPolicyCmptClass extends XClass {
         return addImport(getSimpleName(BuilderAspect.IMPLEMENTATION));
     }
 
-    public String getPublishedInterfaceName() {
-        return addImport(getSimpleName(BuilderAspect.INTERFACE));
-    }
-
     /**
      * If the builder is configured to generate published interfaces, this method returns the name
      * of the published interface. Else the name of the implementation class is returned.
      */
-    public String getClassOrInterfaceName() {
-        return addImport(getSimpleName(getBuilderAspectDependingOnSettings()));
+    public String getPublishedInterfaceName() {
+        return addImport(getSimpleName(BuilderAspect.getValue(isGeneratingPublishedInterfaces())));
     }
 
     @Override
@@ -177,7 +173,7 @@ public class XPolicyCmptClass extends XClass {
      * TODO FIPS-1059
      */
     public String getProductGenerationClassOrInterfaceName() {
-        return getProductGenerationClassName(getBuilderAspectDependingOnSettings());
+        return getProductGenerationClassName(BuilderAspect.getValue(isGeneratingPublishedInterfaces()));
     }
 
     /**
@@ -229,7 +225,7 @@ public class XPolicyCmptClass extends XClass {
      * 
      */
     public String getProductComponentClassOrInterfaceName() {
-        return getProductComponentClassName(getBuilderAspectDependingOnSettings());
+        return getProductComponentClassName(BuilderAspect.getValue(isGeneratingPublishedInterfaces()));
     }
 
     /**
@@ -259,5 +255,25 @@ public class XPolicyCmptClass extends XClass {
 
     public String getProductComponentArgumentName() {
         return getJavaNamingConvention().getMemberVarName(getProductComponentClassName());
+    }
+
+    public Set<XPolicyAttribute> getAttributesToCopy() {
+        Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
+        for (XPolicyAttribute attribute : attributes) {
+            if (attribute.isConsiderInCopySupport()) {
+                resultingSet.add(attribute);
+            }
+        }
+        return resultingSet;
+    }
+
+    public Set<XPolicyAssociation> getAssociationsToCopy() {
+        Set<XPolicyAssociation> resultingSet = new LinkedHashSet<XPolicyAssociation>();
+        for (XPolicyAssociation assoc : associations) {
+            if (assoc.isConsiderInCopySupport()) {
+                resultingSet.add(assoc);
+            }
+        }
+        return resultingSet;
     }
 }

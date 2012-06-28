@@ -30,4 +30,8 @@ public class XPolicyAssociation extends XAssociation {
         return (IPolicyCmptTypeAssociation)super.getAssociation();
     }
 
+    public boolean isConsiderInCopySupport() {
+        return false;
+    }
+
 }
