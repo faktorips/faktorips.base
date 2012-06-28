@@ -85,27 +85,28 @@ public class XPolicyCmptClass extends XClass {
         return getPolicyCmptType().isConfigurableByProductCmptType();
     }
 
-    public String getProductCmptClassName() {
-        try {
-            IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(
-                    getIpsObjectPartContainer().getIpsProject());
-            if (productCmptType != null) {
-                XProductCmptClass xProductCmptClass = getModelNode(productCmptType, XProductCmptClass.class);
-                return xProductCmptClass.getSimpleName(BuilderAspect.IMPLEMENTATION);
-            } else {
-                return StringUtils.EMPTY;
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
     public boolean isAggregateRoot() {
         try {
             return getPolicyCmptType().isAggregateRoot();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    public String getClassName() {
+        return addImport(getSimpleName(BuilderAspect.IMPLEMENTATION));
+    }
+
+    public String getPublishedInterfaceName() {
+        return addImport(getSimpleName(BuilderAspect.INTERFACE));
+    }
+
+    /**
+     * If the builder is configured to generate published interfaces, this method returns the name
+     * of the published interface. Else the name of the implementation class is returned.
+     */
+    public String getClassOrInterfaceName() {
+        return addImport(getSimpleName(getBuilderAspectDependingOnSettings()));
     }
 
     @Override
@@ -139,6 +140,21 @@ public class XPolicyCmptClass extends XClass {
     @Override
     public Set<XDerivedUnionAssociation> getDerivedUnionAssociations() {
         return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnionAssociations);
+    }
+
+    public String getProductCmptClassName() {
+        try {
+            IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(
+                    getIpsObjectPartContainer().getIpsProject());
+            if (productCmptType != null) {
+                XProductCmptClass xProductCmptClass = getModelNode(productCmptType, XProductCmptClass.class);
+                return addImport(xProductCmptClass.getQualifiedName(BuilderAspect.IMPLEMENTATION));
+            } else {
+                return StringUtils.EMPTY;
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     /**

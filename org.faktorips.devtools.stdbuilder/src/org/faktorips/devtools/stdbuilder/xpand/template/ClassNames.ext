@@ -7,9 +7,21 @@ import org::faktorips::devtools::stdbuilder::xpand::model;
 
 IModelObject(AbstractGeneratorModelNode this) :
 	addImport("org.faktorips.runtime.IModelObject");
+
+IModelObjectDelta(AbstractGeneratorModelNode this):
+	addImport("org.faktorips.runtime.IModelObjectDelta");
+	
+IDeltaComputationOptions(AbstractGeneratorModelNode this):
+	addImport("org.faktorips.runtime.IDeltaComputationOptions");
+	
+ModelObjectDelta(AbstractGeneratorModelNode this):
+	addImport("org.faktorips.runtime.ModelObjectDelta");
 	
 IConfigurableModelObject(AbstractGeneratorModelNode this) :
 	addImport(IConfigurableModelObject.name);
+	
+AbstractModelObject(AbstractGeneratorModelNode this) :
+	addImport(AbstractModelObject.name);
 	
 IValidationContext(AbstractGeneratorModelNode this) :
 	addImport(IValidationContext.name);

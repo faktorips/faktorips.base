@@ -320,6 +320,13 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     /**
+     * Returns whether or not methods for delta-support should be added to generated classes.
+     */
+    public boolean isGenerateDeltaSupport() {
+        return true;
+    }
+
+    /**
      * Returns whether or not published interfaces should be generated.
      */
     public boolean isGeneratingPublishedInterfaces() {

@@ -10,6 +10,9 @@ effectiveFromHasChanged() :
 getParentModelObject() :
 	"getParentModelObject()";
 
+newCopyInternal(String argument):
+	"newCopyInternal("+argument+")";
+
 // ---------------------------------
 // Methods in IProductComponentLink
 // ---------------------------------
@@ -89,6 +92,14 @@ initPropertiesFromXml(String arg1, String arg2):
 	"initPropertiesFromXml("+arg1+","+arg2+")";
 			
 // ---------------------------------
+// Methods in AbstractModelObject
+// ---------------------------------
+	
+createChildFromXml(String argument):
+	"createChildFromXml("+argument+")";
+	
+			
+// ---------------------------------
 // Methods in IRuntimeRepository
 // ---------------------------------
 
@@ -101,3 +112,10 @@ isModifiable() :
 	
 toXml(String paramDocument) :
 	"toXml(" + paramDocument + ")";
+	
+// ---------------------------------
+// Methods in IDeltaSupport
+// ---------------------------------
+
+computeDelta(String arg1, String arg2):
+	"computeDelta("+arg1+","+arg2+")";
