@@ -82,7 +82,8 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.beforeBuildProcess(project, buildKind);
         modelService = new ModelService();
-        generatorModelContext = new GeneratorModelContext(getBuilderSet().getConfig());
+        generatorModelContext = new GeneratorModelContext(getBuilderSet().getConfig(), getBuilderSet()
+                .getAnnotationGenerators());
         initTemplate();
         String charset = project.getProject().getDefaultCharset();
         StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);

@@ -524,6 +524,15 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     /**
+     * Returns the map of annotation generators used to provide annotations to generated elements.
+     * 
+     * @return The annotation generator map.
+     */
+    public Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> getAnnotationGenerators() {
+        return annotationGeneratorsMap;
+    }
+
+    /**
      * Returns a code fragment containing all annotations to the given Java Element Type and
      * IpsElement using the given builder.
      * 

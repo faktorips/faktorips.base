@@ -13,12 +13,17 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.faktorips.devtools.core.builder.AbstractBuilderSet;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
+import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
@@ -33,11 +38,15 @@ public class GeneratorModelContext {
 
     private final IIpsArtefactBuilderSetConfig config;
 
+    private final Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap;
+
     // Model Service
     // ImportHandler
 
-    public GeneratorModelContext(IIpsArtefactBuilderSetConfig config) {
+    public GeneratorModelContext(IIpsArtefactBuilderSetConfig config,
+            Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap) {
         this.config = config;
+        this.annotationGeneratorMap = annotationGeneratorMap;
         // TODO FIPS-1059
         this.javaClassNaming = new JavaClassNaming(true);
     }
@@ -116,6 +125,22 @@ public class GeneratorModelContext {
 
     public JavaClassNaming getJavaClassNaming() {
         return javaClassNaming;
+    }
+
+    /**
+     * Returns the list of annotation generators for the given type. This method never returns null.
+     * If there is no annotation generator for the specified type an empty list will be returned.
+     * 
+     * @param type The {@link AnnotatedJavaElementType} you want to get the generators for
+     * @return the list of {@link IAnnotationGenerator annotation generators} or an empty list if
+     *         there is none
+     */
+    public List<IAnnotationGenerator> getAnnotationGenerator(AnnotatedJavaElementType type) {
+        List<IAnnotationGenerator> result = annotationGeneratorMap.get(type);
+        if (result == null) {
+            result = new ArrayList<IAnnotationGenerator>();
+        }
+        return result;
     }
 
 }
