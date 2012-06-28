@@ -1,3 +1,4 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::runtime»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
@@ -22,6 +23,8 @@
 		«IF constant-»
 			public static final «javaClassName» «fieldName» = «defaultValueCode»;
 		«ELSE-»
+			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD)-»
+			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)-»
 			private «javaClassName» «fieldName» = «defaultValueCode»;
 		«ENDIF-»
 	«ENDIF-»
