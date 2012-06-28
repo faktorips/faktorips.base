@@ -160,8 +160,16 @@ public class XPolicyAttribute extends XAttribute {
         return getAttribute().getValueSet().getValueSetType() == valueSetType;
     }
 
-    public boolean isConsiderForDeltaComputation() {
+    public boolean isConsiderInDeltaComputation() {
         return isPublished() && isFieldRequired();
+    }
+
+    public boolean isConsiderInCopySupport() {
+        return isFieldRequired();
+    }
+
+    private boolean isChangeable() {
+        return getAttribute().isChangeable();
     }
 
     /**
@@ -170,7 +178,7 @@ public class XPolicyAttribute extends XAttribute {
      * method call.
      */
     public boolean isFieldRequired() {
-        return ((getAttribute()).isChangeable() || isDerivedByExplicitMethodCall()) && !isOverwrite();
+        return (isChangeable() || isDerivedByExplicitMethodCall()) && !isOverwrite();
     }
 
     private boolean isDerivedByExplicitMethodCall() {

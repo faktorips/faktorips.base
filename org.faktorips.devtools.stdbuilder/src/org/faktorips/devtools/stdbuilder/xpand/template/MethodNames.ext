@@ -77,6 +77,9 @@ getProductCmptGeneration() :
 
 initialize():
 	"initialize()";
+
+copyProductCmptAndGenerationInternal(String argument):
+	"copyProductCmptAndGenerationInternal("+argument+")";
 			
 // ---------------------------------
 // Methods in AbstractConfigurableModelObject

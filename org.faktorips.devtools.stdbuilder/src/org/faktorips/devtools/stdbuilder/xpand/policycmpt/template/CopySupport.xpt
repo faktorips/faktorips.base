@@ -1,0 +1,79 @@
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE copyMethods FOR XPolicyCmptClass-»
+	/**
+     * Internal copy method with a {@link Map} containing already copied instances.
+     * 
+     * @param copyMap the map contains the copied instances
+     * 
+     * @generated
+     */
+    «overrideAnnotationIfHasSupertype(false)»
+    public «IModelObject()» «newCopyInternal(Map(IModelObject(), IModelObject())+" copyMap")» {
+    	«IF hasSupertype()-»
+	        «className» newCopy = («className»)copyMap.get(this);
+	        if (newCopy == null) {
+	            newCopy = new «className»();
+	            newCopy.«copyProductCmptAndGenerationInternal("this")»;
+	            copyProperties(newCopy, copyMap);
+	        }
+	        return newCopy;
+    	«ELSE-»
+	        throw new RuntimeException(
+	                "This method has to be abstract. It needs to have an empty body because of a bug in JMerge.");
+	    «ENDIF-»
+    }
+
+    /**
+     * This method sets all properties in the copy with the values of this object. If there are
+     * copied associated objects they are added to the copy map.
+     * 
+     * @param copy The copy object
+     * @param copyMap a map containing copied associated objects
+     * 
+     * @generated
+     */
+    «overrideAnnotationIfHasSupertype(false)»
+    protected void copyProperties(IModelObject copy, Map<IModelObject, IModelObject> copyMap) {
+        «IF attributesToCopy.size > 0-»
+        	«className» concreteCopy = («className»)copy;
+        	«EXPAND copyAttribute FOREACH attributesToCopy-»
+        «ELSE-»
+        	// Nothing to do.
+        «ENDIF-»
+    }
+
+    /**
+     * Internal method for setting copied associations. For copied targets, the association have to
+     * retarget to the new copied instance. This method have to call
+     * {@link #copyAssociationsInternal(IModelObject, Map)} in other instances associated by
+     * composite.
+     * 
+     * @param abstractCopy the copy of this policy component
+     * @param copyMap the map contains the copied instances
+     * 
+     * @generated
+     */
+    «overrideAnnotationIfHasSupertype(false)»
+    public void copyAssociationsInternal(IModelObject abstractCopy, Map<IModelObject, IModelObject> copyMap) {
+        «IF associationsToCopy.size > 0-»
+        «ELSE-»
+        	// Nothing to do.
+        «ENDIF-»
+    }
+«ENDDEFINE»
+
+«DEFINE copyAttribute FOR XPolicyAttribute-»
+	«IF considerInCopySupport-»«REM»Siehe PolicyCmptImplClassBuilder Z.394«ENDREM»
+        concreteCopy.«fieldName» = «fieldName»;
+    «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE copyAssociation FOR XPolicyAssociation-»
+	«IF considerInCopySupport-»«REM»Siehe PolicyCmptImplClassBuilder Z.523«ENDREM»
+        concreteCopy.«fieldName» = «fieldName»;
+    «ENDIF-»
+«ENDDEFINE»

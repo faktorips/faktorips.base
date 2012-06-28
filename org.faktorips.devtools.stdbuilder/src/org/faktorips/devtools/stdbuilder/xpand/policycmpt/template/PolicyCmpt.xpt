@@ -218,52 +218,11 @@
     	«EXPAND DeltaSupport::computeDeltaMethod-»
     «ENDIF-»
 
-    /**
-     * Internal copy method with a {@link Map} containing already copied instances.
-     * 
-     * @param copyMap the map contains the copied instances
-     * 
-     * @generated
-     */
-    public «IModelObject()» «newCopyInternal(Map(IModelObject(), IModelObject())+" copyMap")» {
-    	«IF hasSupertype()-»
-    	«ELSE-»
-	        throw new RuntimeException(
-	                "This method has to be abstract. It needs to have an empty body because of a bug in JMerge.");
-	    «ENDIF-»
-    }
+    «IF generateCopySupport-»
+    	«EXPAND CopySupport::copyMethods-»
+    «ENDIF-»
+
 «REM»
-    /**
-     * This method sets all properties in the copy with the values of this object. If there are
-     * copied associated objects they are added to the copy map.
-     * 
-     * @param copy The copy object
-     * @param copyMap a map containing copied associated objects
-     * 
-     * @generated
-     */
-    protected void copyProperties(IModelObject copy, Map<IModelObject, IModelObject> copyMap) {
-        AbstractVertrag concreteCopy = (AbstractVertrag)copy;
-        concreteCopy.overridableConfigurableDecimal = overridableConfigurableDecimal;
-        concreteCopy.overridableDouble = overridableDouble;
-        concreteCopy.configurableInt = configurableInt;
-    }
-
-    /**
-     * Internal method for setting copied associations. For copied targets, the association have to
-     * retarget to the new copied instance. This method have to call
-     * {@link #copyAssociationsInternal(IModelObject, Map)} in other instances associated by
-     * composite.
-     * 
-     * @param abstractCopy the copy of this policy component
-     * @param copyMap the map contains the copied instances
-     * 
-     * @generated
-     */
-    public void copyAssociationsInternal(IModelObject abstractCopy, Map<IModelObject, IModelObject> copyMap) {
-        // Nothing to do.
-    }
-
     /**
      * {@inheritDoc}
      * 

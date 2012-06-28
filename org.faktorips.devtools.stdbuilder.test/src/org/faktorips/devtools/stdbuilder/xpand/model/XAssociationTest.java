@@ -122,8 +122,8 @@ public class XAssociationTest {
         doReturn(productCmptType).when(xAssociation).getTargetType();
 
         // doReturn(XProductCmptClass.class).when(xAssociation).getTargetModelNodeType();
-        String targetClassGenerationName = xAssociation.getTargetClassName();
-        assertEquals("ITargetType", targetClassGenerationName);
+        String targetClassName = xAssociation.getTargetClassName();
+        assertEquals("ITargetType", targetClassName);
     }
 
 }

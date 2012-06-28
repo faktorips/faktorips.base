@@ -6,16 +6,16 @@ import org::faktorips::runtime::internal;
 import org::faktorips::devtools::stdbuilder::xpand::model;
 
 IModelObject(AbstractGeneratorModelNode this) :
-	addImport("org.faktorips.runtime.IModelObject");
+	addImport(IModelObject.name);
 
 IModelObjectDelta(AbstractGeneratorModelNode this):
-	addImport("org.faktorips.runtime.IModelObjectDelta");
+	addImport(IModelObjectDelta.name);
 	
 IDeltaComputationOptions(AbstractGeneratorModelNode this):
-	addImport("org.faktorips.runtime.IDeltaComputationOptions");
+	addImport(IDeltaComputationOptions.name);
 	
 ModelObjectDelta(AbstractGeneratorModelNode this):
-	addImport("org.faktorips.runtime.ModelObjectDelta");
+	addImport(ModelObjectDelta.name);
 	
 IConfigurableModelObject(AbstractGeneratorModelNode this) :
 	addImport(IConfigurableModelObject.name);
