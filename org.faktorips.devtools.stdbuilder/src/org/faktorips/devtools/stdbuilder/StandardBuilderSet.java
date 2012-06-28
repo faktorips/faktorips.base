@@ -425,7 +425,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         builders.add(productCmptInterfaceBuilder);
         builders.add(productCmptImplClassBuilder);
         builders.add(productCmptGenInterfaceBuilder);
-        builders.add(productCmptGenImplClassBuilder);
+        // builders.add(productCmptGenImplClassBuilder);
         builders.add(policyCmptImplClassBuilder);
         builders.add(policyCmptInterfaceBuilder);
         builders.add(productCmptGenerationImplBuilder);
