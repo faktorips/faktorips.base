@@ -83,7 +83,7 @@
 		        «ENDIF-»
 		    }
 		   
-«IF associations.size > 0»
+		«IF associations.size > 0»
 		    /**
 		     * @generated
 		     */
@@ -92,7 +92,7 @@
 		        super.«writeReferencesToXml("element")»;
 		        «EXPAND ProductAssociation::writeReferencesToXmlPart FOREACH associations-»
 		    }
-«ENDIF»
+		«ENDIF»
 
 		«EXPAND createPolicyCmpt(this) FOREACH classHierarchy»
 
@@ -106,38 +106,9 @@
 	        return «methodNameCreatePolicyCmpt»();
 	    }
 
-«REM»
-TODO
-
-
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-    @Override
-    public IPolicy createPolicy() {
-        SubPolicy policy = new SubPolicy(getSubPolicyType());
-        policy.setProductCmptGeneration(this);
-        policy.initialize();
-        return policy;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-    @Override
-    public IConfigurableModelObject createPolicyComponent() {
-        return createSubPolicy();
-    }
-
-«ENDREM»			
-			
-			«EXPAND ProductAssociation::getLinkMethods»
-		 }
+		«EXPAND ProductAssociation::getLinkMethods»
+		
+	}
 	«ENDFILE»
 «ENDDEFINE»
 
