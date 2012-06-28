@@ -123,8 +123,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         IType target = getTargetType();
         XClass modelNode = getModelNode(target, getTargetModelNodeType());
         // TODO FIPS-1059
-        String qualifiedName = modelNode.getQualifiedName(BuilderAspect.INTERFACE);
-        return addImport(qualifiedName);
+        return modelNode.getSimpleName(BuilderAspect.INTERFACE);
     }
 
     protected Class<? extends XClass> getTargetModelNodeType() {

@@ -64,7 +64,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     }
 
     public JavaClassNaming getJavaClassNaming() {
-        return getModelContext().getImplClassNaming();
+        return getModelContext().getJavaClassNaming();
     }
 
     public String getFileName(BuilderAspect aspect) {
@@ -82,8 +82,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     }
 
     public String getSimpleName(BuilderAspect aspect) {
-        return getJavaClassNaming().getUnqualifiedClassName(getType().getIpsSrcFile(), aspect,
-                getJavaClassNameProvider());
+        return addImport(getQualifiedName(aspect));
     }
 
     public String getQualifiedName(BuilderAspect aspect) {

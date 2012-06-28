@@ -85,9 +85,9 @@ public class GeneratorModelContext {
      * Adds a new import. The import statement should be the full qualified name of a class.
      * 
      * @param importStatement The full qualified name of a class that should be imported.
-     * @return true if the import was added and not already part of the set.
+     * @return the unqualified name of the import statement
      */
-    public boolean addImport(String importStatement) {
+    public ImportStatement addImport(String importStatement) {
         return getImportHandler().add(importStatement);
     }
 
@@ -114,7 +114,7 @@ public class GeneratorModelContext {
         return propertyValueAsBoolean == null ? false : propertyValueAsBoolean.booleanValue();
     }
 
-    public JavaClassNaming getImplClassNaming() {
+    public JavaClassNaming getJavaClassNaming() {
         return javaClassNaming;
     }
 

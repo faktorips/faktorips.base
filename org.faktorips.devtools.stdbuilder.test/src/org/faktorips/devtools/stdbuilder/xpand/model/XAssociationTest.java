@@ -18,7 +18,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
@@ -38,10 +37,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class XAssociationTest {
 
     @Mock
-    private IAssociation association;
+    private GeneratorModelContext modelContext;
 
     @Mock
-    private GeneratorModelContext modelContext;
+    private IAssociation association;
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private XAssociation xAssociation;
@@ -118,15 +117,13 @@ public class XAssociationTest {
     public void testGetTargetClassName() throws Exception {
         IProductCmptType productCmptType = mock(IProductCmptType.class);
         XProductCmptClass xProductCmptClass = mock(XProductCmptClass.class);
-        doReturn("org.faktorips.sample.model.test.ITargetType").when(xProductCmptClass).getQualifiedName(
-                BuilderAspect.INTERFACE);
+        doReturn("ITargetType").when(xProductCmptClass).getSimpleName(BuilderAspect.INTERFACE);
         doReturn(xProductCmptClass).when(xAssociation).getModelNode(productCmptType, XProductCmptClass.class);
         doReturn(productCmptType).when(xAssociation).getTargetType();
 
         // doReturn(XProductCmptClass.class).when(xAssociation).getTargetModelNodeType();
         String targetClassGenerationName = xAssociation.getTargetClassName();
         assertEquals("ITargetType", targetClassGenerationName);
-        verify(xAssociation).addImport("org.faktorips.sample.model.test.ITargetType");
     }
 
 }

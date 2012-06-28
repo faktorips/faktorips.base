@@ -40,7 +40,7 @@ public class XProductAssociation extends XAssociation {
         IType target = getTargetType();
         XClass modelNode = getModelNode(target, XProductCmptGenerationClass.class);
         // TODO FIPS-1059
-        return addImport(modelNode.getQualifiedName(BuilderAspect.INTERFACE));
+        return modelNode.getSimpleName(BuilderAspect.INTERFACE);
     }
 
     public String getMethodNameGetTargetGeneration() {

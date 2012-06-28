@@ -87,7 +87,7 @@ public class XProductCmptGenerationClass extends XProductClass {
 
     public String getProductCmptClassName(BuilderAspect aspect) {
         XProductCmptClass modelNode = getModelNode(getProductCmptType(), XProductCmptClass.class);
-        return addImport(modelNode.getQualifiedName(aspect));
+        return modelNode.getSimpleName(aspect);
     }
 
     public String getMethodNameGetProductCmpt() {

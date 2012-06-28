@@ -18,7 +18,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
@@ -72,8 +71,7 @@ public class XProductAssociationTest {
         when(association.findTarget(ipsProject)).thenReturn(targetCmptType);
         when(modelService.getModelNode(targetCmptType, XProductCmptGenerationClass.class, modelContext)).thenReturn(
                 xTargetGenerationClass);
-        when(xTargetGenerationClass.getQualifiedName(BuilderAspect.INTERFACE)).thenReturn(
-                "org.faktorips.sample.model.test.ITargetTypeGen");
+        when(xTargetGenerationClass.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("ITargetTypeGen");
         when(modelService.getModelNode(targetCmptType, XProductCmptClass.class, modelContext)).thenReturn(
                 xTargetCmptClass);
     }
@@ -87,7 +85,6 @@ public class XProductAssociationTest {
     public void testGetTargetClassGenerationName() {
         String targetClassGenerationName = xProductAssociation.getTargetClassGenerationName();
         assertEquals("ITargetTypeGen", targetClassGenerationName);
-        verify(modelContext).addImport("org.faktorips.sample.model.test.ITargetTypeGen");
     }
 
     @Test

@@ -91,7 +91,7 @@ public class XPolicyCmptClass extends XClass {
                     getIpsObjectPartContainer().getIpsProject());
             if (productCmptType != null) {
                 XProductCmptClass xProductCmptClass = getModelNode(productCmptType, XProductCmptClass.class);
-                return addImport(xProductCmptClass.getQualifiedName(BuilderAspect.IMPLEMENTATION));
+                return xProductCmptClass.getSimpleName(BuilderAspect.IMPLEMENTATION);
             } else {
                 return StringUtils.EMPTY;
             }

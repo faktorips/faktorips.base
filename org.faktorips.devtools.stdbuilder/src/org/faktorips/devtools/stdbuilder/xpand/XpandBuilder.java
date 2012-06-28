@@ -112,7 +112,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
-        generatorModelContext.setImportHandler(new ImportHandler());
+        generatorModelContext.setImportHandler(new ImportHandler(getPackage()));
     }
 
     /**

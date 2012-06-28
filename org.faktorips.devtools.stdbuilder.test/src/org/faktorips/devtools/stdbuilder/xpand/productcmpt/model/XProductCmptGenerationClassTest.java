@@ -17,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Set;
@@ -77,11 +76,10 @@ public class XProductCmptGenerationClassTest {
     public void testGetProductCmptClassName() throws Exception {
         when(modelService.getModelNode(productCmptType, XProductCmptClass.class, modelContext)).thenReturn(
                 xProductCmptClass);
-        when(xProductCmptClass.getQualifiedName(BuilderAspect.IMPLEMENTATION)).thenReturn("test.ProductCmpt");
+        when(xProductCmptClass.getSimpleName(BuilderAspect.IMPLEMENTATION)).thenReturn("ProductCmpt");
 
         String productCmptClassName = xProductCmptGenerationClass.getProductCmptClassName(BuilderAspect.IMPLEMENTATION);
         assertEquals("ProductCmpt", productCmptClassName);
-        verify(modelContext).addImport("test.ProductCmpt");
     }
 
     @Test
