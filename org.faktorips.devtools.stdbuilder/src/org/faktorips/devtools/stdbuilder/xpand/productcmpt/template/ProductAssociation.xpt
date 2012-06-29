@@ -43,14 +43,14 @@
      */
      «overrideAnnotation(true)»
    	«IF oneToMany-»
-	    public «List_(targetInterfaceName)» «methodNameGetter»() {
+	    public «List_(targetInterfaceName)» «method(methodNameGetter)» {
         	«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«fieldName».size());
 			for («IProductComponentLink(targetInterfaceName)» «name.toFirstLower()» : «fieldName».values()) {
 	            result.add(«name.toFirstLower()».«getTarget()»);
     	    }
         	return result;
     «ELSE-»
-	    public «targetInterfaceName» «methodNameGetter»() {
+	    public «targetInterfaceName» «method(methodNameGetter)» {
 			return «fieldName» != null ? «fieldName».«getTarget()» : null;
     «ENDIF-»
     }
@@ -64,7 +64,7 @@
      */
      «overrideAnnotation(true)»
    	«IF oneToMany-»
-	    public «List_(targetClassGenerationName)» «methodNameGetter»(«Calendar()» effectiveDate) {
+	    public «List_(targetClassGenerationName)» «method(methodNameGetter, Calendar(), "effectiveDate")» {
         	«List_(targetInterfaceName)» targets = «methodNameGetter»();
         	«List_(targetClassGenerationName)» result = new «ArrayList(targetClassGenerationName)»();
 			for («targetInterfaceName» target : targets) {
@@ -75,7 +75,7 @@
         }
         return result;
     «ELSE-»
-	    public «targetClassGenerationName» «methodNameGetter»(«Calendar()» effectiveDate) {
+	    public «targetClassGenerationName» «method(methodNameGetter, Calendar(), "effectiveDate")» {
 			return «fieldName» != null ? «fieldName».«getTarget()».«methodNameGetTargetGeneration»(effectiveDate) : null;
     «ENDIF-»
     }
@@ -89,7 +89,7 @@
      * @generated
      */
      «overrideAnnotation(true)»
-	public «targetInterfaceName» «methodNameGetSingle»(int index) {
+	public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")» {
 		«Iterator(IProductComponentLink(targetInterfaceName))» it = «fieldName».values().iterator();
         try {
             for (int i = 0; i < index; i++) {

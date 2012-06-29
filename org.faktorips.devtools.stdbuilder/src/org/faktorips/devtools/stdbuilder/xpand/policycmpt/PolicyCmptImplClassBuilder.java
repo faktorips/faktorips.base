@@ -18,13 +18,16 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.util.LocalizedStringsSet;
 
 public class PolicyCmptImplClassBuilder extends XpandBuilder<XPolicyCmptClass> {
 
-    public PolicyCmptImplClassBuilder(StandardBuilderSet builderSet) {
-        super(builderSet, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class));
+    public PolicyCmptImplClassBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext,
+            ModelService modelService) {
+        super(builderSet, modelContext, modelService, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class));
     }
 
     @Override

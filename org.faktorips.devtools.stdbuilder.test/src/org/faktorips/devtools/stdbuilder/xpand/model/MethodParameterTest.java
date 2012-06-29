@@ -13,23 +13,23 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
-public class MethodSignature {
+import static org.junit.Assert.assertEquals;
 
-    private final String name;
+import org.eclipse.jdt.core.Signature;
+import org.junit.Test;
 
-    private final String[] parameters;
+public class MethodParameterTest {
 
-    public MethodSignature(String name, String[] parameters) {
-        this.name = name;
-        this.parameters = parameters;
+    @Test
+    public void testGetDefinition() throws Exception {
+        MethodParameter methodParameter = new MethodParameter("testtype", "param");
+        assertEquals("testtype param", methodParameter.getDefinition());
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String[] getParameters() {
-        return parameters;
+    @Test
+    public void testGetTypeSignature() throws Exception {
+        MethodParameter methodParameter = new MethodParameter("testtype", "param");
+        assertEquals(Signature.createTypeSignature("testtype", false), methodParameter.getTypeSignature());
     }
 
 }

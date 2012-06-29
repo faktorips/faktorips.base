@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
@@ -42,6 +43,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -83,6 +85,8 @@ import org.faktorips.devtools.stdbuilder.table.TableRowBuilder;
 import org.faktorips.devtools.stdbuilder.testcase.TestCaseBuilder;
 import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.devtools.stdbuilder.type.GenType;
+import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -167,6 +171,10 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public final static String CONFIG_PROPERTY_CAMELCASE_SEPARATED = "camelCaseSeparated"; //$NON-NLS-1$
 
+    private ModelService modelService;
+
+    private GeneratorModelContext generatorModelContext;
+
     private TableImplBuilder tableImplBuilder;
 
     private TableRowBuilder tableRowBuilder;
@@ -220,6 +228,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // buf.append('.');
         // buf.append(versionObj.getMicro());
         // version = buf.toString();
+
     }
 
     @Override
@@ -230,6 +239,12 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     @Override
     public void beforeBuildProcess(int buildKind) throws CoreException {
         clearGenerators();
+    }
+
+    @Override
+    public void clean(IProgressMonitor monitor) {
+        super.clean(monitor);
+        modelService = new ModelService();
     }
 
     @Override
@@ -333,6 +348,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
+    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
+        createAnnotationGeneratorMap();
+        modelService = new ModelService();
+        generatorModelContext = new GeneratorModelContext(config, getAnnotationGenerators());
+        super.initialize(config);
+    }
+
+    @Override
     protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
         // create policy component type builders
         policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(this);
@@ -408,8 +431,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         ValidationRuleMessagesPropertiesBuilder validationMessagesBuilder = new ValidationRuleMessagesPropertiesBuilder(
                 this);
 
-        createAnnotationGeneratorMap();
-
         List<IIpsArtefactBuilder> extendingBuilders = getExtendingArtefactBuilders();
 
         ModelTypeXmlBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this);
@@ -445,8 +466,10 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         builders.addAll(extendingBuilders);
 
         // TODO add XPAND builder for testing purposes
-        builders.add(new org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder(this));
-        builders.add(new org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationImlClassBuilder(this));
+        builders.add(new org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder(this,
+                generatorModelContext, modelService));
+        builders.add(new org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationImlClassBuilder(this,
+                generatorModelContext, modelService));
 
         return builders.toArray(new IIpsArtefactBuilder[builders.size()]);
     }
