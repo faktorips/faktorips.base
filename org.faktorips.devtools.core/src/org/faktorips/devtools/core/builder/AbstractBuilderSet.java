@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
@@ -207,6 +208,11 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         } else {
             return true;
         }
+    }
+
+    @Override
+    public void clean(IProgressMonitor monitor) {
+        // default implementation does nothing
     }
 
 }

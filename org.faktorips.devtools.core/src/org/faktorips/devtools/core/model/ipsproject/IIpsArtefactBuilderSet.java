@@ -17,9 +17,12 @@ import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
@@ -301,5 +304,15 @@ public interface IIpsArtefactBuilderSet {
      * @return True to mark the files and folders as derived
      */
     public boolean isMarkNoneMergableResourcesAsDerived();
+
+    /**
+     * Called by the {@link IpsBuilder} when {@link IpsBuilder#clean(IProgressMonitor)} is called
+     * giving the builder set the opportunity to do additional clearing.
+     * 
+     * @see IncrementalProjectBuilder#clean(IProgressMonitor)
+     * 
+     */
+    @SuppressWarnings("javadoc")
+    public void clean(IProgressMonitor monitor);
 
 }

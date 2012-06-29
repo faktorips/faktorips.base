@@ -378,6 +378,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 removeDerivedResources(destination, monitor);
             }
         }
+        getBuilderSetReInitialisedIfNecessary(getIpsProject()).clean(monitor);
     }
 
     /**
