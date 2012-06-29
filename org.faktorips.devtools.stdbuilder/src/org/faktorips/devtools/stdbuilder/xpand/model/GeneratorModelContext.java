@@ -157,7 +157,7 @@ public class GeneratorModelContext {
 
     public boolean isGeneratingPublishedInterfaces() {
         // TODO FIPS-1059
-        return false;
+        return true;
     }
 
 }
