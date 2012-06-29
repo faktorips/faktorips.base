@@ -10,8 +10,18 @@ effectiveFromHasChanged() :
 getParentModelObject() :
 	"getParentModelObject()";
 
+// ---------------------------------
+// Methods in ICopySupport
+// ---------------------------------
+
 newCopyInternal(String argument):
 	"newCopyInternal("+argument+")";
+
+copyProperties(String arg1, String arg2):
+	"copyProperties("+arg1+","+arg2+")";
+
+copyAssociationsInternal(String arg1, String arg2):
+	"copyAssociationsInternal("+arg1+","+arg2+")";
 
 // ---------------------------------
 // Methods in IProductComponentLink

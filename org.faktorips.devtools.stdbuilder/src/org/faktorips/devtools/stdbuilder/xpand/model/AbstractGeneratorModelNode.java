@@ -275,7 +275,7 @@ public abstract class AbstractGeneratorModelNode {
 
     /**
      * Checks whether or not an override annotation is needed respect to the different compliance
-     * levels. Up to Java5 there was no override annotation at all (this case is not longer
+     * levels. Up to Java5 there was no override annotation at all (this case is no longer
      * supported). In Java5 there were only override annotations for real overrides not for
      * interface implementations. For compliance levels greater Java5 we always generate an override
      * annotation if either an interface or an other implementation is overridden. Whether or not an

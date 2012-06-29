@@ -10,8 +10,7 @@
      * @param copyMap the map contains the copied instances
      * 
      * @generated
-     */
-    «overrideAnnotationIfHasSupertype(false)»
+     */«REM»«overrideAnnotationIfHasSupertype(false)»«ENDREM»
     public «IModelObject()» «newCopyInternal(Map(IModelObject(), IModelObject())+" copyMap")» {
     	«IF hasSupertype()-»
 	        «className» newCopy = («className»)copyMap.get(this);
@@ -35,9 +34,8 @@
      * @param copyMap a map containing copied associated objects
      * 
      * @generated
-     */
-    «overrideAnnotationIfHasSupertype(false)»
-    protected void copyProperties(IModelObject copy, Map<IModelObject, IModelObject> copyMap) {
+     */«REM»«overrideAnnotationIfHasSupertype(false)»«ENDREM»
+    protected void «copyProperties(IModelObject()+" copy", Map(IModelObject(), IModelObject())+" copyMap")» {
         «IF attributesToCopy.size > 0-»
         	«className» concreteCopy = («className»)copy;
         	«EXPAND copyAttribute FOREACH attributesToCopy-»
@@ -56,9 +54,8 @@
      * @param copyMap the map contains the copied instances
      * 
      * @generated
-     */
-    «overrideAnnotationIfHasSupertype(false)»
-    public void copyAssociationsInternal(IModelObject abstractCopy, Map<IModelObject, IModelObject> copyMap) {
+     */«REM»«overrideAnnotationIfHasSupertype(false)»«ENDREM»
+    public void «copyAssociationsInternal(IModelObject()+" abstractCopy", Map(IModelObject(), IModelObject())+" copyMap")» {
         «IF associationsToCopy.size > 0-»
         «ELSE-»
         	// Nothing to do.
