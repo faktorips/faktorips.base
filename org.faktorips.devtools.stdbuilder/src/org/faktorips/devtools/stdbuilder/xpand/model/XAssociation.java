@@ -119,11 +119,16 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         }
     }
 
+    public String getTargetInterfaceName() {
+        IType target = getTargetType();
+        XClass modelNode = getModelNode(target, getTargetModelNodeType());
+        return modelNode.getSimpleName(BuilderAspect.getValue(isGeneratingPublishedInterfaces()));
+    }
+
     public String getTargetClassName() {
         IType target = getTargetType();
         XClass modelNode = getModelNode(target, getTargetModelNodeType());
-        // TODO FIPS-1059
-        return modelNode.getSimpleName(BuilderAspect.INTERFACE);
+        return modelNode.getSimpleName(BuilderAspect.IMPLEMENTATION);
     }
 
     protected Class<? extends XClass> getTargetModelNodeType() {

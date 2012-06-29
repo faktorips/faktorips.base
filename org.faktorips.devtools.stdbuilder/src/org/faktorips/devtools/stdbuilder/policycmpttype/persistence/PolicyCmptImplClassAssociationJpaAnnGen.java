@@ -22,20 +22,20 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.RelationshipType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
-import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
-import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
 
 /**
  * This class generates JPA annotations for associations of policy component types.
@@ -76,79 +76,83 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         annotationForRelationshipType.put(RelationshipType.MANY_TO_ONE, ANNOTATION_MANY_TO_ONE);
     }
 
-    public PolicyCmptImplClassAssociationJpaAnnGen(StandardBuilderSet builderSet) {
-        super(builderSet);
-    }
-
     @Override
     public AnnotatedJavaElementType getAnnotatedJavaElementType() {
         return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION;
     }
 
     @Override
-    public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
+    public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)ipsElement;
+        if (generatorModelNode instanceof XPolicyAssociation) {
+            XPolicyAssociation xPolicyAssociation = (XPolicyAssociation)generatorModelNode;
 
-        try {
-            if (!association.getPersistenceAssociatonInfo().isValid(association.getIpsProject())) {
-                return fragment;
+            IPolicyCmptTypeAssociation association = xPolicyAssociation.getAssociation();
+
+            try {
+                if (!association.getPersistenceAssociatonInfo().isValid(association.getIpsProject())) {
+                    return fragment;
+                }
+
+                IPolicyCmptTypeAssociation inverseAssociation = association.findInverseAssociation(association
+                        .getIpsProject());
+                XPolicyAssociation xInverseAssociation = xPolicyAssociation.getModelNode(inverseAssociation,
+                        XPolicyAssociation.class);
+
+                IIpsArtefactBuilderSet ipsArtefactBuilderSet = xPolicyAssociation.getIpsProject()
+                        .getIpsArtefactBuilderSet();
+                if (ipsArtefactBuilderSet instanceof StandardBuilderSet) {
+                    StandardBuilderSet standardBuilderSet = (StandardBuilderSet)ipsArtefactBuilderSet;
+                    IPersistenceProvider persistenceProviderImpl = standardBuilderSet
+                            .getPersistenceProviderImplementation();
+
+                    // add import and annotation depending on the relationship type (e.g. oneToMany)
+                    RelationshipType relationShip = RelationshipType.UNKNOWN;
+                    if (inverseAssociation != null) {
+                        relationShip = association.getPersistenceAssociatonInfo().evalBidirectionalRelationShipType(
+                                inverseAssociation);
+                    } else {
+                        relationShip = association.getPersistenceAssociatonInfo().evalUnidirectionalRelationShipType();
+                    }
+                    if (relationShip == RelationshipType.UNKNOWN) {
+                        throw new RuntimeException("Error evaluation the relationship type!");
+                    }
+
+                    fragment.addImport(importForRelationshipType.get(relationShip));
+                    fragment.append(annotationForRelationshipType.get(relationShip));
+
+                    // add attributes to relationship annotation
+                    List<String> attributesToAppend = new ArrayList<String>();
+                    addAnnotationAttributeMappedBy(relationShip, attributesToAppend, association, xInverseAssociation);
+                    addAnnotationAttributeCascadeType(fragment, attributesToAppend, association);
+                    addAnnotationAttributeFetch(fragment, attributesToAppend, association);
+                    addAnnotationAttributesTargetEntity(attributesToAppend, xPolicyAssociation);
+                    addAnnotationAttributeOrphanRemoval(persistenceProviderImpl, attributesToAppend, association);
+                    appendAllAttributes(fragment, attributesToAppend);
+
+                    // evaluate further attributes depending on the relationship type
+                    addAnnotationFor(persistenceProviderImpl, fragment, association);
+
+                    // add special annotation in case of join table needed
+                    addAnnotationJoinTable(fragment, association);
+                }
+            } catch (CoreException e) {
+                StdBuilderPlugin.log(e);
             }
 
-            // get necessary generators
-            GenAssociation genAssociation = getGenerator(association);
-            IPolicyCmptTypeAssociation inverseAssociation = genAssociation.getInverseAssociation();
-            GenAssociation genInverseAssociation = getGenerator(inverseAssociation);
-
-            IPersistenceProvider persistenceProviderImpl = genAssociation.getGenType().getBuilderSet()
-                    .getPersistenceProviderImplementation();
-
-            // add import and annotation depending on the relationship type (e.g. oneToMany)
-            RelationshipType relationShip = RelationshipType.UNKNOWN;
-            if (inverseAssociation != null) {
-                relationShip = association.getPersistenceAssociatonInfo().evalBidirectionalRelationShipType(
-                        inverseAssociation);
-            } else {
-                relationShip = association.getPersistenceAssociatonInfo().evalUnidirectionalRelationShipType();
-            }
-            if (relationShip == RelationshipType.UNKNOWN) {
-                throw new RuntimeException("Error evaluation the relationship type!");
-            }
-
-            fragment.addImport(importForRelationshipType.get(relationShip));
-            fragment.append(annotationForRelationshipType.get(relationShip));
-
-            // add attributes to relationship annotation
-            List<String> attributesToAppend = new ArrayList<String>();
-            addAnnotationAttributeMappedBy(relationShip, attributesToAppend, genAssociation, genInverseAssociation);
-            addAnnotationAttributeCascadeType(fragment, attributesToAppend, genAssociation);
-            addAnnotationAttributeFetch(fragment, attributesToAppend, genAssociation);
-            addAnnotationAttributesTargetEntity(fragment, attributesToAppend, genAssociation);
-            addAnnotationAttributeOrphanRemoval(persistenceProviderImpl, attributesToAppend, genAssociation);
-            appendAllAttributes(fragment, attributesToAppend);
-
-            // evaluate further attributes depending on the relationship type
-            addAnnotationFor(persistenceProviderImpl, fragment, genAssociation);
-
-            // add special annotation in case of join table needed
-            addAnnotationJoinTable(fragment, genAssociation);
-        } catch (CoreException e) {
-            StdBuilderPlugin.log(e);
         }
-
         return fragment;
     }
 
     private void addAnnotationAttributeOrphanRemoval(IPersistenceProvider persistenceProviderImpl,
             List<String> attributesToAppend,
-            GenAssociation genAssociation) {
+            IPolicyCmptTypeAssociation association) {
         // note that depending on the JPA implementation (not JPA
         // 2.0) the orphan removal feature could be set as attribute or separate annotation
         if (persistenceProviderImpl == null || !persistenceProviderImpl.isSupportingOrphanRemoval()) {
             return;
         }
-        IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
-                .getPersistenceAssociatonInfo();
+        IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
 
         if (persistenceAssociatonInfo.isOrphanRemoval()) {
             String attributeOrphanRemoval = persistenceProviderImpl.getRelationshipAnnotationAttributeOrphanRemoval();
@@ -160,9 +164,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
 
     private void addAnnotationFor(IPersistenceProvider persistenceProviderImpl,
             JavaCodeFragment fragment,
-            GenAssociation genAssociation) {
-        IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
-                .getPersistenceAssociatonInfo();
+            IPolicyCmptTypeAssociation association) {
+        IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
 
         // add orphan removal annotation, note that depending on the JPA implementation (not JPA
         // 2.0) the orphan removal feature could be set as attribute or separate annotation
@@ -177,21 +180,9 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         }
     }
 
-    private GenAssociation getGenerator(IPolicyCmptTypeAssociation pcTypeAssociation) throws CoreException {
-        if (pcTypeAssociation == null) {
-            return null;
-        }
-        return getStandardBuilderSet().getGenerator(pcTypeAssociation.getPolicyCmptType()).getGenerator(
-                pcTypeAssociation);
-    }
-
-    private GenPolicyCmptType getGenerator(IPolicyCmptType policyCmptType) throws CoreException {
-        return getStandardBuilderSet().getGenerator(policyCmptType);
-    }
-
-    private void addAnnotationJoinTable(JavaCodeFragment fragment, GenAssociation genAssociation) throws CoreException {
-        IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
-                .getPersistenceAssociatonInfo();
+    private void addAnnotationJoinTable(JavaCodeFragment fragment, IPolicyCmptTypeAssociation association)
+            throws CoreException {
+        IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
         if (!persistenceAssociatonInfo.isJoinTableRequired()) {
             return;
         }
@@ -257,20 +248,15 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         fragment.append(')');
     }
 
-    private void addAnnotationAttributesTargetEntity(JavaCodeFragment fragment,
-            List<String> attributesToAppend,
-            GenAssociation genAssociation) throws CoreException {
-        GenPolicyCmptType genTargetPolicyCmptType = getGenerator(genAssociation.getTargetPolicyCmptType());
-        String targetQName = genTargetPolicyCmptType.getUnqualifiedClassName(false);
-        fragment.addImport(genTargetPolicyCmptType.getQualifiedName(false));
-        attributesToAppend.add("targetEntity = " + targetQName + ".class");
+    private void addAnnotationAttributesTargetEntity(List<String> attributesToAppend,
+            XPolicyAssociation xPolicyAssociation) {
+        attributesToAppend.add("targetEntity = " + xPolicyAssociation.getTargetClassName() + ".class");
     }
 
     private void addAnnotationAttributeCascadeType(JavaCodeFragment fragment,
             List<String> attributesToAppend,
-            GenAssociation genAssociation) {
-        IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
-                .getPersistenceAssociatonInfo();
+            IPolicyCmptTypeAssociation association) {
+        IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
         List<String> cascadeTypes = new ArrayList<String>();
         boolean needImport = false;
         if (persistenceAssociatonInfo.isCascadeTypeMerge() && persistenceAssociatonInfo.isCascadeTypeRemove()
@@ -310,10 +296,9 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
 
     private void addAnnotationAttributeFetch(JavaCodeFragment fragment,
             List<String> attributesToAppend,
-            GenAssociation genAssociation) {
+            IPolicyCmptTypeAssociation association) {
         fragment.addImport(IMPORT_FETCH_TYPE);
-        IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
-                .getPersistenceAssociatonInfo();
+        IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
         // note that the FetchType enumeration must be equal to the FetchType enumeration in JPA
         attributesToAppend.add("fetch=FetchType." + persistenceAssociatonInfo.getFetchType().toString());
     }
@@ -325,15 +310,16 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
      */
     private void addAnnotationAttributeMappedBy(RelationshipType relationShip,
             List<String> attributesToAppend,
-            GenAssociation genAssociation,
-            GenAssociation genInverseAssociation) throws CoreException {
-        if (genInverseAssociation == null) {
+            IPolicyCmptTypeAssociation association,
+            XPolicyAssociation xInverseAssociation) {
+        IPolicyCmptTypeAssociation inverseAssociation = xInverseAssociation.getAssociation();
+        if (inverseAssociation == null) {
             // inverse generator not exist,
             // maybe this is an unidirectional association
             return;
         }
 
-        if (isOwnerOfRelationship(genAssociation.getAssociation(), genInverseAssociation.getAssociation())) {
+        if (isOwnerOfRelationship(association, inverseAssociation)) {
             // the owned by must be defined on the inverse side of the owner side,
             // otherwise the joined table annotation will be ignored
             return;
@@ -345,7 +331,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             return;
         }
 
-        attributesToAppend.add("mappedBy=\"" + genInverseAssociation.getFieldNameForAssociation() + "\"");
+        attributesToAppend.add("mappedBy=\"" + xInverseAssociation.getFieldName() + "\"");
     }
 
     public boolean isOwnerOfRelationship(IPolicyCmptTypeAssociation association,
@@ -399,26 +385,20 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         if (pcTypeAssociation.getPersistenceAssociatonInfo().isTransient()) {
             return false;
         }
-        return isTargetPolicyCmptTypePersistenceEnabled(this, pcTypeAssociation);
+        return isTargetPolicyCmptTypePersistenceEnabled(pcTypeAssociation);
     }
 
     /*
      * Returns <code>true</code> if the persistent is enabled on the target type otherwise
      * <code>false</code>
      */
-    static boolean isTargetPolicyCmptTypePersistenceEnabled(IAnnotationGenerator generator,
-            IPolicyCmptTypeAssociation pcTypeAssociation) {
-        GenAssociation pcTypeAssociationGenerator;
+    static boolean isTargetPolicyCmptTypePersistenceEnabled(IPolicyCmptTypeAssociation pcTypeAssociation) {
         try {
-            pcTypeAssociationGenerator = generator.getStandardBuilderSet()
-                    .getGenerator(pcTypeAssociation.getPolicyCmptType()).getGenerator(pcTypeAssociation);
-            return pcTypeAssociationGenerator.getTargetPolicyCmptType().isPersistentEnabled();
+            IPolicyCmptType targetPolicyCmptType = pcTypeAssociation.findTargetPolicyCmptType(pcTypeAssociation
+                    .getIpsProject());
+            return targetPolicyCmptType.isPersistentEnabled();
         } catch (CoreException e) {
-            // in some cases the getGenerator method could throw a CoreException e.g. if the
-            // generator not exists and a new one are created lazily the generator validates the
-            // IpsElement and if there was a core exception during validation
-            IpsPlugin.log(e);
+            throw new CoreRuntimeException(e);
         }
-        return false;
     }
 }

@@ -13,11 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -39,13 +35,6 @@ public class ProductCmptGenerationInterfaceBuilder extends XpandBuilder<XProduct
     @Override
     protected Class<XProductCmptGenerationClass> getGeneratorModelNodeClass() {
         return XProductCmptGenerationClass.class;
-    }
-
-    @Override
-    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override

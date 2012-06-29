@@ -18,8 +18,8 @@
      * @generated
      */
      «overrideAnnotation(true)»
-     public «List_(targetClassName)» «methodNameGetter»() {
-     	«List_(targetClassName)» result = new «ArrayList(targetClassName)»(«methodNameGetNumOfInternal»());
+     public «List_(targetInterfaceName)» «methodNameGetter»() {
+     	«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«methodNameGetNumOfInternal»());
      	«IF isImplementedInSuperclass(currentContextClass)-»
      		result.addAll(super.«methodNameGetter»());
      	«ENDIF-»

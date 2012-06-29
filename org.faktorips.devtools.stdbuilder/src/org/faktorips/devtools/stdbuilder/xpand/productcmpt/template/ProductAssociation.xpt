@@ -13,9 +13,9 @@
 	     * @generated
 	     */
 		«IF oneToMany-»
-			private «Map("String", IProductComponentLink(targetClassName))» «fieldName»  = new «LinkedHashMap("String", IProductComponentLink(targetClassName))»(0);
+			private «Map("String", IProductComponentLink(targetInterfaceName))» «field(fieldName)»  = new «LinkedHashMap("String", IProductComponentLink(targetInterfaceName))»(0);
 		«ELSE-»
-			private «IProductComponentLink(targetClassName)» «fieldName» = null;
+			private «IProductComponentLink(targetInterfaceName)» «field(fieldName)» = null;
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
@@ -43,14 +43,14 @@
      */
      «overrideAnnotation(true)»
    	«IF oneToMany-»
-	    public «List_(targetClassName)» «methodNameGetter»() {
-        	«List_(targetClassName)» result = new «ArrayList(targetClassName)»(«fieldName».size());
-			for («IProductComponentLink(targetClassName)» «name.toFirstLower()» : «fieldName».values()) {
+	    public «List_(targetInterfaceName)» «methodNameGetter»() {
+        	«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«fieldName».size());
+			for («IProductComponentLink(targetInterfaceName)» «name.toFirstLower()» : «fieldName».values()) {
 	            result.add(«name.toFirstLower()».«getTarget()»);
     	    }
         	return result;
     «ELSE-»
-	    public «targetClassName» «methodNameGetter»() {
+	    public «targetInterfaceName» «methodNameGetter»() {
 			return «fieldName» != null ? «fieldName».«getTarget()» : null;
     «ENDIF-»
     }
@@ -65,9 +65,9 @@
      «overrideAnnotation(true)»
    	«IF oneToMany-»
 	    public «List_(targetClassGenerationName)» «methodNameGetter»(«Calendar()» effectiveDate) {
-        	«List_(targetClassName)» targets = «methodNameGetter»();
+        	«List_(targetInterfaceName)» targets = «methodNameGetter»();
         	«List_(targetClassGenerationName)» result = new «ArrayList(targetClassGenerationName)»();
-			for («targetClassName» target : targets) {
+			for («targetInterfaceName» target : targets) {
 				«targetClassGenerationName» gen = target.«methodNameGetTargetGeneration»(effectiveDate);
 				if (gen != null) {
 	                result.add(gen);
@@ -89,8 +89,8 @@
      * @generated
      */
      «overrideAnnotation(true)»
-	public «targetClassName» «methodNameGetSingle»(int index) {
-		«Iterator(IProductComponentLink(targetClassName))» it = «fieldName».values().iterator();
+	public «targetInterfaceName» «methodNameGetSingle»(int index) {
+		«Iterator(IProductComponentLink(targetInterfaceName))» it = «fieldName».values().iterator();
         try {
             for (int i = 0; i < index; i++) {
                 it.next();
@@ -111,10 +111,10 @@
      */
      «overrideAnnotation(true)»
 	«IF oneToMany-»
-	    public «Collection_(IProductComponentLink(targetClassName))» «methodNameGetLinksFor»() {
+	    public «Collection_(IProductComponentLink(targetInterfaceName))» «methodNameGetLinksFor»() {
     	    return «Collections()».unmodifiableCollection(«fieldName».values());
     «ELSE-»
-	    public «IProductComponentLink(targetClassName)» «methodNameGetLinksFor»() {
+	    public «IProductComponentLink(targetInterfaceName)» «methodNameGetLinksFor»() {
     		return «fieldName»;
 	«ENDIF-»
     }
@@ -127,7 +127,7 @@
      * @generated
      */
      «overrideAnnotation(true)»
-    public «IProductComponentLink(targetClassName)» «methodNameGetLinkFor»(«targetClassName» productComponent) {
+    public «IProductComponentLink(targetInterfaceName)» «methodNameGetLinkFor»(«targetInterfaceName» productComponent) {
 		«IF oneToMany-»
         	return «fieldName».get(productComponent.getId());
         «ELSE-»
@@ -143,9 +143,9 @@
      * 
      * @generated
      */
-    public void «methodNameAdd»(«targetClassName» target) {
+    public void «methodNameAdd»(«targetInterfaceName» target) {
         «EXPAND ProductCommons::checkRepositoryModifyable-»
-        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetClassName)»(this, target));
+        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target));
     }
     «ENDIF»
 «ENDDEFINE»
@@ -158,9 +158,9 @@
      * 
      * @generated
      */
-    public void «methodNameAdd»(«targetClassName» target, «CardinalityRange()» cardinality) {
+    public void «methodNameAdd»(«targetInterfaceName» target, «CardinalityRange()» cardinality) {
         «EXPAND ProductCommons::checkRepositoryModifyable-»
-        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetClassName)»(this, target, cardinality));
+        this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target, cardinality));
     }
     «ENDIF»
 «ENDDEFINE»
@@ -172,9 +172,9 @@
      * 
      * @generated
      */
-    public void «methodNameSetter»(«targetClassName» target) {
+    public void «methodNameSetter»(«targetInterfaceName» target) {
         «EXPAND ProductCommons::checkRepositoryModifyable-»
-        «fieldName» = (target == null ? null : new «ProductComponentLink(targetClassName)»(this, target));
+        «fieldName» = (target == null ? null : new «ProductComponentLink(targetInterfaceName)»(this, target));
     }
 	«ENDIF»
 «ENDDEFINE»
@@ -187,7 +187,7 @@
      * @generated
      */
     «overrideAnnotation(true)»
-    public «CardinalityRange()» «methodNameGetCardinalityFor»(«targetClassName» productCmpt) {
+    public «CardinalityRange()» «methodNameGetCardinalityFor»(«targetInterfaceName» productCmpt) {
         if (productCmpt != null) {
     	«IF oneToMany-»
             return «fieldName».containsKey(productCmpt.«getId()») ? «fieldName».get(productCmpt.«getId()»)
@@ -231,7 +231,7 @@
 	    public «IProductComponentLink("? extends " + IProductComponent())» «getLink("String linkName", IProductComponent() + " target")» {
 	    	«FOREACH associations AS this-»
 		        if ("«name»".equals(linkName)) {
-		            return «methodNameGetLinkFor»((«targetClassName»)target);
+		            return «methodNameGetLinkFor»((«targetInterfaceName»)target);
 		        }
 		    «ENDFOREACH-»
 		    «IF hasSupertype() -»
@@ -277,15 +277,15 @@
 	   associationElements = elementsMap.get("«name»");
 	    if (associationElements != null) {
 			«IF oneToMany-»
-			        this.«fieldName» = new «LinkedHashMap("String", IProductComponentLink(targetClassName))»(associationElements.size());
+			        this.«fieldName» = new «LinkedHashMap("String", IProductComponentLink(targetInterfaceName))»(associationElements.size());
 			        for (Element element : associationElements) {
-			            «IProductComponentLink(targetClassName)» link = new «ProductComponentLink(targetClassName)»(this);
+			            «IProductComponentLink(targetInterfaceName)» link = new «ProductComponentLink(targetInterfaceName)»(this);
 			            link.initFromXml(element);
 			            this.«fieldName».put(link.getTargetId(), link);
 	        }
 			«ELSE-»
 	            Element element = associationElements.get(0);
-	            «fieldName» = new «ProductComponentLink(targetClassName)»(this);
+	            «fieldName» = new «ProductComponentLink(targetInterfaceName)»(this);
 	            «fieldName».initFromXml(element);
 			«ENDIF-»
 	    }
@@ -293,11 +293,13 @@
 
 «DEFINE writeReferencesToXmlPart FOR XProductAssociation-»
 		«IF oneToMany-»
-		    for («IProductComponentLink(targetClassName)» link : «fieldName».values()) {
+		    for («IProductComponentLink(targetInterfaceName)» link : «fieldName».values()) {
 		        element.appendChild(((«IXmlPersistenceSupport()»)link).«toXml("element.getOwnerDocument()")»);
 		    }
 		«ELSE-»
-			element.appendChild(((«IXmlPersistenceSupport()»)«fieldName»).«toXml("element.getOwnerDocument()")»);
+		    if («fieldName» != null) {
+				element.appendChild(((«IXmlPersistenceSupport()»)«fieldName»).«toXml("element.getOwnerDocument()")»);
+			}
 		«ENDIF-»
 «ENDDEFINE»
 

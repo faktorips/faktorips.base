@@ -13,14 +13,20 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.ImportDeclaration;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -28,6 +34,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
+import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.util.LocalizedStringsSet;
@@ -48,6 +56,10 @@ public abstract class AbstractGeneratorModelNode {
     private final GeneratorModelContext modelContext;
 
     private final ModelService modelService;
+
+    private final List<String> generatedFields = new ArrayList<String>();
+
+    private final List<MethodSignature> generatedMethods = new ArrayList<MethodSignature>();
 
     /**
      * This constructor is required in every generator model node. It defines
@@ -317,24 +329,21 @@ public abstract class AbstractGeneratorModelNode {
      * Returns whether or not methods for delta-support should be added to generated classes.
      */
     public boolean isGenerateDeltaSupport() {
-        // TODO FIPS-1059
-        return true;
+        return getModelContext().isGenerateDeltaSupport();
     }
 
     /**
      * Returns whether or not methods for copy-support should be added to generated classes.
      */
     public boolean isGenerateCopySupport() {
-        // TODO FIPS-1059
-        return true;
+        return getModelContext().isGenerateCopySupport();
     }
 
     /**
      * Returns whether or not published interfaces should be generated.
      */
     public boolean isGeneratingPublishedInterfaces() {
-        // TODO FIPS-1059
-        return true;
+        return getModelContext().isGeneratingPublishedInterfaces();
     }
 
     /**
@@ -355,6 +364,62 @@ public abstract class AbstractGeneratorModelNode {
             nodes.add(getModelNode(part, nodeClass));
         }
         return nodes;
+    }
+
+    /**
+     * Returns a string containing all annotations to the given {@link AnnotatedJavaElementType} and
+     * IpsElement using the given builder.
+     * 
+     * @param type Determines the type of annotation to generate. See
+     *            {@link AnnotatedJavaElementType} for a list of possible types.
+     * @param ipsElement The IPS element to create the annotations for. <br/>
+     *            <code>Null</code> is permitted for certain AnnotatedJavaElementTypes which do not
+     *            need further information. This is the case if <code>type</code> is
+     *            POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD.
+     * @return the string containing the annotations
+     * 
+     */
+    public String getAnnotations(AnnotatedJavaElementType type, IIpsElement ipsElement) {
+        List<IAnnotationGenerator> generators = getModelContext().getAnnotationGenerator(type);
+        String result = "";
+        for (IAnnotationGenerator generator : generators) {
+            if (!generator.isGenerateAnnotationFor(ipsElement)) {
+                continue;
+            }
+            JavaCodeFragment annotationFragment = generator.createAnnotation(this);
+            addImport(annotationFragment.getImportDeclaration());
+            result += annotationFragment.getSourcecode() + "\n";
+        }
+        return result;
+    }
+
+    /**
+     * Returns a string containing all annotations to the given {@link AnnotatedJavaElementType} and
+     * the {@link IIpsObjectPartContainer} that is represented by this model node.
+     * 
+     * @see #getIpsObjectPartContainer()
+     * 
+     * @param type The type you want to generate
+     * @return the string containing the annotations
+     */
+    public String getAnnotations(AnnotatedJavaElementType type) {
+        return getAnnotations(type, getIpsObjectPartContainer());
+    }
+
+    public List<IJavaElement> getGeneratedJavaElements(IType javaType) {
+        List<IJavaElement> result = new ArrayList<IJavaElement>();
+        for (String field : generatedFields) {
+            result.add(javaType.getField(field));
+        }
+        for (MethodSignature methodSignature : generatedMethods) {
+            result.add(javaType.getMethod(methodSignature.getName(), methodSignature.getParameters()));
+        }
+        return result;
+    }
+
+    public String field(String fieldName) {
+        generatedFields.add(fieldName);
+        return fieldName;
     }
 
 }
