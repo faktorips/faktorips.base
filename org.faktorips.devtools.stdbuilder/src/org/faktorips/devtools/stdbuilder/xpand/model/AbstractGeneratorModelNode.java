@@ -422,4 +422,22 @@ public abstract class AbstractGeneratorModelNode {
         return fieldName;
     }
 
+    public String method(String methodName) {
+        return method(methodName, new String[] {});
+    }
+
+    public String method(String methodName, String parameter) {
+        return method(methodName, new String[] { parameter });
+    }
+
+    public String method(String methodName, String parameter1, String parameter2) {
+        return method(methodName, new String[] { parameter1, parameter2 });
+    }
+
+    public String method(String methodName, String... parameters) {
+        MethodSignature methodSignature = new MethodSignature(methodName, parameters);
+        generatedMethods.add(methodSignature);
+        return methodName;
+    }
+
 }
