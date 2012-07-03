@@ -57,9 +57,9 @@ public abstract class AbstractGeneratorModelNode {
 
     private final ModelService modelService;
 
-    private final List<String> generatedFields = new ArrayList<String>();
+    private final Set<String> generatedFields = new LinkedHashSet<String>();
 
-    private final List<MethodSignature> generatedMethods = new ArrayList<MethodSignature>();
+    private final Set<MethodDefinition> generatedMethods = new LinkedHashSet<MethodDefinition>();
 
     /**
      * This constructor is required in every generator model node. It defines
@@ -406,38 +406,88 @@ public abstract class AbstractGeneratorModelNode {
         return getAnnotations(type, getIpsObjectPartContainer());
     }
 
+    public void clearGeneratedJavaElements() {
+        generatedFields.clear();
+        generatedMethods.clear();
+    }
+
     public List<IJavaElement> getGeneratedJavaElements(IType javaType) {
         List<IJavaElement> result = new ArrayList<IJavaElement>();
         for (String field : generatedFields) {
             result.add(javaType.getField(field));
         }
-        for (MethodSignature methodSignature : generatedMethods) {
-            result.add(javaType.getMethod(methodSignature.getName(), methodSignature.getParameters()));
+        for (MethodDefinition methodSignature : generatedMethods) {
+            result.add(javaType.getMethod(methodSignature.getName(), methodSignature.getrTypeSignatures()));
         }
         return result;
     }
 
+    // METHODS FOR TEMPLATES TO ADD GENERATED ARTIFACTS
+    // These methods needs to be easy accessible from templates.
+
+    /**
+     * Adds a field with the given name to the list of generated fields.
+     * 
+     * @param fieldName The name of the field
+     * 
+     * @return Returns simply the name to use in the template
+     */
     public String field(String fieldName) {
         generatedFields.add(fieldName);
         return fieldName;
     }
 
+    /**
+     * Adds a method with no parameter to the list of generated method signatures.
+     * 
+     * @param methodName The name of the generated method
+     * @return The methods definition. For example for a method name <em>getFoo</em> the method
+     *         definition is <em>getFoo()</em>
+     */
     public String method(String methodName) {
-        return method(methodName, new String[] {});
+        return method(methodName, new MethodParameter[0]);
     }
 
-    public String method(String methodName, String parameter) {
-        return method(methodName, new String[] { parameter });
+    /**
+     * Adds a method with one parameter to the list of generated method signatures. The method
+     * parameter is split in the parameter type and the parameter name
+     * 
+     * @param methodName The name of the generated method
+     * @param parameterType The type of the method parameter
+     * @param parameterName The name of the method parameter
+     * @return The methods definition. For example for a method name <em>setFoo</em> with parameter
+     *         <em>bar</em> of type <em>String</em> the method definition is
+     *         <em>SetFoo(String bar)<em>
+     */
+    public String method(String methodName, String parameterType, String parameterName) {
+        return method(methodName, new MethodParameter(parameterType, parameterName));
     }
 
-    public String method(String methodName, String parameter1, String parameter2) {
-        return method(methodName, new String[] { parameter1, parameter2 });
+    /**
+     * Adds a method with two parameters to the list of generated method signatures.
+     * 
+     * @param methodName The name of the generated method
+     * @param parameterType1 The type of the first method parameter
+     * @param parameterName1 The name of the first method parameter
+     * @param parameterType2 The type of the second method parameter
+     * @param parameterName2 The name of the second method parameter
+     * @return The methods definition. For example for a method name <em>setFoo</em> with parameter
+     *         <em>bar</em> of type <em>String</em> the method definition is
+     *         <em>SetFoo(String bar)<em>
+     */
+    public String method(String methodName,
+            String parameterType1,
+            String parameterName1,
+            String parameterType2,
+            String parameterName2) {
+        return method(methodName, new MethodParameter(parameterType1, parameterName1), new MethodParameter(
+                parameterType2, parameterName2));
     }
 
-    public String method(String methodName, String... parameters) {
-        MethodSignature methodSignature = new MethodSignature(methodName, parameters);
+    public String method(String methodName, MethodParameter... parameters) {
+        MethodDefinition methodSignature = new MethodDefinition(methodName, parameters);
         generatedMethods.add(methodSignature);
-        return methodName;
+        return methodSignature.getDefinition();
     }
 
 }

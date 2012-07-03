@@ -24,7 +24,7 @@ public class PolicyCmptImplClassBuilderTest {
 
     @Test
     public void testGetTemplate_exists() throws Exception {
-        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(null);
+        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(null, null, null);
         String template = policyCmptImplClassBuilder.getTemplate();
         int lastIndexOf = template.lastIndexOf(SyntaxConstants.NS_DELIM);
         template = template.substring(0, lastIndexOf);

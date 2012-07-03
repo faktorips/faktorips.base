@@ -40,7 +40,7 @@ public class XpandBuilderTest {
     public void testBeforeBuildProcess() throws Exception {
         // Using PolicyCmptImlClassBuilder as concrete instance knowing that this also tests this
         // other class
-        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(builderSet);
+        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(builderSet, null, null);
         policyCmptImplClassBuilder.beforeBuildProcess(ipsProject, 0);
         assertNotNull(policyCmptImplClassBuilder.getOut());
         assertNotNull(policyCmptImplClassBuilder.getTemplateDefinition());

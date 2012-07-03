@@ -163,4 +163,40 @@ public class XDerivedUnionAssociationTest {
 
         assertTrue(xDerivedUnionAssociation.isImplementedInSuperclass(xClass));
     }
+
+    @Test
+    public void testIsImplementedInSuperclass_differentProjects() throws Exception {
+        // TODO der Test ist bisher der transitiv test. es muss noch ein test implementiert werden,
+        // in dem derived union und subset in unterschiedlichen Projekten liegen
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(association.getIpsProject()).thenReturn(ipsProject);
+
+        IType type = mock(IType.class);
+        IType superType = mock(IType.class);
+        IType superSuperType = mock(IType.class);
+        IType superSuperSuperType = mock(IType.class);
+
+        when(xDerivedUnionAssociation.getAssociationType()).thenReturn(superSuperSuperType);
+
+        when(xClass.getType()).thenReturn(type);
+        when(type.findSupertype(any(IIpsProject.class))).thenReturn(superType);
+        when(superType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperType);
+        when(superSuperType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperSuperType);
+
+        IAssociation association2 = mock(IAssociation.class);
+        when(association2.getSubsettedDerivedUnion()).thenReturn(DERIVED_UNION_NAME);
+        ArrayList<IAssociation> associations = new ArrayList<IAssociation>();
+        associations.add(association2);
+
+        assertFalse(xDerivedUnionAssociation.isImplementedInSuperclass(xClass));
+
+        when(superSuperType.getAssociations()).thenReturn(associations);
+
+        assertTrue(xDerivedUnionAssociation.isImplementedInSuperclass(xClass));
+
+        when(superSuperType.getAssociations()).thenReturn(new ArrayList<IAssociation>());
+        when(superSuperSuperType.getAssociations()).thenReturn(associations);
+
+        assertTrue(xDerivedUnionAssociation.isImplementedInSuperclass(xClass));
+    }
 }

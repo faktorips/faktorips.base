@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xpand2.XpandExecutionContextImpl;
+import org.eclipse.xpand2.output.Outlet;
 import org.eclipse.xtend.type.impl.java.JavaBeansMetaModel;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
@@ -37,6 +38,7 @@ import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
+import org.faktorips.devtools.stdbuilder.xpand.nullout.NullOutlet;
 import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutlet;
 import org.faktorips.devtools.stdbuilder.xpand.stringout.StringOutput;
 import org.faktorips.util.ArgumentCheck;
@@ -67,13 +69,15 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
      * translating for example java doc.
      * 
      * @param builderSet The builder set used with this builder
+     * @param modelContext the generator model context holding necessary context information
+     * @param modelService the model service to get and create generator model nodes
      * @param localizedStringsSet the {@link LocalizedStringsSet} for translations
      */
-    public XpandBuilder(StandardBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
+    public XpandBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext, ModelService modelService,
+            LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
-        modelService = new ModelService();
-        generatorModelContext = new GeneratorModelContext(getBuilderSet().getConfig(), getBuilderSet()
-                .getAnnotationGenerators());
+        generatorModelContext = modelContext;
+        this.modelService = modelService;
     }
 
     @Override
@@ -91,8 +95,8 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
         super.beforeBuildProcess(project, buildKind);
         initTemplate();
         String charset = project.getProject().getDefaultCharset();
-        StringOutlet outlet = (StringOutlet)getOut().getOutlet(null);
-        if (outlet == null || !outlet.getFileEncoding().equals(charset)) {
+        Outlet outlet = getOut().getOutlet(null);
+        if (!(outlet instanceof StringOutlet) || !outlet.getFileEncoding().equals(charset)) {
             outlet = new StringOutlet(charset, null);
             getOut().addOutlet(outlet);
         }
@@ -190,10 +194,8 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
             IIpsObjectPartContainer ipsObjectPartContainer) {
         if (templateDefinition == null) {
             initTemplate();
-            // TODO increase performance by creating a NullOutlet
-            StringOutlet outlet = new StringOutlet("UTF-8", null);
-            getOut().addOutlet(outlet);
         }
+        getOut().addOutlet(new NullOutlet());
         // TODO NullImportHandler??
         generatorModelContext.setImportHandler(new ImportHandler(""));
         evaluateTemplate(ipsObjectPartContainer.getIpsObject());

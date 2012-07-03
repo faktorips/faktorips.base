@@ -107,6 +107,9 @@ public class ModelService {
 
     public Set<AbstractGeneratorModelNode> getAllModelNodes(IIpsObjectPartContainer ipsObjectPartContainer) {
         Set<AbstractGeneratorModelNode> nodes = generatorModelNodes.get(ipsObjectPartContainer);
+        if (nodes == null) {
+            nodes = new HashSet<AbstractGeneratorModelNode>();
+        }
         return nodes;
     }
 }

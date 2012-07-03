@@ -193,7 +193,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     }
 
     private boolean isFullBuildRequired(int kind) throws CoreException {
-        if (kind == FULL_BUILD || kind == CLEAN_BUILD) {
+        if (kind == FULL_BUILD) {
             return true;
         }
         IResourceDelta delta = getDelta(getProject());
@@ -378,6 +378,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 removeDerivedResources(destination, monitor);
             }
         }
+        getBuilderSetReInitialisedIfNecessary(getIpsProject()).clean(monitor);
     }
 
     /**

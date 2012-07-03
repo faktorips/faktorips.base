@@ -18,13 +18,16 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.util.LocalizedStringsSet;
 
 public class ProductCmptImplClassBuilder extends XpandBuilder<XProductCmptClass> {
 
-    public ProductCmptImplClassBuilder(StandardBuilderSet builderSet) {
-        super(builderSet, new LocalizedStringsSet(ProductCmptImplClassBuilder.class));
+    public ProductCmptImplClassBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext,
+            ModelService modelService) {
+        super(builderSet, modelContext, modelService, new LocalizedStringsSet(ProductCmptImplClassBuilder.class));
     }
 
     @Override
