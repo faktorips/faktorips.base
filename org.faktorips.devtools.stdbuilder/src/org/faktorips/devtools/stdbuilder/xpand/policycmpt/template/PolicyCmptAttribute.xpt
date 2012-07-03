@@ -18,14 +18,15 @@
 	«IF generateField-»
 		/**
 		 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
+		 *
 		 * @generated
 		 */
 		«IF constant-»
-			public static final «javaClassName» «fieldName» = «defaultValueCode»;
+			public static final «javaClassName» «field(fieldName)» = «defaultValueCode»;
 		«ELSE-»
 			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD)-»
 			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)-»
-			private «javaClassName» «fieldName» = «defaultValueCode»;
+			private «javaClassName» «field(fieldName)» = «defaultValueCode»;
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
@@ -34,10 +35,11 @@
 	«IF generateGetter-»
 		/**
 		 * «inheritDocOrJavaDoc("METHOD_GETVALUE", name, description)»
+		 *
 		 * @generated
 		 */
 		«overrideAnnotation(true)»
-		public «javaClassName» «methodNameGetter»() {
+		public «javaClassName» «method(methodNameGetter)»{
 			«IF generateField-»
 				return «IF constant»«fieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(fieldName)»«ENDIF»;
 			«ELSE-»
@@ -58,10 +60,11 @@
 	«IF generateSetter-»
 		/**
 		 * «inheritDocOrJavaDoc("METHOD_SETVALUE", name, description)»
+		 *
 		 * @generated
 		 */
 		«overrideAnnotation(true)»
-		public void «methodNameSetter»(«javaClassName» newValue) {
+		public void «method(methodNameSetter, javaClassName, "newValue")»{
 			«EXPAND PropertyChangeSupport::storeOldValue-»
 			this.«fieldName» = newValue;
 			«EXPAND PropertyChangeSupport::notify-»
@@ -73,10 +76,11 @@
 	«IF generateGetAllowedValuesFor-»
 	/**
 	 * «inheritDocOrJavaDoc("METHOD_GET_ALLOWED_VALUES_FOR", name, description)»
+	 *
 	 * @generated
 	 */
 	 «overrideAnnotation(true)»
-	public «ValueSet()»<«datatypeClass»> «methodNameGetAllowedValuesFor»(«IValidationContext()» context) {
+	public «ValueSet()»<«datatypeClass»> «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»{
 		return «methodNameGetProductCmptGeneration»().«methodNameGetAllowedValuesFor»(context);
 	}
 	«ENDIF-»

@@ -9,19 +9,18 @@
 
 «DEFINE main FOR XPolicyCmptClass»
 	«FILE getFileName(BuilderAspect::IMPLEMENTATION)-»
-	package «packageName»;
+package «packageName»;
 
-		«EXPAND CommonDefinitions::ImportBlock FOREACH modelContext.imports ONFILECLOSE»
+«EXPAND CommonDefinitions::ImportBlock FOREACH modelContext.imports ONFILECLOSE»
 	
-		/**
-		 «IF generatingPublishedInterfaces-»
-		 *	«localizedJDoc("CLASS", getSimpleName(BuilderAspect::INTERFACE))»
-		 «ENDIF-»
-		 * @generated
-		 */
-		 «getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS)-»
-		public «abstract()» class «className» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
-		{
+	/**
+	 «IF generatingPublishedInterfaces-»
+	 *	«localizedJDoc("CLASS", getSimpleName(BuilderAspect::INTERFACE))»
+	 «ENDIF-»
+	 * @generated
+	 */
+	 «getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS)-»
+	public «abstract()» class «className» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces»{
 
 		«FOREACH attributes AS this-»
 			«IF !published-»
@@ -43,8 +42,8 @@
 			«ENDIF-»
 		«ENDFOREACH-»
 			
-		«EXPAND constructors»
-
+		«EXPAND constructors-»
+		
 		«FOREACH attributes AS this-»
 			«EXPAND PolicyCmptAttribute::allowedValuesMethod-»
 			«EXPAND PolicyCmptAttribute::getter-»
@@ -221,30 +220,24 @@
     «IF generateCopySupport-»
     	«EXPAND CopySupport::copyMethods-»
     «ENDIF-»
+    
+    «IF generateVisitorSupport-»
+    	«EXPAND VisitorSupport::acceptMethod-»
+    «ENDIF-»
+    
+    «EXPAND validateMethods-»
+«ENDDEFINE»
 
-«REM»
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-    @Override
-    public boolean accept(IModelObjectVisitor visitor) {
-        if (!visitor.visit(this)) {
-            return false;
-        }
-        return true;
-    }
-
+«DEFINE validateMethods FOR XPolicyCmptClass-»
     /**
      * Validates the object (but not its children). Returns <code>true</code> if this object should
      * continue validating, <code>false</code> else.
      * 
      * @generated
      */
-    @Override
-    public boolean validateSelf(MessageList ml, IValidationContext context) {
-        if (!super.validateSelf(ml, context)) {
+    «overrideAnnotation(true)»
+    public boolean «validateSelf(MessageList()+" ml", IValidationContext()+" context")» {
+        if (!super.«validateSelf("ml", "context")») {
             return STOP_VALIDATION;
         }
         return CONTINUE_VALIDATION;
@@ -255,9 +248,8 @@
      * 
      * @generated
      */
-    @Override
-    public void validateDependants(MessageList ml, IValidationContext context) {
-        super.validateDependants(ml, context);
+    «overrideAnnotation(true)»
+    public void «validateDependants(MessageList()+" ml", IValidationContext()+" context")» {
+        super.«validateDependants("ml", "context")»;
     }
-    «ENDREM»
 «ENDDEFINE»

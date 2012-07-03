@@ -17,7 +17,7 @@
 	        if (newCopy == null) {
 	            newCopy = new «className»();
 	            newCopy.«copyProductCmptAndGenerationInternal("this")»;
-	            copyProperties(newCopy, copyMap);
+	            «copyProperties("newCopy", "copyMap")»
 	        }
 	        return newCopy;
     	«ELSE-»
@@ -63,14 +63,16 @@
     }
 «ENDDEFINE»
 
+«REM»Siehe PolicyCmptImplClassBuilder Z.394«ENDREM»
 «DEFINE copyAttribute FOR XPolicyAttribute-»
-	«IF considerInCopySupport-»«REM»Siehe PolicyCmptImplClassBuilder Z.394«ENDREM»
+	«IF considerInCopySupport-»
         concreteCopy.«fieldName» = «fieldName»;
     «ENDIF-»
 «ENDDEFINE»
 
+«REM»Siehe PolicyCmptImplClassBuilder Z.523«ENDREM»
 «DEFINE copyAssociation FOR XPolicyAssociation-»
-	«IF considerInCopySupport-»«REM»Siehe PolicyCmptImplClassBuilder Z.523«ENDREM»
+	«IF considerInCopySupport-»
         concreteCopy.«fieldName» = «fieldName»;
     «ENDIF-»
 «ENDDEFINE»

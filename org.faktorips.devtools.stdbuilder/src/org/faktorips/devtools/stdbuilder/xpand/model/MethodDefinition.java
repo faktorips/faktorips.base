@@ -26,7 +26,7 @@ import org.eclipse.jdt.core.Signature;
  * needed by a JDT model.
  * 
  * @see #getDefinition()
- * @see #getrTypeSignatures()
+ * @see #getTypeSignatures()
  * 
  * @author dirmeier
  */
@@ -74,7 +74,7 @@ public class MethodDefinition {
      * 
      * @return The array of type signatures, one entry for every parameter
      */
-    public String[] getrTypeSignatures() {
+    public String[] getTypeSignatures() {
         String[] result = new String[parameters.length];
         int i = 0;
         for (MethodParameter parameter : parameters) {

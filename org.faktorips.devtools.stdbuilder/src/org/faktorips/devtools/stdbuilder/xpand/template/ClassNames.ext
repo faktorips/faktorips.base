@@ -12,11 +12,17 @@ IModelObject(AbstractGeneratorModelNode this) :
 IModelObjectDelta(AbstractGeneratorModelNode this):
 	addImport(IModelObjectDelta.name);
 	
+IModelObjectVisitor(AbstractGeneratorModelNode this):
+	addImport(IModelObjectVisitor.name);
+	
 IDeltaComputationOptions(AbstractGeneratorModelNode this):
 	addImport(IDeltaComputationOptions.name);
 	
 ModelObjectDelta(AbstractGeneratorModelNode this):
 	addImport(ModelObjectDelta.name);
+	
+MessageList(AbstractGeneratorModelNode this):
+	addImport(MessageList.name);
 	
 IConfigurableModelObject(AbstractGeneratorModelNode this) :
 	addImport(IConfigurableModelObject.name);

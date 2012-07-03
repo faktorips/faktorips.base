@@ -340,6 +340,13 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     /**
+     * Returns whether or not methods for the visitor-support should be added to generated classes.
+     */
+    public boolean isGenerateVisitorSupport() {
+        return getModelContext().isGenerateVisitorSupport();
+    }
+
+    /**
      * Returns whether or not published interfaces should be generated.
      */
     public boolean isGeneratingPublishedInterfaces() {
@@ -417,7 +424,7 @@ public abstract class AbstractGeneratorModelNode {
             result.add(javaType.getField(field));
         }
         for (MethodDefinition methodSignature : generatedMethods) {
-            result.add(javaType.getMethod(methodSignature.getName(), methodSignature.getrTypeSignatures()));
+            result.add(javaType.getMethod(methodSignature.getName(), methodSignature.getTypeSignatures()));
         }
         return result;
     }
@@ -427,6 +434,9 @@ public abstract class AbstractGeneratorModelNode {
 
     /**
      * Adds a field with the given name to the list of generated fields.
+     * <p>
+     * Use to register a field that should be included in the refactoring support and the
+     * jump-to-source-code feature.
      * 
      * @param fieldName The name of the field
      * 
@@ -439,6 +449,9 @@ public abstract class AbstractGeneratorModelNode {
 
     /**
      * Adds a method with no parameter to the list of generated method signatures.
+     * <p>
+     * Use to register a method that should be included in the refactoring support and the
+     * jump-to-source-code feature.
      * 
      * @param methodName The name of the generated method
      * @return The methods definition. For example for a method name <em>getFoo</em> the method
@@ -450,10 +463,13 @@ public abstract class AbstractGeneratorModelNode {
 
     /**
      * Adds a method with one parameter to the list of generated method signatures. The method
-     * parameter is split in the parameter type and the parameter name
+     * parameter is defined by the parameter type and the parameter name.
+     * <p>
+     * Use to register a method that should be included in the refactoring support and the
+     * jump-to-source-code feature.
      * 
      * @param methodName The name of the generated method
-     * @param parameterType The type of the method parameter
+     * @param parameterType The (Java-)type of the method parameter
      * @param parameterName The name of the method parameter
      * @return The methods definition. For example for a method name <em>setFoo</em> with parameter
      *         <em>bar</em> of type <em>String</em> the method definition is
@@ -465,6 +481,9 @@ public abstract class AbstractGeneratorModelNode {
 
     /**
      * Adds a method with two parameters to the list of generated method signatures.
+     * <p>
+     * Use to register a method that should be included in the refactoring support and the
+     * jump-to-source-code feature.
      * 
      * @param methodName The name of the generated method
      * @param parameterType1 The type of the first method parameter

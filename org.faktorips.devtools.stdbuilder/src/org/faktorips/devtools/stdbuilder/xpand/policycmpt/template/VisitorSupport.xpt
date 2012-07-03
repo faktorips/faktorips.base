@@ -1,0 +1,19 @@
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE acceptMethod FOR XPolicyCmptClass-»
+	/**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    «overrideAnnotation(true)»
+    public boolean «accept(IModelObjectVisitor() +" visitor")» {
+    	if (!visitor.visit(this)) {
+            return false;
+        }
+        return true;
+    }
+«ENDDEFINE»

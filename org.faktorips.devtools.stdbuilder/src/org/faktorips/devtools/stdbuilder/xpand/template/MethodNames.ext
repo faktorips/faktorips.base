@@ -24,6 +24,13 @@ copyAssociationsInternal(String arg1, String arg2):
 	"copyAssociationsInternal("+arg1+","+arg2+")";
 
 // ---------------------------------
+// Methods in IVisitorSupport
+// ---------------------------------
+
+accept(String argument):
+	"accept("+argument+")";
+
+// ---------------------------------
 // Methods in IProductComponentLink
 // ---------------------------------
 
@@ -111,6 +118,11 @@ initPropertiesFromXml(String arg1, String arg2):
 createChildFromXml(String argument):
 	"createChildFromXml("+argument+")";
 	
+validateSelf(String argument1, String argument2):
+	"validateSelf("+argument1+", "+argument2+")";
+	
+validateDependants(String argument1, String argument2):
+	"validateDependants("+argument1+", "+argument2+")";
 			
 // ---------------------------------
 // Methods in IRuntimeRepository
