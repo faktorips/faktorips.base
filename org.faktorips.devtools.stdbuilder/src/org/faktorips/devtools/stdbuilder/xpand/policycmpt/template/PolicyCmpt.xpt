@@ -170,9 +170,10 @@ package «packageName»;
 		 	«IF hasSupertype()-»
 		 		return super.«getEffectiveFromAsCalendar()»;
 		 	«ELSE-»
-		 	    return null; // TODO Implement access to effective from.
-        // To avoid that the generator overwrites the implementation,
-        // you have to add NOT after @annotation in the Javadoc!
+		 	    return null;
+		 	    «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE1")»
+		 	    «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE2")»
+		 	    «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE3")»
 		 	«ENDIF-»
 		 «ELSE-»
 		        «IModelObject()» parent = «getParentModelObject()»;
@@ -230,8 +231,7 @@ package «packageName»;
 
 «DEFINE validateMethods FOR XPolicyCmptClass-»
     /**
-     * Validates the object (but not its children). Returns <code>true</code> if this object should
-     * continue validating, <code>false</code> else.
+     * «localizedJDoc("VALIDATE_DEPENDANTS_JAVADOC")»
      * 
      * @generated
      */
@@ -244,7 +244,7 @@ package «packageName»;
     }
 
     /**
-     * Validates the objects children.
+     * «localizedJDoc("VALIDATE_SELF_JAVADOC")»
      * 
      * @generated
      */

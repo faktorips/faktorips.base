@@ -50,6 +50,9 @@ ArrayList(AbstractGeneratorModelNode this, String genericType) :
 
 Map(AbstractGeneratorModelNode this, String genericKey, String genericValue) :
 	addImport(Map.name) + "<"+ genericKey + ", " + genericValue + ">";
+	
+HashMap(AbstractGeneratorModelNode this, String genericKey, String genericValue) :
+	addImport(HashMap.name) + "<"+ genericKey + ", " + genericValue + ">";
 
 LinkedHashMap(AbstractGeneratorModelNode this, String genericKey, String genericValue) :
 	addImport(LinkedHashMap.name) + "<"+ genericKey + ", " + genericValue + ">";

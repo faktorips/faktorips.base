@@ -4,13 +4,28 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
 «DEFINE copyMethods FOR XPolicyCmptClass-»
-	/**
-     * Internal copy method with a {@link Map} containing already copied instances.
-     * 
-     * @param copyMap the map contains the copied instances
+	
+   	«IF !abstract-»
+    /**
+     * {@inheritDoc}
      * 
      * @generated
-     */«REM»«overrideAnnotationIfHasSupertype(false)»«ENDREM»
+     */
+    «overrideAnnotation(true)»
+    public «IModelObject()» «newCopy()» {
+        «Map(IModelObject(), IModelObject())» copyMap = new «HashMap(IModelObject(), IModelObject())»();
+        «className» newCopy = («className») «newCopyInternal("copyMap")»;
+        «copyAssociationsInternal("newCopy", "copyMap")»;
+        return newCopy;
+    }
+	«ENDIF-»
+	
+	/**
+     * «localizedJDoc("METHOD_NEW_COPY_INTERNAL_JAVADOC")»
+     * 
+     * @generated
+     */
+     «overrideAnnotationIfHasSupertype(false)»«REM»für Vertrag muss override angegeben werden«ENDREM»
     public «IModelObject()» «newCopyInternal(Map(IModelObject(), IModelObject())+" copyMap")» {
     	«IF hasSupertype()-»
 	        «className» newCopy = («className»)copyMap.get(this);
@@ -27,11 +42,7 @@
     }
 
     /**
-     * This method sets all properties in the copy with the values of this object. If there are
-     * copied associated objects they are added to the copy map.
-     * 
-     * @param copy The copy object
-     * @param copyMap a map containing copied associated objects
+     * «localizedJDoc("METHOD_COPY_PROPERTIES_JAVADOC")»
      * 
      * @generated
      */«REM»«overrideAnnotationIfHasSupertype(false)»«ENDREM»
@@ -40,25 +51,19 @@
         	«className» concreteCopy = («className»)copy;
         	«EXPAND copyAttribute FOREACH attributesToCopy-»
         «ELSE-»
-        	// Nothing to do.
+        	«localizedComment("NOTHING_TO_DO")-»
         «ENDIF-»
     }
 
     /**
-     * Internal method for setting copied associations. For copied targets, the association have to
-     * retarget to the new copied instance. This method have to call
-     * {@link #copyAssociationsInternal(IModelObject, Map)} in other instances associated by
-     * composite.
-     * 
-     * @param abstractCopy the copy of this policy component
-     * @param copyMap the map contains the copied instances
-     * 
+     * «localizedJDoc("METHOD_COPY_ASSOCIATIONS_INTERNAL_JAVADOC")»
+     
      * @generated
      */«REM»«overrideAnnotationIfHasSupertype(false)»«ENDREM»
     public void «copyAssociationsInternal(IModelObject()+" abstractCopy", Map(IModelObject(), IModelObject())+" copyMap")» {
         «IF associationsToCopy.size > 0-»
         «ELSE-»
-        	// Nothing to do.
+        	«localizedComment("NOTHING_TO_DO")-»
         «ENDIF-»
     }
 «ENDDEFINE»

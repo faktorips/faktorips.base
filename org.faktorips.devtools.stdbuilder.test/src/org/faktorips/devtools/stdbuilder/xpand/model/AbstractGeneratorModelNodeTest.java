@@ -13,8 +13,11 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -61,4 +64,12 @@ public class AbstractGeneratorModelNodeTest {
         verify(modelContext).addImport("package.subpackage.ClassName");
     }
 
+    @Test
+    public void testGetLocalizedComent() {
+        xClass = spy(xClass);
+        doReturn("GenericComment").when(xClass).getLocalizedText("key");
+
+        String localizedComment = xClass.localizedComment("key");
+        assertEquals("// GenericComment", localizedComment);
+    }
 }

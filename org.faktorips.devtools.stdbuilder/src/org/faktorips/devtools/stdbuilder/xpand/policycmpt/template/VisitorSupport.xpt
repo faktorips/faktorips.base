@@ -11,9 +11,24 @@
      */
     «overrideAnnotation(true)»
     public boolean «accept(IModelObjectVisitor() +" visitor")» {
+    	«IF hasSupertype()»
+        if (!super.accept(visitor)) {
+            return false;
+        }
+        «ELSE-»
     	if (!visitor.visit(this)) {
             return false;
         }
+    	«ENDIF-»
+        «REM» for (IDeckung deckung : deckungen) {
+            deckung.accept(visitor);
+        }
+        for (IVertragsTeil subVertragsTeil : subVertragsTeile) {
+            subVertragsTeil.accept(visitor);
+        }
+        if (oneToOneVertragsTeil != null) {
+            oneToOneVertragsTeil.accept(visitor);
+        } «ENDREM»
         return true;
     }
 «ENDDEFINE»

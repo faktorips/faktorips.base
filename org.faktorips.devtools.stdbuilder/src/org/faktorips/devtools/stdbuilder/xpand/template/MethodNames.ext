@@ -10,25 +10,6 @@ effectiveFromHasChanged() :
 getParentModelObject() :
 	"getParentModelObject()";
 
-// ---------------------------------
-// Methods in ICopySupport
-// ---------------------------------
-
-newCopyInternal(String argument):
-	"newCopyInternal("+argument+")";
-
-copyProperties(String arg1, String arg2):
-	"copyProperties("+arg1+","+arg2+")";
-
-copyAssociationsInternal(String arg1, String arg2):
-	"copyAssociationsInternal("+arg1+","+arg2+")";
-
-// ---------------------------------
-// Methods in IVisitorSupport
-// ---------------------------------
-
-accept(String argument):
-	"accept("+argument+")";
 
 // ---------------------------------
 // Methods in IProductComponentLink
@@ -144,3 +125,27 @@ toXml(String paramDocument) :
 
 computeDelta(String arg1, String arg2):
 	"computeDelta("+arg1+","+arg2+")";
+
+	
+// ---------------------------------
+// Methods in ICopySupport
+// ---------------------------------
+
+newCopy():
+	"newCopy()";
+	
+newCopyInternal(String argument):
+	"newCopyInternal("+argument+")";
+
+copyProperties(String arg1, String arg2):
+	"copyProperties("+arg1+","+arg2+")";
+
+copyAssociationsInternal(String arg1, String arg2):
+	"copyAssociationsInternal("+arg1+","+arg2+")";
+
+// ---------------------------------
+// Methods in IVisitorSupport
+// ---------------------------------
+
+accept(String argument):
+	"accept("+argument+")";
