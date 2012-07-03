@@ -1,4 +1,5 @@
 import java::util;
+import java::beans;
 import org::w3c::dom;
 import org::faktorips::valueset;
 import org::faktorips::runtime;
@@ -25,6 +26,9 @@ AbstractModelObject(AbstractGeneratorModelNode this) :
 	
 IValidationContext(AbstractGeneratorModelNode this) :
 	addImport(IValidationContext.name);
+
+PropertyChangeEvent(AbstractGeneratorModelNode this):
+	addImport(PropertyChangeEvent.name);
 
 // Collection is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
 Collection_(AbstractGeneratorModelNode this, String genericType) :

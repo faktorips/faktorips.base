@@ -92,6 +92,19 @@
 
 «DEFINE notify FOR XPolicyAttribute-»
 	«IF modelContext.generatePropertyChange-»
-		notifyChangeListeners(new «addImport("java.beans.PropertyChangeEvent")» (this, «constantNamePropertyName», «getReferenceOrSafeCopyIfNecessary(oldValueVariable)», «getReferenceOrSafeCopyIfNecessary(fieldName)»));
+		«IF datatype.name=="int" || datatype.name=="boolean"-»
+			«EXPAND notifyForIntOrBoolean-»
+		«ELSE-»
+			notifyChangeListeners(new «PropertyChangeEvent()» (this, «constantNamePropertyName», «oldValueVariable», «fieldName»));
+		«ENDIF-»
 	«ENDIF-»
+«ENDDEFINE»
+
+«REM»Workaround entsprechend BeanChangeListenerSupportBuilder#appendFieldAccess()«ENDREM»
+«DEFINE notifyForIntOrBoolean FOR XPolicyAttribute-»
+		«IF datatype.name=="int"-»
+			notifyChangeListeners(new «PropertyChangeEvent()» (this, «constantNamePropertyName», new Integer(«oldValueVariable»), new Integer(«fieldName»)));
+		«ELSE-»
+			notifyChangeListeners(new «PropertyChangeEvent()» (this, «constantNamePropertyName», Boolean.valueOf(«oldValueVariable»), Boolean.valueOf(«fieldName»)));
+		«ENDIF-»
 «ENDDEFINE»
