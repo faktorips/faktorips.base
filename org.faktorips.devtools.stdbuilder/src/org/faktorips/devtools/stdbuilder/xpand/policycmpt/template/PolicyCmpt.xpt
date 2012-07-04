@@ -231,7 +231,7 @@ package «packageName»;
 
 «DEFINE validateMethods FOR XPolicyCmptClass-»
     /**
-     * «localizedJDoc("VALIDATE_DEPENDANTS_JAVADOC")»
+     * «localizedJDoc("VALIDATE_DEPENDANTS")»
      * 
      * @generated
      */
@@ -244,7 +244,7 @@ package «packageName»;
     }
 
     /**
-     * «localizedJDoc("VALIDATE_SELF_JAVADOC")»
+     * «localizedJDoc("VALIDATE_SELF")»
      * 
      * @generated
      */

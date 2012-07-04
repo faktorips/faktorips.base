@@ -21,7 +21,7 @@
 	«ENDIF-»
 	
 	/**
-     * «localizedJDoc("METHOD_NEW_COPY_INTERNAL_JAVADOC")»
+     * «localizedJDoc("METHOD_NEW_COPY_INTERNAL")»
      * 
      * @generated
      */
@@ -42,7 +42,7 @@
     }
 
     /**
-     * «localizedJDoc("METHOD_COPY_PROPERTIES_JAVADOC")»
+     * «localizedJDoc("METHOD_COPY_PROPERTIES")»
      * 
      * @generated
      */«REM»«overrideAnnotationIfHasSupertype(false)»«ENDREM»
@@ -51,19 +51,19 @@
         	«className» concreteCopy = («className»)copy;
         	«EXPAND copyAttribute FOREACH attributesToCopy-»
         «ELSE-»
-        	«localizedComment("NOTHING_TO_DO")-»
+        	«localizedComment("NOTHING_TO_DO")»
         «ENDIF-»
     }
 
     /**
-     * «localizedJDoc("METHOD_COPY_ASSOCIATIONS_INTERNAL_JAVADOC")»
+     * «localizedJDoc("METHOD_COPY_ASSOCIATIONS_INTERNAL")»
      
      * @generated
      */«REM»«overrideAnnotationIfHasSupertype(false)»«ENDREM»
     public void «copyAssociationsInternal(IModelObject()+" abstractCopy", Map(IModelObject(), IModelObject())+" copyMap")» {
         «IF associationsToCopy.size > 0-»
         «ELSE-»
-        	«localizedComment("NOTHING_TO_DO")-»
+        	«localizedComment("NOTHING_TO_DO")»
         «ENDIF-»
     }
 «ENDDEFINE»

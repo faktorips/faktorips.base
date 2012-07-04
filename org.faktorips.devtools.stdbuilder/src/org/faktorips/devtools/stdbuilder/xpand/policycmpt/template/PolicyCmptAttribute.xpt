@@ -46,7 +46,7 @@
 				«IF generateDefaultForDerivedAttribute-»
 					return «defaultValueCode»;
 				«ELSE-»
-			        // TODO Belegung der Berechnungsparameter implementieren
+			        «localizedComment("COMMENT_DERIVED_ATTRIBUTE_METHOD_CALL")»
 			        «EXPAND FormulaSignature::formulaParameterDeclaration FOR formulaSignature-»
 			        return «EXPAND getProductGeneration».«EXPAND FormulaSignature::formulaCall FOR formulaSignature-»;			
 				«ENDIF-»
