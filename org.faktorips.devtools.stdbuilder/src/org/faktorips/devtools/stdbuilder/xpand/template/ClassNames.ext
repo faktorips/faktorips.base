@@ -35,6 +35,9 @@ IValidationContext(AbstractGeneratorModelNode this) :
 
 PropertyChangeEvent(AbstractGeneratorModelNode this):
 	addImport(PropertyChangeEvent.name);
+	
+AssociationChangedEvent(AbstractGeneratorModelNode this):
+	addImport(AssociationChangedEvent.name);
 
 // Collection is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
 Collection_(AbstractGeneratorModelNode this, String genericType) :

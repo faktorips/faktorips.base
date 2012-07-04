@@ -3,7 +3,7 @@
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 «DEFINE fieldDefinition FOR XPolicyCmptClass-»
-	«IF modelContext.generatePropertyChange && !hasSupertype()-»
+	«IF generateChangeSupport && !hasSupertype()-»
 	    /**
 	     * «localizedJDoc("FIELD_PROPERTY_CHANGE_SUPPORT")»
 	     * 
@@ -14,7 +14,7 @@
 «ENDDEFINE»
 
 «DEFINE generalMethods FOR XPolicyCmptClass-»
-	«IF modelContext.generatePropertyChange && !hasSupertype()-»
+	«IF generateChangeSupport && !hasSupertype()-»
 	/**
      * {@inheritDoc}
      * 
@@ -85,18 +85,36 @@
 «ENDDEFINE»
 
 «DEFINE storeOldValue FOR XPolicyAttribute-»
-	«IF modelContext.generatePropertyChange-»
+	«IF generateChangeSupport-»
 		«javaClassName» «oldValueVariable» = «fieldName»;
 	«ENDIF-»
 «ENDDEFINE»
 
+«DEFINE storeOldValue FOR XPolicyAssociation-»
+	«IF generateChangeSupport-»
+		«targetInterfaceName» «oldValueVariable» = «fieldName»;
+	«ENDIF-»
+«ENDDEFINE»
+
 «DEFINE notify FOR XPolicyAttribute-»
-	«IF modelContext.generatePropertyChange-»
+	«IF generateChangeSupport-»
 		«IF datatype.name=="int" || datatype.name=="boolean"-»
 			«EXPAND notifyForIntOrBoolean-»
 		«ELSE-»
 			notifyChangeListeners(new «PropertyChangeEvent()» (this, «constantNamePropertyName», «oldValueVariable», «fieldName»));
 		«ENDIF-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE notify FOR XPolicyAssociation-»
+	«IF generateChangeSupport-»
+		notifyChangeListeners(new «AssociationChangedEvent()» (this, «constantNamePropertyName», «oldValueVariable», newObject));
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE notifyNewAssociation(String variableNameNewPolicyCmpt) FOR XPolicyAssociation-»
+	«IF generateChangeSupport-»
+		notifyChangeListeners(new «AssociationChangedEvent()» (this, «constantNamePropertyName», null, «variableNameNewPolicyCmpt»));
 	«ENDIF-»
 «ENDDEFINE»
 

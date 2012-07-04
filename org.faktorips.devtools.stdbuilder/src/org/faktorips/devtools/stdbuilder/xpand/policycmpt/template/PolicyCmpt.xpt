@@ -11,7 +11,7 @@
 	«FILE getFileName(BuilderAspect::IMPLEMENTATION)-»
 package «packageName»;
 
-«EXPAND CommonDefinitions::ImportBlock FOREACH modelContext.imports ONFILECLOSE»
+«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 	
 	/**
 	 «IF generatingPublishedInterfaces-»
@@ -41,6 +41,10 @@ package «packageName»;
 				«EXPAND PolicyCmptAttribute::memberField-»
 			«ENDIF-»
 		«ENDFOREACH-»
+		
+		«FOREACH associations AS this-»
+			«EXPAND PolicyCmptAssociation::field-»
+		«ENDFOREACH-»
 			
 		«EXPAND constructors-»
 		
@@ -48,6 +52,10 @@ package «packageName»;
 			«EXPAND PolicyCmptAttribute::allowedValuesMethod-»
 			«EXPAND PolicyCmptAttribute::getter-»
 			«EXPAND PolicyCmptAttribute::setter-»
+		«ENDFOREACH-»
+
+		«FOREACH associations AS this-»
+			«EXPAND PolicyCmptAssociation::methods-»
 		«ENDFOREACH-»
 
 		«IF configured-»

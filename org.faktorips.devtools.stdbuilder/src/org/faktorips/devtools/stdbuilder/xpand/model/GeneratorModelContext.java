@@ -132,7 +132,7 @@ public class GeneratorModelContext {
         return javaClassNaming;
     }
 
-    public boolean isGeneratePropertyChange() {
+    public boolean isGenerateChangeSupport() {
         return config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER)
                 .booleanValue();
     }

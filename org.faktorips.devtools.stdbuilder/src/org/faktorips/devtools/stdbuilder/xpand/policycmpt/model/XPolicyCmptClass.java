@@ -108,7 +108,7 @@ public class XPolicyCmptClass extends XClass {
     @Override
     public List<String> getImplementedInterfaces() {
         List<String> list = super.getImplementedInterfaces();
-        if (getModelContext().isGeneratePropertyChange() && !hasSupertype()) {
+        if (getContext().isGenerateChangeSupport() && !hasSupertype()) {
             list.add(addImport(INotificationSupport.class));
         }
         return list;

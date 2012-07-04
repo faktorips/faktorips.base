@@ -1,0 +1,202 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::runtime»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::template»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAttributeExtension»
+
+«DEFINE field FOR XPolicyAssociation-»
+	«IF !derivedUnion-»
+	    /**
+	     * «localizedJDoc("FIELD_ASSOCIATION", name.toFirstUpper())»
+	     * 
+	     * @generated
+	     */
+		«IF oneToMany-»
+			private «List_(targetInterfaceName)» «field(fieldName)»  = new «ArrayList(targetInterfaceName)»();
+		«ELSE-»
+			private «targetClassName» «field(fieldName)» = null;
+		«ENDIF-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE methods FOR XPolicyAssociation-»
+	«EXPAND ProductAssociation::getNumOf-»
+	«EXPAND contains-»
+	«EXPAND getters-»
+	«EXPAND setterMethodsForToOne-»
+	«EXPAND newMethods-»
+«REM»
+	«EXPAND add-»
+	«EXPAND remove-»
+
+
+
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    @Override
+    public void addNichtKonfigurierteVertragsklasse(INichtKonfigurierteVertragsklasse objectToAdd) {
+        addNichtKonfigurierteVertragsklasseInternal(objectToAdd);
+        notifyChangeListeners(new AssociationChangedEvent(this, ASSOCIATION_NICHTKONFIGURIERTEVERTRAGSKLASSEN, null,
+                objectToAdd));
+    }
+
+    /**
+     * Adds the given object as NichtKonfigurierteVertragsklasse without triggering a change event.
+     * 
+     * @generated
+     */
+    public void addNichtKonfigurierteVertragsklasseInternal(INichtKonfigurierteVertragsklasse objectToAdd) {
+        if (objectToAdd == null) {
+            throw new NullPointerException("Can't add null to association NichtKonfigurierteVertragsklasse of " + this);
+        }
+        if (nichtKonfigurierteVertragsklassen.contains(objectToAdd)) {
+            return;
+        }
+        nichtKonfigurierteVertragsklassen.add(objectToAdd);
+        if (!objectToAdd.containsVertrag(this)) {
+            objectToAdd.addVertrag(this);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    @Override
+    public void removeNichtKonfigurierteVertragsklasse(INichtKonfigurierteVertragsklasse objectToRemove) {
+        if (objectToRemove == null) {
+            return;
+        }
+        if (nichtKonfigurierteVertragsklassen.remove(objectToRemove)) {
+            objectToRemove.removeVertrag(this);
+        }
+        notifyChangeListeners(new AssociationChangedEvent(this, ASSOCIATION_NICHTKONFIGURIERTEVERTRAGSKLASSEN,
+                objectToRemove, null));
+    }
+    
+    
+«ENDREM»
+«ENDDEFINE»
+«DEFINE contains FOR XPolicyAssociation-»
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    «overrideAnnotation(true)»
+    public boolean «method(methodNameContains, targetInterfaceName, "objectToTest")» {
+        return «fieldName».contains(objectToTest);
+    }
+«ENDDEFINE»
+«DEFINE getters FOR XPolicyAssociation-»
+	«IF oneToMany»
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotation(true)»
+	    public «List_(targetInterfaceName)» «method(methodNameGetter)» {
+	        return «Collections()».unmodifiableList(«fieldName»);
+	    }
+	
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotation(true)»
+	    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")» {
+	        return «fieldName».get(index);
+	    }
+    «ELSE»
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotation(true)»
+	    public «targetInterfaceName» «method(methodNameGetSingle)» {
+	        return «fieldName»;
+	    }
+    «ENDIF»
+«ENDDEFINE»
+«DEFINE setterMethodsForToOne FOR XPolicyAssociation-»
+	«IF !oneToMany-»
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotation(true)»
+	    public void «method(methodNameSetter, targetInterfaceName, "newObject")» {
+			«EXPAND PropertyChangeSupport::storeOldValue-»
+	        «methodNameSetInternal»(newObject);
+			«EXPAND PropertyChangeSupport::notify-»
+	    }
+
+	    /**
+	     * «localizedJDoc("METHOD_SET_OBJECT_INTERNAL", name.toFirstUpper())»
+	     * 
+	     * @generated
+	     */
+	    public void «method(methodNameSetInternal, targetInterfaceName, "newObject")»{
+	        if («fieldName» != null) {
+	            «fieldName».«methodNameSetInternalInverseAssociation»(null);
+	        }
+	        if (newObject != null) {
+	            «EXPAND newObject».«methodNameSetInternalInverseAssociation»(this);
+	        }
+	        «fieldName» = «EXPAND castToImplementationIfNecessary» newObject;
+	    }
+    «ENDIF»
+«ENDDEFINE»
+«DEFINE newObject FOR XPolicyAssociation-»
+	«IF generatingPublishedInterfaces-»
+	(«EXPAND castToImplementationIfNecessary»newObject)«ELSE-»
+	newObject«ENDIF-»
+«ENDDEFINE»
+«DEFINE castToImplementationIfNecessary FOR XPolicyAssociation-»
+	«IF generatingPublishedInterfaces-»(«targetClassName»)«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE newMethods FOR XPolicyAssociation-»
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+	«overrideAnnotation(true)»
+    public «targetInterfaceName» «method(methodNameNew)»{
+        «targetClassName» «variableNameNewInstance» = new «targetClassName»();
+        «methodNameSetInternal»(«variableNameNewInstance»);
+        «variableNameNewInstance».«initialize()»;
+        «EXPAND PropertyChangeSupport::notifyNewAssociation(variableNameNewInstance)-»
+        return «variableNameNewInstance»;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+	«overrideAnnotation(true)»
+    public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceName, targetProductCmptVariableName)» {
+        if («targetProductCmptVariableName» == null) {
+            return «methodNameNew»();
+        }
+        IVertragsTeil newOneToOneVertragsTeil = iElementarProdukt.createVertragsTeil();
+        setOneToOneVertragsTeilInternal(newOneToOneVertragsTeil);
+        newOneToOneVertragsTeil.initialize();
+        notifyChangeListeners(new AssociationChangedEvent(this, ASSOCIATION_ONETOONEVERTRAGSTEIL, null,
+                newOneToOneVertragsTeil));
+        return newOneToOneVertragsTeil;
+    }
+«ENDDEFINE»

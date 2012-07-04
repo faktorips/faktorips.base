@@ -64,20 +64,29 @@ public class XPolicyAttribute extends XAttribute {
         }
     }
 
+    /**
+     * Returns true for all attributes except derived (on the fly) and overridden attributes.
+     */
     public boolean isGenerateField() {
-        return !isDerivedOnTheFly();
+        return !isDerivedOnTheFly() && !isOverwrite();
     }
 
     public boolean isPublished() {
         return getAttribute().getModifier() == Modifier.PUBLISHED;
     }
 
+    /**
+     * Returns true for all attributes except for constant and overridden attributes.
+     */
     public boolean isGenerateGetter() {
-        return !isConstant();
+        return !isConstant() && !isOverwrite();
     }
 
+    /**
+     * Returns true for all attributes except for derived, constant and overridden attributes.
+     */
     public boolean isGenerateSetter() {
-        return !isDerived() && !isConstant();
+        return !isDerived() && !isConstant() && !isOverwrite();
     }
 
     public boolean isDerived() {

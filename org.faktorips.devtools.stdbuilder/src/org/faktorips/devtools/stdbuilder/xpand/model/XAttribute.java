@@ -65,7 +65,7 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
     }
 
     public String fieldPropertyNameSuffix() {
-        return getModelContext().isGenerateSeparatedCamelCase() ? StringUtil.camelCaseToUnderscore(getName())
+        return getContext().isGenerateSeparatedCamelCase() ? StringUtil.camelCaseToUnderscore(getName())
                 .toUpperCase() : getName().toUpperCase();
     }
 

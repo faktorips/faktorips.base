@@ -49,7 +49,7 @@ public class XClassTest {
     public void createTestXClass() {
         xClass = mock(XClass.class, CALLS_REAL_METHODS);
         when(xClass.getIpsObjectPartContainer()).thenReturn(type);
-        when(xClass.getModelContext()).thenReturn(modelContext);
+        when(xClass.getContext()).thenReturn(modelContext);
 
         when(type.getIpsProject()).thenReturn(ipsProject);
         when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());

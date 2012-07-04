@@ -50,7 +50,7 @@ public class XAssociationTest {
         when(association.getTargetRoleSingular()).thenReturn("testTarget");
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
         doReturn(new JavaNamingConvention()).when(xAssociation).getJavaNamingConvention();
-        doReturn(modelContext).when(xAssociation).getModelContext();
+        doReturn(modelContext).when(xAssociation).getContext();
     }
 
     @Test

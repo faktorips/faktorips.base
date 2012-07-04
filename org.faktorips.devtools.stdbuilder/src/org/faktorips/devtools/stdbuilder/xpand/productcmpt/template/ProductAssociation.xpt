@@ -202,7 +202,7 @@
     «ENDIF»
 «ENDDEFINE»
 
-«DEFINE getNumOf FOR XProductAssociation-»
+«DEFINE getNumOf FOR XAssociation-»
 	«IF oneToMany-»
     /**
      * {@inheritDoc}

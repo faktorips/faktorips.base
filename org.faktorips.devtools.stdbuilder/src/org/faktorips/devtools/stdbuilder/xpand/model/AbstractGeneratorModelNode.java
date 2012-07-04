@@ -150,7 +150,7 @@ public abstract class AbstractGeneratorModelNode {
      * @return the unqualified name of the type
      */
     public String addImport(Class<?> clazz) {
-        getModelContext().addImport(clazz.getName());
+        getContext().addImport(clazz.getName());
         return clazz.getSimpleName();
     }
 
@@ -179,7 +179,7 @@ public abstract class AbstractGeneratorModelNode {
         } else {
             javaQName = qName;
         }
-        ImportStatement importStatement = getModelContext().addImport(javaQName);
+        ImportStatement importStatement = getContext().addImport(javaQName);
         return importStatement.getUnqualifiedName();
     }
 
@@ -190,7 +190,7 @@ public abstract class AbstractGeneratorModelNode {
      */
     public void addImport(ImportDeclaration importDeclaration) {
         for (String importStatement : importDeclaration.getImports()) {
-            getModelContext().addImport(importStatement);
+            getContext().addImport(importStatement);
         }
     }
 
@@ -202,7 +202,7 @@ public abstract class AbstractGeneratorModelNode {
      * @return true if remove was successful
      */
     public boolean removeImport(String importStatement) {
-        return getModelContext().removeImport(importStatement);
+        return getContext().removeImport(importStatement);
     }
 
     /**
@@ -291,7 +291,7 @@ public abstract class AbstractGeneratorModelNode {
      * @see IIpsArtefactBuilderSet#getLanguageUsedInGeneratedSourceCode()
      */
     public final Locale getLanguageUsedInGeneratedSourceCode() {
-        return getModelContext().getLanguageUsedInGeneratedSourceCode();
+        return getContext().getLanguageUsedInGeneratedSourceCode();
     }
 
     /**
@@ -317,7 +317,7 @@ public abstract class AbstractGeneratorModelNode {
         return false;
     }
 
-    public GeneratorModelContext getModelContext() {
+    public GeneratorModelContext getContext() {
         return modelContext;
     }
 
@@ -327,7 +327,7 @@ public abstract class AbstractGeneratorModelNode {
 
     public <T extends AbstractGeneratorModelNode> T getModelNode(IIpsObjectPartContainer ipsObjectPartContainer,
             Class<T> nodeClass) {
-        return getModelService().getModelNode(ipsObjectPartContainer, nodeClass, getModelContext());
+        return getModelService().getModelNode(ipsObjectPartContainer, nodeClass, getContext());
     }
 
     protected IJavaNamingConvention getJavaNamingConvention() {
@@ -338,28 +338,35 @@ public abstract class AbstractGeneratorModelNode {
      * Returns whether or not methods for delta-support should be added to generated classes.
      */
     public boolean isGenerateDeltaSupport() {
-        return getModelContext().isGenerateDeltaSupport();
+        return getContext().isGenerateDeltaSupport();
     }
 
     /**
      * Returns whether or not methods for copy-support should be added to generated classes.
      */
     public boolean isGenerateCopySupport() {
-        return getModelContext().isGenerateCopySupport();
+        return getContext().isGenerateCopySupport();
     }
 
     /**
      * Returns whether or not methods for the visitor-support should be added to generated classes.
      */
     public boolean isGenerateVisitorSupport() {
-        return getModelContext().isGenerateVisitorSupport();
+        return getContext().isGenerateVisitorSupport();
     }
 
     /**
      * Returns whether or not published interfaces should be generated.
      */
     public boolean isGeneratingPublishedInterfaces() {
-        return getModelContext().isGeneratingPublishedInterfaces();
+        return getContext().isGeneratingPublishedInterfaces();
+    }
+
+    /**
+     * Returns whether or not published interfaces should be generated.
+     */
+    public boolean isGenerateChangeSupport() {
+        return getContext().isGenerateChangeSupport();
     }
 
     /**
@@ -396,7 +403,7 @@ public abstract class AbstractGeneratorModelNode {
      * 
      */
     public String getAnnotations(AnnotatedJavaElementType type, IIpsElement ipsElement) {
-        List<IAnnotationGenerator> generators = getModelContext().getAnnotationGenerator(type);
+        List<IAnnotationGenerator> generators = getContext().getAnnotationGenerator(type);
         String result = "";
         for (IAnnotationGenerator generator : generators) {
             if (!generator.isGenerateAnnotationFor(ipsElement)) {

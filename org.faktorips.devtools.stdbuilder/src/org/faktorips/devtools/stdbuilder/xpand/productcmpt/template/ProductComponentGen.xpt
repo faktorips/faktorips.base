@@ -10,7 +10,7 @@
 	package «packageName»;
 
 		«EXPAND CommonDefinitions::ImportBlock FOREACH imported() ONFILECLOSE»
-		«EXPAND CommonDefinitions::ImportBlock FOREACH modelContext.imports ONFILECLOSE»
+		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 	
 		/**
 		 * «localizedJDoc("CLASS", getSimpleName(BuilderAspect::INTERFACE))»

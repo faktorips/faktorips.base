@@ -105,7 +105,7 @@ public class XProductClassTest {
     public void createProductClass() {
         xProductClass = mock(XProductClass.class, CALLS_REAL_METHODS);
         when(xProductClass.getModelService()).thenReturn(modelService);
-        when(xProductClass.getModelContext()).thenReturn(modelContext);
+        when(xProductClass.getContext()).thenReturn(modelContext);
         when(xProductClass.getIpsObjectPartContainer()).thenReturn(type);
     }
 
