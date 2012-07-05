@@ -20,6 +20,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -235,6 +236,11 @@ public class XPolicyCmptClass extends XClass {
     protected IProductCmptType getProductCmptType() {
         try {
             IProductCmptType prodType = getPolicyCmptType().findProductCmptType(getIpsProject());
+            if (prodType == null) {
+                throw new CoreRuntimeException(NLS.bind(
+                        "The policy component type {0} is not configured by a product component type.",
+                        getPolicyCmptType()));
+            }
             return prodType;
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);

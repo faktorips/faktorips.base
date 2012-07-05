@@ -14,6 +14,9 @@
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
@@ -42,7 +45,7 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public String getMethodNameContains() {
-        return "contains" + StringUtils.capitalize(getTargetClassName());
+        return "contains" + StringUtils.capitalize(getName(false));
     }
 
     public String getConstantNamePropertyName() {
@@ -57,8 +60,20 @@ public class XPolicyAssociation extends XAssociation {
         return getMethodNameSetter(false) + "Internal";
     }
 
+    public String getMethodNameAddInternal() {
+        return getMethodNameAdd() + "Internal";
+    }
+
     protected String getMethodNameSetter(boolean toMany) {
         return getJavaNamingConvention().getSetterMethodName(getName(toMany));
+    }
+
+    public String getMethodNameNew() {
+        return "new" + StringUtils.capitalize(getName(false));
+    }
+
+    public String getMethodNameRemove() {
+        return "remove" + StringUtils.capitalize(getName(false));
     }
 
     /**
@@ -67,14 +82,51 @@ public class XPolicyAssociation extends XAssociation {
      * <p>
      * Note: the returned name cannot be calculated using the generator model (or meta model
      * respectively) as it is an implicit relation, an assumption done by the old code generator.
+     * 
+     * @throws NullPointerException if this association has no inverse association.
      */
-    public String getMethodNameSetInternalInverseAssociation() {
-        return getJavaNamingConvention().getSetterMethodName(getAssociation().getPolicyCmptType().getName())
-                + "Internal";
+    public String getMethodNameInverseAssociationSetInternal() {
+        return getJavaNamingConvention().getSetterMethodName(getInverseAssociation().getName()) + "Internal";
     }
 
-    public String getMethodNameNew() {
-        return "new" + getTargetClassName();
+    /**
+     * @throws NullPointerException if this association has no inverse association.
+     */
+    public String getMethodNameInverseAssociationContains() {
+        return "contains" + getInverseAssociation().getName();
+    }
+
+    /**
+     * @throws NullPointerException if this association has no inverse association.
+     */
+    public String getMethodNameInverseAssociationAdd() {
+        return "add" + getInverseAssociation().getName();
+    }
+
+    /**
+     * @throws NullPointerException if this association has no inverse association.
+     */
+    public String getMethodNameInverseAssociationRemove() {
+        return "remove" + getInverseAssociation().getName();
+    }
+
+    /**
+     * Returns the model node for the inverse association represented by this association node.
+     * 
+     * @throws NullPointerException if this association has no inverse association.
+     */
+    protected XPolicyAssociation getInverseAssociation() {
+        try {
+            IPolicyCmptTypeAssociation inverseAssoc = getAssociation().findInverseAssociation(getIpsProject());
+            if (inverseAssoc != null) {
+                return getModelNode(inverseAssoc, XPolicyAssociation.class);
+            } else {
+                throw new NullPointerException(NLS.bind("PolicyCmptTypeAssociation {0} has no inverse association.",
+                        getAssociation()));
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     public String getVariableNameNewInstance() {
@@ -86,12 +138,42 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public String getTargetProductCmptInterfaceName() {
-        XPolicyCmptClass xPolicyCmptClass = getModelNode(getPolicyCmptType(), XPolicyCmptClass.class);
+        XPolicyCmptClass xPolicyCmptClass = getTargetPolicyCmptClass();
         return xPolicyCmptClass.getProductComponentClassOrInterfaceName();
     }
 
-    private IPolicyCmptType getPolicyCmptType() {
-        return getAssociation().getPolicyCmptType();
+    public String getMethodNameCreatePolicyCmptForTargetProductCmpt() {
+        XPolicyCmptClass xPolicyCmptClass = getTargetPolicyCmptClass();
+        return "create" + xPolicyCmptClass.getClassName();
+    }
+
+    private XPolicyCmptClass getTargetPolicyCmptClass() {
+        try {
+            IPolicyCmptType polCmptType = getAssociation().findTargetPolicyCmptType(getIpsProject());
+            return getModelNode(polCmptType, XPolicyCmptClass.class);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    public boolean isProductRelevant() {
+        try {
+            return getAssociation().isConstrainedByProductStructure(getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    public boolean isComposition() {
+        return getAssociation().isComposition();
+    }
+
+    public boolean hasInverseAssociation() {
+        try {
+            return getAssociation().findInverseAssociation(getIpsProject()) != null;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
 }

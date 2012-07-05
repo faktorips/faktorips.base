@@ -107,14 +107,20 @@
 «ENDDEFINE»
 
 «DEFINE notify FOR XPolicyAssociation-»
-	«IF generateChangeSupport-»
-		notifyChangeListeners(new «AssociationChangedEvent()» (this, «constantNamePropertyName», «oldValueVariable», newObject));
-	«ENDIF-»
+	«EXPAND notifyAssociation(oldValueVariable, "newObject")-»
 «ENDDEFINE»
 
-«DEFINE notifyNewAssociation(String variableNameNewPolicyCmpt) FOR XPolicyAssociation-»
+«DEFINE notifyNewAssociation(String variableName) FOR XPolicyAssociation-»
+	«EXPAND notifyAssociation("null", variableName)-»
+«ENDDEFINE»
+
+«DEFINE notifyRemovedAssociation(String variableName) FOR XPolicyAssociation-»
+	«EXPAND notifyAssociation(variableName, "null")-»
+«ENDDEFINE»
+
+«DEFINE notifyAssociation(String oldValue, String newValue) FOR XPolicyAssociation-»
 	«IF generateChangeSupport-»
-		notifyChangeListeners(new «AssociationChangedEvent()» (this, «constantNamePropertyName», null, «variableNameNewPolicyCmpt»));
+		notifyChangeListeners(new «AssociationChangedEvent()» (this, «constantNamePropertyName», «oldValue», «newValue»));
 	«ENDIF-»
 «ENDDEFINE»
 

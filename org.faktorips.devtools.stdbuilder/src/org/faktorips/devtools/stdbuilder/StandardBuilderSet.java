@@ -446,7 +446,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         builders.add(productCmptInterfaceBuilder);
         builders.add(productCmptImplClassBuilder);
         builders.add(productCmptGenInterfaceBuilder);
-        // builders.add(productCmptGenImplClassBuilder);
+        builders.add(productCmptGenImplClassBuilder);
         builders.add(policyCmptImplClassBuilder);
         builders.add(policyCmptInterfaceBuilder);
         builders.add(productCmptGenerationImplBuilder);
@@ -468,8 +468,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // TODO add XPAND builder for testing purposes
         builders.add(new org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder(this,
                 generatorModelContext, modelService));
-        builders.add(new org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationImlClassBuilder(this,
-                generatorModelContext, modelService));
+        // builders.add(new
+        // org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationImlClassBuilder(this,
+        // generatorModelContext, modelService));
 
         return builders.toArray(new IIpsArtefactBuilder[builders.size()]);
     }

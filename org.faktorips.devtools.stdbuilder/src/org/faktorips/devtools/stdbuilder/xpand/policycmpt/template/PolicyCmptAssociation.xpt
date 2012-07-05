@@ -27,74 +27,24 @@
 	«EXPAND getters-»
 	«EXPAND setterMethodsForToOne-»
 	«EXPAND newMethods-»
-«REM»
 	«EXPAND add-»
 	«EXPAND remove-»
-
-
-
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-    @Override
-    public void addNichtKonfigurierteVertragsklasse(INichtKonfigurierteVertragsklasse objectToAdd) {
-        addNichtKonfigurierteVertragsklasseInternal(objectToAdd);
-        notifyChangeListeners(new AssociationChangedEvent(this, ASSOCIATION_NICHTKONFIGURIERTEVERTRAGSKLASSEN, null,
-                objectToAdd));
-    }
-
-    /**
-     * Adds the given object as NichtKonfigurierteVertragsklasse without triggering a change event.
-     * 
-     * @generated
-     */
-    public void addNichtKonfigurierteVertragsklasseInternal(INichtKonfigurierteVertragsklasse objectToAdd) {
-        if (objectToAdd == null) {
-            throw new NullPointerException("Can't add null to association NichtKonfigurierteVertragsklasse of " + this);
-        }
-        if (nichtKonfigurierteVertragsklassen.contains(objectToAdd)) {
-            return;
-        }
-        nichtKonfigurierteVertragsklassen.add(objectToAdd);
-        if (!objectToAdd.containsVertrag(this)) {
-            objectToAdd.addVertrag(this);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-    @Override
-    public void removeNichtKonfigurierteVertragsklasse(INichtKonfigurierteVertragsklasse objectToRemove) {
-        if (objectToRemove == null) {
-            return;
-        }
-        if (nichtKonfigurierteVertragsklassen.remove(objectToRemove)) {
-            objectToRemove.removeVertrag(this);
-        }
-        notifyChangeListeners(new AssociationChangedEvent(this, ASSOCIATION_NICHTKONFIGURIERTEVERTRAGSKLASSEN,
-                objectToRemove, null));
-    }
-    
-    
-«ENDREM»
 «ENDDEFINE»
+
 «DEFINE contains FOR XPolicyAssociation-»
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-    «overrideAnnotation(true)»
-    public boolean «method(methodNameContains, targetInterfaceName, "objectToTest")» {
-        return «fieldName».contains(objectToTest);
-    }
+	«IF oneToMany-»
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotation(true)»
+	    public boolean «method(methodNameContains, targetInterfaceName, "objectToTest")» {
+	        return «fieldName».contains(objectToTest);
+	    }
+    «ENDIF»
 «ENDDEFINE»
+
 «DEFINE getters FOR XPolicyAssociation-»
 	«IF oneToMany»
 	    /**
@@ -149,54 +99,134 @@
 	     */
 	    public void «method(methodNameSetInternal, targetInterfaceName, "newObject")»{
 	        if («fieldName» != null) {
-	            «fieldName».«methodNameSetInternalInverseAssociation»(null);
+	            «fieldName».«methodNameInverseAssociationSetInternal»(null);
 	        }
 	        if (newObject != null) {
-	            «EXPAND newObject».«methodNameSetInternalInverseAssociation»(this);
+	            «EXPAND newObject».«methodNameInverseAssociationSetInternal»(this);
 	        }
 	        «fieldName» = «EXPAND castToImplementationIfNecessary» newObject;
 	    }
     «ENDIF»
 «ENDDEFINE»
+
 «DEFINE newObject FOR XPolicyAssociation-»
 	«IF generatingPublishedInterfaces-»
 	(«EXPAND castToImplementationIfNecessary»newObject)«ELSE-»
 	newObject«ENDIF-»
 «ENDDEFINE»
+
 «DEFINE castToImplementationIfNecessary FOR XPolicyAssociation-»
 	«IF generatingPublishedInterfaces-»(«targetClassName»)«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE newMethods FOR XPolicyAssociation-»
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-	«overrideAnnotation(true)»
-    public «targetInterfaceName» «method(methodNameNew)»{
-        «targetClassName» «variableNameNewInstance» = new «targetClassName»();
-        «methodNameSetInternal»(«variableNameNewInstance»);
-        «variableNameNewInstance».«initialize()»;
-        «EXPAND PropertyChangeSupport::notifyNewAssociation(variableNameNewInstance)-»
-        return «variableNameNewInstance»;
-    }
+	«IF productRelevant-»
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+		«overrideAnnotation(true)»
+	    public «targetInterfaceName» «method(methodNameNew)»{
+	        «targetClassName» «variableNameNewInstance» = new «targetClassName»();
+			«EXPAND addOrSetNewInstance-»
+	        «variableNameNewInstance».«initialize()»;
+	        «EXPAND PropertyChangeSupport::notifyNewAssociation(variableNameNewInstance)-»
+	        return «variableNameNewInstance»;
+	    }
+	
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+		«overrideAnnotation(true)»
+	    public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceName, targetProductCmptVariableName)» {
+	        if («targetProductCmptVariableName» == null) {
+	            return «methodNameNew»();
+	        }
+	        «targetInterfaceName» «variableNameNewInstance» = «targetProductCmptVariableName».«methodNameCreatePolicyCmptForTargetProductCmpt»(); 
+			«EXPAND addOrSetNewInstance-»
+	        «variableNameNewInstance».«initialize()»;
+	        «EXPAND PropertyChangeSupport::notifyNewAssociation(variableNameNewInstance)-»
+	        return «variableNameNewInstance»;
+	    }
+    «ENDIF-»
+«ENDDEFINE»
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-	«overrideAnnotation(true)»
-    public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceName, targetProductCmptVariableName)» {
-        if («targetProductCmptVariableName» == null) {
-            return «methodNameNew»();
-        }
-        IVertragsTeil newOneToOneVertragsTeil = iElementarProdukt.createVertragsTeil();
-        setOneToOneVertragsTeilInternal(newOneToOneVertragsTeil);
-        newOneToOneVertragsTeil.initialize();
-        notifyChangeListeners(new AssociationChangedEvent(this, ASSOCIATION_ONETOONEVERTRAGSTEIL, null,
-                newOneToOneVertragsTeil));
-        return newOneToOneVertragsTeil;
-    }
+«DEFINE addOrSetNewInstance FOR XPolicyAssociation-»
+	«IF oneToMany-»
+       	«methodNameAddInternal»(«variableNameNewInstance»);
+    «ELSE-»
+       	«methodNameSetInternal»(«variableNameNewInstance»);
+    «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE add FOR XPolicyAssociation-»
+	«IF oneToMany-»
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+		«overrideAnnotation(true)»
+	    public void «method(methodNameAdd, targetInterfaceName, "objectToAdd")»{
+	        «methodNameAddInternal»(objectToAdd);
+	        «EXPAND PropertyChangeSupport::notifyNewAssociation("objectToAdd")-»
+	    }
+	
+	    /**
+	     * «localizedJDoc("METHOD_ADD_OBJECT_INTERNAL", name)»
+	     * 
+	     * @generated
+	     */
+	    public void «method(methodNameAddInternal, targetInterfaceName, "objectToAdd")»{
+	        if (objectToAdd == null) {
+	            throw new NullPointerException("Can't add null to association «name» of " + this);
+	        }
+	        if («fieldName».contains(objectToAdd)) {
+	            return;
+	        }
+	        «fieldName».add(objectToAdd);
+	        «IF hasInverseAssociation()-»
+		        if (!objectToAdd.«methodNameInverseAssociationContains»(this)) {
+		            objectToAdd.«methodNameInverseAssociationAdd»(this);
+		        }
+		   	«ENDIF-»
+	    }
+    «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE remove FOR XPolicyAssociation-»
+	«IF oneToMany-»
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+		«overrideAnnotation(true)»
+	    public void «method(methodNameRemove, targetInterfaceName, "objectToRemove")»{
+	        if (objectToRemove == null) {
+	            return;
+	        }
+	        if («fieldName».remove(objectToRemove)) {
+	        	«EXPAND detachRemovedObject-»
+	        }
+	        «EXPAND PropertyChangeSupport::notifyRemovedAssociation("objectToRemove")-»
+	    }
+    «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE detachRemovedObject FOR XPolicyAssociation-»
+	«IF composition-»
+		«IF hasInverseAssociation()-»
+			((«targetClassName»)objectToRemove).«methodNameInverseAssociationSetInternal»(null);
+		«ENDIF-»
+	«ELSE-»
+		«IF hasInverseAssociation() && inverseAssociation.oneToMany-»
+			objectToRemove.«methodNameInverseAssociationRemove»(this);
+		«ELSE-»
+			((«targetClassName»)objectToRemove).«methodNameInverseAssociationSetInternal»(null);
+		«ENDIF-»
+	«ENDIF-»
 «ENDDEFINE»
