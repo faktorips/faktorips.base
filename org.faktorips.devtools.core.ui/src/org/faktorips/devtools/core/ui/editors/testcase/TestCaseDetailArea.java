@@ -253,8 +253,8 @@ public class TestCaseDetailArea {
     }
 
     private void applyHeight(ScrolledComposite scrolledComposite) {
-        GridDataFactory dataFactory = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).hint(SWT.DEFAULT,
-                computeScrolledCompositeHeight()).grab(true, true);
+        GridDataFactory dataFactory = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL)
+                .hint(SWT.DEFAULT, computeScrolledCompositeHeight()).grab(true, true);
         dataFactory.applyTo(scrolledComposite);
     }
 
@@ -362,8 +362,8 @@ public class TestCaseDetailArea {
             ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(Datatype.STRING);
         }
 
-        Label label = toolkit.createFormLabel(attributeComposite, StringUtils.capitalize(attributeValue
-                .getTestAttribute()));
+        Label label = toolkit.createFormLabel(attributeComposite,
+                StringUtils.capitalize(attributeValue.getTestAttribute()));
         if (testAttribute != null) {
             // use description of parameter as tooltip
             String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(testAttribute);
@@ -475,8 +475,8 @@ public class TestCaseDetailArea {
             addSectionSelectionListeners(null, label, currLink);
         } else {
             // target not found in current test case
-            Label label = toolkit.createLabel(hyperlinkArea, TestCaseHierarchyPath
-                    .unqualifiedName(currLink.getTarget()));
+            Label label = toolkit.createLabel(hyperlinkArea,
+                    TestCaseHierarchyPath.unqualifiedName(currLink.getTarget()));
             addSectionSelectionListeners(null, label, currLink);
             label = toolkit.createLabel(hyperlinkArea,
                     " (" + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currLink.getTarget()) + " ) "); //$NON-NLS-1$ //$NON-NLS-2$
@@ -621,8 +621,8 @@ public class TestCaseDetailArea {
             label.setToolTipText(localizedDescription);
             section.getChildren()[0].setToolTipText(localizedDescription);
         }
-        final EditField<?> editField = new EnumValueField(toolkit.createCombo(composite, TestRuleViolationType
-                .getEnumType()), TestRuleViolationType.getEnumType());
+        final EditField<?> editField = new EnumValueField(toolkit.createCombo(composite,
+                TestRuleViolationType.getEnumType()), TestRuleViolationType.getEnumType());
         addSectionSelectionListeners(editField, label, rule);
 
         editField.getControl().addFocusListener(new FocusAdapter() {
@@ -863,7 +863,7 @@ public class TestCaseDetailArea {
         if (editField == null) {
             // edit field not found, try to get the special edit value field
             editField = allEditFieldsCache.get((TestCaseSection.VALUESECTION + uniqueKey).toUpperCase());
-            if (editField == null) {
+            if (editField == null && uniqueKey != null) {
                 // fallback
                 editField = allEditFieldsCache.get(uniqueKey.toUpperCase());
             }
