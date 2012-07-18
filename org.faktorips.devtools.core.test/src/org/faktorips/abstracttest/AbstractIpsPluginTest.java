@@ -880,15 +880,15 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     /**
      * Creates a new product component that is based on the given product component type and has one
-     * generation with it's valid from date set to the current working date. The product component
-     * is stored in the same package fragment root as the type. If the qualifiedName includes a
-     * package name, the package is created if it does not already exists.
+     * generation with it's valid from date set 2012-07-18, 01:01:01. The product component is
+     * stored in the same package fragment root as the type. If the qualifiedName includes a package
+     * name, the package is created if it does not already exists.
      */
     protected ProductCmpt newProductCmpt(IProductCmptType type, String qualifiedName) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)newIpsObject(type.getIpsPackageFragment().getRoot(),
                 IpsObjectType.PRODUCT_CMPT, qualifiedName);
         productCmpt.setProductCmptType(type.getQualifiedName());
-        productCmpt.newGeneration(new GregorianCalendar());
+        productCmpt.newGeneration(new GregorianCalendar(2012, 06, 18, 1, 1, 1));
         productCmpt.getIpsSrcFile().save(true, null);
         return (ProductCmpt)productCmpt;
     }
