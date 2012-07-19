@@ -86,28 +86,37 @@ public class XPolicyAssociation extends XAssociation {
      * @throws NullPointerException if this association has no inverse association.
      */
     public String getMethodNameInverseAssociationSetInternal() {
-        return getJavaNamingConvention().getSetterMethodName(getInverseAssociation().getName()) + "Internal";
+        return getJavaNamingConvention().getSetterMethodName(getInverseAssociationName()) + "Internal";
     }
 
     /**
      * @throws NullPointerException if this association has no inverse association.
      */
     public String getMethodNameInverseAssociationContains() {
-        return "contains" + getInverseAssociation().getName();
+        return "contains" + getInverseAssociationName();
     }
 
     /**
      * @throws NullPointerException if this association has no inverse association.
      */
     public String getMethodNameInverseAssociationAdd() {
-        return "add" + getInverseAssociation().getName();
+        return "add" + getInverseAssociationName();
     }
 
     /**
      * @throws NullPointerException if this association has no inverse association.
      */
     public String getMethodNameInverseAssociationRemove() {
-        return "remove" + getInverseAssociation().getName();
+        return "remove" + getInverseAssociationName();
+    }
+
+    /**
+     * Returns the inverse association's name.
+     * 
+     * @throws NullPointerException if no inverse association exists.
+     */
+    protected String getInverseAssociationName() {
+        return getInverseAssociation().getName();
     }
 
     /**
@@ -115,7 +124,7 @@ public class XPolicyAssociation extends XAssociation {
      * 
      * @throws NullPointerException if this association has no inverse association.
      */
-    protected XPolicyAssociation getInverseAssociation() {
+    public XPolicyAssociation getInverseAssociation() {
         try {
             IPolicyCmptTypeAssociation inverseAssoc = getAssociation().findInverseAssociation(getIpsProject());
             if (inverseAssoc != null) {
@@ -127,6 +136,53 @@ public class XPolicyAssociation extends XAssociation {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    /**
+     * Returns <code>true</code> if
+     * <ul>
+     * <li>
+     * this association is a master-to-detail composition, and</li>
+     * <li>
+     * the association's target exists and is a dependent type (and not the aggregate root).</li>
+     * </ul>
+     * <code>false</code> otherwise.
+     */
+    public boolean isValidComposition() {
+        IPolicyCmptType targetType = getTargetPolicyCmptType();
+        return isCompositionMasterToDetail() && hasTarget() && isTargetTypeDependantType(targetType);
+    }
+
+    /**
+     * Returns <code>true</code> if an inverse association is defined or if this association is a
+     * valid composition ( {@link #isValidComposition()} )
+     */
+    public boolean isGenerateCodeToSynchronizeReverseComposition() {
+        return isValidComposition() || hasInverseAssociation();
+    }
+
+    /**
+     * Returns <code>true</code> if this association is an association (neither composition nor
+     * aggregation) and an inverse association is defined. <code>false</code> otherwise.
+     */
+    public boolean isGenerateCodeToSynchronizeReverseAssociation() {
+        return isAssociation() && hasInverseAssociation();
+    }
+
+    private boolean isTargetTypeDependantType(IPolicyCmptType targetType) {
+        try {
+            return targetType.isDependantType();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    private boolean hasTarget() {
+        return getTargetType() != null;
+    }
+
+    private IPolicyCmptType getTargetPolicyCmptType() {
+        return (IPolicyCmptType)getTargetType();
     }
 
     public String getVariableNameNewInstance() {
@@ -166,6 +222,14 @@ public class XPolicyAssociation extends XAssociation {
 
     public boolean isComposition() {
         return getAssociation().isComposition();
+    }
+
+    public boolean isCompositionMasterToDetail() {
+        return getAssociation().isCompositionMasterToDetail();
+    }
+
+    private boolean isAssociation() {
+        return getAssociation().isAssoziation();
     }
 
     public boolean hasInverseAssociation() {

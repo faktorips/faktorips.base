@@ -330,7 +330,7 @@ public abstract class AbstractGeneratorModelNode {
         return getModelService().getModelNode(ipsObjectPartContainer, nodeClass, getContext());
     }
 
-    protected IJavaNamingConvention getJavaNamingConvention() {
+    public IJavaNamingConvention getJavaNamingConvention() {
         return getIpsProject().getJavaNamingConvention();
     }
 

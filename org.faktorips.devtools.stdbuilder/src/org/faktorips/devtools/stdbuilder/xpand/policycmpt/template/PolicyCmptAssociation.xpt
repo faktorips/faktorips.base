@@ -78,6 +78,7 @@
 	    }
     «ENDIF»
 «ENDDEFINE»
+
 «DEFINE setterMethodsForToOne FOR XPolicyAssociation-»
 	«IF !oneToMany-»
 	    /**
@@ -102,17 +103,17 @@
 	            «fieldName».«methodNameInverseAssociationSetInternal»(null);
 	        }
 	        if (newObject != null) {
-	            «EXPAND newObject».«methodNameInverseAssociationSetInternal»(this);
+	            «EXPAND castIfNeccessary("newObject")».«methodNameInverseAssociationSetInternal»(this);
 	        }
 	        «fieldName» = «EXPAND castToImplementationIfNecessary» newObject;
 	    }
     «ENDIF»
 «ENDDEFINE»
 
-«DEFINE newObject FOR XPolicyAssociation-»
+«DEFINE castIfNeccessary(String varName) FOR XPolicyAssociation-»
 	«IF generatingPublishedInterfaces-»
-	(«EXPAND castToImplementationIfNecessary»newObject)«ELSE-»
-	newObject«ENDIF-»
+	(«EXPAND castToImplementationIfNecessary»«varName»)«ELSE-»
+	«varName»«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE castToImplementationIfNecessary FOR XPolicyAssociation-»
@@ -187,14 +188,41 @@
 	        if («fieldName».contains(objectToAdd)) {
 	            return;
 	        }
-	        «fieldName».add(objectToAdd);
-	        «IF hasInverseAssociation()-»
-		        if (!objectToAdd.«methodNameInverseAssociationContains»(this)) {
-		            objectToAdd.«methodNameInverseAssociationAdd»(this);
-		        }
-		   	«ENDIF-»
+	        «EXPAND synchronizeInverseCompositionIfNecessary-»
+			«fieldName».add(objectToAdd);
+	        «EXPAND synchronizeInverseAssociationIfNecessary-»
 	    }
     «ENDIF-»
+«ENDDEFINE»
+
+«REM»
+	Anforderung der ADD Methode: 
+		- Valide Composition UND inverse Beziehung
+«ENDREM»
+«DEFINE synchronizeInverseCompositionIfNecessary FOR XPolicyAssociation-»
+	«IF validComposition && hasInverseAssociation()-»
+		«EXPAND castIfNeccessary("objectToAdd")».«methodNameInverseAssociationSetInternal»(this);
+    «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE synchronizeInverseAssociationIfNecessary FOR XPolicyAssociation-»
+	«IF generateCodeToSynchronizeReverseAssociation-»
+		«IF oneToMany-»
+			if («EXPAND varNameNullCheckIfNecessary("objectToAdd")» !objectToAdd.«methodNameInverseAssociationContains»(this)) {
+				objectToAdd.«methodNameInverseAssociationAdd»(this);
+			}
+	    «ELSE-»
+	    	if («EXPAND varNameNullCheckIfNecessary("objectToAdd")» objectToAdd.«methodNameGetter»()!=null) {
+				«EXPAND castIfNeccessary("objectToAdd")».«methodNameSetter»(this);
+			}
+	    «ENDIF-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE varNameNullCheckIfNecessary(String varName) FOR XPolicyAssociation-»
+	«IF !inverseAssociation.oneToMany-»
+		«varName» !=null &&
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE remove FOR XPolicyAssociation-»
@@ -209,24 +237,42 @@
 	        if (objectToRemove == null) {
 	            return;
 	        }
-	        if («fieldName».remove(objectToRemove)) {
-	        	«EXPAND detachRemovedObject-»
-	        }
+			«EXPAND removeAndDetach-»
 	        «EXPAND PropertyChangeSupport::notifyRemovedAssociation("objectToRemove")-»
 	    }
     «ENDIF-»
 «ENDDEFINE»
 
+«REM»
+	Test nötig: Composition ohne inverse Relation
+		-> alter Generator sollte if aber kein detatch generieren
+«ENDREM»
+«DEFINE removeAndDetach FOR XPolicyAssociation-»
+	«IF generateCodeToSynchronizeReverseComposition-»
+		if («fieldName».remove(objectToRemove)) {
+			«EXPAND detachRemovedObject-»
+		}
+	«ELSE-»
+		«fieldName».remove(objectToRemove);
+	«ENDIF-»
+«ENDDEFINE»
+
 «DEFINE detachRemovedObject FOR XPolicyAssociation-»
-	«IF composition-»
+	«IF hasInverseAssociation()-»
+		«IF inverseAssociation.oneToMany-»
+			objectToRemove.«methodNameInverseAssociationRemove»(this);
+		«ELSE-»
+			«EXPAND castIfNeccessary("objectToRemove")».«methodNameInverseAssociationSetInternal»(null);
+		«ENDIF-»
+	«ENDIF-»
+«ENDDEFINE»
+	«REM»«IF generateCodeToSynchronizeReverseComposition-»
 		«IF hasInverseAssociation()-»
-			((«targetClassName»)objectToRemove).«methodNameInverseAssociationSetInternal»(null);
 		«ENDIF-»
 	«ELSE-»
 		«IF hasInverseAssociation() && inverseAssociation.oneToMany-»
 			objectToRemove.«methodNameInverseAssociationRemove»(this);
 		«ELSE-»
-			((«targetClassName»)objectToRemove).«methodNameInverseAssociationSetInternal»(null);
+			«EXPAND castIfNeccessary("objectToRemove")».«methodNameInverseAssociationSetInternal»(null);
 		«ENDIF-»
-	«ENDIF-»
-«ENDDEFINE»
+	«ENDIF-»«ENDREM»
