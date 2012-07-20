@@ -11,6 +11,12 @@
 	«EXPAND getterNumOfInternal(currentContextClass)»
 «ENDDEFINE»
 
+«DEFINE methodsForDerivedUnionPolicy(XClass currentContextClass) FOR XDerivedUnionAssociation-»
+	«EXPAND getterNumOf(currentContextClass)»
+	«EXPAND getter(currentContextClass)»
+	«EXPAND getterNumOfInternal(currentContextClass)»
+«ENDDEFINE»
+
 «DEFINE getter(XClass currentContextClass) FOR XDerivedUnionAssociation-»
     /**
      * {@inheritDoc}
@@ -18,7 +24,7 @@
      * @generated
      */
      «overrideAnnotation(true)»
-     public «List_(targetInterfaceName)» «methodNameGetter»() {
+     public «List_(targetInterfaceName)» «method(methodNameGetter)» {
      	«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«methodNameGetNumOfInternal»());
      	«IF isImplementedInSuperclass(currentContextClass)-»
      		result.addAll(super.«methodNameGetter»());
@@ -41,7 +47,7 @@
      * @generated
      */
      «overrideAnnotation(true)»
-     public int «methodNameGetNumOf»() {
+     public int «method(methodNameGetNumOf)» {
      	return «methodNameGetNumOfInternal»();
      }
 «ENDDEFINE»
@@ -57,5 +63,16 @@
      	«ENDFOREACH-»
         return num;
      }
+«ENDDEFINE»
+
+«DEFINE methodDerivedUnionContains(XClass currentContextClass) FOR XDerivedUnionAssociation-»
+	/**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public boolean «method(methodNameContains, targetInterfaceName, "objectToTest")» {
+        return «methodNameGetter»().contains(objectToTest);
+    }
 «ENDDEFINE»
 

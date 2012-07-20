@@ -14,8 +14,10 @@
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -25,6 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -165,6 +168,43 @@ public class XPolicyCmptClassTest {
         when(modelService.getModelNode(prodType, XProductCmptClass.class, modelContext)).thenReturn(xProdClass);
 
         assertEquals("ProductName", policyCmptClass.getProductCmptClassName());
+    }
+
+    @Test
+    public void testIsGenerateInitPropertiesFromXML() {
+        XPolicyCmptClass policyCmptClass;
+        policyCmptClass = setUpAttrList(true, true, true);
+        assertTrue(policyCmptClass.isGenerateInitPropertiesFromXML());
+
+        policyCmptClass = setUpAttrList(false, true, true);
+        assertTrue(policyCmptClass.isGenerateInitPropertiesFromXML());
+
+        policyCmptClass = setUpAttrList(false, true, false);
+        assertTrue(policyCmptClass.isGenerateInitPropertiesFromXML());
+
+        policyCmptClass = setUpAttrList(false, false, false);
+        assertFalse(policyCmptClass.isGenerateInitPropertiesFromXML());
+
+        policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        Set<XPolicyAttribute> list = new HashSet<XPolicyAttribute>();
+        doReturn(list).when(policyCmptClass).getAttributes();
+        assertFalse(policyCmptClass.isGenerateInitPropertiesFromXML());
+    }
+
+    private XPolicyCmptClass setUpAttrList(boolean init1, boolean init2, boolean init3) {
+        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        Set<XPolicyAttribute> list = new HashSet<XPolicyAttribute>();
+        XPolicyAttribute attr1 = mock(XPolicyAttribute.class);
+        XPolicyAttribute attr2 = mock(XPolicyAttribute.class);
+        XPolicyAttribute attr3 = mock(XPolicyAttribute.class);
+        when(attr1.isGenerateInitPropertiesFromXML()).thenReturn(init1);
+        when(attr2.isGenerateInitPropertiesFromXML()).thenReturn(init2);
+        when(attr3.isGenerateInitPropertiesFromXML()).thenReturn(init3);
+        list.add(attr1);
+        list.add(attr2);
+        list.add(attr3);
+        doReturn(list).when(policyCmptClass).getAttributes();
+        return policyCmptClass;
     }
 
 }

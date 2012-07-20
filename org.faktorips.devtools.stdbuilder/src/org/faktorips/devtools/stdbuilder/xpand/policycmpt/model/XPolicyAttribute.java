@@ -68,7 +68,7 @@ public class XPolicyAttribute extends XAttribute {
      * Returns true for all attributes except derived (on the fly) and overridden attributes.
      */
     public boolean isGenerateField() {
-        return !isDerivedOnTheFly() && !isOverwrite();
+        return (isDerivedByExplicitMethodCall() || isChangeable()) && !isOverwrite();
     }
 
     public boolean isPublished() {
@@ -101,12 +101,12 @@ public class XPolicyAttribute extends XAttribute {
         return isProductRelevant() && !isDerived();
     }
 
-    public boolean isGenerateInitFromXML() {
-        return !isDerived() && !isConstant();
+    public boolean isGenerateInitPropertiesFromXML() {
+        return isGenerateField();
     }
 
     public boolean isGenerateDefaultInitialize() {
-        return isOverwrite() && getAttribute().isChangeable();
+        return isOverwrite() && isChangeable();
     }
 
     public String getDatatypeClass() {
@@ -190,11 +190,11 @@ public class XPolicyAttribute extends XAttribute {
         return (isChangeable() || isDerivedByExplicitMethodCall()) && !isOverwrite();
     }
 
-    private boolean isDerivedByExplicitMethodCall() {
+    protected boolean isDerivedByExplicitMethodCall() {
         return getAttribute().getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL;
     }
 
-    private boolean isDerivedOnTheFly() {
+    protected boolean isDerivedOnTheFly() {
         return getAttribute().getAttributeType() == AttributeType.DERIVED_ON_THE_FLY;
     }
 

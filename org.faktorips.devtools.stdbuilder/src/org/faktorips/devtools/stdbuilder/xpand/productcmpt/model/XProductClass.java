@@ -82,19 +82,9 @@ public abstract class XProductClass extends XClass {
      * @return The list of derived union associations
      */
     protected final Set<IProductCmptTypeAssociation> getProductDerivedUnionAssociations(boolean changableAssociations) {
-        Set<IProductCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IProductCmptTypeAssociation>();
         Set<IProductCmptTypeAssociation> notDerivedUnionAssociations = getProductAssociations(changableAssociations);
-        for (IProductCmptTypeAssociation association : notDerivedUnionAssociations) {
-            try {
-                if (association.isSubsetOfADerivedUnion()) {
-                    IProductCmptTypeAssociation subsettedDerivedUnion = (IProductCmptTypeAssociation)association
-                            .findSubsettedDerivedUnion(getIpsProject());
-                    resultingAssociations.add(subsettedDerivedUnion);
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-        }
+        Set<IProductCmptTypeAssociation> resultingAssociations = findSubsettedDerivedUnions(
+                notDerivedUnionAssociations, IProductCmptTypeAssociation.class);
         return resultingAssociations;
     }
 

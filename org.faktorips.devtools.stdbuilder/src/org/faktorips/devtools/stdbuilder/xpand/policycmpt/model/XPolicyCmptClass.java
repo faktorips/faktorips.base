@@ -52,11 +52,9 @@ public class XPolicyCmptClass extends XClass {
                 new LinkedHashSet<IPolicyCmptTypeAttribute>(policyCmptType.getPolicyCmptTypeAttributes()),
                 XPolicyAttribute.class);
         associations = initNodesForParts(getPolicyAssociations(policyCmptType, false), XPolicyAssociation.class);
-        // TODO derived unions müssen noch richtig "berechnet" werden siehe product side
-        derivedUnionAssociations = new LinkedHashSet<XDerivedUnionAssociation>();
-        // derivedUnionAssociations = initNodesForParts(getPolicyAssociations(policyCmptType,
-        // false),
-        // XDerivedUnionAssociation.class);
+        derivedUnionAssociations = initNodesForParts(
+                findSubsettedDerivedUnions(policyCmptType.getPolicyCmptTypeAssociations(),
+                        IPolicyCmptTypeAssociation.class), XDerivedUnionAssociation.class);
     }
 
     private Set<IPolicyCmptTypeAssociation> getPolicyAssociations(IPolicyCmptType policyCmptType, boolean derivedUnion) {
@@ -281,5 +279,18 @@ public class XPolicyCmptClass extends XClass {
             }
         }
         return resultingSet;
+    }
+
+    /**
+     * Returns <code>true</code> if at least one attribute would generate code in the
+     * initPropertiesFromXML-Method. <code>false</code> otherwise.
+     */
+    public boolean isGenerateInitPropertiesFromXML() {
+        for (XPolicyAttribute attr : getAttributes()) {
+            if (attr.isGenerateInitPropertiesFromXML()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

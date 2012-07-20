@@ -40,12 +40,24 @@ public class XPolicyAssociation extends XAssociation {
         return (IPolicyCmptTypeAssociation)super.getAssociation();
     }
 
-    public boolean isConsiderInCopySupport() {
-        return false;
+    public boolean isConsiderInDeltaComputation() {
+        return isValidMasterToDetailButNotDerivedUnion();
     }
 
-    public String getMethodNameContains() {
-        return "contains" + StringUtils.capitalize(getName(false));
+    public boolean isConsiderInEffectiveFromHasChanged() {
+        return isValidMasterToDetailButNotDerivedUnion();
+    }
+
+    public boolean isConsiderInNewChildFromXML() {
+        return isValidMasterToDetailButNotDerivedUnion();
+    }
+
+    private boolean isValidMasterToDetailButNotDerivedUnion() {
+        return isValid() && isCompositionMasterToDetail() && !isDerived();
+    }
+
+    public boolean isConsiderInCopySupport() {
+        return false;
     }
 
     public String getConstantNamePropertyName() {
@@ -124,7 +136,7 @@ public class XPolicyAssociation extends XAssociation {
      * 
      * @throws NullPointerException if this association has no inverse association.
      */
-    public XPolicyAssociation getInverseAssociation() {
+    public XAssociation getInverseAssociation() {
         try {
             IPolicyCmptTypeAssociation inverseAssoc = getAssociation().findInverseAssociation(getIpsProject());
             if (inverseAssoc != null) {
@@ -157,15 +169,23 @@ public class XPolicyAssociation extends XAssociation {
      * Returns <code>true</code> if an inverse association is defined or if this association is a
      * valid composition ( {@link #isValidComposition()} )
      */
-    public boolean isGenerateCodeToSynchronizeReverseComposition() {
+    public boolean isGenerateCodeToSynchronizeInverseCompositionForRemove() {
         return isValidComposition() || hasInverseAssociation();
+    }
+
+    /**
+     * Returns <code>true</code> if an inverse association is defined and if this association is a
+     * valid composition ( {@link #isValidComposition()} ) at the same time.
+     */
+    public boolean isGenerateCodeToSynchronizeInverseCompositionForAdd() {
+        return isValidComposition() && hasInverseAssociation();
     }
 
     /**
      * Returns <code>true</code> if this association is an association (neither composition nor
      * aggregation) and an inverse association is defined. <code>false</code> otherwise.
      */
-    public boolean isGenerateCodeToSynchronizeReverseAssociation() {
+    public boolean isGenerateCodeToSynchronizeInverseAssociation() {
         return isAssociation() && hasInverseAssociation();
     }
 
@@ -238,6 +258,10 @@ public class XPolicyAssociation extends XAssociation {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    public String getLocalVarNameCreateChildFromXML() {
+        return StringUtils.uncapitalize(getName()) + "LocalVar";
     }
 
 }

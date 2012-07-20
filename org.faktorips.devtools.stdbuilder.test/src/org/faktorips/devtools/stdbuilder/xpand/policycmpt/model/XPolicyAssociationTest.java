@@ -14,6 +14,8 @@
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -22,6 +24,7 @@ import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +44,7 @@ public class XPolicyAssociationTest {
     private ModelService modelService;
 
     @Mock
-    private XPolicyAssociation inverseAssoc;
+    private XAssociation inverseAssoc;
     private XPolicyAssociation assoc;
 
     @Before
@@ -65,6 +68,44 @@ public class XPolicyAssociationTest {
         doReturn(null).when(assoc).getInverseAssociation();
 
         assoc.getMethodNameInverseAssociationSetInternal();
+    }
+
+    @Test
+    public void testGenerateSynchronizeForAdd() {
+        doReturn(true).when(assoc).isValidComposition();
+        doReturn(false).when(assoc).hasInverseAssociation();
+        assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForAdd());
+
+        doReturn(false).when(assoc).isValidComposition();
+        doReturn(true).when(assoc).hasInverseAssociation();
+        assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForAdd());
+
+        doReturn(false).when(assoc).isValidComposition();
+        doReturn(false).when(assoc).hasInverseAssociation();
+        assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForAdd());
+
+        doReturn(true).when(assoc).isValidComposition();
+        doReturn(true).when(assoc).hasInverseAssociation();
+        assertTrue(assoc.isGenerateCodeToSynchronizeInverseCompositionForAdd());
+    }
+
+    @Test
+    public void testGenerateSynchronizeForRemove() {
+        doReturn(true).when(assoc).isValidComposition();
+        doReturn(false).when(assoc).hasInverseAssociation();
+        assertTrue(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
+
+        doReturn(false).when(assoc).isValidComposition();
+        doReturn(true).when(assoc).hasInverseAssociation();
+        assertTrue(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
+
+        doReturn(false).when(assoc).isValidComposition();
+        doReturn(false).when(assoc).hasInverseAssociation();
+        assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
+
+        doReturn(true).when(assoc).isValidComposition();
+        doReturn(true).when(assoc).hasInverseAssociation();
+        assertTrue(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
     }
 
 }

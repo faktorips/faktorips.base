@@ -90,6 +90,18 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getAssociation().isDerivedUnion();
     }
 
+    public boolean isDerived() {
+        return getAssociation().isDerived();
+    }
+
+    public boolean isValid() {
+        try {
+            return getAssociation().isValid(getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
     public boolean isSubsetOf(XDerivedUnionAssociation derivedUnionAssociation) {
         if (getAssociation().getSubsettedDerivedUnion().equals(derivedUnionAssociation.getName())) {
             return true;
@@ -150,6 +162,10 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
     public String getMethodNameGetNumOf() {
         return getJavaNamingConvention().getGetterMethodName(
                 "NumOf" + StringUtils.capitalize(getAssociation().getTargetRolePlural()));
+    }
+
+    public String getMethodNameContains() {
+        return "contains" + StringUtils.capitalize(getName(false));
     }
 
 }

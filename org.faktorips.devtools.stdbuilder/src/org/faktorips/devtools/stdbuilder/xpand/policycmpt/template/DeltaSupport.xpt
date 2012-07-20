@@ -19,11 +19,11 @@
         if (!«className».class.isAssignableFrom(otherObject.getClass())) {
             return delta;
         }
-        «className» otherAbstractVertrag = («className»)otherObject;
+    	«IF !attributes.isEmpty || !associations.isEmpty-»
+	        «className» other«className» = («className»)otherObject;
+        «ENDIF-»
 		«EXPAND DeltaSupport::deltaCheckForAttribute(this) FOREACH attributes-»
-		«REM»
 		«EXPAND DeltaSupport::deltaCheckForRelatedClasses(this) FOREACH associations-»
-		«ENDREM»
         return delta;
     }
 «ENDDEFINE»
@@ -34,15 +34,8 @@
     «ENDIF-»
 «ENDDEFINE»
 
-		«REM»
 «DEFINE deltaCheckForRelatedClasses(XPolicyCmptClass policyClass) FOR XPolicyAssociation-»
-	«IF considerForDeltaComputation-»
-		BeispielCode aus "maxspec.Vertrag"
-		ModelObjectDelta.createChildDeltas(delta, deckungen, otherVertrag.deckungen, "deckungen", options);
-        ModelObjectDelta.createChildDeltas(delta, subVertragsTeile, otherVertrag.subVertragsTeile, "subVertragsTeile",
-                options);
-        ModelObjectDelta.createChildDeltas(delta, oneToOneVertragsTeil, otherVertrag.oneToOneVertragsTeil,
-                "oneToOneVertragsTeil", options);
+	«IF considerInDeltaComputation-»
+		ModelObjectDelta.createChildDeltas(delta, «fieldName», other«policyClass.className».«fieldName», "«fieldName»", options);
     «ENDIF-»
 «ENDDEFINE»
-		«ENDREM»

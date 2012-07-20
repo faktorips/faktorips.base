@@ -32,7 +32,7 @@
 	        if (newCopy == null) {
 	            newCopy = new «className»();
 	            newCopy.«copyProductCmptAndGenerationInternal("this")»;
-	            «copyProperties("newCopy", "copyMap")»
+	            «copyProperties("newCopy", "copyMap")»;
 	        }
 	        return newCopy;
     	«ELSE-»

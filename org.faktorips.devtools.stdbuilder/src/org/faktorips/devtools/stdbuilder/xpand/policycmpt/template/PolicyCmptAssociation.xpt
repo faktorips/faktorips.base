@@ -5,6 +5,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::template»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAttributeExtension»
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::ClassNames»
 
 «DEFINE field FOR XPolicyAssociation-»
 	«IF !derivedUnion-»
@@ -195,18 +196,14 @@
     «ENDIF-»
 «ENDDEFINE»
 
-«REM»
-	Anforderung der ADD Methode: 
-		- Valide Composition UND inverse Beziehung
-«ENDREM»
 «DEFINE synchronizeInverseCompositionIfNecessary FOR XPolicyAssociation-»
-	«IF validComposition && hasInverseAssociation()-»
+	«IF generateCodeToSynchronizeInverseCompositionForAdd-»
 		«EXPAND castIfNeccessary("objectToAdd")».«methodNameInverseAssociationSetInternal»(this);
     «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE synchronizeInverseAssociationIfNecessary FOR XPolicyAssociation-»
-	«IF generateCodeToSynchronizeReverseAssociation-»
+	«IF generateCodeToSynchronizeInverseAssociation-»
 		«IF oneToMany-»
 			if («EXPAND varNameNullCheckIfNecessary("objectToAdd")» !objectToAdd.«methodNameInverseAssociationContains»(this)) {
 				objectToAdd.«methodNameInverseAssociationAdd»(this);
@@ -245,10 +242,10 @@
 
 «REM»
 	Test nötig: Composition ohne inverse Relation
-		-> alter Generator sollte if aber kein detatch generieren
+		-> alter Generator sollte leeres if(){} aber kein detach generieren
 «ENDREM»
 «DEFINE removeAndDetach FOR XPolicyAssociation-»
-	«IF generateCodeToSynchronizeReverseComposition-»
+	«IF generateCodeToSynchronizeInverseCompositionForRemove-»
 		if («fieldName».remove(objectToRemove)) {
 			«EXPAND detachRemovedObject-»
 		}
@@ -266,13 +263,41 @@
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
-	«REM»«IF generateCodeToSynchronizeReverseComposition-»
-		«IF hasInverseAssociation()-»
-		«ENDIF-»
-	«ELSE-»
-		«IF hasInverseAssociation() && inverseAssociation.oneToMany-»
-			objectToRemove.«methodNameInverseAssociationRemove»(this);
+
+«DEFINE delegateEffectiveFromHasChanged FOR XPolicyAssociation-»
+	«IF considerInEffectiveFromHasChanged-»
+		«IF oneToMany-»
+			for («Iterator(targetInterfaceName)» it = «fieldName».iterator(); it.hasNext();) {
+	            «AbstractConfigurableModelObject()» child = («AbstractConfigurableModelObject()»)it.next();
+	            child.effectiveFromHasChanged();
+	        }
 		«ELSE-»
-			«EXPAND castIfNeccessary("objectToRemove")».«methodNameInverseAssociationSetInternal»(null);
+			if («fieldName» != null) {
+	            ((«AbstractConfigurableModelObject()»)«fieldName»).effectiveFromHasChanged();
+	        }
 		«ENDIF-»
-	«ENDIF-»«ENDREM»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE createTargetFromXML FOR XPolicyAssociation-»
+	«IF considerInNewChildFromXML-»
+        if ("«name»".equals(childEl.getNodeName())) {
+            String className = childEl.getAttribute("class");
+            if (className.length() > 0) {
+                try {
+                    «targetClassName» «localVarNameCreateChildFromXML» = («targetClassName»)Class.forName(className).newInstance();
+                    «IF oneToMany-»
+	                    «methodNameAdd»(«localVarNameCreateChildFromXML»);
+                    «ELSE-»
+	                    «methodNameSetter»(«localVarNameCreateChildFromXML»);                    	
+                    «ENDIF-»
+                    return «localVarNameCreateChildFromXML»;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return («AbstractModelObject()»)«methodNameNew»();
+        }
+	«ENDIF-»
+«ENDDEFINE»
+        

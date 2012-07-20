@@ -101,7 +101,7 @@
 «ENDDEFINE»
 
 «DEFINE initAttributeFromXML FOR XPolicyAttribute-»
-	«IF generateInitFromXML-»
+	«IF generateInitPropertiesFromXML-»
         if (propMap.containsKey("«name»")) {
             this.«fieldName» = «newInstanceExpression»;
         }

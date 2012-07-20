@@ -54,9 +54,13 @@ package «packageName»;
 			«EXPAND PolicyCmptAttribute::setter-»
 		«ENDFOREACH-»
 
+		«EXPAND DerivedUnionAssociation::methodDerivedUnionContains(this) FOREACH  derivedUnionAssociations»
+
 		«FOREACH associations AS this-»
 			«EXPAND PolicyCmptAssociation::methods-»
 		«ENDFOREACH-»
+		
+		«EXPAND DerivedUnionAssociation::methodsForDerivedUnionPolicy(this) FOREACH  derivedUnionAssociations»
 
 		«IF configured-»
 			«EXPAND generalMethodsForConfiguredPolicyCmpts-»
@@ -165,6 +169,7 @@ package «packageName»;
 	 «overrideAnnotation(false)»
     public void «effectiveFromHasChanged()» {
         super.«effectiveFromHasChanged()»;
+        «EXPAND PolicyCmptAssociation::delegateEffectiveFromHasChanged FOREACH associations-»
     }
     
 	/**
@@ -191,22 +196,23 @@ package «packageName»;
 		        return null;
 		 «ENDIF-»
 	 }
-    
 «ENDDEFINE»
 
 «DEFINE generalMethods FOR XPolicyCmptClass-»
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-	 «overrideAnnotation(false)»
-    protected void «initPropertiesFromXml(Map("String", "String")+" propMap", IRuntimeRepository()+" productRepository")» {
-        super.«initPropertiesFromXml("propMap", "productRepository")»;
-        «FOREACH attributes AS this-»
-			«EXPAND PolicyCmptAttribute::initAttributeFromXML-»
-        «ENDFOREACH-»
-    }
+	«IF generateInitPropertiesFromXML-»
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+		 «overrideAnnotation(false)»
+	    protected void «initPropertiesFromXml(Map("String", "String")+" propMap", IRuntimeRepository()+" productRepository")» {
+	        super.«initPropertiesFromXml("propMap", "productRepository")»;
+	        «FOREACH attributes AS this-»
+				«EXPAND PolicyCmptAttribute::initAttributeFromXML-»
+	        «ENDFOREACH-»
+	    }
+    «ENDIF-»
     
     /**
      * {@inheritDoc}
@@ -219,6 +225,7 @@ package «packageName»;
         if (newChild != null) {
             return newChild;
         }
+        «EXPAND PolicyCmptAssociation::createTargetFromXML FOREACH associations-»
         return null;
     }
 
@@ -239,7 +246,7 @@ package «packageName»;
 
 «DEFINE validateMethods FOR XPolicyCmptClass-»
     /**
-     * «localizedJDoc("VALIDATE_DEPENDANTS")»
+     * «localizedJDoc("VALIDATE_SELF")»
      * 
      * @generated
      */
@@ -252,7 +259,7 @@ package «packageName»;
     }
 
     /**
-     * «localizedJDoc("VALIDATE_SELF")»
+     * «localizedJDoc("VALIDATE_DEPENDANTS")»
      * 
      * @generated
      */

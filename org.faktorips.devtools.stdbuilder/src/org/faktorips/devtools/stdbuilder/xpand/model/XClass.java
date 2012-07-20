@@ -14,6 +14,8 @@
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -25,6 +27,7 @@ import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.INotificationSupport;
@@ -191,6 +194,39 @@ public abstract class XClass extends AbstractGeneratorModelNode {
 
     public boolean isAbstract() {
         return getType().isAbstract();
+    }
+
+    /**
+     * Returns the derived unions (not subsets) of all given associations. Each given association is
+     * checked whether it is a subset of a derived union:
+     * <ul>
+     * <li>If it is, the derived union that is subsetted by said association is retrieved and added
+     * to the result</li>
+     * <li>If it is not the association is ignored</li>
+     * </ul>
+     * 
+     * @param associations all associations defined for this class
+     * @param associationClass the requires association class
+     */
+    protected <T extends IAssociation> Set<T> findSubsettedDerivedUnions(Collection<T> associations,
+            Class<T> associationClass) {
+        Set<T> resultingAssociations = new LinkedHashSet<T>();
+        for (T association : associations) {
+            try {
+                if (association.isSubsetOfADerivedUnion()) {
+                    IAssociation subsettedDerivedUnion = association.findSubsettedDerivedUnion(getIpsProject());
+                    if (associationClass.isAssignableFrom(subsettedDerivedUnion.getClass())) {
+                        @SuppressWarnings("unchecked")
+                        // safe cast due to subclass check above
+                        T typedDU = (T)subsettedDerivedUnion;
+                        resultingAssociations.add(typedDU);
+                    }
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return resultingAssociations;
     }
 
 }
