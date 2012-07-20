@@ -266,5 +266,6 @@ package «packageName»;
     «overrideAnnotation(true)»
     public void «validateDependants(MessageList()+" ml", IValidationContext()+" context")» {
         super.«validateDependants("ml", "context")»;
+        «EXPAND PolicyCmptAssociation::validateDependents FOREACH associations-»
     }
 «ENDDEFINE»

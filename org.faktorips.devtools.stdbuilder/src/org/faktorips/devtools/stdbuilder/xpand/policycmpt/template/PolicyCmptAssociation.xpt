@@ -279,8 +279,24 @@
 	«ENDIF-»
 «ENDDEFINE»
 
+«DEFINE validateDependents FOR XPolicyAssociation-»
+	«IF considerInValidateDependents-»
+        «IF oneToMany-»
+	        if («methodNameGetNumOf»() > 0) {
+	            for («targetInterfaceName» rel : «methodNameGetter»()) {
+	                ml.add(rel.validate(context));
+	            }
+	        }
+        «ELSE-»
+        	if («fieldName» != null) {
+	            ml.add(«fieldName».validate(context));
+	        }
+        «ENDIF-»
+	«ENDIF-»
+«ENDDEFINE»
+
 «DEFINE createTargetFromXML FOR XPolicyAssociation-»
-	«IF considerInNewChildFromXML-»
+	«IF considerInCreateChildFromXML-»
         if ("«name»".equals(childEl.getNodeName())) {
             String className = childEl.getAttribute("class");
             if (className.length() > 0) {

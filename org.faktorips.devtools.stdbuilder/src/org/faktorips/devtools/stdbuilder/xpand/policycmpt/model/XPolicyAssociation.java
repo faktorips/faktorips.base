@@ -41,19 +41,27 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public boolean isConsiderInDeltaComputation() {
-        return isValidMasterToDetailButNotDerivedUnion();
+        return isValidMasterToDetail() && !isDerived();
     }
 
     public boolean isConsiderInEffectiveFromHasChanged() {
-        return isValidMasterToDetailButNotDerivedUnion();
+        return isValidMasterToDetail() && !isDerivedUnion();
     }
 
-    public boolean isConsiderInNewChildFromXML() {
-        return isValidMasterToDetailButNotDerivedUnion();
+    public boolean isConsiderInCreateChildFromXML() {
+        return isValidMasterToDetail() && !isDerivedUnion();
     }
 
-    private boolean isValidMasterToDetailButNotDerivedUnion() {
-        return isValid() && isCompositionMasterToDetail() && !isDerived();
+    public boolean isConsiderInValidateDependents() {
+        return isValid() && isCompositionMasterToDetail() && !isSubsetOfADerivedUnion();
+    }
+
+    private boolean isSubsetOfADerivedUnion() {
+        return getAssociation().isSubsetOfADerivedUnion();
+    }
+
+    private boolean isValidMasterToDetail() {
+        return isValid() && isCompositionMasterToDetail();
     }
 
     public boolean isConsiderInCopySupport() {
