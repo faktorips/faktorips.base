@@ -102,3 +102,10 @@ IllegalRepositoryModificationException(AbstractGeneratorModelNode this) :
 	
 ValueSet(AbstractGeneratorModelNode this):
 	addImport(ValueSet.name);
+	
+IUnresolvedReference(AbstractGeneratorModelNode this):
+	addImport(IUnresolvedReference.name);
+	
+DefaultUnresolvedReference(AbstractGeneratorModelNode this):
+	addImport(DefaultUnresolvedReference.name);
+

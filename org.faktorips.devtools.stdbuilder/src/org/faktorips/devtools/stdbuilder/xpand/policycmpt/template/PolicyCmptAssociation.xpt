@@ -360,4 +360,14 @@
         }
 	«ENDIF-»
 «ENDDEFINE»
+
+«DEFINE createUnresolvedReference FOR XPolicyAssociation-»
+	«IF considerInCreateCreateUnresolvedReference-»
+		if ("«name»".equals(targetRole)) {
+            return new «DefaultUnresolvedReference()»(this, objectId, "«IF oneToMany»«methodNameAdd»«ELSE»«methodNameSetter»«ENDIF-»",
+                    «targetInterfaceName».class, targetId);
+        }
+	«ENDIF-»
+«ENDDEFINE»
+
         

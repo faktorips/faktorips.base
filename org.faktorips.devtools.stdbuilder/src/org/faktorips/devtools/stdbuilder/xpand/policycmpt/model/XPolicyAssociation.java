@@ -56,6 +56,10 @@ public class XPolicyAssociation extends XAssociation {
         return isProductRelevant();
     }
 
+    public boolean isConsiderInCreateCreateUnresolvedReference() {
+        return isValid() && isTypeAssociation();
+    }
+
     private boolean isValidMasterToDetail() {
         return isValid() && isCompositionMasterToDetail();
     }

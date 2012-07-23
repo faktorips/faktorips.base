@@ -9,7 +9,9 @@ effectiveFromHasChanged() :
 
 getParentModelObject() :
 	"getParentModelObject()";
-
+	
+createUnresolvedReference(String arguments):
+	"createUnresolvedReference("+arguments+")";
 
 // ---------------------------------
 // Methods in IProductComponentLink

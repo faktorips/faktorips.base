@@ -228,6 +228,18 @@ package «packageName»;
         «EXPAND PolicyCmptAssociation::createTargetFromXML FOREACH associations-»
         return null;
     }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    «overrideAnnotation(false)»
+    protected «IUnresolvedReference()» «createUnresolvedReference("Object objectId, String targetRole, String targetId")»
+            throws Exception {
+        «EXPAND PolicyCmptAssociation::createUnresolvedReference FOREACH associations-»
+        return super.createUnresolvedReference(objectId, targetRole, targetId);
+    }
 
 	«IF generateDeltaSupport-»
     	«EXPAND DeltaSupport::computeDeltaMethod-»
