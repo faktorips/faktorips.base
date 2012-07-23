@@ -59,9 +59,15 @@
      * «localizedJDoc("METHOD_COPY_ASSOCIATIONS_INTERNAL")»
      
      * @generated
-     */«REM»«overrideAnnotationIfHasSupertype(false)»«ENDREM»
+     */
+     «overrideAnnotationIfHasSupertype(false)»
     public void «copyAssociationsInternal(IModelObject()+" abstractCopy", Map(IModelObject(), IModelObject())+" copyMap")» {
         «IF associationsToCopy.size > 0-»
+        	«IF hasSupertype()-»
+		        super.copyAssociationsInternal(abstractCopy, copyMap);
+        	«ENDIF-»
+	        «className» newCopy = («className»)abstractCopy;
+	        «EXPAND copyAssociation FOREACH associations-»
         «ELSE-»
         	«localizedComment("NOTHING_TO_DO")»
         «ENDIF-»
@@ -78,6 +84,32 @@
 «REM»Siehe PolicyCmptImplClassBuilder Z.523«ENDREM»
 «DEFINE copyAssociation FOR XPolicyAssociation-»
 	«IF considerInCopySupport-»
-        concreteCopy.«fieldName» = «fieldName»;
+		«IF typeAssociation-»		
+			«IF oneToMany-»
+		        for («targetInterfaceName» «copySupportLoopVarName» : «fieldName») {
+		            if (copyMap.containsKey(«copySupportLoopVarName»)) {
+		                newCopy.«fieldName».remove(«copySupportLoopVarName»);
+		                newCopy.«fieldName».add((«targetInterfaceName»)copyMap
+		                        .get(«copySupportLoopVarName»));
+		            }
+		        }
+			«ELSE-»
+				if (copyMap.containsKey(«fieldName»)) {
+					newCopy.«fieldName» = («targetClassName»)copyMap.get(«fieldName»);
+				}
+			«ENDIF-»
+		«ELSE-»
+			«IF oneToMany-»
+				for («targetInterfaceName» «copySupportLoopVarName» : «fieldName») {
+		            «targetClassName» «copySupportCopyVarName» = («targetClassName»)copyMap.get(«copySupportLoopVarName»);
+		            ((«targetClassName»)«copySupportLoopVarName»).copyAssociationsInternal(«copySupportCopyVarName», copyMap);
+		        }
+			«ELSE-»
+		        if («fieldName» != null) {
+		            «targetClassName» «copySupportCopyVarName» = («targetClassName»)copyMap.get(«fieldName»);
+		            «fieldName».copyAssociationsInternal(«copySupportCopyVarName», copyMap);
+		        }
+			«ENDIF-»
+	    «ENDIF-»
     «ENDIF-»
 «ENDDEFINE»

@@ -267,5 +267,10 @@ package «packageName»;
     public void «validateDependants(MessageList()+" ml", IValidationContext()+" context")» {
         super.«validateDependants("ml", "context")»;
         «EXPAND PolicyCmptAssociation::validateDependents FOREACH associations-»
+        «FOREACH derivedUnionAssociations AS assoc-»
+        	«IF !assoc.isImplementedInSuperclass(this)-»
+        		«EXPAND PolicyCmptAssociation::validateDependents FOR assoc»
+        	«ENDIF-»
+        «ENDFOREACH-»
     }
 «ENDDEFINE»

@@ -11,24 +11,31 @@
      */
     «overrideAnnotation(true)»
     public boolean «accept(IModelObjectVisitor() +" visitor")» {
-    	«IF hasSupertype()»
-        if (!super.accept(visitor)) {
-            return false;
-        }
+    	«IF hasSupertype()-»
+	        if (!super.accept(visitor)) {
+	            return false;
+	        }
         «ELSE-»
-    	if (!visitor.visit(this)) {
-            return false;
-        }
+	    	if (!visitor.visit(this)) {
+	            return false;
+	        }
     	«ENDIF-»
-        «REM» for (IDeckung deckung : deckungen) {
-            deckung.accept(visitor);
-        }
-        for (IVertragsTeil subVertragsTeil : subVertragsTeile) {
-            subVertragsTeil.accept(visitor);
-        }
-        if (oneToOneVertragsTeil != null) {
-            oneToOneVertragsTeil.accept(visitor);
-        } «ENDREM»
+    	«EXPAND acceptVisitor FOREACH associations-»
         return true;
     }
 «ENDDEFINE»
+
+«DEFINE acceptVisitor FOR XPolicyAssociation-»
+	«IF considerInVisitorSupport-»
+		«IF oneToMany-»
+			for («targetInterfaceName» «visitorSupportLoopVarName» : «fieldName») {
+		        «visitorSupportLoopVarName».accept(visitor);
+		    }
+		«ELSE-»
+			if («visitorSupportLoopVarName» != null) {
+	            «visitorSupportLoopVarName».accept(visitor);
+	        }
+		«ENDIF-»
+	«ENDIF-»
+«ENDDEFINE»
+

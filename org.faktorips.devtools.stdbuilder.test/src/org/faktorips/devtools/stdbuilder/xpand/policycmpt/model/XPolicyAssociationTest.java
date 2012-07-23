@@ -108,4 +108,10 @@ public class XPolicyAssociationTest {
         assertTrue(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
     }
 
+    @Test
+    public void testIsCompositionMasterToDetail()
+     throws Exception {
+    
+    }
+
 }

@@ -80,6 +80,7 @@
     «ENDIF»
 «ENDDEFINE»
 
+«REM»TODO Generierung ohne ChangeSupport unterschiedlich! Siehe «ENDREM»
 «DEFINE setterMethodsForToOne FOR XPolicyAssociation-»
 	«IF !oneToMany-»
 	    /**
@@ -100,15 +101,50 @@
 	     * @generated
 	     */
 	    public void «method(methodNameSetInternal, targetInterfaceName, "newObject")»{
-	        if («fieldName» != null) {
-	            «fieldName».«methodNameInverseAssociationSetInternal»(null);
-	        }
-	        if (newObject != null) {
-	            «EXPAND castIfNeccessary("newObject")».«methodNameInverseAssociationSetInternal»(this);
-	        }
-	        «fieldName» = «EXPAND castToImplementationIfNecessary» newObject;
+	    	«IF compositionMasterToDetail-»
+		        if («fieldName» != null) {
+		            «EXPAND synchronizeInverseCompositionIfNecessaryForSet(false, fieldName, "null")-»
+		        }
+		        if (newObject != null) {
+		            «EXPAND synchronizeInverseCompositionIfNecessaryForSet(true, "newObject", "this")-»
+		        }
+		        «fieldName» = «EXPAND castToImplementationIfNecessary» newObject;
+	        	«EXPAND synchronizeInverseAssociationIfNecessary(fieldName)-»
+		    «ENDIF-»
+		    «IF typeAssociation-»
+		    	if (newObject == «fieldName») return;
+		    	«IF hasInverseAssociation()-»
+			        «targetInterfaceName» oldRefObject = «fieldName»;
+			        «fieldName» = null;
+			        «EXPAND cleanupOldReference("oldRefObject")-»
+			    «ENDIF-»
+		        «fieldName» = «EXPAND castToImplementationIfNecessary» newObject;
+	        	«EXPAND synchronizeInverseAssociationIfNecessary(fieldName)-»
+		    «ENDIF-»
 	    }
     «ENDIF»
+«ENDDEFINE»
+«DEFINE synchronizeInverseCompositionIfNecessaryForSet(boolean cast, String varName, String newRef) FOR XPolicyAssociation-»
+	«IF generateCodeToSynchronizeInverseCompositionForSet-»
+		«IF cast»«EXPAND castIfNeccessary(varName)»«ELSE»«varName»«ENDIF».«methodNameInverseAssociationSetInternal»(«newRef»);
+    «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE cleanupOldReference(String varToCleanUp) FOR XPolicyAssociation-»
+	«IF !oneToMany-»
+		if(«varToCleanUp» != null){
+        	«EXPAND cleanupOldReferenceInner(varToCleanUp)-»
+		}
+    «ELSE-»
+    	«EXPAND cleanupOldReferenceInner(varToCleanUp)-»
+    «ENDIF-»
+«ENDDEFINE»
+«DEFINE cleanupOldReferenceInner(String varToCleanUp) FOR XPolicyAssociation-»
+	«IF inverseAssociation.oneToMany»
+		«varToCleanUp».«methodNameInverseAssociationRemove»(this);
+    «ELSE-»
+		«varToCleanUp».«methodNameInverseAssociationSet»(null);    	
+    «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE castIfNeccessary(String varName) FOR XPolicyAssociation-»
@@ -189,28 +225,36 @@
 	        if («fieldName».contains(objectToAdd)) {
 	            return;
 	        }
-	        «EXPAND synchronizeInverseCompositionIfNecessary-»
+	        «EXPAND synchronizeInverseCompositionIfNecessaryForAdd-»
 			«fieldName».add(objectToAdd);
-	        «EXPAND synchronizeInverseAssociationIfNecessary-»
+	        «EXPAND synchronizeInverseAssociationIfNecessary("objectToAdd")-»
 	    }
     «ENDIF-»
 «ENDDEFINE»
 
-«DEFINE synchronizeInverseCompositionIfNecessary FOR XPolicyAssociation-»
+«DEFINE synchronizeInverseCompositionIfNecessaryForAdd FOR XPolicyAssociation-»
 	«IF generateCodeToSynchronizeInverseCompositionForAdd-»
 		«EXPAND castIfNeccessary("objectToAdd")».«methodNameInverseAssociationSetInternal»(this);
     «ENDIF-»
 «ENDDEFINE»
 
-«DEFINE synchronizeInverseAssociationIfNecessary FOR XPolicyAssociation-»
+«DEFINE synchronizeInverseAssociationIfNecessary(String objectToSynchronize) FOR XPolicyAssociation-»
 	«IF generateCodeToSynchronizeInverseAssociation-»
 		«IF oneToMany-»
-			if («EXPAND varNameNullCheckIfNecessary("objectToAdd")» !objectToAdd.«methodNameInverseAssociationContains»(this)) {
-				objectToAdd.«methodNameInverseAssociationAdd»(this);
+			if («EXPAND varNameNullCheckIfNecessary(objectToSynchronize)» !«objectToSynchronize».«methodNameInverseAssociationContains»(this)) {
+				«objectToSynchronize».«methodNameInverseAssociationAdd»(this);
 			}
 	    «ELSE-»
-	    	if («EXPAND varNameNullCheckIfNecessary("objectToAdd")» objectToAdd.«methodNameGetter»()!=null) {
-				«EXPAND castIfNeccessary("objectToAdd")».«methodNameSetter»(this);
+	    	if («EXPAND varNameNullCheckIfNecessary(objectToSynchronize)» «objectToSynchronize».«methodNameInverseAssociationGet»()!=this) {
+				«objectToSynchronize».«methodNameInverseAssociationSet»(this);
+				«REM» Der alte Codegenerator baut hier evtl. einen Cast ein:
+			        if (!varClassName.equals(getGenType().getQualifiedName(false))) {
+			            code.append("((");
+			            code.appendClassName(getGenType().getQualifiedName(false));
+			            code.append(")" + varName + ").");
+			        }
+			        Wird das fuer Derived Union auch mal verwendet, oder ist das ueberfluessig?
+				«ENDREM»
 			}
 	    «ENDIF-»
 	«ENDIF-»
@@ -279,7 +323,7 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE validateDependents FOR XPolicyAssociation-»
+«DEFINE validateDependents FOR XAssociation-»
 	«IF considerInValidateDependents-»
         «IF oneToMany-»
 	        if («methodNameGetNumOf»() > 0) {
@@ -301,13 +345,13 @@
             String className = childEl.getAttribute("class");
             if (className.length() > 0) {
                 try {
-                    «targetClassName» «localVarNameCreateChildFromXML» = («targetClassName»)Class.forName(className).newInstance();
+                    «targetClassName» «createChildFromXMLLocalVarName» = («targetClassName»)Class.forName(className).newInstance();
                     «IF oneToMany-»
-	                    «methodNameAdd»(«localVarNameCreateChildFromXML»);
+	                    «methodNameAdd»(«createChildFromXMLLocalVarName»);
                     «ELSE-»
-	                    «methodNameSetter»(«localVarNameCreateChildFromXML»);                    	
+	                    «methodNameSetter»(«createChildFromXMLLocalVarName»);                    	
                     «ENDIF-»
-                    return «localVarNameCreateChildFromXML»;
+                    return «createChildFromXMLLocalVarName»;
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

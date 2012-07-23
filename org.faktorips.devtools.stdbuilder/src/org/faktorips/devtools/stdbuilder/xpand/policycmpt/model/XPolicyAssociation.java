@@ -52,12 +52,8 @@ public class XPolicyAssociation extends XAssociation {
         return isValidMasterToDetail() && !isDerivedUnion();
     }
 
-    public boolean isConsiderInValidateDependents() {
-        return isValid() && isCompositionMasterToDetail() && !isSubsetOfADerivedUnion();
-    }
-
-    private boolean isSubsetOfADerivedUnion() {
-        return getAssociation().isSubsetOfADerivedUnion();
+    public boolean isConsiderInVisitorSupport() {
+        return isProductRelevant();
     }
 
     private boolean isValidMasterToDetail() {
@@ -65,7 +61,7 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public boolean isConsiderInCopySupport() {
-        return false;
+        return isValid() && !isDerived() && !isCompositionDetailToMaster();
     }
 
     public String getConstantNamePropertyName() {
@@ -96,17 +92,28 @@ public class XPolicyAssociation extends XAssociation {
         return "remove" + StringUtils.capitalize(getName(false));
     }
 
+    public String getMethodNameInverseAssociationGet() {
+        return getJavaNamingConvention().getGetterMethodName(getInverseAssociationName());
+    }
+
     /**
      * Returns then name of the setter method that is used to set this associations policy instance
      * as target (e.g. parent) of the target associations.
-     * <p>
-     * Note: the returned name cannot be calculated using the generator model (or meta model
-     * respectively) as it is an implicit relation, an assumption done by the old code generator.
+     * 
+     * @throws NullPointerException if this association has no inverse association.
+     */
+    public String getMethodNameInverseAssociationSet() {
+        return getJavaNamingConvention().getSetterMethodName(getInverseAssociationName());
+    }
+
+    /**
+     * Returns then name of the setInternal method that is used to set this associations policy
+     * instance as target (e.g. parent) of the target associations.
      * 
      * @throws NullPointerException if this association has no inverse association.
      */
     public String getMethodNameInverseAssociationSetInternal() {
-        return getJavaNamingConvention().getSetterMethodName(getInverseAssociationName()) + "Internal";
+        return getMethodNameInverseAssociationSet() + "Internal";
     }
 
     /**
@@ -182,10 +189,18 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
-     * Returns <code>true</code> if an inverse association is defined and if this association is a
+     * Returns <code>true</code> if an inverse association is defined and this association is a
      * valid composition ( {@link #isValidComposition()} ) at the same time.
      */
     public boolean isGenerateCodeToSynchronizeInverseCompositionForAdd() {
+        return isValidComposition() && hasInverseAssociation();
+    }
+
+    /**
+     * Returns <code>true</code> if an inverse association is defined and this association is a
+     * valid composition ( {@link #isValidComposition()} ) at the same time.
+     */
+    public boolean isGenerateCodeToSynchronizeInverseCompositionForSet() {
         return isValidComposition() && hasInverseAssociation();
     }
 
@@ -194,7 +209,7 @@ public class XPolicyAssociation extends XAssociation {
      * aggregation) and an inverse association is defined. <code>false</code> otherwise.
      */
     public boolean isGenerateCodeToSynchronizeInverseAssociation() {
-        return isAssociation() && hasInverseAssociation();
+        return isTypeAssociation() && hasInverseAssociation();
     }
 
     private boolean isTargetTypeDependantType(IPolicyCmptType targetType) {
@@ -256,7 +271,15 @@ public class XPolicyAssociation extends XAssociation {
         return getAssociation().isCompositionMasterToDetail();
     }
 
-    private boolean isAssociation() {
+    public boolean isCompositionDetailToMaster() {
+        return getAssociation().isCompositionDetailToMaster();
+    }
+
+    /**
+     * Returns whether or not the type of this association is "association" (and not composition or
+     * aggregation).
+     */
+    public boolean isTypeAssociation() {
         return getAssociation().isAssoziation();
     }
 
@@ -268,8 +291,29 @@ public class XPolicyAssociation extends XAssociation {
         }
     }
 
-    public String getLocalVarNameCreateChildFromXML() {
-        return StringUtils.uncapitalize(getName()) + "LocalVar";
+    public String getCreateChildFromXMLLocalVarName() {
+        return getJavaNamingConvention().getMemberVarName(getName()) + "LocalVar";
     }
 
+    /**
+     * Returns the uncapitalized singular role-name. Use inside a loop to store the associated
+     * policy instance.
+     */
+    public String getVisitorSupportLoopVarName() {
+        return getJavaNamingConvention().getMemberVarName(getAssociation().getTargetRoleSingular());
+    }
+
+    /**
+     * Returns uncapitalized target interface name, e.g. "iCoverage".
+     */
+    public String getCopySupportLoopVarName() {
+        return StringUtils.uncapitalize(getTargetInterfaceName());
+    }
+
+    /**
+     * Returns "copy"+the target className, e.g. "copyCoverage".
+     */
+    public String getCopySupportCopyVarName() {
+        return "copy" + getTargetClassName();
+    }
 }
