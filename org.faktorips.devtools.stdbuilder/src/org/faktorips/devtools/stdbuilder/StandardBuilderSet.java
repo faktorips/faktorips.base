@@ -468,9 +468,10 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // TODO add XPAND builder for testing purposes
         builders.add(new org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder(this,
                 generatorModelContext, modelService));
-        // builders.add(new
-        // org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationImlClassBuilder(this,
-        // generatorModelContext, modelService));
+        builders.add(new org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationImplClassBuilder(
+                this, generatorModelContext, modelService));
+        builders.add(new org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptImplClassBuilder(this,
+                generatorModelContext, modelService));
 
         return builders.toArray(new IIpsArtefactBuilder[builders.size()]);
     }

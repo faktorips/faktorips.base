@@ -24,14 +24,14 @@ import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class ProductCmptGenerationImlClassBuilder extends XpandBuilder<XProductCmptGenerationClass> {
+public class ProductCmptGenerationImplClassBuilder extends XpandBuilder<XProductCmptGenerationClass> {
 
     private final IJavaClassNameProvider javaClassNameProvider;
 
-    public ProductCmptGenerationImlClassBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext,
+    public ProductCmptGenerationImplClassBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext,
             ModelService modelService) {
         super(builderSet, modelContext, modelService, new LocalizedStringsSet(
-                ProductCmptGenerationImlClassBuilder.class));
+                ProductCmptGenerationImplClassBuilder.class));
         javaClassNameProvider = XProductCmptGenerationClass
                 .createProductCmptGenJavaClassNaming(getLanguageUsedInGeneratedSourceCode());
     }
