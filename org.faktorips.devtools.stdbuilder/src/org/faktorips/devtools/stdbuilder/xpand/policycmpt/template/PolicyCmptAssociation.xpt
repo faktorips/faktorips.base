@@ -122,7 +122,7 @@
 	        	«EXPAND synchronizeInverseAssociationIfNecessary(fieldName)-»
 		    «ENDIF-»
 	    }
-    «ENDIF»
+    «ENDIF-»
 «ENDDEFINE»
 «DEFINE synchronizeInverseCompositionIfNecessaryForSet(boolean cast, String varName, String newRef) FOR XPolicyAssociation-»
 	«IF generateCodeToSynchronizeInverseCompositionForSet-»

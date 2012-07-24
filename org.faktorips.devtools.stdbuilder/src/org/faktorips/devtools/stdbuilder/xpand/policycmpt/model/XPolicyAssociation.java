@@ -60,6 +60,10 @@ public class XPolicyAssociation extends XAssociation {
         return isValid() && isTypeAssociation();
     }
 
+    public boolean isSetInverseAssociationInCopySupport() {
+        return isValidComposition() && hasInverseAssociation();
+    }
+
     private boolean isValidMasterToDetail() {
         return isValid() && isCompositionMasterToDetail();
     }
@@ -295,23 +299,34 @@ public class XPolicyAssociation extends XAssociation {
         }
     }
 
+    /**
+     * Returns the uncapitalized singular role-name with the suffix "LocalVar". Use inside a loop to
+     * store the associated policy instance. e.g. "baseCoverageLocalVar".
+     */
     public String getCreateChildFromXMLLocalVarName() {
         return getJavaNamingConvention().getMemberVarName(getName()) + "LocalVar";
     }
 
     /**
      * Returns the uncapitalized singular role-name. Use inside a loop to store the associated
-     * policy instance.
+     * policy instance. e.g. "baseCoverage".
      */
     public String getVisitorSupportLoopVarName() {
-        return getJavaNamingConvention().getMemberVarName(getAssociation().getTargetRoleSingular());
+        return getJavaNamingConvention().getMemberVarName(getName());
     }
 
     /**
      * Returns uncapitalized target interface name, e.g. "iCoverage".
      */
-    public String getCopySupportLoopVarName() {
+    public String getCopySupportLoopVarNameInternal() {
         return StringUtils.uncapitalize(getTargetInterfaceName());
+    }
+
+    /**
+     * Returns uncapitalized target class name, e.g. "coverage".
+     */
+    public String getCopySupportLoopVarName() {
+        return StringUtils.uncapitalize(getTargetClassName());
     }
 
     /**

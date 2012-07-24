@@ -47,12 +47,13 @@
      * @generated
      */«REM»«overrideAnnotationIfHasSupertype(false)»«ENDREM»
     protected void «copyProperties(IModelObject()+" copy", Map(IModelObject(), IModelObject())+" copyMap")» {
+		«IF hasSupertype()-»
+			super.copyProperties(copy, copyMap);
+        «ENDIF-»		
         «IF attributesToCopy.size > 0 || associations.size > 0-»
-        	super.copyProperties(copy, copyMap);
+    		«className» concreteCopy = («className»)copy;
         	«EXPAND copyAttributes-»
-        	«REM»
         	«EXPAND copyAssociations-»
-        	«ENDREM»        
         «ELSE-»
         	«localizedComment("NOTHING_TO_DO")»
         «ENDIF-»
@@ -79,7 +80,6 @@
 
 «REM»Siehe PolicyCmptImplClassBuilder Z.394«ENDREM»
 «DEFINE copyAttributes FOR XPolicyCmptClass-»
-    «className» concreteCopy = («className»)copy;
 	«FOREACH attributesToCopy AS this-»
 		«IF considerInCopySupport-»
 	        concreteCopy.«fieldName» = «fieldName»;
@@ -88,7 +88,6 @@
 «ENDDEFINE»
 
 «DEFINE copyAssociations FOR XPolicyCmptClass-»
-	«className» concreteCopy = («className»)copy;
 	«FOREACH associations AS this-»
 		«IF considerInCopySupport-»
 			«IF typeAssociation-»		
@@ -99,59 +98,27 @@
 				«ENDIF-»
 			«ELSE-»
 				«IF oneToMany-»
-					for («targetInterfaceName» «copySupportLoopVarName» : «fieldName») {
-			            «targetClassName» «copySupportCopyVarName» = («targetClassName»)copyMap.get(«copySupportLoopVarName»);
-			            ((«targetClassName»)«copySupportLoopVarName»).copyAssociationsInternal(«copySupportCopyVarName», copyMap);
-			        }
-			        for («Iterator(targetInterfaceName)» it = «fieldName».iterator(); it.hasNext();) {
-			            «targetClassName» vertragsTeil = («targetClassName»)it.next();
-			            «targetClassName» copyVertragsTeil = («targetClassName»)vertragsTeil.newCopyInternal(copyMap);
-			            copyVertragsTeil.setSubVertragInternal(concreteCopy);
-			            concreteCopy.subVertragsTeile.add(copyVertragsTeil);
-			            copyMap.put(vertragsTeil, copyVertragsTeil);
+			        for («Iterator(targetInterfaceName)» it = «fieldName».iterator(); it.hasNext();) { «REM» TODO cast ohne published interfaces nicht noetig«ENDREM»
+			            «targetClassName» «copySupportLoopVarName» = («targetClassName»)it.next();
+			            «targetClassName» «copySupportCopyVarName» = («targetClassName»)«copySupportLoopVarName».newCopyInternal(copyMap);
+			            «IF setInverseAssociationInCopySupport-»
+				            «copySupportCopyVarName».«methodNameInverseAssociationSetInternal»(concreteCopy);
+			           	«ENDIF-»
+			            concreteCopy.«fieldName».add(«copySupportCopyVarName»);
+			            copyMap.put(«copySupportLoopVarName», «copySupportCopyVarName»);
        				}			
 				«ELSE-»
-			        if («fieldName» != null) {
-			            «targetClassName» «copySupportCopyVarName» = («targetClassName»)copyMap.get(«fieldName»);
-			            «fieldName».copyAssociationsInternal(«copySupportCopyVarName», copyMap);
-			        }
-			        
-			        if (oneToOneVertragsTeil != null) {
-			            concreteCopy.oneToOneVertragsTeil = (VertragsTeil)oneToOneVertragsTeil.newCopyInternal(copyMap);
-			            concreteCopy.oneToOneVertragsTeil.setVertragInternal(concreteCopy);
-			            copyMap.put(oneToOneVertragsTeil, concreteCopy.oneToOneVertragsTeil);
+			        if («fieldName» != null) { «REM» TODO cast ohne published interfaces nicht noetig«ENDREM»
+			            concreteCopy.«fieldName» = («targetClassName»)«fieldName».newCopyInternal(copyMap);
+			            «IF setInverseAssociationInCopySupport-»
+			            	concreteCopy.«fieldName».«methodNameInverseAssociationSetInternal»(concreteCopy);
+			           	«ENDIF-»
+			            copyMap.put(«fieldName», concreteCopy.«fieldName»);
 			        }
 				«ENDIF-»
 		    «ENDIF-»
 	    «ENDIF-»
 	«ENDFOREACH-»
-        for (Iterator<IDeckung> it = deckungen.iterator(); it.hasNext();) {
-            Deckung deckung = (Deckung)it.next();
-            Deckung copyDeckung = (Deckung)deckung.newCopyInternal(copyMap);
-            copyDeckung.setVertragInternal(concreteCopy);
-            concreteCopy.deckungen.add(copyDeckung);
-            copyMap.put(deckung, copyDeckung);
-        }
-        concreteCopy.nichtKonfigurierteVertragsklassen.addAll(nichtKonfigurierteVertragsklassen);
-        for (Iterator<IVertragsTeil> it = subVertragsTeile.iterator(); it.hasNext();) {
-            VertragsTeil vertragsTeil = (VertragsTeil)it.next();
-            VertragsTeil copyVertragsTeil = (VertragsTeil)vertragsTeil.newCopyInternal(copyMap);
-            copyVertragsTeil.setSubVertragInternal(concreteCopy);
-            concreteCopy.subVertragsTeile.add(copyVertragsTeil);
-            copyMap.put(vertragsTeil, copyVertragsTeil);
-        }
-        if (oneToOneVertragsTeil != null) {
-            concreteCopy.oneToOneVertragsTeil = (VertragsTeil)oneToOneVertragsTeil.newCopyInternal(copyMap);
-            concreteCopy.oneToOneVertragsTeil.setVertragInternal(concreteCopy);
-            copyMap.put(oneToOneVertragsTeil, concreteCopy.oneToOneVertragsTeil);
-        }
-        for (Iterator<IDeckung> it = zusatzDeckungen.iterator(); it.hasNext();) {
-            Deckung deckung = (Deckung)it.next();
-            Deckung copyDeckung = (Deckung)deckung.newCopyInternal(copyMap);
-            concreteCopy.zusatzDeckungen.add(copyDeckung);
-            copyMap.put(deckung, copyDeckung);
-        }
-        concreteCopy.nichtKonfigurierteKlasseOneToOne = nichtKonfigurierteKlasseOneToOne;
 «ENDDEFINE»
 
 «REM»Siehe PolicyCmptImplClassBuilder Z.523«ENDREM»
@@ -159,11 +126,11 @@
 	«IF considerInCopySupport-»
 		«IF typeAssociation-»		
 			«IF oneToMany-»
-		        for («targetInterfaceName» «copySupportLoopVarName» : «fieldName») {
-		            if (copyMap.containsKey(«copySupportLoopVarName»)) {
-		                newCopy.«fieldName».remove(«copySupportLoopVarName»);
+		        for («targetInterfaceName» «copySupportLoopVarNameInternal» : «fieldName») {
+		            if (copyMap.containsKey(«copySupportLoopVarNameInternal»)) {
+		                newCopy.«fieldName».remove(«copySupportLoopVarNameInternal»);
 		                newCopy.«fieldName».add((«targetInterfaceName»)copyMap
-		                        .get(«copySupportLoopVarName»));
+		                        .get(«copySupportLoopVarNameInternal»));
 		            }
 		        }
 			«ELSE-»
@@ -173,9 +140,9 @@
 			«ENDIF-»
 		«ELSE-»
 			«IF oneToMany-»
-				for («targetInterfaceName» «copySupportLoopVarName» : «fieldName») {
-		            «targetClassName» «copySupportCopyVarName» = («targetClassName»)copyMap.get(«copySupportLoopVarName»);
-		            ((«targetClassName»)«copySupportLoopVarName»).copyAssociationsInternal(«copySupportCopyVarName», copyMap);
+				for («targetInterfaceName» «copySupportLoopVarNameInternal» : «fieldName») {
+		            «targetClassName» «copySupportCopyVarName» = («targetClassName»)copyMap.get(«copySupportLoopVarNameInternal»);
+		            ((«targetClassName»)«copySupportLoopVarNameInternal»).copyAssociationsInternal(«copySupportCopyVarName», copyMap);
 		        }
 			«ELSE-»
 		        if («fieldName» != null) {
