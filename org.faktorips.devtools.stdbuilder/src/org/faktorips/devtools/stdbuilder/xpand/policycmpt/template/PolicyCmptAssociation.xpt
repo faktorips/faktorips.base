@@ -90,38 +90,47 @@
 	     */
 	    «overrideAnnotation(true)»
 	    public void «method(methodNameSetter, targetInterfaceName, "newObject")» {
-			«EXPAND PropertyChangeSupport::storeOldValue-»
-	        «methodNameSetInternal»(newObject);
-			«EXPAND PropertyChangeSupport::notify-»
+	    	«IF generateChangeSupport-»
+				«EXPAND PropertyChangeSupport::storeOldValue-»
+		        «methodNameSetInternal»(newObject);
+				«EXPAND PropertyChangeSupport::notify-»
+			«ELSE-»
+				«EXPAND setterMethodCode-»
+			«ENDIF-»
 	    }
 
-	    /**
-	     * «localizedJDoc("METHOD_SET_OBJECT_INTERNAL", name.toFirstUpper())»
-	     * 
-	     * @generated
-	     */
-	    public void «method(methodNameSetInternal, targetInterfaceName, "newObject")»{
-	    	«IF compositionMasterToDetail-»
-		        if («fieldName» != null) {
-		            «EXPAND synchronizeInverseCompositionIfNecessaryForSet(false, fieldName, "null")-»
-		        }
-		        if (newObject != null) {
-		            «EXPAND synchronizeInverseCompositionIfNecessaryForSet(true, "newObject", "this")-»
-		        }
-		        «fieldName» = «EXPAND castToImplementationIfNecessary» newObject;
-	        	«EXPAND synchronizeInverseAssociationIfNecessary(fieldName)-»
-		    «ENDIF-»
-		    «IF typeAssociation-»
-		    	if (newObject == «fieldName») return;
-		    	«IF hasInverseAssociation()-»
-			        «targetInterfaceName» oldRefObject = «fieldName»;
-			        «fieldName» = null;
-			        «EXPAND cleanupOldReference("oldRefObject")-»
-			    «ENDIF-»
-		        «fieldName» = «EXPAND castToImplementationIfNecessary» newObject;
-	        	«EXPAND synchronizeInverseAssociationIfNecessary(fieldName)-»
-		    «ENDIF-»
-	    }
+    	«IF generateChangeSupport-»
+		    /**
+		     * «localizedJDoc("METHOD_SET_OBJECT_INTERNAL", name.toFirstUpper())»
+		     * 
+		     * @generated
+		     */
+		    public void «method(methodNameSetInternal, targetInterfaceName, "newObject")»{
+				«EXPAND setterMethodCode-»
+	    	}	
+		«ENDIF-»
+    «ENDIF-»
+«ENDDEFINE»
+«DEFINE setterMethodCode FOR XPolicyAssociation-»
+	«IF compositionMasterToDetail-»
+        if («fieldName» != null) {
+            «EXPAND synchronizeInverseCompositionIfNecessaryForSet(false, fieldName, "null")-»
+        }
+        if (newObject != null) {
+            «EXPAND synchronizeInverseCompositionIfNecessaryForSet(true, "newObject", "this")-»
+        }
+        «fieldName» = «EXPAND castToImplementationIfNecessary» newObject;
+    	«EXPAND synchronizeInverseAssociationIfNecessary(fieldName)-»
+    «ENDIF-»
+    «IF typeAssociation-»
+    	if (newObject == «fieldName») return;
+    	«IF hasInverseAssociation()-»
+	        «targetInterfaceName» oldRefObject = «fieldName»;
+	        «fieldName» = null;
+	        «EXPAND cleanupOldReference("oldRefObject")-»
+	    «ENDIF-»
+        «fieldName» = «EXPAND castToImplementationIfNecessary» newObject;
+    	«EXPAND synchronizeInverseAssociationIfNecessary(fieldName)-»
     «ENDIF-»
 «ENDDEFINE»
 «DEFINE synchronizeInverseCompositionIfNecessaryForSet(boolean cast, String varName, String newRef) FOR XPolicyAssociation-»
