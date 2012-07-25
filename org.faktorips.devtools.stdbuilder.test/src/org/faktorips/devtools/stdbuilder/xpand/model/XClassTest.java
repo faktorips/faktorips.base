@@ -14,17 +14,23 @@
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -82,6 +88,55 @@ public class XClassTest {
 
         assertEquals("test.Type", xClass.getQualifiedName(BuilderAspect.IMPLEMENTATION));
         assertEquals("test.IType", xClass.getQualifiedName(BuilderAspect.INTERFACE));
+    }
+
+    @Test
+    public void testHasNonAbstractSupertype_NoSupertype() throws CoreException {
+        XPolicyCmptClass xPolicyClass = setUpTypeHierarchy(false, false);
+        when(xPolicyClass.getType().findSupertype(any(IIpsProject.class))).thenReturn(null);
+
+        assertFalse(xPolicyClass.hasNonAbstractSupertype());
+    }
+
+    @Test
+    public void testHasNonAbstractSupertype_AllSupertypesAbstract() throws CoreException {
+        XPolicyCmptClass xPolicyClass = setUpTypeHierarchy(true, true);
+        assertFalse(xPolicyClass.hasNonAbstractSupertype());
+    }
+
+    @Test
+    public void testHasNonAbstractSupertype_OnlySupertypeNonAbstract() throws CoreException {
+        XPolicyCmptClass xPolicyClass = setUpTypeHierarchy(false, true);
+        assertTrue(xPolicyClass.hasNonAbstractSupertype());
+    }
+
+    @Test
+    public void testHasNonAbstractSupertype_OnlySuperSupertypeNonAbstract() throws CoreException {
+        XPolicyCmptClass xPolicyClass = setUpTypeHierarchy(true, false);
+        assertTrue(xPolicyClass.hasNonAbstractSupertype());
+    }
+
+    private XPolicyCmptClass setUpTypeHierarchy(boolean superIsAbstract, boolean superSuperIsAbstract)
+            throws CoreException {
+        XPolicyCmptClass xPolicyClass = mock(XPolicyCmptClass.class, CALLS_REAL_METHODS);
+        IIpsProject ipsProjectMock = mock(IIpsProject.class, CALLS_REAL_METHODS);
+
+        IPolicyCmptType startType = mock(IPolicyCmptType.class);
+        IPolicyCmptType superType = mock(IPolicyCmptType.class);
+        IPolicyCmptType superSuperType = mock(IPolicyCmptType.class);
+
+        when(xPolicyClass.getType()).thenReturn(startType);
+        when(xPolicyClass.getIpsObjectPartContainer()).thenReturn(startType);
+        when(xPolicyClass.getIpsProject()).thenReturn(ipsProjectMock);
+
+        when(startType.findSupertype(any(IIpsProject.class))).thenReturn(superType);
+        when(superType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperType);
+        when(superSuperType.findSupertype(any(IIpsProject.class))).thenReturn(null);
+        when(startType.isAbstract()).thenReturn(false);
+        when(superType.isAbstract()).thenReturn(superIsAbstract);
+        when(superSuperType.isAbstract()).thenReturn(superSuperIsAbstract);
+
+        return xPolicyClass;
     }
 
 }

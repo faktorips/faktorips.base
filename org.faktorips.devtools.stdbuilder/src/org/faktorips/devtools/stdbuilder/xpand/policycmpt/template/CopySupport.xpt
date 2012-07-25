@@ -11,7 +11,7 @@
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotation(true)»
+	    «overrideAnnotationIfHasNonAbstractSuperklass()»
 	    public «IModelObject()» «newCopy()» {
 	        «Map(IModelObject(), IModelObject())» copyMap = new «HashMap(IModelObject(), IModelObject())»();
 	        «className» newCopy = («className») «newCopyInternal("copyMap")»;
@@ -25,7 +25,7 @@
      * 
      * @generated
      */
-     «overrideAnnotationIfHasSupertype(false)»«REM»für Vertrag muss override angegeben werden,  Deckung hat Fehler mit override«ENDREM»
+     «overrideAnnotationIfHasSuperclass()»«REM»für Vertrag muss override angegeben werden,  Deckung hat Fehler mit override«ENDREM»
     public «IModelObject()» «newCopyInternal(Map(IModelObject(), IModelObject())+" copyMap")» {
     	«IF !abstract-»
 	        «className» newCopy = («className»)copyMap.get(this);

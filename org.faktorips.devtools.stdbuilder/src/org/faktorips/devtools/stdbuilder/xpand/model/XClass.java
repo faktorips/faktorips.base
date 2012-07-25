@@ -27,8 +27,10 @@ import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.INotificationSupport;
 
@@ -53,6 +55,42 @@ public abstract class XClass extends AbstractGeneratorModelNode {
 
     public boolean hasSupertype() {
         return getType().hasSupertype();
+    }
+
+    public boolean hasNonAbstractSupertype() {
+        try {
+            IType superType = getType().findSupertype(getIpsProject());
+            if (superType == null) {
+                return false;
+            } else {
+                NonAbstractSupertypeFinder finder = new NonAbstractSupertypeFinder(getIpsProject());
+                finder.start(superType);
+                return finder.hasNonAbstractSupertype();
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    private class NonAbstractSupertypeFinder extends TypeHierarchyVisitor<IType> {
+        boolean hasNonAbstractSupertype = false;
+
+        public NonAbstractSupertypeFinder(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        public boolean hasNonAbstractSupertype() {
+            return hasNonAbstractSupertype;
+        }
+
+        @Override
+        protected boolean visit(IType currentType) throws CoreException {
+            hasNonAbstractSupertype |= !currentType.isAbstract();
+            if (hasNonAbstractSupertype) {
+                return false;
+            }
+            return true;
+        }
     }
 
     /**
