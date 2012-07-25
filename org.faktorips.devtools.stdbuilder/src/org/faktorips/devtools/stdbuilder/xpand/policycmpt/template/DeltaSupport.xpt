@@ -19,11 +19,11 @@
         if (!«className».class.isAssignableFrom(otherObject.getClass())) {
             return delta;
         }
-    	«IF !attributes.isEmpty || !associations.isEmpty-»
+    	«IF !attributesForDeltaComputation.isEmpty || !associationsForDeltaComputation.isEmpty-»
 	        «className» other«className» = («className»)otherObject;
+			«EXPAND DeltaSupport::deltaCheckForAttribute(this) FOREACH attributesForDeltaComputation-»
+			«EXPAND DeltaSupport::deltaCheckForRelatedClasses(this) FOREACH associationsForDeltaComputation-»
         «ENDIF-»
-		«EXPAND DeltaSupport::deltaCheckForAttribute(this) FOREACH attributes-»
-		«EXPAND DeltaSupport::deltaCheckForRelatedClasses(this) FOREACH associations-»
         return delta;
     }
 «ENDDEFINE»

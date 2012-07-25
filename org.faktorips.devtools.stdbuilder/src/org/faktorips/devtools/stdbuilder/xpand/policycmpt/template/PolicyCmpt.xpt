@@ -89,15 +89,15 @@ package «packageName»;
         «EXPAND initializationForOverrideAttributes-»
     }
     «IF configured»
-	/**
-     * «localizedJDoc("CONSTRUCTOR", className)»
-     * 
-     * @generated
-     */
-    public «className»(«productComponentClassOrInterfaceName» productCmpt) {
-        super(productCmpt);
-        «EXPAND initializationForOverrideAttributes-»
-    }
+		/**
+	     * «localizedJDoc("CONSTRUCTOR", className)»
+	     * 
+	     * @generated
+	     */
+	    public «className»(«productComponentClassOrInterfaceName» productCmpt) {
+	        super(productCmpt);
+	        «EXPAND initializationForOverrideAttributes-»
+	    }
     «ENDIF»
 «ENDDEFINE»
 
@@ -281,17 +281,19 @@ package «packageName»;
         return null;
     }
     
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-    «overrideAnnotation(false)»
-    protected «IUnresolvedReference()» «createUnresolvedReference("Object objectId, String targetRole, String targetId")»
-            throws Exception {
-        «EXPAND PolicyCmptAssociation::createUnresolvedReference FOREACH associations-»
-        return super.createUnresolvedReference(objectId, targetRole, targetId);
-    }
+    «IF generateMethodCreateUnresolvedReference-»
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotation(false)»
+	    protected «IUnresolvedReference()» «createUnresolvedReference("Object objectId, String targetRole, String targetId")»
+	            throws Exception {
+	        «EXPAND PolicyCmptAssociation::createUnresolvedReference FOREACH associations-»
+	        return super.createUnresolvedReference(objectId, targetRole, targetId);
+	    }
+    «ENDIF-»
 
 	«IF generateDeltaSupport-»
     	«EXPAND DeltaSupport::computeDeltaMethod-»

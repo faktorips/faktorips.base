@@ -6,18 +6,18 @@
 «DEFINE copyMethods FOR XPolicyCmptClass-»
 	
    	«IF !abstract-»
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-    «overrideAnnotation(true)»
-    public «IModelObject()» «newCopy()» {
-        «Map(IModelObject(), IModelObject())» copyMap = new «HashMap(IModelObject(), IModelObject())»();
-        «className» newCopy = («className») «newCopyInternal("copyMap")»;
-        «copyAssociationsInternal("newCopy", "copyMap")»;
-        return newCopy;
-    }
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotation(true)»
+	    public «IModelObject()» «newCopy()» {
+	        «Map(IModelObject(), IModelObject())» copyMap = new «HashMap(IModelObject(), IModelObject())»();
+	        «className» newCopy = («className») «newCopyInternal("copyMap")»;
+	        «copyAssociationsInternal("newCopy", "copyMap")»;
+	        return newCopy;
+	    }
 	«ENDIF-»
 	
 	/**
@@ -25,13 +25,15 @@
      * 
      * @generated
      */
-     «overrideAnnotationIfHasSupertype(false)»«REM»für Vertrag muss override angegeben werden«ENDREM»
+     «overrideAnnotationIfHasSupertype(false)»«REM»für Vertrag muss override angegeben werden,  Deckung hat Fehler mit override«ENDREM»
     public «IModelObject()» «newCopyInternal(Map(IModelObject(), IModelObject())+" copyMap")» {
-    	«IF hasSupertype()-»
+    	«IF !abstract-»
 	        «className» newCopy = («className»)copyMap.get(this);
 	        if (newCopy == null) {
 	            newCopy = new «className»();
-	            newCopy.«copyProductCmptAndGenerationInternal("this")»;
+	            «IF configured-»
+		            newCopy.«copyProductCmptAndGenerationInternal("this")»;
+	            «ENDIF-»
 	            «copyProperties("newCopy", "copyMap")»;
 	        }
 	        return newCopy;
@@ -45,12 +47,12 @@
      * «localizedJDoc("METHOD_COPY_PROPERTIES")»
      * 
      * @generated
-     */«REM»«overrideAnnotationIfHasSupertype(false)»«ENDREM»
+     */«REM»«overrideAnnotationIfHasSupertype(false)»  Deckung hat Fehler mit override«ENDREM»
     protected void «copyProperties(IModelObject()+" copy", Map(IModelObject(), IModelObject())+" copyMap")» {
 		«IF hasSupertype()-»
 			super.copyProperties(copy, copyMap);
         «ENDIF-»		
-        «IF attributesToCopy.size > 0 || associations.size > 0-»
+        «IF attributesToCopy.size > 0 || associationsToCopy.size > 0-»
     		«className» concreteCopy = («className»)copy;
         	«EXPAND copyAttributes-»
         	«EXPAND copyAssociations-»
@@ -63,8 +65,7 @@
      * «localizedJDoc("METHOD_COPY_ASSOCIATIONS_INTERNAL")»
      *
      * @generated
-     */
-     «overrideAnnotationIfHasSupertype(false)»
+     */«REM» «overrideAnnotationIfHasSupertype(false)» Deckung hat Fehler mit override«ENDREM»
     public void «copyAssociationsInternal(IModelObject()+" abstractCopy", Map(IModelObject(), IModelObject())+" copyMap")» {
         «IF associationsToCopy.size > 0-»
         	«IF hasSupertype()-»

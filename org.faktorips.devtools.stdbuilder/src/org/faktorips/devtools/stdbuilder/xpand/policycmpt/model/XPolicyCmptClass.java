@@ -79,8 +79,13 @@ public class XPolicyCmptClass extends XClass {
         return getIpsObjectPartContainer();
     }
 
+    /**
+     * Returns <code>true</code> if this policy component type is configurable and at the same time
+     * a configuring product component type is defined. <code>false</code> else.
+     */
     public boolean isConfigured() {
-        return getPolicyCmptType().isConfigurableByProductCmptType();
+        return getPolicyCmptType().isConfigurableByProductCmptType()
+                && getPolicyCmptType().getProductCmptType() != null;
     }
 
     public boolean isAggregateRoot() {
@@ -280,6 +285,26 @@ public class XPolicyCmptClass extends XClass {
         return resultingSet;
     }
 
+    public Set<XPolicyAttribute> getAttributesForDeltaComputation() {
+        Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
+        for (XPolicyAttribute attribute : getAttributes()) {
+            if (attribute.isConsiderInDeltaComputation()) {
+                resultingSet.add(attribute);
+            }
+        }
+        return resultingSet;
+    }
+
+    public Set<XPolicyAssociation> getAssociationsForDeltaComputation() {
+        Set<XPolicyAssociation> resultingSet = new LinkedHashSet<XPolicyAssociation>();
+        for (XPolicyAssociation assoc : getAssociations()) {
+            if (assoc.isConsiderInDeltaComputation()) {
+                resultingSet.add(assoc);
+            }
+        }
+        return resultingSet;
+    }
+
     public Set<XPolicyAssociation> getAssociationsToCopy() {
         Set<XPolicyAssociation> resultingSet = new LinkedHashSet<XPolicyAssociation>();
         for (XPolicyAssociation assoc : getAssociations()) {
@@ -294,6 +319,16 @@ public class XPolicyCmptClass extends XClass {
         Set<XPolicyAssociation> resultingSet = new LinkedHashSet<XPolicyAssociation>();
         for (XPolicyAssociation assoc : getAssociations()) {
             if (assoc.isInverseComposition() && !assoc.isInverseOfADerivedUnion()) {
+                resultingSet.add(assoc);
+            }
+        }
+        return resultingSet;
+    }
+
+    private Set<XPolicyAssociation> getPureAssociations() {
+        Set<XPolicyAssociation> resultingSet = new LinkedHashSet<XPolicyAssociation>();
+        for (XPolicyAssociation assoc : getAssociations()) {
+            if (assoc.isTypeAssociation()) {
                 resultingSet.add(assoc);
             }
         }
@@ -317,11 +352,23 @@ public class XPolicyCmptClass extends XClass {
         return hasInverseCompositionAssociations();
     }
 
+    public boolean isGenerateMethodCreateUnresolvedReference() {
+        return hasAssociations();
+    }
+
     /**
      * Returns <code>true</code> if this policy cmpt class has at least one association that is the
      * inverse of a composition, but not a derived union association.
      */
     private boolean hasInverseCompositionAssociations() {
         return !getInverseCompositions().isEmpty();
+    }
+
+    /**
+     * Returns <code>true</code> if this policy cmpt class has at least one association (no
+     * composition).
+     */
+    private boolean hasAssociations() {
+        return !getPureAssociations().isEmpty();
     }
 }
