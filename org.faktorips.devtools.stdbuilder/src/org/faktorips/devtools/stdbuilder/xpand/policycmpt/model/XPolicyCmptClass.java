@@ -34,7 +34,6 @@ import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
-import org.faktorips.runtime.INotificationSupport;
 import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 
@@ -108,7 +107,7 @@ public class XPolicyCmptClass extends XClass {
     public List<String> getImplementedInterfaces() {
         List<String> list = super.getImplementedInterfaces();
         if (getContext().isGenerateChangeSupport() && !hasSupertype()) {
-            list.add(addImport(INotificationSupport.class));
+            // list.add(addImport(INotificationSupport.class));
         }
         return list;
     }
@@ -263,8 +262,18 @@ public class XPolicyCmptClass extends XClass {
 
     public Set<XPolicyAttribute> getAttributesToCopy() {
         Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
-        for (XPolicyAttribute attribute : attributes) {
+        for (XPolicyAttribute attribute : getAttributes()) {
             if (attribute.isConsiderInCopySupport()) {
+                resultingSet.add(attribute);
+            }
+        }
+        return resultingSet;
+    }
+
+    public Set<XPolicyAttribute> getAttributesToInitWithProductData() {
+        Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
+        for (XPolicyAttribute attribute : getAttributes()) {
+            if (attribute.isGenerateInitWithProductData()) {
                 resultingSet.add(attribute);
             }
         }
@@ -273,8 +282,18 @@ public class XPolicyCmptClass extends XClass {
 
     public Set<XPolicyAssociation> getAssociationsToCopy() {
         Set<XPolicyAssociation> resultingSet = new LinkedHashSet<XPolicyAssociation>();
-        for (XPolicyAssociation assoc : associations) {
+        for (XPolicyAssociation assoc : getAssociations()) {
             if (assoc.isConsiderInCopySupport()) {
+                resultingSet.add(assoc);
+            }
+        }
+        return resultingSet;
+    }
+
+    public Set<XPolicyAssociation> getInverseCompositions() {
+        Set<XPolicyAssociation> resultingSet = new LinkedHashSet<XPolicyAssociation>();
+        for (XPolicyAssociation assoc : getAssociations()) {
+            if (assoc.isInverseComposition() && !assoc.isInverseOfADerivedUnion()) {
                 resultingSet.add(assoc);
             }
         }
@@ -292,5 +311,17 @@ public class XPolicyCmptClass extends XClass {
             }
         }
         return false;
+    }
+
+    public boolean isGenerateGetParentModelObject() {
+        return hasInverseCompositionAssociations();
+    }
+
+    /**
+     * Returns <code>true</code> if this policy cmpt class has at least one association that is the
+     * inverse of a composition, but not a derived union association.
+     */
+    private boolean hasInverseCompositionAssociations() {
+        return !getInverseCompositions().isEmpty();
     }
 }

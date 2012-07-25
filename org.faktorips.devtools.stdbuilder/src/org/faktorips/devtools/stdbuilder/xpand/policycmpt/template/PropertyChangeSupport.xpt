@@ -9,7 +9,7 @@
 	     * 
 	     * @generated
 	     */
-	    protected final «addImport("org.faktorips.runtime.IpsPropertyChangeSupport")» propertyChangeSupport = new IpsPropertyChangeSupport(this);
+	    protected final «IpsPropertyChangeSupport()» propertyChangeSupport = new «IpsPropertyChangeSupport()»(this);
 	«ENDIF»
 «ENDDEFINE»
 
@@ -20,12 +20,17 @@
      * 
 	 * @generated
 	 */«REM»«overrideAnnotation(false)-»«ENDREM»
-	public void notifyChangeListeners(«addImport("java.beans.PropertyChangeEvent")» event) {
-        if (event instanceof «addImport("org.faktorips.runtime.AssociationChangedEvent")») {
-            propertyChangeSupport.fireAssociationChange((AssociationChangedEvent)event);
+	public void notifyChangeListeners(«PropertyChangeEvent()» event) {
+        if (event instanceof «AssociationChangedEvent()») {
+            propertyChangeSupport.fireAssociationChange((«AssociationChangedEvent()»)event);
         } else {
             propertyChangeSupport.firePropertyChange(event);
         }
+        «FOREACH inverseCompositions AS this-»
+	        if («fieldName» != null) {
+	            ((«INotificationSupport()»)«fieldName»).notifyChangeListeners(event);
+	        }
+        «ENDFOREACH-»
     }
     
     /**
@@ -33,7 +38,7 @@
      * 
      * @generated
      */«REM»«overrideAnnotation(false)-»«ENDREM»
-    public void addPropertyChangeListener(«addImport("java.beans.PropertyChangeListener")» listener) {
+    public void addPropertyChangeListener(«PropertyChangeListener()» listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
@@ -42,7 +47,7 @@
      * 
      * @generated
      */«REM»«overrideAnnotation(false)-»«ENDREM»
-    public void addPropertyChangeListener(PropertyChangeListener listener, boolean propagateEventsFromChildren) {
+    public void addPropertyChangeListener(«PropertyChangeListener()» listener, boolean propagateEventsFromChildren) {
         propertyChangeSupport.addPropertyChangeListener(listener, propagateEventsFromChildren);
     }
 

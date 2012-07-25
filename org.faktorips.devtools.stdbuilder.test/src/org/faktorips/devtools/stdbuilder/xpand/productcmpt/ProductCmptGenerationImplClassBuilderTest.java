@@ -21,7 +21,7 @@ import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder;
 import org.junit.Test;
 
-public class ProductCmptGenerationImlClassBuilderTest {
+public class ProductCmptGenerationImplClassBuilderTest {
 
     @Test
     public void testGetTemplate_exists() throws Exception {

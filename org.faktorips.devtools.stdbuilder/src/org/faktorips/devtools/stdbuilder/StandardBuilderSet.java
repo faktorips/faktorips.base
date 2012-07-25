@@ -470,8 +470,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 generatorModelContext, modelService));
         builders.add(new org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationImplClassBuilder(
                 this, generatorModelContext, modelService));
-        builders.add(new org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptImplClassBuilder(this,
-                generatorModelContext, modelService));
+        // builders.add(new
+        // org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptImplClassBuilder(this,
+        // generatorModelContext, modelService));
 
         return builders.toArray(new IIpsArtefactBuilder[builders.size()]);
     }

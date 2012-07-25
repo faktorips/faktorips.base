@@ -118,7 +118,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return isValid() && isCompositionMasterToDetail() && !getAssociation().isSubsetOfADerivedUnion();
     }
 
-    private boolean isCompositionMasterToDetail() {
+    public boolean isCompositionMasterToDetail() {
         return getAssociation().getAssociationType() == AssociationType.COMPOSITION_MASTER_TO_DETAIL;
     }
 

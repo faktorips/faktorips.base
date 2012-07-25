@@ -6,6 +6,9 @@ import org::faktorips::runtime;
 import org::faktorips::runtime::internal;
 import org::faktorips::devtools::stdbuilder::xpand::model;
 
+IpsPropertyChangeSupport(AbstractGeneratorModelNode this) :
+	addImport(IpsPropertyChangeSupport.name);
+
 IModelObject(AbstractGeneratorModelNode this) :
 	addImport(IModelObject.name);
 
@@ -36,8 +39,14 @@ AbstractConfigurableModelObject(AbstractGeneratorModelNode this) :
 IValidationContext(AbstractGeneratorModelNode this) :
 	addImport(IValidationContext.name);
 
+INotificationSupport(AbstractGeneratorModelNode this):
+	addImport(INotificationSupport.name);
+
 PropertyChangeEvent(AbstractGeneratorModelNode this):
 	addImport(PropertyChangeEvent.name);
+	
+PropertyChangeListener(AbstractGeneratorModelNode this):
+	addImport(PropertyChangeListener.name);
 	
 AssociationChangedEvent(AbstractGeneratorModelNode this):
 	addImport(AssociationChangedEvent.name);

@@ -45,6 +45,10 @@ package «packageName»;
 		«FOREACH associations AS this-»
 			«EXPAND PolicyCmptAssociation::field-»
 		«ENDFOREACH-»
+		
+		«FOREACH inverseCompositions AS this-»
+			«EXPAND PolicyCmptAssociation::fieldForParent-»
+		«ENDFOREACH-»
 			
 		«EXPAND constructors-»
 		
@@ -62,9 +66,9 @@ package «packageName»;
 		
 		«EXPAND DerivedUnionAssociation::methodsForDerivedUnionPolicy(this) FOREACH  derivedUnionAssociations»
 
-		«IF configured-»
-			«EXPAND generalMethodsForConfiguredPolicyCmpts-»
-	    «ENDIF-»
+		«EXPAND generalMethodsForConfiguredPolicyCmpts-»
+	    
+	 	«EXPAND generateCodeForDependentObject»
 	   
 		«EXPAND PropertyChangeSupport::generalMethods-»
 		
@@ -107,95 +111,145 @@ package «packageName»;
 «ENDDEFINE»
 
 «DEFINE generalMethodsForConfiguredPolicyCmpts FOR XPolicyCmptClass-»
-		
-    /**
-     * «localizedJDoc("METHOD_INITIALIZE")»
-     * 
-     * @restrainedmodifiable
-     */
-	 «overrideAnnotation(false)»
-    public void «initialize()» {
-    	«IF hasSupertype()-»
-	        super.«initialize()»;
-    	«ELSE-»
-	        if («methodNameGetProductCmptGeneration»() == null) {
-	            return;
-	        }
-	        «FOREACH attributes AS this-»
-				«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
-	        «ENDFOREACH-»
-        «ENDIF-»
-	    // begin-user-code
-	    // end-user-code
-    }
-	 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @generated
-	 */
-	 «overrideAnnotation(false)»
-	 public «productComponentClassOrInterfaceName» «methodNameGetProductComponent»() {
-	 	return («productComponentClassOrInterfaceName») «getProductComponent()»;
-	 }
-	 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @generated
-	 */
-	 «overrideAnnotation(false)»
-	 public «productGenerationClassOrInterfaceName» «methodNameGetProductCmptGeneration»() {
-	 	return («productGenerationClassOrInterfaceName») «getProductCmptGeneration()»;
-	 }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @generated
-	 */
-	 «overrideAnnotation(false)»
-	 public void «methodNameSetProductComponent»(«productComponentClassOrInterfaceName» «productComponentArgumentName», boolean initPropertiesWithConfiguratedDefaults) {
-        «setProductComponent(productComponentArgumentName)»;
-        if (initPropertiesWithConfiguratedDefaults) {
-            «initialize()»;
-        }
-	 }
-	 /**
-	 * {@inheritDoc}
-	 *
-     * @generated
-     */
-	 «overrideAnnotation(false)»
-    public void «effectiveFromHasChanged()» {
-        super.«effectiveFromHasChanged()»;
-        «EXPAND PolicyCmptAssociation::delegateEffectiveFromHasChanged FOREACH associations-»
-    }
-    
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @generated
-	 */
-	 «overrideAnnotation(false)»
-	 public «Calendar()» «getEffectiveFromAsCalendar()» {
-	 	«IF aggregateRoot-»
-		 	«IF hasSupertype()-»
-		 		return super.«getEffectiveFromAsCalendar()»;
-		 	«ELSE-»
-		 	    return null;
-		 	    «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE1")»
-		 	    «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE2")»
-		 	    «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE3")»
-		 	«ENDIF-»
-		 «ELSE-»
-		        «IModelObject()» parent = «getParentModelObject()»;
-		        if (parent instanceof «IConfigurableModelObject()») {
-		            return ((«IConfigurableModelObject()»)parent).«getEffectiveFromAsCalendar()»;
+	«IF configured-»
+	    /**
+	     * «localizedJDoc("METHOD_INITIALIZE")»
+	     * 
+	     * @restrainedmodifiable
+	     */
+		 «overrideAnnotation(false)»
+	    public void «initialize()» {
+	    	«IF hasSupertype()-»
+		        super.«initialize()»;
+	        «ENDIF-»
+	    	«IF !attributesToInitWithProductData.isEmpty-»
+		        if («methodNameGetProductCmptGeneration»() == null) {
+		            return;
 		        }
-		        return null;
-		 «ENDIF-»
-	 }
+		        «FOREACH attributesToInitWithProductData AS this-»
+					«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
+		        «ENDFOREACH-»
+	        «ENDIF-»
+		    // begin-user-code
+		    // end-user-code
+	    }
+		 
+		/**
+		 * {@inheritDoc}
+		 *
+		 * @generated
+		 */
+		 «overrideAnnotation(false)»
+		 public «productComponentClassOrInterfaceName» «methodNameGetProductComponent»() {
+		 	return («productComponentClassOrInterfaceName») «getProductComponent()»;
+		 }
+		 
+		/**
+		 * {@inheritDoc}
+		 *
+		 * @generated
+		 */
+		 «overrideAnnotation(false)»
+		 public «productGenerationClassOrInterfaceName» «methodNameGetProductCmptGeneration»() {
+		 	return («productGenerationClassOrInterfaceName») «getProductCmptGeneration()»;
+		 }
+	
+		/**
+		 * {@inheritDoc}
+		 *
+		 * @generated
+		 */
+		 «overrideAnnotation(false)»
+		 public void «methodNameSetProductComponent»(«productComponentClassOrInterfaceName» «productComponentArgumentName», boolean initPropertiesWithConfiguratedDefaults) {
+	        «setProductComponent(productComponentArgumentName)»;
+	        if (initPropertiesWithConfiguratedDefaults) {
+	            «initialize()»;
+	        }
+		 }
+		 /**
+		 * {@inheritDoc}
+		 *
+	     * @generated
+	     */
+		 «overrideAnnotation(false)»
+	    public void «effectiveFromHasChanged()» {
+	        super.«effectiveFromHasChanged()»;
+	        «EXPAND PolicyCmptAssociation::delegateEffectiveFromHasChanged FOREACH associations-»
+	    }
+	    
+		/**
+		 * {@inheritDoc}
+		 *
+		 * @generated
+		 */
+		 «overrideAnnotation(false)»
+		 public «Calendar()» «getEffectiveFromAsCalendar()» {
+		 	«IF aggregateRoot-»
+			 	«IF hasSupertype()-»
+			 		return super.«getEffectiveFromAsCalendar()»;
+			 	«ELSE-»
+			 	    return null;
+			 	    «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE1")»
+			 	    «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE2")»
+			 	    «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE3")»
+			 	«ENDIF-»
+			 «ELSE-»
+			        «IModelObject()» parent = «getParentModelObject()»;
+			        if (parent instanceof «IConfigurableModelObject()») {
+			            return ((«IConfigurableModelObject()»)parent).«getEffectiveFromAsCalendar()»;
+			        }
+			        return null;
+			 «ENDIF-»
+		 }
+	 «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE generateCodeForDependentObject FOR XPolicyCmptClass-»«REM»
+	 if (isFirstDependantTypeInHierarchy(getPcType()) && getPcType().isConfigurableByProductCmptType()) {
+            generateMethodGetEffectiveFromAsCalendarForDependantObjectBaseClass(methodBuilder);
+        }
+
+        // generate Method getParentModelObject()
+        generateMethodGetParentModelObject(methodBuilder, detailToMasterAssociations);
+
+        // methods create for each parent
+        for (IPolicyCmptTypeAssociation association : detailToMasterAssociations) {
+            generateFieldForParent(memberVarsBuilder, association);
+            generateMethodSetParentObjectInternal(methodBuilder, association);
+        }
+
+        // methods for subset of derived union associations
+        // we must first collect a map of all inverse-of-derived-union-association-generators
+        // containing a list of the corresponding subset-derived-union-associations
+        // because a subset of a derived union could be added in the same class multiple times
+        // but we need to create the getter for the parent object only once
+        Map<GenAssociation, List<IPolicyCmptTypeAssociation>> inverseOfDerivedUnionAssociationGenerators = getAllInverseOfDerivedUnionAssociationsGenerator(getPcType());
+        for (Map.Entry<GenAssociation, List<IPolicyCmptTypeAssociation>> entry : inverseOfDerivedUnionAssociationGenerators
+                .entrySet()) {
+            generateMethodGetterForInverseOfDerivedUnion(methodBuilder, entry.getKey(), entry.getValue());
+        }«ENDREM»
+
+	«IF generateGetParentModelObject-»
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+		 «overrideAnnotation(false)»
+	    public «IModelObject()» «getParentModelObject()» {
+	    	«FOREACH inverseCompositions AS this-»
+		        if («fieldName» != null) {
+		            return «fieldName»;
+		        }
+	    	«ENDFOREACH-»
+	        return null;
+	    }
+    «ENDIF-»
+	
+	«FOREACH inverseCompositions AS this-»
+		«EXPAND PolicyCmptAssociation::methodSetParentInternal-»
+	«ENDFOREACH-»
+	
 «ENDDEFINE»
 
 «DEFINE generalMethods FOR XPolicyCmptClass-»
@@ -208,9 +262,7 @@ package «packageName»;
 		 «overrideAnnotation(false)»
 	    protected void «initPropertiesFromXml(Map("String", "String")+" propMap", IRuntimeRepository()+" productRepository")» {
 	        super.«initPropertiesFromXml("propMap", "productRepository")»;
-	        «FOREACH attributes AS this-»
-				«EXPAND PolicyCmptAttribute::initAttributeFromXML-»
-	        «ENDFOREACH-»
+			«EXPAND PolicyCmptAttribute::initAttributeFromXML FOREACH attributes-»
 	    }
     «ENDIF-»
     
@@ -220,7 +272,7 @@ package «packageName»;
      * @generated
      */
     «overrideAnnotation(false)»
-    protected «AbstractModelObject()» «createChildFromXml("Element childEl")» {
+    protected «AbstractModelObject()» «createChildFromXml(Element()+" childEl")» {
         «AbstractModelObject()» newChild = super.«createChildFromXml("childEl")»;
         if (newChild != null) {
             return newChild;

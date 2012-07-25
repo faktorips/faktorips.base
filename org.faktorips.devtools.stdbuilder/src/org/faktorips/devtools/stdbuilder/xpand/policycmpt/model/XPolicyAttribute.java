@@ -97,8 +97,11 @@ public class XPolicyAttribute extends XAttribute {
         return getAttribute().getAttributeType() == AttributeType.CONSTANT;
     }
 
+    /**
+     * @see PolicyCmptImplClassBuilder line 1049
+     */
     public boolean isGenerateInitWithProductData() {
-        return isProductRelevant() && !isDerived();
+        return isProductRelevant() && isChangeable() && !isOverwrite();
     }
 
     public boolean isGenerateInitPropertiesFromXML() {

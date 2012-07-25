@@ -40,6 +40,11 @@ public class XPolicyAssociation extends XAssociation {
         return (IPolicyCmptTypeAssociation)super.getAssociation();
     }
 
+    public boolean isGenerateField() {
+        return isOneToMany() && !isDerivedUnion() || !isOneToMany() && !isDerivedUnion()
+                && !isCompositionDetailToMaster();
+    }
+
     public boolean isConsiderInDeltaComputation() {
         return isValidMasterToDetail() && !isDerived();
     }
@@ -220,6 +225,14 @@ public class XPolicyAssociation extends XAssociation {
         return isTypeAssociation() && hasInverseAssociation();
     }
 
+    public boolean isTypeConfigurableByProductCmptType() {
+        return getPolicyCmptType().isConfigurableByProductCmptType();
+    }
+
+    private IPolicyCmptType getPolicyCmptType() {
+        return getAssociation().getPolicyCmptType();
+    }
+
     private boolean isTargetTypeDependantType(IPolicyCmptType targetType) {
         try {
             return targetType.isDependantType();
@@ -275,8 +288,22 @@ public class XPolicyAssociation extends XAssociation {
         return getAssociation().isComposition();
     }
 
-    public boolean isCompositionMasterToDetail() {
-        return getAssociation().isCompositionMasterToDetail();
+    /**
+     * Returns <code>true</code> if this association is the inverse of a derived union association.
+     * <code>false</code> else.
+     * 
+     * @throws NullPointerException if this association has no inverse association.
+     */
+    public boolean isInverseOfADerivedUnion() {
+        return getInverseAssociation().isDerivedUnion();
+    }
+
+    /**
+     * Returns <code>true</code> if this association is the inverse of a master to detail
+     * composition. IOW it is a detail to master association.
+     */
+    public boolean isInverseComposition() {
+        return isCompositionDetailToMaster();
     }
 
     public boolean isCompositionDetailToMaster() {

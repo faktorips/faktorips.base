@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -207,4 +208,40 @@ public class XPolicyCmptClassTest {
         return policyCmptClass;
     }
 
+    @Test
+    public void testgetInverseCompositions() {
+        XPolicyCmptClass policyCmptClass = setupPolicyClassWithGetAssociations();
+
+        when(associationNode1.isInverseComposition()).thenReturn(false);
+        when(associationNode2.isInverseComposition()).thenReturn(true);
+        when(associationNode2.isInverseOfADerivedUnion()).thenReturn(true);
+        assertEquals(0, policyCmptClass.getInverseCompositions().size());
+
+        when(associationNode1.isInverseComposition()).thenReturn(false);
+        when(associationNode2.isInverseComposition()).thenReturn(false);
+        when(associationNode2.isInverseOfADerivedUnion()).thenReturn(false);
+        assertEquals(0, policyCmptClass.getInverseCompositions().size());
+
+        when(associationNode1.isInverseComposition()).thenReturn(false);
+        when(associationNode2.isInverseComposition()).thenReturn(true);
+        when(associationNode2.isInverseOfADerivedUnion()).thenReturn(false);
+        assertEquals(1, policyCmptClass.getInverseCompositions().size());
+
+        when(associationNode1.isInverseComposition()).thenReturn(true);
+        when(associationNode1.isInverseOfADerivedUnion()).thenReturn(false);
+        when(associationNode2.isInverseComposition()).thenReturn(true);
+        when(associationNode2.isInverseOfADerivedUnion()).thenReturn(false);
+        assertEquals(2, policyCmptClass.getInverseCompositions().size());
+    }
+
+    private XPolicyCmptClass setupPolicyClassWithGetAssociations() {
+        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        associationNode1 = mock(XPolicyAssociation.class);
+        associationNode2 = mock(XPolicyAssociation.class);
+        Set<XPolicyAssociation> assocs = new LinkedHashSet<XPolicyAssociation>();
+        assocs.add(associationNode1);
+        assocs.add(associationNode2);
+        doReturn(assocs).when(policyCmptClass).getAssociations();
+        return policyCmptClass;
+    }
 }

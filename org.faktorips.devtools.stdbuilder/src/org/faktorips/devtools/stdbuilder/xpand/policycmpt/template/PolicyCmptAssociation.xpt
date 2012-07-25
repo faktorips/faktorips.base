@@ -8,7 +8,7 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::ClassNames»
 
 «DEFINE field FOR XPolicyAssociation-»
-	«IF !derivedUnion-»
+	«IF generateField-»
 	    /**
 	     * «localizedJDoc("FIELD_ASSOCIATION", name.toFirstUpper())»
 	     * 
@@ -82,7 +82,7 @@
 
 «REM»TODO Generierung ohne ChangeSupport unterschiedlich! Siehe «ENDREM»
 «DEFINE setterMethodsForToOne FOR XPolicyAssociation-»
-	«IF !oneToMany-»
+	«IF !oneToMany && !inverseComposition-»
 	    /**
 	     * {@inheritDoc}
 	     * 
@@ -377,6 +377,35 @@
                     «targetInterfaceName».class, targetId);
         }
 	«ENDIF-»
+«ENDDEFINE»
+
+«REM» Code for detailToMaster compositions«ENDREM»
+«DEFINE fieldForParent FOR XPolicyAssociation-»
+	/**
+	 * «localizedJDoc("FIELD_PARENT", targetClassName)»
+	 *
+	 * @generated	 
+	 */
+	private «targetClassName» «fieldName»;
+«ENDDEFINE»
+«DEFINE methodSetParentInternal FOR XPolicyAssociation-»
+	/**
+     * @generated
+     */
+    public void «methodNameSetInternal»(«targetInterfaceName» newParent) {
+        if («methodNameGetter»() == newParent) {
+            return;
+        }
+        «IModelObject()» parent = «getParentModelObject()»;
+        if (newParent != null && parent != null) {
+            throw new RuntimeException(
+                    "Deckung can't be assigned to parent object of class Vertrag, because object already belongs to a different parent object.");
+        }
+        this.«fieldName» = «EXPAND castToImplementationIfNecessary» newParent;
+        «IF typeConfigurableByProductCmptType-»
+        	effectiveFromHasChanged();
+		«ENDIF-»
+    }
 «ENDDEFINE»
 
         
