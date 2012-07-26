@@ -6,25 +6,25 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
 «DEFINE methodsForDerivedUnion(XClass currentContextClass) FOR XDerivedUnionAssociation-»
-	«EXPAND getter(currentContextClass)»
+	«EXPAND getter(currentContextClass, methodNameGetter)»
 	«EXPAND getterNumOf(currentContextClass)»
 	«EXPAND getterNumOfInternal(currentContextClass)»
 «ENDDEFINE»
 
 «DEFINE methodsForDerivedUnionPolicy(XClass currentContextClass) FOR XDerivedUnionAssociation-»
 	«EXPAND getterNumOf(currentContextClass)»
-	«EXPAND getter(currentContextClass)»
+	«EXPAND getter(currentContextClass, methodNameGetterForPolicy)»
 	«EXPAND getterNumOfInternal(currentContextClass)»
 «ENDDEFINE»
 
-«DEFINE getter(XClass currentContextClass) FOR XDerivedUnionAssociation-»
+«DEFINE getter(XClass currentContextClass, String methodName) FOR XDerivedUnionAssociation-»
     /**
      * {@inheritDoc}
      * 
      * @generated
      */
      «overrideAnnotation(true)»
-     public «List_(targetInterfaceName)» «method(methodNameGetter)» {
+     public «List_(targetInterfaceName)» «method(methodName)» {
      	«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«methodNameGetNumOfInternal»());
      	«IF isImplementedInSuperclass(currentContextClass)-»
      		result.addAll(super.«methodNameGetter»());

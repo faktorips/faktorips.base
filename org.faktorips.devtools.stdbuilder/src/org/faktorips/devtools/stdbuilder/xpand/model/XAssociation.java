@@ -156,6 +156,20 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getTargetClassName(xClass);
     }
 
+    /**
+     * In contrast to {@link #getTargetClassName()} this method returns the class name of the type
+     * this association is part of.
+     */
+    public String getClassName() {
+        IType target = getIType();
+        XClass xClass = getModelNode(target, getTargetModelNodeType());
+        return getTargetClassName(xClass);
+    }
+
+    private IType getIType() {
+        return getAssociation().getType();
+    }
+
     protected String getTargetClassName(XClass xClass) {
         return xClass.getSimpleName(BuilderAspect.IMPLEMENTATION);
     }

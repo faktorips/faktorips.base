@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -123,7 +124,13 @@ public class XDerivedUnionAssociation extends XAssociation {
             }
             return true;
         }
-
     }
 
+    /**
+     * Returns the setter name for derived unions on policy side, which does not capitalize the role
+     * name until now erroneously. e.g. getpolicyPart() instead of getPolicyPart().
+     */
+    public String getMethodNameGetterForPolicy() {
+        return "get" + StringUtils.uncapitalize(getName(false));
+    }
 }

@@ -399,7 +399,7 @@
         «IModelObject()» parent = «getParentModelObject()»;
         if (newParent != null && parent != null) {
             throw new RuntimeException(
-                    "Deckung can't be assigned to parent object of class Vertrag, because object already belongs to a different parent object.");
+                    "«className» can't be assigned to parent object of class «name», because object already belongs to a different parent object.");
         }
         this.«fieldName» = «EXPAND castToImplementationIfNecessary» newParent;
         «IF typeConfigurableByProductCmptType-»
