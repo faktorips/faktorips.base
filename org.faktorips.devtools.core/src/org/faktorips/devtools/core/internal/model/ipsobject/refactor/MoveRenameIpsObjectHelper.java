@@ -22,12 +22,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ltk.core.refactoring.Change;
-import org.eclipse.ltk.core.refactoring.NullChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DependencyGraph;
@@ -152,11 +148,9 @@ public final class MoveRenameIpsObjectHelper {
             RefactoringStatus status,
             IProgressMonitor pm) throws CoreException {
 
-        Change undoDeleteChange = new NullChange();
+        IIpsSrcFile fileToBeCopied = toBeRefactored.getIpsSrcFile();
+        IIpsSrcFile targetFile = null;
         try {
-            IIpsSrcFile fileToBeCopied = toBeRefactored.getIpsSrcFile();
-            IIpsSrcFile targetFile;
-
             if (targetIpsPackageFragment.equals(fileToBeCopied.getIpsPackageFragment())
                     && RefactorUtil.isOnlyCapitalizationChanged(fileToBeCopied, newName)) {
                 // Copy original file to temporary file with time stamp to avoid file system
@@ -164,8 +158,8 @@ public final class MoveRenameIpsObjectHelper {
                 IIpsSrcFile tempSrcFile = RefactorUtil.copyIpsSrcFileToTemporary(fileToBeCopied,
                         targetIpsPackageFragment, newName, pm);
 
-                // Delete original file using refactoring to be able to undo later
-                undoDeleteChange = performDeleteRefactoring(fileToBeCopied, pm);
+                // Delete original file
+                fileToBeCopied.delete();
 
                 // Copy temporary file to target file and delete temporary file
                 targetFile = RefactorUtil.copyIpsSrcFile(tempSrcFile, targetIpsPackageFragment, newName, pm);
@@ -175,20 +169,13 @@ public final class MoveRenameIpsObjectHelper {
                 // Copy original file to target file
                 targetFile = RefactorUtil.copyIpsSrcFile(fileToBeCopied, targetIpsPackageFragment, newName, pm);
 
-                // Delete original file using refactoring to be able to undo later
-                undoDeleteChange = performDeleteRefactoring(fileToBeCopied, pm);
+                // Delete original file
+                fileToBeCopied.delete();
             }
 
             // Perform validation on target file.
             IIpsObject copiedIpsObject = targetFile.getIpsObject();
             MessageList validationMessageList = copiedIpsObject.validate(copiedIpsObject.getIpsProject());
-
-            /*
-             * Delete target file (can't leave it here already because participants condition
-             * checking may fail which would abort the refactoring completely and we don't want to
-             * have the copy around in this case).
-             */
-            targetFile.delete();
 
             return validationMessageList;
 
@@ -197,15 +184,30 @@ public final class MoveRenameIpsObjectHelper {
             return new MessageList();
 
         } finally {
-            // Roll-back original source file by undo delete refactoring
-            undoDeleteChange.perform(pm);
-        }
-    }
+            if (targetFile != null) {
+                /*
+                 * Roll-back original source file - first copy to temporary to avoid problems
+                 * because of same file with different case.
+                 */
+                IIpsSrcFile temporaryRestore = RefactorUtil.copyIpsSrcFileToTemporary(targetFile,
+                        fileToBeCopied.getIpsPackageFragment(), fileToBeCopied.getIpsObjectName(), pm);
 
-    private Change performDeleteRefactoring(IIpsSrcFile fileToBeCopied, IProgressMonitor pm) throws CoreException {
-        IPath resourcePath = fileToBeCopied.getCorrespondingResource().getFullPath();
-        DeleteResourceChange deleteResourceChange = new DeleteResourceChange(resourcePath, true);
-        return deleteResourceChange.perform(pm);
+                /*
+                 * Delete target file (can't leave it at target already because participants
+                 * condition checking may fail which would abort the refactoring completely and we
+                 * don't want to have the copy around in this case).
+                 */
+                targetFile.delete();
+
+                /*
+                 * Roll-back original source file from temporary restored file, delete temporary
+                 * file
+                 */
+                RefactorUtil.copyIpsSrcFile(temporaryRestore, fileToBeCopied.getIpsPackageFragment(),
+                        fileToBeCopied.getIpsObjectName(), pm);
+                temporaryRestore.delete();
+            }
+        }
     }
 
     public IpsRefactoringModificationSet refactorIpsModel(IIpsPackageFragment targetIpsPackageFragment,
@@ -229,8 +231,8 @@ public final class MoveRenameIpsObjectHelper {
         return modifications;
     }
 
-    private IpsRefactoringModificationSet updateDependencies(IIpsPackageFragment targetIpsPackageFragment, String newName)
-            throws CoreException {
+    private IpsRefactoringModificationSet updateDependencies(IIpsPackageFragment targetIpsPackageFragment,
+            String newName) throws CoreException {
         IpsRefactoringModificationSet modifications = new IpsRefactoringModificationSet(null);
         for (IDependency dependency : getDependencies()) {
             if (!isMatching(dependency)) {

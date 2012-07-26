@@ -326,7 +326,6 @@ public abstract class RefactoringParticipantHelper {
             StandardBuilderSet builderSet) {
         targetJavaElements = initializeJavaElements(ipsObjectPartContainer, builderSet);
         return true;
-
     }
 
     protected List<IJavaElement> initializeJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
