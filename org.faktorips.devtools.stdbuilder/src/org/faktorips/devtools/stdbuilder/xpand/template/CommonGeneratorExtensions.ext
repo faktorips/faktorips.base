@@ -15,17 +15,40 @@ String addImport(List[ImportStatement] imported, String qName) :
 String camelCaseToUnderscore(String s) :
 	JAVA org.faktorips.util.StringUtil.camelCaseToUnderscore(java.lang.String); 
 
+// Use this function for methods that implement an base-interface method (a base interface from the 
+// FIPS runtime, e.g. IConfigurableModelObject). Returns the @Override annotation if the 
+// compliance level is Java 6 or higher. (In Java 5 no @Override must be annotated when 
+// implementing an interface method) 
 overrideAnnotation(AbstractGeneratorModelNode this, boolean interfaceMethodImplementation) :
 	if needOverrideAnnotation(interfaceMethodImplementation) then "@Override";
 	
-overrideAnnotation(XPolicyAttribute this, boolean interfaceMethodImplementation) :
-	if overwrite || needOverrideAnnotation(interfaceMethodImplementation) then "@Override";
+// Use this function for published methods. i.e. methods that are defined in a published interface.
+// Returns the @Override annotation if published interfaces a beeing generated and if the compliance 
+// level is Java 6 or higher. (In Java 5 no @Override must be annotated when implementing an
+// interface method) 
+overrideAnnotationForPublishedMethod(AbstractGeneratorModelNode this) :
+	if needOverrideAnnotation(generatingPublishedInterfaces) then "@Override";
+
+// User this function for attribute methods (e.g. getter, setter).
+// Will return the @Override annotation if the attribute overwrites an attribute in a supertype, else nothing.
+overrideAnnotationIfOverriddenAttribute(XPolicyAttribute this, boolean interfaceMethodImplementation) :
+	if overwrite then "@Override";
 	
-overrideAnnotationIfHasSuperClass(XPolicyCmptClass this, boolean interfaceMethodImplementation) :
-	if hasSupertype() || needOverrideAnnotation(interfaceMethodImplementation) then "@Override";
-	
-overrideAnnotationIfHasNonAbstractSuperClass(XPolicyCmptClass this, boolean interfaceMethodImplementation) :
-	if hasNonAbstractSupertype() || needOverrideAnnotation(interfaceMethodImplementation) then "@Override";
+// Use this function if the method in question is generated for all generated classes and subclasses always 
+// override their super's implementation. The method in question should not be an interface method. 
+// Returns the @Override annotation if the given XPolicyCmptClass has a superclass.
+// Returns nothing in all other cases.
+overrideAnnotationIfHasSuperclass(XPolicyCmptClass this) :
+	if hasSupertype() then "@Override";
+
+// Use this function if the generated method is the implementation of an interface method, 
+// but there may be superclasses that already implement the method themselves. 
+// Returns nothing if the compliance level is 5 (Java 1.5) and none of the current XPolicyCmptClass' 
+// superclasses is concrete (non abstract). (In this case the method overrides an interface method. 
+// In java 5 no @override must be annotated when implementing an interface.) 
+// Returns the @Override annotation in all other cases.
+overrideAnnotationForInterfaceOrNonAbstractSuperclassMethod(XPolicyCmptClass this) :
+	if needOverrideAnnotation(!hasNonAbstractSupertype()) then "@Override";
 	
 inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String jDoc):
 	generatingPublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc);

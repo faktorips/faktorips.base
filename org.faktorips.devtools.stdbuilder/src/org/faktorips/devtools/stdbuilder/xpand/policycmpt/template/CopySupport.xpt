@@ -11,7 +11,7 @@
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotationIfHasNonAbstractSuperklass()»
+	    «overrideAnnotationForInterfaceOrNonAbstractSuperclassMethod()»
 	    public «IModelObject()» «newCopy()» {
 	        «Map(IModelObject(), IModelObject())» copyMap = new «HashMap(IModelObject(), IModelObject())»();
 	        «className» newCopy = («className») «newCopyInternal("copyMap")»;
@@ -25,7 +25,7 @@
      * 
      * @generated
      */
-     «overrideAnnotationIfHasSuperclass()»«REM»für Vertrag muss override angegeben werden,  Deckung hat Fehler mit override«ENDREM»
+     «overrideAnnotationIfHasSuperclass()»
     public «IModelObject()» «newCopyInternal(Map(IModelObject(), IModelObject())+" copyMap")» {
     	«IF !abstract-»
 	        «className» newCopy = («className»)copyMap.get(this);
@@ -47,7 +47,8 @@
      * «localizedJDoc("METHOD_COPY_PROPERTIES")»
      * 
      * @generated
-     */«REM»«overrideAnnotationIfHasSupertype(false)»  Deckung hat Fehler mit override«ENDREM»
+     */
+     «overrideAnnotationIfHasSuperclass()»
     protected void «copyProperties(IModelObject()+" copy", Map(IModelObject(), IModelObject())+" copyMap")» {
 		«IF hasSupertype()-»
 			super.copyProperties(copy, copyMap);
@@ -65,7 +66,8 @@
      * «localizedJDoc("METHOD_COPY_ASSOCIATIONS_INTERNAL")»
      *
      * @generated
-     */«REM» «overrideAnnotationIfHasSupertype(false)» Deckung hat Fehler mit override«ENDREM»
+     */
+     «overrideAnnotationIfHasSuperclass()»
     public void «copyAssociationsInternal(IModelObject()+" abstractCopy", Map(IModelObject(), IModelObject())+" copyMap")» {
         «IF associationsToCopy.size > 0-»
         	«IF hasSupertype()-»

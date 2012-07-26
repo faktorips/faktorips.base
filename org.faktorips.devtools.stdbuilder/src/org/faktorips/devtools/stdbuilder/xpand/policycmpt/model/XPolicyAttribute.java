@@ -65,10 +65,13 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     /**
-     * Returns true for all attributes except derived (on the fly) and overridden attributes.
+     * Returns <code>true</code> for constant attributes and attributes that require a member
+     * variable.
+     * 
+     * @see #isRequireMemberVariable()
      */
     public boolean isGenerateField() {
-        return (isDerivedByExplicitMethodCall() || isChangeable()) && !isOverwrite();
+        return isRequireMemberVariable() || isConstant();
     }
 
     public boolean isPublished() {
@@ -105,7 +108,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateInitPropertiesFromXML() {
-        return isGenerateField();
+        return isRequireMemberVariable();
     }
 
     public boolean isGenerateDefaultInitialize() {
@@ -173,11 +176,11 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isConsiderInDeltaComputation() {
-        return isPublished() && isFieldRequired();
+        return isPublished() && isRequireMemberVariable();
     }
 
     public boolean isConsiderInCopySupport() {
-        return isFieldRequired();
+        return isRequireMemberVariable();
     }
 
     private boolean isChangeable() {
@@ -187,9 +190,9 @@ public class XPolicyAttribute extends XAttribute {
     /**
      * Returns <code>true</code> if a member variable is required for the type of attribute. This is
      * currently the case for changeable attributes and attributes that are derived by an explicit
-     * method call.
+     * method call. But not for constant attributes as they require a constant but not a variable.
      */
-    public boolean isFieldRequired() {
+    public boolean isRequireMemberVariable() {
         return (isChangeable() || isDerivedByExplicitMethodCall()) && !isOverwrite();
     }
 
