@@ -38,18 +38,20 @@ public class BaseJodaDatatypeHelperTest {
     @Test
     public void testNewInstance() {
         BaseJodaDatatypeHelper baseJodaDatatypeHelper = new BaseJodaDatatypeHelper("myParseMethod");
-        JavaCodeFragment valueOfExpression = baseJodaDatatypeHelper.valueOfExpression("myExpression");
         JavaCodeFragment newInstance = baseJodaDatatypeHelper.newInstance("myExpression");
         assertTrue(newInstance.getImportDeclaration().isCovered(BaseJodaDatatypeHelper.ORG_FAKTORIPS_UTIL_JODA_UTIL));
-        assertTrue(newInstance.getSourcecode().contains("JodaUtil"));
-        assertTrue(newInstance.getSourcecode().contains("myParseMethod"));
-        assertTrue(newInstance.getSourcecode().contains("myExpression"));
-        assertEquals(valueOfExpression, newInstance);
+        assertEquals("JodaUtil.myParseMethod(\"myExpression\")", newInstance.getSourcecode());
+    }
 
-        newInstance = baseJodaDatatypeHelper.newInstance(null);
+    @Test
+    public void testNewInstance_Null() {
+        JavaCodeFragment newInstance = new BaseJodaDatatypeHelper("myParseMethod").newInstance(null);
         assertEquals("null", newInstance.getSourcecode());
+    }
 
-        newInstance = baseJodaDatatypeHelper.newInstance("");
+    @Test
+    public void testNewInstance_EmptyString() {
+        JavaCodeFragment newInstance = new BaseJodaDatatypeHelper("myParseMethod").newInstance("");
         assertEquals("null", newInstance.getSourcecode());
     }
 
