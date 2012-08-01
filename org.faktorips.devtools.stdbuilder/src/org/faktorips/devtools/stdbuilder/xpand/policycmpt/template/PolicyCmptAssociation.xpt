@@ -379,7 +379,7 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«REM» Code for detailToMaster compositions«ENDREM»
+«REM» Templates for detailToMaster compositions«ENDREM»
 «DEFINE fieldForParent FOR XPolicyAssociation-»
 	/**
 	 * «localizedJDoc("FIELD_PARENT", targetClassName)»

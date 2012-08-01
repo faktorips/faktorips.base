@@ -2,6 +2,7 @@
 «IMPORT org::faktorips::devtools::core::builder::naming»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
@@ -11,10 +12,11 @@
 	«EXPAND getterNumOfInternal(currentContextClass)»
 «ENDDEFINE»
 
-«DEFINE methodsForDerivedUnionPolicy(XClass currentContextClass) FOR XDerivedUnionAssociation-»
+«DEFINE methodsForDerivedUnionPolicy(XPolicyCmptClass currentContextClass) FOR XDerivedUnionAssociation-»
 	«EXPAND getterNumOf(currentContextClass)»
 	«EXPAND getter(currentContextClass, methodNameGetterForPolicy)»
 	«EXPAND getterNumOfInternal(currentContextClass)»
+	«EXPAND getParent(currentContextClass)»
 «ENDDEFINE»
 
 «DEFINE getter(XClass currentContextClass, String methodName) FOR XDerivedUnionAssociation-»
@@ -74,5 +76,28 @@
     public boolean «method(methodNameContains, targetInterfaceName, "objectToTest")» {
         return «methodNameGetter»().contains(objectToTest);
     }
+«ENDDEFINE»
+
+«DEFINE getParent(XPolicyCmptClass currentContextClass) FOR XDerivedUnionAssociation-»
+	«IF hasInverseDerivedUnions(currentContextClass)-»
+		/**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotationIfHasSuperclass(currentContextClass)»
+	    public boolean «method(methodNameGetter)» {
+	     	«FOREACH (Set[XPolicyAssociation])getInverseDerivedUnions(currentContextClass) AS this-»
+			    if («fieldName» != null) {
+			        return «fieldName»;
+			    }
+	     	«ENDFOREACH-»
+	    	«IF isImplementedInSuperclass(currentContextClass)-»
+	    		 return super.«methodNameGetter»();
+	    	«ELSE-» 
+	    		 return null;
+	    	«ENDIF-» 
+	    }
+   	«ENDIF-»
 «ENDDEFINE»
 

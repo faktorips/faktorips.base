@@ -107,6 +107,10 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         }
     }
 
+    /**
+     * TODO: wenn die gegebene derived union gleichzeitig noch ein Subset ist, muss dann auch gegen
+     * die übergeordnete DU getestet werden?
+     */
     public boolean isSubsetOf(XDerivedUnionAssociation derivedUnionAssociation) {
         if (getAssociation().getSubsettedDerivedUnion().equals(derivedUnionAssociation.getName())) {
             return true;

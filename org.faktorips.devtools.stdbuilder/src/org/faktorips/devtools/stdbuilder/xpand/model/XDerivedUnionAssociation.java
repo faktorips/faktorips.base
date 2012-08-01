@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -124,6 +126,35 @@ public class XDerivedUnionAssociation extends XAssociation {
             }
             return true;
         }
+    }
+
+    public boolean hasInverseAssociationsOfDerivedUnionSubsets(XPolicyCmptClass policyClass) {
+        return !getInverseAssociationsOfDerivedUnionSubsets(policyClass).isEmpty();
+    }
+
+    /**
+     * Returns the inverse associations defined in the given policy class that are subsets of this
+     * derived union association.
+     * <p>
+     * In other words: Searches the given policy class for inverse associations. For each inverse
+     * finds their original association and checks whether or not it is a subset of this derived
+     * union. If it is, the inverse association (of the given policy class) is added to the list.
+     * 
+     * TODO: wenn subsets dieser derived union selbst noch DUs sind, muss dann auch gegen diese
+     * getestet werden?
+     * 
+     * @param policyClass the class to search for inverse associations of this derived union
+     * 
+     */
+    public Set<XPolicyAssociation> getInverseAssociationsOfDerivedUnionSubsets(XPolicyCmptClass policyClass) {
+        Set<XPolicyAssociation> result = new LinkedHashSet<XPolicyAssociation>();
+        Set<? extends XPolicyAssociation> associations = policyClass.getAssociations();
+        for (XPolicyAssociation xAssociation : associations) {
+            if (xAssociation.hasInverseAssociation() && xAssociation.getInverseAssociation().isSubsetOf(this)) {
+                result.add(xAssociation);
+            }
+        }
+        return result;
     }
 
     /**

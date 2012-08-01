@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,26 +46,72 @@ public class XPolicyCmptClass extends XClass {
 
     private final Set<XDerivedUnionAssociation> derivedUnionAssociations;
 
+    private final Set<XPolicyAssociation> inverseDerivedUnions;
+
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
         attributes = initNodesForParts(
                 new LinkedHashSet<IPolicyCmptTypeAttribute>(policyCmptType.getPolicyCmptTypeAttributes()),
                 XPolicyAttribute.class);
-        associations = initNodesForParts(getPolicyAssociations(policyCmptType, false), XPolicyAssociation.class);
+        associations = initNodesForParts(getPolicyAssociations(policyCmptType), XPolicyAssociation.class);
         derivedUnionAssociations = initNodesForParts(
                 findSubsettedDerivedUnions(policyCmptType.getPolicyCmptTypeAssociations(),
                         IPolicyCmptTypeAssociation.class), XDerivedUnionAssociation.class);
+        inverseDerivedUnions = initNodesForParts(
+                findInverseDerivedUnionAssociations(policyCmptType.getPolicyCmptTypeAssociations()),
+                XPolicyAssociation.class);
     }
 
-    private Set<IPolicyCmptTypeAssociation> getPolicyAssociations(IPolicyCmptType policyCmptType, boolean derivedUnion) {
+    /**
+     * Returns <code>true</code> all associations of a policy component type except derived unions
+     * and inverse associations of derived unions.
+     */
+    private Set<IPolicyCmptTypeAssociation> getPolicyAssociations(IPolicyCmptType policyCmptType) {
         Set<IPolicyCmptTypeAssociation> result = new LinkedHashSet<IPolicyCmptTypeAssociation>();
         List<IPolicyCmptTypeAssociation> policyCmptTypeAssociations = policyCmptType.getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyCmptTypeAssociations) {
-            if (policyCmptTypeAssociation.isDerivedUnion() == derivedUnion) {
+            if (isValidAssociation(policyCmptTypeAssociation)) {
                 result.add(policyCmptTypeAssociation);
             }
         }
         return result;
+    }
+
+    /**
+     * Returns <code>true</code> for all associations except derived unions and inverse associations
+     * of derived unions.
+     */
+    private boolean isValidAssociation(IPolicyCmptTypeAssociation policyCmptTypeAssociation) {
+        return !policyCmptTypeAssociation.isDerivedUnion() && !isInverseOfADerivedUnion(policyCmptTypeAssociation);
+    }
+
+    private boolean isInverseOfADerivedUnion(IPolicyCmptTypeAssociation policyCmptTypeAssociation) {
+        try {
+            return policyCmptTypeAssociation.isInverseOfDerivedUnion();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    /**
+     * Inspects all inverse associations. If a given association is the inverse of a derived union
+     * it is added to the result.
+     */
+    protected Set<IPolicyCmptTypeAssociation> findInverseDerivedUnionAssociations(Collection<IPolicyCmptTypeAssociation> associations) {
+        Set<IPolicyCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IPolicyCmptTypeAssociation>();
+        for (IPolicyCmptTypeAssociation association : associations) {
+            try {
+                if (association.isCompositionDetailToMaster()) {
+                    IPolicyCmptTypeAssociation inverseAssociation = association.findInverseAssociation(getIpsProject());
+                    if (inverseAssociation.isDerivedUnion()) {
+                        resultingAssociations.add(inverseAssociation);
+                    }
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return resultingAssociations;
     }
 
     @Override
@@ -139,6 +186,10 @@ public class XPolicyCmptClass extends XClass {
     @Override
     public Set<XDerivedUnionAssociation> getDerivedUnionAssociations() {
         return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnionAssociations);
+    }
+
+    public Set<XPolicyAssociation> getInverseDerivedUnionAssociations() {
+        return new CopyOnWriteArraySet<XPolicyAssociation>(inverseDerivedUnions);
     }
 
     public String getProductCmptClassName() {

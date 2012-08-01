@@ -28,6 +28,8 @@ import java.util.Set;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -198,5 +200,54 @@ public class XDerivedUnionAssociationTest {
         when(superSuperSuperType.getAssociations()).thenReturn(associations);
 
         assertTrue(xDerivedUnionAssociation.isImplementedInSuperclass(xClass));
+    }
+
+    @Test
+            public void testGetInverseAssociationsOfDerivedUnionSubsets_noInverseAssociations() {
+                XPolicyCmptClass policyClass = setUpAssociations(null, null, null);
+                assertTrue(xDerivedUnionAssociation.getInverseAssociationsOfDerivedUnionSubsets(policyClass).isEmpty());
+            }
+
+    @Test
+            public void testGetInverseAssociationsOfDerivedUnionSubsets_InverseNoSubsets() {
+                XPolicyAssociation inverse3Assoc = mock(XPolicyAssociation.class);
+                when(inverse3Assoc.isSubsetOf(xDerivedUnionAssociation)).thenReturn(false);
+        
+                XPolicyCmptClass policyClass = setUpAssociations(null, null, inverse3Assoc);
+                assertTrue(xDerivedUnionAssociation.getInverseAssociationsOfDerivedUnionSubsets(policyClass).isEmpty());
+            }
+
+    @Test
+            public void testGetInverseAssociationsOfDerivedUnionSubsets_InverseAndSubset() {
+                XPolicyAssociation inverse2Assoc = mock(XPolicyAssociation.class);
+                XPolicyAssociation inverse3Assoc = mock(XPolicyAssociation.class);
+                when(inverse2Assoc.isSubsetOf(xDerivedUnionAssociation)).thenReturn(false);
+                when(inverse3Assoc.isSubsetOf(xDerivedUnionAssociation)).thenReturn(true);
+        
+                XPolicyCmptClass policyClass = setUpAssociations(null, inverse2Assoc, inverse3Assoc);
+                Set<XPolicyAssociation> inverseDerivedUnions = xDerivedUnionAssociation.getInverseAssociationsOfDerivedUnionSubsets(policyClass);
+                assertEquals(1, inverseDerivedUnions.size());
+                assertEquals(policyClass.getAssociations().toArray()[2], inverseDerivedUnions.iterator().next());
+            }
+
+    private XPolicyCmptClass setUpAssociations(XPolicyAssociation assoc1Inverse,
+            XPolicyAssociation assoc2Inverse,
+            XPolicyAssociation assoc3Inverse) {
+        XPolicyCmptClass policyClass = mock(XPolicyCmptClass.class);
+        Set<XPolicyAssociation> assocs = new LinkedHashSet<XPolicyAssociation>();
+        XPolicyAssociation assoc1 = mock(XPolicyAssociation.class);
+        XPolicyAssociation assoc2 = mock(XPolicyAssociation.class);
+        XPolicyAssociation assoc3 = mock(XPolicyAssociation.class);
+        when(assoc1.getInverseAssociation()).thenReturn(assoc1Inverse);
+        when(assoc2.getInverseAssociation()).thenReturn(assoc2Inverse);
+        when(assoc3.getInverseAssociation()).thenReturn(assoc3Inverse);
+        when(assoc1.hasInverseAssociation()).thenReturn(assoc1Inverse != null);
+        when(assoc2.hasInverseAssociation()).thenReturn(assoc2Inverse != null);
+        when(assoc3.hasInverseAssociation()).thenReturn(assoc3Inverse != null);
+        assocs.add(assoc1);
+        assocs.add(assoc2);
+        assocs.add(assoc3);
+        when(policyClass.getAssociations()).thenReturn(assocs);
+        return policyClass;
     }
 }
