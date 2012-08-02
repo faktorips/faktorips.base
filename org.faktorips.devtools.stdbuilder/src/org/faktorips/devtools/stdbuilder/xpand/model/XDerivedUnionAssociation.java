@@ -143,6 +143,11 @@ public class XDerivedUnionAssociation extends XAssociation {
      * TODO: wenn subsets dieser derived union selbst noch DUs sind, muss dann auch gegen diese
      * getestet werden?
      * 
+     * Hmm. Eigentlich sollten doch alle übergeordneten DUs schon ermittelt und in der dieser
+     * Methode abgearbeitet werden. evtl. is das dann überflüssig...
+     * 
+     * Methode nie für VertragsTeil aufgerufen. Werden eigentlich DUs für seine Assocs gefunden?!
+     * 
      * @param policyClass the class to search for inverse associations of this derived union
      * 
      */
