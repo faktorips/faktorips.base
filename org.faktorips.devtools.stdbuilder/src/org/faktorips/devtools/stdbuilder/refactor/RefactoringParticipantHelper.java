@@ -19,9 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
@@ -35,7 +33,6 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
-import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -341,30 +338,25 @@ public abstract class RefactoringParticipantHelper {
 
         ArgumentCheck.notNull(new Object[] { ipsObject, targetIpsPackageFragment, newName, builderSet });
 
-        Change undoDeleteChange = new NullChange();
+        IIpsSrcFile originalFile = ipsObject.getIpsSrcFile();
+        IIpsSrcFile targetFile = null;
         try {
             // 1) Create temporary copy with time stamp to avoid file system problems
-            IIpsSrcFile tempSrcFile = RefactorUtil.copyIpsSrcFileToTemporary(ipsObject.getIpsSrcFile(),
-                    targetIpsPackageFragment, newName, null);
-            IPath originalResourcePath = ipsObject.getIpsSrcFile().getCorrespondingResource().getFullPath();
+            IIpsSrcFile tempSrcFile = RefactorUtil.copyIpsSrcFileToTemporary(originalFile, targetIpsPackageFragment,
+                    newName, null);
 
-            // 2) Delete original source file with delete refactoring for undo possibility
-            DeleteResourceChange deleteResourceChange = new DeleteResourceChange(originalResourcePath, true);
-            undoDeleteChange = deleteResourceChange.perform(null);
+            // 2) Delete original source file
+            originalFile.delete();
 
             // 3) Copy the temporary file to create the target file
-            IIpsSrcFile targetSrcFile = RefactorUtil.copyIpsSrcFile(tempSrcFile, targetIpsPackageFragment, newName,
-                    null);
+            targetFile = RefactorUtil.copyIpsSrcFile(tempSrcFile, targetIpsPackageFragment, newName, null);
 
             // 4) Delete the temporary file, we don't need it any longer
             tempSrcFile.getCorrespondingResource().delete(true, null);
 
             // 5) Obtain the generated Java elements for the target IPS object
-            IIpsObject targetIpsObject = targetSrcFile.getIpsObject();
+            IIpsObject targetIpsObject = targetFile.getIpsObject();
             targetJavaElements = builderSet.getGeneratedJavaElements(targetIpsObject);
-
-            // 6) Clean up by deleting the target source file
-            targetSrcFile.getCorrespondingResource().delete(true, null);
 
         } catch (CoreException e) {
             // The participant won't be initialized if a CoreException occurs
@@ -372,11 +364,25 @@ public abstract class RefactoringParticipantHelper {
             return false;
 
         } finally {
-            // Roll-back by performing the undo change of the delete refactoring
+            // 6) Clean up by deleting the target source file and rolling back the original file
             try {
-                undoDeleteChange.perform(new NullProgressMonitor());
+                if (targetFile != null) {
+                    // Copy to temporary to avoid problems because of same file with different case
+                    IIpsSrcFile temporaryRestore = RefactorUtil.copyIpsSrcFileToTemporary(targetFile,
+                            originalFile.getIpsPackageFragment(), originalFile.getIpsObjectName(), null);
+
+                    // Deleting the target source file
+                    targetFile.delete();
+
+                    // Restore From temporary
+                    RefactorUtil.copyIpsSrcFile(temporaryRestore, originalFile.getIpsPackageFragment(),
+                            originalFile.getIpsObjectName(), null);
+                    temporaryRestore.delete();
+                }
             } catch (CoreException e) {
-                throw new RuntimeException(e);
+                // The participant won't be initialized if a CoreException occurs
+                StdBuilderPlugin.log(e);
+                return false;
             }
         }
 
