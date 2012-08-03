@@ -46,7 +46,7 @@ public class XPolicyCmptClass extends XClass {
 
     private final Set<XDerivedUnionAssociation> derivedUnionAssociations;
 
-    private final Set<XPolicyAssociation> inverseDerivedUnions;
+    private final Set<XDerivedUnionAssociation> derivedUnionsForInverseSubsets;
 
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
@@ -57,9 +57,9 @@ public class XPolicyCmptClass extends XClass {
         derivedUnionAssociations = initNodesForParts(
                 findSubsettedDerivedUnions(policyCmptType.getPolicyCmptTypeAssociations(),
                         IPolicyCmptTypeAssociation.class), XDerivedUnionAssociation.class);
-        inverseDerivedUnions = initNodesForParts(
+        derivedUnionsForInverseSubsets = initNodesForParts(
                 findInverseDerivedUnionAssociations(policyCmptType.getPolicyCmptTypeAssociations()),
-                XPolicyAssociation.class);
+                XDerivedUnionAssociation.class);
     }
 
     /**
@@ -94,8 +94,8 @@ public class XPolicyCmptClass extends XClass {
     }
 
     /**
-     * Inspects all inverse associations. If a given association is the inverse of a derived union
-     * it is added to the result.
+     * Inspects all inverse associations. If a given association is the inverse of a
+     * derived-union-subset, the original derived union is searched and added to the result.
      */
     protected Set<IPolicyCmptTypeAssociation> findInverseDerivedUnionAssociations(Collection<IPolicyCmptTypeAssociation> associations) {
         Set<IPolicyCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IPolicyCmptTypeAssociation>();
@@ -103,8 +103,10 @@ public class XPolicyCmptClass extends XClass {
             try {
                 if (association.isCompositionDetailToMaster()) {
                     IPolicyCmptTypeAssociation inverseAssociation = association.findInverseAssociation(getIpsProject());
-                    if (inverseAssociation.isDerivedUnion()) {
-                        resultingAssociations.add(inverseAssociation);
+                    if (inverseAssociation.isSubsetOfADerivedUnion()) {
+                        IPolicyCmptTypeAssociation subsettedDerivedUnion = (IPolicyCmptTypeAssociation)inverseAssociation
+                                .findSubsettedDerivedUnion(getIpsProject());
+                        resultingAssociations.add(subsettedDerivedUnion);
                     }
                 }
             } catch (CoreException e) {
@@ -188,8 +190,8 @@ public class XPolicyCmptClass extends XClass {
         return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnionAssociations);
     }
 
-    public Set<XPolicyAssociation> getInverseDerivedUnionAssociations() {
-        return new CopyOnWriteArraySet<XPolicyAssociation>(inverseDerivedUnions);
+    public Set<XDerivedUnionAssociation> getInverseDerivedUnionAssociations() {
+        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnionsForInverseSubsets);
     }
 
     public String getProductCmptClassName() {

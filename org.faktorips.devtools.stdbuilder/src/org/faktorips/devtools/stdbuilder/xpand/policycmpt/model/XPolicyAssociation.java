@@ -164,7 +164,7 @@ public class XPolicyAssociation extends XAssociation {
      * 
      * @throws NullPointerException if this association has no inverse association.
      */
-    public XAssociation getInverseAssociation() {
+    public XPolicyAssociation getInverseAssociation() {
         try {
             IPolicyCmptTypeAssociation inverseAssoc = getAssociation().findInverseAssociation(getIpsProject());
             if (inverseAssoc != null) {

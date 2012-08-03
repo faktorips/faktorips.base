@@ -64,7 +64,8 @@ package «packageName»;
 			«EXPAND PolicyCmptAssociation::methods-»
 		«ENDFOREACH-»
 		
-		«EXPAND DerivedUnionAssociation::methodsForDerivedUnionPolicy(this) FOREACH  derivedUnionAssociations»
+		«EXPAND DerivedUnionAssociation::methodsForDerivedUnionPolicy(this) FOREACH  derivedUnionAssociations-»
+		«EXPAND DerivedUnionAssociation::getParent(this) FOREACH  inverseDerivedUnionAssociations-»
 
 		«EXPAND generalMethodsForConfiguredPolicyCmpts-»
 	    
@@ -242,7 +243,11 @@ package «packageName»;
 		            return «fieldName»;
 		        }
 	    	«ENDFOREACH-»
-	        return null;
+	        «IF hasSupertype()-»
+	        	return super.«getParentModelObject()»;
+		 	«ELSE-»
+	        	return null;
+		 	«ENDIF-»
 	    }
     «ENDIF-»
 	

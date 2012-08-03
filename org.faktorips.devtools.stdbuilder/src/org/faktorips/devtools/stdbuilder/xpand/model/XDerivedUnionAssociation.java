@@ -17,10 +17,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
@@ -164,9 +165,33 @@ public class XDerivedUnionAssociation extends XAssociation {
 
     /**
      * Returns the setter name for derived unions on policy side, which does not capitalize the role
-     * name until now erroneously. e.g. getpolicyPart() instead of getPolicyPart().
+     * name until now erroneously. e.g. getpolicyPart() instead of getPolicyPart() (if the role name
+     * is policyPart).
      */
     public String getMethodNameGetterForPolicy() {
-        return "get" + StringUtils.uncapitalize(getName(false));
+        return "get" + getName(false);
+    }
+
+    public boolean hasInverseAssociation() {
+        return getXPolicyAssociation().hasInverseAssociation();
+    }
+
+    public String getMethodNameInverseAssociationGetter() {
+        return getXPolicyAssociation().getMethodNameInverseAssociationGet();
+    }
+
+    public String getInterfaceName() {
+        // FIXME Demeter dreht sich im Grabe um!
+        return addImport(getXPolicyAssociation().getInverseAssociation().getTargetInterfaceName());
+    }
+
+    protected XPolicyAssociation getXPolicyAssociation() {
+        if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
+            return getModelNode(getAssociation(), XPolicyAssociation.class);
+        } else {
+            throw new NullPointerException(NLS.bind(
+                    "The Derived Union {0} is no policy association. Thus no XPolicyAssociation can be acquired.",
+                    getAssociation()));
+        }
     }
 }
