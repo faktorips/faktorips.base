@@ -132,13 +132,4 @@ public class XDerivedUnionAssociation extends XAssociation {
         }
     }
 
-    /**
-     * Returns the setter name for derived unions on policy side, which does not capitalize the role
-     * name until now erroneously. e.g. getpolicyPart() instead of getPolicyPart() (if the role name
-     * is policyPart).
-     */
-    public String getMethodNameGetterForPolicy() {
-        return "get" + getName(false);
-    }
-
 }

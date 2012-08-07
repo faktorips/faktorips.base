@@ -86,8 +86,17 @@ public class XPolicyAssociation extends XAssociation {
         return "old" + StringUtils.capitalize(getName());
     }
 
+    /**
+     * If this is a detail to master association the
+     * {@link #getMethodNameSetInternalUncapitalized()} is used as a result. Reproduces Bug in old
+     * code generator for compatibility. see FIPS-1143.
+     */
     public String getMethodNameSetInternal() {
-        return getMethodNameSetter(false) + "Internal";
+        if (isCompositionDetailToMaster()) {
+            return getMethodNameSetInternalUncapitalized();
+        } else {
+            return getMethodNameSetter(false) + "Internal";
+        }
     }
 
     public String getMethodNameAddInternal() {
@@ -387,5 +396,38 @@ public class XPolicyAssociation extends XAssociation {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    /**
+     * 
+     /** If this is a detail to master association the
+     * {@link #getMethodNameGetSingleUncapitalized()} is used as a result. Reproduces Bug in old
+     * code generator for compatibility. see FIPS-1143.
+     */
+    @Override
+    public String getMethodNameGetSingle() {
+        if (isCompositionDetailToMaster()) {
+            return getMethodNameGetSingleUncapitalized();
+        } else {
+            return super.getMethodNameGetSingle();
+        }
+    }
+
+    /**
+     * Returns the setter name for derived unions on policy side, which does not capitalize the role
+     * name until now erroneously. e.g. getpolicyPart() instead of getPolicyPart() (if the role name
+     * is policyPart).
+     */
+    private String getMethodNameGetSingleUncapitalized() {
+        return "get" + getName(false);
+    }
+
+    /**
+     * Returns the setter name for derived unions on policy side, which does not capitalize the role
+     * name until now erroneously. e.g. getpolicyPart() instead of getPolicyPart() (if the role name
+     * is policyPart).
+     */
+    private String getMethodNameSetInternalUncapitalized() {
+        return "set" + getName(false) + "Internal";
     }
 }
