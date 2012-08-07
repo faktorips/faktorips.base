@@ -56,8 +56,9 @@
         «IF attributesToCopy.size > 0 || associationsToCopy.size > 0-»
     		«className» concreteCopy = («className»)copy;
         	«EXPAND copyAttributes-»
-        	«EXPAND copyAssociations-»
-        «ELSE-»
+        	«EXPAND copyAssociations-»        	
+        «ENDIF-»
+        «IF attributesToCopy.size == 0 && associationsToCopy.size == 0 && !hasSupertype()-»
         	«localizedComment("NOTHING_TO_DO")»
         «ENDIF-»
     }
@@ -69,13 +70,14 @@
      */
      «overrideAnnotationIfHasSuperclass()»
     public void «copyAssociationsInternal(IModelObject()+" abstractCopy", Map(IModelObject(), IModelObject())+" copyMap")» {
+    	«IF hasSupertype()-»
+	        super.copyAssociationsInternal(abstractCopy, copyMap);
+    	«ENDIF-»
         «IF associationsToCopy.size > 0-»
-        	«IF hasSupertype()-»
-		        super.copyAssociationsInternal(abstractCopy, copyMap);
-        	«ENDIF-»
 	        «className» newCopy = («className»)abstractCopy;
 	        «EXPAND copyAssociationInternal FOREACH associations-»
-        «ELSE-»
+        «ENDIF-»
+        «IF associationsToCopy.size == 0 && !hasSupertype()-»
         	«localizedComment("NOTHING_TO_DO")»
         «ENDIF-»
     }
