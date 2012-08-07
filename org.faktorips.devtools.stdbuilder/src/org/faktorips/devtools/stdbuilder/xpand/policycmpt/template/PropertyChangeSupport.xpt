@@ -13,79 +13,93 @@
 	«ENDIF»
 «ENDDEFINE»
 
-«DEFINE generalMethods FOR XPolicyCmptClass-»
+«DEFINE generalMethods FOR XPolicyCmptClass-»	
+	«EXPAND notifyChangeListeners-»
+	«EXPAND addRemoveListenerMethods-»
+«ENDDEFINE»
+
+«DEFINE notifyChangeListeners FOR XPolicyCmptClass-»
+	«IF generateNotifyChangeListeners-»
+		/**
+	     * {@inheritDoc}
+	     * 
+		 * @generated
+		 */
+		 «overrideAnnotationIfHasSuperclass()-»
+		public void notifyChangeListeners(«PropertyChangeEvent()» event) {
+			«IF !hasSupertype()-»
+		        if (event instanceof «AssociationChangedEvent()») {
+		            propertyChangeSupport.fireAssociationChange((«AssociationChangedEvent()»)event);
+		        } else {
+		            propertyChangeSupport.firePropertyChange(event);
+		        }
+			«ELSE-»
+				super.notifyChangeListeners(event);
+			«ENDIF-»
+	        «FOREACH inverseCompositions AS this-»
+		        if («fieldName» != null) {
+		            ((«INotificationSupport()»)«fieldName»).notifyChangeListeners(event);
+		        }
+	        «ENDFOREACH-»
+	    }
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE addRemoveListenerMethods FOR XPolicyCmptClass-»
 	«IF generateChangeSupport && !hasSupertype()-»
-	/**
-     * {@inheritDoc}
-     * 
-	 * @generated
-	 */«REM»«overrideAnnotation(false)-»«ENDREM»
-	public void notifyChangeListeners(«PropertyChangeEvent()» event) {
-        if (event instanceof «AssociationChangedEvent()») {
-            propertyChangeSupport.fireAssociationChange((«AssociationChangedEvent()»)event);
-        } else {
-            propertyChangeSupport.firePropertyChange(event);
-        }
-        «FOREACH inverseCompositions AS this-»
-	        if («fieldName» != null) {
-	            ((«INotificationSupport()»)«fieldName»).notifyChangeListeners(event);
-	        }
-        «ENDFOREACH-»
-    }
-    
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */«REM»«overrideAnnotation(false)-»«ENDREM»
-    public void addPropertyChangeListener(«PropertyChangeListener()» listener) {
-        propertyChangeSupport.addPropertyChangeListener(listener);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */«REM»«overrideAnnotation(false)-»«ENDREM»
-    public void addPropertyChangeListener(«PropertyChangeListener()» listener, boolean propagateEventsFromChildren) {
-        propertyChangeSupport.addPropertyChangeListener(listener, propagateEventsFromChildren);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */«REM»«overrideAnnotation(false)-»«ENDREM»
-    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */«REM»«overrideAnnotation(false)-»«ENDREM»
-    public boolean hasListeners(String propertyName) {
-        return propertyChangeSupport.hasListeners(propertyName);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */«REM»«overrideAnnotation(false)-»«ENDREM»
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        propertyChangeSupport.removePropertyChangeListener(listener);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */«REM»«overrideAnnotation(false)-»«ENDREM»
-    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
-    }
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */«REM»«overrideAnnotation(false)-»«ENDREM»
+	    public void addPropertyChangeListener(«PropertyChangeListener()» listener) {
+	        propertyChangeSupport.addPropertyChangeListener(listener);
+	    }
+	
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */«REM»«overrideAnnotation(false)-»«ENDREM»
+	    public void addPropertyChangeListener(«PropertyChangeListener()» listener, boolean propagateEventsFromChildren) {
+	        propertyChangeSupport.addPropertyChangeListener(listener, propagateEventsFromChildren);
+	    }
+	
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */«REM»«overrideAnnotation(false)-»«ENDREM»
+	    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+	        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+	    }
+	
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */«REM»«overrideAnnotation(false)-»«ENDREM»
+	    public boolean hasListeners(String propertyName) {
+	        return propertyChangeSupport.hasListeners(propertyName);
+	    }
+	
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */«REM»«overrideAnnotation(false)-»«ENDREM»
+	    public void removePropertyChangeListener(PropertyChangeListener listener) {
+	        propertyChangeSupport.removePropertyChangeListener(listener);
+	    }
+	
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */«REM»«overrideAnnotation(false)-»«ENDREM»
+	    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+	        propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+	    }
 	«ENDIF»
 «ENDDEFINE»
 

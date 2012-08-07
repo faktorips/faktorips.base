@@ -415,6 +415,10 @@ public class XPolicyCmptClass extends XClass {
         return hasAssociations();
     }
 
+    public boolean isGenerateNotifyChangeListeners() {
+        return isGenerateChangeSupport() && !hasSupertype() || !getDetailToMasterDerivedUnionAssociations().isEmpty();
+    }
+
     /**
      * Returns <code>true</code> if this policy cmpt class has at least one association that is the
      * inverse of a composition, but not a derived union association.
