@@ -46,7 +46,9 @@ public class XPolicyCmptClass extends XClass {
 
     private final Set<XDerivedUnionAssociation> derivedUnionAssociations;
 
-    private final Set<XDerivedUnionAssociation> derivedUnionsForInverseSubsets;
+    private final Set<XDerivedUnionAssociation> inverseDerivedUnionAssociations;
+
+    private final Set<XDetailToMasterAssociation> detailToMasterAssociations;
 
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
@@ -57,9 +59,12 @@ public class XPolicyCmptClass extends XClass {
         derivedUnionAssociations = initNodesForParts(
                 findSubsettedDerivedUnions(policyCmptType.getPolicyCmptTypeAssociations(),
                         IPolicyCmptTypeAssociation.class), XDerivedUnionAssociation.class);
-        derivedUnionsForInverseSubsets = initNodesForParts(
-                findInverseDerivedUnionAssociations(policyCmptType.getPolicyCmptTypeAssociations()),
+        inverseDerivedUnionAssociations = initNodesForParts(
+                findInversedSubsettedDerivedUnionAssociations(policyCmptType.getPolicyCmptTypeAssociations()),
                 XDerivedUnionAssociation.class);
+        detailToMasterAssociations = initNodesForParts(
+                findDetailToMasterAssociations(policyCmptType.getPolicyCmptTypeAssociations()),
+                XDetailToMasterAssociation.class);
     }
 
     /**
@@ -94,10 +99,23 @@ public class XPolicyCmptClass extends XClass {
     }
 
     /**
+     * Finds all inverse associations (detail to master associations) in this class.
+     */
+    protected Set<IPolicyCmptTypeAssociation> findDetailToMasterAssociations(Collection<IPolicyCmptTypeAssociation> associations) {
+        Set<IPolicyCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IPolicyCmptTypeAssociation>();
+        for (IPolicyCmptTypeAssociation association : associations) {
+            if (association.isCompositionDetailToMaster()) {
+                resultingAssociations.add(association);
+            }
+        }
+        return resultingAssociations;
+    }
+
+    /**
      * Inspects all inverse associations. If a given association is the inverse of a
      * derived-union-subset, the original derived union is searched and added to the result.
      */
-    protected Set<IPolicyCmptTypeAssociation> findInverseDerivedUnionAssociations(Collection<IPolicyCmptTypeAssociation> associations) {
+    protected Set<IPolicyCmptTypeAssociation> findInversedSubsettedDerivedUnionAssociations(Collection<IPolicyCmptTypeAssociation> associations) {
         Set<IPolicyCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IPolicyCmptTypeAssociation>();
         for (IPolicyCmptTypeAssociation association : associations) {
             try {
@@ -149,14 +167,6 @@ public class XPolicyCmptClass extends XClass {
         return addImport(getSimpleName(BuilderAspect.IMPLEMENTATION));
     }
 
-    /**
-     * If the builder is configured to generate published interfaces, this method returns the name
-     * of the published interface. Else the name of the implementation class is returned.
-     */
-    public String getPublishedInterfaceName() {
-        return addImport(getSimpleName(BuilderAspect.getValue(isGeneratingPublishedInterfaces())));
-    }
-
     @Override
     public List<String> getImplementedInterfaces() {
         List<String> list = super.getImplementedInterfaces();
@@ -191,7 +201,11 @@ public class XPolicyCmptClass extends XClass {
     }
 
     public Set<XDerivedUnionAssociation> getInverseDerivedUnionAssociations() {
-        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnionsForInverseSubsets);
+        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(inverseDerivedUnionAssociations);
+    }
+
+    public Set<XDetailToMasterAssociation> getDetailToMasterAssociations() {
+        return new CopyOnWriteArraySet<XDetailToMasterAssociation>(detailToMasterAssociations);
     }
 
     public String getProductCmptClassName() {

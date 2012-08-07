@@ -58,18 +58,19 @@ package «packageName»;
 			«EXPAND PolicyCmptAttribute::setter-»
 		«ENDFOREACH-»
 
-		«EXPAND DerivedUnionAssociation::methodDerivedUnionContains(this) FOREACH  derivedUnionAssociations»
+		«EXPAND DerivedUnionAssociation::methodDerivedUnionContains(this) FOREACH derivedUnionAssociations»
 
 		«FOREACH associations AS this-»
 			«EXPAND PolicyCmptAssociation::methods-»
 		«ENDFOREACH-»
 		
-		«EXPAND DerivedUnionAssociation::methodsForDerivedUnionPolicy(this) FOREACH  derivedUnionAssociations-»
-		«EXPAND DerivedUnionAssociation::getParent(this) FOREACH  inverseDerivedUnionAssociations-»
+		«EXPAND DerivedUnionAssociation::methodsForDerivedUnionPolicy(this) FOREACH derivedUnionAssociations-»
 
 		«EXPAND generalMethodsForConfiguredPolicyCmpts-»
-	    
-	 	«EXPAND generateCodeForDependentObject»
+		
+		«EXPAND generateCodeForDependentObject»
+		
+		«EXPAND DerivedUnionAssociation::getParent(this) FOREACH inverseDerivedUnionAssociations-»
 	   
 		«EXPAND PropertyChangeSupport::generalMethods-»
 		

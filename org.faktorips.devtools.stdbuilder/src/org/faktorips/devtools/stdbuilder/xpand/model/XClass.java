@@ -122,6 +122,14 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         return getIpsObjectPartContainer();
     }
 
+    /**
+     * If the builder is configured to generate published interfaces, this method returns the name
+     * of the published interface. Else the name of the implementation class is returned.
+     */
+    public String getPublishedInterfaceName() {
+        return addImport(getSimpleName(BuilderAspect.getValue(isGeneratingPublishedInterfaces())));
+    }
+
     public String getSimpleName(BuilderAspect aspect) {
         return addImport(getQualifiedName(aspect));
     }

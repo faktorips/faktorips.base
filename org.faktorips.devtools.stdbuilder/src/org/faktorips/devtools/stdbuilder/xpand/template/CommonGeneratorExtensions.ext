@@ -15,7 +15,7 @@ String addImport(List[ImportStatement] imported, String qName) :
 String camelCaseToUnderscore(String s) :
 	JAVA org.faktorips.util.StringUtil.camelCaseToUnderscore(java.lang.String); 
 
-// Use this function for methods that implement an base-interface method (a base interface from the 
+// Use this function for methods that implement a base-interface method (a base interface from the 
 // FIPS runtime, e.g. IConfigurableModelObject). Returns the @Override annotation if the 
 // compliance level is Java 6 or higher. (In Java 5 no @Override must be annotated when 
 // implementing an interface method) 
@@ -28,6 +28,13 @@ overrideAnnotation(AbstractGeneratorModelNode this, boolean interfaceMethodImple
 // interface method) 
 overrideAnnotationForPublishedMethod(AbstractGeneratorModelNode this) :
 	if needOverrideAnnotation(generatingPublishedInterfaces) then "@Override";
+
+// Use this function for published methods that require an override in a special condition. i.e. methods 
+// that are defined in a published interface (if generated) but may also be overridden in subclasses. Returns the 
+// @Override annotation if published interfaces a beeing generated and if the  compliance level is Java 6 or 
+// higher or if the condition is true . (In Java 5 no @Override must be annotated when implementing an interface method) 
+overrideAnnotationForPublishedMethodOrIf(AbstractGeneratorModelNode this, boolean condition) :
+	if needOverrideAnnotation(generatingPublishedInterfaces) || condition then "@Override";
 
 // User this function for attribute methods (e.g. getter, setter).
 // Will return the @Override annotation if the attribute overwrites an attribute in a supertype, else nothing.
