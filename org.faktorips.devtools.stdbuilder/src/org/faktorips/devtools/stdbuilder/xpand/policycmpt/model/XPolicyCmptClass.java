@@ -430,4 +430,28 @@ public class XPolicyCmptClass extends XClass {
     private boolean hasAssociations() {
         return !getPureAssociations().isEmpty();
     }
+
+    /**
+     * Returns <code>false</code> if this is no dependent type. If this is a dependent type this
+     * method returns <code>true</code> if
+     * <ul>
+     * <li>no super type is defined,</li>
+     * <li>a super type is defined and it is NOT a dependent type</li>
+     * </ul>
+     * <code>false</code> otherwise.
+     */
+    public boolean isFirstDependantTypeInHierarchy() {
+        try {
+            if (!getPolicyCmptType().isDependantType()) {
+                return false;
+            }
+            IPolicyCmptType supertype = (IPolicyCmptType)getPolicyCmptType().findSupertype(getIpsProject());
+            if (supertype == null) {
+                return true;
+            }
+            return !supertype.isDependantType();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
 }
