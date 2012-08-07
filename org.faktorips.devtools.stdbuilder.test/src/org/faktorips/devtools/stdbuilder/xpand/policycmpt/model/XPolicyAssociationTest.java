@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +43,7 @@ public class XPolicyAssociationTest {
     private ModelService modelService;
 
     @Mock
-    private XAssociation inverseAssoc;
+    private XPolicyAssociation inverseAssoc;
     private XPolicyAssociation assoc;
 
     @Before
@@ -109,9 +108,8 @@ public class XPolicyAssociationTest {
     }
 
     @Test
-    public void testIsCompositionMasterToDetail()
-     throws Exception {
-    
+    public void testIsCompositionMasterToDetail() throws Exception {
+
     }
 
 }

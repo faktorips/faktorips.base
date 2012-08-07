@@ -46,9 +46,7 @@ public class XPolicyCmptClass extends XClass {
 
     private final Set<XDerivedUnionAssociation> derivedUnionAssociations;
 
-    private final Set<XDerivedUnionAssociation> inverseDerivedUnionAssociations;
-
-    private final Set<XDetailToMasterAssociation> detailToMasterAssociations;
+    private final Set<XDetailToMasterDerivedUnionAssociation> detailToMasterDerivedUnionAssociations;
 
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
@@ -59,12 +57,9 @@ public class XPolicyCmptClass extends XClass {
         derivedUnionAssociations = initNodesForParts(
                 findSubsettedDerivedUnions(policyCmptType.getPolicyCmptTypeAssociations(),
                         IPolicyCmptTypeAssociation.class), XDerivedUnionAssociation.class);
-        inverseDerivedUnionAssociations = initNodesForParts(
-                findInversedSubsettedDerivedUnionAssociations(policyCmptType.getPolicyCmptTypeAssociations()),
-                XDerivedUnionAssociation.class);
-        detailToMasterAssociations = initNodesForParts(
-                findDetailToMasterAssociations(policyCmptType.getPolicyCmptTypeAssociations()),
-                XDetailToMasterAssociation.class);
+        detailToMasterDerivedUnionAssociations = initNodesForParts(
+                findDetailToMasterDerivedUnionAssociations(policyCmptType.getPolicyCmptTypeAssociations()),
+                XDetailToMasterDerivedUnionAssociation.class);
     }
 
     /**
@@ -112,10 +107,11 @@ public class XPolicyCmptClass extends XClass {
     }
 
     /**
-     * Inspects all inverse associations. If a given association is the inverse of a
-     * derived-union-subset, the original derived union is searched and added to the result.
+     * Inspects all detail to master associations. If a given association is the inverse of a
+     * derived-union-subset, the original detail to master derived union is determined and added to
+     * the result.
      */
-    protected Set<IPolicyCmptTypeAssociation> findInversedSubsettedDerivedUnionAssociations(Collection<IPolicyCmptTypeAssociation> associations) {
+    protected Set<IPolicyCmptTypeAssociation> findDetailToMasterDerivedUnionAssociations(Collection<IPolicyCmptTypeAssociation> associations) {
         Set<IPolicyCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IPolicyCmptTypeAssociation>();
         for (IPolicyCmptTypeAssociation association : associations) {
             try {
@@ -124,7 +120,7 @@ public class XPolicyCmptClass extends XClass {
                     if (inverseAssociation.isSubsetOfADerivedUnion()) {
                         IPolicyCmptTypeAssociation subsettedDerivedUnion = (IPolicyCmptTypeAssociation)inverseAssociation
                                 .findSubsettedDerivedUnion(getIpsProject());
-                        resultingAssociations.add(subsettedDerivedUnion);
+                        resultingAssociations.add(subsettedDerivedUnion.findInverseAssociation(getIpsProject()));
                     }
                 }
             } catch (CoreException e) {
@@ -200,12 +196,8 @@ public class XPolicyCmptClass extends XClass {
         return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnionAssociations);
     }
 
-    public Set<XDerivedUnionAssociation> getInverseDerivedUnionAssociations() {
-        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(inverseDerivedUnionAssociations);
-    }
-
-    public Set<XDetailToMasterAssociation> getDetailToMasterAssociations() {
-        return new CopyOnWriteArraySet<XDetailToMasterAssociation>(detailToMasterAssociations);
+    public Set<XDetailToMasterDerivedUnionAssociation> getDetailToMasterDerivedUnionAssociations() {
+        return new CopyOnWriteArraySet<XDetailToMasterDerivedUnionAssociation>(detailToMasterDerivedUnionAssociations);
     }
 
     public String getProductCmptClassName() {
@@ -437,5 +429,29 @@ public class XPolicyCmptClass extends XClass {
      */
     private boolean hasAssociations() {
         return !getPureAssociations().isEmpty();
+    }
+
+    /**
+     * Returns <code>false</code> if this is no dependent type. If this is a dependent type this
+     * method returns <code>true</code> if
+     * <ul>
+     * <li>no super type is defined,</li>
+     * <li>a super type is defined and it is NOT a dependent type</li>
+     * </ul>
+     * <code>false</code> otherwise.
+     */
+    public boolean isFirstDependantTypeInHierarchy() {
+        try {
+            if (!getPolicyCmptType().isDependantType()) {
+                return false;
+            }
+            IPolicyCmptType supertype = (IPolicyCmptType)getPolicyCmptType().findSupertype(getIpsProject());
+            if (supertype == null) {
+                return true;
+            }
+            return !supertype.isDependantType();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 }
