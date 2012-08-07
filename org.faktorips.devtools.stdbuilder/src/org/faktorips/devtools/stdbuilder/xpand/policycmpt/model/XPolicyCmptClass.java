@@ -182,6 +182,11 @@ public class XPolicyCmptClass extends XClass {
     }
 
     @Override
+    public Set<XPolicyCmptClass> getClassHierarchy() {
+        return getClassHierarchy(XPolicyCmptClass.class);
+    }
+
+    @Override
     public Set<XPolicyAttribute> getAttributes() {
         return new CopyOnWriteArraySet<XPolicyAttribute>(attributes);
     }
@@ -200,18 +205,21 @@ public class XPolicyCmptClass extends XClass {
         return new CopyOnWriteArraySet<XDetailToMasterDerivedUnionAssociation>(detailToMasterDerivedUnionAssociations);
     }
 
+    private XProductCmptClass getProductCmptClass() {
+        IProductCmptType productCmptType = getProductCmptType();
+        if (productCmptType != null) {
+            XProductCmptClass xProductCmptClass = getModelNode(productCmptType, XProductCmptClass.class);
+            return xProductCmptClass;
+        }
+        return null;
+    }
+
     public String getProductCmptClassName() {
-        try {
-            IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(
-                    getIpsObjectPartContainer().getIpsProject());
-            if (productCmptType != null) {
-                XProductCmptClass xProductCmptClass = getModelNode(productCmptType, XProductCmptClass.class);
-                return xProductCmptClass.getSimpleName(BuilderAspect.IMPLEMENTATION);
-            } else {
-                return StringUtils.EMPTY;
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        XProductCmptClass productCmptClass = getProductCmptClass();
+        if (productCmptClass != null) {
+            return productCmptClass.getSimpleName(BuilderAspect.IMPLEMENTATION);
+        } else {
+            return StringUtils.EMPTY;
         }
     }
 
@@ -260,10 +268,13 @@ public class XPolicyCmptClass extends XClass {
      * 
      */
     public String getProductComponentClassName(BuilderAspect aspect) {
-        IProductCmptType prodType = getProductCmptType();
-        XProductCmptClass xProductCmptClass = getModelNode(prodType, XProductCmptClass.class);
-        String simpleName = xProductCmptClass.getSimpleName(aspect);
-        return simpleName;
+        XProductCmptClass xProductCmptClass = getProductCmptClass();
+        if (xProductCmptClass != null) {
+            String simpleName = xProductCmptClass.getSimpleName(aspect);
+            return simpleName;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -318,6 +329,23 @@ public class XPolicyCmptClass extends XClass {
 
     public String getMethodNameSetProductComponent() {
         return getJavaNamingConvention().getSetterMethodName(getProductComponentClassName());
+    }
+
+    /**
+     * The method create... is generated in the product component no in the policy component type.
+     * However we have this method to get the name of the create method here because we use the
+     * policy generator model to create these create method in the product component.
+     * 
+     * @return The name of the create policy component method, for example createCoverage for a
+     *         policy component called 'Coverage'
+     */
+    public String getMethodNameCreatePolicyCmpt() {
+        XProductCmptClass productCmptClass = getProductCmptClass();
+        if (productCmptClass != null) {
+            return productCmptClass.getMethodNameCreatePolicyCmpt();
+        } else {
+            return null;
+        }
     }
 
     public String getProductComponentArgumentName() {

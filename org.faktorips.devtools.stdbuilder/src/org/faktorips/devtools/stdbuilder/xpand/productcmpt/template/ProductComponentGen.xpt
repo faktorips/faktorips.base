@@ -2,6 +2,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
@@ -26,7 +27,7 @@
 		     * 
 		     * @generated
 		     */
-			public «getSimpleName(BuilderAspect::IMPLEMENTATION)»(«getProductCmptClassName(BuilderAspect::IMPLEMENTATION)» productCmpt) {
+			public «method(getSimpleName(BuilderAspect::IMPLEMENTATION), getProductCmptClassName(BuilderAspect::IMPLEMENTATION), "productCmpt")» {
 				super(productCmpt);
 			}
 			
@@ -42,7 +43,7 @@
 		     */
 		    «overrideAnnotationForPublishedMethod()-»
 			«REM» TODO FIPS-1059 «ENDREM»
-		    public «getProductCmptClassName(BuilderAspect::INTERFACE)» «methodNameGetProductCmpt»() {
+		    public «getProductCmptClassName(BuilderAspect::INTERFACE)» «method(methodNameGetProductCmpt)» {
 		        return («getProductCmptClassName(BuilderAspect::INTERFACE)»)«getProductComponent()»;
 		    }
 
@@ -94,10 +95,11 @@
 		    }
 		«ENDIF»
 
-		«EXPAND createPolicyCmpt(this) FOREACH classHierarchy»
+		«EXPAND createPolicyCmpt(this) FOREACH policyTypeClassHierarchy»
 
-		«IF !abstract»
-			«IF configurationForPolicyCmptType»
+		«IF configurationForPolicyCmptType»
+			«LET policyCmptClass AS policyCmptClass»
+				«IF !policyCmptClass.abstract»
 			    /**
 			     * {@inheritDoc}
 			     * 
@@ -105,9 +107,10 @@
 			     */
 			    «overrideAnnotation(false)-»
 			    public «IConfigurableModelObject()» «createPolicyComponent()» {
-			        return «methodNameCreatePolicyCmpt»();
+			        return «policyCmptClass.methodNameCreatePolicyCmpt»();
 			    }
-		    «ENDIF»
+			    «ENDIF»
+		    «ENDLET»
 		«ENDIF»
 
 		«EXPAND ProductAssociation::getLinkMethods»
@@ -117,15 +120,15 @@
 «ENDDEFINE»
 
 «REM» The content of the method is always the same (use currentType). The methodName is derived from different types «ENDREM»
-«DEFINE createPolicyCmpt(XProductCmptGenerationClass currentType) FOR XProductCmptGenerationClass»
-	«IF configurationForPolicyCmptType && !abstract»
+«DEFINE createPolicyCmpt(XProductCmptGenerationClass currentType) FOR XPolicyCmptClass»
+	«IF !abstract»
     /**
      * {@inheritDoc}
      * 
      * @generated
      */
-    «overrideAnnotationForPublishedMethodOrIf(currentType != this)-»
-    public «policyInterfaceName» «methodNameCreatePolicyCmpt»() {
+    «	(currentType != this)-»
+    public «publishedInterfaceName» «method(methodNameCreatePolicyCmpt)» {
         «currentType.policyImplClassName» policy = new «currentType.policyImplClassName»(«currentType.methodNameGetProductCmpt»());
         policy.«setProductCmptGeneration("this")»;
         policy.«initialize()»;

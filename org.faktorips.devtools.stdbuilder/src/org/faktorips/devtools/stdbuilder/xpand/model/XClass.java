@@ -53,25 +53,6 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         return new DefaultJavaClassNameProvider();
     }
 
-    public boolean hasSupertype() {
-        return getType().hasSupertype();
-    }
-
-    public boolean hasNonAbstractSupertype() {
-        try {
-            IType superType = getType().findSupertype(getIpsProject());
-            if (superType == null) {
-                return false;
-            } else {
-                NonAbstractSupertypeFinder finder = new NonAbstractSupertypeFinder(getIpsProject());
-                finder.start(superType);
-                return finder.hasNonAbstractSupertype();
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
     private class NonAbstractSupertypeFinder extends TypeHierarchyVisitor<IType> {
         boolean hasNonAbstractSupertype = false;
 
@@ -163,6 +144,37 @@ public abstract class XClass extends AbstractGeneratorModelNode {
             throw new CoreRuntimeException(e);
         }
     }
+
+    public boolean hasSupertype() {
+        return getType().hasSupertype();
+    }
+
+    public boolean hasNonAbstractSupertype() {
+        try {
+            IType superType = getType().findSupertype(getIpsProject());
+            if (superType == null) {
+                return false;
+            } else {
+                NonAbstractSupertypeFinder finder = new NonAbstractSupertypeFinder(getIpsProject());
+                finder.start(superType);
+                return finder.hasNonAbstractSupertype();
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    public <T extends XClass> Set<T> getClassHierarchy(Class<T> concreteClass) {
+        try {
+            SuperclassCollector<T> superclassCollector = new SuperclassCollector<T>(getIpsProject(), concreteClass);
+            superclassCollector.start(getType());
+            return superclassCollector.getSuperclasses();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    public abstract Set<? extends XClass> getClassHierarchy();
 
     /**
      * Returns the unqualified name of the base superclass that is used when the IPS type does not
@@ -273,6 +285,29 @@ public abstract class XClass extends AbstractGeneratorModelNode {
             }
         }
         return resultingAssociations;
+    }
+
+    protected class SuperclassCollector<T extends XClass> extends TypeHierarchyVisitor<IType> {
+
+        private final Class<T> nodeClass;
+
+        private final Set<T> superclasses = new LinkedHashSet<T>();
+
+        public SuperclassCollector(IIpsProject ipsProject, Class<T> nodeClass) {
+            super(ipsProject);
+            this.nodeClass = nodeClass;
+        }
+
+        @Override
+        protected boolean visit(IType currentType) throws CoreException {
+            getSuperclasses().add(getModelNode(currentType, nodeClass));
+            return true;
+        }
+
+        public Set<T> getSuperclasses() {
+            return superclasses;
+        }
+
     }
 
 }

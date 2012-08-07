@@ -25,7 +25,7 @@
      * @generated
      */
      «overrideAnnotationForPublishedMethod()-»
-     public «List_(targetInterfaceName)» «method(methodName)» {
+     public «List_(targetInterfaceName)» «methodName»() {
      	«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«methodNameGetNumOfInternal»());
      	«IF isImplementedInSuperclass(currentContextClass)-»
      		result.addAll(super.«methodNameGetter»());
@@ -48,7 +48,7 @@
      * @generated
      */
      «overrideAnnotationForPublishedMethod()-»
-     public int «method(methodNameGetNumOf)» {
+     public int «methodNameGetNumOf»() {
      	return «methodNameGetNumOfInternal»();
      }
 «ENDDEFINE»
@@ -73,7 +73,7 @@
      * @generated
      */
      «overrideAnnotationForPublishedMethod()-»
-    public boolean «method(methodNameContains, targetInterfaceName, "objectToTest")» {
+    public boolean «methodNameContains»(«targetInterfaceName», objectToTest) {
         return «methodNameGetter»().contains(objectToTest);
     }
 «ENDDEFINE»
@@ -85,7 +85,7 @@
      * @generated
      */
     «overrideAnnotationForPublishedMethodOrIf(isImplementedInSuperclass(currentContextClass))-» 
-    public «targetInterfaceName» «method(methodNameGetter)» {
+    public «targetInterfaceName» «methodNameGetter»() {
      	«FOREACH (Set[XPolicyAssociation])getDetailToMasterSubsetAssociations(currentContextClass) AS this-»
 		    if («fieldName» != null) {
 		        return «fieldName»;

@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -25,6 +26,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenJavaClass
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 
 public class XProductCmptGenerationClass extends XProductClass {
@@ -83,6 +85,20 @@ public class XProductCmptGenerationClass extends XProductClass {
     @Override
     public Set<XProductCmptGenerationClass> getClassHierarchy() {
         return super.getClassHierarchy(XProductCmptGenerationClass.class);
+    }
+
+    /**
+     * Returns the class hierarchy of the corresponding policy component type.
+     * 
+     * @return The policy component class hierarchy
+     */
+    public Set<XPolicyCmptClass> getPolicyTypeClassHierarchy() {
+        XPolicyCmptClass policyCmptClass = getPolicyCmptClass();
+        if (policyCmptClass == null) {
+            return new LinkedHashSet<XPolicyCmptClass>();
+        } else {
+            return policyCmptClass.getClassHierarchy();
+        }
     }
 
     public String getProductCmptClassName(BuilderAspect aspect) {

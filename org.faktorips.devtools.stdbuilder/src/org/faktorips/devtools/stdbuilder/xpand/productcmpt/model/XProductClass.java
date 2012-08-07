@@ -21,12 +21,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
@@ -134,29 +132,26 @@ public abstract class XProductClass extends XClass {
     }
 
     protected String getPolicyName(BuilderAspect aspect) {
+        XPolicyCmptClass xPolicyCmptClass = getPolicyCmptClass();
+        return xPolicyCmptClass.getSimpleName(aspect);
+    }
+
+    public XPolicyCmptClass getPolicyCmptClass() {
+        IPolicyCmptType policyCmptType;
         try {
-            IPolicyCmptType policyCmptType = getType().findPolicyCmptType(getIpsProject());
-            XClass xPolicyCmptClass = getModelNode(policyCmptType, XPolicyCmptClass.class);
-            return xPolicyCmptClass.getSimpleName(aspect);
+            policyCmptType = getType().findPolicyCmptType(getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+        XPolicyCmptClass xPolicyCmptClass = getModelNode(policyCmptType, XPolicyCmptClass.class);
+        return xPolicyCmptClass;
     }
 
     public String getMethodNameCreatePolicyCmpt() {
         return "create" + getPolicyImplClassName();
     }
 
-    public <T extends XProductClass> Set<T> getClassHierarchy(Class<T> concreteClass) {
-        try {
-            SuperclassCollector<T> superclassCollector = new SuperclassCollector<T>(getIpsProject(), concreteClass);
-            superclassCollector.start(getType());
-            return superclassCollector.getSuperclasses();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
+    @Override
     public abstract Set<? extends XProductClass> getClassHierarchy();
 
     @Override
@@ -164,28 +159,5 @@ public abstract class XProductClass extends XClass {
 
     @Override
     public abstract Set<XProductAssociation> getAssociations();
-
-    protected class SuperclassCollector<T extends XProductClass> extends TypeHierarchyVisitor<IProductCmptType> {
-
-        private final Class<T> nodeClass;
-
-        private final Set<T> superclasses = new LinkedHashSet<T>();
-
-        public SuperclassCollector(IIpsProject ipsProject, Class<T> nodeClass) {
-            super(ipsProject);
-            this.nodeClass = nodeClass;
-        }
-
-        @Override
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
-            getSuperclasses().add(getModelNode(currentType, nodeClass));
-            return true;
-        }
-
-        public Set<T> getSuperclasses() {
-            return superclasses;
-        }
-
-    }
 
 }
