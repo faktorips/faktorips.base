@@ -77,28 +77,24 @@
     }
 «ENDDEFINE»
 
-«DEFINE getParent(XPolicyCmptClass currentContextClass) FOR XDerivedUnionAssociation-»
-	«IF hasInverseSubsets(currentContextClass)-»
-		/**
-	     * {@inheritDoc}
-	     * 
-	     * @generated
-	     */
-	    «overrideAnnotationForPublishedMethodOrIf(isGetParentImplementedInSuperclassOf(currentContextClass))-» 
-	    public «policyInterfaceName» «method(methodNameInverseAssociationGetter)» {
-	     	«FOREACH currentContextClass.detailToMasterAssociations AS inverse-»
-		    	«IF inverse.isInverseSubsetOf(this)-»
-				    if («inverse.fieldName» != null) {
-				        return «inverse.fieldName»;
-				    }
-		    	«ENDIF-» 
-	     	«ENDFOREACH-»
-	    	«IF isGetParentImplementedInSuperclassOf(currentContextClass)-»
-	    		 return super.«methodNameInverseAssociationGetter»();
-	    	«ELSE-» 
-	    		 return null;
-	    	«ENDIF-» 
-	    }
-   	«ENDIF-»
+«DEFINE getParent(XPolicyCmptClass currentContextClass) FOR XDetailToMasterDerivedUnionAssociation-»
+	/**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    «overrideAnnotationForPublishedMethodOrIf(isImplementedInSuperclass(currentContextClass))-» 
+    public «targetInterfaceName» «method(methodNameGetter)» {
+     	«FOREACH (Set[XPolicyAssociation])getDetailToMasterSubsetAssociations(currentContextClass) AS this-»
+		    if («fieldName» != null) {
+		        return «fieldName»;
+		    }
+     	«ENDFOREACH-»
+    	«IF isImplementedInSuperclass(currentContextClass)-»
+    		 return super.«methodNameGetter»();
+    	«ELSE-» 
+    		 return null;
+    	«ENDIF-» 
+    }
 «ENDDEFINE»
 

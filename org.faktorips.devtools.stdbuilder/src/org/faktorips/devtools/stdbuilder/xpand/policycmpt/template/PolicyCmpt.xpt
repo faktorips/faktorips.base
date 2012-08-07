@@ -70,7 +70,7 @@ package «packageName»;
 		
 		«EXPAND generateCodeForDependentObject»
 		
-		«EXPAND DerivedUnionAssociation::getParent(this) FOREACH inverseDerivedUnionAssociations-»
+		«EXPAND DerivedUnionAssociation::getParent(this) FOREACH detailToMasterDerivedUnionAssociations-»
 	   
 		«EXPAND PropertyChangeSupport::generalMethods-»
 		

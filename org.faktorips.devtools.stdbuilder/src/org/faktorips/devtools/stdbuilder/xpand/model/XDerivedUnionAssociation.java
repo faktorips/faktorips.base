@@ -18,17 +18,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XDetailToMasterAssociation;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * This is the generator model node for a derived union association. It is very important to
@@ -49,7 +43,6 @@ public class XDerivedUnionAssociation extends XAssociation {
      */
     public XDerivedUnionAssociation(IAssociation association, GeneratorModelContext context, ModelService modelService) {
         super(association, context, modelService);
-        ArgumentCheck.isTrue(association.isDerivedUnion());
     }
 
     /**
@@ -97,7 +90,7 @@ public class XDerivedUnionAssociation extends XAssociation {
             FindSubsetOfDerivedUnionVisitor findSubsetOfDerivedUnionVisitor = new FindSubsetOfDerivedUnionVisitor(
                     getAssociation(), getIpsProject());
             findSubsetOfDerivedUnionVisitor.start(supertype);
-            return findSubsetOfDerivedUnionVisitor.foundSubset;
+            return findSubsetOfDerivedUnionVisitor.isSubsetFound();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -140,20 +133,6 @@ public class XDerivedUnionAssociation extends XAssociation {
     }
 
     /**
-     * Returns <code>true</code> if the given policy class contains at least on association that is
-     * the inverse of a subset of this derived union.
-     * 
-     */
-    public boolean hasInverseSubsets(XPolicyCmptClass policyClass) {
-        for (XDetailToMasterAssociation deMaAssoc : policyClass.getDetailToMasterAssociations()) {
-            if (deMaAssoc.isInverseSubsetOf(this)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Returns the setter name for derived unions on policy side, which does not capitalize the role
      * name until now erroneously. e.g. getpolicyPart() instead of getPolicyPart() (if the role name
      * is policyPart).
@@ -162,37 +141,4 @@ public class XDerivedUnionAssociation extends XAssociation {
         return "get" + getName(false);
     }
 
-    public String getPolicyInterfaceName() {
-        XClass xClass = getModelNode(getAssociation().getType(), XPolicyCmptClass.class);
-        return xClass.getPublishedInterfaceName();
-    }
-
-    public String getMethodNameInverseAssociationGetter() {
-        return getXPolicyAssociation().getMethodNameInverseAssociationGet();
-    }
-
-    protected XPolicyAssociation getXPolicyAssociation() {
-        if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
-            return getModelNode(getAssociation(), XPolicyAssociation.class);
-        } else {
-            throw new NullPointerException(NLS.bind(
-                    "The Derived Union {0} is no policy association. Thus no XPolicyAssociation can be acquired.",
-                    getAssociation()));
-        }
-    }
-
-    /**
-     * Returns <code>true</code> if a superclass of the given class contains an inverse association
-     * of a subset of this derived union association. <code>false</code> else.
-     * 
-     */
-    public boolean isGetParentImplementedInSuperclassOf(XPolicyCmptClass policyClass) {
-        Set<XDetailToMasterAssociation> detailToMasterAssociations = policyClass.getDetailToMasterAssociations();
-        for (XDetailToMasterAssociation detailToMasterAssociation : detailToMasterAssociations) {
-            if (detailToMasterAssociation.isImplementedInSuperclassOf(policyClass, this)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
