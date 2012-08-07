@@ -198,7 +198,13 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
         getOut().addOutlet(new NullOutlet());
         // TODO NullImportHandler??
         generatorModelContext.setImportHandler(new ImportHandler(""));
-        evaluateTemplate(ipsObjectPartContainer.getIpsObject());
+
+        try {
+            evaluateTemplate(ipsObjectPartContainer.getIpsObject());
+        } catch (Exception e) {
+            // If there is any exception during template evaluation we just ignore it and only use
+            // maybe already found artifacts
+        }
 
         // TODO verschiedene Types?
         List<IType> javaTypes = getGeneratedJavaTypes(ipsObjectPartContainer.getIpsObject());

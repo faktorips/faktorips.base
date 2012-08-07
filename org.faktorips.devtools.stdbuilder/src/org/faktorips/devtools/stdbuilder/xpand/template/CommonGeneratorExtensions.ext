@@ -15,15 +15,15 @@ String addImport(List[ImportStatement] imported, String qName) :
 String camelCaseToUnderscore(String s) :
 	JAVA org.faktorips.util.StringUtil.camelCaseToUnderscore(java.lang.String); 
 
-// Use this function for methods that implement a base-interface method (a base interface from the 
-// FIPS runtime, e.g. IConfigurableModelObject). Returns the @Override annotation if the 
-// compliance level is Java 6 or higher. (In Java 5 no @Override must be annotated when 
-// implementing an interface method) 
+// Use this function for methods that implement a base-interface method (a base interface from the1 
+// FIPS runtime, e.g. IConfigurableModelObject) or already existing base methods (e.g. doInitPropertiesFromXml).
+// Returns the @Override annotation if the compliance level is Java 6 or higher or if interfaceMethodImplementation is false
+// (In Java 5 no @Override must be annotated when implementing an interface method) 
 overrideAnnotation(AbstractGeneratorModelNode this, boolean interfaceMethodImplementation) :
 	if needOverrideAnnotation(interfaceMethodImplementation) then "@Override";
 	
 // Use this function for published methods. i.e. methods that are defined in a published interface.
-// Returns the @Override annotation if published interfaces a beeing generated and if the compliance 
+// Returns the @Override annotation if published interfaces are beeing generated and if the compliance 
 // level is Java 6 or higher. (In Java 5 no @Override must be annotated when implementing an
 // interface method) 
 overrideAnnotationForPublishedMethod(AbstractGeneratorModelNode this) :
@@ -31,7 +31,7 @@ overrideAnnotationForPublishedMethod(AbstractGeneratorModelNode this) :
 
 // Use this function for published methods that require an override in a special condition. i.e. methods 
 // that are defined in a published interface (if generated) but may also be overridden in subclasses. Returns the 
-// @Override annotation if published interfaces a beeing generated and if the  compliance level is Java 6 or 
+// @Override annotation if published interfaces are beeing generated and if the  compliance level is Java 6 or 
 // higher or if the condition is true . (In Java 5 no @Override must be annotated when implementing an interface method) 
 overrideAnnotationForPublishedMethodOrIf(AbstractGeneratorModelNode this, boolean condition) :
 	if needOverrideAnnotation(generatingPublishedInterfaces) || condition then "@Override";
@@ -45,7 +45,7 @@ overrideAnnotationIfOverriddenAttribute(XPolicyAttribute this, boolean interface
 // override their super's implementation. The method in question should not be an interface method. 
 // Returns the @Override annotation if the given XPolicyCmptClass has a superclass.
 // Returns nothing in all other cases.
-overrideAnnotationIfHasSuperclass(XPolicyCmptClass this) :
+overrideAnnotationIfHasSuperclass(XClass this) :
 	if hasSupertype() then "@Override";
 
 // Use this function if the generated method is the implementation of an interface method, 
