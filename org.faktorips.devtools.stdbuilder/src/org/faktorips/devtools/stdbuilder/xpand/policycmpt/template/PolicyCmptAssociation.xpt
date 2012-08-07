@@ -47,13 +47,13 @@
 «ENDDEFINE»
 
 «DEFINE getters FOR XPolicyAssociation-»
-	«IF oneToMany»
+	«IF oneToMany-»
 	    /**
 	     * {@inheritDoc}
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotation(true)»
+	    «overrideAnnotation(true)-»
 	    public «List_(targetInterfaceName)» «method(methodNameGetter)» {
 	        return «Collections()».unmodifiableList(«fieldName»);
 	    }
@@ -63,24 +63,23 @@
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotation(true)»
+	    «overrideAnnotation(true)-»
 	    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")» {
 	        return «fieldName».get(index);
 	    }
-    «ELSE»
+    «ELSE-»
 	    /**
 	     * {@inheritDoc}
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotation(true)»
+	    «overrideAnnotation(true)-»
 	    public «targetInterfaceName» «method(methodNameGetSingle)» {
 	        return «fieldName»;
 	    }
-    «ENDIF»
+    «ENDIF-»
 «ENDDEFINE»
 
-«REM»TODO Generierung ohne ChangeSupport unterschiedlich! Siehe «ENDREM»
 «DEFINE setterMethodsForToOne FOR XPolicyAssociation-»
 	«IF !oneToMany && !inverseComposition-»
 	    /**
@@ -88,7 +87,7 @@
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotation(true)»
+	    «overrideAnnotation(true)-»
 	    public void «method(methodNameSetter, targetInterfaceName, "newObject")» {
 	    	«IF generateChangeSupport-»
 				«EXPAND PropertyChangeSupport::storeOldValue-»
@@ -393,7 +392,7 @@
      * @generated
      */
     public void «methodNameSetInternal»(«targetInterfaceName» newParent) {
-        if («methodNameGetter»() == newParent) {
+        if («methodNameGetSingle»() == newParent) {«REM»parent association can only be 1to1. getSingle can be used.«ENDREM»
             return;
         }
         «IModelObject()» parent = «getParentModelObject()»;
