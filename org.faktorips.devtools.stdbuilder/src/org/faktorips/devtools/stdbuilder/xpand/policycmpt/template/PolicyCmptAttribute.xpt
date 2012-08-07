@@ -33,11 +33,11 @@
 «DEFINE getter FOR XPolicyAttribute-» 
 	«IF generateGetter-»
 		/**
-		 * «inheritDocOrJavaDoc("METHOD_GETVALUE", name, description)»
+		 * «inheritDocOrJavaDoc("METHOD_GETVALUE", name, description)-»
 		 *
 		 * @generated
 		 */
-		«overrideAnnotation(true)»
+		«overrideAnnotationForPublishedMethodOrIf(published, overwrite)»
 		public «javaClassName» «method(methodNameGetter)»{
 			«IF generateField-»
 				return «IF constant»«fieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(fieldName)»«ENDIF»;
@@ -62,7 +62,7 @@
 		 *
 		 * @generated
 		 */
-		«overrideAnnotation(true)»
+		«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
 		public void «method(methodNameSetter, javaClassName, "newValue")»{
 			«EXPAND PropertyChangeSupport::storeOldValue-»
 			this.«fieldName» = newValue;
@@ -78,7 +78,7 @@
 	 *
 	 * @generated
 	 */
-	 «overrideAnnotation(true)»
+		«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
 	public «ValueSet()»<«datatypeClass»> «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»{
 		return «methodNameGetProductCmptGeneration»().«methodNameGetAllowedValuesFor»(context);
 	}

@@ -226,10 +226,6 @@ public class XPolicyAttribute extends XAttribute {
         return xPolicyCmptClass;
     }
 
-    public String getConstantNamePropertyName() {
-        return "PROPERTY_" + StringUtils.upperCase(getFieldName());
-    }
-
     public String getOldValueVariable() {
         return " old" + StringUtils.capitalize(getFieldName());
     }
