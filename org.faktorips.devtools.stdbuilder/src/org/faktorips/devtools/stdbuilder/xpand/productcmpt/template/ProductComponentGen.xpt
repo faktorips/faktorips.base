@@ -40,7 +40,7 @@
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotation(true)»
+		    «overrideAnnotationForPublishedMethod()-»
 			«REM» TODO FIPS-1059 «ENDREM»
 		    public «getProductCmptClassName(BuilderAspect::INTERFACE)» «methodNameGetProductCmpt»() {
 		        return («getProductCmptClassName(BuilderAspect::INTERFACE)»)«getProductComponent()»;
@@ -52,7 +52,7 @@
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotation(false)»
+		    «overrideAnnotation(false)-»
 		    protected void «doInitPropertiesFromXml(Map("String", Element()) + " configMap")» {
 		        super.«doInitPropertiesFromXml("configMap")»;
 		    }
@@ -61,7 +61,7 @@
 		    /**
 		     * @generated
 		     */
-		    «overrideAnnotation(false)»
+		    «overrideAnnotation(false)-»
 		    protected void «doInitReferencesFromXml(Map("String", List_(Element())) + " elementsMap")» {
 		        super.«doInitReferencesFromXml("elementsMap")»;
 		        «List_(Element())» «EXPAND ProductAssociation::doInitReferencesFromXmlPart FOREACH associations-»
@@ -74,7 +74,7 @@
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotation(false)»
+		    «overrideAnnotation(false)-»
 		    protected void «writePropertiesToXml(Element() + " element")» {
 		    	«IF hasSupertype()-»
 		        	super.«writePropertiesToXml("element")»;
@@ -87,7 +87,7 @@
 		    /**
 		     * @generated
 		     */
-		    «overrideAnnotation(false)»
+		    «overrideAnnotation(false)-»
 		    protected void «writeReferencesToXml(Element() + " element")» {
 		        super.«writeReferencesToXml("element")»;
 		        «EXPAND ProductAssociation::writeReferencesToXmlPart FOREACH associations-»
@@ -96,17 +96,19 @@
 
 		«EXPAND createPolicyCmpt(this) FOREACH classHierarchy»
 
-		«IF configurationForPolicyCmptType»
-		    /**
-		     * {@inheritDoc}
-		     * 
-		     * @generated
-		     */
-		    @Override
-		    public «IConfigurableModelObject()» «createPolicyComponent()» {
-		        return «methodNameCreatePolicyCmpt»();
-		    }
-	    «ENDIF»
+		«IF !abstract»
+			«IF configurationForPolicyCmptType»
+			    /**
+			     * {@inheritDoc}
+			     * 
+			     * @generated
+			     */
+			    «overrideAnnotation(false)-»
+			    public «IConfigurableModelObject()» «createPolicyComponent()» {
+			        return «methodNameCreatePolicyCmpt»();
+			    }
+		    «ENDIF»
+		«ENDIF»
 
 		«EXPAND ProductAssociation::getLinkMethods»
 		
@@ -116,13 +118,13 @@
 
 «REM» The content of the method is always the same (use currentType). The methodName is derived from different types «ENDREM»
 «DEFINE createPolicyCmpt(XProductCmptGenerationClass currentType) FOR XProductCmptGenerationClass»
-	«IF configurationForPolicyCmptType»
+	«IF configurationForPolicyCmptType && !abstract»
     /**
      * {@inheritDoc}
      * 
      * @generated
      */
-    @Override
+    «overrideAnnotationForPublishedMethodOrIf(currentType != this)-»
     public «policyInterfaceName» «methodNameCreatePolicyCmpt»() {
         «currentType.policyImplClassName» policy = new «currentType.policyImplClassName»(«currentType.methodNameGetProductCmpt»());
         policy.«setProductCmptGeneration("this")»;
