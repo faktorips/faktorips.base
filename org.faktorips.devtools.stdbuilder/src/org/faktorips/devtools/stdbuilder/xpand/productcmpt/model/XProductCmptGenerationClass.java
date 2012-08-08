@@ -93,11 +93,12 @@ public class XProductCmptGenerationClass extends XProductClass {
      * @return The policy component class hierarchy
      */
     public Set<XPolicyCmptClass> getPolicyTypeClassHierarchy() {
-        XPolicyCmptClass policyCmptClass = getPolicyCmptClass();
-        if (policyCmptClass == null) {
-            return new LinkedHashSet<XPolicyCmptClass>();
+        if (isConfigurationForPolicyCmptType()) {
+            XPolicyCmptClass policyCmptClass = getPolicyCmptClass();
+            Set<XPolicyCmptClass> result = policyCmptClass.getClassHierarchy();
+            return result;
         } else {
-            return policyCmptClass.getClassHierarchy();
+            return new LinkedHashSet<XPolicyCmptClass>();
         }
     }
 

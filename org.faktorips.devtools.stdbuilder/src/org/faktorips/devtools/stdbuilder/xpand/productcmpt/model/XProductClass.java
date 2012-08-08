@@ -143,6 +143,9 @@ public abstract class XProductClass extends XClass {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+        if (policyCmptType == null) {
+            throw new NullPointerException("No policy found for " + getName());
+        }
         XPolicyCmptClass xPolicyCmptClass = getModelNode(policyCmptType, XPolicyCmptClass.class);
         return xPolicyCmptClass;
     }

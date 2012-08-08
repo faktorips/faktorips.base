@@ -22,6 +22,11 @@
 	private «javaClassName» «field(fieldName)» = «defaultValueCode»;
 «ENDDEFINE»
 
+«DEFINE getterSetter FOR XProductAttribute-»
+	«EXPAND getter-»
+	«EXPAND setter-»
+«ENDDEFINE»
+
 «DEFINE getter FOR XProductAttribute-» 
 	/**
 	 * «inheritDocOrJavaDoc("METHOD_GETVALUE", name, description)»
@@ -41,7 +46,7 @@
 	 *
 	 * @generated
 	 */
-	«overrideAnnotationForPublishedMethodOrIf(published, overwrite)»
+	«overrideAnnotation(overwrite)»
 	public void «method(methodNameSetter, javaClassName, "newValue")»{
 		«EXPAND ProductCommons::checkRepositoryModifyable-»
 		this.«fieldName» = newValue;

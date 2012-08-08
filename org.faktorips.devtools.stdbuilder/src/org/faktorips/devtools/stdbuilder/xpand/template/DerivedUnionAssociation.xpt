@@ -73,7 +73,7 @@
      * @generated
      */
      «overrideAnnotationForPublishedMethod()-»
-    public boolean «methodNameContains»(«targetInterfaceName», objectToTest) {
+    public boolean «methodNameContains»(«targetInterfaceName» objectToTest) {
         return «methodNameGetter»().contains(objectToTest);
     }
 «ENDDEFINE»
