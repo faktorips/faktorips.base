@@ -145,7 +145,7 @@ public class XPolicyAttribute extends XAttribute {
         if (isDerived()) {
             return false;
         }
-        if (isValueSetUnrestricted() && !isProductRelevant()) {
+        if (isValueSetUnrestricted() || !isProductRelevant()) {
             return false;
         }
         if (isValueSetEnum() && isDatatypeContentSeperatedEnum()) {
