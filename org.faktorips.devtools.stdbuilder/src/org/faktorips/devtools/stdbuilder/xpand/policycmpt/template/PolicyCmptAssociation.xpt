@@ -51,37 +51,39 @@
 «ENDDEFINE»
 
 «DEFINE getters FOR XPolicyAssociation-»
-	«IF oneToMany-»
-	    /**
-	     * {@inheritDoc}
-	     * 
-	     * @generated
-	     */
-	    «overrideAnnotation(true)-»
-	    public «List_(targetInterfaceName)» «method(methodNameGetter)» {
-	        return «Collections()».unmodifiableList(«fieldName»);
-	    }
-	
-	    /**
-	     * {@inheritDoc}
-	     * 
-	     * @generated
-	     */
-	    «overrideAnnotation(true)-»
-	    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")» {
-	        return «fieldName».get(index);
-	    }
-    «ELSE-»
-	    /**
-	     * {@inheritDoc}
-	     * 
-	     * @generated
-	     */
-	    «overrideAnnotation(true)-»
-	    public «targetInterfaceName» «method(methodNameGetSingle)» {
-	        return «fieldName»;
-	    }
-    «ENDIF-»
+	«IF generateGetter»
+		«IF oneToMany-»
+		    /**
+		     * {@inheritDoc}
+		     * 
+		     * @generated
+		     */
+		    «overrideAnnotation(true)-»
+		    public «List_(targetInterfaceName)» «method(methodNameGetter)» {
+		        return «Collections()».unmodifiableList(«fieldName»);
+		    }
+		
+		    /**
+		     * {@inheritDoc}
+		     * 
+		     * @generated
+		     */
+		    «overrideAnnotation(true)-»
+		    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")» {
+		        return «fieldName».get(index);
+		    }
+	    «ELSE-»
+		    /**
+		     * {@inheritDoc}
+		     * 
+		     * @generated
+		     */
+		    «overrideAnnotation(true)-»
+		    public «targetInterfaceName» «method(methodNameGetSingle)» {
+		        return «fieldName»;
+		    }
+	    «ENDIF-»
+    «ENDIF»
 «ENDDEFINE»
 
 «DEFINE setterMethodsForToOne FOR XPolicyAssociation-»

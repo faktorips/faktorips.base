@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
@@ -116,11 +117,23 @@ public class XPolicyCmptClass extends XClass {
         for (IPolicyCmptTypeAssociation association : associations) {
             try {
                 if (association.isCompositionDetailToMaster()) {
-                    IPolicyCmptTypeAssociation inverseAssociation = association.findInverseAssociation(getIpsProject());
+                    IPolicyCmptTypeAssociation inverseAssociation;
+                    if (association.isSharedAssociation()) {
+                        inverseAssociation = association.findSharedAssociationHost(getIpsProject())
+                                .findInverseAssociation(getIpsProject());
+                    } else {
+                        inverseAssociation = association.findInverseAssociation(getIpsProject());
+                    }
                     if (inverseAssociation.isSubsetOfADerivedUnion()) {
                         IPolicyCmptTypeAssociation subsettedDerivedUnion = (IPolicyCmptTypeAssociation)inverseAssociation
                                 .findSubsettedDerivedUnion(getIpsProject());
-                        resultingAssociations.add(subsettedDerivedUnion.findInverseAssociation(getIpsProject()));
+                        if (subsettedDerivedUnion.hasInverseAssociation()) {
+                            // it is possible that the derived union does not specify a inverse but
+                            // subset does
+                            IPolicyCmptTypeAssociation inverseSubsettedAssociation = subsettedDerivedUnion
+                                    .findInverseAssociation(getIpsProject());
+                            resultingAssociations.add(inverseSubsettedAssociation);
+                        }
                     }
                 }
             } catch (CoreException e) {
@@ -309,7 +322,7 @@ public class XPolicyCmptClass extends XClass {
         try {
             IProductCmptType prodType = getPolicyCmptType().findProductCmptType(getIpsProject());
             if (prodType == null) {
-                throw new CoreRuntimeException(NLS.bind(
+                throw new NullPointerException(NLS.bind(
                         "The policy component type {0} is not configured by a product component type.",
                         getPolicyCmptType()));
             }
@@ -405,7 +418,7 @@ public class XPolicyCmptClass extends XClass {
     public Set<XPolicyAssociation> getInverseCompositions() {
         Set<XPolicyAssociation> resultingSet = new LinkedHashSet<XPolicyAssociation>();
         for (XPolicyAssociation assoc : getAssociations()) {
-            if (assoc.isInverseComposition() && !assoc.isInverseOfADerivedUnion()) {
+            if (assoc.isInverseComposition() && (!assoc.isInverseOfADerivedUnion() || assoc.isSharedAssociation())) {
                 resultingSet.add(assoc);
             }
         }
@@ -461,6 +474,18 @@ public class XPolicyCmptClass extends XClass {
      */
     private boolean hasAssociations() {
         return !getPureAssociations().isEmpty();
+    }
+
+    public XPolicyCmptClass getSuperclass() {
+        try {
+            IType superType = getType().findSupertype(getIpsProject());
+            if (superType == null) {
+                throw new NullPointerException("Found no supertype for " + getName());
+            }
+            return getModelNode(superType, XPolicyCmptClass.class);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     /**
