@@ -37,16 +37,17 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ReferencesToProductSearchQueryTest extends AbstractIpsPluginTest {
+public class ReferencesToTableContentsSearchQueryTest extends AbstractIpsPluginTest {
 
     private IIpsProject proj;
     private IIpsPackageFragmentRoot root;
-    private ReferencesToProductSearchQuery query;
-    private IProductCmpt prodCmptReferenced;
+    private ReferencesToTableContentsSearchQuery query;
+    private ITableContents tableContentsReferenced;
     private IProductCmpt prodCmpt;
     private IProductCmpt prodCmpt2;
     private IProductCmpt prodCmpt3;
@@ -60,28 +61,28 @@ public class ReferencesToProductSearchQueryTest extends AbstractIpsPluginTest {
         proj = newIpsProject("TestProjekt");
         root = proj.getIpsPackageFragmentRoots()[0];
 
-        prodCmptReferenced = newProductCmpt(root, "toBeReferenced");
+        tableContentsReferenced = newTableContents(root, "toBeReferenced");
         prodCmpt = newProductCmpt(root, "TestProductComponent");
         IProductCmptGeneration generation = (IProductCmptGeneration)prodCmpt.newGeneration(calendar);
-        IProductCmptLink relation = generation.newLink("");
-        relation.setTarget(prodCmptReferenced.getQualifiedName());
+        ITableContentUsage usage = generation.newTableContentUsage();
+        usage.setTableContentName(tableContentsReferenced.getQualifiedName());
 
         prodCmpt2 = newProductCmpt(root, "TestProductComponent2");
         IProductCmptGeneration generation2 = (IProductCmptGeneration)prodCmpt2.newGeneration(calendar);
-        IProductCmptLink relation2 = generation2.newLink("");
-        relation2.setTarget(prodCmptReferenced.getQualifiedName());
+        ITableContentUsage usage2 = generation2.newTableContentUsage();
+        usage2.setTableContentName(tableContentsReferenced.getQualifiedName());
 
         prodCmpt3 = newProductCmpt(root, "TestProductComponent3");
         IProductCmptGeneration generation3 = (IProductCmptGeneration)prodCmpt3.newGeneration(calendar);
-        IProductCmptLink relation3 = generation3.newLink("");
-        relation3.setTarget(prodCmptReferenced.getQualifiedName());
+        ITableContentUsage usage3 = generation3.newTableContentUsage();
+        usage3.setTableContentName(tableContentsReferenced.getQualifiedName());
 
         prodCmptNoRef = newProductCmpt(root, "TestProductComponentNoRef");
     }
 
     @Test
     public void testRun() {
-        query = new ReferencesToProductSearchQuery(prodCmptReferenced);
+        query = new ReferencesToTableContentsSearchQuery(tableContentsReferenced);
         // run query in same thread as this test
         NewSearchUI.runQueryInForeground(IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow(), query);
 
@@ -131,10 +132,10 @@ public class ReferencesToProductSearchQueryTest extends AbstractIpsPluginTest {
         IProductCmpt prodCmptInOtherProject = newProductCmpt(otherProject, "TestProductComponentInReferencingProject");
         IProductCmptGeneration generationInOtherProject = (IProductCmptGeneration)prodCmptInOtherProject
                 .newGeneration((GregorianCalendar)Calendar.getInstance());
-        IProductCmptLink relationInterProject = generationInOtherProject.newLink("");
-        relationInterProject.setTarget(prodCmptReferenced.getQualifiedName());
+        ITableContentUsage usageInterProject = generationInOtherProject.newTableContentUsage();
+        usageInterProject.setTableContentName(tableContentsReferenced.getQualifiedName());
 
-        query = new ReferencesToProductSearchQuery(prodCmptReferenced);
+        query = new ReferencesToTableContentsSearchQuery(tableContentsReferenced);
         // run query in same thread as this test
         NewSearchUI.runQueryInForeground(IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow(), query);
 

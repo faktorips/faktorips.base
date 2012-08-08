@@ -15,19 +15,27 @@ package org.faktorips.devtools.core.ui.search.reference;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.search.ui.NewSearchUI;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.ui.search.reference.ReferenceSearchResult;
-import org.faktorips.devtools.core.ui.search.reference.ReferencesToPolicySearchQuery;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -99,6 +107,48 @@ public class ReferencesToPolicySearchQueryTest extends AbstractIpsPluginTest {
         expectedSet.add(pcType3);
         assertEquals(expectedSet, resultSet);
         assertFalse(resultSet.contains(pcTypeNoRef));
+    }
+
+    /**
+     * Test for Jira Issue FIPS-771
+     */
+    @Test
+    public void testFindHitInReferencingProject() throws CoreException {
+
+        IIpsProject otherProject = newIpsProject("SubTestProjekt");
+        IIpsPackageFragmentRoot rootOtherProject = otherProject.getIpsPackageFragmentRoots()[0];
+
+        IIpsProjectProperties properties = otherProject.getProperties();
+        IIpsObjectPath ipsObjectPath = properties.getIpsObjectPath();
+
+        IpsProjectRefEntry ipsProjectRefEntry = new IpsProjectRefEntry((IpsObjectPath)ipsObjectPath, proj);
+
+        IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[] { ipsProjectRefEntry,
+                rootOtherProject.getIpsObjectPathEntry() };
+        ipsObjectPath.setEntries(newEntries);
+        otherProject.setProperties(properties);
+
+        IPolicyCmptType pcTypeInOtherProject = newPolicyCmptType(otherProject, "TestTypeInOtherProject");
+        IPolicyCmptTypeAssociation associationInterProject = pcTypeInOtherProject.newPolicyCmptTypeAssociation();
+        associationInterProject.setTarget(pcTypeReferenced.getQualifiedName());
+
+        query = new ReferencesToPolicySearchQuery(pcTypeReferenced);
+        // run query in same thread as this test
+        NewSearchUI.runQueryInForeground(IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow(), query);
+
+        ReferenceSearchResult searchResult = (ReferenceSearchResult)query.getSearchResult();
+        Object[] results = searchResult.getMatchingElements();
+
+        List<Object> result = Arrays.asList(results);
+
+        assertEquals(4, result.size());
+
+        List<Object> resultPolicyCmptTypes = new ArrayList<Object>();
+
+        for (Object object : result) {
+            resultPolicyCmptTypes.add(((Object[])object)[0]);
+        }
+        assertTrue(resultPolicyCmptTypes.contains(pcTypeInOtherProject));
     }
 
 }

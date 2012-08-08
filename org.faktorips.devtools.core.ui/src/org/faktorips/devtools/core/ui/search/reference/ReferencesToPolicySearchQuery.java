@@ -13,9 +13,13 @@
 
 package org.faktorips.devtools.core.ui.search.reference;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 /**
@@ -30,7 +34,17 @@ public class ReferencesToPolicySearchQuery extends ReferenceSearchQuery {
 
     @Override
     protected IIpsElement[] findReferences() throws CoreException {
-        return referenced.getIpsProject().findReferencingPolicyCmptTypes((PolicyCmptType)referenced);
+        List<IPolicyCmptType> referencingPolicyCmptTypes = new ArrayList<IPolicyCmptType>();
+        
+        IIpsProject[] referencingProjects = referenced.getIpsProject().findReferencingProjectLeavesOrSelf();
+        
+        for (IIpsProject referencingIpsProject : referencingProjects) {
+            IPolicyCmptType[] findReferencingPolicyCmptTypes = referencingIpsProject
+                    .findReferencingPolicyCmptTypes((IPolicyCmptType)referenced);
+        
+            referencingPolicyCmptTypes.addAll(Arrays.asList(findReferencingPolicyCmptTypes));
+        }
+        return referencingPolicyCmptTypes.toArray(new IIpsElement[referencingPolicyCmptTypes.size()]);
     }
 
     @Override
