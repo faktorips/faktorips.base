@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -65,8 +66,8 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
     }
 
     public String fieldPropertyNameSuffix() {
-        return getContext().isGenerateSeparatedCamelCase() ? StringUtil.camelCaseToUnderscore(getName())
-                .toUpperCase() : getName().toUpperCase();
+        return getContext().isGenerateSeparatedCamelCase() ? StringUtil.camelCaseToUnderscore(getName()).toUpperCase()
+                : getName().toUpperCase();
     }
 
     public String getDefaultValueCode() {
@@ -91,6 +92,10 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return addImport(javaClassName);
     }
 
+    public boolean isPublished() {
+        return getAttribute().getModifier().isPublished();
+    }
+
     public final boolean isOverwrite() {
         return getAttribute().isOverwrite();
     }
@@ -99,6 +104,10 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         JavaCodeFragment fragment = getDatatypeHelper().referenceOrSafeCopyIfNeccessary(memberVarName);
         addImport(fragment.getImportDeclaration());
         return fragment.getSourcecode();
+    }
+
+    public String getConstantNamePropertyName() {
+        return "PROPERTY_" + StringUtils.upperCase(getFieldName());
     }
 
 }

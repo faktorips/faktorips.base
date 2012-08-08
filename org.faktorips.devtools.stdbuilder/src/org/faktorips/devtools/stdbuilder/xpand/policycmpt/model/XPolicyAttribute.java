@@ -19,7 +19,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.DatatypeUtil;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -72,10 +71,6 @@ public class XPolicyAttribute extends XAttribute {
      */
     public boolean isGenerateField() {
         return isRequireMemberVariable() || isConstant();
-    }
-
-    public boolean isPublished() {
-        return getAttribute().getModifier() == Modifier.PUBLISHED;
     }
 
     /**
@@ -224,10 +219,6 @@ public class XPolicyAttribute extends XAttribute {
         IPolicyCmptType polType = getIpsObjectPartContainer().getPolicyCmptType();
         XPolicyCmptClass xPolicyCmptClass = getModelNode(polType, XPolicyCmptClass.class);
         return xPolicyCmptClass;
-    }
-
-    public String getConstantNamePropertyName() {
-        return "PROPERTY_" + StringUtils.upperCase(getFieldName());
     }
 
     public String getOldValueVariable() {

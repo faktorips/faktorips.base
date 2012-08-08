@@ -1,0 +1,52 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::runtime»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE constantForPropertyName FOR XProductAttribute-»
+	/**
+	 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
+	 * @generated
+	 */
+	public final static String «constantNamePropertyName» = "«name»";
+«ENDDEFINE»
+
+«DEFINE memberField FOR XProductAttribute-»
+	/**
+	 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
+	 *
+	 * @generated
+	 */
+	private «javaClassName» «field(fieldName)» = «defaultValueCode»;
+«ENDDEFINE»
+
+«DEFINE getter FOR XProductAttribute-» 
+	/**
+	 * «inheritDocOrJavaDoc("METHOD_GETVALUE", name, description)»
+	 *
+	 * @generated
+	 */
+	«overrideAnnotationForPublishedMethodOrIf(published, overwrite)»
+	public «javaClassName» «method(methodNameGetter)»{
+		return «getReferenceOrSafeCopyIfNecessary(fieldName)»;
+	}
+«ENDDEFINE»
+
+
+«DEFINE setter FOR XProductAttribute-»
+	/**
+	 * «inheritDocOrJavaDoc("METHOD_SETVALUE", name, description)»
+	 *
+	 * @generated
+	 */
+	«overrideAnnotationForPublishedMethodOrIf(published, overwrite)»
+	public void «method(methodNameSetter, javaClassName, "newValue")»{
+		«EXPAND ProductCommons::checkRepositoryModifyable-»
+		this.«fieldName» = newValue;
+	}
+«ENDDEFINE»
+
+«DEFINE initAttributeFromXML FOR XProductAttribute-»
+«ENDDEFINE»
