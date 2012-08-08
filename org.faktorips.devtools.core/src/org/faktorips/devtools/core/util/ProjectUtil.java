@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -48,6 +49,9 @@ import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
  * @author Thorsten Günther
  */
 public class ProjectUtil {
+
+    // character and numbers without special character, white space and umlauts
+    private static final Pattern NAME_PATTERN = Pattern.compile("\\w+"); //$NON-NLS-1$
 
     /**
      * Adds the Faktor-IPS nature to the given project.
@@ -158,22 +162,8 @@ public class ProjectUtil {
         IIpsProject ipsProject = createIpsProject(javaProject, runtimeIdPrefix, isProductDefinitionProject,
                 isModelProject, isPersistentProject);
 
-        IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.setOutputDefinedPerSrcFolder(true);
+        createIpsSourceFolderEntry(ipsProject, srcFolder.getName(), mergableFolder, derivedFolder);
 
-        if (path.containsSrcFolderEntry(srcFolder)) {
-            path.removeSrcFolderEntry(srcFolder);
-        }
-
-        IIpsSrcFolderEntry entry = path.newSourceFolderEntry(srcFolder);
-        entry.setSpecificBasePackageNameForMergableJavaClasses(javaProject.getProject().getName()
-                + "." + srcFolder.getName()); //$NON-NLS-1$
-        entry.setSpecificOutputFolderForMergableJavaFiles(mergableFolder);
-        entry.setSpecificBasePackageNameForDerivedJavaClasses(javaProject.getProject().getName()
-                + "." + srcFolder.getName()); //$NON-NLS-1$
-        entry.setSpecificOutputFolderForDerivedJavaFiles(derivedFolder);
-
-        ipsProject.setIpsObjectPath(path);
         return ipsProject;
     }
 
@@ -234,8 +224,7 @@ public class ProjectUtil {
         if (path.containsSrcFolderEntry(srcFolder)) {
             path.removeSrcFolderEntry(srcFolder);
         }
-
-        String packageName = ipsProject.getName() + "." + folderName; //$NON-NLS-1$
+        String packageName = getValidProjectName(ipsProject.getName()) + "." + folderName; //$NON-NLS-1$
 
         IIpsSrcFolderEntry entry = path.newSourceFolderEntry(srcFolder);
         entry.setSpecificBasePackageNameForMergableJavaClasses(packageName);
@@ -246,6 +235,27 @@ public class ProjectUtil {
         ipsProject.setIpsObjectPath(path);
 
         return srcFolder;
+    }
+
+    /**
+     * <p>
+     * Any invalid character will be transformed to an underscore.
+     * <p>
+     * Note that this is not part of an official naming convention. We defined this because code
+     * generator generated project name than package name part.
+     */
+    protected static String getValidProjectName(String projectName) {
+
+        // Replace characters that are not valid for Java packages name
+        char[] characters = projectName.toCharArray();
+        for (int i = 0; i < characters.length; i++) {
+            if ((i == 0 && !Character.isJavaIdentifierStart(characters[i]))
+                    || (i > 0 && !Character.isJavaIdentifierPart(characters[i]))) {
+                characters[i] = '_';
+            }
+        }
+
+        return String.valueOf(characters);
     }
 
     /**
