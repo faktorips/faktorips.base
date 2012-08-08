@@ -3,6 +3,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::template»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
@@ -66,17 +67,13 @@
      }
 «ENDDEFINE»
 
+		«REM» wird in PolicyCmptAssociation.xpt behandelt
 «DEFINE methodDerivedUnionContains(XClass currentContextClass) FOR XDerivedUnionAssociation-»
-	/**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-     «overrideAnnotationForPublishedMethod()-»
-    public boolean «methodNameContains»(«targetInterfaceName» objectToTest) {
-        return «methodNameGetter»().contains(objectToTest);
-    }
+	«IF isDefinedIn(currentContextClass)-»
+		«EXPAND PolicyCmptAssociation::contains»
+	«ENDIF-»
 «ENDDEFINE»
+		«ENDREM»
 
 «DEFINE getParent(XPolicyCmptClass currentContextClass) FOR XDetailToMasterDerivedUnionAssociation-»
 	/**
