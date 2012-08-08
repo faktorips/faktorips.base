@@ -15,6 +15,7 @@ package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
@@ -110,7 +111,9 @@ public class XFormulaParameter extends AbstractGeneratorModelNode {
             return ((ValueDatatype)paramDataype).getDefaultValue();
         } else {
             if (helper != null) {
-                return helper.nullExpression().toString();
+                JavaCodeFragment nullExpression = helper.nullExpression();
+                addImport(nullExpression.getImportDeclaration());
+                return nullExpression.getSourcecode();
             } else {
                 return "null";
             }
