@@ -10,7 +10,7 @@
 	 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
 	 * @generated
 	 */
-	public final static String «constantNamePropertyName» = "«name»";
+	public final static String «field«constantNamePropertyName»» = "«name»";
 «ENDDEFINE»
 
 «DEFINE memberField FOR XProductAttribute-»

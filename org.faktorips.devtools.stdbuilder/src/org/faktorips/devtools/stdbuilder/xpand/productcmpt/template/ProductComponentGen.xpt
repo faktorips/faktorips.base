@@ -20,7 +20,15 @@
 		public «abstract()» class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
 		 {
 		 
+		 	«FOREACH attributes AS this-»
+		 		«IF !generatingPublishedInterfaces || !published -»
+			 		«EXPAND ProductAttribute::constantForPropertyName-»
+			 	«ENDIF-»
+		 	«ENDFOREACH-»
+		 
 			«EXPAND ProductAssociation::field FOREACH associations-»
+
+			«EXPAND ProductAttribute::memberField FOREACH attributes-»
 			
 		    /**
 		     * «localizedJDoc("CONSTRUCTOR", getSimpleName(BuilderAspect::IMPLEMENTATION))»
