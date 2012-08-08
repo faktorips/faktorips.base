@@ -57,8 +57,10 @@ package «packageName»;
 			«EXPAND PolicyCmptAttribute::getter-»
 			«EXPAND PolicyCmptAttribute::setter-»
 		«ENDFOREACH-»
-
+		
+		«REM»
 		«EXPAND DerivedUnionAssociation::methodDerivedUnionContains(this) FOREACH derivedUnionAssociations»
+		«ENDREM»
 
 		«FOREACH associations AS this-»
 			«EXPAND PolicyCmptAssociation::methods-»

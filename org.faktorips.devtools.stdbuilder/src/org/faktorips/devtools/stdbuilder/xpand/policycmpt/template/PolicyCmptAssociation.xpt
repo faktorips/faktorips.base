@@ -27,21 +27,25 @@
 	«EXPAND contains-»
 	«EXPAND getters-»
 	«EXPAND setterMethodsForToOne-»
-	«EXPAND newMethods-»
+	«EXPAND newChildMethods-»
 	«EXPAND add-»
 	«EXPAND remove-»
 «ENDDEFINE»
 
-«DEFINE contains FOR XPolicyAssociation-»
+«DEFINE contains FOR XAssociation-»
 	«IF oneToMany-»
 	    /**
 	     * {@inheritDoc}
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotation(true)»
+     	«overrideAnnotationForPublishedMethod()-»
 	    public boolean «method(methodNameContains, targetInterfaceName, "objectToTest")» {
-	        return «fieldName».contains(objectToTest);
+	    	«IF derivedUnion-»	    		
+		        return «methodNameGetter»().contains(objectToTest);
+	    	«ELSE-»
+		        return «fieldName».contains(objectToTest);
+	    	«ENDIF-»
 	    }
     «ENDIF»
 «ENDDEFINE»
@@ -165,8 +169,8 @@
 	«IF generatingPublishedInterfaces-»(«targetClassName»)«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE newMethods FOR XPolicyAssociation-»
-	«IF productRelevant-»
+«DEFINE newChildMethods FOR XPolicyAssociation-»
+	«IF generateNewChildMethods-»
 	    /**
 	     * {@inheritDoc}
 	     * 
@@ -181,22 +185,24 @@
 	        return «variableNameNewInstance»;
 	    }
 	
-	    /**
-	     * {@inheritDoc}
-	     * 
-	     * @generated
-	     */
-		«overrideAnnotation(true)»
-	    public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceName, targetProductCmptVariableName)» {
-	        if («targetProductCmptVariableName» == null) {
-	            return «methodNameNew»();
-	        }
-	        «targetInterfaceName» «variableNameNewInstance» = «targetProductCmptVariableName».«methodNameCreatePolicyCmptForTargetProductCmpt»(); 
-			«EXPAND addOrSetNewInstance-»
-	        «variableNameNewInstance».«initialize()»;
-	        «EXPAND PropertyChangeSupport::notifyNewAssociation(variableNameNewInstance)-»
-	        return «variableNameNewInstance»;
-	    }
+		«IF generateNewChildWithArgumentsMethod-»
+		    /**
+		     * {@inheritDoc}
+		     * 
+		     * @generated
+		     */
+			«overrideAnnotation(true)»
+		    public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceName, targetProductCmptVariableName)» {
+		        if («targetProductCmptVariableName» == null) {
+		            return «methodNameNew»();
+		        }
+		        «targetInterfaceName» «variableNameNewInstance» = «targetProductCmptVariableName».«methodNameCreatePolicyCmptForTargetProductCmpt»(); 
+				«EXPAND addOrSetNewInstance-»
+		        «variableNameNewInstance».«initialize()»;
+		        «EXPAND PropertyChangeSupport::notifyNewAssociation(variableNameNewInstance)-»
+		        return «variableNameNewInstance»;
+		    }
+	    «ENDIF-»
     «ENDIF-»
 «ENDDEFINE»
 

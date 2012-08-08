@@ -132,4 +132,12 @@ public class XDerivedUnionAssociation extends XAssociation {
         }
     }
 
+    /**
+     * Returns <code>true</code> if this derived union association is defined in the given class.
+     * <code>false</code> else.
+     */
+    public boolean isDefinedIn(XClass xClass) {
+        return getAssociation().getType().equals(xClass.getType());
+    }
+
 }

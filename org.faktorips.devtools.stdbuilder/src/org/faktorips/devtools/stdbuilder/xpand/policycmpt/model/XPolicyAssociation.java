@@ -78,6 +78,14 @@ public class XPolicyAssociation extends XAssociation {
         return isValid() && !isDerived() && !isCompositionDetailToMaster();
     }
 
+    public boolean isGenerateNewChildMethods() {
+        return isCompositionMasterToDetail() && !getTargetPolicyCmptClass().isAbstract();
+    }
+
+    public boolean isGenerateNewChildWithArgumentsMethod() {
+        return getTargetPolicyCmptClass().isConfigured();
+    }
+
     public String getConstantNamePropertyName() {
         return "ASSOCIATION_" + getFieldName().toUpperCase();
     }
