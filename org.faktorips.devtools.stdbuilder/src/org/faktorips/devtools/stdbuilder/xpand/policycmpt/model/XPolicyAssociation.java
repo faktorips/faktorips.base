@@ -96,8 +96,9 @@ public class XPolicyAssociation extends XAssociation {
 
     /**
      * If this is a detail to master association the
-     * {@link #getMethodNameSetInternalUncapitalized()} is used as a result. Reproduces Bug in old
-     * code generator for compatibility. see FIPS-1143.
+     * {@link #getMethodNameSetInternalUncapitalized()} is used as a result.
+     * 
+     * Reproduces Bug in old code generator for compatibility. see FIPS-1143.
      */
     public String getMethodNameSetInternal() {
         if (isCompositionDetailToMaster()) {
@@ -128,18 +129,28 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
-     * Returns then name of the setter method that is used to set this associations policy instance
-     * as target (e.g. parent) of the target associations.
+     * Returns then name of the set method that is used to set this associations policy instance as
+     * target (e.g. parent) of the target associations. The old implementation however does not
+     * capitalize the role name until now erroneously. e.g. setpolicyPart() instead of
+     * setPolicyPart() (if the role name is policyPart).
+     * 
+     * Reproduces Bug in old code generator for compatibility. see FIPS-1143.
      * 
      * @throws NullPointerException if this association has no inverse association.
      */
     public String getMethodNameInverseAssociationSet() {
-        return getJavaNamingConvention().getSetterMethodName(getInverseAssociationName());
+        // should be return
+        // getJavaNamingConvention().getSetterMethodName(getInverseAssociationName());
+        return "set" + getInverseAssociationName();
     }
 
     /**
      * Returns then name of the setInternal method that is used to set this associations policy
-     * instance as target (e.g. parent) of the target associations.
+     * instance as target (e.g. parent) of the target associations. The old implementation however
+     * does not capitalize the role name until now erroneously. e.g. setpolicyPartInternal() instead
+     * of setPolicyPartInternal() (if the role name is policyPart).
+     * 
+     * Reproduces Bug in old code generator for compatibility. see FIPS-1143.
      * 
      * @throws NullPointerException if this association has no inverse association.
      */
@@ -151,21 +162,21 @@ public class XPolicyAssociation extends XAssociation {
      * @throws NullPointerException if this association has no inverse association.
      */
     public String getMethodNameInverseAssociationContains() {
-        return "contains" + getInverseAssociationName();
+        return "contains" + StringUtils.capitalize(getInverseAssociationName());
     }
 
     /**
      * @throws NullPointerException if this association has no inverse association.
      */
     public String getMethodNameInverseAssociationAdd() {
-        return "add" + getInverseAssociationName();
+        return "add" + StringUtils.capitalize(getInverseAssociationName());
     }
 
     /**
      * @throws NullPointerException if this association has no inverse association.
      */
     public String getMethodNameInverseAssociationRemove() {
-        return "remove" + getInverseAssociationName();
+        return "remove" + StringUtils.capitalize(getInverseAssociationName());
     }
 
     /**
@@ -267,8 +278,16 @@ public class XPolicyAssociation extends XAssociation {
         return (IPolicyCmptType)getTargetType();
     }
 
+    /**
+     * Returns the name of the variable used in new child methods. The old implementation does not
+     * capitalize the role name until now erroneously. e.g. newpolicyPart instead of newPolicyPart
+     * (if the role name is policyPart).
+     * 
+     * Reproduces Bug in old code generator for compatibility. see FIPS-1143.
+     */
     public String getVariableNameNewInstance() {
-        return getMethodNameNew();
+        // should be return getMethodNameNew();
+        return "new" + getName(false);
     }
 
     public String getTargetProductCmptVariableName() {
@@ -425,6 +444,8 @@ public class XPolicyAssociation extends XAssociation {
      * Returns the setter name for derived unions on policy side, which does not capitalize the role
      * name until now erroneously. e.g. getpolicyPart() instead of getPolicyPart() (if the role name
      * is policyPart).
+     * 
+     * Reproduces Bug in old code generator for compatibility. see FIPS-1143.
      */
     private String getMethodNameGetSingleUncapitalized() {
         return "get" + getName(false);
@@ -434,6 +455,8 @@ public class XPolicyAssociation extends XAssociation {
      * Returns the setter name for derived unions on policy side, which does not capitalize the role
      * name until now erroneously. e.g. getpolicyPart() instead of getPolicyPart() (if the role name
      * is policyPart).
+     * 
+     * Reproduces Bug in old code generator for compatibility. see FIPS-1143.
      */
     private String getMethodNameSetInternalUncapitalized() {
         return "set" + getName(false) + "Internal";

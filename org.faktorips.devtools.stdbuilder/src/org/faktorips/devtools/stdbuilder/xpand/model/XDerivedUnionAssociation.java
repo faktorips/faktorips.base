@@ -140,4 +140,16 @@ public class XDerivedUnionAssociation extends XAssociation {
         return getAssociation().getType().equals(xClass.getType());
     }
 
+    /**
+     * Returns <code>true</code> when the method getNumOfXXInternal() should call super. This is the
+     * case if this derived union is not defined in the given class and at the same time is
+     * subsetted by an association of the given class. IOW returns <code>true</code> if there is a
+     * method in the super class that can be called. <code>false</code> otherwise.
+     * 
+     * @param xClass the class in which a super call could be generated or not.
+     */
+    public boolean generateGetNumOfInternalSuperCall(XClass xClass) {
+        return !isDefinedIn(xClass) && isImplementedInSuperclass(xClass);
+    }
+
 }

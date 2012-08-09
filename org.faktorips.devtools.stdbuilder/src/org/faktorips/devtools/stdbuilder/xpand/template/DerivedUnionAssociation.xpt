@@ -60,6 +60,9 @@
      */
      private int «methodNameGetNumOfInternal»() {
         int num = 0;
+        «IF generateGetNumOfInternalSuperCall(currentContextClass)-»
+     		num += super.«methodNameGetNumOf»();
+        «ENDIF-»«REM»Force empty line, imitate old generator«ENDREM»
      	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
      		num += «subsetAssociation.methodNameGetNumOf»();
      	«ENDFOREACH-»

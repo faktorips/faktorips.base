@@ -147,8 +147,15 @@ public class XPolicyCmptClass extends XClass {
      * a configuring product component type is defined. <code>false</code> else.
      */
     public boolean isConfigured() {
-        return getPolicyCmptType().isConfigurableByProductCmptType()
-                && getPolicyCmptType().getProductCmptType() != null;
+        return isConfigurable() && getPolicyCmptType().getProductCmptType() != null;
+    }
+
+    /**
+     * Returns <code>true</code> if this policy component type is configurable. Ignores whether or
+     * not a configuring product component type is defined. <code>false</code> else.
+     */
+    private boolean isConfigurable() {
+        return getPolicyCmptType().isConfigurableByProductCmptType();
     }
 
     public boolean isAggregateRoot() {
