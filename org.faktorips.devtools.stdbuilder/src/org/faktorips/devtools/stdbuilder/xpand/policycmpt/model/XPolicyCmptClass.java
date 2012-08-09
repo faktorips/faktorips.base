@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -517,5 +518,26 @@ public class XPolicyCmptClass extends XClass {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    /**
+     * Returns <code>true</code> if this class contains at least on association with type
+     * {@link AssociationType#ASSOCIATION}, <code>false</code> else.
+     */
+    public boolean isRequiresLocalVariableInCopyAssocsInternal() {
+        return hasAssociationsWithTypeAssociation();
+    }
+
+    /**
+     * Returns <code>true</code> if this class contains at least on association with type
+     * {@link AssociationType#ASSOCIATION}, <code>false</code> else.
+     */
+    private boolean hasAssociationsWithTypeAssociation() {
+        for (XPolicyAssociation assoc : getAssociations()) {
+            if (assoc.isTypeAssociation()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
