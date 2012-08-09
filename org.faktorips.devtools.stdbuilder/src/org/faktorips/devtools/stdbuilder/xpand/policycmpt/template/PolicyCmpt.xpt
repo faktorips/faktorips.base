@@ -232,7 +232,7 @@ package «packageName»;
 		            return «fieldName»;
 		        }
 	    	«ENDFOREACH-»
-	        «IF hasSupertype()-»
+	        «IF hasSupertype() && superclass.generateGetParentModelObject-»
 	        	return super.«getParentModelObject()»;
 		 	«ELSE-»
 	        	return null;

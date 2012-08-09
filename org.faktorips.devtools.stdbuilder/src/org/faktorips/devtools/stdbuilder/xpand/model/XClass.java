@@ -131,12 +131,8 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         try {
             if (getType().hasSupertype()) {
                 IType superType = getType().findSupertype(getIpsProject());
-                if (superType != null) {
-                    return addImport(getJavaClassNaming().getQualifiedClassName(superType, aspect,
-                            getJavaClassNameProvider()));
-                } else {
-                    return "";
-                }
+                return addImport(getJavaClassNaming().getQualifiedClassName(superType, aspect,
+                        getJavaClassNameProvider()));
             } else {
                 return getBaseSuperclassName();
             }

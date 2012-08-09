@@ -46,6 +46,20 @@ public class XPolicyAssociation extends XAssociation {
                 && !isCompositionDetailToMaster();
     }
 
+    public boolean isGenerateGetter() {
+        if (isSharedAssociation()) {
+            try {
+                IPolicyCmptTypeAssociation associationWithSameName = getAssociation().findSuperAssociationWithSameName(
+                        getIpsProject());
+                return (associationWithSameName == null || !associationWithSameName.isSharedAssociation());
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        } else {
+            return true;
+        }
+    }
+
     public boolean isConsiderInDeltaComputation() {
         return isValidMasterToDetail() && !isDerived();
     }
@@ -325,6 +339,10 @@ public class XPolicyAssociation extends XAssociation {
         return getAssociation().isComposition();
     }
 
+    public boolean isSharedAssociation() {
+        return getAssociation().isSharedAssociation();
+    }
+
     /**
      * Returns <code>true</code> if this association is the inverse of a derived union association.
      * <code>false</code> else.
@@ -332,7 +350,7 @@ public class XPolicyAssociation extends XAssociation {
      * @throws NullPointerException if this association has no inverse association.
      */
     public boolean isInverseOfADerivedUnion() {
-        return getInverseAssociation().isDerivedUnion();
+        return isSharedAssociation() || getInverseAssociation().isDerivedUnion();
     }
 
     /**

@@ -20,7 +20,15 @@
 		public «abstract()» class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
 		 {
 		 
+		 	«FOREACH attributes AS this-»
+		 		«IF !generatingPublishedInterfaces || !published -»
+			 		«EXPAND ProductAttribute::constantForPropertyName-»
+			 	«ENDIF-»
+		 	«ENDFOREACH-»
+		 
 			«EXPAND ProductAssociation::field FOREACH associations-»
+
+			«EXPAND ProductAttribute::memberField FOREACH attributes-»
 			
 		    /**
 		     * «localizedJDoc("CONSTRUCTOR", getSimpleName(BuilderAspect::IMPLEMENTATION))»
@@ -30,8 +38,10 @@
 			public «method(getSimpleName(BuilderAspect::IMPLEMENTATION), getProductCmptClassName(BuilderAspect::IMPLEMENTATION), "productCmpt")» {
 				super(productCmpt);
 			}
-			
-			«EXPAND ProductAssociation::getterSetterAdder FOREACH  associations»
+
+			«EXPAND ProductAttribute::getterSetter FOREACH attributes»
+
+			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
 			
 			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH  derivedUnionAssociations»
 
@@ -127,7 +137,7 @@
      * 
      * @generated
      */
-    «	(currentType != this)-»
+     «overrideAnnotationForPublishedMethodOrIf(this != currentType.policyCmptClass)»
     public «publishedInterfaceName» «method(methodNameCreatePolicyCmpt)» {
         «currentType.policyImplClassName» policy = new «currentType.policyImplClassName»(«currentType.methodNameGetProductCmpt»());
         policy.«setProductCmptGeneration("this")»;

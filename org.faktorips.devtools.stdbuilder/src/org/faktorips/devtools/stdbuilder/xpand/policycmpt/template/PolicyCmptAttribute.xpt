@@ -11,7 +11,7 @@
 	 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
 	 * @generated
 	 */
-	public final static String «constantNamePropertyName» = "«name»";
+	public final static String «field(constantNamePropertyName)» = "«name»";
 «ENDDEFINE»
 
 «DEFINE memberField FOR XPolicyAttribute-»
@@ -79,7 +79,7 @@
 	 *
 	 * @generated
 	 */
-		«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
+	«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
 	public «ValueSet()»<«datatypeClass»> «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»{
 		return «methodNameGetProductCmptGeneration»().«methodNameGetAllowedValuesFor»(context);
 	}
