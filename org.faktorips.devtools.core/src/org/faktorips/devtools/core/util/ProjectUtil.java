@@ -50,6 +50,7 @@ import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
  */
 public class ProjectUtil {
 
+    // TODO CODE-REVIEW PA-559: nicht verwendete Konstante
     // character and numbers without special character, white space and umlauts
     private static final Pattern NAME_PATTERN = Pattern.compile("\\w+"); //$NON-NLS-1$
 
@@ -243,6 +244,14 @@ public class ProjectUtil {
      * <p>
      * Note that this is not part of an official naming convention. We defined this because code
      * generator generated project name than package name part.
+     */
+    /*
+     * TODO CODE-REVIEW PA-559: Es geht hier eigentlich nicht um einen validen Projektnamen. Als
+     * Projektnamen ist nach wie vor alles erlaubt. Der Code ist dupliziert aus
+     * JavaNamingConvention#getEnumLiteral. Diese Methode sollte verschoben werden nach
+     * JavaNamingConvention und dort heißen: getValidJavaIdentifier(String). Bitte noch in den
+     * JavaDoc ein @see ValidationUtils#validateJavaIdentifier(String, IIpsProject) aufnehmen. Die
+     * Methode dann auch gleich in JavaNamingConvention#getEnumLiteral verwenden.
      */
     protected static String getValidProjectName(String projectName) {
 

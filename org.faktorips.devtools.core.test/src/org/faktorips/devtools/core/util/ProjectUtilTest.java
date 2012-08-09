@@ -55,6 +55,11 @@ public class ProjectUtilTest extends AbstractIpsPluginTest {
         assertEquals(Locale.GERMAN, ipsProject.getFormulaLanguageLocale());
     }
 
+    /*
+     * TODO CODE-REVIEW PA-559: Tests umbenennen und verschieben für
+     * JavaNamingConvention#getValidJavaIdentifier.
+     */
+
     @Test
     public void testGetValidProjectName_NotValidCharacter() {
         String projectName = ProjectUtil.getValidProjectName("&23&& 78");
