@@ -133,4 +133,28 @@ public class JavaNamingConventionTest {
         assertEquals("TODO", javaNamingConvention.getToDoMarker());
     }
 
+    @Test
+    public void testGetValidProjectName_NotValidCharacter() {
+        String projectName = javaNamingConvention.getValidJavaIdentifier("&23&& 78");
+        assertEquals("_23___78", projectName);
+    }
+
+    @Test
+    public void testGetValidProjectName_NotValidCharacter_NummberAsFirsCharacter() {
+        String projectName = javaNamingConvention.getValidJavaIdentifier("123");
+        assertEquals("_23", projectName);
+    }
+
+    @Test
+    public void testGetValidProjectName() {
+        String projectName = javaNamingConvention.getValidJavaIdentifier("$123");
+        assertEquals("$123", projectName);
+    }
+
+    @Test
+    public void testGetValidProjectName_NotValidHyphen() {
+        String projectName = javaNamingConvention.getValidJavaIdentifier("$-123");
+        assertEquals("$_123", projectName);
+    }
+
 }

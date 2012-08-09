@@ -17,6 +17,8 @@ import java.lang.reflect.Modifier;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 
 /**
@@ -117,8 +119,25 @@ public class JavaNamingConvention implements IJavaNamingConvention {
         enumLiteral = enumLiteral.replace("\u00DC", "UE"); //$NON-NLS-1$ //$NON-NLS-2$
         enumLiteral = enumLiteral.replace("\u00DF", "SS"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        // Replace characters that are not valid for Java identifiers
-        char[] characters = enumLiteral.toCharArray();
+        return getValidJavaIdentifier(enumLiteral);
+    }
+
+    /**
+     * <p>
+     * Any invalid character will be transformed to an underscore.
+     * <p>
+     * Note that this is not part of an official naming convention. We defined this because code
+     * generator generated project name than package name part.
+     * 
+     * @see ValidationUtils#validateJavaIdentifier(String, IIpsProject)
+     * 
+     */
+
+    @Override
+    public String getValidJavaIdentifier(String identifier) {
+
+        // Replace characters that are not valid for Java identifier
+        char[] characters = identifier.toCharArray();
         for (int i = 0; i < characters.length; i++) {
             if ((i == 0 && !Character.isJavaIdentifierStart(characters[i]))
                     || (i > 0 && !Character.isJavaIdentifierPart(characters[i]))) {

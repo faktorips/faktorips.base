@@ -17,7 +17,6 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -33,6 +32,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.core.IpsClasspathContainerInitializer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.Util;
+import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
@@ -49,10 +49,6 @@ import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
  * @author Thorsten Günther
  */
 public class ProjectUtil {
-
-    // TODO CODE-REVIEW PA-559: nicht verwendete Konstante
-    // character and numbers without special character, white space and umlauts
-    private static final Pattern NAME_PATTERN = Pattern.compile("\\w+"); //$NON-NLS-1$
 
     /**
      * Adds the Faktor-IPS nature to the given project.
@@ -225,7 +221,7 @@ public class ProjectUtil {
         if (path.containsSrcFolderEntry(srcFolder)) {
             path.removeSrcFolderEntry(srcFolder);
         }
-        String packageName = getValidProjectName(ipsProject.getName()) + "." + folderName; //$NON-NLS-1$
+        String packageName = new JavaNamingConvention().getValidJavaIdentifier(ipsProject.getName()) + "." + folderName; //$NON-NLS-1$
 
         IIpsSrcFolderEntry entry = path.newSourceFolderEntry(srcFolder);
         entry.setSpecificBasePackageNameForMergableJavaClasses(packageName);
@@ -236,35 +232,6 @@ public class ProjectUtil {
         ipsProject.setIpsObjectPath(path);
 
         return srcFolder;
-    }
-
-    /**
-     * <p>
-     * Any invalid character will be transformed to an underscore.
-     * <p>
-     * Note that this is not part of an official naming convention. We defined this because code
-     * generator generated project name than package name part.
-     */
-    /*
-     * TODO CODE-REVIEW PA-559: Es geht hier eigentlich nicht um einen validen Projektnamen. Als
-     * Projektnamen ist nach wie vor alles erlaubt. Der Code ist dupliziert aus
-     * JavaNamingConvention#getEnumLiteral. Diese Methode sollte verschoben werden nach
-     * JavaNamingConvention und dort heißen: getValidJavaIdentifier(String). Bitte noch in den
-     * JavaDoc ein @see ValidationUtils#validateJavaIdentifier(String, IIpsProject) aufnehmen. Die
-     * Methode dann auch gleich in JavaNamingConvention#getEnumLiteral verwenden.
-     */
-    protected static String getValidProjectName(String projectName) {
-
-        // Replace characters that are not valid for Java packages name
-        char[] characters = projectName.toCharArray();
-        for (int i = 0; i < characters.length; i++) {
-            if ((i == 0 && !Character.isJavaIdentifierStart(characters[i]))
-                    || (i > 0 && !Character.isJavaIdentifierPart(characters[i]))) {
-                characters[i] = '_';
-            }
-        }
-
-        return String.valueOf(characters);
     }
 
     /**
