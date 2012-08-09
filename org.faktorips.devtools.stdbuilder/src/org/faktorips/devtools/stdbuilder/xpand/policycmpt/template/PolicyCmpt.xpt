@@ -58,9 +58,7 @@ package «packageName»;
 			«EXPAND PolicyCmptAttribute::setter-»
 		«ENDFOREACH-»
 		
-		«REM»
 		«EXPAND DerivedUnionAssociation::methodDerivedUnionContains(this) FOREACH derivedUnionAssociations»
-		«ENDREM»
 
 		«FOREACH associations AS this-»
 			«EXPAND PolicyCmptAssociation::methods-»
@@ -208,7 +206,7 @@ package «packageName»;
 	   			«IF hasSupertype()-»
 	   				return super.«getEffectiveFromAsCalendar()»;
 				«ELSE-»
-					return null;
+					return null; // TODO
 					«localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE1")»
 					«localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE2")»
 					«localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE3")»

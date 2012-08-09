@@ -62,7 +62,8 @@
         int num = 0;
         «IF generateGetNumOfInternalSuperCall(currentContextClass)-»
      		num += super.«methodNameGetNumOf»();
-        «ENDIF-»«REM»Force empty line, imitate old generator«ENDREM»
+     		«REM»Force empty line, imitate old generator«ENDREM»
+        «ENDIF-»
      	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
      		num += «subsetAssociation.methodNameGetNumOf»();
      	«ENDFOREACH-»
@@ -70,13 +71,11 @@
      }
 «ENDDEFINE»
 
-		«REM» wird in PolicyCmptAssociation.xpt behandelt
 «DEFINE methodDerivedUnionContains(XClass currentContextClass) FOR XDerivedUnionAssociation-»
 	«IF isDefinedIn(currentContextClass)-»
-		«EXPAND PolicyCmptAssociation::contains»
+		«EXPAND PolicyCmptAssociation::contains »
 	«ENDIF-»
 «ENDDEFINE»
-		«ENDREM»
 
 «DEFINE getParent(XPolicyCmptClass currentContextClass) FOR XDetailToMasterDerivedUnionAssociation-»
 	/**

@@ -74,15 +74,15 @@
 
 «DEFINE allowedValuesMethod FOR XPolicyAttribute-»
 	«IF generateGetAllowedValuesFor-»
-	/**
-	 * «inheritDocOrJavaDoc("METHOD_GET_ALLOWED_VALUES_FOR", name, description)»
-	 *
-	 * @generated
-	 */
-	«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
-	public «ValueSet()»<«datatypeClass»> «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»{
-		return «methodNameGetProductCmptGeneration»().«methodNameGetAllowedValuesFor»(context);
-	}
+		/**
+		 * «inheritDocOrJavaDoc("METHOD_GET_ALLOWED_VALUES_FOR", name, description)»
+		 *
+		 * @generated
+		 */
+		«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
+		public «ValueSet()»<«datatypeClass»> «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»{
+			return «methodNameGetProductCmptGeneration»().«methodNameGetAllowedValuesFor»(context);
+		}
 	«ENDIF-»
 «ENDDEFINE»
 

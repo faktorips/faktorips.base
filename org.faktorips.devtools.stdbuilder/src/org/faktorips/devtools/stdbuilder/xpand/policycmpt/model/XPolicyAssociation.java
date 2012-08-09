@@ -73,7 +73,7 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public boolean isConsiderInVisitorSupport() {
-        return isProductRelevant();
+        return isValidMasterToDetail() && !isDerivedUnion();
     }
 
     public boolean isConsiderInCreateCreateUnresolvedReference() {
