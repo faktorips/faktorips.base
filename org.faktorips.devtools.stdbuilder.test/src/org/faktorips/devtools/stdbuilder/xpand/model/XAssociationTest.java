@@ -114,14 +114,14 @@ public class XAssociationTest {
     }
 
     @Test
-    public void testGetTargetClassName() throws Exception {
-        XProductCmptClass xProductCmptClass = initMocksForGetNameTests();
-        doReturn("TargetType").when(xProductCmptClass).getSimpleName(BuilderAspect.IMPLEMENTATION);
-
-        // doReturn(XProductCmptClass.class).when(xAssociation).getTargetModelNodeType();
-        String targetClassName = xAssociation.getTargetClassName();
-        assertEquals("TargetType", targetClassName);
-    }
+        public void testGetClassName() throws Exception {
+            XProductCmptClass xProductCmptClass = initMocksForGetNameTests();
+            doReturn("TargetType").when(xProductCmptClass).getSimpleName(BuilderAspect.IMPLEMENTATION);
+    
+            // doReturn(XProductCmptClass.class).when(xAssociation).getTargetModelNodeType();
+            String targetClassName = xAssociation.getTargetClassName();
+            assertEquals("TargetType", targetClassName);
+        }
 
     @Test
     public void testGetTargetInterfaceName() throws Exception {
