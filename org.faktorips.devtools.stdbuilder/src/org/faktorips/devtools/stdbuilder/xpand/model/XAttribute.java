@@ -92,6 +92,18 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return addImport(javaClassName);
     }
 
+    public String getNewInstanceExpression(String expression) {
+        JavaCodeFragment fragment = getDatatypeHelper().newInstanceFromExpression(expression);
+        addImport(fragment.getImportDeclaration());
+        return fragment.getSourcecode();
+    }
+
+    public String getToStringExpression(String memberVarName) {
+        JavaCodeFragment fragment = getDatatypeHelper().getToStringExpression(memberVarName);
+        addImport(fragment.getImportDeclaration());
+        return fragment.getSourcecode();
+    }
+
     public boolean isPublished() {
         return getAttribute().getModifier().isPublished();
     }

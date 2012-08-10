@@ -102,6 +102,9 @@ IRuntimeRepository(AbstractGeneratorModelNode this) :
 IXmlPersistenceSupport(AbstractGeneratorModelNode this) :
 	addImport(IXmlPersistenceSupport.name);
 
+ValueToXmlHelper(AbstractGeneratorModelNode this) :
+	addImport(ValueToXmlHelper.name);
+
 // EXECPTIONS
 NoSuchElementException(AbstractGeneratorModelNode this) :
 	addImport(NoSuchElementException.name);

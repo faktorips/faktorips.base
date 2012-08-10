@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -235,12 +234,6 @@ public class XPolicyAttribute extends XAttribute {
 
     public String getMethodNameComputeAttribute() {
         return getAttribute().getComputationMethodSignature();
-    }
-
-    public String getNewInstanceExpression() {
-        JavaCodeFragment fragment = getDatatypeHelper().newInstanceFromExpression("propMap.get(\"" + getName() + "\")");
-        addImport(fragment.getImportDeclaration());
-        return fragment.getSourcecode();
     }
 
 }

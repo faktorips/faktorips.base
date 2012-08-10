@@ -15,7 +15,7 @@
 
 «DEFINE memberField FOR XProductAttribute-»
 	/**
-	 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
+	 * «localizedJDoc("FIELD_VALUE", name.toFirstUpper())»
 	 *
 	 * @generated
 	 */
@@ -42,11 +42,10 @@
 
 «DEFINE setter FOR XProductAttribute-»
 	/**
-	 * «inheritDocOrJavaDoc("METHOD_SETVALUE", name, description)»
+	 * «localizedJDoc("METHOD_SETVALUE", name, description)»
 	 *
 	 * @generated
 	 */
-	«overrideAnnotation(overwrite)»
 	public void «method(methodNameSetter, javaClassName, "newValue")»{
 		«EXPAND ProductCommons::checkRepositoryModifyable-»
 		this.«fieldName» = newValue;
@@ -54,4 +53,16 @@
 «ENDDEFINE»
 
 «DEFINE initAttributeFromXML FOR XProductAttribute-»
+        configElement = configMap.get("«name»");
+        if (configElement != null) {
+            String value = «ValueToXmlHelper()».«getValueFromElement("configElement", "\"Value\"")»;
+            this.«name» = «getNewInstanceExpression("value")»;
+        }
+«ENDDEFINE»
+
+«DEFINE writeAttributeToXML FOR XProductAttribute-»
+        attributeElement = element.getOwnerDocument().createElement("AttributeValue");
+        attributeElement.setAttribute("attribute", "«name»");
+        «ValueToXmlHelper()».addValueToElement(«getToStringExpression(name)», attributeElement, "Value");
+        element.appendChild(attributeElement);
 «ENDDEFINE»

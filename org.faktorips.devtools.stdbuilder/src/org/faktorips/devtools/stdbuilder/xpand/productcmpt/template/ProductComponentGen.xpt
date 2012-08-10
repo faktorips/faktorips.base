@@ -26,9 +26,9 @@
 			 	«ENDIF-»
 		 	«ENDFOREACH-»
 		 
-			«EXPAND ProductAssociation::field FOREACH associations-»
-
 			«EXPAND ProductAttribute::memberField FOREACH attributes-»
+
+			«EXPAND ProductAssociation::field FOREACH associations-»
 			
 		    /**
 		     * «localizedJDoc("CONSTRUCTOR", getSimpleName(BuilderAspect::IMPLEMENTATION))»
@@ -66,6 +66,8 @@
 		    «overrideAnnotation(false)-»
 		    protected void «doInitPropertiesFromXml(Map("String", Element()) + " configMap")» {
 		        super.«doInitPropertiesFromXml("configMap")»;
+		        Element configElement = null;
+		        «EXPAND ProductAttribute::initAttributeFromXML FOREACH attributes-»
 		    }
 			
 «IF associations.size > 0»
@@ -89,6 +91,9 @@
 		    protected void «writePropertiesToXml(Element() + " element")» {
 		    	«IF hasSupertype()-»
 		        	super.«writePropertiesToXml("element")»;
+			        Element attributeElement = null;
+			        List<String> stringList = null;
+		        	«EXPAND ProductAttribute::writeAttributeToXML FOREACH attributes-»
 		        «ELSE-»
  «REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification. 
 		        «ENDIF-»
@@ -107,21 +112,21 @@
 
 		«EXPAND createPolicyCmpt(this) FOREACH policyTypeClassHierarchy»
 
-		«IF configurationForPolicyCmptType»
-			«LET policyCmptClass AS policyCmptClass»
-				«IF !policyCmptClass.abstract»
-			    /**
-			     * {@inheritDoc}
-			     * 
-			     * @generated
-			     */
-			    «overrideAnnotation(false)-»
-			    public «IConfigurableModelObject()» «createPolicyComponent()» {
-			        return «policyCmptClass.methodNameCreatePolicyCmpt»();
-			    }
-			    «ENDIF»
-		    «ENDLET»
-		«ENDIF»
+		«IF !configurationForPolicyCmptType || !policyCmptClass.abstract»
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotation(false)-»
+	    public «IConfigurableModelObject()» «createPolicyComponent()» {
+	    	«IF !configurationForPolicyCmptType-»
+	    		return null;
+	    	«ELSE-»
+	        	return «policyCmptClass.methodNameCreatePolicyCmpt»();
+	        «ENDIF-»
+	    }
+	    «ENDIF»
 
 		«EXPAND ProductAssociation::getLinkMethods»
 		

@@ -114,6 +114,13 @@ validateDependants(String argument1, String argument2):
 isModifiable() :
 	"isModifiable()";
 
+
+// ---------------------------------
+// Methods in ValueToXmlHelper
+// ---------------------------------
+getValueFromElement(String paramConfigElement, String paramValue) :
+	"getValueFromElement(" + paramConfigElement + ", " + paramValue + ")";
+	
 // ---------------------------------
 // Methods in IXmlPersistenceSupport
 // ---------------------------------
