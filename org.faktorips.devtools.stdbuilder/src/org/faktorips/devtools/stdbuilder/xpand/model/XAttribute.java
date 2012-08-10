@@ -49,7 +49,7 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return getIpsObjectPartContainer();
     }
 
-    public final DatatypeHelper getDatatypeHelper() {
+    public DatatypeHelper getDatatypeHelper() {
         return datatypeHelper;
     }
 
@@ -92,8 +92,14 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return addImport(javaClassName);
     }
 
-    public String getNewInstanceExpression(String expression) {
+    public String getNewInstanceFromExpression(String expression) {
         JavaCodeFragment fragment = getDatatypeHelper().newInstanceFromExpression(expression);
+        addImport(fragment.getImportDeclaration());
+        return fragment.getSourcecode();
+    }
+
+    public String getNewInstance() {
+        JavaCodeFragment fragment = getDatatypeHelper().newInstance("");
         addImport(fragment.getImportDeclaration());
         return fragment.getSourcecode();
     }

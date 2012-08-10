@@ -118,9 +118,19 @@ isModifiable() :
 // ---------------------------------
 // Methods in ValueToXmlHelper
 // ---------------------------------
+
 getValueFromElement(String paramConfigElement, String paramValue) :
 	"getValueFromElement(" + paramConfigElement + ", " + paramValue + ")";
 	
+// ---------------------------------
+// Methods in MultiValueXmlHelper
+// ---------------------------------
+
+getValuesFromXML(String paramConfigElement) :
+	"getValuesFromXML(" + paramConfigElement + ")";
+	
+addValuesToElement(String attributeElementParam, String nameParam) :
+	"addValuesToElement(" + attributeElementParam + ", " + nameParam + ")";
 // ---------------------------------
 // Methods in IXmlPersistenceSupport
 // ---------------------------------

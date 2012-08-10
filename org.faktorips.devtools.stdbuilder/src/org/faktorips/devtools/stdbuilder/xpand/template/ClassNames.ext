@@ -104,6 +104,9 @@ IXmlPersistenceSupport(AbstractGeneratorModelNode this) :
 
 ValueToXmlHelper(AbstractGeneratorModelNode this) :
 	addImport(ValueToXmlHelper.name);
+	
+MultiValueXmlHelper(AbstractGeneratorModelNode this) :
+	addImport(MultiValueXmlHelper.name);
 
 // EXECPTIONS
 NoSuchElementException(AbstractGeneratorModelNode this) :

@@ -76,3 +76,6 @@ inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String jDoc, Object param, 
 	
 abstract(XClass this) :
 	if abstract then "abstract";
+
+isPolicyCmptClass(XClass xClass) :
+	if XPolicyCmptClass.isInstance(xClass) then true else false;

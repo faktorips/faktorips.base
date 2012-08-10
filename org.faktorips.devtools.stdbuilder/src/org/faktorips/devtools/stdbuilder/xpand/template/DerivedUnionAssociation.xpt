@@ -62,7 +62,10 @@
         int num = 0;
         «IF generateGetNumOfInternalSuperCall(currentContextClass)-»
      		num += super.«methodNameGetNumOf»();
-        «ENDIF-»«REM»Force empty line, imitate old generator«ENDREM»
+        «ENDIF-»
+        «IF isPolicyCmptClass(currentContextClass)-»
+        	«REM»Force empty line, imitate old generator«ENDREM»
+        «ENDIF-»
      	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
      		num += «subsetAssociation.methodNameGetNumOf»();
      	«ENDFOREACH-»

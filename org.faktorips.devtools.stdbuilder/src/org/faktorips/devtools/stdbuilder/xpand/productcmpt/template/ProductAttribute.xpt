@@ -19,7 +19,12 @@
 	 *
 	 * @generated
 	 */
-	private «javaClassName» «field(fieldName)» = «defaultValueCode»;
+	 «IF multiValue-»
+		 private «javaClassName» «field(fieldName)» = «newInstance»;
+		 «REM»new line because of old code generator«ENDREM»
+	 «ELSE-»
+		 private «javaClassName» «field(fieldName)» = «defaultValueCode»;
+	 «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE getterSetter FOR XProductAttribute-»
@@ -48,21 +53,48 @@
 	 */
 	public void «method(methodNameSetter, javaClassName, "newValue")»{
 		«EXPAND ProductCommons::checkRepositoryModifyable-»
-		this.«fieldName» = newValue;
+		this.«fieldName» = «getReferenceOrSafeCopyIfNecessary("newValue")»;
 	}
 «ENDDEFINE»
 
 «DEFINE initAttributeFromXML FOR XProductAttribute-»
         configElement = configMap.get("«name»");
         if (configElement != null) {
+        «IF multiValue-»
+        	«IF javaClassName == "List<String>"-»
+	            «javaClassName» valueList = «MultiValueXmlHelper()».«getValuesFromXML("configElement")»;
+	        «ELSE-»
+	            «javaClassName» valueList = «newInstance»;
+	            «List_("String")» stringList = «MultiValueXmlHelper()».«getValuesFromXML("configElement")»;
+	            for (String stringValue : stringList) {
+	                «singleJavaClassName» convertedValue = «getNewSingleInstanceFromExpression("stringValue")»;
+	                valueList.add(convertedValue);
+	            }
+	        «ENDIF-»
+   	        this.«name» = valueList;
+        «ELSE-»
             String value = «ValueToXmlHelper()».«getValueFromElement("configElement", "\"Value\"")»;
-            this.«name» = «getNewInstanceExpression("value")»;
-        }
+            this.«name» = «getNewInstanceFromExpression("value")»;
+        «ENDIF-»
+        }        
 «ENDDEFINE»
 
 «DEFINE writeAttributeToXML FOR XProductAttribute-»
         attributeElement = element.getOwnerDocument().createElement("AttributeValue");
         attributeElement.setAttribute("attribute", "«name»");
-        «ValueToXmlHelper()».addValueToElement(«getToStringExpression(name)», attributeElement, "Value");
+        «IF multiValue-»
+            «IF javaClassName == "List<String>"-»
+                «MultiValueXmlHelper()».«addValuesToElement("attributeElement", "this." + name)»;
+            «ELSE-»
+		        stringList = new «ArrayList("String")»();
+		        for («singleJavaClassName» value : this.«name») {
+		            String stringValue = value == null ? null : value.toString();
+		            stringList.add(stringValue);
+		        }
+		        «MultiValueXmlHelper()».«addValuesToElement("attributeElement", "stringList")»;
+	        «ENDIF-»
+	    «ELSE-»
+	        «ValueToXmlHelper()».addValueToElement(«getToStringExpression(name)», attributeElement, "Value");
+        «ENDIF-»
         element.appendChild(attributeElement);
 «ENDDEFINE»
