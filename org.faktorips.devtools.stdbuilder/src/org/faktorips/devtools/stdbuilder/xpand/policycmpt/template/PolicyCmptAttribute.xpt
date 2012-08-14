@@ -80,7 +80,7 @@
 		 * @generated
 		 */
 		«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
-		public «ValueSet()»<«datatypeClass»> «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»{
+		public «ValueSet(valueSetJavaClassName)» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»{
 			return «methodNameGetProductCmptGeneration»().«methodNameGetAllowedValuesFor»(context);
 		}
 	«ENDIF-»
@@ -103,7 +103,8 @@
 «DEFINE initAttributeFromXML FOR XPolicyAttribute-»
 	«IF generateInitPropertiesFromXML-»
         if (propMap.containsKey("«name»")) {
-            this.«fieldName» = «newInstanceExpression»;
+            this.«fieldName» = «getNewInstanceFromExpression("propMap.get(\"" + name + "\")")»;
         }
     «ENDIF-»
 «ENDDEFINE»
+

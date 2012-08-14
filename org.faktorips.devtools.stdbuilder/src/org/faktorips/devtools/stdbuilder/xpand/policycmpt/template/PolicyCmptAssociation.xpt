@@ -15,8 +15,10 @@
 	     * @generated
 	     */
 		«IF oneToMany-»
+			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
 			private «List_(targetInterfaceName)» «field(fieldName)»  = new «ArrayList(targetInterfaceName)»();
 		«ELSE-»
+			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
 			private «targetClassName» «field(fieldName)» = null;
 		«ENDIF-»
 	«ENDIF-»
@@ -393,7 +395,8 @@
 	 *
 	 * @generated	 
 	 */
-	private «targetClassName» «fieldName»;
+	«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
+	private «targetClassName» «field(fieldName)»;
 «ENDDEFINE»
 «DEFINE methodSetParentInternal FOR XPolicyAssociation-»
 	/**

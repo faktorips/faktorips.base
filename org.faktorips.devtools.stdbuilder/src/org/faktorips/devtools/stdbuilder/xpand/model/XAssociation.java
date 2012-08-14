@@ -159,7 +159,13 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
     public String getTargetClassName() {
         IType target = getTargetType();
         XClass xClass = getModelNode(target, getTargetModelNodeType());
-        return getTargetClassName(xClass);
+        return getClassName(xClass);
+    }
+
+    public String getTargetQualifiedClassName() {
+        IType target = getTargetType();
+        XClass xClass = getModelNode(target, getTargetModelNodeType());
+        return xClass.getQualifiedName(BuilderAspect.IMPLEMENTATION);
     }
 
     /**
@@ -169,14 +175,14 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
     public String getClassName() {
         IType target = getIType();
         XClass xClass = getModelNode(target, getTargetModelNodeType());
-        return getTargetClassName(xClass);
+        return getClassName(xClass);
     }
 
     private IType getIType() {
         return getAssociation().getType();
     }
 
-    protected String getTargetClassName(XClass xClass) {
+    protected String getClassName(XClass xClass) {
         return xClass.getSimpleName(BuilderAspect.IMPLEMENTATION);
     }
 

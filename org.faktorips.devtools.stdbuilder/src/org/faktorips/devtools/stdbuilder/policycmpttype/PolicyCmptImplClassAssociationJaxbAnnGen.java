@@ -32,7 +32,7 @@ public class PolicyCmptImplClassAssociationJaxbAnnGen extends AbstractAnnotation
             IPolicyCmptTypeAssociation association = xPolicyAssociation.getAssociation();
 
             String fieldName = xPolicyAssociation.getFieldName();
-            String targetImplClassName = xPolicyAssociation.getTargetClassName();
+            String targetImplClassName = xPolicyAssociation.getTargetQualifiedClassName();
 
             if (association.is1To1()) {
                 // toOne

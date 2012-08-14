@@ -110,8 +110,38 @@ public class XPolicyAttribute extends XAttribute {
         return isOverwrite() && isChangeable();
     }
 
-    public String getDatatypeClass() {
+    public String getValueSetJavaClassName() {
         return addImport(valuesetDatatypeHelper.getJavaClassName());
+    }
+
+    public String getValueSetNullValueCode() {
+        JavaCodeFragment nullValueCode = valuesetDatatypeHelper.nullExpression();
+        addImport(nullValueCode.getImportDeclaration());
+        return nullValueCode.getSourcecode();
+    }
+
+    public String getValueSetNewInstanceFromExpression(String expression) {
+        JavaCodeFragment fragment = valuesetDatatypeHelper.newInstanceFromExpression(expression);
+        addImport(fragment.getImportDeclaration());
+        return fragment.getSourcecode();
+    }
+
+    public String getToStringExpression() {
+        JavaCodeFragment fragment = getDatatypeHelper().getToStringExpression(getFieldNameDefaultValue());
+        addImport(fragment.getImportDeclaration());
+        return fragment.getSourcecode();
+    }
+
+    public boolean isRangeSupported() {
+        try {
+            return getIpsProject().isValueSetTypeApplicable(getDatatype(), ValueSetType.RANGE);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    public String getRangeClassName() {
+        return addImport(valuesetDatatypeHelper.getRangeJavaClassName(true));
     }
 
     public boolean isGenerateDefaultForDerivedAttribute() {
@@ -230,18 +260,20 @@ public class XPolicyAttribute extends XAttribute {
         return "getSetOfAllowedValuesFor" + StringUtils.capitalize(getFieldName());
     }
 
+    public String getFieldNameDefaultValue() {
+        return "defaultValue" + StringUtils.capitalize(getFieldName());
+    }
+
+    public String getFieldNameValueSet() {
+        return "setOfAllowedValues" + StringUtils.capitalize(getFieldName());
+    }
+
     public String getMethodNameGetDefaultValue() {
         return "getDefaultValue" + StringUtils.capitalize(getFieldName());
     }
 
     public String getMethodNameComputeAttribute() {
         return getAttribute().getComputationMethodSignature();
-    }
-
-    public String getNewInstanceExpression() {
-        JavaCodeFragment fragment = getDatatypeHelper().newInstanceFromExpression("propMap.get(\"" + getName() + "\")");
-        addImport(fragment.getImportDeclaration());
-        return fragment.getSourcecode();
     }
 
 }

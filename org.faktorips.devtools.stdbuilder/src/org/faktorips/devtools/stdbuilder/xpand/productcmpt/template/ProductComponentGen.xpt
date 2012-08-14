@@ -26,9 +26,11 @@
 			 	«ENDIF-»
 		 	«ENDFOREACH-»
 		 
-			«EXPAND ProductAssociation::field FOREACH associations-»
-
 			«EXPAND ProductAttribute::memberField FOREACH attributes-»
+
+			«EXPAND DefaultAndAllowedValues::defaultAndAllowedValuesFields FOREACH configuredAttributes-»
+
+			«EXPAND ProductAssociation::field FOREACH associations-»
 			
 		    /**
 		     * «localizedJDoc("CONSTRUCTOR", getSimpleName(BuilderAspect::IMPLEMENTATION))»
@@ -40,6 +42,8 @@
 			}
 
 			«EXPAND ProductAttribute::getterSetter FOREACH attributes»
+
+			«EXPAND DefaultAndAllowedValues::getterSetter FOREACH configuredAttributes-»
 
 			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
 			
@@ -66,6 +70,9 @@
 		    «overrideAnnotation(false)-»
 		    protected void «doInitPropertiesFromXml(Map("String", Element()) + " configMap")» {
 		        super.«doInitPropertiesFromXml("configMap")»;
+		        Element configElement = null;
+		        «EXPAND ProductAttribute::initAttributeFromXML FOREACH attributes-»
+		        «EXPAND DefaultAndAllowedValues::initAttributeFromXML FOREACH configuredAttributes-»
 		    }
 			
 «IF associations.size > 0»
@@ -92,6 +99,17 @@
 		        «ELSE-»
  «REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification. 
 		        «ENDIF-»
+		        «IF attributes.size > 0»
+			        Element attributeElement = null;
+			        List<String> stringList = null;
+		        	«EXPAND ProductAttribute::writeAttributeToXML FOREACH attributes-»
+		        «ENDIF»
+		        «IF configuredAttributes.size > 0» 
+		        	Element configElement = null;
+		        	Element valueSetElement = null;
+		        	Element valueSetValuesElement = null;
+		        	«EXPAND DefaultAndAllowedValues::writeAttributeToXML FOREACH configuredAttributes-»
+		        «ENDIF»
 		    }
 		   
 		«IF associations.size > 0»
@@ -107,21 +125,21 @@
 
 		«EXPAND createPolicyCmpt(this) FOREACH policyTypeClassHierarchy»
 
-		«IF configurationForPolicyCmptType»
-			«LET policyCmptClass AS policyCmptClass»
-				«IF !policyCmptClass.abstract»
-			    /**
-			     * {@inheritDoc}
-			     * 
-			     * @generated
-			     */
-			    «overrideAnnotation(false)-»
-			    public «IConfigurableModelObject()» «createPolicyComponent()» {
-			        return «policyCmptClass.methodNameCreatePolicyCmpt»();
-			    }
-			    «ENDIF»
-		    «ENDLET»
-		«ENDIF»
+		«IF !configurationForPolicyCmptType || !policyCmptClass.abstract»
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotation(false)-»
+	    public «IConfigurableModelObject()» «createPolicyComponent()» {
+	    	«IF !configurationForPolicyCmptType-»
+	    		return null;
+	    	«ELSE-»
+	        	return «policyCmptClass.methodNameCreatePolicyCmpt»();
+	        «ENDIF-»
+	    }
+	    «ENDIF»
 
 		«EXPAND ProductAssociation::getLinkMethods»
 		

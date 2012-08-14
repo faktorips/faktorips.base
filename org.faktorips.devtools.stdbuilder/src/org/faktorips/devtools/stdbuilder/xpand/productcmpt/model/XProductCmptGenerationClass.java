@@ -26,6 +26,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenJavaClass
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 
@@ -35,9 +36,11 @@ public class XProductCmptGenerationClass extends XProductClass {
 
     private final IJavaClassNameProvider prodGenJavaClassNameProvider;
 
-    protected final Set<XProductAttribute> attributes;
+    private final Set<XProductAttribute> attributes;
 
-    protected final Set<XProductAssociation> associations;
+    private final Set<XPolicyAttribute> configuredAttributes;
+
+    private final Set<XProductAssociation> associations;
 
     private final Set<XDerivedUnionAssociation> derivedUnionAssociations;
 
@@ -47,6 +50,7 @@ public class XProductCmptGenerationClass extends XProductClass {
         prodGenJavaClassNameProvider = createProductCmptGenJavaClassNaming(getLanguageUsedInGeneratedSourceCode());
 
         attributes = initNodesForParts(getProductAttributes(CHANGE_OVER_TIME), XProductAttribute.class);
+        configuredAttributes = initNodesForParts(getConfiguredAttributes(CHANGE_OVER_TIME), XPolicyAttribute.class);
         associations = initNodesForParts(getProductAssociations(CHANGE_OVER_TIME), XProductAssociation.class);
         derivedUnionAssociations = initNodesForParts(getProductDerivedUnionAssociations(CHANGE_OVER_TIME),
                 XDerivedUnionAssociation.class);
@@ -116,6 +120,11 @@ public class XProductCmptGenerationClass extends XProductClass {
     @Override
     public Set<XProductAttribute> getAttributes() {
         return new CopyOnWriteArraySet<XProductAttribute>(attributes);
+    }
+
+    @Override
+    public Set<XPolicyAttribute> getConfiguredAttributes() {
+        return new CopyOnWriteArraySet<XPolicyAttribute>(configuredAttributes);
     }
 
     @Override
