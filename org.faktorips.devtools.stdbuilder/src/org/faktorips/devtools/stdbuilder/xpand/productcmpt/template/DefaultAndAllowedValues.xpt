@@ -1,0 +1,142 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::runtime»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE defaultAndAllowedValuesFields FOR XPolicyAttribute-»
+	«IF generateGetAllowedValuesFor-»
+		«EXPAND defaultField-»
+		«EXPAND allowedValueSetField-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE defaultField FOR XPolicyAttribute-»
+    /**
+     * «localizedJDoc("FIELD_DEFAULTVALUE", name)»
+     * 
+     * @generated
+     */
+    private «javaClassName» «fieldNameDefaultValue» = «defaultValueCode»;
+«ENDDEFINE»
+
+«DEFINE allowedValueSetField FOR XPolicyAttribute-»
+	«IF false-»
+«REM» TODO für Ranges wird vermutlich noch anderer Code generiert  
+	    /**
+	     * «localizedJDoc("FIELD_RANGE_FOR", name)»
+	     * 
+	     * @generated
+	     */
+	    private «Range(datatypeClass)» «fieldNameValueSet»; //TODO der name ist noch falsch
+	    «ENDREM»
+	«ELSE-»
+	    /**
+	     * «localizedJDoc("FIELD_ALLOWED_VALUES_FOR", name)»
+	     * 
+	     * @generated
+	     */
+	    private «ValueSet(valueSetJavaClassName)» «fieldNameValueSet»;
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE getterSetter FOR XPolicyAttribute-»
+	«IF generateGetAllowedValuesFor-»
+		«EXPAND getterDefaultValue-»
+		«EXPAND getterAllowedValues-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE getterDefaultValue FOR XPolicyAttribute-»
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    «overrideAnnotationForAttribute()»
+    public «javaClassName» «methodNameGetDefaultValue»() {
+        return «fieldNameDefaultValue»;
+    }
+«ENDDEFINE»
+
+«DEFINE getterAllowedValues FOR XPolicyAttribute-»
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    «overrideAnnotationForAttribute()»
+    public «ValueSet(valueSetJavaClassName)» «methodNameGetAllowedValuesFor»(«IValidationContext()» context) {
+        return «fieldNameValueSet»;
+    }
+«ENDDEFINE»
+
+«DEFINE initAttributeFromXML FOR XPolicyAttribute-»
+	«IF generateGetAllowedValuesFor-»
+        configElement = configMap.get("«name»");
+        if (configElement != null) {
+            String value = «ValueToXmlHelper()».«getValueFromElement("configElement", "\"Value\"")»;
+            «fieldNameDefaultValue» = «getNewInstanceFromExpression("value")»;
+            «fieldNameValueSet» = new «UnrestrictedValueSet(valueSetJavaClassName)»();
+            «EnumValues()» values = «ValueToXmlHelper()».«getEnumValueSetFromElement("configElement", "\"ValueSet\"")»;
+            if (values != null) {
+                «ArrayList(valueSetJavaClassName)» enumValues = new «ArrayList(valueSetJavaClassName)»();
+                for (int i = 0; i < values.«getNumberOfValues()»; i++) {
+                    enumValues.add(«getValueSetNewInstanceFromExpression("values.getValue(i)")»);
+                }
+                «fieldNameValueSet» = new «OrderedValueSet(valueSetJavaClassName)»(enumValues, values
+                        .containsNull(), «valueSetNullValueCode»);
+            }
+            «IF rangeSupported-»
+            «Range()» range = «ValueToXmlHelper()».«getRangeFromElement("configElement", "\"ValueSet\"")»;
+            if (range != null) {
+                «fieldNameValueSet» = «rangeClassName».valueOf(range.getLower(), range
+                        .getUpper(), range.getStep(), range.containsNull());
+            }
+            «ENDIF-»
+        }
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«DEFINE writeAttributeToXML FOR XPolicyAttribute-»
+        configElement = element.getOwnerDocument().createElement("ConfigElement");
+        configElement.setAttribute("attribute", "«name»");
+        «ValueToXmlHelper()».«addValueToElement(toStringExpression, "configElement", "\"Value\"")»;
+        valueSetElement = element.getOwnerDocument().createElement("\"ValueSet\"");
+        valueSetElement.setAttribute("abstract", "false");
+        if («fieldNameValueSet» instanceof «UnrestrictedValueSet("?")») {
+            Element unrestrictedValueSetElement = element.getOwnerDocument().createElement("Unrestricted");
+            Element valueElement = unrestrictedValueSetElement.getOwnerDocument().createElement("AllValues");
+            unrestrictedValueSetElement.appendChild(valueElement);
+            valueSetElement.appendChild(unrestrictedValueSetElement);
+        }
+        «IF rangeSupported»
+        if («fieldNameValueSet» instanceof «qnameRange("?")») {
+            «qnameRange(javaClassName)» range = («qnameRange(javaClassName)»)«fieldNameValueSet»;
+            valueSetValuesElement = element.getOwnerDocument().createElement("Range");
+            valueSetValuesElement.setAttribute("containsNull", Boolean.toString(«fieldNameValueSet».«containsNull()»));
+            «ValueToXmlHelper()».«addValueToElement(getToStringExpression("range.getLowerBound()"),
+                    "valueSetValuesElement", "\"LowerBound\"")»;
+            «ValueToXmlHelper()».«addValueToElement(getToStringExpression("range.getUpperBound()"),
+                    "valueSetValuesElement", "\"UpperBound\"")»;
+            «ValueToXmlHelper()».«addValueToElement(getToStringExpression("range.getStep()"),
+                    "valueSetValuesElement", "\"Step\"")»;
+            valueSetElement.appendChild(valueSetValuesElement);
+        }
+        «ENDIF»
+        if («fieldNameValueSet» instanceof «OrderedValueSet("?")») {
+            valueSetValuesElement = element.getOwnerDocument().createElement("Enum");
+            valueSetValuesElement.setAttribute("containsNull", Boolean.toString(«fieldNameValueSet».«containsNull()»));
+            for («javaClassName» value : «fieldNameValueSet».getValues(true)) {
+                Element valueElement = element.getOwnerDocument().createElement("Value");
+                ValueToXmlHelper.addValueToElement(value == null ? null : value.toString(), valueElement, "Data");
+                valueSetValuesElement.appendChild(valueElement);
+            }
+            valueSetElement.appendChild(valueSetValuesElement);
+        }
+        configElement.appendChild(valueSetElement);
+        element.appendChild(configElement);
+«ENDDEFINE»

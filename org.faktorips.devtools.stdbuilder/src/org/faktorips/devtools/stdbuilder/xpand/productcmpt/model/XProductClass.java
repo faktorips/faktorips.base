@@ -22,12 +22,14 @@ import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 
 public abstract class XProductClass extends XClass {
@@ -119,6 +121,32 @@ public abstract class XProductClass extends XClass {
         return resultingAttributes;
     }
 
+    /**
+     * Returns the list of configured policy attributes. With the parameter you could specify
+     * whether you want the attributes that change over time or attributes not changing over time.
+     * <p>
+     * This method needs to be final because it may be called in constructor
+     * 
+     * @param changableAttributes True to get attributes that change over time, false to get all
+     *            other attributes
+     * @return the list of policy attributes configured by this product component.
+     */
+    protected final Set<IPolicyCmptTypeAttribute> getConfiguredAttributes(boolean changableAttributes) {
+        try {
+            Set<IPolicyCmptTypeAttribute> resultingAttributes = new LinkedHashSet<IPolicyCmptTypeAttribute>();
+            IPolicyCmptType policyType = getType().findPolicyCmptType(getIpsProject());
+            List<IPolicyCmptTypeAttribute> allAttributes = policyType.getPolicyCmptTypeAttributes();
+            for (IPolicyCmptTypeAttribute attr : allAttributes) {
+                if (attr.isChangingOverTime() == changableAttributes && attr.isProductRelevant()) {
+                    resultingAttributes.add(attr);
+                }
+            }
+            return resultingAttributes;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
     public boolean isConfigurationForPolicyCmptType() {
         return getType().isConfigurationForPolicyCmptType();
     }
@@ -159,6 +187,8 @@ public abstract class XProductClass extends XClass {
 
     @Override
     public abstract Set<XProductAttribute> getAttributes();
+
+    public abstract Set<XPolicyAttribute> getConfiguredAttributes();
 
     @Override
     public abstract Set<XProductAssociation> getAssociations();

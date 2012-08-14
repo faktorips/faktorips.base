@@ -122,6 +122,15 @@ isModifiable() :
 getValueFromElement(String paramConfigElement, String paramValue) :
 	"getValueFromElement(" + paramConfigElement + ", " + paramValue + ")";
 	
+getEnumValueSetFromElement(String paramConfigElement, String paramValueSet) :
+	"getEnumValueSetFromElement(" + paramConfigElement + ", " + paramValueSet + ")";
+	
+getRangeFromElement(String paramConfigElement, String paramValueSet) :
+	"getRangeFromElement(" + paramConfigElement + ", " + paramValueSet + ")";
+
+addValueToElement(String valueParam, String elementParam, String tagNameParam) :
+	"addValueToElement(" + valueParam + ", " +  elementParam + ", " + tagNameParam + ")";
+
 // ---------------------------------
 // Methods in MultiValueXmlHelper
 // ---------------------------------
@@ -131,6 +140,21 @@ getValuesFromXML(String paramConfigElement) :
 	
 addValuesToElement(String attributeElementParam, String nameParam) :
 	"addValuesToElement(" + attributeElementParam + ", " + nameParam + ")";
+	
+// ---------------------------------
+// Methods in ValueSet
+// ---------------------------------
+	
+containsNull() : 
+	"containsNull()";
+
+// ---------------------------------
+// Methods in EnumValueSet
+// ---------------------------------
+
+getNumberOfValues() : 
+	"getNumberOfValues()";
+
 // ---------------------------------
 // Methods in IXmlPersistenceSupport
 // ---------------------------------

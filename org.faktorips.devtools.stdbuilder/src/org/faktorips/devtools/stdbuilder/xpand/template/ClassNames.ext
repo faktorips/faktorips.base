@@ -108,16 +108,31 @@ ValueToXmlHelper(AbstractGeneratorModelNode this) :
 MultiValueXmlHelper(AbstractGeneratorModelNode this) :
 	addImport(MultiValueXmlHelper.name);
 
+ValueSet(AbstractGeneratorModelNode this, String genericType):
+	addImport(ValueSet.name) + "<" + genericType + ">";
+
+UnrestrictedValueSet(AbstractGeneratorModelNode this, String genericType):
+	addImport(UnrestrictedValueSet.name) + "<" + genericType + ">";
+
+OrderedValueSet(AbstractGeneratorModelNode this, String genericType):
+	addImport(OrderedValueSet.name) + "<" + genericType + ">";
+
+qnameRange(AbstractGeneratorModelNode this, String genericType):
+	org::faktorips::valueset::Range.name + "<" + genericType + ">";
+
+EnumValues(AbstractGeneratorModelNode this):
+	addImport(org::faktorips::runtime::internal::EnumValues.name);
+
+Range(AbstractGeneratorModelNode this):
+	addImport(org::faktorips::runtime::internal::Range.name);
+
 // EXECPTIONS
 NoSuchElementException(AbstractGeneratorModelNode this) :
 	addImport(NoSuchElementException.name);
 
 IllegalRepositoryModificationException(AbstractGeneratorModelNode this) :
 	addImport(IllegalRepositoryModificationException.name);
-	
-ValueSet(AbstractGeneratorModelNode this):
-	addImport(ValueSet.name);
-	
+
 IUnresolvedReference(AbstractGeneratorModelNode this):
 	addImport(IUnresolvedReference.name);
 	

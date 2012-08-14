@@ -28,6 +28,8 @@
 		 
 			«EXPAND ProductAttribute::memberField FOREACH attributes-»
 
+			«EXPAND DefaultAndAllowedValues::defaultAndAllowedValuesFields FOREACH configuredAttributes-»
+
 			«EXPAND ProductAssociation::field FOREACH associations-»
 			
 		    /**
@@ -40,6 +42,8 @@
 			}
 
 			«EXPAND ProductAttribute::getterSetter FOREACH attributes»
+
+			«EXPAND DefaultAndAllowedValues::getterSetter FOREACH configuredAttributes-»
 
 			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
 			
@@ -68,6 +72,7 @@
 		        super.«doInitPropertiesFromXml("configMap")»;
 		        Element configElement = null;
 		        «EXPAND ProductAttribute::initAttributeFromXML FOREACH attributes-»
+		        «EXPAND DefaultAndAllowedValues::initAttributeFromXML FOREACH configuredAttributes-»
 		    }
 			
 «IF associations.size > 0»
@@ -91,12 +96,20 @@
 		    protected void «writePropertiesToXml(Element() + " element")» {
 		    	«IF hasSupertype()-»
 		        	super.«writePropertiesToXml("element")»;
-			        Element attributeElement = null;
-			        List<String> stringList = null;
-		        	«EXPAND ProductAttribute::writeAttributeToXML FOREACH attributes-»
 		        «ELSE-»
  «REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification. 
 		        «ENDIF-»
+		        «IF attributes.size > 0»
+			        Element attributeElement = null;
+			        List<String> stringList = null;
+		        	«EXPAND ProductAttribute::writeAttributeToXML FOREACH attributes-»
+		        «ENDIF»
+		        «IF configuredAttributes.size > 0» 
+		        	Element configElement = null;
+		        	Element valueSetElement = null;
+		        	Element valueSetValuesElement = null;
+		        	«EXPAND DefaultAndAllowedValues::writeAttributeToXML FOREACH configuredAttributes-»
+		        «ENDIF»
 		    }
 		   
 		«IF associations.size > 0»

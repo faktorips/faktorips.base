@@ -45,9 +45,11 @@ overrideAnnotationForPublishedMethodOrIf(AbstractGeneratorModelNode this, boolea
 	if needOverrideAnnotation(generatingPublishedInterfaces && isPublished) || condition then "@Override";
 
 // User this function for attribute methods (e.g. getter, setter).
-// Will return the @Override annotation if the attribute overwrites an attribute in a supertype, else nothing.
-overrideAnnotationIfOverriddenAttribute(XPolicyAttribute this, boolean interfaceMethodImplementation) :
-	if overwrite then "@Override";
+// Will return the @Override annotation if the attribute overwrites an attribute in a supertype.
+// If the attribute does not override another attribute, the boolean parameter specifies wether the attribute
+// is publishe
+overrideAnnotationForAttribute(XAttribute this) :
+	overrideAnnotationForPublishedMethodOrIf(published, overwrite);
 	
 // Use this function if the method in question is generated for all generated classes and subclasses always 
 // override their super's implementation. The method in question should not be an interface method. 

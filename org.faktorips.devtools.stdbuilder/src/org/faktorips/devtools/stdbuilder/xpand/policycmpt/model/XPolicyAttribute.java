@@ -16,6 +16,7 @@ package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -109,8 +110,38 @@ public class XPolicyAttribute extends XAttribute {
         return isOverwrite() && isChangeable();
     }
 
-    public String getDatatypeClass() {
+    public String getValueSetJavaClassName() {
         return addImport(valuesetDatatypeHelper.getJavaClassName());
+    }
+
+    public String getValueSetNullValueCode() {
+        JavaCodeFragment nullValueCode = valuesetDatatypeHelper.nullExpression();
+        addImport(nullValueCode.getImportDeclaration());
+        return nullValueCode.getSourcecode();
+    }
+
+    public String getValueSetNewInstanceFromExpression(String expression) {
+        JavaCodeFragment fragment = valuesetDatatypeHelper.newInstanceFromExpression(expression);
+        addImport(fragment.getImportDeclaration());
+        return fragment.getSourcecode();
+    }
+
+    public String getToStringExpression() {
+        JavaCodeFragment fragment = getDatatypeHelper().getToStringExpression(getFieldNameDefaultValue());
+        addImport(fragment.getImportDeclaration());
+        return fragment.getSourcecode();
+    }
+
+    public boolean isRangeSupported() {
+        try {
+            return getIpsProject().isValueSetTypeApplicable(getDatatype(), ValueSetType.RANGE);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    public String getRangeClassName() {
+        return addImport(valuesetDatatypeHelper.getRangeJavaClassName(true));
     }
 
     public boolean isGenerateDefaultForDerivedAttribute() {
@@ -144,7 +175,7 @@ public class XPolicyAttribute extends XAttribute {
         if (isDerived()) {
             return false;
         }
-        if (isValueSetUnrestricted() || !isProductRelevant()) {
+        if (isValueSetUnrestricted() && !isProductRelevant()) {
             return false;
         }
         if (isValueSetEnum() && isDatatypeContentSeperatedEnum()) {
@@ -226,6 +257,14 @@ public class XPolicyAttribute extends XAttribute {
 
     public String getMethodNameGetAllowedValuesFor() {
         return "getSetOfAllowedValuesFor" + StringUtils.capitalize(getFieldName());
+    }
+
+    public String getFieldNameDefaultValue() {
+        return "defaultValue" + StringUtils.capitalize(getFieldName());
+    }
+
+    public String getFieldNameValueSet() {
+        return "setOfAllowedValues" + StringUtils.capitalize(getFieldName());
     }
 
     public String getMethodNameGetDefaultValue() {
