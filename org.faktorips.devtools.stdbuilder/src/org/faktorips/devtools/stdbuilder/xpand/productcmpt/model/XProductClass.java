@@ -132,18 +132,22 @@ public abstract class XProductClass extends XClass {
      * @return the list of policy attributes configured by this product component.
      */
     protected final Set<IPolicyCmptTypeAttribute> getConfiguredAttributes(boolean changableAttributes) {
-        try {
-            Set<IPolicyCmptTypeAttribute> resultingAttributes = new LinkedHashSet<IPolicyCmptTypeAttribute>();
-            IPolicyCmptType policyType = getType().findPolicyCmptType(getIpsProject());
-            List<IPolicyCmptTypeAttribute> allAttributes = policyType.getPolicyCmptTypeAttributes();
-            for (IPolicyCmptTypeAttribute attr : allAttributes) {
-                if (attr.isChangingOverTime() == changableAttributes && attr.isProductRelevant()) {
-                    resultingAttributes.add(attr);
+        Set<IPolicyCmptTypeAttribute> resultingAttributes = new LinkedHashSet<IPolicyCmptTypeAttribute>();
+        if (isConfigurationForPolicyCmptType()) {
+            try {
+                IPolicyCmptType policyType = getType().findPolicyCmptType(getIpsProject());
+                List<IPolicyCmptTypeAttribute> allAttributes = policyType.getPolicyCmptTypeAttributes();
+                for (IPolicyCmptTypeAttribute attr : allAttributes) {
+                    if (attr.isChangingOverTime() == changableAttributes && attr.isProductRelevant()) {
+                        resultingAttributes.add(attr);
+                    }
                 }
+                return resultingAttributes;
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
             }
+        } else {
             return resultingAttributes;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
     }
 
