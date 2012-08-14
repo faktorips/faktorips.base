@@ -172,16 +172,17 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateGetAllowedValuesFor() {
-        if (isDerived()) {
+        if (isChangeable()) {
+            if (isValueSetUnrestricted() && !isProductRelevant()) {
+                return false;
+            }
+            if (isValueSetEnum() && isDatatypeContentSeperatedEnum()) {
+                return false;
+            }
+            return true;
+        } else {
             return false;
         }
-        if (isValueSetUnrestricted() && !isProductRelevant()) {
-            return false;
-        }
-        if (isValueSetEnum() && isDatatypeContentSeperatedEnum()) {
-            return false;
-        }
-        return true;
     }
 
     protected boolean isDatatypeContentSeperatedEnum() {

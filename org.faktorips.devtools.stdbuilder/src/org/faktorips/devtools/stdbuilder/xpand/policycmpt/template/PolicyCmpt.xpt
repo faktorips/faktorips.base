@@ -58,9 +58,7 @@ package «packageName»;
 			«EXPAND PolicyCmptAttribute::setter-»
 		«ENDFOREACH-»
 		
-		«REM»
 		«EXPAND DerivedUnionAssociation::methodDerivedUnionContains(this) FOREACH derivedUnionAssociations»
-		«ENDREM»
 
 		«FOREACH associations AS this-»
 			«EXPAND PolicyCmptAssociation::methods-»
@@ -208,8 +206,7 @@ package «packageName»;
 	   			«IF hasSupertype()-»
 	   				return super.«getEffectiveFromAsCalendar()»;
 				«ELSE-»
-					return null;
-					«localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE1")»
+					return null; «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE1")»
 					«localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE2")»
 					«localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE3")»
 				«ENDIF-»
@@ -326,11 +323,11 @@ package «packageName»;
     «overrideAnnotation(true)»
     public void «validateDependants(MessageList()+" ml", IValidationContext()+" context")» {
         super.«validateDependants("ml", "context")»;
-        «EXPAND PolicyCmptAssociation::validateDependents FOREACH associations-»
         «FOREACH derivedUnionAssociations AS assoc-»
         	«IF !assoc.isImplementedInSuperclass(this)-»
         		«EXPAND PolicyCmptAssociation::validateDependents FOR assoc»
         	«ENDIF-»
         «ENDFOREACH-»
+        «EXPAND PolicyCmptAssociation::validateDependents FOREACH associations-»
     }
 «ENDDEFINE»

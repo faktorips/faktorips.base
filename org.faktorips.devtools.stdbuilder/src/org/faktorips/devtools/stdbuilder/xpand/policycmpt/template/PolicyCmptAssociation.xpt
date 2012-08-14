@@ -107,9 +107,11 @@
 	    }
 
     	«IF generateChangeSupport-»
-		    /**
+		    /** «REM»TODO old codegenerator writes the comment only for compositions«ENDREM»
+		     «IF !typeAssociation-» 
 		     * «localizedJDoc("METHOD_SET_OBJECT_INTERNAL", name.toFirstUpper())»
 		     * 
+		     «ENDIF-»
 		     * @generated
 		     */
 		    public void «method(methodNameSetInternal, targetInterfaceName, "newObject")»{

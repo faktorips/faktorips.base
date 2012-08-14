@@ -118,7 +118,7 @@ OrderedValueSet(AbstractGeneratorModelNode this, String genericType):
 	addImport(OrderedValueSet.name) + "<" + genericType + ">";
 
 qnameRange(AbstractGeneratorModelNode this, String genericType):
-	org::faktorips::valueset::Range.name + "<" + genericType + ">";
+	"org.faktorips.valueset.Range<" + genericType + ">";
 
 EnumValues(AbstractGeneratorModelNode this):
 	addImport(org::faktorips::runtime::internal::EnumValues.name);

@@ -74,7 +74,9 @@
 	        super.copyAssociationsInternal(abstractCopy, copyMap);
     	«ENDIF-»
         «IF associationsToCopy.size > 0-»
-	        «className» newCopy = («className»)abstractCopy;
+            «IF requiresLocalVariableInCopyAssocsInternal»
+            	«className» newCopy = («className»)abstractCopy;
+            «ENDIF-»
 	        «EXPAND copyAssociationInternal FOREACH associations-»
         «ENDIF-»
         «IF associationsToCopy.size == 0 && !hasSupertype()-»

@@ -16,14 +16,19 @@
 
 «DEFINE memberField FOR XPolicyAttribute-»
 	«IF generateField-»
-		/**
-		 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
-		 *
-		 * @generated
-		 */
 		«IF constant-»
+			/**
+			 * «localizedJDoc("FIELD_ATTRIBUTE_CONSTANT", name)»
+			 *
+			 * @generated
+			 */
 			public static final «javaClassName» «field(fieldName)» = «defaultValueCode»;
 		«ELSE-»
+			/**
+			 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
+			 *
+			 * @generated
+			 */
 			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD)-»
 			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)-»
 			private «javaClassName» «field(fieldName)» = «defaultValueCode»;
@@ -34,7 +39,7 @@
 «DEFINE getter FOR XPolicyAttribute-» 
 	«IF generateGetter-»
 		/**
-		 * «inheritDocOrJavaDoc("METHOD_GETVALUE", name, description)-»
+		 * «inheritDocOrJavaDoc("METHOD_GETVALUE", name, description)»
 		 *
 		 * @generated
 		 */

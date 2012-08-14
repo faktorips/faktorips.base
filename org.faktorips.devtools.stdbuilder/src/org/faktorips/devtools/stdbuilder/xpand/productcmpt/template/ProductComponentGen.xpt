@@ -70,7 +70,9 @@
 		    «overrideAnnotation(false)-»
 		    protected void «doInitPropertiesFromXml(Map("String", Element()) + " configMap")» {
 		        super.«doInitPropertiesFromXml("configMap")»;
-		        Element configElement = null;
+		        «IF attributes.size > 0 || configuredAttributes.size > 0-»
+		        	Element configElement = null;
+		        «ENDIF-»
 		        «EXPAND ProductAttribute::initAttributeFromXML FOREACH attributes-»
 		        «EXPAND DefaultAndAllowedValues::initAttributeFromXML FOREACH configuredAttributes-»
 		    }
@@ -99,17 +101,17 @@
 		        «ELSE-»
  «REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification. 
 		        «ENDIF-»
-		        «IF attributes.size > 0»
+		        «IF attributes.size > 0-»
 			        Element attributeElement = null;
 			        List<String> stringList = null;
 		        	«EXPAND ProductAttribute::writeAttributeToXML FOREACH attributes-»
-		        «ENDIF»
-		        «IF configuredAttributes.size > 0» 
+		        «ENDIF-»
+		        «IF configuredAttributes.size > 0-» 
 		        	Element configElement = null;
 		        	Element valueSetElement = null;
 		        	Element valueSetValuesElement = null;
 		        	«EXPAND DefaultAndAllowedValues::writeAttributeToXML FOREACH configuredAttributes-»
-		        «ENDIF»
+		        «ENDIF-»
 		    }
 		   
 		«IF associations.size > 0»
