@@ -85,7 +85,7 @@
 		 * @generated
 		 */
 		«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
-		public «ValueSet(valueSetJavaClassName)» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»{
+		public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»{
 			return «methodNameGetProductCmptGeneration»().«methodNameGetAllowedValuesFor»(context);
 		}
 	«ENDIF-»

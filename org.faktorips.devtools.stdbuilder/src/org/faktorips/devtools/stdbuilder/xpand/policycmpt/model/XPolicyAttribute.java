@@ -31,6 +31,8 @@ import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XFormulaSignature;
+import org.faktorips.valueset.OrderedValueSet;
+import org.faktorips.valueset.ValueSet;
 
 public class XPolicyAttribute extends XAttribute {
 
@@ -112,7 +114,35 @@ public class XPolicyAttribute extends XAttribute {
         return isOverwrite() && isChangeable();
     }
 
+    /**
+     * Returns the java class name for value set. For example an
+     * <code>ValueSet&lt;Integer&gt;</code>
+     * 
+     * @return The class name of the value set
+     */
     public String getValueSetJavaClassName() {
+        if (getAttribute().getValueSet().isAbstract()) {
+            String valueSetClass = addImport(ValueSet.class);
+            return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
+        } else if (getAttribute().getValueSet().isEnum()) {
+            String valueSetClass = addImport(OrderedValueSet.class);
+            return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
+        } else if (getAttribute().getValueSet().isRange()) {
+            // call this method to add import statement the type
+            valuesetDatatypeHelper.getJavaClassName();
+            return addImport(valuesetDatatypeHelper.getRangeJavaClassName(true));
+        } else {
+            throw new RuntimeException("Unexpected valueset type for attribute " + getName());
+        }
+    }
+
+    /**
+     * The java class may differ for value sets. For example when the type is primitive we need to
+     * use the wrapped type instead.
+     * 
+     * @return The name of the java class used for value sets.
+     */
+    public String getJavaClassUsedForValueSet() {
         return addImport(valuesetDatatypeHelper.getJavaClassName());
     }
 
