@@ -24,23 +24,12 @@
 «ENDDEFINE»
 
 «DEFINE allowedValueSetField FOR XPolicyAttribute-»
-	«IF false-»
-«REM» TODO für Ranges wird vermutlich noch anderer Code generiert  
-	    /**
-	     * «localizedJDoc("FIELD_RANGE_FOR", name)»
-	     * 
-	     * @generated
-	     */
-	    private «Range(datatypeClass)» «fieldNameValueSet»; //TODO der name ist noch falsch
-	    «ENDREM»
-	«ELSE-»
-	    /**
-	     * «localizedJDoc("FIELD_ALLOWED_VALUES_FOR", name)»
-	     * 
-	     * @generated
-	     */
-	    private «ValueSet(javaClassUsedForValueSet)» «fieldNameValueSet»;
-	«ENDIF-»
+    /**
+     * «localizedJDoc("FIELD_ALLOWED_VALUES_FOR", name)»
+     * 
+     * @generated
+     */
+    private «valueSetJavaClassName» «fieldNameValueSet»;
 «ENDDEFINE»
 
 «DEFINE getterSetter FOR XPolicyAttribute-»

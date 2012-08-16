@@ -122,7 +122,7 @@ public class XPolicyAttribute extends XAttribute {
      * @return The class name of the value set
      */
     public String getValueSetJavaClassName() {
-        if (getAttribute().getValueSet().isAbstract()) {
+        if ((getAttribute().getValueSet().isUnrestricted() && isProductRelevant())) {
             String valueSetClass = addImport(ValueSet.class);
             return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
         } else if (getAttribute().getValueSet().isEnum()) {
@@ -298,7 +298,15 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public String getMethodNameGetAllowedValuesFor() {
-        return "getSetOfAllowedValuesFor" + StringUtils.capitalize(getFieldName());
+        String prefix;
+        if (getAttribute().getValueSet().isEnum()) {
+            prefix = "getAllowedValuesFor";
+        } else if (getAttribute().getValueSet().isRange()) {
+            prefix = "getRangeFor";
+        } else {
+            prefix = "getSetOfAllowedValuesFor";
+        }
+        return prefix + StringUtils.capitalize(getFieldName());
     }
 
     public String getFieldNameDefaultValue() {
