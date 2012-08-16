@@ -10,7 +10,7 @@
 «DEFINE field FOR XPolicyAssociation-»
 	«IF generateField-»
 	    /**
-	     * «localizedJDoc("FIELD_ASSOCIATION", name.toFirstUpper())»
+	     * «localizedJDoc("FIELD_ASSOCIATION", name)»
 	     * 
 	     * @generated
 	     */

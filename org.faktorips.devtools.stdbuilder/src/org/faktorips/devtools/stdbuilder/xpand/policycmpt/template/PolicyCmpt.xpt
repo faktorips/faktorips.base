@@ -3,6 +3,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::MethodNames»
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
@@ -51,6 +52,8 @@ package «packageName»;
 		«ENDFOREACH-»
 			
 		«EXPAND constructors-»
+		
+		«EXPAND getterForProductAttributes(this) FOREACH productAttributes-»
 		
 		«FOREACH attributes AS this-»
 			«EXPAND PolicyCmptAttribute::allowedValuesMethod-»
@@ -103,6 +106,19 @@ package «packageName»;
     «ENDIF»
 «ENDDEFINE»
 
+«DEFINE getterForProductAttributes(XPolicyCmptClass currentClass) FOR XProductAttribute-»
+	 /**
+     * «localizedJDoc("METHOD_GET_VALUE_IN_POLICY", name, description)»
+     * @generated
+     */
+    public «javaClassName» «methodNameGetter»() {
+    	«IF changingOverTime»
+        	return «currentClass.methodNameGetProductCmptGeneration»().«methodNameGetter»();
+        «ELSE»
+        	return «currentClass.methodNameGetProductComponent»().«methodNameGetter»();
+        «ENDIF»
+    }
+«ENDDEFINE»
 
 «DEFINE initializationForOverrideAttributes FOR XPolicyCmptClass-»
 	«FOREACH attributes AS this-»
@@ -113,13 +129,14 @@ package «packageName»;
 «ENDDEFINE»
 
 «DEFINE generalMethodsForConfiguredPolicyCmpts FOR XPolicyCmptClass-»
-	«IF configured-»
 	    /**
 	     * «localizedJDoc("METHOD_INITIALIZE")»
 	     * 
 	     * @restrainedmodifiable
 	     */
-		 «overrideAnnotation(false)»
+	     «IF hasSupertype() || configured-»
+		 	«overrideAnnotation(false)-»
+		 «ENDIF-»
 	    public void «initialize()» {
 	    	«IF hasSupertype()-»
 		        super.«initialize()»;
@@ -136,6 +153,7 @@ package «packageName»;
 		    // end-user-code
 	    }
 		 
+	«IF configured-»
 		/**
 		 * {@inheritDoc}
 		 *

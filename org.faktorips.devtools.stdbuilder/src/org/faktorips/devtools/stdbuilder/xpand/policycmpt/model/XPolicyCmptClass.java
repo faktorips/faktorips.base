@@ -29,12 +29,14 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
@@ -43,6 +45,8 @@ import org.faktorips.runtime.internal.AbstractModelObject;
 public class XPolicyCmptClass extends XClass {
 
     private final Set<XPolicyAttribute> attributes;
+
+    private final Set<XProductAttribute> productAttributes;
 
     private final Set<XPolicyAssociation> associations;
 
@@ -55,6 +59,7 @@ public class XPolicyCmptClass extends XClass {
         attributes = initNodesForParts(
                 new LinkedHashSet<IPolicyCmptTypeAttribute>(policyCmptType.getPolicyCmptTypeAttributes()),
                 XPolicyAttribute.class);
+        productAttributes = initNodesForParts(getProductAttributes(policyCmptType), XProductAttribute.class);
         associations = initNodesForParts(getPolicyAssociations(policyCmptType), XPolicyAssociation.class);
         derivedUnionAssociations = initNodesForParts(
                 findSubsettedDerivedUnions(policyCmptType.getPolicyCmptTypeAssociations(),
@@ -62,6 +67,20 @@ public class XPolicyCmptClass extends XClass {
         detailToMasterDerivedUnionAssociations = initNodesForParts(
                 findDetailToMasterDerivedUnionAssociations(policyCmptType.getPolicyCmptTypeAssociations()),
                 XDetailToMasterDerivedUnionAssociation.class);
+    }
+
+    private Set<IProductCmptTypeAttribute> getProductAttributes(IPolicyCmptType policyCmptType) {
+        if (policyCmptType.isConfigurableByProductCmptType()) {
+            try {
+                IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
+                return new LinkedHashSet<IProductCmptTypeAttribute>(productCmptType.getProductCmptTypeAttributes());
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        } else {
+            Set<IProductCmptTypeAttribute> productAttributes = new LinkedHashSet<IProductCmptTypeAttribute>();
+            return productAttributes;
+        }
     }
 
     /**
@@ -157,18 +176,9 @@ public class XPolicyCmptClass extends XClass {
     }
 
     /**
-     * Returns <code>true</code> if this policy component type is configurable and at the same time
-     * a configuring product component type is defined. <code>false</code> else.
+     * Returns <code>true</code> if this policy component type is configurable
      */
     public boolean isConfigured() {
-        return isConfigurable() && getPolicyCmptType().getProductCmptType() != null;
-    }
-
-    /**
-     * Returns <code>true</code> if this policy component type is configurable. Ignores whether or
-     * not a configuring product component type is defined. <code>false</code> else.
-     */
-    private boolean isConfigurable() {
         return getPolicyCmptType().isConfigurableByProductCmptType();
     }
 
@@ -210,6 +220,10 @@ public class XPolicyCmptClass extends XClass {
     @Override
     public Set<XPolicyAttribute> getAttributes() {
         return new CopyOnWriteArraySet<XPolicyAttribute>(attributes);
+    }
+
+    public Set<XProductAttribute> getProductAttributes() {
+        return new CopyOnWriteArraySet<XProductAttribute>(productAttributes);
     }
 
     @Override

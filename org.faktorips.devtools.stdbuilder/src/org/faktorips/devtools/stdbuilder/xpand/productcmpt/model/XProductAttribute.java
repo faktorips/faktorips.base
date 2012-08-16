@@ -81,4 +81,7 @@ public class XProductAttribute extends XAttribute {
         return getAttribute().isMultiValueAttribute();
     }
 
+    public boolean isChangingOverTime() {
+        return getAttribute().isChangingOverTime();
+    }
 }
