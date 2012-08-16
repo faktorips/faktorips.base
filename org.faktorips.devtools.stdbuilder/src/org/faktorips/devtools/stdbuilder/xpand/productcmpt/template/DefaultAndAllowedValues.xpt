@@ -24,8 +24,18 @@
 «ENDDEFINE»
 
 «DEFINE allowedValueSetField FOR XPolicyAttribute-»
-    /**
-     * «localizedJDoc("FIELD_ALLOWED_VALUES_FOR", name)»
+	«IF valueSetUnrestricted-»
+	    /**
+	     * «localizedJDoc("FIELD_SET_OF_ALLOWED_VALUES_FOR", name)»
+	«ENDIF-»
+	«IF valueSetRange-»
+		/**
+	     * «localizedJDoc("FIELD_RANGE_FOR", name)»
+	«ENDIF-»
+	«IF valueSetEnum-»
+	    /**
+	     * «localizedJDoc("FIELD_ALLOWED_VALUES_FOR", name)»
+	«ENDIF-»
      * 
      * @generated
      */
@@ -58,7 +68,7 @@
      * @generated
      */
     «overrideAnnotationForAttribute()»
-    public «ValueSet(javaClassUsedForValueSet)» «methodNameGetAllowedValuesFor»(«IValidationContext()» context) {
+    public «valueSetJavaClassName» «methodNameGetAllowedValuesFor»(«IValidationContext()» context) {
         return «fieldNameValueSet»;
     }
 «ENDDEFINE»
@@ -68,23 +78,25 @@
         configElement = configMap.get("«name»");
         if (configElement != null) {
             String value = «ValueToXmlHelper()».«getValueFromElement("configElement", "\"Value\"")»;
-            «fieldNameDefaultValue» = «EXPAND PolicyCmptAttribute::initAttributeFromXMLDetermineValue("value", "getRepository()")»;
-            «fieldNameValueSet» = new «UnrestrictedValueSet(valueSetJavaClassName)»();
-            «EnumValues()» values = «ValueToXmlHelper()».«getEnumValueSetFromElement("configElement", "\"ValueSet\"")»;
-            if (values != null) {
-                «ArrayList(javaClassUsedForValueSet)» enumValues = new «ArrayList(javaClassUsedForValueSet)»();
-                for (int i = 0; i < values.«getNumberOfValues()»; i++) {
-                    enumValues.add(«EXPAND PolicyCmptAttribute::initAttributeFromXMLDetermineValue("values.getValue(i)", "getRepository()")»);
-                }
-                «fieldNameValueSet» = new «OrderedValueSet(javaClassUsedForValueSet)»(enumValues, values
-                        .containsNull(), «valueSetNullValueCode»);
-            }
+            «fieldNameDefaultValue» = «EXPAND PolicyCmptAttribute::determineValue("value", "getRepository()")»;
+            «IF enumValueSetSupported-»
+	            «fieldNameValueSet» = new «UnrestrictedValueSet(valueSetJavaClassName)»();
+	            «EnumValues()» values = «ValueToXmlHelper()».«getEnumValueSetFromElement("configElement", "\"ValueSet\"")»;
+	            if (values != null) {
+	                «ArrayList(javaClassUsedForValueSet)» enumValues = new «ArrayList(javaClassUsedForValueSet)»();
+	                for (int i = 0; i < values.«getNumberOfValues()»; i++) {
+	                    enumValues.add(«EXPAND PolicyCmptAttribute::determineValue("values.getValue(i)", "getRepository()")»);
+	                }
+	                «fieldNameValueSet» = new «OrderedValueSet(javaClassUsedForValueSet)»(enumValues, values
+	                        .containsNull(), «valueSetNullValueCode»);
+	            }
+            «ENDIF-»
             «IF rangeSupported-»
-            «Range()» range = «ValueToXmlHelper()».«getRangeFromElement("configElement", "\"ValueSet\"")»;
-            if (range != null) {
-                «fieldNameValueSet» = «rangeClassName».valueOf(range.getLower(), range
-                        .getUpper(), range.getStep(), range.containsNull());
-            }
+	            «Range()» range = «ValueToXmlHelper()».«getRangeFromElement("configElement", "\"ValueSet\"")»;
+	            if (range != null) {
+	                «fieldNameValueSet» = «rangeClassName».valueOf(range.getLower(), range
+	                        .getUpper(), range.getStep(), range.containsNull());
+	            }
             «ENDIF-»
         }
 	«ENDIF-»

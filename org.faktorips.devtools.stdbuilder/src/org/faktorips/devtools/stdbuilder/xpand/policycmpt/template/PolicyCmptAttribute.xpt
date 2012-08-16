@@ -108,15 +108,21 @@
 «DEFINE initAttributeFromXML FOR XPolicyAttribute-»
 	«IF generateInitPropertiesFromXML-»
         if (propMap.containsKey("«name»")) {
-            this.«fieldName» = «EXPAND initAttributeFromXMLDetermineValue("propMap.get(\"" + name + "\")", "productRepository")»;
+            this.«fieldName» = «EXPAND determineValue("propMap.get(\"" + name + "\")", "productRepository")»;
         }
     «ENDIF-»
 «ENDDEFINE»
-«DEFINE initAttributeFromXMLDetermineValue(String expression, String repositoryExpression) FOR XPolicyAttribute-»
+«DEFINE determineValue(String expression, String repositoryExpression) FOR XPolicyAttribute-»
 	«IF datatypeContentSeparatedEnum-»
-    	«getValueByIdentifier(expression, repositoryExpression)-»
+    	«EXPAND getValueByIdentifier(expression, repositoryExpression)-»
     «ELSE-»
-		«getNewInstanceFromExpression(expression)-»
+		«getValueSetNewInstanceFromExpression(expression)-»
     «ENDIF-»
 «ENDDEFINE»
+«REM»Ignores the cast necessary for pre java 5 enums. See EnumTypeBuilder#getNewInstanceCodeFragmentForEnumTypesWithDeferredContent()«ENDREM»
+«DEFINE getValueByIdentifier(String expression, String repositoryExpression) FOR XPolicyAttribute-»
+	 «repositoryExpression».getEnumValue(«enumTypeJavaClassName».class, «getNewInstanceFromExpression(expression)»)
+«ENDDEFINE»
+
+
 

@@ -169,8 +169,16 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isRangeSupported() {
+        return isValueSetTypeSupported(ValueSetType.RANGE);
+    }
+
+    public boolean isEnumValueSetSupported() {
+        return isValueSetTypeSupported(ValueSetType.ENUM);
+    }
+
+    private boolean isValueSetTypeSupported(ValueSetType valueSetType) {
         try {
-            return getIpsProject().isValueSetTypeApplicable(getDatatype(), ValueSetType.RANGE);
+            return getIpsProject().isValueSetTypeApplicable(getDatatype(), valueSetType);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -230,11 +238,15 @@ public class XPolicyAttribute extends XAttribute {
         return DatatypeUtil.isEnumTypeWithSeparateContent(getDatatype());
     }
 
-    protected boolean isValueSetEnum() {
+    public boolean isValueSetEnum() {
         return isValueSetOfType(ValueSetType.ENUM);
     }
 
-    protected boolean isValueSetUnrestricted() {
+    public boolean isValueSetRange() {
+        return isValueSetOfType(ValueSetType.RANGE);
+    }
+
+    public boolean isValueSetUnrestricted() {
         return isValueSetOfType(ValueSetType.UNRESTRICTED);
     }
 
@@ -314,7 +326,16 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public String getFieldNameValueSet() {
-        return "setOfAllowedValues" + StringUtils.capitalize(getFieldName());
+        if (isValueSetUnrestricted()) {
+            return "setOfAllowedValues" + StringUtils.capitalize(getFieldName());
+        }
+        if (isValueSetRange()) {
+            return "rangeFor" + StringUtils.capitalize(getFieldName());
+        }
+        if (isValueSetEnum()) {
+            return "allowedValuesFor" + StringUtils.capitalize(getFieldName());
+        }
+        throw new RuntimeException(NLS.bind("Attribute {0} has an invalid value set type.", getAttribute()));
     }
 
     public String getMethodNameGetDefaultValue() {
@@ -360,6 +381,11 @@ public class XPolicyAttribute extends XAttribute {
         }
         throw new NullPointerException(NLS.bind("The datatype of attribute {0} is no enum type with separate content.",
                 getAttribute()));
+    }
+
+    public String getEnumTypeJavaClassName() {
+        EnumTypeDatatypeHelper enumHelper = getDatatypeHelperForContentSeparatedEnum();
+        return addImport(enumHelper.getJavaClassName());
     }
 
 }
