@@ -32,6 +32,7 @@ import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XFormulaSignature;
 import org.faktorips.valueset.OrderedValueSet;
+import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 
 public class XPolicyAttribute extends XAttribute {
@@ -131,6 +132,9 @@ public class XPolicyAttribute extends XAttribute {
             // call this method to add import statement the type
             valuesetDatatypeHelper.getJavaClassName();
             return addImport(valuesetDatatypeHelper.getRangeJavaClassName(true));
+        } else if (getAttribute().getValueSet().isUnrestricted()) {
+            String valueSetClass = addImport(UnrestrictedValueSet.class);
+            return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
         } else {
             throw new RuntimeException("Unexpected valueset type for attribute " + getName());
         }
