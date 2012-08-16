@@ -38,7 +38,7 @@
 	     * 
 	     * @generated
 	     */
-	    private «ValueSet(valueSetJavaClassName)» «fieldNameValueSet»;
+	    private «ValueSet(javaClassUsedForValueSet)» «fieldNameValueSet»;
 	«ENDIF-»
 «ENDDEFINE»
 
@@ -68,7 +68,7 @@
      * @generated
      */
     «overrideAnnotationForAttribute()»
-    public «ValueSet(valueSetJavaClassName)» «methodNameGetAllowedValuesFor»(«IValidationContext()» context) {
+    public «ValueSet(javaClassUsedForValueSet)» «methodNameGetAllowedValuesFor»(«IValidationContext()» context) {
         return «fieldNameValueSet»;
     }
 «ENDDEFINE»
@@ -79,14 +79,14 @@
         if (configElement != null) {
             String value = «ValueToXmlHelper()».«getValueFromElement("configElement", "\"Value\"")»;
             «fieldNameDefaultValue» = «getNewInstanceFromExpression("value")»;
-            «fieldNameValueSet» = new «UnrestrictedValueSet(valueSetJavaClassName)»();
+            «fieldNameValueSet» = new «UnrestrictedValueSet(javaClassUsedForValueSet)»();
             «EnumValues()» values = «ValueToXmlHelper()».«getEnumValueSetFromElement("configElement", "\"ValueSet\"")»;
             if (values != null) {
-                «ArrayList(valueSetJavaClassName)» enumValues = new «ArrayList(valueSetJavaClassName)»();
+                «ArrayList(javaClassUsedForValueSet)» enumValues = new «ArrayList(javaClassUsedForValueSet)»();
                 for (int i = 0; i < values.«getNumberOfValues()»; i++) {
                     enumValues.add(«getValueSetNewInstanceFromExpression("values.getValue(i)")»);
                 }
-                «fieldNameValueSet» = new «OrderedValueSet(valueSetJavaClassName)»(enumValues, values
+                «fieldNameValueSet» = new «OrderedValueSet(javaClassUsedForValueSet)»(enumValues, values
                         .containsNull(), «valueSetNullValueCode»);
             }
             «IF rangeSupported-»
@@ -116,7 +116,7 @@
         }
         «IF rangeSupported-»
         if («fieldNameValueSet» instanceof «qnameRange("?")») {
-            «qnameRange(valueSetJavaClassName)» range = («qnameRange(valueSetJavaClassName)»)«fieldNameValueSet»;
+            «qnameRange(javaClassUsedForValueSet)» range = («qnameRange(javaClassUsedForValueSet)»)«fieldNameValueSet»;
             valueSetValuesElement = element.getOwnerDocument().createElement("Range");
             valueSetValuesElement.setAttribute("containsNull", Boolean.toString(«fieldNameValueSet».«containsNull()»));
             «ValueToXmlHelper()».«addValueToElement(getToStringExpression("range.getLowerBound()"),
