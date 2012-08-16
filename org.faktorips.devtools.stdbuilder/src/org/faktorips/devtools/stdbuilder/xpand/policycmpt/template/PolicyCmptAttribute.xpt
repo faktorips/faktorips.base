@@ -108,8 +108,15 @@
 «DEFINE initAttributeFromXML FOR XPolicyAttribute-»
 	«IF generateInitPropertiesFromXML-»
         if (propMap.containsKey("«name»")) {
-            this.«fieldName» = «getNewInstanceFromExpression("propMap.get(\"" + name + "\")")»;
+            this.«fieldName» = «EXPAND initAttributeFromXMLDetermineValue("propMap.get(\"" + name + "\")", "productRepository")»;
         }
+    «ENDIF-»
+«ENDDEFINE»
+«DEFINE initAttributeFromXMLDetermineValue(String expression, String repositoryExpression) FOR XPolicyAttribute-»
+	«IF datatypeContentSeparatedEnum-»
+    	«getValueByIdentifier(expression, repositoryExpression)-»
+    «ELSE-»
+		«getNewInstanceFromExpression(expression)-»
     «ENDIF-»
 «ENDDEFINE»
 

@@ -15,6 +15,7 @@ package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -24,6 +25,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -206,7 +208,7 @@ public class XPolicyAttribute extends XAttribute {
             if (isValueSetUnrestricted() && !isProductRelevant()) {
                 return false;
             }
-            if (isValueSetEnum() && isDatatypeContentSeperatedEnum()) {
+            if (isValueSetEnum() && isDatatypeContentSeparatedEnum()) {
                 return false;
             }
             return true;
@@ -215,7 +217,12 @@ public class XPolicyAttribute extends XAttribute {
         }
     }
 
-    protected boolean isDatatypeContentSeperatedEnum() {
+    /**
+     * Returns <code>true</code> if this attributes data type is an enumeration-type with separate
+     * content. <code>false</code> else.
+     * 
+     */
+    public boolean isDatatypeContentSeparatedEnum() {
         return DatatypeUtil.isEnumTypeWithSeparateContent(getDatatype());
     }
 
@@ -283,7 +290,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public String getOldValueVariable() {
-        return " old" + StringUtils.capitalize(getFieldName());
+        return "old" + StringUtils.capitalize(getFieldName());
     }
 
     public String getMethodNameGetAllowedValuesFor() {
@@ -304,6 +311,43 @@ public class XPolicyAttribute extends XAttribute {
 
     public String getMethodNameComputeAttribute() {
         return getAttribute().getComputationMethodSignature();
+    }
+
+    /**
+     * Returns the getValueByIdentifier code if and only if this attribute's datatype is an enum
+     * type with separate content.
+     * 
+     * @throws NullPointerException if this attribute's datatype is no enum of if there are no
+     *             separate contents.
+     */
+    public String getValueByIdentifier(String expression, String repositoryExpression) {
+        try {
+            EnumTypeDatatypeHelper enumHelper = getDatatypeHelperForContentSeparatedEnum();
+            JavaCodeFragment valueByIdentifierFragment = enumHelper.getEnumTypeBuilder()
+                    .getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(), expression,
+                            new JavaCodeFragment(repositoryExpression));
+            return valueByIdentifierFragment.getSourcecode();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    /**
+     * Returns the {@link EnumTypeDatatypeHelper} if and only if this attribute's datatype is an
+     * enum type with separate content.
+     * 
+     * @throws NullPointerException if this attribute's datatype is no enum of if there are no
+     *             separate contents.
+     */
+    private EnumTypeDatatypeHelper getDatatypeHelperForContentSeparatedEnum() {
+        if (getDatatypeHelper() instanceof EnumTypeDatatypeHelper) {
+            EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)getDatatypeHelper();
+            if (!enumHelper.getEnumType().isContainingValues()) {
+                return enumHelper;
+            }
+        }
+        throw new NullPointerException(NLS.bind("The datatype of attribute {0} is no enum type with separate content.",
+                getAttribute()));
     }
 
 }

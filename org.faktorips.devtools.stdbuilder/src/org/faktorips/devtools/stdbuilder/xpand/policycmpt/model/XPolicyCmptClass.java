@@ -387,6 +387,10 @@ public class XPolicyCmptClass extends XClass {
         return getJavaNamingConvention().getMemberVarName(getProductComponentClassName());
     }
 
+    public String getLocalVarNameDeltaSupportOtherObject() {
+        return getJavaNamingConvention().getMemberVarName("other" + getClassName());
+    }
+
     public Set<XPolicyAttribute> getAttributesToCopy() {
         Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
         for (XPolicyAttribute attribute : getAttributes()) {

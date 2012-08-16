@@ -20,17 +20,17 @@
             return delta;
         }
     	«IF !attributesForDeltaComputation.isEmpty || !associationsForDeltaComputation.isEmpty-»
-	        «className» other«className» = («className»)otherObject;
-			«EXPAND DeltaSupport::deltaCheckForAttribute(this) FOREACH attributesForDeltaComputation-»
+	        «className» «localVarNameDeltaSupportOtherObject» = («className»)otherObject;
+			«EXPAND DeltaSupport::deltaCheckForAttribute(this, localVarNameDeltaSupportOtherObject) FOREACH attributesForDeltaComputation-»
 			«EXPAND DeltaSupport::deltaCheckForRelatedClasses(this) FOREACH associationsForDeltaComputation-»
         «ENDIF-»
         return delta;
     }
 «ENDDEFINE»
 
-«DEFINE deltaCheckForAttribute(XPolicyCmptClass policyClass) FOR XPolicyAttribute-»
+«DEFINE deltaCheckForAttribute(XPolicyCmptClass policyClass, String localVarName) FOR XPolicyAttribute-»
 	«IF considerInDeltaComputation-»
-        delta.checkPropertyChange(«policyClass.publishedInterfaceName».«constantNamePropertyName», «fieldName», otherAbstractVertrag.«fieldName», options);
+        delta.checkPropertyChange(«policyClass.publishedInterfaceName».«constantNamePropertyName», «fieldName», «localVarName».«fieldName», options);
     «ENDIF-»
 «ENDDEFINE»
 

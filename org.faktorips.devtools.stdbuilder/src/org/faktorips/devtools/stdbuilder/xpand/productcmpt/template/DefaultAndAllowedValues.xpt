@@ -3,6 +3,7 @@
 «IMPORT org::faktorips::runtime»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::template»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
@@ -78,13 +79,13 @@
         configElement = configMap.get("«name»");
         if (configElement != null) {
             String value = «ValueToXmlHelper()».«getValueFromElement("configElement", "\"Value\"")»;
-            «fieldNameDefaultValue» = «getNewInstanceFromExpression("value")»;
-            «fieldNameValueSet» = new «UnrestrictedValueSet(javaClassUsedForValueSet)»();
+            «fieldNameDefaultValue» = «EXPAND PolicyCmptAttribute::initAttributeFromXMLDetermineValue("value", "getRepository()")»;
+            «fieldNameValueSet» = new «UnrestrictedValueSet(valueSetJavaClassName)»();
             «EnumValues()» values = «ValueToXmlHelper()».«getEnumValueSetFromElement("configElement", "\"ValueSet\"")»;
             if (values != null) {
                 «ArrayList(javaClassUsedForValueSet)» enumValues = new «ArrayList(javaClassUsedForValueSet)»();
                 for (int i = 0; i < values.«getNumberOfValues()»; i++) {
-                    enumValues.add(«getValueSetNewInstanceFromExpression("values.getValue(i)")»);
+                    enumValues.add(«EXPAND PolicyCmptAttribute::initAttributeFromXMLDetermineValue("values.getValue(i)", "getRepository()")»);
                 }
                 «fieldNameValueSet» = new «OrderedValueSet(javaClassUsedForValueSet)»(enumValues, values
                         .containsNull(), «valueSetNullValueCode»);
