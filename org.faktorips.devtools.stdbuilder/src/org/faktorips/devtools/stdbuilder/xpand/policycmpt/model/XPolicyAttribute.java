@@ -290,12 +290,12 @@ public class XPolicyAttribute extends XAttribute {
      * @throws NullPointerException if this attribute's datatype is no enum of if there are no
      *             separate contents.
      */
-    public String getValueByIdentifier(String expression) {
+    public String getValueByIdentifier(String expression, String repositoryExpression) {
         try {
             EnumTypeDatatypeHelper enumHelper = getDatatypeHelperForContentSeparatedEnum();
             JavaCodeFragment valueByIdentifierFragment = enumHelper.getEnumTypeBuilder()
                     .getCallGetValueByIdentifierCodeFragment(enumHelper.getEnumType(), expression,
-                            new JavaCodeFragment("productRepository"));
+                            new JavaCodeFragment(repositoryExpression));
             return valueByIdentifierFragment.getSourcecode();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
