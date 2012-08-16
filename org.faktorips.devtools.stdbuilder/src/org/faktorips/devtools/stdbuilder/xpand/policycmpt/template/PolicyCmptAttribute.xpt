@@ -15,15 +15,17 @@
 «ENDDEFINE»
 
 «DEFINE constantForValueSet FOR XPolicyAttribute-»
-	/**
-	«IF valueSetRange-»
-	 * «localizedJDoc("FIELD_MAX_RANGE_FOR", name)»
-	«ELSEIF valueSetEnum-»
-	 * «localizedJDoc("FIELD_MAX_ALLOWED_VALUES_FOR", name)»
+	«IF valueSetRange || valueSetEnum-»
+		/**
+		«IF valueSetRange-»
+		 * «localizedJDoc("FIELD_MAX_RANGE_FOR", name)»
+		«ELSEIF valueSetEnum-»
+		 * «localizedJDoc("FIELD_MAX_ALLOWED_VALUES_FOR", name)»
+		«ENDIF-»
+		 * @generated
+		 */
+		public final static String «field(constantNameValueSet)» = "«name»";
 	«ENDIF-»
-	 * @generated
-	 */
-	public final static String «field(constantNameValueSet)» = "«name»";
 «ENDDEFINE»
 
 «DEFINE memberField FOR XPolicyAttribute-»
@@ -124,20 +126,9 @@
 «DEFINE initAttributeFromXML FOR XPolicyAttribute-»
 	«IF generateInitPropertiesFromXML-»
         if (propMap.containsKey("«name»")) {
-            this.«fieldName» = «EXPAND determineValue("propMap.get(\"" + name + "\")", "productRepository")»;
+            this.«fieldName» = «getNewInstanceFromExpression("propMap.get(\"" + name + "\")", "productRepository")»;
         }
     «ENDIF-»
-«ENDDEFINE»
-«DEFINE determineValue(String expression, String repositoryExpression) FOR XPolicyAttribute-»
-	«IF datatypeContentSeparatedEnum-»
-    	«EXPAND getValueByIdentifier(expression, repositoryExpression)-»
-    «ELSE-»
-		«getValueSetNewInstanceFromExpression(expression)-»
-    «ENDIF-»
-«ENDDEFINE»
-«REM»Ignores the cast necessary for pre java 5 enums. See EnumTypeBuilder#getNewInstanceCodeFragmentForEnumTypesWithDeferredContent()«ENDREM»
-«DEFINE getValueByIdentifier(String expression, String repositoryExpression) FOR XPolicyAttribute-»
-	 «repositoryExpression».getEnumValue(«enumTypeJavaClassName».class, «getNewInstanceFromExpression(expression)»)
 «ENDDEFINE»
 
 

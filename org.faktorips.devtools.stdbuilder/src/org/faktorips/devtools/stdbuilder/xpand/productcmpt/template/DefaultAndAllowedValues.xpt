@@ -3,7 +3,6 @@
 «IMPORT org::faktorips::runtime»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
-«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::template»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
@@ -78,20 +77,22 @@
         configElement = configMap.get("«name»");
         if (configElement != null) {
             String value = «ValueToXmlHelper()».«getValueFromElement("configElement", "\"Value\"")»;
-            «fieldNameDefaultValue» = «EXPAND PolicyCmptAttribute::determineValue("value", "getRepository()")»;
-            «IF enumValueSetSupported-»
-	            «fieldNameValueSet» = new «UnrestrictedValueSet(valueSetJavaClassName)»();
+            «fieldNameDefaultValue» = «getNewInstanceFromExpression("value", "getRepository()")»;
+            «IF valueSetUnrestricted-» 
+            	«fieldNameValueSet» = new «UnrestrictedValueSet(javaClassUsedForValueSet)»();
+            «ENDIF»
+            «IF valueSetEnum || (valueSetUnrestricted && enumValueSetSupported)-»
 	            «EnumValues()» values = «ValueToXmlHelper()».«getEnumValueSetFromElement("configElement", "\"ValueSet\"")»;
 	            if (values != null) {
 	                «ArrayList(javaClassUsedForValueSet)» enumValues = new «ArrayList(javaClassUsedForValueSet)»();
 	                for (int i = 0; i < values.«getNumberOfValues()»; i++) {
-	                    enumValues.add(«EXPAND PolicyCmptAttribute::determineValue("values.getValue(i)", "getRepository()")»);
+	                    enumValues.add(«getValueSetNewInstanceFromExpression("values.getValue(i)", "getRepository()")»);
 	                }
 	                «fieldNameValueSet» = new «OrderedValueSet(javaClassUsedForValueSet)»(enumValues, values
 	                        .containsNull(), «valueSetNullValueCode»);
 	            }
             «ENDIF-»
-            «IF rangeSupported-»
+            «IF valueSetRange || (valueSetUnrestricted && rangeSupported)-»
 	            «Range()» range = «ValueToXmlHelper()».«getRangeFromElement("configElement", "\"ValueSet\"")»;
 	            if (range != null) {
 	                «fieldNameValueSet» = «rangeClassName».valueOf(range.getLower(), range

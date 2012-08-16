@@ -161,10 +161,48 @@ public class XPolicyAttribute extends XAttribute {
         return nullValueCode.getSourcecode();
     }
 
-    public String getValueSetNewInstanceFromExpression(String expression) {
+    /**
+     * Returns the code to create a new instance of and element stored in a value set. The
+     * expression is the code to retrieve the value from, e.g. another variable. The
+     * repositoryExpression is the code to for getting a repository. It may be needed for
+     * enumerations with separated content.
+     * 
+     * @param expression The expression to get the value from
+     * @param repositoryExpression the expression to get the repository
+     * @return The code needed to create a new instance for a value set
+     */
+    public String getValueSetNewInstanceFromExpression(String expression, String repositoryExpression) {
         JavaCodeFragment fragment = valuesetDatatypeHelper.newInstanceFromExpression(expression);
         addImport(fragment.getImportDeclaration());
-        return fragment.getSourcecode();
+        String result = fragment.getSourcecode();
+        if (isDatatypeContentSeparatedEnum()) {
+            return getExpressionForEnumWithSeparatedContent(repositoryExpression, result);
+        } else {
+            return result;
+        }
+    }
+
+    /**
+     * Returns the code to create a new instance of and element stored in a value set. The
+     * expression is the code to retrieve the value from, e.g. another variable. The
+     * repositoryExpression is the code to for getting a repository. It may be needed for
+     * enumerations with separated content.
+     * 
+     * @param expression The expression to get the value from
+     * @param repositoryExpression the expression to get the repository
+     * @return The code needed to create a new instance for a value set
+     */
+    public String getNewInstanceFromExpression(String expression, String repositoryExpression) {
+        String result = getNewInstanceFromExpression(expression);
+        if (isDatatypeContentSeparatedEnum()) {
+            return getExpressionForEnumWithSeparatedContent(repositoryExpression, result);
+        } else {
+            return result;
+        }
+    }
+
+    public String getExpressionForEnumWithSeparatedContent(String repositoryExpression, String newInstanceExpression) {
+        return repositoryExpression + newInstanceExpression;
     }
 
     public String getToStringExpression() {
