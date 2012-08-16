@@ -17,7 +17,7 @@
 		«ELSE-»
 			private «IProductComponentLink(targetInterfaceName)» «field(fieldName)» = null;
 		«ENDIF-»
-	«ENDIF-»
+	«ENDIF»
 «ENDDEFINE»
 
 «DEFINE getterSetterAdder FOR XProductAssociation-»

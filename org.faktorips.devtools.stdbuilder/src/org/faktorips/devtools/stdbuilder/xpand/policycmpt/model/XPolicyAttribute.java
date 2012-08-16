@@ -18,19 +18,24 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XFormulaSignature;
+import org.faktorips.util.StringUtil;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
@@ -122,19 +127,19 @@ public class XPolicyAttribute extends XAttribute {
      * @return The class name of the value set
      */
     public String getValueSetJavaClassName() {
-        if ((getAttribute().getValueSet().isUnrestricted() && isProductRelevant())) {
+        if ((isValueSetUnrestricted() && isProductRelevant())) {
             String valueSetClass = addImport(ValueSet.class);
             return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
-        } else if (getAttribute().getValueSet().isEnum()) {
+        } else if (isValueSetUnrestricted()) {
+            String valueSetClass = addImport(UnrestrictedValueSet.class);
+            return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
+        } else if (isValueSetEnum()) {
             String valueSetClass = addImport(OrderedValueSet.class);
             return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
-        } else if (getAttribute().getValueSet().isRange()) {
+        } else if (isValueSetRange()) {
             // call this method to add import statement the type
             valuesetDatatypeHelper.getJavaClassName();
             return addImport(valuesetDatatypeHelper.getRangeJavaClassName(true));
-        } else if (getAttribute().getValueSet().isUnrestricted()) {
-            String valueSetClass = addImport(UnrestrictedValueSet.class);
-            return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
         } else {
             throw new RuntimeException("Unexpected valueset type for attribute " + getName());
         }
@@ -230,11 +235,15 @@ public class XPolicyAttribute extends XAttribute {
         return DatatypeUtil.isEnumTypeWithSeparateContent(getDatatype());
     }
 
-    protected boolean isValueSetEnum() {
+    public boolean isValueSetEnum() {
         return isValueSetOfType(ValueSetType.ENUM);
     }
 
-    protected boolean isValueSetUnrestricted() {
+    public boolean isValueSetRange() {
+        return isValueSetOfType(ValueSetType.RANGE);
+    }
+
+    public boolean isValueSetUnrestricted() {
         return isValueSetOfType(ValueSetType.UNRESTRICTED);
     }
 
@@ -299,9 +308,9 @@ public class XPolicyAttribute extends XAttribute {
 
     public String getMethodNameGetAllowedValuesFor() {
         String prefix;
-        if (getAttribute().getValueSet().isEnum()) {
+        if (isValueSetEnum()) {
             prefix = "getAllowedValuesFor";
-        } else if (getAttribute().getValueSet().isRange()) {
+        } else if (isValueSetRange()) {
             prefix = "getRangeFor";
         } else {
             prefix = "getSetOfAllowedValuesFor";
@@ -311,6 +320,63 @@ public class XPolicyAttribute extends XAttribute {
 
     public String getFieldNameDefaultValue() {
         return "defaultValue" + StringUtils.capitalize(getFieldName());
+    }
+
+    public String getConstantNameValueSet() {
+        String name = getName();
+        if (isGenerateSeparatedCamelCase()) {
+            name = StringUtil.camelCaseToUnderscore(name, false);
+        }
+        String constName = StringUtils.upperCase(name);
+        if (isValueSetEnum()) {
+            return "MAX_ALLOWED_VALUES_FOR_" + constName;
+        }
+        if (isValueSetRange()) {
+            return "MAX_ALLOWED_RANGE_FOR_" + constName;
+        }
+        throw new RuntimeException("Can't handle value set " + getAttribute().getValueSet());
+    }
+
+    public String getValuesetCode() {
+        JavaCodeFragment result;
+        if (isValueSetRange()) {
+            IRangeValueSet range = (IRangeValueSet)getAttribute().getValueSet();
+            JavaCodeFragment containsNullFrag = new JavaCodeFragment();
+            containsNullFrag.append(range.getContainsNull());
+            result = valuesetDatatypeHelper.newRangeInstance(createCastExpression(range.getLowerBound()),
+                    createCastExpression(range.getUpperBound()), createCastExpression(range.getStep()),
+                    containsNullFrag, true);
+        } else if (isValueSetEnum()) {
+            String[] valueIds;
+            boolean containsNull;
+            if ((getAttribute()).getValueSet() instanceof IEnumValueSet) {
+                IEnumValueSet set = (IEnumValueSet)(getAttribute()).getValueSet();
+                valueIds = set.getValues();
+                containsNull = !getDatatype().isPrimitive() && set.getContainsNull();
+            } else if (getDatatype() instanceof EnumDatatype) {
+                valueIds = ((EnumDatatype)getDatatype()).getAllValueIds(true);
+                containsNull = !getDatatype().isPrimitive();
+            } else {
+                throw new IllegalArgumentException("This method is only applicable to attributes "
+                        + "based on an EnumDatatype or containing an EnumValueSet.");
+            }
+            result = valuesetDatatypeHelper.newEnumValueSetInstance(valueIds, containsNull, true);
+        } else {
+            throw new RuntimeException("Can't handle value set " + getAttribute().getValueSet());
+        }
+        addImport(result.getImportDeclaration());
+        return result.getSourcecode();
+    }
+
+    private JavaCodeFragment createCastExpression(String bound) {
+        JavaCodeFragment frag = new JavaCodeFragment();
+        if (StringUtils.isEmpty(bound) && !valuesetDatatypeHelper.getDatatype().hasNullObject()) {
+            frag.append('(');
+            frag.appendClassName(valuesetDatatypeHelper.getJavaClassName());
+            frag.append(')');
+        }
+        frag.append(valuesetDatatypeHelper.newInstance(bound));
+        return frag;
     }
 
     public String getFieldNameValueSet() {

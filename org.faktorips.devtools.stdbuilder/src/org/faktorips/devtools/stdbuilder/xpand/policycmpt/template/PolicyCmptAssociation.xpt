@@ -20,7 +20,7 @@
 		«ELSE-»
 			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
 			private «targetClassName» «field(fieldName)» = null;
-		«ENDIF-»
+		«ENDIF»
 	«ENDIF-»
 «ENDDEFINE»
 

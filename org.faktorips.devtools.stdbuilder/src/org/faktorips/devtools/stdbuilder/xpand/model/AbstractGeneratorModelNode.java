@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.util.LocalizedStringsSet;
@@ -367,6 +368,18 @@ public abstract class AbstractGeneratorModelNode {
      */
     public boolean isGenerateChangeSupport() {
         return getContext().isGenerateChangeSupport();
+    }
+
+    /**
+     * Returns whether to generate camel case constant names with underscore separator or without.
+     * For example if this property is true, the constant for the property
+     * checkAnythingAndDoSomething would be generated as CHECK_ANYTHING_AND_DO_SOMETHING, if the
+     * property is false the constant name would be CHECKANYTHINGANDDOSOMETHING.
+     * 
+     * @see StandardBuilderSet#CONFIG_PROPERTY_CAMELCASE_SEPARATED
+     */
+    public boolean isGenerateSeparatedCamelCase() {
+        return getContext().isGenerateSeparatedCamelCase();
     }
 
     /**

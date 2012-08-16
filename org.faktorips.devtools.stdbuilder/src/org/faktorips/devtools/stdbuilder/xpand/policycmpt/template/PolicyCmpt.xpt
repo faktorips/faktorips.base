@@ -26,6 +26,7 @@ package «packageName»;
 		«FOREACH attributes AS this-»
 			«IF !published-»
 				«EXPAND PolicyCmptAttribute::constantForPropertyName-»
+				«EXPAND PolicyCmptAttribute::constantForValueSet-»
 			«ENDIF-»
 		«ENDFOREACH-»
 		
@@ -43,9 +44,7 @@ package «packageName»;
 			«ENDIF-»
 		«ENDFOREACH-»
 		
-		«FOREACH associations AS this-»
-			«EXPAND PolicyCmptAssociation::field-»
-		«ENDFOREACH-»
+		«EXPAND PolicyCmptAssociation::field FOREACH associations-»
 		
 		«FOREACH inverseCompositions AS this-»
 			«EXPAND PolicyCmptAssociation::fieldForParent-»
@@ -148,6 +147,9 @@ package «packageName»;
 		        «FOREACH attributesToInitWithProductData AS this-»
 					«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
 		        «ENDFOREACH-»
+	        «ENDIF-»
+	        «IF !configured-»
+	        «REM» TODO Empty line to match old code generator«ENDREM»
 	        «ENDIF-»
 		    // begin-user-code
 		    // end-user-code

@@ -137,6 +137,14 @@ public class GeneratorModelContext {
                 .booleanValue();
     }
 
+    /**
+     * Returns whether to generate camel case constant names with underscore separator or without.
+     * For example if this property is true, the constant for the property
+     * checkAnythingAndDoSomething would be generated as CHECK_ANYTHING_AND_DO_SOMETHING, if the
+     * property is false the constant name would be CHECKANYTHINGANDDOSOMETHING.
+     * 
+     * @see StandardBuilderSet#CONFIG_PROPERTY_CAMELCASE_SEPARATED
+     */
     public boolean isGenerateSeparatedCamelCase() {
         Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
                 StandardBuilderSet.CONFIG_PROPERTY_CAMELCASE_SEPARATED);

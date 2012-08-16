@@ -14,6 +14,18 @@
 	public final static String «field(constantNamePropertyName)» = "«name»";
 «ENDDEFINE»
 
+«DEFINE constantForValueSet FOR XPolicyAttribute-»
+	/**
+	«IF valueSetRange-»
+	 * «localizedJDoc("FIELD_MAX_RANGE_FOR", name)»
+	«ELSEIF valueSetEnum-»
+	 * «localizedJDoc("FIELD_MAX_ALLOWED_VALUES_FOR", name)»
+	«ENDIF-»
+	 * @generated
+	 */
+	public final static String «field(constantNameValueSet)» = "«name»";
+«ENDDEFINE»
+
 «DEFINE memberField FOR XPolicyAttribute-»
 	«IF generateField-»
 		«IF constant-»
@@ -86,7 +98,11 @@
 		 */
 		«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
 		public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»{
-			return «methodNameGetProductCmptGeneration»().«methodNameGetAllowedValuesFor»(context);
+			«IF productRelevant-»
+				return «methodNameGetProductCmptGeneration»().«methodNameGetAllowedValuesFor»(context);
+			«ELSE-»
+				return «constantNameValueSet»;
+			«ENDIF-»
 		}
 	«ENDIF-»
 «ENDDEFINE»
