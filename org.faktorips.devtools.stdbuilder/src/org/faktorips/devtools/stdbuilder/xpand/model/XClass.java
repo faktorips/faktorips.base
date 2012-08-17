@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
@@ -306,4 +308,31 @@ public abstract class XClass extends AbstractGeneratorModelNode {
 
     }
 
+    /**
+     * Returns all master to detail associations of this type/class including derived unions but not
+     * subsets of derived unions. Includes derived union associations that are at the same time
+     * subsets of another derived union.
+     */
+    public abstract Set<XAssociation> getMasterToDetailAssociations();
+
+    /**
+     * Returns all master to detail associations of a type including derived unions but not subsets
+     * of derived unions. Ignores associations of wrong association classes. e.g. returns an empty
+     * list if you retrieve the {@link IPolicyCmptTypeAssociation policy associations} of an
+     * {@link IProductCmptType}.
+     */
+    protected <T extends IAssociation> Set<T> getAssociations(IType type,
+            Class<T> associationClass,
+            AbstractAssociationFilter filter) {
+        Set<T> result = new LinkedHashSet<T>();
+        List<IAssociation> associations = type.getAssociations();
+        for (IAssociation association : associations) {
+            if (associationClass.isAssignableFrom(association.getClass()) && filter.isValidAssociation(association)) {
+                @SuppressWarnings("unchecked")
+                T typedAssociation = (T)association;
+                result.add(typedAssociation);
+            }
+        }
+        return result;
+    }
 }

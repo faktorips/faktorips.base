@@ -14,6 +14,7 @@
 «ENDDEFINE»
 
 «DEFINE methodsForDerivedUnionPolicy(XPolicyCmptClass currentContextClass) FOR XDerivedUnionAssociation-»
+	«EXPAND methodDerivedUnionContains(currentContextClass)»
 	«EXPAND getterNumOf(currentContextClass)»
 	«EXPAND getter(currentContextClass, methodNameGetter)»
 	«EXPAND getterNumOfInternal(currentContextClass)»

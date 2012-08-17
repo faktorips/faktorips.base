@@ -56,15 +56,16 @@ public class XDerivedUnionAssociation extends XAssociation {
     }
 
     /**
-     * Returns a list of associations that are a subset of this derived union. The associations are
-     * part of the given {@link XClass}.
+     * Returns a list of associations that are a subset of this derived union. This includes derived
+     * union associations that are at the same time subsets of this derived union. The associations
+     * are part of the given {@link XClass}.
      * 
      * @param xClass The type in which context you generate code
      * @return the list of associations that subsets this derived union
      */
     public Set<XAssociation> getSubsetAssociations(XClass xClass) {
         Set<XAssociation> result = new LinkedHashSet<XAssociation>();
-        Set<? extends XAssociation> associations = xClass.getAssociations();
+        Set<? extends XAssociation> associations = xClass.getMasterToDetailAssociations();
         for (XAssociation xAssociation : associations) {
             if (xAssociation.isSubsetOf(this)) {
                 result.add(xAssociation);
