@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
+import java.util.Arrays;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -21,6 +23,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.DatatypeUtil;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -213,8 +216,12 @@ public class XPolicyAttribute extends XAttribute {
         return fragment.getSourcecode();
     }
 
-    public boolean isEnumDatatype() {
-        return getDatatype().isEnum();
+    /**
+     * Returns true if the data type is an enumeration defined as Faktor-IPS Enum.
+     * 
+     */
+    public boolean isIpsEnum() {
+        return getDatatype() instanceof EnumTypeDatatypeAdapter;
     }
 
     public boolean isRangeSupported() {
@@ -439,6 +446,31 @@ public class XPolicyAttribute extends XAttribute {
         return frag;
     }
 
+    /**
+     * Returns the code to get all values of the enum data type.
+     * <p>
+     * The method assumes that the data type is an Faktor-IPS Enum (@see {@link #isIpsEnum()}) and
+     * returns the code that gets all values of this enum data type. If the enum has separated
+     * content the repository expression is needed to access these values.
+     */
+    public String getAllEnumValuesCode(String repositoryExpression) {
+        EnumTypeDatatypeAdapter enumDatatype = ((EnumTypeDatatypeAdapter)getDatatype());
+        JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
+        if (enumDatatype.getEnumType().isContainingValues()) {
+            javaCodeFragment.appendClassName(Arrays.class).append(".asList(").append(getJavaClassName())
+                    .append(".values())");
+        } else {
+            javaCodeFragment.append(repositoryExpression).append(".").append("getEnumValues(")
+                    .append(getJavaClassName()).append(".class)");
+        }
+        addImport(javaCodeFragment.getImportDeclaration());
+        return javaCodeFragment.getSourcecode();
+    }
+
+    /**
+     * Returns the name of the field defined for the value set. This field name depends on the kind
+     * of value set.
+     */
     public String getFieldNameValueSet() {
         if (isValueSetUnrestricted()) {
             return "setOfAllowedValues" + StringUtils.capitalize(getFieldName());
@@ -497,9 +529,28 @@ public class XPolicyAttribute extends XAttribute {
                 getAttribute()));
     }
 
-    public String getEnumTypeJavaClassName() {
-        EnumTypeDatatypeHelper enumHelper = getDatatypeHelperForContentSeparatedEnum();
-        return addImport(enumHelper.getJavaClassName());
+    /**
+     * This method returns the qualified name of the java class name corresponding to the data type.
+     * There is no need to use this qualified name anywhere but we need to be exactyl compatible to
+     * old code generator.
+     * <p>
+     * TODO Remove this method an its call in DefaultAndAllowedValues#writeAttributeToXML
+     * 
+     */
+    public String getJavaClassQualifiedName() {
+        return getDatatypeHelper().getJavaClassName();
+    }
+
+    /**
+     * This method returns the qualified name of the java class name corresponding to the data type.
+     * There is no need to use this qualified name anywhere but we need to be exactyl compatible to
+     * old code generator.
+     * <p>
+     * TODO Remove this method an its call in DefaultAndAllowedValues#writeAttributeToXML
+     * 
+     */
+    public String getJavaClassQualifiedNameUsedForValueSet() {
+        return valuesetDatatypeHelper.getJavaClassName();
     }
 
 }

@@ -79,8 +79,8 @@
             String value = «ValueToXmlHelper()».«getValueFromElement("configElement", "\"Value\"")»;
             «fieldNameDefaultValue» = «getNewInstanceFromExpression("value", "getRepository()")»;
             «IF valueSetUnrestricted-»
-            	«IF enumDatatype-»
-       	            «fieldNameValueSet» = new «OrderedValueSet(javaClassUsedForValueSet)»(«Arrays()».asList(«javaClassUsedForValueSet».values()), true, null);
+            	«IF ipsEnum-»
+       	            «fieldNameValueSet» = new «OrderedValueSet(javaClassUsedForValueSet)»(«getAllEnumValuesCode("getRepository()")», true, null);
             	«ELSE» 
 	            	«fieldNameValueSet» = new «UnrestrictedValueSet(javaClassUsedForValueSet)»();
             	«ENDIF»
@@ -115,37 +115,54 @@
         «ValueToXmlHelper()».«addValueToElement(toStringExpression, "configElement", "\"Value\"")»;
         valueSetElement = element.getOwnerDocument().createElement("ValueSet");
         valueSetElement.setAttribute("abstract", "false");
-        if («fieldNameValueSet» instanceof «UnrestrictedValueSet("?")») {
-            Element unrestrictedValueSetElement = element.getOwnerDocument().createElement("Unrestricted");
-            Element valueElement = unrestrictedValueSetElement.getOwnerDocument().createElement("AllValues");
-            unrestrictedValueSetElement.appendChild(valueElement);
-            valueSetElement.appendChild(unrestrictedValueSetElement);
-        }
-        «IF rangeSupported-»
-        if («fieldNameValueSet» instanceof «qnameRange("?")») {
-            «qnameRange(javaClassUsedForValueSet)» range = («qnameRange(javaClassUsedForValueSet)»)«fieldNameValueSet»;
-            valueSetValuesElement = element.getOwnerDocument().createElement("Range");
-            valueSetValuesElement.setAttribute("containsNull", Boolean.toString(«fieldNameValueSet».«containsNull()»));
-            «ValueToXmlHelper()».«addValueToElement(getToStringExpression("range.getLowerBound()"),
-                    "valueSetValuesElement", "\"LowerBound\"")»;
-            «ValueToXmlHelper()».«addValueToElement(getToStringExpression("range.getUpperBound()"),
-                    "valueSetValuesElement", "\"UpperBound\"")»;
-            «ValueToXmlHelper()».«addValueToElement(getToStringExpression("range.getStep()"),
-                    "valueSetValuesElement", "\"Step\"")»;
-            valueSetElement.appendChild(valueSetValuesElement);
-        }
+        «IF valueSetUnrestricted-»
+	        if («fieldNameValueSet» instanceof «UnrestrictedValueSet("?")») {
+	            Element unrestrictedValueSetElement = element.getOwnerDocument().createElement("Unrestricted");
+	            Element valueElement = unrestrictedValueSetElement.getOwnerDocument().createElement("AllValues");
+	            unrestrictedValueSetElement.appendChild(valueElement);
+	            valueSetElement.appendChild(unrestrictedValueSetElement);
+	        }
         «ENDIF-»
-        if («fieldNameValueSet» instanceof «OrderedValueSet("?")») {
-            valueSetValuesElement = element.getOwnerDocument().createElement("Enum");
-            valueSetValuesElement.setAttribute("containsNull", Boolean.toString(«fieldNameValueSet».«containsNull()»));
-            for («javaClassName» value : «fieldNameValueSet».getValues(true)) {
-                Element valueElement = element.getOwnerDocument().createElement("Value");
-                «ValueToXmlHelper()».«addValueToElement(getToStringExpression("value"),"valueElement", "\"Data\"")»;
-                valueSetValuesElement.appendChild(valueElement);
-            }
-            valueSetElement.appendChild(valueSetValuesElement);
-        }
+    	«IF valueSetUnrestricted && rangeSupported-»
+        	if («fieldNameValueSet» instanceof «qnameRange("?")») {
+	            «qnameRange(javaClassQualifiedNameUsedForValueSet)» range = («qnameRange(javaClassQualifiedNameUsedForValueSet)»)«fieldNameValueSet»;
+	            «EXPAND writeRange("range")-»
+	        }
+        «ELSEIF valueSetRange-»
+                «EXPAND writeRange(fieldNameValueSet)-»
+        «ENDIF-»
+        «IF valueSetUnrestricted && enumValueSetSupported-»
+    		if («fieldNameValueSet» instanceof «OrderedValueSet("?")») {
+    			«EXPAND writeEnumValueSet-»
+	        }
+	    «ELSEIF valueSetEnum-»
+       			«EXPAND writeEnumValueSet-»
+		«ENDIF-»
         configElement.appendChild(valueSetElement);
         element.appendChild(configElement);
 	«ENDIF-»
 «ENDDEFINE»
+
+«DEFINE writeRange(String rangeVar) FOR XPolicyAttribute-»
+	            valueSetValuesElement = element.getOwnerDocument().createElement("Range");
+	            valueSetValuesElement.setAttribute("containsNull", Boolean.toString(«fieldNameValueSet».«containsNull()»));
+	            «ValueToXmlHelper()».«addValueToElement(getToStringExpression(rangeVar + ".getLowerBound()"),
+	                    "valueSetValuesElement", "\"LowerBound\"")»;
+	            «ValueToXmlHelper()».«addValueToElement(getToStringExpression(rangeVar + ".getUpperBound()"),
+	                    "valueSetValuesElement", "\"UpperBound\"")»;
+	            «ValueToXmlHelper()».«addValueToElement(getToStringExpression(rangeVar + ".getStep()"),
+	                    "valueSetValuesElement", "\"Step\"")»;
+	            valueSetElement.appendChild(valueSetValuesElement);
+«ENDDEFINE»
+
+«DEFINE writeEnumValueSet FOR XPolicyAttribute-»
+	            valueSetValuesElement = element.getOwnerDocument().createElement("Enum");
+	            valueSetValuesElement.setAttribute("containsNull", Boolean.toString(«fieldNameValueSet».«containsNull()»));
+	            for («javaClassQualifiedName» value : «fieldNameValueSet».getValues(true)) {
+	                Element valueElement = element.getOwnerDocument().createElement("Value");
+	                «ValueToXmlHelper()».«addValueToElement(getToStringExpression("value"),"valueElement", "\"Data\"")»;
+	                valueSetValuesElement.appendChild(valueElement);
+	            }
+	            valueSetElement.appendChild(valueSetValuesElement);
+«ENDDEFINE»
+	            
