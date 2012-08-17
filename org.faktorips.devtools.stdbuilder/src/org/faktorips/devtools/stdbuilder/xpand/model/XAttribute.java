@@ -88,7 +88,6 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
      */
     public String getJavaClassName() {
         String javaClassName = getDatatypeHelper().getJavaClassName();
-        // addImport() handles primitive data types.
         return addImport(javaClassName);
     }
 
