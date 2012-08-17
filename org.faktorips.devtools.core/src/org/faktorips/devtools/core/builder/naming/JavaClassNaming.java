@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
  * Provides class and package names for {@link IIpsSrcFile IPS source files}. The name is
  * concatenated by the package name provided by {@link JavaPackageStructure} and the unqualified
  * name. Clients may overwrite the unqualified class name.
- * 
+ * <p>
  * Qualified names will only contain package names of a specific type of artifacts, e.g. internal
  * and mergable, or published and mergable. The flags published and mergable must be specified when
  * creating a {@link JavaClassNaming}.
