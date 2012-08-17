@@ -343,11 +343,6 @@ package «packageName»;
     «overrideAnnotation(true)»
     public void «validateDependants(MessageList()+" ml", IValidationContext()+" context")» {
         super.«validateDependants("ml", "context")»;
-        «FOREACH derivedUnionAssociations AS assoc-»
-        	«IF !assoc.isImplementedInSuperclass(this)-»
-        		«EXPAND PolicyCmptAssociation::validateDependents FOR assoc»
-        	«ENDIF-»
-        «ENDFOREACH-»
-        «EXPAND PolicyCmptAssociation::validateDependents FOREACH associations-»
+        «EXPAND PolicyCmptAssociation::validateDependents FOREACH masterToDetailAssociationsInNaturalOrder-»
     }
 «ENDDEFINE»
