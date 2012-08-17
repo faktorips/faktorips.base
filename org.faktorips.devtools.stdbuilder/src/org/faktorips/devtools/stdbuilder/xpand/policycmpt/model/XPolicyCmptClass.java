@@ -31,15 +31,14 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractAssociationFilter;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.model.MasterToDetailWithoutSubsetsFilter;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.model.filter.MasterToDetailFilter;
+import org.faktorips.devtools.stdbuilder.xpand.model.filter.MasterToDetailWithoutSubsetsFilter;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
@@ -81,15 +80,6 @@ public class XPolicyCmptClass extends XClass {
         detailToMasterDerivedUnionAssociations = initNodesForParts(
                 findDetailToMasterDerivedUnionAssociations(policyCmptType.getPolicyCmptTypeAssociations()),
                 XDetailToMasterDerivedUnionAssociation.class);
-    }
-
-    public class MasterToDetailFilter extends AbstractAssociationFilter {
-
-        @Override
-        public boolean isValidAssociation(IAssociation association) {
-            return association.getAssociationType() == AssociationType.COMPOSITION_MASTER_TO_DETAIL;
-        }
-
     }
 
     private Set<IProductCmptTypeAttribute> getProductAttributes(IPolicyCmptType policyCmptType) {

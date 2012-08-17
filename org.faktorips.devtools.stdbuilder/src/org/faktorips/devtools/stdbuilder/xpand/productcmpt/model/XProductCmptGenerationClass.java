@@ -25,10 +25,10 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenJavaClassNameProvider;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.model.MasterToDetailWithoutSubsetsFilter;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.model.filter.MasterToDetailFilter;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
@@ -58,8 +58,8 @@ public class XProductCmptGenerationClass extends XProductClass {
         configuredAttributes = initNodesForParts(getConfiguredAttributes(CHANGE_OVER_TIME), XPolicyAttribute.class);
         associations = initNodesForParts(getProductAssociations(CHANGE_OVER_TIME), XProductAssociation.class);
         masterToDetailAssociations = initNodesForParts(
-                getAssociations(ipsObjectPartContainer, IProductCmptTypeAssociation.class,
-                        new MasterToDetailWithoutSubsetsFilter()), XProductAssociation.class);
+                getAssociations(ipsObjectPartContainer, IProductCmptTypeAssociation.class, new MasterToDetailFilter()),
+                XProductAssociation.class);
         derivedUnionAssociations = initNodesForParts(getProductDerivedUnionAssociations(CHANGE_OVER_TIME),
                 XDerivedUnionAssociation.class);
     }
