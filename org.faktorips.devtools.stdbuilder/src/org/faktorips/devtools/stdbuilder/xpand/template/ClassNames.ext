@@ -59,9 +59,12 @@ Collection_(AbstractGeneratorModelNode this, String genericType) :
 List_(AbstractGeneratorModelNode this, String genericType) :
 	addImport("java.util.List") + "<" + genericType + ">";
 
-// ArrayList.name does return List. Thats why we have to use the string reference in addImport
+// ArrayList.name does return java.util.ArrayList. Thats why we have to use the string reference in addImport
 ArrayList(AbstractGeneratorModelNode this, String genericType) :
 	addImport("java.util.ArrayList") + "<" + genericType + ">";
+	
+Arrays(AbstractGeneratorModelNode this) :
+	addImport(Arrays.name);
 
 Map(AbstractGeneratorModelNode this, String genericKey, String genericValue) :
 	addImport(Map.name) + "<"+ genericKey + ", " + genericValue + ">";

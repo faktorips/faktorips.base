@@ -78,9 +78,13 @@
         if (configElement != null) {
             String value = «ValueToXmlHelper()».«getValueFromElement("configElement", "\"Value\"")»;
             «fieldNameDefaultValue» = «getNewInstanceFromExpression("value", "getRepository()")»;
-            «IF valueSetUnrestricted-» 
-            	«fieldNameValueSet» = new «UnrestrictedValueSet(javaClassUsedForValueSet)»();
-            «ENDIF»
+            «IF valueSetUnrestricted-»
+            	«IF enumDatatype-»
+       	            «fieldNameValueSet» = new «OrderedValueSet(javaClassUsedForValueSet)»(«Arrays()».asList(«javaClassUsedForValueSet».values()), true, null);
+            	«ELSE» 
+	            	«fieldNameValueSet» = new «UnrestrictedValueSet(javaClassUsedForValueSet)»();
+            	«ENDIF»
+            «ENDIF-»
             «IF valueSetEnum || (valueSetUnrestricted && enumValueSetSupported)-»
 	            «EnumValues()» values = «ValueToXmlHelper()».«getEnumValueSetFromElement("configElement", "\"ValueSet\"")»;
 	            if (values != null) {

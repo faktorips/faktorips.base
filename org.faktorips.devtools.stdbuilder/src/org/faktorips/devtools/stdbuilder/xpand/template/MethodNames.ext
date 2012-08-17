@@ -1,5 +1,16 @@
 extension org::faktorips::devtools::stdbuilder::xpand::template::ClassNames reexport;
 
+// ---------------------------------
+// Methods in IModelObject or AbstractModelObject
+// ---------------------------------
+
+createUnresolvedReference(String arguments):
+	"createUnresolvedReference("+arguments+")";
+
+
+// ---------------------------------
+// Methods in IConfigurableModelObject or AbstractConfigurableModelObject
+// ---------------------------------
 
 getEffectiveFromAsCalendar() :
 	"getEffectiveFromAsCalendar()";
@@ -7,12 +18,13 @@ getEffectiveFromAsCalendar() :
 effectiveFromHasChanged() :
 	"effectiveFromHasChanged()";
 
+// ---------------------------------
+// Methods in IDependantObject
+// ---------------------------------
+
 getParentModelObject() :
 	"getParentModelObject()";
 	
-createUnresolvedReference(String arguments):
-	"createUnresolvedReference("+arguments+")";
-
 // ---------------------------------
 // Methods in IProductComponentLink
 // ---------------------------------

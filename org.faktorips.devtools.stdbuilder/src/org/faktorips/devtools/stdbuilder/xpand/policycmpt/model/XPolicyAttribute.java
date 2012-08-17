@@ -127,12 +127,14 @@ public class XPolicyAttribute extends XAttribute {
      * @return The class name of the value set
      */
     public String getValueSetJavaClassName() {
-        if ((isValueSetUnrestricted() && isProductRelevant())) {
-            String valueSetClass = addImport(ValueSet.class);
-            return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
-        } else if (isValueSetUnrestricted()) {
-            String valueSetClass = addImport(UnrestrictedValueSet.class);
-            return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
+        if (isValueSetUnrestricted()) {
+            if (isProductRelevant()) {
+                String valueSetClass = addImport(ValueSet.class);
+                return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
+            } else {
+                String valueSetClass = addImport(UnrestrictedValueSet.class);
+                return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
+            }
         } else if (isValueSetEnum()) {
             String valueSetClass = addImport(OrderedValueSet.class);
             return valueSetClass + "<" + getJavaClassUsedForValueSet() + ">";
@@ -209,6 +211,10 @@ public class XPolicyAttribute extends XAttribute {
         JavaCodeFragment fragment = getDatatypeHelper().getToStringExpression(getFieldNameDefaultValue());
         addImport(fragment.getImportDeclaration());
         return fragment.getSourcecode();
+    }
+
+    public boolean isEnumDatatype() {
+        return getDatatype().isEnum();
     }
 
     public boolean isRangeSupported() {
@@ -383,6 +389,14 @@ public class XPolicyAttribute extends XAttribute {
         throw new RuntimeException("Can't handle value set " + getAttribute().getValueSet());
     }
 
+    /**
+     * Returns the code needed to instantiate a value set.
+     * <p>
+     * It is used to generate the code for the value set constant if there is a value set defined in
+     * the model.
+     * 
+     * @return The code that instantiates the defined value set.
+     */
     public String getValuesetCode() {
         JavaCodeFragment result;
         if (isValueSetRange()) {
