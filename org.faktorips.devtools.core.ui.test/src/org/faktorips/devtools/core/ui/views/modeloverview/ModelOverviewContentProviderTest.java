@@ -411,9 +411,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         List<IType> components = new ArrayList<IType>(srcFiles.size());
         for (IIpsSrcFile file : srcFiles) {
             IType ipsObject = (IType)file.getIpsObject();
-            if (ipsObject instanceof ProductCmptType || ipsObject instanceof PolicyCmptType) {
-                components.add(ipsObject);
-            }
+            components.add(ipsObject);
         }
         return components;
     }

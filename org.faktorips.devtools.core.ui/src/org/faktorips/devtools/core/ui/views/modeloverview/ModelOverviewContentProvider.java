@@ -50,8 +50,6 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
 
     @Override
     public boolean hasChildren(Object element) {
-        // TODO Auto-generated method stub
-        return false;
+        return getChildren(element).length != 0;
     }
-
 }
