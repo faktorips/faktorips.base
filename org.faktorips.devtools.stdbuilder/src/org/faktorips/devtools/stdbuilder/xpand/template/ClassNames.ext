@@ -142,3 +142,5 @@ IUnresolvedReference(AbstractGeneratorModelNode this):
 DefaultUnresolvedReference(AbstractGeneratorModelNode this):
 	addImport(DefaultUnresolvedReference.name);
 
+FormulaExecutionException(AbstractGeneratorModelNode this):
+	addImport(FormulaExecutionException.name);

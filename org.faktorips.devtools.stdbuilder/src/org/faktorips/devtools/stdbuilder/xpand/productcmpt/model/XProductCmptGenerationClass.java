@@ -20,6 +20,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenJavaClassNameProvider;
@@ -44,9 +45,11 @@ public class XProductCmptGenerationClass extends XProductClass {
 
     private final Set<XDerivedUnionAssociation> derivedUnionAssociations;
 
-    public XProductCmptGenerationClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext modelContext,
+    private final Set<XMethod> formulas;
+
+    public XProductCmptGenerationClass(IProductCmptType productCmptType, GeneratorModelContext modelContext,
             ModelService modelService) {
-        super(ipsObjectPartContainer, modelContext, modelService);
+        super(productCmptType, modelContext, modelService);
         prodGenJavaClassNameProvider = createProductCmptGenJavaClassNaming(getLanguageUsedInGeneratedSourceCode());
 
         attributes = initNodesForParts(getProductAttributes(CHANGE_OVER_TIME), XProductAttribute.class);
@@ -54,6 +57,8 @@ public class XProductCmptGenerationClass extends XProductClass {
         associations = initNodesForParts(getProductAssociations(CHANGE_OVER_TIME), XProductAssociation.class);
         derivedUnionAssociations = initNodesForParts(getProductDerivedUnionAssociations(CHANGE_OVER_TIME),
                 XDerivedUnionAssociation.class);
+        formulas = initNodesForParts(new LinkedHashSet<IIpsObjectPart>(productCmptType.getFormulaSignatures()),
+                XMethod.class);
     }
 
     public static ProductCmptGenJavaClassNameProvider createProductCmptGenJavaClassNaming(Locale locale) {
@@ -135,6 +140,10 @@ public class XProductCmptGenerationClass extends XProductClass {
     @Override
     public Set<XDerivedUnionAssociation> getDerivedUnionAssociations() {
         return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnionAssociations);
+    }
+
+    public Set<XMethod> getFormulas() {
+        return new CopyOnWriteArraySet<XMethod>(formulas);
     }
 
 }

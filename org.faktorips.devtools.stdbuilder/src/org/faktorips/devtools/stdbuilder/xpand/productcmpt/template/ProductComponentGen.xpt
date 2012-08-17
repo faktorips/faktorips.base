@@ -49,6 +49,8 @@
 			
 			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH  derivedUnionAssociations»
 
+			«EXPAND Methods::formulaMethod FOREACH formulas»
+
 «REM» GET PRODUCT COMPONENT METHOD «ENDREM»			
 		    /**
 		     * {@inheritDoc}

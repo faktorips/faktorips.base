@@ -2,7 +2,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::runtime»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
-«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAttributeExtension»
 
@@ -66,8 +66,8 @@
 					return «defaultValueCode»;
 				«ELSE-»
 			        «localizedComment("COMMENT_DERIVED_ATTRIBUTE_METHOD_CALL")»
-			        «EXPAND FormulaSignature::formulaParameterDeclaration FOR formulaSignature-»
-			        return «EXPAND getProductGeneration».«EXPAND FormulaSignature::formulaCall FOR formulaSignature-»;			
+			        «EXPAND formulaParameterDeclaration FOR formulaSignature-»
+			        return «EXPAND getProductGeneration».«EXPAND formulaCall FOR formulaSignature-»;			
 				«ENDIF-»
 			«ENDIF-»
 		}
@@ -131,5 +131,14 @@
     «ENDIF-»
 «ENDDEFINE»
 
+«DEFINE formulaParameterDeclaration FOR XMethod-»
+	«FOREACH parameters AS parameter-»
+		«parameter.javaClassName» «parameter.name» = «parameter.nullExpression»;
+	«ENDFOREACH-»
+«ENDDEFINE»
+
+«DEFINE formulaCall FOR XMethod-»
+	«methodName»(«FOREACH parameters AS parameter SEPARATOR ","»«parameter.name»«ENDFOREACH»)
+«ENDDEFINE»
 
 

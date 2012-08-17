@@ -37,7 +37,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuild
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XFormulaSignature;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XMethod;
 import org.faktorips.util.StringUtil;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
@@ -254,9 +254,9 @@ public class XPolicyAttribute extends XAttribute {
         }
     }
 
-    public XFormulaSignature getFormulaSignature() {
+    public XMethod getFormulaSignature() {
         IProductCmptTypeMethod method = getComputationMethod();
-        return getModelNode(method, XFormulaSignature.class);
+        return getModelNode(method, XMethod.class);
     }
 
     private IProductCmptTypeMethod getComputationMethod() {

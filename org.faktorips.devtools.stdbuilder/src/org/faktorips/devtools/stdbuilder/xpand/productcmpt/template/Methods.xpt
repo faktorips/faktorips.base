@@ -1,0 +1,17 @@
+«IMPORT java::util»
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE formulaMethod FOR XMethod-»
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    «modifier» «javaClassName» «method(methodName, methodParameters)» throws «FormulaExecutionException()» {
+        return («notPrimitiveJavaClassName»)getFormulaEvaluator().evaluate("«methodName»", «FOREACH methodParameters AS parameter SEPARATOR ","»«parameter.name»«ENDFOREACH»);
+    }
+«ENDDEFINE»

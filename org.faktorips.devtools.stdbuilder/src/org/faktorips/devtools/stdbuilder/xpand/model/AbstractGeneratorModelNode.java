@@ -19,13 +19,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
@@ -34,6 +39,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -142,6 +149,25 @@ public abstract class AbstractGeneratorModelNode {
             }
         }
         return description;
+    }
+
+    protected String getJavaClassName(Datatype datatype, boolean resolveTypesToPublishedInterface) {
+        if (datatype instanceof IPolicyCmptType) {
+            return getModelNode((IPolicyCmptType)datatype, XPolicyCmptClass.class).getSimpleName(
+                    BuilderAspect.getValue(resolveTypesToPublishedInterface));
+        } else if (datatype instanceof IProductCmptType) {
+            return getModelNode((IProductCmptType)datatype, XProductCmptClass.class).getSimpleName(
+                    BuilderAspect.getValue(resolveTypesToPublishedInterface));
+        } else if (datatype.isVoid()) {
+            return "void";
+        } else {
+            try {
+                DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(datatype.getQualifiedName());
+                return addImport(datatypeHelper.getJavaClassName());
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
     }
 
     /**
@@ -530,6 +556,10 @@ public abstract class AbstractGeneratorModelNode {
             String parameterName2) {
         return method(methodName, new MethodParameter(parameterType1, parameterName1), new MethodParameter(
                 parameterType2, parameterName2));
+    }
+
+    public String method(String methodName, List<MethodParameter> parameters) {
+        return method(methodName, parameters.toArray(new MethodParameter[parameters.size()]));
     }
 
     public String method(String methodName, MethodParameter... parameters) {
