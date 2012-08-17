@@ -15,18 +15,20 @@ package org.faktorips.devtools.core.ui.views.modeloverview;
 
 import java.util.List;
 
-public class SubtypeNode implements IModelOverviewNode {
+public class SubtypeNode extends AbstractStrucureNode {
 
-    @Override
-    public List<IModelOverviewNode> getChildren() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public IModelOverviewNode getParent() {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Creates a {@link SubtypeNode} with a mandatory parent {@link ComponentNode} and a List of
+     * mandatory {@link #children}.
+     * 
+     * @param parent the parent, this parameter must not be <tt>null</tt>.
+     * @param children a list of {@link ComponentNode component nodes}, this list must not be
+     *            <tt>null</tt> or empty.
+     * @throws NullPointerException if one of the parameters is <tt>null</tt> or {@link #children}
+     *             is empty.
+     */
+    public SubtypeNode(ComponentNode parent, List<ComponentNode> children) {
+        super(parent, children);
     }
 
 }

@@ -3,7 +3,7 @@
  * 
  * Alle Rechte vorbehalten.
  * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
@@ -15,18 +15,20 @@ package org.faktorips.devtools.core.ui.views.modeloverview;
 
 import java.util.List;
 
-public class CompositeNode implements IModelOverviewNode {
+public class CompositeNode extends AbstractStrucureNode {
 
-    @Override
-    public List<IModelOverviewNode> getChildren() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public IModelOverviewNode getParent() {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Creates a {@link CompositeNode} with a mandatory parent {@link ComponentNode} and a List of
+     * mandatory {@link #children}.
+     * 
+     * @param parent the parent, this parameter must not be <tt>null</tt>.
+     * @param children a list of {@link ComponentNode component nodes}, this list must not be
+     *            <tt>null</tt> or empty.
+     * @throws NullPointerException if one of the parameters is <tt>null</tt> or {@link #children}
+     *             is empty.
+     */
+    public CompositeNode(ComponentNode parent, List<ComponentNode> children) {
+        super(parent, children);
     }
 
 }

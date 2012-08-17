@@ -41,7 +41,7 @@ public class ComponentNode implements IModelOverviewNode {
     }
 
     /**
-     * Returns a list which may contain at most one {@link CompositeNode} and one
+     * Returns a list which may contain at most one {@link StructureNode} and one
      * {@link SubtypeNode}.
      * 
      */
@@ -83,7 +83,7 @@ public class ComponentNode implements IModelOverviewNode {
     }
 
     /**
-     * Sets the {@link CompositeNode} which will be returned by {@link #getChildren()}.
+     * Sets the {@link StructureNode} which will be returned by {@link #getChildren()}.
      * 
      * @param compositeNode
      */
