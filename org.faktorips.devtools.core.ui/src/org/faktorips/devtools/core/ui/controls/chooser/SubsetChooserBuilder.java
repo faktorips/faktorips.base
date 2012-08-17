@@ -55,27 +55,36 @@ public class SubsetChooserBuilder {
         mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         sourceLabel = toolkit.createLabel(mainComposite, Messages.ListChooser_labelAvailableValues);
-        toolkit.createLabel(mainComposite, ""); //$NON-NLS-1$
+        GridData srcLabelLayout = new GridData(GridData.FILL, GridData.BEGINNING, false, false);
+        srcLabelLayout.horizontalSpan = 2;
+        srcLabelLayout.widthHint = 100;
+        sourceLabel.setLayoutData(srcLabelLayout);
         targetLabel = toolkit.createLabel(mainComposite, Messages.ListChooser_lableChoosenValues);
-        toolkit.createLabel(mainComposite, ""); //$NON-NLS-1$
+        GridData targetLabelLayout = new GridData(GridData.FILL, GridData.BEGINNING, false, false);
+        targetLabelLayout.horizontalSpan = 2;
+        targetLabelLayout.widthHint = 100;
+        targetLabel.setLayoutData(targetLabelLayout);
 
         TableLayoutComposite srcParent = new TableLayoutComposite(mainComposite, SWT.NONE);
-        srcParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        GridData srcCompositeLayout = new GridData(SWT.FILL, SWT.FILL, true, true);
+        srcParent.setLayoutData(srcCompositeLayout);
         preDefinedValuesTable = new Table(srcParent, SWT.MULTI | SWT.FULL_SELECTION | SWT.BORDER | SWT.V_SCROLL
                 | SWT.H_SCROLL);
-        preDefinedValuesTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        GridData srcTableLayout = new GridData(SWT.FILL, SWT.FILL, true, true);
+        preDefinedValuesTable.setLayoutData(srcTableLayout);
         srcParent.addColumnData(new ColumnPixelData(15, false)); // message image
         srcParent.addColumnData(new ColumnWeightData(95, true));
 
         addChooseButtons(mainComposite);
 
         TableLayoutComposite targetParent = new TableLayoutComposite(mainComposite, SWT.NONE);
-        targetParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        GridData targetCompositeLayout = new GridData(SWT.FILL, SWT.FILL, true, true);
+        targetParent.setLayoutData(targetCompositeLayout);
         resultingValuesTable = new Table(targetParent, SWT.MULTI | SWT.FULL_SELECTION | SWT.BORDER | SWT.V_SCROLL
                 | SWT.H_SCROLL);
-        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        layoutData.horizontalIndent = 5;
-        resultingValuesTable.setLayoutData(layoutData);
+        GridData targetTableLayout = new GridData(SWT.FILL, SWT.FILL, true, true);
+        targetTableLayout.horizontalIndent = 5;
+        resultingValuesTable.setLayoutData(targetTableLayout);
         targetParent.addColumnData(new ColumnPixelData(15, false)); // message image
         targetParent.addColumnData(new ColumnWeightData(95, true));
 
