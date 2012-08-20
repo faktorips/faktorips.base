@@ -61,7 +61,7 @@ public class XProductCmptGenerationClass extends XProductClass {
         configuredAttributes = initNodesForParts(getConfiguredAttributes(CHANGE_OVER_TIME), XPolicyAttribute.class);
         associations = initNodesForParts(getProductAssociations(CHANGE_OVER_TIME), XProductAssociation.class);
         masterToDetailAssociations = initNodesForParts(
-                getAssociations(ipsObjectPartContainer, IProductCmptTypeAssociation.class, new MasterToDetailFilter()),
+                getAssociations(productCmptType, IProductCmptTypeAssociation.class, new MasterToDetailFilter()),
                 XProductAssociation.class);
         derivedUnionAssociations = initNodesForParts(getProductDerivedUnionAssociations(CHANGE_OVER_TIME),
                 XDerivedUnionAssociation.class);
