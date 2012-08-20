@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
+package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -28,10 +28,6 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.model.MethodParameter;
-import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 
 public class XMethod extends AbstractGeneratorModelNode {
 
@@ -45,7 +41,7 @@ public class XMethod extends AbstractGeneratorModelNode {
 
     @Override
     public IMethod getIpsObjectPartContainer() {
-        return (IProductCmptTypeMethod)super.getIpsObjectPartContainer();
+        return (IMethod)super.getIpsObjectPartContainer();
     }
 
     public IMethod getMethod() {
@@ -61,8 +57,8 @@ public class XMethod extends AbstractGeneratorModelNode {
     }
 
     public String getJavaClassName() {
-        boolean resolveTypesToPublishedInterface = getMethod().getModifier().isPublished();
-        return getJavaClassName(getDatatype(), resolveTypesToPublishedInterface);
+        Datatype datatype = getDatatype();
+        return getJavaClassName(datatype);
     }
 
     public String getNotPrimitiveJavaClassName() {
@@ -70,7 +66,15 @@ public class XMethod extends AbstractGeneratorModelNode {
         if (datatype instanceof ValueDatatype && datatype.isPrimitive()) {
             datatype = ((ValueDatatype)datatype).getWrapperType();
         }
-        return getJavaClassName(datatype, getMethod().getModifier().isPublished());
+        return getJavaClassName(datatype);
+    }
+
+    protected String getJavaClassName(Datatype datatype) {
+        boolean resolveTypesToPublishedInterface = getMethod().getModifier().isPublished()
+                && isGeneratingPublishedInterfaces();
+        boolean useGeneration = (getMethod() instanceof IProductCmptTypeMethod)
+                && ((IProductCmptTypeMethod)getMethod()).isChangingOverTime();
+        return getJavaClassName(datatype, useGeneration, resolveTypesToPublishedInterface);
     }
 
     public Set<XParameter> getParameters() {
@@ -98,10 +102,28 @@ public class XMethod extends AbstractGeneratorModelNode {
         if (isReturnVoid()) {
             throw new RuntimeException("Cannot give default return value for void in method " + getName());
         } else if (datatype.isValueDatatype()) {
-            return ((ValueDatatype)datatype).getDefaultValue();
+            String defaultValue = ((ValueDatatype)datatype).getDefaultValue();
+            // getDefaultValue returns null if the default value should be "null"
+            if (defaultValue == null) {
+                return "null";
+            } else {
+                return defaultValue;
+            }
         } else {
             return "null";
         }
+    }
+
+    public boolean isOverrides() {
+        try {
+            return getMethod().findOverriddenMethod(getIpsProject()) != null;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    public boolean isPublished() {
+        return getMethod().getModifier().isPublished();
     }
 
     public boolean isAbstract() {

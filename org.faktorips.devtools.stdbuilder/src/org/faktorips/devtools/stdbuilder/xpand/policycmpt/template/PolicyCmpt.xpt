@@ -66,6 +66,8 @@ package «packageName»;
 		
 		«EXPAND DerivedUnionAssociation::methodsForDerivedUnionPolicy(this) FOREACH derivedUnionAssociations-»
 
+		«EXPAND Methods::method FOREACH methods-»
+		
 		«EXPAND generalMethodsForConfiguredPolicyCmpts-»
 		
 		«EXPAND generateCodeForDependentObject»

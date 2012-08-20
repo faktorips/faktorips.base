@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
+package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
@@ -20,9 +20,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.type.IParameter;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
-import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 
 public class XParameter extends AbstractGeneratorModelNode {
 
@@ -43,7 +40,8 @@ public class XParameter extends AbstractGeneratorModelNode {
      * Returns the java class name for this parameter
      */
     public String getJavaClassName() {
-        return getJavaClassName(getDatatype(), isGeneratingPublishedInterfaces());
+        XMethod xMethod = getModelNode(getParameter().getParameterContainer(), XMethod.class);
+        return xMethod.getJavaClassName(getDatatype());
     }
 
     protected Datatype getDatatype() {

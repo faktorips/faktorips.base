@@ -46,6 +46,7 @@ import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -151,13 +152,18 @@ public abstract class AbstractGeneratorModelNode {
         return description;
     }
 
-    protected String getJavaClassName(Datatype datatype, boolean resolveTypesToPublishedInterface) {
+    protected String getJavaClassName(Datatype datatype, boolean useGeneration, boolean resolveTypesToPublishedInterface) {
         if (datatype instanceof IPolicyCmptType) {
             return getModelNode((IPolicyCmptType)datatype, XPolicyCmptClass.class).getSimpleName(
                     BuilderAspect.getValue(resolveTypesToPublishedInterface));
         } else if (datatype instanceof IProductCmptType) {
-            return getModelNode((IProductCmptType)datatype, XProductCmptClass.class).getSimpleName(
-                    BuilderAspect.getValue(resolveTypesToPublishedInterface));
+            if (useGeneration) {
+                return getModelNode((IProductCmptType)datatype, XProductCmptGenerationClass.class).getSimpleName(
+                        BuilderAspect.getValue(resolveTypesToPublishedInterface));
+            } else {
+                return getModelNode((IProductCmptType)datatype, XProductCmptClass.class).getSimpleName(
+                        BuilderAspect.getValue(resolveTypesToPublishedInterface));
+            }
         } else if (datatype.isVoid()) {
             return "void";
         } else {
@@ -566,6 +572,11 @@ public abstract class AbstractGeneratorModelNode {
         MethodDefinition methodSignature = new MethodDefinition(methodName, parameters);
         generatedMethods.add(methodSignature);
         return methodSignature.getDefinition();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [" + ipsObjectPartContainer + "]";
     }
 
 }

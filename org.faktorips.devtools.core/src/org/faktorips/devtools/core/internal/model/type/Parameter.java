@@ -43,6 +43,11 @@ public class Parameter extends AtomicIpsObjectPart implements IParameter {
     }
 
     @Override
+    public IParameterContainer getParameterContainer() {
+        return (IParameterContainer)getParent();
+    }
+
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
