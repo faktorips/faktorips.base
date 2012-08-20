@@ -34,8 +34,11 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.model.filter.MasterToDetailFilter;
+import org.faktorips.devtools.stdbuilder.xpand.model.filter.MasterToDetailWithoutSubsetsFilter;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
@@ -50,7 +53,9 @@ public class XPolicyCmptClass extends XClass {
 
     private final Set<XPolicyAssociation> associations;
 
-    private final Set<XPolicyAssociation> masterToDetailAssociationsInNaturalOrder;
+    private final Set<XPolicyAssociation> masterToDetailAssociations;
+
+    private final Set<XPolicyAssociation> masterToDetailAssociationsWithoutSubsets;
 
     private final Set<XDerivedUnionAssociation> derivedUnionAssociations;
 
@@ -63,8 +68,12 @@ public class XPolicyCmptClass extends XClass {
                 XPolicyAttribute.class);
         productAttributes = initNodesForParts(getProductAttributes(policyCmptType), XProductAttribute.class);
         associations = initNodesForParts(getPolicyAssociations(policyCmptType), XPolicyAssociation.class);
-        masterToDetailAssociationsInNaturalOrder = initNodesForParts(
-                getMasterToDetailAssociationsIncludingDerivedUnions(policyCmptType), XPolicyAssociation.class);
+        masterToDetailAssociations = initNodesForParts(
+                getAssociations(policyCmptType, IPolicyCmptTypeAssociation.class, new MasterToDetailFilter()),
+                XPolicyAssociation.class);
+        masterToDetailAssociationsWithoutSubsets = initNodesForParts(
+                getAssociations(policyCmptType, IPolicyCmptTypeAssociation.class,
+                        new MasterToDetailWithoutSubsetsFilter()), XPolicyAssociation.class);
         derivedUnionAssociations = initNodesForParts(
                 findSubsettedDerivedUnions(policyCmptType.getPolicyCmptTypeAssociations(),
                         IPolicyCmptTypeAssociation.class), XDerivedUnionAssociation.class);
@@ -116,30 +125,6 @@ public class XPolicyCmptClass extends XClass {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-    }
-
-    /**
-     * Returns <code>true</code> all master to detail associations of a policy component type
-     * including derived unions but not subsets of derived unions.
-     */
-    private Set<IPolicyCmptTypeAssociation> getMasterToDetailAssociationsIncludingDerivedUnions(IPolicyCmptType policyCmptType) {
-        Set<IPolicyCmptTypeAssociation> result = new LinkedHashSet<IPolicyCmptTypeAssociation>();
-        List<IPolicyCmptTypeAssociation> policyCmptTypeAssociations = policyCmptType.getPolicyCmptTypeAssociations();
-        for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyCmptTypeAssociations) {
-            if (isValidMasterToDetailAssociation(policyCmptTypeAssociation)) {
-                result.add(policyCmptTypeAssociation);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Returns <code>true</code> for all master to detail associations including derived unions but
-     * not subsets of derived unions.
-     */
-    private boolean isValidMasterToDetailAssociation(IPolicyCmptTypeAssociation policyCmptTypeAssociation) {
-        return policyCmptTypeAssociation.isCompositionMasterToDetail()
-                && !isInverseOfADerivedUnion(policyCmptTypeAssociation);
     }
 
     /**
@@ -259,8 +244,13 @@ public class XPolicyCmptClass extends XClass {
         return new CopyOnWriteArraySet<XPolicyAssociation>(associations);
     }
 
-    public Set<XPolicyAssociation> getMasterToDetailAssociationsInNaturalOrder() {
-        return new CopyOnWriteArraySet<XPolicyAssociation>(masterToDetailAssociationsInNaturalOrder);
+    @Override
+    public Set<XAssociation> getMasterToDetailAssociations() {
+        return new CopyOnWriteArraySet<XAssociation>(masterToDetailAssociations);
+    }
+
+    public Set<XPolicyAssociation> getMasterToDetailAssociationsWithoutSubsets() {
+        return new CopyOnWriteArraySet<XPolicyAssociation>(masterToDetailAssociationsWithoutSubsets);
     }
 
     @Override

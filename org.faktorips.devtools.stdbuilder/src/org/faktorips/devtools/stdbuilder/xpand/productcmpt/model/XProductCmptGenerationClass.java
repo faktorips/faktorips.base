@@ -23,10 +23,13 @@ import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenJavaClassNameProvider;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.model.filter.MasterToDetailFilter;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
@@ -43,6 +46,8 @@ public class XProductCmptGenerationClass extends XProductClass {
 
     private final Set<XProductAssociation> associations;
 
+    private final Set<XProductAssociation> masterToDetailAssociations;
+
     private final Set<XDerivedUnionAssociation> derivedUnionAssociations;
 
     private final Set<XMethod> formulas;
@@ -55,6 +60,9 @@ public class XProductCmptGenerationClass extends XProductClass {
         attributes = initNodesForParts(getProductAttributes(CHANGE_OVER_TIME), XProductAttribute.class);
         configuredAttributes = initNodesForParts(getConfiguredAttributes(CHANGE_OVER_TIME), XPolicyAttribute.class);
         associations = initNodesForParts(getProductAssociations(CHANGE_OVER_TIME), XProductAssociation.class);
+        masterToDetailAssociations = initNodesForParts(
+                getAssociations(ipsObjectPartContainer, IProductCmptTypeAssociation.class, new MasterToDetailFilter()),
+                XProductAssociation.class);
         derivedUnionAssociations = initNodesForParts(getProductDerivedUnionAssociations(CHANGE_OVER_TIME),
                 XDerivedUnionAssociation.class);
         formulas = initNodesForParts(new LinkedHashSet<IIpsObjectPart>(productCmptType.getFormulaSignatures()),
@@ -146,4 +154,8 @@ public class XProductCmptGenerationClass extends XProductClass {
         return new CopyOnWriteArraySet<XMethod>(formulas);
     }
 
+    @Override
+    public Set<XAssociation> getMasterToDetailAssociations() {
+        return new CopyOnWriteArraySet<XAssociation>(masterToDetailAssociations);
+    }
 }

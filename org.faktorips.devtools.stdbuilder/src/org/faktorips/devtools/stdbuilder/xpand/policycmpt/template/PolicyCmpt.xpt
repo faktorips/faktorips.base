@@ -59,8 +59,6 @@ package «packageName»;
 			«EXPAND PolicyCmptAttribute::getter-»
 			«EXPAND PolicyCmptAttribute::setter-»
 		«ENDFOREACH-»
-		
-		«EXPAND DerivedUnionAssociation::methodDerivedUnionContains(this) FOREACH derivedUnionAssociations»
 
 		«FOREACH associations AS this-»
 			«EXPAND PolicyCmptAssociation::methods-»
@@ -343,6 +341,6 @@ package «packageName»;
     «overrideAnnotation(true)»
     public void «validateDependants(MessageList()+" ml", IValidationContext()+" context")» {
         super.«validateDependants("ml", "context")»;
-        «EXPAND PolicyCmptAssociation::validateDependents FOREACH masterToDetailAssociationsInNaturalOrder-»
+        «EXPAND PolicyCmptAssociation::validateDependents FOREACH masterToDetailAssociationsWithoutSubsets-»
     }
 «ENDDEFINE»

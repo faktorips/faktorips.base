@@ -29,7 +29,10 @@ import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.type.AssociationType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.stdbuilder.xpand.model.filter.MasterToDetailWithoutSubsetsFilter;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -139,4 +142,56 @@ public class XClassTest {
         return xPolicyClass;
     }
 
+    @Test
+    public void testIsMasterToDetailAssociationIncludingDerivedUnions_detailToMaster() {
+        AbstractAssociationFilter filter = new MasterToDetailWithoutSubsetsFilter();
+        IAssociation association = mock(IAssociation.class);
+        when(association.getAssociationType()).thenReturn(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+
+        assertFalse(filter.isValidAssociation(association));
+    }
+
+    @Test
+    public void testIsMasterToDetailAssociationIncludingDerivedUnions_subsetOfDU() {
+        AbstractAssociationFilter filter = new MasterToDetailWithoutSubsetsFilter();
+        IAssociation association = mock(IAssociation.class);
+        when(association.getAssociationType()).thenReturn(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        when(association.isSubsetOfADerivedUnion()).thenReturn(true);
+        when(association.isDerivedUnion()).thenReturn(false);
+
+        assertFalse(filter.isValidAssociation(association));
+    }
+
+    @Test
+    public void testIsMasterToDetailAssociationIncludingDerivedUnions_DUAndSubsetOfDU() {
+        AbstractAssociationFilter filter = new MasterToDetailWithoutSubsetsFilter();
+        IAssociation association = mock(IAssociation.class);
+        when(association.getAssociationType()).thenReturn(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        when(association.isSubsetOfADerivedUnion()).thenReturn(true);
+        when(association.isDerivedUnion()).thenReturn(true);
+
+        assertTrue(filter.isValidAssociation(association));
+    }
+
+    @Test
+    public void testIsMasterToDetailAssociationIncludingDerivedUnions_DU() {
+        AbstractAssociationFilter filter = new MasterToDetailWithoutSubsetsFilter();
+        IAssociation association = mock(IAssociation.class);
+        when(association.getAssociationType()).thenReturn(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        when(association.isSubsetOfADerivedUnion()).thenReturn(false);
+        when(association.isDerivedUnion()).thenReturn(true);
+
+        assertTrue(filter.isValidAssociation(association));
+    }
+
+    @Test
+    public void testIsMasterToDetailAssociationIncludingDerivedUnions_normalAssoc() {
+        AbstractAssociationFilter filter = new MasterToDetailWithoutSubsetsFilter();
+        IAssociation association = mock(IAssociation.class);
+        when(association.getAssociationType()).thenReturn(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        when(association.isSubsetOfADerivedUnion()).thenReturn(false);
+        when(association.isDerivedUnion()).thenReturn(false);
+
+        assertTrue(filter.isValidAssociation(association));
+    }
 }
