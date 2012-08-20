@@ -4,7 +4,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::template»
 
-«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAttributeExtension»
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAssociationExtension»
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::ClassNames»
 
 «DEFINE field FOR XPolicyAssociation-»
@@ -267,6 +267,7 @@
 	    «ELSE-»
 	    	if («EXPAND varNameNullCheckIfNecessary(objectToSynchronize)» «objectToSynchronize».«methodNameInverseAssociationGet»()!=this) {
 				«objectToSynchronize».«methodNameInverseAssociationSet»(this);
+				«IF false-»
 				«REM» Der alte Codegenerator baut hier evtl. einen Cast ein:
 			        if (!varClassName.equals(getGenType().getQualifiedName(false))) {
 			            code.append("((");
@@ -275,6 +276,7 @@
 			        }
 			        Wird das fuer Derived Union auch mal verwendet, oder ist das ueberfluessig?
 				«ENDREM»
+				«ENDIF-»
 			}
 	    «ENDIF-»
 	«ENDIF-»
@@ -376,7 +378,11 @@
                     throw new RuntimeException(e);
                 }
             }
-            return («AbstractModelObject()»)«methodNameNew»();
+            «IF abstractTarget-»
+            	throw new RuntimeException(childEl.toString() + ": Attribute className is missing.");
+            «ELSE-»
+            	return («AbstractModelObject()»)«methodNameNew»();
+            «ENDIF-»
         }
 	«ENDIF-»
 «ENDDEFINE»
@@ -408,8 +414,8 @@
         if («methodNameGetSingle»() == newParent) {«REM»parent association can only be 1to1. getSingle can be used.«ENDREM»
             return;
         }
-        «IModelObject()» parent = «getParentModelObject()»;
-        if (newParent != null && parent != null) {
+        «IModelObject()» «parentVar()» = «getParentModelObject()»;
+        if (newParent != null && «parentVar()» != null) {
             throw new RuntimeException(
                     "«className» can't be assigned to parent object of class «name», because object already belongs to a different parent object.");
         }
