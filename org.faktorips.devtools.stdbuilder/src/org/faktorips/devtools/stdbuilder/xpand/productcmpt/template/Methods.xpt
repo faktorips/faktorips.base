@@ -11,9 +11,26 @@
      * 
      * @generated
      */
+     «overrideAnnotationForPublishedMethodOrIf(published, overrides)-»
     «modifier» «javaClassName» «method(methodName, methodParameters)» throws «FormulaExecutionException()» {
         return («notPrimitiveJavaClassName»)getFormulaEvaluator().evaluate("«methodName»", «FOREACH methodParameters AS parameter SEPARATOR ","»«parameter.name»«ENDFOREACH»);
     }
+    «IF overloadsFormula»
+    	«LET overloadedFormulaMethod AS this-»
+		    /**
+		     * {@inheritDoc}
+		     * 
+		     * @generated
+		     */
+		    «overrideAnnotation(false)»
+		    «modifier» «javaClassName» «method(methodName, methodParameters)» throws «FormulaExecutionException()» {
+		        // TODO a delegation to the method computeAnyFormula(int, PaymentMode) needs to be
+		        // implemented here
+		        // And make sure to disable the regeneration of this method.
+		        throw new RuntimeException("Not implemented yet.");
+		    }
+    	«ENDLET-»
+    «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE method FOR XMethod-»

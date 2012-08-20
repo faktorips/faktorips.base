@@ -505,7 +505,16 @@ public class XPolicyCmptClass extends XClass {
     }
 
     public boolean isGenerateNotifyChangeListeners() {
-        return isGenerateChangeSupport() && !hasSupertype() || !getDetailToMasterDerivedUnionAssociations().isEmpty();
+        return isGenerateChangeSupport() && (!hasSupertype() || hasDetailToMasterAssociations());
+    }
+
+    private boolean hasDetailToMasterAssociations() {
+        for (XPolicyAssociation asso : getAssociations()) {
+            if (asso.isCompositionDetailToMaster()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

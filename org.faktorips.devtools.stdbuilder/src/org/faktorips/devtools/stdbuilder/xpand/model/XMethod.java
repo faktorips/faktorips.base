@@ -26,6 +26,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
 
@@ -70,7 +71,7 @@ public class XMethod extends AbstractGeneratorModelNode {
     }
 
     protected String getJavaClassName(Datatype datatype) {
-        boolean resolveTypesToPublishedInterface = getMethod().getModifier().isPublished()
+        boolean resolveTypesToPublishedInterface = (getMethod().getModifier().isPublished() || getMethod() instanceof IPolicyCmptTypeMethod)
                 && isGeneratingPublishedInterfaces();
         boolean useGeneration = (getMethod() instanceof IProductCmptTypeMethod)
                 && ((IProductCmptTypeMethod)getMethod()).isChangingOverTime();
@@ -141,4 +142,31 @@ public class XMethod extends AbstractGeneratorModelNode {
             return false;
         }
     }
+
+    public boolean isOverloadsFormula() {
+        if (getMethod() instanceof IProductCmptTypeMethod) {
+            return ((IProductCmptTypeMethod)getMethod()).isOverloadsFormula();
+        } else {
+            return false;
+        }
+    }
+
+    public XMethod getOverloadedFormulaMethod() {
+        if (getMethod() instanceof IProductCmptTypeMethod) {
+            try {
+                IProductCmptTypeMethod overloadedFormulaMethod = ((IProductCmptTypeMethod)getMethod())
+                        .findOverloadedFormulaMethod(getIpsProject());
+                if (overloadedFormulaMethod == null) {
+                    throw new CoreRuntimeException("Cannot find overloaded formula for method " + getName());
+                }
+                XMethod overloadedMethod = getModelNode(overloadedFormulaMethod, XMethod.class);
+                return overloadedMethod;
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        } else {
+            throw new RuntimeException("The method " + getName() + " is no formula signature.");
+        }
+    }
+
 }

@@ -168,6 +168,10 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return xClass.getQualifiedName(BuilderAspect.IMPLEMENTATION);
     }
 
+    public boolean isAbstractTarget() {
+        return getTargetType().isAbstract();
+    }
+
     /**
      * In contrast to {@link #getTargetClassName()} this method returns the class name of the type
      * this association is part of.
