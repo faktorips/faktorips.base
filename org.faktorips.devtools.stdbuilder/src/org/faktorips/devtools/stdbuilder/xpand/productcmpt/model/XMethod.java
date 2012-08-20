@@ -27,6 +27,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.MethodParameter;
@@ -36,27 +37,23 @@ public class XMethod extends AbstractGeneratorModelNode {
 
     private final Set<XParameter> methodParameters;
 
-    public XMethod(IProductCmptTypeMethod method, GeneratorModelContext context, ModelService modelService) {
+    public XMethod(IMethod method, GeneratorModelContext context, ModelService modelService) {
         super(method, context, modelService);
         methodParameters = initNodesForParts(new LinkedHashSet<IIpsObjectPart>(Arrays.asList(method.getParameters())),
                 XParameter.class);
     }
 
     @Override
-    public IProductCmptTypeMethod getIpsObjectPartContainer() {
+    public IMethod getIpsObjectPartContainer() {
         return (IProductCmptTypeMethod)super.getIpsObjectPartContainer();
     }
 
-    public IProductCmptTypeMethod getMethod() {
+    public IMethod getMethod() {
         return getIpsObjectPartContainer();
     }
 
     public String getModifier() {
         return Modifier.toString(getMethod().getJavaModifier() | (isAbstract() ? Modifier.ABSTRACT : 0));
-    }
-
-    private boolean isAbstract() {
-        return getMethod().isAbstract();
     }
 
     public String getMethodName() {
@@ -96,4 +93,30 @@ public class XMethod extends AbstractGeneratorModelNode {
         }
     }
 
+    public String getDefaultReturnValue() {
+        Datatype datatype = getDatatype();
+        if (isReturnVoid()) {
+            throw new RuntimeException("Cannot give default return value for void in method " + getName());
+        } else if (datatype.isValueDatatype()) {
+            return ((ValueDatatype)datatype).getDefaultValue();
+        } else {
+            return "null";
+        }
+    }
+
+    public boolean isAbstract() {
+        return getMethod().isAbstract();
+    }
+
+    public boolean isReturnVoid() {
+        return getDatatype().isVoid();
+    }
+
+    public boolean isFormulaSignature() {
+        if (getMethod() instanceof IProductCmptTypeMethod) {
+            return ((IProductCmptTypeMethod)getMethod()).isFormulaSignatureDefinition();
+        } else {
+            return false;
+        }
+    }
 }

@@ -15,3 +15,21 @@
         return («notPrimitiveJavaClassName»)getFormulaEvaluator().evaluate("«methodName»", «FOREACH methodParameters AS parameter SEPARATOR ","»«parameter.name»«ENDFOREACH»);
     }
 «ENDDEFINE»
+
+«DEFINE method FOR XMethod-»
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    «modifier» «javaClassName» «method(methodName, methodParameters)» «IF !abstract-»
+	    {
+	        // TODO implement method!
+	        «IF !returnVoid-»
+	        	return «defaultReturnValue»;
+	        «ENDIF-»
+	    }
+    «ELSE-»
+    	;
+    «ENDIF»
+«ENDDEFINE»

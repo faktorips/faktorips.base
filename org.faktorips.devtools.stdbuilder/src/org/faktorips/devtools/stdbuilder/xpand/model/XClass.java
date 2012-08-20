@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
@@ -26,13 +27,14 @@ import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XMethod;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.INotificationSupport;
 
@@ -46,34 +48,15 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      */
     private static final IJavaClassNameProvider JAVA_CLASS_NAME_PROVIDER = createJavaClassNamingProvider();
 
-    public XClass(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
-            ModelService modelService) {
-        super(ipsObjectPartContainer, context, modelService);
+    private final Set<XMethod> methods;
+
+    public XClass(IType type, GeneratorModelContext context, ModelService modelService) {
+        super(type, context, modelService);
+        methods = initNodesForParts(new LinkedHashSet<IIpsObjectPart>(type.getMethods()), XMethod.class);
     }
 
     public static IJavaClassNameProvider createJavaClassNamingProvider() {
         return new DefaultJavaClassNameProvider();
-    }
-
-    private class NonAbstractSupertypeFinder extends TypeHierarchyVisitor<IType> {
-        boolean hasNonAbstractSupertype = false;
-
-        public NonAbstractSupertypeFinder(IIpsProject ipsProject) {
-            super(ipsProject);
-        }
-
-        public boolean hasNonAbstractSupertype() {
-            return hasNonAbstractSupertype;
-        }
-
-        @Override
-        protected boolean visit(IType currentType) throws CoreException {
-            hasNonAbstractSupertype |= !currentType.isAbstract();
-            if (hasNonAbstractSupertype) {
-                return false;
-            }
-            return true;
-        }
     }
 
     /**
@@ -103,6 +86,10 @@ public abstract class XClass extends AbstractGeneratorModelNode {
 
     public IType getType() {
         return getIpsObjectPartContainer();
+    }
+
+    public Set<XMethod> getMethods() {
+        return new CopyOnWriteArraySet<XMethod>(methods);
     }
 
     /**
@@ -285,29 +272,6 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         return resultingAssociations;
     }
 
-    protected class SuperclassCollector<T extends XClass> extends TypeHierarchyVisitor<IType> {
-
-        private final Class<T> nodeClass;
-
-        private final Set<T> superclasses = new LinkedHashSet<T>();
-
-        public SuperclassCollector(IIpsProject ipsProject, Class<T> nodeClass) {
-            super(ipsProject);
-            this.nodeClass = nodeClass;
-        }
-
-        @Override
-        protected boolean visit(IType currentType) throws CoreException {
-            getSuperclasses().add(getModelNode(currentType, nodeClass));
-            return true;
-        }
-
-        public Set<T> getSuperclasses() {
-            return superclasses;
-        }
-
-    }
-
     /**
      * Returns all master to detail associations of this type/class including derived unions but not
      * subsets of derived unions. Includes derived union associations that are at the same time
@@ -334,5 +298,49 @@ public abstract class XClass extends AbstractGeneratorModelNode {
             }
         }
         return result;
+    }
+
+    protected class SuperclassCollector<T extends XClass> extends TypeHierarchyVisitor<IType> {
+
+        private final Class<T> nodeClass;
+
+        private final Set<T> superclasses = new LinkedHashSet<T>();
+
+        public SuperclassCollector(IIpsProject ipsProject, Class<T> nodeClass) {
+            super(ipsProject);
+            this.nodeClass = nodeClass;
+        }
+
+        @Override
+        protected boolean visit(IType currentType) throws CoreException {
+            getSuperclasses().add(getModelNode(currentType, nodeClass));
+            return true;
+        }
+
+        public Set<T> getSuperclasses() {
+            return superclasses;
+        }
+
+    }
+
+    private class NonAbstractSupertypeFinder extends TypeHierarchyVisitor<IType> {
+        boolean hasNonAbstractSupertype = false;
+
+        public NonAbstractSupertypeFinder(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        public boolean hasNonAbstractSupertype() {
+            return hasNonAbstractSupertype;
+        }
+
+        @Override
+        protected boolean visit(IType currentType) throws CoreException {
+            hasNonAbstractSupertype |= !currentType.isAbstract();
+            if (hasNonAbstractSupertype) {
+                return false;
+            }
+            return true;
+        }
     }
 }

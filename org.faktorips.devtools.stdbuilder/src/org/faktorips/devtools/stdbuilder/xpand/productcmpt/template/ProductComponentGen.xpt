@@ -49,7 +49,14 @@
 			
 			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH  derivedUnionAssociations»
 
-			«EXPAND Methods::formulaMethod FOREACH formulas»
+			
+			«FOREACH methods AS this-»
+				«IF !formulaSignature-»
+					«EXPAND Methods::method-»
+				«ELSE-»
+					«EXPAND Methods::formulaMethod-»
+				«ENDIF-»
+			«ENDFOREACH-»
 
 «REM» GET PRODUCT COMPONENT METHOD «ENDREM»			
 		    /**

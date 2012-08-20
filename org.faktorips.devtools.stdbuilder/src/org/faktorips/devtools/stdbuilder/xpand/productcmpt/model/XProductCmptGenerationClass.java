@@ -20,7 +20,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -50,8 +49,6 @@ public class XProductCmptGenerationClass extends XProductClass {
 
     private final Set<XDerivedUnionAssociation> derivedUnionAssociations;
 
-    private final Set<XMethod> formulas;
-
     public XProductCmptGenerationClass(IProductCmptType productCmptType, GeneratorModelContext modelContext,
             ModelService modelService) {
         super(productCmptType, modelContext, modelService);
@@ -65,8 +62,6 @@ public class XProductCmptGenerationClass extends XProductClass {
                 XProductAssociation.class);
         derivedUnionAssociations = initNodesForParts(getProductDerivedUnionAssociations(CHANGE_OVER_TIME),
                 XDerivedUnionAssociation.class);
-        formulas = initNodesForParts(new LinkedHashSet<IIpsObjectPart>(productCmptType.getFormulaSignatures()),
-                XMethod.class);
     }
 
     public static ProductCmptGenJavaClassNameProvider createProductCmptGenJavaClassNaming(Locale locale) {
@@ -148,10 +143,6 @@ public class XProductCmptGenerationClass extends XProductClass {
     @Override
     public Set<XDerivedUnionAssociation> getDerivedUnionAssociations() {
         return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnionAssociations);
-    }
-
-    public Set<XMethod> getFormulas() {
-        return new CopyOnWriteArraySet<XMethod>(formulas);
     }
 
     @Override
