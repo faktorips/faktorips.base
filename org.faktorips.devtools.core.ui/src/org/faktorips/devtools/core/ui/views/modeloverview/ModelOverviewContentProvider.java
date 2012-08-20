@@ -93,14 +93,14 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
 
             if (subtypes.size() > 0) {
                 List<ComponentNode> children = encapsulateComponentTypes(subtypes, componentNode);
-                CompositeNode compositeNode = new CompositeNode(componentNode, children);
+                SubtypeNode subtypeNode = new SubtypeNode(componentNode, children);
                 // componentNode.setCompositeNode(compositeNode);
-                childNodes.add(compositeNode);
+                childNodes.add(subtypeNode);
             }
 
         } else if (parentElement instanceof AbstractStrucureNode) {
-            CompositeNode compositeNode = (CompositeNode)parentElement;
-            return compositeNode.getChildren().toArray();
+            IModelOverviewNode parentNode = (IModelOverviewNode)parentElement;
+            return parentNode.getChildren().toArray();
         }
         return childNodes.toArray();
     }

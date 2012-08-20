@@ -18,6 +18,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -45,6 +48,24 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testGetChildrenEmpty() throws CoreException {
+        // setup
+        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
+
+        IIpsProject project = newIpsProject();
+        newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
+        newProductCmptType(project, "TestProductComponentType");
+
+        Object[] elements = contentProvider.getElements(project);
+
+        // test
+        assertNotNull(contentProvider.getChildren(elements[0]));
+        assertNotNull(contentProvider.getChildren(elements[1]));
+        assertEquals(0, contentProvider.getChildren(elements[0]).length);
+        assertEquals(0, contentProvider.getChildren(elements[1]).length);
+    }
+
+    @Test
     public void testHasSubtypeChildren() throws CoreException {
         // setup
         IIpsProject project = newIpsProject();
@@ -52,17 +73,18 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         IType subCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestSubPolicyComponentType");
         subCmptType.setSupertype(cmptType.getQualifiedName());
 
-        IType prodCmptType = newProductCmptType(project, "TestProductComponentType");
-        IType subProdCmptType = newProductCmptType(project, "TestSubProductComponentType");
+        IIpsProject project2 = newIpsProject();
+        IType prodCmptType = newProductCmptType(project2, "TestProductComponentType");
+        IType subProdCmptType = newProductCmptType(project2, "TestSubProductComponentType");
         subProdCmptType.setSupertype(prodCmptType.getQualifiedName());
 
         ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
         Object[] elements = contentProvider.getElements(project);
+        Object[] elements2 = contentProvider.getElements(project2);
 
         // test
-        for (Object element : elements) {
-            assertTrue(contentProvider.hasChildren(element));
-        }
+        assertTrue(contentProvider.hasChildren(elements[0]));
+        assertTrue(contentProvider.hasChildren(elements2[0]));
     }
 
     @Test
@@ -99,6 +121,20 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         assertEquals(2, elements1.length);
         assertEquals(2, elements2.length);
 
+        // test the identity of the root elements
+        // project1
+        List<IType> elementList1 = new ArrayList<IType>();
+        elementList1.add(((ComponentNode)elements1[0]).getValue());
+        elementList1.add(((ComponentNode)elements1[1]).getValue());
+        assertTrue(elementList1.contains(cmptType));
+        assertTrue(elementList1.contains(prodCmptType));
+
+        // project2
+        List<IType> elementList2 = new ArrayList<IType>();
+        elementList2.add(((ComponentNode)elements2[0]).getValue());
+        elementList2.add(((ComponentNode)elements2[1]).getValue());
+        assertTrue(elementList2.contains(cmptType2));
+        assertTrue(elementList2.contains(prodCmptType2));
     }
 
     @Test
@@ -159,26 +195,20 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         assertEquals(2, contentProvider.getChildren(elements[1]).length);
     }
 
+    /**
+     * 
+     * <strong>Scenario:</strong><br>
+     * Tests if the root Elements have children and the returned lists are not null. Furthermore it
+     * is checked that the correct {@link AbstractStrucureNode AbstractStructureNodes} are returned.
+     * At last the nodes under these structure nodes will be checked on identity.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * In the first {@link IIpsProject} a {@link CompositeNode} and a {@link SubtypeNode} are
+     * expected as children of the root element. In the second project only a SubType node is
+     * expected.
+     */
     @Test
-    public void testGetChildrenEmpty() throws CoreException {
-        // setup
-        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
-
-        IIpsProject project = newIpsProject();
-        newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
-        newProductCmptType(project, "TestProductComponentType");
-
-        Object[] elements = contentProvider.getElements(project);
-
-        // test
-        assertNotNull(contentProvider.getChildren(elements[0]));
-        assertNotNull(contentProvider.getChildren(elements[1]));
-        assertEquals(0, contentProvider.getChildren(elements[0]).length);
-        assertEquals(0, contentProvider.getChildren(elements[1]).length);
-    }
-
-    @Test
-    public void testGetChildrenNotEmpty() throws CoreException {
+    public void testGetChildren() throws CoreException {
         // setup
         ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
 
@@ -200,13 +230,34 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
         Object[] elements = contentProvider.getElements(project);
-        Object[] elements2 = contentProvider.getElements(project2);
+
+        IModelOverviewNode compositeNode = (IModelOverviewNode)contentProvider.getChildren(elements[0])[0];
+        IModelOverviewNode subtypeNode = (IModelOverviewNode)contentProvider.getChildren(elements[0])[1];
 
         // test
-        System.out.println(((ComponentNode)elements[0]).getValue().getQualifiedName());
-        System.out.println(((ComponentNode)elements2[0]).getValue().getQualifiedName());
+        // project1
         assertEquals(2, contentProvider.getChildren(elements[0]).length);
-        assertEquals(1, contentProvider.getChildren(elements2[0]).length);
 
+        assertTrue(compositeNode instanceof CompositeNode);
+        assertTrue(subtypeNode instanceof SubtypeNode);
+
+        List<IModelOverviewNode> compositeChildren = compositeNode.getChildren();
+        assertEquals(1, compositeChildren.size());
+        assertEquals(associatedCmptType, ((ComponentNode)compositeChildren.get(0)).getValue());
+
+        List<IModelOverviewNode> subtypeChildren = subtypeNode.getChildren();
+        assertEquals(1, subtypeChildren.size());
+        assertEquals(subCmptType, ((ComponentNode)subtypeChildren.get(0)).getValue());
+
+        // project2
+        Object[] elements2 = contentProvider.getElements(project2);
+
+        IModelOverviewNode subtypeNode2 = (IModelOverviewNode)contentProvider.getChildren(elements2[0])[0];
+
+        assertEquals(1, contentProvider.getChildren(elements2[0]).length);
+        assertTrue(subtypeNode2 instanceof SubtypeNode);
+        List<IModelOverviewNode> subtypeChildren2 = subtypeNode2.getChildren();
+        assertEquals(1, subtypeChildren2.size());
+        assertEquals(subProdCmptType, ((ComponentNode)subtypeChildren2.get(0)).getValue());
     }
 }
