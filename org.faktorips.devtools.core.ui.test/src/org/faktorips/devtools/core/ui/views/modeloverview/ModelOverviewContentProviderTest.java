@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -168,6 +167,8 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         prodCmptHausratProduktAssociation2.setMinCardinality(0);
         prodCmptHausratProduktAssociation2.setMaxCardinality(IAssociation.CARDINALITY_MANY);
 
+        List<IAssociation> associations = polCmptHausratVertrag.findAllAssociations(hausratmodell);
+
         IIpsObjectPath ipsObjectPath = hausratmodell.getIpsObjectPath();
         ipsObjectPath.newIpsProjectRefEntry(grundmodell);
         hausratmodell.setIpsObjectPath(ipsObjectPath);
@@ -202,54 +203,97 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     public void testHasNoChildren() throws CoreException {
         // setup
         IIpsProject project = newIpsProject();
-        IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
-        IType prodType = newProductCmptType(project, "TestProductComponentType");
+        newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
+        newProductCmptType(project, "TestProductComponentType");
 
         ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
+        Object[] elements = contentProvider.getElements(project);
 
         // test
-        assertFalse(contentProvider.hasChildren(cmptType));
-        assertFalse(contentProvider.hasChildren(prodType));
+        for (Object object : elements) {
+            assertFalse(contentProvider.hasChildren(object));
+        }
     }
 
     @Test
     public void testHasSubtypeChildren() throws CoreException {
         // setup
-        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
-
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
         IType subCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestSubPolicyComponentType");
         subCmptType.setSupertype(cmptType.getQualifiedName());
 
-        IType prodCmptType = newProductCmptType(project, "TestProduchtComponentType");
+        IType prodCmptType = newProductCmptType(project, "TestProductComponentType");
         IType subProdCmptType = newProductCmptType(project, "TestSubProductComponentType");
         subProdCmptType.setSupertype(prodCmptType.getQualifiedName());
 
+        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
+        Object[] elements = contentProvider.getElements(project);
+
         // test
-        assertTrue(contentProvider.hasChildren(cmptType));
-        assertTrue(contentProvider.hasChildren(prodCmptType));
+        for (Object element : elements) {
+            assertTrue(contentProvider.hasChildren(element));
+        }
+    }
+
+    @Test
+    public void testGetRootElements() throws CoreException {
+        // setup
+        // project1: Status of root elements depends only on associations
+        IIpsProject project1 = newIpsProject();
+        IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project1, "TestPolicyComponentType");
+        IType associatedCmptType = newPolicyCmptTypeWithoutProductCmptType(project1, "TestPolicyComponentType2");
+        IAssociation association = cmptType.newAssociation();
+        association.setTarget(associatedCmptType.getQualifiedName());
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+
+        IType prodCmptType = newProductCmptType(project1, "TestProductComponentType");
+        IType associatedProdCmptType = newProductCmptType(project1, "TestProductComponentType2");
+        IAssociation association2 = prodCmptType.newAssociation();
+        association2.setTarget(associatedProdCmptType.getQualifiedName());
+
+        // project2: Status of root elements depends only on supertypes
+        IIpsProject project2 = newIpsProject();
+        IType cmptType2 = newPolicyCmptTypeWithoutProductCmptType(project2, "TestPolicyComponentType");
+        IType subCmptType = newPolicyCmptTypeWithoutProductCmptType(project2, "TestSubPolicyComponentType");
+        subCmptType.setSupertype(cmptType2.getQualifiedName());
+
+        IType prodCmptType2 = newProductCmptType(project2, "TestProductComponentType");
+        IType subProdCmptType = newProductCmptType(project2, "TestSubProductComponentType");
+        subProdCmptType.setSupertype(prodCmptType2.getQualifiedName());
+
+        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
+        Object[] elements1 = contentProvider.getElements(project1);
+        Object[] elements2 = contentProvider.getElements(project2);
+
+        // test the number of existing root elements
+        assertEquals(2, elements1.length);
+        assertEquals(2, elements2.length);
+
     }
 
     @Test
     public void testHasAssociationChildren() throws CoreException {
         // setup
-        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
-
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
         IType associatedCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType2");
         IAssociation association = cmptType.newAssociation();
         association.setTarget(associatedCmptType.getQualifiedName());
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
         IType prodCmptType = newProductCmptType(project, "TestProductComponentType");
         IType associatedProdCmptType = newProductCmptType(project, "TestProductComponentType2");
         IAssociation association2 = prodCmptType.newAssociation();
         association2.setTarget(associatedProdCmptType.getQualifiedName());
 
+        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
+        Object[] elements = contentProvider.getElements(project);
+
         // test
-        assertTrue(contentProvider.hasChildren(cmptType));
-        assertTrue(contentProvider.hasChildren(prodCmptType));
+        for (Object element : elements) {
+            assertTrue(contentProvider.hasChildren(element));
+        }
     }
 
     @Test
@@ -273,11 +317,17 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         IAssociation association2 = prodCmptType.newAssociation();
 
         association.setTarget(associatedCmptType.getQualifiedName());
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         association2.setTarget(associatedProdCmptType.getQualifiedName());
 
+        Object[] elements = contentProvider.getElements(project);
+
         // test
-        assertTrue(contentProvider.hasChildren(cmptType));
-        assertTrue(contentProvider.hasChildren(prodCmptType));
+        assertEquals(2, elements.length);
+        assertTrue(contentProvider.hasChildren(elements[0]));
+        assertTrue(contentProvider.hasChildren(elements[1]));
+        assertEquals(2, contentProvider.getChildren(elements[0]).length);
+        assertEquals(2, contentProvider.getChildren(elements[1]).length);
     }
 
     @Test
@@ -289,11 +339,13 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         PolicyCmptType polType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
         ProductCmptType prodType = newProductCmptType(project, "TestProductComponentType");
 
+        Object[] elements = contentProvider.getElements(project);
+
         // test
-        assertNotNull(contentProvider.getChildren(polType));
-        assertNotNull(contentProvider.getChildren(prodType));
-        assertEquals(contentProvider.getChildren(polType).length, 0);
-        assertEquals(contentProvider.getChildren(prodType).length, 0);
+        assertNotNull(contentProvider.getChildren(elements[0]));
+        assertNotNull(contentProvider.getChildren(elements[1]));
+        assertEquals(0, contentProvider.getChildren(elements[0]).length);
+        assertEquals(0, contentProvider.getChildren(elements[1]).length);
     }
 
     @Test
@@ -306,44 +358,27 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         IType associatedCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType2");
         IType subCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestSubPolicyComponentType");
 
-        IType prodCmptType = newProductCmptType(project, "TestProductComponentType");
-        IType associatedProdCmptType = newProductCmptType(project, "TestProductComponentType2");
-        IType subProdCmptType = newProductCmptType(project, "TestSubProductComponentType");
-
+        IAssociation association = cmptType.newAssociation();
+        association.setTarget(associatedCmptType.getQualifiedName());
         subCmptType.setSupertype(cmptType.getQualifiedName());
+
+        IIpsProject project2 = newIpsProject();
+        IType prodCmptType = newProductCmptType(project2, "TestProductComponentType");
+        IType subProdCmptType = newProductCmptType(project2, "TestSubProductComponentType");
+
         subProdCmptType.setSupertype(prodCmptType.getQualifiedName());
 
-        IAssociation association = cmptType.newAssociation();
-        IAssociation association2 = prodCmptType.newAssociation();
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
-        association.setTarget(associatedCmptType.getQualifiedName());
-        association2.setTarget(associatedProdCmptType.getQualifiedName());
+        Object[] elements = contentProvider.getElements(project);
+        Object[] elements2 = contentProvider.getElements(project2);
 
         // test
-        assertEquals(contentProvider.getChildren(cmptType).length, 2);
-        assertEquals(contentProvider.getChildren(prodCmptType).length, 2);
+        System.out.println(((ComponentNode)elements[0]).getValue().getQualifiedName());
+        System.out.println(((ComponentNode)elements2[0]).getValue().getQualifiedName());
+        assertEquals(2, contentProvider.getChildren(elements[0]).length);
+        assertEquals(1, contentProvider.getChildren(elements2[0]).length);
 
-    }
-
-    private void printTree(IIpsElement node, String prefix, int layer) throws CoreException {
-        if (node instanceof IType) {
-            System.out.println(layer + " Node: " + node.getName());
-            System.out.println("\t" + node.getClass());
-
-            if (node instanceof PolicyCmptType) {
-                System.out.println("\tProdCmptType: " + ((PolicyCmptType)node).getProductCmptType());
-            } else if (node instanceof ProductCmptType) {
-                System.out.println("\tPolCmptType: " + ((ProductCmptType)node).getPolicyCmptType());
-            }
-        }
-        if (!node.hasChildren()) {
-            return;
-        } else {
-            layer++;
-            for (IIpsElement child : node.getChildren()) {
-                printTree(child, prefix + "\t", layer);
-            }
-        }
     }
 
     private void printStructuredTree(List<IType> components, IType component, String prefix, int level)
