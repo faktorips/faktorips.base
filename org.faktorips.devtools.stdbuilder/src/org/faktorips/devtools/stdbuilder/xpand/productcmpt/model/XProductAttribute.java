@@ -22,8 +22,21 @@ import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
 
+/**
+ * This is the generator model node for {@link IProductCmptTypeAttribute}.
+ * <p>
+ * In addition to {@link XAttribute} this model node handles the special cases for multi value
+ * attributes. For example it does return an special data type so you could generate most of the
+ * code just like for single value data type. If you need the data type of the single value just
+ * take the {@link XSingleValueOfMultiValueAttribute} model node.
+ * 
+ * @author dirmeier
+ */
 public class XProductAttribute extends XAttribute {
 
+    /**
+     * Default constructor as expected by {@link ModelService}
+     */
     public XProductAttribute(IProductCmptTypeAttribute attribute, GeneratorModelContext context,
             ModelService modelService) {
         super(attribute, context, modelService);
@@ -60,25 +73,21 @@ public class XProductAttribute extends XAttribute {
         }
     }
 
-    /**
-     * In case of a multivalue attribute this method returns the name of the datatype for a single
-     * object in the list. In case of a singlevalue attribute the normal attributes type class name
-     * is returned.
-     * 
-     * @return The name of the class name for a single value.
-     */
-    public String getSingleJavaClassName() {
-        return super.getJavaClassName();
-    }
-
-    public String getNewSingleInstanceFromExpression(String expression) {
-        JavaCodeFragment fragment = super.getDatatypeHelper().newInstanceFromExpression(expression);
-        addImport(fragment.getImportDeclaration());
-        return fragment.getSourcecode();
+    @Override
+    public String getDefaultValueCode() {
+        if (isMultiValue()) {
+            return getNewInstance();
+        } else {
+            return super.getDefaultValueCode();
+        }
     }
 
     public boolean isMultiValue() {
         return getAttribute().isMultiValueAttribute();
+    }
+
+    public XSingleValueOfMultiValueAttribute getSingleValueOfMultiValueAttribute() {
+        return getModelNode(getAttribute(), XSingleValueOfMultiValueAttribute.class);
     }
 
     public boolean isChangingOverTime() {

@@ -24,7 +24,7 @@
 		«ENDIF-»
 		 * @generated
 		 */
-		public final static String «field(constantNameValueSet)» = «valuesetCode»;
+		public final static «valueSetJavaClassName» «field(constantNameValueSet)» = «valuesetCode»;
 	«ENDIF-»
 «ENDDEFINE»
 

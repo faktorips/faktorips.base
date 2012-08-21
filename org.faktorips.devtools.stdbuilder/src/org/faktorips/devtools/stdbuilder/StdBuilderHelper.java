@@ -176,7 +176,7 @@ public final class StdBuilderHelper {
             return "void";
         }
         if (datatype instanceof ValueDatatype) {
-            DatatypeHelper helper = ipsProject.findDatatypeHelper(qualifiedDatatypeName);
+            DatatypeHelper helper = ipsProject.getDatatypeHelper(datatype);
             if (helper != null) {
                 return helper.getJavaClassName();
             }

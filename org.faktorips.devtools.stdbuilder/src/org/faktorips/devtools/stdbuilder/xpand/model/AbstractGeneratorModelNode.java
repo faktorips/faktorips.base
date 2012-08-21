@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
@@ -30,7 +29,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
@@ -167,12 +165,8 @@ public abstract class AbstractGeneratorModelNode {
         } else if (datatype.isVoid()) {
             return "void";
         } else {
-            try {
-                DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(datatype.getQualifiedName());
-                return addImport(datatypeHelper.getJavaClassName());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
+            return addImport(datatypeHelper.getJavaClassName());
         }
     }
 

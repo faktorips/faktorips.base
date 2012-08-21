@@ -22,7 +22,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -177,37 +176,7 @@ public class XPolicyAttribute extends XAttribute {
      * @return The code needed to create a new instance for a value set
      */
     public String getValueSetNewInstanceFromExpression(String expression, String repositoryExpression) {
-        JavaCodeFragment fragment = valuesetDatatypeHelper.newInstanceFromExpression(expression);
-        addImport(fragment.getImportDeclaration());
-        String result = fragment.getSourcecode();
-        if (isDatatypeContentSeparatedEnum()) {
-            return getExpressionForEnumWithSeparatedContent(repositoryExpression, result);
-        } else {
-            return result;
-        }
-    }
-
-    /**
-     * Returns the code to create a new instance of and element stored in a value set. The
-     * expression is the code to retrieve the value from, e.g. another variable. The
-     * repositoryExpression is the code to for getting a repository. It may be needed for
-     * enumerations with separated content.
-     * 
-     * @param expression The expression to get the value from
-     * @param repositoryExpression the expression to get the repository
-     * @return The code needed to create a new instance for a value set
-     */
-    public String getNewInstanceFromExpression(String expression, String repositoryExpression) {
-        String result = getNewInstanceFromExpression(expression);
-        if (isDatatypeContentSeparatedEnum()) {
-            return getExpressionForEnumWithSeparatedContent(repositoryExpression, result);
-        } else {
-            return result;
-        }
-    }
-
-    public String getExpressionForEnumWithSeparatedContent(String repositoryExpression, String newInstanceExpression) {
-        return repositoryExpression + newInstanceExpression;
+        return getNewInstanceFromExpression(valuesetDatatypeHelper, expression, repositoryExpression);
     }
 
     public String getToStringExpression() {
@@ -283,15 +252,6 @@ public class XPolicyAttribute extends XAttribute {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Returns <code>true</code> if this attributes data type is an enumeration-type with separate
-     * content. <code>false</code> else.
-     * 
-     */
-    public boolean isDatatypeContentSeparatedEnum() {
-        return DatatypeUtil.isEnumTypeWithSeparateContent(getDatatype());
     }
 
     public boolean isValueSetEnum() {
