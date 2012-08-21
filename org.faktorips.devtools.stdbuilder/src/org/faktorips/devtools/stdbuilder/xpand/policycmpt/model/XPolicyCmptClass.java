@@ -448,7 +448,9 @@ public class XPolicyCmptClass extends XClass {
     public Set<XPolicyAssociation> getInverseCompositions() {
         Set<XPolicyAssociation> resultingSet = new LinkedHashSet<XPolicyAssociation>();
         for (XPolicyAssociation assoc : getAssociations()) {
-            if (assoc.isInverseComposition() && (!assoc.isInverseOfADerivedUnion() || assoc.isSharedAssociation())) {
+            // FIXME @Corny hier muss wohl statt assoc.isSharedAssociation() die Methode
+            // isTopLevelSharedAssociation() oder isRootSharedAssociation() aufrufen werden
+            if (assoc.isInverseComposition() && !(assoc.isInverseOfADerivedUnion() || assoc.isSharedAssociation())) {
                 resultingSet.add(assoc);
             }
         }
@@ -487,16 +489,7 @@ public class XPolicyCmptClass extends XClass {
     }
 
     public boolean isGenerateNotifyChangeListeners() {
-        return isGenerateChangeSupport() && (!hasSupertype() || hasDetailToMasterAssociations());
-    }
-
-    private boolean hasDetailToMasterAssociations() {
-        for (XPolicyAssociation asso : getAssociations()) {
-            if (asso.isCompositionDetailToMaster()) {
-                return true;
-            }
-        }
-        return false;
+        return isGenerateChangeSupport() && (!hasSupertype() || hasInverseCompositionAssociations());
     }
 
     /**

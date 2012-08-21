@@ -398,32 +398,36 @@
 
 «REM» Templates for detailToMaster compositions«ENDREM»
 «DEFINE fieldForParent FOR XPolicyAssociation-»
-	/**
-	 * «localizedJDoc("FIELD_PARENT", targetClassName)»
-	 *
-	 * @generated	 
-	 */
-	«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
-	private «targetClassName» «field(fieldName)»;
+	«IF !sharedAssociation-»
+		/**
+		 * «localizedJDoc("FIELD_PARENT", targetClassName)»
+		 *
+		 * @generated	 
+		 */
+		«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
+		private «targetClassName» «field(fieldName)»;
+	«ENDIF-»
 «ENDDEFINE»
 «DEFINE methodSetParentInternal FOR XPolicyAssociation-»
-	/**
-     * @generated
-     */
-    public void «methodNameSetInternal»(«targetInterfaceName» newParent) {
-        if («methodNameGetSingle»() == newParent) {«REM»parent association can only be 1to1. getSingle can be used.«ENDREM»
-            return;
-        }
-        «IModelObject()» «parentVar()» = «getParentModelObject()»;
-        if (newParent != null && «parentVar()» != null) {
-            throw new RuntimeException(
-                    "«className» can't be assigned to parent object of class «name», because object already belongs to a different parent object.");
-        }
-        this.«fieldName» = «EXPAND castToImplementationIfNecessary» newParent;
-        «IF typeConfigurableByProductCmptType-»
-        	effectiveFromHasChanged();
-		«ENDIF-»
-    }
+	«IF !sharedAssociation-»
+		/**
+	     * @generated
+	     */
+	    public void «methodNameSetInternal»(«targetInterfaceName» newParent) {
+	        if («methodNameGetSingle»() == newParent) {«REM»parent association can only be 1to1. getSingle can be used.«ENDREM»
+	            return;
+	        }
+	        «IModelObject()» «parentVar()» = «getParentModelObject()»;
+	        if (newParent != null && «parentVar()» != null) {
+	            throw new RuntimeException(
+	                    "«className» can't be assigned to parent object of class «name», because object already belongs to a different parent object.");
+	        }
+	        this.«fieldName» = «EXPAND castToImplementationIfNecessary» newParent;
+	        «IF typeConfigurableByProductCmptType-»
+	        	effectiveFromHasChanged();
+			«ENDIF-»
+	    }
+	«ENDIF-»
 «ENDDEFINE»
 
         
