@@ -37,6 +37,7 @@ import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.model.filter.AssociationWithoutDUAndInverseDUFilter;
 import org.faktorips.devtools.stdbuilder.xpand.model.filter.MasterToDetailFilter;
 import org.faktorips.devtools.stdbuilder.xpand.model.filter.MasterToDetailWithoutSubsetsFilter;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribute;
@@ -67,7 +68,9 @@ public class XPolicyCmptClass extends XClass {
                 new LinkedHashSet<IPolicyCmptTypeAttribute>(policyCmptType.getPolicyCmptTypeAttributes()),
                 XPolicyAttribute.class);
         productAttributes = initNodesForParts(getProductAttributes(policyCmptType), XProductAttribute.class);
-        associations = initNodesForParts(getPolicyAssociations(policyCmptType), XPolicyAssociation.class);
+        associations = initNodesForParts(
+                getAssociations(policyCmptType, IPolicyCmptTypeAssociation.class,
+                        new AssociationWithoutDUAndInverseDUFilter()), XPolicyAssociation.class);
         masterToDetailAssociations = initNodesForParts(
                 getAssociations(policyCmptType, IPolicyCmptTypeAssociation.class, new MasterToDetailFilter()),
                 XPolicyAssociation.class);
@@ -93,37 +96,6 @@ public class XPolicyCmptClass extends XClass {
         } else {
             Set<IProductCmptTypeAttribute> productAttributes = new LinkedHashSet<IProductCmptTypeAttribute>();
             return productAttributes;
-        }
-    }
-
-    /**
-     * Returns <code>true</code> all associations of a policy component type except derived unions
-     * and inverse associations of derived unions.
-     */
-    private Set<IPolicyCmptTypeAssociation> getPolicyAssociations(IPolicyCmptType policyCmptType) {
-        Set<IPolicyCmptTypeAssociation> result = new LinkedHashSet<IPolicyCmptTypeAssociation>();
-        List<IPolicyCmptTypeAssociation> policyCmptTypeAssociations = policyCmptType.getPolicyCmptTypeAssociations();
-        for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyCmptTypeAssociations) {
-            if (isValidAssociation(policyCmptTypeAssociation)) {
-                result.add(policyCmptTypeAssociation);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Returns <code>true</code> for all associations except derived unions and inverse associations
-     * of derived unions.
-     */
-    private boolean isValidAssociation(IPolicyCmptTypeAssociation policyCmptTypeAssociation) {
-        return !policyCmptTypeAssociation.isDerivedUnion() && !isInverseOfADerivedUnion(policyCmptTypeAssociation);
-    }
-
-    private boolean isInverseOfADerivedUnion(IPolicyCmptTypeAssociation policyCmptTypeAssociation) {
-        try {
-            return policyCmptTypeAssociation.isInverseOfDerivedUnion();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
     }
 
