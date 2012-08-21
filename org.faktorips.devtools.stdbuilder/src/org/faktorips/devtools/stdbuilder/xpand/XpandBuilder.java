@@ -76,6 +76,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     public XpandBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext, ModelService modelService,
             LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
+        setMergeEnabled(true);
         generatorModelContext = modelContext;
         this.modelService = modelService;
     }
