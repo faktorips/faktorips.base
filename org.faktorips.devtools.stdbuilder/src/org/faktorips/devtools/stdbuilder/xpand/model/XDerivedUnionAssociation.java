@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -138,7 +139,13 @@ public class XDerivedUnionAssociation extends XAssociation {
      * <code>false</code> else.
      */
     public boolean isDefinedIn(XClass xClass) {
+        System.out.println(NLS.bind("isDefinedIn() auf {0} für {1} aufgerufen.", this, xClass));
         return getAssociation().getType().equals(xClass.getType());
+    }
+
+    public String getMarker() {
+        String teset = "";
+        return teset;
     }
 
     /**

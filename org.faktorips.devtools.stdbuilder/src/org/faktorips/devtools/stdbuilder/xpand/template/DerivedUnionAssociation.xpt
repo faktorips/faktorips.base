@@ -8,26 +8,24 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
 «DEFINE methodsForDerivedUnion(XClass currentContextClass) FOR XDerivedUnionAssociation-»
-	«EXPAND getter(currentContextClass, methodNameGetter)»
+	«EXPAND getter(currentContextClass)»
 	«EXPAND getterNumOf(currentContextClass)»
 	«EXPAND getterNumOfInternal(currentContextClass)»
 «ENDDEFINE»
 
 «DEFINE methodsForDerivedUnionPolicy(XPolicyCmptClass currentContextClass) FOR XDerivedUnionAssociation-»
 	«EXPAND methodDerivedUnionContains(currentContextClass)»
-	«EXPAND getterNumOf(currentContextClass)»
-	«EXPAND getter(currentContextClass, methodNameGetter)»
-	«EXPAND getterNumOfInternal(currentContextClass)»
+	«EXPAND methodsForDerivedUnion(currentContextClass)»
 «ENDDEFINE»
 
-«DEFINE getter(XClass currentContextClass, String methodName) FOR XDerivedUnionAssociation-»
+«DEFINE getter(XClass currentContextClass) FOR XDerivedUnionAssociation-»
     /**
      * {@inheritDoc}
      * 
      * @generated
      */
      «overrideAnnotationForPublishedMethod()-»
-     public «List_(targetInterfaceName)» «methodName»() {
+     public «List_(targetInterfaceName)» «methodNameGetter»() {
      	«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«methodNameGetNumOfInternal»());
      	«IF isImplementedInSuperclass(currentContextClass)-»
      		result.addAll(super.«methodNameGetter»());
@@ -75,6 +73,7 @@
 «ENDDEFINE»
 
 «DEFINE methodDerivedUnionContains(XClass currentContextClass) FOR XDerivedUnionAssociation-»
+	«marker-»
 	«IF isDefinedIn(currentContextClass)-»
 		«EXPAND PolicyCmptAssociation::contains »
 	«ENDIF-»

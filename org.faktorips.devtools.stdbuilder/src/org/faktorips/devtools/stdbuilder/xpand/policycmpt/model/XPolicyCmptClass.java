@@ -58,7 +58,7 @@ public class XPolicyCmptClass extends XClass {
 
     private final Set<XPolicyAssociation> masterToDetailAssociationsWithoutSubsets;
 
-    private final Set<XDerivedUnionAssociation> derivedUnionAssociations;
+    private final Set<XDerivedUnionAssociation> subsettedDerivedUnions;
 
     private final Set<XDetailToMasterDerivedUnionAssociation> detailToMasterDerivedUnionAssociations;
 
@@ -77,7 +77,7 @@ public class XPolicyCmptClass extends XClass {
         masterToDetailAssociationsWithoutSubsets = initNodesForParts(
                 getAssociations(policyCmptType, IPolicyCmptTypeAssociation.class,
                         new MasterToDetailWithoutSubsetsFilter()), XPolicyAssociation.class);
-        derivedUnionAssociations = initNodesForParts(
+        subsettedDerivedUnions = initNodesForParts(
                 findSubsettedDerivedUnions(policyCmptType.getPolicyCmptTypeAssociations(),
                         IPolicyCmptTypeAssociation.class), XDerivedUnionAssociation.class);
         detailToMasterDerivedUnionAssociations = initNodesForParts(
@@ -226,8 +226,8 @@ public class XPolicyCmptClass extends XClass {
     }
 
     @Override
-    public Set<XDerivedUnionAssociation> getDerivedUnionAssociations() {
-        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnionAssociations);
+    public Set<XDerivedUnionAssociation> getSubsettedDerivedUnions() {
+        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(subsettedDerivedUnions);
     }
 
     public Set<XDetailToMasterDerivedUnionAssociation> getDetailToMasterDerivedUnionAssociations() {

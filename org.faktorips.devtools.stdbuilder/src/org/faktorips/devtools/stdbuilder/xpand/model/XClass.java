@@ -220,7 +220,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      * Returns the list of associations in the current type. Does not add derived union
      * associations!
      * 
-     * @see #getDerivedUnionAssociations()
+     * @see #getSubsettedDerivedUnions()
      * 
      * @return The list of associations in this type except derived unions
      */
@@ -232,7 +232,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      * 
      * @return The list of derived unions you need to implement in this class
      */
-    public abstract Set<XDerivedUnionAssociation> getDerivedUnionAssociations();
+    public abstract Set<XDerivedUnionAssociation> getSubsettedDerivedUnions();
 
     public boolean isAbstract() {
         return getType().isAbstract();

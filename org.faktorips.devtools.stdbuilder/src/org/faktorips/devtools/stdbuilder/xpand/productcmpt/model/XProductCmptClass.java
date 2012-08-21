@@ -39,7 +39,7 @@ public class XProductCmptClass extends XProductClass {
 
     private final Set<XProductAssociation> masterToDetailAssociations;
 
-    private final Set<XDerivedUnionAssociation> derivedUnionAssociations;
+    private final Set<XDerivedUnionAssociation> subsettedDerivedUnions;
 
     public XProductCmptClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext modelContext,
             ModelService modelService) {
@@ -51,7 +51,7 @@ public class XProductCmptClass extends XProductClass {
         masterToDetailAssociations = initNodesForParts(
                 getAssociations(ipsObjectPartContainer, IProductCmptTypeAssociation.class, new MasterToDetailFilter()),
                 XProductAssociation.class);
-        derivedUnionAssociations = initNodesForParts(getProductDerivedUnionAssociations(CHANGE_OVER_TIME),
+        subsettedDerivedUnions = initNodesForParts(getProductDerivedUnionAssociations(CHANGE_OVER_TIME),
                 XDerivedUnionAssociation.class);
     }
 
@@ -71,8 +71,8 @@ public class XProductCmptClass extends XProductClass {
     }
 
     @Override
-    public Set<XDerivedUnionAssociation> getDerivedUnionAssociations() {
-        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnionAssociations);
+    public Set<XDerivedUnionAssociation> getSubsettedDerivedUnions() {
+        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(subsettedDerivedUnions);
     }
 
     public IProductCmptType getProductCmptType() {
