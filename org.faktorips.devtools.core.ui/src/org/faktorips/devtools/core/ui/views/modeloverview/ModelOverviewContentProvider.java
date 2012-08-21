@@ -29,6 +29,16 @@ import org.faktorips.util.ArgumentCheck;
 
 public class ModelOverviewContentProvider implements ITreeContentProvider {
 
+    /*
+     * TODO CODE-REVIEW FIPS-1194: Exception-Handling: CoreException als CoreRuntimeException
+     * weiterwerfen. Exceptions so früh wie möglich behandeln, also CoreExceptions nicht in privaten
+     * Methoden weiterwerfen sondern direkt in CoreRuntimeException umwandeln
+     */
+
+    /*
+     * TODO CODE-REVIEW FIPS-1194: Scope von Variablen minimieren: Effective Java Item 45
+     */
+
     @Override
     public Object[] getElements(Object inputElement) {
         // check input arguments
@@ -53,6 +63,10 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
             throw new RuntimeException(e);
         }
 
+        /*
+         * TODO CODE-REVIEW FIPS-1194: Variablendeklaration array unnötig, kann direkt return
+         * aufrufen
+         */
         Object[] array = encapsulateComponentTypes(rootComponents, null).toArray();
         return array;
     }
@@ -71,10 +85,21 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
     public Object[] getChildren(Object parentElement) {
         List<IModelOverviewNode> childNodes = new ArrayList<IModelOverviewNode>();
         if (parentElement instanceof ComponentNode) {
+            /*
+             * TODO CODE-REVIEW FIPS-1194: Der Code innerhalb dieses If-Zweiges sieht für mich stark
+             * danach aus als gehöre er nach ComponentNode.getChildren(),
+             * CompositeNode.getChildren() und SubtypeNode.getChildren()
+             */
+
+            /* TODO CODE-REVIEW FIPS-1194: Kommentare ausschließlich in englischer Sprache */
             // hier die child-elemente auslesen, dann deren unterelemente bauen und hinzufügen
 
             ComponentNode componentNode = (ComponentNode)parentElement;
 
+            /*
+             * TODO CODE-REVIEW FIPS-1194: Beispiel für eine Variablen deren Scope wesentlich
+             * verkleinert werden kann: subtypes
+             */
             List<IType> subtypes = componentNode.getValue().searchSubtypes(false, false);
             List<IType> associations;
             try {
@@ -83,6 +108,7 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
                 throw new RuntimeException(e);
             }
 
+            /* TODO CODE-REVIEW FIPS-1194: Lesbarer: !associations.isEmpty() */
             if (associations.size() > 0) {
                 List<ComponentNode> children = encapsulateComponentTypes(associations, componentNode);
                 CompositeNode compositeNode = new CompositeNode(componentNode, children);
@@ -113,6 +139,10 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
         return getChildren(element).length != 0;
     }
 
+    /*
+     * TODO CODE-REVIEW FIPS-1194: Private Methoden möglichst nahe dort positionieren, wo sie
+     * gebraucht werden. In diesem Fall direkt unter getElements()
+     */
     private List<IType> getRootComponentTypes(List<IType> components) throws CoreException {
         List<IType> rootComponents = new ArrayList<IType>();
         for (IType iType : components) {
@@ -123,6 +153,10 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
         return rootComponents;
     }
 
+    /*
+     * TODO CODE-REVIEW FIPS-1194: Kommentare, welche beschreiben was eine Methode macht, als
+     * Javadoc anstatt gewöhnlichem Kommentar machen
+     */
     // Encapsulates a list of arbitrary ITypes into a List of ComponentNodes
     private List<ComponentNode> encapsulateComponentTypes(List<IType> components, ComponentNode parent) {
         List<ComponentNode> componentNodes = new ArrayList<ComponentNode>();
@@ -157,6 +191,7 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
         return false;
     }
 
+    /* TODO CODE-REVIEW FIPS-1194: Keine neuen Warnings einchecken */
     /**
      * Returns a List of {@link IType component types} which are associated to this {@link IType}
      * component type. The only {@link AssociationType association types} which will be returned are

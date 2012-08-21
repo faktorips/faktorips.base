@@ -19,6 +19,7 @@ import java.util.List;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.ArgumentCheck;
 
+/* TODO CODE-REVIEW FIPS-1194: package-private sollte reichen */
 public class ComponentNode implements IModelOverviewNode {
 
     private IType value;

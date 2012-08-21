@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.views.modeloverview;
 
 import java.util.List;
 
+/* TODO CODE-REVIEW FIPS-1194: package-private sollte reichen */
 public class CompositeNode extends AbstractStrucureNode {
 
     /**

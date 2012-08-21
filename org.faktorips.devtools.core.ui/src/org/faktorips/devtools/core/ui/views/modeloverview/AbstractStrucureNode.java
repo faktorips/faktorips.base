@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.faktorips.util.ArgumentCheck;
 
+/* TODO CODE-REVIEW FIPS-1194: package-private sollte reichen */
 public abstract class AbstractStrucureNode implements IModelOverviewNode {
 
     private final ComponentNode parent;
