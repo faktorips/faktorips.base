@@ -122,7 +122,8 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
     public Set<XPolicyAssociation> getDetailToMasterSubsetAssociations(XPolicyCmptClass policyClass) {
         Set<XPolicyAssociation> subsets = new LinkedHashSet<XPolicyAssociation>();
         for (XPolicyAssociation assoc : policyClass.getAssociations()) {
-            if (assoc.isCompositionDetailToMaster() && assoc.getInverseAssociation().isSubsetOf(getDerivedUnion())) {
+            if (assoc.isCompositionDetailToMaster()
+                    && assoc.getInverseAssociation().isRecursiveSubsetOf(getDerivedUnion())) {
                 subsets.add(assoc);
             }
         }
@@ -139,5 +140,14 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    /**
+     * Returns the name for the get-parent method using the uncapitalized association name. e.g.
+     * getparentPolicy() instead of getParentPolicy() if the role name is "parentPolicy".
+     * 
+     */
+    public String getMethodNameGetParent() {
+        return "get" + getName(false);
     }
 }

@@ -114,18 +114,19 @@ public class XAssociationTest {
     }
 
     @Test
-        public void testGetClassName() throws Exception {
-            XProductCmptClass xProductCmptClass = initMocksForGetNameTests();
-            doReturn("TargetType").when(xProductCmptClass).getSimpleName(BuilderAspect.IMPLEMENTATION);
-    
-            // doReturn(XProductCmptClass.class).when(xAssociation).getTargetModelNodeType();
-            String targetClassName = xAssociation.getTargetClassName();
-            assertEquals("TargetType", targetClassName);
-        }
+    public void testGetClassName() throws Exception {
+        XProductCmptClass xProductCmptClass = initMocksForGetNameTests();
+        doReturn("TargetType").when(xProductCmptClass).getSimpleName(BuilderAspect.IMPLEMENTATION);
+
+        // doReturn(XProductCmptClass.class).when(xAssociation).getTargetModelNodeType();
+        String targetClassName = xAssociation.getTargetClassName();
+        assertEquals("TargetType", targetClassName);
+    }
 
     @Test
     public void testGetTargetInterfaceName() throws Exception {
         XProductCmptClass xProductCmptClass = initMocksForGetNameTests();
+        doReturn(true).when(xAssociation).isGeneratingPublishedInterfaces();
         doReturn("ITargetType").when(xProductCmptClass).getSimpleName(BuilderAspect.INTERFACE);
 
         // doReturn(XProductCmptClass.class).when(xAssociation).getTargetModelNodeType();
@@ -141,4 +142,31 @@ public class XAssociationTest {
         return xProductCmptClass;
     }
 
+    @Test
+    public void testIsRecursiveSubsetOf() {
+        XDerivedUnionAssociation du = mock(XDerivedUnionAssociation.class);
+        XDerivedUnionAssociation otherDu = mock(XDerivedUnionAssociation.class);
+        doReturn(otherDu).when(xAssociation).getSubsettedDerivedUnion();
+
+        doReturn(false).when(xAssociation).isSubsetOfADerivedUnion();
+        assertFalse(xAssociation.isRecursiveSubsetOf(du));
+
+        doReturn(true).when(xAssociation).isSubsetOfADerivedUnion();
+        doReturn(false).when(xAssociation).isSubsetOf(du);
+        when(otherDu.isRecursiveSubsetOf(du)).thenReturn(false);
+        assertFalse(xAssociation.isRecursiveSubsetOf(du));
+
+        doReturn(true).when(xAssociation).isSubsetOf(du);
+        when(otherDu.isRecursiveSubsetOf(du)).thenReturn(false);
+        assertTrue(xAssociation.isRecursiveSubsetOf(du));
+
+        doReturn(false).when(xAssociation).isSubsetOf(du);
+        when(otherDu.isRecursiveSubsetOf(du)).thenReturn(true);
+        assertTrue(xAssociation.isRecursiveSubsetOf(du));
+
+        doReturn(true).when(xAssociation).isSubsetOf(du);
+        when(otherDu.isRecursiveSubsetOf(du)).thenReturn(true);
+        assertTrue(xAssociation.isRecursiveSubsetOf(du));
+
+    }
 }

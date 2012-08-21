@@ -87,7 +87,7 @@
      * @generated
      */
     «overrideAnnotationForPublishedMethodOrIf(isImplementedInSuperclass(currentContextClass))-» 
-    public «targetInterfaceName» «methodNameGetter»() {
+    public «targetInterfaceName» «methodNameGetParent»() {
      	«FOREACH (Set[XPolicyAssociation])getDetailToMasterSubsetAssociations(currentContextClass) AS this-»
 		    if («fieldName» != null) {
 		        return «fieldName»;

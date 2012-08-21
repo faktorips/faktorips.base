@@ -22,7 +22,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
-import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 
 /**
  * Generator model class representing a policy association.
@@ -416,31 +415,6 @@ public class XPolicyAssociation extends XAssociation {
      */
     public String getCopySupportCopyVarName() {
         return "copy" + getTargetClassName();
-    }
-
-    /**
-     * Returns the derived union this association is a subset of.
-     * 
-     * @throws NullPointerException if this is not a subset of a derived union.
-     * @throws NullPointerException if no derived union could be found for this subset.
-     */
-    public XDerivedUnionAssociation getSubsettedDerivedUnion() {
-        if (!isSubsetOfADerivedUnion()) {
-            throw new NullPointerException(NLS.bind(
-                    "The association {0} is not a subset of a derived union. Unable to determine derived union.",
-                    getAssociation()));
-        }
-        try {
-            IPolicyCmptTypeAssociation derivedUnion = (IPolicyCmptTypeAssociation)getAssociation()
-                    .findSubsettedDerivedUnion(getIpsProject());
-            if (derivedUnion == null) {
-                throw new NullPointerException(
-                        NLS.bind("No derived union found for association {0}.", getAssociation()));
-            }
-            return getModelNode(derivedUnion, XDerivedUnionAssociation.class);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
     }
 
     /**
