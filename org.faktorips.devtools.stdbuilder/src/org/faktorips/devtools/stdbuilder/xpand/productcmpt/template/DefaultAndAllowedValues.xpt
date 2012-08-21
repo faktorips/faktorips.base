@@ -81,9 +81,9 @@
             «IF valueSetUnrestricted-»
             	«IF ipsEnum-»
        	            «fieldNameValueSet» = new «OrderedValueSet(javaClassUsedForValueSet)»(«getAllEnumValuesCode("getRepository()")», true, null);
-            	«ELSE» 
+            	«ELSE-»
 	            	«fieldNameValueSet» = new «UnrestrictedValueSet(javaClassUsedForValueSet)»();
-            	«ENDIF»
+            	«ENDIF-»
             «ENDIF-»
             «IF valueSetEnum || (valueSetUnrestricted && enumValueSetSupported)-»
 	            «EnumValues()» values = «ValueToXmlHelper()».«getEnumValueSetFromElement("configElement", "\"ValueSet\"")»;
