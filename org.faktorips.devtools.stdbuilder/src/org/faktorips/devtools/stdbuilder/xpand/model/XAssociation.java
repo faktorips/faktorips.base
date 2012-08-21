@@ -15,9 +15,11 @@ package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -81,7 +83,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
     /**
      * Returns true if this association is a one to many association and false if it is one to one.
      * 
-     * @return true fro one to many and false for one to one associations
+     * @return true for one to many and false for one to one associations
      */
     public boolean isOneToMany() {
         return getAssociation().is1ToMany();
@@ -108,16 +110,62 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
     }
 
     /**
-     * TODO: wenn die gegebene derived union gleichzeitig noch ein Subset ist, muss dann auch gegen
-     * die übergeordnete DU getestet werden?
+     * Returns <code>true</code> if this association is a strict subset of the given derived union.
+     * Returns <code>false</code> if this association is an indirect subset or subset of second
+     * grade (or higher), i.e. if it is the subset of another derived union, that is itself a subset
+     * of the given derived union. Returns <code>false</code> in all other cases.
      * 
-     * TODO ist der Name einer DU eindeutig?
+     * @param derivedUnionAssociation the derived union to test against.
      */
     public boolean isSubsetOf(XDerivedUnionAssociation derivedUnionAssociation) {
         if (getAssociation().getSubsettedDerivedUnion().equals(derivedUnionAssociation.getName())) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Returns <code>true</code> if this association is a subset or indirect subset of the given
+     * derived union. An indirect subset or subset of second grade (or higher) is an association
+     * that is the subset of another derived union, that is itself a subset of the given derived
+     * union. Returns <code>false</code> in all other cases.
+     * 
+     * @param derivedUnionAssociation the derived union to test against.
+     * @see #isSubsetOf(XDerivedUnionAssociation)
+     */
+    public boolean isRecursiveSubsetOf(XDerivedUnionAssociation derivedUnionAssociation) {
+        if (!isSubsetOfADerivedUnion()) {
+            return false;
+        }
+        if (isSubsetOf(derivedUnionAssociation)) {
+            return true;
+        }
+        return getSubsettedDerivedUnion().isRecursiveSubsetOf(derivedUnionAssociation);
+    }
+
+    /**
+     * Returns the derived union this association is a subset of.
+     * 
+     * @throws NullPointerException if this is not a subset of a derived union.
+     * @throws NullPointerException if no derived union could be found for this subset.
+     */
+    public XDerivedUnionAssociation getSubsettedDerivedUnion() {
+        if (!isSubsetOfADerivedUnion()) {
+            throw new NullPointerException(NLS.bind(
+                    "The association {0} is not a subset of a derived union. Unable to determine derived union.",
+                    getAssociation()));
+        }
+        try {
+            IPolicyCmptTypeAssociation derivedUnion = (IPolicyCmptTypeAssociation)getAssociation()
+                    .findSubsettedDerivedUnion(getIpsProject());
+            if (derivedUnion == null) {
+                throw new NullPointerException(
+                        NLS.bind("No derived union found for association {0}.", getAssociation()));
+            }
+            return getModelNode(derivedUnion, XDerivedUnionAssociation.class);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     public boolean isConsiderInValidateDependents() {
