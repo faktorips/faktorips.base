@@ -65,7 +65,6 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // Nothing to do
-
     }
 
     @Override
@@ -87,14 +86,12 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
             if (associations.size() > 0) {
                 List<ComponentNode> children = encapsulateComponentTypes(associations, componentNode);
                 CompositeNode compositeNode = new CompositeNode(componentNode, children);
-                // componentNode.setCompositeNode(compositeNode);
                 childNodes.add(compositeNode);
             }
 
             if (subtypes.size() > 0) {
                 List<ComponentNode> children = encapsulateComponentTypes(subtypes, componentNode);
                 SubtypeNode subtypeNode = new SubtypeNode(componentNode, children);
-                // componentNode.setCompositeNode(compositeNode);
                 childNodes.add(subtypeNode);
             }
 

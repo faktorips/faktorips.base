@@ -41,7 +41,7 @@ public class ComponentNode implements IModelOverviewNode {
     }
 
     /**
-     * Returns a list which may contain at most one {@link StructureNode} and one
+     * Returns a list which may contain at most one {@link CompositeNode} and one
      * {@link SubtypeNode}.
      * 
      */
@@ -66,28 +66,10 @@ public class ComponentNode implements IModelOverviewNode {
      * Returns the stored IType element of this value. This method should never return <tt>null</tt>
      * .
      * 
-     * @return
+     * @return the encapsulated {@link IType} object.
      */
     public IType getValue() {
         return value;
     }
 
-    /**
-     * Sets the {@link SubtypeNode} which will be returned by {@link #getChildren()}.
-     * 
-     * 
-     * @param subtypeNode
-     */
-    public void setSubtypeNode(SubtypeNode subtypeNode) {
-        this.subtypeNode = subtypeNode;
-    }
-
-    /**
-     * Sets the {@link StructureNode} which will be returned by {@link #getChildren()}.
-     * 
-     * @param compositeNode
-     */
-    public void setCompositeNode(CompositeNode compositeNode) {
-        this.compositeNode = compositeNode;
-    }
 }
