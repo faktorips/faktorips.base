@@ -38,6 +38,7 @@ import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.filter.AssociationWithoutDUAndInverseDUFilter;
+import org.faktorips.devtools.stdbuilder.xpand.model.filter.DerivedUnionFilter;
 import org.faktorips.devtools.stdbuilder.xpand.model.filter.MasterToDetailFilter;
 import org.faktorips.devtools.stdbuilder.xpand.model.filter.MasterToDetailWithoutSubsetsFilter;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribute;
@@ -58,6 +59,8 @@ public class XPolicyCmptClass extends XClass {
 
     private final Set<XPolicyAssociation> masterToDetailAssociationsWithoutSubsets;
 
+    private final Set<XDerivedUnionAssociation> derivedUnions;
+
     private final Set<XDerivedUnionAssociation> subsettedDerivedUnions;
 
     private final Set<XDetailToMasterDerivedUnionAssociation> detailToMasterDerivedUnionAssociations;
@@ -77,6 +80,9 @@ public class XPolicyCmptClass extends XClass {
         masterToDetailAssociationsWithoutSubsets = initNodesForParts(
                 getAssociations(policyCmptType, IPolicyCmptTypeAssociation.class,
                         new MasterToDetailWithoutSubsetsFilter()), XPolicyAssociation.class);
+        derivedUnions = initNodesForParts(
+                getAssociations(policyCmptType, IPolicyCmptTypeAssociation.class, new DerivedUnionFilter()),
+                XDerivedUnionAssociation.class);
         subsettedDerivedUnions = initNodesForParts(
                 findSubsettedDerivedUnions(policyCmptType.getPolicyCmptTypeAssociations(),
                         IPolicyCmptTypeAssociation.class), XDerivedUnionAssociation.class);
@@ -223,6 +229,10 @@ public class XPolicyCmptClass extends XClass {
 
     public Set<XPolicyAssociation> getMasterToDetailAssociationsWithoutSubsets() {
         return new CopyOnWriteArraySet<XPolicyAssociation>(masterToDetailAssociationsWithoutSubsets);
+    }
+
+    public Set<XDerivedUnionAssociation> getDerivedUnions() {
+        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnions);
     }
 
     @Override

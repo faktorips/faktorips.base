@@ -40,9 +40,21 @@ public class XPolicyAssociation extends XAssociation {
         return (IPolicyCmptTypeAssociation)super.getAssociation();
     }
 
+    /**
+     * Returns <code>true</code> for:
+     * <ul>
+     * <li>oneToMany associations (but not derived unions, see below)</li>
+     * <li>oneToOne associations (but <code>false</code> for onToOne-detailToMaster associations)</li>
+     * </ul>
+     * Returns <code>false</code> for
+     * <ul>
+     * <li>derived union associations</li>
+     * <li>shared associations</li>
+     * </ul>
+     */
     public boolean isGenerateField() {
-        return isOneToMany() && !isDerivedUnion() || !isOneToMany() && !isDerivedUnion()
-                && !isCompositionDetailToMaster();
+        return (isOneToMany() || !isOneToMany() && !isCompositionDetailToMaster()) && !isDerivedUnion()
+                && !isSharedAssociation();
     }
 
     public boolean isGenerateGetter() {

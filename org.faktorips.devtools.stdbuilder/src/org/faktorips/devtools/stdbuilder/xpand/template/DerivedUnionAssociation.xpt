@@ -13,11 +13,6 @@
 	«EXPAND getterNumOfInternal(currentContextClass)»
 «ENDDEFINE»
 
-«DEFINE methodsForDerivedUnionPolicy(XPolicyCmptClass currentContextClass) FOR XDerivedUnionAssociation-»
-	«EXPAND methodDerivedUnionContains(currentContextClass)»
-	«EXPAND methodsForDerivedUnion(currentContextClass)»
-«ENDDEFINE»
-
 «DEFINE getter(XClass currentContextClass) FOR XDerivedUnionAssociation-»
     /**
      * {@inheritDoc}
@@ -73,7 +68,6 @@
 «ENDDEFINE»
 
 «DEFINE methodDerivedUnionContains(XClass currentContextClass) FOR XDerivedUnionAssociation-»
-	«marker-»
 	«IF isDefinedIn(currentContextClass)-»
 		«EXPAND PolicyCmptAssociation::contains »
 	«ENDIF-»

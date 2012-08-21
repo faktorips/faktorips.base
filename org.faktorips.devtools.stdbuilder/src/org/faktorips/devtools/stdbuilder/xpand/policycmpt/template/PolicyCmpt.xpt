@@ -64,7 +64,8 @@ package «packageName»;
 			«EXPAND PolicyCmptAssociation::methods-»
 		«ENDFOREACH-»
 		
-		«EXPAND DerivedUnionAssociation::methodsForDerivedUnionPolicy(this) FOREACH derivedUnionAssociations-»
+		«EXPAND DerivedUnionAssociation::methodDerivedUnionContains(this) FOREACH derivedUnions-»
+		«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH subsettedDerivedUnions-»
 
 		«EXPAND Methods::method FOREACH methods-»
 		

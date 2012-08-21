@@ -13,15 +13,14 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model.filter;
 
-import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractAssociationFilter;
 
-public class MasterToDetailFilter extends AbstractAssociationFilter {
+public class DerivedUnionFilter extends AbstractAssociationFilter {
 
     @Override
     public boolean isValidAssociation(IAssociation association) {
-        return association.getAssociationType() == AssociationType.COMPOSITION_MASTER_TO_DETAIL;
+        return association.isDerivedUnion();
     }
 
 }

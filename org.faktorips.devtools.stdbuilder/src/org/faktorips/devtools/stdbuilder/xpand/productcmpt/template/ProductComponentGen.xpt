@@ -47,7 +47,7 @@
 
 			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
 			
-			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH  derivedUnionAssociations»
+			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH  subsettedDerivedUnions»
 
 			
 			«FOREACH methods AS this-»
