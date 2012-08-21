@@ -19,6 +19,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.StringUtil;
 
@@ -91,10 +92,54 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return addImport(javaClassName);
     }
 
-    public String getNewInstanceFromExpression(String expression) {
-        JavaCodeFragment fragment = getDatatypeHelper().newInstanceFromExpression(expression);
+    /**
+     * Returns the code to create a new instance. The expression is the code to retrieve the value
+     * from, e.g. another variable. The repositoryExpression is the code for getting a repository.
+     * It may be needed for enumerations with separated content.
+     * 
+     * @param expression The expression to get the value from
+     * @param repositoryExpression the expression to get the repository
+     * @return The code needed to create a new instance for a value set
+     */
+    public String getNewInstanceFromExpression(String expression, String repositoryExpression) {
+        return getNewInstanceFromExpression(getDatatypeHelper(), expression, repositoryExpression);
+    }
+
+    /**
+     * Returns the code to create a new instance. The expression is the code to retrieve the value
+     * from, e.g. another variable. The repositoryExpression is the code for getting a repository.
+     * It may be needed for enumerations with separated content.
+     * 
+     * @param datatypeHelper The data type helper of the data type you need the new instance
+     *            expression for
+     * @param expression The expression to get the value from
+     * @param repositoryExpression the expression to get the repository
+     * @return The code needed to create a new instance for a value set
+     */
+    protected String getNewInstanceFromExpression(DatatypeHelper datatypeHelper,
+            String expression,
+            String repositoryExpression) {
+        JavaCodeFragment fragment = datatypeHelper.newInstanceFromExpression(expression);
         addImport(fragment.getImportDeclaration());
-        return fragment.getSourcecode();
+        String result = fragment.getSourcecode();
+        if (isDatatypeContentSeparatedEnum()) {
+            return getExpressionForEnumWithSeparatedContent(repositoryExpression, result);
+        } else {
+            return result;
+        }
+    }
+
+    public String getExpressionForEnumWithSeparatedContent(String repositoryExpression, String newInstanceExpression) {
+        return repositoryExpression + newInstanceExpression;
+    }
+
+    /**
+     * Returns <code>true</code> if this attributes data type is an enumeration-type with separate
+     * content. <code>false</code> else.
+     * 
+     */
+    public boolean isDatatypeContentSeparatedEnum() {
+        return DatatypeUtil.isEnumTypeWithSeparateContent(getDatatype());
     }
 
     public String getNewInstance() {
