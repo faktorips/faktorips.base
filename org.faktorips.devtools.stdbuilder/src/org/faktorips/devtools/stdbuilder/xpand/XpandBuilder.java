@@ -54,11 +54,11 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
 
     private final static IJavaClassNameProvider JAVA_CLASS_NAMEING_PROVIDER = XClass.createJavaClassNamingProvider();
 
-    private XpandDefinition templateDefinition;
+    private final ThreadLocal<XpandDefinition> threadLocalTemplateDefinition = new ThreadLocal<XpandDefinition>();
 
-    private XpandExecutionContextImpl xpandContext;
+    private final ThreadLocal<XpandExecutionContextImpl> threadLocalXpandContext = new ThreadLocal<XpandExecutionContextImpl>();
 
-    private StringOutput out;
+    private final ThreadLocal<StringOutput> threadLocalOut = new ThreadLocal<StringOutput>();
 
     private final ModelService modelService;
 
@@ -108,15 +108,15 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
      */
     protected void initTemplate() {
         setOut(new StringOutput());
-        xpandContext = new XpandExecutionContextImpl(getOut(), null);
+        threadLocalXpandContext.set(new XpandExecutionContextImpl(getOut(), null));
         JavaBeansMetaModel mm = new JavaBeansMetaModel();
-        xpandContext.registerMetaModel(mm);
+        getXpandContext().registerMetaModel(mm);
 
-        final org.eclipse.xtend.typesystem.Type targetType = xpandContext.getTypeForName(getGeneratorModelNodeClass()
-                .getName().replaceAll("\\.", SyntaxConstants.NS_DELIM));
+        final org.eclipse.xtend.typesystem.Type targetType = getXpandContext().getTypeForName(
+                getGeneratorModelNodeClass().getName().replaceAll("\\.", SyntaxConstants.NS_DELIM));
         ArgumentCheck.notNull(targetType);
         final org.eclipse.xtend.typesystem.Type[] paramTypes = new org.eclipse.xtend.typesystem.Type[0];
-        setTemplateDefinition(xpandContext.findDefinition(getTemplate(), targetType, paramTypes));
+        setTemplateDefinition(getXpandContext().findDefinition(getTemplate(), targetType, paramTypes));
         ArgumentCheck.notNull(getTemplateDefinition());
     }
 
@@ -143,7 +143,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     }
 
     private void evaluateTemplate(IIpsObject ipsObject) {
-        getTemplateDefinition().evaluate((XpandExecutionContext)xpandContext.cloneWithoutVariables(),
+        getTemplateDefinition().evaluate((XpandExecutionContext)getXpandContext().cloneWithoutVariables(),
                 getGeneratorModelRoot(ipsObject));
     }
 
@@ -170,30 +170,34 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
         return modelService;
     }
 
+    public XpandExecutionContextImpl getXpandContext() {
+        return threadLocalXpandContext.get();
+    }
+
     public GeneratorModelContext getGeneratorModelContext() {
         return generatorModelContext;
     }
 
     public StringOutput getOut() {
-        return out;
+        return threadLocalOut.get();
     }
 
     public void setOut(StringOutput out) {
-        this.out = out;
+        threadLocalOut.set(out);
     }
 
     public XpandDefinition getTemplateDefinition() {
-        return templateDefinition;
+        return threadLocalTemplateDefinition.get();
     }
 
     public void setTemplateDefinition(XpandDefinition templateDefinition) {
-        this.templateDefinition = templateDefinition;
+        threadLocalTemplateDefinition.set(templateDefinition);
     }
 
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IIpsObjectPartContainer ipsObjectPartContainer) {
-        if (templateDefinition == null) {
+        if (getTemplateDefinition() == null) {
             initTemplate();
         }
         getOut().addOutlet(new NullOutlet());
@@ -203,8 +207,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
         try {
             evaluateTemplate(ipsObjectPartContainer.getIpsObject());
         } catch (Exception e) {
-            // If there is any exception during template evaluation we just ignore it and only use
-            // maybe already found artifacts
+            throw new RuntimeException("Exception while parsing template for " + ipsObjectPartContainer);
         }
 
         // TODO verschiedene Types?
