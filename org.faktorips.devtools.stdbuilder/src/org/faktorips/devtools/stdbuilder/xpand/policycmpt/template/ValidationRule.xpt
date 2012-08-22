@@ -19,7 +19,7 @@
     /**
      * «localizedJDoc("EXEC_RULE", name)»
      * 
-     * @restrainedmodifiable
+     * @generated
      */
     protected boolean «method(methodNameExecRule, MessageList(), "ml", IValidationContext(), "context")» {
     	«IF specificBusinessFunctions»
@@ -36,7 +36,7 @@
 		     // begin-user-code
 	        «localizedComment("EXEC_RULE_IMPLEMENT_TODO", name)»
 	        if (true) {
-	            ml.add(«methodNameCreateMessage»(context «FOREACH replacementParameters AS param», null«ENDFOREACH»));«IF needTodoCompleteCallCreateMsg-»
+	            ml.add(«methodNameCreateMessage»(context «FOREACH replacementParameters AS param», null«ENDFOREACH»«IF validatedAttrSpecifiedInSrc», new «ObjectProperty()»[0]«ENDIF»));«IF needTodoCompleteCallCreateMsg-»
 	            «localizedComment("EXEC_RULE_COMPLETE_CALL_CREATE_MSG_TODO",name)»
 	            «ENDIF-»
 	        }
@@ -77,7 +77,9 @@
                 «ENDFOREACH-»
 				 };
         «ELSE-»
+        «IF !validatedAttrSpecifiedInSrc-»
         «ObjectProperty()» invalidObjectProperties = new «ObjectProperty()»(this);
+        «ENDIF-»
 		«ENDIF-»        
         «IF containsReplacementParameters-»
 	        «MsgReplacementParameter()»[] replacementParameters = new «MsgReplacementParameter()»[] {

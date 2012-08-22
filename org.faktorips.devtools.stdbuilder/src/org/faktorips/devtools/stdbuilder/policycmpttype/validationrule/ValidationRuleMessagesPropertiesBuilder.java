@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -42,7 +43,7 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
     // translated by LocalizedTextHelper
     private static final String MESSAGES_COMMENT = "MESSAGES_COMMENT";
 
-    static final String MESSAGES_PREFIX = ".properties";
+    static final String MESSAGES_EXTENSION = "properties";
 
     private final Map<IFile, ValidationRuleMessagesGenerator> messageGeneratorMap;
 
@@ -134,18 +135,18 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
     protected IFile getPropertyFile(IIpsPackageFragmentRoot root, ISupportedLanguage supportedLanguage) {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         IFolder derivedFolder = entry.getOutputFolderForDerivedJavaFiles();
-
-        IPath path = QNameUtil.toPath(getResourceBundleBaseName(entry)).append(
-                getMessagesFileName(entry, supportedLanguage.getLocale(), supportedLanguage.isDefaultLanguage()));
+        String resourceBundleBaseName = getResourceBundleBaseName(entry)
+                + getMessagesFileSuffix(supportedLanguage.getLocale(), supportedLanguage.isDefaultLanguage());
+        IPath path = QNameUtil.toPath(resourceBundleBaseName).addFileExtension(MESSAGES_EXTENSION);
         IFile messagesFile = derivedFolder.getFile(path);
         return messagesFile;
     }
 
-    protected String getMessagesFileName(IIpsSrcFolderEntry entry, Locale locale, boolean isDefaultLocale) {
-        if (isDefaultLocale) {
-            return entry.getValidationMessagesBundle().replace('.', '/') + MESSAGES_PREFIX;
+    private String getMessagesFileSuffix(Locale locale, boolean isDefaultLocale) {
+        if (!isDefaultLocale) {
+            return "_" + locale.toString();
         } else {
-            return entry.getValidationMessagesBundle().replace('.', '/') + "_" + locale.toString() + MESSAGES_PREFIX;
+            return StringUtils.EMPTY;
         }
     }
 

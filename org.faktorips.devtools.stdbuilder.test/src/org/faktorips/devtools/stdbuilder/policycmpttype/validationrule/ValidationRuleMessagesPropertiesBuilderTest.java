@@ -223,9 +223,10 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
         IFile file = mock(IFile.class);
 
-        IPath path = new Path(ROOT_FOLDER + "/" + TEST_VALIDATION_MESSAGES.replace('.', '/')
-                + ValidationRuleMessagesPropertiesBuilder.MESSAGES_PREFIX);
-        when(builderSet.getValidationMessageBundleBaseName(any(IIpsSrcFolderEntry.class))).thenReturn(ROOT_FOLDER);
+        IPath path = new Path(ROOT_FOLDER + "/" + TEST_VALIDATION_MESSAGES.replace('.', '/') + "."
+                + ValidationRuleMessagesPropertiesBuilder.MESSAGES_EXTENSION);
+        when(builderSet.getValidationMessageBundleBaseName(any(IIpsSrcFolderEntry.class))).thenReturn(
+                ROOT_FOLDER + "." + TEST_VALIDATION_MESSAGES);
 
         IFolder derivedFolder = mock(IFolder.class);
         when(derivedFolder.getFile(path)).thenReturn(file);
@@ -254,8 +255,9 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         IFile file = mock(IFile.class);
 
         IPath path = new Path(ROOT_FOLDER + "/" + TEST_VALIDATION_MESSAGES.replace('.', '/') + "_"
-                + locale.getLanguage() + ValidationRuleMessagesPropertiesBuilder.MESSAGES_PREFIX);
-        when(builderSet.getValidationMessageBundleBaseName(any(IIpsSrcFolderEntry.class))).thenReturn(ROOT_FOLDER);
+                + locale.getLanguage() + "." + ValidationRuleMessagesPropertiesBuilder.MESSAGES_EXTENSION);
+        when(builderSet.getValidationMessageBundleBaseName(any(IIpsSrcFolderEntry.class))).thenReturn(
+                ROOT_FOLDER + "." + TEST_VALIDATION_MESSAGES);
 
         IFolder derivedFolder = mock(IFolder.class);
         when(derivedFolder.getFile(path)).thenReturn(file);

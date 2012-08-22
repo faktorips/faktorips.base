@@ -30,6 +30,7 @@ import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.MethodParameter;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.util.StringUtil;
 
 public class XValidationRule extends AbstractGeneratorModelNode {
@@ -51,6 +52,10 @@ public class XValidationRule extends AbstractGeneratorModelNode {
         return getValidationRule().isConfigurableByProductComponent();
     }
 
+    public boolean isValidatedAttrSpecifiedInSrc() {
+        return getValidationRule().isValidatedAttrSpecifiedInSrc();
+    }
+
     public boolean isCheckValueAgainstValueSetRule() {
         return getValidationRule().isCheckValueAgainstValueSetRule();
     }
@@ -61,7 +66,7 @@ public class XValidationRule extends AbstractGeneratorModelNode {
     }
 
     public boolean isNeedTodoCompleteCallCreateMsg() {
-        return isContainsReplacementParameters() || getValidationRule().isValidatedAttrSpecifiedInSrc();
+        return isContainsReplacementParameters() || isValidatedAttrSpecifiedInSrc();
     }
 
     public boolean isContainsReplacementParameters() {
@@ -73,8 +78,7 @@ public class XValidationRule extends AbstractGeneratorModelNode {
     }
 
     public boolean isValidateAttributes() {
-        return !getValidationRule().isValidatedAttrSpecifiedInSrc()
-                && getValidationRule().getValidatedAttributes().length > 0;
+        return !isValidatedAttrSpecifiedInSrc() && getValidationRule().getValidatedAttributes().length > 0;
     }
 
     public List<String> getValidatedAttributeConstants() {
@@ -113,6 +117,9 @@ public class XValidationRule extends AbstractGeneratorModelNode {
         result.add(new MethodParameter(addImport(IValidationContext.class), "context"));
         for (String replacementParameter : getReplacementParameters()) {
             result.add(new MethodParameter(addImport(Object.class), replacementParameter));
+        }
+        if (isValidatedAttrSpecifiedInSrc()) {
+            result.add(new MethodParameter(addImport(ObjectProperty.class) + "[]", "invalidObjectProperties"));
         }
         return result;
     }
