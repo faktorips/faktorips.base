@@ -18,9 +18,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessagesGenerator;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
@@ -48,12 +51,53 @@ public class XValidationRule extends AbstractGeneratorModelNode {
         return getValidationRule().isConfigurableByProductComponent();
     }
 
+    public boolean isCheckValueAgainstValueSetRule() {
+        return getValidationRule().isCheckValueAgainstValueSetRule();
+    }
+
+    public XPolicyAttribute getCheckedAttribute() {
+        IAttribute attr = getValidationRule().getType().getAttribute(getValidationRule().getValidatedAttributeAt(0));
+        return getModelNode(attr, XPolicyAttribute.class);
+    }
+
+    public boolean isNeedTodoCompleteCallCreateMsg() {
+        return isContainsReplacementParameters() || getValidationRule().isValidatedAttrSpecifiedInSrc();
+    }
+
     public boolean isContainsReplacementParameters() {
         return !getValidationRule().getMessageText().getReplacementParameters().isEmpty();
     }
 
     public LinkedHashSet<String> getReplacementParameters() {
         return convertToJavaParameters(getValidationRule().getMessageText().getReplacementParameters());
+    }
+
+    public boolean isValidateAttributes() {
+        return !getValidationRule().isValidatedAttrSpecifiedInSrc()
+                && getValidationRule().getValidatedAttributes().length > 0;
+    }
+
+    public List<String> getValidatedAttributeConstants() {
+        List<String> result = new ArrayList<String>();
+        String[] attributes = getValidationRule().getValidatedAttributes();
+        for (String attributeName : attributes) {
+            try {
+                IAttribute attr = getValidationRule().getType().findAttribute(attributeName, getIpsProject());
+                XPolicyAttribute xPolicyAttribute = getModelNode(attr, XPolicyAttribute.class);
+                result.add(xPolicyAttribute.getConstantNamePropertyName());
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return result;
+    }
+
+    public boolean isSpecificBusinessFunctions() {
+        return !getValidationRule().isAppliedForAllBusinessFunctions();
+    }
+
+    public String[] getSpecifiedBusinessFunctions() {
+        return getValidationRule().getBusinessFunctions();
     }
 
     public String getMethodNameExecRule() {
@@ -96,6 +140,11 @@ public class XValidationRule extends AbstractGeneratorModelNode {
         JavaCodeFragment codeFragment = getValidationRule().getMessageSeverity().getJavaSourcecode();
         addImport(codeFragment.getImportDeclaration());
         return codeFragment.getSourcecode();
+    }
+
+    public String getConstantNameRuleName() {
+        return getLocalizedText("FIELD_RULE_NAME",
+                StringUtils.upperCase(StringUtil.camelCaseToUnderscore(getValidationRule().getName(), false)));
     }
 
     /**

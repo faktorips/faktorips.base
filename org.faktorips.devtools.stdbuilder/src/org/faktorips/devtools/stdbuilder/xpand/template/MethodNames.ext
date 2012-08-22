@@ -71,6 +71,9 @@ writeReferencesToXml(String paramElement) :
 // Methods in IProductComponentGeneration
 // ---------------------------------
 
+isValidationRuleActivated(String paramConstantName) :
+	"isValidationRuleActivated(" + paramConstantName +")";
+
 getLink(String paramLinkName, String paramTarget) :
 	"getLink(" + paramLinkName + ", " + paramTarget +")";
 

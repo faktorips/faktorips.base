@@ -335,7 +335,7 @@ package «packageName»;
         if (!super.«validateSelf("ml", "context")») {
             return STOP_VALIDATION;
         }
-        «EXPAND ValidationRule::validate FOREACH validationRules»
+        «EXPAND ValidationRule::validate FOREACH validationRules-»
         return CONTINUE_VALIDATION;
     }
 
