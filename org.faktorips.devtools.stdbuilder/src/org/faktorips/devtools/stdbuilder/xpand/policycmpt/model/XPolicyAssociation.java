@@ -48,17 +48,17 @@ public class XPolicyAssociation extends XAssociation {
      * </ul>
      * Returns <code>false</code> for
      * <ul>
-     * <li>derived union associations</li>
      * <li>shared associations</li>
      * </ul>
      */
     public boolean isGenerateField() {
-        return (isOneToMany() || !isOneToMany() && !isCompositionDetailToMaster()) && !isDerivedUnion()
-                && !isSharedAssociation();
+        return (isOneToMany() || !isOneToMany() && !isCompositionDetailToMaster()) && !isDerivedUnion();
     }
 
     public boolean isGenerateGetter() {
         if (isSharedAssociation()) {
+            // FIXME @Corny in methode auslagern e.g. isTopLevelSharedAssociation() oder
+            // isRootSharedAssociation()
             try {
                 IPolicyCmptTypeAssociation associationWithSameName = getAssociation().findSuperAssociationWithSameName(
                         getIpsProject());
