@@ -4,6 +4,7 @@ import org::w3c::dom;
 import org::faktorips::valueset;
 import org::faktorips::runtime;
 import org::faktorips::runtime::internal;
+import org::faktorips::runtime::util;
 import org::faktorips::devtools::stdbuilder::xpand::model;
 
 IpsPropertyChangeSupport(AbstractGeneratorModelNode this) :
@@ -23,10 +24,22 @@ IDeltaComputationOptions(AbstractGeneratorModelNode this):
 	
 ModelObjectDelta(AbstractGeneratorModelNode this):
 	addImport(ModelObjectDelta.name);
+
+ObjectProperty(AbstractGeneratorModelNode this):
+	addImport(ObjectProperty.name);
+
+Message(AbstractGeneratorModelNode this):
+	addImport(Message.name);
 	
 MessageList(AbstractGeneratorModelNode this):
 	addImport(MessageList.name);
 	
+MsgReplacementParameter(AbstractGeneratorModelNode this):
+	addImport(MsgReplacementParameter.name);
+	
+MessagesHelper(AbstractGeneratorModelNode this):
+	addImport(MessagesHelper.name);
+
 IConfigurableModelObject(AbstractGeneratorModelNode this) :
 	addImport(IConfigurableModelObject.name);
 	

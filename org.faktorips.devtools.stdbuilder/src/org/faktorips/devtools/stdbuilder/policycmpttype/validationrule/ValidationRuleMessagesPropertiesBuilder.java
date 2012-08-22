@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -29,13 +28,13 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.util.LocalizedStringsSet;
 
 public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBuilder {
@@ -53,9 +52,14 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
      * 
      * @param builderSet The builder set this builder belongs to
      */
-    public ValidationRuleMessagesPropertiesBuilder(IIpsArtefactBuilderSet builderSet) {
+    public ValidationRuleMessagesPropertiesBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(ValidationRuleMessagesPropertiesBuilder.class));
         messageGeneratorMap = new HashMap<IFile, ValidationRuleMessagesGenerator>();
+    }
+
+    @Override
+    public StandardBuilderSet getBuilderSet() {
+        return (StandardBuilderSet)super.getBuilderSet();
     }
 
     @Override
@@ -123,11 +127,15 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
         }
     }
 
+    protected String getResourceBundleBaseName(IIpsSrcFolderEntry entry) {
+        return getBuilderSet().getValidationMessageBundleBaseName(entry);
+    }
+
     protected IFile getPropertyFile(IIpsPackageFragmentRoot root, ISupportedLanguage supportedLanguage) {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         IFolder derivedFolder = entry.getOutputFolderForDerivedJavaFiles();
 
-        IPath path = QNameUtil.toPath(getResourceBundlePackage(entry)).append(
+        IPath path = QNameUtil.toPath(getResourceBundleBaseName(entry)).append(
                 getMessagesFileName(entry, supportedLanguage.getLocale(), supportedLanguage.isDefaultLanguage()));
         IFile messagesFile = derivedFolder.getFile(path);
         return messagesFile;
@@ -139,16 +147,6 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
         } else {
             return entry.getValidationMessagesBundle().replace('.', '/') + "_" + locale.toString() + MESSAGES_PREFIX;
         }
-    }
-
-    protected String getResourceBundleBaseName(IIpsSrcFolderEntry entry) {
-        String baseName = getResourceBundlePackage(entry) + "." + entry.getValidationMessagesBundle();
-        return baseName;
-    }
-
-    protected String getResourceBundlePackage(IIpsSrcFolderEntry entry) {
-        String basePack = entry.getBasePackageNameForDerivedJavaClasses();
-        return getBuilderSet().getInternalPackage(basePack, StringUtils.EMPTY);
     }
 
     protected ValidationRuleMessagesGenerator getMessagesGenerator(IIpsSrcFile ipsSrcFile,

@@ -1,0 +1,17 @@
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE getNumOf FOR XAssociation-»
+	«IF oneToMany-»
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    «overrideAnnotationForPublishedMethod()-»
+    public int «method(methodNameGetNumOf)» {
+        return «fieldName».size();
+    }
+    «ENDIF»
+«ENDDEFINE»

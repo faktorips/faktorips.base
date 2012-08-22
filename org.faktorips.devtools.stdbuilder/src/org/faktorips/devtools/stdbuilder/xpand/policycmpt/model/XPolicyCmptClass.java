@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.AssociationType;
@@ -65,6 +66,8 @@ public class XPolicyCmptClass extends XClass {
 
     private final Set<XDetailToMasterDerivedUnionAssociation> detailToMasterDerivedUnionAssociations;
 
+    private final Set<XValidationRule> validationRules;
+
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
         attributes = initNodesForParts(
@@ -89,6 +92,8 @@ public class XPolicyCmptClass extends XClass {
         detailToMasterDerivedUnionAssociations = initNodesForParts(
                 findDetailToMasterDerivedUnionAssociations(policyCmptType.getPolicyCmptTypeAssociations()),
                 XDetailToMasterDerivedUnionAssociation.class);
+        validationRules = initNodesForParts(new LinkedHashSet<IValidationRule>(policyCmptType.getValidationRules()),
+                XValidationRule.class);
     }
 
     private Set<IProductCmptTypeAttribute> getProductAttributes(IPolicyCmptType policyCmptType) {
@@ -242,6 +247,10 @@ public class XPolicyCmptClass extends XClass {
 
     public Set<XDetailToMasterDerivedUnionAssociation> getDetailToMasterDerivedUnionAssociations() {
         return new CopyOnWriteArraySet<XDetailToMasterDerivedUnionAssociation>(detailToMasterDerivedUnionAssociations);
+    }
+
+    public Set<XValidationRule> getValidationRules() {
+        return new CopyOnWriteArraySet<XValidationRule>(validationRules);
     }
 
     private XProductCmptClass getProductCmptClass() {

@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -796,6 +797,10 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public final ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
         return productCmptInterfaceBuilder;
+    }
+
+    public String getValidationMessageBundleBaseName(IIpsSrcFolderEntry entry) {
+        return generatorModelContext.getValidationMessageBundleBaseName(entry);
     }
 
     private final class StandardParameterIdentifierResolverForFormulaTest extends StandardParameterIdentifierResolver {

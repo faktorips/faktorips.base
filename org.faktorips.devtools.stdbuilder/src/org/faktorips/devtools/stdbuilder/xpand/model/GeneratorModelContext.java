@@ -19,14 +19,25 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.builder.AbstractBuilderSet;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
+ * This class holds all the context information needed to generate the java code with our XPAND
+ * builder framework. Context information are for example the java class naming or the builder
+ * configuration.
+ * <p>
+ * The import handler for a single file build is also stored in this context and need to be reseted
+ * for every new file. In fact this is not the optimum but ok for the moment. To be thread safe the
+ * import handler is stored as {@link ThreadLocal} variable.
+ * 
  * 
  * @author widmaier
  */
@@ -34,14 +45,17 @@ public class GeneratorModelContext {
 
     private final JavaClassNaming javaClassNaming;
 
+    /**
+     * The import handler holds the import statements for a single file. However this context is the
+     * same for all file generations. Because every file is generated sequentially in one thread we
+     * could reuse a {@link ThreadLocal} variable in this model context. Every new file have to
+     * clear its {@link ImportHandler} before starting generation.
+     */
     private final ThreadLocal<ImportHandler> importHandlerThreadLocal = new ThreadLocal<ImportHandler>();
 
     private final IIpsArtefactBuilderSetConfig config;
 
     private final Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap;
-
-    // Model Service
-    // ImportHandler
 
     public GeneratorModelContext(IIpsArtefactBuilderSetConfig config,
             Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap) {
@@ -130,6 +144,16 @@ public class GeneratorModelContext {
 
     public JavaClassNaming getJavaClassNaming() {
         return javaClassNaming;
+    }
+
+    public String getValidationMessageBundleBaseName(IIpsSrcFolderEntry entry) {
+        String baseName = getResourceBundlePackage(entry) + "." + entry.getValidationMessagesBundle();
+        return baseName;
+    }
+
+    protected String getResourceBundlePackage(IIpsSrcFolderEntry entry) {
+        String basePack = entry.getBasePackageNameForDerivedJavaClasses();
+        return JavaPackageStructure.getInternalPackage(basePack, StringUtils.EMPTY);
     }
 
     public boolean isGenerateChangeSupport() {

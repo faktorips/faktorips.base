@@ -13,7 +13,7 @@
      */
      «overrideAnnotationForPublishedMethodOrIf(published, overrides)-»
     «modifier» «javaClassName» «method(methodName, methodParameters)» throws «FormulaExecutionException()» {
-        return («notPrimitiveJavaClassName»)getFormulaEvaluator().evaluate("«methodName»"«IF methodParameters.size>0», «ENDIF»«FOREACH methodParameters AS parameter SEPARATOR ","»«parameter.name»«ENDFOREACH»);
+        return («notPrimitiveJavaClassName»)getFormulaEvaluator().evaluate("«methodName»" «FOREACH methodParameters AS parameter», «parameter.name»«ENDFOREACH»);
     }
     «IF overloadsFormula»
     	«LET overloadedFormulaMethod AS this-»

@@ -311,6 +311,15 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     /**
+     * Returns the localized string for the given key. The resulting string will be returned with
+     * the prefix for comments ("//").
+     */
+    public String localizedComment(String key, String replacement) {
+        String text = getLocalizedText(key, replacement);
+        return "// " + text;
+    }
+
+    /**
      * Returns the language that variables, methods are named and and JDoc are written in.
      * <p>
      * Do not overwrite this method because it may be used in constructors

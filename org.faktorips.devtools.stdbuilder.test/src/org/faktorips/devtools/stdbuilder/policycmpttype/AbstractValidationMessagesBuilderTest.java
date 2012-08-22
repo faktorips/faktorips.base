@@ -22,13 +22,13 @@ import java.util.Locale;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IPath;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 public abstract class AbstractValidationMessagesBuilderTest {
 
@@ -41,10 +41,11 @@ public abstract class AbstractValidationMessagesBuilderTest {
         super();
     }
 
-    protected DefaultBuilderSet mockBuilderSet() {
-        DefaultBuilderSet builderSet = mock(DefaultBuilderSet.class);
+    protected StandardBuilderSet mockBuilderSet() {
+        StandardBuilderSet builderSet = mock(StandardBuilderSet.class);
         when(builderSet.getInternalPackage(TEST_PACK, "")).thenReturn(ROOT_FOLDER);
         when(builderSet.getLanguageUsedInGeneratedSourceCode()).thenReturn(Locale.ENGLISH);
+        when(builderSet.getValidationMessageBundleBaseName(any(IIpsSrcFolderEntry.class))).thenReturn("test");
         return builderSet;
     }
 
