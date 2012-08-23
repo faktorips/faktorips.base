@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 
 /**
@@ -51,25 +50,11 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
      * Implemented in this case means that the super class contains a detail to master association
      * which is a subset of this association.
      */
-    @Override
-    public boolean isImplementedInSuperclass(XClass xClass) {
-        if (!(xClass instanceof XPolicyCmptClass)) {
-            throw new IllegalArgumentException(
-                    "XDetailToMasterDerivedUnionAssociation#isImplementedInSuperclass() can process XPolicyCmptClasses only.");
-        }
-        if (getAssociationType().equals(xClass.getType())) {
+    public boolean isImplementedInSuperclass(XPolicyCmptClass xClass) {
+        if (getTypeOfAssociation().equals(xClass.getType())) {
             return false;
         }
-        try {
-            XPolicyCmptClass policyCmptClass = (XPolicyCmptClass)xClass;
-            IPolicyCmptType supertype = (IPolicyCmptType)policyCmptClass.getType().findSupertype(getIpsProject());
-            FindSubsetOfDetailToMasterDerivedUnionVisitor findSubsetOfDerivedUnionVisitor = new FindSubsetOfDetailToMasterDerivedUnionVisitor(
-                    getDerviedUnionAssociation(), getIpsProject());
-            findSubsetOfDerivedUnionVisitor.start(supertype);
-            return findSubsetOfDerivedUnionVisitor.isSubsetFound();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getDerivedUnion().isImplementedInSuperclass(xClass);
     }
 
     /**
@@ -116,17 +101,17 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
      * 
      */
     class FindSubsetOfDetailToMasterDerivedUnionVisitor extends TypeHierarchyVisitor<IPolicyCmptType> {
-    
+
         private final IAssociation derivedUnion;
-    
+
         boolean foundSubset = false;
-    
-        public FindSubsetOfDetailToMasterDerivedUnionVisitor(IPolicyCmptTypeAssociation detailToMasterDerivedUnion,
+
+        public FindSubsetOfDetailToMasterDerivedUnionVisitor(IPolicyCmptTypeAssociation masterToDetailDerivedUnion,
                 IIpsProject ipsProject) {
             super(ipsProject);
-            this.derivedUnion = detailToMasterDerivedUnion;
+            this.derivedUnion = masterToDetailDerivedUnion;
         }
-    
+
         @Override
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
             List<IPolicyCmptTypeAssociation> associations = currentType.getPolicyCmptTypeAssociations();
@@ -144,7 +129,7 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
             }
             return true;
         }
-    
+
         public boolean isSubsetFound() {
             return foundSubset;
         }

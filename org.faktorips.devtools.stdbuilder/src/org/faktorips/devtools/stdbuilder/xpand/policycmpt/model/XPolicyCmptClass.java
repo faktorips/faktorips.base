@@ -14,7 +14,6 @@
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,64 +59,6 @@ public class XPolicyCmptClass extends XClass {
 
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
-    }
-
-    /**
-     * Finds all inverse associations (detail to master associations) in this class.
-     */
-    protected Set<IPolicyCmptTypeAssociation> findDetailToMasterAssociations(Collection<IPolicyCmptTypeAssociation> associations) {
-        Set<IPolicyCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IPolicyCmptTypeAssociation>();
-        for (IPolicyCmptTypeAssociation association : associations) {
-            if (association.isCompositionDetailToMaster()) {
-                resultingAssociations.add(association);
-            }
-        }
-        return resultingAssociations;
-    }
-
-    /**
-     * Inspects all detail to master associations. If a given association is the inverse of a
-     * derived-union-subset, the original detail to master derived union is determined and added to
-     * the result.
-     */
-    protected Set<IPolicyCmptTypeAssociation> findDetailToMasterDerivedUnionAssociations(Collection<IPolicyCmptTypeAssociation> associations) {
-        Set<IPolicyCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IPolicyCmptTypeAssociation>();
-        for (IPolicyCmptTypeAssociation association : associations) {
-            try {
-                if (association.isCompositionDetailToMaster()) {
-                    IPolicyCmptTypeAssociation inverseAssociation;
-                    if (association.isSharedAssociation()) {
-                        inverseAssociation = association.findSharedAssociationHost(getIpsProject())
-                                .findInverseAssociation(getIpsProject());
-                    } else {
-                        inverseAssociation = association.findInverseAssociation(getIpsProject());
-                    }
-                    if (inverseAssociation.isSubsetOfADerivedUnion()) {
-                        IPolicyCmptTypeAssociation subsettedDerivedUnion = (IPolicyCmptTypeAssociation)inverseAssociation
-                                .findSubsettedDerivedUnion(getIpsProject());
-                        // it is possible that the derived union does not specify a inverse but
-                        // subset does
-                        if (subsettedDerivedUnion.hasInverseAssociation()) {
-                            IPolicyCmptTypeAssociation inverseSubsettedAssociation = subsettedDerivedUnion
-                                    .findInverseAssociation(getIpsProject());
-                            if (!resultingAssociations.contains(inverseSubsettedAssociation)) {
-                                IPolicyCmptTypeAssociation superAssociationWithSameName = inverseSubsettedAssociation
-                                        .findSuperAssociationWithSameName(getIpsProject());
-                                if (superAssociationWithSameName == null) {
-                                    resultingAssociations.add(inverseSubsettedAssociation);
-                                } else {
-                                    System.out.println("found other association from " + inverseSubsettedAssociation
-                                            + " to " + superAssociationWithSameName + " for " + association);
-                                }
-                            }
-                        }
-                    }
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-        }
-        return resultingAssociations;
     }
 
     @Override
@@ -230,21 +171,22 @@ public class XPolicyCmptClass extends XClass {
                 if (associations == null) {
                     List<IPolicyCmptTypeAssociation> associationsNeedToGenerate = getType()
                             .getPolicyCmptTypeAssociations();
-                    for (Iterator<IPolicyCmptTypeAssociation> iterator = associationsNeedToGenerate.iterator(); iterator
-                            .hasNext();) {
-                        IPolicyCmptTypeAssociation association = iterator.next();
-                        if (association.isCompositionDetailToMaster()) {
-                            try {
-                                IPolicyCmptTypeAssociation superAssociationWithSameName = association
-                                        .findSuperAssociationWithSameName(getIpsProject());
-                                if (superAssociationWithSameName != null) {
-                                    iterator.remove();
-                                }
-                            } catch (CoreException e) {
-                                throw new CoreRuntimeException(e);
-                            }
-                        }
-                    }
+                    // for (Iterator<IPolicyCmptTypeAssociation> iterator =
+                    // associationsNeedToGenerate.iterator(); iterator
+                    // .hasNext();) {
+                    // IPolicyCmptTypeAssociation association = iterator.next();
+                    // if (association.isCompositionDetailToMaster()) {
+                    // try {
+                    // IPolicyCmptTypeAssociation superAssociationWithSameName = association
+                    // .findSuperAssociationWithSameName(getIpsProject());
+                    // if (superAssociationWithSameName != null) {
+                    // iterator.remove();
+                    // }
+                    // } catch (CoreException e) {
+                    // throw new CoreRuntimeException(e);
+                    // }
+                    // }
+                    // }
                     associations = initNodesForParts(associationsNeedToGenerate, XPolicyAssociation.class);
                 }
             }
@@ -267,6 +209,19 @@ public class XPolicyCmptClass extends XClass {
         return new CopyOnWriteArraySet<XDerivedUnionAssociation>(subsettedDerivedUnions);
     }
 
+    /**
+     * Finds all inverse associations (detail to master associations) in this class.
+     */
+    protected Set<IPolicyCmptTypeAssociation> findDetailToMasterAssociations(Collection<IPolicyCmptTypeAssociation> associations) {
+        Set<IPolicyCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IPolicyCmptTypeAssociation>();
+        for (IPolicyCmptTypeAssociation association : associations) {
+            if (association.isCompositionDetailToMaster()) {
+                resultingAssociations.add(association);
+            }
+        }
+        return resultingAssociations;
+    }
+
     public Set<XDetailToMasterDerivedUnionAssociation> getDetailToMasterDerivedUnionAssociations() {
         checkForUpdate();
         if (detailToMasterDerivedUnionAssociations == null) {
@@ -279,6 +234,55 @@ public class XPolicyCmptClass extends XClass {
             }
         }
         return new CopyOnWriteArraySet<XDetailToMasterDerivedUnionAssociation>(detailToMasterDerivedUnionAssociations);
+    }
+
+    /**
+     * Inspects all detail to master associations. If a given association is the inverse of a
+     * derived-union-subset, the original detail to master derived union is determined and added to
+     * the result.
+     */
+    protected Set<IPolicyCmptTypeAssociation> findDetailToMasterDerivedUnionAssociations(Collection<IPolicyCmptTypeAssociation> associations) {
+        Set<IPolicyCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IPolicyCmptTypeAssociation>();
+        for (IPolicyCmptTypeAssociation association : associations) {
+            addDetailToMasterDerivedUnion(association, resultingAssociations);
+        }
+        return resultingAssociations;
+    }
+
+    protected void addDetailToMasterDerivedUnion(IPolicyCmptTypeAssociation association,
+            Set<IPolicyCmptTypeAssociation> resultingAssociations) {
+        try {
+            if (association.isCompositionDetailToMaster()) {
+                IPolicyCmptTypeAssociation masterToDetailAssociation;
+                if (association.isSharedAssociation()) {
+                    masterToDetailAssociation = association.findSharedAssociationHost(getIpsProject())
+                            .findInverseAssociation(getIpsProject());
+                } else {
+                    masterToDetailAssociation = association.findInverseAssociation(getIpsProject());
+                }
+                if (masterToDetailAssociation.isSubsetOfADerivedUnion()) {
+                    IPolicyCmptTypeAssociation derivedUnionAssociation = (IPolicyCmptTypeAssociation)masterToDetailAssociation
+                            .findSubsettedDerivedUnion(getIpsProject());
+                    // it is possible that the derived union does not specify a inverse but
+                    // subset does
+                    if (derivedUnionAssociation.hasInverseAssociation()) {
+                        IPolicyCmptTypeAssociation detailToMasterDerivedUnion = derivedUnionAssociation
+                                .findInverseAssociation(getIpsProject());
+                        if (!resultingAssociations.contains(detailToMasterDerivedUnion)) {
+                            IPolicyCmptTypeAssociation superAssociationWithSameName = detailToMasterDerivedUnion
+                                    .findSuperAssociationWithSameName(getIpsProject());
+                            if (superAssociationWithSameName == null) {
+                                resultingAssociations.add(detailToMasterDerivedUnion);
+                            } else {
+                                addDetailToMasterDerivedUnion(detailToMasterDerivedUnion, resultingAssociations);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     public Set<XValidationRule> getValidationRules() {

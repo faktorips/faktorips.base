@@ -168,7 +168,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
      * 
      * @return The IType that is the parent of the association
      */
-    protected IType getAssociationType() {
+    protected IType getTypeOfAssociation() {
         return getAssociation().getType();
     }
 

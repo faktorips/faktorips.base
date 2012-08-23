@@ -84,7 +84,7 @@ public class XDerivedUnionAssociation extends XAssociation {
      *         false otherwise
      */
     public boolean isImplementedInSuperclass(XClass xClass) {
-        if (getAssociationType().equals(xClass.getType())) {
+        if (getTypeOfAssociation().equals(xClass.getType())) {
             return false;
         }
         try {

@@ -77,15 +77,25 @@ public class XPolicyAssociation extends XAssociation {
      * 
      */
     public boolean isGenerateGetter() {
-        if (isSharedAssociation()) {
-            // FIXME @Corny in methode auslagern e.g. isTopLevelSharedAssociation() oder
-            // isRootSharedAssociation()
-            try {
-                IPolicyCmptTypeAssociation associationWithSameName = getAssociation().findSuperAssociationWithSameName(
-                        getIpsProject());
-                return (associationWithSameName == null || !associationWithSameName.isSharedAssociation());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+        if (isCompositionDetailToMaster()) {
+            if (isSharedAssociation()) {
+                // FIXME @Corny in methode auslagern e.g. isTopLevelSharedAssociation() oder
+                // isRootSharedAssociation()
+                try {
+                    IPolicyCmptTypeAssociation associationWithSameName = getAssociation()
+                            .findSuperAssociationWithSameName(getIpsProject());
+                    return (associationWithSameName == null || !associationWithSameName.isSharedAssociation());
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            } else {
+                try {
+                    IPolicyCmptTypeAssociation superAssociationWithSameName = getAssociation()
+                            .findSuperAssociationWithSameName(getIpsProject());
+                    return superAssociationWithSameName == null;
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
             }
         } else {
             return !isDerived();
