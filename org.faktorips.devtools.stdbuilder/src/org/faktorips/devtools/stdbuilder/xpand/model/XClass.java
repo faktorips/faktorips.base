@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -47,11 +46,16 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      */
     private static final IJavaClassNameProvider JAVA_CLASS_NAME_PROVIDER = createJavaClassNamingProvider();
 
-    private final Set<XMethod> methods;
+    private Set<XMethod> methods;
 
     public XClass(IType type, GeneratorModelContext context, ModelService modelService) {
         super(type, context, modelService);
-        methods = initNodesForParts(new LinkedHashSet<IIpsObjectPart>(type.getMethods()), XMethod.class);
+    }
+
+    @Override
+    protected void clearCaches() {
+        super.clearCaches();
+        methods = null;
     }
 
     public static IJavaClassNameProvider createJavaClassNamingProvider() {
@@ -88,6 +92,14 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     }
 
     public Set<XMethod> getMethods() {
+        checkForUpdate();
+        if (methods == null) {
+            synchronized (methods) {
+                if (methods == null) {
+                    methods = initNodesForParts(getType().getMethods(), XMethod.class);
+                }
+            }
+        }
         return new CopyOnWriteArraySet<XMethod>(methods);
     }
 

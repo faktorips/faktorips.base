@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.xpand.model;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -25,7 +24,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -36,8 +34,7 @@ public class XMethod extends AbstractGeneratorModelNode {
 
     public XMethod(IMethod method, GeneratorModelContext context, ModelService modelService) {
         super(method, context, modelService);
-        methodParameters = initNodesForParts(new LinkedHashSet<IIpsObjectPart>(Arrays.asList(method.getParameters())),
-                XParameter.class);
+        methodParameters = initNodesForParts(Arrays.asList(method.getParameters()), XParameter.class);
     }
 
     @Override

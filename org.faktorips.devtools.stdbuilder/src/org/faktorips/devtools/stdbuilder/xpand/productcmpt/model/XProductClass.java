@@ -16,6 +16,7 @@ package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
@@ -28,10 +29,19 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
+import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 
 public abstract class XProductClass extends XClass {
+
+    private Set<XProductAttribute> attributes;
+
+    private Set<XPolicyAttribute> configuredAttributes;
+
+    private Set<XProductAssociation> associations;
+
+    private Set<XDerivedUnionAssociation> subsettedDerivedUnions;
 
     public XProductClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext modelContext,
             ModelService modelService) {
@@ -46,6 +56,71 @@ public abstract class XProductClass extends XClass {
     @Override
     public IProductCmptType getType() {
         return getIpsObjectPartContainer();
+    }
+
+    @Override
+    protected void clearCaches() {
+        super.clearCaches();
+        attributes = null;
+        configuredAttributes = null;
+        associations = null;
+        subsettedDerivedUnions = null;
+    }
+
+    public abstract boolean isChangeOverTime();
+
+    @Override
+    public Set<XProductAttribute> getAttributes() {
+        checkForUpdate();
+        if (attributes == null) {
+            synchronized (attributes) {
+                if (attributes == null) {
+                    attributes = initNodesForParts(getProductAttributes(isChangeOverTime()), XProductAttribute.class);
+                }
+            }
+        }
+        return new CopyOnWriteArraySet<XProductAttribute>(attributes);
+    }
+
+    public Set<XPolicyAttribute> getConfiguredAttributes() {
+        checkForUpdate();
+        if (configuredAttributes == null) {
+            synchronized (configuredAttributes) {
+                if (configuredAttributes == null) {
+                    configuredAttributes = initNodesForParts(getConfiguredAttributes(isChangeOverTime()),
+                            XPolicyAttribute.class);
+                }
+            }
+        }
+        return new CopyOnWriteArraySet<XPolicyAttribute>(configuredAttributes);
+    }
+
+    @Override
+    public Set<XProductAssociation> getAssociations() {
+        checkForUpdate();
+        if (associations == null) {
+            synchronized (associations) {
+                if (associations == null) {
+                    associations = initNodesForParts(getProductAssociations(isChangeOverTime()),
+                            XProductAssociation.class);
+                }
+            }
+        }
+        return new CopyOnWriteArraySet<XProductAssociation>(associations);
+    }
+
+    @Override
+    public Set<XDerivedUnionAssociation> getSubsettedDerivedUnions() {
+        checkForUpdate();
+        if (subsettedDerivedUnions == null) {
+            synchronized (subsettedDerivedUnions) {
+                if (subsettedDerivedUnions == null) {
+                    subsettedDerivedUnions = initNodesForParts(getProductDerivedUnionAssociations(isChangeOverTime()),
+                            XDerivedUnionAssociation.class);
+                }
+            }
+        }
+        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(subsettedDerivedUnions);
     }
 
     /**
@@ -187,13 +262,5 @@ public abstract class XProductClass extends XClass {
 
     @Override
     public abstract Set<? extends XProductClass> getClassHierarchy();
-
-    @Override
-    public abstract Set<XProductAttribute> getAttributes();
-
-    public abstract Set<XPolicyAttribute> getConfiguredAttributes();
-
-    @Override
-    public abstract Set<XProductAssociation> getAssociations();
 
 }

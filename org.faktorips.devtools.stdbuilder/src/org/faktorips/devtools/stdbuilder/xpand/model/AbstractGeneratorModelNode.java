@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -55,6 +56,8 @@ import org.faktorips.util.LocalizedStringsSet;
  * @author dirmeier, widmaier
  */
 public abstract class AbstractGeneratorModelNode {
+
+    private long lastUpdateStamp;
 
     private final LocalizedStringsSet localizedStringSet = new LocalizedStringsSet(getClass());
 
@@ -148,6 +151,37 @@ public abstract class AbstractGeneratorModelNode {
             }
         }
         return description;
+    }
+
+    /**
+     * Call this method before every access to cached resources. This method would call
+     * {@link #clearCaches()} if needed.
+     * 
+     * @return True if an update is needed, false if everything is still the same.
+     */
+    protected boolean checkForUpdate() {
+        long modificationStamp = getIpsObjectPartContainer().getEnclosingResource().getModificationStamp();
+        if (modificationStamp != lastUpdateStamp) {
+            synchronized (this) {
+                if (modificationStamp != lastUpdateStamp) {
+                    clearCaches();
+                    lastUpdateStamp = modificationStamp;
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * This method is called when cached generator model nodes need to be cleared. Always call super
+     * because may be the super class also has cached nodes.
+     */
+    protected void clearCaches() {
+        // do nothing - only default method
     }
 
     protected String getJavaClassName(Datatype datatype, boolean useGeneration, boolean resolveTypesToPublishedInterface) {
@@ -428,7 +462,7 @@ public abstract class AbstractGeneratorModelNode {
      * @param nodeClass the expected concrete generator model class (subclass of
      *            {@link AbstractGeneratorModelNode}) that will be created for each part
      */
-    protected final <T extends AbstractGeneratorModelNode> Set<T> initNodesForParts(Set<? extends IIpsObjectPart> parts,
+    protected final <T extends AbstractGeneratorModelNode> Set<T> initNodesForParts(Collection<? extends IIpsObjectPart> parts,
             Class<T> nodeClass) {
         Set<T> nodes = new LinkedHashSet<T>();
         for (IIpsObjectPart part : parts) {

@@ -62,54 +62,13 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
         }
         try {
             XPolicyCmptClass policyCmptClass = (XPolicyCmptClass)xClass;
-            IPolicyCmptType supertype = (IPolicyCmptType)policyCmptClass.getPolicyCmptType().findSupertype(
-                    getIpsProject());
+            IPolicyCmptType supertype = (IPolicyCmptType)policyCmptClass.getType().findSupertype(getIpsProject());
             FindSubsetOfDetailToMasterDerivedUnionVisitor findSubsetOfDerivedUnionVisitor = new FindSubsetOfDetailToMasterDerivedUnionVisitor(
                     getDerviedUnionAssociation(), getIpsProject());
             findSubsetOfDerivedUnionVisitor.start(supertype);
             return findSubsetOfDerivedUnionVisitor.isSubsetFound();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
-        }
-    }
-
-    /**
-     * Searches the given type (and the super type hierarchy) for subsets of the detail to master
-     * derived union specified when creating the visitor.
-     * 
-     */
-    class FindSubsetOfDetailToMasterDerivedUnionVisitor extends TypeHierarchyVisitor<IPolicyCmptType> {
-
-        private final IAssociation derivedUnion;
-
-        boolean foundSubset = false;
-
-        public FindSubsetOfDetailToMasterDerivedUnionVisitor(IPolicyCmptTypeAssociation detailToMasterDerivedUnion,
-                IIpsProject ipsProject) {
-            super(ipsProject);
-            this.derivedUnion = detailToMasterDerivedUnion;
-        }
-
-        @Override
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
-            List<IPolicyCmptTypeAssociation> associations = currentType.getPolicyCmptTypeAssociations();
-            for (IPolicyCmptTypeAssociation assoc : associations) {
-                if (assoc.isCompositionDetailToMaster()) {
-                    IPolicyCmptTypeAssociation inverseAssociation = assoc.findInverseAssociation(getIpsProject());
-                    if (inverseAssociation.getSubsettedDerivedUnion().equals(derivedUnion.getName())) {
-                        foundSubset = true;
-                        return false;
-                    }
-                }
-            }
-            if (currentType.equals(derivedUnion.getType())) {
-                return false;
-            }
-            return true;
-        }
-
-        public boolean isSubsetFound() {
-            return foundSubset;
         }
     }
 
@@ -149,5 +108,45 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
      */
     public String getMethodNameGetParent() {
         return "get" + getName(false);
+    }
+
+    /**
+     * Searches the given type (and the super type hierarchy) for subsets of the detail to master
+     * derived union specified when creating the visitor.
+     * 
+     */
+    class FindSubsetOfDetailToMasterDerivedUnionVisitor extends TypeHierarchyVisitor<IPolicyCmptType> {
+    
+        private final IAssociation derivedUnion;
+    
+        boolean foundSubset = false;
+    
+        public FindSubsetOfDetailToMasterDerivedUnionVisitor(IPolicyCmptTypeAssociation detailToMasterDerivedUnion,
+                IIpsProject ipsProject) {
+            super(ipsProject);
+            this.derivedUnion = detailToMasterDerivedUnion;
+        }
+    
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+            List<IPolicyCmptTypeAssociation> associations = currentType.getPolicyCmptTypeAssociations();
+            for (IPolicyCmptTypeAssociation assoc : associations) {
+                if (assoc.isCompositionDetailToMaster()) {
+                    IPolicyCmptTypeAssociation inverseAssociation = assoc.findInverseAssociation(getIpsProject());
+                    if (inverseAssociation.getSubsettedDerivedUnion().equals(derivedUnion.getName())) {
+                        foundSubset = true;
+                        return false;
+                    }
+                }
+            }
+            if (currentType.equals(derivedUnion.getType())) {
+                return false;
+            }
+            return true;
+        }
+    
+        public boolean isSubsetFound() {
+            return foundSubset;
+        }
     }
 }

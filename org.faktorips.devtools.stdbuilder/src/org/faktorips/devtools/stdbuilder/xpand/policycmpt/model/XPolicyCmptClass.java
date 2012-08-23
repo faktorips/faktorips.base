@@ -27,14 +27,10 @@ import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.stdbuilder.xpand.model.AbstractAssociationFilter;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
@@ -47,57 +43,22 @@ import org.faktorips.runtime.internal.AbstractModelObject;
 
 public class XPolicyCmptClass extends XClass {
 
-    private final Set<XPolicyAttribute> attributes;
+    private volatile Set<XPolicyAttribute> attributes;
 
-    private final Set<XProductAttribute> productAttributes;
+    private volatile Set<XProductAttribute> productAttributes;
 
-    private final Set<XPolicyAssociation> associations;
+    private volatile Set<XPolicyAssociation> associations;
 
-    private final Set<XDerivedUnionAssociation> subsettedDerivedUnions;
+    private volatile Set<XDerivedUnionAssociation> subsettedDerivedUnions;
 
-    private final Set<XDetailToMasterDerivedUnionAssociation> detailToMasterDerivedUnionAssociations;
+    private volatile Set<XDetailToMasterDerivedUnionAssociation> detailToMasterDerivedUnionAssociations;
 
-    private final Set<XValidationRule> validationRules;
+    private volatile Set<XValidationRule> validationRules;
 
     // TODO FIXME UNDALLESANDEREAUCH: wir dürfen deise Dinge auf keinen Fall cachen!
 
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
-        attributes = initNodesForParts(
-                new LinkedHashSet<IPolicyCmptTypeAttribute>(policyCmptType.getPolicyCmptTypeAttributes()),
-                XPolicyAttribute.class);
-        productAttributes = initNodesForParts(getProductAttributes(policyCmptType), XProductAttribute.class);
-
-        associations = initNodesForParts(
-                getAssociations(policyCmptType, IPolicyCmptTypeAssociation.class, new AbstractAssociationFilter() {
-
-                    @Override
-                    public boolean isValidAssociation(IAssociation association) {
-                        return true;
-                    }
-                }), XPolicyAssociation.class);
-        subsettedDerivedUnions = initNodesForParts(
-                findSubsettedDerivedUnions(policyCmptType.getPolicyCmptTypeAssociations(),
-                        IPolicyCmptTypeAssociation.class), XDerivedUnionAssociation.class);
-        detailToMasterDerivedUnionAssociations = initNodesForParts(
-                findDetailToMasterDerivedUnionAssociations(policyCmptType.getPolicyCmptTypeAssociations()),
-                XDetailToMasterDerivedUnionAssociation.class);
-        validationRules = initNodesForParts(new LinkedHashSet<IValidationRule>(policyCmptType.getValidationRules()),
-                XValidationRule.class);
-    }
-
-    private Set<IProductCmptTypeAttribute> getProductAttributes(IPolicyCmptType policyCmptType) {
-        if (policyCmptType.isConfigurableByProductCmptType()) {
-            try {
-                IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
-                return new LinkedHashSet<IProductCmptTypeAttribute>(productCmptType.getProductCmptTypeAttributes());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-        } else {
-            Set<IProductCmptTypeAttribute> productAttributes = new LinkedHashSet<IProductCmptTypeAttribute>();
-            return productAttributes;
-        }
     }
 
     /**
@@ -156,23 +117,21 @@ public class XPolicyCmptClass extends XClass {
         return (IPolicyCmptType)super.getIpsObjectPartContainer();
     }
 
-    /**
-     * @return Returns the policyCmptType.
-     */
-    public IPolicyCmptType getPolicyCmptType() {
-        return getIpsObjectPartContainer();
+    @Override
+    public IPolicyCmptType getType() {
+        return (IPolicyCmptType)super.getType();
     }
 
     /**
      * Returns <code>true</code> if this policy component type is configurable
      */
     public boolean isConfigured() {
-        return getPolicyCmptType().isConfigurableByProductCmptType();
+        return getType().isConfigurableByProductCmptType();
     }
 
     public boolean isAggregateRoot() {
         try {
-            return getPolicyCmptType().isAggregateRoot();
+            return getType().isAggregateRoot();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -206,29 +165,106 @@ public class XPolicyCmptClass extends XClass {
     }
 
     @Override
+    protected void clearCaches() {
+        super.clearCaches();
+        attributes = null;
+        productAttributes = null;
+        associations = null;
+        subsettedDerivedUnions = null;
+        detailToMasterDerivedUnionAssociations = null;
+        validationRules = null;
+    }
+
+    @Override
     public Set<XPolicyAttribute> getAttributes() {
+        checkForUpdate();
+        if (attributes == null) {
+            synchronized (attributes) {
+                if (attributes == null) {
+                    attributes = initNodesForParts(getType().getPolicyCmptTypeAttributes(), XPolicyAttribute.class);
+                }
+            }
+        }
         return new CopyOnWriteArraySet<XPolicyAttribute>(attributes);
     }
 
     public Set<XProductAttribute> getProductAttributes() {
+        checkForUpdate();
+        if (productAttributes == null) {
+            synchronized (productAttributes) {
+                if (productAttributes == null) {
+                    productAttributes = initNodesForParts(getProductAttributes(getType()), XProductAttribute.class);
+                }
+            }
+        }
         return new CopyOnWriteArraySet<XProductAttribute>(productAttributes);
+    }
+
+    private Set<IProductCmptTypeAttribute> getProductAttributes(IPolicyCmptType policyCmptType) {
+        if (policyCmptType.isConfigurableByProductCmptType()) {
+            try {
+                IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
+                return new LinkedHashSet<IProductCmptTypeAttribute>(productCmptType.getProductCmptTypeAttributes());
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        } else {
+            Set<IProductCmptTypeAttribute> productAttributes = new LinkedHashSet<IProductCmptTypeAttribute>();
+            return productAttributes;
+        }
     }
 
     @Override
     public Set<XPolicyAssociation> getAssociations() {
+        checkForUpdate();
+        if (associations == null) {
+            synchronized (associations) {
+                if (associations == null) {
+                    associations = initNodesForParts(getType().getAssociations(), XPolicyAssociation.class);
+                }
+            }
+        }
         return new CopyOnWriteArraySet<XPolicyAssociation>(associations);
     }
 
     @Override
     public Set<XDerivedUnionAssociation> getSubsettedDerivedUnions() {
+        checkForUpdate();
+        if (subsettedDerivedUnions == null) {
+            synchronized (subsettedDerivedUnions) {
+                if (subsettedDerivedUnions == null) {
+                    subsettedDerivedUnions = initNodesForParts(
+                            findSubsettedDerivedUnions(getType().getPolicyCmptTypeAssociations(),
+                                    IPolicyCmptTypeAssociation.class), XDerivedUnionAssociation.class);
+                }
+            }
+        }
         return new CopyOnWriteArraySet<XDerivedUnionAssociation>(subsettedDerivedUnions);
     }
 
     public Set<XDetailToMasterDerivedUnionAssociation> getDetailToMasterDerivedUnionAssociations() {
+        checkForUpdate();
+        if (detailToMasterDerivedUnionAssociations == null) {
+            synchronized (detailToMasterDerivedUnionAssociations) {
+                if (detailToMasterDerivedUnionAssociations == null) {
+                    detailToMasterDerivedUnionAssociations = initNodesForParts(
+                            findDetailToMasterDerivedUnionAssociations(getType().getPolicyCmptTypeAssociations()),
+                            XDetailToMasterDerivedUnionAssociation.class);
+                }
+            }
+        }
         return new CopyOnWriteArraySet<XDetailToMasterDerivedUnionAssociation>(detailToMasterDerivedUnionAssociations);
     }
 
     public Set<XValidationRule> getValidationRules() {
+        checkForUpdate();
+        if (validationRules == null) {
+            synchronized (validationRules) {
+                if (validationRules == null) {
+                    validationRules = initNodesForParts(getType().getValidationRules(), XValidationRule.class);
+                }
+            }
+        }
         return new CopyOnWriteArraySet<XValidationRule>(validationRules);
     }
 
@@ -334,11 +370,10 @@ public class XPolicyCmptClass extends XClass {
      */
     protected IProductCmptType getProductCmptType() {
         try {
-            IProductCmptType prodType = getPolicyCmptType().findProductCmptType(getIpsProject());
+            IProductCmptType prodType = getType().findProductCmptType(getIpsProject());
             if (prodType == null) {
                 throw new NullPointerException(NLS.bind(
-                        "The policy component type {0} is not configured by a product component type.",
-                        getPolicyCmptType()));
+                        "The policy component type {0} is not configured by a product component type.", getType()));
             }
             return prodType;
         } catch (CoreException e) {
@@ -502,10 +537,10 @@ public class XPolicyCmptClass extends XClass {
      */
     public boolean isFirstDependantTypeInHierarchy() {
         try {
-            if (!getPolicyCmptType().isDependantType()) {
+            if (!getType().isDependantType()) {
                 return false;
             }
-            IPolicyCmptType supertype = (IPolicyCmptType)getPolicyCmptType().findSupertype(getIpsProject());
+            IPolicyCmptType supertype = (IPolicyCmptType)getType().findSupertype(getIpsProject());
             if (supertype == null) {
                 return true;
             }

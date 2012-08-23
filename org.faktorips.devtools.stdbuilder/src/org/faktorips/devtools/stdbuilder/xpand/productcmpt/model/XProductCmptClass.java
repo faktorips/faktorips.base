@@ -48,6 +48,11 @@ public class XProductCmptClass extends XProductClass {
     }
 
     @Override
+    public boolean isChangeOverTime() {
+        return CHANGE_OVER_TIME;
+    }
+
+    @Override
     public Set<XProductAttribute> getAttributes() {
         return new CopyOnWriteArraySet<XProductAttribute>(attributes);
     }
