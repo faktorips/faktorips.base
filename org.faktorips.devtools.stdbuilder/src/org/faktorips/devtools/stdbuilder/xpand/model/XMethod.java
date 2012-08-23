@@ -30,11 +30,10 @@ import org.faktorips.devtools.core.model.type.IMethod;
 
 public class XMethod extends AbstractGeneratorModelNode {
 
-    private final Set<XParameter> methodParameters;
+    private Set<XParameter> methodParameters;
 
     public XMethod(IMethod method, GeneratorModelContext context, ModelService modelService) {
         super(method, context, modelService);
-        methodParameters = initNodesForParts(Arrays.asList(method.getParameters()), XParameter.class);
     }
 
     @Override
@@ -76,6 +75,14 @@ public class XMethod extends AbstractGeneratorModelNode {
     }
 
     public Set<XParameter> getParameters() {
+        checkForUpdate();
+        if (methodParameters == null) {
+            synchronized (this) {
+                if (methodParameters == null) {
+                    methodParameters = initNodesForParts(Arrays.asList(getMethod().getParameters()), XParameter.class);
+                }
+            }
+        }
         return new CopyOnWriteArraySet<XParameter>(methodParameters);
     }
 

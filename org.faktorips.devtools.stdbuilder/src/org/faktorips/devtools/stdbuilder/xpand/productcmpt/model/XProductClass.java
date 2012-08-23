@@ -73,7 +73,7 @@ public abstract class XProductClass extends XClass {
     public Set<XProductAttribute> getAttributes() {
         checkForUpdate();
         if (attributes == null) {
-            synchronized (attributes) {
+            synchronized (this) {
                 if (attributes == null) {
                     attributes = initNodesForParts(getProductAttributes(isChangeOverTime()), XProductAttribute.class);
                 }
@@ -85,7 +85,7 @@ public abstract class XProductClass extends XClass {
     public Set<XPolicyAttribute> getConfiguredAttributes() {
         checkForUpdate();
         if (configuredAttributes == null) {
-            synchronized (configuredAttributes) {
+            synchronized (this) {
                 if (configuredAttributes == null) {
                     configuredAttributes = initNodesForParts(getConfiguredAttributes(isChangeOverTime()),
                             XPolicyAttribute.class);
@@ -99,7 +99,7 @@ public abstract class XProductClass extends XClass {
     public Set<XProductAssociation> getAssociations() {
         checkForUpdate();
         if (associations == null) {
-            synchronized (associations) {
+            synchronized (this) {
                 if (associations == null) {
                     associations = initNodesForParts(getProductAssociations(isChangeOverTime()),
                             XProductAssociation.class);
@@ -113,7 +113,7 @@ public abstract class XProductClass extends XClass {
     public Set<XDerivedUnionAssociation> getSubsettedDerivedUnions() {
         checkForUpdate();
         if (subsettedDerivedUnions == null) {
-            synchronized (subsettedDerivedUnions) {
+            synchronized (this) {
                 if (subsettedDerivedUnions == null) {
                     subsettedDerivedUnions = initNodesForParts(getProductDerivedUnionAssociations(isChangeOverTime()),
                             XDerivedUnionAssociation.class);

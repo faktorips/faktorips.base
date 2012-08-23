@@ -160,7 +160,8 @@ public abstract class AbstractGeneratorModelNode {
      * @return True if an update is needed, false if everything is still the same.
      */
     protected boolean checkForUpdate() {
-        long modificationStamp = getIpsObjectPartContainer().getEnclosingResource().getModificationStamp();
+        long modificationStamp = getIpsObjectPartContainer().getEnclosingResource() != null ? getIpsObjectPartContainer()
+                .getEnclosingResource().getModificationStamp() : 0;
         if (modificationStamp != lastUpdateStamp) {
             synchronized (this) {
                 if (modificationStamp != lastUpdateStamp) {

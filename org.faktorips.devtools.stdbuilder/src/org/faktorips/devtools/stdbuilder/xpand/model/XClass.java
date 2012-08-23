@@ -94,7 +94,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     public Set<XMethod> getMethods() {
         checkForUpdate();
         if (methods == null) {
-            synchronized (methods) {
+            synchronized (this) {
                 if (methods == null) {
                     methods = initNodesForParts(getType().getMethods(), XMethod.class);
                 }
