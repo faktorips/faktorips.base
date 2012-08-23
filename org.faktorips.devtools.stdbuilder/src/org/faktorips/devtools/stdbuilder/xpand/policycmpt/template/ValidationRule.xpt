@@ -19,7 +19,7 @@
     /**
      * «localizedJDoc("EXEC_RULE", name)»
      * 
-     * @generated
+     * @restrainedmodifiable
      */
     protected boolean «method(methodNameExecRule, MessageList(), "ml", IValidationContext(), "context")» {
     	«IF specificBusinessFunctions»

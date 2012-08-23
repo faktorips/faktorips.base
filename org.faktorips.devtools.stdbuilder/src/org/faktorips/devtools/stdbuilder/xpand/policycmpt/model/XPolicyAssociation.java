@@ -41,6 +41,23 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
+     * Returns true if this association is a derived union or an inverse of a derived union
+     * association.
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isDerived() {
+        if (super.isDerived()) {
+            return true;
+        }
+        if (isCompositionDetailToMaster()) {
+            return getInverseAssociation().isDerivedUnion();
+        }
+        return false;
+    }
+
+    /**
      * Returns <code>true</code> for:
      * <ul>
      * <li>oneToMany associations (but not derived unions, see below)</li>
@@ -55,6 +72,10 @@ public class XPolicyAssociation extends XAssociation {
         return (isOneToMany() || !isOneToMany() && !isCompositionDetailToMaster()) && !isDerivedUnion();
     }
 
+    /**
+     * Returns true if a (normal) getter needs to be generated for this association.
+     * 
+     */
     public boolean isGenerateGetter() {
         if (isSharedAssociation()) {
             // FIXME @Corny in methode auslagern e.g. isTopLevelSharedAssociation() oder
@@ -67,44 +88,58 @@ public class XPolicyAssociation extends XAssociation {
                 throw new CoreRuntimeException(e);
             }
         } else {
-            return true;
+            return !isDerived();
         }
     }
 
+    /**
+     * Returns true if a setter needs to be generated for this association
+     */
+    public boolean isGenerateSetter() {
+        return !isOneToMany() && !isInverseComposition() && !isDerived();
+    }
+
+    /**
+     * Returns true if a add method needs to be generated for this association
+     */
+    public boolean isGenerateAddAndRemoveMethod() {
+        return isOneToMany() && !isDerived();
+    }
+
     public boolean isConsiderInDeltaComputation() {
-        return isValidMasterToDetail() && !isDerived();
+        return isMasterToDetail() && !isDerived();
     }
 
     public boolean isConsiderInEffectiveFromHasChanged() {
-        return isValidMasterToDetail() && !isDerivedUnion();
+        return isMasterToDetail() && !isDerivedUnion();
     }
 
     public boolean isConsiderInCreateChildFromXML() {
-        return isValidMasterToDetail() && !isDerivedUnion();
+        return isMasterToDetail() && !isDerivedUnion();
     }
 
     public boolean isConsiderInVisitorSupport() {
-        return isValidMasterToDetail() && !isDerivedUnion();
+        return isMasterToDetail() && !isDerivedUnion();
     }
 
     public boolean isConsiderInCreateCreateUnresolvedReference() {
-        return isValid() && isTypeAssociation();
+        return isTypeAssociation();
     }
 
     public boolean isSetInverseAssociationInCopySupport() {
-        return isValidComposition() && hasInverseAssociation();
-    }
-
-    private boolean isValidMasterToDetail() {
-        return isValid() && isCompositionMasterToDetail();
+        return isMasterToDetail() && hasInverseAssociation();
     }
 
     public boolean isConsiderInCopySupport() {
-        return isValid() && !isDerived() && !isCompositionDetailToMaster();
+        return !isCompositionDetailToMaster() && !isDerived();
+    }
+
+    public boolean isConsiderInValidateDependents() {
+        return isMasterToDetail() && !getAssociation().isSubsetOfADerivedUnion();
     }
 
     public boolean isGenerateNewChildMethods() {
-        return isCompositionMasterToDetail() && !getTargetPolicyCmptClass().isAbstract();
+        return isMasterToDetail() && !getTargetPolicyCmptClass().isAbstract() && !isDerivedUnion();
     }
 
     public boolean isGenerateNewChildWithArgumentsMethod() {
@@ -233,42 +268,27 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
-     * Returns <code>true</code> if
-     * <ul>
-     * <li>
-     * this association is a master-to-detail composition, and</li>
-     * <li>
-     * the association's target exists and is a dependent type (and not the aggregate root).</li>
-     * </ul>
-     * <code>false</code> otherwise.
-     */
-    public boolean isValidComposition() {
-        IPolicyCmptType targetType = getTargetPolicyCmptType();
-        return isCompositionMasterToDetail() && hasTarget() && isTargetTypeDependantType(targetType);
-    }
-
-    /**
      * Returns <code>true</code> if an inverse association is defined or if this association is a
-     * valid composition ( {@link #isValidComposition()} )
+     * valid composition ( {@link #isMasterToDetail()} )
      */
     public boolean isGenerateCodeToSynchronizeInverseCompositionForRemove() {
-        return isValidComposition() || hasInverseAssociation();
+        return isMasterToDetail() || hasInverseAssociation();
     }
 
     /**
      * Returns <code>true</code> if an inverse association is defined and this association is a
-     * valid composition ( {@link #isValidComposition()} ) at the same time.
+     * valid composition ( {@link #isMasterToDetail()} ) at the same time.
      */
     public boolean isGenerateCodeToSynchronizeInverseCompositionForAdd() {
-        return isValidComposition() && hasInverseAssociation();
+        return isMasterToDetail() && hasInverseAssociation();
     }
 
     /**
      * Returns <code>true</code> if an inverse association is defined and this association is a
-     * valid composition ( {@link #isValidComposition()} ) at the same time.
+     * valid composition ( {@link #isMasterToDetail()} ) at the same time.
      */
     public boolean isGenerateCodeToSynchronizeInverseCompositionForSet() {
-        return isValidComposition() && hasInverseAssociation();
+        return isMasterToDetail() && hasInverseAssociation();
     }
 
     /**
@@ -285,22 +305,6 @@ public class XPolicyAssociation extends XAssociation {
 
     private IPolicyCmptType getPolicyCmptType() {
         return getAssociation().getPolicyCmptType();
-    }
-
-    private boolean isTargetTypeDependantType(IPolicyCmptType targetType) {
-        try {
-            return targetType.isDependantType();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
-    private boolean hasTarget() {
-        return getTargetType() != null;
-    }
-
-    private IPolicyCmptType getTargetPolicyCmptType() {
-        return (IPolicyCmptType)getTargetType();
     }
 
     /**

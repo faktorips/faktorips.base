@@ -3,7 +3,7 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
 «DEFINE getNumOf FOR XAssociation-»
-	«IF oneToMany-»
+	«IF oneToMany && !derived -»
     /**
      * {@inheritDoc}
      * 

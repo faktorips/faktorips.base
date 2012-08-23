@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
@@ -102,9 +103,8 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void initAssociations() {
+    public void testInitAssociations() {
         setupAssociationList();
-
         XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
         Set<XPolicyAssociation> associationNodeSet = policyCmptClass.getAssociations();
         assertEquals(2, associationNodeSet.size());
@@ -112,7 +112,7 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void initAssociationList() {
+    public void testInitAssociationList() {
         setupAssociationList();
 
         XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
@@ -128,13 +128,13 @@ public class XPolicyCmptClassTest {
         associationNode2 = mock(XPolicyAssociation.class);
         IPolicyCmptTypeAssociation assoc1 = mock(IPolicyCmptTypeAssociation.class);
         IPolicyCmptTypeAssociation assoc2 = mock(IPolicyCmptTypeAssociation.class);
-        List<IPolicyCmptTypeAssociation> assocList = new ArrayList<IPolicyCmptTypeAssociation>();
+        List<IAssociation> assocList = new ArrayList<IAssociation>();
         assocList.add(assoc1);
         assocList.add(assoc2);
 
         doReturn(associationNode1).when(modelService).getModelNode(assoc1, XPolicyAssociation.class, modelContext);
         doReturn(associationNode2).when(modelService).getModelNode(assoc2, XPolicyAssociation.class, modelContext);
-        when(type.getPolicyCmptTypeAssociations()).thenReturn(assocList);
+        when(type.getAssociations()).thenReturn(assocList);
     }
 
     @Test
@@ -244,4 +244,55 @@ public class XPolicyCmptClassTest {
         doReturn(assocs).when(policyCmptClass).getAssociations();
         return policyCmptClass;
     }
+
+    @Test
+    public void testFindDetailToMasterDerivedUnionAssociations() throws Exception {
+        IPolicyCmptTypeAssociation derivedUnion = mock(IPolicyCmptTypeAssociation.class);
+        IPolicyCmptTypeAssociation inverseDerivedUnion = mock(IPolicyCmptTypeAssociation.class);
+        IPolicyCmptTypeAssociation subset = mock(IPolicyCmptTypeAssociation.class);
+        IPolicyCmptTypeAssociation inverseSubset = mock(IPolicyCmptTypeAssociation.class);
+
+        List<IPolicyCmptTypeAssociation> associations = new ArrayList<IPolicyCmptTypeAssociation>();
+        associations.add(inverseSubset);
+
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+        Set<IPolicyCmptTypeAssociation> detailToMasterDerivedUnionAssociations = policyCmptClass
+                .findDetailToMasterDerivedUnionAssociations(associations);
+
+        assertTrue(detailToMasterDerivedUnionAssociations.isEmpty());
+
+        when(derivedUnion.isDerivedUnion()).thenReturn(true);
+        when(derivedUnion.isCompositionMasterToDetail()).thenReturn(true);
+        when(derivedUnion.hasInverseAssociation()).thenReturn(true);
+        when(derivedUnion.findInverseAssociation(any(IIpsProject.class))).thenReturn(inverseDerivedUnion);
+        when(derivedUnion.getInverseAssociation()).thenReturn("inverseOfDu");
+
+        when(inverseDerivedUnion.isCompositionDetailToMaster()).thenReturn(true);
+        when(inverseDerivedUnion.findInverseAssociation(any(IIpsProject.class))).thenReturn(derivedUnion);
+
+        when(subset.isCompositionMasterToDetail()).thenReturn(true);
+        when(subset.isSubsetOfADerivedUnion()).thenReturn(true);
+        when(subset.findSubsettedDerivedUnion(any(IIpsProject.class))).thenReturn(derivedUnion);
+        when(subset.hasInverseAssociation()).thenReturn(true);
+        when(subset.findInverseAssociation(any(IIpsProject.class))).thenReturn(inverseSubset);
+
+        when(inverseSubset.isCompositionDetailToMaster()).thenReturn(true);
+        when(inverseSubset.findInverseAssociation(any(IIpsProject.class))).thenReturn(subset);
+        when(inverseSubset.getName()).thenReturn("inverseOfSubset");
+
+        detailToMasterDerivedUnionAssociations = policyCmptClass
+                .findDetailToMasterDerivedUnionAssociations(associations);
+
+        assertEquals(1, detailToMasterDerivedUnionAssociations.size());
+        assertEquals(inverseDerivedUnion, detailToMasterDerivedUnionAssociations.iterator().next());
+
+        when(derivedUnion.getInverseAssociation()).thenReturn("same");
+        when(inverseSubset.getName()).thenReturn("same");
+
+        detailToMasterDerivedUnionAssociations = policyCmptClass
+                .findDetailToMasterDerivedUnionAssociations(associations);
+
+        assertTrue(detailToMasterDerivedUnionAssociations.isEmpty());
+    }
+
 }

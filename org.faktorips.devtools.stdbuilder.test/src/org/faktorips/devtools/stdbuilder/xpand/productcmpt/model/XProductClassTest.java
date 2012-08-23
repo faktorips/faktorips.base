@@ -174,6 +174,7 @@ public class XProductClassTest {
     public void getChangableProductAssociations() {
         XProductCmptClass productClass = new XProductCmptClass(type, modelContext, modelService);
         Set<XProductAssociation> associations = productClass.getAssociations();
+        // TODO improve this test
         assertEquals(0, associations.size());
     }
 

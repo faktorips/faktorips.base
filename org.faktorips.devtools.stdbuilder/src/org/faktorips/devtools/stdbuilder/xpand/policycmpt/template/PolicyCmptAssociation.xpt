@@ -41,7 +41,7 @@
 	     */
      	«overrideAnnotationForPublishedMethod()-»
 	    public boolean «method(methodNameContains, targetInterfaceName, "objectToTest")» {
-	    	«IF derivedUnion-»	    		
+	    	«IF derivedUnion-»
 		        return «methodNameGetter»().contains(objectToTest);
 	    	«ELSE-»
 		        return «fieldName».contains(objectToTest);
@@ -87,7 +87,7 @@
 «ENDDEFINE»
 
 «DEFINE setterMethodsForToOne FOR XPolicyAssociation-»
-	«IF !oneToMany && !inverseComposition-»
+	«IF generateSetter-»
 	    /**
 	     * {@inheritDoc}
 	     * 
@@ -118,8 +118,9 @@
 		«ENDIF-»
     «ENDIF-»
 «ENDDEFINE»
+
 «DEFINE setterMethodCode FOR XPolicyAssociation-»
-	«IF compositionMasterToDetail-»
+	«IF masterToDetail-»
         if («fieldName» != null) {
             «EXPAND synchronizeInverseCompositionIfNecessaryForSet(false, fieldName, "null")-»
         }
@@ -140,6 +141,7 @@
     	«EXPAND synchronizeInverseAssociationIfNecessary(fieldName)-»
     «ENDIF-»
 «ENDDEFINE»
+
 «DEFINE synchronizeInverseCompositionIfNecessaryForSet(boolean cast, String varName, String newRef) FOR XPolicyAssociation-»
 	«IF generateCodeToSynchronizeInverseCompositionForSet-»
 		«IF cast»«EXPAND castIfNeccessary(varName)»«ELSE»«varName»«ENDIF».«methodNameInverseAssociationSetInternal»(«newRef»);
@@ -155,6 +157,7 @@
     	«EXPAND cleanupOldReferenceInner(varToCleanUp)-»
     «ENDIF-»
 «ENDDEFINE»
+
 «DEFINE cleanupOldReferenceInner(String varToCleanUp) FOR XPolicyAssociation-»
 	«IF inverseAssociation.oneToMany»
 		«varToCleanUp».«methodNameInverseAssociationRemove»(this);
@@ -219,7 +222,7 @@
 «ENDDEFINE»
 
 «DEFINE add FOR XPolicyAssociation-»
-	«IF oneToMany-»
+	«IF generateAddAndRemoveMethod-»
 	    /**
 	     * {@inheritDoc}
 	     * 
@@ -287,7 +290,7 @@
 «ENDDEFINE»
 
 «DEFINE remove FOR XPolicyAssociation-»
-	«IF oneToMany-»
+	«IF generateAddAndRemoveMethod-»
 	    /**
 	     * {@inheritDoc}
 	     * 
@@ -343,7 +346,7 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE validateDependents FOR XAssociation-»
+«DEFINE validateDependents FOR XPolicyAssociation-»
 	«IF considerInValidateDependents-»
         «IF oneToMany-»
 	        if («methodNameGetNumOf»() > 0) {

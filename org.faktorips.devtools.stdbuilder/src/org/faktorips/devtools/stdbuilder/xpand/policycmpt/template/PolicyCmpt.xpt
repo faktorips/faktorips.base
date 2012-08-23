@@ -64,7 +64,6 @@ package «packageName»;
 			«EXPAND PolicyCmptAssociation::methods-»
 		«ENDFOREACH-»
 		
-		«EXPAND DerivedUnionAssociation::methodDerivedUnionContains(this) FOREACH derivedUnions-»
 		«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH subsettedDerivedUnions-»
 
 		«EXPAND Methods::method FOREACH methods-»
@@ -114,11 +113,11 @@ package «packageName»;
      * @generated
      */
     public «javaClassName» «methodNameGetter»() {
-    	«IF changingOverTime»
+    	«IF changingOverTime-»
         	return «currentClass.methodNameGetProductCmptGeneration»().«methodNameGetter»();
-        «ELSE»
+        «ELSE-»
         	return «currentClass.methodNameGetProductComponent»().«methodNameGetter»();
-        «ENDIF»
+        «ENDIF-»
     }
 «ENDDEFINE»
 
@@ -347,6 +346,6 @@ package «packageName»;
     «overrideAnnotation(true)»
     public void «validateDependants(MessageList()+" ml", IValidationContext()+" context")» {
         super.«validateDependants("ml", "context")»;
-        «EXPAND PolicyCmptAssociation::validateDependents FOREACH masterToDetailAssociationsWithoutSubsets-»
+        «EXPAND PolicyCmptAssociation::validateDependents FOREACH associations-»
     }
 «ENDDEFINE»

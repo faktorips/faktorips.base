@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
@@ -168,5 +169,17 @@ public class XAssociationTest {
         when(otherDu.isRecursiveSubsetOf(du)).thenReturn(true);
         assertTrue(xAssociation.isRecursiveSubsetOf(du));
 
+    }
+
+    @Test
+    public void testIsMasterToDetail() throws Exception {
+        when(association.getAssociationType()).thenReturn(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        assertTrue(xAssociation.isMasterToDetail());
+        when(association.getAssociationType()).thenReturn(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        assertFalse(xAssociation.isMasterToDetail());
+        when(association.getAssociationType()).thenReturn(AssociationType.ASSOCIATION);
+        assertFalse(xAssociation.isMasterToDetail());
+        when(association.getAssociationType()).thenReturn(AssociationType.AGGREGATION);
+        assertTrue(xAssociation.isMasterToDetail());
     }
 }

@@ -92,6 +92,7 @@ public class XPolicyAttributeTest {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(false).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
+        doReturn(true).when(xPolicyAttribute).isChangeable();
 
         doReturn(true).when(xPolicyAttribute).isValueSetEnum();
         doReturn(true).when(xPolicyAttribute).isDatatypeContentSeparatedEnum();
@@ -105,6 +106,7 @@ public class XPolicyAttributeTest {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(true).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
+        doReturn(true).when(xPolicyAttribute).isChangeable();
 
         doReturn(false).when(xPolicyAttribute).isValueSetEnum();
         doReturn(false).when(xPolicyAttribute).isDatatypeContentSeparatedEnum();
@@ -118,6 +120,7 @@ public class XPolicyAttributeTest {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(false).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
+        doReturn(true).when(xPolicyAttribute).isChangeable();
 
         doReturn(false).when(xPolicyAttribute).isValueSetEnum();
         doReturn(false).when(xPolicyAttribute).isDatatypeContentSeparatedEnum();
@@ -132,6 +135,7 @@ public class XPolicyAttributeTest {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(false).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
+        doReturn(true).when(xPolicyAttribute).isChangeable();
 
         doReturn(true).when(xPolicyAttribute).isValueSetEnum();
         doReturn(false).when(xPolicyAttribute).isDatatypeContentSeparatedEnum();

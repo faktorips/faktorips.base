@@ -32,16 +32,13 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.AssociationType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.stdbuilder.xpand.model.AbstractAssociationFilter;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
-import org.faktorips.devtools.stdbuilder.xpand.model.filter.AssociationWithoutDUAndInverseDUFilter;
-import org.faktorips.devtools.stdbuilder.xpand.model.filter.DerivedUnionFilter;
-import org.faktorips.devtools.stdbuilder.xpand.model.filter.MasterToDetailFilter;
-import org.faktorips.devtools.stdbuilder.xpand.model.filter.MasterToDetailWithoutSubsetsFilter;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
@@ -56,17 +53,13 @@ public class XPolicyCmptClass extends XClass {
 
     private final Set<XPolicyAssociation> associations;
 
-    private final Set<XPolicyAssociation> masterToDetailAssociations;
-
-    private final Set<XPolicyAssociation> masterToDetailAssociationsWithoutSubsets;
-
-    private final Set<XDerivedUnionAssociation> derivedUnions;
-
     private final Set<XDerivedUnionAssociation> subsettedDerivedUnions;
 
     private final Set<XDetailToMasterDerivedUnionAssociation> detailToMasterDerivedUnionAssociations;
 
     private final Set<XValidationRule> validationRules;
+
+    // TODO FIXME UNDALLESANDEREAUCH: wir dürfen deise Dinge auf keinen Fall cachen!
 
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
@@ -74,18 +67,15 @@ public class XPolicyCmptClass extends XClass {
                 new LinkedHashSet<IPolicyCmptTypeAttribute>(policyCmptType.getPolicyCmptTypeAttributes()),
                 XPolicyAttribute.class);
         productAttributes = initNodesForParts(getProductAttributes(policyCmptType), XProductAttribute.class);
+
         associations = initNodesForParts(
-                getAssociations(policyCmptType, IPolicyCmptTypeAssociation.class,
-                        new AssociationWithoutDUAndInverseDUFilter()), XPolicyAssociation.class);
-        masterToDetailAssociations = initNodesForParts(
-                getAssociations(policyCmptType, IPolicyCmptTypeAssociation.class, new MasterToDetailFilter()),
-                XPolicyAssociation.class);
-        masterToDetailAssociationsWithoutSubsets = initNodesForParts(
-                getAssociations(policyCmptType, IPolicyCmptTypeAssociation.class,
-                        new MasterToDetailWithoutSubsetsFilter()), XPolicyAssociation.class);
-        derivedUnions = initNodesForParts(
-                getAssociations(policyCmptType, IPolicyCmptTypeAssociation.class, new DerivedUnionFilter()),
-                XDerivedUnionAssociation.class);
+                getAssociations(policyCmptType, IPolicyCmptTypeAssociation.class, new AbstractAssociationFilter() {
+
+                    @Override
+                    public boolean isValidAssociation(IAssociation association) {
+                        return true;
+                    }
+                }), XPolicyAssociation.class);
         subsettedDerivedUnions = initNodesForParts(
                 findSubsettedDerivedUnions(policyCmptType.getPolicyCmptTypeAssociations(),
                         IPolicyCmptTypeAssociation.class), XDerivedUnionAssociation.class);
@@ -143,12 +133,14 @@ public class XPolicyCmptClass extends XClass {
                     if (inverseAssociation.isSubsetOfADerivedUnion()) {
                         IPolicyCmptTypeAssociation subsettedDerivedUnion = (IPolicyCmptTypeAssociation)inverseAssociation
                                 .findSubsettedDerivedUnion(getIpsProject());
+                        // it is possible that the derived union does not specify a inverse but
+                        // subset does
                         if (subsettedDerivedUnion.hasInverseAssociation()) {
-                            // it is possible that the derived union does not specify a inverse but
-                            // subset does
-                            IPolicyCmptTypeAssociation inverseSubsettedAssociation = subsettedDerivedUnion
-                                    .findInverseAssociation(getIpsProject());
-                            resultingAssociations.add(inverseSubsettedAssociation);
+                            if (!subsettedDerivedUnion.getInverseAssociation().equals(association.getName())) {
+                                IPolicyCmptTypeAssociation inverseSubsettedAssociation = subsettedDerivedUnion
+                                        .findInverseAssociation(getIpsProject());
+                                resultingAssociations.add(inverseSubsettedAssociation);
+                            }
                         }
                     }
                 }
@@ -225,19 +217,6 @@ public class XPolicyCmptClass extends XClass {
     @Override
     public Set<XPolicyAssociation> getAssociations() {
         return new CopyOnWriteArraySet<XPolicyAssociation>(associations);
-    }
-
-    @Override
-    public Set<XAssociation> getMasterToDetailAssociations() {
-        return new CopyOnWriteArraySet<XAssociation>(masterToDetailAssociations);
-    }
-
-    public Set<XPolicyAssociation> getMasterToDetailAssociationsWithoutSubsets() {
-        return new CopyOnWriteArraySet<XPolicyAssociation>(masterToDetailAssociationsWithoutSubsets);
-    }
-
-    public Set<XDerivedUnionAssociation> getDerivedUnions() {
-        return new CopyOnWriteArraySet<XDerivedUnionAssociation>(derivedUnions);
     }
 
     @Override
@@ -454,22 +433,13 @@ public class XPolicyCmptClass extends XClass {
         return resultingSet;
     }
 
+    // TODO check!!
     public Set<XPolicyAssociation> getInverseCompositions() {
         Set<XPolicyAssociation> resultingSet = new LinkedHashSet<XPolicyAssociation>();
         for (XPolicyAssociation assoc : getAssociations()) {
             // FIXME @Corny hier muss wohl statt assoc.isSharedAssociation() die Methode
             // isTopLevelSharedAssociation() oder isRootSharedAssociation() aufrufen werden
             if (assoc.isInverseComposition() && !(assoc.isInverseOfADerivedUnion() || assoc.isSharedAssociation())) {
-                resultingSet.add(assoc);
-            }
-        }
-        return resultingSet;
-    }
-
-    private Set<XPolicyAssociation> getPureAssociations() {
-        Set<XPolicyAssociation> resultingSet = new LinkedHashSet<XPolicyAssociation>();
-        for (XPolicyAssociation assoc : getAssociations()) {
-            if (assoc.isTypeAssociation()) {
                 resultingSet.add(assoc);
             }
         }
@@ -494,7 +464,7 @@ public class XPolicyCmptClass extends XClass {
     }
 
     public boolean isGenerateMethodCreateUnresolvedReference() {
-        return hasAssociations();
+        return hasAssociationsWithTypeAssociation();
     }
 
     public boolean isGenerateNotifyChangeListeners() {
@@ -507,14 +477,6 @@ public class XPolicyCmptClass extends XClass {
      */
     private boolean hasInverseCompositionAssociations() {
         return !getInverseCompositions().isEmpty();
-    }
-
-    /**
-     * Returns <code>true</code> if this policy cmpt class has at least one association (no
-     * composition).
-     */
-    private boolean hasAssociations() {
-        return !getPureAssociations().isEmpty();
     }
 
     public XPolicyCmptClass getSuperclass() {

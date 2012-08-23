@@ -71,38 +71,38 @@ public class XPolicyAssociationTest {
 
     @Test
     public void testGenerateSynchronizeForAdd() {
-        doReturn(true).when(assoc).isValidComposition();
+        doReturn(true).when(assoc).isMasterToDetail();
         doReturn(false).when(assoc).hasInverseAssociation();
         assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForAdd());
 
-        doReturn(false).when(assoc).isValidComposition();
+        doReturn(false).when(assoc).isMasterToDetail();
         doReturn(true).when(assoc).hasInverseAssociation();
         assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForAdd());
 
-        doReturn(false).when(assoc).isValidComposition();
+        doReturn(false).when(assoc).isMasterToDetail();
         doReturn(false).when(assoc).hasInverseAssociation();
         assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForAdd());
 
-        doReturn(true).when(assoc).isValidComposition();
+        doReturn(true).when(assoc).isMasterToDetail();
         doReturn(true).when(assoc).hasInverseAssociation();
         assertTrue(assoc.isGenerateCodeToSynchronizeInverseCompositionForAdd());
     }
 
     @Test
     public void testGenerateSynchronizeForRemove() {
-        doReturn(true).when(assoc).isValidComposition();
+        doReturn(true).when(assoc).isMasterToDetail();
         doReturn(false).when(assoc).hasInverseAssociation();
         assertTrue(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
 
-        doReturn(false).when(assoc).isValidComposition();
+        doReturn(false).when(assoc).isMasterToDetail();
         doReturn(true).when(assoc).hasInverseAssociation();
         assertTrue(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
 
-        doReturn(false).when(assoc).isValidComposition();
+        doReturn(false).when(assoc).isMasterToDetail();
         doReturn(false).when(assoc).hasInverseAssociation();
         assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
 
-        doReturn(true).when(assoc).isValidComposition();
+        doReturn(true).when(assoc).isMasterToDetail();
         doReturn(true).when(assoc).hasInverseAssociation();
         assertTrue(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
     }

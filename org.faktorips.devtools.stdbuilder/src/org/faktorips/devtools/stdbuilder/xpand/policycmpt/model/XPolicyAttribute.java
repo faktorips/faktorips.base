@@ -278,7 +278,7 @@ public class XPolicyAttribute extends XAttribute {
         return isRequireMemberVariable();
     }
 
-    private boolean isChangeable() {
+    public boolean isChangeable() {
         return getAttribute().isChangeable();
     }
 

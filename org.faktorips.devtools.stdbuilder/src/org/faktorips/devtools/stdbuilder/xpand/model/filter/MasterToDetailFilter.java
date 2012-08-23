@@ -21,7 +21,8 @@ public class MasterToDetailFilter extends AbstractAssociationFilter {
 
     @Override
     public boolean isValidAssociation(IAssociation association) {
-        return association.getAssociationType() == AssociationType.COMPOSITION_MASTER_TO_DETAIL;
+        return association.getAssociationType() == AssociationType.COMPOSITION_MASTER_TO_DETAIL
+                || association.getAssociationType() == AssociationType.AGGREGATION;
     }
 
 }

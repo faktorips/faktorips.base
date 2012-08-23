@@ -217,10 +217,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     public abstract Set<? extends XAttribute> getAttributes();
 
     /**
-     * Returns the list of associations in the current type. Does not add derived union
-     * associations!
-     * 
-     * @see #getSubsettedDerivedUnions()
+     * Returns the list of associations in the current type.
      * 
      * @return The list of associations in this type except derived unions
      */
@@ -270,13 +267,6 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         }
         return resultingAssociations;
     }
-
-    /**
-     * Returns all master to detail associations of this type/class including derived unions but not
-     * subsets of derived unions. Includes derived union associations that are at the same time
-     * subsets of another derived union.
-     */
-    public abstract Set<XAssociation> getMasterToDetailAssociations();
 
     /**
      * Returns all master to detail associations of a type including derived unions but not subsets

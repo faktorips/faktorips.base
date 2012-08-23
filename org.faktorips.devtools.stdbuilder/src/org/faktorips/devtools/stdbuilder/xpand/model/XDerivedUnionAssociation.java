@@ -65,8 +65,9 @@ public class XDerivedUnionAssociation extends XAssociation {
      */
     public Set<XAssociation> getSubsetAssociations(XClass xClass) {
         Set<XAssociation> result = new LinkedHashSet<XAssociation>();
-        Set<? extends XAssociation> associations = xClass.getMasterToDetailAssociations();
+        Set<? extends XAssociation> associations = xClass.getAssociations();
         for (XAssociation xAssociation : associations) {
+            // TODO need xAssociation.isMasterToDetail() && ??
             if (xAssociation.isSubsetOf(this)) {
                 result.add(xAssociation);
             }

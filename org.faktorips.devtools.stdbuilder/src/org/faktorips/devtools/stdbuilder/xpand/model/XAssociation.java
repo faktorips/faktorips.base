@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
@@ -101,12 +100,8 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getAssociation().isDerived();
     }
 
-    public boolean isValid() {
-        try {
-            return getAssociation().isValid(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+    public boolean isMasterToDetail() {
+        return getAssociation().getAssociationType().isMasterToDetail();
     }
 
     /**
@@ -166,14 +161,6 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-    }
-
-    public boolean isConsiderInValidateDependents() {
-        return isValid() && isCompositionMasterToDetail() && !getAssociation().isSubsetOfADerivedUnion();
-    }
-
-    public boolean isCompositionMasterToDetail() {
-        return getAssociation().getAssociationType() == AssociationType.COMPOSITION_MASTER_TO_DETAIL;
     }
 
     /**

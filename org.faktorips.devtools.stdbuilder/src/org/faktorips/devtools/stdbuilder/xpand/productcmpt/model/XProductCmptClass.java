@@ -18,12 +18,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
-import org.faktorips.devtools.stdbuilder.xpand.model.filter.MasterToDetailFilter;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.runtime.internal.ProductComponent;
 
@@ -37,8 +34,6 @@ public class XProductCmptClass extends XProductClass {
 
     private final Set<XProductAssociation> associations;
 
-    private final Set<XProductAssociation> masterToDetailAssociations;
-
     private final Set<XDerivedUnionAssociation> subsettedDerivedUnions;
 
     public XProductCmptClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext modelContext,
@@ -48,9 +43,6 @@ public class XProductCmptClass extends XProductClass {
         attributes = initNodesForParts(getProductAttributes(CHANGE_OVER_TIME), XProductAttribute.class);
         configuredAttributes = initNodesForParts(getConfiguredAttributes(CHANGE_OVER_TIME), XPolicyAttribute.class);
         associations = initNodesForParts(getProductAssociations(CHANGE_OVER_TIME), XProductAssociation.class);
-        masterToDetailAssociations = initNodesForParts(
-                getAssociations(ipsObjectPartContainer, IProductCmptTypeAssociation.class, new MasterToDetailFilter()),
-                XProductAssociation.class);
         subsettedDerivedUnions = initNodesForParts(getProductDerivedUnionAssociations(CHANGE_OVER_TIME),
                 XDerivedUnionAssociation.class);
     }
@@ -94,11 +86,6 @@ public class XProductCmptClass extends XProductClass {
                 XProductCmptGenerationClass.class);
         return getJavaNamingConvention().getGetterMethodName(
                 productCmptGenerationClass.getSimpleName(BuilderAspect.IMPLEMENTATION));
-    }
-
-    @Override
-    public Set<XAssociation> getMasterToDetailAssociations() {
-        return new CopyOnWriteArraySet<XAssociation>(masterToDetailAssociations);
     }
 
 }
