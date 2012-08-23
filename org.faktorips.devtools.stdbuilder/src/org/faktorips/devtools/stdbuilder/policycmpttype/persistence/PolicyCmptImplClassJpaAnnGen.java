@@ -70,7 +70,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
         if (generatorModelNode instanceof XPolicyCmptClass) {
             XPolicyCmptClass xPolicyCmptClass = (XPolicyCmptClass)generatorModelNode;
 
-            IPolicyCmptType pcType = xPolicyCmptClass.getPolicyCmptType();
+            IPolicyCmptType pcType = xPolicyCmptClass.getType();
 
             IPersistentTypeInfo persistenceTypeInfo = pcType.getPersistenceTypeInfo();
 

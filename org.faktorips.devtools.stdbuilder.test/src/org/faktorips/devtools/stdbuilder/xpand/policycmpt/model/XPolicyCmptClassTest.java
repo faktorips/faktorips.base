@@ -152,7 +152,7 @@ public class XPolicyCmptClassTest {
 
     private IProductCmptType initProdType(XPolicyCmptClass policyCmptClass) throws CoreException {
         IPolicyCmptType polType = mock(IPolicyCmptType.class);
-        when(policyCmptClass.getPolicyCmptType()).thenReturn(polType);
+        when(policyCmptClass.getType()).thenReturn(polType);
 
         IProductCmptType prodType = mock(IProductCmptType.class);
         when(polType.findProductCmptType(any(IIpsProject.class))).thenReturn(prodType);
