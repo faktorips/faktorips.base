@@ -28,7 +28,9 @@
  			«IF subsetAssociation.oneToMany-»
      			result.addAll(«subsetAssociation.methodNameGetter»());
      		«ELSE-»
-     			result.add(«subsetAssociation.methodNameGetter»());
+		        if («subsetAssociation.methodNameGetter»() != null) {
+     				result.add(«subsetAssociation.methodNameGetter»());
+     			}
      		«ENDIF-»
      	«ENDFOREACH-»
      	return result;

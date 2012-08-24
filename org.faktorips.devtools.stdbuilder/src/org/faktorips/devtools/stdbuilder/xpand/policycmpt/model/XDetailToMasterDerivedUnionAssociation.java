@@ -22,7 +22,6 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -54,7 +53,15 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
         if (getTypeOfAssociation().equals(xClass.getType())) {
             return false;
         }
-        return getDerivedUnion().isImplementedInSuperclass(xClass);
+        try {
+            IPolicyCmptType supertype = (IPolicyCmptType)xClass.getType().findSupertype(xClass.getIpsProject());
+            FindSubsetOfDerivedUnionVisitor findSubsetOfDerivedUnionVisitor = new FindSubsetOfDerivedUnionVisitor(
+                    getAssociation(), xClass.getIpsProject());
+            findSubsetOfDerivedUnionVisitor.start(supertype);
+            return findSubsetOfDerivedUnionVisitor.isSubsetFound();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     /**
@@ -66,9 +73,18 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
     public Set<XPolicyAssociation> getDetailToMasterSubsetAssociations(XPolicyCmptClass policyClass) {
         Set<XPolicyAssociation> subsets = new LinkedHashSet<XPolicyAssociation>();
         for (XPolicyAssociation assoc : policyClass.getAssociations()) {
-            if (assoc.isCompositionDetailToMaster() && !assoc.isDerived()
-                    && assoc.getInverseAssociation().isRecursiveSubsetOf(getDerivedUnion())) {
-                subsets.add(assoc);
+            if (assoc.isCompositionDetailToMaster()) {
+                if (assoc.isSharedAssociation() && getName().equals(assoc.getName())) {
+                    subsets.add(assoc);
+                }
+                if (assoc.hasInverseAssociation()) {
+                    XPolicyAssociation inverseAssociation = assoc.getInverseAssociation();
+                    if (!inverseAssociation.isDerived()
+                            && (getName().equals(assoc.getName()) || inverseAssociation
+                                    .isRecursiveSubsetOf(getDerivedUnion()))) {
+                        subsets.add(assoc);
+                    }
+                }
             }
         }
         return subsets;
@@ -96,35 +112,36 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
     }
 
     /**
-     * Searches the given type (and the super type hierarchy) for subsets of the detail to master
-     * derived union specified when creating the visitor.
+     * Searches the given type (and the super type hierarchy) for subsets of the derived union
+     * specified when creating the visitor.
      * 
      */
-    class FindSubsetOfDetailToMasterDerivedUnionVisitor extends TypeHierarchyVisitor<IPolicyCmptType> {
+    private static class FindSubsetOfDerivedUnionVisitor extends TypeHierarchyVisitor<IPolicyCmptType> {
 
-        private final IAssociation derivedUnion;
+        private final IPolicyCmptTypeAssociation detailToMasterDU;
 
-        boolean foundSubset = false;
+        private boolean foundSubset = false;
 
-        public FindSubsetOfDetailToMasterDerivedUnionVisitor(IPolicyCmptTypeAssociation masterToDetailDerivedUnion,
-                IIpsProject ipsProject) {
+        public FindSubsetOfDerivedUnionVisitor(IPolicyCmptTypeAssociation detailToMasterDU, IIpsProject ipsProject) {
             super(ipsProject);
-            this.derivedUnion = masterToDetailDerivedUnion;
+            this.detailToMasterDU = detailToMasterDU;
         }
 
         @Override
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
             List<IPolicyCmptTypeAssociation> associations = currentType.getPolicyCmptTypeAssociations();
-            for (IPolicyCmptTypeAssociation assoc : associations) {
-                if (assoc.isCompositionDetailToMaster()) {
-                    IPolicyCmptTypeAssociation inverseAssociation = assoc.findInverseAssociation(getIpsProject());
-                    if (inverseAssociation.getSubsettedDerivedUnion().equals(derivedUnion.getName())) {
+            for (IPolicyCmptTypeAssociation asso : associations) {
+                if (asso != detailToMasterDU && asso.isCompositionDetailToMaster()) {
+                    IPolicyCmptTypeAssociation masterToDetail = asso.findInverseAssociation(ipsProject);
+                    if (!masterToDetail.isDerivedUnion()
+                            && masterToDetail.getSubsettedDerivedUnion().equals(
+                                    detailToMasterDU.getInverseAssociation())) {
                         foundSubset = true;
                         return false;
                     }
                 }
             }
-            if (currentType.equals(derivedUnion.getType())) {
+            if (currentType.equals(detailToMasterDU.getType())) {
                 return false;
             }
             return true;
@@ -134,4 +151,5 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
             return foundSubset;
         }
     }
+
 }

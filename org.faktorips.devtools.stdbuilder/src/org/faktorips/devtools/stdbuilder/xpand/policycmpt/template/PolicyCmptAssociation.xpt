@@ -7,21 +7,31 @@
 
 «DEFINE field FOR XPolicyAssociation-»
 	«IF generateField-»
-	    /**
-	     * «localizedJDoc("FIELD_ASSOCIATION", name)»
-	     * 
-	     * @generated
-	     */
-		«IF oneToMany-»
+		«IF masterToDetail || typeAssociation-»
+		    /**
+		     * «localizedJDoc("FIELD_ASSOCIATION", name)»
+		     * 
+		     * @generated
+		     */
+			«IF oneToMany-»
+				«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
+				private «List_(targetInterfaceName)» «field(fieldName)»  = new «ArrayList(targetInterfaceName)»();
+			«ELSE-»
+				«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
+				private «targetClassName» «field(fieldName)» = null;
+			«ENDIF-»
+		«ELSEIF compositionDetailToMaster-»
+			/**
+			 * «localizedJDoc("FIELD_PARENT", targetClassName)»
+			 *
+			 * @generated	 
+			 */
 			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
-			private «List_(targetInterfaceName)» «field(fieldName)»  = new «ArrayList(targetInterfaceName)»();
-		«ELSE-»
-			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
-			private «targetClassName» «field(fieldName)» = null;
-		«ENDIF»
+			private «targetClassName» «field(fieldName)»;
+		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
-
+	
 «DEFINE methods FOR XPolicyAssociation-»
 	«EXPAND Association::getNumOf-»
 	«EXPAND contains-»
@@ -398,19 +408,9 @@
 «ENDDEFINE»
 
 «REM» Templates for detailToMaster compositions«ENDREM»
-«DEFINE fieldForParent FOR XPolicyAssociation-»
-	«IF !sharedAssociation-»
-		/**
-		 * «localizedJDoc("FIELD_PARENT", targetClassName)»
-		 *
-		 * @generated	 
-		 */
-		«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
-		private «targetClassName» «field(fieldName)»;
-	«ENDIF-»
-«ENDDEFINE»
+
 «DEFINE methodSetParentInternal FOR XPolicyAssociation-»
-	«IF !sharedAssociation-»
+	«IF !sharedAssociationImplementedInSuperclass-»
 		/**
 	     * @generated
 	     */

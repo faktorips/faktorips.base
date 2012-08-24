@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -54,8 +55,6 @@ public class XPolicyCmptClass extends XClass {
     private volatile Set<XDetailToMasterDerivedUnionAssociation> detailToMasterDerivedUnionAssociations;
 
     private volatile Set<XValidationRule> validationRules;
-
-    // TODO FIXME UNDALLESANDEREAUCH: wir dürfen deise Dinge auf keinen Fall cachen!
 
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
@@ -209,19 +208,6 @@ public class XPolicyCmptClass extends XClass {
         return new CopyOnWriteArraySet<XDerivedUnionAssociation>(subsettedDerivedUnions);
     }
 
-    /**
-     * Finds all inverse associations (detail to master associations) in this class.
-     */
-    protected Set<IPolicyCmptTypeAssociation> findDetailToMasterAssociations(Collection<IPolicyCmptTypeAssociation> associations) {
-        Set<IPolicyCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IPolicyCmptTypeAssociation>();
-        for (IPolicyCmptTypeAssociation association : associations) {
-            if (association.isCompositionDetailToMaster()) {
-                resultingAssociations.add(association);
-            }
-        }
-        return resultingAssociations;
-    }
-
     public Set<XDetailToMasterDerivedUnionAssociation> getDetailToMasterDerivedUnionAssociations() {
         checkForUpdate();
         if (detailToMasterDerivedUnionAssociations == null) {
@@ -244,41 +230,74 @@ public class XPolicyCmptClass extends XClass {
     protected Set<IPolicyCmptTypeAssociation> findDetailToMasterDerivedUnionAssociations(Collection<IPolicyCmptTypeAssociation> associations) {
         Set<IPolicyCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IPolicyCmptTypeAssociation>();
         for (IPolicyCmptTypeAssociation association : associations) {
-            addDetailToMasterDerivedUnion(association, resultingAssociations);
+            XPolicyAssociation associationAsModelNode = getModelNode(association, XPolicyAssociation.class);
+            if (!associationAsModelNode.isDerived()) {
+                addDetailToMasterDerivedUnion(association, resultingAssociations, new HashSet<String>());
+            }
         }
         return resultingAssociations;
     }
 
     protected void addDetailToMasterDerivedUnion(IPolicyCmptTypeAssociation association,
-            Set<IPolicyCmptTypeAssociation> resultingAssociations) {
+            Set<IPolicyCmptTypeAssociation> resultingAssociations,
+            Set<String> resultingNames) {
         try {
             if (association.isCompositionDetailToMaster()) {
-                IPolicyCmptTypeAssociation masterToDetailAssociation;
                 if (association.isSharedAssociation()) {
-                    masterToDetailAssociation = association.findSharedAssociationHost(getIpsProject())
-                            .findInverseAssociation(getIpsProject());
+                    XPolicyAssociation xPolicyAssociation = getModelNode(association, XPolicyAssociation.class);
+                    if (!xPolicyAssociation.isSharedAssociationImplementedInSuperclass()) {
+                        IPolicyCmptTypeAssociation sharedAssociationHost = association
+                                .findSharedAssociationHost(getIpsProject());
+                        resultingAssociations.add(sharedAssociationHost);
+                        resultingNames.add(sharedAssociationHost.getName());
+                    }
                 } else {
-                    masterToDetailAssociation = association.findInverseAssociation(getIpsProject());
-                }
-                if (masterToDetailAssociation.isSubsetOfADerivedUnion()) {
-                    IPolicyCmptTypeAssociation derivedUnionAssociation = (IPolicyCmptTypeAssociation)masterToDetailAssociation
-                            .findSubsettedDerivedUnion(getIpsProject());
-                    // it is possible that the derived union does not specify a inverse but
-                    // subset does
-                    if (derivedUnionAssociation.hasInverseAssociation()) {
-                        IPolicyCmptTypeAssociation detailToMasterDerivedUnion = derivedUnionAssociation
-                                .findInverseAssociation(getIpsProject());
-                        if (!resultingAssociations.contains(detailToMasterDerivedUnion)) {
-                            IPolicyCmptTypeAssociation superAssociationWithSameName = detailToMasterDerivedUnion
-                                    .findSuperAssociationWithSameName(getIpsProject());
-                            if (superAssociationWithSameName == null) {
-                                resultingAssociations.add(detailToMasterDerivedUnion);
-                            } else {
-                                addDetailToMasterDerivedUnion(detailToMasterDerivedUnion, resultingAssociations);
+                    IPolicyCmptTypeAssociation masterToDetailAssociation = association
+                            .findInverseAssociation(getIpsProject());
+                    if (masterToDetailAssociation.isSubsetOfADerivedUnion()) {
+                        IPolicyCmptTypeAssociation derivedUnionAssociation = (IPolicyCmptTypeAssociation)masterToDetailAssociation
+                                .findSubsettedDerivedUnion(getIpsProject());
+                        // it is possible that the derived union does not specify a inverse but
+                        // subset does
+                        if (derivedUnionAssociation.hasInverseAssociation()) {
+                            IPolicyCmptTypeAssociation detailToMasterDerivedUnion = derivedUnionAssociation
+                                    .findInverseAssociation(getIpsProject());
+                            if (!resultingNames.contains(detailToMasterDerivedUnion.getName())) {
+                                IPolicyCmptTypeAssociation superAssociationWithSameName = detailToMasterDerivedUnion
+                                        .findSuperAssociationWithSameName(getIpsProject());
+                                if (superAssociationWithSameName == null) {
+                                    resultingAssociations.add(detailToMasterDerivedUnion);
+                                    resultingNames.add(detailToMasterDerivedUnion.getName());
+                                }
+                                if (superAssociationWithSameName != null
+                                        || derivedUnionAssociation.isSubsetOfADerivedUnion()) {
+                                    addDetailToMasterDerivedUnion(detailToMasterDerivedUnion, resultingAssociations,
+                                            resultingNames);
+                                }
                             }
                         }
                     }
                 }
+                // This part handles the case that there is a derived union with the same name in
+                // super class that is not already
+                if (association.getType() == getType() && !association.isSharedAssociation()
+                        && !resultingNames.contains(association.getName())) {
+                    IPolicyCmptTypeAssociation superAssociationWithSameName = association
+                            .findSuperAssociationWithSameName(association.getIpsProject());
+                    if (superAssociationWithSameName != null) {
+                        IPolicyCmptTypeAssociation inverseOfSuperAssociation = superAssociationWithSameName
+                                .findInverseAssociation(superAssociationWithSameName.getIpsProject());
+                        if (inverseOfSuperAssociation == null) {
+                            throw new RuntimeException("Cannot find inverse association of "
+                                    + superAssociationWithSameName);
+                        }
+                        if (inverseOfSuperAssociation.isDerivedUnion()) {
+                            resultingAssociations.add(superAssociationWithSameName);
+                            resultingNames.add(superAssociationWithSameName.getName());
+                        }
+                    }
+                }
+
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
@@ -497,19 +516,6 @@ public class XPolicyCmptClass extends XClass {
         return resultingSet;
     }
 
-    // TODO check!!
-    public Set<XPolicyAssociation> getInverseCompositions() {
-        Set<XPolicyAssociation> resultingSet = new LinkedHashSet<XPolicyAssociation>();
-        for (XPolicyAssociation assoc : getAssociations()) {
-            // FIXME @Corny hier muss wohl statt assoc.isSharedAssociation() die Methode
-            // isTopLevelSharedAssociation() oder isRootSharedAssociation() aufrufen werden
-            if (assoc.isInverseComposition() && !(assoc.isInverseOfADerivedUnion() || assoc.isSharedAssociation())) {
-                resultingSet.add(assoc);
-            }
-        }
-        return resultingSet;
-    }
-
     /**
      * Returns <code>true</code> if at least one attribute would generate code in the
      * initPropertiesFromXML-Method. <code>false</code> otherwise.
@@ -540,7 +546,13 @@ public class XPolicyCmptClass extends XClass {
      * inverse of a composition, but not a derived union association.
      */
     private boolean hasInverseCompositionAssociations() {
-        return !getInverseCompositions().isEmpty();
+        for (XPolicyAssociation assoc : getAssociations()) {
+            if (assoc.isCompositionDetailToMaster() && !assoc.isDerived()
+                    && !assoc.isSharedAssociationImplementedInSuperclass()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public XPolicyCmptClass getSuperclass() {

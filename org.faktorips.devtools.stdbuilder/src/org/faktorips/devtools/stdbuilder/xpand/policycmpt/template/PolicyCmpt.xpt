@@ -46,10 +46,6 @@ package «packageName»;
 		
 		«EXPAND PolicyCmptAssociation::field FOREACH associations-»
 		
-		«FOREACH inverseCompositions AS this-»
-			«EXPAND PolicyCmptAssociation::fieldForParent-»
-		«ENDFOREACH-»
-			
 		«EXPAND constructors-»
 		
 		«EXPAND getterForProductAttributes(this) FOREACH productAttributes-»
@@ -60,9 +56,7 @@ package «packageName»;
 			«EXPAND PolicyCmptAttribute::setter-»
 		«ENDFOREACH-»
 
-		«FOREACH associations AS this-»
-			«EXPAND PolicyCmptAssociation::methods-»
-		«ENDFOREACH-»
+		«EXPAND PolicyCmptAssociation::methods FOREACH associations-»
 		
 		«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH subsettedDerivedUnions-»
 
@@ -246,10 +240,12 @@ package «packageName»;
 	     */
 		 «overrideAnnotation(false)»
 	    public «IModelObject()» «getParentModelObject()» {
-	    	«FOREACH inverseCompositions AS this-»
-		        if («fieldName» != null) {
-		            return «fieldName»;
-		        }
+	    	«FOREACH associations AS this-»
+	    		«IF compositionDetailToMaster && !derived-»
+			        if («fieldName» != null) {
+			            return «fieldName»;
+			        }
+		        «ENDIF-»
 	    	«ENDFOREACH-»
 	        «IF hasSupertype() && superclass.generateGetParentModelObject-»
 	        	return super.«getParentModelObject()»;
@@ -259,8 +255,10 @@ package «packageName»;
 	    }
     «ENDIF-»
 	
-	«FOREACH inverseCompositions AS this-»
-		«EXPAND PolicyCmptAssociation::methodSetParentInternal-»
+	«FOREACH associations AS this-»
+   		«IF compositionDetailToMaster && !derived-»
+			«EXPAND PolicyCmptAssociation::methodSetParentInternal-»
+		«ENDIF-»
 	«ENDFOREACH-»
 	
 «ENDDEFINE»

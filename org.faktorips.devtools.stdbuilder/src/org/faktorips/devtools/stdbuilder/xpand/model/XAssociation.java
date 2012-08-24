@@ -135,18 +135,19 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         if (isSubsetOf(derivedUnionAssociation)) {
             return true;
         }
-        return getSubsettedDerivedUnion().isRecursiveSubsetOf(derivedUnionAssociation);
+        XDerivedUnionAssociation subsettedDerivedUnions = getSubsettedDerivedUnion();
+        return subsettedDerivedUnions.isRecursiveSubsetOf(derivedUnionAssociation);
     }
 
     /**
      * Returns the derived union this association is a subset of.
      * 
-     * @throws NullPointerException if this is not a subset of a derived union.
+     * @throws RuntimeException if this is not a subset of a derived union.
      * @throws NullPointerException if no derived union could be found for this subset.
      */
-    public XDerivedUnionAssociation getSubsettedDerivedUnion() {
+    XDerivedUnionAssociation getSubsettedDerivedUnion() {
         if (!isSubsetOfADerivedUnion()) {
-            throw new NullPointerException(NLS.bind(
+            throw new RuntimeException(NLS.bind(
                     "The association {0} is not a subset of a derived union. Unable to determine derived union.",
                     getAssociation()));
         }

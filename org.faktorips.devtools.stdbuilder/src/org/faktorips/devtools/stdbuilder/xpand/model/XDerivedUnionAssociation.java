@@ -67,7 +67,6 @@ public class XDerivedUnionAssociation extends XAssociation {
         Set<XAssociation> result = new LinkedHashSet<XAssociation>();
         Set<? extends XAssociation> associations = xClass.getAssociations();
         for (XAssociation xAssociation : associations) {
-            // TODO need xAssociation.isMasterToDetail() && ??
             if (xAssociation.isSubsetOf(this)) {
                 result.add(xAssociation);
             }
@@ -88,49 +87,13 @@ public class XDerivedUnionAssociation extends XAssociation {
             return false;
         }
         try {
-            IType supertype = xClass.getType().findSupertype(getIpsProject());
+            IType supertype = xClass.getType().findSupertype(xClass.getIpsProject());
             FindSubsetOfDerivedUnionVisitor findSubsetOfDerivedUnionVisitor = new FindSubsetOfDerivedUnionVisitor(
-                    getAssociation(), getIpsProject());
+                    getAssociation(), xClass.getIpsProject());
             findSubsetOfDerivedUnionVisitor.start(supertype);
             return findSubsetOfDerivedUnionVisitor.isSubsetFound();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
-        }
-    }
-
-    /**
-     * Searches the given type (and the super type hierarchy) for subsets of the derived union
-     * specified when creating the visitor.
-     * 
-     */
-    class FindSubsetOfDerivedUnionVisitor extends TypeHierarchyVisitor<IType> {
-
-        private final IAssociation derivedUnion;
-
-        boolean foundSubset = false;
-
-        public FindSubsetOfDerivedUnionVisitor(IAssociation derivedUnion, IIpsProject ipsProject) {
-            super(ipsProject);
-            this.derivedUnion = derivedUnion;
-        }
-
-        @Override
-        protected boolean visit(IType currentType) throws CoreException {
-            List<IAssociation> associations = currentType.getAssociations();
-            for (IAssociation aAssociation : associations) {
-                if (aAssociation.getSubsettedDerivedUnion().equals(derivedUnion.getName())) {
-                    foundSubset = true;
-                    return false;
-                }
-            }
-            if (currentType.equals(derivedUnion.getType())) {
-                return false;
-            }
-            return true;
-        }
-
-        public boolean isSubsetFound() {
-            return foundSubset;
         }
     }
 
@@ -152,6 +115,43 @@ public class XDerivedUnionAssociation extends XAssociation {
      */
     public boolean generateGetNumOfInternalSuperCall(XClass xClass) {
         return !isDefinedIn(xClass) && isImplementedInSuperclass(xClass);
+    }
+
+    /**
+     * Searches the given type (and the super type hierarchy) for subsets of the derived union
+     * specified when creating the visitor.
+     * 
+     */
+    private static class FindSubsetOfDerivedUnionVisitor extends TypeHierarchyVisitor<IType> {
+
+        private final IAssociation derivedUnion;
+
+        private boolean foundSubset = false;
+
+        public FindSubsetOfDerivedUnionVisitor(IAssociation derivedUnion, IIpsProject ipsProject) {
+            super(ipsProject);
+            this.derivedUnion = derivedUnion;
+        }
+
+        @Override
+        protected boolean visit(IType currentType) throws CoreException {
+            List<IAssociation> associations = currentType.getAssociations();
+            for (IAssociation aAssociation : associations) {
+                if (aAssociation.getSubsettedDerivedUnion() != null
+                        && aAssociation.getSubsettedDerivedUnion().equals(derivedUnion.getName())) {
+                    foundSubset = true;
+                    return false;
+                }
+            }
+            if (currentType.equals(derivedUnion.getType())) {
+                return false;
+            }
+            return true;
+        }
+
+        public boolean isSubsetFound() {
+            return foundSubset;
+        }
     }
 
 }

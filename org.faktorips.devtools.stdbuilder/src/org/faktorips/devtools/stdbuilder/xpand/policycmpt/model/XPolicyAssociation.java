@@ -51,7 +51,7 @@ public class XPolicyAssociation extends XAssociation {
         if (super.isDerived()) {
             return true;
         }
-        if (isCompositionDetailToMaster()) {
+        if (isCompositionDetailToMaster() && !isSharedAssociation()) {
             return getInverseAssociation().isDerivedUnion();
         }
         return false;
@@ -69,36 +69,32 @@ public class XPolicyAssociation extends XAssociation {
      * </ul>
      */
     public boolean isGenerateField() {
-        return (isOneToMany() || !isOneToMany() && !isCompositionDetailToMaster()) && !isDerivedUnion();
+        if (isDerived()) {
+            return false;
+        } else {
+            return !isSharedAssociationImplementedInSuperclass();
+        }
     }
 
     /**
-     * Returns true if a (normal) getter needs to be generated for this association.
-     * 
+     * Returns true if a <em>NORMAL</em> getter needs to be generated for this association. Maybe an
+     * getter for the derived union is still generated, depending on the list of derived union
+     * associations get from {@link XPolicyCmptClass#getSubsettedDerivedUnions()} or
+     * {@link XPolicyCmptClass#getDetailToMasterDerivedUnionAssociations()}
      */
     public boolean isGenerateGetter() {
-        if (isCompositionDetailToMaster()) {
-            if (isSharedAssociation()) {
-                // FIXME @Corny in methode auslagern e.g. isTopLevelSharedAssociation() oder
-                // isRootSharedAssociation()
-                try {
-                    IPolicyCmptTypeAssociation associationWithSameName = getAssociation()
-                            .findSuperAssociationWithSameName(getIpsProject());
-                    return (associationWithSameName == null || !associationWithSameName.isSharedAssociation());
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
-            } else {
-                try {
-                    IPolicyCmptTypeAssociation superAssociationWithSameName = getAssociation()
-                            .findSuperAssociationWithSameName(getIpsProject());
-                    return superAssociationWithSameName == null;
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+        if (isDerived() || isSharedAssociation()) {
+            return false;
+        } else if (isCompositionDetailToMaster()) {
+            try {
+                IPolicyCmptTypeAssociation associationWithSameName = getAssociation().findSuperAssociationWithSameName(
+                        getIpsProject());
+                return associationWithSameName == null;
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
             }
         } else {
-            return !isDerived();
+            return true;
         }
     }
 
@@ -369,13 +365,26 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
-     * Returns <code>true</code> if this association is the inverse of a derived union association.
-     * <code>false</code> else.
+     * Returns true if this is a shared association that is already implemented in super class. If
+     * this is no shared association this method always returns false.
      * 
-     * @throws NullPointerException if this association has no inverse association.
+     * @return True if this is a shared association and it is already implemented in a super class.
+     *         Returns false if it is no shared association or it is not already implement
      */
-    public boolean isInverseOfADerivedUnion() {
-        return isSharedAssociation() || getInverseAssociation().isDerivedUnion();
+    public boolean isSharedAssociationImplementedInSuperclass() {
+        if (isSharedAssociation()) {
+            try {
+                IPolicyCmptTypeAssociation superAssociationWithSameName = getAssociation()
+                        .findSuperAssociationWithSameName(getIpsProject());
+                XPolicyAssociation superAssociationNode = getModelNode(superAssociationWithSameName,
+                        XPolicyAssociation.class);
+                return !superAssociationNode.isDerived();
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -479,4 +488,33 @@ public class XPolicyAssociation extends XAssociation {
     private String getMethodNameSetInternalUncapitalized() {
         return "set" + getName(false) + "Internal";
     }
+
+    // @Override
+    // public Set<XDerivedUnionAssociation> getSubsettedDerivedUnions() {
+    // if (isMasterToDetail() && isSubsetOfADerivedUnion()) {
+    // return super.getSubsettedDerivedUnions();
+    // } else if (isCompositionDetailToMaster()) {
+    // LinkedHashSet<XDerivedUnionAssociation> result = new
+    // LinkedHashSet<XDerivedUnionAssociation>();
+    // IPolicyCmptTypeAssociation masterToDetailAssociation;
+    // try {
+    // if (isSharedAssociation()) {
+    // masterToDetailAssociation = getAssociation().findSharedAssociationHost(getIpsProject())
+    // .findInverseAssociation(getIpsProject());
+    // } else {
+    // masterToDetailAssociation = getAssociation().findInverseAssociation(getIpsProject());
+    // }
+    // IPolicyCmptTypeAssociation derivedUnion =
+    // (IPolicyCmptTypeAssociation)masterToDetailAssociation
+    // .findSubsettedDerivedUnion(getIpsProject());
+    // if
+    //
+    // } catch (CoreException e) {
+    // throw new CoreRuntimeException(e);
+    // }
+    // return result;
+    // }
+    // throw new RuntimeException("The association " + getAssociation() +
+    // " does not supports derived unions");
+    // }
 }

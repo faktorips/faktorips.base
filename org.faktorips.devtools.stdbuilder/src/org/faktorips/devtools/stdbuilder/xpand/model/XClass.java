@@ -265,7 +265,8 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         for (T association : associations) {
             try {
                 if (association.isSubsetOfADerivedUnion()) {
-                    IAssociation subsettedDerivedUnion = association.findSubsettedDerivedUnion(getIpsProject());
+                    IAssociation subsettedDerivedUnion = association.findSubsettedDerivedUnion(association
+                            .getIpsProject());
                     if (associationClass.isAssignableFrom(subsettedDerivedUnion.getClass())) {
                         @SuppressWarnings("unchecked")
                         // safe cast due to subclass check above
