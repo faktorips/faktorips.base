@@ -30,7 +30,7 @@
 
 «DEFINE memberField FOR XPolicyAttribute-»
 	«IF generateField-»
-		«IF constant-»
+		«IF constant && !published-»
 			/**
 			 * «localizedJDoc("FIELD_ATTRIBUTE_CONSTANT", name)»
 			 *
