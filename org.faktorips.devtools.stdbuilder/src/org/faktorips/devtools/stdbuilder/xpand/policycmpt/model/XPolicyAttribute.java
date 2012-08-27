@@ -90,7 +90,7 @@ public class XPolicyAttribute extends XAttribute {
      * Returns true for all attributes except for constant and overridden attributes.
      */
     public boolean isGenerateGetter() {
-        return !isConstant() && !isOverwrite();
+        return !isConstant() && (!isOverwrite() || isDerived());
     }
 
     /**

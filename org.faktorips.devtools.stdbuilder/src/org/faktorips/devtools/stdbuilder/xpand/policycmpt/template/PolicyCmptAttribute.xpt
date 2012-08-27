@@ -37,7 +37,7 @@
 			 * @generated
 			 */
 			public static final «javaClassName» «field(fieldName)» = «defaultValueCode»;
-		«ELSE-»
+		«ELSEIF !constant-»
 			/**
 			 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
 			 *
