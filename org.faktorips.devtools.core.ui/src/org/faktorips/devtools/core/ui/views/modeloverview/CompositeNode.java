@@ -15,21 +15,17 @@ package org.faktorips.devtools.core.ui.views.modeloverview;
 
 import java.util.List;
 
-/* TODO CODE-REVIEW FIPS-1194: package-private sollte reichen */
-public class CompositeNode extends AbstractStrucureNode {
+class CompositeNode extends AbstractStructureNode {
 
     /**
-     * Creates a {@link CompositeNode} with a mandatory parent {@link ComponentNode} and a List of
+     * Creates a {@link CompositeNode} with a mandatory parent {@link ComponentNode} and a {@link List} of
      * mandatory <tt>children</tt>.
      * 
-     * @param parent the parent, this parameter must not be <tt>null</tt>.
-     * @param children a list of {@link ComponentNode component nodes}, this list must not be
-     *            <tt>null</tt> or empty.
-     * @throws NullPointerException if one of the parameters is <tt>null</tt> or <tt>children</tt>
-     *             is empty.
+     * @param parent the parent, this parameter must not be {@code null}.
+     * @throws NullPointerException if one of the parameters is {@code null} or <tt>children</tt> is
+     *             empty.
      */
     public CompositeNode(ComponentNode parent, List<ComponentNode> children) {
         super(parent, children);
     }
-
 }

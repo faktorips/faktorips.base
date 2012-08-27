@@ -15,30 +15,14 @@ package org.faktorips.devtools.core.ui.views.modeloverview;
 
 import java.util.List;
 
-/* TODO CODE-REVIEW FIPS-1194: package-private sollte reichen */
-public interface IModelOverviewNode {
-
-    /*
-     * TODO CODE-REVIEW FIPS-1194: Wenn im @return nichts besonderes mehr steht, das @return bitte
-     * weglassen. Das null bzw. empty list hier einfach noch in die Zusammenfassung mit
-     * reinschreiben.
+interface IModelOverviewNode {
+    /**
+     * Returns all children of this node or an empty {@link List} if there are no children.
      */
-
-    /* TODO CODE-REVIEW FIPS-1194: Auf Typen mit {@link} verweisen, statt mit <tt> hervorheben */
+    List<? extends IModelOverviewNode> getChildren();
 
     /**
-     * Returns all children of this node.
-     * 
-     * @return the children or an empty <tt>List</tt> if there are no children.
-     */
-    List<IModelOverviewNode> getChildren();
-
-    /* TODO CODE-REVIEW FIPS-1194: {@code null} statt <tt>null</tt> verwenden */
-    /**
-     * Returns the parent of this node.
-     * 
-     * @return the parent node or <tt>null</tt> if it has no parent
+     * Returns the parent of this node or {@code null} if it has no parent.
      */
     IModelOverviewNode getParent();
-
 }

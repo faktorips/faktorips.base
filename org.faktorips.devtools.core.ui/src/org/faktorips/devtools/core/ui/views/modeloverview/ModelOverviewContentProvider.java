@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -29,17 +30,6 @@ import org.faktorips.util.ArgumentCheck;
 
 public class ModelOverviewContentProvider implements ITreeContentProvider {
 
-    /*
-     * TODO CODE-REVIEW FIPS-1194: Exception-Handling: CoreException als CoreRuntimeException
-     * weiterwerfen. Exceptions so früh wie möglich behandeln, also CoreExceptions nicht in privaten
-     * Methoden weiterwerfen sondern direkt in CoreRuntimeException umwandeln
-     */
-
-    /*
-     * TODO CODE-REVIEW FIPS-1194: Scope von Variablen minimieren: Effective Java Item 45
-     */
-
-    // this is a test comment
     @Override
     public Object[] getElements(Object inputElement) {
         // check input arguments
@@ -48,28 +38,53 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
                         "The input element for the ModelOverviewContentProvider.getElements(Oject) must be an instance of IIpsProject."); //$NON-NLS-1$
 
         List<IType> rootComponents;
-
-        // get all components from the input project
-        IIpsProject model = (IIpsProject)inputElement;
-        List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
-        IpsObjectType[] filter = { IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.POLICY_CMPT_TYPE };
+        IIpsProject iIpsProject;
         try {
-            List<IType> componentsFromSrcFiles;
-            model.findAllIpsSrcFiles(srcFiles, filter);
+            // get all components from the input project
+            IpsObjectType[] filter = { IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.POLICY_CMPT_TYPE };
+            List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
+
+            iIpsProject = (IIpsProject)inputElement;
+            iIpsProject.findAllIpsSrcFiles(srcFiles, filter);
 
             // get the root elements
-            componentsFromSrcFiles = getComponentsFromSrcFiles(srcFiles);
-            rootComponents = getRootComponentTypes(componentsFromSrcFiles);
+            rootComponents = getRootComponentTypes(getComponentsFromSrcFiles(srcFiles));
         } catch (CoreException e) {
-            throw new RuntimeException(e);
+            throw new CoreRuntimeException(e);
         }
 
-        /*
-         * TODO CODE-REVIEW FIPS-1194: Variablendeklaration array unnötig, kann direkt return
-         * aufrufen
-         */
-        Object[] array = encapsulateComponentTypes(rootComponents, null).toArray();
-        return array;
+        return encapsulateComponentTypes(rootComponents, iIpsProject).toArray();
+    }
+
+    private List<IType> getRootComponentTypes(List<IType> components) {
+        List<IType> rootComponents = new ArrayList<IType>();
+        for (IType iType : components) {
+            if (!iType.hasSupertype() && !isAssociationTarget(iType, components)) {
+                rootComponents.add(iType);
+            }
+        }
+        return rootComponents;
+    }
+
+    /**
+     * Takes a {@link List} of {@link IIpsSrcFile} and extracts the corresponding {@link List} of
+     * {@link IType}. It operates only on {@link List Lists} of {@link IIpsSrcFile} which represent
+     * {@link IType}
+     * 
+     * @param srcFiles a {@link List} of {@link IIpsSrcFile} which represents {@link IType} elements
+     * @return a {@link List} of the same size with corresponding {@link IType}, or an empty
+     *         {@link List} if the input {@link List} was empty
+     */
+    private List<IType> getComponentsFromSrcFiles(List<IIpsSrcFile> srcFiles) {
+        List<IType> components = new ArrayList<IType>(srcFiles.size());
+        for (IIpsSrcFile file : srcFiles) {
+            try {
+                components.add((IType)file.getIpsObject());
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return components;
     }
 
     @Override
@@ -84,49 +99,7 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getChildren(Object parentElement) {
-        List<IModelOverviewNode> childNodes = new ArrayList<IModelOverviewNode>();
-        if (parentElement instanceof ComponentNode) {
-            /*
-             * TODO CODE-REVIEW FIPS-1194: Der Code innerhalb dieses If-Zweiges sieht für mich stark
-             * danach aus als gehöre er nach ComponentNode.getChildren(),
-             * CompositeNode.getChildren() und SubtypeNode.getChildren()
-             */
-
-            /* TODO CODE-REVIEW FIPS-1194: Kommentare ausschließlich in englischer Sprache */
-            // hier die child-elemente auslesen, dann deren unterelemente bauen und hinzufügen
-
-            ComponentNode componentNode = (ComponentNode)parentElement;
-
-            /*
-             * TODO CODE-REVIEW FIPS-1194: Beispiel für eine Variablen deren Scope wesentlich
-             * verkleinert werden kann: subtypes
-             */
-            List<IType> subtypes = componentNode.getValue().searchSubtypes(false, false);
-            List<IType> associations;
-            try {
-                associations = getAssociations(componentNode.getValue());
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
-
-            /* TODO CODE-REVIEW FIPS-1194: Lesbarer: !associations.isEmpty() */
-            if (associations.size() > 0) {
-                List<ComponentNode> children = encapsulateComponentTypes(associations, componentNode);
-                CompositeNode compositeNode = new CompositeNode(componentNode, children);
-                childNodes.add(compositeNode);
-            }
-
-            if (subtypes.size() > 0) {
-                List<ComponentNode> children = encapsulateComponentTypes(subtypes, componentNode);
-                SubtypeNode subtypeNode = new SubtypeNode(componentNode, children);
-                childNodes.add(subtypeNode);
-            }
-
-        } else if (parentElement instanceof AbstractStrucureNode) {
-            IModelOverviewNode parentNode = (IModelOverviewNode)parentElement;
-            return parentNode.getChildren().toArray();
-        }
-        return childNodes.toArray();
+        return ((IModelOverviewNode)parentElement).getChildren().toArray();
     }
 
     @Override
@@ -140,51 +113,37 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
         return getChildren(element).length != 0;
     }
 
-    /*
-     * TODO CODE-REVIEW FIPS-1194: Private Methoden möglichst nahe dort positionieren, wo sie
-     * gebraucht werden. In diesem Fall direkt unter getElements()
+    /**
+     * Encapsulates a {@link List} of {@link IType ITypes} into a {@link List} of
+     * {@link ComponentNode ComponentNodes}.
+     * 
+     * @param components the elements which should be encapsulated
+     * @return a {@link List} of {@link ComponentNode ComponenteNodes}
      */
-    private List<IType> getRootComponentTypes(List<IType> components) throws CoreException {
-        List<IType> rootComponents = new ArrayList<IType>();
-        for (IType iType : components) {
-            if (!iType.hasSupertype() && !isAssociationTarget(iType.getQualifiedName(), components)) {
-                rootComponents.add(iType);
-            }
-        }
-        return rootComponents;
-    }
-
-    /*
-     * TODO CODE-REVIEW FIPS-1194: Kommentare, welche beschreiben was eine Methode macht, als
-     * Javadoc anstatt gewöhnlichem Kommentar machen
-     */
-    // Encapsulates a list of arbitrary ITypes into a List of ComponentNodes
-    private List<ComponentNode> encapsulateComponentTypes(List<IType> components, ComponentNode parent) {
+    protected static List<ComponentNode> encapsulateComponentTypes(List<IType> components, IIpsProject rootProject) {
         List<ComponentNode> componentNodes = new ArrayList<ComponentNode>();
 
         for (IType component : components) {
-            componentNodes.add(new ComponentNode(component, parent));
+            componentNodes.add(new ComponentNode(component, null, rootProject));
         }
 
         return componentNodes;
     }
 
-    // Gets the PolicyCmpTypes and ProductCmptTypes from a list of IIpsSrcFiles
-    private List<IType> getComponentsFromSrcFiles(List<IIpsSrcFile> srcFiles) throws CoreException {
-        List<IType> components = new ArrayList<IType>(srcFiles.size());
-        for (IIpsSrcFile file : srcFiles) {
-            IType ipsObject = (IType)file.getIpsObject();
-            components.add(ipsObject);
-        }
-        return components;
-    }
-
-    // checks if target is contained in the associations from the components list
-    private boolean isAssociationTarget(String target, List<IType> components) throws CoreException {
+    /**
+     * This method checks if an {@link IType} is targeted by an {@link IAssociation}.
+     * 
+     * @param target the {@link IType} which should be checked on incoming associations
+     * @param components a {@link List} of {@link IType} which define the scope of associations that
+     *            will be checked
+     * @return {@code true}, if any association is directed towards the provided target, otherwise
+     *         {@code false}
+     */
+    private boolean isAssociationTarget(IType target, List<IType> components) {
         for (IType component : components) {
             List<IType> associations = getAssociations(component);
             for (IType association : associations) {
-                if (association.getQualifiedName().equals(target)) {
+                if (association.getQualifiedName().equals(target.getQualifiedName())) {
                     return true;
                 }
             }
@@ -192,29 +151,29 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
         return false;
     }
 
-    /* TODO CODE-REVIEW FIPS-1194: Keine neuen Warnings einchecken */
     /**
-     * Returns a List of {@link IType component types} which are associated to this {@link IType}
-     * component type. The only {@link AssociationType association types} which will be returned are
-     * {@link AssociationType}.COMPOSITION_MASTER_TO_DETAIL an {@link AssociationType}.AGGREGATION.
+     * Returns a {@link List} of {@link IType component types} which are associated to this
+     * {@link IType} component type. The only {@link AssociationType association types} which will
+     * be returned are {@link AssociationType}.COMPOSITION_MASTER_TO_DETAIL an
+     * {@link AssociationType}.AGGREGATION, that means only associations which are directed away
+     * from the argument <tt>object</tt>.
      * 
-     * @param object
-     * @return a list of associated {@link IType}s
-     * @throws CoreException
+     * @param rootElement for which the outgoing associations should be returned
+     * @return a {@link List} of associated {@link IType}s
      */
-    private List<IType> getAssociations(IType object) throws CoreException {
+    protected static List<IType> getAssociations(IType rootElement) {
         List<IType> associations = new ArrayList<IType>();
 
-        // wie wichtig ist diese Methode? Erfuellt nicht findAllAssociations() den gewuenschten
-        // Zweck
-        // siehe auch isAssociationTarget!
-
-        List<IAssociation> findAssociations = object.findAllAssociations(object.getIpsProject());
-        for (IAssociation association : findAssociations) {
-            if (association.getAssociationType().equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)
-                    || association.getAssociationType().equals(AssociationType.AGGREGATION)) {
-                associations.add(association.findTarget(association.getIpsProject()));
+        try {
+            List<IAssociation> findAssociations = rootElement.getAssociations();
+            for (IAssociation association : findAssociations) {
+                if (association.getAssociationType().equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)
+                        || association.getAssociationType().equals(AssociationType.AGGREGATION)) {
+                    associations.add(association.findTarget(association.getIpsProject()));
+                }
             }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
         return associations;
     }
