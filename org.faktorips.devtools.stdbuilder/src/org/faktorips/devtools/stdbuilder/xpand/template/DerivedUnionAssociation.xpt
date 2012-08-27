@@ -28,9 +28,15 @@
  			«IF subsetAssociation.oneToMany-»
      			result.addAll(«subsetAssociation.methodNameGetter»());
      		«ELSE-»
+     			«IF productCmptTypeAssociation-»
+		        if («subsetAssociation.fieldName» != null) {
+     				result.add(«subsetAssociation.methodNameGetter»());
+     			}
+     			«ELSE-»
 		        if («subsetAssociation.methodNameGetter»() != null) {
      				result.add(«subsetAssociation.methodNameGetter»());
      			}
+     			«ENDIF-»
      		«ENDIF-»
      	«ENDFOREACH-»
      	return result;

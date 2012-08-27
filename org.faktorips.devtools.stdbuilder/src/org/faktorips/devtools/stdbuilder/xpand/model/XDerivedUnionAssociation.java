@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
@@ -115,6 +116,15 @@ public class XDerivedUnionAssociation extends XAssociation {
      */
     public boolean generateGetNumOfInternalSuperCall(XClass xClass) {
         return !isDefinedIn(xClass) && isImplementedInSuperclass(xClass);
+    }
+
+    /**
+     * TODO Only needed because of some strange code that was generated in the old code generator.
+     * FIPS-1141
+     * 
+     */
+    public boolean isProductCmptTypeAssociation() {
+        return getTypeOfAssociation() instanceof IProductCmptType;
     }
 
     /**

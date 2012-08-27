@@ -218,9 +218,14 @@ public class XPolicyAssociation extends XAssociation {
      * valid composition ( {@link #isMasterToDetail()} )
      */
     public boolean isGenerateCodeToSynchronizeInverseCompositionForRemove() {
-        // TODO FIPS-1141 better but not in old code generator:
-        // (isMasterToDetail() || (isTypeAssociation()) && hasInverseAssociation();
-        return isMasterToDetail() || (isTypeAssociation() && hasInverseAssociation());
+        // TODO FIPS-1141 correct but not in old code generator:
+        // return (isMasterToDetail() || isTypeAssociation()) && hasInverseAssociation();
+        try {
+            return (hasInverseAssociation() || getAssociation().isComposition()
+                    && ((IPolicyCmptType)getTargetType()).isDependantType());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     /**
