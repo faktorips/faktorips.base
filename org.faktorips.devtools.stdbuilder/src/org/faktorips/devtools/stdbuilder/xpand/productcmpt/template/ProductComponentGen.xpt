@@ -85,8 +85,8 @@
 		        «EXPAND ProductAttribute::initAttributeFromXML FOREACH attributes-»
 		        «EXPAND DefaultAndAllowedValues::initAttributeFromXML FOREACH configuredAttributes-»
 		    }
-			
-«IF associations.size > 0»
+	
+«IF containsNotDerivedAssociations»
 		    /**
 		     * @generated
 		     */
@@ -123,7 +123,7 @@
 		        «ENDIF-»
 		    }
 		   
-		«IF associations.size > 0»
+		«IF  containsNotDerivedAssociations»
 		    /**
 		     * @generated
 		     */

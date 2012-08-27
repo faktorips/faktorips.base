@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
@@ -128,8 +129,6 @@ public abstract class XProductClass extends XClass {
      * changableAssociations you could specify whether you want the associations that are changeable
      * over time or not changeable (sometimes called static) associations.
      * <p>
-     * This method does not return any derived union association.
-     * <p>
      * This method needs to be final because it may be called in constructor
      * 
      * @see #getProductDerivedUnionAssociations(boolean)
@@ -138,8 +137,16 @@ public abstract class XProductClass extends XClass {
      *            to get only not changeable over time associations
      * @return The list of associations without derived unions
      */
-    protected final Set<IProductCmptTypeAssociation> getProductAssociations(boolean changableAssociations) {
-        return getProductAssociations(false, changableAssociations);
+    protected Set<IProductCmptTypeAssociation> getProductAssociations(boolean changableAssociations) {
+        Set<IProductCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IProductCmptTypeAssociation>();
+        List<IProductCmptTypeAssociation> allAssociations = getType().getProductCmptTypeAssociations();
+        for (IProductCmptTypeAssociation assoc : allAssociations) {
+            // TODO FIPS-989 Associations supporting changeOverTime
+            if (changableAssociations) {
+                resultingAssociations.add(assoc);
+            }
+        }
+        return resultingAssociations;
     }
 
     /**
@@ -156,21 +163,8 @@ public abstract class XProductClass extends XClass {
      * @return The list of derived union associations
      */
     protected final Set<IProductCmptTypeAssociation> getProductDerivedUnionAssociations(boolean changableAssociations) {
-        Set<IProductCmptTypeAssociation> notDerivedUnionAssociations = getProductAssociations(changableAssociations);
-        Set<IProductCmptTypeAssociation> resultingAssociations = findSubsettedDerivedUnions(
-                notDerivedUnionAssociations, IProductCmptTypeAssociation.class);
-        return resultingAssociations;
-    }
-
-    private Set<IProductCmptTypeAssociation> getProductAssociations(boolean derivedUnion, boolean changableAssociations) {
-        Set<IProductCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IProductCmptTypeAssociation>();
-        List<IProductCmptTypeAssociation> allAssociations = getType().getProductCmptTypeAssociations();
-        for (IProductCmptTypeAssociation assoc : allAssociations) {
-            // TODO FIPS-989
-            if (assoc.isDerivedUnion() == derivedUnion && changableAssociations) {
-                resultingAssociations.add(assoc);
-            }
-        }
+        Set<IProductCmptTypeAssociation> resultingAssociations = findSubsettedDerivedUnions(getAssociations(),
+                IProductCmptTypeAssociation.class);
         return resultingAssociations;
     }
 
@@ -263,4 +257,13 @@ public abstract class XProductClass extends XClass {
     @Override
     public abstract Set<? extends XProductClass> getClassHierarchy();
 
+    // TODO test
+    public boolean isContainsNotDerivedAssociations() {
+        for (XAssociation association : getAssociations()) {
+            if (!association.isDerived()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

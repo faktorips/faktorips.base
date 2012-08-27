@@ -19,7 +19,6 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
@@ -145,15 +144,14 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
      * @throws RuntimeException if this is not a subset of a derived union.
      * @throws NullPointerException if no derived union could be found for this subset.
      */
-    XDerivedUnionAssociation getSubsettedDerivedUnion() {
+    protected XDerivedUnionAssociation getSubsettedDerivedUnion() {
         if (!isSubsetOfADerivedUnion()) {
             throw new RuntimeException(NLS.bind(
                     "The association {0} is not a subset of a derived union. Unable to determine derived union.",
                     getAssociation()));
         }
         try {
-            IPolicyCmptTypeAssociation derivedUnion = (IPolicyCmptTypeAssociation)getAssociation()
-                    .findSubsettedDerivedUnion(getIpsProject());
+            IAssociation derivedUnion = getAssociation().findSubsettedDerivedUnion(getIpsProject());
             if (derivedUnion == null) {
                 throw new NullPointerException(
                         NLS.bind("No derived union found for association {0}.", getAssociation()));

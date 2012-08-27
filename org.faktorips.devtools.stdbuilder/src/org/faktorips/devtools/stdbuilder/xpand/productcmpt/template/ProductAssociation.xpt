@@ -217,9 +217,11 @@
 	    «overrideAnnotation(false)»
 	    public «IProductComponentLink("? extends " + IProductComponent())» «getLink("String linkName", IProductComponent() + " target")» {
 	    	«FOREACH associations AS this-»
-		        if ("«name»".equals(linkName)) {
-		            return «methodNameGetLinkFor»((«targetInterfaceName»)target);
-		        }
+				«IF !derived-»
+			        if ("«name»".equals(linkName)) {
+			            return «methodNameGetLinkFor»((«targetInterfaceName»)target);
+			        }
+		        «ENDIF-»
 		    «ENDFOREACH-»
 		    «IF hasSupertype() -»
 		        return super.«getLink("linkName", "target")»;
@@ -244,13 +246,15 @@
 			new «ArrayList(IProductComponentLink("? extends " + IProductComponent()))»();        	
         «ENDIF-»
     	«FOREACH associations AS this-»
-	    	«IF oneToMany-»
-	    		list.addAll(«methodNameGetLinksFor»());
-	    	«ELSE-»
-	    		if («methodNameGetLinksFor»() != null) {
-	    			list.add(«methodNameGetLinksFor»());
-	    		}
-	    	«ENDIF-»
+			«IF !derived-»
+		    	«IF oneToMany-»
+		    		list.addAll(«methodNameGetLinksFor»());
+		    	«ELSE-»
+		    		if («methodNameGetLinksFor»() != null) {
+		    			list.add(«methodNameGetLinksFor»());
+		    		}
+		    	«ENDIF-»
+		    «ENDIF-»
         «ENDFOREACH-»
 	    «IF hasSupertype() -»
 	        return list;
@@ -261,6 +265,7 @@
 «ENDDEFINE»
 
 «DEFINE doInitReferencesFromXmlPart FOR XProductAssociation-»
+	«IF !derived-»
 	   associationElements = elementsMap.get("«name»");
 	    if (associationElements != null) {
 			«IF oneToMany-»
@@ -276,9 +281,11 @@
 	            «fieldName».initFromXml(element);
 			«ENDIF-»
 	    }
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE writeReferencesToXmlPart FOR XProductAssociation-»
+	«IF !derived-»
 		«IF oneToMany-»
 		    for («IProductComponentLink(targetInterfaceName)» link : «fieldName».values()) {
 		        element.appendChild(((«IXmlPersistenceSupport()»)link).«toXml("element.getOwnerDocument()")»);
@@ -288,6 +295,7 @@
 				element.appendChild(((«IXmlPersistenceSupport()»)«fieldName»).«toXml("element.getOwnerDocument()")»);
 			}
 		«ENDIF-»
+	«ENDIF-»
 «ENDDEFINE»
 
 «REM»    

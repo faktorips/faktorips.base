@@ -259,23 +259,18 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      * @param associations all associations defined for this class
      * @param associationClass the requires association class
      */
-    protected <T extends IAssociation> Set<T> findSubsettedDerivedUnions(Collection<T> associations,
+    protected <T extends IAssociation, X extends XAssociation> Set<T> findSubsettedDerivedUnions(Collection<X> associations,
             Class<T> associationClass) {
         Set<T> resultingAssociations = new LinkedHashSet<T>();
-        for (T association : associations) {
-            try {
-                if (association.isSubsetOfADerivedUnion()) {
-                    IAssociation subsettedDerivedUnion = association.findSubsettedDerivedUnion(association
-                            .getIpsProject());
-                    if (associationClass.isAssignableFrom(subsettedDerivedUnion.getClass())) {
-                        @SuppressWarnings("unchecked")
-                        // safe cast due to subclass check above
-                        T typedDU = (T)subsettedDerivedUnion;
-                        resultingAssociations.add(typedDU);
-                    }
+        for (X association : associations) {
+            if (association.isSubsetOfADerivedUnion()) {
+                XAssociation subsettedDerivedUnionNode = association.getSubsettedDerivedUnion();
+                if (associationClass.isAssignableFrom(subsettedDerivedUnionNode.getAssociation().getClass())) {
+                    @SuppressWarnings("unchecked")
+                    // safe cast due to subclass check above
+                    T typedDU = (T)subsettedDerivedUnionNode.getAssociation();
+                    resultingAssociations.add(typedDU);
                 }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
             }
         }
         return resultingAssociations;
