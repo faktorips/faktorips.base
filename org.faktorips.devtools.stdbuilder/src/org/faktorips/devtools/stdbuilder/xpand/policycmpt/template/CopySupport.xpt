@@ -89,7 +89,7 @@
 «DEFINE copyAttributes FOR XPolicyCmptClass-»
 	«FOREACH attributesToCopy AS this-»
 		«IF considerInCopySupport-»
-	        concreteCopy.«fieldName» = «fieldName»;
+	        concreteCopy.«fieldName» = «getReferenceOrSafeCopyIfNecessary(fieldName)»;
 	    «ENDIF-»
 	«ENDFOREACH-»
 «ENDDEFINE»

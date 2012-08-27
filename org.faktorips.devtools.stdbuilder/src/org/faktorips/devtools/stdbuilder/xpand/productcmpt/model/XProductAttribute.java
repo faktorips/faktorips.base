@@ -76,10 +76,16 @@ public class XProductAttribute extends XAttribute {
     @Override
     public String getDefaultValueCode() {
         if (isMultiValue()) {
-            return getNewInstance();
+            return getNewMultiValueInstance();
         } else {
             return super.getDefaultValueCode();
         }
+    }
+
+    public String getNewMultiValueInstance() {
+        JavaCodeFragment fragment = getDatatypeHelper().newInstance("");
+        addImport(fragment.getImportDeclaration());
+        return fragment.getSourcecode();
     }
 
     public boolean isMultiValue() {

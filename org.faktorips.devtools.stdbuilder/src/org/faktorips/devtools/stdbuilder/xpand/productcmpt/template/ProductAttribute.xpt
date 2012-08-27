@@ -59,7 +59,7 @@
         	«IF javaClassName == "List<String>"-»
 	            «javaClassName» valueList = «MultiValueXmlHelper()».«getValuesFromXML("configElement")»;
 	        «ELSE-»
-	            «javaClassName» valueList = «newInstance»;
+	            «javaClassName» valueList = «newMultiValueInstance»;
             	«LET singleValueOfMultiValueAttribute AS this-»
 		            «List_("String")» stringList = «MultiValueXmlHelper()».«getValuesFromXML("configElement")»;
 		            for (String stringValue : stringList) {

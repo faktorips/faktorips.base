@@ -142,12 +142,6 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return DatatypeUtil.isEnumTypeWithSeparateContent(getDatatype());
     }
 
-    public String getNewInstance() {
-        JavaCodeFragment fragment = getDatatypeHelper().newInstance("");
-        addImport(fragment.getImportDeclaration());
-        return fragment.getSourcecode();
-    }
-
     public String getToStringExpression(String memberVarName) {
         JavaCodeFragment fragment = getDatatypeHelper().getToStringExpression(memberVarName);
         addImport(fragment.getImportDeclaration());

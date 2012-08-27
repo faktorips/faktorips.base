@@ -85,7 +85,7 @@
 		«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
 		public void «method(methodNameSetter, javaClassName, "newValue")»{
 			«EXPAND PropertyChangeSupport::storeOldValue-»
-			this.«fieldName» = newValue;
+			this.«fieldName» = «getReferenceOrSafeCopyIfNecessary("newValue")»;
 			«EXPAND PropertyChangeSupport::notify-»
 		}
 	«ENDIF-»
@@ -103,7 +103,7 @@
 			«IF productRelevant-»
 				return «methodNameGetProductCmptGeneration»().«methodNameGetAllowedValuesFor»(context);
 			«ELSE-»
-				return «constantNameValueSet»;
+				return «IF overwrite»«typeName».«ENDIF»«constantNameValueSet»;
 			«ENDIF-»
 		}
 	«ENDIF-»

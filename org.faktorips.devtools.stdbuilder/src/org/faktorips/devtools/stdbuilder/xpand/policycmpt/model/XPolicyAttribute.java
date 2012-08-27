@@ -21,6 +21,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -299,6 +300,17 @@ public class XPolicyAttribute extends XAttribute {
         return getAttribute().getAttributeType() == AttributeType.DERIVED_ON_THE_FLY;
     }
 
+    /**
+     * Returns the name of the type where this interface is defined. For published attributes this
+     * is the name of the interface (if there are any generated) for public interfaces it is the
+     * name of the implementation.
+     * 
+     */
+    public String getTypeName() {
+        return getXPolicyCmptClass().getSimpleName(
+                BuilderAspect.getValue(isGeneratingPublishedInterfaces() && isPublished()));
+    }
+
     public String getProductGenerationClassOrInterfaceName() {
         return getXPolicyCmptClass().getProductGenerationClassOrInterfaceName();
     }
@@ -445,7 +457,8 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public String getMethodNameGetDefaultValue() {
-        return "getDefaultValue" + StringUtils.capitalize(getFieldName());
+        return getJavaNamingConvention().getGetterMethodName("DefaultValue" + StringUtils.capitalize(getFieldName()),
+                getDatatype());
     }
 
     public String getMethodNameComputeAttribute() {
