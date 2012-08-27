@@ -109,7 +109,7 @@
 			            «targetClassName» «copySupportLoopVarName» = («targetClassName»)it.next();
 			            «targetClassName» «copySupportCopyVarName» = («targetClassName»)«copySupportLoopVarName».newCopyInternal(copyMap);
 			            «IF setInverseAssociationInCopySupport-»
-				            «copySupportCopyVarName».«methodNameInverseAssociationSetInternal»(concreteCopy);
+				            «copySupportCopyVarName».«inverseAssociation.methodNameSetInternal»(concreteCopy);
 			           	«ENDIF-»
 			            concreteCopy.«fieldName».add(«copySupportCopyVarName»);
 			            copyMap.put(«copySupportLoopVarName», «copySupportCopyVarName»);
@@ -118,7 +118,7 @@
 			        if («fieldName» != null) { «REM» TODO cast ohne published interfaces nicht noetig«ENDREM»
 			            concreteCopy.«fieldName» = («targetClassName»)«fieldName».newCopyInternal(copyMap);
 			            «IF setInverseAssociationInCopySupport-»
-			            	concreteCopy.«fieldName».«methodNameInverseAssociationSetInternal»(concreteCopy);
+			            	concreteCopy.«fieldName».«inverseAssociation.methodNameSetInternal»(concreteCopy);
 			           	«ENDIF-»
 			            copyMap.put(«fieldName», concreteCopy.«fieldName»);
 			        }

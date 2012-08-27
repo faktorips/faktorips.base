@@ -125,7 +125,7 @@
 				/**
 			     * @generated
 			     */
-			    public void «methodNameSetInternal»(«targetInterfaceName» newParent) {
+			    public void «method(methodNameSetInternal,targetInterfaceName, "newParent")» {
 			        if («methodNameGetSingle»() == newParent) {«REM»parent association can only be 1to1. getSingle can be used.«ENDREM»
 			            return;
 			        }
@@ -175,12 +175,14 @@
 
 «DEFINE setterMethodCode FOR XPolicyAssociation-»
 	«IF masterToDetail-»
-        if («fieldName» != null) {
-            «EXPAND synchronizeInverseCompositionIfNecessaryForSet(false, fieldName, "null")-»
-        }
-        if (newObject != null) {
-            «EXPAND synchronizeInverseCompositionIfNecessaryForSet(true, "newObject", "this")-»
-        }
+		«IF generateCodeToSynchronizeInverseCompositionForSet-»
+	        if («fieldName» != null) {
+	            «EXPAND synchronizeInverseCompositionIfNecessaryForSet(false, fieldName, "null")-»
+	        }
+	        if (newObject != null) {
+	            «EXPAND synchronizeInverseCompositionIfNecessaryForSet(true, "newObject", "this")-»
+	        }
+        «ENDIF-»
         «fieldName» = «EXPAND castToImplementationIfNecessary» newObject;
     	«EXPAND synchronizeInverseAssociationIfNecessary(fieldName)-»
     «ENDIF-»
@@ -197,9 +199,7 @@
 «ENDDEFINE»
 
 «DEFINE synchronizeInverseCompositionIfNecessaryForSet(boolean cast, String varName, String newRef) FOR XPolicyAssociation-»
-	«IF generateCodeToSynchronizeInverseCompositionForSet-»
-		«IF cast»«EXPAND castIfNeccessary(varName)»«ELSE»«varName»«ENDIF».«methodNameInverseAssociationSetInternal»(«newRef»);
-    «ENDIF-»
+	«IF cast»«EXPAND castIfNeccessary(varName)»«ELSE»«varName»«ENDIF».«inverseAssociation.methodNameSetInternal»(«newRef»);
 «ENDDEFINE»
 
 «DEFINE cleanupOldReference(String varToCleanUp) FOR XPolicyAssociation-»
@@ -214,9 +214,9 @@
 
 «DEFINE cleanupOldReferenceInner(String varToCleanUp) FOR XPolicyAssociation-»
 	«IF inverseAssociation.oneToMany»
-		«varToCleanUp».«methodNameInverseAssociationRemove»(this);
+		«varToCleanUp».«inverseAssociation.methodNameRemove»(this);
     «ELSE-»
-		«varToCleanUp».«methodNameInverseAssociationSet»(null);    	
+		«varToCleanUp».«inverseAssociation.methodNameSetter»(null);    	
     «ENDIF-»
 «ENDDEFINE»
 
@@ -309,19 +309,19 @@
 
 «DEFINE synchronizeInverseCompositionIfNecessaryForAdd FOR XPolicyAssociation-»
 	«IF generateCodeToSynchronizeInverseCompositionForAdd-»
-		«EXPAND castIfNeccessary("objectToAdd")».«methodNameInverseAssociationSetInternal»(this);
+		«EXPAND castIfNeccessary("objectToAdd")».«inverseAssociation.methodNameSetInternal»(this);
     «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE synchronizeInverseAssociationIfNecessary(String objectToSynchronize) FOR XPolicyAssociation-»
 	«IF generateCodeToSynchronizeInverseAssociation-»
-		«IF oneToMany-»
-			if («EXPAND varNameNullCheckIfNecessary(objectToSynchronize)» !«objectToSynchronize».«methodNameInverseAssociationContains»(this)) {
-				«objectToSynchronize».«methodNameInverseAssociationAdd»(this);
+		«IF inverseAssociation.oneToMany-»
+			if («EXPAND varNameNullCheckIfNecessary(objectToSynchronize)» !«objectToSynchronize».«inverseAssociation.methodNameContains»(this)) {
+				«objectToSynchronize».«inverseAssociation.methodNameAdd»(this);
 			}
 	    «ELSE-»
-	    	if («EXPAND varNameNullCheckIfNecessary(objectToSynchronize)» «objectToSynchronize».«methodNameInverseAssociationGet»()!=this) {
-				«objectToSynchronize».«methodNameInverseAssociationSet»(this);
+	    	if («EXPAND varNameNullCheckIfNecessary(objectToSynchronize)» «objectToSynchronize».«inverseAssociation.methodNameGetter»()!=this) {
+				«objectToSynchronize».«inverseAssociation.methodNameSetter»(this);
 				«IF false-»
 				«REM» Der alte Codegenerator baut hier evtl. einen Cast ein:
 			        if (!varClassName.equals(getGenType().getQualifiedName(false))) {
@@ -338,7 +338,7 @@
 «ENDDEFINE»
 
 «DEFINE varNameNullCheckIfNecessary(String varName) FOR XPolicyAssociation-»
-	«IF !inverseAssociation.oneToMany-»
+	«IF !oneToMany-»
 		«varName» !=null &&
 	«ENDIF-»
 «ENDDEFINE»
@@ -378,9 +378,9 @@
 «DEFINE detachRemovedObject FOR XPolicyAssociation-»
 	«IF hasInverseAssociation()-»
 		«IF inverseAssociation.oneToMany-»
-			objectToRemove.«methodNameInverseAssociationRemove»(this);
+			objectToRemove.«inverseAssociation.methodNameRemove»(this);
 		«ELSE-»
-			«EXPAND castIfNeccessary("objectToRemove")».«methodNameInverseAssociationSetInternal»(null);
+			«EXPAND castIfNeccessary("objectToRemove")».«inverseAssociation.methodNameSetInternal»(null);
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
