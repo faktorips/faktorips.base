@@ -39,6 +39,7 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
      * TODO CODE-REVIEW FIPS-1194: Scope von Variablen minimieren: Effective Java Item 45
      */
 
+    // this is a test comment
     @Override
     public Object[] getElements(Object inputElement) {
         // check input arguments
