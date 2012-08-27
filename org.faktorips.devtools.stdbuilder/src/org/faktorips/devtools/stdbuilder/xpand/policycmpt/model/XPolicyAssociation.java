@@ -218,7 +218,9 @@ public class XPolicyAssociation extends XAssociation {
      * valid composition ( {@link #isMasterToDetail()} )
      */
     public boolean isGenerateCodeToSynchronizeInverseCompositionForRemove() {
-        return isMasterToDetail() || hasInverseAssociation();
+        // TODO FIPS-1141 better but not in old code generator:
+        // (isMasterToDetail() || (isTypeAssociation()) && hasInverseAssociation();
+        return isMasterToDetail() || (isTypeAssociation() && hasInverseAssociation());
     }
 
     /**

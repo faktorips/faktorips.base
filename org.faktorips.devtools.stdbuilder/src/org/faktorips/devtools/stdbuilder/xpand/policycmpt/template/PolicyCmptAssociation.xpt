@@ -321,16 +321,16 @@
 			}
 	    «ELSE-»
 	    	if («EXPAND varNameNullCheckIfNecessary(objectToSynchronize)» «objectToSynchronize».«inverseAssociation.methodNameGetter»()!=this) {
-				«objectToSynchronize».«inverseAssociation.methodNameSetter»(this);
 				«IF false-»
-				«REM» Der alte Codegenerator baut hier evtl. einen Cast ein:
-			        if (!varClassName.equals(getGenType().getQualifiedName(false))) {
-			            code.append("((");
-			            code.appendClassName(getGenType().getQualifiedName(false));
-			            code.append(")" + varName + ").");
-			        }
-			        Wird das fuer Derived Union auch mal verwendet, oder ist das ueberfluessig?
+				«REM» 
+					TODO unnötiger Cast und Fallunterscheidung!
+					«EXPAND castIfNeccessary(objectToSynchronize)»
 				«ENDREM»
+				«ENDIF-»
+				«IF oneToMany-»
+					«EXPAND castIfNeccessary(objectToSynchronize)».«inverseAssociation.methodNameSetter»(this);
+				«ELSE-»
+					«objectToSynchronize».«inverseAssociation.methodNameSetter»(this);
 				«ENDIF-»
 			}
 	    «ENDIF-»
@@ -361,10 +361,6 @@
     «ENDIF-»
 «ENDDEFINE»
 
-«REM»
-	Test nötig: Composition ohne inverse Relation
-		-> alter Generator sollte leeres if(){} aber kein detach generieren
-«ENDREM»
 «DEFINE removeAndDetach FOR XPolicyAssociation-»
 	«IF generateCodeToSynchronizeInverseCompositionForRemove-»
 		if («fieldName».remove(objectToRemove)) {
@@ -375,12 +371,17 @@
 	«ENDIF-»
 «ENDDEFINE»
 
+«REM» TODO FIPS-1141 (7): delete the «IF hasInverseAssociation()-» clause when fixed«ENDREM»
 «DEFINE detachRemovedObject FOR XPolicyAssociation-»
 	«IF hasInverseAssociation()-»
 		«IF inverseAssociation.oneToMany-»
 			objectToRemove.«inverseAssociation.methodNameRemove»(this);
 		«ELSE-»
-			«EXPAND castIfNeccessary("objectToRemove")».«inverseAssociation.methodNameSetInternal»(null);
+			«IF inverseAssociation.typeAssociation-»
+				«EXPAND castIfNeccessary("objectToRemove")».«inverseAssociation.methodNameSetter»(null);
+			«ELSE-»
+				«EXPAND castIfNeccessary("objectToRemove")».«inverseAssociation.methodNameSetInternal»(null);
+			«ENDIF-»
 		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
