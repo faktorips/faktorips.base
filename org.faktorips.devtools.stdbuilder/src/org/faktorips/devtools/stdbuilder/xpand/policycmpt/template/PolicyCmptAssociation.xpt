@@ -213,7 +213,7 @@
 «ENDDEFINE»
 
 «DEFINE cleanupOldReferenceInner(String varToCleanUp) FOR XPolicyAssociation-»
-	«IF inverseAssociation.oneToMany»
+	«IF inverseAssociation.oneToMany-»
 		«varToCleanUp».«inverseAssociation.methodNameRemove»(this);
     «ELSE-»
 		«varToCleanUp».«inverseAssociation.methodNameSetter»(null);    	
