@@ -62,7 +62,11 @@
         	«REM»Force empty line, imitate old generator«ENDREM»
         «ENDIF-»
      	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
-     		num += «subsetAssociation.methodNameGetNumOf»();
+     		«IF subsetAssociation.oneToMany-»
+     			num += «subsetAssociation.methodNameGetNumOf»();
+     		«ELSE-»
+		        num += «subsetAssociation.fieldName» == null ? 0 : 1;
+     		«ENDIF-»
      	«ENDFOREACH-»
         return num;
      }

@@ -170,22 +170,6 @@ public class XPolicyCmptClass extends XClass {
                 if (associations == null) {
                     List<IPolicyCmptTypeAssociation> associationsNeedToGenerate = getType()
                             .getPolicyCmptTypeAssociations();
-                    // for (Iterator<IPolicyCmptTypeAssociation> iterator =
-                    // associationsNeedToGenerate.iterator(); iterator
-                    // .hasNext();) {
-                    // IPolicyCmptTypeAssociation association = iterator.next();
-                    // if (association.isCompositionDetailToMaster()) {
-                    // try {
-                    // IPolicyCmptTypeAssociation superAssociationWithSameName = association
-                    // .findSuperAssociationWithSameName(getIpsProject());
-                    // if (superAssociationWithSameName != null) {
-                    // iterator.remove();
-                    // }
-                    // } catch (CoreException e) {
-                    // throw new CoreRuntimeException(e);
-                    // }
-                    // }
-                    // }
                     associations = initNodesForParts(associationsNeedToGenerate, XPolicyAssociation.class);
                 }
             }
@@ -279,7 +263,7 @@ public class XPolicyCmptClass extends XClass {
                     }
                 }
                 // This part handles the case that there is a derived union with the same name in
-                // super class that is not already
+                // super class that is not already part of the result.
                 if (association.getType() == getType() && !association.isSharedAssociation()
                         && !resultingNames.contains(association.getName())) {
                     IPolicyCmptTypeAssociation superAssociationWithSameName = association

@@ -90,7 +90,7 @@ public class XDerivedUnionAssociationTest {
     @Test
     public void testIsImplementedInSuperclass_superClassNotImplemented() throws Exception {
         IIpsProject ipsProject = mock(IIpsProject.class);
-        when(association.getIpsProject()).thenReturn(ipsProject);
+        when(xClass.getIpsProject()).thenReturn(ipsProject);
 
         IType superType = mock(IType.class);
         when(xDerivedUnionAssociation.getTypeOfAssociation()).thenReturn(superType);
@@ -105,7 +105,7 @@ public class XDerivedUnionAssociationTest {
     @Test
     public void testIsImplementedInSuperclass_superClassImplemented() throws Exception {
         IIpsProject ipsProject = mock(IIpsProject.class);
-        when(association.getIpsProject()).thenReturn(ipsProject);
+        when(xClass.getIpsProject()).thenReturn(ipsProject);
 
         IType superType = mock(IType.class);
         when(xDerivedUnionAssociation.getTypeOfAssociation()).thenReturn(superType);
@@ -133,7 +133,7 @@ public class XDerivedUnionAssociationTest {
     @Test
     public void testIsImplementedInSuperclass_transitiv() throws Exception {
         IIpsProject ipsProject = mock(IIpsProject.class);
-        when(association.getIpsProject()).thenReturn(ipsProject);
+        when(xClass.getIpsProject()).thenReturn(ipsProject);
 
         IType type = mock(IType.class);
         IType superType = mock(IType.class);
@@ -165,11 +165,9 @@ public class XDerivedUnionAssociationTest {
     }
 
     @Test
-    public void testIsImplementedInSuperclass_differentProjects() throws Exception {
-        // TODO der Test ist bisher der transitiv test. es muss noch ein test implementiert werden,
-        // in dem derived union und subset in unterschiedlichen Projekten liegen
+    public void testIsImplementedInSuperclass_checkProjects() throws Exception {
         IIpsProject ipsProject = mock(IIpsProject.class);
-        when(association.getIpsProject()).thenReturn(ipsProject);
+        when(xClass.getIpsProject()).thenReturn(ipsProject);
 
         IType type = mock(IType.class);
         IType superType = mock(IType.class);
@@ -179,9 +177,9 @@ public class XDerivedUnionAssociationTest {
         when(xDerivedUnionAssociation.getTypeOfAssociation()).thenReturn(superSuperSuperType);
 
         when(xClass.getType()).thenReturn(type);
-        when(type.findSupertype(any(IIpsProject.class))).thenReturn(superType);
-        when(superType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperType);
-        when(superSuperType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperSuperType);
+        when(type.findSupertype(ipsProject)).thenReturn(superType);
+        when(superType.findSupertype(ipsProject)).thenReturn(superSuperType);
+        when(superSuperType.findSupertype(ipsProject)).thenReturn(superSuperSuperType);
 
         IAssociation association2 = mock(IAssociation.class);
         when(association2.getSubsettedDerivedUnion()).thenReturn(DERIVED_UNION_NAME);

@@ -57,6 +57,10 @@ public class XPolicyAssociation extends XAssociation {
         return false;
     }
 
+    public boolean isQualified() {
+        return getAssociation().isQualified();
+    }
+
     /**
      * Returns <code>true</code> for:
      * <ul>
@@ -99,10 +103,10 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
-     * Returns true if a setter needs to be generated for this association
+     * Returns true if a setter needs to be generated for this association.
      */
     public boolean isGenerateSetter() {
-        return !isOneToMany() && !isInverseComposition() && !isDerived();
+        return !isOneToMany() && !isDerived();
     }
 
     /**
@@ -339,7 +343,11 @@ public class XPolicyAssociation extends XAssociation {
         return "create" + xPolicyCmptClass.getClassName();
     }
 
-    private XPolicyCmptClass getTargetPolicyCmptClass() {
+    /**
+     * Returns the generator model node of the target.
+     * 
+     */
+    public XPolicyCmptClass getTargetPolicyCmptClass() {
         try {
             IPolicyCmptType polCmptType = getAssociation().findTargetPolicyCmptType(getIpsProject());
             return getModelNode(polCmptType, XPolicyCmptClass.class);
@@ -489,32 +497,4 @@ public class XPolicyAssociation extends XAssociation {
         return "set" + getName(false) + "Internal";
     }
 
-    // @Override
-    // public Set<XDerivedUnionAssociation> getSubsettedDerivedUnions() {
-    // if (isMasterToDetail() && isSubsetOfADerivedUnion()) {
-    // return super.getSubsettedDerivedUnions();
-    // } else if (isCompositionDetailToMaster()) {
-    // LinkedHashSet<XDerivedUnionAssociation> result = new
-    // LinkedHashSet<XDerivedUnionAssociation>();
-    // IPolicyCmptTypeAssociation masterToDetailAssociation;
-    // try {
-    // if (isSharedAssociation()) {
-    // masterToDetailAssociation = getAssociation().findSharedAssociationHost(getIpsProject())
-    // .findInverseAssociation(getIpsProject());
-    // } else {
-    // masterToDetailAssociation = getAssociation().findInverseAssociation(getIpsProject());
-    // }
-    // IPolicyCmptTypeAssociation derivedUnion =
-    // (IPolicyCmptTypeAssociation)masterToDetailAssociation
-    // .findSubsettedDerivedUnion(getIpsProject());
-    // if
-    //
-    // } catch (CoreException e) {
-    // throw new CoreRuntimeException(e);
-    // }
-    // return result;
-    // }
-    // throw new RuntimeException("The association " + getAssociation() +
-    // " does not supports derived unions");
-    // }
 }

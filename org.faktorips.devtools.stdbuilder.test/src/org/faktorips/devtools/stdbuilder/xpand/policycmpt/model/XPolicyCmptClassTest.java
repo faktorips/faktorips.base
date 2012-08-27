@@ -28,7 +28,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -128,13 +127,14 @@ public class XPolicyCmptClassTest {
         associationNode2 = mock(XPolicyAssociation.class);
         IPolicyCmptTypeAssociation assoc1 = mock(IPolicyCmptTypeAssociation.class);
         IPolicyCmptTypeAssociation assoc2 = mock(IPolicyCmptTypeAssociation.class);
-        List<IAssociation> assocList = new ArrayList<IAssociation>();
+        List<IPolicyCmptTypeAssociation> assocList = new ArrayList<IPolicyCmptTypeAssociation>();
         assocList.add(assoc1);
         assocList.add(assoc2);
 
         doReturn(associationNode1).when(modelService).getModelNode(assoc1, XPolicyAssociation.class, modelContext);
         doReturn(associationNode2).when(modelService).getModelNode(assoc2, XPolicyAssociation.class, modelContext);
-        when(type.getAssociations()).thenReturn(assocList);
+        when(type.getAssociations()).thenReturn(new ArrayList<IAssociation>(assocList));
+        when(type.getPolicyCmptTypeAssociations()).thenReturn(assocList);
     }
 
     @Test
@@ -209,48 +209,23 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testgetInverseCompositions() {
-        XPolicyCmptClass policyCmptClass = setupPolicyClassWithGetAssociations();
-
-        when(associationNode1.isInverseComposition()).thenReturn(false);
-        when(associationNode2.isInverseComposition()).thenReturn(true);
-        when(associationNode2.isInverseOfADerivedUnion()).thenReturn(true);
-        assertEquals(0, policyCmptClass.getInverseCompositions().size());
-
-        when(associationNode1.isInverseComposition()).thenReturn(false);
-        when(associationNode2.isInverseComposition()).thenReturn(false);
-        when(associationNode2.isInverseOfADerivedUnion()).thenReturn(false);
-        assertEquals(0, policyCmptClass.getInverseCompositions().size());
-
-        when(associationNode1.isInverseComposition()).thenReturn(false);
-        when(associationNode2.isInverseComposition()).thenReturn(true);
-        when(associationNode2.isInverseOfADerivedUnion()).thenReturn(false);
-        assertEquals(1, policyCmptClass.getInverseCompositions().size());
-
-        when(associationNode1.isInverseComposition()).thenReturn(true);
-        when(associationNode1.isInverseOfADerivedUnion()).thenReturn(false);
-        when(associationNode2.isInverseComposition()).thenReturn(true);
-        when(associationNode2.isInverseOfADerivedUnion()).thenReturn(false);
-        assertEquals(2, policyCmptClass.getInverseCompositions().size());
-    }
-
-    private XPolicyCmptClass setupPolicyClassWithGetAssociations() {
-        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
-        associationNode1 = mock(XPolicyAssociation.class);
-        associationNode2 = mock(XPolicyAssociation.class);
-        Set<XPolicyAssociation> assocs = new LinkedHashSet<XPolicyAssociation>();
-        assocs.add(associationNode1);
-        assocs.add(associationNode2);
-        doReturn(assocs).when(policyCmptClass).getAssociations();
-        return policyCmptClass;
-    }
-
-    @Test
     public void testFindDetailToMasterDerivedUnionAssociations() throws Exception {
         IPolicyCmptTypeAssociation derivedUnion = mock(IPolicyCmptTypeAssociation.class);
         IPolicyCmptTypeAssociation inverseDerivedUnion = mock(IPolicyCmptTypeAssociation.class);
         IPolicyCmptTypeAssociation subset = mock(IPolicyCmptTypeAssociation.class);
         IPolicyCmptTypeAssociation inverseSubset = mock(IPolicyCmptTypeAssociation.class);
+
+        XPolicyAssociation xDerivedUnion = mock(XPolicyAssociation.class);
+        XPolicyAssociation xInverseDerivedUnion = mock(XPolicyAssociation.class);
+        XPolicyAssociation xSubset = mock(XPolicyAssociation.class);
+        XPolicyAssociation xInverseSubset = mock(XPolicyAssociation.class);
+
+        when(modelService.getModelNode(derivedUnion, XPolicyAssociation.class, modelContext)).thenReturn(xDerivedUnion);
+        when(modelService.getModelNode(inverseDerivedUnion, XPolicyAssociation.class, modelContext)).thenReturn(
+                xInverseDerivedUnion);
+        when(modelService.getModelNode(subset, XPolicyAssociation.class, modelContext)).thenReturn(xSubset);
+        when(modelService.getModelNode(inverseSubset, XPolicyAssociation.class, modelContext)).thenReturn(
+                xInverseSubset);
 
         List<IPolicyCmptTypeAssociation> associations = new ArrayList<IPolicyCmptTypeAssociation>();
         associations.add(inverseSubset);
@@ -262,11 +237,13 @@ public class XPolicyCmptClassTest {
         assertTrue(detailToMasterDerivedUnionAssociations.isEmpty());
 
         when(derivedUnion.isDerivedUnion()).thenReturn(true);
+        when(xDerivedUnion.isDerived()).thenReturn(true);
         when(derivedUnion.isCompositionMasterToDetail()).thenReturn(true);
         when(derivedUnion.hasInverseAssociation()).thenReturn(true);
         when(derivedUnion.findInverseAssociation(any(IIpsProject.class))).thenReturn(inverseDerivedUnion);
         when(derivedUnion.getInverseAssociation()).thenReturn("inverseOfDu");
 
+        when(xInverseDerivedUnion.isDerived()).thenReturn(true);
         when(inverseDerivedUnion.isCompositionDetailToMaster()).thenReturn(true);
         when(inverseDerivedUnion.findInverseAssociation(any(IIpsProject.class))).thenReturn(derivedUnion);
 
@@ -285,14 +262,6 @@ public class XPolicyCmptClassTest {
 
         assertEquals(1, detailToMasterDerivedUnionAssociations.size());
         assertEquals(inverseDerivedUnion, detailToMasterDerivedUnionAssociations.iterator().next());
-
-        when(derivedUnion.getInverseAssociation()).thenReturn("same");
-        when(inverseSubset.getName()).thenReturn("same");
-
-        detailToMasterDerivedUnionAssociations = policyCmptClass
-                .findDetailToMasterDerivedUnionAssociations(associations);
-
-        assertTrue(detailToMasterDerivedUnionAssociations.isEmpty());
     }
 
 }

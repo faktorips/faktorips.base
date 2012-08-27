@@ -82,6 +82,28 @@
 		    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")» {
 		        return «fieldName».get(index);
 		    }
+		    «IF qualified»
+			    /**
+			     * {@inheritDoc}
+			     * 
+			     * @generated
+			     */
+			    «overrideAnnotationForPublishedMethod()»
+			    public  «List_(targetInterfaceName)» «method(methodNameGetSingle, targetProductCmptInterfaceName, "qualifier")» {
+			        if (qualifier == null) {
+			            return null;
+			        }
+			        «List_(targetInterfaceName)» result = new  «ArrayList(targetInterfaceName)»();
+			        for («targetInterfaceName» «name.toFirstLower()» : «fieldName») {
+			        	«LET targetPolicyCmptClass AS targetClass-»
+			            if («name.toFirstLower()».«targetClass.methodNameGetProductComponent»().equals(qualifier)) {
+			                result.add(«name.toFirstLower()»);
+			            }
+			            «ENDLET-»
+			        }
+			        return result;
+			    }
+    		«ENDIF»
 	    «ELSE-»
 		    /**
 		     * {@inheritDoc}
@@ -98,33 +120,55 @@
 
 «DEFINE setterMethodsForToOne FOR XPolicyAssociation-»
 	«IF generateSetter-»
-	    /**
-	     * {@inheritDoc}
-	     * 
-	     * @generated
-	     */
-	    «overrideAnnotation(true)-»
-	    public void «method(methodNameSetter, targetInterfaceName, "newObject")» {
-	    	«IF generateChangeSupport-»
-				«EXPAND PropertyChangeSupport::storeOldValue-»
-		        «methodNameSetInternal»(newObject);
-				«EXPAND PropertyChangeSupport::notify-»
-			«ELSE-»
-				«EXPAND setterMethodCode-»
+		«IF compositionDetailToMaster-»
+			«IF !sharedAssociationImplementedInSuperclass-»
+				/**
+			     * @generated
+			     */
+			    public void «methodNameSetInternal»(«targetInterfaceName» newParent) {
+			        if («methodNameGetSingle»() == newParent) {«REM»parent association can only be 1to1. getSingle can be used.«ENDREM»
+			            return;
+			        }
+			        «IModelObject()» «parentVar()» = «getParentModelObject()»;
+			        if (newParent != null && «parentVar()» != null) {
+			            throw new RuntimeException(
+			                    "«className» can't be assigned to parent object of class «name», because object already belongs to a different parent object.");
+			        }
+			        this.«fieldName» = «EXPAND castToImplementationIfNecessary» newParent;
+			        «IF typeConfigurableByProductCmptType-»
+			        	effectiveFromHasChanged();
+					«ENDIF-»
+			    }
 			«ENDIF-»
-	    }
-
-    	«IF generateChangeSupport-»
-		    /** «REM»TODO old codegenerator writes the comment only for compositions«ENDREM»
-		     «IF !typeAssociation-» 
-		     * «localizedJDoc("METHOD_SET_OBJECT_INTERNAL", name.toFirstUpper())»
+		«ELSE-»
+		    /**
+		     * {@inheritDoc}
 		     * 
-		     «ENDIF-»
 		     * @generated
 		     */
-		    public void «method(methodNameSetInternal, targetInterfaceName, "newObject")»{
-				«EXPAND setterMethodCode-»
-	    	}	
+		    «overrideAnnotation(true)-»
+		    public void «method(methodNameSetter, targetInterfaceName, "newObject")» {
+		    	«IF generateChangeSupport-»
+					«EXPAND PropertyChangeSupport::storeOldValue-»
+			        «methodNameSetInternal»(newObject);
+					«EXPAND PropertyChangeSupport::notify-»
+				«ELSE-»
+					«EXPAND setterMethodCode-»
+				«ENDIF-»
+		    }
+	
+	    	«IF generateChangeSupport-»
+			    /** «REM»TODO old codegenerator writes the comment only for compositions«ENDREM»
+			     «IF !typeAssociation-» 
+			     * «localizedJDoc("METHOD_SET_OBJECT_INTERNAL", name.toFirstUpper())»
+			     * 
+			     «ENDIF-»
+			     * @generated
+			     */
+			    public void «method(methodNameSetInternal, targetInterfaceName, "newObject")»{
+					«EXPAND setterMethodCode-»
+		    	}	
+			«ENDIF-»
 		«ENDIF-»
     «ENDIF-»
 «ENDDEFINE»
@@ -404,30 +448,6 @@
             return new «DefaultUnresolvedReference()»(this, objectId, "«IF oneToMany»«methodNameAdd»«ELSE»«methodNameSetter»«ENDIF-»",
                     «targetInterfaceName».class, targetId);
         }
-	«ENDIF-»
-«ENDDEFINE»
-
-«REM» Templates for detailToMaster compositions«ENDREM»
-
-«DEFINE methodSetParentInternal FOR XPolicyAssociation-»
-	«IF !sharedAssociationImplementedInSuperclass-»
-		/**
-	     * @generated
-	     */
-	    public void «methodNameSetInternal»(«targetInterfaceName» newParent) {
-	        if («methodNameGetSingle»() == newParent) {«REM»parent association can only be 1to1. getSingle can be used.«ENDREM»
-	            return;
-	        }
-	        «IModelObject()» «parentVar()» = «getParentModelObject()»;
-	        if (newParent != null && «parentVar()» != null) {
-	            throw new RuntimeException(
-	                    "«className» can't be assigned to parent object of class «name», because object already belongs to a different parent object.");
-	        }
-	        this.«fieldName» = «EXPAND castToImplementationIfNecessary» newParent;
-	        «IF typeConfigurableByProductCmptType-»
-	        	effectiveFromHasChanged();
-			«ENDIF-»
-	    }
 	«ENDIF-»
 «ENDDEFINE»
 

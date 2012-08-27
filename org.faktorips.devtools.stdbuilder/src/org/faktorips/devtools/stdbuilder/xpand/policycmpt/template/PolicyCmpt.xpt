@@ -255,12 +255,6 @@ package «packageName»;
 	    }
     «ENDIF-»
 	
-	«FOREACH associations AS this-»
-   		«IF compositionDetailToMaster && !derived-»
-			«EXPAND PolicyCmptAssociation::methodSetParentInternal-»
-		«ENDIF-»
-	«ENDFOREACH-»
-	
 «ENDDEFINE»
 
 «DEFINE generalMethods FOR XPolicyCmptClass-»
