@@ -16,12 +16,14 @@ package org.faktorips.devtools.stdbuilder.xpand.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -41,6 +43,9 @@ public class XAssociationTest {
     private GeneratorModelContext modelContext;
 
     @Mock
+    private ModelService modelService;
+
+    @Mock
     private IAssociation association;
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
@@ -52,6 +57,7 @@ public class XAssociationTest {
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
         doReturn(new JavaNamingConvention()).when(xAssociation).getJavaNamingConvention();
         doReturn(modelContext).when(xAssociation).getContext();
+        doReturn(modelService).when(xAssociation).getModelService();
     }
 
     @Test
@@ -182,4 +188,29 @@ public class XAssociationTest {
         when(association.getAssociationType()).thenReturn(AssociationType.AGGREGATION);
         assertTrue(xAssociation.isMasterToDetail());
     }
+
+    @Test(expected = RuntimeException.class)
+    public void testGetSubsettedDerivedUnion_notASubset() throws Exception {
+        xAssociation.getSubsettedDerivedUnion();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testGetSubsettedDerivedUnion_subsetNotFound() throws Exception {
+        when(association.isSubsetOfADerivedUnion()).thenReturn(true);
+        xAssociation.getSubsettedDerivedUnion();
+    }
+
+    @Test
+    public void testGetSubsettedDerivedUnion_subsetFound() throws Exception {
+        IAssociation derivedUnion = mock(IAssociation.class);
+        XDerivedUnionAssociation xDerivedUnion = mock(XDerivedUnionAssociation.class);
+        when(modelService.getModelNode(derivedUnion, XDerivedUnionAssociation.class, modelContext)).thenReturn(
+                xDerivedUnion);
+
+        when(association.isSubsetOfADerivedUnion()).thenReturn(true);
+        when(association.findSubsettedDerivedUnion(any(IIpsProject.class))).thenReturn(derivedUnion);
+
+        assertEquals(xDerivedUnion, xAssociation.getSubsettedDerivedUnion());
+    }
+
 }

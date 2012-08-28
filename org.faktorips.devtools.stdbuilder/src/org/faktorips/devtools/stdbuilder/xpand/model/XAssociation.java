@@ -144,7 +144,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
      * @throws RuntimeException if this is not a subset of a derived union.
      * @throws NullPointerException if no derived union could be found for this subset.
      */
-    protected XDerivedUnionAssociation getSubsettedDerivedUnion() {
+    public XDerivedUnionAssociation getSubsettedDerivedUnion() {
         if (!isSubsetOfADerivedUnion()) {
             throw new RuntimeException(NLS.bind(
                     "The association {0} is not a subset of a derived union. Unable to determine derived union.",

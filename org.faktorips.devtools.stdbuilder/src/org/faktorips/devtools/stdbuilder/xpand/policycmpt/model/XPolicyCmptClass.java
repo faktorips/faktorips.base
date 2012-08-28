@@ -182,9 +182,7 @@ public class XPolicyCmptClass extends XClass {
         if (subsettedDerivedUnions == null) {
             synchronized (this) {
                 if (subsettedDerivedUnions == null) {
-                    subsettedDerivedUnions = initNodesForParts(
-                            findSubsettedDerivedUnions(getAssociations(), IPolicyCmptTypeAssociation.class),
-                            XDerivedUnionAssociation.class);
+                    subsettedDerivedUnions = findSubsettedDerivedUnions(getAssociations());
                 }
             }
         }
@@ -212,7 +210,7 @@ public class XPolicyCmptClass extends XClass {
         Set<XDetailToMasterDerivedUnionAssociation> resultingAssociations = new LinkedHashSet<XDetailToMasterDerivedUnionAssociation>();
         for (XPolicyAssociation association : associations) {
             if (!association.isDerived()) {
-                resultingAssociations.addAll(association.getSubsettedDetailToMasterAssociationsInternal());
+                resultingAssociations.addAll(association.getSubsettedDetailToMasterAssociations());
             }
         }
         return resultingAssociations;

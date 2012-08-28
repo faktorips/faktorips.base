@@ -116,8 +116,7 @@ public abstract class XProductClass extends XClass {
         if (subsettedDerivedUnions == null) {
             synchronized (this) {
                 if (subsettedDerivedUnions == null) {
-                    subsettedDerivedUnions = initNodesForParts(getProductDerivedUnionAssociations(isChangeOverTime()),
-                            XDerivedUnionAssociation.class);
+                    subsettedDerivedUnions = findSubsettedDerivedUnions(getAssociations());
                 }
             }
         }
@@ -129,9 +128,6 @@ public abstract class XProductClass extends XClass {
      * changableAssociations you could specify whether you want the associations that are changeable
      * over time or not changeable (sometimes called static) associations.
      * <p>
-     * This method needs to be final because it may be called in constructor
-     * 
-     * @see #getProductDerivedUnionAssociations(boolean)
      * 
      * @param changableAssociations true if you want only associations changeable over time, false
      *            to get only not changeable over time associations
@@ -146,25 +142,6 @@ public abstract class XProductClass extends XClass {
                 resultingAssociations.add(assoc);
             }
         }
-        return resultingAssociations;
-    }
-
-    /**
-     * This method returns the derived union associations defined in this type. With the parameter
-     * changableAssociations you could specify whether you want the associations that are changeable
-     * over time or not changeable (sometimes called static) associations.
-     * <p>
-     * If you want to have not derived union associations, @see #getProductAssociations(boolean)
-     * <p>
-     * This method needs to be final because it may be called in constructor
-     * 
-     * @param changableAssociations true if you want only associations changeable over time, false
-     *            to get only not changeable over time associations
-     * @return The list of derived union associations
-     */
-    protected final Set<IProductCmptTypeAssociation> getProductDerivedUnionAssociations(boolean changableAssociations) {
-        Set<IProductCmptTypeAssociation> resultingAssociations = findSubsettedDerivedUnions(getAssociations(),
-                IProductCmptTypeAssociation.class);
         return resultingAssociations;
     }
 
@@ -257,7 +234,11 @@ public abstract class XProductClass extends XClass {
     @Override
     public abstract Set<? extends XProductClass> getClassHierarchy();
 
-    // TODO test
+    /**
+     * Returns true if there is at least one association that is not a derived union or the inverse
+     * of a derived union.
+     * 
+     */
     public boolean isContainsNotDerivedAssociations() {
         for (XAssociation association : getAssociations()) {
             if (!association.isDerived()) {

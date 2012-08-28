@@ -47,7 +47,7 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     // TODO need to test
-    public Set<XDetailToMasterDerivedUnionAssociation> getSubsettedDetailToMasterAssociationsInternal() {
+    public Set<XDetailToMasterDerivedUnionAssociation> getSubsettedDetailToMasterAssociations() {
         return getSubsettedDetailToMasterAssociationsInternal(new HashSet<String>(), getTypeOfAssociation());
     }
 
@@ -109,7 +109,7 @@ public class XPolicyAssociation extends XAssociation {
                             throw new RuntimeException("Cannot find inverse association of "
                                     + superAssociationWithSameName);
                         }
-                        if (inverseOfSuperAssociation.isDerivedUnion()) {
+                        if (inverseOfSuperAssociation.isDerived()) {
                             resultingAssociations.add(getModelNode(superAssociationWithSameName.getAssociation(),
                                     XDetailToMasterDerivedUnionAssociation.class));
                             resultingNames.add(superAssociationWithSameName.getName());
@@ -132,7 +132,7 @@ public class XPolicyAssociation extends XAssociation {
      * simply return null because testing would be with equal low performance as this method itself.
      * 
      */
-    private XPolicyAssociation getSuperAssociationWithSameName() {
+    XPolicyAssociation getSuperAssociationWithSameName() {
         try {
             IPolicyCmptTypeAssociation superAssociationWithSameName = getAssociation()
                     .findSuperAssociationWithSameName(getIpsProject());
