@@ -14,7 +14,10 @@
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -26,34 +29,117 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.util.ArgumentCheck;
 
 public class ModelOverviewContentProvider implements ITreeContentProvider {
 
+    private enum ToChildAssociationType {
+        SELF,
+        ASSOCIATION,
+        SUPERTYPE
+    }
+
     @Override
     public Object[] getElements(Object inputElement) {
-        // check input arguments
-        ArgumentCheck
-                .isInstanceOf(inputElement, IIpsProject.class,
-                        "The input element for the ModelOverviewContentProvider.getElements(Oject) must be an instance of IIpsProject."); //$NON-NLS-1$
 
-        List<IType> rootComponents;
+        Collection<IType> rootComponents;
         IIpsProject iIpsProject;
         try {
             // get all components from the input project
             IpsObjectType[] filter = { IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.POLICY_CMPT_TYPE };
             List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
 
-            iIpsProject = (IIpsProject)inputElement;
+            if (inputElement instanceof IType) {
+                iIpsProject = ((IType)inputElement).getIpsProject();
+            } else {
+                iIpsProject = (IIpsProject)inputElement;
+            }
+
             iIpsProject.findAllIpsSrcFiles(srcFiles, filter);
+            List<IType> componentsFromSrcFiles = getComponentsFromSrcFiles(srcFiles);
 
             // get the root elements
-            rootComponents = getRootComponentTypes(getComponentsFromSrcFiles(srcFiles));
+            if (inputElement instanceof IType) {
+                /*
+                 * TODO hier werden entweder nur PolicyCmptTypes oder ProductCmptTypes benötigt, die
+                 * anderen können weggelassen werden
+                 */
+                IType input = (IType)inputElement;
+                Collection<IType> rootCandidates = getRootElementsForIType(input, componentsFromSrcFiles,
+                        ToChildAssociationType.SELF, new ArrayList<IType>());
+                rootComponents = getRootElementsForIType(input, componentsFromSrcFiles, ToChildAssociationType.SELF,
+                        rootCandidates);
+            } else {
+                rootComponents = getRootComponentTypes(componentsFromSrcFiles);
+            }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
 
         return encapsulateComponentTypes(rootComponents, iIpsProject).toArray();
+    }
+
+    /**
+     * Computes the root-nodes for an {@link IType} element. The root-nodes are exactly those nodes
+     * which have an outgoing association to the given element. An association is of Type
+     * {@link AssociationType}.COMPOSITION_MASTER_TO_DETAIL or {@link AssociationType}.AGGREGATION
+     * and may be contain a subtype hierarchy. A run of this method with an empty rootCandidates
+     * parameter will return a list of root-candidates. A second run of this method with the
+     * previously obtained rootCandidates as parameter, will clean the list of false candidates.
+     * 
+     * @param element the starting point
+     * @param componentList the list of all concerned elements
+     * @param association the {@link ToChildAssociationType} of the parent element to this element
+     * @param rootCandidates a {@link Collection} of {@link IType}.
+     */
+    private Collection<IType> getRootElementsForIType(IType element,
+            List<IType> componentList,
+            ToChildAssociationType association,
+            Collection<IType> rootCandidates) {
+        Set<IType> rootElements = new HashSet<IType>();
+        List<IType> associatingTypes = getAssociatingTypes(element, componentList);
+        IType supertype;
+
+        try {
+            supertype = element.findSupertype(element.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+
+        // Breaking condition
+        if (associatingTypes.isEmpty() && supertype == null
+                && (association == ToChildAssociationType.SELF || association == ToChildAssociationType.ASSOCIATION)) {
+            rootElements.add(element);
+        }
+
+        // recursive call for all child elements
+        for (IType associations : associatingTypes) {
+            rootElements.addAll(getRootElementsForIType(associations, componentList,
+                    ToChildAssociationType.ASSOCIATION, rootCandidates));
+        }
+
+        if (supertype != null) {
+            rootElements.addAll(getRootElementsForIType(supertype, componentList, ToChildAssociationType.SUPERTYPE,
+                    rootCandidates));
+        }
+
+        // If a supertype has been added in the first run, it has to be added now, too
+        if (rootElements.isEmpty() && association == ToChildAssociationType.SUPERTYPE
+                && rootCandidates.contains(element)) {
+            rootElements.add(element);
+        }
+
+        // None of the child elements is a root element, therefore check the association type of the
+        // current element
+        if (rootElements.isEmpty() && association == ToChildAssociationType.ASSOCIATION) {
+            rootElements.add(element);
+        }
+
+        // If the hierarchy is solely build with supertypes, we must add the source element itself
+        if (rootElements.isEmpty() && association == ToChildAssociationType.SELF) {
+            rootElements.add(element);
+        }
+
+        return rootElements;
     }
 
     private List<IType> getRootComponentTypes(List<IType> components) {
@@ -120,7 +206,7 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
      * @param components the elements which should be encapsulated
      * @return a {@link List} of {@link ComponentNode ComponenteNodes}
      */
-    protected static List<ComponentNode> encapsulateComponentTypes(List<IType> components, IIpsProject rootProject) {
+    protected static List<ComponentNode> encapsulateComponentTypes(Collection<IType> components, IIpsProject rootProject) {
         List<ComponentNode> componentNodes = new ArrayList<ComponentNode>();
 
         for (IType component : components) {
@@ -149,6 +235,29 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
             }
         }
         return false;
+    }
+
+    /**
+     * This method computes a {@link List} of {@link IType ITypes} which targets the indicated
+     * target with an {@link IAssociation}, or an empty {@link List} if there are no such
+     * associations.
+     * 
+     * @param target the {@link IType} which should be checked on incoming associations
+     * @param components a {@link List} of {@link IType} which define the scope of associations that
+     *            will be checked
+     */
+    private List<IType> getAssociatingTypes(IType target, List<IType> components) {
+        List<IType> associatingComponents = new ArrayList<IType>();
+        for (IType component : components) {
+            List<IType> targets = getAssociations(component);
+            for (IType targetComponentType : targets) {
+                if (targetComponentType.getQualifiedName().equals(target.getQualifiedName())) {
+                    associatingComponents.add(component);
+                    break;
+                }
+            }
+        }
+        return associatingComponents;
     }
 
     /**

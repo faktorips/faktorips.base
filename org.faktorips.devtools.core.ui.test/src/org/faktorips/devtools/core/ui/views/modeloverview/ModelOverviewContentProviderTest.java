@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -466,4 +467,218 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         assertTrue(vertragChildren[0] instanceof SubtypeNode);
         assertTrue(vertragChildren[1] instanceof CompositeNode);
     }
+
+    @Test
+    public void testGetElementsOnIType() {
+        // setup
+        IIpsProject project;
+        PolicyCmptType leafPolicy;
+        PolicyCmptType rootPolicy;
+        PolicyCmptType superPolicy;
+        try {
+            project = newIpsProject();
+            leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
+            rootPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Root Node");
+            superPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Super Node");
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        // the Master-to-Detail association makes a root node out of rootPolicy
+        IAssociation association = rootPolicy.newAssociation();
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setTarget(leafPolicy.getQualifiedName());
+
+        // the Supertype superPolicy is no root node of leafPolicy
+        leafPolicy.setSupertype(superPolicy.getQualifiedName());
+
+        // test
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] elements = provider.getElements(leafPolicy);
+        assertEquals(1, elements.length);
+        assertEquals(rootPolicy, ((ComponentNode)elements[0]).getValue());
+    }
+
+    /**
+     * 
+     * <strong>Scenario:</strong><br>
+     * An {@link IType} is indirectly targeted by an {@link IAssociation} over the supertype
+     * hierarchy: <br />
+     * Example: if A supertype B and B -> C, then !A->C
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * B is only root for C
+     */
+    @Test
+    public void testGetElementsInITypeSupertypeHierarchy() {
+        // setup
+        IIpsProject project;
+        ProductCmptType leafPolicy;
+        ProductCmptType rootPolicy;
+        ProductCmptType superPolicy;
+        try {
+            project = newIpsProject();
+            leafPolicy = newProductCmptType(project, "Leaf Node");
+            rootPolicy = newProductCmptType(project, "Root Node");
+            superPolicy = newProductCmptType(project, "Super Node");
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        // the Master-to-Detail association makes an indirect root node out of rootPolicy
+        IAssociation association = rootPolicy.newAssociation();
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setTarget(leafPolicy.getQualifiedName());
+
+        // the Supertype superPolicy is no root node of leafProduct
+        rootPolicy.setSupertype(superPolicy.getQualifiedName());
+
+        // test
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] elements = provider.getElements(leafPolicy);
+        assertEquals(1, elements.length);
+        assertEquals(rootPolicy, ((ComponentNode)elements[0]).getValue());
+    }
+
+    /**
+     * 
+     * <strong>Scenario:</strong><br>
+     * An {@link IType} is indirectly targeted by an {@link IAssociation} over the supertype
+     * hierarchy: <br />
+     * Example: if A -> B and B supertype of C, then A->C
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * A is the root for object C
+     */
+    @Test
+    public void testGetElementsOnITypeSupertypeAssociation() {
+        // setup
+        IIpsProject project;
+        PolicyCmptType leafPolicy;
+        PolicyCmptType rootPolicy;
+        PolicyCmptType superPolicy;
+        try {
+            project = newIpsProject();
+            leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
+            rootPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Root Node");
+            superPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Super Node");
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        // the Master-to-Detail association makes an indirect root node out of rootPolicy
+        IAssociation association = rootPolicy.newAssociation();
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setTarget(superPolicy.getQualifiedName());
+
+        // the Supertype superPolicy is no root node of leafPolicy
+        leafPolicy.setSupertype(superPolicy.getQualifiedName());
+
+        // test
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] elements = provider.getElements(leafPolicy);
+        assertEquals(1, elements.length);
+        assertEquals(rootPolicy, ((ComponentNode)elements[0]).getValue());
+    }
+
+    /**
+     * 
+     * <strong>Scenario:</strong><br>
+     * If the selected object is the only object in the hierarchy, it is the root element.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The element is also the root element
+     */
+    @Test
+    public void testGetElementsOnITypeSingleElement() {
+        // setup
+        IIpsProject project;
+        PolicyCmptType leafPolicy;
+        try {
+            project = newIpsProject();
+            leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+
+        // test
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] elements = provider.getElements(leafPolicy);
+        assertEquals(1, elements.length);
+        assertEquals(leafPolicy, ((ComponentNode)elements[0]).getValue());
+    }
+
+    /**
+     * 
+     * <strong>Scenario:</strong><br>
+     * If a child is already a root node, none of its parent nodes should be root. The problem is,
+     * that a node can be reached via different paths.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * Only the topmost element should be root.
+     */
+    @Test
+    public void testGetElementsOnITypeOnlyOneRoot() {
+        // setup
+        IIpsProject project;
+        ProductCmptType produkt;
+        ProductCmptType hausratProdukt;
+        ProductCmptType deckungstyp;
+        ProductCmptType hausratGrunddeckungstyp;
+        try {
+            project = newIpsProject();
+            produkt = newProductCmptType(project, "Produkt");
+            hausratProdukt = newProductCmptType(project, "HausratProdukt");
+            deckungstyp = newProductCmptType(project, "Deckungstyp");
+            hausratGrunddeckungstyp = newProductCmptType(project, "HausratGrunddeckungstyp");
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+
+        // set supertypes
+        hausratProdukt.setSupertype(produkt.getQualifiedName());
+        hausratGrunddeckungstyp.setSupertype(deckungstyp.getQualifiedName());
+
+        // set associations
+        IAssociation deckungstyp2produkt = produkt.newAssociation();
+        deckungstyp2produkt.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        deckungstyp2produkt.setTarget(deckungstyp.getQualifiedName());
+
+        IAssociation hausratGrunddeckungstyp2hausratProdukt = hausratProdukt.newAssociation();
+        hausratGrunddeckungstyp2hausratProdukt.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        hausratGrunddeckungstyp2hausratProdukt.setTarget(hausratGrunddeckungstyp.getQualifiedName());
+
+        // test
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] elements = provider.getElements(hausratGrunddeckungstyp);
+
+        assertEquals(1, elements.length);
+        assertEquals(produkt, ((ComponentNode)elements[0]).getValue());
+
+    }
+
+    @Test
+    public void testGetElementsOnITypeOnlySupertypeHierarchy() {
+        // setup
+        IIpsProject project;
+        PolicyCmptType leafPolicy;
+        PolicyCmptType superPolicy;
+        PolicyCmptType superSuperPolicy;
+        try {
+            project = newIpsProject();
+            leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
+            superSuperPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Root Node");
+            superPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Super Node");
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+
+        // the Supertype superPolicy is no root node of leafPolicy
+        leafPolicy.setSupertype(superPolicy.getQualifiedName());
+        superPolicy.setSupertype(superSuperPolicy.getQualifiedName());
+
+        // test
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] elements = provider.getElements(leafPolicy);
+        assertEquals(1, elements.length);
+        assertEquals(leafPolicy, ((ComponentNode)elements[0]).getValue());
+    }
+
 }
