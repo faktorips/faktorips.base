@@ -15,7 +15,7 @@
 «ENDDEFINE»
 
 «DEFINE constantForValueSet FOR XPolicyAttribute-»
-	«IF valueSetRange || valueSetEnum-»
+	«IF generateConstantForValueSet-»
 		/**
 		«IF valueSetRange-»
 		 * «localizedJDoc("FIELD_MAX_RANGE_FOR", name)»
@@ -67,7 +67,7 @@
 				«ELSE-»
 			        «localizedComment("COMMENT_DERIVED_ATTRIBUTE_METHOD_CALL")»
 			        «EXPAND formulaParameterDeclaration FOR formulaSignature-»
-			        return «EXPAND getProductGeneration».«EXPAND formulaCall FOR formulaSignature-»;			
+			        return «getProductCmptGeneration(false && formulaSignature.published)».«EXPAND formulaCall FOR formulaSignature-»;			
 				«ENDIF-»
 			«ENDIF-»
 		}
@@ -101,7 +101,7 @@
 		«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
 		public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»{
 			«IF productRelevant-»
-				return «methodNameGetProductCmptGeneration»().«methodNameGetAllowedValuesFor»(context);
+				return «getProductCmptGeneration(published)».«methodNameGetAllowedValuesFor»(context);
 			«ELSE-»
 				return «IF overwrite»«typeName».«ENDIF»«constantNameValueSet»;
 			«ENDIF-»
@@ -109,17 +109,9 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE getProductGeneration FOR XPolicyAttribute-»
-	«IF generatingPublishedInterfaces-»
-		((«productGenerationClassName»)«methodNameGetProductCmptGeneration»())
-	«ELSE-»
-		«methodNameGetProductCmptGeneration»()
-	«ENDIF-»
-«ENDDEFINE»
-
 «DEFINE initConfigurableAttribute FOR XPolicyAttribute-»
 	«IF generateInitWithProductData-»
-        «fieldName» = «methodNameGetProductCmptGeneration»().«methodNameGetDefaultValue»();
+        «fieldName» = «getProductCmptGeneration(published)».«methodNameGetDefaultValue»();
     «ENDIF-»
 «ENDDEFINE»
 

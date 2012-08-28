@@ -12,3 +12,9 @@ inheritDocOrJavaDoc(XPolicyAttribute this, String jDoc, Object param):
 inheritDocOrJavaDoc(XPolicyAttribute this, String jDoc, Object param, Object desc):
 	overwrite || generatingPublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc, param, desc);
 	
+	
+getProductCmptGeneration(XPolicyAttribute this, Boolean publishedInterface) :
+	if (!generatingPublishedInterfaces || publishedInterface) then methodNameGetProductCmptGeneration + "()" 
+	else "((" + productGenerationClassName + ")" + methodNameGetProductCmptGeneration + "())";
+
+	

@@ -269,6 +269,10 @@ public class XPolicyAttribute extends XAttribute {
         }
     }
 
+    public boolean isGenerateConstantForValueSet() {
+        return !isAbstractValueSet() && (isValueSetRange() || isValueSetEnum());
+    }
+
     public boolean isValueSetEnum() {
         return isValueSetOfType(ValueSetType.ENUM);
     }
@@ -283,6 +287,10 @@ public class XPolicyAttribute extends XAttribute {
 
     private boolean isValueSetOfType(ValueSetType valueSetType) {
         return getAttribute().getValueSet().getValueSetType() == valueSetType;
+    }
+
+    public boolean isAbstractValueSet() {
+        return getAttribute().getValueSet().isAbstract();
     }
 
     public boolean isConsiderInDeltaComputation() {
@@ -345,6 +353,10 @@ public class XPolicyAttribute extends XAttribute {
         IPolicyCmptType polType = getIpsObjectPartContainer().getPolicyCmptType();
         XPolicyCmptClass xPolicyCmptClass = getModelNode(polType, XPolicyCmptClass.class);
         return xPolicyCmptClass;
+    }
+
+    public boolean mark(boolean flag) {
+        return flag;
     }
 
     public String getOldValueVariable() {
