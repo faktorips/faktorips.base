@@ -94,10 +94,10 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
                     return fragment;
                 }
 
-                IPolicyCmptTypeAssociation inverseAssociation = association.findInverseAssociation(association
-                        .getIpsProject());
-                XPolicyAssociation xInverseAssociation = xPolicyAssociation.getModelNode(inverseAssociation,
-                        XPolicyAssociation.class);
+                XPolicyAssociation xInverseAssociation = null;
+                if (xPolicyAssociation.hasInverseAssociation()) {
+                    xInverseAssociation = xPolicyAssociation.getInverseAssociation();
+                }
 
                 IIpsArtefactBuilderSet ipsArtefactBuilderSet = xPolicyAssociation.getIpsProject()
                         .getIpsArtefactBuilderSet();
@@ -108,9 +108,9 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
 
                     // add import and annotation depending on the relationship type (e.g. oneToMany)
                     RelationshipType relationShip = RelationshipType.UNKNOWN;
-                    if (inverseAssociation != null) {
+                    if (xInverseAssociation != null) {
                         relationShip = association.getPersistenceAssociatonInfo().evalBidirectionalRelationShipType(
-                                inverseAssociation);
+                                xInverseAssociation.getAssociation());
                     } else {
                         relationShip = association.getPersistenceAssociatonInfo().evalUnidirectionalRelationShipType();
                     }
@@ -123,7 +123,10 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
 
                     // add attributes to relationship annotation
                     List<String> attributesToAppend = new ArrayList<String>();
-                    addAnnotationAttributeMappedBy(relationShip, attributesToAppend, association, xInverseAssociation);
+                    if (xInverseAssociation != null) {
+                        addAnnotationAttributeMappedBy(relationShip, attributesToAppend, association,
+                                xInverseAssociation);
+                    }
                     addAnnotationAttributeCascadeType(fragment, attributesToAppend, association);
                     addAnnotationAttributeFetch(fragment, attributesToAppend, association);
                     addAnnotationAttributesTargetEntity(attributesToAppend, xPolicyAssociation);

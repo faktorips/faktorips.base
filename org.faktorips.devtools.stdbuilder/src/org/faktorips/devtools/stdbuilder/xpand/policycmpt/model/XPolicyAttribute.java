@@ -90,7 +90,7 @@ public class XPolicyAttribute extends XAttribute {
      * Returns true for all attributes except for constant and overridden attributes.
      */
     public boolean isGenerateGetter() {
-        return !isConstant() && (!isOverwrite() || isDerived());
+        return !isConstant() && (!isOverwrite() || isDerivedOnTheFly());
     }
 
     /**
@@ -210,8 +210,22 @@ public class XPolicyAttribute extends XAttribute {
         }
     }
 
-    public String getRangeClassName() {
-        return addImport(valuesetDatatypeHelper.getRangeJavaClassName(true));
+    public String getNewRangeExpression(String lowerBoundExp,
+            String upperBoundExp,
+            String stepExp,
+            String containsNullExp) {
+        JavaCodeFragment newRangeInstance = valuesetDatatypeHelper.newRangeInstance(
+                new JavaCodeFragment(lowerBoundExp), new JavaCodeFragment(upperBoundExp),
+                new JavaCodeFragment(stepExp), new JavaCodeFragment(containsNullExp), false);
+        addImport(newRangeInstance.getImportDeclaration());
+        return newRangeInstance.getSourcecode();
+    }
+
+    public String newEnumValueSetInstance(String valueCollection, String containsNullExpression) {
+        JavaCodeFragment newEnumExpression = valuesetDatatypeHelper.newEnumValueSetInstance(new JavaCodeFragment(
+                valueCollection), new JavaCodeFragment(containsNullExpression), true);
+        addImport(newEnumExpression.getImportDeclaration());
+        return newEnumExpression.getSourcecode();
     }
 
     public boolean isGenerateDefaultForDerivedAttribute() {

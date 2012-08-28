@@ -68,10 +68,10 @@
 		            }
                 «ENDLET-»
 	        «ENDIF-»
-   	        this.«name» = valueList;
+   	        this.«fieldName» = valueList;
         «ELSE-»
             String value = «ValueToXmlHelper()».«getValueFromElement("configElement", "\"Value\"")»;
-            this.«name» = «getNewInstanceFromExpression("value", "getRepository()")»;
+            this.«fieldName» = «getNewInstanceFromExpression("value", "getRepository()")»;
         «ENDIF-»
         }        
 «ENDDEFINE»
@@ -81,11 +81,11 @@
         attributeElement.setAttribute("attribute", "«name»");
         «IF multiValue-»
             «IF javaClassName == "List<String>"-»
-                «MultiValueXmlHelper()».«addValuesToElement("attributeElement", "this." + name)»;
+                «MultiValueXmlHelper()».«addValuesToElement("attributeElement", "this." + fieldName)»;
             «ELSE-»
             	«LET singleValueOfMultiValueAttribute AS this-»
 			        stringList = new «ArrayList("String")»();
-			        for («javaClassName» value : this.«name») {
+			        for («javaClassName» value : this.«fieldName») {
 			            String stringValue = «getToStringExpression("value")»;
 			            stringList.add(stringValue);
 			        }
@@ -93,7 +93,7 @@
 		        «MultiValueXmlHelper()».«addValuesToElement("attributeElement", "stringList")»;
 	        «ENDIF-»
 	    «ELSE-»
-	        «ValueToXmlHelper()».addValueToElement(«getToStringExpression(name)», attributeElement, "Value");
+	        «ValueToXmlHelper()».addValueToElement(«getToStringExpression(fieldName)», attributeElement, "Value");
         «ENDIF-»
         element.appendChild(attributeElement);
 «ENDDEFINE»

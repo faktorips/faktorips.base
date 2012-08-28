@@ -51,6 +51,8 @@ public class ModelService {
     public <T extends AbstractGeneratorModelNode> T getModelNode(IIpsObjectPartContainer ipsObjectPartContainer,
             Class<T> nodeClass,
             GeneratorModelContext modelContext) {
+        ArgumentCheck.notNull(ipsObjectPartContainer);
+        ArgumentCheck.notNull(nodeClass);
         Set<AbstractGeneratorModelNode> nodes = generatorModelNodes.get(ipsObjectPartContainer);
         if (nodes == null) {
             nodes = new HashSet<AbstractGeneratorModelNode>();
@@ -74,8 +76,6 @@ public class ModelService {
             Class<T> nodeClass,
             GeneratorModelContext modelContext) {
         try {
-            ArgumentCheck.notNull(ipsObjectPartContainer);
-            ArgumentCheck.notNull(nodeClass);
             Constructor<?>[] constructors = nodeClass.getConstructors();
             for (Constructor<?> constructor : constructors) {
                 Class<?>[] parameterTypes = constructor.getParameterTypes();

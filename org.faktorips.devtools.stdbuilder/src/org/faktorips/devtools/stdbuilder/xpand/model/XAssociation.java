@@ -185,20 +185,23 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
     }
 
     public String getTargetInterfaceName() {
-        IType target = getTargetType();
-        XClass modelNode = getModelNode(target, getTargetModelNodeType());
-        return modelNode.getSimpleName(BuilderAspect.getValue(isGeneratingPublishedInterfaces()));
+        XClass xClass = getTargetModelNode();
+        return xClass.getSimpleName(BuilderAspect.getValue(isGeneratingPublishedInterfaces()));
     }
 
     public String getTargetClassName() {
-        IType target = getTargetType();
-        XClass xClass = getModelNode(target, getTargetModelNodeType());
+        XClass xClass = getTargetModelNode();
         return getClassName(xClass);
     }
 
-    public String getTargetQualifiedClassName() {
+    protected XClass getTargetModelNode() {
         IType target = getTargetType();
-        XClass xClass = getModelNode(target, getTargetModelNodeType());
+        XClass xClass = getModelNode(target, getModelNodeType());
+        return xClass;
+    }
+
+    public String getTargetQualifiedClassName() {
+        XClass xClass = getTargetModelNode();
         return xClass.getQualifiedName(BuilderAspect.IMPLEMENTATION);
     }
 
@@ -212,7 +215,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
      */
     public String getClassName() {
         IType target = getIType();
-        XClass xClass = getModelNode(target, getTargetModelNodeType());
+        XClass xClass = getModelNode(target, getModelNodeType());
         return getClassName(xClass);
     }
 
@@ -224,15 +227,15 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return xClass.getSimpleName(BuilderAspect.IMPLEMENTATION);
     }
 
-    protected Class<? extends XClass> getTargetModelNodeType() {
+    protected Class<? extends XClass> getModelNodeType() {
         // TODO is there a better way? Cannot move to subclass because of derived unions
-        Class<? extends IType> targetClass = getTargetType().getClass();
-        if (IProductCmptType.class.isAssignableFrom(targetClass)) {
+        Class<? extends IType> typeClass = getTypeOfAssociation().getClass();
+        if (IProductCmptType.class.isAssignableFrom(typeClass)) {
             return XProductCmptClass.class;
-        } else if (IPolicyCmptType.class.isAssignableFrom(targetClass)) {
+        } else if (IPolicyCmptType.class.isAssignableFrom(typeClass)) {
             return XPolicyCmptClass.class;
         } else {
-            throw new RuntimeException("Illegal association target type " + targetClass);
+            throw new RuntimeException("Illegal association target type " + typeClass);
         }
     }
 

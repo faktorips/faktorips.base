@@ -227,7 +227,7 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public boolean isConsiderInEffectiveFromHasChanged() {
-        return isMasterToDetail() && !isDerivedUnion();
+        return isMasterToDetail() && !isDerived() && ((XPolicyCmptClass)getTargetModelNode()).isConfigured();
     }
 
     public boolean isConsiderInCreateChildFromXML() {
@@ -473,8 +473,8 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
-     * Returns the uncapitalized singular role-name with the suffix "LocalVar". Use inside a loop to
-     * store the associated policy instance. e.g. "baseCoverageLocalVar".
+     * Name of a local variable used inside a loop to store the associated policy instance. e.g.
+     * "baseCoverageLocalVar".
      */
     public String getCreateChildFromXMLLocalVarName() {
         return getJavaNamingConvention().getMemberVarName(getName()) + "LocalVar";
@@ -511,16 +511,15 @@ public class XPolicyAssociation extends XAssociation {
 
     /**
      * 
-     /** If this is a detail to master association the
-     * {@link #getMethodNameGetSingleUncapitalized()} is used as a result. Reproduces Bug in old
-     * code generator for compatibility. see FIPS-1143.
+     /** If this is a toOne association the {@link #getMethodNameGetSingleUncapitalized()} is used
+     * as a result. Reproduces Bug in old code generator for compatibility. see FIPS-1143.
      */
     @Override
     public String getMethodNameGetSingle() {
-        if (isCompositionDetailToMaster()) {
-            return getMethodNameGetSingleUncapitalized();
-        } else {
+        if (isOneToMany()) {
             return super.getMethodNameGetSingle();
+        } else {
+            return getMethodNameGetSingleUncapitalized();
         }
     }
 

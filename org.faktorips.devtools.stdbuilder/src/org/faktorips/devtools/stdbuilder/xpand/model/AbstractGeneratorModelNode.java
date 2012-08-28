@@ -46,6 +46,7 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -97,6 +98,7 @@ public abstract class AbstractGeneratorModelNode {
      */
     public AbstractGeneratorModelNode(IIpsObjectPartContainer ipsObjectPartContainer, GeneratorModelContext context,
             ModelService modelService) {
+        ArgumentCheck.notNull(ipsObjectPartContainer);
         this.ipsObjectPartContainer = ipsObjectPartContainer;
         this.modelContext = context;
         this.modelService = modelService;

@@ -80,7 +80,7 @@
             «fieldNameDefaultValue» = «getNewInstanceFromExpression("value", "getRepository()")»;
             «IF valueSetUnrestricted-»
             	«IF ipsEnum-»
-       	            «fieldNameValueSet» = new «OrderedValueSet(javaClassUsedForValueSet)»(«getAllEnumValuesCode("getRepository()")», true, null);
+       	            «fieldNameValueSet» = «newEnumValueSetInstance(getAllEnumValuesCode("getRepository()"), "true")»;
             	«ELSE-»
 	            	«fieldNameValueSet» = new «UnrestrictedValueSet(javaClassUsedForValueSet)»();
             	«ENDIF-»
@@ -92,15 +92,15 @@
 	                for (int i = 0; i < values.«getNumberOfValues()»; i++) {
 	                    enumValues.add(«getValueSetNewInstanceFromExpression("values.getValue(i)", "getRepository()")»);
 	                }
-	                «fieldNameValueSet» = new «OrderedValueSet(javaClassUsedForValueSet)»(enumValues, values
-	                        .containsNull(), «valueSetNullValueCode»);
+	                «fieldNameValueSet» = «newEnumValueSetInstance("enumValues", "values
+	                        .containsNull()")»;
 	            }
             «ENDIF-»
             «IF valueSetRange || (valueSetUnrestricted && rangeSupported)-»
 	            «Range()» range = «ValueToXmlHelper()».«getRangeFromElement("configElement", "\"ValueSet\"")»;
 	            if (range != null) {
-	                «fieldNameValueSet» = «rangeClassName».valueOf(range.getLower(), range
-	                        .getUpper(), range.getStep(), range.containsNull());
+	                «fieldNameValueSet» = «getNewRangeExpression("range.getLower()", "range
+	                        .getUpper()", "range.getStep()", "range.containsNull()")»;
 	            }
             «ENDIF-»
         }
