@@ -68,17 +68,23 @@ public abstract class XType extends XClass {
     }
 
     private String getSuperclassName(BuilderAspect aspect) {
+        if (getType().hasSupertype()) {
+            XType xSuperType = getSupertype();
+            return xSuperType.getSimpleName(aspect);
+        } else {
+            return getBaseSuperclassName();
+        }
+    }
+
+    protected XType getSupertype() {
+        IType superType;
         try {
-            if (getType().hasSupertype()) {
-                IType superType = getType().findSupertype(getIpsProject());
-                return addImport(getJavaClassNaming().getQualifiedClassName(superType, aspect,
-                        getJavaClassNameProvider()));
-            } else {
-                return getBaseSuperclassName();
-            }
+            superType = getType().findSupertype(getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+        XType xSuperType = getModelNode(superType, getClass());
+        return xSuperType;
     }
 
     public String getSuperclassName() {
