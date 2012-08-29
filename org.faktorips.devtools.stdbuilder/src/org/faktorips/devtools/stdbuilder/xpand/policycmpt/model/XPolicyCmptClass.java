@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,20 +29,20 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.model.XType;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XTableUsage;
 import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 
-public class XPolicyCmptClass extends XClass {
+public class XPolicyCmptClass extends XType {
 
     private volatile Set<XPolicyAttribute> attributes;
 
@@ -54,6 +55,8 @@ public class XPolicyCmptClass extends XClass {
     private volatile Set<XDetailToMasterDerivedUnionAssociation> detailToMasterDerivedUnionAssociations;
 
     private volatile Set<XValidationRule> validationRules;
+
+    private volatile Set<XTableUsage> productTables;
 
     public XPolicyCmptClass(IPolicyCmptType policyCmptType, GeneratorModelContext context, ModelService modelService) {
         super(policyCmptType, context, modelService);
@@ -140,25 +143,16 @@ public class XPolicyCmptClass extends XClass {
         if (productAttributes == null) {
             synchronized (this) {
                 if (productAttributes == null) {
-                    productAttributes = initNodesForParts(getProductAttributes(getType()), XProductAttribute.class);
+                    if (isConfigured()) {
+                        productAttributes = initNodesForParts(getProductCmptType().getProductCmptTypeAttributes(),
+                                XProductAttribute.class);
+                    } else {
+                        productAttributes = new HashSet<XProductAttribute>();
+                    }
                 }
             }
         }
         return new CopyOnWriteArraySet<XProductAttribute>(productAttributes);
-    }
-
-    private Set<IProductCmptTypeAttribute> getProductAttributes(IPolicyCmptType policyCmptType) {
-        if (policyCmptType.isConfigurableByProductCmptType()) {
-            try {
-                IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
-                return new LinkedHashSet<IProductCmptTypeAttribute>(productCmptType.getProductCmptTypeAttributes());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-        } else {
-            Set<IProductCmptTypeAttribute> productAttributes = new LinkedHashSet<IProductCmptTypeAttribute>();
-            return productAttributes;
-        }
     }
 
     @Override
@@ -228,6 +222,23 @@ public class XPolicyCmptClass extends XClass {
         return new CopyOnWriteArraySet<XValidationRule>(validationRules);
     }
 
+    public Set<XTableUsage> getProductTables() {
+        checkForUpdate();
+        if (productTables == null) {
+            synchronized (this) {
+                if (productTables == null) {
+                    if (isConfigured()) {
+                        productTables = initNodesForParts(getProductCmptType().getTableStructureUsages(),
+                                XTableUsage.class);
+                    } else {
+                        productTables = new HashSet<XTableUsage>();
+                    }
+                }
+            }
+        }
+        return new CopyOnWriteArraySet<XTableUsage>(productTables);
+    }
+
     private XProductCmptClass getProductCmptClass() {
         IProductCmptType productCmptType = getProductCmptType();
         if (productCmptType != null) {
@@ -251,7 +262,7 @@ public class XPolicyCmptClass extends XClass {
      * policy component class. An import will be added automatically.
      * 
      */
-    protected String getProductGenerationClassName() {
+    public String getProductGenerationClassName() {
         return getProductGenerationClassName(BuilderAspect.IMPLEMENTATION);
     }
 

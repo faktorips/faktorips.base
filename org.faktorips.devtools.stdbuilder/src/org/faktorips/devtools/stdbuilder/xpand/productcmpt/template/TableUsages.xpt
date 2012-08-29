@@ -1,0 +1,57 @@
+«IMPORT java::util»
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE memberField FOR XTableUsage-»
+    /**
+     * «localizedJDoc("FIELD_TABLE_USAGE", name)»
+     * 
+     * @generated
+     */
+    protected String «fieldName» = null;
+«ENDDEFINE»
+
+«DEFINE getterAndSetter FOR XTableUsage-»
+	«EXPAND getter-»
+	«EXPAND setter-»
+«ENDDEFINE»
+
+«DEFINE getter FOR XTableUsage-»
+    /**
+     * «localizedJDoc("METHOD_GET_TABLE", name)»
+     * 
+     * @generated
+     */
+    public «tableClassName» «method(methodNameGetter)» {
+        if («fieldName» == null) {
+            return null;
+        }
+        return («tableClassName»)getRepository().getTable(«fieldName»);
+    }
+«ENDDEFINE»
+
+«DEFINE setter FOR XTableUsage-»
+    /**
+     * «localizedJDoc("METHOD_SET_TABLE_NAME", fieldName.toFirstUpper())»
+     * 
+     * @generated
+     */
+    public void «method(methodNameSetter, "String", "tableName")» {
+        «EXPAND ProductCommons::checkRepositoryModifyable-»
+        this.«fieldName» = tableName;
+    }
+«ENDDEFINE»
+
+«DEFINE initTableUsages FOR XTableUsage-»
+        element = tableUsageMap.get("«name»");
+        if (element != null) {
+            «fieldName» = «ValueToXmlHelper()».«getValueFromElement("element", "\"TableContentName\"")»;
+        }
+«ENDDEFINE»
+
+«DEFINE writeTableUsages FOR XTableUsage-»
+        writeTableUsageToXml(element, "«name»", «fieldName»);
+«ENDDEFINE»

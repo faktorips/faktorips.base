@@ -62,6 +62,8 @@ package «packageName»;
 
 		«EXPAND Methods::method FOREACH methods-»
 		
+		«EXPAND getterForTables(this) FOREACH productTables-»
+		
 		«EXPAND generalMethodsForConfiguredPolicyCmpts-»
 		
 		«EXPAND generateCodeForDependentObject»
@@ -112,6 +114,21 @@ package «packageName»;
         «ELSE-»
         	return «currentClass.methodNameGetProductComponent»().«methodNameGetter»();
         «ENDIF-»
+    }
+«ENDDEFINE»
+
+«DEFINE getterForTables(XPolicyCmptClass policyClass) FOR XTableUsage-»
+    /**
+     * «localizedJDoc("METHOD_GET_TABLE_IN_POLICY", name)»
+     * 
+     * @generated
+     */
+    public «tableClassName» «method(methodNameGetter)» {
+    	«policyClass.productGenerationClassName» productCmpt = («policyClass.productGenerationClassName»)«policyClass.methodNameGetProductCmptGeneration»();
+        if (productCmpt == null) {
+            return null;
+        }
+        return productCmpt.«methodNameGetter»();
     }
 «ENDDEFINE»
 
@@ -184,6 +201,7 @@ package «packageName»;
 	            «initialize()»;
 	        }
 		 }
+		 
 		 /**
 		 * {@inheritDoc}
 		 *

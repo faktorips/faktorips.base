@@ -6,13 +6,13 @@
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
-«DEFINE methodsForDerivedUnion(XClass currentContextClass) FOR XDerivedUnionAssociation-»
-	«EXPAND getter(currentContextClass)»
-	«EXPAND getterNumOf(currentContextClass)»
-	«EXPAND getterNumOfInternal(currentContextClass)»
+«DEFINE methodsForDerivedUnion(XType currentContextType) FOR XDerivedUnionAssociation-»
+	«EXPAND getter(currentContextType)»
+	«EXPAND getterNumOf(currentContextType)»
+	«EXPAND getterNumOfInternal(currentContextType)»
 «ENDDEFINE»
 
-«DEFINE getter(XClass currentContextClass) FOR XDerivedUnionAssociation-»
+«DEFINE getter(XType currentContextType) FOR XDerivedUnionAssociation-»
     /**
      * {@inheritDoc}
      * 
@@ -21,10 +21,10 @@
      «overrideAnnotationForPublishedMethod()-»
      public «List_(targetInterfaceName)» «methodNameGetter»() {
      	«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«methodNameGetNumOfInternal»());
-     	«IF isImplementedInSuperclass(currentContextClass)-»
+     	«IF isImplementedInSuperclass(currentContextType)-»
      		result.addAll(super.«methodNameGetter»());
      	«ENDIF-»
-     	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
+     	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextType) AS subsetAssociation-»
  			«IF subsetAssociation.oneToMany-»
      			result.addAll(«subsetAssociation.methodNameGetter»());
      		«ELSE-»
@@ -43,7 +43,7 @@
      }
 «ENDDEFINE»
 
-«DEFINE getterNumOf(XClass currentContextClass) FOR XDerivedUnionAssociation-»
+«DEFINE getterNumOf(XType currentContextType) FOR XDerivedUnionAssociation-»
     /**
      * {@inheritDoc}
      * 
@@ -55,19 +55,19 @@
      }
 «ENDDEFINE»
 
-«DEFINE getterNumOfInternal(XClass currentContextClass) FOR XDerivedUnionAssociation-»
+«DEFINE getterNumOfInternal(XType currentContextType) FOR XDerivedUnionAssociation-»
     /**
      * @generated
      */
      private int «methodNameGetNumOfInternal»() {
         int num = 0;
-        «IF generateGetNumOfInternalSuperCall(currentContextClass)-»
+        «IF generateGetNumOfInternalSuperCall(currentContextType)-»
      		num += super.«methodNameGetNumOf»();
         «ENDIF-»
-        «IF isPolicyCmptClass(currentContextClass)-»
+        «IF isPolicyCmptClass(currentContextType)-»
         	«REM»Force empty line, imitate old generator«ENDREM»
         «ENDIF-»
-     	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextClass) AS subsetAssociation-»
+     	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextType) AS subsetAssociation-»
      		«IF subsetAssociation.oneToMany-»
      			num += «subsetAssociation.methodNameGetNumOf»();
      		«ELSE-»
@@ -78,20 +78,20 @@
      }
 «ENDDEFINE»
 
-«DEFINE getParent(XPolicyCmptClass currentContextClass) FOR XDetailToMasterDerivedUnionAssociation-»
+«DEFINE getParent(XPolicyCmptClass currentContextType) FOR XDetailToMasterDerivedUnionAssociation-»
 	/**
      * {@inheritDoc}
      * 
      * @generated
      */
-    «overrideAnnotationForPublishedMethodOrIf(isImplementedInSuperclass(currentContextClass))-» 
+    «overrideAnnotationForPublishedMethodOrIf(isImplementedInSuperclass(currentContextType))-» 
     public «targetInterfaceName» «methodNameGetParent»() {
-     	«FOREACH (Set[XPolicyAssociation])getDetailToMasterSubsetAssociations(currentContextClass) AS this-»
+     	«FOREACH (Set[XPolicyAssociation])getDetailToMasterSubsetAssociations(currentContextType) AS this-»
 		    if («fieldName» != null) {
 		        return «fieldName»;
 		    }
      	«ENDFOREACH-»
-    	«IF isImplementedInSuperclass(currentContextClass)-»
+    	«IF isImplementedInSuperclass(currentContextType)-»
     		 return super.«methodNameGetter»();
     	«ELSE-» 
     		 return null;

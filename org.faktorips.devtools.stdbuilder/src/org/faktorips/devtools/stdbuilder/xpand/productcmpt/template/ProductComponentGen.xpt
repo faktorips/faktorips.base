@@ -32,6 +32,8 @@
 
 			«EXPAND ProductAssociation::field FOREACH associations-»
 			
+			«EXPAND TableUsages::memberField FOREACH tables»
+			
 		    /**
 		     * «localizedJDoc("CONSTRUCTOR", getSimpleName(BuilderAspect::IMPLEMENTATION))»
 		     * 
@@ -97,7 +99,18 @@
 		    }
 «ENDIF»
 
-«REM» TODO Implementierung «ENDREM»
+«IF containsTables-»
+		    /**
+		     * @generated
+		     */
+		    @Override
+		    protected void «doInitTableUsagesFromXml(Map("String", Element()) + " tableUsageMap")» {
+		        super.«doInitTableUsagesFromXml("tableUsageMap")»;
+		        Element element = null;
+		        «EXPAND TableUsages::initTableUsages FOREACH tables-»
+		    }
+«ENDIF»
+
 		    /**
 		     * {@inheritDoc}
 		     * 
@@ -134,6 +147,17 @@
 		    }
 		«ENDIF»
 
+		«IF containsTables-»
+		    /**
+		     * @generated
+		     */
+		    @Override
+		    protected void «writeTableUsagesToXml(Element() + " element")» {
+		        super.«writeTableUsagesToXml("element")»;
+		        «EXPAND TableUsages::writeTableUsages FOREACH tables-»
+		    }
+		«ENDIF»
+
 		«EXPAND createPolicyCmpt(this) FOREACH policyTypeClassHierarchy»
 
 		«IF !configurationForPolicyCmptType || !policyCmptClass.abstract»
@@ -154,6 +178,7 @@
 
 		«EXPAND ProductAssociation::getLinkMethods»
 		
+		«EXPAND TableUsages::getterAndSetter FOREACH tables»
 	}
 	«ENDFILE»
 «ENDDEFINE»

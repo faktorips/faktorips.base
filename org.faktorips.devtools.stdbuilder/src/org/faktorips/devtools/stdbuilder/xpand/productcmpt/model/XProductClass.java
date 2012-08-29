@@ -29,12 +29,12 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
-import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.model.XType;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 
-public abstract class XProductClass extends XClass {
+public abstract class XProductClass extends XType {
 
     private Set<XProductAttribute> attributes;
 
@@ -43,6 +43,8 @@ public abstract class XProductClass extends XClass {
     private Set<XProductAssociation> associations;
 
     private Set<XDerivedUnionAssociation> subsettedDerivedUnions;
+
+    private Set<XTableUsage> tables;
 
     public XProductClass(IProductCmptType ipsObjectPartContainer, GeneratorModelContext modelContext,
             ModelService modelService) {
@@ -66,6 +68,7 @@ public abstract class XProductClass extends XClass {
         configuredAttributes = null;
         associations = null;
         subsettedDerivedUnions = null;
+        tables = null;
     }
 
     public abstract boolean isChangeOverTime();
@@ -121,6 +124,22 @@ public abstract class XProductClass extends XClass {
             }
         }
         return new CopyOnWriteArraySet<XDerivedUnionAssociation>(subsettedDerivedUnions);
+    }
+
+    public Set<XTableUsage> getTables() {
+        checkForUpdate();
+        if (tables == null) {
+            synchronized (this) {
+                if (tables == null) {
+                    tables = initNodesForParts(getType().getTableStructureUsages(), XTableUsage.class);
+                }
+            }
+        }
+        return new CopyOnWriteArraySet<XTableUsage>(tables);
+    }
+
+    public boolean iscontainsTables() {
+        return !getTables().isEmpty();
     }
 
     /**

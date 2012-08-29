@@ -61,12 +61,12 @@ public class XDerivedUnionAssociation extends XAssociation {
      * union associations that are at the same time subsets of this derived union. The associations
      * are part of the given {@link XClass}.
      * 
-     * @param xClass The type in which context you generate code
+     * @param xType The type in which context you generate code
      * @return the list of associations that subsets this derived union
      */
-    public Set<XAssociation> getSubsetAssociations(XClass xClass) {
+    public Set<XAssociation> getSubsetAssociations(XType xType) {
         Set<XAssociation> result = new LinkedHashSet<XAssociation>();
-        Set<? extends XAssociation> associations = xClass.getAssociations();
+        Set<? extends XAssociation> associations = xType.getAssociations();
         for (XAssociation xAssociation : associations) {
             if (xAssociation.isSubsetOf(this)) {
                 result.add(xAssociation);
@@ -79,18 +79,18 @@ public class XDerivedUnionAssociation extends XAssociation {
      * Checks whether this derived union is already implemented in any superclass. This is the case
      * if there is any superclass that has already a subset of this derived union.
      * 
-     * @param xClass The type in which context you generate the code
+     * @param xType The type in which context you generate the code
      * @return True if there is already an implementation in any super class (super call is needed),
      *         false otherwise
      */
-    public boolean isImplementedInSuperclass(XClass xClass) {
-        if (getTypeOfAssociation().equals(xClass.getType())) {
+    public boolean isImplementedInSuperclass(XType xType) {
+        if (getTypeOfAssociation().equals(xType.getType())) {
             return false;
         }
         try {
-            IType supertype = xClass.getType().findSupertype(xClass.getIpsProject());
+            IType supertype = xType.getType().findSupertype(xType.getIpsProject());
             FindSubsetOfDerivedUnionVisitor findSubsetOfDerivedUnionVisitor = new FindSubsetOfDerivedUnionVisitor(
-                    getAssociation(), xClass.getIpsProject());
+                    getAssociation(), xType.getIpsProject());
             findSubsetOfDerivedUnionVisitor.start(supertype);
             return findSubsetOfDerivedUnionVisitor.isSubsetFound();
         } catch (CoreException e) {
@@ -102,8 +102,8 @@ public class XDerivedUnionAssociation extends XAssociation {
      * Returns <code>true</code> if this derived union association is defined in the given class.
      * <code>false</code> else.
      */
-    public boolean isDefinedIn(XClass xClass) {
-        return getAssociation().getType().equals(xClass.getType());
+    public boolean isDefinedIn(XType xType) {
+        return getAssociation().getType().equals(xType.getType());
     }
 
     /**
@@ -112,10 +112,10 @@ public class XDerivedUnionAssociation extends XAssociation {
      * subsetted by an association of the given class. IOW returns <code>true</code> if there is a
      * method in the super class that can be called. <code>false</code> otherwise.
      * 
-     * @param xClass the class in which a super call could be generated or not.
+     * @param xType the class in which a super call could be generated or not.
      */
-    public boolean generateGetNumOfInternalSuperCall(XClass xClass) {
-        return !isDefinedIn(xClass) && isImplementedInSuperclass(xClass);
+    public boolean generateGetNumOfInternalSuperCall(XType xType) {
+        return !isDefinedIn(xType) && isImplementedInSuperclass(xType);
     }
 
     /**

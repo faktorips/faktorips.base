@@ -61,12 +61,17 @@ doInitPropertiesFromXml(String paramMap) :
 doInitReferencesFromXml(String paramMap) :
 	"doInitReferencesFromXml(" + paramMap + ")";
 
+doInitTableUsagesFromXml(String paramMap) :
+	"doInitTableUsagesFromXml(" + paramMap + ")";
+
 writePropertiesToXml(String paramElement) :
 	"writePropertiesToXml(" + paramElement + ")";
 
 writeReferencesToXml(String paramElement) :
 	"writeReferencesToXml(" + paramElement + ")";
 
+writeTableUsagesToXml(String paramElement) :
+	"writeTableUsagesToXml(" + paramElement + ")";
 // ---------------------------------
 // Methods in IProductComponentGeneration
 // ---------------------------------
