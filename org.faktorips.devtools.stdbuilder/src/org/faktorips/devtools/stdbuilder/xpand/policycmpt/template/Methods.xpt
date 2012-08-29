@@ -9,7 +9,9 @@
     /**
     «IF published-»
      * {@inheritDoc}
-     * 
+     *
+     «ELSE-» 
+     * «description» 
     «ENDIF-»
      * @generated
      */
