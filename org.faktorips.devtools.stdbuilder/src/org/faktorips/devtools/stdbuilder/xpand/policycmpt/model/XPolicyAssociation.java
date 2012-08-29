@@ -24,6 +24,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -166,6 +167,19 @@ public class XPolicyAssociation extends XAssociation {
 
     public boolean isQualified() {
         return getAssociation().isQualified();
+    }
+
+    /**
+     * This method returns true if the maximum cardinality is greater than one also if it is a
+     * qualified association.
+     * <p>
+     * Normally the method isOneToMany returns true for qualified associations which maximum
+     * cardinality is one. @see {@link IAssociation#is1ToMany()}
+     * 
+     * @return True if the maximum cardinality is greater than one
+     */
+    public boolean isOneToManyIgnoringQualifier() {
+        return getAssociation().is1ToManyIgnoringQualifier();
     }
 
     /**

@@ -101,32 +101,59 @@
 	     * @generated
 	     */
 	    «overrideAnnotationForPublishedMethod()»
-	    public  «List_(targetInterfaceName)» «method(methodNameGetSingle, targetProductCmptInterfaceName, "qualifier")» {
-	        if (qualifier == null) {
-	            return null;
-	        }
-	        «IF derived-»
-		        «List_(targetInterfaceName)» elements = «methodNameGetter»();
-		        «List_(targetInterfaceName)» result = new  «ArrayList(targetInterfaceName)»();
-		        for («targetInterfaceName» element : elements) {
-		        	«LET targetPolicyCmptClass AS targetClass-»
-		            if (element.«targetClass.methodNameGetProductComponent»().equals(qualifier)) {
-		                result.add(element);
-		            }
-		            «ENDLET-»
+	     «IF oneToManyIgnoringQualifier-»
+		    public  «List_(targetInterfaceName)» «method(methodNameGetSingle, targetProductCmptInterfaceName, "qualifier")» {
+		        if (qualifier == null) {
+		            return null;
 		        }
-«REM»FIPS-1142::remove this if-else«ENDREM»	        «ELSE-»
-		        «List_(targetInterfaceName)» result = new  «ArrayList(targetInterfaceName)»();
-		        for («targetInterfaceName» «targetClassName.toFirstLower()» : «fieldName») {
-		        	«LET targetPolicyCmptClass AS targetClass-»
-		            if («targetClassName.toFirstLower()».«targetClass.methodNameGetProductComponent»().equals(qualifier)) {
-		                result.add(«targetClassName.toFirstLower()»);
-		            }
-		            «ENDLET-»
+		        «IF derived-»
+			        «List_(targetInterfaceName)» elements = «methodNameGetter»();
+			        «List_(targetInterfaceName)» result = new  «ArrayList(targetInterfaceName)»();
+			        for («targetInterfaceName» element : elements) {
+			        	«LET targetPolicyCmptClass AS targetClass-»
+			            if (element.«targetClass.methodNameGetProductComponent»().equals(qualifier)) {
+			                result.add(element);
+			            }
+			            «ENDLET-»
+			        }
+	«REM»FIPS-1142::remove this if-else«ENDREM»	        «ELSE-»
+			        «List_(targetInterfaceName)» result = new  «ArrayList(targetInterfaceName)»();
+			        for («targetInterfaceName» «targetClassName.toFirstLower()» : «fieldName») {
+			        	«LET targetPolicyCmptClass AS targetClass-»
+			            if («targetClassName.toFirstLower()».«targetClass.methodNameGetProductComponent»().equals(qualifier)) {
+			                result.add(«targetClassName.toFirstLower()»);
+			            }
+			            «ENDLET-»
+			        }
+		        «ENDIF-»
+		        return result;
+		    }
+		«ELSE-»
+		    public  «targetInterfaceName» «method(methodNameGetSingle, targetProductCmptInterfaceName, "qualifier")» {
+		        if (qualifier == null) {
+		            return null;
 		        }
-	        «ENDIF-»
-	        return result;
-	    }
+		        «IF derived-»
+			        «List_(targetInterfaceName)» elements = «methodNameGetter»();
+			        for («targetInterfaceName» element : elements) {
+			        	«LET targetPolicyCmptClass AS targetClass-»
+			            if (element.«targetClass.methodNameGetProductComponent»().equals(qualifier)) {
+			                return element;
+			            }
+			            «ENDLET-»
+			        }
+	«REM»FIPS-1142::remove this if-else«ENDREM»	        «ELSE-»
+			        for («targetInterfaceName» «targetClassName.toFirstLower()» : «fieldName») {
+			        	«LET targetPolicyCmptClass AS targetClass-»
+			            if («targetClassName.toFirstLower()».«targetClass.methodNameGetProductComponent»().equals(qualifier)) {
+			                return «targetClassName.toFirstLower()»;
+			            }
+			            «ENDLET-»
+			        }
+		        «ENDIF-»
+		        return null;
+		    }
+		«ENDIF-»
 	«ENDIF»
 «ENDDEFINE»
 
