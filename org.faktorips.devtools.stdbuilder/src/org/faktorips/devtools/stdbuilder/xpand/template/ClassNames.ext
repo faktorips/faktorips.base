@@ -1,3 +1,4 @@
+import java::lang;
 import java::util;
 import java::beans;
 import org::w3c::dom;
@@ -157,3 +158,6 @@ DefaultUnresolvedReference(AbstractGeneratorModelNode this):
 
 FormulaExecutionException(AbstractGeneratorModelNode this):
 	addImport(FormulaExecutionException.name);
+	
+RuntimeException(AbstractGeneratorModelNode this):
+	addImport(RuntimeException.name);

@@ -10,7 +10,7 @@
     «IF published-»
      * {@inheritDoc}
      *
-     «ELSE-» 
+«REM»TODO Simple else would be enough«ENDREM»     «ELSEIF description.length > 0-» 
      * «description» 
     «ENDIF-»
      * @generated

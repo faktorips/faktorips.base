@@ -125,7 +125,7 @@ public class XAssociationTest {
         XProductCmptClass xProductCmptClass = initMocksForGetNameTests();
         doReturn("TargetType").when(xProductCmptClass).getSimpleName(BuilderAspect.IMPLEMENTATION);
 
-        // doReturn(XProductCmptClass.class).when(xAssociation).getTargetModelNodeType();
+        doReturn(XProductCmptClass.class).when(xAssociation).getModelNodeType();
         String targetClassName = xAssociation.getTargetClassName();
         assertEquals("TargetType", targetClassName);
     }
@@ -136,7 +136,7 @@ public class XAssociationTest {
         doReturn(true).when(xAssociation).isGeneratingPublishedInterfaces();
         doReturn("ITargetType").when(xProductCmptClass).getSimpleName(BuilderAspect.INTERFACE);
 
-        // doReturn(XProductCmptClass.class).when(xAssociation).getTargetModelNodeType();
+        doReturn(XProductCmptClass.class).when(xAssociation).getModelNodeType();
         String targetClassName = xAssociation.getTargetInterfaceName();
         assertEquals("ITargetType", targetClassName);
     }

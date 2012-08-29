@@ -15,9 +15,11 @@
 		     */
 			«IF oneToMany-»
 				«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
+			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)-»
 				private «List_(targetInterfaceName)» «field(fieldName)»  = new «ArrayList(targetInterfaceName)»();
 			«ELSE-»
 				«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
+			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)-»
 				private «targetClassName» «field(fieldName)» = null;
 			«ENDIF-»
 		«ELSEIF compositionDetailToMaster-»
@@ -27,6 +29,7 @@
 			 * @generated	 
 			 */
 			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
+			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)-»
 			private «targetClassName» «field(fieldName)»;
 		«ENDIF-»
 	«ENDIF-»
@@ -170,8 +173,7 @@
 			        }
 			        «IModelObject()» «parentVar()» = «getParentModelObject()»;
 			        if (newParent != null && «parentVar()» != null) {
-			            throw new RuntimeException(
-			                    "«className» can't be assigned to parent object of class «name», because object already belongs to a different parent object.");
+			            throw new «RuntimeException()»(«localizedText("RUNTIME_EXCEPTION_SET_PARENT_OBJECT_INTERNAL", className, name)»);
 			        }
 			        this.«fieldName» = «EXPAND castToImplementationIfNecessary» newParent;
 			        «IF typeConfigurableByProductCmptType-»

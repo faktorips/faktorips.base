@@ -19,6 +19,7 @@ import static org.junit.Assert.assertSame;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.junit.Before;
@@ -55,7 +56,7 @@ public class ModelServiceTest {
         assertSame(node2, modelService.getModelNode(productCmptType, XProductCmptClass.class, modelContext));
 
         // same ipsObjectPart other type
-        XProductCmptGenerationClass node3 = modelService.getModelNode(productCmptType,
+        XProductClass node3 = modelService.getModelNode(productCmptType,
                 XProductCmptGenerationClass.class, modelContext);
         assertNotNull(node3);
         assertSame(node, modelService.getModelNode(policyCmptType, XPolicyCmptClass.class, modelContext));

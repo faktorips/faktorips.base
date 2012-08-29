@@ -64,6 +64,33 @@ package «packageName»;
 		
 		«EXPAND getterForTables(this) FOREACH productTables-»
 		
+		/**
+	     * «localizedJDoc("METHOD_INITIALIZE")»
+	     * 
+	     * @restrainedmodifiable
+	     */
+	     «IF hasSupertype() || configured-»
+		 	«overrideAnnotation(false)-»
+		 «ENDIF-»
+	    public void «initialize()» {
+	    	«IF hasSupertype()-»
+		        super.«initialize()»;
+	        «ENDIF-»
+	    	«IF !attributesToInitWithProductData.isEmpty-»
+		        if («methodNameGetProductCmptGeneration»() == null) {
+		            return;
+		        }
+		        «FOREACH attributesToInitWithProductData AS this-»
+					«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
+		        «ENDFOREACH-»
+	        «ENDIF-»
+	        «IF !configured-»
+	        «REM» TODO Empty line to match old code generator«ENDREM»
+	        «ENDIF-»
+		    // begin-user-code
+		    // end-user-code
+	    }
+		
 		«EXPAND generalMethodsForConfiguredPolicyCmpts-»
 		
 		«EXPAND generateCodeForDependentObject»
@@ -141,40 +168,13 @@ package «packageName»;
 «ENDDEFINE»
 
 «DEFINE generalMethodsForConfiguredPolicyCmpts FOR XPolicyCmptClass-»
-	    /**
-	     * «localizedJDoc("METHOD_INITIALIZE")»
-	     * 
-	     * @restrainedmodifiable
-	     */
-	     «IF hasSupertype() || configured-»
-		 	«overrideAnnotation(false)-»
-		 «ENDIF-»
-	    public void «initialize()» {
-	    	«IF hasSupertype()-»
-		        super.«initialize()»;
-	        «ENDIF-»
-	    	«IF !attributesToInitWithProductData.isEmpty-»
-		        if («methodNameGetProductCmptGeneration»() == null) {
-		            return;
-		        }
-		        «FOREACH attributesToInitWithProductData AS this-»
-					«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
-		        «ENDFOREACH-»
-	        «ENDIF-»
-	        «IF !configured-»
-	        «REM» TODO Empty line to match old code generator«ENDREM»
-	        «ENDIF-»
-		    // begin-user-code
-		    // end-user-code
-	    }
-		 
 	«IF configured-»
 		/**
 		 * {@inheritDoc}
 		 *
 		 * @generated
 		 */
-		 «overrideAnnotation(false)»
+		 «overrideAnnotationForPublishedMethod()»
 		 public «productComponentClassOrInterfaceName» «methodNameGetProductComponent»() {
 		 	return («productComponentClassOrInterfaceName») «getProductComponent()»;
 		 }
@@ -184,7 +184,7 @@ package «packageName»;
 		 *
 		 * @generated
 		 */
-		 «overrideAnnotation(false)»
+		 «overrideAnnotationForPublishedMethod()»
 		 public «productGenerationClassOrInterfaceName» «methodNameGetProductCmptGeneration»() {
 		 	return («productGenerationClassOrInterfaceName») «getProductCmptGeneration()»;
 		 }
@@ -194,7 +194,7 @@ package «packageName»;
 		 *
 		 * @generated
 		 */
-		 «overrideAnnotation(false)»
+		 «overrideAnnotationForPublishedMethod()»
 		 public void «methodNameSetProductComponent»(«productComponentClassOrInterfaceName» «productComponentArgumentName», boolean initPropertiesWithConfiguratedDefaults) {
 	        «setProductComponent(productComponentArgumentName)»;
 	        if (initPropertiesWithConfiguratedDefaults) {
@@ -256,7 +256,7 @@ package «packageName»;
 	     * 
 	     * @generated
 	     */
-		 «overrideAnnotation(false)»
+		 «overrideAnnotationForInterfaceOrNonAbstractSuperclassMethod()»
 	    public «IModelObject()» «getParentModelObject()» {
 	    	«FOREACH associations AS this-»
 	    		«IF compositionDetailToMaster && !derived-»
@@ -335,11 +335,11 @@ package «packageName»;
 
 «DEFINE validateMethods FOR XPolicyCmptClass-»
     /**
-     * «localizedJDoc("VALIDATE_SELF")»
+     * «localizedJDoc("VALIDATE_SELF", name)»
      * 
      * @generated
      */
-    «overrideAnnotation(true)»
+    «overrideAnnotation(false)»
     public boolean «validateSelf(MessageList()+" ml", IValidationContext()+" context")» {
         if (!super.«validateSelf("ml", "context")») {
             return STOP_VALIDATION;
@@ -349,11 +349,11 @@ package «packageName»;
     }
 
     /**
-     * «localizedJDoc("VALIDATE_DEPENDANTS")»
+     * «localizedJDoc("VALIDATE_DEPENDANTS", name)»
      * 
      * @generated
      */
-    «overrideAnnotation(true)»
+    «overrideAnnotation(false)»
     public void «validateDependants(MessageList()+" ml", IValidationContext()+" context")» {
         super.«validateDependants("ml", "context")»;
         «EXPAND PolicyCmptAssociation::validateDependents FOREACH associations-»

@@ -62,6 +62,11 @@ public abstract class XProductClass extends XType {
     }
 
     @Override
+    protected XProductClass getSupertype() {
+        return (XProductClass)super.getSupertype();
+    }
+
+    @Override
     protected void clearCaches() {
         super.clearCaches();
         attributes = null;
@@ -265,5 +270,50 @@ public abstract class XProductClass extends XType {
             }
         }
         return false;
+    }
+
+    /**
+     * Check whether we need to generate the cretePolicyCmpt method for the specified policy
+     * component class or not
+     * 
+     * @param policyCmptClass The policy component class for which we want to generate a create
+     *            method
+     * 
+     * @return true if we need to generate the create method
+     */
+    public boolean isGenerateMethodCreatePolicyCmpt(XPolicyCmptClass policyCmptClass) {
+        return isConfigurationForPolicyCmptType() && !getPolicyCmptClass().isAbstract()
+                && !policyCmptClass.isAbstract();
+    }
+
+    /**
+     * Check whether to generate the generic <code>createPolicyComponent</code> method.
+     * <p>
+     * If this product component class does not configure any policy component we generate the
+     * method with <code>return null;</code> If it does configure a policy component than this
+     * policy component needs not to be abstract and the super type must not configure the same
+     * policy component type.
+     * 
+     * @return True if we need to generate the generic <code>createPolicyComponent</code> method
+     */
+    public boolean isGenerateMethodGenericCreatePolicyComponent() {
+        return !isConfigurationForPolicyCmptType()
+                || (!getPolicyCmptClass().isAbstract() && !(hasSupertype() && isConfigurationForPolicyCmptType() && getPolicyCmptClass()
+                        .equals(getSupertype().getPolicyCmptClass())));
+    }
+
+    /**
+     * Returns the class hierarchy of the corresponding policy component type.
+     * 
+     * @return The policy component class hierarchy
+     */
+    public Set<XPolicyCmptClass> getPolicyTypeClassHierarchy() {
+        if (isConfigurationForPolicyCmptType()) {
+            XPolicyCmptClass policyCmptClass = getPolicyCmptClass();
+            Set<XPolicyCmptClass> result = policyCmptClass.getClassHierarchy();
+            return result;
+        } else {
+            return new LinkedHashSet<XPolicyCmptClass>();
+        }
     }
 }

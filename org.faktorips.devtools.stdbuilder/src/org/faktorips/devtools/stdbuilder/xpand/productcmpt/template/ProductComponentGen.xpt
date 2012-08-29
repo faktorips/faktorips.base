@@ -160,7 +160,9 @@
 
 		«EXPAND createPolicyCmpt(this) FOREACH policyTypeClassHierarchy»
 
-		«IF !configurationForPolicyCmptType || !policyCmptClass.abstract»
+
+«REM» TODO may use covariant return type«ENDREM»
+		«IF generateMethodGenericCreatePolicyComponent»
 	    /**
 	     * {@inheritDoc}
 	     * 
@@ -184,8 +186,9 @@
 «ENDDEFINE»
 
 «REM» The content of the method is always the same (use currentType). The methodName is derived from different types «ENDREM»
+«REM» TODO may use covariant return type«ENDREM»
 «DEFINE createPolicyCmpt(XProductCmptGenerationClass currentType) FOR XPolicyCmptClass»
-	«IF !abstract && !currentType.policyCmptClass.abstract»
+	«IF currentType.isGenerateMethodCreatePolicyCmpt(this)-»
     /**
      * {@inheritDoc}
      * 

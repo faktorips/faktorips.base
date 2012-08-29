@@ -157,7 +157,7 @@ public class XProductClassTest {
 
     @Test
     public void getStaticProductAttributes() {
-        XProductCmptGenerationClass productClass = new XProductCmptGenerationClass(type, modelContext, modelService);
+        XProductClass productClass = new XProductCmptGenerationClass(type, modelContext, modelService);
         Set<XProductAttribute> attributes = productClass.getAttributes();
         assertEquals(2, attributes.size());
         assertThat(attributes, hasItems(attrNode1, attrNode3));
@@ -165,7 +165,7 @@ public class XProductClassTest {
 
     @Test
     public void getStaticProductAssociations() {
-        XProductCmptGenerationClass productClass = new XProductCmptGenerationClass(type, modelContext, modelService);
+        XProductClass productClass = new XProductCmptGenerationClass(type, modelContext, modelService);
         Set<XProductAssociation> associations = productClass.getAssociations();
         assertEquals(3, associations.size());
         assertThat(associations, hasItems(assocNode1, assocNode2, assocNode3));
