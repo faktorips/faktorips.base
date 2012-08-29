@@ -16,16 +16,15 @@
         return («notPrimitiveJavaClassName»)getFormulaEvaluator().evaluate("«methodName»" «FOREACH methodParameters AS parameter», «parameter.name»«ENDFOREACH»);
     }
     «IF overloadsFormula»
-    	«LET overloadedFormulaMethod AS this-»
+    	«LET overloadedFormulaMethod AS overloaded-»
 		    /**
 		     * {@inheritDoc}
 		     * 
 		     * @generated
 		     */
 		    «overrideAnnotation(false)»
-		    «modifier» «javaClassName» «method(methodName, methodParameters)» throws «FormulaExecutionException()» {
-		        // TODO a delegation to the method computeAnyFormula(int, PaymentMode) needs to be
-		        // implemented here
+		    «overloaded.modifier» «overloaded.javaClassName» «overloaded.methodName»(«FOREACH overloadedFormulaMethod.parameters AS param SEPARATOR ", "»«param.javaClassName» «param.name»«ENDFOREACH») throws «FormulaExecutionException()» {
+		        // TODO a delegation to the method «methodName»(«FOREACH parameters AS param SEPARATOR ", "»«param.javaClassName»«ENDFOREACH») needs to be implemented here
 		        // And make sure to disable the regeneration of this method.
 		        throw new RuntimeException("Not implemented yet.");
 		    }

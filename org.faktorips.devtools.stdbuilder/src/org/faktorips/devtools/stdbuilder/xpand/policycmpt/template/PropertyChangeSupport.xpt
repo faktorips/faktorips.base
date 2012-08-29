@@ -27,7 +27,7 @@
 	     * 
 		 * @generated
 		 */
-		 «overrideAnnotationIfHasSuperclass()-»
+		 «overrideAnnotationIfHasSuperclassOrInterface()-»
 		public void notifyChangeListeners(«PropertyChangeEvent()» event) {
 			«IF !hasSupertype()-»
 		        if (event instanceof «AssociationChangedEvent()») {
@@ -55,7 +55,8 @@
 	     * {@inheritDoc}
 	     * 
 	     * @generated
-	     */«REM»«overrideAnnotation(false)-»«ENDREM»
+	     */
+		«overrideAnnotation(true)-»
 	    public void addPropertyChangeListener(«PropertyChangeListener()» listener) {
 	        propertyChangeSupport.addPropertyChangeListener(listener);
 	    }
@@ -64,7 +65,8 @@
 	     * {@inheritDoc}
 	     * 
 	     * @generated
-	     */«REM»«overrideAnnotation(false)-»«ENDREM»
+	     */
+		«overrideAnnotation(true)-»
 	    public void addPropertyChangeListener(«PropertyChangeListener()» listener, boolean propagateEventsFromChildren) {
 	        propertyChangeSupport.addPropertyChangeListener(listener, propagateEventsFromChildren);
 	    }
@@ -73,7 +75,8 @@
 	     * {@inheritDoc}
 	     * 
 	     * @generated
-	     */«REM»«overrideAnnotation(false)-»«ENDREM»
+	     */
+		«overrideAnnotation(true)-»
 	    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 	        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
 	    }
@@ -82,7 +85,8 @@
 	     * {@inheritDoc}
 	     * 
 	     * @generated
-	     */«REM»«overrideAnnotation(false)-»«ENDREM»
+	     */
+		«overrideAnnotation(true)-»
 	    public boolean hasListeners(String propertyName) {
 	        return propertyChangeSupport.hasListeners(propertyName);
 	    }
@@ -91,7 +95,8 @@
 	     * {@inheritDoc}
 	     * 
 	     * @generated
-	     */«REM»«overrideAnnotation(false)-»«ENDREM»
+	     */
+		«overrideAnnotation(true)-»
 	    public void removePropertyChangeListener(PropertyChangeListener listener) {
 	        propertyChangeSupport.removePropertyChangeListener(listener);
 	    }
@@ -100,7 +105,8 @@
 	     * {@inheritDoc}
 	     * 
 	     * @generated
-	     */«REM»«overrideAnnotation(false)-»«ENDREM»
+	     */
+		«overrideAnnotation(true)-»
 	    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 	        propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	    }

@@ -64,9 +64,6 @@
         «IF generateGetNumOfInternalSuperCall(currentContextType)-»
      		num += super.«methodNameGetNumOf»();
         «ENDIF-»
-        «IF isPolicyCmptClass(currentContextType)-»
-        	«REM»Force empty line, imitate old generator«ENDREM»
-        «ENDIF-»
      	«FOREACH (Set[XAssociation])getSubsetAssociations(currentContextType) AS subsetAssociation-»
      		«IF subsetAssociation.oneToMany-»
      			num += «subsetAssociation.methodNameGetNumOf»();

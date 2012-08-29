@@ -59,6 +59,13 @@ overrideAnnotationForAttribute(XAttribute this) :
 overrideAnnotationIfHasSuperclass(XType this) :
 	if hasSupertype() then "@Override";
 
+// Use this function if the method in question is generated for all generated classes and subclasses always 
+// override their super's implementation. The method in question should not be an interface method. 
+// Returns the @Override annotation if the given XPolicyCmptClass has a superclass.
+// Returns nothing in all other cases.
+overrideAnnotationIfHasSuperclassOrInterface(XType this) :
+	if hasSupertype() || needOverrideAnnotation(true) then "@Override";
+
 // Use this function if the generated method is the implementation of an interface method, 
 // but there may be superclasses that already implement the method themselves. 
 // Returns nothing if the compliance level is 5 (Java 1.5) and none of the current XPolicyCmptClass' 

@@ -453,7 +453,7 @@ public class XPolicyCmptClass extends XType {
     }
 
     public boolean isGenerateGetParentModelObject() {
-        return hasInverseCompositionAssociations();
+        return hasCompositionDetailToMaster();
     }
 
     public boolean isGenerateMethodCreateUnresolvedReference() {
@@ -461,14 +461,14 @@ public class XPolicyCmptClass extends XType {
     }
 
     public boolean isGenerateNotifyChangeListeners() {
-        return isGenerateChangeSupport() && (!hasSupertype() || hasInverseCompositionAssociations());
+        return isGenerateChangeSupport() && (!hasSupertype() || hasCompositionDetailToMaster());
     }
 
     /**
      * Returns <code>true</code> if this policy cmpt class has at least one association that is the
      * inverse of a composition, but not a derived union association.
      */
-    private boolean hasInverseCompositionAssociations() {
+    private boolean hasCompositionDetailToMaster() {
         for (XPolicyAssociation assoc : getAssociations()) {
             if (assoc.isCompositionDetailToMaster() && !assoc.isDerived()
                     && !assoc.isSharedAssociationImplementedInSuperclass()) {

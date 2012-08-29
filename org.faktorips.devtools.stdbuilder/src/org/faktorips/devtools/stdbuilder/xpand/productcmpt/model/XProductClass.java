@@ -289,17 +289,25 @@ public abstract class XProductClass extends XType {
     /**
      * Check whether to generate the generic <code>createPolicyComponent</code> method.
      * <p>
-     * If this product component class does not configure any policy component we generate the
-     * method with <code>return null;</code> If it does configure a policy component than this
-     * policy component needs not to be abstract and the super type must not configure the same
-     * policy component type.
+     * If this product component class does not configure any policy component and has no super type
+     * we generate the method with <code>return null;</code> If it does configure a policy component
+     * than this policy component needs to be not abstract and the super type must not configure the
+     * same policy component type.
      * 
      * @return True if we need to generate the generic <code>createPolicyComponent</code> method
      */
     public boolean isGenerateMethodGenericCreatePolicyComponent() {
-        return !isConfigurationForPolicyCmptType()
-                || (!getPolicyCmptClass().isAbstract() && !(hasSupertype() && isConfigurationForPolicyCmptType() && getPolicyCmptClass()
-                        .equals(getSupertype().getPolicyCmptClass())));
+        if (!isConfigurationForPolicyCmptType()) {
+            if (!hasSupertype()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return !getPolicyCmptClass().isAbstract()
+                    && !(hasSupertype() && isConfigurationForPolicyCmptType() && getPolicyCmptClass().equals(
+                            getSupertype().getPolicyCmptClass()));
+        }
     }
 
     /**
