@@ -210,6 +210,13 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
+     * Returns true if a qualified getter needs to be generated for this association.
+     */
+    public boolean isGenerateQualifiedGetter() {
+        return isOneToMany() && isQualified();
+    }
+
+    /**
      * Returns true if a setter needs to be generated for this association.
      */
     public boolean isGenerateSetter() {

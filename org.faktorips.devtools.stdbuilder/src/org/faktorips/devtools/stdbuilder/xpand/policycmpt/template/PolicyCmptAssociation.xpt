@@ -82,28 +82,6 @@
 		    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")» {
 		        return «fieldName».get(index);
 		    }
-		    «IF qualified»
-			    /**
-			     * {@inheritDoc}
-			     * 
-			     * @generated
-			     */
-			    «overrideAnnotationForPublishedMethod()»
-			    public  «List_(targetInterfaceName)» «method(methodNameGetSingle, targetProductCmptInterfaceName, "qualifier")» {
-			        if (qualifier == null) {
-			            return null;
-			        }
-			        «List_(targetInterfaceName)» result = new  «ArrayList(targetInterfaceName)»();
-			        for («targetInterfaceName» «name.toFirstLower()» : «fieldName») {
-			        	«LET targetPolicyCmptClass AS targetClass-»
-			            if («name.toFirstLower()».«targetClass.methodNameGetProductComponent»().equals(qualifier)) {
-			                result.add(«name.toFirstLower()»);
-			            }
-			            «ENDLET-»
-			        }
-			        return result;
-			    }
-    		«ENDIF»
 	    «ELSE-»
 		    /**
 		     * {@inheritDoc}
@@ -116,6 +94,40 @@
 		    }
 	    «ENDIF-»
     «ENDIF»
+    «IF generateQualifiedGetter»
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotationForPublishedMethod()»
+	    public  «List_(targetInterfaceName)» «method(methodNameGetSingle, targetProductCmptInterfaceName, "qualifier")» {
+	        if (qualifier == null) {
+	            return null;
+	        }
+	        «IF derived-»
+		        «List_(targetInterfaceName)» elements = «methodNameGetter»();
+		        «List_(targetInterfaceName)» result = new  «ArrayList(targetInterfaceName)»();
+		        for («targetInterfaceName» element : elements) {
+		        	«LET targetPolicyCmptClass AS targetClass-»
+		            if (element.«targetClass.methodNameGetProductComponent»().equals(qualifier)) {
+		                result.add(element);
+		            }
+		            «ENDLET-»
+		        }
+«REM»FIPS-1142::remove this if-else«ENDREM»	        «ELSE-»
+		        «List_(targetInterfaceName)» result = new  «ArrayList(targetInterfaceName)»();
+		        for («targetInterfaceName» «targetClassName.toFirstLower()» : «fieldName») {
+		        	«LET targetPolicyCmptClass AS targetClass-»
+		            if («targetClassName.toFirstLower()».«targetClass.methodNameGetProductComponent»().equals(qualifier)) {
+		                result.add(«targetClassName.toFirstLower()»);
+		            }
+		            «ENDLET-»
+		        }
+	        «ENDIF-»
+	        return result;
+	    }
+	«ENDIF»
 «ENDDEFINE»
 
 «DEFINE setterMethodsForToOne FOR XPolicyAssociation-»
