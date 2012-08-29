@@ -29,7 +29,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.ExtensionPoints;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
@@ -728,7 +727,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
                 }
             } catch (CoreException e) {
-                IpsPlugin.log(e);
+                // IpsPlugin.log(e);
             }
         }
 

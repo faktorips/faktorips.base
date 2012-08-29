@@ -219,6 +219,8 @@ public class Messages extends NLS {
 
     public static String LinkEditDialog_cardinalityDefault;
 
+    public static String LinksSection_filterEmptyAssociations;
+
     public static String ValidationRuleSection_DefaultTitle;
 
     public static String ProductCmptPropertySection_NoContentToDisplay;

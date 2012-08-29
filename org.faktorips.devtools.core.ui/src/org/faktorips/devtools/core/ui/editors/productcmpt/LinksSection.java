@@ -14,6 +14,12 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -56,6 +62,8 @@ import org.faktorips.util.message.MessageList;
  */
 public class LinksSection extends IpsSection implements ICompositeWithSelectableViewer {
 
+    private static final String PREFERENCE_ID_SUFFIX_FILTER_EMPTY_ASSOCIATIONS = "_filterEmptyAssociations"; //$NON-NLS-1$
+
     private static final String ID = "org.faktorips.devtools.core.ui.editors.productcmpt.LinksSection"; //$NON-NLS-1$
 
     /**
@@ -89,6 +97,8 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
     private final ProductCmptEditor editor;
 
+    private FilterEmptyAssociationsAction filterEmptyAssociationAction;
+
     /**
      * Creates a new RelationsSection which displays relations for the given generation.
      * 
@@ -110,7 +120,10 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         Composite relationRootPane = toolkit.createComposite(client);
         relationRootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
 
-        LinksContentProvider contentProvider = new LinksContentProvider();
+        boolean filterEmptyAssociations = filterEmptyAssociations();
+        LinksContentProvider contentProvider = new LinksContentProvider(filterEmptyAssociations);
+        filterEmptyAssociationAction = new FilterEmptyAssociationsAction(filterEmptyAssociations);
+
         if (contentProvider.getElements(generation).length == 0) {
             GridLayout layout = (GridLayout)client.getLayout();
             layout.marginHeight = 2;
@@ -168,6 +181,34 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             registerDoubleClickListener();
         }
         toolkit.getFormToolkit().paintBordersFor(relationRootPane);
+    }
+
+    private boolean filterEmptyAssociations() {
+        IPreferencesService preferencesService = Platform.getPreferencesService();
+        String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
+        String preferenceId = ID + PREFERENCE_ID_SUFFIX_FILTER_EMPTY_ASSOCIATIONS;
+
+        return preferencesService.getBoolean(pluginId, preferenceId, false, null);
+    }
+
+    protected void setFilterEmptyAssociations(boolean exclude) {
+        if (treeViewer == null) {
+            return;
+        }
+
+        LinksContentProvider contentProvider = (LinksContentProvider)treeViewer.getContentProvider();
+
+        contentProvider.setFilterEmptyAssociations(exclude);
+        storeFilterEmptyAssociations(exclude);
+
+        treeViewer.refresh();
+    }
+
+    private void storeFilterEmptyAssociations(boolean exclude) {
+        String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
+        IEclipsePreferences node = new InstanceScope().getNode(pluginId);
+        String preferenceId = ID + PREFERENCE_ID_SUFFIX_FILTER_EMPTY_ASSOCIATIONS;
+        node.putBoolean(preferenceId, exclude);
     }
 
     /**
@@ -308,4 +349,26 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
     }
 
+    @Override
+    protected void populateToolBar(IToolBarManager toolBarManager) {
+        super.populateToolBar(toolBarManager);
+
+        if (treeViewer != null) {
+            toolBarManager.add(filterEmptyAssociationAction);
+        }
+    }
+
+    private final class FilterEmptyAssociationsAction extends Action {
+
+        FilterEmptyAssociationsAction(boolean exclude) {
+            super(Messages.LinksSection_filterEmptyAssociations, AS_CHECK_BOX);
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/cfilter.gif")); //$NON-NLS-1$
+            setChecked(exclude);
+        }
+
+        @Override
+        public void run() {
+            setFilterEmptyAssociations(isChecked());
+        }
+    }
 }
