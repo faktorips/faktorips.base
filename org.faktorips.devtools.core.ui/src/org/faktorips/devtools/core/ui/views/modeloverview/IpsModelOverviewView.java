@@ -42,8 +42,7 @@ public class IpsModelOverviewView extends ViewPart {
 
     @Override
     public void setFocus() {
-        // TODO Auto-generated method stub
-
+        // nothing to do
     }
 
     public void showOverview(IType input) {
@@ -66,8 +65,7 @@ public class IpsModelOverviewView extends ViewPart {
 
             @Override
             public String getToolTipText() {
-                // TODO Tooltip internationalisieren
-                return "Show Policy Component Structure";
+                return Messages.IpsModelOverview_tooltipShowOnlyPolicies;
             }
 
             @Override
@@ -78,6 +76,7 @@ public class IpsModelOverviewView extends ViewPart {
             }
 
         };
+
         Action showProductComponentStructureAction = new Action() {
             @Override
             public ImageDescriptor getImageDescriptor() {
@@ -86,8 +85,7 @@ public class IpsModelOverviewView extends ViewPart {
 
             @Override
             public String getToolTipText() {
-                // TODO Tooltip internationalisieren
-                return "Show Product Component Structure";
+                return Messages.IpsModelOverview_tooltipShowOnlyProducts;
             }
 
             @Override
@@ -102,5 +100,4 @@ public class IpsModelOverviewView extends ViewPart {
         actionBars.getToolBarManager().add(showPolicyComponentStructureAction);
         actionBars.getToolBarManager().add(showProductComponentStructureAction);
     }
-
 }
