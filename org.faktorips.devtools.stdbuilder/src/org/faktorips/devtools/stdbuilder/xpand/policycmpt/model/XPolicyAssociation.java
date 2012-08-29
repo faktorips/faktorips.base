@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
+import java.lang.annotation.Inherited;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -510,28 +511,30 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
-     * 
-     /** If this is a toOne association the {@link #getMethodNameGetSingleUncapitalized()} is used
-     * as a result. Reproduces Bug in old code generator for compatibility. see FIPS-1143.
+     * TODO Workaround for old code generator FIPS-1143. @see {@link #getMethodNameGetter()}
      */
     @Override
     public String getMethodNameGetSingle() {
         if (isOneToMany()) {
             return super.getMethodNameGetSingle();
         } else {
-            return getMethodNameGetSingleUncapitalized();
+            return getMethodNameGetter();
         }
     }
 
     /**
-     * Returns the setter name for derived unions on policy side, which does not capitalize the role
-     * name until now erroneously. e.g. getpolicyPart() instead of getPolicyPart() (if the role name
-     * is policyPart).
+     * {@link Inherited}
      * 
-     * Reproduces Bug in old code generator for compatibility. see FIPS-1143.
+     * Reproduces Bug in old code generator for compatibility. see FIPS-1143. One-To-One Getters are
+     * generated without capitalized names.
      */
-    private String getMethodNameGetSingleUncapitalized() {
-        return "get" + getName(false);
+    @Override
+    public String getMethodNameGetter() {
+        if (!isOneToMany()) {
+            return "get" + getName(false);
+        } else {
+            return super.getMethodNameGetter();
+        }
     }
 
     /**

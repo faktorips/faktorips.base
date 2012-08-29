@@ -111,7 +111,7 @@
 		     * @generated
 		     */
 		    «overrideAnnotation(true)-»
-		    public «targetInterfaceName» «method(methodNameGetSingle)» {
+		    public «targetInterfaceName» «method(methodNameGetter)» {
 		        return «fieldName»;
 		    }
 	    «ENDIF-»
@@ -126,7 +126,7 @@
 			     * @generated
 			     */
 			    public void «method(methodNameSetInternal,targetInterfaceName, "newParent")» {
-			        if («methodNameGetSingle»() == newParent) {«REM»parent association can only be 1to1. getSingle can be used.«ENDREM»
+			        if («methodNameGetter»() == newParent) {«REM»parent association can only be 1to1. getSingle can be used.«ENDREM»
 			            return;
 			        }
 			        «IModelObject()» «parentVar()» = «getParentModelObject()»;
@@ -320,7 +320,7 @@
 				«objectToSynchronize».«inverseAssociation.methodNameAdd»(this);
 			}
 	    «ELSE-»
-	    	if («EXPAND varNameNullCheckIfNecessary(objectToSynchronize)» «objectToSynchronize».«inverseAssociation.methodNameGetter»()!=this) {
+	    	if («EXPAND varNameNullCheckIfNecessary(objectToSynchronize)» «objectToSynchronize».«inverseAssociation.methodNameGetter»() != this) {
 				«IF false-»
 				«REM» 
 					TODO unnötiger Cast und Fallunterscheidung!
