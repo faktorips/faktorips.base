@@ -1925,6 +1925,9 @@
                               value="org.faktorips.devtools.core.model.type.IType">
                         </instanceof>
                      </adapt>
+                     <instanceof
+                           value="org.faktorips.devtools.core.model.ipsproject.IIpsProject">
+                     </instanceof>
                   </or>
                </iterate>
             </with>
@@ -2150,14 +2153,19 @@
                      variable="selection">
                   <iterate
                         ifEmpty="false"
-                        operator="and">
-                     <adapt
-                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
-                        <test
-                              forcePluginActivation="true"
-                              property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
-                        </test>
-                     </adapt>
+                        operator="or">
+                     <or>
+                        <adapt
+                              type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                           <test
+                                 forcePluginActivation="true"
+                                 property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
+                           </test>
+                        </adapt>
+                        <instanceof
+                              value="org.faktorips.devtools.core.model.ipsproject.IIpsProject">
+                        </instanceof>
+                     </or>
                   </iterate>
                </with>
             </visibleWhen>

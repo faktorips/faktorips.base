@@ -13,10 +13,15 @@
 
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class IpsModelOverviewView extends ViewPart {
 
@@ -25,11 +30,11 @@ public class IpsModelOverviewView extends ViewPart {
     private TreeViewer treeviewer;
 
     public IpsModelOverviewView() {
-        // TODO Auto-generated constructor stub
     }
 
     @Override
     public void createPartControl(Composite parent) {
+        initToolBar();
         this.treeviewer = new TreeViewer(parent);
         this.treeviewer.setContentProvider(new ModelOverviewContentProvider());
         this.treeviewer.setLabelProvider(new IpsModelOverviewLabelProvider());
@@ -41,8 +46,61 @@ public class IpsModelOverviewView extends ViewPart {
 
     }
 
-    public void showOverview(IIpsProject project) {
-        this.treeviewer.setInput(project);
+    public void showOverview(IType input) {
+        this.treeviewer.setInput(input);
+    }
+
+    public void showOverview(IIpsProject input) {
+        this.treeviewer.setInput(input);
+    }
+
+    private void initToolBar() {
+        IActionBars actionBars = getViewSite().getActionBars();
+
+        Action showPolicyComponentStructureAction = new Action() {
+            @Override
+            public ImageDescriptor getImageDescriptor() {
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("PolicyCmptType.gif"); //$NON-NLS-1$
+                //                return IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmptType.gif"); //$NON-NLS-1$
+            }
+
+            @Override
+            public String getToolTipText() {
+                // TODO Tooltip internationalisieren
+                return "Show Policy Component Structure";
+            }
+
+            @Override
+            public void run() {
+                // TODO Action implementieren
+                // Filter setzen?
+                // view refreshen
+            }
+
+        };
+        Action showProductComponentStructureAction = new Action() {
+            @Override
+            public ImageDescriptor getImageDescriptor() {
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmptType.gif"); //$NON-NLS-1$
+            }
+
+            @Override
+            public String getToolTipText() {
+                // TODO Tooltip internationalisieren
+                return "Show Product Component Structure";
+            }
+
+            @Override
+            public void run() {
+                // TODO Action implementieren
+                // Filter setzen?
+                // view refreshen
+            }
+
+        };
+
+        actionBars.getToolBarManager().add(showPolicyComponentStructureAction);
+        actionBars.getToolBarManager().add(showProductComponentStructureAction);
     }
 
 }
