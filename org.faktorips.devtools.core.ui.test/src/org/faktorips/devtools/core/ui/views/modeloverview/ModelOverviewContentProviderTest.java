@@ -32,6 +32,20 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.junit.Test;
 
+/*
+ * TODO CODE-REVIEW FIPS-1194: In Testfällen CoreExceptions einfach mit throws wegwerfen, damit die
+ * Logik einfacher wird
+ */
+
+/*
+ * TODO CODE-REVIEW FIPS-1194: Namenskonventionen für Testmethoden beachten:
+ * test<MethodName>_<Scenario>, e.g. testHasChildren_NoChildren anstatt testHasNoChildren
+ */
+
+/*
+ * TODO CODE-REVIEW FIPS-1194: ComponentNode enthält noch einiges an Logik, für welches man
+ * Unit-Tests (in einer eigenen Klasse ComponentNodeTest) schreiben sollte
+ */
 public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
     @Test

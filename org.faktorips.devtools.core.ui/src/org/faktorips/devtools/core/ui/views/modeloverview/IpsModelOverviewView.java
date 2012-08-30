@@ -32,15 +32,18 @@ public class IpsModelOverviewView extends ViewPart {
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"; //$NON-NLS-1$
 
     private TreeViewer treeViewer;
+    // TODO CODE-REVIEW FIPS-1194: UI Toolkit kann final markiert werden
     private UIToolkit uiToolkit = new UIToolkit(null);
     private Label label;
 
+    // TODO CODE-REVIEW FIPS-1194: Leerer public Konstruktor muss nicht explizit angegeben werden
     public IpsModelOverviewView() {
     }
 
     @Override
     public void createPartControl(Composite parent) {
         initToolBar();
+        // TODO CODE-REVIEW FIPS-1194: Auskommentierter Code
         // uiToolkit = new UIToolkit(new FormToolkit(parent.getDisplay()));
         Composite panel = uiToolkit.createGridComposite(parent, 1, false, true, new GridData(SWT.FILL, SWT.FILL, true,
                 true));
@@ -84,6 +87,7 @@ public class IpsModelOverviewView extends ViewPart {
     }
 
     private void initToolBar() {
+        // TODO CODE-REVIEW FIPS-1194: final Schlüsselwörter hier nicht notwendig
         final IActionBars actionBars = getViewSite().getActionBars();
 
         final Action showToggleTypeAction = new Action() {

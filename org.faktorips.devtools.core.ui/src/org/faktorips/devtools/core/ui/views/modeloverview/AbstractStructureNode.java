@@ -20,6 +20,11 @@ import org.faktorips.util.ArgumentCheck;
 abstract class AbstractStructureNode implements IModelOverviewNode {
 
     private final ComponentNode parent;
+
+    /*
+     * TODO CODE-REVIEW FIPS-1194: Children mit leerer Liste initialisieren, spart NullCheck in
+     * addChildren
+     */
     private List<ComponentNode> children;
 
     /**
@@ -29,11 +34,10 @@ abstract class AbstractStructureNode implements IModelOverviewNode {
      * @param parent the parent, this parameter must not be {@code null}.
      * @param children a {@link List} of {@link ComponentNode component nodes}, this {@link List}
      *            must not be {@code null} or empty.
-     * @throws NullPointerException if one of the parameters is {@code null} or provided list of
+     * @throws NullPointerException if one of the parameters is {@code null} or the provided list of
      *             children is empty.
      */
     public AbstractStructureNode(ComponentNode parent, List<ComponentNode> children) {
-
         ArgumentCheck.notNull(parent, "'parent' must not be null."); //$NON-NLS-1$
         ArgumentCheck.notNull(children, "'children' must not be null."); //$NON-NLS-1$
         ArgumentCheck.isTrue(!children.isEmpty(), "'children', must not be empty."); //$NON-NLS-1$
@@ -56,6 +60,10 @@ abstract class AbstractStructureNode implements IModelOverviewNode {
     }
 
     private void addChildren(List<ComponentNode> children) {
+        /*
+         * TODO CODE-REVIEW FIPS-1194: Methode ist private und diese Checks wurden bereits im
+         * Konstruktor durchgeführt
+         */
         ArgumentCheck.notNull(children, "'children' must not be null."); //$NON-NLS-1$
         ArgumentCheck.isTrue(!children.isEmpty(), "'children', must not be empty."); //$NON-NLS-1$
 

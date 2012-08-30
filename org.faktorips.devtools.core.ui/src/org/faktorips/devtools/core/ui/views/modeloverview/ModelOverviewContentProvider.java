@@ -32,6 +32,11 @@ import org.faktorips.devtools.core.model.type.IType;
 
 public class ModelOverviewContentProvider implements ITreeContentProvider {
 
+    // TODO CODE-REVIEW FIPS-1194: Innere Klassen / Enums nach Konvention immer am Ende der Datei
+    /*
+     * TODO CODE-REVIEW FIPS-1194: Enum kann als static markiert werden (unterscheidet sich nicht
+     * pro Instanz von ModelOverviewContentProvider), Effective Java Item 22
+     */
     private enum ToChildAssociationType {
         SELF,
         ASSOCIATION,
@@ -40,11 +45,15 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getElements(Object inputElement) {
-
+        /*
+         * TODO CODE-REVIEW FIPS-1194: Scope dieser beiden Variablen minimieren, indem das return
+         * noch in den try Block gezogen wird
+         */
         Collection<IType> rootComponents;
         IIpsProject iIpsProject;
         try {
             // get all components from the input project
+            // TODO CODE-REVIEW FIPS-1194: Scope minimieren
             IpsObjectType[] filter = { IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.POLICY_CMPT_TYPE };
             List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
 
@@ -95,6 +104,8 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
             List<IType> componentList,
             ToChildAssociationType association,
             Collection<IType> rootCandidates) {
+
+        // TODO CODE-REVIEW FIPS-1194: Scope von lokalen Variablen minimieren
         Set<IType> rootElements = new HashSet<IType>();
         List<IType> associatingTypes = getAssociatingTypes(element, componentList);
         IType supertype;
@@ -142,6 +153,10 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
         return rootElements;
     }
 
+    /*
+     * TODO CODE-REVIEW FIPS-1194: Das Wort Component verwenden wir im Zusammenhang mit ITypes
+     * nicht, besser also getRootTypes
+     */
     private List<IType> getRootComponentTypes(List<IType> components) {
         List<IType> rootComponents = new ArrayList<IType>();
         for (IType iType : components) {
@@ -199,6 +214,10 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
         return getChildren(element).length != 0;
     }
 
+    /*
+     * TODO CODE-REVIEW FIPS-1194: Gehören die folgenden beiden statischen Methoden nicht eher an
+     * die Klasse ComponentNode?
+     */
     /**
      * Encapsulates a {@link List} of {@link IType ITypes} into a {@link List} of
      * {@link ComponentNode ComponentNodes}.
@@ -230,6 +249,10 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
      *         {@code false}
      */
     private boolean isAssociationTarget(IType target, List<IType> components) {
+        /*
+         * TODO CODE-REVIEW FIPS-1194: Können wir hier vielleicht
+         * IType#findAssociationsForTargetAndAssociationType verwenden?
+         */
         for (IType component : components) {
             List<IType> associations = getAssociations(component);
             for (IType association : associations) {
@@ -251,6 +274,11 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
      *            will be checked
      */
     private List<IType> getAssociatingTypes(IType target, List<IType> components) {
+        /*
+         * TODO CODE-REVIEW FIPS-1194: Können wir hier vielleicht
+         * IType#findAssociationsForTargetAndAssociationType verwenden und dann auf jeder
+         * zurückgegebenen IAssociation nur noch getType() aufrufen?
+         */
         List<IType> associatingComponents = new ArrayList<IType>();
         for (IType component : components) {
             List<IType> targets = getAssociations(component);
@@ -264,6 +292,11 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
         return associatingComponents;
     }
 
+    /*
+     * TODO CODE-REVIEW FIPS-1194: Diese Methode sollte direkt vom IType angeboten werden. Analog
+     * findAssociationsForTargetAndAssociationType könnte es dort noch
+     * findAssociationsForAssociationType geben
+     */
     /**
      * Returns a {@link List} of {@link IType component types} which are associated to this
      * {@link IType} component type. The only {@link AssociationType association types} which will
@@ -276,7 +309,6 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
      */
     protected static List<IType> getAssociations(IType rootElement) {
         List<IType> associations = new ArrayList<IType>();
-
         try {
             List<IAssociation> findAssociations = rootElement.getAssociations();
             for (IAssociation association : findAssociations) {

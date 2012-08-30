@@ -26,6 +26,9 @@ class ComponentNode implements IModelOverviewNode {
     private IIpsProject rootProject;
     private AbstractStructureNode parent;
 
+    /*
+     * TODO CODE-REVIEW FIPS-1194: tt nicht verwenden
+     */
     /**
      * Creates a new ComponentNode with designated <tt>parent</tt> node and <tt>value</tt>. Use this
      * constructor if the parent node is already known at creation time.
