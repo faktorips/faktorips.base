@@ -82,6 +82,21 @@ public class XProductAttribute extends XAttribute {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * For single value product attributes we never generate a safe copy.
+     * 
+     */
+    @Override
+    public String getReferenceOrSafeCopyIfNecessary(String memberVarName) {
+        if (!isMultiValue()) {
+            return memberVarName;
+        } else {
+            return super.getReferenceOrSafeCopyIfNecessary(memberVarName);
+        }
+    }
+
     public String getNewMultiValueInstance() {
         JavaCodeFragment fragment = getDatatypeHelper().newInstance("");
         addImport(fragment.getImportDeclaration());
