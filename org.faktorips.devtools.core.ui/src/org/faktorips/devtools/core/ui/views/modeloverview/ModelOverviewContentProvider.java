@@ -13,8 +13,10 @@
 
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +34,9 @@ import org.faktorips.devtools.core.model.type.IType;
 
 public class ModelOverviewContentProvider implements ITreeContentProvider {
 
-    private enum ToChildAssociationType {
+    private List<Deque<PathElement>> paths = new ArrayList<Deque<PathElement>>();
+
+    enum ToChildAssociationType {
         SELF,
         ASSOCIATION,
         SUPERTYPE
@@ -59,15 +63,14 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
 
             // get the root elements
             if (inputElement instanceof IType) {
-                /*
-                 * TODO hier werden entweder nur PolicyCmptTypes oder ProductCmptTypes benötigt, die
-                 * anderen können weggelassen werden
-                 */
+                paths = new ArrayList<Deque<PathElement>>();
                 IType input = (IType)inputElement;
                 Collection<IType> rootCandidates = getRootElementsForIType(input, componentsFromSrcFiles,
-                        ToChildAssociationType.SELF, new ArrayList<IType>());
+                        ToChildAssociationType.SELF, new ArrayList<IType>(), new ArrayList<Deque<PathElement>>(),
+                        new ArrayDeque<PathElement>());
                 rootComponents = getRootElementsForIType(input, componentsFromSrcFiles, ToChildAssociationType.SELF,
-                        rootCandidates);
+                        rootCandidates, getPaths(), new ArrayDeque<PathElement>());
+
             } else {
                 rootComponents = getRootComponentTypes(componentsFromSrcFiles);
             }
@@ -90,14 +93,23 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
      * @param componentList the list of all concerned elements
      * @param association the {@link ToChildAssociationType} of the parent element to this element
      * @param rootCandidates a {@link Collection} of {@link IType}.
+     * @param foundPaths a {@link List} of paths from the provided element to the computed root
+     *            elements
+     * @param callHierarchy a {@link Deque} which contains the path from the current element to the
+     *            source element
      */
-    private Collection<IType> getRootElementsForIType(IType element,
+    Collection<IType> getRootElementsForIType(IType element,
             List<IType> componentList,
             ToChildAssociationType association,
-            Collection<IType> rootCandidates) {
+            Collection<IType> rootCandidates,
+            List<Deque<PathElement>> foundPaths,
+            Deque<PathElement> callHierarchy) {
         Set<IType> rootElements = new HashSet<IType>();
         List<IType> associatingTypes = getAssociatingTypes(element, componentList);
         IType supertype;
+
+        ArrayDeque<PathElement> callHierarchyTemp = new ArrayDeque<PathElement>(callHierarchy);
+        callHierarchyTemp.push(new PathElement(element, association));
 
         try {
             supertype = element.findSupertype(element.getIpsProject());
@@ -109,34 +121,38 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
         if (associatingTypes.isEmpty() && supertype == null
                 && (association == ToChildAssociationType.SELF || association == ToChildAssociationType.ASSOCIATION)) {
             rootElements.add(element);
+            foundPaths.add(callHierarchyTemp);
         }
 
         // recursive call for all child elements
         for (IType associations : associatingTypes) {
             rootElements.addAll(getRootElementsForIType(associations, componentList,
-                    ToChildAssociationType.ASSOCIATION, rootCandidates));
+                    ToChildAssociationType.ASSOCIATION, rootCandidates, foundPaths, callHierarchyTemp));
         }
 
         if (supertype != null) {
             rootElements.addAll(getRootElementsForIType(supertype, componentList, ToChildAssociationType.SUPERTYPE,
-                    rootCandidates));
+                    rootCandidates, foundPaths, callHierarchyTemp));
         }
 
         // If a supertype has been added in the first run, it has to be added now, too
         if (rootElements.isEmpty() && association == ToChildAssociationType.SUPERTYPE
                 && rootCandidates.contains(element)) {
             rootElements.add(element);
+            foundPaths.add(callHierarchyTemp);
         }
 
         // None of the child elements is a root element, therefore check the association type of the
         // current element
         if (rootElements.isEmpty() && association == ToChildAssociationType.ASSOCIATION) {
             rootElements.add(element);
+            foundPaths.add(callHierarchyTemp);
         }
 
         // If the hierarchy is solely build with supertypes, we must add the source element itself
         if (rootElements.isEmpty() && association == ToChildAssociationType.SELF) {
             rootElements.add(element);
+            foundPaths.add(callHierarchyTemp);
         }
 
         return rootElements;
@@ -290,4 +306,14 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
         }
         return associations;
     }
+
+    /**
+     * Returns a {@link List} of {@link Deque}s of {@link PathElement}s which has been computed by
+     * {@link #getRootElementsForIType(IType, List, ToChildAssociationType, Collection, List, Deque)}
+     * or an empty {@link List} otherwise.
+     */
+    public List<Deque<PathElement>> getPaths() {
+        return paths;
+    }
+
 }

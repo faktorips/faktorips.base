@@ -13,19 +13,27 @@
 
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.TreePath;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider.ToChildAssociationType;
 
 public class IpsModelOverviewView extends ViewPart {
 
@@ -66,7 +74,53 @@ public class IpsModelOverviewView extends ViewPart {
 
     public void showOverview(IType input) {
         this.treeViewer.setInput(input);
+        List<Deque<PathElement>> paths = ((ModelOverviewContentProvider)this.treeViewer.getContentProvider())
+                .getPaths();
+        TreePath[] treePaths = new TreePath[paths.size()];
+        for (int i = 0; i < paths.size(); i++) {
+            treePaths[i] = this.expandPath(paths.get(i));
+        }
+        this.treeViewer.setSelection(new TreeSelection(treePaths));
         this.updateView();
+    }
+
+    private TreePath expandPath(Deque<PathElement> treePath) {
+        TreeItem[] items = this.treeViewer.getTree().getItems();
+        List<IModelOverviewNode> pathElements = new ArrayList<IModelOverviewNode>();
+
+        for (PathElement pathElement : treePath) {
+            if (pathElement.getAssociationType() == ToChildAssociationType.SELF) {
+                for (TreeItem item : items) {
+                    if (((ComponentNode)item.getData()).getValue().equals(pathElement.getComponent())) {
+                        pathElements.add(((ComponentNode)item.getData()));
+                    }
+                }
+                break;
+            }
+            for (TreeItem item : items) {
+                if (((ComponentNode)item.getData()).getValue().equals(pathElement.getComponent())) {
+                    IModelOverviewNode data = (IModelOverviewNode)item.getData();
+                    pathElements.add(data);
+                    // this.treeViewer.setExpandedState(item.getData(), true);
+                    this.treeViewer.setExpandedState(new TreePath(pathElements.toArray()), true);
+
+                    TreeItem[] items2 = item.getItems();
+                    for (TreeItem structureItem : items2) {
+                        if ((structureItem.getData() instanceof CompositeNode && pathElement.getAssociationType() == ToChildAssociationType.ASSOCIATION)
+                                || (structureItem.getData() instanceof SubtypeNode && pathElement.getAssociationType() == ToChildAssociationType.SUPERTYPE)) {
+
+                            pathElements.add((IModelOverviewNode)structureItem.getData());
+                            this.treeViewer.setExpandedState(new TreePath(pathElements.toArray()), true);
+                            // this.treeViewer.setExpandedState(item.getData(), true);
+                            items = structureItem.getItems();
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        return new TreePath(pathElements.toArray());
     }
 
     public void showOverview(IIpsProject input) {
@@ -109,11 +163,20 @@ public class IpsModelOverviewView extends ViewPart {
                     this.setToolTipText(Messages.IpsModelOverview_tooltipShowOnlyPolicies);
                 } else {
                     this.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmptType.gif")); //$NON-NLS-1$
-                    this.setToolTipText("Produkt Tooltip");
+                    this.setToolTipText(Messages.IpsModelOverview_tooltipShowOnlyProducts);
                 }
             }
 
         };
+
+        // showToggleTypeAction.addPropertyChangeListener(new IPropertyChangeListener() {
+        //
+        // @Override
+        // public void propertyChange(PropertyChangeEvent event) {
+        // // TODO Auto-generated method stub
+        // System.out.println(event.getProperty());
+        // }
+        // });
 
         actionBars.getToolBarManager().add(showToggleTypeAction);
     }

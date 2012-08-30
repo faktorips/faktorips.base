@@ -16,11 +16,13 @@ package org.faktorips.devtools.core.ui.views.modeloverview;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.IIpsSrcFileViewItem;
 import org.faktorips.util.ArgumentCheck;
 
-class ComponentNode implements IModelOverviewNode {
+class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
 
     private IType value;
     private IIpsProject rootProject;
@@ -106,6 +108,24 @@ class ComponentNode implements IModelOverviewNode {
      */
     IIpsProject getRootIpsProject() {
         return this.rootProject;
+    }
+
+    @Override
+    public IIpsSrcFile getWrappedIpsSrcFile() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Object getAdapter(Class adapter) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IIpsSrcFile getIpsSrcFile() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
