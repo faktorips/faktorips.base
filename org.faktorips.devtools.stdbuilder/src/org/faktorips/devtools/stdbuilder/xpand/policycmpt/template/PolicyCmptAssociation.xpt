@@ -39,9 +39,8 @@
 	«EXPAND Association::getNumOf-»
 	«EXPAND contains-»
 	«EXPAND getters-»
-	«EXPAND setterMethodsForToOne-»
+	«EXPAND setterOrAdder-»
 	«EXPAND newChildMethods-»
-	«EXPAND add-»
 	«EXPAND remove-»
 «ENDDEFINE»
 
@@ -160,14 +159,14 @@
 	«ENDIF»
 «ENDDEFINE»
 
-«DEFINE setterMethodsForToOne FOR XPolicyAssociation-»
+«DEFINE setterOrAdder FOR XPolicyAssociation-»
 	«IF generateSetter-»
 		«IF compositionDetailToMaster-»
 			«IF !sharedAssociationImplementedInSuperclass-»
 				/**
 			     * @generated
 			     */
-			    public void «method(methodNameSetInternal,targetInterfaceName, "newParent")» {
+			    public void «method(methodNameSetOrAddInternal,targetInterfaceName, "newParent")» {
 			        if («methodNameGetter»() == newParent) {«REM»parent association can only be 1to1. getSingle can be used.«ENDREM»
 			            return;
 			        }
@@ -188,10 +187,10 @@
 		     * @generated
 		     */
 		    «overrideAnnotation(true)-»
-		    public void «method(methodNameSetter, targetInterfaceName, "newObject")» {
+		    public void «method(methodNameSetOrAdd, targetInterfaceName, "newObject")» {
 		    	«IF generateChangeSupport-»
 					«EXPAND PropertyChangeSupport::storeOldValue-»
-			        «methodNameSetInternal»(newObject);
+			        «methodNameSetOrAddInternal»(newObject);
 					«EXPAND PropertyChangeSupport::notify-»
 				«ELSE-»
 					«EXPAND setterMethodCode-»
@@ -206,11 +205,37 @@
 			     «ENDIF-»
 			     * @generated
 			     */
-			    public void «method(methodNameSetInternal, targetInterfaceName, "newObject")»{
+			    public void «method(methodNameSetOrAddInternal, targetInterfaceName, "newObject")»{
 					«EXPAND setterMethodCode-»
 		    	}	
 			«ENDIF-»
 		«ENDIF-»
+	«ELSEIF generateAddAndRemoveMethod-»
+	    /**
+	     * {@inheritDoc}
+	     * 
+	     * @generated
+	     */
+		«overrideAnnotation(true)»
+	    public void «method(methodNameSetOrAdd, targetInterfaceName, "objectToAdd")»{
+	    	«IF generateChangeSupport-»
+		        «methodNameSetOrAddInternal»(objectToAdd);
+		        «EXPAND PropertyChangeSupport::notifyNewAssociation("objectToAdd")-»
+		    «ELSE-»
+		    	«EXPAND addMethodCode»
+		    «ENDIF-»
+	    }
+	
+    	«IF generateChangeSupport-»
+		    /**
+		     * «localizedJDoc("METHOD_ADD_OBJECT_INTERNAL", name)»
+		     * 
+		     * @generated
+		     */
+		    public void «method(methodNameSetOrAddInternal, targetInterfaceName, "objectToAdd")»{
+		    	«EXPAND addMethodCode-»
+		    }
+		«ENDIF»
     «ENDIF-»
 «ENDDEFINE»
 
@@ -239,8 +264,36 @@
     «ENDIF-»
 «ENDDEFINE»
 
+«DEFINE addMethodCode FOR XPolicyAssociation-»
+	        if (objectToAdd == null) {
+	            throw new NullPointerException("Can't add null to association «name» of " + this);
+	        }
+	        if («fieldName».contains(objectToAdd)) {
+	            return;
+	        }
+	        «EXPAND synchronizeInverseCompositionIfNecessaryForAdd-»
+			«fieldName».add(objectToAdd);
+	        «EXPAND synchronizeInverseAssociationIfNecessary("objectToAdd")-»
+«ENDDEFINE»
+
+«DEFINE addOrSetNewInstance FOR XPolicyAssociation-»
+	«IF oneToMany-»
+		«IF generateChangeSupport-»
+       		«methodNameSetOrAddInternal»(«variableNameNewInstance»);
+       	«ELSE-»
+       		«methodNameSetOrAdd»(«variableNameNewInstance»);
+       	«ENDIF-»
+    «ELSE-»
+		«IF generateChangeSupport || compositionDetailToMaster-»
+	       	«methodNameSetOrAddInternal»(«variableNameNewInstance»);
+	    «ELSE-»
+	       	«methodNameSetOrAdd»(«variableNameNewInstance»);
+	    «ENDIF-»
+    «ENDIF-»
+«ENDDEFINE»
+
 «DEFINE synchronizeInverseCompositionIfNecessaryForSet(boolean cast, String varName, String newRef) FOR XPolicyAssociation-»
-	«IF cast»«EXPAND castIfNeccessary(varName)»«ELSE»«varName»«ENDIF».«inverseAssociation.methodNameSetInternal»(«newRef»);
+	«IF cast»«EXPAND castIfNeccessary(varName)»«ELSE»«varName»«ENDIF».«inverseAssociation.methodNameSetOrAddInternal»(«newRef»);
 «ENDDEFINE»
 
 «DEFINE cleanupOldReference(String varToCleanUp) FOR XPolicyAssociation-»
@@ -257,7 +310,7 @@
 	«IF inverseAssociation.oneToMany-»
 		«varToCleanUp».«inverseAssociation.methodNameRemove»(this);
     «ELSE-»
-		«varToCleanUp».«inverseAssociation.methodNameSetter»(null);    	
+		«varToCleanUp».«inverseAssociation.methodNameSetOrAdd»(null);    	
     «ENDIF-»
 «ENDDEFINE»
 
@@ -308,49 +361,9 @@
     «ENDIF-»
 «ENDDEFINE»
 
-«DEFINE addOrSetNewInstance FOR XPolicyAssociation-»
-	«IF oneToMany-»
-       	«methodNameAddInternal»(«variableNameNewInstance»);
-    «ELSE-»
-       	«methodNameSetInternal»(«variableNameNewInstance»);
-    «ENDIF-»
-«ENDDEFINE»
-
-«DEFINE add FOR XPolicyAssociation-»
-	«IF generateAddAndRemoveMethod-»
-	    /**
-	     * {@inheritDoc}
-	     * 
-	     * @generated
-	     */
-		«overrideAnnotation(true)»
-	    public void «method(methodNameAdd, targetInterfaceName, "objectToAdd")»{
-	        «methodNameAddInternal»(objectToAdd);
-	        «EXPAND PropertyChangeSupport::notifyNewAssociation("objectToAdd")-»
-	    }
-	
-	    /**
-	     * «localizedJDoc("METHOD_ADD_OBJECT_INTERNAL", name)»
-	     * 
-	     * @generated
-	     */
-	    public void «method(methodNameAddInternal, targetInterfaceName, "objectToAdd")»{
-	        if (objectToAdd == null) {
-	            throw new NullPointerException("Can't add null to association «name» of " + this);
-	        }
-	        if («fieldName».contains(objectToAdd)) {
-	            return;
-	        }
-	        «EXPAND synchronizeInverseCompositionIfNecessaryForAdd-»
-			«fieldName».add(objectToAdd);
-	        «EXPAND synchronizeInverseAssociationIfNecessary("objectToAdd")-»
-	    }
-    «ENDIF-»
-«ENDDEFINE»
-
 «DEFINE synchronizeInverseCompositionIfNecessaryForAdd FOR XPolicyAssociation-»
 	«IF generateCodeToSynchronizeInverseCompositionForAdd-»
-		«EXPAND castIfNeccessary("objectToAdd")».«inverseAssociation.methodNameSetInternal»(this);
+		«EXPAND castIfNeccessary("objectToAdd")».«inverseAssociation.methodNameSetOrAddInternal»(this);
     «ENDIF-»
 «ENDDEFINE»
 
@@ -358,7 +371,7 @@
 	«IF generateCodeToSynchronizeInverseAssociation-»
 		«IF inverseAssociation.oneToMany-»
 			if («EXPAND varNameNullCheckIfNecessary(objectToSynchronize)» !«objectToSynchronize».«inverseAssociation.methodNameContains»(this)) {
-				«objectToSynchronize».«inverseAssociation.methodNameAdd»(this);
+				«objectToSynchronize».«inverseAssociation.methodNameSetOrAdd»(this);
 			}
 	    «ELSE-»
 	    	if («EXPAND varNameNullCheckIfNecessary(objectToSynchronize)» «objectToSynchronize».«inverseAssociation.methodNameGetter»() != this) {
@@ -369,9 +382,9 @@
 				«ENDREM»
 				«ENDIF-»
 				«IF oneToMany-»
-					«EXPAND castIfNeccessary(objectToSynchronize)».«inverseAssociation.methodNameSetter»(this);
+					«EXPAND castIfNeccessary(objectToSynchronize)».«inverseAssociation.methodNameSetOrAdd»(this);
 				«ELSE-»
-					«objectToSynchronize».«inverseAssociation.methodNameSetter»(this);
+					«objectToSynchronize».«inverseAssociation.methodNameSetOrAdd»(this);
 				«ENDIF-»
 			}
 	    «ENDIF-»
@@ -419,9 +432,9 @@
 			objectToRemove.«inverseAssociation.methodNameRemove»(this);
 		«ELSE-»
 			«IF inverseAssociation.typeAssociation-»
-				«EXPAND castIfNeccessary("objectToRemove")».«inverseAssociation.methodNameSetter»(null);
+				«EXPAND castIfNeccessary("objectToRemove")».«inverseAssociation.methodNameSetOrAdd»(null);
 			«ELSE-»
-				«EXPAND castIfNeccessary("objectToRemove")».«inverseAssociation.methodNameSetInternal»(null);
+				«EXPAND castIfNeccessary("objectToRemove")».«inverseAssociation.methodNameSetOrAddInternal»(null);
 			«ENDIF-»
 		«ENDIF-»
 	«ENDIF-»
@@ -466,9 +479,9 @@
                 try {
                     «targetClassName» «createChildFromXMLLocalVarName» = («targetClassName»)Class.forName(className).newInstance();
                     «IF oneToMany-»
-	                    «methodNameAdd»(«createChildFromXMLLocalVarName»);
+	                    «methodNameSetOrAdd»(«createChildFromXMLLocalVarName»);
                     «ELSE-»
-	                    «methodNameSetter»(«createChildFromXMLLocalVarName»);                    	
+	                    «methodNameSetOrAdd»(«createChildFromXMLLocalVarName»);                    	
                     «ENDIF-»
                     return «createChildFromXMLLocalVarName»;
                 } catch (Exception e) {
@@ -487,7 +500,7 @@
 «DEFINE createUnresolvedReference FOR XPolicyAssociation-»
 	«IF considerInCreateCreateUnresolvedReference-»
 		if ("«name»".equals(targetRole)) {
-            return new «DefaultUnresolvedReference()»(this, objectId, "«IF oneToMany»«methodNameAdd»«ELSE»«methodNameSetter»«ENDIF-»",
+            return new «DefaultUnresolvedReference()»(this, objectId, "«IF oneToMany»«methodNameSetOrAdd»«ELSE»«methodNameSetOrAdd»«ENDIF-»",
                     «targetInterfaceName».class, targetId);
         }
 	«ENDIF-»

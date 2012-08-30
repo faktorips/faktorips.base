@@ -292,10 +292,6 @@ public class XPolicyAssociation extends XAssociation {
         return "old" + StringUtils.capitalize(getName());
     }
 
-    public String getMethodNameAddInternal() {
-        return getMethodNameAdd() + "Internal";
-    }
-
     /**
      * Returns the name of the setter method.
      * 
@@ -303,18 +299,19 @@ public class XPolicyAssociation extends XAssociation {
      * reproduces Bug in old code generator for compatibility. see FIPS-1143.
      */
     @Override
-    public String getMethodNameSetter() {
-        if (isCompositionDetailToMaster()) {
+    public String getMethodNameSetOrAdd() {
+        if (isCompositionDetailToMaster() && !isOneToMany()) {
             return "set" + getName(false);
+        } else {
+            return super.getMethodNameSetOrAdd();
         }
-        return super.getMethodNameSetter();
     }
 
     /**
      * Returns the method name for internal setters.
      */
-    public String getMethodNameSetInternal() {
-        return getMethodNameSetter() + "Internal";
+    public String getMethodNameSetOrAddInternal() {
+        return getMethodNameSetOrAdd() + "Internal";
     }
 
     public String getMethodNameNew() {

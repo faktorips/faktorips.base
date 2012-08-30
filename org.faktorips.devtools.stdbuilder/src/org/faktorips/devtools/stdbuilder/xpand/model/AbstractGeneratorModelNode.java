@@ -480,6 +480,12 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     /**
+     */
+    public boolean isGenerateToXmlSupport() {
+        return getContext().isGenerateToXmlSupport();
+    }
+
+    /**
      * 
      * Creates a list containing one {@link AbstractGeneratorModelNode} (of the given class) for
      * every {@link IIpsObjectPart} in the given list.

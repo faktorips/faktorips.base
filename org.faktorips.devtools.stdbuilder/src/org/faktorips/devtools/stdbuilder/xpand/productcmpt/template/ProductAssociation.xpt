@@ -144,7 +144,7 @@
      * 
      * @generated
      */
-    public void «method(methodNameAdd, targetInterfaceName, "target")» {
+    public void «method(methodNameSetOrAdd, targetInterfaceName, "target")» {
         «EXPAND ProductCommons::checkRepositoryModifyable-»
         this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target));
     }
@@ -159,7 +159,7 @@
      * 
      * @generated
      */
-    public void «method(methodNameAdd, targetInterfaceName, "target", CardinalityRange(), "cardinality")» {
+    public void «method(methodNameSetOrAdd, targetInterfaceName, "target", CardinalityRange(), "cardinality")» {
         «EXPAND ProductCommons::checkRepositoryModifyable-»
         this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target, cardinality));
     }
@@ -173,7 +173,7 @@
      * 
      * @generated
      */
-    public void «method(methodNameSetter, targetInterfaceName, "target")» {
+    public void «method(methodNameSetOrAdd, targetInterfaceName, "target")» {
         «EXPAND ProductCommons::checkRepositoryModifyable-»
         «fieldName» = (target == null ? null : new «ProductComponentLink(targetInterfaceName)»(this, target));
     }

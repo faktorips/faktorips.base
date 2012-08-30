@@ -68,15 +68,12 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
     /**
      * The name of the adder method - only used for one-to-many associations.
      */
-    public String getMethodNameAdd() {
-        return "add" + StringUtils.capitalize(getName(false));
-    }
-
-    /**
-     * The name of the setter method - only used for one-to-one associations.
-     */
-    public String getMethodNameSetter() {
-        return getJavaNamingConvention().getSetterMethodName(getName(false));
+    public String getMethodNameSetOrAdd() {
+        if (isOneToMany()) {
+            return "add" + StringUtils.capitalize(getName(false));
+        } else {
+            return getJavaNamingConvention().getSetterMethodName(getName(false));
+        }
     }
 
     /**

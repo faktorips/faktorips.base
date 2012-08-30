@@ -187,6 +187,10 @@ public class GeneratorModelContext {
         return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT);
     }
 
+    public boolean isGenerateToXmlSupport() {
+        return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_TO_XML_SUPPORT);
+    }
+
     public boolean isGeneratingPublishedInterfaces() {
         // TODO FIPS-1059
         return true;

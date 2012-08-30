@@ -113,7 +113,7 @@ package «packageName»;
      * 
      * @generated
      */
-    public «className»() {
+    public «method(className)» {
         super();
         «EXPAND initializationForOverrideAttributes-»
     }
@@ -123,7 +123,7 @@ package «packageName»;
 	     * 
 	     * @generated
 	     */
-	    public «className»(«productComponentClassOrInterfaceName» productCmpt) {
+	    public «method(className, productComponentClassOrInterfaceName, "productCmpt")» {
 	        super(productCmpt);
 	        «EXPAND initializationForOverrideAttributes-»
 	    }
@@ -132,10 +132,15 @@ package «packageName»;
 
 «DEFINE getterForProductAttributes(XPolicyCmptClass currentClass) FOR XProductAttribute-»
 	 /**
-     * «localizedJDoc("METHOD_GET_VALUE_IN_POLICY", name, description)»
+     * «localizedJDoc("METHOD_GET_VALUE_IN_POLICY", name)»
+     «IF description.length > 0-»
+     * <p>
+     * «description»
+     «ENDIF-»
+     * 
      * @generated
      */
-    public «javaClassName» «methodNameGetter»() {
+    public «javaClassName» «method(methodNameGetter)» {
     	«IF changingOverTime-»
         	return «currentClass.methodNameGetProductCmptGeneration»().«methodNameGetter»();
         «ELSE-»
