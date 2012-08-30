@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +40,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,6 +83,15 @@ public class XProductClassTest {
 
     @Mock
     private XProductAttribute attrNode3;
+
+    @Mock
+    private XPolicyAttribute polAttrNode1;
+
+    @Mock
+    private XPolicyAttribute polAttrNode2;
+
+    @Mock
+    private XPolicyAttribute polAttrNode3;
 
     @Mock
     private XProductAssociation assocNode1;
@@ -202,6 +213,39 @@ public class XProductClassTest {
         associations.add(assocNode2);
         doReturn(associations).when(xProductClass).getAssociations();
         assertTrue(xProductClass.isContainsNotDerivedAssociations());
+    }
+
+    @Test
+    public void testGetConfiguredAttributes() throws Exception {
+        when(xProductClass.getType()).thenReturn(type);
+        doReturn(xPolicyCmpt).when(xProductClass).getPolicyCmptClass();
+
+        assertTrue(xProductClass.getConfiguredAttributesInternal().isEmpty());
+
+        when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(true);
+
+        assertTrue(xProductClass.getConfiguredAttributesInternal().isEmpty());
+
+        when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(true);
+
+        when(polAttrNode1.isProductRelevant()).thenReturn(true);
+        when(polAttrNode1.isGenerateGetAllowedValuesFor()).thenReturn(true);
+        when(polAttrNode2.isProductRelevant()).thenReturn(true);
+
+        Set<XPolicyAttribute> associations = new LinkedHashSet<XPolicyAttribute>();
+        associations.add(polAttrNode1);
+        associations.add(polAttrNode2);
+        associations.add(polAttrNode3);
+
+        when(xPolicyCmpt.getAttributes()).thenReturn(associations);
+
+        assertTrue(xProductClass.getConfiguredAttributesInternal().isEmpty());
+
+        when(type.getQualifiedName()).thenReturn("myProduct");
+        when(xPolicyCmpt.isConfiguredBy("myProduct")).thenReturn(true);
+
+        assertEquals(1, xProductClass.getConfiguredAttributesInternal().size());
+        assertThat(xProductClass.getConfiguredAttributesInternal(), hasItem(polAttrNode1));
     }
 
 }

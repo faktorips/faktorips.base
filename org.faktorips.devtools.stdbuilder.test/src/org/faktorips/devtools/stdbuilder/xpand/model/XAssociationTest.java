@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +54,8 @@ public class XAssociationTest {
 
     @Before
     public void initMocks() {
-        when(association.getTargetRoleSingular()).thenReturn("testTarget");
+        when(association.getTargetRoleSingular()).thenReturn("singular");
+        when(association.getTargetRolePlural()).thenReturn("plural");
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
         doReturn(new JavaNamingConvention()).when(xAssociation).getJavaNamingConvention();
         doReturn(modelContext).when(xAssociation).getContext();
@@ -63,23 +65,25 @@ public class XAssociationTest {
     @Test
     public void testGetMethodNameAdd() throws Exception {
         initMocks();
-        String addMethodName = xAssociation.getMethodNameAdd();
-        assertEquals("addTestTarget", addMethodName);
+        when(xAssociation.isOneToMany()).thenReturn(true);
+        String addMethodName = xAssociation.getMethodNameSetOrAdd();
+        assertEquals("addSingular", addMethodName);
 
-        association.setTargetRoleSingular("TestTarget");
-        addMethodName = xAssociation.getMethodNameAdd();
-        assertEquals("addTestTarget", addMethodName);
+        when(association.getTargetRoleSingular()).thenReturn("Singular");
+        addMethodName = xAssociation.getMethodNameSetOrAdd();
+        assertEquals("addSingular", addMethodName);
     }
 
     @Test
     public void testGetMethodNameSetter() throws Exception {
         initMocks();
-        String methodName = xAssociation.getMethodNameSetter();
-        assertEquals("setTestTarget", methodName);
+        String methodName = xAssociation.getMethodNameSetOrAdd();
+        assertEquals("setSingular", methodName);
     }
 
     @Test
     public void testGetMethodNameGetterterNumOf() throws Exception {
+        doReturn(XPolicyCmptClass.class).when(xAssociation).getModelNodeType();
         when(association.getTargetRolePlural()).thenReturn("testTargets");
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
         String methodName = xAssociation.getMethodNameGetNumOf();

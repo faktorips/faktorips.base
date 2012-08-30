@@ -138,6 +138,14 @@ public class XPolicyCmptClass extends XType {
         return new CopyOnWriteArraySet<XPolicyAttribute>(attributes);
     }
 
+    public boolean isConfiguredBy(String qualifiedName) {
+        if (!isConfigured()) {
+            return false;
+        } else {
+            return getType().getProductCmptType().equals(qualifiedName);
+        }
+    }
+
     public Set<XProductAttribute> getProductAttributes() {
         checkForUpdate();
         if (productAttributes == null) {

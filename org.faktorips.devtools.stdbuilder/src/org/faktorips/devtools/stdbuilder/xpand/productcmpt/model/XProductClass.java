@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -84,11 +83,30 @@ public abstract class XProductClass extends XType {
         if (attributes == null) {
             synchronized (this) {
                 if (attributes == null) {
-                    attributes = initNodesForParts(getProductAttributes(isChangeOverTime()), XProductAttribute.class);
+                    attributes = initNodesForParts(getAttributesInternal(isChangeOverTime()), XProductAttribute.class);
                 }
             }
         }
         return new CopyOnWriteArraySet<XProductAttribute>(attributes);
+    }
+
+    /**
+     * Returns the list of attributes. With the parameter you could specify whether you want the
+     * attributes that change over time or attributes not changing over time.
+     * 
+     * @param changableAttributes True to get attributes that change over time, false to get all
+     *            other attributes
+     * @return the list of attributes defined in this type
+     */
+    protected Set<IProductCmptTypeAttribute> getAttributesInternal(boolean changableAttributes) {
+        Set<IProductCmptTypeAttribute> resultingAttributes = new LinkedHashSet<IProductCmptTypeAttribute>();
+        List<IProductCmptTypeAttribute> allAttributes = getType().getProductCmptTypeAttributes();
+        for (IProductCmptTypeAttribute attr : allAttributes) {
+            if (changableAttributes == attr.isChangingOverTime()) {
+                resultingAttributes.add(attr);
+            }
+        }
+        return resultingAttributes;
     }
 
     public Set<XPolicyAttribute> getConfiguredAttributes() {
@@ -96,11 +114,40 @@ public abstract class XProductClass extends XType {
         if (configuredAttributes == null) {
             synchronized (this) {
                 if (configuredAttributes == null) {
-                    configuredAttributes = getConfiguredAttributes(isChangeOverTime());
+                    configuredAttributes = getConfiguredAttributesInternal();
                 }
             }
         }
         return new CopyOnWriteArraySet<XPolicyAttribute>(configuredAttributes);
+    }
+
+    /**
+     * Returns the list of configured policy attributes. With the parameter you could specify
+     * whether you want the attributes that change over time or attributes not changing over time.
+     * <p>
+     * This method needs to be final because it may be called in constructor
+     * 
+     * @return the list of policy attributes configured by this product component.
+     */
+    protected Set<XPolicyAttribute> getConfiguredAttributesInternal() {
+        Set<XPolicyAttribute> resultingAttributes = new LinkedHashSet<XPolicyAttribute>();
+        if (isConfigurationForPolicyCmptType()) {
+            XPolicyCmptClass policyCmptClass = getPolicyCmptClass();
+            if (!policyCmptClass.isConfiguredBy(getType().getQualifiedName())) {
+                return resultingAttributes;
+            }
+            Set<XPolicyAttribute> allAttributes = policyCmptClass.getAttributes();
+            for (XPolicyAttribute attr : allAttributes) {
+                if (attr.isProductRelevant()) {
+                    if (attr.isGenerateGetAllowedValuesFor()) {
+                        resultingAttributes.add(attr);
+                    }
+                }
+            }
+            return resultingAttributes;
+        } else {
+            return resultingAttributes;
+        }
     }
 
     @Override
@@ -109,12 +156,34 @@ public abstract class XProductClass extends XType {
         if (associations == null) {
             synchronized (this) {
                 if (associations == null) {
-                    associations = initNodesForParts(getProductAssociations(isChangeOverTime()),
+                    associations = initNodesForParts(getAssociationsInternal(isChangeOverTime()),
                             XProductAssociation.class);
                 }
             }
         }
         return new CopyOnWriteArraySet<XProductAssociation>(associations);
+    }
+
+    /**
+     * Getting the list of associations defined in this type. With the parameter
+     * changableAssociations you could specify whether you want the associations that are changeable
+     * over time or not changeable (sometimes called static) associations.
+     * <p>
+     * 
+     * @param changableAssociations true if you want only associations changeable over time, false
+     *            to get only not changeable over time associations
+     * @return The list of associations without derived unions
+     */
+    protected Set<IProductCmptTypeAssociation> getAssociationsInternal(boolean changableAssociations) {
+        Set<IProductCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IProductCmptTypeAssociation>();
+        List<IProductCmptTypeAssociation> allAssociations = getType().getProductCmptTypeAssociations();
+        for (IProductCmptTypeAssociation assoc : allAssociations) {
+            // TODO FIPS-989 Associations supporting changeOverTime
+            if (changableAssociations) {
+                resultingAssociations.add(assoc);
+            }
+        }
+        return resultingAssociations;
     }
 
     @Override
@@ -144,82 +213,6 @@ public abstract class XProductClass extends XType {
 
     public boolean iscontainsTables() {
         return !getTables().isEmpty();
-    }
-
-    /**
-     * Getting the list of associations defined in this type. With the parameter
-     * changableAssociations you could specify whether you want the associations that are changeable
-     * over time or not changeable (sometimes called static) associations.
-     * <p>
-     * 
-     * @param changableAssociations true if you want only associations changeable over time, false
-     *            to get only not changeable over time associations
-     * @return The list of associations without derived unions
-     */
-    protected Set<IProductCmptTypeAssociation> getProductAssociations(boolean changableAssociations) {
-        Set<IProductCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IProductCmptTypeAssociation>();
-        List<IProductCmptTypeAssociation> allAssociations = getType().getProductCmptTypeAssociations();
-        for (IProductCmptTypeAssociation assoc : allAssociations) {
-            // TODO FIPS-989 Associations supporting changeOverTime
-            if (changableAssociations) {
-                resultingAssociations.add(assoc);
-            }
-        }
-        return resultingAssociations;
-    }
-
-    /**
-     * Returns the list of attributes. With the parameter you could specify whether you want the
-     * attributes that change over time or attributes not changing over time.
-     * <p>
-     * This method needs to be final because it may be called in constructor
-     * 
-     * @param changableAttributes True to get attributes that change over time, false to get all
-     *            other attributes
-     * @return the list of attributes defined in this type
-     */
-    protected final Set<IProductCmptTypeAttribute> getProductAttributes(boolean changableAttributes) {
-        Set<IProductCmptTypeAttribute> resultingAttributes = new LinkedHashSet<IProductCmptTypeAttribute>();
-        List<IProductCmptTypeAttribute> allAttributes = getType().getProductCmptTypeAttributes();
-        for (IProductCmptTypeAttribute attr : allAttributes) {
-            if (changableAttributes == attr.isChangingOverTime()) {
-                resultingAttributes.add(attr);
-            }
-        }
-        return resultingAttributes;
-    }
-
-    /**
-     * Returns the list of configured policy attributes. With the parameter you could specify
-     * whether you want the attributes that change over time or attributes not changing over time.
-     * <p>
-     * This method needs to be final because it may be called in constructor
-     * 
-     * @param changableAttributes True to get attributes that change over time, false to get all
-     *            other attributes
-     * @return the list of policy attributes configured by this product component.
-     */
-    protected final Set<XPolicyAttribute> getConfiguredAttributes(boolean changableAttributes) {
-        Set<XPolicyAttribute> resultingAttributes = new LinkedHashSet<XPolicyAttribute>();
-        if (isConfigurationForPolicyCmptType()) {
-            try {
-                IPolicyCmptType policyType = getType().findPolicyCmptType(getIpsProject());
-                List<IPolicyCmptTypeAttribute> allAttributes = policyType.getPolicyCmptTypeAttributes();
-                for (IPolicyCmptTypeAttribute attr : allAttributes) {
-                    if (attr.isChangingOverTime() == changableAttributes && attr.isProductRelevant()) {
-                        XPolicyAttribute xPolicyAttribute = getModelNode(attr, XPolicyAttribute.class);
-                        if (xPolicyAttribute.isGenerateGetAllowedValuesFor()) {
-                            resultingAttributes.add(xPolicyAttribute);
-                        }
-                    }
-                }
-                return resultingAttributes;
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-        } else {
-            return resultingAttributes;
-        }
     }
 
     public boolean isConfigurationForPolicyCmptType() {
@@ -293,8 +286,8 @@ public abstract class XProductClass extends XType {
      * <p>
      * If this product component class does not configure any policy component and has no super type
      * we generate the method with <code>return null;</code> If it does configure a policy component
-     * than this policy component needs to be not abstract and the super type must not configure the
-     * same policy component type.
+     * than this policy component needs to be not abstract and must configure this product
+     * component.
      * 
      * @return True if we need to generate the generic <code>createPolicyComponent</code> method
      */
@@ -306,9 +299,8 @@ public abstract class XProductClass extends XType {
                 return false;
             }
         } else {
-            return !getPolicyCmptClass().isAbstract()
-                    && !(hasSupertype() && isConfigurationForPolicyCmptType() && getPolicyCmptClass().equals(
-                            getSupertype().getPolicyCmptClass()));
+            XPolicyCmptClass policyCmptClass = getPolicyCmptClass();
+            return !policyCmptClass.isAbstract() && policyCmptClass.isConfiguredBy(getType().getQualifiedName());
         }
     }
 
