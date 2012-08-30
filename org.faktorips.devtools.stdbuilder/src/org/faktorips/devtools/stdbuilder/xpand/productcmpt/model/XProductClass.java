@@ -96,8 +96,7 @@ public abstract class XProductClass extends XType {
         if (configuredAttributes == null) {
             synchronized (this) {
                 if (configuredAttributes == null) {
-                    configuredAttributes = initNodesForParts(getConfiguredAttributes(isChangeOverTime()),
-                            XPolicyAttribute.class);
+                    configuredAttributes = getConfiguredAttributes(isChangeOverTime());
                 }
             }
         }
@@ -200,15 +199,18 @@ public abstract class XProductClass extends XType {
      *            other attributes
      * @return the list of policy attributes configured by this product component.
      */
-    protected final Set<IPolicyCmptTypeAttribute> getConfiguredAttributes(boolean changableAttributes) {
-        Set<IPolicyCmptTypeAttribute> resultingAttributes = new LinkedHashSet<IPolicyCmptTypeAttribute>();
+    protected final Set<XPolicyAttribute> getConfiguredAttributes(boolean changableAttributes) {
+        Set<XPolicyAttribute> resultingAttributes = new LinkedHashSet<XPolicyAttribute>();
         if (isConfigurationForPolicyCmptType()) {
             try {
                 IPolicyCmptType policyType = getType().findPolicyCmptType(getIpsProject());
                 List<IPolicyCmptTypeAttribute> allAttributes = policyType.getPolicyCmptTypeAttributes();
                 for (IPolicyCmptTypeAttribute attr : allAttributes) {
                     if (attr.isChangingOverTime() == changableAttributes && attr.isProductRelevant()) {
-                        resultingAttributes.add(attr);
+                        XPolicyAttribute xPolicyAttribute = getModelNode(attr, XPolicyAttribute.class);
+                        if (xPolicyAttribute.isGenerateGetAllowedValuesFor()) {
+                            resultingAttributes.add(xPolicyAttribute);
+                        }
                     }
                 }
                 return resultingAttributes;
