@@ -16,18 +16,24 @@ package org.faktorips.devtools.core.ui.views.modeloverview;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.UIToolkit;
 
 public class IpsModelOverviewView extends ViewPart {
 
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"; //$NON-NLS-1$
 
-    private TreeViewer treeviewer;
+    private TreeViewer treeViewer;
+    private UIToolkit uiToolkit = new UIToolkit(null);
+    private Label label;
 
     public IpsModelOverviewView() {
     }
@@ -35,32 +41,57 @@ public class IpsModelOverviewView extends ViewPart {
     @Override
     public void createPartControl(Composite parent) {
         initToolBar();
-        this.treeviewer = new TreeViewer(parent);
-        this.treeviewer.setContentProvider(new ModelOverviewContentProvider());
-        this.treeviewer.setLabelProvider(new IpsModelOverviewLabelProvider());
+        // uiToolkit = new UIToolkit(new FormToolkit(parent.getDisplay()));
+        Composite panel = uiToolkit.createGridComposite(parent, 1, false, true, new GridData(SWT.FILL, SWT.FILL, true,
+                true));
+
+        label = uiToolkit.createLabel(panel, "", SWT.LEFT, new GridData(SWT.FILL, SWT.FILL, //$NON-NLS-1$
+                true, false));
+
+        this.treeViewer = new TreeViewer(panel);
+        this.treeViewer.setContentProvider(new ModelOverviewContentProvider());
+        this.treeViewer.setLabelProvider(new IpsModelOverviewLabelProvider());
+        this.treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     }
 
     @Override
     public void setFocus() {
-        // nothing to do
+        this.treeViewer.getTree().setFocus();
+    }
+
+    @Override
+    public void dispose() {
+        uiToolkit.dispose();
     }
 
     public void showOverview(IType input) {
-        this.treeviewer.setInput(input);
+        this.treeViewer.setInput(input);
+        this.updateView();
     }
 
     public void showOverview(IIpsProject input) {
-        this.treeviewer.setInput(input);
+        this.treeViewer.setInput(input);
+        this.updateView();
+    }
+
+    private void updateView() {
+        Object element = treeViewer.getInput();
+        if (element instanceof IType) {
+            this.label.setText(((IType)element).getQualifiedName());
+        } else {
+            this.label.setText(((IIpsProject)element).getName());
+        }
     }
 
     private void initToolBar() {
-        IActionBars actionBars = getViewSite().getActionBars();
+        final IActionBars actionBars = getViewSite().getActionBars();
 
-        Action showPolicyComponentStructureAction = new Action() {
+        final Action showToggleTypeAction = new Action() {
+            private boolean showPolicyComponents = true;
+
             @Override
             public ImageDescriptor getImageDescriptor() {
                 return IpsUIPlugin.getImageHandling().createImageDescriptor("PolicyCmptType.gif"); //$NON-NLS-1$
-                //                return IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmptType.gif"); //$NON-NLS-1$
             }
 
             @Override
@@ -70,34 +101,20 @@ public class IpsModelOverviewView extends ViewPart {
 
             @Override
             public void run() {
-                // TODO Action implementieren
-                // Filter setzen?
-                // view refreshen
+                // TODO get this method to work
+                // switch state
+                showPolicyComponents = !showPolicyComponents;
+                if (showPolicyComponents) {
+                    this.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("PolicyCmptType.gif")); //$NON-NLS-1$
+                    this.setToolTipText(Messages.IpsModelOverview_tooltipShowOnlyPolicies);
+                } else {
+                    this.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmptType.gif")); //$NON-NLS-1$
+                    this.setToolTipText("Produkt Tooltip");
+                }
             }
 
         };
 
-        Action showProductComponentStructureAction = new Action() {
-            @Override
-            public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmptType.gif"); //$NON-NLS-1$
-            }
-
-            @Override
-            public String getToolTipText() {
-                return Messages.IpsModelOverview_tooltipShowOnlyProducts;
-            }
-
-            @Override
-            public void run() {
-                // TODO Action implementieren
-                // Filter setzen?
-                // view refreshen
-            }
-
-        };
-
-        actionBars.getToolBarManager().add(showPolicyComponentStructureAction);
-        actionBars.getToolBarManager().add(showProductComponentStructureAction);
+        actionBars.getToolBarManager().add(showToggleTypeAction);
     }
 }

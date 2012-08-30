@@ -1932,14 +1932,6 @@
                </iterate>
             </with>
          </enabledWhen>
-         <activeWhen>
-            <with
-                  variable="selection">
-               <iterate
-                     ifEmpty="false">
-               </iterate>
-            </with>
-         </activeWhen>
       </handler>
    </extension>
 

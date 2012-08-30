@@ -210,10 +210,14 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
         List<ComponentNode> componentNodes = new ArrayList<ComponentNode>();
 
         for (IType component : components) {
-            componentNodes.add(new ComponentNode(component, null, rootProject));
+            componentNodes.add(encapsulateComponentType(component, rootProject));
         }
 
         return componentNodes;
+    }
+
+    protected static ComponentNode encapsulateComponentType(IType component, IIpsProject rootProject) {
+        return new ComponentNode(component, null, rootProject);
     }
 
     /**

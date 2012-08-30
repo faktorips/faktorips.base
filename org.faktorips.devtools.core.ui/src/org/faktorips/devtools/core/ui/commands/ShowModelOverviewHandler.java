@@ -18,11 +18,11 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
@@ -36,7 +36,8 @@ public class ShowModelOverviewHandler extends AbstractHandler {
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         // this method must be called first! Otherwise the selection is not valid.
-        TypedSelection<IAdaptable> selection = getSelectionFromSelectionProvider();
+        TypedSelection<IAdaptable> selection = new TypedSelection<IAdaptable>(IAdaptable.class,
+                HandlerUtil.getCurrentSelection(event));
 
         IWorkbenchWindow activeWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
         IWorkbenchPage activePage = activeWindow.getActivePage();
@@ -62,14 +63,6 @@ public class ShowModelOverviewHandler extends AbstractHandler {
         }
 
         return null;
-    }
-
-    protected TypedSelection<IAdaptable> getSelectionFromSelectionProvider() {
-        TypedSelection<IAdaptable> typedSelection;
-        ISelectionService selectionService = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
-                .getSelectionService();
-        typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, selectionService.getSelection());
-        return typedSelection;
     }
 
 }
