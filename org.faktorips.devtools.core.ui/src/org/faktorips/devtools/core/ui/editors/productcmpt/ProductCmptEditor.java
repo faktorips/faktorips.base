@@ -11,14 +11,19 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
@@ -249,4 +254,34 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             return null;
         }
     }
+
+    @Override
+    protected List<IMessage> getMessages() {
+        List<IMessage> messages = super.getMessages();
+        if (getGenerationPropertiesPage().showsNotLatestGeneration()) {
+            messages.add(0, getGenerationPropertiesPage().getNotLatestGenerationMessage());
+        }
+        return messages;
+    }
+
+    @Override
+    protected String createHeaderMessage(List<IMessage> messages, int messageType) {
+        if (!getGenerationPropertiesPage().showsNotLatestGeneration()) {
+            return super.createHeaderMessage(messages, messageType);
+        }
+
+        String generationName = getGenerationPropertiesPage().getGenerationName(getActiveGeneration());
+
+        List<IMessage> filteredList = new ArrayList<IMessage>(messages);
+        filteredList.remove(0);
+
+        String headerMessage = super.createHeaderMessage(filteredList, messageType);
+
+        if (StringUtils.isBlank(headerMessage)) {
+            return generationName;
+        }
+
+        return generationName + SystemUtils.LINE_SEPARATOR + headerMessage;
+    }
+
 }

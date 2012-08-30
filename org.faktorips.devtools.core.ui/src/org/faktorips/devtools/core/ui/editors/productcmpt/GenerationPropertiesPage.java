@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CTabFolder;
@@ -93,7 +92,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         pageRoot = formBody;
         this.toolkit = toolkit;
-        updatePageMessage();
         createStack();
         createPageContent();
         createToolbar();
@@ -302,7 +300,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     @Override
     public void refresh() {
-        updateTabname();
+        updateGenerationName();
 
         // Refreshes the visible controller by application start
         IpsUIPlugin.getDefault().getPropertyVisibleController().updateUI();
@@ -322,58 +320,53 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         if (stack != null) {
             updateStack();
             createPageContent();
-            updateTabname();
+            updateGenerationName();
             resetDataChangeableState();
-            updatePageMessage();
         }
 
         gotoPreviousGenerationAction.update();
         gotoNextGenerationAction.update();
     }
 
-    private void updatePageMessage() {
-        // getManagedForm().getToolkit().decorateFormHeading(getManagedForm().getForm().getForm());
-        if (!isNewestGeneration()) {
-            IMessage[] message = new IMessage[1];
-            message[0] = new IMessage() {
-
-                @Override
-                public int getMessageType() {
-                    return WARNING;
-                }
-
-                @Override
-                public String getMessage() {
-                    String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                            .getGenerationConceptNameSingular();
-                    return NLS.bind(Messages.GenerationPropertiesPage_msg_warning_notLatestGeneration, genName);
-                }
-
-                @Override
-                public String getPrefix() {
-                    return null;
-                }
-
-                @Override
-                public Object getKey() {
-                    return "WARNING_MSG_NOT_LATEST"; //$NON-NLS-1$
-                }
-
-                @Override
-                public Object getData() {
-                    return null;
-                }
-
-                @Override
-                public Control getControl() {
-                    return null;
-                }
-            };
-            getManagedForm().getForm().setMessage(getTabname(getActiveGeneration()), IMessageProvider.WARNING, message);
-        } else {
-            getManagedForm().getForm().setMessage(null, IMessageProvider.NONE);
+    IMessage getNotLatestGenerationMessage() {
+        if (!showsNotLatestGeneration()) {
+            return null;
         }
+        IMessage message = new IMessage() {
 
+            @Override
+            public int getMessageType() {
+                return WARNING;
+            }
+
+            @Override
+            public String getMessage() {
+                String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                        .getGenerationConceptNameSingular();
+                return NLS.bind(Messages.GenerationPropertiesPage_msg_warning_notLatestGeneration, genName);
+            }
+
+            @Override
+            public String getPrefix() {
+                return null;
+            }
+
+            @Override
+            public Object getKey() {
+                return "WARNING_MSG_NOT_LATEST"; //$NON-NLS-1$
+            }
+
+            @Override
+            public Object getData() {
+                return null;
+            }
+
+            @Override
+            public Control getControl() {
+                return null;
+            }
+        };
+        return message;
     }
 
     private boolean isNewestGeneration() {
@@ -391,7 +384,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         createAndSetStackTopControl();
     }
 
-    private String getTabname(IIpsObjectGeneration generation) {
+    String getGenerationName(IIpsObjectGeneration generation) {
         DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
         String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
                 .getGenerationConceptNameSingular();
@@ -408,12 +401,12 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         }
     }
 
-    private void updateTabname() {
-        setPartName(getTabname(getActiveGeneration()));
-        updateTabText(getPartControl());
+    private void updateGenerationName() {
+        setPartName(getGenerationName(getActiveGeneration()));
+        updateGenerationNameText(getPartControl());
     }
 
-    private void updateTabText(Control partControl) {
+    private void updateGenerationNameText(Control partControl) {
         if (partControl == null) {
             return;
         }
@@ -421,7 +414,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             ((CTabFolder)partControl).getItem(0).setText(getPartName());
             return;
         }
-        updateTabText(partControl.getParent());
+        updateGenerationNameText(partControl.getParent());
     }
 
     @Override
@@ -515,7 +508,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
                 setToolTipText(null);
                 setEnabled(false);
             } else {
-                String tabName = getTabname(getGeneration());
+                String tabName = getGenerationName(getGeneration());
                 setText(tabName);
                 setToolTipText(tabName);
                 setEnabled(true);
@@ -532,6 +525,10 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             });
         }
 
+    }
+
+    boolean showsNotLatestGeneration() {
+        return isActive() && !isNewestGeneration();
     }
 
 }
