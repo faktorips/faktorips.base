@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -24,6 +25,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductClass;
 
 /**
  * This is the generator model node for a derived union association. It is very important to
@@ -53,6 +55,12 @@ public class XDerivedUnionAssociation extends XAssociation {
      * @return The name of the getNumOf...Internal method
      */
     public String getMethodNameGetNumOfInternal() {
+        // TODO Bad hack to be compatible with old code generator
+        if (XProductClass.class.isAssignableFrom(getModelNodeType())) {
+            return getJavaNamingConvention().getGetterMethodName(
+                    "NumOf" + StringUtils.capitalize(getAssociation().getTargetRolePlural()))
+                    + "Internal";
+        }
         return getMethodNameGetNumOf() + "Internal";
     }
 

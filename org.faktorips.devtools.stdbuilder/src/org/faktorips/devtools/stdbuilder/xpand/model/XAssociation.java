@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 
 public abstract class XAssociation extends AbstractGeneratorModelNode {
@@ -209,25 +210,15 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getTargetType().isAbstract();
     }
 
-    /**
-     * In contrast to {@link #getTargetClassName()} this method returns the class name of the type
-     * this association is part of.
-     */
-    public String getClassName() {
-        IType target = getIType();
-        XClass xClass = getModelNode(target, getModelNodeType());
-        return getClassName(xClass);
-    }
-
-    private IType getIType() {
-        return getAssociation().getType();
+    public String getTypeName() {
+        return getTypeOfAssociation().getName();
     }
 
     protected String getClassName(XClass xClass) {
         return xClass.getSimpleName(BuilderAspect.IMPLEMENTATION);
     }
 
-    protected Class<? extends XClass> getModelNodeType() {
+    protected Class<? extends XType> getModelNodeType() {
         // TODO is there a better way? Cannot move to subclass because of derived unions
         Class<? extends IType> typeClass = getTypeOfAssociation().getClass();
         if (IProductCmptType.class.isAssignableFrom(typeClass)) {
@@ -240,6 +231,10 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
     }
 
     public String getMethodNameGetNumOf() {
+        // TODO Bad hack to be compatible with old code generator
+        if (XProductClass.class.isAssignableFrom(getModelNodeType())) {
+            return getJavaNamingConvention().getGetterMethodName("NumOf" + getAssociation().getTargetRolePlural());
+        }
         return getJavaNamingConvention().getGetterMethodName(
                 "NumOf" + StringUtils.capitalize(getAssociation().getTargetRolePlural()));
     }

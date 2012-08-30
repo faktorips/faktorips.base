@@ -292,26 +292,29 @@ public class XPolicyAssociation extends XAssociation {
         return "old" + StringUtils.capitalize(getName());
     }
 
-    /**
-     * If this is a detail to master association the
-     * {@link #getMethodNameSetInternalUncapitalized()} is used as a result.
-     * 
-     * Reproduces Bug in old code generator for compatibility. see FIPS-1143.
-     */
-    public String getMethodNameSetInternal() {
-        if (isCompositionDetailToMaster()) {
-            return getMethodNameSetInternalUncapitalized();
-        } else {
-            return getMethodNameSetter(false) + "Internal";
-        }
-    }
-
     public String getMethodNameAddInternal() {
         return getMethodNameAdd() + "Internal";
     }
 
-    protected String getMethodNameSetter(boolean toMany) {
-        return getJavaNamingConvention().getSetterMethodName(getName(toMany));
+    /**
+     * Returns the name of the setter method.
+     * 
+     * TODO Just delete this method and use the implementation of the super class. At the moment it
+     * reproduces Bug in old code generator for compatibility. see FIPS-1143.
+     */
+    @Override
+    public String getMethodNameSetter() {
+        if (isCompositionDetailToMaster()) {
+            return "set" + getName(false);
+        }
+        return super.getMethodNameSetter();
+    }
+
+    /**
+     * Returns the method name for internal setters.
+     */
+    public String getMethodNameSetInternal() {
+        return getMethodNameSetter() + "Internal";
     }
 
     public String getMethodNameNew() {
@@ -556,17 +559,6 @@ public class XPolicyAssociation extends XAssociation {
         } else {
             return super.getMethodNameGetter();
         }
-    }
-
-    /**
-     * Returns the setter name for derived unions on policy side, which does not capitalize the role
-     * name until now erroneously. e.g. getpolicyPart() instead of getPolicyPart() (if the role name
-     * is policyPart).
-     * 
-     * Reproduces Bug in old code generator for compatibility. see FIPS-1143.
-     */
-    private String getMethodNameSetInternalUncapitalized() {
-        return "set" + getName(false) + "Internal";
     }
 
 }
