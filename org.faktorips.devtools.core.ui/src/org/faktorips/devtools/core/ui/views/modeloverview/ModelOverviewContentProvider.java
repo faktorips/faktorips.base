@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.views.modeloverview;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
@@ -257,35 +256,23 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
         return associatingComponents;
     }
 
-    /*
-     * TODO CODE-REVIEW FIPS-1194: Diese Methode sollte direkt vom IType angeboten werden. Analog
-     * findAssociationsForTargetAndAssociationType könnte es dort noch
-     * findAssociationsForAssociationType geben
-     */
     /**
-     * Returns a {@link List} of {@link IType component types} which are associated to this
-     * {@link IType} component type. The only {@link AssociationType association types} which will
-     * be returned are {@link AssociationType}.COMPOSITION_MASTER_TO_DETAIL an
-     * {@link AssociationType}.AGGREGATION, that means only associations which are directed away
-     * from the argument object.
+     * Returns a {@link List} of all {@link IAssociation}s which are associated to this
+     * {@link IType} and match one of the provided types.
      * 
-     * @param rootElement for which the outgoing associations should be returned
-     * @return a {@link List} of associated {@link IType}s
+     * @return a {@link List} of associated {@link IAssociation}s
      */
-    // getAssociations(AssociationType... types)
-    protected static List<IType> getAssociationsForAssociationTypes(IType rootElement, AssociationType... filter) {
-        try {
-            List<IType> associations = new ArrayList<IType>();
-            List<IAssociation> findAssociations = rootElement.getAssociations();
-            for (IAssociation association : findAssociations) {
-                if (Arrays.asList(filter).contains(association.getAssociationType())) {
-                    associations.add(association.findTarget(association.getIpsProject()));
-                }
+    protected static List<IType> getAssociationsForAssociationTypes(IType rootElement, AssociationType... types) {
+        List<IAssociation> associations = rootElement.getAssociations(types);
+        List<IType> associatingTypes = new ArrayList<IType>(associations.size());
+        for (IAssociation association : associations) {
+            try {
+                associatingTypes.add(association.findTarget(rootElement.getIpsProject()));
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
             }
-            return associations;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
+        return associatingTypes;
     }
 
     /**

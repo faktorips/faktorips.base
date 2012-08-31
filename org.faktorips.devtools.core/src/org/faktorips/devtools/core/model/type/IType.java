@@ -309,6 +309,14 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
     public List<IAssociation> getAssociations();
 
     /**
+     * Returns all {@link IAssociation associations} that have one of the indicated
+     * {@link AssociationType}s.
+     * 
+     * @param types an array of desired {@link AssociationType}s
+     */
+    public List<IAssociation> getAssociations(AssociationType... types);
+
+    /**
      * Returns all associations that have the indicated target. Returns an empty array if no such
      * association exists or target is <code>null</code>.
      * <p>
