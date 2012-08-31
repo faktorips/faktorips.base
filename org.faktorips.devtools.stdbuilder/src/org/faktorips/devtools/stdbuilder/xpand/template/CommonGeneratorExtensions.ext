@@ -3,15 +3,6 @@ import org::faktorips::devtools::stdbuilder::xpand::policycmpt::model;
 
 extension org::faktorips::devtools::stdbuilder::xpand::template::MethodNames reexport;
 
-create List[ImportStatement] imported (XClass this) :
-	(List[ImportStatement]) {}; 
-
-ImportStatement newImport(String qualifiedName) :
-	JAVA org.faktorips.devtools.stdbuilder.xpand.model.ImportStatement.newInstance(java.lang.String);
-
-String addImport(List[ImportStatement] imported, String qName) :
-	imported.add(newImport(qName));
-
 String camelCaseToUnderscore(String s) :
 	JAVA org.faktorips.util.StringUtil.camelCaseToUnderscore(java.lang.String); 
 

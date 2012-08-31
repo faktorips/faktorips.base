@@ -42,7 +42,6 @@ public class ProductCmptImplClassBuilder extends XpandBuilder<XProductCmptClass>
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
-        // TODO
         return false;
     }
 

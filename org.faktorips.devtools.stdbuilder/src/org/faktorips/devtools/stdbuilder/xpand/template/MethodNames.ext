@@ -134,6 +134,8 @@ validateDependants(String argument1, String argument2):
 isModifiable() :
 	"isModifiable()";
 
+getProductComponentGeneration(String idParam, String effectiveFromParam):
+	"getProductComponentGeneration(" + idParam + ", " + effectiveFromParam + ")";
 
 // ---------------------------------
 // Methods in ValueToXmlHelper

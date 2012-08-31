@@ -445,7 +445,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         builders.add(tableImplBuilder);
         builders.add(tableRowBuilder);
         builders.add(productCmptInterfaceBuilder);
-        builders.add(productCmptImplClassBuilder);
+        // builders.add(productCmptImplClassBuilder);
         builders.add(productCmptGenInterfaceBuilder);
         // builders.add(productCmptGenImplClassBuilder);
         // builders.add(policyCmptImplClassBuilder);
@@ -471,6 +471,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 generatorModelContext, modelService));
         builders.add(new org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationImplClassBuilder(
                 this, generatorModelContext, modelService));
+        builders.add(new org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptImplClassBuilder(this,
+                generatorModelContext, modelService));
         // builders.add(new
         // org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptImplClassBuilder(this,
         // generatorModelContext, modelService));

@@ -1,0 +1,124 @@
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE main FOR XProductCmptClass-»
+	«FILE getFileName(BuilderAspect::IMPLEMENTATION) -»
+	package «packageName»;
+
+		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
+	
+		/**
+		 * «localizedJDoc("CLASS", getSimpleName(BuilderAspect::INTERFACE))»
+		 * @generated
+		 */
+		public «abstract()» class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
+		 {
+		 
+		 	«FOREACH attributes AS this-»
+		 		«IF !generatingPublishedInterfaces || !published -»
+			 		«EXPAND ProductAttribute::constantForPropertyName-»
+			 	«ENDIF-»
+		 	«ENDFOREACH-»
+		 
+			«EXPAND ProductAttribute::memberField FOREACH attributes-»
+
+		    /**
+		     * «localizedJDoc("CONSTRUCTOR", getSimpleName(BuilderAspect::IMPLEMENTATION))»
+		     * 
+		     * @generated
+		     */
+			public «method(getSimpleName(BuilderAspect::IMPLEMENTATION), IRuntimeRepository(), "repository", "String", "id", "String", "kindId", "String", "versionId")» {
+		        super(repository, id, kindId, versionId);
+			}
+
+		    /**
+		     * {@inheritDoc}
+		     * 
+		     * @generated
+		     */
+		    @Override
+		    public «productCmptGenClassName» «method(methodNameGetProductComponentGeneration, Calendar(), "effectiveDate")» {
+		        return («productCmptGenClassName»)«getRepository()».«getProductComponentGeneration("getId()", "effectiveDate")»;
+		    }
+
+			«EXPAND ProductAttribute::getterSetter FOREACH attributes»
+
+		    /**
+		     * {@inheritDoc}
+		     * 
+		     * @generated
+		     */
+		    «overrideAnnotation(false)-»
+		    protected void «doInitPropertiesFromXml(Map("String", Element()) + " configMap")» {
+		        super.«doInitPropertiesFromXml("configMap")»;
+		        «IF attributes.size > 0-»
+		        	Element configElement = null;
+		        «ENDIF-»
+		        «EXPAND ProductAttribute::initAttributeFromXML FOREACH attributes-»
+		    }
+			«EXPAND writeToXmlMethods-»
+
+			«EXPAND createPolicyCmpt(this) FOREACH policyTypeClassHierarchy»
+
+«REM» TODO may use covariant return type«ENDREM»
+		«IF generateMethodGenericCreatePolicyComponent»
+		    /**
+		     * {@inheritDoc}
+		     * 
+		     * @generated
+		     */
+		    «overrideAnnotation(false)-»
+		    public «IConfigurableModelObject()» «createPolicyComponent()» {
+		    	«IF !configurationForPolicyCmptType-»
+		    		return null;
+		    	«ELSE-»
+		        	return «policyCmptClass.methodNameCreatePolicyCmpt»();
+		        «ENDIF-»
+		    }
+	    «ENDIF»
+	}
+	«ENDFILE»
+«ENDDEFINE»
+«DEFINE writeToXmlMethods FOR XProductCmptClass-»
+	«IF generateToXmlSupport-»
+		    /**
+		     * {@inheritDoc}
+		     * 
+		     * @generated
+		     */
+		    «overrideAnnotation(false)-»
+		    protected void «writePropertiesToXml(Element() + " element")» {
+		    	«IF hasSupertype()-»
+		        	super.«writePropertiesToXml("element")»;
+		        «ELSE-»
+ «REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification.
+		        «ENDIF-»
+		        «IF attributes.size > 0-»
+			        Element attributeElement = null;
+			        List<String> stringList = null;
+		        	«EXPAND ProductAttribute::writeAttributeToXML FOREACH attributes-»
+		        «ENDIF-»
+		    }
+	«ENDIF-»
+«ENDDEFINE»
+
+«REM» The content of the method is always the same (use currentType). The methodName is derived from different types «ENDREM»
+«REM» TODO may use covariant return type«ENDREM»
+«DEFINE createPolicyCmpt(XProductCmptClass currentType) FOR XPolicyCmptClass»
+	«IF currentType.isGenerateMethodCreatePolicyCmpt(this)-»
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+     «overrideAnnotationForPublishedMethodOrIf(this != currentType.policyCmptClass)»
+    public «publishedInterfaceName» «method(methodNameCreatePolicyCmpt)» {
+        return new «currentType.policyImplClassName»(this);
+    }
+    «ENDIF»
+«ENDDEFINE»

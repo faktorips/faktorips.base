@@ -38,7 +38,7 @@ public class XProductCmptGenerationClass extends XProductClass {
     }
 
     @Override
-    public boolean isChangeOverTime() {
+    public boolean isChangeOverTimeClass() {
         return CHANGE_OVER_TIME;
     }
 

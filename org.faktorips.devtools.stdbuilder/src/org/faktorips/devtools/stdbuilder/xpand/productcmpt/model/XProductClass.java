@@ -75,7 +75,14 @@ public abstract class XProductClass extends XType {
         tables = null;
     }
 
-    public abstract boolean isChangeOverTime();
+    /**
+     * Returns true if this class represents a container that handles properties which changes over
+     * time, otherwise false.
+     * <p>
+     * In other words. True for product generations, false for product component class.
+     * 
+     */
+    public abstract boolean isChangeOverTimeClass();
 
     @Override
     public Set<XProductAttribute> getAttributes() {
@@ -83,7 +90,8 @@ public abstract class XProductClass extends XType {
         if (attributes == null) {
             synchronized (this) {
                 if (attributes == null) {
-                    attributes = initNodesForParts(getAttributesInternal(isChangeOverTime()), XProductAttribute.class);
+                    attributes = initNodesForParts(getAttributesInternal(isChangeOverTimeClass()),
+                            XProductAttribute.class);
                 }
             }
         }
@@ -131,7 +139,7 @@ public abstract class XProductClass extends XType {
      */
     protected Set<XPolicyAttribute> getConfiguredAttributesInternal() {
         Set<XPolicyAttribute> resultingAttributes = new LinkedHashSet<XPolicyAttribute>();
-        if (isConfigurationForPolicyCmptType()) {
+        if (isConfigurationForPolicyCmptType() && isChangeOverTimeClass()) {
             XPolicyCmptClass policyCmptClass = getPolicyCmptClass();
             if (!policyCmptClass.isConfiguredBy(getType().getQualifiedName())) {
                 return resultingAttributes;
@@ -156,7 +164,7 @@ public abstract class XProductClass extends XType {
         if (associations == null) {
             synchronized (this) {
                 if (associations == null) {
-                    associations = initNodesForParts(getAssociationsInternal(isChangeOverTime()),
+                    associations = initNodesForParts(getAssociationsInternal(isChangeOverTimeClass()),
                             XProductAssociation.class);
                 }
             }

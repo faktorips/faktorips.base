@@ -616,6 +616,8 @@ public abstract class AbstractGeneratorModelNode {
      * <p>
      * Use to register a method that should be included in the refactoring support and the
      * jump-to-source-code feature.
+     * <p>
+     * We cannot simply use varagrs because they are not supported ba XPAND.
      * 
      * @param methodName The name of the generated method
      * @param parameterType1 The type of the first method parameter
@@ -633,6 +635,71 @@ public abstract class AbstractGeneratorModelNode {
             String parameterName2) {
         return method(methodName, new MethodParameter(parameterType1, parameterName1), new MethodParameter(
                 parameterType2, parameterName2));
+    }
+
+    /**
+     * Adds a method with two parameters to the list of generated method signatures.
+     * <p>
+     * Use to register a method that should be included in the refactoring support and the
+     * jump-to-source-code feature.
+     * <p>
+     * We cannot simply use varagrs because they are not supported ba XPAND.
+     * 
+     * @param methodName The name of the generated method
+     * @param parameterType1 The type of the first method parameter
+     * @param parameterName1 The name of the first method parameter
+     * @param parameterType2 The type of the second method parameter
+     * @param parameterName2 The name of the second method parameter
+     * @param parameterType3 The type of the third method parameter
+     * @param parameterName3 The name of the third method parameter
+     * @return The methods definition. For example for a method name <em>setFoo</em> with parameter
+     *         <em>bar</em> of type <em>String</em> the method definition is
+     *         <em>SetFoo(String bar)<em>
+     */
+    public String method(String methodName,
+            String parameterType1,
+            String parameterName1,
+            String parameterType2,
+            String parameterName2,
+            String parameterType3,
+            String parameterName3) {
+        return method(methodName, new MethodParameter(parameterType1, parameterName1), new MethodParameter(
+                parameterType2, parameterName2), new MethodParameter(parameterType3, parameterName3));
+    }
+
+    /**
+     * Adds a method with two parameters to the list of generated method signatures.
+     * <p>
+     * Use to register a method that should be included in the refactoring support and the
+     * jump-to-source-code feature.
+     * <p>
+     * We cannot simply use varagrs because they are not supported ba XPAND.
+     * 
+     * @param methodName The name of the generated method
+     * @param parameterType1 The type of the first method parameter
+     * @param parameterName1 The name of the first method parameter
+     * @param parameterType2 The type of the second method parameter
+     * @param parameterName2 The name of the second method parameter
+     * @param parameterType3 The type of the third method parameter
+     * @param parameterName3 The name of the third method parameter
+     * @param parameterType4 The type of the fourth method parameter
+     * @param parameterName4 The name of the fourth method parameter
+     * @return The methods definition. For example for a method name <em>setFoo</em> with parameter
+     *         <em>bar</em> of type <em>String</em> the method definition is
+     *         <em>SetFoo(String bar)<em>
+     */
+    public String method(String methodName,
+            String parameterType1,
+            String parameterName1,
+            String parameterType2,
+            String parameterName2,
+            String parameterType3,
+            String parameterName3,
+            String parameterType4,
+            String parameterName4) {
+        return method(methodName, new MethodParameter(parameterType1, parameterName1), new MethodParameter(
+                parameterType2, parameterName2), new MethodParameter(parameterType3, parameterName3),
+                new MethodParameter(parameterType4, parameterName4));
     }
 
     public String method(String methodName, List<MethodParameter> parameters) {

@@ -31,7 +31,7 @@ public class XProductCmptClass extends XProductClass {
     }
 
     @Override
-    public boolean isChangeOverTime() {
+    public boolean isChangeOverTimeClass() {
         return CHANGE_OVER_TIME;
     }
 
@@ -49,9 +49,24 @@ public class XProductCmptClass extends XProductClass {
         return super.getClassHierarchy(XProductCmptClass.class);
     }
 
-    public String getMethodNameGetProductComponentGeneration() {
-        XProductClass productCmptGenerationClass = getModelNode(getType(),
+    protected XProductCmptGenerationClass getProductCmptGenerationNode() {
+        XProductCmptGenerationClass productCmptGenerationClass = getModelNode(getProductCmptType(),
                 XProductCmptGenerationClass.class);
+        return productCmptGenerationClass;
+    }
+
+    public String getProductCmptGenClassName() {
+        XProductCmptGenerationClass productCmptGenerationClass = getProductCmptGenerationNode();
+        return productCmptGenerationClass.getSimpleName(BuilderAspect.INTERFACE);
+    }
+
+    public String getProductCmptGenClassName(BuilderAspect aspect) {
+        XProductCmptGenerationClass productCmptGenerationClass = getProductCmptGenerationNode();
+        return productCmptGenerationClass.getSimpleName(aspect);
+    }
+
+    public String getMethodNameGetProductComponentGeneration() {
+        XProductCmptGenerationClass productCmptGenerationClass = getProductCmptGenerationNode();
         return getJavaNamingConvention().getGetterMethodName(
                 productCmptGenerationClass.getSimpleName(BuilderAspect.IMPLEMENTATION));
     }
