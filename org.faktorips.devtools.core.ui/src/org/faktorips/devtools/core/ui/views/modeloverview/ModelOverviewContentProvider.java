@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.views.modeloverview;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
@@ -35,50 +36,38 @@ import org.faktorips.devtools.core.model.type.IType;
 public class ModelOverviewContentProvider implements ITreeContentProvider {
 
     private List<Deque<PathElement>> paths = new ArrayList<Deque<PathElement>>();
-
-    enum ToChildAssociationType {
-        SELF,
-        ASSOCIATION,
-        SUPERTYPE
-    }
+    // it is important that this list does not contain a set of AssociationTypes which would cause
+    // association loops
+    private final AssociationType[] associationTypeFilter = { AssociationType.AGGREGATION,
+            AssociationType.COMPOSITION_MASTER_TO_DETAIL };
 
     @Override
     public Object[] getElements(Object inputElement) {
-
-        Collection<IType> rootComponents;
-        IIpsProject iIpsProject;
-        try {
-            // get all components from the input project
-            IpsObjectType[] filter = { IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.POLICY_CMPT_TYPE };
-            List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
-
-            if (inputElement instanceof IType) {
-                iIpsProject = ((IType)inputElement).getIpsProject();
-            } else {
-                iIpsProject = (IIpsProject)inputElement;
-            }
-
-            iIpsProject.findAllIpsSrcFiles(srcFiles, filter);
-            List<IType> componentsFromSrcFiles = getComponentsFromSrcFiles(srcFiles);
-
-            // get the root elements
-            if (inputElement instanceof IType) {
-                paths = new ArrayList<Deque<PathElement>>();
-                IType input = (IType)inputElement;
-                Collection<IType> rootCandidates = getRootElementsForIType(input, componentsFromSrcFiles,
-                        ToChildAssociationType.SELF, new ArrayList<IType>(), new ArrayList<Deque<PathElement>>(),
-                        new ArrayDeque<PathElement>());
-                rootComponents = getRootElementsForIType(input, componentsFromSrcFiles, ToChildAssociationType.SELF,
-                        rootCandidates, getPaths(), new ArrayDeque<PathElement>());
-
-            } else {
-                rootComponents = getRootComponentTypes(componentsFromSrcFiles);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IIpsProject ipsProject;
+        if (inputElement instanceof IType) {
+            ipsProject = ((IType)inputElement).getIpsProject();
+        } else {
+            ipsProject = (IIpsProject)inputElement;
         }
 
-        return encapsulateComponentTypes(rootComponents, iIpsProject).toArray();
+        List<IType> projectTypes = getProjectTypes(ipsProject, new IpsObjectType[] { IpsObjectType.PRODUCT_CMPT_TYPE,
+                IpsObjectType.POLICY_CMPT_TYPE });
+
+        // get the root elements
+        Collection<IType> rootComponents;
+        if (inputElement instanceof IType) { // get the root elements if the input is an IType
+            paths = new ArrayList<Deque<PathElement>>();
+            IType input = (IType)inputElement;
+            Collection<IType> rootCandidates = getRootElementsForIType(input, projectTypes,
+                    ToChildAssociationType.SELF, new ArrayList<IType>(), new ArrayList<Deque<PathElement>>(),
+                    new ArrayDeque<PathElement>());
+            rootComponents = getRootElementsForIType(input, projectTypes, ToChildAssociationType.SELF, rootCandidates,
+                    getPaths(), new ArrayDeque<PathElement>());
+
+        } else { // get the root elements if the input is an IpsProject
+            rootComponents = getRootTypes(projectTypes);
+        }
+        return ComponentNode.encapsulateComponentTypes(rootComponents, ipsProject).toArray();
     }
 
     /**
@@ -104,13 +93,11 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
             Collection<IType> rootCandidates,
             List<Deque<PathElement>> foundPaths,
             Deque<PathElement> callHierarchy) {
-        Set<IType> rootElements = new HashSet<IType>();
-        List<IType> associatingTypes = getAssociatingTypes(element, componentList);
-        IType supertype;
 
-        ArrayDeque<PathElement> callHierarchyTemp = new ArrayDeque<PathElement>(callHierarchy);
+        Deque<PathElement> callHierarchyTemp = new ArrayDeque<PathElement>(callHierarchy);
         callHierarchyTemp.push(new PathElement(element, association));
 
+        IType supertype;
         try {
             supertype = element.findSupertype(element.getIpsProject());
         } catch (CoreException e) {
@@ -118,6 +105,8 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
         }
 
         // Breaking condition
+        Set<IType> rootElements = new HashSet<IType>();
+        List<IType> associatingTypes = getAssociatingTypes(element, componentList, associationTypeFilter);
         if (associatingTypes.isEmpty() && supertype == null
                 && (association == ToChildAssociationType.SELF || association == ToChildAssociationType.ASSOCIATION)) {
             rootElements.add(element);
@@ -158,10 +147,19 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
         return rootElements;
     }
 
-    private List<IType> getRootComponentTypes(List<IType> components) {
+    /**
+     * Computes the root elements of a complete {@link IIpsProject}. An element is considered as
+     * root if it is no association target of any other {@link IType} and if it has no supertype
+     * {@link IType}.
+     * 
+     * @param components all components of the concerned {@link IIpsProject}
+     * @return a {@link List} of {@link IType} with the root elements, or an empty list if there are
+     *         no elements.
+     */
+    private List<IType> getRootTypes(List<IType> components) {
         List<IType> rootComponents = new ArrayList<IType>();
         for (IType iType : components) {
-            if (!iType.hasSupertype() && !isAssociationTarget(iType, components)) {
+            if (!iType.hasSupertype() && !isAssociationTarget(iType, components, associationTypeFilter)) {
                 rootComponents.add(iType);
             }
         }
@@ -173,11 +171,21 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
      * {@link IType}. It operates only on {@link List Lists} of {@link IIpsSrcFile} which represent
      * {@link IType}
      * 
-     * @param srcFiles a {@link List} of {@link IIpsSrcFile} which represents {@link IType} elements
+     * @param ipsProject the {@link IIpsProject} for which the objects should be retrieved
+     * @param filter an array of {@list IpsObjectType} to filter the retrieved objects
+     * 
      * @return a {@link List} of the same size with corresponding {@link IType}, or an empty
      *         {@link List} if the input {@link List} was empty
      */
-    private List<IType> getComponentsFromSrcFiles(List<IIpsSrcFile> srcFiles) {
+    private List<IType> getProjectTypes(IIpsProject ipsProject, IpsObjectType[] filter) {
+
+        List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
+        try {
+            ipsProject.findAllIpsSrcFiles(srcFiles, filter);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+
         List<IType> components = new ArrayList<IType>(srcFiles.size());
         for (IIpsSrcFile file : srcFiles) {
             try {
@@ -216,28 +224,8 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
     }
 
     /**
-     * Encapsulates a {@link List} of {@link IType ITypes} into a {@link List} of
-     * {@link ComponentNode ComponentNodes}.
-     * 
-     * @param components the elements which should be encapsulated
-     * @return a {@link List} of {@link ComponentNode ComponenteNodes}
-     */
-    protected static List<ComponentNode> encapsulateComponentTypes(Collection<IType> components, IIpsProject rootProject) {
-        List<ComponentNode> componentNodes = new ArrayList<ComponentNode>();
-
-        for (IType component : components) {
-            componentNodes.add(encapsulateComponentType(component, rootProject));
-        }
-
-        return componentNodes;
-    }
-
-    protected static ComponentNode encapsulateComponentType(IType component, IIpsProject rootProject) {
-        return new ComponentNode(component, null, rootProject);
-    }
-
-    /**
-     * This method checks if an {@link IType} is targeted by an {@link IAssociation}.
+     * Convenience function for {@link #getAssociatingTypes(IType, List, AssociationType...)
+     * getAssociatingTypes(IType, List, AssociationType...).isEmpty()}.
      * 
      * @param target the {@link IType} which should be checked on incoming associations
      * @param components a {@link List} of {@link IType} which define the scope of associations that
@@ -245,16 +233,8 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
      * @return {@code true}, if any association is directed towards the provided target, otherwise
      *         {@code false}
      */
-    private boolean isAssociationTarget(IType target, List<IType> components) {
-        for (IType component : components) {
-            List<IType> associations = getAssociations(component);
-            for (IType association : associations) {
-                if (association.getQualifiedName().equals(target.getQualifiedName())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    private boolean isAssociationTarget(IType target, List<IType> components, AssociationType... filter) {
+        return !getAssociatingTypes(target, components, filter).isEmpty();
     }
 
     /**
@@ -266,45 +246,46 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
      * @param components a {@link List} of {@link IType} which define the scope of associations that
      *            will be checked
      */
-    private List<IType> getAssociatingTypes(IType target, List<IType> components) {
+    private List<IType> getAssociatingTypes(IType target, List<IType> components, AssociationType... filter) {
         List<IType> associatingComponents = new ArrayList<IType>();
         for (IType component : components) {
-            List<IType> targets = getAssociations(component);
-            for (IType targetComponentType : targets) {
-                if (targetComponentType.getQualifiedName().equals(target.getQualifiedName())) {
-                    associatingComponents.add(component);
-                    break;
-                }
+            List<IType> targets = getAssociationsForAssociationTypes(component, filter);
+            if (targets.contains(target)) {
+                associatingComponents.add(component);
             }
         }
         return associatingComponents;
     }
 
+    /*
+     * TODO CODE-REVIEW FIPS-1194: Diese Methode sollte direkt vom IType angeboten werden. Analog
+     * findAssociationsForTargetAndAssociationType könnte es dort noch
+     * findAssociationsForAssociationType geben
+     */
     /**
      * Returns a {@link List} of {@link IType component types} which are associated to this
      * {@link IType} component type. The only {@link AssociationType association types} which will
      * be returned are {@link AssociationType}.COMPOSITION_MASTER_TO_DETAIL an
      * {@link AssociationType}.AGGREGATION, that means only associations which are directed away
-     * from the argument <tt>object</tt>.
+     * from the argument object.
      * 
      * @param rootElement for which the outgoing associations should be returned
      * @return a {@link List} of associated {@link IType}s
      */
-    protected static List<IType> getAssociations(IType rootElement) {
-        List<IType> associations = new ArrayList<IType>();
-
+    // getAssociations(AssociationType... types)
+    protected static List<IType> getAssociationsForAssociationTypes(IType rootElement, AssociationType... filter) {
         try {
+            List<IType> associations = new ArrayList<IType>();
             List<IAssociation> findAssociations = rootElement.getAssociations();
             for (IAssociation association : findAssociations) {
-                if (association.getAssociationType().equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)
-                        || association.getAssociationType().equals(AssociationType.AGGREGATION)) {
+                if (Arrays.asList(filter).contains(association.getAssociationType())) {
                     associations.add(association.findTarget(association.getIpsProject()));
                 }
             }
+            return associations;
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-        return associations;
     }
 
     /**
@@ -314,6 +295,12 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
      */
     public List<Deque<PathElement>> getPaths() {
         return paths;
+    }
+
+    static enum ToChildAssociationType {
+        SELF,
+        ASSOCIATION,
+        SUPERTYPE
     }
 
 }

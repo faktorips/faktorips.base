@@ -18,12 +18,11 @@ import java.util.List;
 class CompositeNode extends AbstractStructureNode {
 
     /**
-     * Creates a {@link CompositeNode} with a mandatory parent {@link ComponentNode} and a {@link List} of
-     * mandatory <tt>children</tt>.
+     * Creates a {@link CompositeNode} with a mandatory parent {@link ComponentNode} and a
+     * {@link List} of mandatory children.
      * 
      * @param parent the parent, this parameter must not be {@code null}.
-     * @throws NullPointerException if one of the parameters is {@code null} or <tt>children</tt> is
-     *             empty.
+     * @throws NullPointerException if one of the parameters is {@code null} or children is empty.
      */
     public CompositeNode(ComponentNode parent, List<ComponentNode> children) {
         super(parent, children);

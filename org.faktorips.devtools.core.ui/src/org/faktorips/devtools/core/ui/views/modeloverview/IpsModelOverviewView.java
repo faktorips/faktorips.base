@@ -39,16 +39,12 @@ public class IpsModelOverviewView extends ViewPart {
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"; //$NON-NLS-1$
 
     private TreeViewer treeViewer;
-    private UIToolkit uiToolkit = new UIToolkit(null);
+    private final UIToolkit uiToolkit = new UIToolkit(null);
     private Label label;
-
-    public IpsModelOverviewView() {
-    }
 
     @Override
     public void createPartControl(Composite parent) {
         initToolBar();
-        // uiToolkit = new UIToolkit(new FormToolkit(parent.getDisplay()));
         Composite panel = uiToolkit.createGridComposite(parent, 1, false, true, new GridData(SWT.FILL, SWT.FILL, true,
                 true));
 
@@ -71,13 +67,28 @@ public class IpsModelOverviewView extends ViewPart {
         uiToolkit.dispose();
     }
 
+    /**
+     * Configures the View to display the scope of a complete IpsProject.
+     * 
+     * @param input the selected {@link IIpsProject}
+     */
+    public void showOverview(IIpsProject input) {
+        this.treeViewer.setInput(input);
+        this.updateView();
+    }
+
+    /**
+     * Configures the View to display the scope of a single IType.
+     * 
+     * @param input the selected {@link IType}
+     */
     public void showOverview(IType input) {
         this.treeViewer.setInput(input);
         List<Deque<PathElement>> paths = ((ModelOverviewContentProvider)this.treeViewer.getContentProvider())
                 .getPaths();
         TreePath[] treePaths = new TreePath[paths.size()];
         for (int i = 0; i < paths.size(); i++) {
-            treePaths[i] = this.expandPath(paths.get(i));
+            treePaths[i] = this.computePath(paths.get(i));
         }
         for (TreePath treePath : treePaths) {
             this.treeViewer.expandToLevel(treePath, 0);
@@ -86,48 +97,41 @@ public class IpsModelOverviewView extends ViewPart {
         this.updateView();
     }
 
-    private TreePath expandPath(Deque<PathElement> treePath) {
+    private TreePath computePath(Deque<PathElement> treePath) {
         // The IpsProject must be from the project which is the lowest in the project hierarchy
         IIpsProject rootProject = treePath.getLast().getComponent().getIpsProject();
         PathElement root = treePath.pop();
         List<IModelOverviewNode> pathList = new ArrayList<IModelOverviewNode>();
 
         // get the root node
-        ComponentNode rootNode = ModelOverviewContentProvider
-                .encapsulateComponentType(root.getComponent(), rootProject);
+        ComponentNode rootNode = ComponentNode.encapsulateComponentType(root.getComponent(), rootProject);
         pathList.add(rootNode);
 
         for (PathElement pathElement : treePath) {
             if (root.getAssociationType() == ToChildAssociationType.SELF) {
                 break;
-            } else {
-                // add the structure node
-                AbstractStructureNode abstractRootChild = null;
-                if (root.getAssociationType() == ToChildAssociationType.ASSOCIATION) {
-                    abstractRootChild = rootNode.getCompositeChild();
-                } else { // ToChildAssociationType.SUPERTYPE
-                    abstractRootChild = rootNode.getSubtypeChild();
-                }
-                pathList.add(abstractRootChild);
-
-                // add the child node
-                for (ComponentNode childNode : abstractRootChild.getChildren()) {
-                    if (childNode.getValue().equals(pathElement.getComponent())) {
-                        pathList.add(childNode);
-                        rootNode = childNode;
-                        break;
-                    }
-                }
-                root = treePath.pop();
             }
+            // add the structure node
+            AbstractStructureNode abstractRootChild = null;
+            if (root.getAssociationType() == ToChildAssociationType.ASSOCIATION) {
+                abstractRootChild = rootNode.getCompositeChild();
+            } else { // ToChildAssociationType.SUPERTYPE
+                abstractRootChild = rootNode.getSubtypeChild();
+            }
+            pathList.add(abstractRootChild);
+
+            // add the child node
+            for (ComponentNode childNode : abstractRootChild.getChildren()) {
+                if (childNode.getValue().equals(pathElement.getComponent())) {
+                    pathList.add(childNode);
+                    rootNode = childNode;
+                    break;
+                }
+            }
+            root = treePath.pop();
         }
 
         return new TreePath(pathList.toArray());
-    }
-
-    public void showOverview(IIpsProject input) {
-        this.treeViewer.setInput(input);
-        this.updateView();
     }
 
     private void updateView() {
@@ -140,9 +144,9 @@ public class IpsModelOverviewView extends ViewPart {
     }
 
     private void initToolBar() {
-        final IActionBars actionBars = getViewSite().getActionBars();
+        IActionBars actionBars = getViewSite().getActionBars();
 
-        final Action showToggleTypeAction = new Action() {
+        Action showToggleTypeAction = new Action() {
             private boolean showPolicyComponents = true;
 
             @Override
@@ -170,15 +174,6 @@ public class IpsModelOverviewView extends ViewPart {
             }
 
         };
-
-        // showToggleTypeAction.addPropertyChangeListener(new IPropertyChangeListener() {
-        //
-        // @Override
-        // public void propertyChange(PropertyChangeEvent event) {
-        // // TODO Auto-generated method stub
-        // System.out.println(event.getProperty());
-        // }
-        // });
 
         actionBars.getToolBarManager().add(showToggleTypeAction);
     }

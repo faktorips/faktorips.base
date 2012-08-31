@@ -14,10 +14,12 @@
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IIpsSrcFileViewItem;
 import org.faktorips.util.ArgumentCheck;
@@ -32,12 +34,12 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
     private SubtypeNode subtypeChild;
 
     /**
-     * Creates a new ComponentNode with designated <tt>parent</tt> node and <tt>value</tt>. Use this
-     * constructor if the parent node is already known at creation time.
+     * Creates a new ComponentNode with designated parent node and value. Use this constructor if
+     * the parent node is already known at creation time.
      * 
      * @param value the corresponding IType element to this node
      * @param parent the parent node
-     * @throws NullPointerException if <tt>value</tt> is null
+     * @throws NullPointerException if value is null
      */
     public ComponentNode(IType value, AbstractStructureNode parent, IIpsProject rootProject) {
 
@@ -63,15 +65,16 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
         List<AbstractStructureNode> children = new ArrayList<AbstractStructureNode>();
 
         addSubtypeChild(children);
+
         addCompositeChild(children);
 
         return children;
     }
 
     private void addCompositeChild(List<AbstractStructureNode> children) {
-        List<IType> associations = ModelOverviewContentProvider.getAssociations(this.getValue());
-        List<ComponentNode> compositeNodeChildren = ModelOverviewContentProvider.encapsulateComponentTypes(
-                associations, this.rootProject);
+        List<IType> associations = ModelOverviewContentProvider.getAssociationsForAssociationTypes(this.getValue(),
+                AssociationType.COMPOSITION_MASTER_TO_DETAIL, AssociationType.AGGREGATION);
+        List<ComponentNode> compositeNodeChildren = encapsulateComponentTypes(associations, this.rootProject);
         if (!compositeNodeChildren.isEmpty()) {
             CompositeNode compositeNode = new CompositeNode(this, compositeNodeChildren);
             children.add(compositeNode);
@@ -81,8 +84,7 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
 
     private void addSubtypeChild(List<AbstractStructureNode> children) {
         List<IType> subtypes = this.getValue().findSubtypes(false, false, this.rootProject);
-        List<ComponentNode> subtypeNodeChildren = ModelOverviewContentProvider.encapsulateComponentTypes(subtypes,
-                this.rootProject);
+        List<ComponentNode> subtypeNodeChildren = encapsulateComponentTypes(subtypes, this.rootProject);
         if (!subtypeNodeChildren.isEmpty()) {
             SubtypeNode subtypeNode = new SubtypeNode(this, subtypeNodeChildren);
             children.add(subtypeNode);
@@ -132,12 +134,35 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
         return subtypeChild;
     }
 
+    /**
+     * Encapsulates a {@link List} of {@link IType ITypes} into a {@link List} of
+     * {@link ComponentNode ComponentNodes}.
+     * 
+     * @param components the elements which should be encapsulated
+     * @return a {@link List} of {@link ComponentNode ComponenteNodes}
+     */
+    protected static List<ComponentNode> encapsulateComponentTypes(Collection<IType> components, IIpsProject rootProject) {
+        List<ComponentNode> componentNodes = new ArrayList<ComponentNode>();
+
+        for (IType component : components) {
+            componentNodes.add(encapsulateComponentType(component, rootProject));
+        }
+
+        return componentNodes;
+    }
+
+    protected static ComponentNode encapsulateComponentType(IType component, IIpsProject rootProject) {
+        return new ComponentNode(component, null, rootProject);
+    }
+
     @Override
     public IIpsSrcFile getWrappedIpsSrcFile() {
         // TODO Auto-generated method stub
         return null;
     }
 
+    @SuppressWarnings("rawtypes")
+    // method defined in supertype, cannot remove the warning here!
     @Override
     public Object getAdapter(Class adapter) {
         // TODO Auto-generated method stub

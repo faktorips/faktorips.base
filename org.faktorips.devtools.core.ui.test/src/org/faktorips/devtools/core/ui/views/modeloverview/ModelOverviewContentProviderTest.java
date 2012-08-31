@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -39,16 +38,11 @@ import org.junit.Test;
 public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testHasNoChildren() {
+    public void testHasChildren_NoChildren() throws CoreException {
         // setup
-        IIpsProject project;
-        try {
-            project = newIpsProject();
-            newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
-            newProductCmptType(project, "TestProductComponentType");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject project = newIpsProject();
+        newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
+        newProductCmptType(project, "TestProductComponentType");
 
         ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
         Object[] elements = contentProvider.getElements(project);
@@ -60,18 +54,13 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildrenEmpty() {
+    public void testGetChildren_ChildrenEmpty() throws CoreException {
         // setup
         ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
 
-        IIpsProject project;
-        try {
-            project = newIpsProject();
-            newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
-            newProductCmptType(project, "TestProductComponentType");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject project = newIpsProject();
+        newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
+        newProductCmptType(project, "TestProductComponentType");
 
         Object[] elements = contentProvider.getElements(project);
 
@@ -83,30 +72,17 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testHasSubtypeChildren() {
+    public void testHasChildren_HasSubtypeChildren() throws CoreException {
         // setup
-        IIpsProject project;
-        IType cmptType;
-        IType subCmptType;
-        try {
-            project = newIpsProject();
-            cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
-            subCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestSubPolicyComponentType");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject project = newIpsProject();
+        IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
+        IType subCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestSubPolicyComponentType");
         subCmptType.setSupertype(cmptType.getQualifiedName());
 
-        IIpsProject project2;
-        IType prodCmptType;
-        IType subProdCmptType;
-        try {
-            project2 = newIpsProject();
-            prodCmptType = newProductCmptType(project2, "TestProductComponentType");
-            subProdCmptType = newProductCmptType(project2, "TestSubProductComponentType");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject project2 = newIpsProject();
+        IType prodCmptType = newProductCmptType(project2, "TestProductComponentType");
+        IType subProdCmptType = newProductCmptType(project2, "TestSubProductComponentType");
+
         subProdCmptType.setSupertype(prodCmptType.getQualifiedName());
 
         ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
@@ -119,106 +95,81 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetRootElements() {
+    public void testGetElements_FindAssociationRootElements() throws CoreException {
         // setup
-        // project1: Status of root elements depends only on associations
-        IIpsProject project1;
-        IType cmptType;
-        IType associatedCmptType;
-        try {
-            project1 = newIpsProject();
-            cmptType = newPolicyCmptTypeWithoutProductCmptType(project1, "TestPolicyComponentType");
-            associatedCmptType = newPolicyCmptTypeWithoutProductCmptType(project1, "TestPolicyComponentType2");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        // Status of root elements depends only on associations
+        IIpsProject project = newIpsProject();
+        IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
+        IType associatedCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType2");
+
         IAssociation association = cmptType.newAssociation();
         association.setTarget(associatedCmptType.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
-        IType prodCmptType;
-        IType associatedProdCmptType;
-        try {
-            prodCmptType = newProductCmptType(project1, "TestProductComponentType");
-            associatedProdCmptType = newProductCmptType(project1, "TestProductComponentType2");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IType prodCmptType = newProductCmptType(project, "TestProductComponentType");
+        IType associatedProdCmptType = newProductCmptType(project, "TestProductComponentType2");
+
         IAssociation association2 = prodCmptType.newAssociation();
         association2.setTarget(associatedProdCmptType.getQualifiedName());
 
-        // project2: Status of root elements depends only on supertypes
-        IIpsProject project2;
-        IType cmptType2;
-        IType subCmptType;
-        try {
-            project2 = newIpsProject();
-            cmptType2 = newPolicyCmptTypeWithoutProductCmptType(project2, "TestPolicyComponentType");
-            subCmptType = newPolicyCmptTypeWithoutProductCmptType(project2, "TestSubPolicyComponentType");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-        subCmptType.setSupertype(cmptType2.getQualifiedName());
-
-        IType prodCmptType2;
-        IType subProdCmptType;
-        try {
-            prodCmptType2 = newProductCmptType(project2, "TestProductComponentType");
-            subProdCmptType = newProductCmptType(project2, "TestSubProductComponentType");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-        subProdCmptType.setSupertype(prodCmptType2.getQualifiedName());
-
         ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
-        Object[] elements1 = contentProvider.getElements(project1);
-        Object[] elements2 = contentProvider.getElements(project2);
+        Object[] elements = contentProvider.getElements(project);
 
         // test the number of existing root elements
-        assertEquals(2, elements1.length);
-        assertEquals(2, elements2.length);
+        assertEquals(2, elements.length);
 
         // test the identity of the root elements
         // project1
-        List<IType> elementList1 = new ArrayList<IType>();
-        elementList1.add(((ComponentNode)elements1[0]).getValue());
-        elementList1.add(((ComponentNode)elements1[1]).getValue());
-        assertTrue(elementList1.contains(cmptType));
-        assertTrue(elementList1.contains(prodCmptType));
-
-        // project2
-        List<IType> elementList2 = new ArrayList<IType>();
-        elementList2.add(((ComponentNode)elements2[0]).getValue());
-        elementList2.add(((ComponentNode)elements2[1]).getValue());
-        assertTrue(elementList2.contains(cmptType2));
-        assertTrue(elementList2.contains(prodCmptType2));
+        List<IType> elementList = new ArrayList<IType>();
+        elementList.add(((ComponentNode)elements[0]).getValue());
+        elementList.add(((ComponentNode)elements[1]).getValue());
+        assertTrue(elementList.contains(cmptType));
+        assertTrue(elementList.contains(prodCmptType));
     }
 
     @Test
-    public void testHasAssociationChildren() {
+    public void testGetElements_FindSupertypeRootElements() throws CoreException {
         // setup
-        IIpsProject project;
-        IType cmptType;
-        IType associatedCmptType;
-        try {
-            project = newIpsProject();
-            cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
-            associatedCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType2");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        // Status of root elements depends only on supertypes
+        IIpsProject project = newIpsProject();
+        IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
+        IType subCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestSubPolicyComponentType");
+
+        subCmptType.setSupertype(cmptType.getQualifiedName());
+
+        IType prodCmptType = newProductCmptType(project, "TestProductComponentType");
+        IType subProdCmptType = newProductCmptType(project, "TestSubProductComponentType");
+
+        subProdCmptType.setSupertype(prodCmptType.getQualifiedName());
+
+        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
+        Object[] elements = contentProvider.getElements(project);
+
+        // test the number of existing root elements
+        assertEquals(2, elements.length);
+
+        // test the identity of the root elements
+        List<IType> elementList = new ArrayList<IType>();
+        elementList.add(((ComponentNode)elements[0]).getValue());
+        elementList.add(((ComponentNode)elements[1]).getValue());
+        assertTrue(elementList.contains(cmptType));
+        assertTrue(elementList.contains(prodCmptType));
+    }
+
+    @Test
+    public void testHasChildren_HasAssociationChildren() throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
+        IType associatedCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType2");
+
         IAssociation association = cmptType.newAssociation();
         association.setTarget(associatedCmptType.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
-        IType prodCmptType;
-        IType associatedProdCmptType;
-        try {
-            prodCmptType = newProductCmptType(project, "TestProductComponentType");
-            associatedProdCmptType = newProductCmptType(project, "TestProductComponentType2");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IType prodCmptType = newProductCmptType(project, "TestProductComponentType");
+        IType associatedProdCmptType = newProductCmptType(project, "TestProductComponentType2");
+
         IAssociation association2 = prodCmptType.newAssociation();
         association2.setTarget(associatedProdCmptType.getQualifiedName());
 
@@ -232,29 +183,17 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testHasAssociationAndSubtypeChildren() {
+    public void testHasChildren_HasAssociationAndSubtypeChildren() throws CoreException {
         // setup
         ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
 
-        IIpsProject project;
-        IType cmptType;
-        IType associatedCmptType;
-        IType subCmptType;
-        IType prodCmptType;
-        IType associatedProdCmptType;
-        IType subProdCmptType;
-        try {
-            project = newIpsProject();
-            cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
-            associatedCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType2");
-            subCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestSubPolicyComponentType");
-
-            prodCmptType = newProductCmptType(project, "TestProductComponentType");
-            associatedProdCmptType = newProductCmptType(project, "TestProductComponentType2");
-            subProdCmptType = newProductCmptType(project, "TestSubProductComponentType");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject project = newIpsProject();
+        IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
+        IType associatedCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType2");
+        IType subCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestSubPolicyComponentType");
+        IType prodCmptType = newProductCmptType(project, "TestProductComponentType");
+        IType associatedProdCmptType = newProductCmptType(project, "TestProductComponentType2");
+        IType subProdCmptType = newProductCmptType(project, "TestSubProductComponentType");
 
         subCmptType.setSupertype(cmptType.getQualifiedName());
         subProdCmptType.setSupertype(prodCmptType.getQualifiedName());
@@ -287,45 +226,25 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
      * In the first {@link IIpsProject} a {@link CompositeNode} and a {@link SubtypeNode} are
      * expected as children of the root element. In the second project only a SubType node is
      * expected.
+     * 
      */
     @Test
-    public void testGetChildren() {
+    public void testGetChildren_CorrectStructureAndComponentNodeHierarchy() throws CoreException {
         // setup
         ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
 
-        IIpsProject project;
-        IType cmptType;
-        IType associatedCmptType;
-        IType subCmptType;
-        try {
-            project = newIpsProject();
-            cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
-            associatedCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType2");
-            subCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestSubPolicyComponentType");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject project1 = newIpsProject();
+        IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project1, "TestPolicyComponentType");
+        IType associatedCmptType = newPolicyCmptTypeWithoutProductCmptType(project1, "TestPolicyComponentType2");
+        IType subCmptType = newPolicyCmptTypeWithoutProductCmptType(project1, "TestSubPolicyComponentType");
 
         IAssociation association = cmptType.newAssociation();
         association.setTarget(associatedCmptType.getQualifiedName());
         subCmptType.setSupertype(cmptType.getQualifiedName());
 
-        IIpsProject project2;
-        IType prodCmptType;
-        IType subProdCmptType;
-        try {
-            project2 = newIpsProject();
-            prodCmptType = newProductCmptType(project2, "TestProductComponentType");
-            subProdCmptType = newProductCmptType(project2, "TestSubProductComponentType");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-
-        subProdCmptType.setSupertype(prodCmptType.getQualifiedName());
-
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
-        Object[] elements = contentProvider.getElements(project);
+        Object[] elements = contentProvider.getElements(project1);
 
         IModelOverviewNode subtypeNode = (IModelOverviewNode)contentProvider.getChildren(elements[0])[0];
         IModelOverviewNode compositeNode = (IModelOverviewNode)contentProvider.getChildren(elements[0])[1];
@@ -344,17 +263,6 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         List<ComponentNode> subtypeChildren = ((SubtypeNode)subtypeNode).getChildren();
         assertEquals(1, subtypeChildren.size());
         assertEquals(subCmptType, subtypeChildren.get(0).getValue());
-
-        // project2
-        Object[] elements2 = contentProvider.getElements(project2);
-
-        IModelOverviewNode subtypeNode2 = (IModelOverviewNode)contentProvider.getChildren(elements2[0])[0];
-
-        assertEquals(1, contentProvider.getChildren(elements2[0]).length);
-        assertTrue(subtypeNode2 instanceof SubtypeNode);
-        List<ComponentNode> subtypeChildren2 = ((SubtypeNode)subtypeNode2).getChildren();
-        assertEquals(1, subtypeChildren2.size());
-        assertEquals(subProdCmptType, subtypeChildren2.get(0).getValue());
     }
 
     /**
@@ -367,24 +275,16 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
      * The elements in the supertype hierarchy should not be included in the construction of the
      * composite nodes.
      * 
+     * 
      */
     @Test
-    public void testNoSupertypeAssociations() {
+    public void testGetChildren_NoSupertypeAssociations() throws CoreException {
         // setup
-        IIpsProject project;
-        PolicyCmptType vertrag;
-        PolicyCmptType deckung;
-        PolicyCmptType hausratVertrag;
-        PolicyCmptType hausratGrunddeckung;
-        try {
-            project = newIpsProject();
-            vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
-            deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
-            hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
-            hausratGrunddeckung = newPolicyCmptTypeWithoutProductCmptType(project, "HausratGrunddeckung");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject project = newIpsProject();
+        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
+        PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
+        PolicyCmptType hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
+        PolicyCmptType hausratGrunddeckung = newPolicyCmptTypeWithoutProductCmptType(project, "HausratGrunddeckung");
 
         hausratVertrag.setSupertype(vertrag.getQualifiedName());
 
@@ -435,22 +335,15 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
      * <strong>Expected Outcome:</strong><br>
      * The {@link SubtypeNode} should be before the {@link CompositeNode} in the list of
      * {@link ComponentNode} children
+     * 
      */
     @Test
-    public void testComponentNodeChildrenOrder() {
+    public void testGetChildren_ComponentNodeChildrenOrder() throws CoreException {
         // setup
-        IIpsProject project;
-        PolicyCmptType vertrag;
-        PolicyCmptType deckung;
-        PolicyCmptType hausratVertrag;
-        try {
-            project = newIpsProject();
-            vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
-            deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
-            hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject project = newIpsProject();
+        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
+        PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
+        PolicyCmptType hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
 
         hausratVertrag.setSupertype(vertrag.getQualifiedName());
 
@@ -473,20 +366,13 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetElementsOnIType() {
+    public void testGetElements_InputInstanceofIType() throws CoreException {
         // setup
-        IIpsProject project;
-        PolicyCmptType leafPolicy;
-        PolicyCmptType rootPolicy;
-        PolicyCmptType superPolicy;
-        try {
-            project = newIpsProject();
-            leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
-            rootPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Root Node");
-            superPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Super Node");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject project = newIpsProject();
+        PolicyCmptType leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
+        PolicyCmptType rootPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Root Node");
+        PolicyCmptType superPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Super Node");
+
         // the Master-to-Detail association makes a root node out of rootPolicy
         IAssociation association = rootPolicy.newAssociation();
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -510,23 +396,17 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
      * Example: if A supertype B and B -> C, then !A->C
      * <p>
      * <strong>Expected Outcome:</strong><br>
-     * B is only root for C
+     * B is the only root for C
+     * 
      */
     @Test
-    public void testGetElementsInITypeSupertypeHierarchy() {
+    public void testGetElements_OmitSupertypeNode() throws CoreException {
         // setup
-        IIpsProject project;
-        ProductCmptType leafPolicy;
-        ProductCmptType rootPolicy;
-        ProductCmptType superPolicy;
-        try {
-            project = newIpsProject();
-            leafPolicy = newProductCmptType(project, "Leaf Node");
-            rootPolicy = newProductCmptType(project, "Root Node");
-            superPolicy = newProductCmptType(project, "Super Node");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject project = newIpsProject();
+        ProductCmptType leafPolicy = newProductCmptType(project, "Leaf Node");
+        ProductCmptType rootPolicy = newProductCmptType(project, "Root Node");
+        ProductCmptType superPolicy = newProductCmptType(project, "Super Node");
+
         // the Master-to-Detail association makes an indirect root node out of rootPolicy
         IAssociation association = rootPolicy.newAssociation();
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -551,22 +431,16 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
      * <p>
      * <strong>Expected Outcome:</strong><br>
      * A is the root for object C
+     * 
      */
     @Test
-    public void testGetElementsOnITypeSupertypeAssociation() {
+    public void testGetElements_ConsiderSupertypeAssociation() throws CoreException {
         // setup
-        IIpsProject project;
-        PolicyCmptType leafPolicy;
-        PolicyCmptType rootPolicy;
-        PolicyCmptType superPolicy;
-        try {
-            project = newIpsProject();
-            leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
-            rootPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Root Node");
-            superPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Super Node");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject project = newIpsProject();
+        PolicyCmptType leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
+        PolicyCmptType rootPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Root Node");
+        PolicyCmptType superPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Super Node");
+
         // the Master-to-Detail association makes an indirect root node out of rootPolicy
         IAssociation association = rootPolicy.newAssociation();
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -591,16 +465,10 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
      * The element is also the root element
      */
     @Test
-    public void testGetElementsOnITypeSingleElement() {
+    public void testGetElements_SingleElementIsItsOwnRoot() throws CoreException {
         // setup
-        IIpsProject project;
-        PolicyCmptType leafPolicy;
-        try {
-            project = newIpsProject();
-            leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject project = newIpsProject();
+        PolicyCmptType leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
 
         // test
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
@@ -619,22 +487,13 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
      * Only the topmost element should be root.
      */
     @Test
-    public void testGetElementsOnITypeOnlyOneRoot() {
+    public void testGetElements_OnlyOneRootInASingleHierarchyPath() throws CoreException {
         // setup
-        IIpsProject project;
-        ProductCmptType produkt;
-        ProductCmptType hausratProdukt;
-        ProductCmptType deckungstyp;
-        ProductCmptType hausratGrunddeckungstyp;
-        try {
-            project = newIpsProject();
-            produkt = newProductCmptType(project, "Produkt");
-            hausratProdukt = newProductCmptType(project, "HausratProdukt");
-            deckungstyp = newProductCmptType(project, "Deckungstyp");
-            hausratGrunddeckungstyp = newProductCmptType(project, "HausratGrunddeckungstyp");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject project = newIpsProject();
+        ProductCmptType produkt = newProductCmptType(project, "Produkt");
+        ProductCmptType hausratProdukt = newProductCmptType(project, "HausratProdukt");
+        ProductCmptType deckungstyp = newProductCmptType(project, "Deckungstyp");
+        ProductCmptType hausratGrunddeckungstyp = newProductCmptType(project, "HausratGrunddeckungstyp");
 
         // set supertypes
         hausratProdukt.setSupertype(produkt.getQualifiedName());
@@ -659,20 +518,12 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetElementsOnITypeOnlySupertypeHierarchy() {
+    public void testGetElements_ElementIsItsOwnRootInPureSupertypeHierarchy() throws CoreException {
         // setup
-        IIpsProject project;
-        PolicyCmptType leafPolicy;
-        PolicyCmptType superPolicy;
-        PolicyCmptType superSuperPolicy;
-        try {
-            project = newIpsProject();
-            leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
-            superSuperPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Root Node");
-            superPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Super Node");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject project = newIpsProject();
+        PolicyCmptType leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
+        PolicyCmptType superSuperPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Root Node");
+        PolicyCmptType superPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Super Node");
 
         // the Supertype superPolicy is no root node of leafPolicy
         leafPolicy.setSupertype(superPolicy.getQualifiedName());
@@ -686,24 +537,15 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetElementsComputedPaths() {
+    public void testGetElements_ComputeRootToLeafHierarchyPaths() throws CoreException {
         // setup
         ModelOverviewContentProvider contenProvider = new ModelOverviewContentProvider();
 
-        IIpsProject project;
-        PolicyCmptType vertrag;
-        PolicyCmptType deckung;
-        PolicyCmptType hausratVertrag;
-        PolicyCmptType hausratGrunddeckung;
-        try {
-            project = newIpsProject();
-            vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
-            deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
-            hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
-            hausratGrunddeckung = newPolicyCmptTypeWithoutProductCmptType(project, "HausratGrunddeckung");
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject project = newIpsProject();
+        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
+        PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
+        PolicyCmptType hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
+        PolicyCmptType hausratGrunddeckung = newPolicyCmptTypeWithoutProductCmptType(project, "HausratGrunddeckung");
 
         List<IType> componentList = new ArrayList<IType>();
         componentList.add(vertrag);
@@ -723,6 +565,9 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         associationHausratVertrag2HausratGrunddeckung.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
         // get the rootCandidates
+        List<AssociationType> associationTypeFilter = new ArrayList<AssociationType>();
+        associationTypeFilter.add(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        associationTypeFilter.add(AssociationType.AGGREGATION);
         Collection<IType> rootCandidatesForIType = contenProvider.getRootElementsForIType(hausratGrunddeckung,
                 componentList, ModelOverviewContentProvider.ToChildAssociationType.SELF, new ArrayList<IType>(),
                 new ArrayList<Deque<PathElement>>(), new ArrayDeque<PathElement>());

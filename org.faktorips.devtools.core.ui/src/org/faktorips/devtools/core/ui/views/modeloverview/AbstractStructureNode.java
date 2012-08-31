@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.util.ArgumentCheck;
@@ -20,7 +21,8 @@ import org.faktorips.util.ArgumentCheck;
 abstract class AbstractStructureNode implements IModelOverviewNode {
 
     private final ComponentNode parent;
-    private List<ComponentNode> children;
+
+    private List<ComponentNode> children = new ArrayList<ComponentNode>();
 
     /**
      * Creates a node with a mandatory parent {@link ComponentNode} and a {@link List} of mandatory
@@ -29,11 +31,10 @@ abstract class AbstractStructureNode implements IModelOverviewNode {
      * @param parent the parent, this parameter must not be {@code null}.
      * @param children a {@link List} of {@link ComponentNode component nodes}, this {@link List}
      *            must not be {@code null} or empty.
-     * @throws NullPointerException if one of the parameters is {@code null} or provided list of
+     * @throws NullPointerException if one of the parameters is {@code null} or the provided list of
      *             children is empty.
      */
     public AbstractStructureNode(ComponentNode parent, List<ComponentNode> children) {
-
         ArgumentCheck.notNull(parent, "'parent' must not be null."); //$NON-NLS-1$
         ArgumentCheck.notNull(children, "'children' must not be null."); //$NON-NLS-1$
         ArgumentCheck.isTrue(!children.isEmpty(), "'children', must not be empty."); //$NON-NLS-1$
@@ -56,14 +57,8 @@ abstract class AbstractStructureNode implements IModelOverviewNode {
     }
 
     private void addChildren(List<ComponentNode> children) {
-        ArgumentCheck.notNull(children, "'children' must not be null."); //$NON-NLS-1$
-        ArgumentCheck.isTrue(!children.isEmpty(), "'children', must not be empty."); //$NON-NLS-1$
 
-        if (this.children == null) {
-            this.children = children;
-        } else {
-            this.children.addAll(children);
-        }
+        this.children.addAll(children);
 
         for (ComponentNode componentNode : children) {
             componentNode.setParent(this);
