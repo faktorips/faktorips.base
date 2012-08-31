@@ -26,7 +26,10 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
 
     private IType value;
     private IIpsProject rootProject;
+    private List<AbstractStructureNode> children;
     private AbstractStructureNode parent;
+    private CompositeNode compositeChild;
+    private SubtypeNode subtypeChild;
 
     /**
      * Creates a new ComponentNode with designated <tt>parent</tt> node and <tt>value</tt>. Use this
@@ -54,6 +57,9 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
      */
     @Override
     public List<AbstractStructureNode> getChildren() {
+        if (children != null) {
+            return children;
+        }
         List<AbstractStructureNode> children = new ArrayList<AbstractStructureNode>();
 
         addSubtypeChild(children);
@@ -69,6 +75,7 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
         if (!compositeNodeChildren.isEmpty()) {
             CompositeNode compositeNode = new CompositeNode(this, compositeNodeChildren);
             children.add(compositeNode);
+            this.compositeChild = compositeNode;
         }
     }
 
@@ -79,6 +86,7 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
         if (!subtypeNodeChildren.isEmpty()) {
             SubtypeNode subtypeNode = new SubtypeNode(this, subtypeNodeChildren);
             children.add(subtypeNode);
+            this.subtypeChild = subtypeNode;
         }
     }
 
@@ -110,6 +118,20 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
         return this.rootProject;
     }
 
+    public CompositeNode getCompositeChild() {
+        if (children == null) {
+            getChildren();
+        }
+        return compositeChild;
+    }
+
+    public SubtypeNode getSubtypeChild() {
+        if (children == null) {
+            getChildren();
+        }
+        return subtypeChild;
+    }
+
     @Override
     public IIpsSrcFile getWrappedIpsSrcFile() {
         // TODO Auto-generated method stub
@@ -126,6 +148,52 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
     public IIpsSrcFile getIpsSrcFile() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((parent == null) ? 0 : parent.hashCode());
+        result = prime * result + ((rootProject == null) ? 0 : rootProject.hashCode());
+        result = prime * result + ((value == null) ? 0 : value.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ComponentNode other = (ComponentNode)obj;
+        if (parent == null) {
+            if (other.parent != null) {
+                return false;
+            }
+        } else if (!parent.equals(other.parent)) {
+            return false;
+        }
+        if (rootProject == null) {
+            if (other.rootProject != null) {
+                return false;
+            }
+        } else if (!rootProject.equals(other.rootProject)) {
+            return false;
+        }
+        if (value == null) {
+            if (other.value != null) {
+                return false;
+            }
+        } else if (!value.equals(other.value)) {
+            return false;
+        }
+        return true;
     }
 
 }

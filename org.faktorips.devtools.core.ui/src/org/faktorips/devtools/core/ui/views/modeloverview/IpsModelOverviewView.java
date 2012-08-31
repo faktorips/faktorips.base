@@ -26,7 +26,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -80,47 +79,50 @@ public class IpsModelOverviewView extends ViewPart {
         for (int i = 0; i < paths.size(); i++) {
             treePaths[i] = this.expandPath(paths.get(i));
         }
+        for (TreePath treePath : treePaths) {
+            this.treeViewer.expandToLevel(treePath, 0);
+        }
         this.treeViewer.setSelection(new TreeSelection(treePaths));
         this.updateView();
     }
 
     private TreePath expandPath(Deque<PathElement> treePath) {
-        TreeItem[] items = this.treeViewer.getTree().getItems();
-        List<IModelOverviewNode> pathElements = new ArrayList<IModelOverviewNode>();
+        // The IpsProject must be from the project which is the lowest in the project hierarchy
+        IIpsProject rootProject = treePath.getLast().getComponent().getIpsProject();
+        PathElement root = treePath.pop();
+        List<IModelOverviewNode> pathList = new ArrayList<IModelOverviewNode>();
+
+        // get the root node
+        ComponentNode rootNode = ModelOverviewContentProvider
+                .encapsulateComponentType(root.getComponent(), rootProject);
+        pathList.add(rootNode);
 
         for (PathElement pathElement : treePath) {
-            if (pathElement.getAssociationType() == ToChildAssociationType.SELF) {
-                for (TreeItem item : items) {
-                    if (((ComponentNode)item.getData()).getValue().equals(pathElement.getComponent())) {
-                        pathElements.add(((ComponentNode)item.getData()));
-                    }
-                }
+            if (root.getAssociationType() == ToChildAssociationType.SELF) {
                 break;
-            }
-            for (TreeItem item : items) {
-                if (((ComponentNode)item.getData()).getValue().equals(pathElement.getComponent())) {
-                    IModelOverviewNode data = (IModelOverviewNode)item.getData();
-                    pathElements.add(data);
-                    // this.treeViewer.setExpandedState(item.getData(), true);
-                    this.treeViewer.setExpandedState(new TreePath(pathElements.toArray()), true);
-
-                    TreeItem[] items2 = item.getItems();
-                    for (TreeItem structureItem : items2) {
-                        if ((structureItem.getData() instanceof CompositeNode && pathElement.getAssociationType() == ToChildAssociationType.ASSOCIATION)
-                                || (structureItem.getData() instanceof SubtypeNode && pathElement.getAssociationType() == ToChildAssociationType.SUPERTYPE)) {
-
-                            pathElements.add((IModelOverviewNode)structureItem.getData());
-                            this.treeViewer.setExpandedState(new TreePath(pathElements.toArray()), true);
-                            // this.treeViewer.setExpandedState(item.getData(), true);
-                            items = structureItem.getItems();
-                            break;
-                        }
-                    }
-                    break;
+            } else {
+                // add the structure node
+                AbstractStructureNode abstractRootChild = null;
+                if (root.getAssociationType() == ToChildAssociationType.ASSOCIATION) {
+                    abstractRootChild = rootNode.getCompositeChild();
+                } else { // ToChildAssociationType.SUPERTYPE
+                    abstractRootChild = rootNode.getSubtypeChild();
                 }
+                pathList.add(abstractRootChild);
+
+                // add the child node
+                for (ComponentNode childNode : abstractRootChild.getChildren()) {
+                    if (childNode.getValue().equals(pathElement.getComponent())) {
+                        pathList.add(childNode);
+                        rootNode = childNode;
+                        break;
+                    }
+                }
+                root = treePath.pop();
             }
         }
-        return new TreePath(pathElements.toArray());
+
+        return new TreePath(pathList.toArray());
     }
 
     public void showOverview(IIpsProject input) {
