@@ -1185,7 +1185,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             return NLS.bind(Messages.IpsObjectEditor_messagesText, binding);
         }
 
-        return messages.get(0).getMessage();
+        IMessage message = messages.get(0);
+        return message.getPrefix() + message.getMessage();
     }
 
     protected List<IMessage> getMessages() {
@@ -1206,6 +1207,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     private static final class MessageAdapter implements IMessage {
+        private static final String ADDITION = ": "; //$NON-NLS-1$
         private final Message message;
 
         private MessageAdapter(Message message) {
@@ -1219,21 +1221,11 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         @Override
         public String getMessage() {
-            String objectMessagePart = getObjectMessagePart();
-            if (StringUtils.isBlank(objectMessagePart)) {
-                return message.getText();
-            }
-
-            return objectMessagePart + ": " + message.getText(); //$NON-NLS-1$
+            return message.getText();
         }
 
         @Override
         public String getPrefix() {
-            return null;
-        }
-
-        private String getObjectMessagePart() {
-
             ObjectProperty[] invalidObjectProperties = message.getInvalidObjectProperties();
             if (invalidObjectProperties.length == 0 || invalidObjectProperties[0] == null) {
                 return StringUtils.EMPTY;
@@ -1248,10 +1240,11 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             }
 
             if (contextObject instanceof ILabeledElement) {
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)contextObject);
+                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)contextObject) + ADDITION;
             }
             if (contextObject instanceof IIpsObjectPartContainer) {
-                return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption((IIpsObjectPartContainer)contextObject);
+                return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption((IIpsObjectPartContainer)contextObject)
+                        + ADDITION;
             }
 
             return StringUtils.EMPTY;

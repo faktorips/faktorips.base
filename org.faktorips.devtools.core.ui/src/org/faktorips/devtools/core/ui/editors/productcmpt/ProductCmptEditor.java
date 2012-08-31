@@ -11,7 +11,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -272,8 +271,11 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 
         String generationName = getGenerationPropertiesPage().getGenerationName(getActiveGeneration());
 
-        List<IMessage> filteredList = new ArrayList<IMessage>(messages);
-        filteredList.remove(0);
+        if (messages.size() == 1) {
+            return generationName;
+        }
+
+        List<IMessage> filteredList = messages.subList(1, messages.size());
 
         String headerMessage = super.createHeaderMessage(filteredList, messageType);
 
