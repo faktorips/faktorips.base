@@ -254,10 +254,6 @@ public abstract class XProductClass extends XType {
         return xPolicyCmptClass;
     }
 
-    public String getMethodNameCreatePolicyCmpt() {
-        return "create" + getPolicyImplClassName();
-    }
-
     @Override
     public abstract Set<? extends XProductClass> getClassHierarchy();
 

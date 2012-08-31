@@ -49,6 +49,18 @@ public abstract class XType extends XClass {
         return getIpsObjectPartContainer();
     }
 
+    public String getImplClassName() {
+        return addImport(getSimpleName(BuilderAspect.IMPLEMENTATION));
+    }
+
+    public String getInterfaceName() {
+        return addImport(getSimpleName(BuilderAspect.INTERFACE));
+    }
+
+    public String getNameForVariable() {
+        return getJavaNamingConvention().getMemberVarName(getName());
+    }
+
     @Override
     protected void clearCaches() {
         super.clearCaches();

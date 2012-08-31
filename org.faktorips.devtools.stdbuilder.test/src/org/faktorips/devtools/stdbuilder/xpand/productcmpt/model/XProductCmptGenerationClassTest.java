@@ -22,8 +22,6 @@ import static org.mockito.Mockito.when;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.builder.JavaNamingConvention;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
@@ -70,26 +68,6 @@ public class XProductCmptGenerationClassTest {
     @Before
     public void createXProductCmptGenerationClass() throws Exception {
         xProductCmptGenerationClass = new XProductCmptGenerationClass(productCmptType, modelContext, modelService);
-    }
-
-    @Test
-    public void testGetProductCmptClassName() throws Exception {
-        when(modelService.getModelNode(productCmptType, XProductCmptClass.class, modelContext)).thenReturn(
-                xProductCmptClass);
-        when(xProductCmptClass.getSimpleName(BuilderAspect.IMPLEMENTATION)).thenReturn("ProductCmpt");
-
-        String productCmptClassName = xProductCmptGenerationClass.getProductCmptClassName(BuilderAspect.IMPLEMENTATION);
-        assertEquals("ProductCmpt", productCmptClassName);
-    }
-
-    @Test
-    public void testGetMethodNameGetProductCmpt() throws Exception {
-        when(modelService.getModelNode(productCmptType, XProductCmptClass.class, modelContext)).thenReturn(
-                xProductCmptClass);
-        when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
-        when(xProductCmptClass.getSimpleName(BuilderAspect.IMPLEMENTATION)).thenReturn("ProductCmpt");
-
-        assertEquals("getProductCmpt", xProductCmptGenerationClass.getMethodNameGetProductCmpt());
     }
 
     @Test

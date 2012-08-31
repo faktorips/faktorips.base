@@ -15,6 +15,6 @@ inheritDocOrJavaDoc(XPolicyAttribute this, String jDoc, Object param, Object des
 	
 getProductCmptGeneration(XPolicyAttribute this, Boolean publishedInterface) :
 	if (!generatingPublishedInterfaces || publishedInterface) then methodNameGetProductCmptGeneration + "()" 
-	else "((" + productGenerationClassName + ")" + methodNameGetProductCmptGeneration + "())";
+	else "((" + policyCmptNode.productCmptGenerationNode.implClassName + ")" + methodNameGetProductCmptGeneration + "())";
 
 	

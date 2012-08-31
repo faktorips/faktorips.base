@@ -16,11 +16,11 @@
         «ELSE-»
         	«ModelObjectDelta()» delta = «ModelObjectDelta()».newDelta(this, otherObject, options);
         «ENDIF-»
-        if (!«className».class.isAssignableFrom(otherObject.getClass())) {
+        if (!«implClassName».class.isAssignableFrom(otherObject.getClass())) {
             return delta;
         }
     	«IF !attributesForDeltaComputation.isEmpty || !associationsForDeltaComputation.isEmpty-»
-	        «className» «localVarNameDeltaSupportOtherObject» = («className»)otherObject;
+	        «implClassName» «localVarNameDeltaSupportOtherObject» = («implClassName»)otherObject;
 			«EXPAND DeltaSupport::deltaCheckForAttribute(this, localVarNameDeltaSupportOtherObject) FOREACH attributesForDeltaComputation-»
 			«EXPAND DeltaSupport::deltaCheckForRelatedClasses(this) FOREACH associationsForDeltaComputation-»
         «ENDIF-»
@@ -36,6 +36,6 @@
 
 «DEFINE deltaCheckForRelatedClasses(XPolicyCmptClass policyClass) FOR XPolicyAssociation-»
 	«IF considerInDeltaComputation-»
-		ModelObjectDelta.createChildDeltas(delta, «fieldName», other«policyClass.className».«fieldName», "«fieldName»", options);
+		ModelObjectDelta.createChildDeltas(delta, «fieldName», other«policyClass.implClassName».«fieldName», "«fieldName»", options);
     «ENDIF-»
 «ENDDEFINE»

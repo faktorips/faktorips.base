@@ -23,7 +23,6 @@ import static org.mockito.Mockito.when;
 import java.util.Set;
 
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
@@ -82,13 +81,9 @@ public class XProductCmptClassTest {
     }
 
     @Test
-    public void testGetMethodNameGetProductComponentGeneration() throws Exception {
-        when(modelService.getModelNode(productCmptType, XProductCmptGenerationClass.class, modelContext)).thenReturn(
-                xProductCmptGenerationClass);
-        when(xProductCmptGenerationClass.getSimpleName(BuilderAspect.IMPLEMENTATION)).thenReturn("TestTypeGen");
-
-        String getterMethodNameForGeneration = xProductCmptClass.getMethodNameGetProductComponentGeneration();
-        assertEquals("getTestTypeGen", getterMethodNameForGeneration);
+    public void testGetMethodNameGetProductCmpt() throws Exception {
+        when(productCmptType.getName()).thenReturn("testType");
+        assertEquals("getTestType", xProductCmptClass.getMethodNameGetProductCmpt());
     }
 
     @Test

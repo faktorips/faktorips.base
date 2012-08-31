@@ -27,7 +27,7 @@ public class PolicyCmptImplClassJaxbAnnGen extends AbstractAnnotationGenerator {
         if (generatorModelNode instanceof XPolicyCmptClass) {
             XPolicyCmptClass xPolicyCmptClass = (XPolicyCmptClass)generatorModelNode;
 
-            String unqualifiedName = xPolicyCmptClass.getClassName();
+            String unqualifiedName = xPolicyCmptClass.getImplClassName();
             codeBuilder.annotationLn("javax.xml.bind.annotation.XmlRootElement", "name", unqualifiedName);
         }
         return codeBuilder.getFragment();

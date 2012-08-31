@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -151,8 +150,8 @@ public class XPolicyCmptClassTest {
         when(modelService.getModelNode(prodType, XProductCmptGenerationClass.class, modelContext)).thenReturn(
                 xProdGenClass);
 
-        policyCmptClass.getProductGenerationClassName();
-        verify(xProdGenClass).getSimpleName(BuilderAspect.IMPLEMENTATION);
+        policyCmptClass.getProductCmptGenerationClassName();
+        verify(xProdGenClass).getInterfaceName();
     }
 
     private IProductCmptType initProdType(XPolicyCmptClass policyCmptClass) throws CoreException {
@@ -170,7 +169,7 @@ public class XPolicyCmptClassTest {
         IProductCmptType prodType = initProdType(policyCmptClass);
 
         XProductCmptClass xProdClass = mock(XProductCmptClass.class);
-        when(xProdClass.getSimpleName(BuilderAspect.IMPLEMENTATION)).thenReturn("ProductName");
+        when(xProdClass.getInterfaceName()).thenReturn("ProductName");
         when(modelService.getModelNode(prodType, XProductCmptClass.class, modelContext)).thenReturn(xProdClass);
 
         assertEquals("ProductName", policyCmptClass.getProductCmptClassName());

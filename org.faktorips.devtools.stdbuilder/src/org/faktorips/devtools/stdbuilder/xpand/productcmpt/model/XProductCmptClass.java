@@ -15,7 +15,6 @@ package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
 import java.util.Set;
 
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -49,26 +48,16 @@ public class XProductCmptClass extends XProductClass {
         return super.getClassHierarchy(XProductCmptClass.class);
     }
 
-    protected XProductCmptGenerationClass getProductCmptGenerationNode() {
-        XProductCmptGenerationClass productCmptGenerationClass = getModelNode(getProductCmptType(),
-                XProductCmptGenerationClass.class);
-        return productCmptGenerationClass;
+    public XProductCmptGenerationClass getProductCmptGenerationNode() {
+        return getModelNode(getType(), XProductCmptGenerationClass.class);
     }
 
-    public String getProductCmptGenClassName() {
-        XProductCmptGenerationClass productCmptGenerationClass = getProductCmptGenerationNode();
-        return productCmptGenerationClass.getSimpleName(BuilderAspect.INTERFACE);
+    public String getMethodNameGetProductCmpt() {
+        return getJavaNamingConvention().getGetterMethodName(getName());
     }
 
-    public String getProductCmptGenClassName(BuilderAspect aspect) {
-        XProductCmptGenerationClass productCmptGenerationClass = getProductCmptGenerationNode();
-        return productCmptGenerationClass.getSimpleName(aspect);
-    }
-
-    public String getMethodNameGetProductComponentGeneration() {
-        XProductCmptGenerationClass productCmptGenerationClass = getProductCmptGenerationNode();
-        return getJavaNamingConvention().getGetterMethodName(
-                productCmptGenerationClass.getSimpleName(BuilderAspect.IMPLEMENTATION));
+    public String getMethodNameSetProductCmpt() {
+        return getJavaNamingConvention().getSetterMethodName(getName());
     }
 
 }

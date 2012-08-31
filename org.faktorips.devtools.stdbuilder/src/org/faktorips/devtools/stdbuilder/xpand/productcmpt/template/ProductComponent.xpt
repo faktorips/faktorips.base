@@ -13,10 +13,10 @@
 		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 	
 		/**
-		 * «localizedJDoc("CLASS", getSimpleName(BuilderAspect::INTERFACE))»
+		 * «localizedJDoc("CLASS", interfaceName)»
 		 * @generated
 		 */
-		public «abstract()» class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
+		public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
 		 {
 		 
 		 	«FOREACH attributes AS this-»
@@ -28,23 +28,15 @@
 			«EXPAND ProductAttribute::memberField FOREACH attributes-»
 
 		    /**
-		     * «localizedJDoc("CONSTRUCTOR", getSimpleName(BuilderAspect::IMPLEMENTATION))»
+		     * «localizedJDoc("CONSTRUCTOR", implClassName)»
 		     * 
 		     * @generated
 		     */
-			public «method(getSimpleName(BuilderAspect::IMPLEMENTATION), IRuntimeRepository(), "repository", "String", "id", "String", "kindId", "String", "versionId")» {
+			public «method(implClassName, IRuntimeRepository(), "repository", "String", "id", "String", "kindId", "String", "versionId")» {
 		        super(repository, id, kindId, versionId);
 			}
 
-		    /**
-		     * {@inheritDoc}
-		     * 
-		     * @generated
-		     */
-		    @Override
-		    public «productCmptGenClassName» «method(methodNameGetProductComponentGeneration, Calendar(), "effectiveDate")» {
-		        return («productCmptGenClassName»)«getRepository()».«getProductComponentGeneration("getId()", "effectiveDate")»;
-		    }
+			«EXPAND getProductComponentGeneration FOR productCmptGenerationNode-»
 
 			«EXPAND ProductAttribute::getterSetter FOREACH attributes»
 
@@ -84,6 +76,19 @@
 	}
 	«ENDFILE»
 «ENDDEFINE»
+
+«DEFINE getProductComponentGeneration FOR XProductCmptGenerationClass-»
+		    /**
+		     * {@inheritDoc}
+		     * 
+		     * @generated
+		     */
+		    @Override
+		    public «interfaceName» «method(methodNameGetProductComponentGeneration, Calendar(), "effectiveDate")» {
+		        return («interfaceName»)«getRepository()».«getProductComponentGeneration("getId()", "effectiveDate")»;
+		    }
+«ENDDEFINE»
+
 «DEFINE writeToXmlMethods FOR XProductCmptClass-»
 	«IF generateToXmlSupport-»
 		    /**

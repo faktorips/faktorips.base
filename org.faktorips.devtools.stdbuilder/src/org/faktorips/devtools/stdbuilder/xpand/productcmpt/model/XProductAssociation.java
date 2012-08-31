@@ -45,7 +45,7 @@ public class XProductAssociation extends XAssociation {
 
     public String getMethodNameGetTargetGeneration() {
         IType target = getTargetType();
-        XProductCmptClass modelNode = getModelNode(target, XProductCmptClass.class);
+        XProductCmptGenerationClass modelNode = getModelNode(target, XProductCmptGenerationClass.class);
         return modelNode.getMethodNameGetProductComponentGeneration();
     }
 

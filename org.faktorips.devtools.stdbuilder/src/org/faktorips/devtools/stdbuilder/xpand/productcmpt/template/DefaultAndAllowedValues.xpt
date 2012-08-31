@@ -19,7 +19,7 @@
      * 
      * @generated
      */
-    private «javaClassName» «fieldNameDefaultValue» = «defaultValueCode»;
+    private «javaClassName» «field(fieldNameDefaultValue)» = «defaultValueCode»;
 «ENDDEFINE»
 
 «DEFINE allowedValueSetField FOR XPolicyAttribute-»
@@ -38,7 +38,7 @@
      * 
      * @generated
      */
-    private «valueSetJavaClassName» «fieldNameValueSet»;
+    private «valueSetJavaClassName» «field(fieldNameValueSet)»;
 «ENDDEFINE»
 
 «DEFINE getterSetter FOR XPolicyAttribute-»
@@ -55,7 +55,7 @@
      * @generated
      */
     «overrideAnnotationForAttribute()»
-    public «javaClassName» «methodNameGetDefaultValue»() {
+    public «javaClassName» «method(methodNameGetDefaultValue)» {
         return «fieldNameDefaultValue»;
     }
 «ENDDEFINE»
@@ -67,7 +67,7 @@
      * @generated
      */
     «overrideAnnotationForAttribute()»
-    public «valueSetJavaClassName» «methodNameGetAllowedValuesFor»(«IValidationContext()» context) {
+    public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")» {
         return «fieldNameValueSet»;
     }
 «ENDDEFINE»

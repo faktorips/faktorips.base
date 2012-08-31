@@ -741,12 +741,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             }
             JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsObjectPartContainer.getAdapter(IIpsSrcFile.class);
-            try {
-                if (javaBuilder.isBuilderFor(ipsSrcFile)) {
-                    javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            if (javaBuilder.isGeneratsArtifactsFor(ipsSrcFile)) {
+                javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
             }
         }
 

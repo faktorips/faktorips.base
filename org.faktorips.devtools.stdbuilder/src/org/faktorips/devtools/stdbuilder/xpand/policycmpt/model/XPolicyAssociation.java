@@ -406,12 +406,12 @@ public class XPolicyAssociation extends XAssociation {
 
     public String getTargetProductCmptInterfaceName() {
         XPolicyCmptClass xPolicyCmptClass = getTargetPolicyCmptClass();
-        return xPolicyCmptClass.getProductComponentClassOrInterfaceName();
+        return xPolicyCmptClass.getProductCmptClassName();
     }
 
     public String getMethodNameCreatePolicyCmptForTargetProductCmpt() {
         XPolicyCmptClass xPolicyCmptClass = getTargetPolicyCmptClass();
-        return "create" + xPolicyCmptClass.getClassName();
+        return "create" + xPolicyCmptClass.getImplClassName();
     }
 
     /**

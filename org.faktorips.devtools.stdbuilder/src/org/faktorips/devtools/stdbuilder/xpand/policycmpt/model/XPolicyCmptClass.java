@@ -20,11 +20,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
-import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -85,10 +82,6 @@ public class XPolicyCmptClass extends XType {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-    }
-
-    public String getClassName() {
-        return addImport(getSimpleName(BuilderAspect.IMPLEMENTATION));
     }
 
     @Override
@@ -247,106 +240,6 @@ public class XPolicyCmptClass extends XType {
         return new CopyOnWriteArraySet<XTableUsage>(productTables);
     }
 
-    private XProductCmptClass getProductCmptClass() {
-        IProductCmptType productCmptType = getProductCmptType();
-        if (productCmptType != null) {
-            XProductCmptClass xProductCmptClass = getModelNode(productCmptType, XProductCmptClass.class);
-            return xProductCmptClass;
-        }
-        return null;
-    }
-
-    public String getProductCmptClassName() {
-        XProductCmptClass productCmptClass = getProductCmptClass();
-        if (productCmptClass != null) {
-            return productCmptClass.getSimpleName(BuilderAspect.IMPLEMENTATION);
-        } else {
-            return StringUtils.EMPTY;
-        }
-    }
-
-    /**
-     * Returns the simple name for the product component generation class associated with this
-     * policy component class. An import will be added automatically.
-     * 
-     */
-    public String getProductGenerationClassName() {
-        return getProductGenerationClassName(BuilderAspect.IMPLEMENTATION);
-    }
-
-    /**
-     * Returns the simple name for the product component generation class or interface associated
-     * with this policy component class. An import will be added automatically.
-     * <p>
-     * This method lets the {@link GeneratorModelContext} and its {@link JavaClassNaming} decide
-     * whether the name of the published interface or the name of the implementing class - in case
-     * no published interface is generated - is returned.
-     * 
-     * TODO FIPS-1059
-     */
-    public String getProductGenerationClassOrInterfaceName() {
-        return getProductGenerationClassName(BuilderAspect.getValue(isGeneratingPublishedInterfaces()));
-    }
-
-    /**
-     * Returns the simple name for the product component generation class or interface associated
-     * with this policy component class. An import will be added automatically.
-     * 
-     */
-    protected String getProductGenerationClassName(BuilderAspect aspect) {
-        IProductCmptType prodType = getProductCmptType();
-        XProductCmptGenerationClass xProductCmptGenClass = getModelNode(prodType, XProductCmptGenerationClass.class);
-        String simpleName = xProductCmptGenClass.getSimpleName(aspect);
-        return simpleName;
-    }
-
-    public String getProductGenerationArgumentName() {
-        return getJavaNamingConvention().getMemberVarName(getProductGenerationClassName());
-    }
-
-    /**
-     * Returns the simple name for the product component class or interface associated with this
-     * policy component class. An import will be added automatically.
-     * 
-     */
-    public String getProductComponentClassName(BuilderAspect aspect) {
-        XProductCmptClass xProductCmptClass = getProductCmptClass();
-        if (xProductCmptClass != null) {
-            String simpleName = xProductCmptClass.getSimpleName(aspect);
-            return simpleName;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the simple name for the product component class associated with this policy component
-     * class. An import will be added automatically.
-     * 
-     */
-    protected String getProductComponentClassName() {
-        return getProductComponentClassName(BuilderAspect.IMPLEMENTATION);
-    }
-
-    /**
-     * Returns the simple name for the product component class or interface associated with this
-     * policy component class. An import will be added automatically.
-     * <p>
-     * This method lets the {@link GeneratorModelContext} and its {@link JavaClassNaming} decide
-     * whether the name of the published interface or the name of the implementing class - in case
-     * no published interface is generated - is returned .
-     * 
-     * TODO FIPS-1059
-     * 
-     */
-    public String getProductComponentClassOrInterfaceName() {
-        return getProductComponentClassName(BuilderAspect.getValue(isGeneratingPublishedInterfaces()));
-    }
-
-    /**
-     * Finds the product component type associated with this policy component type and returns it.
-     * Throws a {@link CoreRuntimeException} in case of a {@link CoreException}.
-     */
     protected IProductCmptType getProductCmptType() {
         try {
             IProductCmptType prodType = getType().findProductCmptType(getIpsProject());
@@ -360,18 +253,179 @@ public class XPolicyCmptClass extends XType {
         }
     }
 
+    public XProductCmptClass getProductCmptNode() {
+        IProductCmptType productCmptType = getProductCmptType();
+        return getModelNode(productCmptType, XProductCmptClass.class);
+    }
+
+    public XProductCmptGenerationClass getProductCmptGenerationNode() {
+        IProductCmptType productCmptType = getProductCmptType();
+        return getModelNode(productCmptType, XProductCmptGenerationClass.class);
+    }
+
+    /**
+     * Returns the class name of the product component. The class name is normally the published
+     * interface. If there is not publish interface generated, this method returns the
+     * implementation name.
+     * 
+     * @return The class name used for product component classes
+     */
+    public String getProductCmptClassName() {
+        return getProductCmptNode().getInterfaceName();
+    }
+
+    /**
+     * Returns the class name of the product component generation. The class name is normally the
+     * published interface. If there is not publish interface generated, this method returns the
+     * implementation name.
+     * 
+     * @return The class name used for product component generation classes
+     */
+    public String getProductCmptGenerationClassName() {
+        return getProductCmptGenerationNode().getInterfaceName();
+    }
+
+    /**
+     * Returns the getter name for the product component. Use this method only when you call this
+     * method. To generate the method you should operate in the context of {@link XProductCmptClass}
+     * 
+     * @return the name of the getProductComponentGeneration method
+     */
+    public String getMethodNameGetProductCmpt() {
+        return getProductCmptNode().getMethodNameGetProductCmpt();
+    }
+
+    /**
+     * Returns the getter name for the product component generation. Use this method only when you
+     * call this method. To generate the method you should operate in the context of
+     * {@link XProductCmptGenerationClass}
+     * 
+     * @return the name of the getProductComponentGeneration method
+     */
     public String getMethodNameGetProductCmptGeneration() {
-        return getJavaNamingConvention().getGetterMethodName(getProductGenerationClassName());
+        return getProductCmptGenerationNode().getMethodNameGetProductComponentGeneration();
     }
 
-    public String getMethodNameGetProductComponent() {
-        return getJavaNamingConvention().getGetterMethodName(getProductComponentClassName());
-    }
+    //
+    // public String getMethodNameGetProductCmptGeneration() {
+    // return getJavaNamingConvention().getGetterMethodName(getProductGenerationClassName());
+    // }
+    //
+    // public String getMethodNameGetProductComponent() {
+    // return getJavaNamingConvention().getGetterMethodName(getProductComponentClassName());
+    // }
+    //
+    // public String getMethodNameSetProductComponent() {
+    // return getJavaNamingConvention().getSetterMethodName(getProductComponentClassName());
+    // }
+    // public String getProductComponentArgumentName() {
+    // return getJavaNamingConvention().getMemberVarName(getProductComponentClassName());
+    // }
 
-    public String getMethodNameSetProductComponent() {
-        return getJavaNamingConvention().getSetterMethodName(getProductComponentClassName());
-    }
-
+    // private XProductCmptClass getProductCmptClass() {
+    // IProductCmptType productCmptType = getProductCmptType();
+    // if (productCmptType != null) {
+    // XProductCmptClass xProductCmptClass = getModelNode(productCmptType, XProductCmptClass.class);
+    // return xProductCmptClass;
+    // }
+    // return null;
+    // }
+    //
+    // public String getProductCmptClassName() {
+    // XProductCmptClass productCmptClass = getProductCmptClass();
+    // if (productCmptClass != null) {
+    // return productCmptClass.getSimpleName(BuilderAspect.IMPLEMENTATION);
+    // } else {
+    // return StringUtils.EMPTY;
+    // }
+    // }
+    //
+    // /**
+    // * Returns the simple name for the product component generation class associated with this
+    // * policy component class. An import will be added automatically.
+    // *
+    // */
+    // public String getProductGenerationClassName() {
+    // return getProductGenerationClassName(BuilderAspect.IMPLEMENTATION);
+    // }
+    //
+    // /**
+    // * Returns the simple name for the product component generation class or interface associated
+    // * with this policy component class. An import will be added automatically.
+    // * <p>
+    // * This method lets the {@link GeneratorModelContext} and its {@link JavaClassNaming} decide
+    // * whether the name of the published interface or the name of the implementing class - in case
+    // * no published interface is generated - is returned.
+    // *
+    // * TODO FIPS-1059
+    // */
+    // public String getProductGenerationClassOrInterfaceName() {
+    // return
+    // getProductGenerationClassName(BuilderAspect.getValue(isGeneratingPublishedInterfaces()));
+    // }
+    //
+    // /**
+    // * Returns the simple name for the product component generation class or interface associated
+    // * with this policy component class. An import will be added automatically.
+    // *
+    // */
+    // protected String getProductGenerationClassName(BuilderAspect aspect) {
+    // IProductCmptType prodType = getProductCmptType();
+    // XProductCmptGenerationClass xProductCmptGenClass = getModelNode(prodType,
+    // XProductCmptGenerationClass.class);
+    // String simpleName = xProductCmptGenClass.getSimpleName(aspect);
+    // return simpleName;
+    // }
+    //
+    // public String getProductGenerationArgumentName() {
+    // return getJavaNamingConvention().getMemberVarName(getProductGenerationClassName());
+    // }
+    //
+    // /**
+    // * Returns the simple name for the product component class or interface associated with this
+    // * policy component class. An import will be added automatically.
+    // *
+    // */
+    // public String getProductComponentClassName(BuilderAspect aspect) {
+    // XProductCmptClass xProductCmptClass = getProductCmptClass();
+    // if (xProductCmptClass != null) {
+    // String simpleName = xProductCmptClass.getSimpleName(aspect);
+    // return simpleName;
+    // } else {
+    // return null;
+    // }
+    // }
+    //
+    // /**
+    // * Returns the simple name for the product component class associated with this policy
+    // component
+    // * class. An import will be added automatically.
+    // *
+    // */
+    // protected String getProductComponentClassName() {
+    // return getProductComponentClassName(BuilderAspect.IMPLEMENTATION);
+    // }
+    //
+    // /**
+    // * Returns the simple name for the product component class or interface associated with this
+    // * policy component class. An import will be added automatically.
+    // * <p>
+    // * This method lets the {@link GeneratorModelContext} and its {@link JavaClassNaming} decide
+    // * whether the name of the published interface or the name of the implementing class - in case
+    // * no published interface is generated - is returned .
+    // *
+    // * TODO FIPS-1059
+    // *
+    // */
+    // public String getProductComponentClassOrInterfaceName() {
+    // return
+    // getProductComponentClassName(BuilderAspect.getValue(isGeneratingPublishedInterfaces()));
+    // }
+    //
+    // /**
+    // * Finds the product component type associated with this policy component type and returns it.
+    // * Throws a {@link CoreRuntimeException} in case of a {@link CoreException}.
+    // */
     /**
      * The method create... is generated in the product component no in the policy component type.
      * However we have this method to get the name of the create method here because we use the
@@ -381,20 +435,11 @@ public class XPolicyCmptClass extends XType {
      *         policy component called 'Coverage'
      */
     public String getMethodNameCreatePolicyCmpt() {
-        XProductCmptClass productCmptClass = getProductCmptClass();
-        if (productCmptClass != null) {
-            return productCmptClass.getMethodNameCreatePolicyCmpt();
-        } else {
-            return null;
-        }
-    }
-
-    public String getProductComponentArgumentName() {
-        return getJavaNamingConvention().getMemberVarName(getProductComponentClassName());
+        return "create" + getImplClassName();
     }
 
     public String getLocalVarNameDeltaSupportOtherObject() {
-        return getJavaNamingConvention().getMemberVarName("other" + getClassName());
+        return getJavaNamingConvention().getMemberVarName("other" + getImplClassName());
     }
 
     public Set<XPolicyAttribute> getAttributesToCopy() {

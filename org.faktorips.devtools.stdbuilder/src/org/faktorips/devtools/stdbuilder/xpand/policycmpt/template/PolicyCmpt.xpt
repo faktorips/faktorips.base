@@ -21,7 +21,7 @@ package «packageName»;
 	 * @generated
 	 */
 	 «getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS)-»
-	public «abstract()» class «className» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces»{
+	public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces»{
 
 		«FOREACH attributes AS this-»
 			«IF !published-»
@@ -91,7 +91,11 @@ package «packageName»;
 		    // end-user-code
 	    }
 		
-		«EXPAND generalMethodsForConfiguredPolicyCmpts-»
+		«IF configured-»
+			«EXPAND getAndSetProductComponent FOR productCmptNode-»
+			«EXPAND getProductComponentGeneration FOR productCmptGenerationNode-»
+			«EXPAND generalMethodsForConfiguredPolicyCmpts-»
+		«ENDIF-»
 		
 		«EXPAND generateCodeForDependentObject»
 		
@@ -109,21 +113,21 @@ package «packageName»;
 
 «DEFINE constructors FOR XPolicyCmptClass-»
 	/**
-     * «localizedJDoc("CONSTRUCTOR", className)»
+     * «localizedJDoc("CONSTRUCTOR", implClassName)»
      * 
      * @generated
      */
-    public «method(className)» {
+    public «method(implClassName)» {
         super();
         «EXPAND initializationForOverrideAttributes-»
     }
     «IF configured»
 		/**
-	     * «localizedJDoc("CONSTRUCTOR", className)»
+	     * «localizedJDoc("CONSTRUCTOR", implClassName)»
 	     * 
 	     * @generated
 	     */
-	    public «method(className, productComponentClassOrInterfaceName, "productCmpt")» {
+	    public «method(implClassName, productCmptClassName, "productCmpt")» {
 	        super(productCmpt);
 	        «EXPAND initializationForOverrideAttributes-»
 	    }
@@ -144,7 +148,7 @@ package «packageName»;
     	«IF changingOverTime-»
         	return «currentClass.methodNameGetProductCmptGeneration»().«methodNameGetter»();
         «ELSE-»
-        	return «currentClass.methodNameGetProductComponent»().«methodNameGetter»();
+        	return «currentClass.methodNameGetProductCmpt»().«methodNameGetter»();
         «ENDIF-»
     }
 «ENDDEFINE»
@@ -156,7 +160,7 @@ package «packageName»;
      * @generated
      */
     public «tableClassName» «method(methodNameGetter)» {
-    	«policyClass.productGenerationClassName» productCmpt = («policyClass.productGenerationClassName»)«policyClass.methodNameGetProductCmptGeneration»();
+    	«policyClass.productCmptGenerationNode.implClassName» productCmpt = («policyClass.productCmptGenerationNode.implClassName»)«policyClass.methodNameGetProductCmptGeneration»();
         if (productCmpt == null) {
             return null;
         }
@@ -172,41 +176,45 @@ package «packageName»;
 	«ENDFOREACH-»
 «ENDDEFINE»
 
-«DEFINE generalMethodsForConfiguredPolicyCmpts FOR XPolicyCmptClass-»
-	«IF configured-»
+«DEFINE getAndSetProductComponent FOR XProductCmptClass-» 
 		/**
 		 * {@inheritDoc}
 		 *
 		 * @generated
 		 */
 		 «overrideAnnotationForPublishedMethod()»
-		 public «productComponentClassOrInterfaceName» «methodNameGetProductComponent»() {
-		 	return («productComponentClassOrInterfaceName») «getProductComponent()»;
+		 public «interfaceName» «method(methodNameGetProductCmpt)» {
+		 	return («interfaceName») «getProductComponent()»;
 		 }
-		 
+
 		/**
 		 * {@inheritDoc}
 		 *
 		 * @generated
 		 */
 		 «overrideAnnotationForPublishedMethod()»
-		 public «productGenerationClassOrInterfaceName» «methodNameGetProductCmptGeneration»() {
-		 	return («productGenerationClassOrInterfaceName») «getProductCmptGeneration()»;
-		 }
-	
-		/**
-		 * {@inheritDoc}
-		 *
-		 * @generated
-		 */
-		 «overrideAnnotationForPublishedMethod()»
-		 public void «methodNameSetProductComponent»(«productComponentClassOrInterfaceName» «productComponentArgumentName», boolean initPropertiesWithConfiguratedDefaults) {
-	        «setProductComponent(productComponentArgumentName)»;
+		 public void «method(methodNameSetProductCmpt, interfaceName, nameForVariable, "boolean", "initPropertiesWithConfiguratedDefaults")» {
+	        «setProductComponent(nameForVariable)»;
 	        if (initPropertiesWithConfiguratedDefaults) {
 	            «initialize()»;
 	        }
 		 }
+«ENDDEFINE»
 		 
+«DEFINE getProductComponentGeneration FOR XProductCmptGenerationClass-» 
+		/**
+		 * {@inheritDoc}
+		 *
+		 * @generated
+		 */
+		 «overrideAnnotationForPublishedMethod()»
+		 public «interfaceName» «method(methodNameGetProductComponentGeneration)» {
+		 	return («interfaceName») «getProductCmptGeneration()»;
+		 }
+	
+«ENDDEFINE»
+
+«DEFINE generalMethodsForConfiguredPolicyCmpts FOR XPolicyCmptClass-»
 		 /**
 		 * {@inheritDoc}
 		 *
@@ -251,7 +259,6 @@ package «packageName»;
 				«ENDIF-»
 			}
 		«ENDIF-»
-	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE generateCodeForDependentObject FOR XPolicyCmptClass-»

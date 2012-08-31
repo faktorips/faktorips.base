@@ -17,13 +17,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.TypeBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class ProductCmptGenerationInterfaceBuilder extends XpandBuilder<XProductCmptGenerationClass> {
+public class ProductCmptGenerationInterfaceBuilder extends TypeBuilder {
 
     public ProductCmptGenerationInterfaceBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext,
             ModelService modelService) {

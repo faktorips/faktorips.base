@@ -32,6 +32,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
@@ -195,6 +197,11 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     }
 
     @Override
+    public boolean isGeneratsArtifactsFor(IIpsSrcFile ipsSrcFile) {
+        return super.isGeneratsArtifactsFor(ipsSrcFile);
+    }
+
+    @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IIpsObjectPartContainer ipsObjectPartContainer) {
         if (getTemplateDefinition() == null) {
@@ -205,17 +212,36 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
         generatorModelContext.setImportHandler(new ImportHandler(""));
 
         try {
-            evaluateTemplate(ipsObjectPartContainer.getIpsObject());
+            IIpsObject ipsObject = ipsObjectPartContainer.getIpsObject();
+            if (!isBuilderFor(ipsObject.getIpsSrcFile())) {
+                if (ipsObject instanceof IPolicyCmptType) {
+                    IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsObject;
+                    if (policyCmptType.isConfigurableByProductCmptType()) {
+                        ipsObject = policyCmptType.findProductCmptType(getIpsProject());
+                    }
+                } else if (ipsObject instanceof IProductCmptType) {
+                    IProductCmptType productCmptType = (IProductCmptType)ipsObject;
+                    if (productCmptType.isConfigurationForPolicyCmptType()) {
+                        ipsObject = productCmptType.findPolicyCmptType(getIpsProject());
+                    }
+                }
+            }
+            evaluateTemplate(ipsObject);
+
+            // At the moment only one java type per generator is supported. Multiple types are only
+            // generated for adjustments implementing formulas
+            List<IType> generatedJavaTypes = getGeneratedJavaTypes(ipsObject);
+            if (generatedJavaTypes.size() > 1) {
+                throw new RuntimeException("more than one " + generatedJavaTypes);
+            }
+            IType javaType = generatedJavaTypes.get(0);
+
+            Set<AbstractGeneratorModelNode> allModelNodes = modelService.getAllModelNodes(ipsObjectPartContainer);
+            for (AbstractGeneratorModelNode generatorModelNode : allModelNodes) {
+                javaElements.addAll(generatorModelNode.getGeneratedJavaElements(javaType));
+            }
         } catch (Exception e) {
-            throw new RuntimeException("Exception while parsing template for " + ipsObjectPartContainer);
-        }
-
-        // TODO verschiedene Types?
-        List<IType> javaTypes = getGeneratedJavaTypes(ipsObjectPartContainer.getIpsObject());
-
-        Set<AbstractGeneratorModelNode> allModelNodes = modelService.getAllModelNodes(ipsObjectPartContainer);
-        for (AbstractGeneratorModelNode generatorModelNode : allModelNodes) {
-            javaElements.addAll(generatorModelNode.getGeneratedJavaElements(javaTypes.get(0)));
+            throw new RuntimeException("Exception while parsing template for " + ipsObjectPartContainer, e);
         }
     }
 

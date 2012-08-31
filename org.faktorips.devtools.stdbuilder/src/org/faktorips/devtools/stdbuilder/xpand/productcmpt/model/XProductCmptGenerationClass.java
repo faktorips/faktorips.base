@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 import java.util.Locale;
 import java.util.Set;
 
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -67,6 +66,10 @@ public class XProductCmptGenerationClass extends XProductClass {
         return getIpsObjectPartContainer();
     }
 
+    public XProductCmptClass getProductCmptClassNode() {
+        return getModelNode(getProductCmptType(), XProductCmptClass.class);
+    }
+
     @Override
     protected String getBaseSuperclassName() {
         return addImport(ProductComponentGeneration.class.getName());
@@ -77,15 +80,7 @@ public class XProductCmptGenerationClass extends XProductClass {
         return super.getClassHierarchy(XProductCmptGenerationClass.class);
     }
 
-    public String getProductCmptClassName(BuilderAspect aspect) {
-        XProductCmptClass modelNode = getModelNode(getProductCmptType(), XProductCmptClass.class);
-        return modelNode.getSimpleName(aspect);
+    public String getMethodNameGetProductComponentGeneration() {
+        return getJavaNamingConvention().getGetterMethodName(getImplClassName());
     }
-
-    public String getMethodNameGetProductCmpt() {
-        XProductCmptClass productCmptClass = getModelNode(getType(), XProductCmptClass.class);
-        return getJavaNamingConvention().getGetterMethodName(
-                productCmptClass.getSimpleName(BuilderAspect.IMPLEMENTATION));
-    }
-
 }

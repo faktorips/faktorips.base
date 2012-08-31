@@ -18,13 +18,13 @@ import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.TypeBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class ProductCmptGenerationImplClassBuilder extends XpandBuilder<XProductCmptGenerationClass> {
+public class ProductCmptGenerationImplClassBuilder extends TypeBuilder {
 
     private final IJavaClassNameProvider javaClassNameProvider;
 

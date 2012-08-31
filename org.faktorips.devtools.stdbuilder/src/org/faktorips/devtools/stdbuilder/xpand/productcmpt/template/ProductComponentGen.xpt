@@ -13,10 +13,10 @@
 		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 	
 		/**
-		 * «localizedJDoc("CLASS", getSimpleName(BuilderAspect::INTERFACE))»
+		 * «localizedJDoc("CLASS", interfaceName)»
 		 * @generated
 		 */
-		public «abstract()» class «getSimpleName(BuilderAspect::IMPLEMENTATION)» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
+		public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
 		 {
 		 
 		 	«FOREACH attributes AS this-»
@@ -38,7 +38,7 @@
 		     * 
 		     * @generated
 		     */
-			public «method(getSimpleName(BuilderAspect::IMPLEMENTATION), getProductCmptClassName(BuilderAspect::IMPLEMENTATION), "productCmpt")» {
+			public «method(implClassName, productCmptClassNode.implClassName, "productCmpt")» {
 				super(productCmpt);
 			}
 
@@ -59,16 +59,7 @@
 				«ENDIF-»
 			«ENDFOREACH-»
 
-		    /**
-		     * {@inheritDoc}
-		     * 
-		     * @generated
-		     */
-		    «overrideAnnotationForPublishedMethod()-»
-			«REM» TODO FIPS-1059 «ENDREM»
-		    public «getProductCmptClassName(BuilderAspect::INTERFACE)» «method(methodNameGetProductCmpt)» {
-		        return («getProductCmptClassName(BuilderAspect::INTERFACE)»)«getProductComponent()»;
-		    }
+			«EXPAND getProductCmpt FOR productCmptClassNode-»
 
 		    /**
 		     * {@inheritDoc}
@@ -108,33 +99,45 @@
 		    }
 «ENDIF»
 		
-		«EXPAND writeToXmlMethods-»
+			«EXPAND writeToXmlMethods-»
 
-		«EXPAND createPolicyCmpt(this) FOREACH policyTypeClassHierarchy»
+			«EXPAND createPolicyCmpt(productCmptClassNode) FOREACH policyTypeClassHierarchy»
 
 
 «REM» TODO may use covariant return type«ENDREM»
-		«IF generateMethodGenericCreatePolicyComponent»
+			«IF generateMethodGenericCreatePolicyComponent»
+			    /**
+			     * {@inheritDoc}
+			     * 
+			     * @generated
+			     */
+			    «overrideAnnotation(false)-»
+			    public «IConfigurableModelObject()» «createPolicyComponent()» {
+			    	«IF !configurationForPolicyCmptType-»
+			    		return null;
+			    	«ELSE-»
+			        	return «policyCmptClass.methodNameCreatePolicyCmpt»();
+			        «ENDIF-»
+			    }
+		    «ENDIF»
+	
+			«EXPAND ProductAssociation::getLinkMethods»
+			
+			«EXPAND TableUsages::getterAndSetter FOREACH tables»
+	}
+	«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE getProductCmpt FOR XProductCmptClass-»
 	    /**
 	     * {@inheritDoc}
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotation(false)-»
-	    public «IConfigurableModelObject()» «createPolicyComponent()» {
-	    	«IF !configurationForPolicyCmptType-»
-	    		return null;
-	    	«ELSE-»
-	        	return «policyCmptClass.methodNameCreatePolicyCmpt»();
-	        «ENDIF-»
+	    «overrideAnnotationForPublishedMethod()-»
+	    public «interfaceName» «method(methodNameGetProductCmpt)» {
+	        return («interfaceName»)«getProductComponent()»;
 	    }
-	    «ENDIF»
-
-		«EXPAND ProductAssociation::getLinkMethods»
-		
-		«EXPAND TableUsages::getterAndSetter FOREACH tables»
-	}
-	«ENDFILE»
 «ENDDEFINE»
 
 «DEFINE writeToXmlMethods FOR XProductCmptGenerationClass-»
@@ -190,7 +193,7 @@
 
 «REM» The content of the method is always the same (use currentType). The methodName is derived from different types «ENDREM»
 «REM» TODO may use covariant return type«ENDREM»
-«DEFINE createPolicyCmpt(XProductCmptGenerationClass currentType) FOR XPolicyCmptClass»
+«DEFINE createPolicyCmpt(XProductCmptClass currentType) FOR XPolicyCmptClass»
 	«IF currentType.isGenerateMethodCreatePolicyCmpt(this)-»
     /**
      * {@inheritDoc}

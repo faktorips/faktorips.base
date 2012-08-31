@@ -14,7 +14,7 @@
 	    «overrideAnnotationForInterfaceOrNonAbstractSuperclassMethod()-»
 	    public «IModelObject()» «newCopy()» {
 	        «Map(IModelObject(), IModelObject())» copyMap = new «HashMap(IModelObject(), IModelObject())»();
-	        «className» newCopy = («className») «newCopyInternal("copyMap")»;
+	        «implClassName» newCopy = («implClassName») «newCopyInternal("copyMap")»;
 	        «copyAssociationsInternal("newCopy", "copyMap")»;
 	        return newCopy;
 	    }
@@ -28,9 +28,9 @@
      «overrideAnnotationIfHasSuperclass()-»
     public «IModelObject()» «newCopyInternal(Map(IModelObject(), IModelObject())+" copyMap")» {
     	«IF !abstract-»
-	        «className» newCopy = («className»)copyMap.get(this);
+	        «implClassName» newCopy = («implClassName»)copyMap.get(this);
 	        if (newCopy == null) {
-	            newCopy = new «className»();
+	            newCopy = new «implClassName»();
 	            «IF configured-»
 		            newCopy.«copyProductCmptAndGenerationInternal("this")»;
 	            «ENDIF-»
@@ -54,7 +54,7 @@
 			super.copyProperties(copy, copyMap);
         «ENDIF-»		
         «IF attributesToCopy.size > 0 || associationsToCopy.size > 0-»
-    		«className» concreteCopy = («className»)copy;
+    		«implClassName» concreteCopy = («implClassName»)copy;
         	«EXPAND copyAttributes-»
         	«EXPAND copyAssociations-»        	
         «ENDIF-»
@@ -75,7 +75,7 @@
     	«ENDIF-»
         «IF associationsToCopy.size > 0-»
             «IF requiresLocalVariableInCopyAssocsInternal-»
-            	«className» newCopy = («className»)abstractCopy;
+            	«implClassName» newCopy = («implClassName»)abstractCopy;
             «ENDIF-»
 	        «EXPAND copyAssociationInternal FOREACH associations-»
         «ENDIF-»

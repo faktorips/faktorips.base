@@ -11,7 +11,7 @@
      * 
      * @generated
      */
-    protected String «fieldName» = null;
+    protected String «field(fieldName)» = null;
 «ENDDEFINE»
 
 «DEFINE getterAndSetter FOR XTableUsage-»

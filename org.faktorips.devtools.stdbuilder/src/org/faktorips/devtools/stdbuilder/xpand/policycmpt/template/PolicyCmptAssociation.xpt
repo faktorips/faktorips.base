@@ -113,7 +113,7 @@
 			        «List_(targetInterfaceName)» result = new  «ArrayList(targetInterfaceName)»();
 			        for («targetInterfaceName» element : elements) {
 			        	«LET targetPolicyCmptClass AS targetClass-»
-			            if (element.«targetClass.methodNameGetProductComponent»().equals(qualifier)) {
+			            if (element.«targetClass.methodNameGetProductCmpt»().equals(qualifier)) {
 			                result.add(element);
 			            }
 			            «ENDLET-»
@@ -122,7 +122,7 @@
 			        «List_(targetInterfaceName)» result = new  «ArrayList(targetInterfaceName)»();
 			        for («targetInterfaceName» «targetClassName.toFirstLower()» : «fieldName») {
 			        	«LET targetPolicyCmptClass AS targetClass-»
-			            if («targetClassName.toFirstLower()».«targetClass.methodNameGetProductComponent»().equals(qualifier)) {
+			            if («targetClassName.toFirstLower()».«targetClass.methodNameGetProductCmpt»().equals(qualifier)) {
 			                result.add(«targetClassName.toFirstLower()»);
 			            }
 			            «ENDLET-»
@@ -139,7 +139,7 @@
 			        «List_(targetInterfaceName)» elements = «methodNameGetter»();
 			        for («targetInterfaceName» element : elements) {
 			        	«LET targetPolicyCmptClass AS targetClass-»
-			            if (element.«targetClass.methodNameGetProductComponent»().equals(qualifier)) {
+			            if (element.«targetClass.methodNameGetProductCmpt»().equals(qualifier)) {
 			                return element;
 			            }
 			            «ENDLET-»
@@ -147,7 +147,7 @@
 	«REM»FIPS-1142::remove this if-else«ENDREM»	        «ELSE-»
 			        for («targetInterfaceName» «targetClassName.toFirstLower()» : «fieldName») {
 			        	«LET targetPolicyCmptClass AS targetClass-»
-			            if («targetClassName.toFirstLower()».«targetClass.methodNameGetProductComponent»().equals(qualifier)) {
+			            if («targetClassName.toFirstLower()».«targetClass.methodNameGetProductCmpt»().equals(qualifier)) {
 			                return «targetClassName.toFirstLower()»;
 			            }
 			            «ENDLET-»

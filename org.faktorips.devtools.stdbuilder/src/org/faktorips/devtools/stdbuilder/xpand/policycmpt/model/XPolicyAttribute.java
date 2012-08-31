@@ -329,27 +329,23 @@ public class XPolicyAttribute extends XAttribute {
      * 
      */
     public String getTypeName() {
-        return getXPolicyCmptClass().getSimpleName(
+        return getPolicyCmptNode().getSimpleName(
                 BuilderAspect.getValue(isGeneratingPublishedInterfaces() && isPublished()));
     }
 
-    public String getProductGenerationClassOrInterfaceName() {
-        return getXPolicyCmptClass().getProductGenerationClassOrInterfaceName();
-    }
-
     public String getProductGenerationClassName() {
-        return getXPolicyCmptClass().getProductGenerationClassName();
+        return getPolicyCmptNode().getProductCmptGenerationClassName();
     }
 
     public String getProductGenerationArgumentName() {
-        return getXPolicyCmptClass().getProductGenerationArgumentName();
+        return getPolicyCmptNode().getProductCmptNode().getNameForVariable();
     }
 
     public String getMethodNameGetProductCmptGeneration() {
-        return getXPolicyCmptClass().getMethodNameGetProductCmptGeneration();
+        return getPolicyCmptNode().getMethodNameGetProductCmptGeneration();
     }
 
-    private XPolicyCmptClass getXPolicyCmptClass() {
+    public XPolicyCmptClass getPolicyCmptNode() {
         IPolicyCmptType polType = getIpsObjectPartContainer().getPolicyCmptType();
         XPolicyCmptClass xPolicyCmptClass = getModelNode(polType, XPolicyCmptClass.class);
         return xPolicyCmptClass;

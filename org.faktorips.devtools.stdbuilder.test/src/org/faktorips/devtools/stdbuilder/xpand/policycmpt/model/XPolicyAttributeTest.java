@@ -71,7 +71,7 @@ public class XPolicyAttributeTest {
     @Test
     public void productGenerationGetterName() throws Exception {
         xPolicyAttribute.getProductGenerationClassName();
-        verify(policyClass).getProductGenerationClassName();
+        verify(policyClass).getProductCmptGenerationClassName();
     }
 
     @Test

@@ -90,7 +90,7 @@ public class XProductAssociationTest {
     @Test
     public void testGetGetterNameForTargetGeneration() throws Exception {
         association.setTarget("test.TargetType");
-        when(xTargetCmptClass.getMethodNameGetProductComponentGeneration()).thenReturn("getTargetTypeGen");
+        when(xTargetGenerationClass.getMethodNameGetProductComponentGeneration()).thenReturn("getTargetTypeGen");
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
         String getterNameForTargetGeneration = xProductAssociation.getMethodNameGetTargetGeneration();
         assertEquals("getTargetTypeGen", getterNameForTargetGeneration);
