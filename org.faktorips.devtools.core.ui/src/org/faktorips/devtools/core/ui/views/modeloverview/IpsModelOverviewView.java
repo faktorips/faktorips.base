@@ -17,11 +17,16 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
+import org.eclipse.jface.viewers.DecorationContext;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -31,8 +36,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IDecoratorManager;
+import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsMenuId;
@@ -40,6 +49,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider.ToChildAssociationType;
 
@@ -62,7 +72,12 @@ public class IpsModelOverviewView extends ViewPart {
 
         this.treeViewer = new TreeViewer(panel);
         this.treeViewer.setContentProvider(new ModelOverviewContentProvider());
-        this.treeViewer.setLabelProvider(new IpsModelOverviewLabelProvider());
+
+        IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
+        DecoratingStyledCellLabelProvider decoratedLabelProvider = new DecoratingStyledCellLabelProvider(
+                new IpsModelOverviewLabelProvider(), decoManager.getLabelDecorator(), new DecorationContext());
+
+        this.treeViewer.setLabelProvider(decoratedLabelProvider);
         this.treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         this.getSite().setSelectionProvider(treeViewer);
 
@@ -71,8 +86,8 @@ public class IpsModelOverviewView extends ViewPart {
     }
 
     private void activateContext() {
-        IContextService serivce = (IContextService)getSite().getService(IContextService.class);
-        serivce.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
+        IContextService service = (IContextService)getSite().getService(IContextService.class);
+        service.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
     }
 
     private void createContextMenu() {
@@ -81,10 +96,40 @@ public class IpsModelOverviewView extends ViewPart {
         manager.add(new OpenEditorAction(treeViewer));
         manager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
         manager.add(new GroupMarker(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
-        Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
+        final Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
         getSite().registerContextMenu(manager, treeViewer);
         MenuCleaner.addAdditionsCleaner(manager);
+
+        manager.addMenuListener(new IMenuListener() {
+
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+                IIpsSrcFile srcFile = getCurrentlySelectedIpsSrcFile();
+
+                if (srcFile == null) {
+                    contextMenu.setVisible(false);
+                }
+            }
+        });
+
+    }
+
+    private IIpsSrcFile getCurrentlySelectedIpsSrcFile() {
+        TypedSelection<IAdaptable> typedSelection = getSelectionFromSelectionProvider();
+        if (typedSelection == null || !typedSelection.isValid()) {
+            return null;
+        }
+
+        return (IIpsSrcFile)typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
+    }
+
+    private TypedSelection<IAdaptable> getSelectionFromSelectionProvider() {
+        TypedSelection<IAdaptable> typedSelection;
+        ISelectionService selectionService = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
+                .getSelectionService();
+        typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, selectionService.getSelection());
+        return typedSelection;
     }
 
     @Override
@@ -204,7 +249,6 @@ public class IpsModelOverviewView extends ViewPart {
             }
 
         };
-
         actionBars.getToolBarManager().add(showToggleTypeAction);
     }
 }
