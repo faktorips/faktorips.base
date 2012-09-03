@@ -299,10 +299,10 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
                 showEmptyMessage();
             } else if (element instanceof String) {
                 // waiting for building hierarchy
-                showMessgeOrTableView(MessageTableSwitch.TABLE);
+                showMessageOrTableView(MessageTableSwitch.TABLE);
             } else if (element instanceof ITypeHierarchy) {
                 ITypeHierarchy hierarchy = (ITypeHierarchy)element;
-                showMessgeOrTableView(MessageTableSwitch.TABLE);
+                showMessageOrTableView(MessageTableSwitch.TABLE);
                 enableButtons(true);
                 IType type = hierarchy.getType();
                 treeViewer.expandAll();
@@ -321,11 +321,11 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         enableButtons(false);
         if (errormsg != null && !errormsg.isDisposed()) {
             errormsg.setText(message);
-            showMessgeOrTableView(MessageTableSwitch.MESSAGE);
+            showMessageOrTableView(MessageTableSwitch.MESSAGE);
         }
     }
 
-    private void showMessgeOrTableView(MessageTableSwitch mtSwitch) {
+    private void showMessageOrTableView(MessageTableSwitch mtSwitch) {
         boolean messageWasVisible = false;
         if (errormsg != null && !errormsg.isDisposed()) {
             messageWasVisible = errormsg.isVisible();
@@ -614,8 +614,8 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
     }
 
     private void activateContext() {
-        IContextService serivce = (IContextService)getSite().getService(IContextService.class);
-        serivce.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
+        IContextService service = (IContextService)getSite().getService(IContextService.class);
+        service.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
     }
 
     @Override
