@@ -65,7 +65,6 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
         List<AbstractStructureNode> children = new ArrayList<AbstractStructureNode>();
 
         addSubtypeChild(children);
-
         addCompositeChild(children);
 
         return children;
@@ -157,22 +156,19 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
 
     @Override
     public IIpsSrcFile getWrappedIpsSrcFile() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.getIpsSrcFile();
     }
 
     @SuppressWarnings("rawtypes")
     // method defined in supertype, cannot remove the warning here!
     @Override
     public Object getAdapter(Class adapter) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.getValue().getAdapter(adapter);
     }
 
     @Override
     public IIpsSrcFile getIpsSrcFile() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.getValue().getIpsSrcFile();
     }
 
     @Override

@@ -18,6 +18,9 @@ import java.util.Deque;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
@@ -26,12 +29,18 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
+import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider.ToChildAssociationType;
 
 public class IpsModelOverviewView extends ViewPart {
@@ -55,6 +64,27 @@ public class IpsModelOverviewView extends ViewPart {
         this.treeViewer.setContentProvider(new ModelOverviewContentProvider());
         this.treeViewer.setLabelProvider(new IpsModelOverviewLabelProvider());
         this.treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        this.getSite().setSelectionProvider(treeViewer);
+
+        this.activateContext();
+        this.createContextMenu();
+    }
+
+    private void activateContext() {
+        IContextService serivce = (IContextService)getSite().getService(IContextService.class);
+        serivce.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
+    }
+
+    private void createContextMenu() {
+        MenuManager manager = new MenuManager();
+        manager.add(new Separator("open")); //$NON-NLS-1$
+        manager.add(new OpenEditorAction(treeViewer));
+        manager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
+        manager.add(new GroupMarker(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
+        Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
+        treeViewer.getControl().setMenu(contextMenu);
+        getSite().registerContextMenu(manager, treeViewer);
+        MenuCleaner.addAdditionsCleaner(manager);
     }
 
     @Override

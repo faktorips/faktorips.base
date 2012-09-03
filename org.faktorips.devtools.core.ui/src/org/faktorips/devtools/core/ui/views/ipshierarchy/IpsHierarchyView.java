@@ -267,7 +267,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
      */
     public void showHierarchy(final IIpsObject element) {
         if (element instanceof IType && element.getEnclosingResource().isAccessible()) {
-            // TODO: Waiting label is currenty deactivated. Check if we do need some
+            // TODO: Waiting label is currently deactivated. Check if we do need some
             // display.asyncExec(new Runnable() {
             // @Override
             // public void run() {
