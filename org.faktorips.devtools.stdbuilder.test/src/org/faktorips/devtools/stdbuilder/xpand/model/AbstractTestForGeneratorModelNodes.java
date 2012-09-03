@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
+import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.junit.Before;
 import org.mockito.Mock;
 

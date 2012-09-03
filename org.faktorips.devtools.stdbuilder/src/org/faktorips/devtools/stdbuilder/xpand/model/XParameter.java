@@ -20,6 +20,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 
 public class XParameter extends AbstractGeneratorModelNode {
 

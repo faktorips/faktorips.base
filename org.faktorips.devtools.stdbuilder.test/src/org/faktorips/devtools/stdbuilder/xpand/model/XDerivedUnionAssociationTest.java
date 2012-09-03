@@ -28,6 +28,7 @@ import java.util.Set;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

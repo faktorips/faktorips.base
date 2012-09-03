@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.xpand.model;
+package org.faktorips.devtools.stdbuilder.xpand;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,6 +25,8 @@ import java.util.Map;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
+import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

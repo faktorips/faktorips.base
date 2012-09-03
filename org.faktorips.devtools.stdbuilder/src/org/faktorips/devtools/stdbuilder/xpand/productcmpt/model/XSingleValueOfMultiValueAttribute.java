@@ -14,7 +14,7 @@
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
 

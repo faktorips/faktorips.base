@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 
 public class XMethod extends AbstractGeneratorModelNode {
 

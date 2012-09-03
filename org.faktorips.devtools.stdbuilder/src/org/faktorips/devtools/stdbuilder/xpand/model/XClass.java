@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 
 public abstract class XClass extends AbstractGeneratorModelNode {
 

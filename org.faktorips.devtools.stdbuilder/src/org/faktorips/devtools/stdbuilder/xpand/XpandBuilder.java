@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.emf.mwe.core.monitor.ProgressMonitor;
 import org.eclipse.internal.xpand2.model.XpandDefinition;
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
 import org.eclipse.jdt.core.IJavaElement;
@@ -25,6 +26,8 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.xpand2.XpandExecutionContext;
 import org.eclipse.xpand2.XpandExecutionContextImpl;
 import org.eclipse.xpand2.output.Outlet;
+import org.eclipse.xtend.expression.ExceptionHandler;
+import org.eclipse.xtend.expression.NullEvaluationHandler;
 import org.eclipse.xtend.type.impl.java.JavaBeansMetaModel;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
@@ -32,11 +35,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
@@ -96,7 +96,9 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     @Override
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.beforeBuildProcess(project, buildKind);
-        initTemplate();
+        if (getTemplateDefinition() == null) {
+            initTemplate();
+        }
         String charset = project.getProject().getDefaultCharset();
         Outlet outlet = getOut().getOutlet(null);
         if (!(outlet instanceof StringOutlet) || !outlet.getFileEncoding().equals(charset)) {
@@ -110,7 +112,12 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
      */
     protected void initTemplate() {
         setOut(new StringOutput());
-        threadLocalXpandContext.set(new XpandExecutionContextImpl(getOut(), null));
+        // TODO maybe we want to instantiate one of these by our own?
+        ProgressMonitor progressMonitor = null;
+        ExceptionHandler exceptionHandler = null;
+        NullEvaluationHandler nullEvaluationHandler = null;
+        threadLocalXpandContext.set(new XpandExecutionContextImpl(getGeneratorModelContext().getResourceManager(),
+                getOut(), null, null, progressMonitor, exceptionHandler, nullEvaluationHandler, null));
         JavaBeansMetaModel mm = new JavaBeansMetaModel();
         getXpandContext().registerMetaModel(mm);
 
@@ -212,20 +219,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
         generatorModelContext.setImportHandler(new ImportHandler(""));
 
         try {
-            IIpsObject ipsObject = ipsObjectPartContainer.getIpsObject();
-            if (!isBuilderFor(ipsObject.getIpsSrcFile())) {
-                if (ipsObject instanceof IPolicyCmptType) {
-                    IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsObject;
-                    if (policyCmptType.isConfigurableByProductCmptType()) {
-                        ipsObject = policyCmptType.findProductCmptType(getIpsProject());
-                    }
-                } else if (ipsObject instanceof IProductCmptType) {
-                    IProductCmptType productCmptType = (IProductCmptType)ipsObject;
-                    if (productCmptType.isConfigurationForPolicyCmptType()) {
-                        ipsObject = productCmptType.findPolicyCmptType(getIpsProject());
-                    }
-                }
-            }
+            IIpsObject ipsObject = getSupportedIpsObject(ipsObjectPartContainer);
             evaluateTemplate(ipsObject);
 
             // At the moment only one java type per generator is supported. Multiple types are only
@@ -244,5 +238,19 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
             throw new RuntimeException("Exception while parsing template for " + ipsObjectPartContainer, e);
         }
     }
+
+    /**
+     * Getting the IPS object that is supported by this builder.
+     * <p>
+     * This method is called to get the generated artifacts for an ipsObjectPartContainer. The given
+     * {@link IIpsObject} {@link IIpsObjectPartContainer} may not be of a supported type. For
+     * example a policy component attribute has generated artifacts in the product component. Hence
+     * we need to parse the policy and the product component template.
+     * 
+     * @param ipsObjectPartContainer A {@link IIpsObjectPartContainer} for which we want to get the
+     *            {@link IIpsObject} that is supported by this builder
+     * @return The {@link IIpsObject} that is supported by this builder.
+     */
+    protected abstract IIpsObject getSupportedIpsObject(IIpsObjectPartContainer ipsObjectPartContainer);
 
 }

@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.util.ArgumentCheck;
 
 /**

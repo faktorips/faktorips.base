@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.xpand.model;
+package org.faktorips.devtools.stdbuilder.xpand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.xtend.expression.ResourceManager;
 import org.faktorips.devtools.core.builder.AbstractBuilderSet;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
@@ -28,6 +29,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
+import org.faktorips.devtools.stdbuilder.xpand.model.ImportStatement;
 
 /**
  * This class holds all the context information needed to generate the java code with our XPAND
@@ -56,6 +59,8 @@ public class GeneratorModelContext {
     private final IIpsArtefactBuilderSetConfig config;
 
     private final Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap;
+
+    private final ResourceManager resourceManager = new OptimizedResourceManager();
 
     public GeneratorModelContext(IIpsArtefactBuilderSetConfig config,
             Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap) {
@@ -116,6 +121,10 @@ public class GeneratorModelContext {
 
     public boolean removeImport(String importStatement) {
         return getImportHandler().remove(importStatement);
+    }
+
+    public ResourceManager getResourceManager() {
+        return resourceManager;
     }
 
     public Locale getLanguageUsedInGeneratedSourceCode() {

@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.stdbuilder.xpand.model.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.junit.Before;
 import org.junit.Test;
