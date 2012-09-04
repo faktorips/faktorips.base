@@ -50,8 +50,6 @@ import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
-import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
@@ -236,9 +234,6 @@ public class IpsModelOverviewView extends ViewPart {
     private void initToolBar() {
         IToolBarManager toolBarManager = getViewSite().getActionBars().getToolBarManager();
         // toolBarManager.add(createToggleProductPolicyAction());
-
-        toolBarManager.add(new ExpandAllAction(treeViewer));
-        toolBarManager.add(new CollapseAllAction(treeViewer));
     }
 
     private void initMenu() {
