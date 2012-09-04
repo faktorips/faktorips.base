@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder.xpand;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -40,10 +41,10 @@ public class XpandBuilderTest {
     public void testBeforeBuildProcess() throws Exception {
         // Using PolicyCmptImlClassBuilder as concrete instance knowing that this also tests this
         // other class
-        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(builderSet, null, null);
+        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(false, builderSet,
+                mock(GeneratorModelContext.class), null);
         policyCmptImplClassBuilder.beforeBuildProcess(ipsProject, 0);
         assertNotNull(policyCmptImplClassBuilder.getOut());
         assertNotNull(policyCmptImplClassBuilder.getTemplateDefinition());
     }
-
 }

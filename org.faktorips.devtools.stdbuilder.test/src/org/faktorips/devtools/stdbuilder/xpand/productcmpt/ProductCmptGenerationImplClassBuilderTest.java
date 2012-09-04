@@ -14,10 +14,13 @@
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 import java.net.URL;
 
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder;
 import org.junit.Test;
 
@@ -25,7 +28,8 @@ public class ProductCmptGenerationImplClassBuilderTest {
 
     @Test
     public void testGetTemplate_exists() throws Exception {
-        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(null, null, null);
+        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(false,
+                mock(StandardBuilderSet.class), mock(GeneratorModelContext.class), null);
         String template = policyCmptImplClassBuilder.getTemplate();
         int lastIndexOf = template.lastIndexOf(SyntaxConstants.NS_DELIM);
         template = template.substring(0, lastIndexOf);
