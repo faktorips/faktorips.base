@@ -20,6 +20,7 @@ import java.util.List;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AssociationType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IIpsSrcFileViewItem;
 import org.faktorips.util.ArgumentCheck;
@@ -34,12 +35,12 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
     private SubtypeNode subtypeChild;
 
     /**
-     * Creates a new ComponentNode with designated parent node and value. Use this constructor if
-     * the parent node is already known at creation time.
+     * Creates a new ComponentNode with designated parent node and value.
      * 
      * @param value the corresponding IType element to this node
      * @param parent the parent node
-     * @throws NullPointerException if value is null
+     * @param rootProject the {@link IIpsProject} which should be used to compute project references
+     * @throws NullPointerException if value or rootProject is null
      */
     public ComponentNode(IType value, AbstractStructureNode parent, IIpsProject rootProject) {
 
@@ -71,10 +72,11 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
     }
 
     private void addCompositeChild(List<AbstractStructureNode> children) {
-        List<IType> associations = ModelOverviewContentProvider.getAssociationsForAssociationTypes(this.getValue(),
-                AssociationType.COMPOSITION_MASTER_TO_DETAIL, AssociationType.AGGREGATION);
-        List<ComponentNode> compositeNodeChildren = encapsulateComponentTypes(associations, this.rootProject);
-        if (!compositeNodeChildren.isEmpty()) {
+        List<IAssociation> associations = this.getValue().getAssociations(AssociationType.COMPOSITION_MASTER_TO_DETAIL,
+                AssociationType.AGGREGATION);
+        if (!associations.isEmpty()) {
+            List<? extends ComponentNode> compositeNodeChildren = AssociationComponentNode
+                    .encapsulateAssociationComponentTypes(associations, this.rootProject);
             CompositeNode compositeNode = new CompositeNode(this, compositeNodeChildren);
             children.add(compositeNode);
             this.compositeChild = compositeNode;
@@ -83,8 +85,8 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
 
     private void addSubtypeChild(List<AbstractStructureNode> children) {
         List<IType> subtypes = this.getValue().findSubtypes(false, false, this.rootProject);
-        List<ComponentNode> subtypeNodeChildren = encapsulateComponentTypes(subtypes, this.rootProject);
-        if (!subtypeNodeChildren.isEmpty()) {
+        if (!subtypes.isEmpty()) {
+            List<ComponentNode> subtypeNodeChildren = encapsulateComponentTypes(subtypes, this.rootProject);
             SubtypeNode subtypeNode = new SubtypeNode(this, subtypeNodeChildren);
             children.add(subtypeNode);
             this.subtypeChild = subtypeNode;
@@ -142,16 +144,10 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
      */
     protected static List<ComponentNode> encapsulateComponentTypes(Collection<IType> components, IIpsProject rootProject) {
         List<ComponentNode> componentNodes = new ArrayList<ComponentNode>();
-
         for (IType component : components) {
-            componentNodes.add(encapsulateComponentType(component, rootProject));
+            componentNodes.add(new ComponentNode(component, null, rootProject));
         }
-
         return componentNodes;
-    }
-
-    protected static ComponentNode encapsulateComponentType(IType component, IIpsProject rootProject) {
-        return new ComponentNode(component, null, rootProject);
     }
 
     @Override

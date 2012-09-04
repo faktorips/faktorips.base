@@ -34,7 +34,7 @@ abstract class AbstractStructureNode implements IModelOverviewNode {
      * @throws NullPointerException if one of the parameters is {@code null} or the provided list of
      *             children is empty.
      */
-    public AbstractStructureNode(ComponentNode parent, List<ComponentNode> children) {
+    public AbstractStructureNode(ComponentNode parent, List<? extends ComponentNode> children) {
         ArgumentCheck.notNull(parent, "'parent' must not be null."); //$NON-NLS-1$
         ArgumentCheck.notNull(children, "'children' must not be null."); //$NON-NLS-1$
         ArgumentCheck.isTrue(!children.isEmpty(), "'children', must not be empty."); //$NON-NLS-1$
@@ -56,7 +56,7 @@ abstract class AbstractStructureNode implements IModelOverviewNode {
         return parent;
     }
 
-    private void addChildren(List<ComponentNode> children) {
+    private void addChildren(List<? extends ComponentNode> children) {
 
         this.children.addAll(children);
 

@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -27,6 +28,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IType;
 import org.junit.Test;
 
 public class ComponentNodeTest extends AbstractIpsPluginTest {
@@ -279,5 +281,49 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
 
         // test
         assertFalse(root1.equals(root2));
+    }
+
+    @Test
+    public void testEncapsulateComponentTypes_EmptyListInput() throws CoreException {
+        IIpsProject project = newIpsProject();
+        List<ComponentNode> encapsulateComponentTypes = ComponentNode.encapsulateComponentTypes(new ArrayList<IType>(),
+                project);
+
+        assertTrue(encapsulateComponentTypes.isEmpty());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testEncapsulateComponentTypes_NullListInput() throws CoreException {
+        IIpsProject project = newIpsProject();
+
+        ComponentNode.encapsulateComponentTypes(null, project);
+    }
+
+    @Test
+    public void testEncapsulateComponentTypes_NonEmptyListInput() throws CoreException {
+        IIpsProject project = newIpsProject();
+        ArrayList<IType> components = new ArrayList<IType>();
+        PolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(project, "Component");
+        components.add(type);
+        List<ComponentNode> encapsulatedComponentTypes = ComponentNode.encapsulateComponentTypes(components, project);
+
+        assertEquals(1, encapsulatedComponentTypes.size());
+        assertEquals(type, encapsulatedComponentTypes.get(0).getValue());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testEncapsulateComponentTypes_NullProjectAndNonEmptyListInput() throws CoreException {
+        IIpsProject project = newIpsProject();
+        ArrayList<IType> components = new ArrayList<IType>();
+        components.add(newPolicyCmptTypeWithoutProductCmptType(project, "Component"));
+
+        ComponentNode.encapsulateComponentTypes(components, null);
+    }
+
+    @Test
+    public void testEncapsulateComponentTypes_NullProjectAndEmptyListInput() {
+        List<ComponentNode> encapsulateComponentTypes = ComponentNode.encapsulateComponentTypes(new ArrayList<IType>(),
+                null);
+        assertTrue(encapsulateComponentTypes.isEmpty());
     }
 }

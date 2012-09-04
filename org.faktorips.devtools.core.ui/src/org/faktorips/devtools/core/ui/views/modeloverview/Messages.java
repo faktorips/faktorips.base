@@ -29,4 +29,8 @@ public class Messages extends NLS {
 
     public static String IpsModelOverview_tooltipShowOnlyPolicies;
     public static String IpsModelOverview_tooltipShowOnlyProducts;
+    public static String IpsModelOverview_menuShowCardinalities_name;
+    public static String IpsModelOverview_tooltipToggleCardinalities;
+    public static String IpsModelOverview_menuShowRoleName_name;
+    public static String IpsModelOverview_menuShowRoleName_tooltip;
 }

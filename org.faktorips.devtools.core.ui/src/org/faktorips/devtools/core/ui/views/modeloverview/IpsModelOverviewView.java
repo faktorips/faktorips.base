@@ -20,8 +20,10 @@ import java.util.List;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -33,9 +35,9 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.contexts.IContextService;
@@ -48,8 +50,11 @@ import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
+import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider.ToChildAssociationType;
 
@@ -57,13 +62,16 @@ public class IpsModelOverviewView extends ViewPart {
 
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"; //$NON-NLS-1$
 
+    private static final String MENU_INFO_GROUP = "group.info"; //$NON-NLS-1$
+
     private TreeViewer treeViewer;
     private final UIToolkit uiToolkit = new UIToolkit(null);
     private Label label;
 
+    private IpsModelOverviewLabelProvider labelProvider;
+
     @Override
     public void createPartControl(Composite parent) {
-        initToolBar();
         Composite panel = uiToolkit.createGridComposite(parent, 1, false, true, new GridData(SWT.FILL, SWT.FILL, true,
                 true));
 
@@ -74,15 +82,19 @@ public class IpsModelOverviewView extends ViewPart {
         this.treeViewer.setContentProvider(new ModelOverviewContentProvider());
 
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
-        DecoratingStyledCellLabelProvider decoratedLabelProvider = new DecoratingStyledCellLabelProvider(
-                new IpsModelOverviewLabelProvider(), decoManager.getLabelDecorator(), new DecorationContext());
+        labelProvider = new IpsModelOverviewLabelProvider();
+        DecoratingStyledCellLabelProvider decoratingLabelProvider = new DecoratingStyledCellLabelProvider(
+                labelProvider, decoManager.getLabelDecorator(), new DecorationContext());
 
-        this.treeViewer.setLabelProvider(decoratedLabelProvider);
+        this.treeViewer.setLabelProvider(decoratingLabelProvider);
         this.treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        this.getSite().setSelectionProvider(treeViewer);
+        this.getSite().setSelectionProvider(treeViewer); // important for the context menu
+        treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));
 
         this.activateContext();
         this.createContextMenu();
+        this.initMenu();
+        this.initToolBar();
     }
 
     private void activateContext() {
@@ -179,7 +191,10 @@ public class IpsModelOverviewView extends ViewPart {
         List<IModelOverviewNode> pathList = new ArrayList<IModelOverviewNode>();
 
         // get the root node
-        ComponentNode rootNode = ComponentNode.encapsulateComponentType(root.getComponent(), rootProject);
+
+        ComponentNode rootNode = new ComponentNode(root.getComponent(), null, rootProject);
+        // ComponentNode rootNode = ComponentNode.encapsulateComponentType(root.getComponent(),
+        // rootProject);
         pathList.add(rootNode);
 
         for (PathElement pathElement : treePath) {
@@ -219,36 +234,123 @@ public class IpsModelOverviewView extends ViewPart {
     }
 
     private void initToolBar() {
-        IActionBars actionBars = getViewSite().getActionBars();
+        IToolBarManager toolBarManager = getViewSite().getActionBars().getToolBarManager();
+        // toolBarManager.add(createToggleProductPolicyAction());
 
-        Action showToggleTypeAction = new Action() {
-            private boolean showPolicyComponents = true;
+        toolBarManager.add(new ExpandAllAction(treeViewer));
+        toolBarManager.add(new CollapseAllAction(treeViewer));
+    }
 
+    private void initMenu() {
+        IMenuManager menuManager = getViewSite().getActionBars().getMenuManager();
+        menuManager.add(new Separator(MENU_INFO_GROUP));
+
+        Action showCardinalitiesAction = createShowCardinalitiesAction();
+        showCardinalitiesAction.setChecked(true);
+
+        Action showRoleNameAction = createShowRoleNameAction();
+        showRoleNameAction.setChecked(true);
+
+        menuManager.appendToGroup(MENU_INFO_GROUP, showCardinalitiesAction);
+        menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);
+    }
+
+    private Action createShowCardinalitiesAction() {
+        return new Action(Messages.IpsModelOverview_menuShowCardinalities_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("PolicyCmptType.gif"); //$NON-NLS-1$
-            }
-
-            @Override
-            public String getToolTipText() {
-                return Messages.IpsModelOverview_tooltipShowOnlyPolicies;
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("Cardinality.gif"); //$NON-NLS-1$
             }
 
             @Override
             public void run() {
-                // TODO get this method to work
-                // switch state
-                showPolicyComponents = !showPolicyComponents;
-                if (showPolicyComponents) {
-                    this.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("PolicyCmptType.gif")); //$NON-NLS-1$
-                    this.setToolTipText(Messages.IpsModelOverview_tooltipShowOnlyPolicies);
-                } else {
-                    this.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmptType.gif")); //$NON-NLS-1$
-                    this.setToolTipText(Messages.IpsModelOverview_tooltipShowOnlyProducts);
-                }
+                labelProvider.toggleShowCardinalities();
+                refresh();
             }
 
+            @Override
+            public String getToolTipText() {
+                return Messages.IpsModelOverview_tooltipToggleCardinalities;
+            }
         };
-        actionBars.getToolBarManager().add(showToggleTypeAction);
+    }
+
+    private Action createShowRoleNameAction() {
+        return new Action(Messages.IpsModelOverview_menuShowRoleName_name, IAction.AS_CHECK_BOX) {
+            @Override
+            public ImageDescriptor getImageDescriptor() {
+                return null;
+            }
+
+            @Override
+            public void run() {
+                labelProvider.toggleShowRolenames();
+                refresh();
+            }
+
+            @Override
+            public String getToolTipText() {
+                return Messages.IpsModelOverview_menuShowRoleName_tooltip;
+            }
+        };
+    }
+
+    // private Action createToggleProductPolicyAction() {
+    // return new Action() {
+    // private boolean showPolicyComponents = true;
+    //
+    // @Override
+    // public ImageDescriptor getImageDescriptor() {
+    //                return IpsUIPlugin.getImageHandling().createImageDescriptor("PolicyCmptType.gif"); //$NON-NLS-1$
+    // }
+    //
+    // @Override
+    // public String getToolTipText() {
+    // return Messages.IpsModelOverview_tooltipShowOnlyPolicies;
+    // }
+    //
+    // @Override
+    // public void run() {
+    // // TODO get this method to work
+    // // switch state
+    // showPolicyComponents = !showPolicyComponents;
+    // if (showPolicyComponents) {
+    //                    this.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("PolicyCmptType.gif")); //$NON-NLS-1$
+    // this.setToolTipText(Messages.IpsModelOverview_tooltipShowOnlyPolicies);
+    // } else {
+    //                    this.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmptType.gif")); //$NON-NLS-1$
+    // this.setToolTipText(Messages.IpsModelOverview_tooltipShowOnlyProducts);
+    // }
+    // refresh();
+    // }
+    //
+    // };
+    // }
+
+    private void refresh() {
+        final Control ctrl = treeViewer.getControl();
+
+        if (ctrl == null || ctrl.isDisposed()) {
+            return;
+        }
+
+        try {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (!treeViewer.getControl().isDisposed()) {
+                        Object input = treeViewer.getInput();
+                        if (input instanceof ComponentNode || input instanceof IIpsProject) {
+                            treeViewer.refresh();
+                        }
+                    }
+                }
+            };
+
+            ctrl.setRedraw(false);
+            ctrl.getDisplay().syncExec(runnable);
+        } finally {
+            ctrl.setRedraw(true);
+        }
     }
 }

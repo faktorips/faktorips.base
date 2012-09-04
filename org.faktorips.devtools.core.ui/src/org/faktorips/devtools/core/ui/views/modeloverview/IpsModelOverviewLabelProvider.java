@@ -14,11 +14,18 @@
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.internal.model.type.Association;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
-public class IpsModelOverviewLabelProvider extends LabelProvider {
+public class IpsModelOverviewLabelProvider extends LabelProvider implements IStyledLabelProvider {
+
+    private boolean showCardinalities = true;
+    private boolean showRolenames = true;
 
     public IpsModelOverviewLabelProvider() {
         super();
@@ -53,5 +60,53 @@ public class IpsModelOverviewLabelProvider extends LabelProvider {
             return ""; //$NON-NLS-1$
         }
         return super.getText(element);
+    }
+
+    @Override
+    public StyledString getStyledText(Object element) {
+        String label = getText(element);
+        StyledString styledLabel = new StyledString(label);
+
+        if (element instanceof AssociationComponentNode) {
+            IAssociation node = ((AssociationComponentNode)element).getAssociation();
+
+            if (showRolenames) {
+                styledLabel
+                        .append(new StyledString(" - " + node.getTargetRoleSingular(), StyledString.QUALIFIER_STYLER)); //$NON-NLS-1$
+            }
+
+            if (showCardinalities) {
+                styledLabel
+                        .append(new StyledString(
+                                " ["    + getCardinalityText(node.getMinCardinality()) + ".." + getCardinalityText(node.getMaxCardinality()) + "]", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                StyledString.COUNTER_STYLER));
+            }
+
+        }
+
+        return styledLabel;
+    }
+
+    private String getCardinalityText(int cardinality) {
+        if (cardinality == Association.CARDINALITY_MANY) {
+            return "*"; //$NON-NLS-1$
+        }
+        return "" + cardinality; //$NON-NLS-1$
+    }
+
+    public void setShowCardinalities(boolean showCardinalities) {
+        this.showCardinalities = showCardinalities;
+    }
+
+    public void toggleShowCardinalities() {
+        this.showCardinalities = !this.showCardinalities;
+    }
+
+    public void setShowRolenames(boolean showRolenames) {
+        this.showRolenames = showRolenames;
+    }
+
+    public void toggleShowRolenames() {
+        this.showRolenames = !this.showRolenames;
     }
 }

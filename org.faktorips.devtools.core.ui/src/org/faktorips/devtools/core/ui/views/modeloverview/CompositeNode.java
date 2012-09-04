@@ -24,7 +24,7 @@ class CompositeNode extends AbstractStructureNode {
      * @param parent the parent, this parameter must not be {@code null}.
      * @throws NullPointerException if one of the parameters is {@code null} or children is empty.
      */
-    public CompositeNode(ComponentNode parent, List<ComponentNode> children) {
+    public CompositeNode(ComponentNode parent, List<? extends ComponentNode> children) {
         super(parent, children);
     }
 }
