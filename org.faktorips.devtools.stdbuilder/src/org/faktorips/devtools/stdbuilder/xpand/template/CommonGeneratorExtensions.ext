@@ -65,15 +65,21 @@ overrideAnnotationIfHasSuperclassOrInterface(XType this) :
 // Returns the @Override annotation in all other cases.
 overrideAnnotationForInterfaceOrNonAbstractSuperclassMethod(XPolicyCmptClass this) :
 	if needOverrideAnnotation(!hasNonAbstractSupertype()) then "@Override";
-	
-inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String jDoc):
-	generatePublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc);
 
-inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String jDoc, Object param):
-	generatePublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc, param);
+inheritDocOrText(AbstractGeneratorModelNode this, String text):
+	generatePublishedInterfaces?"{@inheritDoc}":text;
 	
-inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String jDoc, Object param, Object desc):
-	generatePublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc, param, desc);
+inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key):
+	generatePublishedInterfaces?"{@inheritDoc}":localizedJDoc(key);
+
+inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key, Object param):
+	generatePublishedInterfaces?"{@inheritDoc}":localizedJDoc(key, param);
+	
+inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key, Object param1, Object param2):
+	generatePublishedInterfaces?"{@inheritDoc}":localizedJDoc(key, param1, param2);
+
+inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key, Object param1, Object param2, Object param3):
+	generatePublishedInterfaces?"{@inheritDoc}":localizedJDoc(key, param1, param2, param3);
 	
 abstract(XType this) :
 	if abstract then "abstract";

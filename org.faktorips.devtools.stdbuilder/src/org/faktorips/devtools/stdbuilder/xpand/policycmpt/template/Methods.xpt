@@ -8,7 +8,7 @@
 «DEFINE method FOR XMethod-»
     /**
     «IF published-»
-     * {@inheritDoc}
+     * «inheritDocOrText(description)»
      *
 «REM»TODO Simple else would be enough«ENDREM»     «ELSEIF description.length > 0-» 
      * «description» 

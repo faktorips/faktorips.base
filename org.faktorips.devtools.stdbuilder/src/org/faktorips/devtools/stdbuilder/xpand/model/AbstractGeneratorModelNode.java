@@ -324,6 +324,22 @@ public abstract class AbstractGeneratorModelNode {
 
     /**
      * Returns the localized java doc for the given key. The key is added by the suffix _JAVADOC and
+     * is provided by the corresponding localized string set. Additionally you add two replacement
+     * parameter.
+     * 
+     * @see #localizedJDoc(String, Object...)
+     * @param key The key to search the localized java doc statement
+     * @param replacement1 The first replacement parameter inserted in the localized text
+     * @param replacement2 The second replacement parameter inserted in the localized text
+     * @param replacement3 The third replacement parameter inserted in the localized text
+     * @return the localized java doc statement
+     */
+    public String localizedJDoc(String key, Object replacement1, Object replacement2, Object replacement3) {
+        return localizedJDoc(key, new Object[] { replacement1, replacement2, replacement3 });
+    }
+
+    /**
+     * Returns the localized java doc for the given key. The key is added by the suffix _JAVADOC and
      * is provided by the corresponding localized string set. Additionally you add replacement
      * parameters.
      * <p>

@@ -181,7 +181,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 
 «DEFINE getAndSetProductComponent FOR XProductCmptClass-» 
 		/**
-		 * {@inheritDoc}
+		 * «inheritDocOrJavaDoc("METHOD_GET_PRODUCTCMPT", name, policyCmptClass.name)»
 		 *
 		 * @generated
 		 */
@@ -191,7 +191,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		 }
 
 		/**
-		 * {@inheritDoc}
+		 * «inheritDocOrJavaDoc("METHOD_SET_PRODUCTCMPT",  name, nameForVariable, "initPropertiesWithConfiguratedDefaults")»
 		 *
 		 * @generated
 		 */
@@ -206,7 +206,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		 
 «DEFINE getProductComponentGeneration FOR XProductCmptGenerationClass-» 
 		/**
-		 * {@inheritDoc}
+		 * «inheritDocOrJavaDoc("METHOD_GET_PRODUCTCMPT_GENERATION", generationConceptNameSingular, name, policyCmptClass.name)»
 		 *
 		 * @generated
 		 */

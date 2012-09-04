@@ -104,10 +104,15 @@ public class XPolicyCmptClass extends XType {
     public List<String> getExtendedInterfaces() {
         List<String> extendedInterfaces = super.getExtendedInterfaces();
         if (!hasSupertype()) {
-            if (isConfigured()) {
-                extendedInterfaces.add(addImport(IConfigurableModelObject.class));
-            } else {
-                extendedInterfaces.add(addImport(IModelObject.class));
+            if (isGeneratePublishedInterfaces()) {
+                // in case of not generating published interfaces we use all extended interfaces as
+                // implemented interfaces in the implementation. These interfaces are already
+                // implemented by the abstract super class
+                if (isConfigured()) {
+                    extendedInterfaces.add(addImport(IConfigurableModelObject.class));
+                } else {
+                    extendedInterfaces.add(addImport(IModelObject.class));
+                }
             }
             if (!isAggregateRoot()) {
                 extendedInterfaces.add(addImport(IDependantObject.class));

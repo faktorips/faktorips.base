@@ -331,11 +331,20 @@ public abstract class XProductClass extends XType {
      * 
      */
     public String getVarNameEffectiveDate() {
-        IChangesOverTimeNamingConvention convention = getIpsProject()
-                .getChangesInTimeNamingConventionForGeneratedCode();
+        IChangesOverTimeNamingConvention convention = getChangesOverTimeNamingConvention();
         Locale locale = getLanguageUsedInGeneratedSourceCode();
         String conceptName = convention.getEffectiveDateConceptName(locale);
         return StringUtils.uncapitalize(conceptName);
+    }
+
+    public String getGenerationConceptNameSingular() {
+        return getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+    }
+
+    private IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention() {
+        IChangesOverTimeNamingConvention convention = getIpsProject()
+                .getChangesInTimeNamingConventionForGeneratedCode();
+        return convention;
     }
 
 }
