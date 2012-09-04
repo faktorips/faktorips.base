@@ -330,7 +330,7 @@ public class XPolicyAttribute extends XAttribute {
      */
     public String getTypeName() {
         return getPolicyCmptNode().getSimpleName(
-                BuilderAspect.getValue(isGeneratingPublishedInterfaces() && isPublished()));
+                BuilderAspect.getValue(isGeneratePublishedInterfaces() && isPublished()));
     }
 
     public String getProductGenerationClassName() {

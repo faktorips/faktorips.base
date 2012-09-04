@@ -467,11 +467,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         builders.addAll(extendingBuilders);
 
         // TODO add XPAND builder for testing purposes
-        builders.add(new org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder(this,
+        builders.add(new org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder(false, this,
                 generatorModelContext, modelService));
         builders.add(new org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationImplClassBuilder(
-                this, generatorModelContext, modelService));
-        builders.add(new org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptImplClassBuilder(this,
+                false, this, generatorModelContext, modelService));
+        builders.add(new org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptImplClassBuilder(false, this,
                 generatorModelContext, modelService));
         // builders.add(new
         // org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptImplClassBuilder(this,
@@ -630,8 +630,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * Returns whether toXml() methods are to be generated.
      */
     public boolean isGenerateToXmlSupport() {
-        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_TO_XML_SUPPORT);
-        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean.booleanValue();
+        return generatorModelContext.isGenerateToXmlSupport();
     }
 
     /**
@@ -641,8 +640,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * property is false the constant name would be CHECKANYTHINGANDDOSOMETHING.
      */
     public boolean isGenerateSeparatedCamelCase() {
-        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_CAMELCASE_SEPARATED);
-        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean.booleanValue();
+        return generatorModelContext.isGenerateSeparatedCamelCase();
     }
 
     public FormulaCompiling getFormulaCompiling() {

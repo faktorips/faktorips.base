@@ -24,16 +24,16 @@ import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class ProductCmptGenerationImplClassBuilder extends TypeBuilder {
+public class ProductCmptGenerationImplClassBuilder extends TypeBuilder<XProductCmptGenerationClass> {
 
     private final IJavaClassNameProvider javaClassNameProvider;
 
-    public ProductCmptGenerationImplClassBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext,
-            ModelService modelService) {
-        super(builderSet, modelContext, modelService, new LocalizedStringsSet(
+    public ProductCmptGenerationImplClassBuilder(boolean interfaceBuilder, StandardBuilderSet builderSet,
+            GeneratorModelContext modelContext, ModelService modelService) {
+        super(interfaceBuilder, builderSet, modelContext, modelService, new LocalizedStringsSet(
                 ProductCmptGenerationImplClassBuilder.class));
-        javaClassNameProvider = XProductCmptGenerationClass
-                .createProductCmptGenJavaClassNaming(getLanguageUsedInGeneratedSourceCode());
+        javaClassNameProvider = XProductCmptGenerationClass.createProductCmptGenJavaClassNaming(
+                modelContext.isGeneratePublishedInterfaces(), getLanguageUsedInGeneratedSourceCode());
     }
 
     @Override
@@ -52,18 +52,17 @@ public class ProductCmptGenerationImplClassBuilder extends TypeBuilder {
     }
 
     @Override
-    public boolean isBuildingPublishedSourceFile() {
-        return false;
-    }
-
-    @Override
     public String getTemplate() {
-        return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponentGen::main";
+        if (isInterfaceBuilder()) {
+            return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponentGenInterface::main";
+        } else {
+            return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponentGen::main";
+        }
     }
 
     @Override
     protected boolean generatesInterface() {
-        return false;
+        return isInterfaceBuilder();
     }
 
 }

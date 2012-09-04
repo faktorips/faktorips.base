@@ -5,26 +5,29 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 
-«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::MethodNames»
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
 «DEFINE main FOR XPolicyCmptClass»
 	«FILE getFileName(BuilderAspect::IMPLEMENTATION)-»
-package «packageName»;
+package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 
 «EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 	
 	/**
-	 «IF generatingPublishedInterfaces-»
+	 «IF generatePublishedInterfaces-»
 	 *	«localizedJDoc("CLASS", getSimpleName(BuilderAspect::INTERFACE))»
+	 «ELSE-»
+	 *	«REM»TODO«ENDREM»
 	 «ENDIF-»
 	 * @generated
 	 */
 	 «getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS)-»
 	public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces»{
 
+		«EXPAND PolicyCmptAssociation::constantForPropertyName FOREACH associations»
+
 		«FOREACH attributes AS this-»
-			«IF !published-»
+			«IF !published || !generatePublishedInterfaces-»
 				«EXPAND PolicyCmptAttribute::constantForPropertyName-»
 				«EXPAND PolicyCmptAttribute::constantForValueSet-»
 			«ENDIF-»
@@ -182,7 +185,7 @@ package «packageName»;
 		 *
 		 * @generated
 		 */
-		 «overrideAnnotationForPublishedMethod()»
+		 «overrideAnnotationForPublishedMethod()-»
 		 public «interfaceName» «method(methodNameGetProductCmpt)» {
 		 	return («interfaceName») «getProductComponent()»;
 		 }
@@ -192,7 +195,7 @@ package «packageName»;
 		 *
 		 * @generated
 		 */
-		 «overrideAnnotationForPublishedMethod()»
+		 «overrideAnnotationForPublishedMethod()-»
 		 public void «method(methodNameSetProductCmpt, interfaceName, nameForVariable, "boolean", "initPropertiesWithConfiguratedDefaults")» {
 	        «setProductComponent(nameForVariable)»;
 	        if (initPropertiesWithConfiguratedDefaults) {

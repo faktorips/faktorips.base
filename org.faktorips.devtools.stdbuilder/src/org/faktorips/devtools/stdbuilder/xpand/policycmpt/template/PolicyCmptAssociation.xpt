@@ -5,6 +5,17 @@
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAssociationExtension»
 
+«DEFINE constantForPropertyName FOR XPolicyAssociation-»
+	«IF !generatePublishedInterfaces-»
+	    /**
+	     * «localizedJDoc("FIELD_ASSOCIATION_NAME", name)»
+	     * 
+	     * @generated
+	     */
+	    public final static String «constantNamePropertyName» = "«fieldName»";
+	«ENDIF-»
+«ENDDEFINE»
+
 «DEFINE field FOR XPolicyAssociation-»
 	«IF generateField-»
 		«IF masterToDetail || typeAssociation-»
@@ -42,6 +53,7 @@
 	«EXPAND setterOrAdder-»
 	«EXPAND newChildMethods-»
 	«EXPAND remove-»
+	«EXPAND Association::abstractMethods»
 «ENDDEFINE»
 
 «DEFINE contains FOR XAssociation-»
@@ -70,7 +82,7 @@
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotation(true)-»
+		    «overrideAnnotationForPublishedMethod()-»
 		    public «List_(targetInterfaceName)» «method(methodNameGetter)» {
 		        return «Collections()».unmodifiableList(«fieldName»);
 		    }
@@ -80,7 +92,7 @@
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotation(true)-»
+		    «overrideAnnotationForPublishedMethod()-»
 		    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")» {
 		        return «fieldName».get(index);
 		    }
@@ -90,7 +102,7 @@
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotation(true)-»
+		    «overrideAnnotationForPublishedMethod()-»
 		    public «targetInterfaceName» «method(methodNameGetter)» {
 		        return «fieldName»;
 		    }
@@ -102,7 +114,7 @@
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotationForPublishedMethod()»
+	    «overrideAnnotationForPublishedMethod()-»
 	     «IF oneToManyIgnoringQualifier-»
 		    public  «List_(targetInterfaceName)» «method(methodNameGetSingle, targetProductCmptInterfaceName, "qualifier")» {
 		        if (qualifier == null) {
@@ -186,7 +198,7 @@
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotation(true)-»
+		    «overrideAnnotationForPublishedMethod()-»
 		    public void «method(methodNameSetOrAdd, targetInterfaceName, "newObject")» {
 		    	«IF generateChangeSupport-»
 					«EXPAND PropertyChangeSupport::storeOldValue-»
@@ -216,7 +228,7 @@
 	     * 
 	     * @generated
 	     */
-		«overrideAnnotation(true)»
+	   	«overrideAnnotationForPublishedMethod()-»
 	    public void «method(methodNameSetOrAdd, targetInterfaceName, "objectToAdd")»{
 	    	«IF generateChangeSupport-»
 		        «methodNameSetOrAddInternal»(objectToAdd);
@@ -315,13 +327,13 @@
 «ENDDEFINE»
 
 «DEFINE castIfNeccessary(String varName) FOR XPolicyAssociation-»
-	«IF generatingPublishedInterfaces-»
+	«IF generatePublishedInterfaces-»
 	(«EXPAND castToImplementationIfNecessary»«varName»)«ELSE-»
 	«varName»«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE castToImplementationIfNecessary FOR XPolicyAssociation-»
-	«IF generatingPublishedInterfaces-»(«targetClassName»)«ENDIF-»
+	«IF generatePublishedInterfaces-»(«targetClassName»)«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE newChildMethods FOR XPolicyAssociation-»
@@ -331,7 +343,7 @@
 	     * 
 	     * @generated
 	     */
-		«overrideAnnotation(true)»
+		«overrideAnnotationForPublishedMethod()-»
 	    public «targetInterfaceName» «method(methodNameNew)»{
 	        «targetClassName» «variableNameNewInstance» = new «targetClassName»();
 			«EXPAND addOrSetNewInstance-»
@@ -346,7 +358,7 @@
 		     * 
 		     * @generated
 		     */
-			«overrideAnnotation(true)»
+			«overrideAnnotationForPublishedMethod()-»
 		    public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceName, targetProductCmptVariableName)» {
 		        if («targetProductCmptVariableName» == null) {
 		            return «methodNameNew»();
@@ -404,7 +416,7 @@
 	     * 
 	     * @generated
 	     */
-		«overrideAnnotation(true)»
+		«overrideAnnotationForPublishedMethod()-»
 	    public void «method(methodNameRemove, targetInterfaceName, "objectToRemove")»{
 	        if (objectToRemove == null) {
 	            return;
@@ -506,4 +518,3 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-        

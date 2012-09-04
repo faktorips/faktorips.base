@@ -18,14 +18,14 @@ overrideAnnotation(AbstractGeneratorModelNode this, boolean interfaceMethodImple
 // level is Java 6 or higher. (In Java 5 no @Override must be annotated when implementing an
 // interface method) 
 overrideAnnotationForPublishedMethod(AbstractGeneratorModelNode this) :
-	if needOverrideAnnotation(generatingPublishedInterfaces) then "@Override";
+	if generatePublishedInterfaces && needOverrideAnnotation(true) then "@Override";
 
 // Use this function for published methods that require an override in a special condition. i.e. methods 
 // that are defined in a published interface (if generated) but may also be overridden in subclasses. Returns the 
 // @Override annotation if published interfaces are beeing generated and if the  compliance level is Java 6 or 
 // higher or if the condition is true . (In Java 5 no @Override must be annotated when implementing an interface method) 
 overrideAnnotationForPublishedMethodOrIf(AbstractGeneratorModelNode this, boolean condition) :
-	if needOverrideAnnotation(generatingPublishedInterfaces) || condition then "@Override";
+	if (generatePublishedInterfaces && needOverrideAnnotation(true)) || (condition && needOverrideAnnotation(false)) then "@Override";
 
 // Use this function for maybe published methods that require an override in a special condition. i.e. methods 
 // that are defined in a published interface (if generated) but may also be overridden in subclasses. Returns the 
@@ -33,7 +33,7 @@ overrideAnnotationForPublishedMethodOrIf(AbstractGeneratorModelNode this, boolea
 // level is Java 6 or higher or if the condition is true .
 // (In Java 5 no @Override must be annotated when implementing an interface method) 
 overrideAnnotationForPublishedMethodOrIf(AbstractGeneratorModelNode this, boolean isPublished , boolean condition) :
-	if (generatingPublishedInterfaces && isPublished && needOverrideAnnotation(generatingPublishedInterfaces && isPublished))
+	if (generatePublishedInterfaces && isPublished && needOverrideAnnotation(generatePublishedInterfaces && isPublished))
 		 || condition then "@Override";
 
 // User this function for attribute methods (e.g. getter, setter).
@@ -67,13 +67,13 @@ overrideAnnotationForInterfaceOrNonAbstractSuperclassMethod(XPolicyCmptClass thi
 	if needOverrideAnnotation(!hasNonAbstractSupertype()) then "@Override";
 	
 inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String jDoc):
-	generatingPublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc);
+	generatePublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc);
 
 inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String jDoc, Object param):
-	generatingPublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc, param);
+	generatePublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc, param);
 	
 inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String jDoc, Object param, Object desc):
-	generatingPublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc, param, desc);
+	generatePublishedInterfaces?"{@inheritDoc}":localizedJDoc(jDoc, param, desc);
 	
 abstract(XType this) :
 	if abstract then "abstract";

@@ -39,25 +39,26 @@ import org.faktorips.util.StringUtil;
 
 public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
 
-    private static final IJavaClassNameProvider JAVA_CLASS_NAMEING_PROVIDER = new DefaultJavaClassNameProvider() {
-        @Override
-        public String getImplClassName(IIpsSrcFile ipsSrcFile) {
-            return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "Row";
-        }
-    };
+    private final IJavaClassNameProvider javaClassNameProvider;
 
-    private final String KEY_CLASS_JAVADOC = "TABLE_ROW_BUILDER_CLASS_JAVADOC";
+    private static final String KEY_CLASS_JAVADOC = "TABLE_ROW_BUILDER_CLASS_JAVADOC";
 
-    private final String KEY_CONSTRUCTOR_JAVADOC = "TABLE_ROW_BUILDER_CONSTRUCTOR_JAVADOC";
+    private static final String KEY_CONSTRUCTOR_JAVADOC = "TABLE_ROW_BUILDER_CONSTRUCTOR_JAVADOC";
 
     public TableRowBuilder(DefaultBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(TableRowBuilder.class));
         setMergeEnabled(true);
+        javaClassNameProvider = new DefaultJavaClassNameProvider(builderSet.isGeneratePublishedInterfaces()) {
+            @Override
+            public String getImplClassName(IIpsSrcFile ipsSrcFile) {
+                return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "Row";
+            }
+        };
     }
 
     @Override
     public IJavaClassNameProvider getJavaClassNameProvider() {
-        return JAVA_CLASS_NAMEING_PROVIDER;
+        return javaClassNameProvider;
     }
 
     @Override

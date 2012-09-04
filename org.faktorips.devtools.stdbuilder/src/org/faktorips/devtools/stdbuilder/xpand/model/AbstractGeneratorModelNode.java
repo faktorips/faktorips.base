@@ -457,8 +457,8 @@ public abstract class AbstractGeneratorModelNode {
     /**
      * Returns whether or not published interfaces should be generated.
      */
-    public boolean isGeneratingPublishedInterfaces() {
-        return getContext().isGeneratingPublishedInterfaces();
+    public boolean isGeneratePublishedInterfaces() {
+        return getContext().isGeneratePublishedInterfaces();
     }
 
     /**

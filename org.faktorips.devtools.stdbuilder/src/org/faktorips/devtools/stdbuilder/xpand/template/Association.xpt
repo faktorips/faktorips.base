@@ -15,3 +15,21 @@
     }
     «ENDIF»
 «ENDDEFINE»
+
+«DEFINE abstractMethods FOR XAssociation-»
+	«IF derived && masterToDetail-»
+		/**
+		 * {@inheritDoc}
+		 *
+		 * @generated
+		 */
+	     public abstract «List_(targetInterfaceName)» «methodNameGetter»();
+	     
+		/**
+		 * {@inheritDoc}
+		 *
+		 * @generated
+		 */
+		 public abstract int «methodNameGetNumOf»();
+	«ENDIF»
+«ENDDEFINE»

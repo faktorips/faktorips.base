@@ -174,7 +174,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     public JavaSourceFileBuilder(DefaultBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
         setJavaClassNaming(new JavaClassNaming(!buildsDerivedArtefacts()));
-        javaClassNameProvider = createJavaClassNameProvider();
+        javaClassNameProvider = createJavaClassNameProvider(builderSet.isGeneratePublishedInterfaces());
     }
 
     @Override
@@ -255,9 +255,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         return javaClassNameProvider;
     }
 
-    private IJavaClassNameProvider createJavaClassNameProvider() {
+    private IJavaClassNameProvider createJavaClassNameProvider(boolean isGeneratePublishedInterface) {
         // Interfaces are always published artifacts. But some implementations are also published
-        return new DefaultJavaClassNameProvider() {
+        return new DefaultJavaClassNameProvider(isGeneratePublishedInterface) {
 
             @Override
             public boolean isImplClassPublishedArtifact() {
@@ -691,7 +691,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         if (!isBuilderFor(ipsSrcFile)) {
             return;
         }
-
+        if (!getBuilderSet().isGeneratePublishedInterfaces() && generatesInterface()) {
+            return;
+        }
         IFile javaFile = getJavaFile(ipsSrcFile);
         String content = generate();
         if (content == null || generationCanceled) {

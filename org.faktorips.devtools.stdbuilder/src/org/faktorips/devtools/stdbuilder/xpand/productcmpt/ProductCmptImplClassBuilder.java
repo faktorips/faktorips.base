@@ -23,11 +23,12 @@ import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class ProductCmptImplClassBuilder extends TypeBuilder {
+public class ProductCmptImplClassBuilder extends TypeBuilder<XProductCmptClass> {
 
-    public ProductCmptImplClassBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext,
-            ModelService modelService) {
-        super(builderSet, modelContext, modelService, new LocalizedStringsSet(ProductCmptImplClassBuilder.class));
+    public ProductCmptImplClassBuilder(boolean interfaceBuilder, StandardBuilderSet builderSet,
+            GeneratorModelContext modelContext, ModelService modelService) {
+        super(interfaceBuilder, builderSet, modelContext, modelService, new LocalizedStringsSet(
+                ProductCmptImplClassBuilder.class));
     }
 
     @Override
@@ -41,18 +42,12 @@ public class ProductCmptImplClassBuilder extends TypeBuilder {
     }
 
     @Override
-    public boolean isBuildingPublishedSourceFile() {
-        return false;
-    }
-
-    @Override
     public String getTemplate() {
-        return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponent::main";
-    }
-
-    @Override
-    protected boolean generatesInterface() {
-        return false;
+        if (isInterfaceBuilder()) {
+            return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponentInterface::main";
+        } else {
+            return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponent::main";
+        }
     }
 
 }

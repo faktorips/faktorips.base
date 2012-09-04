@@ -8,7 +8,7 @@
 
 «DEFINE main FOR XProductCmptClass-»
 	«FILE getFileName(BuilderAspect::IMPLEMENTATION) -»
-	package «packageName»;
+	package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 
 		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 	
@@ -20,7 +20,7 @@
 		 {
 		 
 		 	«FOREACH attributes AS this-»
-		 		«IF !generatingPublishedInterfaces || !published -»
+		 		«IF !generatePublishedInterfaces || !published -»
 			 		«EXPAND ProductAttribute::constantForPropertyName-»
 			 	«ENDIF-»
 		 	«ENDFOREACH-»
@@ -83,7 +83,7 @@
 		     * 
 		     * @generated
 		     */
-		    @Override
+		    «overrideAnnotationForPublishedMethod()-»
 		    public «interfaceName» «method(methodNameGetProductComponentGeneration, Calendar(), "effectiveDate")» {
 		        return («interfaceName»)«getRepository()».«getProductComponentGeneration("getId()", "effectiveDate")»;
 		    }
@@ -121,7 +121,7 @@
      * 
      * @generated
      */
-     «overrideAnnotationForPublishedMethodOrIf(this != currentType.policyCmptClass)»
+     «overrideAnnotationForPublishedMethodOrIf(this.productCmptNode != currentType)»
     public «publishedInterfaceName» «method(methodNameCreatePolicyCmpt)» {
         return new «currentType.policyImplClassName»(this);
     }

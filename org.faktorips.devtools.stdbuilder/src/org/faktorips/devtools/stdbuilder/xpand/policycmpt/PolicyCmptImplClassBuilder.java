@@ -25,9 +25,10 @@ import org.faktorips.util.LocalizedStringsSet;
 
 public class PolicyCmptImplClassBuilder extends TypeBuilder<XPolicyCmptClass> {
 
-    public PolicyCmptImplClassBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext,
-            ModelService modelService) {
-        super(builderSet, modelContext, modelService, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class));
+    public PolicyCmptImplClassBuilder(boolean interfaceBuilder, StandardBuilderSet builderSet,
+            GeneratorModelContext modelContext, ModelService modelService) {
+        super(interfaceBuilder, builderSet, modelContext, modelService, new LocalizedStringsSet(
+                PolicyCmptImplClassBuilder.class));
     }
 
     @Override
@@ -41,18 +42,12 @@ public class PolicyCmptImplClassBuilder extends TypeBuilder<XPolicyCmptClass> {
     }
 
     @Override
-    public boolean isBuildingPublishedSourceFile() {
-        return false;
-    }
-
-    @Override
     public String getTemplate() {
-        return "org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmpt::main";
-    }
-
-    @Override
-    protected boolean generatesInterface() {
-        return false;
+        if (isInterfaceBuilder()) {
+            return "org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptInterface::main";
+        } else {
+            return "org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmpt::main";
+        }
     }
 
 }

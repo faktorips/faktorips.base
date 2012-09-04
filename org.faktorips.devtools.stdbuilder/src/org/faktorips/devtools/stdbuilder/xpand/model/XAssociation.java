@@ -185,7 +185,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
 
     public String getTargetInterfaceName() {
         XClass xClass = getTargetModelNode();
-        return xClass.getSimpleName(BuilderAspect.getValue(isGeneratingPublishedInterfaces()));
+        return xClass.getSimpleName(BuilderAspect.getValue(isGeneratePublishedInterfaces()));
     }
 
     public String getTargetClassName() {

@@ -24,7 +24,8 @@ public class ProductCmptGenJavaClassNameProvider extends DefaultJavaClassNamePro
 
     private final Locale locale;
 
-    public ProductCmptGenJavaClassNameProvider(Locale locale) {
+    public ProductCmptGenJavaClassNameProvider(boolean isGeneratePublishedInterface, Locale locale) {
+        super(isGeneratePublishedInterface);
         this.locale = locale;
     }
 
@@ -36,7 +37,7 @@ public class ProductCmptGenJavaClassNameProvider extends DefaultJavaClassNamePro
     }
 
     @Override
-    public String getInterfaceName(IIpsSrcFile ipsSrcFile) {
+    public String getInterfaceNameInternal(IIpsSrcFile ipsSrcFile) {
         String name = ipsSrcFile.getIpsObjectName() + getAbbreviationForGenerationConcept(ipsSrcFile);
         return ipsSrcFile.getIpsProject().getJavaNamingConvention().getPublishedInterfaceName(name);
     }

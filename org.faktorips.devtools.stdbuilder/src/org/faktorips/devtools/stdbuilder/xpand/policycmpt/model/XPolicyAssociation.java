@@ -30,6 +30,7 @@ import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
+import org.faktorips.util.StringUtil;
 
 /**
  * Generator model class representing a policy association.
@@ -285,7 +286,11 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public String getConstantNamePropertyName() {
-        return "ASSOCIATION_" + getFieldName().toUpperCase();
+        String constName = getName(isOneToMany());
+        if (isGenerateSeparatedCamelCase()) {
+            constName = StringUtil.camelCaseToUnderscore(constName, false);
+        }
+        return "ASSOCIATION_" + constName.toUpperCase();
     }
 
     public String getOldValueVariable() {

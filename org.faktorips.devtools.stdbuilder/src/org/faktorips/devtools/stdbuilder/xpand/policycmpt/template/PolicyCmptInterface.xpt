@@ -6,7 +6,7 @@
 
 «DEFINE main FOR XPolicyCmptClass»
 	«FILE getFileName(BuilderAspect::INTERFACE)-»
-	package «packageName»;
+	package «getPackageName(BuilderAspect::INTERFACE)»;
 
 		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 	

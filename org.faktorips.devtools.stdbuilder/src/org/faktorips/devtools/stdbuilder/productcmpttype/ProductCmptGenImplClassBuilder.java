@@ -68,7 +68,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptImplementatio
     public ProductCmptGenImplClassBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(ProductCmptGenImplClassBuilder.class));
         setMergeEnabled(true);
-        javaClassNameProvider = new ProductCmptGenJavaClassNameProvider(getLanguageUsedInGeneratedSourceCode());
+        javaClassNameProvider = new ProductCmptGenJavaClassNameProvider(true, getLanguageUsedInGeneratedSourceCode());
     }
 
     @Override

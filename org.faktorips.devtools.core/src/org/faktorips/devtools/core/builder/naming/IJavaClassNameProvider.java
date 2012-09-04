@@ -23,12 +23,44 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
  */
 public interface IJavaClassNameProvider {
 
+    /**
+     * The name of the implementation that is generated for the given {@link IIpsSrcFile}.
+     * 
+     * @param ipsSrcFile The {@link IIpsSrcFile} you want to get the implementation name for
+     * @return the unqualified name of the generated implementation class
+     */
     public String getImplClassName(IIpsSrcFile ipsSrcFile);
 
+    /**
+     * Returns whether the implementation is a published artifact or not.
+     * 
+     * @return True if the implementation class is a published artifact, false if not
+     */
     public boolean isImplClassPublishedArtifact();
 
+    /**
+     * Returns the name of the interface generated for this {@link IIpsSrcFile} if there is any
+     * interface generated.
+     * <p>
+     * If there is no interface generated for this source file at all (for example for enumerations)
+     * the behavior of this method is not specified. So simply do not call!
+     * <p>
+     * If the generator is configured to not generate published interfaces this method simply
+     * returns the implementation name. This makes writing the code generator more easily because
+     * you do not have to matter whether interfaces are generated or not. Simply always call this
+     * method if you want to get the published interface or the implementation if no published
+     * interface is generated.
+     * 
+     * @param ipsSrcFile The {@link IIpsSrcFile} you want to get the interface name for
+     * @return The unqualified name of the published interface
+     */
     public String getInterfaceName(IIpsSrcFile ipsSrcFile);
 
+    /**
+     * Returns whether the interface is a published artifact or not.
+     * 
+     * @return True if the interface class is a published artifact, false if not
+     */
     public boolean isInterfacePublishedArtifact();
 
 }

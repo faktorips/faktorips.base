@@ -50,7 +50,7 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
     public ProductCmptGenInterfaceBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(ProductCmptGenInterfaceBuilder.class));
         setMergeEnabled(true);
-        javaClassNameProvider = new ProductCmptGenJavaClassNameProvider(getLanguageUsedInGeneratedSourceCode());
+        javaClassNameProvider = new ProductCmptGenJavaClassNameProvider(true, getLanguageUsedInGeneratedSourceCode());
     }
 
     @Override

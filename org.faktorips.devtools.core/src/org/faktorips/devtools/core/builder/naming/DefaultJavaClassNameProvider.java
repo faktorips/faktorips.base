@@ -14,8 +14,21 @@
 package org.faktorips.devtools.core.builder.naming;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 
+/**
+ * The default java name provider. Simply use the the configured {@link IJavaNamingConvention} and
+ * the name of the {@link IIpsSrcFile} to get the implementation or interface name.
+ * 
+ * @author dirmeier
+ */
 public class DefaultJavaClassNameProvider implements IJavaClassNameProvider {
+
+    private final boolean isGeneratePublishedInterface;
+
+    public DefaultJavaClassNameProvider(boolean isGeneratePublishedInterface) {
+        this.isGeneratePublishedInterface = isGeneratePublishedInterface;
+    }
 
     @Override
     public String getImplClassName(IIpsSrcFile ipsSrcFile) {
@@ -25,11 +38,27 @@ public class DefaultJavaClassNameProvider implements IJavaClassNameProvider {
 
     @Override
     public boolean isImplClassPublishedArtifact() {
-        return false;
+        return !isGeneratePublishedInterface;
     }
 
     @Override
-    public String getInterfaceName(IIpsSrcFile ipsSrcFile) {
+    public final String getInterfaceName(IIpsSrcFile ipsSrcFile) {
+        if (!isGeneratePublishedInterface) {
+            return getImplClassName(ipsSrcFile);
+        } else {
+            return getInterfaceNameInternal(ipsSrcFile);
+        }
+    }
+
+    /**
+     * Returns the name of the generated interface and does not check if interfaces are generated at
+     * all.
+     * 
+     * @param ipsSrcFile The {@link IIpsSrcFile} you want to get the generated interface name for
+     * 
+     * @return The name of the generated interface
+     */
+    protected String getInterfaceNameInternal(IIpsSrcFile ipsSrcFile) {
         return ipsSrcFile.getIpsProject().getJavaNamingConvention()
                 .getPublishedInterfaceName(ipsSrcFile.getIpsObjectName());
     }

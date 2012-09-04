@@ -19,7 +19,6 @@ import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
-import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 
@@ -31,14 +30,15 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      * Never use this constant except in the method {@link #getJavaClassNameProvider()} because
      * {@link #getBaseSuperclassName()} may be overwritten in subclasses
      */
-    private static final IJavaClassNameProvider JAVA_CLASS_NAME_PROVIDER = createJavaClassNamingProvider();
+    private final IJavaClassNameProvider javaClassNameProvider;
 
     public XClass(IIpsObject ipsObject, GeneratorModelContext context, ModelService modelService) {
         super(ipsObject, context, modelService);
+        javaClassNameProvider = createJavaClassNamingProvider(context.isGeneratePublishedInterfaces());
     }
 
-    public static IJavaClassNameProvider createJavaClassNamingProvider() {
-        return new DefaultJavaClassNameProvider();
+    public static IJavaClassNameProvider createJavaClassNamingProvider(boolean generatePublishedInterface) {
+        return new DefaultJavaClassNameProvider(generatePublishedInterface);
     }
 
     /**
@@ -49,7 +49,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      *         this {@link XClass}
      */
     public IJavaClassNameProvider getJavaClassNameProvider() {
-        return JAVA_CLASS_NAME_PROVIDER;
+        return javaClassNameProvider;
     }
 
     public JavaClassNaming getJavaClassNaming() {
@@ -71,7 +71,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      * of the published interface. Else the name of the implementation class is returned.
      */
     public String getPublishedInterfaceName() {
-        return addImport(getSimpleName(BuilderAspect.getValue(isGeneratingPublishedInterfaces())));
+        return addImport(getSimpleName(BuilderAspect.getValue(isGeneratePublishedInterfaces())));
     }
 
     public String getSimpleName(BuilderAspect aspect) {
@@ -83,8 +83,9 @@ public abstract class XClass extends AbstractGeneratorModelNode {
                 getJavaClassNameProvider());
     }
 
-    public String getPackageName() {
-        return JavaPackageStructure.getPackageName(getIpsObjectPartContainer().getIpsSrcFile(), false, true);
+    public String getPackageName(BuilderAspect aspect) {
+        return getJavaClassNaming().getPackageName(getIpsObjectPartContainer().getIpsSrcFile(), aspect,
+                getJavaClassNameProvider());
     }
 
     /**

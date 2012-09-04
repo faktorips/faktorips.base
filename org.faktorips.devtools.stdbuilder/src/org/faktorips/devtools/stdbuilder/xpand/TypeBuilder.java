@@ -28,15 +28,22 @@ import org.faktorips.util.LocalizedStringsSet;
 
 public abstract class TypeBuilder<T extends AbstractGeneratorModelNode> extends XpandBuilder<T> {
 
-    public TypeBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext, ModelService modelService,
-            LocalizedStringsSet localizedStringsSet) {
+    private final boolean interfaceBuilder;
+
+    public TypeBuilder(boolean interfaceBuilder, StandardBuilderSet builderSet, GeneratorModelContext modelContext,
+            ModelService modelService, LocalizedStringsSet localizedStringsSet) {
         super(builderSet, modelContext, modelService, localizedStringsSet);
+        this.interfaceBuilder = interfaceBuilder;
     }
 
     @Override
     public boolean isGeneratsArtifactsFor(IIpsSrcFile ipsSrcFile) {
         return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)
                 || ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE);
+    }
+
+    public boolean isInterfaceBuilder() {
+        return interfaceBuilder;
     }
 
     @Override
@@ -60,6 +67,16 @@ public abstract class TypeBuilder<T extends AbstractGeneratorModelNode> extends 
             throw new CoreRuntimeException(e);
         }
         return ipsObject;
+    }
+
+    @Override
+    public boolean isBuildingPublishedSourceFile() {
+        return isInterfaceBuilder() || !getGeneratorModelContext().isGeneratePublishedInterfaces();
+    }
+
+    @Override
+    protected boolean generatesInterface() {
+        return isInterfaceBuilder();
     }
 
 }

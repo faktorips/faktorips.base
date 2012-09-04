@@ -54,7 +54,12 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends JavaSourceFileBuilder {
 
-    private final static IJavaClassNameProvider JAVA_CLASS_NAMEING_PROVIDER = XClass.createJavaClassNamingProvider();
+    /*
+     * If this debug switch is set to true we reload the template with every build!
+     */
+    private static final boolean DEBUG = true;
+
+    private final IJavaClassNameProvider javaClassNameProvider;
 
     private final ThreadLocal<XpandDefinition> threadLocalTemplateDefinition = new ThreadLocal<XpandDefinition>();
 
@@ -78,6 +83,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     public XpandBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext, ModelService modelService,
             LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
+        javaClassNameProvider = XClass.createJavaClassNamingProvider(modelContext.isGeneratePublishedInterfaces());
         setMergeEnabled(true);
         generatorModelContext = modelContext;
         this.modelService = modelService;
@@ -85,7 +91,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
 
     @Override
     public IJavaClassNameProvider getJavaClassNameProvider() {
-        return JAVA_CLASS_NAMEING_PROVIDER;
+        return javaClassNameProvider;
     }
 
     @Override
@@ -96,7 +102,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     @Override
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.beforeBuildProcess(project, buildKind);
-        if (getTemplateDefinition() == null) {
+        if (getTemplateDefinition() == null || DEBUG) {
             initTemplate();
         }
         String charset = project.getProject().getDefaultCharset();
@@ -112,12 +118,8 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
      */
     protected void initTemplate() {
         setOut(new StringOutput());
-        // TODO maybe we want to instantiate one of these by our own?
-        ProgressMonitor progressMonitor = null;
-        ExceptionHandler exceptionHandler = null;
-        NullEvaluationHandler nullEvaluationHandler = null;
-        threadLocalXpandContext.set(new XpandExecutionContextImpl(getGeneratorModelContext().getResourceManager(),
-                getOut(), null, null, progressMonitor, exceptionHandler, nullEvaluationHandler, null));
+        XpandExecutionContextImpl context = createXpandContext();
+        threadLocalXpandContext.set(context);
         JavaBeansMetaModel mm = new JavaBeansMetaModel();
         getXpandContext().registerMetaModel(mm);
 
@@ -127,6 +129,21 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
         final org.eclipse.xtend.typesystem.Type[] paramTypes = new org.eclipse.xtend.typesystem.Type[0];
         setTemplateDefinition(getXpandContext().findDefinition(getTemplate(), targetType, paramTypes));
         ArgumentCheck.notNull(getTemplateDefinition());
+    }
+
+    protected XpandExecutionContextImpl createXpandContext() {
+        if (DEBUG) {
+            return new XpandExecutionContextImpl(getOut(), null);
+        } else {
+            // TODO maybe we want to instantiate one of these by our own?
+            ProgressMonitor progressMonitor = null;
+            ExceptionHandler exceptionHandler = null;
+            NullEvaluationHandler nullEvaluationHandler = null;
+            XpandExecutionContextImpl context = new XpandExecutionContextImpl(getGeneratorModelContext()
+                    .getResourceManager(), getOut(), null, null, progressMonitor, exceptionHandler,
+                    nullEvaluationHandler, null);
+            return context;
+        }
     }
 
     @Override

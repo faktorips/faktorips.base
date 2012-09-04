@@ -48,8 +48,7 @@ public class JavaClassNaming {
     public String getQualifiedClassName(IIpsSrcFile ipsSrcFile,
             BuilderAspect aspect,
             IJavaClassNameProvider javaClassNameProvider) {
-        return getQualifiedName(JavaPackageStructure.getPackageName(ipsSrcFile,
-                aspect.isPublishedArtifact(javaClassNameProvider), mergableArtifacts),
+        return getQualifiedName(getPackageName(ipsSrcFile, aspect, javaClassNameProvider),
                 getUnqualifiedClassName(ipsSrcFile, aspect, javaClassNameProvider));
     }
 
@@ -88,6 +87,13 @@ public class JavaClassNaming {
             BuilderAspect aspect,
             IJavaClassNameProvider javaClassNameProvider) {
         return aspect.getJavaClassName(ipsSrcFile, javaClassNameProvider);
+    }
+
+    public String getPackageName(IIpsSrcFile ipsSrcFile,
+            BuilderAspect aspect,
+            IJavaClassNameProvider javaClassNameProvider) {
+        return JavaPackageStructure.getPackageName(ipsSrcFile,
+                aspect.isPublishedArtifact(javaClassNameProvider), mergableArtifacts);
     }
 
     /**

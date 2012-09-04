@@ -30,8 +30,6 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
-import org.faktorips.runtime.IConfigurableModelObject;
-import org.faktorips.runtime.INotificationSupport;
 
 public abstract class XType extends XClass {
 
@@ -141,15 +139,10 @@ public abstract class XType extends XClass {
     @Override
     public List<String> getExtendedInterfaces() {
         ArrayList<String> list = new ArrayList<String>();
-        // TODO FIPS-1059
-        // TODO Testcase, development suspended as we create the class methods first
-        if (hasSupertype()) {
+        if (hasSupertype() && isGeneratePublishedInterfaces()) {
             String importStatement = addImport(getJavaClassNaming().getQualifiedClassName(getType(),
                     BuilderAspect.INTERFACE, getJavaClassNameProvider()));
             list.add(importStatement);
-        } else {
-            list.add(addImport(IConfigurableModelObject.class));
-            list.add(addImport(INotificationSupport.class));
         }
         return list;
     }
@@ -159,11 +152,12 @@ public abstract class XType extends XClass {
      */
     @Override
     public List<String> getImplementedInterfaces() {
-        // TODO FIPS-1059
         ArrayList<String> list = new ArrayList<String>();
-        String name = getJavaClassNaming().getQualifiedClassName(getType(), BuilderAspect.INTERFACE,
-                getJavaClassNameProvider());
-        list.add(addImport(name));
+        if (isGeneratePublishedInterfaces()) {
+            String name = getJavaClassNaming().getQualifiedClassName(getType(), BuilderAspect.INTERFACE,
+                    getJavaClassNameProvider());
+            list.add(addImport(name));
+        }
         return list;
     }
 

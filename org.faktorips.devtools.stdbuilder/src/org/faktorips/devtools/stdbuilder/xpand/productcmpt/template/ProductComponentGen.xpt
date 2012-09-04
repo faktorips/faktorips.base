@@ -8,7 +8,7 @@
 
 «DEFINE main FOR XProductCmptGenerationClass-»
 	«FILE getFileName(BuilderAspect::IMPLEMENTATION) -»
-	package «packageName»;
+	package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 
 		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 	
@@ -20,7 +20,7 @@
 		 {
 		 
 		 	«FOREACH attributes AS this-»
-		 		«IF !generatingPublishedInterfaces || !published -»
+		 		«IF !generatePublishedInterfaces || !published -»
 			 		«EXPAND ProductAttribute::constantForPropertyName-»
 			 	«ENDIF-»
 		 	«ENDFOREACH-»

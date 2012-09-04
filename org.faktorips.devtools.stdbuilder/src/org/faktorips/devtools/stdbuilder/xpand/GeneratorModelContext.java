@@ -185,24 +185,33 @@ public class GeneratorModelContext {
     }
 
     public boolean isGenerateDeltaSupport() {
-        return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT);
+        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT);
+        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
     }
 
     public boolean isGenerateCopySupport() {
-        return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT);
+        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT);
+        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
     }
 
     public boolean isGenerateVisitorSupport() {
-        return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT);
+        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT);
+        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
     }
 
     public boolean isGenerateToXmlSupport() {
-        return getConfig().getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_TO_XML_SUPPORT);
+        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_TO_XML_SUPPORT);
+        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
     }
 
-    public boolean isGeneratingPublishedInterfaces() {
-        // TODO FIPS-1059
-        return true;
+    public boolean isGeneratePublishedInterfaces() {
+        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_PUBLISHED_INTERFACES);
+        return propertyValueAsBoolean == null ? true : propertyValueAsBoolean.booleanValue();
     }
 
 }

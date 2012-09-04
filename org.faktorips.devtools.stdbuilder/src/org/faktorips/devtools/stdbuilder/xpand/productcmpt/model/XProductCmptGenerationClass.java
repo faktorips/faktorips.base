@@ -33,7 +33,8 @@ public class XProductCmptGenerationClass extends XProductClass {
     public XProductCmptGenerationClass(IProductCmptType productCmptType, GeneratorModelContext modelContext,
             ModelService modelService) {
         super(productCmptType, modelContext, modelService);
-        prodGenJavaClassNameProvider = createProductCmptGenJavaClassNaming(getLanguageUsedInGeneratedSourceCode());
+        prodGenJavaClassNameProvider = createProductCmptGenJavaClassNaming(
+                modelContext.isGeneratePublishedInterfaces(), getLanguageUsedInGeneratedSourceCode());
     }
 
     @Override
@@ -41,8 +42,9 @@ public class XProductCmptGenerationClass extends XProductClass {
         return CHANGE_OVER_TIME;
     }
 
-    public static ProductCmptGenJavaClassNameProvider createProductCmptGenJavaClassNaming(Locale locale) {
-        return new ProductCmptGenJavaClassNameProvider(locale) {
+    public static ProductCmptGenJavaClassNameProvider createProductCmptGenJavaClassNaming(boolean isGeneratePublishedInterface,
+            Locale locale) {
+        return new ProductCmptGenJavaClassNameProvider(isGeneratePublishedInterface, locale) {
 
             @Override
             public String getImplClassName(IIpsSrcFile ipsSrcFile) {

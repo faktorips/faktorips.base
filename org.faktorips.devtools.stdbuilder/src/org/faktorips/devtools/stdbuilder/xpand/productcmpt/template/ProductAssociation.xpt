@@ -22,7 +22,7 @@
 «ENDDEFINE»
 
 «DEFINE getterSetterAdder FOR XProductAssociation-»
-	«IF !derivedUnion»
+	«IF !derived»
 		«EXPAND getterProductCmpt»
 		«EXPAND getterProductCmptGen»
 		«EXPAND getterProductCmptPerIndex»
@@ -34,6 +34,7 @@
 		«EXPAND getCardinalityFor»
 		«EXPAND Association::getNumOf»
     «ENDIF»
+	«EXPAND Association::abstractMethods»
 «ENDDEFINE»
 
 «DEFINE getterProductCmpt FOR XProductAssociation-»
@@ -298,8 +299,4 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«REM»    
-    
-    TODO:	Qualified association
-«ENDREM»
-
+        

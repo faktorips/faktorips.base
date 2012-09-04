@@ -44,7 +44,7 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
-    private static final IJavaClassNameProvider JAVA_CLASS_NAMEING_PROVIDER = new DefaultJavaClassNameProvider() {
+    private static final IJavaClassNameProvider JAVA_CLASS_NAMEING_PROVIDER = new DefaultJavaClassNameProvider(false) {
         @Override
         public String getImplClassName(IIpsSrcFile ipsSrcFile) {
             return ipsSrcFile.getIpsProject().getJavaNamingConvention()

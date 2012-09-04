@@ -47,6 +47,16 @@ import org.faktorips.fl.IdentifierResolver;
  */
 public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJavaPackageStructure {
 
+    /**
+     * Name of the configuration property that indicates whether to generate public interfaces or
+     * not.
+     * <p>
+     * Although this property is defined in this abstraction it needs to be configured in the
+     * extension point of every specific builder. If it is not specified as a configuration
+     * definition of any builder, the default value is <code>true</code>.
+     */
+    public final static String CONFIG_PROPERTY_PUBLISHED_INTERFACES = "generatePublishedInterfaces"; //$NON-NLS-1$
+
     private JavaPackageStructure javaPackageStructure = new JavaPackageStructure();
 
     @Override
@@ -98,6 +108,11 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     @Override
     public String getPackage(IIpsArtefactBuilder builder, IIpsSrcFile ipsSrcFile) throws CoreException {
         return javaPackageStructure.getPackage(builder, ipsSrcFile);
+    }
+
+    public boolean isGeneratePublishedInterfaces() {
+        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_PUBLISHED_INTERFACES);
+        return propertyValueAsBoolean == null ? true : propertyValueAsBoolean.booleanValue();
     }
 
     @Override

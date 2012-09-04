@@ -36,6 +36,13 @@ import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductAttribu
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XTableUsage;
+import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.ICopySupport;
+import org.faktorips.runtime.IDeltaSupport;
+import org.faktorips.runtime.IDependantObject;
+import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.INotificationSupport;
+import org.faktorips.runtime.IVisitorSupport;
 import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 
@@ -87,10 +94,38 @@ public class XPolicyCmptClass extends XType {
     @Override
     public List<String> getImplementedInterfaces() {
         List<String> list = super.getImplementedInterfaces();
-        if (getContext().isGenerateChangeSupport() && !hasSupertype()) {
-            // list.add(addImport(INotificationSupport.class));
+        if (!isGeneratePublishedInterfaces()) {
+            list.addAll(getExtendedInterfaces());
         }
         return list;
+    }
+
+    @Override
+    public List<String> getExtendedInterfaces() {
+        List<String> extendedInterfaces = super.getExtendedInterfaces();
+        if (!hasSupertype()) {
+            if (isConfigured()) {
+                extendedInterfaces.add(addImport(IConfigurableModelObject.class));
+            } else {
+                extendedInterfaces.add(addImport(IModelObject.class));
+            }
+            if (!isAggregateRoot()) {
+                extendedInterfaces.add(addImport(IDependantObject.class));
+            }
+            if (isGenerateChangeSupport()) {
+                extendedInterfaces.add(addImport(INotificationSupport.class));
+            }
+            if (isGenerateCopySupport()) {
+                extendedInterfaces.add(addImport(ICopySupport.class));
+            }
+            if (isGenerateVisitorSupport()) {
+                extendedInterfaces.add(addImport(IVisitorSupport.class));
+            }
+            if (isGenerateDeltaSupport()) {
+                extendedInterfaces.add(addImport(IDeltaSupport.class));
+            }
+        }
+        return extendedInterfaces;
     }
 
     @Override
