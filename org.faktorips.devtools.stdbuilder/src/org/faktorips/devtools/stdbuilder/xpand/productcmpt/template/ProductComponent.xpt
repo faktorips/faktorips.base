@@ -84,8 +84,8 @@
 		     * @generated
 		     */
 		    «overrideAnnotationForPublishedMethod()-»
-		    public «interfaceName» «method(methodNameGetProductComponentGeneration, Calendar(), "effectiveDate")» {
-		        return («interfaceName»)«getRepository()».«getProductComponentGeneration("getId()", "effectiveDate")»;
+		    public «interfaceName» «method(methodNameGetProductComponentGeneration, Calendar(), varNameEffectiveDate)» {
+		        return («interfaceName»)«getRepository()».«getProductComponentGeneration("getId()", varNameEffectiveDate)»;
 		    }
 «ENDDEFINE»
 

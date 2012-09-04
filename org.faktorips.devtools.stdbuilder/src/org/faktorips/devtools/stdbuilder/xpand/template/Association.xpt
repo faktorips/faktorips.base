@@ -17,7 +17,7 @@
 «ENDDEFINE»
 
 «DEFINE abstractMethods FOR XAssociation-»
-	«IF derived && masterToDetail-»
+	«IF !generatePublishedInterfaces && derived && masterToDetail-»
 		/**
 		 * {@inheritDoc}
 		 *

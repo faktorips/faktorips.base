@@ -15,12 +15,15 @@ package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -322,4 +325,17 @@ public abstract class XProductClass extends XType {
             return new LinkedHashSet<XPolicyCmptClass>();
         }
     }
+
+    /**
+     * Returns the variable or parameter name for the effetiveDate.
+     * 
+     */
+    public String getVarNameEffectiveDate() {
+        IChangesOverTimeNamingConvention convention = getIpsProject()
+                .getChangesInTimeNamingConventionForGeneratedCode();
+        Locale locale = getLanguageUsedInGeneratedSourceCode();
+        String conceptName = convention.getEffectiveDateConceptName(locale);
+        return StringUtils.uncapitalize(conceptName);
+    }
+
 }
