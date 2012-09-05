@@ -64,7 +64,7 @@
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotation(false)-»
+		    «overrideAnnotation(!hasNonAbstractSupertype())-»
 		    public «IConfigurableModelObject()» «createPolicyComponent()» {
 		    	«IF !configurationForPolicyCmptType-»
 		    		return null;

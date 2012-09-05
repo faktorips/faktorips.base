@@ -95,7 +95,7 @@
 		 *
 		 * @generated
 		 */
-		«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
+		«overrideAnnotationForPublishedMethodOrIf(published, overwrite && overwrittenAttribute.generateGetAllowedValuesFor)-»
 		public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»{
 			«IF productRelevant-»
 				return «getProductCmptGeneration(published)».«methodNameGetAllowedValuesFor»(context);

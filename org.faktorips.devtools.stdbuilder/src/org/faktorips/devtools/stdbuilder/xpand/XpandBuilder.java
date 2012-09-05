@@ -237,6 +237,9 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
 
         try {
             IIpsObject ipsObject = getSupportedIpsObject(ipsObjectPartContainer);
+            if (ipsObject == null) {
+                return;
+            }
             evaluateTemplate(ipsObject);
 
             // At the moment only one java type per generator is supported. Multiple types are only

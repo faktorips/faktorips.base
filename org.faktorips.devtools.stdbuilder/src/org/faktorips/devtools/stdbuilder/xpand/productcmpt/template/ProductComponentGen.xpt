@@ -200,7 +200,7 @@
      * 
      * @generated
      */
-     «overrideAnnotationForPublishedMethodOrIf(this != currentType.policyCmptClass)-»
+     «overrideAnnotationForPublishedMethodOrIf(this.productCmptNode != currentType)-»
     public «publishedInterfaceName» «method(methodNameCreatePolicyCmpt)» {
         «currentType.policyImplClassName» policy = new «currentType.policyImplClassName»(«currentType.methodNameGetProductCmpt»());
         policy.«setProductCmptGeneration("this")»;

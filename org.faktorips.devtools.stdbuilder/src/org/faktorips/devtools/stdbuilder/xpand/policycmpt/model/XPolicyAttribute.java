@@ -123,6 +123,21 @@ public class XPolicyAttribute extends XAttribute {
         return isOverwrite() && isChangeable();
     }
 
+    public XPolicyAttribute getOverwrittenAttribute() {
+        if (isOverwrite()) {
+            try {
+                IPolicyCmptTypeAttribute overwrittenAttribute = getAttribute()
+                        .findOverwrittenAttribute(getIpsProject());
+                return getModelNode(overwrittenAttribute, XPolicyAttribute.class);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        } else {
+            throw new RuntimeException("Attribute is not overwritten so there is no overwritten attribute for "
+                    + getAttribute());
+        }
+    }
+
     /**
      * Returns the java class name for value set. For example an
      * <code>ValueSet&lt;Integer&gt;</code>

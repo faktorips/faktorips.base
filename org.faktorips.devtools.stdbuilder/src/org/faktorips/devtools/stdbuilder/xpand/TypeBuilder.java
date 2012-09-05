@@ -55,11 +55,15 @@ public abstract class TypeBuilder<T extends AbstractGeneratorModelNode> extends 
                     IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsObject;
                     if (policyCmptType.isConfigurableByProductCmptType()) {
                         ipsObject = policyCmptType.findProductCmptType(getIpsProject());
+                    } else {
+                        return null;
                     }
                 } else if (ipsObject instanceof IProductCmptType) {
                     IProductCmptType productCmptType = (IProductCmptType)ipsObject;
                     if (productCmptType.isConfigurationForPolicyCmptType()) {
                         ipsObject = productCmptType.findPolicyCmptType(getIpsProject());
+                    } else {
+                        return null;
                     }
                 }
             }

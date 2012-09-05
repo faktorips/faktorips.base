@@ -235,7 +235,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			 *
 			 * @generated
 			 */
-			«overrideAnnotationForInterfaceOrNonAbstractSuperclassMethod()-»
+			«overrideAnnotation(!hasSupertype())-»
 			public «Calendar()» «getEffectiveFromAsCalendar()» {
 				«IModelObject()» parent = «getParentModelObject()»;
 				if (parent instanceof «IConfigurableModelObject()») {
@@ -243,9 +243,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 				}
 				return null;
 			}
-		«ENDIF-»
-		«REM»Old generator checks for aggregateRoot && configurable. configurable is unnecessary as configured has already been tested above.«ENDREM»
-	    «IF aggregateRoot-»
+	    «ELSEIF aggregateRoot-»
 			/**
 			 * «inheritDoc()»
 			 *
@@ -271,7 +269,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	     * 
 	     * @generated
 	     */
-		 «overrideAnnotationForInterfaceOrNonAbstractSuperclassMethod()-»
+		 «overrideAnnotation(!(supertypeGenerateGetParentModelObject))-»
 	    public «IModelObject()» «getParentModelObject()» {
 	    	«FOREACH associations AS this-»
 	    		«IF compositionDetailToMaster && !derived-»
@@ -280,7 +278,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			        }
 		        «ENDIF-»
 	    	«ENDFOREACH-»
-	        «IF hasSupertype() && superclass.generateGetParentModelObject-»
+	        «IF supertypeGenerateGetParentModelObject-»
 	        	return super.«getParentModelObject()»;
 		 	«ELSE-»
 	        	return null;

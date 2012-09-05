@@ -153,7 +153,7 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return getAttribute().getModifier().isPublished();
     }
 
-    public final boolean isOverwrite() {
+    public boolean isOverwrite() {
         return getAttribute().isOverwrite();
     }
 

@@ -76,6 +76,11 @@ public class XPolicyCmptClass extends XType {
         return (IPolicyCmptType)super.getType();
     }
 
+    @Override
+    public XPolicyCmptClass getSupertype() {
+        return (XPolicyCmptClass)super.getSupertype();
+    }
+
     /**
      * Returns <code>true</code> if this policy component type is configurable
      */
@@ -88,6 +93,14 @@ public class XPolicyCmptClass extends XType {
             return getType().isAggregateRoot();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
+        }
+    }
+
+    public boolean isSupertypeAggregateRoot() {
+        if (!hasSupertype()) {
+            return false;
+        } else {
+            return getSupertype().isAggregateRoot() || getSupertype().isSupertypeAggregateRoot();
         }
     }
 
@@ -547,6 +560,15 @@ public class XPolicyCmptClass extends XType {
 
     public boolean isGenerateGetParentModelObject() {
         return hasCompositionDetailToMaster();
+    }
+
+    public boolean isSupertypeGenerateGetParentModelObject() {
+        if (!hasSupertype()) {
+            return false;
+        } else {
+            return getSupertype().isGenerateGetParentModelObject()
+                    || getSupertype().isSupertypeGenerateGetParentModelObject();
+        }
     }
 
     public boolean isGenerateMethodCreateUnresolvedReference() {

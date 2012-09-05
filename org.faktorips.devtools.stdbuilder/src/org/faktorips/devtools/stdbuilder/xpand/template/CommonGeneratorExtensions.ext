@@ -33,8 +33,8 @@ overrideAnnotationForPublishedMethodOrIf(AbstractGeneratorModelNode this, boolea
 // level is Java 6 or higher or if the condition is true .
 // (In Java 5 no @Override must be annotated when implementing an interface method) 
 overrideAnnotationForPublishedMethodOrIf(AbstractGeneratorModelNode this, boolean isPublished , boolean condition) :
-	if (generatePublishedInterfaces && isPublished && needOverrideAnnotation(generatePublishedInterfaces && isPublished))
-		 || condition then "@Override";
+	if (generatePublishedInterfaces && isPublished && needOverrideAnnotation(true))
+		 || (condition && needOverrideAnnotation(false)) then "@Override";
 
 // User this function for attribute methods (e.g. getter, setter).
 // Will return the @Override annotation if the attribute overwrites an attribute in a supertype.
