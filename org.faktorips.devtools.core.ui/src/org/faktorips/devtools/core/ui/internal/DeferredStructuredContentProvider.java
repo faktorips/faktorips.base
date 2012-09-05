@@ -35,9 +35,9 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * and any selection handler are able to handle the string element. After the job have finished the
  * viewer is refreshed and all registered listeners are notified.
  * <p>
- * Note that do not reference any content of your context class because it could change during
- * operation. To be sure either implement your deferred content provider in a separate class or in a
- * private static inner class.
+ * Note that you should not reference any content of your context class, because it could change
+ * during operation. To be sure either implement your deferred content provider in a separate class
+ * or in a private static inner class.
  * 
  * @author Cornelius Dirmeier
  */
