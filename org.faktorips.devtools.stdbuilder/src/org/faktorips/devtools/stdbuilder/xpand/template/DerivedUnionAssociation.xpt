@@ -14,11 +14,11 @@
 
 «DEFINE getter(XType currentContextType) FOR XDerivedUnionAssociation-»
     /**
-     * {@inheritDoc}
+     * «inheritDoc()»
      * 
      * @generated
      */
-     «overrideAnnotationForPublishedMethod()-»
+     «overrideAnnotation(true)-»
      public «List_(targetInterfaceName)» «methodNameGetter»() {
      	«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«methodNameGetNumOfInternal»());
      	«IF isImplementedInSuperclass(currentContextType)-»
@@ -43,13 +43,34 @@
      }
 «ENDDEFINE»
 
-«DEFINE getterNumOf(XType currentContextType) FOR XDerivedUnionAssociation-»
+«DEFINE getterForDetailToMaster(XPolicyCmptClass currentContextType) FOR XDetailToMasterDerivedUnionAssociation-»
     /**
-     * {@inheritDoc}
+     * «inheritDoc()»
      * 
      * @generated
      */
-     «overrideAnnotationForPublishedMethod()-»
+     «overrideAnnotation(!isImplementedInSuperclass(currentContextType))-»
+    public «targetInterfaceName» «methodNameGetter»() {
+     	«FOREACH (Set[XPolicyAssociation])getDetailToMasterSubsetAssociations(currentContextType) AS this-»
+		    if («fieldName» != null) {
+		        return «fieldName»;
+		    }
+     	«ENDFOREACH-»
+    	«IF isImplementedInSuperclass(currentContextType)-»
+    		 return super.«methodNameGetter»();
+    	«ELSE-» 
+    		 return null;
+    	«ENDIF-» 
+    }
+«ENDDEFINE»
+
+«DEFINE getterNumOf(XType currentContextType) FOR XDerivedUnionAssociation-»
+    /**
+     * «inheritDoc()»
+     * 
+     * @generated
+     */
+     «overrideAnnotation(true)-»
      public int «methodNameGetNumOf»() {
      	return «methodNameGetNumOfInternal»();
      }
@@ -73,26 +94,5 @@
      	«ENDFOREACH-»
         return num;
      }
-«ENDDEFINE»
-
-«DEFINE getParent(XPolicyCmptClass currentContextType) FOR XDetailToMasterDerivedUnionAssociation-»
-	/**
-     * {@inheritDoc}
-     * 
-     * @generated
-     */
-    «overrideAnnotationForPublishedMethodOrIf(isImplementedInSuperclass(currentContextType))-» 
-    public «targetInterfaceName» «methodNameGetParent»() {
-     	«FOREACH (Set[XPolicyAssociation])getDetailToMasterSubsetAssociations(currentContextType) AS this-»
-		    if («fieldName» != null) {
-		        return «fieldName»;
-		    }
-     	«ENDFOREACH-»
-    	«IF isImplementedInSuperclass(currentContextType)-»
-    		 return super.«methodNameGetter»();
-    	«ELSE-» 
-    		 return null;
-    	«ENDIF-» 
-    }
 «ENDDEFINE»
 

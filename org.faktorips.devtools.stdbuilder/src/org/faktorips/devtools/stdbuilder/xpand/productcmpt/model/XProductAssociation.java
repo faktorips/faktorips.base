@@ -81,4 +81,18 @@ public class XProductAssociation extends XAssociation {
         }
     }
 
+    /**
+     * Returns the key used to localize java doc. The parameter gives the prefix for the key
+     * specifying the scope of generated code. This method adds "ONE" or "MANY" depending on the
+     * kind of the association to differ between one to many and one to one associations.
+     * 
+     * @param prefix The prefix defining the scope of the generated code, for example
+     *            "METHOD_GET_CMPT"
+     * @return The key used to localize the java doc for example "METHOD_GET_CMPT_ONE" or
+     *         "METHOD_GET_CMPT_MANY"
+     */
+    public String getJavadocKey(String prefix) {
+        return prefix + (isOneToMany() ? "_MANY" : "_ONE");
+    }
+
 }

@@ -62,7 +62,7 @@
 			«EXPAND getProductCmpt FOR productCmptClassNode-»
 
 		    /**
-		     * {@inheritDoc}
+		     * «inheritDoc()»
 		     * 
 		     * @generated
 		     */
@@ -107,7 +107,7 @@
 «REM» TODO may use covariant return type«ENDREM»
 			«IF generateMethodGenericCreatePolicyComponent»
 			    /**
-			     * {@inheritDoc}
+			     * «inheritDoc()»
 			     * 
 			     * @generated
 			     */
@@ -130,7 +130,7 @@
 
 «DEFINE getProductCmpt FOR XProductCmptClass-»
 	    /**
-	     * {@inheritDoc}
+	     * «inheritDocOrJavaDoc("METHOD_GET_PRODUCTCMPT_IN_GEN", name, generationConceptNameSingular)»
 	     * 
 	     * @generated
 	     */
@@ -143,7 +143,7 @@
 «DEFINE writeToXmlMethods FOR XProductCmptGenerationClass-»
 	«IF generateToXmlSupport-»
 		    /**
-		     * {@inheritDoc}
+		     * «inheritDoc()»
 		     * 
 		     * @generated
 		     */
@@ -196,11 +196,11 @@
 «DEFINE createPolicyCmpt(XProductCmptClass currentType) FOR XPolicyCmptClass»
 	«IF currentType.isGenerateMethodCreatePolicyCmpt(this)-»
     /**
-     * {@inheritDoc}
+     * «inheritDocOrJavaDoc("METHOD_CREATE_POLICY_CMPT_IN_GEN")»
      * 
      * @generated
      */
-     «overrideAnnotationForPublishedMethodOrIf(this != currentType.policyCmptClass)»
+     «overrideAnnotationForPublishedMethodOrIf(this != currentType.policyCmptClass)-»
     public «publishedInterfaceName» «method(methodNameCreatePolicyCmpt)» {
         «currentType.policyImplClassName» policy = new «currentType.policyImplClassName»(«currentType.methodNameGetProductCmpt»());
         policy.«setProductCmptGeneration("this")»;

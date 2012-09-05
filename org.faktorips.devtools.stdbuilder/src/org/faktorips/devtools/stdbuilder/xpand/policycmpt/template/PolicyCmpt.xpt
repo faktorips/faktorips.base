@@ -102,7 +102,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		
 		«EXPAND generateCodeForDependentObject»
 		
-		«EXPAND DerivedUnionAssociation::getParent(this) FOREACH detailToMasterDerivedUnionAssociations-»
+		«EXPAND DerivedUnionAssociation::getterForDetailToMaster(this) FOREACH detailToMasterDerivedUnionAssociations-»
 	   
 		«EXPAND PropertyChangeSupport::generalMethods-»
 		
@@ -210,7 +210,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		 *
 		 * @generated
 		 */
-		 «overrideAnnotationForPublishedMethod()»
+		 «overrideAnnotationForPublishedMethod()-»
 		 public «interfaceName» «method(methodNameGetProductComponentGeneration)» {
 		 	return («interfaceName») «getProductCmptGeneration()»;
 		 }
@@ -219,11 +219,11 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 
 «DEFINE generalMethodsForConfiguredPolicyCmpts FOR XPolicyCmptClass-»
 		 /**
-		 * {@inheritDoc}
+		 * «inheritDoc()»
 		 *
 	     * @generated
 	     */
-		 «overrideAnnotation(false)»
+		 «overrideAnnotation(false)-»
 	    public void «effectiveFromHasChanged()» {
 	        super.«effectiveFromHasChanged()»;
 	        «EXPAND PolicyCmptAssociation::delegateEffectiveFromHasChanged FOREACH associations-»
@@ -231,11 +231,11 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	    
 	    «IF firstDependantTypeInHierarchy-»
 			/**
-			 * {@inheritDoc}
+			 * «inheritDoc()»
 			 *
 			 * @generated
 			 */
-			«overrideAnnotationForInterfaceOrNonAbstractSuperclassMethod()»
+			«overrideAnnotationForInterfaceOrNonAbstractSuperclassMethod()-»
 			public «Calendar()» «getEffectiveFromAsCalendar()» {
 				«IModelObject()» parent = «getParentModelObject()»;
 				if (parent instanceof «IConfigurableModelObject()») {
@@ -247,11 +247,11 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		«REM»Old generator checks for aggregateRoot && configurable. configurable is unnecessary as configured has already been tested above.«ENDREM»
 	    «IF aggregateRoot-»
 			/**
-			 * {@inheritDoc}
+			 * «inheritDoc()»
 			 *
 			 * @generated
 			 */
-			«overrideAnnotation(!hasSupertype())»
+			«overrideAnnotation(!hasSupertype())-»
 			public «Calendar()» «getEffectiveFromAsCalendar()» {
 	   			«IF hasSupertype()-»
 	   				return super.«getEffectiveFromAsCalendar()»;
@@ -267,11 +267,11 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «DEFINE generateCodeForDependentObject FOR XPolicyCmptClass-»
 	«IF generateGetParentModelObject-»
 	    /**
-	     * {@inheritDoc}
+	     * «inheritDoc()»
 	     * 
 	     * @generated
 	     */
-		 «overrideAnnotationForInterfaceOrNonAbstractSuperclassMethod()»
+		 «overrideAnnotationForInterfaceOrNonAbstractSuperclassMethod()-»
 	    public «IModelObject()» «getParentModelObject()» {
 	    	«FOREACH associations AS this-»
 	    		«IF compositionDetailToMaster && !derived-»
@@ -293,11 +293,11 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «DEFINE generalMethods FOR XPolicyCmptClass-»
 	«IF generateInitPropertiesFromXML-»
 	    /**
-	     * {@inheritDoc}
+	     * «inheritDoc()»
 	     * 
 	     * @generated
 	     */
-		 «overrideAnnotation(false)»
+		 «overrideAnnotation(false)-»
 	    protected void «initPropertiesFromXml(Map("String", "String")+" propMap", IRuntimeRepository()+" productRepository")» {
 	        super.«initPropertiesFromXml("propMap", "productRepository")»;
 			«EXPAND PolicyCmptAttribute::initAttributeFromXML FOREACH attributes-»
@@ -305,11 +305,11 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
     «ENDIF-»
     
     /**
-     * {@inheritDoc}
+     * «inheritDoc()»
      * 
      * @generated
      */
-    «overrideAnnotation(false)»
+    «overrideAnnotation(false)-»
     protected «AbstractModelObject()» «createChildFromXml(Element()+" childEl")» {
         «AbstractModelObject()» newChild = super.«createChildFromXml("childEl")»;
         if (newChild != null) {
@@ -321,11 +321,11 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
     
     «IF generateMethodCreateUnresolvedReference-»
 	    /**
-	     * {@inheritDoc}
+	     * «inheritDoc()»
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotation(false)»
+	    «overrideAnnotation(false)-»
 	    protected «IUnresolvedReference()» «createUnresolvedReference("Object objectId, String targetRole, String targetId")»
 	            throws Exception {
 	        «EXPAND PolicyCmptAssociation::createUnresolvedReference FOREACH associations-»
@@ -354,7 +354,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
      * 
      * @generated
      */
-    «overrideAnnotation(false)»
+    «overrideAnnotation(false)-»
     public boolean «validateSelf(MessageList()+" ml", IValidationContext()+" context")» {
         if (!super.«validateSelf("ml", "context")») {
             return STOP_VALIDATION;
@@ -368,7 +368,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
      * 
      * @generated
      */
-    «overrideAnnotation(false)»
+    «overrideAnnotation(false)-»
     public void «validateDependants(MessageList()+" ml", IValidationContext()+" context")» {
         super.«validateDependants("ml", "context")»;
         «EXPAND PolicyCmptAssociation::validateDependents FOREACH associations-»

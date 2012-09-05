@@ -33,7 +33,7 @@
 	 *
 	 * @generated
 	 */
-	«overrideAnnotationForPublishedMethodOrIf(published, overwrite)»
+	«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
 	public «javaClassName» «method(methodNameGetter)»{
 		return «getReferenceOrSafeCopyIfNecessary(fieldName)»;
 	}

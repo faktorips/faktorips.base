@@ -488,6 +488,27 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     /**
+     * Returns the java doc key used to localize the java doc. The key depends on the kind of the
+     * allowed value set and of the kind of artifact you want to generate, identified by the prefix.
+     * <p>
+     * For example the if the allowed values are configured as range and you want to generate a
+     * field for this range you call this method with prefix "FIELD". The method adds the suffix
+     * "_RANGE" and returns the key "FIELD_RANGE". Use this key with method
+     * {@link #localizedJDoc(String)} to access the translation from property file with the key
+     * "FIELD_RANGE_JAVADOC".
+     * 
+     */
+    public String getJavadocKey(String prefix) {
+        if (isValueSetRange()) {
+            return prefix + "_RANGE";
+        } else if (isValueSetEnum()) {
+            return prefix + "_ALLOWED_VALUES";
+        } else {
+            return prefix + "_SET_OF_ALLOWED_VALUES";
+        }
+    }
+
+    /**
      * Returns the getValueByIdentifier code if and only if this attribute's datatype is an enum
      * type with separate content.
      * 

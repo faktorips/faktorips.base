@@ -5,7 +5,7 @@
 «DEFINE getNumOf FOR XAssociation-»
 	«IF oneToMany && !derived -»
     /**
-     * {@inheritDoc}
+     * «inheritDocOrJavaDoc("METHOD_GET_NUM_OF", getName(true))»
      * 
      * @generated
      */
@@ -17,19 +17,28 @@
 «ENDDEFINE»
 
 «DEFINE abstractMethods FOR XAssociation-»
-	«IF !generatePublishedInterfaces && derived && masterToDetail-»
-		/**
-		 * {@inheritDoc}
-		 *
-		 * @generated
-		 */
-	     public abstract «List_(targetInterfaceName)» «methodNameGetter»();
-	     
-		/**
-		 * {@inheritDoc}
-		 *
-		 * @generated
-		 */
-		 public abstract int «methodNameGetNumOf»();
+	«IF !generatePublishedInterfaces && derived-»
+		«IF masterToDetail-»
+			/**
+		     * «localizedJDoc("METHOD_GET_MANY", getName(true))»
+			 *
+			 * @generated
+			 */
+		     public abstract «List_(targetInterfaceName)» «methodNameGetter»();
+
+			/**
+		     * «localizedJDoc("METHOD_GET_NUM_OF", getName(true))»
+			 *
+			 * @generated
+			 */
+			 public abstract int «methodNameGetNumOf»();
+		«ELSE-»
+			/**
+		     * «localizedJDoc("METHOD_GET_ONE", getName(true))»
+			 *
+			 * @generated
+			 */
+		    public abstract «targetInterfaceName» «methodNameGetter»();
+		«ENDIF-»
 	«ENDIF»
 «ENDDEFINE»

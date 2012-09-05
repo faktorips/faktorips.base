@@ -7,7 +7,7 @@
 	
    	«IF !abstract-»
 	    /**
-	     * {@inheritDoc}
+	     * «inheritDoc()»
 	     * 
 	     * @generated
 	     */

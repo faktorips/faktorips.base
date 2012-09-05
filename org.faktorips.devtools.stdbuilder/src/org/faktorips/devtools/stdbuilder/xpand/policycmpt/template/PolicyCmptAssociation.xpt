@@ -59,7 +59,7 @@
 «DEFINE contains FOR XAssociation-»
 	«IF oneToMany-»
 	    /**
-	     * {@inheritDoc}
+	     * «inheritDocOrJavaDoc("METHOD_CONTAINS_OBJECT")»
 	     * 
 	     * @generated
 	     */
@@ -78,7 +78,7 @@
 	«IF generateGetter»
 		«IF oneToMany-»
 		    /**
-		     * {@inheritDoc}
+		     * «inheritDocOrJavaDoc("METHOD_GET_MANY", getName(true))»
 		     * 
 		     * @generated
 		     */
@@ -88,7 +88,7 @@
 		    }
 		
 		    /**
-		     * {@inheritDoc}
+		     * «inheritDocOrJavaDoc("METHOD_GET_REF_OBJECT_BY_INDEX", name)»
 		     * 
 		     * @generated
 		     */
@@ -98,7 +98,7 @@
 		    }
 	    «ELSE-»
 		    /**
-		     * {@inheritDoc}
+		     * «inheritDocOrJavaDoc("METHOD_GET_ONE", name)»
 		     * 
 		     * @generated
 		     */
@@ -110,7 +110,7 @@
     «ENDIF»
     «IF generateQualifiedGetter»
 	    /**
-	     * {@inheritDoc}
+	     * «inheritDocOrJavaDoc("METHOD_GET_REF_OBJECT_BY_QUALIFIER", name)»
 	     * 
 	     * @generated
 	     */
@@ -194,7 +194,7 @@
 			«ENDIF-»
 		«ELSE-»
 		    /**
-		     * {@inheritDoc}
+	 	     * «inheritDocOrJavaDoc("METHOD_SET_OBJECT", name)»
 		     * 
 		     * @generated
 		     */
@@ -224,7 +224,7 @@
 		«ENDIF-»
 	«ELSEIF generateAddAndRemoveMethod-»
 	    /**
-	     * {@inheritDoc}
+ 	     * «inheritDocOrJavaDoc("METHOD_ADD_OBJECT", name)»
 	     * 
 	     * @generated
 	     */
@@ -339,7 +339,7 @@
 «DEFINE newChildMethods FOR XPolicyAssociation-»
 	«IF generateNewChildMethods-»
 	    /**
-	     * {@inheritDoc}
+ 	     * «inheritDocOrJavaDoc("METHOD_NEW_CHILD", targetClassName, name)»
 	     * 
 	     * @generated
 	     */
@@ -354,7 +354,7 @@
 	
 		«IF generateNewChildWithArgumentsMethod-»
 		    /**
-		     * {@inheritDoc}
+ 	     	 * «inheritDocOrJavaDoc("METHOD_NEW_CHILD_WITH_PRODUCTCMPT_ARG", targetClassName, getName(false), targetProductCmptVariableName)»
 		     * 
 		     * @generated
 		     */
@@ -412,7 +412,7 @@
 «DEFINE remove FOR XPolicyAssociation-»
 	«IF generateAddAndRemoveMethod-»
 	    /**
-	     * {@inheritDoc}
+	     * «inheritDocOrJavaDoc("METHOD_REMOVE_OBJECT", name)»
 	     * 
 	     * @generated
 	     */

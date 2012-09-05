@@ -66,6 +66,9 @@ overrideAnnotationIfHasSuperclassOrInterface(XType this) :
 overrideAnnotationForInterfaceOrNonAbstractSuperclassMethod(XPolicyCmptClass this) :
 	if needOverrideAnnotation(!hasNonAbstractSupertype()) then "@Override";
 
+inheritDoc() :
+	"{@inheritDoc}";
+
 inheritDocOrText(AbstractGeneratorModelNode this, String text):
 	generatePublishedInterfaces?"{@inheritDoc}":text;
 	

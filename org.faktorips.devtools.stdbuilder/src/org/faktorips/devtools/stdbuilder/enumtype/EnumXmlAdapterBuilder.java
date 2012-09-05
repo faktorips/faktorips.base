@@ -44,24 +44,25 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
-    private static final IJavaClassNameProvider JAVA_CLASS_NAMEING_PROVIDER = new DefaultJavaClassNameProvider(false) {
-        @Override
-        public String getImplClassName(IIpsSrcFile ipsSrcFile) {
-            return ipsSrcFile.getIpsProject().getJavaNamingConvention()
-                    .getImplementationClassName(ipsSrcFile.getIpsObjectName() + "XmlAdapter"); //$NON-NLS-1$
-        }
-    };
+    private final IJavaClassNameProvider javaClassNamingProvider;
 
     public EnumTypeBuilder enumTypeBuilder;
 
     public EnumXmlAdapterBuilder(DefaultBuilderSet builderSet, EnumTypeBuilder enumTypeBuilder) {
         super(builderSet, new LocalizedStringsSet(EnumXmlAdapterBuilder.class));
         this.enumTypeBuilder = enumTypeBuilder;
+        javaClassNamingProvider = new DefaultJavaClassNameProvider(builderSet.isGeneratePublishedInterfaces()) {
+            @Override
+            public String getImplClassName(IIpsSrcFile ipsSrcFile) {
+                return ipsSrcFile.getIpsProject().getJavaNamingConvention()
+                        .getImplementationClassName(ipsSrcFile.getIpsObjectName() + "XmlAdapter"); //$NON-NLS-1$
+            }
+        };
     }
 
     @Override
     public IJavaClassNameProvider getJavaClassNameProvider() {
-        return JAVA_CLASS_NAMEING_PROVIDER;
+        return javaClassNamingProvider;
     }
 
     @Override

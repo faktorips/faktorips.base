@@ -39,7 +39,7 @@
 
 «DEFINE getterProductCmpt FOR XProductAssociation-»
     /**
-     * {@inheritDoc}
+     * «inheritDocOrJavaDoc(getJavadocKey("METHOD_GET"), getName(oneToMany))»
      * 
      * @generated
      */
@@ -60,7 +60,7 @@
 
 «DEFINE getterProductCmptGen FOR XProductAssociation-»
     /**
-     * {@inheritDoc}
+     * «inheritDocOrJavaDoc(getJavadocKey("METHOD_GET_CMPT_GEN"), getName(oneToMany))»
      * 
      * @generated
      */
@@ -86,7 +86,7 @@
 «DEFINE getterProductCmptPerIndex FOR XProductAssociation-»
 	«IF oneToMany-»
     /**
-     * {@inheritDoc}
+     * «inheritDocOrJavaDoc("METHOD_GET_CMPT_AT_INDEX", name)»
      * 
      * @generated
      */
@@ -107,7 +107,7 @@
 
 «DEFINE getterLinksFor FOR XProductAssociation-»
     /**
-     * {@inheritDoc}
+     * «inheritDocOrJavaDoc(getJavadocKey("METHOD_GET_CMPT_LINK"), getName(oneToMany))»
      * 
      * @generated
      */
@@ -124,7 +124,7 @@
 
 «DEFINE getterSingleLinkFor FOR XProductAssociation-»
     /**
-     * {@inheritDoc}
+     * «inheritDocOrJavaDoc("METHOD_GET_CMPT_LINK_AT_INDEX", name)»
      * 
      * @generated
      */
@@ -141,7 +141,7 @@
 «DEFINE addMethod FOR XProductAssociation-»
 	«IF oneToMany-»
     /**
-     * «localizedJDoc("METHOD_ADD_RELATED_CMPT")»
+     * «localizedJDoc("METHOD_ADD_CMPT")»
      * 
      * @generated
      */
@@ -156,7 +156,7 @@
 «REM» TODO FIPS-1141 «ENDREM» 
 	«IF oneToMany-»
     /**
-     * «localizedJDoc("METHOD_ADD_RELATED_CMPT_WITH_CARDINALITY")»
+     * «localizedJDoc("METHOD_ADD_CMPT_WITH_CARDINALITY")»
      * 
      * @generated
      */
@@ -170,7 +170,7 @@
 «DEFINE setterMethodForToOne FOR XProductAssociation-»
 	«IF !oneToMany-»
     /**
-     * «localizedJDoc("METHOD_SET_1_RELATED_CMPT", name)»
+     * «localizedJDoc("METHOD_SET_CMPT", name)»
      * 
      * @generated
      */
@@ -184,7 +184,7 @@
 «DEFINE getCardinalityFor FOR XProductAssociation-»
 	«IF hasMatchingAssociation()-»
     /**
-     * {@inheritDoc}
+     * «inheritDocOrJavaDoc("METHOD_GET_CARDINALITY_FOR", name)»
      * 
      * @generated
      */
@@ -211,11 +211,11 @@
 
 «DEFINE getLinkMethod FOR XProductClass-»
 	    /**
-	     * {@inheritDoc}
+	     * «inheritDoc()»
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotation(false)»
+	    «overrideAnnotation(false)-»
 	    public «IProductComponentLink("? extends " + IProductComponent())» «getLink("String linkName", IProductComponent() + " target")» {
 	    	«FOREACH associations AS this-»
 				«IF !derived-»
@@ -234,11 +234,11 @@
 
 «DEFINE getLinksMethod FOR XProductClass»
     /**
-     * {@inheritDoc}
+     * «inheritDoc()»
      * 
      * @generated
      */
-    «overrideAnnotation(false)»
+    «overrideAnnotation(false)-»
     public «List_(IProductComponentLink("? extends " + IProductComponent()))» «getLinks()» {
 	    «List_(IProductComponentLink("? extends " + IProductComponent()))» list = 
 	    «IF hasSupertype()-»

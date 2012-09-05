@@ -17,11 +17,8 @@
 «DEFINE constantForValueSet FOR XPolicyAttribute-»
 	«IF generateConstantForValueSet-»
 		/**
-		«IF valueSetRange-»
-		 * «localizedJDoc("FIELD_MAX_RANGE_FOR", name)»
-		«ELSEIF valueSetEnum-»
-		 * «localizedJDoc("FIELD_MAX_ALLOWED_VALUES_FOR", name)»
-		«ENDIF-»
+		 * «localizedJDoc(getJavadocKey("FIELD_MAX"), name)»
+		 *
 		 * @generated
 		 */
 		public final static «valueSetJavaClassName» «field(constantNameValueSet)» = «valuesetCode»;
@@ -57,7 +54,7 @@
 		 *
 		 * @generated
 		 */
-		«overrideAnnotationForPublishedMethodOrIf(published, overwrite)»
+		«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
 		public «javaClassName» «method(methodNameGetter)»{
 			«IF generateField-»
 				return «IF constant»«fieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(fieldName)»«ENDIF»;
@@ -94,7 +91,7 @@
 «DEFINE allowedValuesMethod FOR XPolicyAttribute-»
 	«IF generateGetAllowedValuesFor-»
 		/**
-		 * «inheritDocOrJavaDoc("METHOD_GET_ALLOWED_VALUES_FOR", name, description)»
+		 * «inheritDocOrJavaDoc(getJavadocKey("METHOD_GET"), name, description)»
 		 *
 		 * @generated
 		 */

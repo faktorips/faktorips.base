@@ -18,11 +18,11 @@
     «IF overloadsFormula»
     	«LET overloadedFormulaMethod AS overloaded-»
 		    /**
-		     * {@inheritDoc}
+		     * «inheritDoc()»
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotation(false)»
+		    «overrideAnnotation(false)-»
 		    «overloaded.modifier» «overloaded.javaClassName» «overloaded.methodName»(«FOREACH overloadedFormulaMethod.parameters AS param SEPARATOR ", "»«param.javaClassName» «param.name»«ENDFOREACH») throws «FormulaExecutionException()» {
 		        // TODO a delegation to the method «methodName»(«FOREACH parameters AS param SEPARATOR ", "»«param.javaClassName»«ENDFOREACH») needs to be implemented here
 		        // And make sure to disable the regeneration of this method.

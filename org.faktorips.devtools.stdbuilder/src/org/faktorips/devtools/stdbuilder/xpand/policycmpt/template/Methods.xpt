@@ -5,6 +5,8 @@
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
+«REM»TODO Sadly there are some minor differences between product methods and policy methos. Maybe we want to join these templates and generate more equal code«ENDREM» 
+
 «DEFINE method FOR XMethod-»
     /**
     «IF published-»

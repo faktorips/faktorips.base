@@ -109,7 +109,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         project = builderSet.getIpsProject();
         productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
         productCmptNamingStrategy.setIpsProject(project);
-        javaClassNameProvider = new DefaultJavaClassNameProvider(false) {
+        javaClassNameProvider = new DefaultJavaClassNameProvider(builderSet.isGeneratePublishedInterfaces()) {
             @Override
             public String getImplClassName(IIpsSrcFile ipsSrcFile) {
                 try {

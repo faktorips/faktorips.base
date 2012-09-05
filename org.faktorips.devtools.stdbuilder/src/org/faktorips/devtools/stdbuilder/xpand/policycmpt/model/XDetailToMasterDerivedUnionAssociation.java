@@ -103,11 +103,12 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
     }
 
     /**
-     * Returns the name for the get-parent method using the uncapitalized association name. e.g.
-     * getparentPolicy() instead of getParentPolicy() if the role name is "parentPolicy".
+     * TODO @see {@link XPolicyAssociation#getMethodNameGetter()}
      * 
+     * {@inheritDoc}
      */
-    public String getMethodNameGetParent() {
+    @Override
+    public String getMethodNameGetter() {
         return "get" + getName(false);
     }
 

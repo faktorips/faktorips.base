@@ -5,11 +5,11 @@
 
 «DEFINE acceptMethod FOR XPolicyCmptClass-»
 	/**
-     * {@inheritDoc}
+     * «inheritDoc()»
      * 
      * @generated
      */
-    «overrideAnnotationIfHasSuperclassOrInterface()»
+    «overrideAnnotationIfHasSuperclassOrInterface()-»
     public boolean «accept(IModelObjectVisitor() +" visitor")» {
     	«IF hasSupertype()-»
 	        if (!super.accept(visitor)) {

@@ -23,18 +23,8 @@
 «ENDDEFINE»
 
 «DEFINE allowedValueSetField FOR XPolicyAttribute-»
-	«IF valueSetUnrestricted-»
-	    /**
-	     * «localizedJDoc("FIELD_SET_OF_ALLOWED_VALUES_FOR", name)»
-	«ENDIF-»
-	«IF valueSetRange-»
-		/**
-	     * «localizedJDoc("FIELD_RANGE_FOR", name)»
-	«ENDIF-»
-	«IF valueSetEnum-»
-	    /**
-	     * «localizedJDoc("FIELD_ALLOWED_VALUES_FOR", name)»
-	«ENDIF-»
+    /**
+     * «localizedJDoc(getJavadocKey("FIELD"), name)»
      * 
      * @generated
      */
@@ -50,11 +40,11 @@
 
 «DEFINE getterDefaultValue FOR XPolicyAttribute-»
     /**
-     * {@inheritDoc}
+     * «inheritDocOrJavaDoc("METHOD_GET_DEFAULTVALUE", name)»
      * 
      * @generated
      */
-    «overrideAnnotationForAttribute()»
+    «overrideAnnotationForAttribute()-»
     public «javaClassName» «method(methodNameGetDefaultValue)» {
         return «fieldNameDefaultValue»;
     }
@@ -62,11 +52,11 @@
 
 «DEFINE getterAllowedValues FOR XPolicyAttribute-»
     /**
-     * {@inheritDoc}
+     * «inheritDocOrJavaDoc(getJavadocKey("METHOD_GET"), name)»
      * 
      * @generated
      */
-    «overrideAnnotationForAttribute()»
+    «overrideAnnotationForAttribute()-»
     public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")» {
         return «fieldNameValueSet»;
     }
