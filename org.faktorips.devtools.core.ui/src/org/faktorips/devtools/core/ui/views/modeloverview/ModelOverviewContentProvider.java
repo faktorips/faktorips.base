@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -31,8 +31,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
 
-public class ModelOverviewContentProvider implements ITreeContentProvider {
+public class ModelOverviewContentProvider extends DeferredStructuredContentProvider implements ITreeContentProvider {
 
     private List<Deque<PathElement>> paths = new ArrayList<Deque<PathElement>>();
     // it is important that this list does not contain a set of AssociationTypes which would cause
@@ -40,8 +41,10 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
     private final AssociationType[] associationTypeFilter = { AssociationType.AGGREGATION,
             AssociationType.COMPOSITION_MASTER_TO_DETAIL };
 
+    private ShowTypeState showState = ShowTypeState.SHOW_POLICIES;
+
     @Override
-    public Object[] getElements(Object inputElement) {
+    protected Object[] collectElements(Object inputElement, IProgressMonitor monitor) {
         IIpsProject ipsProject;
         if (inputElement instanceof IType) {
             ipsProject = ((IType)inputElement).getIpsProject();
@@ -49,23 +52,39 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
             ipsProject = (IIpsProject)inputElement;
         }
 
-        List<IType> projectTypes = getProjectTypes(ipsProject, new IpsObjectType[] { IpsObjectType.PRODUCT_CMPT_TYPE,
-                IpsObjectType.POLICY_CMPT_TYPE });
-
         // get the root elements
         Collection<IType> rootComponents;
         if (inputElement instanceof IType) { // get the root elements if the input is an IType
+
+            monitor.beginTask(getWaitingLabel(), 3);
+            List<IType> projectTypes = getProjectTypes(ipsProject, new IpsObjectType[] {
+                    IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE });
+            monitor.worked(1);
+
             paths = new ArrayList<Deque<PathElement>>();
             IType input = (IType)inputElement;
             Collection<IType> rootCandidates = getRootElementsForIType(input, projectTypes,
                     ToChildAssociationType.SELF, new ArrayList<IType>(), new ArrayList<Deque<PathElement>>(),
                     new ArrayDeque<PathElement>());
+            monitor.worked(1);
             rootComponents = getRootElementsForIType(input, projectTypes, ToChildAssociationType.SELF, rootCandidates,
                     getPaths(), new ArrayDeque<PathElement>());
+            monitor.worked(1);
 
         } else { // get the root elements if the input is an IpsProject
+            monitor.beginTask(getWaitingLabel(), 2);
+            List<IType> projectTypes;
+            if (getShowTypeState() == ShowTypeState.SHOW_POLICIES) {
+                projectTypes = getProjectTypes(ipsProject, new IpsObjectType[] { IpsObjectType.POLICY_CMPT_TYPE });
+            } else {
+                projectTypes = getProjectTypes(ipsProject, new IpsObjectType[] { IpsObjectType.PRODUCT_CMPT_TYPE });
+            }
+            monitor.worked(1);
+
             rootComponents = getRootTypes(projectTypes);
+            monitor.worked(1);
         }
+        monitor.done();
         return ComponentNode.encapsulateComponentTypes(rootComponents, ipsProject).toArray();
     }
 
@@ -197,18 +216,12 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
     }
 
     @Override
-    public void dispose() {
-        // Nothing to do
-    }
-
-    @Override
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        // Nothing to do
-    }
-
-    @Override
     public Object[] getChildren(Object parentElement) {
-        return ((IModelOverviewNode)parentElement).getChildren().toArray();
+        if (parentElement instanceof IModelOverviewNode) {
+            return ((IModelOverviewNode)parentElement).getChildren().toArray();
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -284,10 +297,45 @@ public class ModelOverviewContentProvider implements ITreeContentProvider {
         return paths;
     }
 
+    public void toggleShowTypeState() {
+        if (this.showState == ShowTypeState.SHOW_POLICIES) {
+            this.showState = ShowTypeState.SHOW_PRODUCTS;
+        } else {
+            this.showState = ShowTypeState.SHOW_POLICIES;
+        }
+    }
+
+    public ShowTypeState getShowTypeState() {
+        return showState;
+    }
+
+    public void setShowTypeState(ShowTypeState showState) {
+        this.showState = showState;
+    }
+
     static enum ToChildAssociationType {
         SELF,
         ASSOCIATION,
         SUPERTYPE
     }
 
+    @Override
+    protected String getWaitingLabel() {
+        return Messages.IpsModelOverview_waitingLabel;
+    }
+
+}
+
+enum ShowTypeState {
+    SHOW_POLICIES(1),
+    SHOW_PRODUCTS(2);
+    private final int state;
+
+    ShowTypeState(int value) {
+        this.state = value;
+    }
+
+    public int getState() {
+        return state;
+    }
 }

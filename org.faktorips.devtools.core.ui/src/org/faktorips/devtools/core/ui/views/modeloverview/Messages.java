@@ -33,4 +33,5 @@ public class Messages extends NLS {
     public static String IpsModelOverview_tooltipToggleCardinalities;
     public static String IpsModelOverview_menuShowRoleName_name;
     public static String IpsModelOverview_menuShowRoleName_tooltip;
+    public static String IpsModelOverview_waitingLabel;
 }

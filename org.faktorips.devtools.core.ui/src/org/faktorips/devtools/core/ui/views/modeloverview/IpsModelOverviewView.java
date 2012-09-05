@@ -68,6 +68,8 @@ public class IpsModelOverviewView extends ViewPart {
 
     private IpsModelOverviewLabelProvider labelProvider;
 
+    private ModelOverviewContentProvider provider;
+
     @Override
     public void createPartControl(Composite parent) {
         Composite panel = uiToolkit.createGridComposite(parent, 1, false, true, new GridData(SWT.FILL, SWT.FILL, true,
@@ -77,7 +79,11 @@ public class IpsModelOverviewView extends ViewPart {
                 true, false));
 
         this.treeViewer = new TreeViewer(panel);
-        this.treeViewer.setContentProvider(new ModelOverviewContentProvider());
+        provider = new ModelOverviewContentProvider();
+        // default value for selections of IIpsProjects, should have no effect on selections of
+        // ITypes
+        provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
+        this.treeViewer.setContentProvider(provider);
 
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
         labelProvider = new IpsModelOverviewLabelProvider();
@@ -233,7 +239,7 @@ public class IpsModelOverviewView extends ViewPart {
 
     private void initToolBar() {
         IToolBarManager toolBarManager = getViewSite().getActionBars().getToolBarManager();
-        // toolBarManager.add(createToggleProductPolicyAction());
+        toolBarManager.add(createToggleProductPolicyAction());
     }
 
     private void initMenu() {
@@ -241,9 +247,11 @@ public class IpsModelOverviewView extends ViewPart {
         menuManager.add(new Separator(MENU_INFO_GROUP));
 
         Action showCardinalitiesAction = createShowCardinalitiesAction();
+        labelProvider.setShowCardinalities(true);
         showCardinalitiesAction.setChecked(true);
 
         Action showRoleNameAction = createShowRoleNameAction();
+        labelProvider.setShowRolenames(true);
         showRoleNameAction.setChecked(true);
 
         menuManager.appendToGroup(MENU_INFO_GROUP, showCardinalitiesAction);
@@ -290,37 +298,49 @@ public class IpsModelOverviewView extends ViewPart {
         };
     }
 
-    // private Action createToggleProductPolicyAction() {
-    // return new Action() {
-    // private boolean showPolicyComponents = true;
-    //
-    // @Override
-    // public ImageDescriptor getImageDescriptor() {
-    //                return IpsUIPlugin.getImageHandling().createImageDescriptor("PolicyCmptType.gif"); //$NON-NLS-1$
-    // }
-    //
-    // @Override
-    // public String getToolTipText() {
-    // return Messages.IpsModelOverview_tooltipShowOnlyPolicies;
-    // }
-    //
-    // @Override
-    // public void run() {
-    // // TODO get this method to work
-    // // switch state
-    // showPolicyComponents = !showPolicyComponents;
-    // if (showPolicyComponents) {
-    //                    this.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("PolicyCmptType.gif")); //$NON-NLS-1$
-    // this.setToolTipText(Messages.IpsModelOverview_tooltipShowOnlyPolicies);
-    // } else {
-    //                    this.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmptType.gif")); //$NON-NLS-1$
-    // this.setToolTipText(Messages.IpsModelOverview_tooltipShowOnlyProducts);
-    // }
-    // refresh();
-    // }
-    //
-    // };
-    // }
+    private Action createToggleProductPolicyAction() {
+        return new Action(Messages.IpsModelOverview_tooltipShowOnlyProducts, SWT.TOGGLE) {
+
+            @Override
+            public ImageDescriptor getImageDescriptor() {
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("PolicyCmptType.gif"); //$NON-NLS-1$
+            }
+
+            @Override
+            public String getToolTipText() {
+                return Messages.IpsModelOverview_tooltipShowOnlyPolicies;
+            }
+
+            @Override
+            public void run() {
+                // TODO get this method to work
+                // switch state
+                toggleShowTypeState();
+                // if (showState == ShowTypeState.SHOW_POLICIES) {
+                // //
+                // this.setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
+                // // "ProductCmptType.gif"));
+                //                    //                    this.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("PolicyCmptType.gif")); //$NON-NLS-1$
+                // // this.setToolTipText(Messages.IpsModelOverview_tooltipShowOnlyPolicies);
+                // } else {
+                // //
+                // this.setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
+                // // "PolicyCmptType.gif"));
+                //                    //                    this.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmptType.gif")); //$NON-NLS-1$
+                // // this.setToolTipText(Messages.IpsModelOverview_tooltipShowOnlyProducts);
+                // }
+                // refresh();
+                // getViewSite().getActionBars().updateActionBars();
+                // getViewSite().getActionBars().getToolBarManager().update(true);
+            }
+
+        };
+    }
+
+    private void toggleShowTypeState() {
+        provider.toggleShowTypeState();
+        refresh();
+    }
 
     private void refresh() {
         final Control ctrl = treeViewer.getControl();

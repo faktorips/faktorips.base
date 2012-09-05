@@ -25,6 +25,7 @@ import java.util.Deque;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -44,54 +45,61 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
         newProductCmptType(project, "TestProductComponentType");
 
-        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
-        Object[] elements = contentProvider.getElements(project);
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // test
         for (Object object : elements) {
-            assertFalse(contentProvider.hasChildren(object));
+            assertFalse(provider.hasChildren(object));
         }
     }
 
     @Test
-    public void testGetChildren_ChildrenEmpty() throws CoreException {
+    public void testGetChildren_PolicyChildrenEmpty() throws CoreException {
         // setup
-        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
 
         IIpsProject project = newIpsProject();
         newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
-        newProductCmptType(project, "TestProductComponentType");
 
-        Object[] elements = contentProvider.getElements(project);
+        Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // test
-        assertNotNull(contentProvider.getChildren(elements[0]));
-        assertNotNull(contentProvider.getChildren(elements[1]));
-        assertEquals(0, contentProvider.getChildren(elements[0]).length);
-        assertEquals(0, contentProvider.getChildren(elements[1]).length);
+        assertNotNull(provider.getChildren(elements[0]));
+        assertEquals(0, provider.getChildren(elements[0]).length);
     }
 
     @Test
-    public void testHasChildren_HasSubtypeChildren() throws CoreException {
+    public void testGetChildren_ProductChildrenEmpty() throws CoreException {
+        // setup
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
+
+        IIpsProject project = newIpsProject();
+        newProductCmptType(project, "TestProductComponentType");
+
+        Object[] elements = provider.collectElements(project, new NullProgressMonitor());
+
+        // test
+        assertNotNull(provider.getChildren(elements[0]));
+        assertEquals(0, provider.getChildren(elements[0]).length);
+    }
+
+    @Test
+    public void testHasChildren_PolicyHasSubtypeChildren() throws CoreException {
         // setup
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
         IType subCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestSubPolicyComponentType");
         subCmptType.setSupertype(cmptType.getQualifiedName());
 
-        IIpsProject project2 = newIpsProject();
-        IType prodCmptType = newProductCmptType(project2, "TestProductComponentType");
-        IType subProdCmptType = newProductCmptType(project2, "TestSubProductComponentType");
-
-        subProdCmptType.setSupertype(prodCmptType.getQualifiedName());
-
-        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
-        Object[] elements = contentProvider.getElements(project);
-        Object[] elements2 = contentProvider.getElements(project2);
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
+        Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // test
-        assertTrue(contentProvider.hasChildren(elements[0]));
-        assertTrue(contentProvider.hasChildren(elements2[0]));
+        assertTrue(provider.hasChildren(elements[0]));
     }
 
     @Test
@@ -99,12 +107,6 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         // setup
         // Status of root elements depends only on associations
         IIpsProject project = newIpsProject();
-        IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
-        IType associatedCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType2");
-
-        IAssociation association = cmptType.newAssociation();
-        association.setTarget(associatedCmptType.getQualifiedName());
-        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
         IType prodCmptType = newProductCmptType(project, "TestProductComponentType");
         IType associatedProdCmptType = newProductCmptType(project, "TestProductComponentType2");
@@ -112,18 +114,17 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         IAssociation association2 = prodCmptType.newAssociation();
         association2.setTarget(associatedProdCmptType.getQualifiedName());
 
-        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
-        Object[] elements = contentProvider.getElements(project);
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
+        Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // test the number of existing root elements
-        assertEquals(2, elements.length);
+        assertEquals(1, elements.length);
 
         // test the identity of the root elements
         // project1
         List<IType> elementList = new ArrayList<IType>();
         elementList.add(((ComponentNode)elements[0]).getValue());
-        elementList.add(((ComponentNode)elements[1]).getValue());
-        assertTrue(elementList.contains(cmptType));
         assertTrue(elementList.contains(prodCmptType));
     }
 
@@ -137,23 +138,17 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
         subCmptType.setSupertype(cmptType.getQualifiedName());
 
-        IType prodCmptType = newProductCmptType(project, "TestProductComponentType");
-        IType subProdCmptType = newProductCmptType(project, "TestSubProductComponentType");
-
-        subProdCmptType.setSupertype(prodCmptType.getQualifiedName());
-
-        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
-        Object[] elements = contentProvider.getElements(project);
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
+        Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // test the number of existing root elements
-        assertEquals(2, elements.length);
+        assertEquals(1, elements.length);
 
         // test the identity of the root elements
         List<IType> elementList = new ArrayList<IType>();
         elementList.add(((ComponentNode)elements[0]).getValue());
-        elementList.add(((ComponentNode)elements[1]).getValue());
         assertTrue(elementList.contains(cmptType));
-        assertTrue(elementList.contains(prodCmptType));
     }
 
     @Test
@@ -173,46 +168,39 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         IAssociation association2 = prodCmptType.newAssociation();
         association2.setTarget(associatedProdCmptType.getQualifiedName());
 
-        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
-        Object[] elements = contentProvider.getElements(project);
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // test
         for (Object element : elements) {
-            assertTrue(contentProvider.hasChildren(element));
+            assertTrue(provider.hasChildren(element));
         }
     }
 
     @Test
     public void testHasChildren_HasAssociationAndSubtypeChildren() throws CoreException {
         // setup
-        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
 
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
         IType associatedCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType2");
         IType subCmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestSubPolicyComponentType");
-        IType prodCmptType = newProductCmptType(project, "TestProductComponentType");
-        IType associatedProdCmptType = newProductCmptType(project, "TestProductComponentType2");
-        IType subProdCmptType = newProductCmptType(project, "TestSubProductComponentType");
 
         subCmptType.setSupertype(cmptType.getQualifiedName());
-        subProdCmptType.setSupertype(prodCmptType.getQualifiedName());
 
         IAssociation association = cmptType.newAssociation();
-        IAssociation association2 = prodCmptType.newAssociation();
 
         association.setTarget(associatedCmptType.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        association2.setTarget(associatedProdCmptType.getQualifiedName());
 
-        Object[] elements = contentProvider.getElements(project);
+        Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // test
-        assertEquals(2, elements.length);
-        assertTrue(contentProvider.hasChildren(elements[0]));
-        assertTrue(contentProvider.hasChildren(elements[1]));
-        assertEquals(2, contentProvider.getChildren(elements[0]).length);
-        assertEquals(2, contentProvider.getChildren(elements[1]).length);
+        assertEquals(1, elements.length);
+        assertTrue(provider.hasChildren(elements[0]));
+        assertEquals(2, provider.getChildren(elements[0]).length);
     }
 
     /**
@@ -231,7 +219,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testGetChildren_CorrectStructureAndComponentNodeHierarchy() throws CoreException {
         // setup
-        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
 
         IIpsProject project1 = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project1, "TestPolicyComponentType");
@@ -244,14 +232,14 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
-        Object[] elements = contentProvider.getElements(project1);
+        Object[] elements = provider.collectElements(project1, new NullProgressMonitor());
 
-        IModelOverviewNode subtypeNode = (IModelOverviewNode)contentProvider.getChildren(elements[0])[0];
-        IModelOverviewNode compositeNode = (IModelOverviewNode)contentProvider.getChildren(elements[0])[1];
+        IModelOverviewNode subtypeNode = (IModelOverviewNode)provider.getChildren(elements[0])[0];
+        IModelOverviewNode compositeNode = (IModelOverviewNode)provider.getChildren(elements[0])[1];
 
         // test
         // project1
-        assertEquals(2, contentProvider.getChildren(elements[0]).length);
+        assertEquals(2, provider.getChildren(elements[0]).length);
 
         assertTrue(compositeNode instanceof CompositeNode);
         assertTrue(subtypeNode instanceof SubtypeNode);
@@ -296,33 +284,33 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         associationHausratVertrag2HausratGrunddeckung.setTarget(hausratGrunddeckung.getQualifiedName());
         associationHausratVertrag2HausratGrunddeckung.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
-        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
-        Object[] elements = contentProvider.getElements(project);
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // tests
         ComponentNode vertragNode = (ComponentNode)elements[0];
         assertEquals(vertrag, vertragNode.getValue());
         assertEquals(1, elements.length);
 
-        Object[] vertragStructureChildren = contentProvider.getChildren(elements[0]);
+        Object[] vertragStructureChildren = provider.getChildren(elements[0]);
 
         // test that hausratvertrag is a subtype of vertrag
         SubtypeNode subtypeNode = (SubtypeNode)vertragStructureChildren[0];
-        Object[] vertragSubtypeChildren = contentProvider.getChildren(subtypeNode);
+        Object[] vertragSubtypeChildren = provider.getChildren(subtypeNode);
         assertEquals(1, vertragSubtypeChildren.length);
         ComponentNode hausratVertragNode = (ComponentNode)vertragSubtypeChildren[0];
         assertEquals(hausratVertrag, hausratVertragNode.getValue());
 
         // test that only hausratgrunddeckung is a composite of hausratvertrag
-        Object[] hausratVertragStructureChildren = contentProvider.getChildren(hausratVertragNode);
+        Object[] hausratVertragStructureChildren = provider.getChildren(hausratVertragNode);
         CompositeNode hausratVertragCompositeNode = (CompositeNode)hausratVertragStructureChildren[0];
-        Object[] hausratVertragCompositeChildren = contentProvider.getChildren(hausratVertragCompositeNode);
+        Object[] hausratVertragCompositeChildren = provider.getChildren(hausratVertragCompositeNode);
         assertEquals(1, hausratVertragCompositeChildren.length);
         assertEquals(hausratGrunddeckung, ((ComponentNode)hausratVertragCompositeChildren[0]).getValue());
 
         // test that deckung is a composite of vertrag
         CompositeNode compositeNode = (CompositeNode)vertragStructureChildren[1];
-        Object[] vertragCompositeChildren = contentProvider.getChildren(compositeNode);
+        Object[] vertragCompositeChildren = provider.getChildren(compositeNode);
         assertEquals(1, vertragCompositeChildren.length);
         assertEquals(deckung, ((ComponentNode)vertragCompositeChildren[0]).getValue());
     }
@@ -352,15 +340,15 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         associationVertrag2Deckung.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
         // test
-        ModelOverviewContentProvider contentProvider = new ModelOverviewContentProvider();
-        Object[] elements = contentProvider.getElements(project);
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // tests
         ComponentNode vertragNode = (ComponentNode)elements[0];
         assertEquals(vertrag, vertragNode.getValue());
         assertEquals(1, elements.length);
 
-        Object[] vertragChildren = contentProvider.getChildren(elements[0]);
+        Object[] vertragChildren = provider.getChildren(elements[0]);
         assertTrue(vertragChildren[0] instanceof SubtypeNode);
         assertTrue(vertragChildren[1] instanceof CompositeNode);
     }
@@ -383,7 +371,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
         // test
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-        Object[] elements = provider.getElements(leafPolicy);
+        Object[] elements = provider.collectElements(leafPolicy, new NullProgressMonitor());
         assertEquals(1, elements.length);
         assertEquals(rootPolicy, ((ComponentNode)elements[0]).getValue());
     }
@@ -417,7 +405,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
         // test
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-        Object[] elements = provider.getElements(leafPolicy);
+        Object[] elements = provider.collectElements(leafPolicy, new NullProgressMonitor());
         assertEquals(1, elements.length);
         assertEquals(rootPolicy, ((ComponentNode)elements[0]).getValue());
     }
@@ -451,7 +439,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
         // test
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-        Object[] elements = provider.getElements(leafPolicy);
+        Object[] elements = provider.collectElements(leafPolicy, new NullProgressMonitor());
         assertEquals(1, elements.length);
         assertEquals(rootPolicy, ((ComponentNode)elements[0]).getValue());
     }
@@ -472,7 +460,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
         // test
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-        Object[] elements = provider.getElements(leafPolicy);
+        Object[] elements = provider.collectElements(leafPolicy, new NullProgressMonitor());
         assertEquals(1, elements.length);
         assertEquals(leafPolicy, ((ComponentNode)elements[0]).getValue());
     }
@@ -510,7 +498,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
         // test
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-        Object[] elements = provider.getElements(hausratGrunddeckungstyp);
+        Object[] elements = provider.collectElements(hausratGrunddeckungstyp, new NullProgressMonitor());
 
         assertEquals(1, elements.length);
         assertEquals(produkt, ((ComponentNode)elements[0]).getValue());
@@ -531,7 +519,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
         // test
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-        Object[] elements = provider.getElements(leafPolicy);
+        Object[] elements = provider.collectElements(leafPolicy, new NullProgressMonitor());
         assertEquals(1, elements.length);
         assertEquals(leafPolicy, ((ComponentNode)elements[0]).getValue());
     }
