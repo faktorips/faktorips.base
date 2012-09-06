@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
@@ -35,6 +36,14 @@ public class XpandBuilderTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+    }
+
+    /**
+     * For productive use, the debug switch needs to be disabled!
+     */
+    @Test
+    public void testDebugDisabled() {
+        assertFalse(XpandBuilder.DEBUG);
     }
 
     @Test
