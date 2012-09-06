@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider.ShowTypeState;
 import org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider.ToChildAssociationType;
 import org.junit.Test;
 
@@ -103,7 +104,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetElements_FindAssociationRootElements() throws CoreException {
+    public void testCollectElements_FindAssociationRootElements() throws CoreException {
         // setup
         // Status of root elements depends only on associations
         IIpsProject project = newIpsProject();
@@ -129,7 +130,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetElements_FindSupertypeRootElements() throws CoreException {
+    public void testCollectElements_FindSupertypeRootElements() throws CoreException {
         // setup
         // Status of root elements depends only on supertypes
         IIpsProject project = newIpsProject();
@@ -275,6 +276,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         PolicyCmptType hausratGrunddeckung = newPolicyCmptTypeWithoutProductCmptType(project, "HausratGrunddeckung");
 
         hausratVertrag.setSupertype(vertrag.getQualifiedName());
+        hausratGrunddeckung.setSupertype(deckung.getQualifiedName());
 
         IAssociation associationVertrag2Deckung = vertrag.newAssociation();
         associationVertrag2Deckung.setTarget(deckung.getQualifiedName());
@@ -354,7 +356,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetElements_InputInstanceofIType() throws CoreException {
+    public void testCollectElements_InputInstanceofIType() throws CoreException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
@@ -388,7 +390,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
      * 
      */
     @Test
-    public void testGetElements_OmitSupertypeNode() throws CoreException {
+    public void testCollectElements_OmitSupertypeNode() throws CoreException {
         // setup
         IIpsProject project = newIpsProject();
         ProductCmptType leafPolicy = newProductCmptType(project, "Leaf Node");
@@ -422,7 +424,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
      * 
      */
     @Test
-    public void testGetElements_ConsiderSupertypeAssociation() throws CoreException {
+    public void testCollectElements_ConsiderSupertypeAssociation() throws CoreException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
@@ -453,7 +455,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
      * The element is also the root element
      */
     @Test
-    public void testGetElements_SingleElementIsItsOwnRoot() throws CoreException {
+    public void testCollectElements_SingleElementIsItsOwnRoot() throws CoreException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
@@ -475,7 +477,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
      * Only the topmost element should be root.
      */
     @Test
-    public void testGetElements_OnlyOneRootInASingleHierarchyPath() throws CoreException {
+    public void testCollectElements_OnlyOneRootInASingleHierarchyPath() throws CoreException {
         // setup
         IIpsProject project = newIpsProject();
         ProductCmptType produkt = newProductCmptType(project, "Produkt");
@@ -506,7 +508,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetElements_ElementIsItsOwnRootInPureSupertypeHierarchy() throws CoreException {
+    public void testCollectElements_ElementIsItsOwnRootInPureSupertypeHierarchy() throws CoreException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
@@ -525,9 +527,9 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetElements_ComputeRootToLeafHierarchyPaths() throws CoreException {
+    public void testCollectElements_ComputeRootToLeafHierarchyPaths() throws CoreException {
         // setup
-        ModelOverviewContentProvider contenProvider = new ModelOverviewContentProvider();
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
 
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -556,16 +558,16 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         List<AssociationType> associationTypeFilter = new ArrayList<AssociationType>();
         associationTypeFilter.add(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         associationTypeFilter.add(AssociationType.AGGREGATION);
-        Collection<IType> rootCandidatesForIType = contenProvider.getRootElementsForIType(hausratGrunddeckung,
-                componentList, ModelOverviewContentProvider.ToChildAssociationType.SELF, new ArrayList<IType>(),
-                new ArrayList<Deque<PathElement>>(), new ArrayDeque<PathElement>());
+        Collection<IType> rootCandidatesForIType = provider.getRootElementsForIType(hausratGrunddeckung, componentList,
+                ModelOverviewContentProvider.ToChildAssociationType.SELF, new ArrayList<IType>(),
+                new ArrayList<List<PathElement>>(), new ArrayList<PathElement>());
 
         // compute the actual list of root elements and most importantly the list of paths from the
         // root elements to the selected element
-        List<Deque<PathElement>> paths = new ArrayList<Deque<PathElement>>();
-        contenProvider.getRootElementsForIType(hausratGrunddeckung, componentList,
+        List<List<PathElement>> paths = new ArrayList<List<PathElement>>();
+        provider.getRootElementsForIType(hausratGrunddeckung, componentList,
                 ModelOverviewContentProvider.ToChildAssociationType.SELF, rootCandidatesForIType, paths,
-                new ArrayDeque<PathElement>());
+                new ArrayList<PathElement>());
 
         // expected paths
         Deque<PathElement> paths1 = new ArrayDeque<PathElement>();
@@ -583,5 +585,97 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
         paths.contains(paths1);
         paths.contains(paths2);
+    }
+
+    @Test
+    public void testCollectElements_OnIType_DetectCycleOnSelfreferencingELement() throws CoreException {
+        // setup
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+
+        IIpsProject project = newIpsProject();
+        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
+
+        IAssociation vertrag2vertrag = vertrag.newAssociation();
+        vertrag2vertrag.setTarget(vertrag.getQualifiedName());
+        vertrag2vertrag.setAssociationType(AssociationType.AGGREGATION);
+
+        Object[] elements = provider.collectElements(vertrag, new NullProgressMonitor());
+
+        assertEquals(1, elements.length);
+        assertEquals(vertrag, ((ComponentNode)elements[0]).getValue());
+    }
+
+    @Test
+    public void testCollectElements_OnIType_DetectCycleOnIndirectSelfreferencingELement() throws CoreException {
+        // setup
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+
+        IIpsProject project = newIpsProject();
+        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
+        PolicyCmptType vertrag2 = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag2");
+        PolicyCmptType vertrag3 = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag3");
+
+        IAssociation vertragToVertrag2 = vertrag.newAssociation();
+        vertragToVertrag2.setTarget(vertrag2.getQualifiedName());
+        vertragToVertrag2.setAssociationType(AssociationType.AGGREGATION);
+
+        IAssociation vertrag2ToVertrag3 = vertrag.newAssociation();
+        vertrag2ToVertrag3.setTarget(vertrag3.getQualifiedName());
+        vertrag2ToVertrag3.setAssociationType(AssociationType.AGGREGATION);
+
+        IAssociation vertrag3ToVertrag = vertrag.newAssociation();
+        vertrag3ToVertrag.setTarget(vertrag.getQualifiedName());
+        vertrag3ToVertrag.setAssociationType(AssociationType.AGGREGATION);
+
+        Object[] elements = provider.collectElements(vertrag, new NullProgressMonitor());
+
+        assertEquals(1, elements.length);
+        assertEquals(vertrag, ((ComponentNode)elements[0]).getValue());
+    }
+
+    @Test
+    public void testCollectElements_OnIIpsProject_DetectCycleOnSelfreferencingELement() throws CoreException {
+        // setup
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+
+        IIpsProject project = newIpsProject();
+        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
+
+        IAssociation vertrag2vertrag = vertrag.newAssociation();
+        vertrag2vertrag.setTarget(vertrag.getQualifiedName());
+        vertrag2vertrag.setAssociationType(AssociationType.AGGREGATION);
+
+        Object[] elements = provider.collectElements(project, new NullProgressMonitor());
+
+        assertEquals(1, elements.length);
+        assertEquals(vertrag, ((ComponentNode)elements[0]).getValue());
+    }
+
+    @Test
+    public void testCollectElements_OnIIpsProject_DetectCycleOnIndirectSelfreferencingELement() throws CoreException {
+        // setup
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+
+        IIpsProject project = newIpsProject();
+        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
+        PolicyCmptType vertrag2 = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag2");
+        PolicyCmptType vertrag3 = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag3");
+
+        IAssociation vertragToVertrag2 = vertrag.newAssociation();
+        vertragToVertrag2.setTarget(vertrag2.getQualifiedName());
+        vertragToVertrag2.setAssociationType(AssociationType.AGGREGATION);
+
+        IAssociation vertrag2ToVertrag3 = vertrag.newAssociation();
+        vertrag2ToVertrag3.setTarget(vertrag3.getQualifiedName());
+        vertrag2ToVertrag3.setAssociationType(AssociationType.AGGREGATION);
+
+        IAssociation vertrag3ToVertrag = vertrag.newAssociation();
+        vertrag3ToVertrag.setTarget(vertrag.getQualifiedName());
+        vertrag3ToVertrag.setAssociationType(AssociationType.AGGREGATION);
+
+        Object[] elements = provider.collectElements(project, new NullProgressMonitor());
+
+        assertEquals(1, elements.length);
+        assertEquals(vertrag, ((ComponentNode)elements[0]).getValue());
     }
 }

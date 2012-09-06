@@ -13,10 +13,8 @@
 
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -35,7 +34,7 @@ import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider
 
 public class ModelOverviewContentProvider extends DeferredStructuredContentProvider implements ITreeContentProvider {
 
-    private List<Deque<PathElement>> paths = new ArrayList<Deque<PathElement>>();
+    private List<List<PathElement>> paths = new ArrayList<List<PathElement>>();
     // it is important that this list does not contain a set of AssociationTypes which would cause
     // association loops
     private final AssociationType[] associationTypeFilter = { AssociationType.AGGREGATION,
@@ -56,29 +55,24 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
         Collection<IType> rootComponents;
         if (inputElement instanceof IType) { // get the root elements if the input is an IType
 
+            IType input = (IType)inputElement;
             monitor.beginTask(getWaitingLabel(), 3);
-            List<IType> projectTypes = getProjectTypes(ipsProject, new IpsObjectType[] {
-                    IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE });
+            List<IType> projectTypes = getProjectTypes(ipsProject, getCurrentlyNeededIpsObjectType(input));
             monitor.worked(1);
 
-            paths = new ArrayList<Deque<PathElement>>();
-            IType input = (IType)inputElement;
+            paths = new ArrayList<List<PathElement>>();
             Collection<IType> rootCandidates = getRootElementsForIType(input, projectTypes,
-                    ToChildAssociationType.SELF, new ArrayList<IType>(), new ArrayList<Deque<PathElement>>(),
-                    new ArrayDeque<PathElement>());
+                    ToChildAssociationType.SELF, new ArrayList<IType>(), new ArrayList<List<PathElement>>(),
+                    new ArrayList<PathElement>());
             monitor.worked(1);
             rootComponents = getRootElementsForIType(input, projectTypes, ToChildAssociationType.SELF, rootCandidates,
-                    getPaths(), new ArrayDeque<PathElement>());
+                    paths, new ArrayList<PathElement>());
             monitor.worked(1);
 
         } else { // get the root elements if the input is an IpsProject
             monitor.beginTask(getWaitingLabel(), 2);
             List<IType> projectTypes;
-            if (getShowTypeState() == ShowTypeState.SHOW_POLICIES) {
-                projectTypes = getProjectTypes(ipsProject, new IpsObjectType[] { IpsObjectType.POLICY_CMPT_TYPE });
-            } else {
-                projectTypes = getProjectTypes(ipsProject, new IpsObjectType[] { IpsObjectType.PRODUCT_CMPT_TYPE });
-            }
+            projectTypes = getProjectTypes(ipsProject, getCurrentlyNeededIpsObjectType());
             monitor.worked(1);
 
             rootComponents = getRootTypes(projectTypes);
@@ -86,6 +80,30 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
         }
         monitor.done();
         return ComponentNode.encapsulateComponentTypes(rootComponents, ipsProject).toArray();
+    }
+
+    /**
+     * Determines the needed IpsObjectType on base of the showState, this is needed when the root
+     * elements for an IIpsProject have to be calculated.
+     */
+    private IpsObjectType getCurrentlyNeededIpsObjectType() {
+        if (showState == ShowTypeState.SHOW_POLICIES) {
+            return IpsObjectType.POLICY_CMPT_TYPE;
+        } else {
+            return IpsObjectType.PRODUCT_CMPT_TYPE;
+        }
+    }
+
+    /**
+     * Determines the needed IpsObjectType on base of the Class of the input IType, this is needed
+     * when the root elements for a single IType have to be calculated.
+     */
+    private IpsObjectType getCurrentlyNeededIpsObjectType(IType input) {
+        if (input instanceof PolicyCmptType) {
+            return IpsObjectType.POLICY_CMPT_TYPE;
+        } else {
+            return IpsObjectType.PRODUCT_CMPT_TYPE;
+        }
     }
 
     /**
@@ -102,18 +120,27 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
      * @param rootCandidates a {@link Collection} of {@link IType}.
      * @param foundPaths a {@link List} of paths from the provided element to the computed root
      *            elements
-     * @param callHierarchy a {@link Deque} which contains the path from the current element to the
+     * @param callHierarchy a {@link List} which contains the path from the current element to the
      *            source element
      */
     Collection<IType> getRootElementsForIType(IType element,
             List<IType> componentList,
             ToChildAssociationType association,
             Collection<IType> rootCandidates,
-            List<Deque<PathElement>> foundPaths,
-            Deque<PathElement> callHierarchy) {
+            List<List<PathElement>> foundPaths,
+            List<PathElement> callHierarchy) {
 
-        Deque<PathElement> callHierarchyTemp = new ArrayDeque<PathElement>(callHierarchy);
-        callHierarchyTemp.push(new PathElement(element, association));
+        List<PathElement> callHierarchyTemp = new ArrayList<PathElement>(callHierarchy);
+        PathElement pathElement = new PathElement(element, association);
+
+        // TODO check correctness of this statement
+        if (callHierarchy.contains(pathElement)) {
+            // return empty HashSet because we have a cycle (this element is already contained in
+            // the call hierarchy)
+            return new HashSet<IType>();
+        } else {
+            callHierarchyTemp.add(pathElement);
+        }
 
         IType supertype;
         try {
@@ -133,8 +160,9 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
 
         // recursive call for all child elements
         for (IType associations : associatingTypes) {
-            rootElements.addAll(getRootElementsForIType(associations, componentList,
-                    ToChildAssociationType.ASSOCIATION, rootCandidates, foundPaths, callHierarchyTemp));
+            Collection<IType> rootElementsForIType = getRootElementsForIType(associations, componentList,
+                    ToChildAssociationType.ASSOCIATION, rootCandidates, foundPaths, callHierarchyTemp);
+            rootElements.addAll(rootElementsForIType);
         }
 
         if (supertype != null) {
@@ -176,12 +204,66 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
      */
     private List<IType> getRootTypes(List<IType> components) {
         List<IType> rootComponents = new ArrayList<IType>();
+        List<IType> rootCandidates = new ArrayList<IType>();
+
+        // compute the set of Supertype-root-candidates and real root-elements (no Supertype and no
+        // incoming
+        // Association)
         for (IType iType : components) {
-            if (!iType.hasSupertype() && !isAssociationTarget(iType, components, associationTypeFilter)) {
-                rootComponents.add(iType);
+            if (!iType.hasSupertype()) {
+                rootCandidates.add(iType);
+                if (!isAssociationTarget(iType, components, associationTypeFilter)) {
+                    rootComponents.add(iType);
+                }
             }
         }
+
+        // the lists are not the same we have not found an unambiguous set of root-elements
+        if (rootComponents.size() == rootCandidates.size()) {
+            return rootComponents;
+        } else {
+            removeDescendants(rootCandidates, rootComponents, components);
+            // 1. Take an arbitrary element from the candidates list and add it to the root elements
+            while (!rootCandidates.isEmpty()) {
+                IType newRoot = rootCandidates.remove(0);
+                rootComponents.add(newRoot);
+
+                removeDescendants(rootCandidates, rootComponents, components);
+            }
+        }
+
         return rootComponents;
+    }
+
+    /**
+     * Removes all elements from the {@link List} of root candidates, which are root elements or
+     * somehow are associated to them. Afterwards rootCandidates consist of a {@link List} of root
+     * candidates which are not associated to the provided rootComponents.
+     * 
+     * @param rootComponents list of assured root elements
+     * @param rootCandidates list of potential root elements (for example all elements without a
+     *            supertype)
+     * @param components list of all components to be observed
+     */
+    private void removeDescendants(List<IType> rootCandidates, List<IType> rootComponents, List<IType> components) {
+
+        List<IType> potentialDescendants = new ArrayList<IType>(components);
+        potentialDescendants.removeAll(rootComponents);
+        List<IType> descendants = new ArrayList<IType>(rootComponents);
+
+        // remove all descending elements from the candidates list
+        while (!descendants.isEmpty()) {
+            List<IType> newDescendants = new ArrayList<IType>();
+            for (IType potentialDescendant : potentialDescendants) {
+                if (isAssociationTarget(potentialDescendant, descendants, associationTypeFilter)) {
+                    newDescendants.add(potentialDescendant);
+                }
+            }
+            potentialDescendants.removeAll(newDescendants);
+            rootCandidates.removeAll(descendants); // newDescendants will be removed in the next
+                                                   // iteration, except they are empty
+            descendants = newDescendants;
+        }
     }
 
     /**
@@ -190,16 +272,16 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
      * {@link IType}
      * 
      * @param ipsProject the {@link IIpsProject} for which the objects should be retrieved
-     * @param filter an array of {@list IpsObjectType} to filter the retrieved objects
+     * @param types an array of {@list IpsObjectType} to filter the retrieved objects
      * 
      * @return a {@link List} of the same size with corresponding {@link IType}, or an empty
      *         {@link List} if the input {@link List} was empty
      */
-    private List<IType> getProjectTypes(IIpsProject ipsProject, IpsObjectType[] filter) {
+    private List<IType> getProjectTypes(IIpsProject ipsProject, IpsObjectType... types) {
 
         List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
         try {
-            ipsProject.findAllIpsSrcFiles(srcFiles, filter);
+            ipsProject.findAllIpsSrcFiles(srcFiles, types);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -220,7 +302,7 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
         if (parentElement instanceof IModelOverviewNode) {
             return ((IModelOverviewNode)parentElement).getChildren().toArray();
         } else {
-            return null;
+            return new Object[0];
         }
     }
 
@@ -289,11 +371,11 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
     }
 
     /**
-     * Returns a {@link List} of {@link Deque}s of {@link PathElement}s which has been computed by
-     * {@link #getRootElementsForIType(IType, List, ToChildAssociationType, Collection, List, Deque)}
+     * Returns a {@link List} of {@link List}s of {@link PathElement}s which has been computed by
+     * {@link #getRootElementsForIType(IType, List, ToChildAssociationType, Collection, List, List)}
      * or an empty {@link List} otherwise.
      */
-    public List<Deque<PathElement>> getPaths() {
+    public List<List<PathElement>> getPaths() {
         return paths;
     }
 
@@ -313,29 +395,29 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
         this.showState = showState;
     }
 
+    @Override
+    protected String getWaitingLabel() {
+        return Messages.IpsModelOverview_waitingLabel;
+    }
+
     static enum ToChildAssociationType {
         SELF,
         ASSOCIATION,
         SUPERTYPE
     }
 
-    @Override
-    protected String getWaitingLabel() {
-        return Messages.IpsModelOverview_waitingLabel;
+    static enum ShowTypeState {
+        SHOW_POLICIES(1),
+        SHOW_PRODUCTS(2);
+        private final int state;
+
+        ShowTypeState(int value) {
+            this.state = value;
+        }
+
+        public int getState() {
+            return state;
+        }
     }
 
-}
-
-enum ShowTypeState {
-    SHOW_POLICIES(1),
-    SHOW_PRODUCTS(2);
-    private final int state;
-
-    ShowTypeState(int value) {
-        this.state = value;
-    }
-
-    public int getState() {
-        return state;
-    }
 }

@@ -44,4 +44,38 @@ class PathElement {
         return component;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((associationType == null) ? 0 : associationType.hashCode());
+        result = prime * result + ((component == null) ? 0 : component.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        PathElement other = (PathElement)obj;
+        if (associationType != other.associationType) {
+            return false;
+        }
+        if (component == null) {
+            if (other.component != null) {
+                return false;
+            }
+        } else if (!component.equals(other.component)) {
+            return false;
+        }
+        return true;
+    }
+
 }
