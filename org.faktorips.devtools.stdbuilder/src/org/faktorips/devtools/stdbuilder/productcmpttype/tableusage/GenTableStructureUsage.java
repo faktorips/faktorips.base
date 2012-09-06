@@ -134,7 +134,7 @@ public class GenTableStructureUsage extends GenTypePart {
             if (tsuFile == null) {
                 return "";
             }
-            return getBuilderSet().getBuildersByClass(TableImplBuilder.class).get(0).getQualifiedClassName(tsuFile);
+            return getBuilderSet().getBuilderByClass(TableImplBuilder.class).getQualifiedClassName(tsuFile);
         } else {
             return ITable.class.getName();
         }

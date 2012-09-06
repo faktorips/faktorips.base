@@ -44,8 +44,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptImplClassBuilder;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
@@ -69,7 +69,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     // builders needed
     private ProductCmptBuilder productCmptBuilder;
     private ProductCmptImplClassBuilder productCmptImplBuilder;
-    private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
+    private ProductCmptGenerationImplClassBuilder productCmptGenImplBuilder;
 
     private MultiStatus buildStatus;
 
@@ -95,7 +95,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         productCmptImplBuilder = builder;
     }
 
-    public void setProductCmptGenImplBuilder(ProductCmptGenImplClassBuilder builder) {
+    public void setProductCmptGenImplBuilder(ProductCmptGenerationImplClassBuilder builder) {
         productCmptGenImplBuilder = builder;
     }
 

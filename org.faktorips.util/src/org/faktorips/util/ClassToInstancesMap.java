@@ -53,6 +53,24 @@ public class ClassToInstancesMap<T> {
     }
 
     /**
+     * Putting the value to the classes of its type. Use this method only if you want to put the
+     * instance to exactly its implementation class used as key. Use {@link #put(Class, Object)} if
+     * you want to store the instance for example with its interface used as the key. Calling this
+     * method multiple times with the same key value pair would add a new value every time. That
+     * means you could have the same instance multiple time.
+     * 
+     * @param value the value you want to add
+     * @return the list of all values already added to the map for the given key including the new
+     *         one.
+     */
+    public <K extends T> List<K> put(K value) {
+        @SuppressWarnings("unchecked")
+        // this is exactly this class
+        Class<K> implClass = (Class<K>)value.getClass();
+        return put(implClass, value);
+    }
+
+    /**
      * Putting the value to the classes of key. Calling this method multiple times with the same key
      * value pair would add a new value every time. That means you could have the same instance
      * multiple time.

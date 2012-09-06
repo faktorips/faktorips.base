@@ -13,12 +13,12 @@
 
 package org.faktorips.devtools.core.builder.naming;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.util.QNameUtil;
 
 /**
@@ -31,16 +31,6 @@ public class JavaPackageStructure implements IJavaPackageStructure {
 
     private final static String INTERNAL_PACKAGE = "internal"; //$NON-NLS-1$
 
-    @Override
-    public String getPackage(IIpsArtefactBuilder builder, IIpsSrcFile ipsSrcFile) throws CoreException {
-        if (builder instanceof JavaSourceFileBuilder) {
-            JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
-            return getPackageName(ipsSrcFile, javaBuilder.isBuildingPublishedSourceFile(),
-                    !builder.buildsDerivedArtefacts());
-        }
-        return getPackageName(ipsSrcFile, false, !builder.buildsDerivedArtefacts());
-    }
-
     /**
      * Returns the name of the package the generated artifacts for the given IPS source file will be
      * placed in.
@@ -48,8 +38,16 @@ public class JavaPackageStructure implements IJavaPackageStructure {
      * @param ipsSrcFile The source file to get the package from
      * 
      */
-    public static String getPackageName(IIpsSrcFile ipsSrcFile, boolean publishedArtifacts, boolean mergableArtifacts) {
+    @Override
+    public String getPackageName(IIpsSrcFile ipsSrcFile, boolean publishedArtifacts, boolean mergableArtifacts) {
         return getPackageNameForGeneratedArtefacts(ipsSrcFile, publishedArtifacts, mergableArtifacts);
+    }
+
+    @Override
+    public String getBasePackageName(IIpsSrcFolderEntry entry, boolean publishedArtifacts, boolean mergableArtifacts) {
+        String basePackName = mergableArtifacts ? entry.getBasePackageNameForMergableJavaClasses() : entry
+                .getBasePackageNameForDerivedJavaClasses();
+        return getPackageName(publishedArtifacts, basePackName, StringUtils.EMPTY);
     }
 
     /**
@@ -62,42 +60,30 @@ public class JavaPackageStructure implements IJavaPackageStructure {
      *            moment this applies to Java Source files only). <code>false</code) if the artifact
      *            is 100% generated and can't be modified by the user.
      */
-    protected static String getPackageNameForGeneratedArtefacts(IIpsSrcFile ipsSrcFile,
+    protected String getPackageNameForGeneratedArtefacts(IIpsSrcFile ipsSrcFile,
             boolean publishedArtifacts,
             boolean mergableArtifacts) {
         try {
             String basePackName = mergableArtifacts ? ipsSrcFile.getBasePackageNameForMergableArtefacts() : ipsSrcFile
                     .getBasePackageNameForDerivedArtefacts();
             String packageFragName = ipsSrcFile.getIpsPackageFragment().getName().toLowerCase();
-            if (!publishedArtifacts) {
-                return getInternalPackage(basePackName, packageFragName);
-            } else {
-                return QNameUtil.concat(basePackName, packageFragName);
-            }
+            return getPackageName(publishedArtifacts, basePackName, packageFragName);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
     }
 
-    public static String getInternalPackage(final String basePackName, final String subPackageFragment) {
+    private String getPackageName(boolean publishedArtifacts, String basePackName, String packageFragName) {
+        if (!publishedArtifacts) {
+            return getInternalPackage(basePackName, packageFragName);
+        } else {
+            return QNameUtil.concat(basePackName, packageFragName);
+        }
+    }
+
+    String getInternalPackage(final String basePackName, final String subPackageFragment) {
         String internalBasePack = QNameUtil.concat(basePackName, INTERNAL_PACKAGE);
         return QNameUtil.concat(internalBasePack, subPackageFragment);
-    }
-
-    /**
-     * Returns the name of the (Java) package name that contains the published artifacts that are
-     * generated for the given IPS source file that (the artifacts) are also mergable.
-     */
-    public static String getPackageNameForMergablePublishedArtefacts(IIpsSrcFile ipsSrcFile) {
-        return getPackageName(ipsSrcFile, true, true);
-    }
-
-    /**
-     * Returns the name of the (Java) package name that contains the internal artifacts that are
-     * generated for the given IPS source file that (the artifacts) are also mergable.
-     */
-    public static String getPackageNameForMergableInternalArtefacts(IIpsSrcFile ipsSrcFile) {
-        return getPackageName(ipsSrcFile, false, true);
     }
 
 }

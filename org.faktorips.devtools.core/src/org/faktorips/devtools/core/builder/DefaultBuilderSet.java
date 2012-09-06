@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.builder;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -22,7 +21,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
@@ -60,18 +58,6 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     private JavaPackageStructure javaPackageStructure = new JavaPackageStructure();
 
     @Override
-    public String getInternalPackage(final String basePackName, final String subPackageFragment) {
-        return JavaPackageStructure.getInternalPackage(basePackName, subPackageFragment);
-    }
-
-    @Override
-    public String getTocFilePackageName(IIpsPackageFragmentRoot root) {
-        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
-        String basePackName = entry.getBasePackageNameForDerivedJavaClasses();
-        return getInternalPackage(basePackName, StringUtils.EMPTY);
-    }
-
-    @Override
     public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
         if (root == null) {
             return null;
@@ -80,7 +66,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
             return null;
         }
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
-        String basePackInternal = getTocFilePackageName(root);
+        String basePackInternal = javaPackageStructure.getBasePackageName(entry, false, false);
         IPath path = QNameUtil.toPath(basePackInternal);
         path = path.append(entry.getBasePackageRelativeTocPath());
         IFolder tocFileLocation = getTocFileLocation(root);
@@ -106,8 +92,13 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     }
 
     @Override
-    public String getPackage(IIpsArtefactBuilder builder, IIpsSrcFile ipsSrcFile) throws CoreException {
-        return javaPackageStructure.getPackage(builder, ipsSrcFile);
+    public String getPackageName(IIpsSrcFile ipsSrcFile, boolean publishedArtifacts, boolean mergableArtifacts) {
+        return javaPackageStructure.getPackageName(ipsSrcFile, publishedArtifacts, mergableArtifacts);
+    }
+
+    @Override
+    public String getBasePackageName(IIpsSrcFolderEntry entry, boolean publishedArtifact, boolean mergableArtifacts) {
+        return javaPackageStructure.getBasePackageName(entry, publishedArtifact, mergableArtifacts);
     }
 
     public boolean isGeneratePublishedInterfaces() {

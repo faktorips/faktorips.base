@@ -76,7 +76,7 @@ public class GenAssociationTo1Test extends GenAssociationTest {
                 genAssociationTo1,
                 javaInterface,
                 getGeneratedJavaInterface(configurationForTarget, false,
-                        builderSet.getBuildersByClass(PolicyCmptInterfaceBuilder.class).get(0),
+                        builderSet.getBuilderByClass(PolicyCmptInterfaceBuilder.class).get(0),
                         configurationForTarget.getName()));
         assertEquals(6, generatedJavaElements.size());
     }
@@ -110,7 +110,7 @@ public class GenAssociationTo1Test extends GenAssociationTest {
                 genAssociationTo1,
                 javaClass,
                 getGeneratedJavaInterface(configurationForTarget, false,
-                        builderSet.getBuildersByClass(PolicyCmptInterfaceBuilder.class).get(0),
+                        builderSet.getBuilderByClass(PolicyCmptInterfaceBuilder.class).get(0),
                         configurationForTarget.getName()));
         assertEquals(6, generatedJavaElements.size());
     }

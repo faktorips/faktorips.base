@@ -1510,6 +1510,11 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
         }
 
+        @Override
+        public boolean isBuildingInternalArtefacts() {
+            return false;
+        }
+
     }
 
 }

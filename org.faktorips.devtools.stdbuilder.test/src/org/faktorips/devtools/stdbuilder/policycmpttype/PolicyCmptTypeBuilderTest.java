@@ -39,8 +39,8 @@ public abstract class PolicyCmptTypeBuilderTest extends AbstractStdBuilderTest {
         genPolicyCmptType = new GenPolicyCmptType(policyCmptType, builderSet);
 
         javaClass = getGeneratedJavaClass(policyCmptType, false,
-                builderSet.getBuildersByClass(PolicyCmptImplClassBuilder.class).get(0), POLICY_NAME);
+                builderSet.getBuilderByClass(PolicyCmptImplClassBuilder.class).get(0), POLICY_NAME);
         javaInterface = getGeneratedJavaInterface(policyCmptType, false,
-                builderSet.getBuildersByClass(PolicyCmptInterfaceBuilder.class).get(0), POLICY_NAME);
+                builderSet.getBuilderByClass(PolicyCmptInterfaceBuilder.class).get(0), POLICY_NAME);
     }
 }

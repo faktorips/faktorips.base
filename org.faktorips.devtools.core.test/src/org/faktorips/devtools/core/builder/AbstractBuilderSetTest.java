@@ -51,25 +51,25 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetBuilderByClass() {
-        assertEquals(0, builderSet.getBuildersByClass(NotInBuilderSer.class).size());
-        assertEquals(5, builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class).size());
-        assertEquals(a, builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class).get(0));
-        assertEquals(b, builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class).get(1));
-        assertEquals(c, builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class).get(2));
-        assertEquals(d, builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class).get(3));
-        assertEquals(e, builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class).get(4));
-        assertEquals(1, builderSet.getBuildersByClass(A.class).size());
-        assertEquals(a, builderSet.getBuildersByClass(A.class).get(0));
-        assertEquals(1, builderSet.getBuildersByClass(B.class).size());
-        assertEquals(b, builderSet.getBuildersByClass(B.class).get(0));
-        assertEquals(3, builderSet.getBuildersByClass(C.class).size());
-        assertEquals(c, builderSet.getBuildersByClass(C.class).get(0));
-        assertEquals(d, builderSet.getBuildersByClass(C.class).get(1));
-        assertEquals(e, builderSet.getBuildersByClass(C.class).get(2));
-        assertEquals(1, builderSet.getBuildersByClass(DExtendsC.class).size());
-        assertEquals(d, builderSet.getBuildersByClass(DExtendsC.class).get(0));
-        assertEquals(1, builderSet.getBuildersByClass(EExtendsC.class).size());
-        assertEquals(e, builderSet.getBuildersByClass(EExtendsC.class).get(0));
+        assertEquals(0, builderSet.getBuilderByClass(NotInBuilderSer.class).size());
+        assertEquals(5, builderSet.getBuilderByClass(StubJavaSourceFileBuilder.class).size());
+        assertEquals(a, builderSet.getBuilderByClass(StubJavaSourceFileBuilder.class).get(0));
+        assertEquals(b, builderSet.getBuilderByClass(StubJavaSourceFileBuilder.class).get(1));
+        assertEquals(c, builderSet.getBuilderByClass(StubJavaSourceFileBuilder.class).get(2));
+        assertEquals(d, builderSet.getBuilderByClass(StubJavaSourceFileBuilder.class).get(3));
+        assertEquals(e, builderSet.getBuilderByClass(StubJavaSourceFileBuilder.class).get(4));
+        assertEquals(1, builderSet.getBuilderByClass(A.class).size());
+        assertEquals(a, builderSet.getBuilderByClass(A.class).get(0));
+        assertEquals(1, builderSet.getBuilderByClass(B.class).size());
+        assertEquals(b, builderSet.getBuilderByClass(B.class).get(0));
+        assertEquals(3, builderSet.getBuilderByClass(C.class).size());
+        assertEquals(c, builderSet.getBuilderByClass(C.class).get(0));
+        assertEquals(d, builderSet.getBuilderByClass(C.class).get(1));
+        assertEquals(e, builderSet.getBuilderByClass(C.class).get(2));
+        assertEquals(1, builderSet.getBuilderByClass(DExtendsC.class).size());
+        assertEquals(d, builderSet.getBuilderByClass(DExtendsC.class).get(0));
+        assertEquals(1, builderSet.getBuilderByClass(EExtendsC.class).size());
+        assertEquals(e, builderSet.getBuilderByClass(EExtendsC.class).get(0));
     }
 
     class A extends StubJavaSourceFileBuilder {
@@ -139,20 +139,26 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
         @Override
         public String getName() {
-            // TODO Auto-generated method stub
+            // Auto-generated method stub
             return null;
         }
 
         @Override
         public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
-            // TODO Auto-generated method stub
+            // Auto-generated method stub
 
         }
 
         @Override
         public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
-            // TODO Auto-generated method stub
+            // Auto-generated method stub
 
+        }
+
+        @Override
+        public boolean isBuildingInternalArtefacts() {
+            // Auto-generated method stub
+            return false;
         }
 
     }

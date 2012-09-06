@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.JavaGeneratorForIpsPart;
-import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
@@ -69,16 +68,12 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
     }
 
     public String getPackageName(boolean forInterface) {
-        return getPackageName(type, forInterface);
+        return getPackageName(getBuilderSet(), type, forInterface);
     }
 
-    private static String getPackageName(IType type, boolean forInterface) {
+    private static String getPackageName(StandardBuilderSet builderSet, IType type, boolean forInterface) {
         if (type != null) {
-            if (forInterface) {
-                return JavaPackageStructure.getPackageNameForMergablePublishedArtefacts(type.getIpsSrcFile());
-            }
-            return JavaPackageStructure.getPackageNameForMergableInternalArtefacts(type.getIpsSrcFile());
-
+            return builderSet.getPackageName(type.getIpsSrcFile(), forInterface, true);
         }
         return null;
     }
@@ -89,7 +84,7 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
 
     public static String getQualifiedName(IType type, StandardBuilderSet builderSet, boolean forInterface) {
         if (type != null) {
-            return getQualifiedName(type, getPackageName(type, forInterface), forInterface);
+            return getQualifiedName(type, getPackageName(builderSet, type, forInterface), forInterface);
         }
         return null;
     }

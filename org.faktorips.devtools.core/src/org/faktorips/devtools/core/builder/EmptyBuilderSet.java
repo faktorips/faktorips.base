@@ -32,6 +32,7 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
+import org.faktorips.util.ClassToInstancesMap;
 
 /**
  * An IIpsArtefactBuilderSet implementation that is supposed to be used in cases where no builder
@@ -86,11 +87,6 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
         return null;
     }
 
-    @Override
-    public String getTocFilePackageName(IIpsPackageFragmentRoot root) {
-        return null;
-    }
-
     /**
      * Returns the string <i>emptyBuilderSet</i>
      */
@@ -113,17 +109,12 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     @Override
-    protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
-        return new IIpsArtefactBuilder[0];
+    protected ClassToInstancesMap<IIpsArtefactBuilder> createBuilders() throws CoreException {
+        return new ClassToInstancesMap<IIpsArtefactBuilder>();
     }
 
     @Override
     public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter) {
-        return null;
-    }
-
-    @Override
-    public String getInternalPackage(String basePackageName, String subPackageFragment) {
         return null;
     }
 

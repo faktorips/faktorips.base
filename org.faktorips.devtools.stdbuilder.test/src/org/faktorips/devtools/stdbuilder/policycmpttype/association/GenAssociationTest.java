@@ -48,7 +48,7 @@ public abstract class GenAssociationTest extends PolicyCmptTypeBuilderTest {
         targetPolicyCmptType.setProductCmptType("");
 
         javaInterfaceTargetType = getGeneratedJavaInterface(targetPolicyCmptType, false,
-                builderSet.getBuildersByClass(PolicyCmptInterfaceBuilder.class).get(0), TARGET_POLICY_NAME);
+                builderSet.getBuilderByClass(PolicyCmptInterfaceBuilder.class).get(0), TARGET_POLICY_NAME);
 
         association = policyCmptType.newPolicyCmptTypeAssociation();
         association.setMinCardinality(0);

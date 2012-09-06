@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.builder.naming;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
@@ -35,7 +36,10 @@ public class JavaClassNaming {
 
     private final boolean mergableArtifacts;
 
-    public JavaClassNaming(boolean mergableArtifacts) {
+    private final IJavaPackageStructure javaPackageStructure;
+
+    public JavaClassNaming(IJavaPackageStructure javaPackageStructure, boolean mergableArtifacts) {
+        this.javaPackageStructure = javaPackageStructure;
         this.mergableArtifacts = mergableArtifacts;
     }
 
@@ -92,8 +96,8 @@ public class JavaClassNaming {
     public String getPackageName(IIpsSrcFile ipsSrcFile,
             BuilderAspect aspect,
             IJavaClassNameProvider javaClassNameProvider) {
-        return JavaPackageStructure.getPackageName(ipsSrcFile,
-                aspect.isPublishedArtifact(javaClassNameProvider), mergableArtifacts);
+        return javaPackageStructure.getPackageName(ipsSrcFile, aspect.isPublishedArtifact(javaClassNameProvider),
+                mergableArtifacts);
     }
 
     /**

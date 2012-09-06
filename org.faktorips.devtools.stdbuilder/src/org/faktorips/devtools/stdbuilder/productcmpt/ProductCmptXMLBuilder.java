@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.AbstractXmlFileBuilder;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -44,6 +43,8 @@ import org.w3c.dom.NodeList;
  * @author Thorsten Guenther
  */
 public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
+
+    public static final String XML_ATTRIBUTE_TARGET_RUNTIME_ID = "targetRuntimeId"; //$NON-NLS-1$
 
     private final ExpressionXMLBuilderHelper expressionXMLBuilderHelper;
     private MultiStatus buildStatus;
@@ -104,8 +105,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
         IProductCmptLink[] associations = generation.getLinks();
         for (int i = 0; i < associations.length; i++) {
             Element association = (Element)associationNodes.item(i);
-            association.setAttribute(ProductCmptGenImplClassBuilder.XML_ATTRIBUTE_TARGET_RUNTIME_ID,
-                    getTargetRuntimeId(associations[i]));
+            association.setAttribute(XML_ATTRIBUTE_TARGET_RUNTIME_ID, getTargetRuntimeId(associations[i]));
         }
     }
 

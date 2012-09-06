@@ -30,6 +30,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -57,13 +58,12 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
+import org.faktorips.devtools.stdbuilder.table.TableContentBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.devtools.stdbuilder.testcase.TestCaseBuilder;
 import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
@@ -90,20 +90,6 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 
     // a map that contains the table of contents objects (value) for each table of contents file.
     private Map<IFile, TableOfContent> tocFileMap = new HashMap<IFile, TableOfContent>();
-
-    // required builders
-    private ProductCmptImplClassBuilder productCmptTypeImplClassBuilder;
-    private ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder;
-    private ProductCmptBuilder productCmptBuilder;
-    private TableImplBuilder tableImplClassBuilder;
-    private TestCaseTypeClassBuilder testCaseTypeClassBuilder;
-    private TestCaseBuilder testCaseBuilder;
-    private EnumTypeBuilder enumTypeBuilder;
-    private FormulaTestBuilder formulaTestBuilder;
-    private ModelTypeXmlBuilder policyModelTypeXmlBuilder;
-    private ModelTypeXmlBuilder productModelTypeXmlBuilder;
-    private PolicyCmptImplClassBuilder policyCmptImplClassBuilder;
-    private EnumXmlAdapterBuilder enumXmlAdapterBuilder;
 
     private boolean generateEntriesForModelTypes;
 
@@ -141,54 +127,6 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 
     public void setGenerateEntriesForModelTypes(boolean generateEntriesForModelTypes) {
         this.generateEntriesForModelTypes = generateEntriesForModelTypes;
-    }
-
-    public void setEnumXmlAdapterBuilder(EnumXmlAdapterBuilder enumXmlAdapterBuilder) {
-        this.enumXmlAdapterBuilder = enumXmlAdapterBuilder;
-    }
-
-    public void setProductCmptTypeImplClassBuilder(ProductCmptImplClassBuilder builder) {
-        productCmptTypeImplClassBuilder = builder;
-    }
-
-    public void setProductCmptGenImplClassBuilder(ProductCmptGenImplClassBuilder builder) {
-        productCmptGenImplClassBuilder = builder;
-    }
-
-    public void setProductCmptBuilder(ProductCmptBuilder builder) {
-        productCmptBuilder = builder;
-    }
-
-    public void setTableImplBuilder(TableImplBuilder builder) {
-        tableImplClassBuilder = builder;
-    }
-
-    public void setTestCaseTypeClassBuilder(TestCaseTypeClassBuilder testCaseTypeClassBuilder) {
-        this.testCaseTypeClassBuilder = testCaseTypeClassBuilder;
-    }
-
-    public void setTestCaseBuilder(TestCaseBuilder testCaseBuilder) {
-        this.testCaseBuilder = testCaseBuilder;
-    }
-
-    public void setEnumTypeBuilder(EnumTypeBuilder enumTypeBuilder) {
-        this.enumTypeBuilder = enumTypeBuilder;
-    }
-
-    public void setFormulaTestBuilder(FormulaTestBuilder formulaTestBuilder) {
-        this.formulaTestBuilder = formulaTestBuilder;
-    }
-
-    public void setPolicyModelTypeXmlBuilder(ModelTypeXmlBuilder policyModelTypeXmlBuilder) {
-        this.policyModelTypeXmlBuilder = policyModelTypeXmlBuilder;
-    }
-
-    public void setProductModelTypeXmlBuilder(ModelTypeXmlBuilder productModelTypeXmlBuilder) {
-        this.productModelTypeXmlBuilder = productModelTypeXmlBuilder;
-    }
-
-    public void setPolicyCmptImplClassBuilder(PolicyCmptImplClassBuilder policyCmptImplClassBuilder) {
-        this.policyCmptImplClassBuilder = policyCmptImplClassBuilder;
     }
 
     /**
@@ -440,18 +378,20 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         if (kind == null) {
             return null;
         }
-        String packageString = getBuilderSet().getPackage(this, productCmpt.getIpsSrcFile()).replace('.', '/');
-        String xmlResourceName = packageString + '/' + productCmpt.getName() + ".xml"; //$NON-NLS-1$
+        IPath xmlContentRelativeFile = getBuilderSet().getBuilderByClass(ProductCmptXMLBuilder.class)
+                .getXmlContentRelativeFile(productCmpt.getIpsSrcFile());
         String ipsObjectId = productCmpt.getRuntimeId();
         String ipsObjectQName = productCmpt.getQualifiedName();
-        String implementationClass = productCmptTypeImplClassBuilder.getQualifiedClassName(pcType.getIpsSrcFile());
-        String generationImplClass = productCmptGenImplClassBuilder.getQualifiedClassName(pcType.getIpsSrcFile());
+        String implementationClass = getBuilderSet().getProductCmptImplClassBuilder().getQualifiedClassName(
+                pcType.getIpsSrcFile());
+        String generationImplClass = getBuilderSet().getProductCmptGenImplClassBuilder().getQualifiedClassName(
+                pcType.getIpsSrcFile());
         String kindId = productCmpt.findProductCmptKind().getRuntimeId();
         String versionId = productCmpt.getVersionId();
         DateTime validTo = DateTime.createDateOnly(productCmpt.getValidTo());
 
         ProductCmptTocEntry entry = new ProductCmptTocEntry(ipsObjectId, ipsObjectQName, kindId, versionId,
-                xmlResourceName, implementationClass, generationImplClass, validTo);
+                xmlContentRelativeFile.toString(), implementationClass, generationImplClass, validTo);
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
         List<GenerationTocEntry> genEntries = new ArrayList<GenerationTocEntry>(generations.length);
         for (IIpsObjectGeneration generation : generations) {
@@ -459,11 +399,13 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             IProductCmptGeneration gen = (IProductCmptGeneration)generation;
             String generationClassName;
             if (gen.getProductCmpt().containsFormula() && getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
-                generationClassName = productCmptBuilder.getQualifiedClassName((IProductCmptGeneration)generation);
+                generationClassName = getBuilderSet().getProductCmptBuilder().getQualifiedClassName(
+                        (IProductCmptGeneration)generation);
             } else {
-                generationClassName = productCmptGenImplClassBuilder.getQualifiedClassName(pcType);
+                generationClassName = getBuilderSet().getProductCmptGenImplClassBuilder().getQualifiedClassName(pcType);
             }
-            genEntries.add(new GenerationTocEntry(entry, validFrom, generationClassName, xmlResourceName));
+            genEntries.add(new GenerationTocEntry(entry, validFrom, generationClassName, xmlContentRelativeFile
+                    .toString()));
         }
         entry.setGenerationEntries(genEntries);
         return entry;
@@ -484,7 +426,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String objectId = packageRootName + "." + productCmpt.getQualifiedName(); //$NON-NLS-1$
         objectId = objectId.replace('.', '/') + "." + IpsObjectType.PRODUCT_CMPT.getFileExtension(); //$NON-NLS-1$
 
-        String formulaTestCaseName = formulaTestBuilder.getQualifiedClassName(productCmpt);
+        String formulaTestCaseName = getBuilderSet().getBuilderByClass(FormulaTestBuilder.class).getQualifiedClassName(
+                productCmpt);
 
         String kindId = productCmpt.findProductCmptKind().getName();
         TocEntryObject entry = new FormulaTestTocEntry(objectId, productCmpt.getQualifiedName(), kindId,
@@ -499,6 +442,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      */
     private void removeFormulaTestEntry(IIpsSrcFile ipsSrcFile) throws CoreException {
         getToc(ipsSrcFile).removeEntry(new QualifiedNameType(ipsSrcFile.getIpsObjectName(), IpsObjectType.TEST_CASE));
+        FormulaTestBuilder formulaTestBuilder = getBuilderSet().getBuilderByClass(FormulaTestBuilder.class);
         if (formulaTestBuilder != null) {
             formulaTestBuilder.delete(ipsSrcFile);
         }
@@ -509,11 +453,12 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         if (tableStructure == null) {
             return null;
         }
-        String packageInternal = getBuilderSet().getPackage(this, tableContents.getIpsSrcFile());
-        String tableStructureName = tableImplClassBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile());
-        String xmlResourceName = packageInternal.replace('.', '/') + '/' + tableContents.getName() + ".xml"; //$NON-NLS-1$
+        TableContentBuilder tableContentBuilder = getBuilderSet().getBuilderByClass(TableContentBuilder.class);
+        IPath xmlRelativeFile = tableContentBuilder.getXmlContentRelativeFile(tableContents.getIpsSrcFile());
+        String tableStructureName = getBuilderSet().getBuilderByClass(TableImplBuilder.class).getQualifiedClassName(
+                tableStructure.getIpsSrcFile());
         TocEntryObject entry = new TableContentTocEntry(tableContents.getQualifiedName(),
-                tableContents.getQualifiedName(), xmlResourceName, tableStructureName);
+                tableContents.getQualifiedName(), xmlRelativeFile.toString(), tableStructureName);
         return entry;
     }
 
@@ -533,8 +478,10 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String objectId = packageRootName + "." + testCase.getQualifiedName(); //$NON-NLS-1$
         objectId = objectId.replace('.', '/') + "." + IpsObjectType.TEST_CASE.getFileExtension(); //$NON-NLS-1$
 
-        String xmlResourceName = testCaseBuilder.getXmlResourcePath(testCase);
-        String testCaseTypeName = testCaseTypeClassBuilder.getQualifiedClassName(type);
+        String xmlResourceName = getBuilderSet().getBuilderByClass(TestCaseBuilder.class)
+                .getXmlContentRelativeFile(testCase.getIpsSrcFile()).toString();
+        String testCaseTypeName = getBuilderSet().getBuilderByClass(TestCaseTypeClassBuilder.class)
+                .getQualifiedClassName(type);
         TocEntryObject entry = new TestCaseTocEntry(objectId, testCase.getQualifiedName(), xmlResourceName,
                 testCaseTypeName);
         return entry;
@@ -555,11 +502,12 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String objectId = packageRootName + "." + enumContent.getQualifiedName(); //$NON-NLS-1$
         objectId = objectId.replace('.', '/') + "." + IpsObjectType.ENUM_CONTENT.getFileExtension(); //$NON-NLS-1$
 
-        String packageString = getBuilderSet().getPackage(this, enumContent.getIpsSrcFile()).replace('.', '/');
-        String xmlResourceName = packageString + '/' + enumContent.getName() + ".xml"; //$NON-NLS-1$
-        String enumTypeName = enumTypeBuilder.getQualifiedClassName(enumType);
-        TocEntryObject entry = new EnumContentTocEntry(objectId, enumContent.getQualifiedName(), xmlResourceName,
-                enumTypeName);
+        IPath xmlResourceName = getBuilderSet().getBuilderByClass(EnumContentBuilder.class).getXmlContentRelativeFile(
+                enumContent.getIpsSrcFile());
+
+        String enumTypeName = getBuilderSet().getBuilderByClass(EnumTypeBuilder.class).getQualifiedClassName(enumType);
+        TocEntryObject entry = new EnumContentTocEntry(objectId, enumContent.getQualifiedName(),
+                xmlResourceName.toString(), enumTypeName);
         return entry;
     }
 
@@ -571,7 +519,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             return null;
         }
         TocEntryObject entry = new EnumXmlAdapterTocEntry(enumType.getQualifiedName(), enumType.getQualifiedName(),
-                enumXmlAdapterBuilder.getQualifiedClassName(enumType));
+                getBuilderSet().getBuilderByClass(EnumXmlAdapterBuilder.class).getQualifiedClassName(enumType));
         return entry;
     }
 
@@ -580,16 +528,18 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      */
     public TocEntryObject createTocEntry(IType type) throws CoreException {
         String javaImplClass;
-        String xmlResourceName;
+        IPath xmlResourceName;
         String id = type.getQualifiedName(); // for model types, the qualified name is also the id.
         if (type instanceof IPolicyCmptType) {
-            javaImplClass = policyCmptImplClassBuilder.getQualifiedClassName(type);
-            xmlResourceName = policyModelTypeXmlBuilder.getXmlResourcePath(type);
-            return new PolicyCmptTypeTocEntry(id, type.getQualifiedName(), xmlResourceName, javaImplClass);
+            javaImplClass = getBuilderSet().getPolicyCmptImplClassBuilder().getQualifiedClassName(type);
+            xmlResourceName = getBuilderSet().getBuilderByClass(PolicyModelTypeXmlBuilder.class)
+                    .getXmlContentRelativeFile(type.getIpsSrcFile());
+            return new PolicyCmptTypeTocEntry(id, type.getQualifiedName(), xmlResourceName.toString(), javaImplClass);
         } else if (type instanceof IProductCmptType) {
-            javaImplClass = productCmptTypeImplClassBuilder.getQualifiedClassName(type);
-            xmlResourceName = productModelTypeXmlBuilder.getXmlResourcePath(type);
-            return new ProductCmptTypeTocEntry(id, type.getQualifiedName(), xmlResourceName, javaImplClass);
+            javaImplClass = getBuilderSet().getProductCmptImplClassBuilder().getQualifiedClassName(type);
+            xmlResourceName = getBuilderSet().getBuilderByClass(ProductCmptXMLBuilder.class).getXmlContentRelativeFile(
+                    type.getIpsSrcFile());
+            return new ProductCmptTypeTocEntry(id, type.getQualifiedName(), xmlResourceName.toString(), javaImplClass);
         } else {
             throw new CoreException(new IpsStatus("Unkown subclass " + type.getClass()));
         }
@@ -610,5 +560,10 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     @Override
     public boolean buildsDerivedArtefacts() {
         return true;
+    }
+
+    @Override
+    public boolean isBuildingInternalArtefacts() {
+        return getBuilderSet().isGeneratePublishedInterfaces();
     }
 }

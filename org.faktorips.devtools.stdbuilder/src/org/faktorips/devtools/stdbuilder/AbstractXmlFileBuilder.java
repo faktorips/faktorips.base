@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -94,19 +93,25 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    private IFolder getXmlContentFileFolder(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String packageString = getBuilderSet().getPackage(this, ipsSrcFile);
+    /**
+     * Returns the relative path to the generated XML file.
+     * 
+     * @param ipsSrcFile The {@link IIpsSrcFile} you want to generate
+     * @return the relative path to the generated XML file
+     */
+    public IPath getXmlContentRelativeFile(IIpsSrcFile ipsSrcFile) {
+        String packageString = getBuilderSet().getPackageName(ipsSrcFile, !isBuildingInternalArtefacts(),
+                !buildsDerivedArtefacts());
         IPath pathToPack = new Path(packageString.replace('.', '/'));
-        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFolder(pathToPack);
+        return pathToPack.append(StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName())).addFileExtension("xml");
     }
 
     /**
      * Returns the handle to the file where the xml content for the given ips source file is stored.
      */
     public IFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IFile file = (IFile)ipsSrcFile.getEnclosingResource();
-        IFolder folder = getXmlContentFileFolder(ipsSrcFile);
-        return folder.getFile(StringUtil.getFilenameWithoutExtension(file.getName()) + ".xml"); //$NON-NLS-1$
+        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true)
+                .getFile(getXmlContentRelativeFile(ipsSrcFile));
     }
 
     /**
@@ -143,6 +148,11 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
         } catch (IOException e) {
             throw new CoreException(new IpsStatus(e));
         }
+    }
+
+    @Override
+    public boolean isBuildingInternalArtefacts() {
+        return getBuilderSet().isGeneratePublishedInterfaces();
     }
 
 }

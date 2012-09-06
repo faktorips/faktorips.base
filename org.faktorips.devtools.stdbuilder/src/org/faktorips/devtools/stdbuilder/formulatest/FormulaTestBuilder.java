@@ -64,8 +64,8 @@ import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptGenerationCuBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationImplClassBuilder;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.test.IpsFormulaTestCase;
@@ -97,7 +97,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
 
     // wired builder
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
-    private ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder;
+    private ProductCmptGenerationImplClassBuilder productCmptGenImplClassBuilder;
     private ProductCmptBuilder productCmptBuilder;
 
     private Map<IFormula, Integer> formulasToTestForGeneration;
@@ -142,7 +142,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * @param productCmptGenImplClassBuilder The productCmptGenImplClassBuilder to set.
      */
-    public synchronized void setProductCmptGenImplClassBuilder(ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder) {
+    public synchronized void setProductCmptGenImplClassBuilder(ProductCmptGenerationImplClassBuilder productCmptGenImplClassBuilder) {
         this.productCmptGenImplClassBuilder = productCmptGenImplClassBuilder;
     }
 
@@ -220,7 +220,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
      * Returns the package folder for the given ips sourcefile.
      */
     private IFolder getFolder(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String packageString = getBuilderSet().getPackage(this, ipsSrcFile);
+        String packageString = getBuilderSet().getPackageName(ipsSrcFile, false, false);
         IPath pathToPack = new Path(packageString.replace('.', '/'));
         return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFolder(pathToPack);
     }

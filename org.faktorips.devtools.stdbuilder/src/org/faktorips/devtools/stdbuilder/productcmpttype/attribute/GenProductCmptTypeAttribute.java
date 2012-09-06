@@ -36,7 +36,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
-import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.type.GenAttribute;
 import org.faktorips.runtime.internal.MultiValueXmlHelper;
@@ -485,7 +484,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
      * @throws CoreException If an error occurs while searching for the <tt>IPolicyCmptType</tt>.
      */
     public IType findGeneratedJavaTypeForPolicyCmptType(boolean forInterface) throws CoreException {
-        BasePolicyCmptTypeBuilder policyCmptTypeBuilder = forInterface ? getGenType().getBuilderSet()
+        JavaSourceFileBuilder policyCmptTypeBuilder = forInterface ? getGenType().getBuilderSet()
                 .getPolicyCmptInterfaceBuilder() : getGenType().getBuilderSet().getPolicyCmptImplClassBuilder();
 
         IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(getProductCmptType().getIpsProject());

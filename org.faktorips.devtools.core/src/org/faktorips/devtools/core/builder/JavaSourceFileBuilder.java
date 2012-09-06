@@ -156,8 +156,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     private FacadeHelper facadeHelper;
 
-    private JavaPackageStructure packageStructureAdapter = new JavaPackageStructure();
-
     private JavaClassNaming javaClassNaming;
 
     private final IJavaClassNameProvider javaClassNameProvider;
@@ -173,7 +171,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public JavaSourceFileBuilder(DefaultBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
-        setJavaClassNaming(new JavaClassNaming(!buildsDerivedArtefacts()));
+        setJavaClassNaming(new JavaClassNaming(builderSet, !buildsDerivedArtefacts()));
         javaClassNameProvider = createJavaClassNameProvider(builderSet.isGeneratePublishedInterfaces());
     }
 
@@ -315,7 +313,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @throws CoreException is delegated from calls to other methods
      */
     public final String getPackage(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getPackageStructure().getPackage(this, ipsSrcFile);
+        return getPackageStructure().getPackageName(ipsSrcFile, !isBuildingInternalArtefacts(),
+                !buildsDerivedArtefacts());
     }
 
     /**
@@ -331,7 +330,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @throws CoreException is delegated from calls to other methods
      */
     public final String getPackage() throws CoreException {
-        return getPackageStructure().getPackage(this, getIpsSrcFile());
+        return getPackage(getIpsSrcFile());
     }
 
     /**
@@ -435,7 +434,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Returns the java package structure available for this builder.
      */
     public IJavaPackageStructure getPackageStructure() {
-        return packageStructureAdapter;
+        return getBuilderSet();
     }
 
     /**
@@ -1062,7 +1061,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                     .getArtefactDestination(buildsDerivedArtefacts());
             IPackageFragmentRoot javaRoot = ipsObject.getIpsProject().getJavaProject()
                     .getPackageFragmentRoot(outputFolder);
-            String packageName = getBuilderSet().getPackage(this, ipsObject.getIpsSrcFile());
+            String packageName = getPackage(ipsObject.getIpsSrcFile());
             IPackageFragment fragment = javaRoot.getPackageFragment(packageName);
             List<IType> javaTypes = new ArrayList<IType>(1);
             getGeneratedJavaTypesThis(ipsObject, fragment, javaTypes);
@@ -1101,6 +1100,11 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * This method is called by constructor and is intended to have static content!
      */
     public abstract boolean isBuildingPublishedSourceFile();
+
+    @Override
+    public boolean isBuildingInternalArtefacts() {
+        return !isBuildingPublishedSourceFile();
+    }
 
     /**
      * Returns true if an interface is generated, false if a class is generated.

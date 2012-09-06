@@ -63,8 +63,8 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        tableImplBuilder = builderSet.getBuildersByClass(TableImplBuilder.class).get(0);
-        tocFileBuilder = builderSet.getBuildersByClass(TocFileBuilder.class).get(0);
+        tableImplBuilder = builderSet.getBuilderByClass(TableImplBuilder.class).get(0);
+        tocFileBuilder = builderSet.getBuilderByClass(TocFileBuilder.class).get(0);
         validFrom = new GregorianCalendar();
     }
 

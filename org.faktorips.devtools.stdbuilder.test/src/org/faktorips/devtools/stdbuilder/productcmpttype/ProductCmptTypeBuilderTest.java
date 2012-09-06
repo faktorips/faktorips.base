@@ -61,22 +61,22 @@ public abstract class ProductCmptTypeBuilderTest extends AbstractStdBuilderTest 
                 (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet());
 
         javaClassConfiguredPolicy = getGeneratedJavaClass(policyCmptType, false,
-                builderSet.getBuildersByClass(PolicyCmptImplClassBuilder.class).get(0), POLICY_NAME);
+                builderSet.getBuilderByClass(PolicyCmptImplClassBuilder.class).get(0), POLICY_NAME);
         javaInterfaceConfiguredPolicy = getGeneratedJavaInterface(policyCmptType, false,
-                builderSet.getBuildersByClass(PolicyCmptInterfaceBuilder.class).get(0), POLICY_NAME);
+                builderSet.getBuilderByClass(PolicyCmptInterfaceBuilder.class).get(0), POLICY_NAME);
 
         IChangesOverTimeNamingConvention changesOverTimeNamingConvention = ipsProject
                 .getChangesInTimeNamingConventionForGeneratedCode();
         javaClassGeneration = getGeneratedJavaClass(productCmptType, false,
-                builderSet.getBuildersByClass(ProductCmptGenImplClassBuilder.class).get(0), PRODUCT_NAME
+                builderSet.getBuilderByClass(ProductCmptGenImplClassBuilder.class).get(0), PRODUCT_NAME
                         + changesOverTimeNamingConvention.getGenerationConceptNameAbbreviation());
         javaInterfaceGeneration = getGeneratedJavaInterface(productCmptType, false,
-                builderSet.getBuildersByClass(ProductCmptGenInterfaceBuilder.class).get(0), PRODUCT_NAME
+                builderSet.getBuilderByClass(ProductCmptGenInterfaceBuilder.class).get(0), PRODUCT_NAME
                         + changesOverTimeNamingConvention.getGenerationConceptNameAbbreviation());
 
         javaClass = getGeneratedJavaClass(productCmptType, false,
-                builderSet.getBuildersByClass(ProductCmptImplClassBuilder.class).get(0), PRODUCT_NAME);
+                builderSet.getBuilderByClass(ProductCmptImplClassBuilder.class).get(0), PRODUCT_NAME);
         javaInterface = getGeneratedJavaInterface(productCmptType, false,
-                builderSet.getBuildersByClass(ProductCmptInterfaceBuilder.class).get(0), PRODUCT_NAME);
+                builderSet.getBuilderByClass(ProductCmptInterfaceBuilder.class).get(0), PRODUCT_NAME);
     }
 }
