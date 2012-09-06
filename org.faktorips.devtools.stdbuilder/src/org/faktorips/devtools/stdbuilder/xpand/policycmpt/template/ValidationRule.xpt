@@ -10,9 +10,36 @@
         }
 «ENDDEFINE»
 
+«DEFINE constants FOR XValidationRule-»
+	«IF !generatePublishedInterfaces-»
+		«EXPAND constantMsgCode-»
+		«EXPAND constantRuleName-»
+	«ENDIF-»
+«ENDDEFINE»
+
 «DEFINE validationRuleMethods FOR XValidationRule-»
 	«EXPAND execRuleMethod»
 	«EXPAND createMessageFor»
+«ENDDEFINE»
+
+«DEFINE constantMsgCode FOR XValidationRule-»
+    /**
+     * «localizedJDoc("FIELD_MSG_CODE", name)»
+     * 
+     * @generated
+     */
+    public final static String «constantNameMessageCode» = "«messageCode»";
+«ENDDEFINE»
+
+«DEFINE constantRuleName FOR XValidationRule-»
+	«IF configured-»
+	    /**
+	     * «localizedJDoc("FIELD_RULE_NAME", name)»
+	     * 
+	     * @generated
+	     */
+	    public final static String «constantNameRuleName» = "«name»";
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE execRuleMethod FOR XValidationRule-»
@@ -91,6 +118,6 @@
         «MessagesHelper()» messageHelper = new «MessagesHelper()»("«validateMessageBundleName»",
                 getClass().getClassLoader());
         String msgText = messageHelper.getMessage("«validationMessageKey»", context.getLocale()«FOREACH replacementParameters AS param», «param»«ENDFOREACH»);
-        return new «Message()»(«messageCode», msgText, «severityConstant», invalidObjectProperties «IF containsReplacementParameters», replacementParameters«ENDIF»);
+        return new «Message()»(«constantNameMessageCode», msgText, «severityConstant», invalidObjectProperties «IF containsReplacementParameters», replacementParameters«ENDIF»);
     }
 «ENDDEFINE»

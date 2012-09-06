@@ -134,13 +134,17 @@ public class XValidationRule extends AbstractGeneratorModelNode {
         return ValidationRuleMessagesGenerator.getMessageKey(getIpsObjectPartContainer());
     }
 
-    public String getMessageCode() {
+    public String getConstantNameMessageCode() {
         String upperCaseName = getName();
         if (isGenerateSeparatedCamelCase()) {
             upperCaseName = StringUtil.camelCaseToUnderscore(upperCaseName, false);
         }
         upperCaseName = upperCaseName.toUpperCase();
         return "MSG_CODE_" + upperCaseName;
+    }
+
+    public String getMessageCode() {
+        return getValidationRule().getMessageCode();
     }
 
     public String getSeverityConstant() {

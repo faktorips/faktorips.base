@@ -25,6 +25,8 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces»{
 
 		«EXPAND PolicyCmptAssociation::constantForPropertyName FOREACH associations»
+		
+		«EXPAND ValidationRule::constants FOREACH validationRules»
 
 		«FOREACH attributes AS this-»
 			«IF !published || !generatePublishedInterfaces-»
