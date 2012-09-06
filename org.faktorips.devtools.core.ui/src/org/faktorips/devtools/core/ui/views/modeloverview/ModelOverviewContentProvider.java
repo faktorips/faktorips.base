@@ -300,6 +300,9 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
     @Override
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof IModelOverviewNode) {
+            if (parentElement instanceof ComponentNode && ((ComponentNode)parentElement).isRepetition()) {
+                return new Object[0];
+            }
             return ((IModelOverviewNode)parentElement).getChildren().toArray();
         } else {
             return new Object[0];

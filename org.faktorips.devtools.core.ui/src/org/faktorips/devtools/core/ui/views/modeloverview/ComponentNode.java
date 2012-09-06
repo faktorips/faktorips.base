@@ -93,6 +93,28 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
         }
     }
 
+    /**
+     * Checks if any of the parent nodes contains the same value. Two ComponentNodes with the same
+     * value are considered equal in this method.
+     * 
+     * @return {@code true} if any parent node contains the same value, otherwise {@code false}
+     */
+    public boolean isRepetition() {
+        if (getParent() == null) {
+            return false;
+        }
+        return getParent().getParent().isRepetitionInternal(this.getValue());
+    }
+
+    private boolean isRepetitionInternal(IType value) {
+        if (this.value.equals(value)) {
+            return true;
+        } else if (getParent() == null) {
+            return false;
+        }
+        return getParent().getParent().isRepetitionInternal(value);
+    }
+
     @Override
     public AbstractStructureNode getParent() {
         return parent;
@@ -121,6 +143,9 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
         return this.rootProject;
     }
 
+    /**
+     * @return the child CompositeNode of this node, or null if no such child exists
+     */
     public CompositeNode getCompositeChild() {
         if (children == null) {
             getChildren();
@@ -128,6 +153,9 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
         return compositeChild;
     }
 
+    /**
+     * @return the child SubtypeNode of this node, or null if no such child exists
+     */
     public SubtypeNode getSubtypeChild() {
         if (children == null) {
             getChildren();

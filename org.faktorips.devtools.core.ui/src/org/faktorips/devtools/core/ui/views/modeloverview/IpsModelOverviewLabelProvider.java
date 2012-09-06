@@ -14,10 +14,14 @@
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -26,20 +30,33 @@ public class IpsModelOverviewLabelProvider extends LabelProvider implements ISty
 
     private boolean showCardinalities = true;
     private boolean showRolenames = true;
+    private LocalResourceManager resourceManager;
 
     public IpsModelOverviewLabelProvider() {
         super();
+        resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
 
     @Override
     public Image getImage(Object element) {
         if (element instanceof ComponentNode) {
             ComponentNode node = (ComponentNode)element;
+            String imageName;
+            if (node.getValue() instanceof PolicyCmptType) {
+                imageName = "PolicyCmptType.gif"; //$NON-NLS-1$
+            } else {
+                imageName = "ProductCmptType.gif"; //$NON-NLS-1$
+            }
 
-            IAdaptable adaptable = node.getValue();
-            Image result = IpsUIPlugin.getImageHandling().getImage(adaptable);
-            if (result != null) {
-                return result;
+            if (node.isRepetition()) {
+                return (Image)resourceManager.get(IpsUIPlugin.getImageHandling().getSharedOverlayImage(imageName,
+                        "ovr16/loop_ovr.gif", IDecoration.BOTTOM_LEFT)); //$NON-NLS-1$
+            } else {
+                IAdaptable adaptable = node.getValue();
+                Image result = IpsUIPlugin.getImageHandling().getImage(adaptable);
+                if (result != null) {
+                    return result;
+                }
             }
         } else if (element instanceof CompositeNode) {
             return IpsUIPlugin.getImageHandling().getSharedImage("AssociationType-Aggregation.gif", true); //$NON-NLS-1$
@@ -83,8 +100,13 @@ public class IpsModelOverviewLabelProvider extends LabelProvider implements ISty
             }
 
         }
-
         return styledLabel;
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        resourceManager.dispose();
     }
 
     private String getCardinalityText(int cardinality) {

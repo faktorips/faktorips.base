@@ -30,6 +30,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
@@ -44,15 +45,31 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         // setup
         IIpsProject project = newIpsProject();
         newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
-        newProductCmptType(project, "TestProductComponentType");
 
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
         Object[] elements = provider.collectElements(project, new NullProgressMonitor());
 
         // test
-        for (Object object : elements) {
-            assertFalse(provider.hasChildren(object));
-        }
+        assertFalse(provider.hasChildren(elements[0]));
+    }
+
+    @Test
+    public void testHasChildren_CyclicNodeHasNoChildren() throws CoreException {
+        // setup
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+
+        IIpsProject project = newIpsProject();
+        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
+
+        IAssociation vertrag2vertrag = vertrag.newAssociation();
+        vertrag2vertrag.setTarget(vertrag.getQualifiedName());
+        vertrag2vertrag.setAssociationType(AssociationType.AGGREGATION);
+
+        Object[] elements = provider.collectElements(vertrag, new NullProgressMonitor());
+
+        Object[] structureChildren = provider.getChildren(elements[0]);
+        Object[] componentChildren = provider.getChildren(structureChildren[0]);
+        assertFalse(provider.hasChildren(componentChildren[0]));
     }
 
     @Test
@@ -85,6 +102,78 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         // test
         assertNotNull(provider.getChildren(elements[0]));
         assertEquals(0, provider.getChildren(elements[0]).length);
+    }
+
+    @Test
+    public void testGetChildren_DetectOneElementCycle() throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        IPolicyCmptType selfReferencingVertrag = newPolicyCmptTypeWithoutProductCmptType(project,
+                "SelfReferencingVertrag");
+        IAssociation association = selfReferencingVertrag.newAssociation();
+        association.setTarget(selfReferencingVertrag.getQualifiedName());
+        association.setAssociationType(AssociationType.AGGREGATION);
+
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] elements = provider.collectElements(project, new NullProgressMonitor());
+
+        // tests
+        assertEquals(1, elements.length); // only one root element
+
+        Object[] structureChildren = provider.getChildren(elements[0]);
+        assertEquals(1, structureChildren.length); // only one structure child
+        assertTrue(structureChildren[0] instanceof CompositeNode);
+
+        Object[] componentChildren = provider.getChildren(structureChildren[0]);
+        assertEquals(1, componentChildren.length);
+        AssociationComponentNode componentNode = (AssociationComponentNode)componentChildren[0];
+        assertEquals(selfReferencingVertrag, componentNode.getValue()); // the self referencing node
+                                                                        // has itself as a child!
+        assertTrue(componentNode.isRepetition());
+        assertEquals(0, provider.getChildren(componentNode).length);
+    }
+
+    @Test
+    public void testGetChildren_DetectMultiElementCycle() throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        IPolicyCmptType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "typeA");
+        IPolicyCmptType typeB = newPolicyCmptTypeWithoutProductCmptType(project, "typeB");
+        IPolicyCmptType typeC = newPolicyCmptTypeWithoutProductCmptType(project, "typeC");
+
+        IAssociation ab = typeA.newAssociation();
+        ab.setTarget(typeB.getQualifiedName());
+        ab.setAssociationType(AssociationType.AGGREGATION);
+
+        IAssociation bc = typeB.newAssociation();
+        bc.setTarget(typeC.getQualifiedName());
+        bc.setAssociationType(AssociationType.AGGREGATION);
+
+        IAssociation ac = typeC.newAssociation();
+        ac.setTarget(typeA.getQualifiedName());
+        ac.setAssociationType(AssociationType.AGGREGATION);
+
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] elements = provider.collectElements(project, new NullProgressMonitor());
+
+        assertEquals(1, elements.length);
+
+        // get the parent element
+        Object[] structChildren1 = provider.getChildren(elements[0]);
+
+        // get the first level children
+        Object[] componentChildren1 = provider.getChildren(structChildren1[0]);
+        Object[] structChildren2 = provider.getChildren(componentChildren1[0]);
+
+        // get the second level children
+        Object[] componentChildren2 = provider.getChildren(structChildren2[0]);
+        Object[] structChildren3 = provider.getChildren(componentChildren2[0]);
+
+        // get the third level children
+        Object[] componentChildren3 = provider.getChildren(structChildren3[0]);
+
+        assertTrue(((ComponentNode)componentChildren3[0]).isRepetition());
+        assertEquals(((ComponentNode)elements[0]).getValue(), ((ComponentNode)componentChildren3[0]).getValue());
     }
 
     @Test
