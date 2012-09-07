@@ -15,7 +15,7 @@ package org.faktorips.devtools.stdbuilder.xpand;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -33,6 +33,9 @@ public class XpandBuilderTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private StandardBuilderSet builderSet;
 
+    @Mock
+    private GeneratorModelContext generatorModelContext;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -48,10 +51,11 @@ public class XpandBuilderTest {
 
     @Test
     public void testBeforeBuildProcess() throws Exception {
+        when(generatorModelContext.getResourceManager()).thenReturn(new OptimizedResourceManager());
         // Using PolicyCmptImlClassBuilder as concrete instance knowing that this also tests this
         // other class
         PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(false, builderSet,
-                mock(GeneratorModelContext.class), null);
+                generatorModelContext, null);
         policyCmptImplClassBuilder.beforeBuildProcess(ipsProject, 0);
         assertNotNull(policyCmptImplClassBuilder.getOut());
         assertNotNull(policyCmptImplClassBuilder.getTemplateDefinition());

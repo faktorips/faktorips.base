@@ -218,6 +218,7 @@ public class XProductClassTest {
     @Test
     public void testGetConfiguredAttributes() throws Exception {
         when(xProductClass.getType()).thenReturn(type);
+        doReturn(true).when(xProductClass).isChangeOverTimeClass();
         doReturn(xPolicyCmpt).when(xProductClass).getPolicyCmptClass();
 
         assertTrue(xProductClass.getConfiguredAttributesInternal().isEmpty());

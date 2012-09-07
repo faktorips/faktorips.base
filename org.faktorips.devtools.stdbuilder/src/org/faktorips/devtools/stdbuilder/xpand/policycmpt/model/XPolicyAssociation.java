@@ -49,7 +49,6 @@ public class XPolicyAssociation extends XAssociation {
         return (IPolicyCmptTypeAssociation)super.getAssociation();
     }
 
-    // TODO need to test
     public Set<XDetailToMasterDerivedUnionAssociation> getSubsettedDetailToMasterAssociations() {
         return getSubsettedDetailToMasterAssociationsInternal(new HashSet<String>(), getTypeOfAssociation());
     }

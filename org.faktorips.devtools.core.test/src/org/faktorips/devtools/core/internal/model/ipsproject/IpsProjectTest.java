@@ -89,6 +89,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
+import org.faktorips.util.ClassToInstancesMap;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
@@ -1638,8 +1639,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsArtefactBuilderSet projectABuilderSet = new DefaultBuilderSet() {
 
             @Override
-            protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
-                return new IIpsArtefactBuilder[0];
+            protected ClassToInstancesMap<IIpsArtefactBuilder> createBuilders() throws CoreException {
+                return new ClassToInstancesMap<IIpsArtefactBuilder>();
             }
 
         };
@@ -1680,8 +1681,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsArtefactBuilderSet projectBBuilderSet = new DefaultBuilderSet() {
 
             @Override
-            protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
-                return new IIpsArtefactBuilder[0];
+            protected ClassToInstancesMap<IIpsArtefactBuilder> createBuilders() throws CoreException {
+                return new ClassToInstancesMap<IIpsArtefactBuilder>();
             }
 
         };

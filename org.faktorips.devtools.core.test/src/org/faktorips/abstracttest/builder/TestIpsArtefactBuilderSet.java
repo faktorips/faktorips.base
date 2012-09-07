@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
+import org.faktorips.util.ClassToInstancesMap;
 
 public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
@@ -48,7 +49,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     private boolean isAggregateRootBuilder;
 
-    private final IIpsArtefactBuilder[] ipsArtefactBuilders;
+    private final ClassToInstancesMap<IIpsArtefactBuilder> ipsArtefactBuilders;
 
     /**
      * You can put any object for any key into this map. Some of the test methods in this test
@@ -64,7 +65,10 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     public TestIpsArtefactBuilderSet(IIpsArtefactBuilder[] builders) throws CoreException {
         super();
-        ipsArtefactBuilders = builders;
+        ipsArtefactBuilders = new ClassToInstancesMap<IIpsArtefactBuilder>();
+        for (IIpsArtefactBuilder ipsArtefactBuilder : builders) {
+            ipsArtefactBuilders.put(ipsArtefactBuilder);
+        }
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(CONFIG_PROPERTY_GENERATOR_LOCALE, Locale.GERMAN.getLanguage());
         TestBuilderSetConfig config = new TestBuilderSetConfig(properties);
@@ -77,7 +81,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
+    protected ClassToInstancesMap<IIpsArtefactBuilder> createBuilders() throws CoreException {
         return ipsArtefactBuilders;
     }
 
@@ -162,7 +166,6 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
         return (IFile)testObjectsMap.get(root);
     }
 
-    @Override
     public String getTocFilePackageName(IIpsPackageFragmentRoot root) {
         return (String)testObjectsMap.get(root);
     }

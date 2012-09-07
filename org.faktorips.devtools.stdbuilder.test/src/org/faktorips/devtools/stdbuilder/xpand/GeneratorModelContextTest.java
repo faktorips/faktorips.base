@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.xpand.model.ImportHandler;
-import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,11 +44,15 @@ public class GeneratorModelContextTest {
 
     @Mock
     private ImportHandler importHandler;
+
+    @Mock
+    private IJavaPackageStructure javaPackageStructure;
+
     private GeneratorModelContext generatorModelContext;
 
     @Before
     public void createGeneratorModelContext() throws Exception {
-        generatorModelContext = new GeneratorModelContext(config, annotationGeneratorMap);
+        generatorModelContext = new GeneratorModelContext(config, javaPackageStructure, annotationGeneratorMap);
         generatorModelContext.setImportHandler(importHandler);
     }
 

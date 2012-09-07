@@ -129,8 +129,8 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         incrementalBuild();
 
         // check if the target runtime id was updated in product cmpt c runtime xml
-        String packageOfProductC = ((DefaultBuilderSet)ipsProject.getIpsArtefactBuilderSet()).getPackage(builderSet
-                .getBuilderByClass(ProductCmptBuilder.class).get(0), productCmptC.getIpsSrcFile());
+        String packageOfProductC = ((DefaultBuilderSet)ipsProject.getIpsArtefactBuilderSet()).getPackageName(
+                productCmptC.getIpsSrcFile(), false, false);
         String productCXmlFile = packageOfProductC + "." + "productC";
         productCXmlFile = productCXmlFile.replaceAll("\\.", "/");
         productCXmlFile += ".xml";

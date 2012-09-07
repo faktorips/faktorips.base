@@ -51,25 +51,16 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetBuilderByClass() {
-        assertEquals(0, builderSet.getBuilderByClass(NotInBuilderSer.class).size());
-        assertEquals(5, builderSet.getBuilderByClass(StubJavaSourceFileBuilder.class).size());
-        assertEquals(a, builderSet.getBuilderByClass(StubJavaSourceFileBuilder.class).get(0));
-        assertEquals(b, builderSet.getBuilderByClass(StubJavaSourceFileBuilder.class).get(1));
-        assertEquals(c, builderSet.getBuilderByClass(StubJavaSourceFileBuilder.class).get(2));
-        assertEquals(d, builderSet.getBuilderByClass(StubJavaSourceFileBuilder.class).get(3));
-        assertEquals(e, builderSet.getBuilderByClass(StubJavaSourceFileBuilder.class).get(4));
-        assertEquals(1, builderSet.getBuilderByClass(A.class).size());
-        assertEquals(a, builderSet.getBuilderByClass(A.class).get(0));
-        assertEquals(1, builderSet.getBuilderByClass(B.class).size());
-        assertEquals(b, builderSet.getBuilderByClass(B.class).get(0));
-        assertEquals(3, builderSet.getBuilderByClass(C.class).size());
-        assertEquals(c, builderSet.getBuilderByClass(C.class).get(0));
-        assertEquals(d, builderSet.getBuilderByClass(C.class).get(1));
-        assertEquals(e, builderSet.getBuilderByClass(C.class).get(2));
-        assertEquals(1, builderSet.getBuilderByClass(DExtendsC.class).size());
-        assertEquals(d, builderSet.getBuilderByClass(DExtendsC.class).get(0));
-        assertEquals(1, builderSet.getBuilderByClass(EExtendsC.class).size());
-        assertEquals(e, builderSet.getBuilderByClass(EExtendsC.class).get(0));
+        assertEquals(a, builderSet.getBuilderByClass(A.class));
+        assertEquals(b, builderSet.getBuilderByClass(B.class));
+        assertEquals(c, builderSet.getBuilderByClass(C.class));
+        assertEquals(d, builderSet.getBuilderByClass(DExtendsC.class));
+        assertEquals(e, builderSet.getBuilderByClass(EExtendsC.class));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testGetBuilderByClass_fail() {
+        assertEquals(e, builderSet.getBuilderByClass(C.class));
     }
 
     class A extends StubJavaSourceFileBuilder {
