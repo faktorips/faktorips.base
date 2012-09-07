@@ -66,7 +66,6 @@ public class GeneratorModelContext {
             Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap) {
         this.config = config;
         this.annotationGeneratorMap = annotationGeneratorMap;
-        // TODO FIPS-1059
         this.javaClassNaming = new JavaClassNaming(true);
     }
 
