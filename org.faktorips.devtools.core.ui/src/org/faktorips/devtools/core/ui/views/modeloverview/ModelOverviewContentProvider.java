@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.views.modeloverview;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -60,11 +61,12 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
             List<IType> projectTypes = getProjectTypes(ipsProject, getCurrentlyNeededIpsObjectType(input));
             monitor.worked(1);
 
-            paths = new ArrayList<List<PathElement>>();
             Collection<IType> rootCandidates = getRootElementsForIType(input, projectTypes,
                     ToChildAssociationType.SELF, new ArrayList<IType>(), new ArrayList<List<PathElement>>(),
                     new ArrayList<PathElement>());
             monitor.worked(1);
+
+            paths = new ArrayList<List<PathElement>>();
             rootComponents = getRootElementsForIType(input, projectTypes, ToChildAssociationType.SELF, rootCandidates,
                     paths, new ArrayList<PathElement>());
             monitor.worked(1);
@@ -130,16 +132,14 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
             List<List<PathElement>> foundPaths,
             List<PathElement> callHierarchy) {
 
-        List<PathElement> callHierarchyTemp = new ArrayList<PathElement>(callHierarchy);
-        PathElement pathElement = new PathElement(element, association);
+        List<PathElement> callHierarchyTemp = new LinkedList<PathElement>(callHierarchy);
 
-        // TODO check correctness of this statement
+        PathElement pathElement = new PathElement(element, association);
+        // If the element is already contained in the callHierarchy we have detected a cycle
         if (callHierarchy.contains(pathElement)) {
-            // return empty HashSet because we have a cycle (this element is already contained in
-            // the call hierarchy)
             return new HashSet<IType>();
         } else {
-            callHierarchyTemp.add(pathElement);
+            callHierarchyTemp.add(0, pathElement);
         }
 
         IType supertype;

@@ -31,6 +31,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DecorationContext;
+import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -50,11 +51,15 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
+import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
@@ -75,6 +80,8 @@ public class IpsModelOverviewView extends ViewPart implements Observer {
     private IpsModelOverviewLabelProvider labelProvider;
 
     private ModelOverviewContentProvider provider;
+
+    private ITreeSelection selectionState;
 
     @Override
     public void createPartControl(Composite parent) {
@@ -185,17 +192,25 @@ public class IpsModelOverviewView extends ViewPart implements Observer {
         this.updateView();
     }
 
-    private TreePath computePath(List<PathElement> treePath) {
+    /**
+     * Returns a {@link TreePath} containing the corresponding {@link IModelOverviewNode
+     * IModelOverviewNodes} to the input types. {@link AbstractStructureNode AbstractStructureNodes}
+     * will be generated automatically.
+     * 
+     * @param treePath a list of {@link PathElement PathElements}, ordered from the root-element
+     *            downwards
+     */
+    protected static TreePath computePath(List<PathElement> treePath) {
         // The IpsProject must be from the project which is the lowest in the project hierarchy
-        IIpsProject rootProject = treePath.get(0).getComponent().getIpsProject();
+        IIpsProject rootProject = treePath.get(treePath.size() - 1).getComponent().getIpsProject();
 
         // get the root node
-        PathElement root = treePath.get(treePath.size() - 1);
+        PathElement root = treePath.get(0);
         ComponentNode rootNode = new ComponentNode(root.getComponent(), null, rootProject);
         List<IModelOverviewNode> pathList = new ArrayList<IModelOverviewNode>();
         pathList.add(rootNode);
 
-        for (int i = treePath.size() - 1; i >= 0; i--) {
+        for (int i = 1; i < treePath.size(); i++) {
             if (root.getAssociationType() == ToChildAssociationType.SELF) {
                 break;
             }
@@ -224,16 +239,23 @@ public class IpsModelOverviewView extends ViewPart implements Observer {
 
     private void updateView() {
         Object element = treeViewer.getInput();
-        if (element instanceof IType) {
+        if (element == null) {
+            return;
+        } else if (element instanceof IType) {
             this.label.setText(((IType)element).getQualifiedName());
-        } else {
+        } else if (element instanceof IIpsProject) {
             this.label.setText(((IIpsProject)element).getName());
+        } else {
+            this.label.setText(element.toString());
         }
     }
 
     private void initToolBar() {
         IToolBarManager toolBarManager = getViewSite().getActionBars().getToolBarManager();
         toolBarManager.add(createToggleProductPolicyAction());
+
+        toolBarManager.add(new ExpandAllAction(treeViewer));
+        toolBarManager.add(new CollapseAllAction(treeViewer));
     }
 
     private void initMenu() {
@@ -307,50 +329,52 @@ public class IpsModelOverviewView extends ViewPart implements Observer {
 
             @Override
             public void run() {
-                // TODO get this method to work
-                // switch state
                 toggleShowTypeState();
-                // if (showState == ShowTypeState.SHOW_POLICIES) {
-                // //
-                // this.setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                // // "ProductCmptType.gif"));
-                //                    //                    this.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("PolicyCmptType.gif")); //$NON-NLS-1$
-                // // this.setToolTipText(Messages.IpsModelOverview_tooltipShowOnlyPolicies);
-                // } else {
-                // //
-                // this.setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                // // "PolicyCmptType.gif"));
-                //                    //                    this.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmptType.gif")); //$NON-NLS-1$
-                // // this.setToolTipText(Messages.IpsModelOverview_tooltipShowOnlyProducts);
-                // }
-                // refresh();
-                // getViewSite().getActionBars().updateActionBars();
-                // getViewSite().getActionBars().getToolBarManager().update(true);
             }
 
         };
     }
 
+    /**
+     * Toggles the view between ProductCmpTypes and PolicyCmptTypes. The toggle action takes the
+     * first selected element as input for the content provider and shows the corresponding
+     * ModelOverview. If the initial content provider input was an IpsProject and the user has not
+     * selected any element, the ModelOverview simply switches the view for the complete project.
+     */
     private void toggleShowTypeState() {
         Object input = treeViewer.getInput();
+
+        // store the current selection, restore it after the view has been toggled and refreshed
+        selectionState = (ITreeSelection)this.treeViewer.getSelection();
+
         if (input instanceof IIpsProject) { // switch the viewShowState for project selections
             provider.toggleShowTypeState();
+            treeViewer.getContentProvider().inputChanged(this.treeViewer, input, treeViewer.getInput());
         } else if (input instanceof PolicyCmptType) {
             PolicyCmptType policy = (PolicyCmptType)input;
             try {
-                treeViewer.setInput(policy.findProductCmptType(policy.getIpsProject()));
+                IProductCmptType correspondingProductCmptType = policy.findProductCmptType(policy.getIpsProject());
+                if (correspondingProductCmptType != null) {
+                    treeViewer.setInput(correspondingProductCmptType);
+                } else {
+                    return;
+                }
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
         } else if (input instanceof ProductCmptType) {
             ProductCmptType product = (ProductCmptType)input;
             try {
-                treeViewer.setInput(product.findPolicyCmptType(product.getIpsProject()));
+                IPolicyCmptType correspondingPolicyCmptType = product.findPolicyCmptType(product.getIpsProject());
+                if (correspondingPolicyCmptType != null) {
+                    treeViewer.setInput(correspondingPolicyCmptType);
+                } else {
+                    return;
+                }
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
         }
-        treeViewer.getContentProvider().inputChanged(this.treeViewer, input, treeViewer.getInput());
         refresh();
     }
 
@@ -367,7 +391,7 @@ public class IpsModelOverviewView extends ViewPart implements Observer {
                 public void run() {
                     if (!treeViewer.getControl().isDisposed()) {
                         Object input = treeViewer.getInput();
-                        if (input instanceof ComponentNode || input instanceof IIpsProject) {
+                        if (input instanceof ComponentNode || input instanceof IIpsProject || input instanceof IType) {
                             treeViewer.refresh();
                         }
                     }
@@ -395,7 +419,7 @@ public class IpsModelOverviewView extends ViewPart implements Observer {
         List<List<PathElement>> paths = ((ModelOverviewContentProvider)this.treeViewer.getContentProvider()).getPaths();
         TreePath[] treePaths = new TreePath[paths.size()];
         for (int i = 0; i < paths.size(); i++) {
-            treePaths[i] = this.computePath(paths.get(i));
+            treePaths[i] = IpsModelOverviewView.computePath(paths.get(i));
         }
         for (TreePath treePath : treePaths) {
             this.treeViewer.expandToLevel(treePath, 0);
