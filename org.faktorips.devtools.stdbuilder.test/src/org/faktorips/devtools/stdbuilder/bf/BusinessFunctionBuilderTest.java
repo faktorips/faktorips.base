@@ -47,7 +47,7 @@ public class BusinessFunctionBuilderTest extends AbstractStdBuilderTest {
     }
 
     private IType getGeneratedJavaClass() {
-        return getGeneratedJavaClass(businessFunction, false, builder, BUSINESS_FUNCTION_NAME);
+        return getGeneratedJavaClass(businessFunction, false, BUSINESS_FUNCTION_NAME);
     }
 
 }

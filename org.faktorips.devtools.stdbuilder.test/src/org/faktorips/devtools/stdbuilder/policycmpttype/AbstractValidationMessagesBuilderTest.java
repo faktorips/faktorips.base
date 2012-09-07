@@ -43,7 +43,6 @@ public abstract class AbstractValidationMessagesBuilderTest {
 
     protected StandardBuilderSet mockBuilderSet() {
         StandardBuilderSet builderSet = mock(StandardBuilderSet.class);
-        when(builderSet.getInternalPackage(TEST_PACK, "")).thenReturn(ROOT_FOLDER);
         when(builderSet.getLanguageUsedInGeneratedSourceCode()).thenReturn(Locale.ENGLISH);
         when(builderSet.getValidationMessageBundleBaseName(any(IIpsSrcFolderEntry.class))).thenReturn("test");
         return builderSet;

@@ -45,7 +45,7 @@ public class TableRowBuilderTest extends AbstractStdBuilderTest {
     }
 
     private IType getGeneratedJavaClass() {
-        return getGeneratedJavaClass(structure, false, builder, TABLE_STRUCTURE_NAME + "Row");
+        return getGeneratedJavaClass(structure, false, TABLE_STRUCTURE_NAME + "Row");
     }
 
 }

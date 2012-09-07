@@ -51,39 +51,20 @@ public class JavaPackageStructureTest {
 
     @Test
     public void testGetPackageMergablePublished() throws Exception {
-        when(builder.isBuildingPublishedSourceFile()).thenReturn(true);
-        when(builder.buildsDerivedArtefacts()).thenReturn(false);
-
-        String package1 = packageStructure.getPackage(builder, ipsSrcFile);
+        String package1 = packageStructure.getPackageName(ipsSrcFile, true, true);
         assertEquals("mergable.ubx", package1);
-        String pacakge2 = JavaPackageStructure.getPackageName(ipsSrcFile, true, true);
-        assertEquals("mergable.ubx", pacakge2);
-        String pacakge3 = JavaPackageStructure.getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
-        assertEquals("mergable.ubx", pacakge3);
     }
 
     @Test
     public void testGetPackageDerivedPublished() throws Exception {
-        when(builder.isBuildingPublishedSourceFile()).thenReturn(true);
-        when(builder.buildsDerivedArtefacts()).thenReturn(true);
-
-        String package1 = packageStructure.getPackage(builder, ipsSrcFile);
+        String package1 = packageStructure.getPackageName(ipsSrcFile, true, false);
         assertEquals("derived.ubx", package1);
-        String pacakge2 = JavaPackageStructure.getPackageName(ipsSrcFile, true, false);
-        assertEquals("derived.ubx", pacakge2);
     }
 
     @Test
     public void testGetPackageMergableInternal() throws Exception {
-        when(builder.isBuildingPublishedSourceFile()).thenReturn(false);
-        when(builder.buildsDerivedArtefacts()).thenReturn(false);
-
-        String package1 = packageStructure.getPackage(builder, ipsSrcFile);
+        String package1 = packageStructure.getPackageName(ipsSrcFile, false, true);
         assertEquals("mergable.internal.ubx", package1);
-        String pacakge2 = JavaPackageStructure.getPackageName(ipsSrcFile, false, true);
-        assertEquals("mergable.internal.ubx", pacakge2);
-        String pacakge3 = JavaPackageStructure.getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-        assertEquals("mergable.internal.ubx", pacakge3);
     }
 
     @Test
@@ -91,16 +72,8 @@ public class JavaPackageStructureTest {
         when(builder.isBuildingPublishedSourceFile()).thenReturn(false);
         when(builder.buildsDerivedArtefacts()).thenReturn(true);
 
-        String package1 = packageStructure.getPackage(builder, ipsSrcFile);
+        String package1 = packageStructure.getPackageName(ipsSrcFile, false, false);
         assertEquals("derived.internal.ubx", package1);
-        String pacakge2 = JavaPackageStructure.getPackageName(ipsSrcFile, false, false);
-        assertEquals("derived.internal.ubx", pacakge2);
-    }
-
-    @Test
-    public void testGetInternalPackage() throws Exception {
-        String package1 = JavaPackageStructure.getInternalPackage("base.pack", "sub.pack");
-        assertEquals("base.pack.internal.sub.pack", package1);
     }
 
 }

@@ -43,7 +43,6 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
-import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.util.ArgumentCheck;
@@ -649,7 +648,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      */
     public IType findGeneratedJavaTypeForProductCmptTypeGen(boolean forPublishedInterface) throws CoreException {
         IPolicyCmptType policyCmptType = (IPolicyCmptType)getGenType().getIpsPart();
-        BaseProductCmptTypeBuilder productCmptTypeBuilder = forPublishedInterface ? getGenType().getBuilderSet()
+        JavaSourceFileBuilder productCmptTypeBuilder = forPublishedInterface ? getGenType().getBuilderSet()
                 .getProductCmptGenInterfaceBuilder() : getGenType().getBuilderSet().getProductCmptGenImplClassBuilder();
 
         IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());

@@ -172,8 +172,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         if (((StandardBuilderSet)getBuilderSet()).isGenerateJaxbSupport() && !enumType.isContainingValues()
                 && !enumType.isAbstract()) {
-            EnumXmlAdapterBuilder xmlAdapterBuilder = getBuilderSet().getBuildersByClass(EnumXmlAdapterBuilder.class)
-                    .get(0);
+            EnumXmlAdapterBuilder xmlAdapterBuilder = getBuilderSet().getBuilderByClass(EnumXmlAdapterBuilder.class);
             mainSection.getAnnotationsForTypeBuilder().annotationClassValueLn(
                     "javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter", "value", //$NON-NLS-1$ //$NON-NLS-2$
                     xmlAdapterBuilder.getQualifiedClassName(enumType));

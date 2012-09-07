@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
  * 
  * @author Peter Erzberger
  */
-public class XmlContentFileCopyBuilder extends AbstractXmlFileBuilder {
+public abstract class XmlContentFileCopyBuilder extends AbstractXmlFileBuilder {
 
     public XmlContentFileCopyBuilder(IpsObjectType type, DefaultBuilderSet builderSet) {
         super(type, builderSet);
@@ -51,9 +51,7 @@ public class XmlContentFileCopyBuilder extends AbstractXmlFileBuilder {
      * {@inheritDoc}
      */
     @Override
-    public String getName() {
-        return "XmlContentFileCopyBuilder"; //$NON-NLS-1$
-    }
+    public abstract String getName();
 
     /**
      * {@inheritDoc}

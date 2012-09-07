@@ -19,11 +19,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.xtend.expression.ResourceManager;
 import org.faktorips.devtools.core.builder.AbstractBuilderSet;
+import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
-import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
@@ -62,11 +61,14 @@ public class GeneratorModelContext {
 
     private final ResourceManager resourceManager = new OptimizedResourceManager();
 
-    public GeneratorModelContext(IIpsArtefactBuilderSetConfig config,
+    private final IJavaPackageStructure javaPackageStructure;
+
+    public GeneratorModelContext(IIpsArtefactBuilderSetConfig config, IJavaPackageStructure javaPackageStructure,
             Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap) {
         this.config = config;
+        this.javaPackageStructure = javaPackageStructure;
         this.annotationGeneratorMap = annotationGeneratorMap;
-        this.javaClassNaming = new JavaClassNaming(true);
+        this.javaClassNaming = new JavaClassNaming(javaPackageStructure, true);
     }
 
     IIpsArtefactBuilderSetConfig getConfig() {
@@ -155,13 +157,9 @@ public class GeneratorModelContext {
     }
 
     public String getValidationMessageBundleBaseName(IIpsSrcFolderEntry entry) {
-        String baseName = getResourceBundlePackage(entry) + "." + entry.getValidationMessagesBundle();
+        String baseName = javaPackageStructure.getBasePackageName(entry, false, false) + "."
+                + entry.getValidationMessagesBundle();
         return baseName;
-    }
-
-    protected String getResourceBundlePackage(IIpsSrcFolderEntry entry) {
-        String basePack = entry.getBasePackageNameForDerivedJavaClasses();
-        return JavaPackageStructure.getInternalPackage(basePack, StringUtils.EMPTY);
     }
 
     public boolean isGenerateChangeSupport() {

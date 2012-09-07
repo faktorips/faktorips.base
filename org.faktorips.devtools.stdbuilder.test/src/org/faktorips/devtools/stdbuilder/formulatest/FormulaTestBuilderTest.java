@@ -92,7 +92,7 @@ public class FormulaTestBuilderTest extends AbstractStdBuilderTest {
     }
 
     private IType getGeneratedJavaClass() {
-        return getGeneratedJavaClass(productCmpt, true, builder, PRODUCT_NAME + FormulaTestBuilder.RUNTIME_EXTENSION);
+        return getGeneratedJavaClass(productCmpt, true, PRODUCT_NAME + FormulaTestBuilder.RUNTIME_EXTENSION);
     }
 
     @Test

@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -43,7 +44,6 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttr
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenPolicyCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.GenValidationRule;
-import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.type.GenType;
@@ -356,8 +356,8 @@ public class GenPolicyCmptType extends GenType {
      * @throws CoreException If an error occurs while searching for the <tt>IProductCmptType</tt>.
      */
     public IType findGeneratedJavaTypeForProductCmptType(boolean forInterface) throws CoreException {
-        BaseProductCmptTypeBuilder productCmptTypeBuilder = forInterface ? getBuilderSet()
-                .getProductCmptInterfaceBuilder() : getBuilderSet().getProductCmptImplClassBuilder();
+        JavaSourceFileBuilder productCmptTypeBuilder = forInterface ? getBuilderSet().getProductCmptInterfaceBuilder()
+                : getBuilderSet().getProductCmptImplClassBuilder();
 
         IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(getPolicyCmptType().getIpsProject());
         if (productCmptType == null) {

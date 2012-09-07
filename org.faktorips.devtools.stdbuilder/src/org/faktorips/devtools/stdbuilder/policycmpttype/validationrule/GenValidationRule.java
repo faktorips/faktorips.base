@@ -294,8 +294,8 @@ public class GenValidationRule extends GenTypePart {
         // code to construct the message's text
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)getIpsPart().getIpsSrcFile().getIpsPackageFragment().getRoot()
                 .getIpsObjectPathEntry();
-        ValidationRuleMessagesPropertiesBuilder validationMessageBuilder = getBuilderSet().getBuildersByClass(
-                ValidationRuleMessagesPropertiesBuilder.class).get(0);
+        ValidationRuleMessagesPropertiesBuilder validationMessageBuilder = getBuilderSet().getBuilderByClass(
+                ValidationRuleMessagesPropertiesBuilder.class);
         String messagesPropertiesName = validationMessageBuilder.getResourceBundleBaseName(entry);
         body.appendClassName(MessagesHelper.class).append(" ").append(localVarMessageHelper).append(" = ")//
                 .append("new ").appendClassName(MessagesHelper.class).append("(\"").append(messagesPropertiesName)//
