@@ -82,29 +82,29 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     private IPolicyCmptType toggledPolicyCmptInput;
     private IProductCmptType toggledProductCmptInput;
 
+    private Composite panel;
     private TreeViewer treeViewer;
     private final UIToolkit uiToolkit = new UIToolkit(null);
     private Label label;
+    private Label emptyMessageLabel;
 
     private ModelOverviewLabelProvider labelProvider;
-
     private ModelOverviewContentProvider provider;
 
     private IMemento memento;
     private Action toggleProductPolicyAction;
+    private ExpandAllAction expandAllAction;
+    private CollapseAllAction collapseAllAction;
 
     @Override
     public void createPartControl(Composite parent) {
-        Composite panel = uiToolkit.createGridComposite(parent, 1, false, true, new GridData(SWT.FILL, SWT.FILL, true,
-                true));
+        panel = uiToolkit.createGridComposite(parent, 1, false, true, new GridData(SWT.FILL, SWT.FILL, true, true));
 
         label = uiToolkit.createLabel(panel, "", SWT.LEFT, new GridData(SWT.FILL, SWT.FILL, //$NON-NLS-1$
                 true, false));
 
         treeViewer = new TreeViewer(panel);
         provider = new ModelOverviewContentProvider();
-        // default showState for selection of IIpsProjects
-        provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
         treeViewer.setContentProvider(provider);
 
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
@@ -116,14 +116,59 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         getSite().setSelectionProvider(treeViewer); // important for the context menu
 
+        // initialize the empty message
+        emptyMessageLabel = uiToolkit.createLabel(panel, "", SWT.WRAP, new GridData(SWT.FILL, SWT.FILL, //$NON-NLS-1$
+                true, true));
+        emptyMessageLabel.setText(Messages.IpsModelOverview_emptyMessage);
+
         activateContext();
         createContextMenu();
         initMenu();
         initToolBar();
 
+        // set default show state and the according toggle-button image
+        provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
+        setProductCmptTypeImage();
+
         treeViewer.addTreeListener(createNewAutoExpandStructureNodesListener());
         treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));
         provider.addCollectorFinishedListener(this);
+
+        showEmptyMessage();
+    }
+
+    private void showEmptyMessage() {
+        enableButtons(false);
+        if (!emptyMessageLabel.isDisposed()) {
+            emptyMessageLabel.setVisible(true);
+            ((GridData)emptyMessageLabel.getLayoutData()).exclude = false;
+        }
+        if (!label.isDisposed()) {
+            label.setVisible(false);
+            ((GridData)label.getLayoutData()).exclude = true;
+        }
+        if (!treeViewer.getTree().isDisposed()) {
+            treeViewer.getTree().setVisible(false);
+            ((GridData)treeViewer.getTree().getLayoutData()).exclude = true;
+        }
+        panel.layout();
+    }
+
+    private void showTree() {
+        enableButtons(true);
+        if (!emptyMessageLabel.isDisposed()) {
+            emptyMessageLabel.setVisible(false);
+            ((GridData)emptyMessageLabel.getLayoutData()).exclude = true;
+        }
+        if (!label.isDisposed()) {
+            label.setVisible(true);
+            ((GridData)label.getLayoutData()).exclude = false;
+        }
+        if (!treeViewer.getTree().isDisposed()) {
+            treeViewer.getTree().setVisible(true);
+            ((GridData)treeViewer.getTree().getLayoutData()).exclude = false;
+        }
+        panel.layout();
     }
 
     private ITreeViewerListener createNewAutoExpandStructureNodesListener() {
@@ -219,6 +264,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
      * @param input the selected {@link IIpsProject}
      */
     public void showOverview(IIpsProject input) {
+        this.showTree();
         this.treeViewer.setInput(input);
         this.updateView();
     }
@@ -229,6 +275,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
      * @param input the selected {@link IType}
      */
     public void showOverview(IType input) {
+        this.showTree();
         toggleProductPolicyAction.setEnabled(true);
         try {
             if (input instanceof PolicyCmptType) {
@@ -318,8 +365,10 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         toggleProductPolicyAction = createToggleProductPolicyAction();
         toolBarManager.add(toggleProductPolicyAction);
 
-        toolBarManager.add(new ExpandAllAction(treeViewer));
-        toolBarManager.add(new CollapseAllAction(treeViewer));
+        expandAllAction = new ExpandAllAction(treeViewer);
+        toolBarManager.add(expandAllAction);
+        collapseAllAction = new CollapseAllAction(treeViewer);
+        toolBarManager.add(collapseAllAction);
     }
 
     private void initMenu() {
@@ -387,7 +436,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     }
 
     private Action createToggleProductPolicyAction() {
-        return new Action(Messages.IpsModelOverview_tooltipShowOnlyProducts, SWT.TOGGLE) {
+        return new Action(Messages.IpsModelOverview_tooltipToggleButton, SWT.TOGGLE) {
 
             @Override
             public ImageDescriptor getImageDescriptor() {
@@ -396,7 +445,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
             @Override
             public String getToolTipText() {
-                return Messages.IpsModelOverview_tooltipShowOnlyPolicies;
+                return Messages.IpsModelOverview_tooltipToggleButton;
             }
 
             @Override
@@ -405,6 +454,12 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
             }
 
         };
+    }
+
+    private void enableButtons(boolean state) {
+        expandAllAction.setEnabled(state);
+        collapseAllAction.setEnabled(state);
+        toggleProductPolicyAction.setEnabled(state);
     }
 
     /**

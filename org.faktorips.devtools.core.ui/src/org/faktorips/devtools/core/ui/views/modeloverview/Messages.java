@@ -27,11 +27,11 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
-    public static String IpsModelOverview_tooltipShowOnlyPolicies;
-    public static String IpsModelOverview_tooltipShowOnlyProducts;
+    public static String IpsModelOverview_tooltipToggleButton;
     public static String IpsModelOverview_menuShowCardinalities_name;
     public static String IpsModelOverview_tooltipToggleCardinalities;
     public static String IpsModelOverview_menuShowRoleName_name;
     public static String IpsModelOverview_menuShowRoleName_tooltip;
     public static String IpsModelOverview_waitingLabel;
+    public static String IpsModelOverview_emptyMessage;
 }
