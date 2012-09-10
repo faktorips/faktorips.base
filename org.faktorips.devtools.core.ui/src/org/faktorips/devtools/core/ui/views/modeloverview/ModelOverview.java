@@ -307,8 +307,10 @@ public class ModelOverview extends ViewPart implements Observer {
         labelProvider.setShowRolenames(true);
 
         if (memento != null) {
-            showCardinalitiesAction.setChecked(memento.getBoolean(SHOW_CARDINALITIES));
-            showRoleNameAction.setChecked(memento.getBoolean(SHOW_ROLENAMES));
+            Boolean showCard = memento.getBoolean(SHOW_CARDINALITIES);
+            Boolean showRoles = memento.getBoolean(SHOW_ROLENAMES);
+            showCardinalitiesAction.setChecked(showCard == null ? true : showCard);
+            showRoleNameAction.setChecked(showRoles == null ? true : showRoles);
         } else {
             showCardinalitiesAction.setChecked(true);
             showRoleNameAction.setChecked(true);
