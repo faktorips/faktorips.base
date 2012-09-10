@@ -167,7 +167,9 @@ public abstract class DeferredStructuredContentProvider extends Observable imple
     public void dispose() {
         elements = null;
         deleteObservers();
-        collector.cancel();
+        if (collector != null) {
+            collector.cancel();
+        }
         collector = null;
     }
 
