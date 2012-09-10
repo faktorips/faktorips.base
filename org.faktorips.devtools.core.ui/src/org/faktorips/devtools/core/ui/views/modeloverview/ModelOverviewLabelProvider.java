@@ -26,13 +26,13 @@ import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
-public class IpsModelOverviewLabelProvider extends LabelProvider implements IStyledLabelProvider {
+public class ModelOverviewLabelProvider extends LabelProvider implements IStyledLabelProvider {
 
     private boolean showCardinalities = true;
     private boolean showRolenames = true;
     private LocalResourceManager resourceManager;
 
-    public IpsModelOverviewLabelProvider() {
+    public ModelOverviewLabelProvider() {
         super();
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
@@ -116,12 +116,20 @@ public class IpsModelOverviewLabelProvider extends LabelProvider implements ISty
         return "" + cardinality; //$NON-NLS-1$
     }
 
+    public boolean getShowCardinalities() {
+        return this.showCardinalities;
+    }
+
     public void setShowCardinalities(boolean showCardinalities) {
         this.showCardinalities = showCardinalities;
     }
 
     public void toggleShowCardinalities() {
         this.showCardinalities = !this.showCardinalities;
+    }
+
+    public boolean getShowRolenames() {
+        return this.showRolenames;
     }
 
     public void setShowRolenames(boolean showRolenames) {

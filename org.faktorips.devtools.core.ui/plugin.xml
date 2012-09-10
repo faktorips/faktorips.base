@@ -1146,7 +1146,7 @@
       <view
             allowMultiple="false"
             category="org.faktorips.devtools.productDefinitionCategory"
-            class="org.faktorips.devtools.core.ui.views.modeloverview.IpsModelOverviewView"
+            class="org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"
             icon="icons/IpsHierarchyView.gif"
             id="org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"
             name="%IpsModelOverviewTitle"

@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
-import org.faktorips.devtools.core.ui.views.modeloverview.IpsModelOverviewView;
+import org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview;
 
 public class ShowModelOverviewHandler extends IpsAbstractHandler {
 
@@ -52,14 +52,14 @@ public class ShowModelOverviewHandler extends IpsAbstractHandler {
                 HandlerUtil.getCurrentSelection(event));
 
         try {
-            IViewPart modelOverviewView = activePage.showView(IpsModelOverviewView.EXTENSION_ID, null,
+            IViewPart modelOverviewView = activePage.showView(ModelOverview.EXTENSION_ID, null,
                     IWorkbenchPage.VIEW_ACTIVATE);
             IAdaptable firstElement = selection.getFirstElement();
             if (firstElement instanceof IpsProject) {
-                ((IpsModelOverviewView)modelOverviewView).showOverview((IpsProject)firstElement);
+                ((ModelOverview)modelOverviewView).showOverview((IpsProject)firstElement);
             } else if (ipsSrcFile != null) {
                 try {
-                    ((IpsModelOverviewView)modelOverviewView).showOverview((IType)ipsSrcFile.getIpsObject());
+                    ((ModelOverview)modelOverviewView).showOverview((IType)ipsSrcFile.getIpsObject());
                 } catch (CoreException e) {
                     throw new CoreRuntimeException(e);
                 }

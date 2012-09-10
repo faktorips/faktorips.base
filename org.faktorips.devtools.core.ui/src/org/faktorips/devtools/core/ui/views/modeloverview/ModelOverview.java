@@ -29,9 +29,11 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DecorationContext;
-import org.eclipse.jface.viewers.ITreeSelection;
+import org.eclipse.jface.viewers.ITreeViewerListener;
+import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -42,7 +44,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IDecoratorManager;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -67,21 +72,22 @@ import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMe
 import org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider.ShowTypeState;
 import org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider.ToChildAssociationType;
 
-public class IpsModelOverviewView extends ViewPart implements Observer {
+public class ModelOverview extends ViewPart implements Observer {
 
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"; //$NON-NLS-1$
-
     private static final String MENU_INFO_GROUP = "group.info"; //$NON-NLS-1$
+    private static final String SHOW_CARDINALITIES = "show_cardinalities"; //$NON-NLS-1$
+    private static final String SHOW_ROLENAMES = "show_rolenames"; //$NON-NLS-1$
 
     private TreeViewer treeViewer;
     private final UIToolkit uiToolkit = new UIToolkit(null);
     private Label label;
 
-    private IpsModelOverviewLabelProvider labelProvider;
+    private ModelOverviewLabelProvider labelProvider;
 
     private ModelOverviewContentProvider provider;
 
-    private ITreeSelection selectionState;
+    private IMemento memento;
 
     @Override
     public void createPartControl(Composite parent) {
@@ -98,7 +104,7 @@ public class IpsModelOverviewView extends ViewPart implements Observer {
         this.treeViewer.setContentProvider(provider);
 
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
-        labelProvider = new IpsModelOverviewLabelProvider();
+        labelProvider = new ModelOverviewLabelProvider();
         DecoratingStyledCellLabelProvider decoratingLabelProvider = new DecoratingStyledCellLabelProvider(
                 labelProvider, decoManager.getLabelDecorator(), new DecorationContext());
 
@@ -112,7 +118,39 @@ public class IpsModelOverviewView extends ViewPart implements Observer {
         this.initMenu();
         this.initToolBar();
 
+        this.treeViewer.addTreeListener(createNewAutoExpandStructureNodesListener());
+
         this.provider.addObserver(this);
+    }
+
+    private ITreeViewerListener createNewAutoExpandStructureNodesListener() {
+        return new ITreeViewerListener() {
+
+            @Override
+            public void treeCollapsed(TreeExpansionEvent event) {
+                // do nothing
+            }
+
+            @Override
+            public void treeExpanded(TreeExpansionEvent event) {
+                final Object element = event.getElement();
+                final AbstractTreeViewer treeViewer = event.getTreeViewer();
+                if (element instanceof ComponentNode) {
+                    Control ctrl = treeViewer.getControl();
+                    if (ctrl != null && !ctrl.isDisposed()) {
+                        ctrl.getDisplay().asyncExec(new Runnable() {
+                            @Override
+                            public void run() {
+                                Control ctrl2 = treeViewer.getControl();
+                                if (ctrl2 != null && !ctrl2.isDisposed()) {
+                                    treeViewer.expandToLevel(element, 2);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        };
     }
 
     private void activateContext() {
@@ -264,11 +302,17 @@ public class IpsModelOverviewView extends ViewPart implements Observer {
 
         Action showCardinalitiesAction = createShowCardinalitiesAction();
         labelProvider.setShowCardinalities(true);
-        showCardinalitiesAction.setChecked(true);
 
         Action showRoleNameAction = createShowRoleNameAction();
         labelProvider.setShowRolenames(true);
-        showRoleNameAction.setChecked(true);
+
+        if (memento != null) {
+            showCardinalitiesAction.setChecked(memento.getBoolean(SHOW_CARDINALITIES));
+            showRoleNameAction.setChecked(memento.getBoolean(SHOW_ROLENAMES));
+        } else {
+            showCardinalitiesAction.setChecked(true);
+            showRoleNameAction.setChecked(true);
+        }
 
         menuManager.appendToGroup(MENU_INFO_GROUP, showCardinalitiesAction);
         menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);
@@ -344,9 +388,6 @@ public class IpsModelOverviewView extends ViewPart implements Observer {
     private void toggleShowTypeState() {
         Object input = treeViewer.getInput();
 
-        // store the current selection, restore it after the view has been toggled and refreshed
-        selectionState = (ITreeSelection)this.treeViewer.getSelection();
-
         if (input instanceof IIpsProject) { // switch the viewShowState for project selections
             provider.toggleShowTypeState();
             treeViewer.getContentProvider().inputChanged(this.treeViewer, input, treeViewer.getInput());
@@ -419,11 +460,24 @@ public class IpsModelOverviewView extends ViewPart implements Observer {
         List<List<PathElement>> paths = ((ModelOverviewContentProvider)this.treeViewer.getContentProvider()).getPaths();
         TreePath[] treePaths = new TreePath[paths.size()];
         for (int i = 0; i < paths.size(); i++) {
-            treePaths[i] = IpsModelOverviewView.computePath(paths.get(i));
+            treePaths[i] = ModelOverview.computePath(paths.get(i));
         }
         for (TreePath treePath : treePaths) {
             this.treeViewer.expandToLevel(treePath, 0);
         }
         this.treeViewer.setSelection(new TreeSelection(treePaths));
+    }
+
+    @Override
+    public void saveState(IMemento memento) {
+        super.saveState(memento);
+        memento.putBoolean(SHOW_CARDINALITIES, this.labelProvider.getShowCardinalities());
+        memento.putBoolean(SHOW_ROLENAMES, this.labelProvider.getShowRolenames());
+    }
+
+    @Override
+    public void init(IViewSite site, IMemento memento) throws PartInitException {
+        super.init(site, memento);
+        this.memento = memento;
     }
 }

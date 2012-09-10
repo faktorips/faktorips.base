@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider.ToChildAssociationType;
 import org.junit.Test;
 
-public class IpsModelOverviewViewTest extends AbstractIpsPluginTest {
+public class ModelOverviewTest extends AbstractIpsPluginTest {
 
     @Test
     public void testComputePaths_BuildCorrectTreePath() throws CoreException {
@@ -52,7 +52,7 @@ public class IpsModelOverviewViewTest extends AbstractIpsPluginTest {
         rawPath.add(new PathElement(deckung, ToChildAssociationType.SUPERTYPE));
         rawPath.add(new PathElement(hausratGrunddeckung, ToChildAssociationType.SELF));
 
-        TreePath treePath = IpsModelOverviewView.computePath(rawPath);
+        TreePath treePath = ModelOverview.computePath(rawPath);
 
         // tests
         assertEquals(5, treePath.getSegmentCount());
