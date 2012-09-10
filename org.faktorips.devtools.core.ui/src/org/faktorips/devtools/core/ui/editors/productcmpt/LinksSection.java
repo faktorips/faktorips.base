@@ -120,7 +120,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         Composite relationRootPane = toolkit.createComposite(client);
         relationRootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
 
-        boolean filterEmptyAssociations = filterEmptyAssociations();
+        boolean filterEmptyAssociations = loadFilterEmptyAssociations();
         LinksContentProvider contentProvider = new LinksContentProvider(filterEmptyAssociations);
         filterEmptyAssociationAction = new FilterEmptyAssociationsAction(filterEmptyAssociations);
 
@@ -183,14 +183,6 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         toolkit.getFormToolkit().paintBordersFor(relationRootPane);
     }
 
-    private boolean filterEmptyAssociations() {
-        IPreferencesService preferencesService = Platform.getPreferencesService();
-        String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
-        String preferenceId = ID + PREFERENCE_ID_SUFFIX_FILTER_EMPTY_ASSOCIATIONS;
-
-        return preferencesService.getBoolean(pluginId, preferenceId, false, null);
-    }
-
     protected void setFilterEmptyAssociations(boolean exclude) {
         if (treeViewer == null) {
             return;
@@ -202,6 +194,14 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         storeFilterEmptyAssociations(exclude);
 
         treeViewer.refresh();
+    }
+
+    private boolean loadFilterEmptyAssociations() {
+        IPreferencesService preferencesService = Platform.getPreferencesService();
+        String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
+        String preferenceId = ID + PREFERENCE_ID_SUFFIX_FILTER_EMPTY_ASSOCIATIONS;
+
+        return preferencesService.getBoolean(pluginId, preferenceId, false, null);
     }
 
     private void storeFilterEmptyAssociations(boolean exclude) {
