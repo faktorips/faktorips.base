@@ -32,6 +32,12 @@ public class ImportStatementTest {
     }
 
     @Test
+    public void testGetQualifiedName_EmptyPackage() {
+        ImportStatement importStatement = new ImportStatement("String");
+        assertEquals("String", importStatement.getQualifiedName());
+    }
+
+    @Test
     public void testGetPackageName_Class() throws Exception {
         ImportStatement importStatement = new ImportStatement(String.class);
         assertEquals("java.lang", importStatement.getPackage());

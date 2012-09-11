@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.xpand.model;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,8 +46,7 @@ public class AbstractGeneratorModelNodeTest {
     @Before
     public void setUp() throws Exception {
         xClass = new XPolicyCmptClass(type, modelContext, modelService);
-        ImportStatement importStatement = mock(ImportStatement.class);
-        when(modelContext.addImport(anyString())).thenReturn(importStatement);
+        when(modelContext.addImport(anyString())).thenReturn("dummyImportStatement");
     }
 
     @Test

@@ -62,7 +62,11 @@ public class ImportStatement {
      * @return Returns the qualifiedName.
      */
     public String getQualifiedName() {
-        return packageName + SEPERATOR + className;
+        if (StringUtils.isEmpty(packageName)) {
+            return className;
+        } else {
+            return packageName + SEPERATOR + className;
+        }
     }
 
     /**

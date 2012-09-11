@@ -114,10 +114,11 @@ public class GeneratorModelContext {
      * Adds a new import. The import statement should be the full qualified name of a class.
      * 
      * @param importStatement The full qualified name of a class that should be imported.
-     * @return the unqualified name of the import statement
+     * @return the qualified or unqualified class name depending on whether it is required.
+     * @see ImportHandler#addImportAndReturnClassName(String)
      */
-    public ImportStatement addImport(String importStatement) {
-        return getImportHandler().add(importStatement);
+    public String addImport(String importStatement) {
+        return getImportHandler().addImportAndReturnClassName(importStatement);
     }
 
     public boolean removeImport(String importStatement) {

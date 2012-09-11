@@ -232,7 +232,7 @@ public abstract class AbstractGeneratorModelNode {
      * <p>
      * To avoid the import of classes in the default package and the import of primitive data types
      * ("int", "boolean") qualified class names without package (or without "." respectively) will
-     * not be added as an imported. The given qualified name will still be returned, however.
+     * not be added as an imported. The given unqualified name will still be returned, however.
      * 
      * @param qName The qualified name of the type
      * @return the unqualified name of the type
@@ -244,8 +244,8 @@ public abstract class AbstractGeneratorModelNode {
         } else {
             javaQName = qName;
         }
-        ImportStatement importStatement = getContext().addImport(javaQName);
-        return importStatement.getUnqualifiedName();
+        String className = getContext().addImport(javaQName);
+        return className;
     }
 
     /**
