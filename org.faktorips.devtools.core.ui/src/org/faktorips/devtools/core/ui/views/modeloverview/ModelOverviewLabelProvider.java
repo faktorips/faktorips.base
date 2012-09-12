@@ -30,6 +30,7 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
 
     private boolean showCardinalities = true;
     private boolean showRolenames = true;
+    private boolean showProjects = true;
     private LocalResourceManager resourceManager;
 
     public ModelOverviewLabelProvider() {
@@ -63,7 +64,7 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
         } else if (element instanceof SubtypeNode) {
             return IpsUIPlugin.getImageHandling().getSharedImage("over_co.gif", true); //$NON-NLS-1$
         }
-        return super.getImage(element);
+        return null;
     }
 
     @Override
@@ -71,12 +72,8 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
         if (element instanceof ComponentNode) {
             ComponentNode node = (ComponentNode)element;
             return node.getValue().getName();
-        } else if (element instanceof CompositeNode) {
-            return ""; //$NON-NLS-1$
-        } else if (element instanceof SubtypeNode) {
-            return ""; //$NON-NLS-1$
         }
-        return super.getText(element);
+        return ""; //$NON-NLS-1$
     }
 
     @Override
@@ -98,7 +95,10 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
                                 " ["    + getCardinalityText(node.getMinCardinality()) + ".." + getCardinalityText(node.getMaxCardinality()) + "]", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                 StyledString.COUNTER_STYLER));
             }
-
+        }
+        if (showProjects && element instanceof ComponentNode) {
+            styledLabel.append(new StyledString(" - " + ((ComponentNode)element).getValue().getIpsProject().getName(), //$NON-NLS-1$
+                    StyledString.DECORATIONS_STYLER));
         }
         return styledLabel;
     }
@@ -116,27 +116,72 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
         return "" + cardinality; //$NON-NLS-1$
     }
 
+    /**
+     * @see #setShowCardinalities(boolean)
+     */
     public boolean getShowCardinalities() {
         return this.showCardinalities;
     }
 
+    /**
+     * Defines if cardinalities should be shown on AssociationComponentNode labels
+     */
     public void setShowCardinalities(boolean showCardinalities) {
         this.showCardinalities = showCardinalities;
     }
 
+    /**
+     * Toggles the show cardinalities state
+     * 
+     * @see #setShowCardinalities(boolean)
+     */
     public void toggleShowCardinalities() {
         this.showCardinalities = !this.showCardinalities;
     }
 
+    /**
+     * @see #setShowRolenames(boolean)
+     */
     public boolean getShowRolenames() {
         return this.showRolenames;
     }
 
+    /**
+     * Defines if role names should be shown on AssociationComponentNode labels
+     */
     public void setShowRolenames(boolean showRolenames) {
         this.showRolenames = showRolenames;
     }
 
+    /**
+     * Toggles the show role names state
+     * 
+     * @see #setShowRolenames(boolean)
+     */
     public void toggleShowRolenames() {
         this.showRolenames = !this.showRolenames;
+    }
+
+    /**
+     * @see #setShowProjects(boolean)
+     */
+    public boolean getShowProjects() {
+        return this.showProjects;
+    }
+
+    /**
+     * Defines if the project names should be shown on ComponentNode labels
+     */
+    public void setShowProjects(boolean showProjects) {
+        this.showProjects = showProjects;
+    }
+
+    /**
+     * Toggles the show projects state
+     * 
+     * @see #setShowProjects(boolean)
+     */
+    public void toggleShowProjects() {
+        this.showProjects = !this.showProjects;
     }
 }

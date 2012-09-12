@@ -20,20 +20,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
 
-public class ModelOverviewContentProvider extends DeferredStructuredContentProvider implements ITreeContentProvider {
+public class ModelOverviewContentProvider extends AbstractModelOverviewContentProvider {
 
     private List<List<PathElement>> paths = new ArrayList<List<PathElement>>();
     // it is important that this list does not contain a set of AssociationTypes which would cause
@@ -58,7 +52,7 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
 
             IType input = (IType)inputElement;
             monitor.beginTask(getWaitingLabel(), 3);
-            List<IType> projectTypes = getProjectTypes(ipsProject, getCurrentlyNeededIpsObjectType(input));
+            List<IType> projectTypes = getProjectITypes(ipsProject, getCurrentlyNeededIpsObjectType(input));
             monitor.worked(1);
 
             Collection<IType> rootCandidates = getRootElementsForIType(input, projectTypes,
@@ -73,11 +67,10 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
 
         } else { // get the root elements if the input is an IpsProject
             monitor.beginTask(getWaitingLabel(), 2);
-            List<IType> projectTypes;
-            projectTypes = getProjectTypes(ipsProject, getCurrentlyNeededIpsObjectType());
+            List<IType> projectTypes = getProjectITypes(ipsProject, getCurrentlyNeededIpsObjectType());
             monitor.worked(1);
 
-            rootComponents = getRootTypes(projectTypes);
+            rootComponents = getProjectRootElementsFromComponentList(projectTypes, associationTypeFilter);
             monitor.worked(1);
         }
         monitor.done();
@@ -142,16 +135,10 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
             callHierarchyTemp.add(0, pathElement);
         }
 
-        IType supertype;
-        try {
-            supertype = element.findSupertype(element.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-
-        // Breaking condition
+        IType supertype = getExistingSupertypeFromList(element, componentList);
         Set<IType> rootElements = new HashSet<IType>();
         List<IType> associatingTypes = getAssociatingTypes(element, componentList, associationTypeFilter);
+        // Breaking condition
         if (associatingTypes.isEmpty() && supertype == null
                 && (association == ToChildAssociationType.SELF || association == ToChildAssociationType.ASSOCIATION)) {
             rootElements.add(element);
@@ -193,120 +180,15 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
         return rootElements;
     }
 
-    /**
-     * Computes the root elements of a complete {@link IIpsProject}. An element is considered as
-     * root if it is no association target of any other {@link IType} and if it has no supertype
-     * {@link IType}.
-     * 
-     * @param components all components of the concerned {@link IIpsProject}
-     * @return a {@link List} of {@link IType} with the root elements, or an empty list if there are
-     *         no elements.
-     */
-    private List<IType> getRootTypes(List<IType> components) {
-        List<IType> rootComponents = new ArrayList<IType>();
-        List<IType> rootCandidates = new ArrayList<IType>();
-
-        // compute the set of Supertype-root-candidates and real root-elements (no Supertype and no
-        // incoming
-        // Association)
-        for (IType iType : components) {
-            if (!iType.hasSupertype()) {
-                rootCandidates.add(iType);
-                if (!isAssociationTarget(iType, components, associationTypeFilter)) {
-                    rootComponents.add(iType);
-                }
-            }
-        }
-
-        // the lists are not the same we have not found an unambiguous set of root-elements
-        if (rootComponents.size() == rootCandidates.size()) {
-            return rootComponents;
-        } else {
-            removeDescendants(rootCandidates, rootComponents, components);
-            // 1. Take an arbitrary element from the candidates list and add it to the root elements
-            while (!rootCandidates.isEmpty()) {
-                IType newRoot = rootCandidates.remove(0);
-                rootComponents.add(newRoot);
-
-                removeDescendants(rootCandidates, rootComponents, components);
-            }
-        }
-
-        return rootComponents;
-    }
-
-    /**
-     * Removes all elements from the {@link List} of root candidates, which are root elements or
-     * somehow are associated to them. Afterwards rootCandidates consist of a {@link List} of root
-     * candidates which are not associated to the provided rootComponents.
-     * 
-     * @param rootComponents list of assured root elements
-     * @param rootCandidates list of potential root elements (for example all elements without a
-     *            supertype)
-     * @param components list of all components to be observed
-     */
-    private void removeDescendants(List<IType> rootCandidates, List<IType> rootComponents, List<IType> components) {
-
-        List<IType> potentialDescendants = new ArrayList<IType>(components);
-        potentialDescendants.removeAll(rootComponents);
-        List<IType> descendants = new ArrayList<IType>(rootComponents);
-
-        // remove all descending elements from the candidates list
-        while (!descendants.isEmpty()) {
-            List<IType> newDescendants = new ArrayList<IType>();
-            for (IType potentialDescendant : potentialDescendants) {
-                if (isAssociationTarget(potentialDescendant, descendants, associationTypeFilter)) {
-                    newDescendants.add(potentialDescendant);
-                }
-            }
-            potentialDescendants.removeAll(newDescendants);
-            rootCandidates.removeAll(descendants); // newDescendants will be removed in the next
-                                                   // iteration, except they are empty
-            descendants = newDescendants;
-        }
-    }
-
-    /**
-     * Takes a {@link List} of {@link IIpsSrcFile} and extracts the corresponding {@link List} of
-     * {@link IType}. It operates only on {@link List Lists} of {@link IIpsSrcFile} which represent
-     * {@link IType}
-     * 
-     * @param ipsProject the {@link IIpsProject} for which the objects should be retrieved
-     * @param types an array of {@list IpsObjectType} to filter the retrieved objects
-     * 
-     * @return a {@link List} of the same size with corresponding {@link IType}, or an empty
-     *         {@link List} if the input {@link List} was empty
-     */
-    private List<IType> getProjectTypes(IIpsProject ipsProject, IpsObjectType... types) {
-
-        List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
-        try {
-            ipsProject.findAllIpsSrcFiles(srcFiles, types);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-
-        List<IType> components = new ArrayList<IType>(srcFiles.size());
-        for (IIpsSrcFile file : srcFiles) {
-            try {
-                components.add((IType)file.getIpsObject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-        }
-        return components;
-    }
-
     @Override
     public Object[] getChildren(Object parentElement) {
-        if (parentElement instanceof IModelOverviewNode) {
-            if (parentElement instanceof ComponentNode && ((ComponentNode)parentElement).isRepetition()) {
-                return new Object[0];
-            }
-            return ((IModelOverviewNode)parentElement).getChildren().toArray();
-        } else {
+        if (parentElement instanceof ComponentNode && ((ComponentNode)parentElement).isRepetition()) {
             return new Object[0];
         }
+        if (parentElement instanceof IModelOverviewNode) {
+            return ((IModelOverviewNode)parentElement).getChildren().toArray();
+        }
+        return new Object[0];
     }
 
     @Override
@@ -318,59 +200,6 @@ public class ModelOverviewContentProvider extends DeferredStructuredContentProvi
     @Override
     public boolean hasChildren(Object element) {
         return getChildren(element).length != 0;
-    }
-
-    /**
-     * Convenience function for {@link #getAssociatingTypes(IType, List, AssociationType...)
-     * getAssociatingTypes(IType, List, AssociationType...).isEmpty()}.
-     * 
-     * @param target the {@link IType} which should be checked on incoming associations
-     * @param components a {@link List} of {@link IType} which define the scope of associations that
-     *            will be checked
-     * @return {@code true}, if any association is directed towards the provided target, otherwise
-     *         {@code false}
-     */
-    private boolean isAssociationTarget(IType target, List<IType> components, AssociationType... filter) {
-        return !getAssociatingTypes(target, components, filter).isEmpty();
-    }
-
-    /**
-     * This method computes a {@link List} of {@link IType ITypes} which targets the indicated
-     * target with an {@link IAssociation}, or an empty {@link List} if there are no such
-     * associations.
-     * 
-     * @param target the {@link IType} which should be checked on incoming associations
-     * @param components a {@link List} of {@link IType} which define the scope of associations that
-     *            will be checked
-     */
-    private List<IType> getAssociatingTypes(IType target, List<IType> components, AssociationType... filter) {
-        List<IType> associatingComponents = new ArrayList<IType>();
-        for (IType component : components) {
-            List<IType> targets = getAssociationsForAssociationTypes(component, filter);
-            if (targets.contains(target)) {
-                associatingComponents.add(component);
-            }
-        }
-        return associatingComponents;
-    }
-
-    /**
-     * Returns a {@link List} of all {@link IAssociation}s which are associated to this
-     * {@link IType} and match one of the provided types.
-     * 
-     * @return a {@link List} of associated {@link IAssociation}s
-     */
-    protected static List<IType> getAssociationsForAssociationTypes(IType rootElement, AssociationType... types) {
-        List<IAssociation> associations = rootElement.getAssociations(types);
-        List<IType> associatingTypes = new ArrayList<IType>(associations.size());
-        for (IAssociation association : associations) {
-            try {
-                associatingTypes.add(association.findTarget(rootElement.getIpsProject()));
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-        }
-        return associatingTypes;
     }
 
     /**

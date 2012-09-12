@@ -76,8 +76,10 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"; //$NON-NLS-1$
     private static final String MENU_INFO_GROUP = "group.info"; //$NON-NLS-1$
+
     private static final String SHOW_CARDINALITIES = "show_cardinalities"; //$NON-NLS-1$
     private static final String SHOW_ROLENAMES = "show_rolenames"; //$NON-NLS-1$
+    private static final String SHOW_PROJECTS = "show_projects"; //$NON-NLS-1$
 
     private IPolicyCmptType toggledPolicyCmptInput;
     private IProductCmptType toggledProductCmptInput;
@@ -381,11 +383,16 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         Action showRoleNameAction = createShowRoleNameAction();
         labelProvider.setShowRolenames(true);
 
+        Action showProjectsAction = createShowProjectsAction();
+        labelProvider.setShowProjects(true);
+
         if (memento != null) {
             Boolean showCard = memento.getBoolean(SHOW_CARDINALITIES);
             Boolean showRoles = memento.getBoolean(SHOW_ROLENAMES);
+            Boolean showProjects = memento.getBoolean(SHOW_PROJECTS);
             showCardinalitiesAction.setChecked(showCard == null ? true : showCard);
             showRoleNameAction.setChecked(showRoles == null ? true : showRoles);
+            showProjectsAction.setChecked(showProjects == null ? true : showProjects);
         } else {
             showCardinalitiesAction.setChecked(true);
             showRoleNameAction.setChecked(true);
@@ -393,6 +400,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
         menuManager.appendToGroup(MENU_INFO_GROUP, showCardinalitiesAction);
         menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);
+        menuManager.appendToGroup(MENU_INFO_GROUP, showProjectsAction);
     }
 
     private Action createShowCardinalitiesAction() {
@@ -410,7 +418,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
             @Override
             public String getToolTipText() {
-                return Messages.IpsModelOverview_tooltipToggleCardinalities;
+                return Messages.IpsModelOverview_menuShowCardinalities_tooltip;
             }
         };
     }
@@ -431,6 +439,26 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
             @Override
             public String getToolTipText() {
                 return Messages.IpsModelOverview_menuShowRoleName_tooltip;
+            }
+        };
+    }
+
+    private Action createShowProjectsAction() {
+        return new Action(Messages.IpsModelOverview_menuShowProjects_name, IAction.AS_CHECK_BOX) {
+            @Override
+            public ImageDescriptor getImageDescriptor() {
+                return null;
+            }
+
+            @Override
+            public void run() {
+                labelProvider.toggleShowProjects();
+                refresh();
+            }
+
+            @Override
+            public String getToolTipText() {
+                return Messages.IpsModelOverview_menuShowProjects_tooltip;
             }
         };
     }
@@ -557,6 +585,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         super.saveState(memento);
         memento.putBoolean(SHOW_CARDINALITIES, this.labelProvider.getShowCardinalities());
         memento.putBoolean(SHOW_ROLENAMES, this.labelProvider.getShowRolenames());
+        memento.putBoolean(SHOW_PROJECTS, this.labelProvider.getShowProjects());
     }
 
     @Override

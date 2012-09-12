@@ -28,7 +28,7 @@ import org.faktorips.util.ArgumentCheck;
 class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
 
     private IType value;
-    private IIpsProject rootProject;
+    private IIpsProject sourceProject;
     private List<AbstractStructureNode> children;
     private AbstractStructureNode parent;
     private CompositeNode compositeChild;
@@ -39,17 +39,18 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
      * 
      * @param value the corresponding IType element to this node
      * @param parent the parent node
-     * @param rootProject the {@link IIpsProject} which should be used to compute project references
+     * @param sourceProject the {@link IIpsProject} which should be used to compute project
+     *            references
      * @throws NullPointerException if value or rootProject is null
      */
-    public ComponentNode(IType value, AbstractStructureNode parent, IIpsProject rootProject) {
+    public ComponentNode(IType value, AbstractStructureNode parent, IIpsProject sourceProject) {
 
         ArgumentCheck.notNull(value, "The value of this node must not be null!"); //$NON-NLS-1$
-        ArgumentCheck.notNull(rootProject, "The rootProject parameter is mandatory"); //$NON-NLS-1$
+        ArgumentCheck.notNull(sourceProject, "The rootProject parameter is mandatory"); //$NON-NLS-1$
 
         this.parent = parent;
         this.value = value;
-        this.rootProject = rootProject;
+        this.sourceProject = sourceProject;
     }
 
     /**
@@ -76,7 +77,7 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
                 AssociationType.AGGREGATION);
         if (!associations.isEmpty()) {
             List<? extends ComponentNode> compositeNodeChildren = AssociationComponentNode
-                    .encapsulateAssociationComponentTypes(associations, this.rootProject);
+                    .encapsulateAssociationComponentTypes(associations, this.sourceProject);
             CompositeNode compositeNode = new CompositeNode(this, compositeNodeChildren);
             children.add(compositeNode);
             this.compositeChild = compositeNode;
@@ -84,9 +85,9 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
     }
 
     private void addSubtypeChild(List<AbstractStructureNode> children) {
-        List<IType> subtypes = this.getValue().findSubtypes(false, false, this.rootProject);
+        List<IType> subtypes = this.getValue().findSubtypes(false, false, this.sourceProject);
         if (!subtypes.isEmpty()) {
-            List<ComponentNode> subtypeNodeChildren = encapsulateComponentTypes(subtypes, this.rootProject);
+            List<ComponentNode> subtypeNodeChildren = encapsulateComponentTypes(subtypes, this.sourceProject);
             SubtypeNode subtypeNode = new SubtypeNode(this, subtypeNodeChildren);
             children.add(subtypeNode);
             this.subtypeChild = subtypeNode;
@@ -140,7 +141,7 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
      * Returns the {@link IIpsProject} for which this node has been created.
      */
     IIpsProject getRootIpsProject() {
-        return this.rootProject;
+        return this.sourceProject;
     }
 
     /**
@@ -168,12 +169,14 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
      * {@link ComponentNode ComponentNodes}.
      * 
      * @param components the elements which should be encapsulated
+     * @param sourceProject the project which is used to compute project references
      * @return a {@link List} of {@link ComponentNode ComponenteNodes}
      */
-    protected static List<ComponentNode> encapsulateComponentTypes(Collection<IType> components, IIpsProject rootProject) {
+    protected static List<ComponentNode> encapsulateComponentTypes(Collection<IType> components,
+            IIpsProject sourceProject) {
         List<ComponentNode> componentNodes = new ArrayList<ComponentNode>();
         for (IType component : components) {
-            componentNodes.add(new ComponentNode(component, null, rootProject));
+            componentNodes.add(new ComponentNode(component, null, sourceProject));
         }
         return componentNodes;
     }
@@ -200,7 +203,7 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((parent == null) ? 0 : parent.hashCode());
-        result = prime * result + ((rootProject == null) ? 0 : rootProject.hashCode());
+        result = prime * result + ((sourceProject == null) ? 0 : sourceProject.hashCode());
         result = prime * result + ((value == null) ? 0 : value.hashCode());
         return result;
     }
@@ -224,11 +227,11 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
         } else if (!parent.equals(other.parent)) {
             return false;
         }
-        if (rootProject == null) {
-            if (other.rootProject != null) {
+        if (sourceProject == null) {
+            if (other.sourceProject != null) {
                 return false;
             }
-        } else if (!rootProject.equals(other.rootProject)) {
+        } else if (!sourceProject.equals(other.sourceProject)) {
             return false;
         }
         if (value == null) {
