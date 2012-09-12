@@ -52,7 +52,9 @@ public class ModelOverviewTest extends AbstractIpsPluginTest {
         rawPath.add(new PathElement(deckung, ToChildAssociationType.SUPERTYPE));
         rawPath.add(new PathElement(hausratGrunddeckung, ToChildAssociationType.SELF));
 
-        TreePath treePath = ModelOverview.computePath(rawPath);
+        ModelOverview view = new ModelOverview();
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        TreePath treePath = view.computePath(rawPath, provider);
 
         // tests
         assertEquals(5, treePath.getSegmentCount());

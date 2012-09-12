@@ -210,4 +210,30 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         }
         return components;
     }
+
+    /**
+     * Returns a {@link List} which may contain at most one {@link CompositeNode} and one
+     * {@link SubtypeNode}. The {@link SubtypeNode} will be before the {@link CompositeNode} in the
+     * returned {@link List}. This method has to compute the grandchildren of the node, therefore
+     * these will be stored in the direct children.
+     */
+    abstract List<AbstractStructureNode> getComponentNodeChildren(ComponentNode parent);
+
+    /**
+     * Computes the child {@link SubtypeNode} of this node, if there are any {@link IType}s in the
+     * project scope which are subclassing the enclosed {@link IType} of this node.
+     * 
+     * @param parent the node for which the {@link SubtypeNode} should be computed
+     * @return a {@link SubtypeNode}, or {@code null} if there are no subtypes.
+     */
+    abstract SubtypeNode getComponentNodeSubtypeChild(ComponentNode parent);
+
+    /**
+     * Computes the child {@link CompositeNode} of this node, if there are any {@link IType}s in the
+     * project scope which are associated by the enclosed {@link IType} of this node.
+     * 
+     * @param parent the node for which the {@link CompositeNode} should be computed
+     * @return a {@link CompositeNode}, or {@code null} if there are no associated types.
+     */
+    abstract CompositeNode getComponentNodeCompositeChild(ComponentNode parent);
 }

@@ -43,7 +43,9 @@ abstract class AbstractStructureNode implements IModelOverviewNode {
         addChildren(children);
     }
 
-    @Override
+    /**
+     * Returns all children of this node or an empty {@link List} if there are no children.
+     */
     public List<ComponentNode> getChildren() {
         return children;
     }

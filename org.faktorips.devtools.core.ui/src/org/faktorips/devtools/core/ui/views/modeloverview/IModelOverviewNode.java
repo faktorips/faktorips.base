@@ -16,10 +16,6 @@ package org.faktorips.devtools.core.ui.views.modeloverview;
 import java.util.List;
 
 interface IModelOverviewNode {
-    /**
-     * Returns all children of this node or an empty {@link List} if there are no children.
-     */
-    List<? extends IModelOverviewNode> getChildren();
 
     /**
      * Returns the parent of this node or {@code null} if it has no parent.

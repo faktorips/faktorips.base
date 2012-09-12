@@ -312,7 +312,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
      * @param treePath a list of {@link PathElement PathElements}, ordered from the root-element
      *            downwards
      */
-    protected static TreePath computePath(List<PathElement> treePath) {
+    protected TreePath computePath(List<PathElement> treePath, AbstractModelOverviewContentProvider contentProvider) {
         // The IpsProject must be from the project which is the lowest in the project hierarchy
         IIpsProject rootProject = treePath.get(treePath.size() - 1).getComponent().getIpsProject();
 
@@ -329,9 +329,9 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
             // add the structure node
             AbstractStructureNode abstractRootChild = null;
             if (root.getAssociationType() == ToChildAssociationType.ASSOCIATION) {
-                abstractRootChild = rootNode.getCompositeChild();
+                abstractRootChild = contentProvider.getComponentNodeCompositeChild(rootNode);
             } else { // ToChildAssociationType.SUPERTYPE
-                abstractRootChild = rootNode.getSubtypeChild();
+                abstractRootChild = contentProvider.getComponentNodeSubtypeChild(rootNode);
             }
             pathList.add(abstractRootChild);
 
@@ -572,7 +572,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         List<List<PathElement>> paths = ((ModelOverviewContentProvider)this.treeViewer.getContentProvider()).getPaths();
         TreePath[] treePaths = new TreePath[paths.size()];
         for (int i = 0; i < paths.size(); i++) {
-            treePaths[i] = ModelOverview.computePath(paths.get(i));
+            treePaths[i] = computePath(paths.get(i), provider);
         }
         for (TreePath treePath : treePaths) {
             this.treeViewer.expandToLevel(treePath, 0);

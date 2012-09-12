@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
+import static org.faktorips.devtools.core.ui.views.modeloverview.ComponentNode.encapsulateComponentTypes;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,6 +27,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AssociationType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
 public class ModelOverviewContentProvider extends AbstractModelOverviewContentProvider {
@@ -185,10 +188,50 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
         if (parentElement instanceof ComponentNode && ((ComponentNode)parentElement).isRepetition()) {
             return new Object[0];
         }
-        if (parentElement instanceof IModelOverviewNode) {
-            return ((IModelOverviewNode)parentElement).getChildren().toArray();
+
+        if (parentElement instanceof ComponentNode) {
+            return getComponentNodeChildren((ComponentNode)parentElement).toArray();
+        } else if (parentElement instanceof IModelOverviewNode) {
+            return ((AbstractStructureNode)parentElement).getChildren().toArray();
         }
         return new Object[0];
+    }
+
+    @Override
+    List<AbstractStructureNode> getComponentNodeChildren(ComponentNode parent) {
+        List<AbstractStructureNode> children = new ArrayList<AbstractStructureNode>();
+
+        SubtypeNode subtypeNode = getComponentNodeSubtypeChild(parent);
+        CompositeNode compositeNode = getComponentNodeCompositeChild(parent);
+        if (subtypeNode != null) {
+            children.add(subtypeNode);
+        }
+        if (compositeNode != null) {
+            children.add(compositeNode);
+        }
+        return children;
+    }
+
+    @Override
+    SubtypeNode getComponentNodeSubtypeChild(ComponentNode parent) {
+        List<IType> subtypes = parent.getValue().findSubtypes(false, false, parent.getSourceIpsProject());
+        if (!subtypes.isEmpty()) {
+            List<ComponentNode> subtypeNodeChildren = encapsulateComponentTypes(subtypes, parent.getSourceIpsProject());
+            return new SubtypeNode(parent, subtypeNodeChildren);
+        }
+        return null;
+    }
+
+    @Override
+    CompositeNode getComponentNodeCompositeChild(ComponentNode parent) {
+        List<IAssociation> associations = parent.getValue().getAssociations(
+                AssociationType.COMPOSITION_MASTER_TO_DETAIL, AssociationType.AGGREGATION);
+        if (!associations.isEmpty()) {
+            List<? extends ComponentNode> compositeNodeChildren = AssociationComponentNode
+                    .encapsulateAssociationComponentTypes(associations, parent.getSourceIpsProject());
+            return new CompositeNode(parent, compositeNodeChildren);
+        }
+        return null;
     }
 
     @Override

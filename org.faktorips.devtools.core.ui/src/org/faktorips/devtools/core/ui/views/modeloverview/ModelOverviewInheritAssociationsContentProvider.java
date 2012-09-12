@@ -86,4 +86,22 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
         return projectComponents;
     }
 
+    @Override
+    List<AbstractStructureNode> getComponentNodeChildren(ComponentNode parent) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    SubtypeNode getComponentNodeSubtypeChild(ComponentNode parent) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    CompositeNode getComponentNodeCompositeChild(ComponentNode parent) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
