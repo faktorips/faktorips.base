@@ -32,6 +32,11 @@ import org.apache.commons.lang.StringUtils;
  * (implicitly as java.lang.Integer) in your code but also use a class "some.other.package.Integer"
  * one of the two must be qualified. {@link #requiresQualifiedClassName(ImportStatement)} will
  * return <code>true</code> or <code>false</code> respectively.
+ * <p>
+ * TODO does not work for Classes in the own package that have the same unqualified name as a
+ * java.lang class. e.g. "my.package.Integer". "my.package.Integer" is used instead of
+ * "java.lang.Integer" (no import statements are possible for both of them). And may cause compile
+ * errors.
  * 
  * @author widmaier
  */
