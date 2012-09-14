@@ -34,8 +34,8 @@ import org.apache.commons.lang.StringUtils;
  * return <code>true</code> or <code>false</code> respectively.
  * <p>
  * TODO does not work for Classes in the own package that have the same unqualified name as a
- * java.lang class. e.g. "my.package.Integer". "my.package.Integer" is used instead of
- * "java.lang.Integer" (no import statements are possible for both of them). And may cause compile
+ * java.lang class. e.g. "my.package.Integer". "my.package.Integer" would be used instead of
+ * "java.lang.Integer" (no import statements are possible for both of them), and then causes compile
  * errors.
  * 
  * @author widmaier
