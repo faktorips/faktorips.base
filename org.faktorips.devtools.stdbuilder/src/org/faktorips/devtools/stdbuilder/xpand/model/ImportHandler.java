@@ -86,8 +86,7 @@ public class ImportHandler {
 
     private void registerImportStatementIfPossible(Map<String, ImportStatement> registeredImportsMap,
             ImportStatement importStatement) {
-        if (!isInConflictWithImportedClassName(classNameToImportStatementMap, importStatement)
-                && !isInConflictWithImportedClassName(implicitlyImportedClassNamesMap, importStatement)) {
+        if (!isInConflictWithImportedClassName(importStatement) && !isInConflictWithImplicitClassName(importStatement)) {
             registeredImportsMap.put(importStatement.getUnqualifiedName(), importStatement);
         }
     }
@@ -116,8 +115,11 @@ public class ImportHandler {
      * @param packageName the package name to test
      */
     private boolean isImplicitPackage(String packageName) {
-        return packageName.equals(JAVA_LANG_PACKAGE) || StringUtils.isEmpty(packageName)
-                || packageName.equals(ownPackage);
+        return packageName.equals(JAVA_LANG_PACKAGE) || StringUtils.isEmpty(packageName) || isHomePackage(packageName);
+    }
+
+    private boolean isHomePackage(String packageName) {
+        return packageName.equals(ownPackage);
     }
 
     /**
@@ -129,22 +131,10 @@ public class ImportHandler {
      * @param importStatement the import statement to test
      */
     public boolean requiresQualifiedClassName(ImportStatement importStatement) {
-        String packageName = importStatement.getPackage();
-        if (isImplicitPackage(packageName)) {
-            if (isInConflictWithImplicitClassName(importStatement)) {
-                return true;
-            } else {
-                return isInConflictWithImportedClassName(importStatement);
-            }
-        } else {
-            if (isImported(classNameToImportStatementMap, importStatement)) {
-                return false;
-            }
-            if (isInConflictWithImportedClassName(importStatement)) {
-                return true;
-            }
-        }
-        return true;
+        return (!isImported(classNameToImportStatementMap, importStatement) && !isImported(
+                implicitlyImportedClassNamesMap, importStatement))
+                || isInConflictWithImportedClassName(importStatement)
+                || isInConflictWithImplicitClassName(importStatement);
     }
 
     private boolean isInConflictWithImportedClassName(ImportStatement importStatement) {

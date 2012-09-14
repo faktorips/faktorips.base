@@ -166,8 +166,9 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     /**
-     * The java class may differ for value sets. For example when the type is primitive we need to
-     * use the wrapped type instead.
+     * Adds an import for the datatype's java class name and returns it. The java class may differ
+     * for value sets. For example when the type is primitive we need to use the wrapped type
+     * instead.
      * 
      * @return The name of the java class used for value sets.
      */

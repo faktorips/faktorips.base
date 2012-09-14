@@ -29,10 +29,21 @@ public class ImportHandlerTest {
     @Before
     public void createImportHandler() {
         importHandler = new ImportHandler("my.package");
+        // Use to run testcases against JavaCodeFragment's import logic
+        // importHandler = new DelegateImportHandler();
     }
 
     @Test
-    public void testAdd() throws Exception {
+    public void testAddImportAndReturnClassName() {
+        String className = importHandler.addImportAndReturnClassName("some.package.SomeClass");
+        assertEquals("SomeClass", className);
+
+        String otherClassName = importHandler.addImportAndReturnClassName("some.other.package.SomeClass");
+        assertEquals("some.other.package.SomeClass", otherClassName);
+    }
+
+    @Test
+    public void testAdd() {
         importHandler.add("test.pack.TestClass");
         assertThat(importHandler.getImports(), hasItem(new ImportStatement("test.pack.TestClass")));
     }
@@ -71,8 +82,8 @@ public class ImportHandlerTest {
 
     @Test
     public void testClassNameCollisionImport_JavaLang() {
-        importHandler.add("Integer");
-        assertTrue(importHandler.getImports().isEmpty());
+        // importHandler.add("Integer");
+        // assertTrue(importHandler.getImports().isEmpty());
         importHandler.add("java.lang.Integer");
         assertTrue(importHandler.getImports().isEmpty());
         importHandler.add("org.faktorips.model.internal.Integer");
@@ -109,26 +120,28 @@ public class ImportHandlerTest {
     @Test
     public void testRequiresQualifiedClassName_Collision_JavaLangFirst() {
         ImportStatement importStatement = importHandler.add("java.lang.Integer");
-        ImportStatement secondImportStatement = importHandler.add("some.package.Integer");
         assertFalse(importHandler.requiresQualifiedClassName(importStatement));
+        ImportStatement secondImportStatement = importHandler.add("some.package.Integer");
         assertTrue(importHandler.requiresQualifiedClassName(secondImportStatement));
     }
 
     @Test
     public void testRequiresQualifiedClassName_Collision_SamePackageFirst() {
         ImportStatement importStatement = importHandler.add("my.package.SomeClass");
-        ImportStatement secondImportStatement = importHandler.add("some.other.package.SomeClass");
         assertFalse(importHandler.requiresQualifiedClassName(importStatement));
+        ImportStatement secondImportStatement = importHandler.add("some.other.package.SomeClass");
         assertTrue(importHandler.requiresQualifiedClassName(secondImportStatement));
     }
 
     @Test
     public void testRequiresQualifiedClassName_Collision_OtherClassFirst() {
         ImportStatement importStatement = importHandler.add("some.package.Integer");
-        ImportStatement javaLangImportStatement = importHandler.add("java.lang.Integer");
-        ImportStatement unqualifiedJavLangImportStatement = importHandler.add("Integer");
         assertFalse(importHandler.requiresQualifiedClassName(importStatement));
+
+        ImportStatement javaLangImportStatement = importHandler.add("java.lang.Integer");
         assertTrue(importHandler.requiresQualifiedClassName(javaLangImportStatement));
+
+        ImportStatement unqualifiedJavLangImportStatement = importHandler.add("Integer");
         assertTrue(importHandler.requiresQualifiedClassName(unqualifiedJavLangImportStatement));
     }
 
