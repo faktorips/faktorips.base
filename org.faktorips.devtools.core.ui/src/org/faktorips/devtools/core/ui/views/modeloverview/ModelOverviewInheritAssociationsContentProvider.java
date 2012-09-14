@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
+import static org.faktorips.devtools.core.ui.views.modeloverview.AssociationComponentNode.newAssociationComponentNode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -179,7 +181,6 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
     @Override
     CompositeNode getComponentNodeCompositeChild(ComponentNode parent) {
 
-        List<IType> derivedAssociations = new ArrayList<IType>();
         List<ComponentNode> associationNodes = new ArrayList<ComponentNode>();
 
         IType parentValue = parent.getValue();
@@ -200,18 +201,22 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
             } else {
                 // compute the derived associations -> go up in the inheritance hierarchy
                 IType supertype = parentValue.findSupertype(project);
-                List<IType> supertypeAssociations = new ArrayList<IType>();
+                List<IAssociation> supertypeAssociations = new ArrayList<IAssociation>();
                 // collect all relevant supertype-associations
                 while (supertype != null && !supertype.getIpsProject().equals(project)) {
-                    supertypeAssociations.addAll(getAssociationsForAssociationTypes(supertype, ASSOCIATION_TYPES));
+                    supertypeAssociations.addAll(supertype.getAssociations(ASSOCIATION_TYPES));
                     supertype = supertype.findSupertype(project);
                 }
 
-                for (IType supertypeAssociation : supertypeAssociations) {
-                    derivedAssociations.addAll(findProjectSpecificSubtypes(supertypeAssociation, project));
+                for (IAssociation supertypeAssociation : supertypeAssociations) {
+                    List<IType> subtypes = findProjectSpecificSubtypes(supertypeAssociation.findTarget(project),
+                            project);
+                    for (IType subtype : subtypes) {
+                        associationNodes.add(newAssociationComponentNode(subtype,
+                                supertypeAssociation.getMinCardinality(), supertypeAssociation.getMaxCardinality(),
+                                supertypeAssociation.getTargetRoleSingular(), project, true));
+                    }
                 }
-                associationNodes.addAll(InheritedAssociationComponentNode
-                        .encapsulateInheritedAssociationComponentTypes(derivedAssociations, project));
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);

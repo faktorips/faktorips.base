@@ -39,7 +39,7 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
         association.setTarget(deckung.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
 
-        AssociationComponentNode.newAssociationComponentNode(association, null, project);
+        AssociationComponentNode.newAssociationComponentNode(association, project);
     }
 
     @Test(expected = NullPointerException.class)
@@ -52,7 +52,7 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
         association.setTarget(deckung.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
 
-        AssociationComponentNode.newAssociationComponentNode(association, null, null);
+        AssociationComponentNode.newAssociationComponentNode(association, null);
     }
 
     @Test(expected = NullPointerException.class)
@@ -65,7 +65,7 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
         association.setTarget(deckung.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
 
-        AssociationComponentNode.newAssociationComponentNode(null, null, project);
+        AssociationComponentNode.newAssociationComponentNode(null, project);
     }
 
     @Test
@@ -78,26 +78,9 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
         association.setTarget(deckung.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
 
-        AssociationComponentNode node = AssociationComponentNode
-                .newAssociationComponentNode(association, null, project);
+        AssociationComponentNode node = AssociationComponentNode.newAssociationComponentNode(association, project);
 
         assertEquals(deckung, node.getValue());
-    }
-
-    @Test
-    public void testGetAssociation_IsEqual() throws CoreException {
-        IIpsProject project = newIpsProject();
-        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
-        PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
-
-        IAssociation association = vertrag.newAssociation();
-        association.setTarget(deckung.getQualifiedName());
-        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-
-        AssociationComponentNode node = AssociationComponentNode
-                .newAssociationComponentNode(association, null, project);
-
-        assertEquals(association, node.getAssociation());
     }
 
     @Test
@@ -114,26 +97,6 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
         IIpsProject project = newIpsProject();
 
         AssociationComponentNode.encapsulateAssociationComponentTypes(null, project);
-    }
-
-    @Test
-    public void testEncapsulateAssociationComponentTypes_NonEmptyListInput() throws CoreException {
-        IIpsProject project = newIpsProject();
-        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
-        PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
-
-        IAssociation association = vertrag.newAssociation();
-        association.setTarget(deckung.getQualifiedName());
-        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-
-        ArrayList<IAssociation> associations = new ArrayList<IAssociation>();
-        associations.add(association);
-
-        List<AssociationComponentNode> encapsulatedComponentTypes = AssociationComponentNode
-                .encapsulateAssociationComponentTypes(associations, project);
-
-        assertEquals(1, encapsulatedComponentTypes.size());
-        assertEquals(association, encapsulatedComponentTypes.get(0).getAssociation());
     }
 
     @Test(expected = NullPointerException.class)

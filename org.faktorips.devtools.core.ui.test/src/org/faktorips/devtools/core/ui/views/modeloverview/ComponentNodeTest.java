@@ -34,7 +34,7 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
     public void testGetParent_RootParentIsNull() throws CoreException {
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
-        ComponentNode root = new ComponentNode(vertrag, null, project);
+        ComponentNode root = new ComponentNode(vertrag, project);
 
         assertNull(root.getParent());
     }
@@ -45,8 +45,8 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
 
-        ComponentNode root1 = new ComponentNode(vertrag, null, project);
-        ComponentNode root2 = new ComponentNode(vertrag, null, project);
+        ComponentNode root1 = new ComponentNode(vertrag, project);
+        ComponentNode root2 = new ComponentNode(vertrag, project);
 
         // test
         assertTrue(root1.equals(root2));
@@ -59,8 +59,8 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
         IIpsProject project2 = newIpsProject();
 
-        ComponentNode root1 = new ComponentNode(vertrag, null, project);
-        ComponentNode root2 = new ComponentNode(vertrag, null, project2);
+        ComponentNode root1 = new ComponentNode(vertrag, project);
+        ComponentNode root2 = new ComponentNode(vertrag, project2);
 
         // test
         assertFalse(root1.equals(root2));
@@ -73,8 +73,8 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
         PolicyCmptType vertrag2 = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag2");
 
-        ComponentNode root1 = new ComponentNode(vertrag, null, project);
-        ComponentNode root2 = new ComponentNode(vertrag2, null, project);
+        ComponentNode root1 = new ComponentNode(vertrag, project);
+        ComponentNode root2 = new ComponentNode(vertrag2, project);
 
         // test
         assertFalse(root1.equals(root2));

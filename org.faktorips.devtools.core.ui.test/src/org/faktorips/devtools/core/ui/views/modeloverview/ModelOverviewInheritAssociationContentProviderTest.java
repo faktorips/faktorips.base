@@ -232,7 +232,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
     }
 
     @Test
-    public void testGetChildren_() throws CoreException {
+    public void testGetChildren_FindsDerivedAssociations() throws CoreException {
         // setup
         IIpsProject baseProject = newIpsProject();
         PolicyCmptType stdSubCoverageType = newPolicyCmptTypeWithoutProductCmptType(baseProject, "StdSubCoverageType");
@@ -278,8 +278,10 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
 
         Object[] associationChildren = provider.getChildren(structureChildren[0]);
         assertEquals(2, associationChildren.length);
-        assertTrue(associationChildren[0] instanceof InheritedAssociationComponentNode);
-        assertTrue(associationChildren[1] instanceof InheritedAssociationComponentNode);
+        assertTrue(associationChildren[0] instanceof AssociationComponentNode);
+        assertTrue(((AssociationComponentNode)associationChildren[0]).isInherited());
+        assertTrue(associationChildren[1] instanceof AssociationComponentNode);
+        assertTrue(((AssociationComponentNode)associationChildren[1]).isInherited());
 
         List<IType> associationChildrenList = new ArrayList<IType>();
         associationChildrenList.add(((ComponentNode)associationChildren[0]).getValue());

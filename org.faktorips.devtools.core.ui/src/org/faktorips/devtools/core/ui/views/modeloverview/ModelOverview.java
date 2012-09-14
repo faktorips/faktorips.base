@@ -319,7 +319,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
         // get the root node
         PathElement root = treePath.get(0);
-        ComponentNode rootNode = new ComponentNode(root.getComponent(), null, rootProject);
+        ComponentNode rootNode = new ComponentNode(root.getComponent(), rootProject);
         List<IModelOverviewNode> pathList = new ArrayList<IModelOverviewNode>();
         pathList.add(rootNode);
 

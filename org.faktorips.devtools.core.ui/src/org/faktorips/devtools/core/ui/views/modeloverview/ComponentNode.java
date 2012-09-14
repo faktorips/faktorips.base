@@ -33,17 +33,15 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
      * Creates a new ComponentNode with designated parent node and value.
      * 
      * @param value the corresponding IType element to this node
-     * @param parent the parent node
      * @param sourceProject the {@link IIpsProject} which should be used to compute project
      *            references
      * @throws NullPointerException if value or rootProject is null
      */
-    public ComponentNode(IType value, AbstractStructureNode parent, IIpsProject sourceProject) {
+    public ComponentNode(IType value, IIpsProject sourceProject) {
 
         ArgumentCheck.notNull(value, "The value of this node must not be null!"); //$NON-NLS-1$
         ArgumentCheck.notNull(sourceProject, "The rootProject parameter is mandatory"); //$NON-NLS-1$
 
-        this.parent = parent;
         this.value = value;
         this.sourceProject = sourceProject;
     }
@@ -110,7 +108,7 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
             IIpsProject sourceProject) {
         List<ComponentNode> componentNodes = new ArrayList<ComponentNode>();
         for (IType component : components) {
-            componentNodes.add(new ComponentNode(component, null, sourceProject));
+            componentNodes.add(new ComponentNode(component, sourceProject));
         }
         return componentNodes;
     }

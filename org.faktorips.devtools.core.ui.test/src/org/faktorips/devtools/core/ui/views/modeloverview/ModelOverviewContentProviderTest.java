@@ -775,7 +775,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
 
-        ComponentNode root = new ComponentNode(vertrag, null, project);
+        ComponentNode root = new ComponentNode(vertrag, project);
 
         // tests
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
@@ -794,7 +794,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         vertrag2deckung.setTarget(deckung.getQualifiedName());
         vertrag2deckung.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
-        ComponentNode root = new ComponentNode(vertrag, null, project);
+        ComponentNode root = new ComponentNode(vertrag, project);
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
         CompositeNode child = provider.getComponentNodeCompositeChild(root);
 
@@ -810,7 +810,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
 
-        ComponentNode root = new ComponentNode(vertrag, null, project);
+        ComponentNode root = new ComponentNode(vertrag, project);
 
         // tests
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
@@ -827,7 +827,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         // supertypes
         hausratVertrag.setSupertype(vertrag.getQualifiedName());
 
-        ComponentNode root = new ComponentNode(vertrag, null, project);
+        ComponentNode root = new ComponentNode(vertrag, project);
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
         SubtypeNode child = provider.getComponentNodeSubtypeChild(root);
 
@@ -855,7 +855,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         vertrag2deckung.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
         // tests
-        ComponentNode root = new ComponentNode(vertrag, null, project);
+        ComponentNode root = new ComponentNode(vertrag, project);
 
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
         List<AbstractStructureNode> children = provider.getComponentNodeChildren(root);
@@ -901,7 +901,7 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         vertrag2deckung.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
         // tests
-        ComponentNode root = new ComponentNode(vertrag, null, project);
+        ComponentNode root = new ComponentNode(vertrag, project);
         ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
         List<AbstractStructureNode> children = provider.getComponentNodeChildren(root);
 

@@ -23,7 +23,6 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.type.Association;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class ModelOverviewLabelProvider extends LabelProvider implements IStyledLabelProvider {
@@ -55,7 +54,7 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
                 overlayImages[IDecoration.BOTTOM_LEFT] = "ovr16/loop_ovr.gif"; //$NON-NLS-1$
                 overlayed = true;
             }
-            if (element instanceof InheritedAssociationComponentNode) {
+            if (element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited()) {
                 overlayImages[IDecoration.BOTTOM_RIGHT] = "OverrideIndicator_green.gif"; //$NON-NLS-1$
                 overlayed = true;
             }
@@ -92,7 +91,7 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
         StyledString styledLabel = new StyledString(label);
 
         if (element instanceof AssociationComponentNode) {
-            IAssociation node = ((AssociationComponentNode)element).getAssociation();
+            AssociationComponentNode node = ((AssociationComponentNode)element);
 
             if (showRolenames) {
                 styledLabel
