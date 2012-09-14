@@ -64,6 +64,10 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
 
     @Override
     protected Object[] collectElements(Object inputElement, IProgressMonitor monitor) {
+        if (inputElement instanceof IType) {
+            inputElement = ((IType)inputElement).getIpsProject();
+        }
+
         // only accept project input
         if (inputElement instanceof IIpsProject) {
             IIpsProject project = (IIpsProject)inputElement;

@@ -95,6 +95,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
     private IMemento memento;
     private Action toggleProductPolicyAction;
+    private Action toggleContentProviderAction;
     private ExpandAllAction expandAllAction;
     private CollapseAllAction collapseAllAction;
 
@@ -107,7 +108,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
         treeViewer = new TreeViewer(panel);
         // provider = new ModelOverviewContentProvider();
-        provider = new ModelOverviewInheritAssociationsContentProvider();
+        provider = new ModelOverviewContentProvider();
         treeViewer.setContentProvider(provider);
 
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
@@ -368,8 +369,12 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         toggleProductPolicyAction = createToggleProductPolicyAction();
         toolBarManager.add(toggleProductPolicyAction);
 
+        toggleContentProviderAction = createToggleContentProviderAction();
+        toolBarManager.add(toggleContentProviderAction);
+
         expandAllAction = new ExpandAllAction(treeViewer);
         toolBarManager.add(expandAllAction);
+
         collapseAllAction = new CollapseAllAction(treeViewer);
         toolBarManager.add(collapseAllAction);
     }
@@ -485,10 +490,53 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         };
     }
 
+    private Action createToggleContentProviderAction() {
+        return new Action(Messages.IpsModelOverview_tooltipToggleContentProviderButton, SWT.TOGGLE) {
+
+            @Override
+            public ImageDescriptor getImageDescriptor() {
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("ConfigDefElement.gif"); //$NON-NLS-1$
+            }
+
+            @Override
+            public String getToolTipText() {
+                return Messages.IpsModelOverview_tooltipToggleContentProviderButton;
+            }
+
+            @Override
+            public void run() {
+                toggleContentProvider();
+            }
+
+        };
+    }
+
     private void enableButtons(boolean state) {
         expandAllAction.setEnabled(state);
         collapseAllAction.setEnabled(state);
         toggleProductPolicyAction.setEnabled(state);
+        toggleContentProviderAction.setEnabled(state);
+    }
+
+    private void toggleContentProvider() {
+        Object input = treeViewer.getInput();
+        ShowTypeState currentShowTypeState = provider.getShowTypeState();
+
+        provider.removeCollectorFinishedListener(this);
+
+        if (treeViewer.getContentProvider() instanceof ModelOverviewContentProvider) {
+            provider = new ModelOverviewInheritAssociationsContentProvider();
+        } else {
+            provider = new ModelOverviewContentProvider();
+        }
+
+        if (input instanceof IIpsProject) {
+            treeViewer.setContentProvider(provider);
+            provider.setShowTypeState(currentShowTypeState);
+            provider.addCollectorFinishedListener(this);
+            treeViewer.setInput(input);
+        }
+        refresh();
     }
 
     /**
