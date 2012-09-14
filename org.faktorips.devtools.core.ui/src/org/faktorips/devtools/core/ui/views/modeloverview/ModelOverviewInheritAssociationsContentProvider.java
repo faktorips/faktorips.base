@@ -16,40 +16,48 @@ package org.faktorips.devtools.core.ui.views.modeloverview;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.AssociationType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
 public class ModelOverviewInheritAssociationsContentProvider extends AbstractModelOverviewContentProvider {
 
-    private final AssociationType[] associationTypes = { AssociationType.AGGREGATION,
+    private final AssociationType[] ASSOCIATION_TYPES = { AssociationType.AGGREGATION,
             AssociationType.COMPOSITION_MASTER_TO_DETAIL };
-    private final IpsObjectType[] ipsObjectTypes = { IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE };
 
     @Override
     public Object[] getChildren(Object parentElement) {
-
-        return null;
+        if (parentElement instanceof ComponentNode) {
+            return getComponentNodeChildren((ComponentNode)parentElement).toArray();
+        } else if (parentElement instanceof AbstractStructureNode) {
+            return ((AbstractStructureNode)parentElement).getChildren().toArray();
+        }
+        return new Object[0];
     }
 
     @Override
     public Object getParent(Object element) {
-        // TODO Auto-generated method stub
-        return null;
+        return ((IModelOverviewNode)element).getParent();
     }
 
     @Override
     public boolean hasChildren(Object element) {
-        // TODO Auto-generated method stub
+        if (element instanceof AbstractStructureNode) {
+            return !((AbstractStructureNode)element).getChildren().isEmpty();
+        } else if (element instanceof ComponentNode) {
+            return !getComponentNodeChildren((ComponentNode)element).isEmpty();
+        }
         return false;
     }
 
     @Override
     protected String getWaitingLabel() {
-        // TODO Auto-generated method stub
-        return null;
+        return Messages.IpsModelOverview_waitingLabel;
     }
 
     @Override
@@ -58,13 +66,68 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
         if (inputElement instanceof IIpsProject) {
             IIpsProject project = (IIpsProject)inputElement;
 
-            List<IType> projectSpecificITypes = getProjectSpecificITypes(getProjectITypes(project, ipsObjectTypes),
-                    project);
-            List<IType> rootElements = getProjectRootElementsFromComponentList(projectSpecificITypes, associationTypes);
-            return ComponentNode.encapsulateComponentTypes(rootElements, project).toArray();
+            List<IType> overallRootElements;
+            if (showState == ShowTypeState.SHOW_POLICIES) {
+                overallRootElements = getProjectRootElementsFromComponentList(
+                        getProjectITypes(project, IpsObjectType.POLICY_CMPT_TYPE), project, ASSOCIATION_TYPES);
+            } else {
+                overallRootElements = getProjectRootElementsFromComponentList(
+                        getProjectITypes(project, IpsObjectType.PRODUCT_CMPT_TYPE), project, ASSOCIATION_TYPES);
+            }
+
+            List<IType> derivedRootElements = computeDerivedRootElements(overallRootElements, project);
+            return ComponentNode.encapsulateComponentTypes(derivedRootElements, project).toArray();
         } else {
             return null;
         }
+    }
+
+    private List<IType> computeDerivedRootElements(List<IType> overallRootElements, IIpsProject project) {
+        List<IType> rootElements = new ArrayList<IType>();
+
+        // at first check the overallRootElements themselves
+        for (IType overallRootElement : overallRootElements) {
+            if (overallRootElement.getIpsProject().equals(project)) {
+                rootElements.add(overallRootElement);
+            } else {
+                // dig through the supertype hierarchy and construct the new root elements
+                rootElements.addAll(findProjectSpecificSubtypes(overallRootElement, project));
+            }
+        }
+        return rootElements;
+    }
+
+    private List<IType> findProjectSpecificSubtypes(IType parent, IIpsProject project) {
+        List<IType> rootElements = new ArrayList<IType>();
+        List<IType> subtypes = parent.findSubtypes(false, false, project);
+        boolean foundNothing = true;
+        for (IType subtype : subtypes) {
+            if (subtype.getIpsProject().equals(project)) { // root-element found
+                rootElements.add(subtype);
+                foundNothing = false;
+            }
+        }
+
+        // perform a breadth-first-search on the subtype-hierarchy
+        List<IType> sameLevelSubtypes = new ArrayList<IType>(subtypes);
+        while (foundNothing) {
+            List<IType> newSameLevelSubtypes = new ArrayList<IType>();
+            for (IType subtype : sameLevelSubtypes) {
+                newSameLevelSubtypes.addAll(subtype.findSubtypes(false, false, project));
+            }
+            for (IType sameLevelSubtype : sameLevelSubtypes) {
+                if (sameLevelSubtype.getIpsProject().equals(project)) {
+                    rootElements.add(sameLevelSubtype);
+                    foundNothing = false;
+                }
+            }
+            if (foundNothing && newSameLevelSubtypes.isEmpty()) {
+                return newSameLevelSubtypes;
+            } else {
+                sameLevelSubtypes = newSameLevelSubtypes;
+            }
+        }
+        return rootElements;
     }
 
     /**
@@ -88,20 +151,89 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
 
     @Override
     List<AbstractStructureNode> getComponentNodeChildren(ComponentNode parent) {
-        // TODO Auto-generated method stub
-        return null;
+        List<AbstractStructureNode> children = new ArrayList<AbstractStructureNode>();
+
+        SubtypeNode subtypeNode = getComponentNodeSubtypeChild(parent);
+        if (subtypeNode != null) {
+            children.add(subtypeNode);
+        }
+
+        CompositeNode compositeNode = getComponentNodeCompositeChild(parent);
+        if (compositeNode != null) {
+            children.add(compositeNode);
+        }
+
+        return children;
     }
 
     @Override
     SubtypeNode getComponentNodeSubtypeChild(ComponentNode parent) {
-        // TODO Auto-generated method stub
+        List<IType> subtypes = findProjectSpecificSubtypes(parent.getValue(), parent.getValue().getIpsProject());
+        if (!subtypes.isEmpty()) {
+            return new SubtypeNode(parent, ComponentNode.encapsulateComponentTypes(subtypes, parent.getValue()
+                    .getIpsProject()));
+        }
         return null;
     }
 
     @Override
     CompositeNode getComponentNodeCompositeChild(ComponentNode parent) {
-        // TODO Auto-generated method stub
+
+        List<IType> derivedAssociations = new ArrayList<IType>();
+        List<ComponentNode> associationNodes = new ArrayList<ComponentNode>();
+
+        IType parentValue = parent.getValue();
+        IIpsProject project = parentValue.getIpsProject();
+        // add direct associations (from the same project)
+        associationNodes.addAll(getDirectAssociationComponentNodes(parentValue, project));
+
+        // general root element or supertype is from the same project, therefore we have no derived
+        // associations
+        try {
+            if (parentValue.findSupertype(project) == null
+                    || parentValue.findSupertype(project).getIpsProject().equals(project)) {
+                if (!associationNodes.isEmpty()) {
+                    return new CompositeNode(parent, associationNodes);
+                } else {
+                    return null;
+                }
+            } else {
+                // compute the derived associations -> go up in the inheritance hierarchy
+                IType supertype = parentValue.findSupertype(project);
+                List<IType> supertypeAssociations = new ArrayList<IType>();
+                // collect all relevant supertype-associations
+                while (supertype != null && !supertype.getIpsProject().equals(project)) {
+                    supertypeAssociations.addAll(getAssociationsForAssociationTypes(supertype, ASSOCIATION_TYPES));
+                    supertype = supertype.findSupertype(project);
+                }
+
+                for (IType supertypeAssociation : supertypeAssociations) {
+                    derivedAssociations.addAll(findProjectSpecificSubtypes(supertypeAssociation, project));
+                }
+                associationNodes.addAll(InheritedAssociationComponentNode
+                        .encapsulateInheritedAssociationComponentTypes(derivedAssociations, project));
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+
+        if (!associationNodes.isEmpty()) {
+            return new CompositeNode(parent, associationNodes);
+        }
         return null;
     }
 
+    private List<AssociationComponentNode> getDirectAssociationComponentNodes(IType parentValue, IIpsProject project) {
+        List<IAssociation> directAssociations = new ArrayList<IAssociation>();
+        for (IAssociation directAssociation : parentValue.getAssociations(ASSOCIATION_TYPES)) {
+            try {
+                if (directAssociation.findTarget(project).getIpsProject().equals(project)) {
+                    directAssociations.add(directAssociation);
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return AssociationComponentNode.encapsulateAssociationComponentTypes(directAssociations, project);
+    }
 }

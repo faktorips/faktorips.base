@@ -42,6 +42,8 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
     public Image getImage(Object element) {
         if (element instanceof ComponentNode) {
             ComponentNode node = (ComponentNode)element;
+            boolean overlayed = false;
+            String[] overlayImages = new String[4];
             String imageName;
             if (node.getValue() instanceof PolicyCmptType) {
                 imageName = "PolicyCmptType.gif"; //$NON-NLS-1$
@@ -50,8 +52,16 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
             }
 
             if (node.isRepetition()) {
+                overlayImages[IDecoration.BOTTOM_LEFT] = "ovr16/loop_ovr.gif"; //$NON-NLS-1$
+                overlayed = true;
+            }
+            if (element instanceof InheritedAssociationComponentNode) {
+                overlayImages[IDecoration.BOTTOM_RIGHT] = "OverrideIndicator_green.gif"; //$NON-NLS-1$
+                overlayed = true;
+            }
+            if (overlayed) {
                 return (Image)resourceManager.get(IpsUIPlugin.getImageHandling().getSharedOverlayImage(imageName,
-                        "ovr16/loop_ovr.gif", IDecoration.BOTTOM_LEFT)); //$NON-NLS-1$
+                        overlayImages));
             } else {
                 IAdaptable adaptable = node.getValue();
                 Image result = IpsUIPlugin.getImageHandling().getImage(adaptable);
@@ -97,7 +107,8 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
             }
         }
         if (showProjects && element instanceof ComponentNode) {
-            styledLabel.append(new StyledString(" - " + ((ComponentNode)element).getValue().getIpsProject().getName(), //$NON-NLS-1$
+            styledLabel.append(new StyledString(
+                    " [" + ((ComponentNode)element).getValue().getIpsProject().getName() + "]", //$NON-NLS-1$ //$NON-NLS-2$
                     StyledString.DECORATIONS_STYLER));
         }
         return styledLabel;

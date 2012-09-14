@@ -69,8 +69,8 @@ import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
-import org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider.ShowTypeState;
-import org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider.ToChildAssociationType;
+import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ShowTypeState;
+import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ToChildAssociationType;
 
 public class ModelOverview extends ViewPart implements ICollectorFinishedListener {
 
@@ -91,7 +91,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     private Label emptyMessageLabel;
 
     private ModelOverviewLabelProvider labelProvider;
-    private ModelOverviewContentProvider provider;
+    private AbstractModelOverviewContentProvider provider;
 
     private IMemento memento;
     private Action toggleProductPolicyAction;
@@ -106,7 +106,8 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
                 true, false));
 
         treeViewer = new TreeViewer(panel);
-        provider = new ModelOverviewContentProvider();
+        // provider = new ModelOverviewContentProvider();
+        provider = new ModelOverviewInheritAssociationsContentProvider();
         treeViewer.setContentProvider(provider);
 
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
@@ -116,7 +117,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
         treeViewer.setLabelProvider(decoratingLabelProvider);
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        getSite().setSelectionProvider(treeViewer); // important for the context menu
+        getSite().setSelectionProvider(treeViewer); // necessary for the context menu
 
         // initialize the empty message
         emptyMessageLabel = uiToolkit.createLabel(panel, "", SWT.WRAP, new GridData(SWT.FILL, SWT.FILL, //$NON-NLS-1$
@@ -312,7 +313,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
      * @param treePath a list of {@link PathElement PathElements}, ordered from the root-element
      *            downwards
      */
-    protected TreePath computePath(List<PathElement> treePath, AbstractModelOverviewContentProvider contentProvider) {
+    TreePath computePath(List<PathElement> treePath, ModelOverviewContentProvider contentProvider) {
         // The IpsProject must be from the project which is the lowest in the project hierarchy
         IIpsProject rootProject = treePath.get(treePath.size() - 1).getComponent().getIpsProject();
 
@@ -562,17 +563,17 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     @Override
     public void update(Observable o, Object arg) {
         if (o.equals(this.provider)) {
-            if (this.treeViewer.getInput() instanceof IType) {
-                expandPaths();
+            if (this.treeViewer.getInput() instanceof IType && provider instanceof ModelOverviewContentProvider) {
+                expandPaths((ModelOverviewContentProvider)this.provider);
             }
         }
     }
 
-    private void expandPaths() {
-        List<List<PathElement>> paths = ((ModelOverviewContentProvider)this.treeViewer.getContentProvider()).getPaths();
+    private void expandPaths(ModelOverviewContentProvider contentProvider) {
+        List<List<PathElement>> paths = contentProvider.getPaths();
         TreePath[] treePaths = new TreePath[paths.size()];
         for (int i = 0; i < paths.size(); i++) {
-            treePaths[i] = computePath(paths.get(i), provider);
+            treePaths[i] = computePath(paths.get(i), contentProvider);
         }
         for (TreePath treePath : treePaths) {
             this.treeViewer.expandToLevel(treePath, 0);

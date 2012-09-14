@@ -62,7 +62,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         hausratVertrag.setSupertype(vertrag.getQualifiedName());
 
         List<IType> rootComponents = getProjectRootElementsFromComponentList(
-                getProjectITypes(localProject, ipsObjectTypes), associationTypes);
+                getProjectITypes(localProject, ipsObjectTypes), localProject, associationTypes);
 
         assertEquals(1, rootComponents.size());
         assertEquals(vertrag, rootComponents.get(0));
@@ -79,7 +79,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         vertrag2vertrag.setAssociationType(AssociationType.AGGREGATION);
 
         List<IType> rootComponents = getProjectRootElementsFromComponentList(getProjectITypes(project, ipsObjectTypes),
-                associationTypes);
+                project, associationTypes);
 
         assertEquals(1, rootComponents.size());
         assertEquals(vertrag, rootComponents.get(0));
@@ -106,7 +106,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         vertrag3ToVertrag.setAssociationType(AssociationType.AGGREGATION);
 
         List<IType> rootComponents = getProjectRootElementsFromComponentList(getProjectITypes(project, ipsObjectTypes),
-                associationTypes);
+                project, associationTypes);
 
         assertEquals(1, rootComponents.size());
         assertEquals(vertrag, rootComponents.get(0));
@@ -125,7 +125,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         association2.setTarget(associatedProdCmptType.getQualifiedName());
 
         List<IType> rootComponents = getProjectRootElementsFromComponentList(getProjectITypes(project, ipsObjectTypes),
-                associationTypes);
+                project, associationTypes);
 
         // test the number of existing root elements
         assertEquals(1, rootComponents.size());
@@ -145,13 +145,43 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         subCmptType.setSupertype(cmptType.getQualifiedName());
 
         List<IType> rootComponents = getProjectRootElementsFromComponentList(getProjectITypes(project, ipsObjectTypes),
-                associationTypes);
+                project, associationTypes);
 
         // test the number of existing root elements
         assertEquals(1, rootComponents.size());
 
         // test the identity of the root elements
         assertTrue(rootComponents.contains(cmptType));
+    }
+
+    /**
+     * 
+     * 
+     * <strong>Scenario:</strong><br>
+     * When the root-elements for a project are computed, all referenced projects are included in
+     * this process. Therefore it is possible to obtain root-nodes whose descendants do not contain
+     * any element of the source-project. Such root elements should be omitted.
+     */
+    @Test
+    public void testGetProjectRootElements_OmitBranchesNotContainingSoureceProjectElementsWithoutAnyHierarchy()
+            throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        newPolicyCmptTypeWithoutProductCmptType(project, "AnyElement");
+
+        IIpsProject project2 = newIpsProject();
+        IType type2 = newPolicyCmptTypeWithoutProductCmptType(project2, "AnyOtherElement");
+
+        // set project references
+        IIpsObjectPath path = project2.getIpsObjectPath();
+        path.newIpsProjectRefEntry(project);
+        project2.setIpsObjectPath(path);
+
+        // test
+        List<IType> rootElements = getProjectRootElementsFromComponentList(getProjectITypes(project2, ipsObjectTypes),
+                project2, associationTypes);
+        assertEquals(1, rootElements.size());
+        assertEquals(type2, rootElements.get(0));
     }
 
     @Test

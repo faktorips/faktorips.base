@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
-import java.util.List;
-
 interface IModelOverviewNode {
 
     /**

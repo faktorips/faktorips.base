@@ -14,7 +14,7 @@
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider.ToChildAssociationType;
+import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ToChildAssociationType;
 import org.faktorips.util.ArgumentCheck;
 
 class PathElement {
@@ -25,7 +25,7 @@ class PathElement {
     /**
      * Represents a path element in a tree created by the {@link ModelOverviewContentProvider}.
      * 
-     * @param component the containd {@link IType} element
+     * @param component the contained {@link IType} element
      * @param associationType the {@link ToChildAssociationType} to the next path element
      */
     public PathElement(IType component, ToChildAssociationType associationType) {

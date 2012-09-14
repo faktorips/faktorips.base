@@ -38,8 +38,6 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
     private final AssociationType[] associationTypeFilter = { AssociationType.AGGREGATION,
             AssociationType.COMPOSITION_MASTER_TO_DETAIL };
 
-    private ShowTypeState showState = ShowTypeState.SHOW_POLICIES;
-
     @Override
     protected Object[] collectElements(Object inputElement, IProgressMonitor monitor) {
         IIpsProject ipsProject;
@@ -73,7 +71,7 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
             List<IType> projectTypes = getProjectITypes(ipsProject, getCurrentlyNeededIpsObjectType());
             monitor.worked(1);
 
-            rootComponents = getProjectRootElementsFromComponentList(projectTypes, associationTypeFilter);
+            rootComponents = getProjectRootElementsFromComponentList(projectTypes, ipsProject, associationTypeFilter);
             monitor.worked(1);
         }
         monitor.done();
@@ -114,7 +112,9 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
      * 
      * @param element the starting point
      * @param componentList the list of all concerned elements
-     * @param association the {@link ToChildAssociationType} of the parent element to this element
+     * @param association the
+     *            {@link org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ToChildAssociationType
+     *            ToChildAssociationType} of the parent element to this element
      * @param rootCandidates a {@link Collection} of {@link IType}.
      * @param foundPaths a {@link List} of paths from the provided element to the computed root
      *            elements
@@ -245,6 +245,11 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
         return getChildren(element).length != 0;
     }
 
+    @Override
+    protected String getWaitingLabel() {
+        return Messages.IpsModelOverview_waitingLabel;
+    }
+
     /**
      * Returns a {@link List} of {@link List}s of {@link PathElement}s which has been computed by
      * {@link #getRootElementsForIType(IType, List, ToChildAssociationType, Collection, List, List)}
@@ -252,47 +257,6 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
      */
     public List<List<PathElement>> getPaths() {
         return paths;
-    }
-
-    public void toggleShowTypeState() {
-        if (this.showState == ShowTypeState.SHOW_POLICIES) {
-            this.showState = ShowTypeState.SHOW_PRODUCTS;
-        } else {
-            this.showState = ShowTypeState.SHOW_POLICIES;
-        }
-    }
-
-    public ShowTypeState getShowTypeState() {
-        return showState;
-    }
-
-    public void setShowTypeState(ShowTypeState showState) {
-        this.showState = showState;
-    }
-
-    @Override
-    protected String getWaitingLabel() {
-        return Messages.IpsModelOverview_waitingLabel;
-    }
-
-    static enum ToChildAssociationType {
-        SELF,
-        ASSOCIATION,
-        SUPERTYPE
-    }
-
-    static enum ShowTypeState {
-        SHOW_POLICIES(1),
-        SHOW_PRODUCTS(2);
-        private final int state;
-
-        ShowTypeState(int value) {
-            this.state = value;
-        }
-
-        public int getState() {
-            return state;
-        }
     }
 
 }
