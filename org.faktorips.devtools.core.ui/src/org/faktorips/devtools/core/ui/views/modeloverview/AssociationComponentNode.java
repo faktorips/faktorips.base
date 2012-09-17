@@ -30,6 +30,8 @@ public class AssociationComponentNode extends ComponentNode {
     private int maxCardinality;
     private String targetRoleSingular;
     private boolean isInherited;
+    private boolean isDerivedUnion;
+    private boolean isSubsetOfADerivedUnion;
 
     /**
      * Creates a new AssociationComponentNode with designated parent node and value.
@@ -46,6 +48,8 @@ public class AssociationComponentNode extends ComponentNode {
         this.maxCardinality = targetingAssociation.getMaxCardinality();
         this.targetRoleSingular = targetingAssociation.getTargetRoleSingular();
         this.isInherited = false;
+        this.isDerivedUnion = targetingAssociation.isDerivedUnion();
+        this.isSubsetOfADerivedUnion = targetingAssociation.isSubsetOfADerivedUnion();
     }
 
     /**
@@ -59,11 +63,14 @@ public class AssociationComponentNode extends ComponentNode {
      * @param isInherited indicates if the association is inherited
      */
     private AssociationComponentNode(IType targetType, int minCardinality, int maxCardinality,
-            String targetRoleSingular, IIpsProject rootProject, boolean isInherited) {
+            String targetRoleSingular, IIpsProject rootProject, boolean isDerivedUnion,
+            boolean isSubsetOfADerivedUnion, boolean isInherited) {
         super(targetType, rootProject);
         this.minCardinality = minCardinality;
         this.maxCardinality = maxCardinality;
         this.targetRoleSingular = targetRoleSingular;
+        this.isDerivedUnion = isDerivedUnion;
+        this.isSubsetOfADerivedUnion = isSubsetOfADerivedUnion;
         this.isInherited = isInherited;
     }
 
@@ -101,9 +108,11 @@ public class AssociationComponentNode extends ComponentNode {
             int maxCardinality,
             String targetRoleSingular,
             IIpsProject rootProject,
+            boolean isDerivedUnion,
+            boolean isSubsetOfADerivedUnion,
             boolean isInherited) {
         return new AssociationComponentNode(targetType, minCardinality, maxCardinality, targetRoleSingular,
-                rootProject, isInherited);
+                rootProject, isDerivedUnion, isSubsetOfADerivedUnion, isInherited);
     }
 
     public int getMinCardinality() {
@@ -135,5 +144,55 @@ public class AssociationComponentNode extends ComponentNode {
             componentNodes.add(AssociationComponentNode.newAssociationComponentNode(association, rootProject));
         }
         return componentNodes;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + (isInherited ? 1231 : 1237);
+        result = prime * result + maxCardinality;
+        result = prime * result + minCardinality;
+        result = prime * result + ((targetRoleSingular == null) ? 0 : targetRoleSingular.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        AssociationComponentNode other = (AssociationComponentNode)obj;
+        if (isInherited != other.isInherited) {
+            return false;
+        }
+        if (maxCardinality != other.maxCardinality) {
+            return false;
+        }
+        if (minCardinality != other.minCardinality) {
+            return false;
+        }
+        if (targetRoleSingular == null) {
+            if (other.targetRoleSingular != null) {
+                return false;
+            }
+        } else if (!targetRoleSingular.equals(other.targetRoleSingular)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isDerivedUnion() {
+        return isDerivedUnion;
+    }
+
+    public boolean isSubsetOfADerivedUnion() {
+        return isSubsetOfADerivedUnion;
     }
 }

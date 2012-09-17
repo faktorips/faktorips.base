@@ -75,11 +75,17 @@ import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewC
 public class ModelOverview extends ViewPart implements ICollectorFinishedListener {
 
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"; //$NON-NLS-1$
+
     private static final String MENU_INFO_GROUP = "group.info"; //$NON-NLS-1$
 
     private static final String SHOW_CARDINALITIES = "show_cardinalities"; //$NON-NLS-1$
     private static final String SHOW_ROLENAMES = "show_rolenames"; //$NON-NLS-1$
     private static final String SHOW_PROJECTS = "show_projects"; //$NON-NLS-1$
+
+    private static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType.gif"; //$NON-NLS-1$
+    private static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType.gif"; //$NON-NLS-1$
+    private static final String TOGGLE_CONTENT_PROVIDER_IMAGE = "ConfigDefElement.gif"; //$NON-NLS-1$
+    private static final String CARDINALITY_IMAGE = "Cardinality.gif"; //$NON-NLS-1$
 
     private IPolicyCmptType toggledPolicyCmptInput;
     private IProductCmptType toggledProductCmptInput;
@@ -93,11 +99,13 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     private ModelOverviewLabelProvider labelProvider;
     private AbstractModelOverviewContentProvider provider;
 
-    private IMemento memento;
     private Action toggleProductPolicyAction;
     private Action toggleContentProviderAction;
     private ExpandAllAction expandAllAction;
     private CollapseAllAction collapseAllAction;
+    private boolean showCardinalities;
+    private boolean showRolenames;
+    private boolean showProjectnames;
 
     @Override
     public void createPartControl(Composite parent) {
@@ -384,25 +392,16 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         menuManager.add(new Separator(MENU_INFO_GROUP));
 
         Action showCardinalitiesAction = createShowCardinalitiesAction();
-        labelProvider.setShowCardinalities(true);
+        labelProvider.setShowCardinalities(showCardinalities);
+        showCardinalitiesAction.setChecked(showCardinalities);
 
         Action showRoleNameAction = createShowRoleNameAction();
-        labelProvider.setShowRolenames(true);
+        labelProvider.setShowRolenames(showRolenames);
+        showRoleNameAction.setChecked(showRolenames);
 
         Action showProjectsAction = createShowProjectsAction();
-        labelProvider.setShowProjects(true);
-
-        if (memento != null) {
-            Boolean showCard = memento.getBoolean(SHOW_CARDINALITIES);
-            Boolean showRoles = memento.getBoolean(SHOW_ROLENAMES);
-            Boolean showProjects = memento.getBoolean(SHOW_PROJECTS);
-            showCardinalitiesAction.setChecked(showCard == null ? true : showCard);
-            showRoleNameAction.setChecked(showRoles == null ? true : showRoles);
-            showProjectsAction.setChecked(showProjects == null ? true : showProjects);
-        } else {
-            showCardinalitiesAction.setChecked(true);
-            showRoleNameAction.setChecked(true);
-        }
+        labelProvider.setShowProjects(showProjectnames);
+        showProjectsAction.setChecked(showProjectnames);
 
         menuManager.appendToGroup(MENU_INFO_GROUP, showCardinalitiesAction);
         menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);
@@ -413,7 +412,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         return new Action(Messages.IpsModelOverview_menuShowCardinalities_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("Cardinality.gif"); //$NON-NLS-1$
+                return IpsUIPlugin.getImageHandling().createImageDescriptor(CARDINALITY_IMAGE);
             }
 
             @Override
@@ -474,7 +473,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("PolicyCmptType.gif"); //$NON-NLS-1$
+                return IpsUIPlugin.getImageHandling().createImageDescriptor(POLICY_CMPT_TYPE_IMAGE);
             }
 
             @Override
@@ -495,7 +494,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("ConfigDefElement.gif"); //$NON-NLS-1$
+                return IpsUIPlugin.getImageHandling().createImageDescriptor(TOGGLE_CONTENT_PROVIDER_IMAGE);
             }
 
             @Override
@@ -568,14 +567,14 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         // FIXME Do not misuse the HoverImageDescriptor for functionality that should be
         // provided by the normal image descriptor
         toggleProductPolicyAction.setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "PolicyCmptType.gif")); //$NON-NLS-1$
+                POLICY_CMPT_TYPE_IMAGE));
     }
 
     private void setProductCmptTypeImage() {
         // FIXME Do not misuse the HoverImageDescriptor for functionality that should be
         // provided by the normal image descriptor
         toggleProductPolicyAction.setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "ProductCmptType.gif")); //$NON-NLS-1$
+                PRODUCT_CMPT_TYPE_IMAGE));
     }
 
     private void refresh() {
@@ -638,6 +637,15 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     @Override
     public void init(IViewSite site, IMemento memento) throws PartInitException {
         super.init(site, memento);
-        this.memento = memento;
+
+        // initialize the label settings
+        Boolean showcard = memento.getBoolean(SHOW_CARDINALITIES);
+        showCardinalities = showcard == null ? true : showcard;
+
+        Boolean showRoles = memento.getBoolean(SHOW_ROLENAMES);
+        showRolenames = showRoles == null ? true : showRoles;
+
+        Boolean showProjects = memento.getBoolean(SHOW_PROJECTS);
+        showProjectnames = showProjects == null ? true : showProjects;
     }
 }

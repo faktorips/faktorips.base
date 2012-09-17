@@ -27,9 +27,17 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class ModelOverviewLabelProvider extends LabelProvider implements IStyledLabelProvider {
 
+    private static final String STRUCTURE_NODE_SUPTYPE_IMAGE = "over_co.gif"; //$NON-NLS-1$
+    private static final String STRUCTURE_NODE_ASSOCIATION_IMAGE = "AssociationType-Aggregation.gif"; //$NON-NLS-1$
+    private static final String OVERLAY_INHERITED_ASSOCIATION_IMAGE = "OverrideIndicator_green.gif"; //$NON-NLS-1$
+    private static final String OVERLAY_LOOP_IMAGE = "ovr16/loop_ovr.gif"; //$NON-NLS-1$
+    private static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType.gif"; //$NON-NLS-1$
+    private static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType.gif"; //$NON-NLS-1$
+
     private boolean showCardinalities = true;
     private boolean showRolenames = true;
     private boolean showProjects = true;
+
     private LocalResourceManager resourceManager;
 
     public ModelOverviewLabelProvider() {
@@ -45,19 +53,21 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
             String[] overlayImages = new String[4];
             String imageName;
             if (node.getValue() instanceof PolicyCmptType) {
-                imageName = "PolicyCmptType.gif"; //$NON-NLS-1$
+                imageName = POLICY_CMPT_TYPE_IMAGE;
             } else {
-                imageName = "ProductCmptType.gif"; //$NON-NLS-1$
+                imageName = PRODUCT_CMPT_TYPE_IMAGE;
             }
 
+            // define the overlay images
             if (node.isRepetition()) {
-                overlayImages[IDecoration.BOTTOM_LEFT] = "ovr16/loop_ovr.gif"; //$NON-NLS-1$
+                overlayImages[IDecoration.BOTTOM_LEFT] = OVERLAY_LOOP_IMAGE;
                 overlayed = true;
             }
             if (element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited()) {
-                overlayImages[IDecoration.BOTTOM_RIGHT] = "OverrideIndicator_green.gif"; //$NON-NLS-1$
+                overlayImages[IDecoration.BOTTOM_RIGHT] = OVERLAY_INHERITED_ASSOCIATION_IMAGE;
                 overlayed = true;
             }
+
             if (overlayed) {
                 return (Image)resourceManager.get(IpsUIPlugin.getImageHandling().getSharedOverlayImage(imageName,
                         overlayImages));
@@ -69,9 +79,9 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
                 }
             }
         } else if (element instanceof CompositeNode) {
-            return IpsUIPlugin.getImageHandling().getSharedImage("AssociationType-Aggregation.gif", true); //$NON-NLS-1$
+            return IpsUIPlugin.getImageHandling().getSharedImage(STRUCTURE_NODE_ASSOCIATION_IMAGE, true);
         } else if (element instanceof SubtypeNode) {
-            return IpsUIPlugin.getImageHandling().getSharedImage("over_co.gif", true); //$NON-NLS-1$
+            return IpsUIPlugin.getImageHandling().getSharedImage(STRUCTURE_NODE_SUPTYPE_IMAGE, true);
         }
         return null;
     }
@@ -88,14 +98,19 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
     @Override
     public StyledString getStyledText(Object element) {
         String label = getText(element);
+
         StyledString styledLabel = new StyledString(label);
 
         if (element instanceof AssociationComponentNode) {
             AssociationComponentNode node = ((AssociationComponentNode)element);
 
             if (showRolenames) {
-                styledLabel
-                        .append(new StyledString(" - " + node.getTargetRoleSingular(), StyledString.QUALIFIER_STYLER)); //$NON-NLS-1$
+                String rolename = node.getTargetRoleSingular();
+                if (node.isDerivedUnion()) {
+                    // mark association as a derived union
+                    rolename = "/" + rolename; //$NON-NLS-1$
+                }
+                styledLabel.append(new StyledString(" - " + rolename, StyledString.QUALIFIER_STYLER)); //$NON-NLS-1$
             }
 
             if (showCardinalities) {

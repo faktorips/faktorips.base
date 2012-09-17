@@ -123,15 +123,6 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
             List<IType> allComponentITypes,
             IIpsProject project) {
 
-        // Ist das aktuelle Element null?
-        // Ja? Gib false zurücke
-        // Nein? Zeigt ein Element des selben projekts auf mich?
-        // --- Ja? gib true zurück
-        // --- Nein? Hole alle Typen die auf mich zeigen, ist einer derer Suptypen ein Element des
-        // --- selben Projekts?
-        // ------ Ja? Gib true zurück
-        // ------ Nein? rekursiver Aufruf mit dem Supertypen des aktuellen Elements
-
         if (subtype == null) {
             return false;
         }
@@ -271,7 +262,9 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
                     for (IType subtype : subtypes) {
                         associationNodes.add(newAssociationComponentNode(subtype,
                                 supertypeAssociation.getMinCardinality(), supertypeAssociation.getMaxCardinality(),
-                                supertypeAssociation.getTargetRoleSingular(), project, true));
+                                supertypeAssociation.getTargetRoleSingular(), project,
+                                supertypeAssociation.isDerivedUnion(), supertypeAssociation.isSubsetOfADerivedUnion(),
+                                true));
                     }
                 }
             }
