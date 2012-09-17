@@ -232,6 +232,73 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
     }
 
     @Test
+    public void testCollectElements_DoNotIncludeAssociatedElements() throws CoreException {
+        // setup
+        IIpsProject project1 = newIpsProject();
+        IType externalElement = newPolicyCmptTypeWithoutProductCmptType(project1, "ExternalElement");
+
+        IIpsProject project2 = newIpsProject();
+        IType root = newPolicyCmptTypeWithoutProductCmptType(project2, "Root");
+        IType nonRoot = newPolicyCmptTypeWithoutProductCmptType(project2, "NonRoot");
+
+        nonRoot.setSupertype(externalElement.getQualifiedName());
+
+        IAssociation association = root.newAssociation();
+        association.setTarget(nonRoot.getQualifiedName());
+        association.setAssociationType(AssociationType.AGGREGATION);
+
+        // set project dependencies
+        IIpsObjectPath path = project2.getIpsObjectPath();
+        path.newIpsProjectRefEntry(project1);
+        project2.setIpsObjectPath(path);
+
+        // tests
+        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        Object[] elements = provider.collectElements(project2, new NullProgressMonitor());
+        assertEquals(1, elements.length);
+        assertEquals(root, ((ComponentNode)elements[0]).getValue());
+    }
+
+    @Test
+    public void testCollectElements_RemoveRootNodesWhichAreAlreadyContainedInOtherBranches() throws CoreException {
+        // setup
+        IIpsProject projectA = newIpsProject();
+        IType generalRootA = newPolicyCmptTypeWithoutProductCmptType(projectA, "GeneralRootA");
+
+        IIpsProject projectB = newIpsProject();
+        IType generalRootB = newPolicyCmptTypeWithoutProductCmptType(projectB, "GeneralRootB");
+        IType nonRootB = newPolicyCmptTypeWithoutProductCmptType(projectB, "NonRootB");
+
+        IIpsProject projectC = newIpsProject();
+        IType inheritedRootC = newPolicyCmptTypeWithoutProductCmptType(projectC, "InheritedRootC");
+        IType nonRootC = newPolicyCmptTypeWithoutProductCmptType(projectC, "NonRootC");
+
+        nonRootB.setSupertype(generalRootA.getQualifiedName());
+        nonRootC.setSupertype(nonRootB.getQualifiedName());
+        inheritedRootC.setSupertype(generalRootB.getQualifiedName());
+
+        IAssociation association = generalRootB.newAssociation();
+        association.setAssociationType(AssociationType.AGGREGATION);
+        association.setTarget(nonRootB.getQualifiedName());
+
+        // set project dependencies
+        IIpsObjectPath path = projectB.getIpsObjectPath();
+        path.newIpsProjectRefEntry(projectA);
+        projectB.setIpsObjectPath(path);
+
+        IIpsObjectPath pathC = projectC.getIpsObjectPath();
+        pathC.newIpsProjectRefEntry(projectB);
+        projectC.setIpsObjectPath(pathC);
+
+        // tests
+        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        Object[] elements = provider.collectElements(projectC, new NullProgressMonitor());
+
+        assertEquals(1, elements.length);
+        assertEquals(inheritedRootC, ((ComponentNode)elements[0]).getValue());
+    }
+
+    @Test
     public void testGetChildren_FindsDerivedAssociations() throws CoreException {
         // setup
         IIpsProject baseProject = newIpsProject();

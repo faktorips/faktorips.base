@@ -185,11 +185,10 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
 
     @Override
     public Object[] getChildren(Object parentElement) {
-        if (parentElement instanceof ComponentNode && ((ComponentNode)parentElement).isRepetition()) {
-            return new Object[0];
-        }
-
         if (parentElement instanceof ComponentNode) {
+            if (((ComponentNode)parentElement).isRepetition()) {
+                return new Object[0];
+            }
             return getComponentNodeChildren((ComponentNode)parentElement).toArray();
         } else if (parentElement instanceof IModelOverviewNode) {
             return ((AbstractStructureNode)parentElement).getChildren().toArray();

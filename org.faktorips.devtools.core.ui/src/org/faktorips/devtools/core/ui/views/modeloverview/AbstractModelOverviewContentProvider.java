@@ -156,7 +156,8 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
      * @param types an array of {@link AssociationType} which should be recognized. Make sure it is
      *            not empty, otherwise nothing will be removed!
      */
-    private static void removeDescendants(List<IType> rootCandidates,
+    // FIXME does not remove all descendants -> testcase
+    static void removeDescendants(List<IType> rootCandidates,
             List<IType> rootComponents,
             List<IType> components,
             AssociationType... types) {
@@ -170,6 +171,9 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
             List<IType> newDescendants = new ArrayList<IType>();
             for (IType potentialDescendant : potentialDescendants) {
                 if (isAssociationTarget(potentialDescendant, descendants, types)) {
+                    newDescendants.add(potentialDescendant);
+                }
+                if (hasExistingSupertype(potentialDescendant, descendants)) {
                     newDescendants.add(potentialDescendant);
                 }
             }

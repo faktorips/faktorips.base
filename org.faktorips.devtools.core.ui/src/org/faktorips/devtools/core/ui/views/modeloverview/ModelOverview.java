@@ -530,12 +530,10 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
             provider = new ModelOverviewContentProvider();
         }
 
-        if (input instanceof IIpsProject) {
-            treeViewer.setContentProvider(provider);
-            provider.setShowTypeState(currentShowTypeState);
-            provider.addCollectorFinishedListener(this);
-            treeViewer.setInput(input);
-        }
+        treeViewer.setContentProvider(provider);
+        provider.setShowTypeState(currentShowTypeState);
+        provider.addCollectorFinishedListener(this);
+        treeViewer.setInput(input);
         refresh();
     }
 

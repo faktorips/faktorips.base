@@ -26,6 +26,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -41,7 +42,7 @@ import org.junit.Test;
 
 public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginTest {
 
-    private final AssociationType[] associationTypes = { AssociationType.AGGREGATION,
+    private final AssociationType[] ASSOCIATION_TYPES = { AssociationType.AGGREGATION,
             AssociationType.COMPOSITION_MASTER_TO_DETAIL };
     private final IpsObjectType[] ipsObjectTypes = { IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE };
 
@@ -62,7 +63,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         hausratVertrag.setSupertype(vertrag.getQualifiedName());
 
         List<IType> rootComponents = getProjectRootElementsFromComponentList(
-                getProjectITypes(localProject, ipsObjectTypes), localProject, associationTypes);
+                getProjectITypes(localProject, ipsObjectTypes), localProject, ASSOCIATION_TYPES);
 
         assertEquals(1, rootComponents.size());
         assertEquals(vertrag, rootComponents.get(0));
@@ -79,7 +80,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         vertrag2vertrag.setAssociationType(AssociationType.AGGREGATION);
 
         List<IType> rootComponents = getProjectRootElementsFromComponentList(getProjectITypes(project, ipsObjectTypes),
-                project, associationTypes);
+                project, ASSOCIATION_TYPES);
 
         assertEquals(1, rootComponents.size());
         assertEquals(vertrag, rootComponents.get(0));
@@ -106,7 +107,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         vertrag3ToVertrag.setAssociationType(AssociationType.AGGREGATION);
 
         List<IType> rootComponents = getProjectRootElementsFromComponentList(getProjectITypes(project, ipsObjectTypes),
-                project, associationTypes);
+                project, ASSOCIATION_TYPES);
 
         assertEquals(1, rootComponents.size());
         assertEquals(vertrag, rootComponents.get(0));
@@ -125,7 +126,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         association2.setTarget(associatedProdCmptType.getQualifiedName());
 
         List<IType> rootComponents = getProjectRootElementsFromComponentList(getProjectITypes(project, ipsObjectTypes),
-                project, associationTypes);
+                project, ASSOCIATION_TYPES);
 
         // test the number of existing root elements
         assertEquals(1, rootComponents.size());
@@ -145,7 +146,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         subCmptType.setSupertype(cmptType.getQualifiedName());
 
         List<IType> rootComponents = getProjectRootElementsFromComponentList(getProjectITypes(project, ipsObjectTypes),
-                project, associationTypes);
+                project, ASSOCIATION_TYPES);
 
         // test the number of existing root elements
         assertEquals(1, rootComponents.size());
@@ -179,7 +180,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
 
         // test
         List<IType> rootElements = getProjectRootElementsFromComponentList(getProjectITypes(project2, ipsObjectTypes),
-                project2, associationTypes);
+                project2, ASSOCIATION_TYPES);
         assertEquals(1, rootElements.size());
         assertEquals(type2, rootElements.get(0));
     }
@@ -197,7 +198,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         cmptType2SubCmptType.setTarget(subCmptType.getQualifiedName());
 
         // test
-        assertTrue(isAssociationTarget(subCmptType, getProjectITypes(project, ipsObjectTypes), associationTypes));
+        assertTrue(isAssociationTarget(subCmptType, getProjectITypes(project, ipsObjectTypes), ASSOCIATION_TYPES));
     }
 
     @Test
@@ -213,7 +214,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         cmptType2SubCmptType.setTarget(subCmptType.getQualifiedName());
 
         // test
-        assertTrue(isAssociationTarget(subCmptType, getProjectITypes(project, ipsObjectTypes), associationTypes));
+        assertTrue(isAssociationTarget(subCmptType, getProjectITypes(project, ipsObjectTypes), ASSOCIATION_TYPES));
     }
 
     @Test
@@ -229,7 +230,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         subCmptType2cmptType.setTarget(cmptType.getQualifiedName());
 
         // test
-        assertFalse(isAssociationTarget(subCmptType, getProjectITypes(project, ipsObjectTypes), associationTypes));
+        assertFalse(isAssociationTarget(subCmptType, getProjectITypes(project, ipsObjectTypes), ASSOCIATION_TYPES));
     }
 
     @Test
@@ -245,7 +246,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         cmptType2SubCmptType.setTarget(subCmptType.getQualifiedName());
 
         // test
-        assertFalse(isAssociationTarget(subCmptType, getProjectITypes(project, ipsObjectTypes), associationTypes));
+        assertFalse(isAssociationTarget(subCmptType, getProjectITypes(project, ipsObjectTypes), ASSOCIATION_TYPES));
     }
 
     @Test
@@ -256,7 +257,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
 
         // test
-        assertFalse(isAssociationTarget(cmptType, getProjectITypes(project, ipsObjectTypes), associationTypes));
+        assertFalse(isAssociationTarget(cmptType, getProjectITypes(project, ipsObjectTypes), ASSOCIATION_TYPES));
     }
 
     @Test
@@ -296,7 +297,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         association4.setAssociationType(AssociationType.ASSOCIATION);
 
         List<IType> associatingTypes = getAssociatingTypes(cmptType, getProjectITypes(project, ipsObjectTypes),
-                associationTypes);
+                ASSOCIATION_TYPES);
 
         // test
         assertEquals(2, associatingTypes.size());
@@ -328,7 +329,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         association2.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
         List<IType> associatingTypes = getAssociatingTypes(cmptType, getProjectITypes(project, ipsObjectTypes),
-                associationTypes);
+                ASSOCIATION_TYPES);
         // test
         assertTrue(associatingTypes.isEmpty());
     }
@@ -357,7 +358,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         association2.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
         List<IType> associatingTypes = getAssociatingTypes(cmptType, getProjectITypes(project2, ipsObjectTypes),
-                associationTypes);
+                ASSOCIATION_TYPES);
         // test
         assertEquals(2, associatingTypes.size());
         assertTrue(associatingTypes.contains(associatingType1));
@@ -442,7 +443,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         association2.setTarget(hausratZusatzdeckung.getQualifiedName());
         association2.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
-        List<IType> associations = getAssociationsForAssociationTypes(hausratVertrag, associationTypes);
+        List<IType> associations = getAssociationsForAssociationTypes(hausratVertrag, ASSOCIATION_TYPES);
 
         // tests
         assertEquals(2, associations.size());
@@ -456,14 +457,14 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         IIpsProject project = newIpsProject();
         IType hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
 
-        List<IType> associations = getAssociationsForAssociationTypes(hausratVertrag, associationTypes);
+        List<IType> associations = getAssociationsForAssociationTypes(hausratVertrag, ASSOCIATION_TYPES);
 
         // test
         assertTrue(associations.isEmpty());
     }
 
     @Test
-    public void getExistingSupertypeFromList_FindSupertype() throws CoreException {
+    public void testGetExistingSupertypeFromList_FindSupertype() throws CoreException {
         // setup
         IIpsProject project = newIpsProject();
         IType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -479,7 +480,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
     }
 
     @Test
-    public void getExistingSupertypeFromList_HasNoSupertype() throws CoreException {
+    public void testGetExistingSupertypeFromList_HasNoSupertype() throws CoreException {
         // setup
         IIpsProject project = newIpsProject();
         IType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -491,7 +492,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
     }
 
     @Test
-    public void getExistingSupertypeFromList_HasNoExistingSupertypeFromDifferentProjects() throws CoreException {
+    public void testGetExistingSupertypeFromList_HasNoExistingSupertypeFromDifferentProjects() throws CoreException {
         // setup
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
@@ -510,7 +511,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
     }
 
     @Test
-    public void getExistingSupertypeFromList_HasExistingSupertypeFromDifferentProjects() throws CoreException {
+    public void testGetExistingSupertypeFromList_HasExistingSupertypeFromDifferentProjects() throws CoreException {
         // setup
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
@@ -528,5 +529,171 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         // test
         IType supertype = getExistingSupertypeFromList(subType, getProjectITypes(referencingProject, ipsObjectTypes));
         assertEquals(cmptType, supertype);
+    }
+
+    @Test
+    public void testRemoveDescendants_removeElementsFromInheritanceHierarchyAndKeepSecondRootElement()
+            throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        IType root = newPolicyCmptTypeWithoutProductCmptType(project, "RootType");
+        IType root2 = newPolicyCmptTypeWithoutProductCmptType(project, "RootType2");
+        IType descendant = newPolicyCmptTypeWithoutProductCmptType(project, "SubType");
+
+        descendant.setSupertype(root.getQualifiedName());
+
+        List<IType> rootComponents = new ArrayList<IType>();
+        rootComponents.add(root);
+
+        List<IType> rootCandidateComponents = new ArrayList<IType>();
+        rootCandidateComponents.add(root);
+        rootCandidateComponents.add(root2);
+        rootCandidateComponents.add(descendant);
+
+        List<IType> allComponents = new ArrayList<IType>();
+        allComponents.add(root);
+        allComponents.add(root2);
+        allComponents.add(descendant);
+
+        AbstractModelOverviewContentProvider.removeDescendants(rootCandidateComponents, rootComponents, allComponents,
+                ASSOCIATION_TYPES);
+
+        // tests
+        assertEquals(1, rootCandidateComponents.size());
+        assertTrue(rootCandidateComponents.contains(root2));
+    }
+
+    @Test
+    public void testRemoveDescendants_removeElementsFromInheritanceHierarchy() throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        IType root = newPolicyCmptTypeWithoutProductCmptType(project, "RootType");
+        IType descendant = newPolicyCmptTypeWithoutProductCmptType(project, "SubType");
+
+        descendant.setSupertype(root.getQualifiedName());
+
+        List<IType> rootComponents = new ArrayList<IType>();
+        rootComponents.add(root);
+
+        List<IType> rootCandidatesComponents = new ArrayList<IType>();
+        rootCandidatesComponents.add(root);
+        rootCandidatesComponents.add(descendant);
+
+        List<IType> allComponents = new ArrayList<IType>();
+        allComponents.add(root);
+        allComponents.add(descendant);
+
+        AbstractModelOverviewContentProvider.removeDescendants(rootCandidatesComponents, rootComponents, allComponents,
+                ASSOCIATION_TYPES);
+
+        // tests
+        assertEquals(0, rootCandidatesComponents.size());
+    }
+
+    @Test
+    public void testRemoveDescendants_removeAssociatedElementsAndKeepSecondRootElement() throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        IType root = newPolicyCmptTypeWithoutProductCmptType(project, "RootType");
+        IType root2 = newPolicyCmptTypeWithoutProductCmptType(project, "RootType2");
+        IType descendant = newPolicyCmptTypeWithoutProductCmptType(project, "SubType");
+
+        IAssociation association = root.newAssociation();
+        association.setTarget(descendant.getQualifiedName());
+        association.setAssociationType(AssociationType.AGGREGATION);
+
+        List<IType> rootComponents = new ArrayList<IType>();
+        rootComponents.add(root);
+
+        List<IType> rootCandidateComponents = new ArrayList<IType>();
+        rootCandidateComponents.add(root);
+        rootCandidateComponents.add(root2);
+        rootCandidateComponents.add(descendant);
+
+        List<IType> allComponents = new ArrayList<IType>();
+        allComponents.add(root);
+        allComponents.add(root2);
+        allComponents.add(descendant);
+
+        AbstractModelOverviewContentProvider.removeDescendants(rootCandidateComponents, rootComponents, allComponents,
+                ASSOCIATION_TYPES);
+
+        // tests
+        assertEquals(1, rootCandidateComponents.size());
+        assertTrue(rootCandidateComponents.contains(root2));
+    }
+
+    @Test
+    public void testRemoveDescendants_removeAssociatedElements() throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        IType root = newPolicyCmptTypeWithoutProductCmptType(project, "RootType");
+        IType descendant = newPolicyCmptTypeWithoutProductCmptType(project, "SubType");
+
+        IAssociation association = root.newAssociation();
+        association.setTarget(descendant.getQualifiedName());
+        association.setAssociationType(AssociationType.AGGREGATION);
+
+        List<IType> rootComponents = new ArrayList<IType>();
+        rootComponents.add(root);
+
+        List<IType> rootCandidateComponents = new ArrayList<IType>();
+        rootCandidateComponents.add(root);
+        rootCandidateComponents.add(descendant);
+
+        List<IType> allComponents = new ArrayList<IType>();
+        allComponents.add(root);
+        allComponents.add(descendant);
+
+        AbstractModelOverviewContentProvider.removeDescendants(rootCandidateComponents, rootComponents, allComponents,
+                ASSOCIATION_TYPES);
+
+        // tests
+        assertEquals(0, rootCandidateComponents.size());
+    }
+
+    @Test
+    public void testRemoveDescendants_removeAssociatedAndSubtypedElements() throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        IType root = newPolicyCmptTypeWithoutProductCmptType(project, "RootType");
+        IType descendant1 = newPolicyCmptTypeWithoutProductCmptType(project, "SubType1");
+        IType descendant2 = newPolicyCmptTypeWithoutProductCmptType(project, "SubType2");
+        IType descendant3 = newPolicyCmptTypeWithoutProductCmptType(project, "SubType3");
+        IType descendant4 = newPolicyCmptTypeWithoutProductCmptType(project, "SubType4");
+
+        IAssociation association = root.newAssociation();
+        association.setTarget(descendant1.getQualifiedName());
+        association.setAssociationType(AssociationType.AGGREGATION);
+        descendant2.setSupertype(descendant1.getQualifiedName());
+
+        descendant3.setSupertype(root.getQualifiedName());
+
+        IAssociation association2 = descendant3.newAssociation();
+        association2.setTarget(descendant4.getQualifiedName());
+        association2.setAssociationType(AssociationType.AGGREGATION);
+
+        List<IType> rootComponents = new ArrayList<IType>();
+        rootComponents.add(root);
+
+        List<IType> rootCandidateComponents = new ArrayList<IType>();
+        rootCandidateComponents.add(root);
+        rootCandidateComponents.add(descendant1);
+        rootCandidateComponents.add(descendant2);
+        rootCandidateComponents.add(descendant3);
+        rootCandidateComponents.add(descendant4);
+
+        List<IType> allComponents = new ArrayList<IType>();
+        allComponents.add(root);
+        allComponents.add(descendant1);
+        allComponents.add(descendant2);
+        allComponents.add(descendant3);
+        allComponents.add(descendant4);
+
+        AbstractModelOverviewContentProvider.removeDescendants(rootCandidateComponents, rootComponents, allComponents,
+                ASSOCIATION_TYPES);
+
+        // tests
+        assertEquals(0, rootCandidateComponents.size());
     }
 }

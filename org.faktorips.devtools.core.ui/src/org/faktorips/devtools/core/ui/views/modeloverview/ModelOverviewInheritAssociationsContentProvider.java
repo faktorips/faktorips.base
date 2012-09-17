@@ -35,6 +35,9 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
     @Override
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof ComponentNode) {
+            if (((ComponentNode)parentElement).isRepetition()) {
+                return new Object[0];
+            }
             return getComponentNodeChildren((ComponentNode)parentElement).toArray();
         } else if (parentElement instanceof AbstractStructureNode) {
             return ((AbstractStructureNode)parentElement).getChildren().toArray();
@@ -72,35 +75,85 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
         if (inputElement instanceof IIpsProject) {
             IIpsProject project = (IIpsProject)inputElement;
 
+            List<IType> projectComponents;
             List<IType> overallRootElements;
             if (showState == ShowTypeState.SHOW_POLICIES) {
-                overallRootElements = getProjectRootElementsFromComponentList(
-                        getProjectITypes(project, IpsObjectType.POLICY_CMPT_TYPE), project, ASSOCIATION_TYPES);
+                projectComponents = getProjectITypes(project, IpsObjectType.POLICY_CMPT_TYPE);
             } else {
-                overallRootElements = getProjectRootElementsFromComponentList(
-                        getProjectITypes(project, IpsObjectType.PRODUCT_CMPT_TYPE), project, ASSOCIATION_TYPES);
+                projectComponents = getProjectITypes(project, IpsObjectType.PRODUCT_CMPT_TYPE);
             }
+            overallRootElements = getProjectRootElementsFromComponentList(projectComponents, project, ASSOCIATION_TYPES);
 
-            List<IType> derivedRootElements = computeDerivedRootElements(overallRootElements, project);
+            List<IType> derivedRootElements = computeDerivedRootElements(overallRootElements,
+                    getProjectSpecificITypes(projectComponents, project), projectComponents, project);
             return ComponentNode.encapsulateComponentTypes(derivedRootElements, project).toArray();
         } else {
             return null;
         }
     }
 
-    private List<IType> computeDerivedRootElements(List<IType> overallRootElements, IIpsProject project) {
-        List<IType> rootElements = new ArrayList<IType>();
+    private List<IType> computeDerivedRootElements(List<IType> overallRootElements,
+            List<IType> projectSpecificITypes,
+            List<IType> allComponentITypes,
+            IIpsProject project) {
+        List<IType> rootCandidates = new ArrayList<IType>();
 
         // at first check the overallRootElements themselves
         for (IType overallRootElement : overallRootElements) {
             if (overallRootElement.getIpsProject().equals(project)) {
-                rootElements.add(overallRootElement);
+                rootCandidates.add(overallRootElement);
             } else {
                 // dig through the supertype hierarchy and construct the new root elements
-                rootElements.addAll(findProjectSpecificSubtypes(overallRootElement, project));
+                rootCandidates.addAll(findProjectSpecificSubtypes(overallRootElement, project));
             }
         }
-        return rootElements;
+        List<IType> notRootElements = new ArrayList<IType>();
+        for (IType rootCandidate : rootCandidates) {
+            // remove element if it is associated by another project specific element
+            if (isAssociated(rootCandidate, projectSpecificITypes, allComponentITypes, project)) {
+                notRootElements.add(rootCandidate);
+            }
+        }
+        rootCandidates.removeAll(notRootElements);
+        return rootCandidates;
+    }
+
+    private boolean isAssociated(IType subtype,
+            List<IType> projectSpecificITypes,
+            List<IType> allComponentITypes,
+            IIpsProject project) {
+
+        // Ist das aktuelle Element null?
+        // Ja? Gib false zurücke
+        // Nein? Zeigt ein Element des selben projekts auf mich?
+        // --- Ja? gib true zurück
+        // --- Nein? Hole alle Typen die auf mich zeigen, ist einer derer Suptypen ein Element des
+        // --- selben Projekts?
+        // ------ Ja? Gib true zurück
+        // ------ Nein? rekursiver Aufruf mit dem Supertypen des aktuellen Elements
+
+        if (subtype == null) {
+            return false;
+        }
+        if (isAssociationTarget(subtype, projectSpecificITypes, ASSOCIATION_TYPES)) {
+            return true;
+        } else {
+            List<IType> associatingTypes = getAssociatingTypes(subtype, allComponentITypes, ASSOCIATION_TYPES);
+            for (IType type : associatingTypes) {
+
+                List<IType> associationSubtypes = type.findSubtypes(false, false, project);
+                for (IType associationSubtype : associationSubtypes) {
+                    if (associationSubtype.getIpsProject().equals(project)) {
+                        return true;
+                    }
+                }
+            }
+            try {
+                return isAssociated(subtype.findSupertype(project), projectSpecificITypes, allComponentITypes, project);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
     }
 
     private List<IType> findProjectSpecificSubtypes(IType parent, IIpsProject project) {
