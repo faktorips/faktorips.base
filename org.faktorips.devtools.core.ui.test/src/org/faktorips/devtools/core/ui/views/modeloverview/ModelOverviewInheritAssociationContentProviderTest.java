@@ -183,54 +183,6 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         assertTrue(foundRootITypes.contains(inheritedRootType2));
     }
 
-    /**
-     * 
-     * <strong>Scenario:</strong><br>
-     * When different subtypes of the desired project are located in different branches, only the
-     * element from the highest level should be taken as root element. <strong>Example:</strong><br>
-     * Projects: {@code p} and {@code q} <br>
-     * The node hierarchy is indicated by the node names<br>
-     * Nodes: {@code p.A}, {@code p.AA}, {@code p.AB}, {@code p.AAA}, {@code q.ABA}, {@code q.AAAA}<br>
-     * 
-     * The inherited root node is {@code q.ABA}
-     * <p>
-     * <strong>Expected Outcome:</strong><br>
-     * TODO noschinski2 13.09.2012: Explain expected test outcome
-     */
-    @Test
-    public void testCollectElements_FindHighestRootElementFromTwoProjects() throws CoreException {
-        // setup
-        IIpsProject baseProject = newIpsProject();
-        PolicyCmptType superType = newPolicyCmptTypeWithoutProductCmptType(baseProject, "Supertype");
-        PolicyCmptType subTypeLevelOne1 = newPolicyCmptTypeWithoutProductCmptType(baseProject, "SubtypeLevelOne1");
-        PolicyCmptType subTypeLevelOne2 = newPolicyCmptTypeWithoutProductCmptType(baseProject, "SubtypeLevelOne2");
-        PolicyCmptType subTypeLevelTwo = newPolicyCmptTypeWithoutProductCmptType(baseProject, "SubtypeLevelTwo");
-
-        subTypeLevelOne1.setSupertype(superType.getQualifiedName());
-        subTypeLevelOne2.setSupertype(superType.getQualifiedName());
-        subTypeLevelTwo.setSupertype(subTypeLevelOne1.getQualifiedName());
-
-        IIpsProject customProject = newIpsProject();
-        PolicyCmptType inheritedRootType = newPolicyCmptTypeWithoutProductCmptType(customProject, "InheritedRootType");
-        PolicyCmptType notInheritedRootType = newPolicyCmptTypeWithoutProductCmptType(customProject,
-                "NotInheritedRootType");
-
-        inheritedRootType.setSupertype(subTypeLevelOne2.getQualifiedName());
-        notInheritedRootType.setSupertype(subTypeLevelTwo.getQualifiedName());
-
-        // set project dependencies
-        IIpsObjectPath path = customProject.getIpsObjectPath();
-        path.newIpsProjectRefEntry(baseProject);
-        customProject.setIpsObjectPath(path);
-
-        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
-        Object[] elements = provider.collectElements(customProject, new NullProgressMonitor());
-
-        // tests
-        assertEquals(1, elements.length);
-        assertEquals(inheritedRootType, ((ComponentNode)elements[0]).getValue());
-    }
-
     @Test
     public void testCollectElements_DoNotIncludeAssociatedElements() throws CoreException {
         // setup
@@ -299,6 +251,75 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
     }
 
     @Test
+    public void testCollectElements_findSingleRootElementAfterAssociations() throws CoreException {
+        IIpsProject projectA = newIpsProject();
+        IType aA = newPolicyCmptTypeWithoutProductCmptType(projectA, "a.A");
+        IType aB = newPolicyCmptTypeWithoutProductCmptType(projectA, "a.B");
+
+        IIpsProject projectB = newIpsProject();
+        IType bA = newPolicyCmptTypeWithoutProductCmptType(projectB, "b.A");
+
+        bA.setSupertype(aB.getQualifiedName());
+
+        IAssociation association = aA.newAssociation();
+        association.setTarget(aB.getQualifiedName());
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+
+        // set project dependencies
+        IIpsObjectPath path = projectB.getIpsObjectPath();
+        path.newIpsProjectRefEntry(projectA);
+        projectB.setIpsObjectPath(path);
+
+        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        Object[] elements = provider.collectElements(projectB, new NullProgressMonitor());
+
+        // tests
+        assertEquals(1, elements.length);
+        assertEquals(bA, ((ComponentNode)elements[0]).getValue());
+    }
+
+    @Test
+    public void testCollectElements_findRootElementsAfterAssociations() throws CoreException {
+        IIpsProject projectA = newIpsProject();
+        IType aA = newPolicyCmptTypeWithoutProductCmptType(projectA, "aA");
+        IType aB = newPolicyCmptTypeWithoutProductCmptType(projectA, "aB");
+        IType aC = newPolicyCmptTypeWithoutProductCmptType(projectA, "aC");
+        IType aD = newPolicyCmptTypeWithoutProductCmptType(projectA, "aD");
+
+        IIpsProject projectB = newIpsProject();
+        IType bA = newPolicyCmptTypeWithoutProductCmptType(projectB, "bA");
+        IType bB = newPolicyCmptTypeWithoutProductCmptType(projectB, "bB");
+
+        bA.setSupertype(aB.getQualifiedName());
+        aD.setSupertype(aC.getQualifiedName());
+        bB.setSupertype(aD.getQualifiedName());
+
+        IAssociation association = aA.newAssociation();
+        association.setTarget(aB.getQualifiedName());
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+
+        IAssociation association2 = aA.newAssociation();
+        association2.setTarget(aC.getQualifiedName());
+        association2.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+
+        // set project dependencies
+        IIpsObjectPath path = projectB.getIpsObjectPath();
+        path.newIpsProjectRefEntry(projectA);
+        projectB.setIpsObjectPath(path);
+
+        ModelOverviewInheritAssociationsContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        Object[] elements = provider.collectElements(projectB, new NullProgressMonitor());
+
+        // tests
+        assertEquals(2, elements.length);
+        List<IType> list = new ArrayList<IType>();
+        list.add(((ComponentNode)elements[0]).getValue());
+        list.add(((ComponentNode)elements[1]).getValue());
+        assertTrue(list.contains(bA));
+        assertTrue(list.contains(bB));
+    }
+
+    @Test
     public void testGetChildren_FindsDerivedAssociations() throws CoreException {
         // setup
         IIpsProject baseProject = newIpsProject();
@@ -356,5 +377,4 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         assertTrue(associationChildrenList.contains(clauseType));
         assertTrue(associationChildrenList.contains(deductibleType));
     }
-
 }

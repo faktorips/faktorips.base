@@ -28,6 +28,7 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
     private IType value;
     private IIpsProject sourceProject;
     private AbstractStructureNode parent;
+    private boolean hasInheritedAssociation;
 
     /**
      * Creates a new ComponentNode with designated parent node and value.
@@ -128,6 +129,14 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
     @Override
     public IIpsSrcFile getIpsSrcFile() {
         return this.getValue().getIpsSrcFile();
+    }
+
+    public void setHasInheritedAssociation(boolean hasInheritedAssociation) {
+        this.hasInheritedAssociation = hasInheritedAssociation;
+    }
+
+    public boolean hasInheritedAssociation() {
+        return this.hasInheritedAssociation;
     }
 
     @Override

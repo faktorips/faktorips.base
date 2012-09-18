@@ -696,4 +696,106 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         // tests
         assertEquals(0, rootCandidateComponents.size());
     }
+
+    @Test
+    public void testIsAssociated_DirectAssociation() throws CoreException {
+        // setup
+        IIpsProject projectA = newIpsProject();
+        IType aA = newPolicyCmptTypeWithoutProductCmptType(projectA, "a.A");
+        IType aB = newPolicyCmptTypeWithoutProductCmptType(projectA, "a.B");
+
+        IAssociation association = aA.newAssociation();
+        association.setTarget(aB.getQualifiedName());
+        association.setAssociationType(AssociationType.AGGREGATION);
+
+        // test
+        List<IType> types = AbstractModelOverviewContentProvider.getProjectITypes(projectA,
+                IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE);
+        boolean isAssociated = AbstractModelOverviewContentProvider.isAssociated(aB, types, types, projectA,
+                AssociationType.AGGREGATION, AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        assertTrue(isAssociated);
+    }
+
+    @Test
+    public void testIsAssociated_SupertypesAssociationHasAssociatingSubtype() throws CoreException {
+        // setup
+        IIpsProject projectA = newIpsProject();
+        IType aA = newPolicyCmptTypeWithoutProductCmptType(projectA, "a.A");
+        IType aB = newPolicyCmptTypeWithoutProductCmptType(projectA, "a.B");
+
+        IIpsProject projectB = newIpsProject();
+        IType bA = newPolicyCmptTypeWithoutProductCmptType(projectB, "b.A");
+        IType bB = newPolicyCmptTypeWithoutProductCmptType(projectB, "b.B");
+
+        bA.setSupertype(aA.getQualifiedName());
+        bB.setSupertype(aB.getQualifiedName());
+        IAssociation association = aA.newAssociation();
+        association.setTarget(aB.getQualifiedName());
+        association.setAssociationType(AssociationType.AGGREGATION);
+
+        // set project dependencies
+        IIpsObjectPath path = projectB.getIpsObjectPath();
+        path.newIpsProjectRefEntry(projectA);
+        projectB.setIpsObjectPath(path);
+
+        // test
+        List<IType> allTypes = AbstractModelOverviewContentProvider.getProjectITypes(projectB,
+                IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE);
+
+        List<IType> projectBTypes = new ArrayList<IType>();
+        projectBTypes.add(bA);
+        projectBTypes.add(bB);
+
+        boolean isAssociated = AbstractModelOverviewContentProvider.isAssociated(bB, projectBTypes, allTypes, projectB,
+                AssociationType.AGGREGATION, AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        assertTrue(isAssociated);
+    }
+
+    @Test
+    public void testIsAssociated_AssociationOverTwoInheritanceLevels() throws CoreException {
+        // setup
+        IIpsProject projectA = newIpsProject();
+        IType aA = newPolicyCmptTypeWithoutProductCmptType(projectA, "aA");
+        IType aB = newPolicyCmptTypeWithoutProductCmptType(projectA, "aB");
+
+        IIpsProject projectB = newIpsProject();
+        IType bA = newPolicyCmptTypeWithoutProductCmptType(projectB, "bA");
+        IType bB = newPolicyCmptTypeWithoutProductCmptType(projectB, "bB");
+
+        IIpsProject projectC = newIpsProject();
+        IType cA = newPolicyCmptTypeWithoutProductCmptType(projectC, "cA");
+        IType cB = newPolicyCmptTypeWithoutProductCmptType(projectC, "cB");
+
+        bA.setSupertype(aA.getQualifiedName());
+        bB.setSupertype(aB.getQualifiedName());
+
+        cA.setSupertype(bA.getQualifiedName());
+        cB.setSupertype(bB.getQualifiedName());
+
+        IAssociation association = aA.newAssociation();
+        association.setTarget(aB.getQualifiedName());
+        association.setAssociationType(AssociationType.AGGREGATION);
+
+        // set project dependencies
+        IIpsObjectPath path = projectB.getIpsObjectPath();
+        path.newIpsProjectRefEntry(projectA);
+        projectB.setIpsObjectPath(path);
+
+        // set project dependencies
+        IIpsObjectPath path2 = projectC.getIpsObjectPath();
+        path2.newIpsProjectRefEntry(projectB);
+        projectC.setIpsObjectPath(path2);
+
+        // test
+        List<IType> allTypes = AbstractModelOverviewContentProvider.getProjectITypes(projectC,
+                IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE);
+
+        List<IType> projectCTypes = new ArrayList<IType>();
+        projectCTypes.add(cA);
+        projectCTypes.add(cB);
+
+        boolean isAssociated = AbstractModelOverviewContentProvider.isAssociated(cB, projectCTypes, allTypes, projectC,
+                AssociationType.AGGREGATION, AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        assertTrue(isAssociated);
+    }
 }

@@ -42,7 +42,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IViewSite;
@@ -115,14 +114,13 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
                 true, false));
 
         treeViewer = new TreeViewer(panel);
-        // provider = new ModelOverviewContentProvider();
         provider = new ModelOverviewContentProvider();
         treeViewer.setContentProvider(provider);
 
-        IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
         labelProvider = new ModelOverviewLabelProvider();
         DecoratingStyledCellLabelProvider decoratingLabelProvider = new DecoratingStyledCellLabelProvider(
-                labelProvider, decoManager.getLabelDecorator(), new DecorationContext());
+                labelProvider, IpsPlugin.getDefault().getWorkbench().getDecoratorManager().getLabelDecorator(),
+                new DecorationContext());
 
         treeViewer.setLabelProvider(decoratingLabelProvider);
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -394,17 +392,16 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         Action showCardinalitiesAction = createShowCardinalitiesAction();
         labelProvider.setShowCardinalities(showCardinalities);
         showCardinalitiesAction.setChecked(showCardinalities);
+        menuManager.appendToGroup(MENU_INFO_GROUP, showCardinalitiesAction);
 
         Action showRoleNameAction = createShowRoleNameAction();
         labelProvider.setShowRolenames(showRolenames);
         showRoleNameAction.setChecked(showRolenames);
+        menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);
 
         Action showProjectsAction = createShowProjectsAction();
         labelProvider.setShowProjects(showProjectnames);
         showProjectsAction.setChecked(showProjectnames);
-
-        menuManager.appendToGroup(MENU_INFO_GROUP, showCardinalitiesAction);
-        menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);
         menuManager.appendToGroup(MENU_INFO_GROUP, showProjectsAction);
     }
 

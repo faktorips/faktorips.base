@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
@@ -802,6 +803,39 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         assertNotNull(child);
         assertEquals(1, child.getChildren().size());
         assertEquals(deckung, child.getChildren().get(0).getValue());
+    }
+
+    @Test
+    public void testGetComponentNodeCompositeChild_InheritanceStateIsTrue() throws CoreException {
+        // setup
+        IIpsProject projectA = newIpsProject();
+        PolicyCmptType aA = newPolicyCmptTypeWithoutProductCmptType(projectA, "aA");
+        PolicyCmptType aB = newPolicyCmptTypeWithoutProductCmptType(projectA, "aB");
+
+        IIpsProject projectB = newIpsProject();
+        PolicyCmptType bA = newPolicyCmptTypeWithoutProductCmptType(projectB, "bA");
+        PolicyCmptType bB = newPolicyCmptTypeWithoutProductCmptType(projectB, "bB");
+
+        bA.setSupertype(aA.getQualifiedName());
+        bB.setSupertype(aB.getQualifiedName());
+
+        IAssociation association = aA.newAssociation();
+        association.setTarget(aB.getQualifiedName());
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+
+        IIpsObjectPath path = projectB.getIpsObjectPath();
+        path.newIpsProjectRefEntry(projectA);
+        projectB.setIpsObjectPath(path);
+
+        // tests
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] rootElements = provider.collectElements(projectB, new NullProgressMonitor());
+        Object[] structureNodes = provider.getChildren(rootElements[0]);
+        AssociationComponentNode nodeAB = (AssociationComponentNode)provider.getChildren(structureNodes[1])[0];
+        Object[] structureNodes2 = provider.getChildren(nodeAB);
+        AssociationComponentNode nodeBB = (AssociationComponentNode)provider.getChildren(structureNodes2[0])[0];
+
+        assertTrue(nodeBB.isInherited());
     }
 
     @Test

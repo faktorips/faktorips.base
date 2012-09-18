@@ -35,7 +35,7 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
     private List<List<PathElement>> paths = new ArrayList<List<PathElement>>();
     // it is important that this list does not contain a set of AssociationTypes which would cause
     // association loops
-    private final AssociationType[] associationTypeFilter = { AssociationType.AGGREGATION,
+    private final AssociationType[] ASSOCIATION_TYPES = { AssociationType.AGGREGATION,
             AssociationType.COMPOSITION_MASTER_TO_DETAIL };
 
     @Override
@@ -71,7 +71,7 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
             List<IType> projectTypes = getProjectITypes(ipsProject, getCurrentlyNeededIpsObjectType());
             monitor.worked(1);
 
-            rootComponents = getProjectRootElementsFromComponentList(projectTypes, ipsProject, associationTypeFilter);
+            rootComponents = getProjectRootElementsFromComponentList(projectTypes, ipsProject, ASSOCIATION_TYPES);
             monitor.worked(1);
         }
         monitor.done();
@@ -140,7 +140,7 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
 
         IType supertype = getExistingSupertypeFromList(element, componentList);
         Set<IType> rootElements = new HashSet<IType>();
-        List<IType> associatingTypes = getAssociatingTypes(element, componentList, associationTypeFilter);
+        List<IType> associatingTypes = getAssociatingTypes(element, componentList, ASSOCIATION_TYPES);
         // Breaking condition
         if (associatingTypes.isEmpty() && supertype == null
                 && (association == ToChildAssociationType.SELF || association == ToChildAssociationType.ASSOCIATION)) {
@@ -213,9 +213,22 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
 
     @Override
     SubtypeNode getComponentNodeSubtypeChild(ComponentNode parent) {
-        List<IType> subtypes = parent.getValue().findSubtypes(false, false, parent.getSourceIpsProject());
+        IIpsProject project = parent.getSourceIpsProject();
+        List<IType> subtypes = parent.getValue().findSubtypes(false, false, project);
+        List<ComponentNode> subtypeNodeChildren = new ArrayList<ComponentNode>();
+
+        List<IType> projectITypes = getProjectITypes(project, parent.getValue().getIpsObjectType());
+        List<IType> projectSpecificTypes = getProjectSpecificTypes(projectITypes, project);
+
+        for (IType subtype : subtypes) {
+            ComponentNode componentNode = new ComponentNode(subtype, project);
+            componentNode.setHasInheritedAssociation(isAssociated(subtype, projectSpecificTypes, projectITypes,
+                    project, ASSOCIATION_TYPES));
+            subtypeNodeChildren.add(componentNode);
+        }
+        encapsulateComponentTypes(subtypes, project);
+
         if (!subtypes.isEmpty()) {
-            List<ComponentNode> subtypeNodeChildren = encapsulateComponentTypes(subtypes, parent.getSourceIpsProject());
             return new SubtypeNode(parent, subtypeNodeChildren);
         }
         return null;
@@ -231,6 +244,16 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
             return new CompositeNode(parent, compositeNodeChildren);
         }
         return null;
+    }
+
+    private List<IType> getProjectSpecificTypes(List<IType> projectITypes, IIpsProject project) {
+        List<IType> types = new ArrayList<IType>();
+        for (IType projectType : projectITypes) {
+            if (projectType.getIpsProject().equals(project)) {
+                types.add(projectType);
+            }
+        }
+        return types;
     }
 
     @Override

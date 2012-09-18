@@ -331,4 +331,49 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
      * @return a {@link CompositeNode}, or {@code null} if there are no associated types.
      */
     abstract CompositeNode getComponentNodeCompositeChild(ComponentNode parent);
+
+    /**
+     * Checks if this type is directly or indirectly associated by another {@link IType} of the same
+     * {@link IIpsProject}
+     * 
+     * @param type the {@link IType} for which the associations should be checked
+     * @param projectSpecificITypes a {@link List} of {@link IType}s, containing all ITypes of the
+     *            provided {@code type} {@link IIpsProject}
+     * @param allComponentITypes a {@link List} of {@link IType}s, containing all ITypes of the
+     *            project, including those from referenced projects
+     * @param project the project scope for this operation
+     * @return {@code true} if there is a direct or inherited association, otherwise {@code false}
+     */
+    protected static boolean isAssociated(IType type,
+            List<IType> projectSpecificITypes,
+            List<IType> allComponentITypes,
+            IIpsProject project,
+            AssociationType... types) {
+
+        if (type == null) {
+            return false;
+        }
+        if (project == null) {
+            project = type.getIpsProject();
+        }
+        if (isAssociationTarget(type, projectSpecificITypes, types)) {
+            return true;
+        } else {
+            List<IType> associatingTypes = getAssociatingTypes(type, allComponentITypes, types);
+            for (IType associatingType : associatingTypes) {
+                List<IType> associationSubtypes = associatingType.findSubtypes(true, false, project);
+                for (IType associationSubtype : associationSubtypes) {
+                    if (associationSubtype.getIpsProject().equals(project)) {
+                        return true;
+                    }
+                }
+            }
+            try {
+                return isAssociated(type.findSupertype(project), projectSpecificITypes, allComponentITypes, project,
+                        types);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+    }
 }

@@ -79,8 +79,8 @@ public class AssociationComponentNode extends ComponentNode {
      * AssociationComponentNodes}. It extracts the {@link IType} value, mandatory for the underlying
      * {@link ComponentNode}, from the provided {@link IAssociation}.
      * 
+     * @param targetingAssociation the {@link IAssociation} which contains the association target
      * @param rootProject the {@link IIpsProject} which should be used to compute project references
-     * @param targetingAssociation the association which points to the provided {@IType}
      */
     public static AssociationComponentNode newAssociationComponentNode(IAssociation targetingAssociation,
             IIpsProject rootProject) {
@@ -194,5 +194,9 @@ public class AssociationComponentNode extends ComponentNode {
 
     public boolean isSubsetOfADerivedUnion() {
         return isSubsetOfADerivedUnion;
+    }
+
+    public void setInherited(boolean inherited) {
+        this.isInherited = inherited;
     }
 }
