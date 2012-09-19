@@ -212,4 +212,20 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
     public void toggleShowProjects() {
         this.showProjects = !this.showProjects;
     }
+
+    public String getToolTipText(Object element) {
+        String text = ""; //$NON-NLS-1$
+        if (element instanceof ComponentNode) {
+            if (element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited()) {
+                AssociationComponentNode node = (AssociationComponentNode)element;
+                text += "Dieser Beziehungsknoten wurde von " + node.getTargetingType().getQualifiedName() + " geerbt."; //$NON-NLS-1$ //$NON-NLS-2$
+            } else if (((ComponentNode)element).hasInheritedAssociation()) {
+                text += "Dieser Knoten hat mindestens eine vererbte Beziehung die über ein referenziertes Projekt zustande kommt."; //$NON-NLS-1$
+            }
+            if (!text.isEmpty()) {
+                return text;
+            }
+        }
+        return null;
+    }
 }

@@ -25,10 +25,10 @@ import org.faktorips.devtools.core.model.type.IType;
 
 public class AssociationComponentNode extends ComponentNode {
 
-    // private IAssociation association;
     private int minCardinality;
     private int maxCardinality;
     private String targetRoleSingular;
+    private IType targetingType;
     private boolean isInherited;
     private boolean isDerivedUnion;
     private boolean isSubsetOfADerivedUnion;
@@ -36,42 +36,21 @@ public class AssociationComponentNode extends ComponentNode {
     /**
      * Creates a new AssociationComponentNode with designated parent node and value.
      * 
-     * @param value the corresponding IType element to this node
+     * @param targetType the corresponding IType element to this node
      * @param rootProject the {@link IIpsProject} which should be used to compute project references
      * @param targetingAssociation the association which points to the provided {@IType}
      * 
      * @see ComponentNode
      */
-    private AssociationComponentNode(IType value, IIpsProject rootProject, IAssociation targetingAssociation) {
-        super(value, rootProject);
+    private AssociationComponentNode(IType targetType, IIpsProject rootProject, IAssociation targetingAssociation) {
+        super(targetType, rootProject);
+        this.targetingType = targetingAssociation.getType();
         this.minCardinality = targetingAssociation.getMinCardinality();
         this.maxCardinality = targetingAssociation.getMaxCardinality();
         this.targetRoleSingular = targetingAssociation.getTargetRoleSingular();
         this.isInherited = false;
         this.isDerivedUnion = targetingAssociation.isDerivedUnion();
         this.isSubsetOfADerivedUnion = targetingAssociation.isSubsetOfADerivedUnion();
-    }
-
-    /**
-     * Creates a new AssociationComponentNode with designated parent node and value.
-     * 
-     * @param targetType the {@link IType} value of this node
-     * @param minCardinality the minimal cardinality of the association
-     * @param maxCardinality the maximal cardinality of the association
-     * @param targetRoleSingular the singular role name
-     * @param rootProject the project which defines the project-dependency scope
-     * @param isInherited indicates if the association is inherited
-     */
-    private AssociationComponentNode(IType targetType, int minCardinality, int maxCardinality,
-            String targetRoleSingular, IIpsProject rootProject, boolean isDerivedUnion,
-            boolean isSubsetOfADerivedUnion, boolean isInherited) {
-        super(targetType, rootProject);
-        this.minCardinality = minCardinality;
-        this.maxCardinality = maxCardinality;
-        this.targetRoleSingular = targetRoleSingular;
-        this.isDerivedUnion = isDerivedUnion;
-        this.isSubsetOfADerivedUnion = isSubsetOfADerivedUnion;
-        this.isInherited = isInherited;
     }
 
     /**
@@ -92,27 +71,12 @@ public class AssociationComponentNode extends ComponentNode {
         }
     }
 
-    /**
-     * Factory method for the creation of new {@link AssociationComponentNode
-     * AssociationComponentNodes}.
-     * 
-     * @param targetType the {@link IType} value of this node
-     * @param minCardinality the minimal cardinality of the association
-     * @param maxCardinality the maximal cardinality of the association
-     * @param targetRoleSingular the singular role name
-     * @param rootProject the project which defines the project-dependency scope
-     * @param isInherited indicates if the association is inherited
-     */
-    public static AssociationComponentNode newAssociationComponentNode(IType targetType,
-            int minCardinality,
-            int maxCardinality,
-            String targetRoleSingular,
-            IIpsProject rootProject,
-            boolean isDerivedUnion,
-            boolean isSubsetOfADerivedUnion,
-            boolean isInherited) {
-        return new AssociationComponentNode(targetType, minCardinality, maxCardinality, targetRoleSingular,
-                rootProject, isDerivedUnion, isSubsetOfADerivedUnion, isInherited);
+    public void setTargetingType(IType type) {
+        this.targetingType = type;
+    }
+
+    public IType getTargetingType() {
+        return this.targetingType;
     }
 
     public int getMinCardinality() {

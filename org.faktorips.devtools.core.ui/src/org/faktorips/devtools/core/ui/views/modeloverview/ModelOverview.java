@@ -75,7 +75,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"; //$NON-NLS-1$
 
-    private static final String MENU_INFO_GROUP = "group.info"; //$NON-NLS-1$
+    private static final String MENU_GROUP_INFO = "group.info"; //$NON-NLS-1$
 
     private static final String SHOW_CARDINALITIES = "show_cardinalities"; //$NON-NLS-1$
     private static final String SHOW_ROLENAMES = "show_rolenames"; //$NON-NLS-1$
@@ -117,8 +117,9 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         provider = new ModelOverviewContentProvider();
         treeViewer.setContentProvider(provider);
 
+        ModelOverviewColumnViewerToolTipSupport.enableFor(treeViewer);
         labelProvider = new ModelOverviewLabelProvider();
-        DecoratingStyledCellLabelProvider decoratingLabelProvider = new DecoratingStyledCellLabelProvider(
+        DecoratingStyledCellLabelProvider decoratingLabelProvider = new ModelOverviewDecoratingStyledCellLabelProvider(
                 labelProvider, IpsPlugin.getDefault().getWorkbench().getDecoratorManager().getLabelDecorator(),
                 new DecorationContext());
 
@@ -179,7 +180,6 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
             ((GridData)treeViewer.getTree().getLayoutData()).exclude = false;
         }
         panel.layout();
-        // FIXME otherwise we loose the focus
         this.setFocus();
     }
 
@@ -389,22 +389,23 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
     private void initMenu() {
         IMenuManager menuManager = getViewSite().getActionBars().getMenuManager();
-        menuManager.add(new Separator(MENU_INFO_GROUP));
+        menuManager.add(new Separator(MENU_GROUP_INFO));
 
         Action showCardinalitiesAction = createShowCardinalitiesAction();
         labelProvider.setShowCardinalities(showCardinalities);
         showCardinalitiesAction.setChecked(showCardinalities);
-        menuManager.appendToGroup(MENU_INFO_GROUP, showCardinalitiesAction);
 
         Action showRoleNameAction = createShowRoleNameAction();
         labelProvider.setShowRolenames(showRolenames);
         showRoleNameAction.setChecked(showRolenames);
-        menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);
 
         Action showProjectsAction = createShowProjectsAction();
         labelProvider.setShowProjects(showProjectnames);
         showProjectsAction.setChecked(showProjectnames);
-        menuManager.appendToGroup(MENU_INFO_GROUP, showProjectsAction);
+
+        menuManager.appendToGroup(MENU_GROUP_INFO, showCardinalitiesAction);
+        menuManager.appendToGroup(MENU_GROUP_INFO, showRoleNameAction);
+        menuManager.appendToGroup(MENU_GROUP_INFO, showProjectsAction);
     }
 
     private Action createShowCardinalitiesAction() {

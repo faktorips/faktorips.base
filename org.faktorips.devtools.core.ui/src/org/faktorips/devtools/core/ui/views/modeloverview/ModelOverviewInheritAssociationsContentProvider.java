@@ -244,11 +244,11 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
                     List<IType> subtypes = findProjectSpecificSubtypes(supertypeAssociation.findTarget(project),
                             project);
                     for (IType subtype : subtypes) {
-                        associationNodes.add(newAssociationComponentNode(subtype,
-                                supertypeAssociation.getMinCardinality(), supertypeAssociation.getMaxCardinality(),
-                                supertypeAssociation.getTargetRoleSingular(), project,
-                                supertypeAssociation.isDerivedUnion(), supertypeAssociation.isSubsetOfADerivedUnion(),
-                                true));
+                        AssociationComponentNode associationComponentNode = newAssociationComponentNode(
+                                supertypeAssociation, project);
+                        associationComponentNode.setInherited(true);
+                        associationComponentNode.setTargetingType(subtype);
+                        associationNodes.add(associationComponentNode);
                     }
                 }
             }
