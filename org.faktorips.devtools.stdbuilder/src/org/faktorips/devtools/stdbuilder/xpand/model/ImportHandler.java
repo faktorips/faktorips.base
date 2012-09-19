@@ -36,7 +36,8 @@ import org.apache.commons.lang.StringUtils;
  * TODO does not work for Classes in the own package that have the same unqualified name as a
  * java.lang class. e.g. "my.package.Integer". "my.package.Integer" would be used instead of
  * "java.lang.Integer" (no import statements are possible for both of them), and then causes compile
- * errors.
+ * errors. To fix this each and every java.lang Class would have to be qualified in the code to
+ * avoid collisions.
  * 
  * @author widmaier
  */

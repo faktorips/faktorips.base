@@ -24,13 +24,11 @@
 		     * 
 		     * @generated
 		     */
-			«IF oneToMany-»
-				«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
+			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
 			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)-»
+			«IF oneToMany-»
 				private «List_(targetInterfaceName)» «field(fieldName)»  = new «ArrayList(targetInterfaceName)»();
 			«ELSE-»
-				«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ASSOCIATION)-»
-			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)-»
 				private «targetClassName» «field(fieldName)» = null;
 			«ENDIF-»
 		«ELSEIF compositionDetailToMaster-»
