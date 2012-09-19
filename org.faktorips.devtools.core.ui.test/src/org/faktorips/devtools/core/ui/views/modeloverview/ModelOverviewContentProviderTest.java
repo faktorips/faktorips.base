@@ -833,9 +833,9 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         Object[] structureNodes = provider.getChildren(rootElements[0]);
         AssociationComponentNode nodeAB = (AssociationComponentNode)provider.getChildren(structureNodes[1])[0];
         Object[] structureNodes2 = provider.getChildren(nodeAB);
-        AssociationComponentNode nodeBB = (AssociationComponentNode)provider.getChildren(structureNodes2[0])[0];
+        ComponentNode nodeBB = (ComponentNode)provider.getChildren(structureNodes2[0])[0];
 
-        assertTrue(nodeBB.isInherited());
+        assertTrue(nodeBB.hasInheritedAssociation());
     }
 
     @Test
