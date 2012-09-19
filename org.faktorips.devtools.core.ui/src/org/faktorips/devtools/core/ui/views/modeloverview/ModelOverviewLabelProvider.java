@@ -29,7 +29,7 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
 
     private static final String STRUCTURE_NODE_SUPTYPE_IMAGE = "over_co.gif"; //$NON-NLS-1$
     private static final String STRUCTURE_NODE_ASSOCIATION_IMAGE = "AssociationType-Aggregation.gif"; //$NON-NLS-1$
-    private static final String OVERLAY_INHERITED_ASSOCIATION_IMAGE = "OverrideIndicator_green.gif"; //$NON-NLS-1$
+    private static final String OVERLAY_INHERITED_ASSOCIATION_IMAGE = "OverrideIndicator_orange.gif"; //$NON-NLS-1$
     private static final String OVERLAY_LOOP_IMAGE = "ovr16/loop_ovr.gif"; //$NON-NLS-1$
     private static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType.gif"; //$NON-NLS-1$
     private static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType.gif"; //$NON-NLS-1$
@@ -92,6 +92,8 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
         if (element instanceof ComponentNode) {
             ComponentNode node = (ComponentNode)element;
             return node.getValue().getName();
+        } else if (element instanceof String) {
+            return element.toString();
         }
         return ""; //$NON-NLS-1$
     }

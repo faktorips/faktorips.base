@@ -76,16 +76,22 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
         if (inputElement instanceof IIpsProject) {
             IIpsProject project = (IIpsProject)inputElement;
 
+            monitor.beginTask(getWaitingLabel(), 3);
             List<IType> projectComponents;
             if (showState == ShowTypeState.SHOW_POLICIES) {
                 projectComponents = getProjectITypes(project, IpsObjectType.POLICY_CMPT_TYPE);
             } else {
                 projectComponents = getProjectITypes(project, IpsObjectType.PRODUCT_CMPT_TYPE);
             }
+            monitor.worked(1);
 
             List<IType> derivedRootElements = computeDerivedRootElements(
                     getProjectSpecificITypes(projectComponents, project), projectComponents, project);
-            return ComponentNode.encapsulateComponentTypes(derivedRootElements, project).toArray();
+            monitor.worked(1);
+            Object[] rootElements = ComponentNode.encapsulateComponentTypes(derivedRootElements, project).toArray();
+            monitor.worked(1);
+            monitor.done();
+            return rootElements;
         } else {
             return null;
         }

@@ -67,11 +67,12 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
             monitor.worked(1);
 
         } else { // get the root elements if the input is an IpsProject
-            monitor.beginTask(getWaitingLabel(), 2);
+            monitor.beginTask(getWaitingLabel(), 4);
             List<IType> projectTypes = getProjectITypes(ipsProject, getCurrentlyNeededIpsObjectType());
             monitor.worked(1);
 
-            rootComponents = getProjectRootElementsFromComponentList(projectTypes, ipsProject, ASSOCIATION_TYPES);
+            rootComponents = getProjectRootElementsFromComponentList(projectTypes, ipsProject, monitor,
+                    ASSOCIATION_TYPES);
             monitor.worked(1);
         }
         monitor.done();
@@ -106,9 +107,9 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
      * Computes the root-nodes for an {@link IType} element. The root-nodes are exactly those nodes
      * which have an outgoing association to the given element. An association is of Type
      * {@link AssociationType}.COMPOSITION_MASTER_TO_DETAIL or {@link AssociationType}.AGGREGATION
-     * and may be contain a subtype hierarchy. A run of this method with an empty rootCandidates
+     * and may contain a subtype hierarchy. A run of this method with an empty rootCandidates
      * parameter will return a list of root-candidates. A second run of this method with the
-     * previously obtained rootCandidates as parameter, will clean the list of false candidates.
+     * previously obtained rootCandidates as parameter, will remove false candidates from the list.
      * 
      * @param element the starting point
      * @param componentList the list of all concerned elements
@@ -222,8 +223,11 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
 
         for (IType subtype : subtypes) {
             ComponentNode componentNode = new ComponentNode(subtype, project);
-            componentNode.setHasInheritedAssociation(isAssociated(subtype, projectSpecificTypes, projectITypes,
-                    project, ASSOCIATION_TYPES));
+            boolean associated = false;
+            if (subtype.getIpsProject().equals(project)) {
+                associated = isAssociated(subtype, projectSpecificTypes, projectITypes, project, ASSOCIATION_TYPES);
+            }
+            componentNode.setHasInheritedAssociation(associated);
             subtypeNodeChildren.add(componentNode);
         }
         encapsulateComponentTypes(subtypes, project);

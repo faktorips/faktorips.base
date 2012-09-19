@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -63,7 +64,8 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         hausratVertrag.setSupertype(vertrag.getQualifiedName());
 
         List<IType> rootComponents = getProjectRootElementsFromComponentList(
-                getProjectITypes(localProject, ipsObjectTypes), localProject, ASSOCIATION_TYPES);
+                getProjectITypes(localProject, ipsObjectTypes), localProject, new NullProgressMonitor(),
+                ASSOCIATION_TYPES);
 
         assertEquals(1, rootComponents.size());
         assertEquals(vertrag, rootComponents.get(0));
@@ -80,7 +82,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         vertrag2vertrag.setAssociationType(AssociationType.AGGREGATION);
 
         List<IType> rootComponents = getProjectRootElementsFromComponentList(getProjectITypes(project, ipsObjectTypes),
-                project, ASSOCIATION_TYPES);
+                project, new NullProgressMonitor(), ASSOCIATION_TYPES);
 
         assertEquals(1, rootComponents.size());
         assertEquals(vertrag, rootComponents.get(0));
@@ -107,7 +109,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         vertrag3ToVertrag.setAssociationType(AssociationType.AGGREGATION);
 
         List<IType> rootComponents = getProjectRootElementsFromComponentList(getProjectITypes(project, ipsObjectTypes),
-                project, ASSOCIATION_TYPES);
+                project, new NullProgressMonitor(), ASSOCIATION_TYPES);
 
         assertEquals(1, rootComponents.size());
         assertEquals(vertrag, rootComponents.get(0));
@@ -126,7 +128,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         association2.setTarget(associatedProdCmptType.getQualifiedName());
 
         List<IType> rootComponents = getProjectRootElementsFromComponentList(getProjectITypes(project, ipsObjectTypes),
-                project, ASSOCIATION_TYPES);
+                project, new NullProgressMonitor(), ASSOCIATION_TYPES);
 
         // test the number of existing root elements
         assertEquals(1, rootComponents.size());
@@ -146,7 +148,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
         subCmptType.setSupertype(cmptType.getQualifiedName());
 
         List<IType> rootComponents = getProjectRootElementsFromComponentList(getProjectITypes(project, ipsObjectTypes),
-                project, ASSOCIATION_TYPES);
+                project, new NullProgressMonitor(), ASSOCIATION_TYPES);
 
         // test the number of existing root elements
         assertEquals(1, rootComponents.size());
@@ -180,7 +182,7 @@ public class AbstractModelOverviewContentProviderTest extends AbstractIpsPluginT
 
         // test
         List<IType> rootElements = getProjectRootElementsFromComponentList(getProjectITypes(project2, ipsObjectTypes),
-                project2, ASSOCIATION_TYPES);
+                project2, new NullProgressMonitor(), ASSOCIATION_TYPES);
         assertEquals(1, rootElements.size());
         assertEquals(type2, rootElements.get(0));
     }

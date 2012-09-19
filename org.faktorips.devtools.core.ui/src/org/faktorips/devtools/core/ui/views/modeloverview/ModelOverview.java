@@ -179,6 +179,8 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
             ((GridData)treeViewer.getTree().getLayoutData()).exclude = false;
         }
         panel.layout();
+        // FIXME otherwise we loose the focus
+        this.setFocus();
     }
 
     private ITreeViewerListener createNewAutoExpandStructureNodesListener() {
@@ -274,8 +276,8 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
      * @param input the selected {@link IIpsProject}
      */
     public void showOverview(IIpsProject input) {
-        this.showTree();
         this.treeViewer.setInput(input);
+        this.showTree();
         this.updateView();
     }
 

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -43,6 +44,7 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
      */
     protected static List<IType> getProjectRootElementsFromComponentList(List<IType> components,
             IIpsProject sourceProject,
+            IProgressMonitor monitor,
             AssociationType... types) {
         List<IType> rootComponents = new ArrayList<IType>();
         List<IType> rootCandidates = new ArrayList<IType>();
@@ -57,6 +59,7 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
                 }
             }
         }
+        monitor.worked(1);
 
         // the lists are the same we have found an unambiguous set of root-elements
         if (rootComponents.size() != rootCandidates.size()) {
@@ -68,6 +71,8 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
                 removeDescendants(rootCandidates, rootComponents, components, types);
             }
         }
+        monitor.worked(1);
+
         removeSuperfluousRootElements(rootComponents, sourceProject, types);
         return rootComponents;
     }
