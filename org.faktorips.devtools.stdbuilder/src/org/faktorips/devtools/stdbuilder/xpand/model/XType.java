@@ -87,10 +87,13 @@ public abstract class XType extends XClass {
         }
     }
 
-    protected XType getSupertype() {
+    public XType getSupertype() {
         IType superType;
         try {
             superType = getType().findSupertype(getIpsProject());
+            if (superType == null) {
+                throw new NullPointerException("Found no supertype for " + getName());
+            }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

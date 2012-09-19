@@ -22,12 +22,12 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
@@ -116,7 +116,10 @@ public class XPolicyCmptClass extends XType {
     @Override
     public List<String> getExtendedInterfaces() {
         List<String> extendedInterfaces = super.getExtendedInterfaces();
-        if (!hasSupertype()) {
+        if (hasSupertype()) {
+            String superInterfaceName = getSupertype().getQualifiedName(BuilderAspect.INTERFACE);
+            extendedInterfaces.add(addImport(superInterfaceName));
+        } else {
             if (isGeneratePublishedInterfaces()) {
                 // in case of not generating published interfaces we use all extended interfaces as
                 // implemented interfaces in the implementation. These interfaces are already
@@ -471,18 +474,6 @@ public class XPolicyCmptClass extends XType {
             }
         }
         return false;
-    }
-
-    public XPolicyCmptClass getSuperclass() {
-        try {
-            IType superType = getType().findSupertype(getIpsProject());
-            if (superType == null) {
-                throw new NullPointerException("Found no supertype for " + getName());
-            }
-            return getModelNode(superType, XPolicyCmptClass.class);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
     }
 
     /**

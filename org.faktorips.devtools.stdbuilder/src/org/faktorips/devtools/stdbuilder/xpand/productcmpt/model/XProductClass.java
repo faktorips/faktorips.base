@@ -64,7 +64,7 @@ public abstract class XProductClass extends XType {
     }
 
     @Override
-    protected XProductClass getSupertype() {
+    public XProductClass getSupertype() {
         return (XProductClass)super.getSupertype();
     }
 

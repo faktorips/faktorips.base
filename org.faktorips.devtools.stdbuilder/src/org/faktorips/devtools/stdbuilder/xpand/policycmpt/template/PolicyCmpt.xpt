@@ -11,7 +11,7 @@
 	«FILE getFileName(BuilderAspect::IMPLEMENTATION)-»
 package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 
-«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
+	«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 	
 	/**
 	 «IF generatePublishedInterfaces-»
