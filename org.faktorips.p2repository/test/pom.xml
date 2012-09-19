@@ -7,11 +7,13 @@
 	<parent>
 		<groupId>org.faktorips</groupId>
 		<artifactId>org.faktorips.aggregator.sites</artifactId>
-		<version>3.7.4-SNAPSHOT</version>
+		<version>3.8.0-SNAPSHOT</version>
 		<relativePath>../../org.faktorips.aggregator/sites/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>org.faktorips.p2repository.test</artifactId>
+	<version>3.8.0-SNAPSHOT</version>
+	
 	<packaging>eclipse-repository</packaging>
 
     

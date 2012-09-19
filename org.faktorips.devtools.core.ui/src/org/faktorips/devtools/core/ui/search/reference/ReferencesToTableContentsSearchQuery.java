@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.search.reference;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -24,7 +26,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
  * 
  * @author Joerg Ortmann
  */
-public class ReferencesToTableContentsSearchQuery extends ReferenceSearchQuery {
+public class ReferencesToTableContentsSearchQuery extends AbstractReferenceFromProductSearchQuery {
 
     public ReferencesToTableContentsSearchQuery(ITableContents referenced) {
         super(referenced);
@@ -32,14 +34,7 @@ public class ReferencesToTableContentsSearchQuery extends ReferenceSearchQuery {
 
     @Override
     protected IIpsElement[] findReferences() throws CoreException {
-        return referenced.getIpsProject().findReferencingProductCmptGenerations(referenced.getQualifiedNameType());
-    }
-
-    @Override
-    protected Object[] getDataForResult(IIpsElement object) {
-        if (object instanceof IProductCmptGeneration) {
-            return new Object[] { ((IProductCmptGeneration)object).getProductCmpt(), object };
-        }
-        return null;
+        List<IProductCmptGeneration> referencingProductCmptGenerations = getReferencingProductCmptGenerations();
+        return referencingProductCmptGenerations.toArray(new IIpsElement[referencingProductCmptGenerations.size()]);
     }
 }

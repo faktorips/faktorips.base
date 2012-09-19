@@ -10104,3 +10104,7 @@ synchronisiert
 covariant
 unspecific
 mergeable
+implementieren
+blendet
+kardinalitäten
+assoziationen

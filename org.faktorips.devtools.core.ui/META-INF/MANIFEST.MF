@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Development Tools UI
 Bundle-SymbolicName: org.faktorips.devtools.core.ui;singleton:=true
-Bundle-Version: 3.7.4.qualifier
+Bundle-Version: 3.8.0.qualifier
 Bundle-Activator: org.faktorips.devtools.core.ui.IpsUIPlugin
 Require-Bundle: org.eclipse.ui;visibility:=reexport,
  org.eclipse.core.runtime,
@@ -68,6 +68,7 @@ Export-Package: org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.internal.generationdate,
  org.faktorips.devtools.core.ui.search,
  org.faktorips.devtools.core.ui.search.matcher,
+ org.faktorips.devtools.core.ui.search.reference,
  org.faktorips.devtools.core.ui.search.scope,
  org.faktorips.devtools.core.ui.table,
  org.faktorips.devtools.core.ui.team.compare,

@@ -15,16 +15,26 @@ package org.faktorips.devtools.core.ui.search.reference;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.search.ui.NewSearchUI;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -99,4 +109,48 @@ public class ReferencesToProductSearchQueryTest extends AbstractIpsPluginTest {
         assertFalse(resultSet.contains(prodCmptNoRef));
     }
 
+    /**
+     * Test for Jira Issue FIPS-771
+     */
+    @Test
+    public void testFindHitInReferencingProject() throws CoreException {
+
+        IIpsProject otherProject = newIpsProject("SubTestProjekt");
+        IIpsPackageFragmentRoot rootOtherProject = otherProject.getIpsPackageFragmentRoots()[0];
+
+        IIpsProjectProperties properties = otherProject.getProperties();
+        IIpsObjectPath ipsObjectPath = properties.getIpsObjectPath();
+
+        IpsProjectRefEntry ipsProjectRefEntry = new IpsProjectRefEntry((IpsObjectPath)ipsObjectPath, proj);
+
+        IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[] { ipsProjectRefEntry,
+                rootOtherProject.getIpsObjectPathEntry() };
+        ipsObjectPath.setEntries(newEntries);
+        otherProject.setProperties(properties);
+
+        IProductCmpt prodCmptInOtherProject = newProductCmpt(otherProject, "TestProductComponentInReferencingProject");
+        IProductCmptGeneration generationInOtherProject = (IProductCmptGeneration)prodCmptInOtherProject
+                .newGeneration((GregorianCalendar)Calendar.getInstance());
+        IProductCmptLink relationInterProject = generationInOtherProject.newLink("");
+        relationInterProject.setTarget(prodCmptReferenced.getQualifiedName());
+
+        query = new ReferencesToProductSearchQuery(prodCmptReferenced);
+        // run query in same thread as this test
+        NewSearchUI.runQueryInForeground(IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow(), query);
+
+        ReferenceSearchResult searchResult = (ReferenceSearchResult)query.getSearchResult();
+        Object[] results = searchResult.getMatchingElements();
+
+        List<Object> result = Arrays.asList(results);
+
+        assertEquals(4, result.size());
+
+        List<Object> resultProductCmpts = new ArrayList<Object>();
+
+        for (Object object : result) {
+            resultProductCmpts.add(((Object[])object)[0]);
+        }
+        assertTrue(resultProductCmpts.contains(prodCmptInOtherProject));
+
+    }
 }

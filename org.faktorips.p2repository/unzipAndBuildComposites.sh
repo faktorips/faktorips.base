@@ -35,10 +35,6 @@ for dir in $COMPOSITE_DIR/*; do
 	REL_DIR=./${dir##/*/}
         printf "$child" "$REL_DIR" >> $contentFile
         printf "$child" "$REL_DIR" >> $artifactFile
-        #cd $dir
-        #ls -1r plugins/ | awk '{split($1,f,"_");a[f[1]]++}a[f[1]] > 1{system("rm -f plugins/"$1)}'
-        #ls -1r features/ | awk '{split($1,f,"_");a[f[1]]++}a[f[1]] > 1{system("rm -f features/"$1)}'
-        #cd ..      
     fi
 done
 printf "$footer" >> $contentFile

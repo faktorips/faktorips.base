@@ -56,7 +56,7 @@ doAsserts()
 {
 	if [ -z "$NEW_VERSION" ]
 	then
-		echo "Please specify next version with -nextVersion x.x.x or use argument -noNewVersion" 
+		echo "Please specify new version with -newVersion x.x.x or use argument -noNewVersion" 
 	fi
 }
 
@@ -123,7 +123,7 @@ setVersion()
 {
 	echo -e "\nSetting new Version ${NEW_VERSION}\n"
 	$MAVEN_CMD -f ${BUILD_POM} org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${NEW_VERSION}-SNAPSHOT
-	git commit -m "Setting new version ${NEW_VERSION}" -- */pom.xml */META-INF/MANIFEST.MF */feature.xml
+	git commit -m "Setting new version ${NEW_VERSION}" -- */pom.xml */*/pom.xml */META-INF/MANIFEST.MF */feature.xml
 	git push
 }
 
