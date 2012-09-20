@@ -647,14 +647,20 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     public void init(IViewSite site, IMemento memento) throws PartInitException {
         super.init(site, memento);
 
-        // initialize the label settings
-        Boolean showcard = memento.getBoolean(SHOW_CARDINALITIES);
-        showCardinalities = showcard == null ? true : showcard;
+        if (memento != null) {
+            // initialize the label settings
+            Boolean showcard = memento.getBoolean(SHOW_CARDINALITIES);
+            showCardinalities = showcard == null ? true : showcard;
 
-        Boolean showRoles = memento.getBoolean(SHOW_ROLENAMES);
-        showRolenames = showRoles == null ? true : showRoles;
+            Boolean showRoles = memento.getBoolean(SHOW_ROLENAMES);
+            showRolenames = showRoles == null ? true : showRoles;
 
-        Boolean showProjects = memento.getBoolean(SHOW_PROJECTS);
-        showProjectnames = showProjects == null ? true : showProjects;
+            Boolean showProjects = memento.getBoolean(SHOW_PROJECTS);
+            showProjectnames = showProjects == null ? true : showProjects;
+        } else {
+            showCardinalities = true;
+            showRolenames = true;
+            showProjectnames = true;
+        }
     }
 }
