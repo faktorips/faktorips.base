@@ -1958,6 +1958,13 @@
             properties="isEditorEditable"
             type="org.faktorips.devtools.core.ui.editors.IpsObjectEditor">
       </propertyTester>
+      <propertyTester
+            class="org.faktorips.devtools.core.ui.commands.IpsModelProjectTester"
+            id="org.faktorips.devtools.core.ui.commands.IpsModelProjectTester"
+            namespace="org.faktorips.devtools.core.ui.commands.IpsModelProjectTester"
+            properties="isModelIpsProject"
+            type="org.faktorips.devtools.core.internal.model.ipsproject.IpsProject">
+      </propertyTester>
    </extension>
    
       <extension
@@ -2154,9 +2161,10 @@
                                  property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
                            </test>
                         </adapt>
-                        <instanceof
-                              value="org.faktorips.devtools.core.model.ipsproject.IIpsProject">
-                        </instanceof>
+                        <test
+                              forcePluginActivation="true"
+                              property="org.faktorips.devtools.core.ui.commands.IpsModelProjectTester.isModelIpsProject">
+                        </test>
                      </or>
                   </iterate>
                </with>
