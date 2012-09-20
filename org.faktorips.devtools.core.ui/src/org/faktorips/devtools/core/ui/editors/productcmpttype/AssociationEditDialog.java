@@ -116,7 +116,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         Composite panel = createTabItemComposite(folder, 1, false);
 
         createExtensionArea(panel, IExtensionPropertyDefinition.POSITION_TOP);
-        createGenerellGroup(getToolkit().createGroup(panel, Messages.AssociationEditDialog_generalGroup));
+        createGeneralGroup(getToolkit().createGroup(panel, Messages.AssociationEditDialog_generalGroup));
 
         createDerivedUnionGroup(getToolkit().createGroup(panel, Messages.AssociationEditDialog_derivedUnionGroup));
         createExtensionArea(panel, IExtensionPropertyDefinition.POSITION_BOTTOM);
@@ -135,7 +135,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         extFactory.createControls(workArea, getToolkit(), association, position);
     }
 
-    private void createGenerellGroup(Composite parent) {
+    private void createGeneralGroup(Composite parent) {
         Composite workArea = getToolkit().createLabelEditColumnComposite(parent);
 
         // target
@@ -150,6 +150,15 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         Combo typeCombo = getToolkit().createCombo(workArea);
         getBindingContext().bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE,
                 IProductCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
+
+        // Changing over time checkbox
+        getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_changeOverTimeLabel);
+        Checkbox changeOverTimeCheckbox = getToolkit().createCheckbox(
+                workArea,
+                NLS.bind(Messages.AssociationEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
+        getBindingContext().bindContent(changeOverTimeCheckbox, association,
+                IProductCmptTypeAssociation.PROPERTY_CHANGING_OVER_TIME);
 
         // role singular
         getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_roleSingularLabel);

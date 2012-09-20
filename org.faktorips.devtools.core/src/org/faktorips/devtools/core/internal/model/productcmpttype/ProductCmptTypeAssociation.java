@@ -384,7 +384,9 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     @Override
     public void setChangingOverTime(boolean changingOverTime) {
+        boolean oldValue = isChangingOverTime;
         isChangingOverTime = changingOverTime;
+        valueChanged(oldValue, isChangingOverTime);
     }
 
 }

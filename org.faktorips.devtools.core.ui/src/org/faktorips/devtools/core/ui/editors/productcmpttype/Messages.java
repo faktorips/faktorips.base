@@ -37,6 +37,8 @@ public class Messages extends NLS {
     public static String AssociationEditDialog_derivedUnionGroup;
     public static String AssociationEditDialog_derivedUnionLabel;
     public static String AssociationEditDialog_generalGroup;
+    public static String AssociationEditDialog_changeOverTimeCheckbox;
+    public static String AssociationEditDialog_changeOverTimeLabel;
 
     public static String AssociationEditDialog_group_selectExplicitly;
 
