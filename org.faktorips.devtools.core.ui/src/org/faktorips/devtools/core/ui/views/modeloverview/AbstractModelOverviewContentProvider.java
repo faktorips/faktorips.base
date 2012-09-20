@@ -381,4 +381,23 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
             }
         }
     }
+
+    /**
+     * Takes a {@link List} of {@link IType} and extracts all elements which are contained in the
+     * provided {@link IIpsProject} into a new list.
+     * 
+     * @param components a list of {@link IType}
+     * @param project the project for which the {@link IType}s should be retrieved
+     * @return a {@link List} of {@link IType}, or an empty list if no provided elements are
+     *         contained in this project
+     */
+    protected static List<IType> getProjectSpecificITypes(List<IType> components, IIpsProject project) {
+        List<IType> projectComponents = new ArrayList<IType>();
+        for (IType iType : components) {
+            if (iType.getIpsProject().getName().equals(project.getName())) {
+                projectComponents.add(iType);
+            }
+        }
+        return projectComponents;
+    }
 }

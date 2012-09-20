@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -84,7 +85,6 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
     private static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType.gif"; //$NON-NLS-1$
     private static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType.gif"; //$NON-NLS-1$
-    private static final String TOGGLE_CONTENT_PROVIDER_IMAGE = "ConfigDefElement.gif"; //$NON-NLS-1$
     private static final String CARDINALITY_IMAGE = "Cardinality.gif"; //$NON-NLS-1$
 
     private IPolicyCmptType toggledPolicyCmptInput;
@@ -94,7 +94,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     private TreeViewer treeViewer;
     private final UIToolkit uiToolkit = new UIToolkit(null);
     private Label label;
-    private Label emptyMessageLabel;
+    private Label infoessageLabel;
 
     private ModelOverviewLabelProvider labelProvider;
     private AbstractModelOverviewContentProvider provider;
@@ -130,9 +130,8 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         getSite().setSelectionProvider(treeViewer); // necessary for the context menu
 
         // initialize the empty message
-        emptyMessageLabel = uiToolkit.createLabel(panel, "", SWT.WRAP, new GridData(SWT.FILL, SWT.FILL, //$NON-NLS-1$
+        infoessageLabel = uiToolkit.createLabel(panel, "", SWT.WRAP, new GridData(SWT.FILL, SWT.FILL, //$NON-NLS-1$
                 true, true));
-        emptyMessageLabel.setText(Messages.IpsModelOverview_emptyMessage);
 
         activateContext();
         createContextMenu();
@@ -147,14 +146,15 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));
         provider.addCollectorFinishedListener(this);
 
-        showEmptyMessage();
+        showInfoMessage(Messages.IpsModelOverview_emptyMessage);
     }
 
-    private void showEmptyMessage() {
+    private void showInfoMessage(String message) {
+        infoessageLabel.setText(message);
         enableButtons(false);
-        if (!emptyMessageLabel.isDisposed()) {
-            emptyMessageLabel.setVisible(true);
-            ((GridData)emptyMessageLabel.getLayoutData()).exclude = false;
+        if (!infoessageLabel.isDisposed()) {
+            infoessageLabel.setVisible(true);
+            ((GridData)infoessageLabel.getLayoutData()).exclude = false;
         }
         if (!label.isDisposed()) {
             label.setVisible(false);
@@ -169,9 +169,9 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
     private void showTree() {
         enableButtons(true);
-        if (!emptyMessageLabel.isDisposed()) {
-            emptyMessageLabel.setVisible(false);
-            ((GridData)emptyMessageLabel.getLayoutData()).exclude = true;
+        if (!infoessageLabel.isDisposed()) {
+            infoessageLabel.setVisible(false);
+            ((GridData)infoessageLabel.getLayoutData()).exclude = true;
         }
         if (!label.isDisposed()) {
             label.setVisible(true);
@@ -278,9 +278,17 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
      * @param input the selected {@link IIpsProject}
      */
     public void showOverview(IIpsProject input) {
-        this.treeViewer.setInput(input);
-        this.showTree();
-        this.updateView();
+        List<IType> result = AbstractModelOverviewContentProvider.getProjectITypes(input, new IpsObjectType[] {
+                IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE });
+        List<IType> projectSpecificITypes = AbstractModelOverviewContentProvider
+                .getProjectSpecificITypes(result, input);
+        if (projectSpecificITypes.isEmpty()) {
+            showInfoMessage(Messages.IpsModelOverview_NothingToShow_message);
+        } else {
+            this.treeViewer.setInput(input);
+            this.showTree();
+            this.updateView();
+        }
     }
 
     /**
@@ -289,7 +297,6 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
      * @param input the selected {@link IType}
      */
     public void showOverview(IType input) {
-        this.showTree();
         toggleProductPolicyAction.setEnabled(true);
         try {
             if (input instanceof PolicyCmptType) {
@@ -313,6 +320,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
             throw new CoreRuntimeException(e);
         }
         this.treeViewer.setInput(input);
+        this.showTree();
         this.updateView();
     }
 
