@@ -408,13 +408,14 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
         menuManager.add(new Separator(MENU_GROUP_CONTENT_PROVIDER));
 
-        setModelOverviewContentProviderAction = createSetContentProviderAction("Zeige tatsächliche Modellstruktur",
-                new ModelOverviewContentProvider());
+        setModelOverviewContentProviderAction = createSetContentProviderAction(
+                Messages.IpsModelOverview_ContentProvider_label, new ModelOverviewContentProvider());
         setModelOverviewContentProviderAction.setChecked(true);
         menuManager.appendToGroup(MENU_GROUP_CONTENT_PROVIDER, setModelOverviewContentProviderAction);
 
         setModelOverviewInheritAssociationsContentProviderAction = createSetContentProviderAction(
-                "Zeige vererbte Modellstruktur", new ModelOverviewInheritAssociationsContentProvider());
+                Messages.IpsModelOverview_InheritAssociationsContentProvider_label,
+                new ModelOverviewInheritAssociationsContentProvider());
         menuManager
                 .appendToGroup(MENU_GROUP_CONTENT_PROVIDER, setModelOverviewInheritAssociationsContentProviderAction);
 
