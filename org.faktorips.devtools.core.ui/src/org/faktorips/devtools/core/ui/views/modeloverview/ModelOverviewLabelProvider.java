@@ -33,6 +33,7 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
     private static final String OVERLAY_LOOP_IMAGE = "ovr16/loop_ovr.gif"; //$NON-NLS-1$
     private static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType.gif"; //$NON-NLS-1$
     private static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType.gif"; //$NON-NLS-1$
+    private static final String OVERLAY_ABSTRACT_IMAGE = "AbstractIndicator.gif"; //$NON-NLS-1$
 
     private boolean showCardinalities = true;
     private boolean showRolenames = true;
@@ -61,6 +62,10 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
             // define the overlay images
             if (node.isRepetition()) {
                 overlayImages[IDecoration.BOTTOM_LEFT] = OVERLAY_LOOP_IMAGE;
+                overlayed = true;
+            }
+            if (node.getValue().isAbstract()) {
+                overlayImages[IDecoration.TOP_RIGHT] = OVERLAY_ABSTRACT_IMAGE;
                 overlayed = true;
             }
             if (element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited()

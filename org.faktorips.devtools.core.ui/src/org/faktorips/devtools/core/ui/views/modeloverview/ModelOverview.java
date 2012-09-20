@@ -76,6 +76,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"; //$NON-NLS-1$
 
     private static final String MENU_GROUP_INFO = "group.info"; //$NON-NLS-1$
+    private static final String MENU_GROUP_CONTENT_PROVIDER = "group.contentprovider"; //$NON-NLS-1$
 
     private static final String SHOW_CARDINALITIES = "show_cardinalities"; //$NON-NLS-1$
     private static final String SHOW_ROLENAMES = "show_rolenames"; //$NON-NLS-1$
@@ -99,7 +100,8 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     private AbstractModelOverviewContentProvider provider;
 
     private Action toggleProductPolicyAction;
-    private Action toggleContentProviderAction;
+    private Action setModelOverviewContentProviderAction;
+    private Action setModelOverviewInheritAssociationsContentProviderAction;
     private ExpandAllAction expandAllAction;
     private CollapseAllAction collapseAllAction;
     private boolean showCardinalities;
@@ -377,9 +379,6 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         toggleProductPolicyAction = createToggleProductPolicyAction();
         toolBarManager.add(toggleProductPolicyAction);
 
-        toggleContentProviderAction = createToggleContentProviderAction();
-        toolBarManager.add(toggleContentProviderAction);
-
         expandAllAction = new ExpandAllAction(treeViewer);
         toolBarManager.add(expandAllAction);
 
@@ -406,6 +405,19 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         menuManager.appendToGroup(MENU_GROUP_INFO, showCardinalitiesAction);
         menuManager.appendToGroup(MENU_GROUP_INFO, showRoleNameAction);
         menuManager.appendToGroup(MENU_GROUP_INFO, showProjectsAction);
+
+        menuManager.add(new Separator(MENU_GROUP_CONTENT_PROVIDER));
+
+        setModelOverviewContentProviderAction = createSetContentProviderAction("Zeige tatsächliche Modellstruktur",
+                new ModelOverviewContentProvider());
+        setModelOverviewContentProviderAction.setChecked(true);
+        menuManager.appendToGroup(MENU_GROUP_CONTENT_PROVIDER, setModelOverviewContentProviderAction);
+
+        setModelOverviewInheritAssociationsContentProviderAction = createSetContentProviderAction(
+                "Zeige vererbte Modellstruktur", new ModelOverviewInheritAssociationsContentProvider());
+        menuManager
+                .appendToGroup(MENU_GROUP_CONTENT_PROVIDER, setModelOverviewInheritAssociationsContentProviderAction);
+
     }
 
     private Action createShowCardinalitiesAction() {
@@ -489,24 +501,25 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         };
     }
 
-    private Action createToggleContentProviderAction() {
-        return new Action(Messages.IpsModelOverview_tooltipToggleContentProviderButton, SWT.TOGGLE) {
+    private Action createSetContentProviderAction(final String label,
+            final AbstractModelOverviewContentProvider contentProvider) {
+        return new Action(label, IAction.AS_RADIO_BUTTON) {
+            AbstractModelOverviewContentProvider newProvider = contentProvider;
 
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor(TOGGLE_CONTENT_PROVIDER_IMAGE);
+                return null;
             }
 
             @Override
             public String getToolTipText() {
-                return Messages.IpsModelOverview_tooltipToggleContentProviderButton;
+                return label;
             }
 
             @Override
             public void run() {
-                toggleContentProvider();
+                setContentProvider(newProvider);
             }
-
         };
     }
 
@@ -514,20 +527,16 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         expandAllAction.setEnabled(state);
         collapseAllAction.setEnabled(state);
         toggleProductPolicyAction.setEnabled(state);
-        toggleContentProviderAction.setEnabled(state);
+        setModelOverviewContentProviderAction.setEnabled(state);
     }
 
-    private void toggleContentProvider() {
+    private void setContentProvider(AbstractModelOverviewContentProvider provider) {
         Object input = treeViewer.getInput();
         ShowTypeState currentShowTypeState = provider.getShowTypeState();
 
         provider.removeCollectorFinishedListener(this);
 
-        if (treeViewer.getContentProvider() instanceof ModelOverviewContentProvider) {
-            provider = new ModelOverviewInheritAssociationsContentProvider();
-        } else {
-            provider = new ModelOverviewContentProvider();
-        }
+        this.provider = provider;
 
         treeViewer.setContentProvider(provider);
         provider.setShowTypeState(currentShowTypeState);
