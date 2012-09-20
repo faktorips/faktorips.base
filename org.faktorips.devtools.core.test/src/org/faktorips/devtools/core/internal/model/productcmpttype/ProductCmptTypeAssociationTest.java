@@ -298,6 +298,9 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         association.setDerivedUnion(true);
         association.setSubsettedDerivedUnion("BaseCoverageType");
         association.setAssociationType(AssociationType.AGGREGATION);
+        // Default is true/changing over time
+        assertTrue(association.isChangingOverTime());
+        association.setChangingOverTime(false);
 
         Element el = association.toXml(newDocument());
         association = productType.newProductCmptTypeAssociation();
@@ -311,6 +314,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals(4, association.getMaxCardinality());
         assertTrue(association.isDerivedUnion());
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
+        assertFalse(association.isChangingOverTime());
     }
 
     /**
@@ -332,6 +336,20 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertTrue(association.isDerivedUnion());
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
         assertEquals("blabla", association.getDescriptionText(Locale.US));
+        assertFalse(association.isChangingOverTime());
+    }
+
+    /**
+     * Test method for
+     * {@link org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer#initFromXml(org.w3c.dom.Element)}
+     * .
+     */
+    @Test
+    public void testInitFromXmlElement_WithoutChangingOverTimeProperty() {
+        Element docEl = getTestDocument().getDocumentElement();
+        Element el = XmlUtil.getElement(docEl, 1);
+        association.initFromXml(el);
+        assertTrue(association.isChangingOverTime());
     }
 
     /**

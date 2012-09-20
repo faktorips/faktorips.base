@@ -13,7 +13,12 @@
           minCardinality="1" 
           maxCardinality="*" 
           derivedUnion="true"
-          subsettedDerivedUnion="BaseCoverageType">
+          subsettedDerivedUnion="BaseCoverageType"
+          changingOverTime="false">
+		<Description locale="en">blabla</Description>
+	</Association>
+	
+	<Association id="23">
 		<Description locale="en">blabla</Description>
 	</Association>
 		

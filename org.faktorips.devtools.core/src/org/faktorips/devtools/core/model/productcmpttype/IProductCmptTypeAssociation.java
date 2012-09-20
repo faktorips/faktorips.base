@@ -189,19 +189,27 @@ public interface IProductCmptTypeAssociation extends IAssociation {
     String getMatchingAssociationSource();
 
     /**
+     * Returns whether this association is marked as changing over time (<code>true</code>) or as
+     * static (<code>false</code>). Instances of changing-over-time associations (
+     * {@link IProductCmptLink product component links}) are part of {@link IProductCmptGeneration
+     * product component generations}. Each generation may specify a different target component.
+     * Instances of static associations are part of the {@link IProductCmpt product component}
+     * directly.
      * 
-     * @return
+     * @return <code>true</code> if instances of this associations change over time,
+     *         <code>false</code> if they are static.
      */
     boolean isChangingOverTime();
 
     /**
      * Marks this association as changing over time (<code>true</code>) or static (
-     * <code>false</code>) respectively. Instances of this associations ({@link IProductCmptLink
-     * product component links}) will then be part of the {@link IProductCmptGeneration product
-     * component generation} (changing over time) or the {@link IProductCmpt product component}
-     * directly (static).
+     * <code>false</code>). Instances of changing-over-time associations ({@link IProductCmptLink
+     * product component links}) will be part of {@link IProductCmptGeneration product component
+     * generations}. Each generation may specify a different target component. Instances of static
+     * associations will be part of the {@link IProductCmpt product component} directly.
      * 
-     * @param changingOverTime
+     * @param changingOverTime <code>true</code> if instances of this associations change over time,
+     *            <code>false</code> if they are static.
      */
     void setChangingOverTime(boolean changingOverTime);
 

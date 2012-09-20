@@ -50,6 +50,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     private String matchingAssociationName = StringUtils.EMPTY;
 
+    private boolean isChangingOverTime = true;
+
     public ProductCmptTypeAssociation(IProductCmptType parent, String id) {
         super(parent, id);
         type = AssociationType.AGGREGATION;
@@ -362,6 +364,9 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         super.initPropertiesFromXml(element, id);
         matchingAssociationSource = element.getAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE);
         matchingAssociationName = element.getAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME);
+        if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) { // use default value in case null
+            isChangingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
+        }
     }
 
     @Override
@@ -369,6 +374,17 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE, matchingAssociationSource);
         newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME, matchingAssociationName);
+        newElement.setAttribute(PROPERTY_CHANGING_OVER_TIME, Boolean.toString(isChangingOverTime));
+    }
+
+    @Override
+    public boolean isChangingOverTime() {
+        return isChangingOverTime;
+    }
+
+    @Override
+    public void setChangingOverTime(boolean changingOverTime) {
+        isChangingOverTime = changingOverTime;
     }
 
 }
