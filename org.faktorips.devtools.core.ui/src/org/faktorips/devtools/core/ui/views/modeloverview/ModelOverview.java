@@ -108,6 +108,12 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     private boolean showRolenames;
     private boolean showProjectnames;
 
+    private Action showCardinalitiesAction;
+
+    private Action showRoleNameAction;
+
+    private Action showProjectsAction;
+
     @Override
     public void createPartControl(Composite parent) {
         panel = uiToolkit.createGridComposite(parent, 1, false, true, new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -398,15 +404,15 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         IMenuManager menuManager = getViewSite().getActionBars().getMenuManager();
         menuManager.add(new Separator(MENU_GROUP_INFO));
 
-        Action showCardinalitiesAction = createShowCardinalitiesAction();
+        showCardinalitiesAction = createShowCardinalitiesAction();
         labelProvider.setShowCardinalities(showCardinalities);
         showCardinalitiesAction.setChecked(showCardinalities);
 
-        Action showRoleNameAction = createShowRoleNameAction();
+        showRoleNameAction = createShowRoleNameAction();
         labelProvider.setShowRolenames(showRolenames);
         showRoleNameAction.setChecked(showRolenames);
 
-        Action showProjectsAction = createShowProjectsAction();
+        showProjectsAction = createShowProjectsAction();
         labelProvider.setShowProjects(showProjectnames);
         showProjectsAction.setChecked(showProjectnames);
 
@@ -536,7 +542,13 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         expandAllAction.setEnabled(state);
         collapseAllAction.setEnabled(state);
         toggleProductPolicyAction.setEnabled(state);
+
+        showCardinalitiesAction.setEnabled(state);
+        showProjectsAction.setEnabled(state);
+        showRoleNameAction.setEnabled(state);
+
         setModelOverviewContentProviderAction.setEnabled(state);
+        setModelOverviewInheritAssociationsContentProviderAction.setEnabled(state);
     }
 
     private void setContentProvider(AbstractModelOverviewContentProvider provider) {
