@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<toc label="My own help">
-   <topic label="Ich bin ein Topic">
-      <topic href="html/testhelp.html" label="Meine Test-Hilfe">
-      </topic>
-   </topic>
-</toc>

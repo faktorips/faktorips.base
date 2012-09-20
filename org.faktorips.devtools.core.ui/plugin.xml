@@ -2346,13 +2346,6 @@
           class="org.faktorips.devtools.core.ui.LinkDropHandler">
     </ipsDropAdapterProvider>
  </extension>
- <extension
-       point="org.eclipse.help.toc">
-             <toc
-            file="toc.xml"
-            primary="true">
-      </toc>
- </extension>
 	
 
 	

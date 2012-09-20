@@ -190,7 +190,12 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
             if (((ComponentNode)parentElement).isRepetition()) {
                 return new Object[0];
             }
-            return getComponentNodeChildren((ComponentNode)parentElement).toArray();
+            List<AbstractStructureNode> structureChildren = getComponentNodeChildren((ComponentNode)parentElement);
+            List<ComponentNode> componentChildren = new ArrayList<ComponentNode>();
+            for (AbstractStructureNode node : structureChildren) {
+                componentChildren.addAll(node.getChildren());
+            }
+            return componentChildren.toArray();
         } else if (parentElement instanceof IModelOverviewNode) {
             return ((AbstractStructureNode)parentElement).getChildren().toArray();
         }
