@@ -16,18 +16,18 @@ package org.faktorips.devtools.core.model.productcmpt;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.type.IAssociation;
 
-public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyValueContainer {
+public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyValueContainer,
+        IProductCmptLinkContainer {
 
     /**
      * Prefix for all message codes of this class.
@@ -172,77 +172,19 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
 
     /**
      * Returns the product component's relations to other product components.
+     * 
+     * Use {@link #getLinkList()} instead
      */
     public IProductCmptLink[] getLinks();
 
     /**
      * Returns the links that are instances of the given product component type association or an
-     * empty array if no such link is found.
+     * empty array if no such link is found. Use {@link #getLinkList(String)} instead
      * 
      * @param association The name (=target role singular) of an association.
      * @throws IllegalArgumentException if type relation is null.
      */
     public IProductCmptLink[] getLinks(String association);
-
-    /**
-     * Returns the number of relations.
-     */
-    public int getNumOfLinks();
-
-    /**
-     * Creates a new link that is an instance of the product component type association identified
-     * by the given association name.
-     * 
-     * @throws NullPointerException if associationName is <code>null</code>.
-     */
-    public IProductCmptLink newLink(String associationName);
-
-    /**
-     * Creates a new link that is an instance of the product component type association.
-     * 
-     * @throws NullPointerException if association is <code>null</code>.
-     */
-    public IProductCmptLink newLink(IProductCmptTypeAssociation association);
-
-    /**
-     * Creates a new link that is an instance of the given association. The new link is placed
-     * before the given one.
-     */
-    public IProductCmptLink newLink(String association, IProductCmptLink insertBefore);
-
-    /**
-     * Checks whether a new link as instance of the given product component type association and the
-     * given target will be valid.
-     * 
-     * @param ipsProject The project which ips object path is used for the search. This is not
-     *            necessarily the project this component is part of.
-     * 
-     * @return <code>true</code> if a new relation with the given values will be valid,
-     *         <code>false</code> otherwise.
-     * 
-     * @throws CoreException if a problem occur during the search of the type hierarchy.
-     */
-    public boolean canCreateValidLink(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
-            throws CoreException;
-
-    /**
-     * Moves the link given with parameter <code>toMove</code> before or after the specified target
-     * link. If the target belongs to another association, the association of the toMove link will
-     * change, too.
-     * <p>
-     * With the boolean parameter before you could specify to move the link before or after the
-     * target link.
-     * 
-     * @param toMove the link you want to move
-     * @param target target link you want to move the <code>toMove</code>-Link
-     * @param before true for moving <code>toMove</code> in front of target, false to move it behind
-     *            target
-     * 
-     * @return The method returns true if the link could be moved and returns false if toMove or
-     *         target is null one of the links was not part of this generation yet.
-     * 
-     */
-    public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean before);
 
     /**
      * Returns a new table content usage.

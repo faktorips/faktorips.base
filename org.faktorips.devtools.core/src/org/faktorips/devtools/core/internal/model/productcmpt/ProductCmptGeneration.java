@@ -693,4 +693,22 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return getProductCmpt().getProductCmptType();
     }
 
+    @Override
+    public boolean isContainerFor(IProductCmptTypeAssociation association) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public List<IProductCmptLink> getLinkList() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<IProductCmptLink> getLinkList(String associationName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

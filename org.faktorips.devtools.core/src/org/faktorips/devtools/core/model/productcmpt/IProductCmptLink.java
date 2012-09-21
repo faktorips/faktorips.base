@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -109,6 +110,14 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement {
      * Returns the product component generation this configuration element belongs to.
      */
     public IProductCmptGeneration getProductCmptGeneration();
+
+    /**
+     * Returns the {@link IProductCmptLinkContainer link container} this link is a part of.
+     * 
+     * @since 3.8
+     * @see IProductCmptLinkContainer
+     */
+    public IProductCmptLinkContainer getProductCmptLinkContainer();
 
     /**
      * Returns the name of the product component type association this link is an instance of.

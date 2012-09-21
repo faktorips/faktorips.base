@@ -427,4 +427,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     }
 
+    @Override
+    public IProductCmptLinkContainer getProductCmptLinkContainer() {
+        return (IProductCmptLinkContainer)getParent();
+    }
+
 }
