@@ -36,7 +36,5 @@ public class Messages extends NLS {
     public static String IpsModelOverview_emptyMessage;
     public static String IpsModelOverview_menuShowProjects_name;
     public static String IpsModelOverview_menuShowProjects_tooltip;
-    public static String IpsModelOverview_ContentProvider_label;
-    public static String IpsModelOverview_InheritAssociationsContentProvider_label;
     public static String IpsModelOverview_NothingToShow_message;
 }

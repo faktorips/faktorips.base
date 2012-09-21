@@ -13,6 +13,7 @@
    <extension-point id="ipsDropListenerProvider" name="ipsDropListenerProvider" schema="schema/ipsDropListenerProvider.exsd"/>
    <extension-point id="productCmptPropertyFilter" name="Product Component Property Filter" schema="schema/productCmptPropertyFilter.exsd"/>
    <extension-point id="deepCopyWizard" name="Deep Copy Wizard" schema="schema/deepCopyWizard.exsd"/>
+   <extension-point id="modelOverviewContentProvider" name="modelOverviewContentProvider" schema="schema/modelOverviewContentProvider.exsd"/>
    
 <!-- 
     Product Definition Perspective
@@ -2353,6 +2354,17 @@
     <ipsDropAdapterProvider
           class="org.faktorips.devtools.core.ui.LinkDropHandler">
     </ipsDropAdapterProvider>
+ </extension>
+ <extension
+       point="org.faktorips.devtools.core.ui.modelOverviewContentProvider">
+    <contentprovider
+          class="org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider"
+          label="%org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider_label">
+    </contentprovider>
+    <contentprovider
+          class="org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewInheritAssociationsContentProvider"
+          label="%org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewInheritAssociationsContentProvider_label">
+    </contentprovider>
  </extension>
 	
 

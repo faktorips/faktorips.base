@@ -19,6 +19,11 @@ import java.util.Observable;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
@@ -87,6 +92,8 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     private static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType.gif"; //$NON-NLS-1$
     private static final String CARDINALITY_IMAGE = "Cardinality.gif"; //$NON-NLS-1$
 
+    private static final String MODEL_OVERVIEW_CONTENT_PROVIDER_EXTENSION_POINT_ID = "org.faktorips.devtools.core.ui.modelOverviewContentProvider"; //$NON-NLS-1$
+
     private IPolicyCmptType toggledPolicyCmptInput;
     private IProductCmptType toggledProductCmptInput;
 
@@ -100,8 +107,6 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     private AbstractModelOverviewContentProvider provider;
 
     private Action toggleProductPolicyAction;
-    private Action setModelOverviewContentProviderAction;
-    private Action setModelOverviewInheritAssociationsContentProviderAction;
     private ExpandAllAction expandAllAction;
     private CollapseAllAction collapseAllAction;
     private boolean showCardinalities;
@@ -113,6 +118,8 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     private Action showRoleNameAction;
 
     private Action showProjectsAction;
+
+    private List<IAction> contentProviderActions;
 
     @Override
     public void createPartControl(Composite parent) {
@@ -420,19 +427,44 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         menuManager.appendToGroup(MENU_GROUP_INFO, showRoleNameAction);
         menuManager.appendToGroup(MENU_GROUP_INFO, showProjectsAction);
 
+        // TODO use the extension point
         menuManager.add(new Separator(MENU_GROUP_CONTENT_PROVIDER));
 
-        setModelOverviewContentProviderAction = createSetContentProviderAction(
-                Messages.IpsModelOverview_ContentProvider_label, new ModelOverviewContentProvider());
-        setModelOverviewContentProviderAction.setChecked(true);
-        menuManager.appendToGroup(MENU_GROUP_CONTENT_PROVIDER, setModelOverviewContentProviderAction);
+        for (IAction contentProviderAction : getContentProviderActions()) {
+            menuManager.appendToGroup(MENU_GROUP_CONTENT_PROVIDER, contentProviderAction);
+        }
+        if (!contentProviderActions.isEmpty()) {
+            contentProviderActions.get(0).setChecked(true);
+        }
+    }
 
-        setModelOverviewInheritAssociationsContentProviderAction = createSetContentProviderAction(
-                Messages.IpsModelOverview_InheritAssociationsContentProvider_label,
-                new ModelOverviewInheritAssociationsContentProvider());
-        menuManager
-                .appendToGroup(MENU_GROUP_CONTENT_PROVIDER, setModelOverviewInheritAssociationsContentProviderAction);
+    private List<IAction> getContentProviderActions() {
+        if (contentProviderActions == null || contentProviderActions.isEmpty()) {
+            contentProviderActions = new ArrayList<IAction>();
 
+            IExtensionRegistry registry = Platform.getExtensionRegistry();
+            IExtensionPoint extensionPoint = registry
+                    .getExtensionPoint(MODEL_OVERVIEW_CONTENT_PROVIDER_EXTENSION_POINT_ID);
+            IExtension[] extensions = extensionPoint.getExtensions();
+
+            for (int i = 0; i < extensions.length; i++) {
+                IConfigurationElement[] elements = extensions[i].getConfigurationElements();
+                for (int j = 0; j < elements.length; j++) {
+                    try {
+                        Object contentProvider = elements[j].createExecutableExtension("class"); //$NON-NLS-1$
+                        if (contentProvider instanceof AbstractModelOverviewContentProvider) {
+                            String label = elements[j].getAttribute("label"); //$NON-NLS-1$
+
+                            contentProviderActions.add(createSetContentProviderAction(label,
+                                    (AbstractModelOverviewContentProvider)contentProvider));
+                        }
+                    } catch (CoreException e) {
+                        throw new CoreRuntimeException(e);
+                    }
+                }
+            }
+        }
+        return contentProviderActions;
     }
 
     private Action createShowCardinalitiesAction() {
@@ -547,8 +579,9 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         showProjectsAction.setEnabled(state);
         showRoleNameAction.setEnabled(state);
 
-        setModelOverviewContentProviderAction.setEnabled(state);
-        setModelOverviewInheritAssociationsContentProviderAction.setEnabled(state);
+        for (IAction action : contentProviderActions) {
+            action.setEnabled(state);
+        }
     }
 
     private void setContentProvider(AbstractModelOverviewContentProvider provider) {
