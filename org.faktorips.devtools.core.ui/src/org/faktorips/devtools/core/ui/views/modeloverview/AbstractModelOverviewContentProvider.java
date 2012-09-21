@@ -31,6 +31,10 @@ import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider
 public abstract class AbstractModelOverviewContentProvider extends DeferredStructuredContentProvider implements
         ITreeContentProvider {
 
+    /**
+     * Provides information about the currently shown {@link IType}s. It will be set by the
+     * {@link ModelOverview}, but the content provider is responsible to act on this state.
+     */
     protected ShowTypeState showState = ShowTypeState.SHOW_POLICIES;
 
     /**
@@ -39,6 +43,10 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
      * {@link IType}.
      * 
      * @param components all components of the concerned {@link IIpsProject}s
+     * @param sourceProject the selected {@link IIpsProject}
+     * @param monitor an {@link IProgressMonitor} which consumes three units of work
+     * @param types the {@link AssociationType}s which should be considered for the root element
+     *            computation
      * @return a {@link List} of {@link IType} with the root elements, or an empty list if there are
      *         no elements.
      */
@@ -61,7 +69,6 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         }
         monitor.worked(1);
 
-        // the lists are the same we have found an unambiguous set of root-elements
         if (rootComponents.size() != rootCandidates.size()) {
             removeDescendants(rootCandidates, rootComponents, components, types);
             // Remove an arbitrary element from the candidates list and add it to the root elements
@@ -93,6 +100,20 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         rootCandidates.removeAll(elementsToRemove);
     }
 
+    /**
+     * Checks if the tree of descendants of an {@IType} element contains an element of a
+     * specific {@link IIpsProject}
+     * 
+     * @param element the {@link IType} root element of the tree
+     * @param sourceProject the {@link IIpsProject} for which the existence of an element is
+     *            evaluated
+     * @param callHierarchy a {@link List} of {@link IType} which contains the elements which
+     *            already have been checked
+     * @param types the {@link AssociationType}s which should be considered for the computation of
+     *            element associations
+     * @return {@code true} if the indicated tree contains an element of the provided project,
+     *         otherwise {@code false}
+     */
     private static boolean isContainingSourceProjectElement(IType element,
             IIpsProject sourceProject,
             List<IType> callHierarchy,
@@ -127,6 +148,9 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         return false;
     }
 
+    /**
+     * Convenience function for {@link #getExistingSupertypeFromList(IType, List)} {@code != null}
+     */
     protected static boolean hasExistingSupertype(IType type, List<IType> components) {
         return getExistingSupertypeFromList(type, components) != null;
     }
@@ -161,7 +185,6 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
      * @param types an array of {@link AssociationType} which should be recognized. Make sure it is
      *            not empty, otherwise nothing will be removed!
      */
-    // FIXME does not remove all descendants -> testcase
     static void removeDescendants(List<IType> rootCandidates,
             List<IType> rootComponents,
             List<IType> components,
@@ -183,8 +206,7 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
                 }
             }
             potentialDescendants.removeAll(newDescendants);
-            rootCandidates.removeAll(descendants); // newDescendants will be removed in the next
-                                                   // iteration, except they are empty
+            rootCandidates.removeAll(descendants);
             descendants = newDescendants;
         }
     }
@@ -271,6 +293,17 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         return components;
     }
 
+    /**
+     * Toggles the show type state.<br>
+     * <p>
+     * <b>Example:</b> <br>
+     * <ol>
+     * <li>{@link #getShowTypeState()} returns {@link ShowTypeState ShowTypeState.SHOW_POLICIES}</li>
+     * <li>{@link #toggleShowTypeState()}</li>
+     * <li>{@link #getShowTypeState()} return {@link ShowTypeState ShowTypeState.SHOW_PRODUCTS}</li>
+     * <br>
+     * and the other way round
+     */
     public void toggleShowTypeState() {
         if (this.showState == ShowTypeState.SHOW_POLICIES) {
             this.showState = ShowTypeState.SHOW_PRODUCTS;
@@ -283,6 +316,9 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         return showState;
     }
 
+    /**
+     * Sets the show type state of the content provider.
+     */
     public void setShowTypeState(ShowTypeState showState) {
         this.showState = showState;
     }

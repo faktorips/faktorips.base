@@ -34,6 +34,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DecorationContext;
 import org.eclipse.jface.viewers.ITreeViewerListener;
@@ -101,7 +102,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     private TreeViewer treeViewer;
     private final UIToolkit uiToolkit = new UIToolkit(null);
     private Label label;
-    private Label infoessageLabel;
+    private Label infoMessageLabel;
 
     private ModelOverviewLabelProvider labelProvider;
     private AbstractModelOverviewContentProvider provider;
@@ -129,10 +130,13 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
                 true, false));
 
         treeViewer = new TreeViewer(panel);
+        initContentProviders();
+
+        // initializes with a default content provider
         provider = new ModelOverviewContentProvider();
         treeViewer.setContentProvider(provider);
 
-        ModelOverviewColumnViewerToolTipSupport.enableFor(treeViewer);
+        ColumnViewerToolTipSupport.enableFor(treeViewer);
         labelProvider = new ModelOverviewLabelProvider();
         DecoratingStyledCellLabelProvider decoratingLabelProvider = new ModelOverviewDecoratingStyledCellLabelProvider(
                 labelProvider, IpsPlugin.getDefault().getWorkbench().getDecoratorManager().getLabelDecorator(),
@@ -143,7 +147,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         getSite().setSelectionProvider(treeViewer); // necessary for the context menu
 
         // initialize the empty message
-        infoessageLabel = uiToolkit.createLabel(panel, "", SWT.WRAP, new GridData(SWT.FILL, SWT.FILL, //$NON-NLS-1$
+        infoMessageLabel = uiToolkit.createLabel(panel, "", SWT.WRAP, new GridData(SWT.FILL, SWT.FILL, //$NON-NLS-1$
                 true, true));
 
         activateContext();
@@ -163,11 +167,11 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     }
 
     private void showInfoMessage(String message) {
-        infoessageLabel.setText(message);
+        infoMessageLabel.setText(message);
         enableButtons(false);
-        if (!infoessageLabel.isDisposed()) {
-            infoessageLabel.setVisible(true);
-            ((GridData)infoessageLabel.getLayoutData()).exclude = false;
+        if (!infoMessageLabel.isDisposed()) {
+            infoMessageLabel.setVisible(true);
+            ((GridData)infoMessageLabel.getLayoutData()).exclude = false;
         }
         if (!label.isDisposed()) {
             label.setVisible(false);
@@ -182,9 +186,9 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
     private void showTree() {
         enableButtons(true);
-        if (!infoessageLabel.isDisposed()) {
-            infoessageLabel.setVisible(false);
-            ((GridData)infoessageLabel.getLayoutData()).exclude = true;
+        if (!infoMessageLabel.isDisposed()) {
+            infoMessageLabel.setVisible(false);
+            ((GridData)infoMessageLabel.getLayoutData()).exclude = true;
         }
         if (!label.isDisposed()) {
             label.setVisible(true);
@@ -427,7 +431,6 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         menuManager.appendToGroup(MENU_GROUP_INFO, showRoleNameAction);
         menuManager.appendToGroup(MENU_GROUP_INFO, showProjectsAction);
 
-        // TODO use the extension point
         menuManager.add(new Separator(MENU_GROUP_CONTENT_PROVIDER));
 
         for (IAction contentProviderAction : getContentProviderActions()) {
@@ -439,6 +442,14 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     }
 
     private List<IAction> getContentProviderActions() {
+        initContentProviders();
+        return contentProviderActions;
+    }
+
+    /**
+     * Initializes the set of content providers, if it has not been initialized yet
+     */
+    private void initContentProviders() {
         if (contentProviderActions == null || contentProviderActions.isEmpty()) {
             contentProviderActions = new ArrayList<IAction>();
 
@@ -464,7 +475,6 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
                 }
             }
         }
-        return contentProviderActions;
     }
 
     private Action createShowCardinalitiesAction() {
@@ -584,17 +594,17 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         }
     }
 
-    private void setContentProvider(AbstractModelOverviewContentProvider provider) {
+    private void setContentProvider(AbstractModelOverviewContentProvider newProvider) {
         Object input = treeViewer.getInput();
         ShowTypeState currentShowTypeState = provider.getShowTypeState();
 
-        provider.removeCollectorFinishedListener(this);
+        newProvider.removeCollectorFinishedListener(this);
 
-        this.provider = provider;
+        this.provider = newProvider;
 
-        treeViewer.setContentProvider(provider);
-        provider.setShowTypeState(currentShowTypeState);
-        provider.addCollectorFinishedListener(this);
+        treeViewer.setContentProvider(newProvider);
+        newProvider.setShowTypeState(currentShowTypeState);
+        newProvider.addCollectorFinishedListener(this);
         treeViewer.setInput(input);
         refresh();
     }
@@ -627,15 +637,19 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     }
 
     private void setPolicyCmptTypeImage() {
-        // FIXME Do not misuse the HoverImageDescriptor for functionality that should be
-        // provided by the normal image descriptor
+        /*
+         * FIXME Do not misuse the HoverImageDescriptor for functionality that should be provided by
+         * the normal image descriptor
+         */
         toggleProductPolicyAction.setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 POLICY_CMPT_TYPE_IMAGE));
     }
 
     private void setProductCmptTypeImage() {
-        // FIXME Do not misuse the HoverImageDescriptor for functionality that should be
-        // provided by the normal image descriptor
+        /*
+         * FIXME Do not misuse the HoverImageDescriptor for functionality that should be provided by
+         * the normal image descriptor
+         */
         toggleProductPolicyAction.setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 PRODUCT_CMPT_TYPE_IMAGE));
     }
