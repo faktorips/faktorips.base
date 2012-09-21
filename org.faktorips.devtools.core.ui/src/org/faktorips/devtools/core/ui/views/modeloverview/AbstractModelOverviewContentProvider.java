@@ -344,34 +344,47 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
     }
 
     /**
-     * Returns a {@link List} which may contain at most one {@link CompositeNode} and one
-     * {@link SubtypeNode}. The {@link SubtypeNode} will be before the {@link CompositeNode} in the
-     * returned {@link List}. This method has to compute the grandchildren of the node, therefore
-     * these will be stored in the direct children.
+     * Returns a {@link List} consisting of {@link SubtypeComponentNode}s and
+     * {@link AssociationComponentNode}s. The {@link SubtypeComponentNode}s will be before the
+     * {@link AssociationComponentNode}s in the returned {@link List}.
      * 
-     * @return a {@link List} with a {@link SubtypeNode} and a {@link CompositeNode}, in this
-     *         indicated order when both children exist, otherwise a list with only one element, or
-     *         an empty list if no child exists.
+     * @return a list with the computed children, or an empty list if there are no children
      */
-    abstract List<AbstractStructureNode> getComponentNodeChildren(ComponentNode parent);
+    List<ComponentNode> getComponentNodeChildren(ComponentNode parent) {
+        List<ComponentNode> children = new ArrayList<ComponentNode>();
+
+        List<SubtypeComponentNode> subtypeChildren = getComponentNodeSubtypeChildren(parent);
+        if (subtypeChildren != null) {
+            children.addAll(subtypeChildren);
+        }
+
+        List<AssociationComponentNode> associationChildren = getComponentNodeAssociationChildren(parent);
+        if (associationChildren != null) {
+            children.addAll(associationChildren);
+        }
+
+        return children;
+    }
 
     /**
-     * Computes the child {@link SubtypeNode} of this node, if there are any {@link IType}s in the
-     * project scope which are subclassing the enclosed {@link IType} of this node.
+     * Computes the {@link SubtypeComponentNode} children of this node, if there are any
+     * {@link IType}s in the project scope which are subclassing the enclosed {@link IType} of this
+     * node.
      * 
-     * @param parent the node for which the {@link SubtypeNode} should be computed
-     * @return a {@link SubtypeNode}, or {@code null} if there are no subtypes.
+     * @param parent the node for which the children should be computed
+     * @return a {@link SubtypeComponentNode}, or {@code null} if there are no subtypes.
      */
-    abstract SubtypeNode getComponentNodeSubtypeChild(ComponentNode parent);
+    abstract List<SubtypeComponentNode> getComponentNodeSubtypeChildren(ComponentNode parent);
 
     /**
-     * Computes the child {@link CompositeNode} of this node, if there are any {@link IType}s in the
-     * project scope which are associated by the enclosed {@link IType} of this node.
+     * Computes the {@link AssociationComponentNode} children of this node, if there are any
+     * {@link IType}s in the project scope which are associated by the enclosed {@link IType} of
+     * this node.
      * 
-     * @param parent the node for which the {@link CompositeNode} should be computed
-     * @return a {@link CompositeNode}, or {@code null} if there are no associated types.
+     * @param parent the node for which the children should be computed
+     * @return a {@link AssociationComponentNode}, or {@code null} if there are no associated types.
      */
-    abstract CompositeNode getComponentNodeCompositeChild(ComponentNode parent);
+    abstract List<AssociationComponentNode> getComponentNodeAssociationChildren(ComponentNode parent);
 
     /**
      * Checks if this type is directly or indirectly associated by another {@link IType} of the same

@@ -39,7 +39,7 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
         association.setTarget(deckung.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
 
-        AssociationComponentNode.newAssociationComponentNode(association, project);
+        AssociationComponentNode.newAssociationComponentNode(association, null, project);
     }
 
     @Test(expected = NullPointerException.class)
@@ -52,7 +52,7 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
         association.setTarget(deckung.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
 
-        AssociationComponentNode.newAssociationComponentNode(association, null);
+        AssociationComponentNode.newAssociationComponentNode(association, null, null);
     }
 
     @Test(expected = NullPointerException.class)
@@ -65,7 +65,7 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
         association.setTarget(deckung.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
 
-        AssociationComponentNode.newAssociationComponentNode(null, project);
+        AssociationComponentNode.newAssociationComponentNode(null, null, project);
     }
 
     @Test
@@ -78,7 +78,8 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
         association.setTarget(deckung.getQualifiedName());
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
 
-        AssociationComponentNode node = AssociationComponentNode.newAssociationComponentNode(association, project);
+        AssociationComponentNode node = AssociationComponentNode
+                .newAssociationComponentNode(association, null, project);
 
         assertEquals(deckung, node.getValue());
     }
@@ -87,7 +88,7 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
     public void testEncapsulateAssociationComponentTypes_EmptyListInput() throws CoreException {
         IIpsProject project = newIpsProject();
         List<AssociationComponentNode> encapsulateAssociationComponentTypes = AssociationComponentNode
-                .encapsulateAssociationComponentTypes(new ArrayList<IAssociation>(), project);
+                .encapsulateAssociationComponentTypes(new ArrayList<IAssociation>(), null, project);
 
         assertTrue(encapsulateAssociationComponentTypes.isEmpty());
     }
@@ -96,7 +97,7 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
     public void testEncapsulateAssociationComponentTypes_NullListInput() throws CoreException {
         IIpsProject project = newIpsProject();
 
-        AssociationComponentNode.encapsulateAssociationComponentTypes(null, project);
+        AssociationComponentNode.encapsulateAssociationComponentTypes(null, null, project);
     }
 
     @Test(expected = NullPointerException.class)
@@ -111,13 +112,13 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
 
         ArrayList<IAssociation> associations = new ArrayList<IAssociation>();
         associations.add(association);
-        AssociationComponentNode.encapsulateAssociationComponentTypes(associations, null);
+        AssociationComponentNode.encapsulateAssociationComponentTypes(associations, null, null);
     }
 
     @Test
     public void testEncapsulateAssociationComponentTypes_NullProjectAndEmptyListInput() {
         List<AssociationComponentNode> encapsulateAssociationComponentTypes = AssociationComponentNode
-                .encapsulateAssociationComponentTypes(new ArrayList<IAssociation>(), null);
+                .encapsulateAssociationComponentTypes(new ArrayList<IAssociation>(), null, null);
         assertTrue(encapsulateAssociationComponentTypes.isEmpty());
     }
 }

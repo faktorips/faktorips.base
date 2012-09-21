@@ -57,23 +57,17 @@ public class ModelOverviewTest extends AbstractIpsPluginTest {
         TreePath treePath = view.computePath(rawPath, provider);
 
         // tests
-        assertEquals(5, treePath.getSegmentCount());
+        assertEquals(3, treePath.getSegmentCount());
 
         Object vertragNode = treePath.getSegment(0);
         assertTrue(vertragNode instanceof ComponentNode);
         assertEquals(vertrag, ((ComponentNode)vertragNode).getValue());
 
-        Object vertragAssociations = treePath.getSegment(1);
-        assertTrue(vertragAssociations instanceof CompositeNode);
-
-        Object deckungNode = treePath.getSegment(2);
+        Object deckungNode = treePath.getSegment(1);
         assertTrue(deckungNode instanceof ComponentNode);
         assertEquals(deckung, ((ComponentNode)deckungNode).getValue());
 
-        Object deckungSubtype = treePath.getSegment(3);
-        assertTrue(deckungSubtype instanceof SubtypeNode);
-
-        Object hausratGrunddeckungNode = treePath.getSegment(4);
+        Object hausratGrunddeckungNode = treePath.getSegment(2);
         assertTrue(hausratGrunddeckungNode instanceof ComponentNode);
         assertEquals(hausratGrunddeckung, ((ComponentNode)hausratGrunddeckungNode).getValue());
     }

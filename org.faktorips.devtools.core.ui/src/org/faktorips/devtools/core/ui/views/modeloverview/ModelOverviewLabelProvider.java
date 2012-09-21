@@ -31,8 +31,6 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
     private static final String POLICY_SUBTYPE_IMAGE = "policy_subtype.gif"; //$NON-NLS-1$
     private static final String POLICY_ASSOCIATION_IMAGE = "policy_AssociationType-Aggregation.gif"; //$NON-NLS-1$
     private static final String PRODUCT_ASSOCIATION_IMAGE = "product_AssociationType-Aggregation.gif"; //$NON-NLS-1$
-    private static final String STRUCTURE_NODE_SUPTYPE_IMAGE = "over_co.gif"; //$NON-NLS-1$
-    private static final String STRUCTURE_NODE_ASSOCIATION_IMAGE = "AssociationType-Aggregation.gif"; //$NON-NLS-1$
     private static final String OVERLAY_INHERITED_ASSOCIATION_IMAGE = "OverrideIndicator_orange.gif"; //$NON-NLS-1$
     private static final String OVERLAY_LOOP_IMAGE = "ovr16/loop_ovr.gif"; //$NON-NLS-1$
     private static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType.gif"; //$NON-NLS-1$
@@ -77,22 +75,20 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
                 overlayImages[IDecoration.BOTTOM_RIGHT] = OVERLAY_INHERITED_ASSOCIATION_IMAGE;
                 overlayed = true;
             }
-            if (node.getParent() != null) {
-                if (node.getParent() instanceof CompositeNode) {
-                    if (node.getValue() instanceof PolicyCmptType) {
-                        imageName = POLICY_ASSOCIATION_IMAGE;
-                    } else {
-                        imageName = PRODUCT_ASSOCIATION_IMAGE;
-                    }
+            if (node instanceof AssociationComponentNode) {
+                if (node.getValue() instanceof PolicyCmptType) {
+                    imageName = POLICY_ASSOCIATION_IMAGE;
                 } else {
-                    if (node.getValue() instanceof PolicyCmptType) {
-                        imageName = POLICY_SUBTYPE_IMAGE;
-                    } else {
-                        imageName = PRODUCT_SUBTYPE_IMAGE;
-                    }
+                    imageName = PRODUCT_ASSOCIATION_IMAGE;
                 }
-                overlayed = true;
+            } else if (node instanceof SubtypeComponentNode) {
+                if (node.getValue() instanceof PolicyCmptType) {
+                    imageName = POLICY_SUBTYPE_IMAGE;
+                } else {
+                    imageName = PRODUCT_SUBTYPE_IMAGE;
+                }
             }
+            overlayed = true;
 
             if (overlayed) {
                 return (Image)resourceManager.get(IpsUIPlugin.getImageHandling().getSharedOverlayImage(imageName,
@@ -104,10 +100,6 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
                     return result;
                 }
             }
-        } else if (element instanceof CompositeNode) {
-            return IpsUIPlugin.getImageHandling().getSharedImage(STRUCTURE_NODE_ASSOCIATION_IMAGE, true);
-        } else if (element instanceof SubtypeNode) {
-            return IpsUIPlugin.getImageHandling().getSharedImage(STRUCTURE_NODE_SUPTYPE_IMAGE, true);
         }
         return null;
     }

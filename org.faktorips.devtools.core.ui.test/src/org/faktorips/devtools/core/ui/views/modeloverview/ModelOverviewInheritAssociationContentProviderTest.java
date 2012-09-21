@@ -321,6 +321,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
 
     @Test
     public void testGetChildren_FindsDerivedAssociations() throws CoreException {
+
         // setup
         IIpsProject baseProject = newIpsProject();
         PolicyCmptType stdSubCoverageType = newPolicyCmptTypeWithoutProductCmptType(baseProject, "StdSubCoverageType");
@@ -360,11 +361,7 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         // this should be the derived root element from the customProject
         assertEquals(subCoverageType, ((ComponentNode)elements[0]).getValue());
 
-        Object[] structureChildren = provider.getChildren(elements[0]);
-        assertEquals(1, structureChildren.length);
-        assertTrue(structureChildren[0] instanceof CompositeNode);
-
-        Object[] associationChildren = provider.getChildren(structureChildren[0]);
+        Object[] associationChildren = provider.getChildren(elements[0]);
         assertEquals(2, associationChildren.length);
         assertTrue(associationChildren[0] instanceof AssociationComponentNode);
         assertTrue(((AssociationComponentNode)associationChildren[0]).isInherited());

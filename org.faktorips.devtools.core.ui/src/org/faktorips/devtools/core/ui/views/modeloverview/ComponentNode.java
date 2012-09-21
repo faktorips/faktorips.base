@@ -27,7 +27,7 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
 
     private IType value;
     private IIpsProject sourceProject;
-    private AbstractStructureNode parent;
+    private ComponentNode parent;
     private boolean hasInheritedAssociation;
 
     /**
@@ -57,7 +57,7 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
         if (getParent() == null) {
             return false;
         }
-        return getParent().getParent().isRepetitionInternal(this.getValue());
+        return getParent().isRepetitionInternal(this.getValue());
     }
 
     private boolean isRepetitionInternal(IType value) {
@@ -66,11 +66,11 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
         } else if (getParent() == null) {
             return false;
         }
-        return getParent().getParent().isRepetitionInternal(value);
+        return getParent().isRepetitionInternal(value);
     }
 
     @Override
-    public AbstractStructureNode getParent() {
+    public ComponentNode getParent() {
         return parent;
     }
 
@@ -78,7 +78,7 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
      * @see #getParent()
      * 
      */
-    public void setParent(AbstractStructureNode parent) {
+    public void setParent(ComponentNode parent) {
         this.parent = parent;
     }
 
@@ -88,6 +88,10 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
      */
     public IType getValue() {
         return value;
+    }
+
+    public void setValue(IType value) {
+        this.value = value;
     }
 
     /**
@@ -102,14 +106,18 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
      * {@link ComponentNode ComponentNodes}.
      * 
      * @param components the elements which should be encapsulated
+     * @param parent the parent {@link ComponentNode} for this set of {@link IType ITypes}
      * @param sourceProject the project which is used to compute project references
      * @return a {@link List} of {@link ComponentNode ComponenteNodes}
      */
-    protected static List<ComponentNode> encapsulateComponentTypes(Collection<IType> components,
+    static List<ComponentNode> encapsulateComponentTypes(Collection<IType> components,
+            ComponentNode parent,
             IIpsProject sourceProject) {
         List<ComponentNode> componentNodes = new ArrayList<ComponentNode>();
         for (IType component : components) {
-            componentNodes.add(new ComponentNode(component, sourceProject));
+            ComponentNode componentNode = new ComponentNode(component, sourceProject);
+            componentNode.setParent(parent);
+            componentNodes.add(componentNode);
         }
         return componentNodes;
     }

@@ -42,7 +42,8 @@ public class AssociationComponentNode extends ComponentNode {
      * 
      * @see ComponentNode
      */
-    private AssociationComponentNode(IType targetType, IIpsProject rootProject, IAssociation targetingAssociation) {
+    private AssociationComponentNode(IType targetType, ComponentNode parent, IIpsProject rootProject,
+            IAssociation targetingAssociation) {
         super(targetType, rootProject);
         this.targetingType = targetingAssociation.getType();
         this.minCardinality = targetingAssociation.getMinCardinality();
@@ -51,6 +52,7 @@ public class AssociationComponentNode extends ComponentNode {
         this.isInherited = false;
         this.isDerivedUnion = targetingAssociation.isDerivedUnion();
         this.isSubsetOfADerivedUnion = targetingAssociation.isSubsetOfADerivedUnion();
+        this.setParent(parent);
     }
 
     /**
@@ -62,9 +64,10 @@ public class AssociationComponentNode extends ComponentNode {
      * @param rootProject the {@link IIpsProject} which should be used to compute project references
      */
     public static AssociationComponentNode newAssociationComponentNode(IAssociation targetingAssociation,
+            ComponentNode parent,
             IIpsProject rootProject) {
         try {
-            return new AssociationComponentNode(targetingAssociation.findTarget(rootProject), rootProject,
+            return new AssociationComponentNode(targetingAssociation.findTarget(rootProject), parent, rootProject,
                     targetingAssociation);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
@@ -91,6 +94,9 @@ public class AssociationComponentNode extends ComponentNode {
         return this.targetRoleSingular;
     }
 
+    /**
+     * Indicates if the underlying association is inherited.
+     */
     public boolean isInherited() {
         return this.isInherited;
     }
@@ -100,12 +106,17 @@ public class AssociationComponentNode extends ComponentNode {
      * {@link AssociationComponentNode AssociationComponentNodes}.
      * 
      * @param associations the elements which should be encapsulated
+     * @param parent the parent {@link ComponentNode} for this set of associations
+     * @param rootProject the selected {@link IIpsProject}
      */
     protected static List<AssociationComponentNode> encapsulateAssociationComponentTypes(Collection<IAssociation> associations,
+            ComponentNode parent,
             IIpsProject rootProject) {
         List<AssociationComponentNode> componentNodes = new ArrayList<AssociationComponentNode>();
         for (IAssociation association : associations) {
-            componentNodes.add(AssociationComponentNode.newAssociationComponentNode(association, rootProject));
+            AssociationComponentNode newAssociationComponentNode = AssociationComponentNode
+                    .newAssociationComponentNode(association, parent, rootProject);
+            componentNodes.add(newAssociationComponentNode);
         }
         return componentNodes;
     }

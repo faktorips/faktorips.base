@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
-import static org.faktorips.devtools.core.ui.views.modeloverview.ComponentNode.encapsulateComponentTypes;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -76,7 +74,7 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
             monitor.worked(1);
         }
         monitor.done();
-        return ComponentNode.encapsulateComponentTypes(rootComponents, ipsProject).toArray();
+        return ComponentNode.encapsulateComponentTypes(rootComponents, null, ipsProject).toArray();
     }
 
     /**
@@ -190,44 +188,23 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
             if (((ComponentNode)parentElement).isRepetition()) {
                 return new Object[0];
             }
-            List<AbstractStructureNode> structureChildren = getComponentNodeChildren((ComponentNode)parentElement);
-            List<ComponentNode> componentChildren = new ArrayList<ComponentNode>();
-            for (AbstractStructureNode node : structureChildren) {
-                componentChildren.addAll(node.getChildren());
-            }
-            return componentChildren.toArray();
-        } else if (parentElement instanceof IModelOverviewNode) {
-            return ((AbstractStructureNode)parentElement).getChildren().toArray();
+            List<ComponentNode> componentNodeChildren = getComponentNodeChildren((ComponentNode)parentElement);
+            return componentNodeChildren.toArray();
         }
         return new Object[0];
     }
 
     @Override
-    List<AbstractStructureNode> getComponentNodeChildren(ComponentNode parent) {
-        List<AbstractStructureNode> children = new ArrayList<AbstractStructureNode>();
-
-        SubtypeNode subtypeNode = getComponentNodeSubtypeChild(parent);
-        CompositeNode compositeNode = getComponentNodeCompositeChild(parent);
-        if (subtypeNode != null) {
-            children.add(subtypeNode);
-        }
-        if (compositeNode != null) {
-            children.add(compositeNode);
-        }
-        return children;
-    }
-
-    @Override
-    SubtypeNode getComponentNodeSubtypeChild(ComponentNode parent) {
+    List<SubtypeComponentNode> getComponentNodeSubtypeChildren(ComponentNode parent) {
         IIpsProject project = parent.getSourceIpsProject();
         List<IType> subtypes = parent.getValue().findSubtypes(false, false, project);
-        List<ComponentNode> subtypeNodeChildren = new ArrayList<ComponentNode>();
+        List<SubtypeComponentNode> subtypeNodeChildren = new ArrayList<SubtypeComponentNode>();
 
         List<IType> projectITypes = getProjectITypes(project, parent.getValue().getIpsObjectType());
         List<IType> projectSpecificTypes = getProjectSpecificTypes(projectITypes, project);
 
         for (IType subtype : subtypes) {
-            ComponentNode componentNode = new ComponentNode(subtype, project);
+            SubtypeComponentNode componentNode = new SubtypeComponentNode(subtype, project);
             boolean associated = false;
             if (subtype.getIpsProject().equals(project)) {
                 associated = isAssociated(subtype, projectSpecificTypes, projectITypes, project, ASSOCIATION_TYPES);
@@ -235,22 +212,19 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
             componentNode.setHasInheritedAssociation(associated);
             subtypeNodeChildren.add(componentNode);
         }
-        encapsulateComponentTypes(subtypes, project);
 
-        if (!subtypes.isEmpty()) {
-            return new SubtypeNode(parent, subtypeNodeChildren);
-        }
-        return null;
+        return SubtypeComponentNode.encapsulateSubtypeComponentTypes(subtypes, parent, project);
     }
 
     @Override
-    CompositeNode getComponentNodeCompositeChild(ComponentNode parent) {
+    List<AssociationComponentNode> getComponentNodeAssociationChildren(ComponentNode parent) {
         List<IAssociation> associations = parent.getValue().getAssociations(
                 AssociationType.COMPOSITION_MASTER_TO_DETAIL, AssociationType.AGGREGATION);
         if (!associations.isEmpty()) {
-            List<? extends ComponentNode> compositeNodeChildren = AssociationComponentNode
-                    .encapsulateAssociationComponentTypes(associations, parent.getSourceIpsProject());
-            return new CompositeNode(parent, compositeNodeChildren);
+            List<AssociationComponentNode> compositeNodeChildren = new ArrayList<AssociationComponentNode>();
+            compositeNodeChildren.addAll(AssociationComponentNode.encapsulateAssociationComponentTypes(associations,
+                    parent, parent.getSourceIpsProject()));
+            return compositeNodeChildren;
         }
         return null;
     }
@@ -289,5 +263,4 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
     public List<List<PathElement>> getPaths() {
         return paths;
     }
-
 }

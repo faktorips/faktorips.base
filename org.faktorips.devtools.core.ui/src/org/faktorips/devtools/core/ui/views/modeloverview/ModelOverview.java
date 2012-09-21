@@ -343,8 +343,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
     /**
      * Returns a {@link TreePath} containing the corresponding {@link IModelOverviewNode
-     * IModelOverviewNodes} to the input types. {@link AbstractStructureNode AbstractStructureNodes}
-     * will be generated automatically.
+     * IModelOverviewNodes} to the input types.
      * 
      * @param treePath a list of {@link PathElement PathElements}, ordered from the root-element
      *            downwards
@@ -363,17 +362,10 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
             if (root.getAssociationType() == ToChildAssociationType.SELF) {
                 break;
             }
-            // add the structure node
-            AbstractStructureNode abstractRootChild = null;
-            if (root.getAssociationType() == ToChildAssociationType.ASSOCIATION) {
-                abstractRootChild = contentProvider.getComponentNodeCompositeChild(rootNode);
-            } else { // ToChildAssociationType.SUPERTYPE
-                abstractRootChild = contentProvider.getComponentNodeSubtypeChild(rootNode);
-            }
-            pathList.add(abstractRootChild);
 
             // add the child node
-            for (ComponentNode childNode : abstractRootChild.getChildren()) {
+            for (Object child : contentProvider.getChildren(rootNode)) {
+                ComponentNode childNode = (ComponentNode)child;
                 // note that
                 if (childNode.getValue().equals(treePath.get(i).getComponent())) {
                     pathList.add(childNode);
