@@ -241,7 +241,7 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
 
     @Override
     public Object getParent(Object element) {
-        IModelOverviewNode node = (IModelOverviewNode)element;
+        ComponentNode node = (ComponentNode)element;
         return node.getParent();
     }
 

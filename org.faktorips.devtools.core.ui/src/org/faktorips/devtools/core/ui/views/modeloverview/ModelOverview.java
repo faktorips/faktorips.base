@@ -133,7 +133,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         initContentProviders();
 
         // initializes with a default content provider
-        provider = new ModelOverviewContentProvider();
+        provider = new ModelOverviewInheritAssociationsContentProvider();
         treeViewer.setContentProvider(provider);
 
         ColumnViewerToolTipSupport.enableFor(treeViewer);
@@ -342,8 +342,8 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     }
 
     /**
-     * Returns a {@link TreePath} containing the corresponding {@link IModelOverviewNode
-     * IModelOverviewNodes} to the input types.
+     * Returns a {@link TreePath} containing the corresponding {@link ComponentNode ComponentNodes}
+     * to the input types.
      * 
      * @param treePath a list of {@link PathElement PathElements}, ordered from the root-element
      *            downwards
@@ -355,7 +355,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         // get the root node
         PathElement root = treePath.get(0);
         ComponentNode rootNode = new ComponentNode(root.getComponent(), rootProject);
-        List<IModelOverviewNode> pathList = new ArrayList<IModelOverviewNode>();
+        List<ComponentNode> pathList = new ArrayList<ComponentNode>();
         pathList.add(rootNode);
 
         for (int i = 1; i < treePath.size(); i++) {
