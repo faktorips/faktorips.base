@@ -2358,12 +2358,12 @@
  <extension
        point="org.faktorips.devtools.core.ui.modelOverviewContentProvider">
     <contentprovider
-          class="org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider"
-          label="%org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider_label">
-    </contentprovider>
-    <contentprovider
           class="org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewInheritAssociationsContentProvider"
           label="%org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewInheritAssociationsContentProvider_label">
+    </contentprovider>
+    <contentprovider
+          class="org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider"
+          label="%org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewContentProvider_label">
     </contentprovider>
  </extension>
 	

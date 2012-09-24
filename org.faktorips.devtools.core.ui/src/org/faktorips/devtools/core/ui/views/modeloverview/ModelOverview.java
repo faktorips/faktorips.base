@@ -33,12 +33,9 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DecorationContext;
-import org.eclipse.jface.viewers.ITreeViewerListener;
-import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -130,10 +127,13 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
                 true, false));
 
         treeViewer = new TreeViewer(panel);
-        initContentProviders();
 
         // initializes with a default content provider
         provider = new ModelOverviewInheritAssociationsContentProvider();
+
+        initContentProviders();
+        // set default show state and the according toggle-button image
+        provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
         treeViewer.setContentProvider(provider);
 
         ColumnViewerToolTipSupport.enableFor(treeViewer);
@@ -155,11 +155,8 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         initMenu();
         initToolBar();
 
-        // set default show state and the according toggle-button image
-        provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
         setProductCmptTypeImage();
 
-        treeViewer.addTreeListener(createNewAutoExpandStructureNodesListener());
         treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));
         provider.addCollectorFinishedListener(this);
 
@@ -200,36 +197,6 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         }
         panel.layout();
         this.setFocus();
-    }
-
-    private ITreeViewerListener createNewAutoExpandStructureNodesListener() {
-        return new ITreeViewerListener() {
-
-            @Override
-            public void treeCollapsed(TreeExpansionEvent event) {
-                // do nothing
-            }
-
-            @Override
-            public void treeExpanded(TreeExpansionEvent event) {
-                final Object element = event.getElement();
-                final AbstractTreeViewer treeViewer = event.getTreeViewer();
-                if (element instanceof ComponentNode) {
-                    Control ctrl = treeViewer.getControl();
-                    if (ctrl != null && !ctrl.isDisposed()) {
-                        ctrl.getDisplay().asyncExec(new Runnable() {
-                            @Override
-                            public void run() {
-                                Control ctrl2 = treeViewer.getControl();
-                                if (ctrl2 != null && !ctrl2.isDisposed()) {
-                                    treeViewer.expandToLevel(element, 2);
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        };
     }
 
     private void activateContext() {
@@ -466,7 +433,9 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
                     }
                 }
             }
+            contentProviderActions.get(0).run();
         }
+
     }
 
     private Action createShowCardinalitiesAction() {
@@ -588,7 +557,8 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
     private void setContentProvider(AbstractModelOverviewContentProvider newProvider) {
         Object input = treeViewer.getInput();
-        ShowTypeState currentShowTypeState = provider.getShowTypeState();
+        ShowTypeState currentShowTypeState;
+        currentShowTypeState = provider.getShowTypeState();
 
         newProvider.removeCollectorFinishedListener(this);
 
