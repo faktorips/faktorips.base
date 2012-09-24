@@ -163,6 +163,48 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testGetChildren_SubtypeChildrenHaveParent() throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        IType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "typeA");
+        IType typeB = newPolicyCmptTypeWithoutProductCmptType(project, "typeB");
+
+        typeB.setSupertype(typeA.getQualifiedName());
+
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+
+        Object[] children = provider.getChildren(new ComponentNode(typeA, project));
+
+        // test
+        assertEquals(1, children.length);
+        assertTrue(children[0] instanceof SubtypeComponentNode);
+        assertEquals(typeB, ((SubtypeComponentNode)children[0]).getValue());
+        assertEquals(typeA, ((ComponentNode)children[0]).getParent().getValue());
+    }
+
+    @Test
+    public void testGetChildren_AssociationChildrenHaveParent() throws CoreException {
+        // setup
+        IIpsProject project = newIpsProject();
+        IType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "typeA");
+        IType typeB = newPolicyCmptTypeWithoutProductCmptType(project, "typeB");
+
+        IAssociation association = typeA.newAssociation();
+        association.setTarget(typeB.getQualifiedName());
+        association.setAssociationType(AssociationType.AGGREGATION);
+
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+
+        Object[] children = provider.getChildren(new ComponentNode(typeA, project));
+
+        // test
+        assertEquals(1, children.length);
+        assertTrue(children[0] instanceof AssociationComponentNode);
+        assertEquals(typeB, ((AssociationComponentNode)children[0]).getValue());
+        assertEquals(typeA, ((ComponentNode)children[0]).getParent().getValue());
+    }
+
+    @Test
     public void testHasChildren_PolicyHasSubtypeChildren() throws CoreException {
         // setup
         IIpsProject project = newIpsProject();

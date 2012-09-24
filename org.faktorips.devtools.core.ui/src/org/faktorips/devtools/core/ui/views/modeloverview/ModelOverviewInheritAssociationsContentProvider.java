@@ -230,7 +230,7 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
 
         List<AssociationComponentNode> componentNodes = new ArrayList<AssociationComponentNode>();
         for (IAssociation association : directAssociations) {
-            componentNodes.add(AssociationComponentNode.newAssociationComponentNode(association, null, project));
+            componentNodes.add(AssociationComponentNode.newAssociationComponentNode(association, parent, project));
         }
         return componentNodes;
     }
