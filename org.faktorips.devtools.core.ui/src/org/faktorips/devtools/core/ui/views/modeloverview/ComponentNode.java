@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IIpsSrcFileViewItem;
 import org.faktorips.util.ArgumentCheck;
 
-class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
+class ComponentNode implements IIpsSrcFileViewItem {
 
     private IType value;
     private IIpsProject sourceProject;
@@ -69,7 +69,6 @@ class ComponentNode implements IModelOverviewNode, IIpsSrcFileViewItem {
         return getParent().isRepetitionInternal(value);
     }
 
-    @Override
     public ComponentNode getParent() {
         return parent;
     }
