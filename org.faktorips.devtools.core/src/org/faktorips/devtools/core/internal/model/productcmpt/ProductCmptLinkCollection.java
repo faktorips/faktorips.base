@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
  * Contains all {@link IProductCmptLink links} for one product component.
@@ -52,5 +53,27 @@ public class ProductCmptLinkCollection {
      */
     public List<IProductCmptLink> getLinks() {
         return null;
+    }
+
+    public IProductCmptLink newLink(IProductCmptLinkContainer parent, IProductCmptTypeAssociation association) {
+        return null;
+    }
+
+    public IProductCmptLink newLink(IProductCmptLinkContainer parent, String associationName) {
+        return null;
+    }
+
+    public boolean addLink(IProductCmptLink link) {
+        return false;
+
+    }
+
+    public boolean remove(IProductCmptLink link) {
+        return false;
+
+    }
+
+    public void clear() {
+
     }
 }
