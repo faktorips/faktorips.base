@@ -55,12 +55,20 @@ public class ProductCmptLinkCollection {
         return null;
     }
 
-    public IProductCmptLink newLink(IProductCmptLinkContainer parent, IProductCmptTypeAssociation association) {
+    public IProductCmptLink newLink(IProductCmptLinkContainer container,
+            IProductCmptTypeAssociation association,
+            String partId) {
         return null;
     }
 
-    public IProductCmptLink newLink(IProductCmptLinkContainer parent, String associationName) {
+    public IProductCmptLink newLink(IProductCmptLinkContainer container, String associationName, String partId) {
         return null;
+    }
+
+    protected IProductCmptLink createLink(IProductCmptLinkContainer container, String associationName, String partId) {
+        IProductCmptLink link = new ProductCmptLink(container, partId);
+
+        return link;
     }
 
     public boolean addLink(IProductCmptLink link) {

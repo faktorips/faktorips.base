@@ -62,6 +62,7 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -706,6 +707,22 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         int currentMonth = GregorianCalendar.getInstance().get(Calendar.MONTH);
         int currentDay = GregorianCalendar.getInstance().get(Calendar.DAY_OF_MONTH);
         return new GregorianCalendar(currentYear, currentMonth, currentDay + offsetToCurrentDay);
+    }
+
+    @Test
+    public void testIsContainerForChangingAssociation() {
+        IProductCmptTypeAssociation changingAssoc = type.newProductCmptTypeAssociation();
+        changingAssoc.setChangingOverTime(true);
+
+        assertFalse(productCmpt.isContainerFor(changingAssoc));
+    }
+
+    @Test
+    public void testIsContainerForStaticAssociation() {
+        IProductCmptTypeAssociation staticAssoc = type.newProductCmptTypeAssociation();
+        staticAssoc.setChangingOverTime(false);
+
+        assertTrue(productCmpt.isContainerFor(staticAssoc));
     }
 
 }

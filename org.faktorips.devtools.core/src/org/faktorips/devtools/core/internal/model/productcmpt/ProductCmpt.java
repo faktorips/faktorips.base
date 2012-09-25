@@ -55,6 +55,8 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProduc
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeValidations;
@@ -509,6 +511,65 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         propertyValues.addAll(getAllPropertyValues());
         propertyValues.addAll(generation.getAllPropertyValues());
         return propertyValues;
+    }
+
+    @Override
+    public boolean isContainerFor(IProductCmptTypeAssociation association) {
+        return !association.isChangingOverTime();
+    }
+
+    @Override
+    public int getNumOfLinks() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public IProductCmptLink newLink(String associationName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IProductCmptLink newLink(IProductCmptTypeAssociation association) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IProductCmptLink newLink(String association, IProductCmptLink insertAbove) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean canCreateValidLink(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
+            throws CoreException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean above) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public List<IProductCmptLink> getLinkList() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<IProductCmptLink> getLinkList(String associationName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IProductCmpt getProductCmpt() {
+        return this;
     }
 
 }

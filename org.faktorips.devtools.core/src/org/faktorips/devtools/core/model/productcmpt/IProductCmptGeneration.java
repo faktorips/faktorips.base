@@ -88,6 +88,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     /**
      * Returns the product component this generation belongs to.
      */
+    @Override
     public IProductCmpt getProductCmpt();
 
     /**

@@ -658,4 +658,20 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertNull(generation.getValidationRuleConfig(null));
     }
 
+    @Test
+    public void testIsContainerForChangingAssociation() {
+        IProductCmptTypeAssociation changingAssoc = productCmptType.newProductCmptTypeAssociation();
+        changingAssoc.setChangingOverTime(true);
+
+        assertTrue(generation.isContainerFor(changingAssoc));
+    }
+
+    @Test
+    public void testIsContainerForStaticAssociation() {
+        IProductCmptTypeAssociation staticAssoc = productCmptType.newProductCmptTypeAssociation();
+        staticAssoc.setChangingOverTime(false);
+
+        assertFalse(generation.isContainerFor(staticAssoc));
+    }
+
 }

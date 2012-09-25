@@ -412,4 +412,39 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         return association;
     }
 
+    @Test
+    public void testGetProductCmpt() {
+        IProductCmptLink newLink = createLinkWithContainer(generation, "id1", "assoc1");
+        assertNotNull(newLink.getProductCmpt());
+        assertEquals(productCmpt, newLink.getProductCmpt());
+    }
+
+    @Test
+    public void testGetProductCmpt2() {
+        IProductCmptLink newLink = createLinkWithContainer(productCmpt, "id1", "assoc1");
+        assertNotNull(newLink.getProductCmpt());
+        assertEquals(productCmpt, newLink.getProductCmpt());
+    }
+
+    @Test
+    public void testGetProductCmptGeneration() {
+        IProductCmptLink newLink = createLinkWithContainer(generation, "id1", "assoc1");
+        assertNotNull(newLink.getProductCmptGeneration());
+        assertEquals(generation, newLink.getProductCmptGeneration());
+    }
+
+    @Test
+    public void testGetProductCmptGeneration2() {
+        IProductCmptLink newLink = createLinkWithContainer(productCmpt, "id1", "assoc1");
+        assertNull(newLink.getProductCmptGeneration());
+    }
+
+    private IProductCmptLink createLinkWithContainer(IProductCmptLinkContainer container,
+            String partId,
+            String associationName) {
+        IProductCmptLink newLink = new ProductCmptLink(container, partId);
+        newLink.setAssociation(associationName);
+        return newLink;
+    }
+
 }

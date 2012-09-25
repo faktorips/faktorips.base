@@ -71,8 +71,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     private int maxCardinality = 1;
 
-    public ProductCmptLink(IProductCmptGeneration generation, String id) {
-        super(generation, id);
+    public ProductCmptLink(IProductCmptLinkContainer parent, String id) {
+        super(parent, id);
     }
 
     public ProductCmptLink() {
@@ -81,12 +81,21 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     @Override
     public IProductCmpt getProductCmpt() {
-        return (IProductCmpt)getParent().getParent();
+        return getProductCmptLinkContainer().getProductCmpt();
     }
 
     @Override
+    @Deprecated
     public IProductCmptGeneration getProductCmptGeneration() {
-        return (IProductCmptGeneration)getParent();
+        if (getProductCmptLinkContainer() instanceof IProductCmptGeneration) {
+            return (IProductCmptGeneration)getParent();
+        }
+        return null;
+    }
+
+    @Override
+    public IProductCmptLinkContainer getProductCmptLinkContainer() {
+        return (IProductCmptLinkContainer)getParent();
     }
 
     @Override
@@ -425,11 +434,6 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             return true;
         }
 
-    }
-
-    @Override
-    public IProductCmptLinkContainer getProductCmptLinkContainer() {
-        return (IProductCmptLinkContainer)getParent();
     }
 
 }

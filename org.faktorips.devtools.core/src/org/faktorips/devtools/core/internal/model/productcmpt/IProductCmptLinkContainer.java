@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -34,7 +35,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
  * @since 3.8
  * @author widmaier
  */
-public interface IProductCmptLinkContainer {
+public interface IProductCmptLinkContainer extends IIpsObjectPartContainer {
 
     /**
      * Returns <code>true</code> if this container is responsible for the given association. For
@@ -132,9 +133,11 @@ public interface IProductCmptLinkContainer {
      */
     List<IProductCmptLink> getLinkList(String associationName);
 
-    /*
-     * ? if required
+    /**
+     * Returns the product component for this link container. If this container is a
+     * {@link IProductCmptGeneration product component generation} the corresponding product
+     * component is returned. If this is a {@link IProductCmpt product component} it returns itself.
      */
-    // IProductCmpt getProductCmpt();
+    IProductCmpt getProductCmpt();
 
 }

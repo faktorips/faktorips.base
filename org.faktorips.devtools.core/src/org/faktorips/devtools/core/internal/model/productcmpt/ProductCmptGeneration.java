@@ -695,8 +695,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public boolean isContainerFor(IProductCmptTypeAssociation association) {
-        // TODO Auto-generated method stub
-        return false;
+        return association.isChangingOverTime();
     }
 
     @Override

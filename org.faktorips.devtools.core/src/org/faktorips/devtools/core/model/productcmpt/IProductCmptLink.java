@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -107,8 +108,16 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement {
     public IProductCmpt getProductCmpt();
 
     /**
-     * Returns the product component generation this configuration element belongs to.
+     * Returns the product component generation this configuration element belongs to. Returns
+     * <code>null</code> if this link is part of the product component (it does not change over
+     * time).
+     * 
+     * @deprecated As of 3.8 {@link IProductCmptLink product component links} can be part of both
+     *             {@link IProductCmpt product components} and {@link ProductCmptGeneration product
+     *             component generations}. Use {@link #getProductCmptLinkContainer()} and the common
+     *             interface {@link IProductCmptLinkContainer} instead.
      */
+    @Deprecated
     public IProductCmptGeneration getProductCmptGeneration();
 
     /**
