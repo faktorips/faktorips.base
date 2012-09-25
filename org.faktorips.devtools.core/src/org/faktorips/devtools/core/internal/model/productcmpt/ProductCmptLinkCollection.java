@@ -55,32 +55,65 @@ public class ProductCmptLinkCollection {
         return null;
     }
 
+    /**
+     * Creates (and returns) a new link.
+     * 
+     * @param container the container the new link should be part of
+     * @param association the original association the new link is an instance of
+     * @param partId the part id the new link should have
+     * @return the newly creates
+     */
     public IProductCmptLink newLink(IProductCmptLinkContainer container,
             IProductCmptTypeAssociation association,
             String partId) {
         return null;
     }
 
+    /**
+     * Creates (and returns) a new link.
+     * 
+     * @param container the container the new link should be part of
+     * @param associationName the name of the original association the new link is an instance of
+     * @param partId the part id the new link should have
+     * @return the newly creates
+     */
     public IProductCmptLink newLink(IProductCmptLinkContainer container, String associationName, String partId) {
         return null;
     }
 
     protected IProductCmptLink createLink(IProductCmptLinkContainer container, String associationName, String partId) {
-        IProductCmptLink link = new ProductCmptLink(container, partId);
+        // IProductCmptLink link = new ProductCmptLink(container, partId);
 
-        return link;
+        return null;
     }
 
+    /**
+     * Adds the given link to this link collection.
+     * 
+     * @param link the link to be added
+     * @return <code>true</code> if the link could be added to this collection, <code>false</code>
+     *         otherwise.
+     */
     public boolean addLink(IProductCmptLink link) {
         return false;
 
     }
 
+    /**
+     * Removes the given link from this link collection.
+     * 
+     * @param link the link to be removed
+     * @return <code>true</code> if the link was removed from this collection, <code>false</code>
+     *         otherwise.
+     */
     public boolean remove(IProductCmptLink link) {
         return false;
 
     }
 
+    /**
+     * Removes all links from this collection.
+     */
     public void clear() {
 
     }
