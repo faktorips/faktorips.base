@@ -35,6 +35,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
  * <p>
  * Introduced for static associations. Both {@link IProductCmpt product components} and
  * {@link IProductCmptGeneration product component generations} can contain links.
+ * <p>
+ * Note: this class does not ensure that all link instances are part of the same parent. It accepts
+ * all link instance regardless of their parent.
  * 
  * @since 3.8
  * @author widmaier
@@ -102,13 +105,15 @@ public class ProductCmptLinkCollection {
      * @return the newly creates
      */
     public IProductCmptLink newLink(IProductCmptLinkContainer container, String associationName, String partId) {
-        return null;
+        IProductCmptLink link = createLink(container, associationName, partId);
+        addLink(link);
+        return link;
     }
 
     protected IProductCmptLink createLink(IProductCmptLinkContainer container, String associationName, String partId) {
-        // IProductCmptLink link = new ProductCmptLink(container, partId);
-
-        return null;
+        IProductCmptLink link = new ProductCmptLink(container, partId);
+        link.setAssociation(associationName);
+        return link;
     }
 
     /**
@@ -150,21 +155,37 @@ public class ProductCmptLinkCollection {
     }
 
     /**
-     * Removes the given link from this link collection.
+     * Removes the given link from this link collection. Does nothing if the given link is
+     * <code>null</code> or if it does not belong to any association, IOW
+     * {@link IProductCmptLink#getAssociation()} returns <code>null</code>.
      * 
      * @param link the link to be removed
      * @return <code>true</code> if the link was removed from this collection, <code>false</code>
      *         otherwise.
      */
     public boolean remove(IProductCmptLink link) {
-        return false;
+        if (link == null) {
+            return false;
+        }
+        if (link.getAssociation() == null) {
+            return false;
+        }
+        return removeInternal(link);
+    }
 
+    private boolean removeInternal(IProductCmptLink link) {
+        List<IProductCmptLink> linkList = associationNameToLinkListMap.get(link.getAssociation());
+        if (linkList == null) {
+            return false;
+        } else {
+            return linkList.remove(link);
+        }
     }
 
     /**
      * Removes all links from this collection.
      */
     public void clear() {
-
+        associationNameToLinkListMap.clear();
     }
 }

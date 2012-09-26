@@ -14,18 +14,25 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ProductCmptLinkCollectionTest {
+public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
 
     private ProductCmptLinkCollection linkCollection;
     private IProductCmptLink link1;
@@ -34,10 +41,13 @@ public class ProductCmptLinkCollectionTest {
     private IProductCmptLink link4;
     private IProductCmptLink link5;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         linkCollection = new ProductCmptLinkCollection();
+    }
 
+    private void setUpCollectionWithLinks() {
         link1 = mock(IProductCmptLink.class);
         link2 = mock(IProductCmptLink.class);
         link3 = mock(IProductCmptLink.class);
@@ -65,7 +75,7 @@ public class ProductCmptLinkCollectionTest {
     }
 
     @Test
-    public void testGetLinks_Empty() {
+    public void testGetLinks_EmptyCollection() {
         List<IProductCmptLink> links = new ProductCmptLinkCollection().getLinks();
         assertNotNull(links);
         assertTrue(links.isEmpty());
@@ -73,6 +83,7 @@ public class ProductCmptLinkCollectionTest {
 
     @Test
     public void testGetLinks() {
+        setUpCollectionWithLinks();
         List<IProductCmptLink> links = linkCollection.getLinks();
         assertTrue(links.contains(link1));
         assertTrue(links.contains(link2));
@@ -85,10 +96,13 @@ public class ProductCmptLinkCollectionTest {
         assertEquals(link2, links.get(2));
         assertEquals(link4, links.get(3));
         assertEquals(link5, links.get(4));
+
+        assertEquals(5, linkCollection.getLinks().size());
     }
 
     @Test
     public void testGetLinksForAssociation() {
+        setUpCollectionWithLinks();
         List<IProductCmptLink> links = linkCollection.getLinks("anotherAssociation");
         assertEquals(2, links.size());
         assertTrue(links.contains(link2));
@@ -100,6 +114,7 @@ public class ProductCmptLinkCollectionTest {
 
     @Test
     public void testGetLinksForAssociation2() {
+        setUpCollectionWithLinks();
         List<IProductCmptLink> links = linkCollection.getLinks("oneAssociation");
         assertEquals(2, links.size());
         assertTrue(links.contains(link1));
@@ -111,6 +126,7 @@ public class ProductCmptLinkCollectionTest {
 
     @Test
     public void testGetLinksForAssociation3() {
+        setUpCollectionWithLinks();
         List<IProductCmptLink> links = linkCollection.getLinks("yetAnotherAssociation");
         assertEquals(1, links.size());
         assertTrue(links.contains(link5));
@@ -118,9 +134,79 @@ public class ProductCmptLinkCollectionTest {
 
     @Test
     public void testGetLinksForAssociation_NoAssciations() {
+        setUpCollectionWithLinks();
         List<IProductCmptLink> links = linkCollection.getLinks("inexistentAssociation");
         assertNotNull(links);
         assertTrue(links.isEmpty());
     }
 
+    @Test
+    public void testNewLink_addsLink() {
+        IProductCmptGeneration container = createContainer();
+        linkCollection.newLink(container, "oneAssociation", "id1");
+        linkCollection.newLink(container, "anotherAssociation", "id2");
+        linkCollection.newLink(container, "oneAssociation", "id3");
+
+        assertEquals(3, linkCollection.getLinks().size());
+    }
+
+    @Test
+    public void testNewLink() {
+        IProductCmptGeneration container = createContainer();
+        IProductCmptLink newLink = linkCollection.newLink(container, "oneAssociation", "id1");
+        assertEquals("id1", newLink.getId());
+        assertEquals(container, newLink.getParent());
+        assertEquals("oneAssociation", newLink.getAssociation());
+    }
+
+    private IProductCmptGeneration createContainer() {
+        try {
+            IIpsProject ipsProject = newIpsProject();
+            ProductCmpt productCmpt = newProductCmpt(ipsProject, "ProdCmpt");
+            IProductCmptGeneration gen = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar());
+            return gen;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    @Test
+    public void testRemove() {
+        setUpCollectionWithLinks();
+        linkCollection.remove(link3);
+        assertEquals(4, linkCollection.getLinks().size());
+        assertFalse(linkCollection.getLinks().contains(link3));
+    }
+
+    @Test
+    public void testRemoveMultipleTimes() {
+        setUpCollectionWithLinks();
+        linkCollection.remove(link3);
+        assertEquals(4, linkCollection.getLinks().size());
+        assertFalse(linkCollection.getLinks().contains(link3));
+        linkCollection.remove(link3);
+        assertEquals(4, linkCollection.getLinks().size());
+        assertFalse(linkCollection.getLinks().contains(link3));
+    }
+
+    @Test
+    public void testRemove_null() {
+        setUpCollectionWithLinks();
+        linkCollection.remove(null);
+        assertEquals(5, linkCollection.getLinks().size());
+        assertTrue(linkCollection.getLinks().contains(link3));
+    }
+
+    @Test
+    public void testRemove_onEmptyList() {
+        linkCollection.remove(link1);
+        assertTrue(linkCollection.getLinks().isEmpty());
+    }
+
+    @Test
+    public void testClear() {
+        setUpCollectionWithLinks();
+        linkCollection.clear();
+        assertEquals(0, linkCollection.getLinks().size());
+    }
 }
