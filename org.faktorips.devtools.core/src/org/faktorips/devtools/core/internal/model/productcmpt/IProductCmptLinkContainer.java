@@ -25,7 +25,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.type.IAssociation;
 
 /**
- * Common interface for all classes that contain {@link IProductCmptLink product component links}.
+ * Common interface for all classes that can contain {@link IProductCmptLink product component
+ * links}.
  * <p>
  * Created with the introduction of static associations. {@link IProductCmptLink product component
  * links} can now be part of both {@link IProductCmpt product components} and
