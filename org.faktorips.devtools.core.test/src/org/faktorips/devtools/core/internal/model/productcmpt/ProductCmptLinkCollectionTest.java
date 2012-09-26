@@ -65,6 +65,13 @@ public class ProductCmptLinkCollectionTest {
     }
 
     @Test
+    public void testGetLinks_Empty() {
+        List<IProductCmptLink> links = new ProductCmptLinkCollection().getLinks();
+        assertNotNull(links);
+        assertTrue(links.isEmpty());
+    }
+
+    @Test
     public void testGetLinks() {
         List<IProductCmptLink> links = linkCollection.getLinks();
         assertTrue(links.contains(link1));
