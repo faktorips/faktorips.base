@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Nl1
+Bundle-SymbolicName: org.faktorips.nls.devtools.core.ui.help.nl1
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.faktorips.devtools.core.ui.help;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

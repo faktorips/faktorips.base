@@ -1,0 +1,147 @@
+<?xml version="1.0" ?>
+ <!DOCTYPE html PUBLIC "-_W3C_DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ </head>
+ <body>
+ 	<h1>Modeloverview</h1>
+ 	<p>
+		The <em>Modeloverview</em> provides two different views for model exploring purposes.
+		View number one shows the selected FaktorIPS-project and all referenced projects,
+		too. It displays the overall inheritance hierarchy and all Master-to-Detail-compositions
+		and aggregations. The purpose of the second view is to provide a better overview over
+		the dependencies in large projects. This view displays only elements of the 
+		selected project. Dependencies which are defined in the referenced projects are
+		<em>inherited</em> and will be displayed as inherited associations in the current project.
+		This article will refer to the first view as <em>Complete View</em> and to the second view 
+		as <em>Inheritance View</em>.
+	</p>
+ 	
+ 	<h2>Modeloverview in complete project context (Complete View)</h2>
+ 	<p>
+ 		These two screenshots show the structure of the the Faktor-IPS tutorial project <em>Hausratmodell</em>. It 
+ 		references the base project <em>Grundmodell</em>. To reduce the amount of displayed elements the <em>Product
+ 		Component Types</em> and <em>Policy Component Types</em> will be shown separately. The view can be switched
+ 		via the red marked button. After switching the view the icon of the button will change to the the other 
+ 		component-type icon.  
+	</p>
+	<p>
+		Faktor-IPS model projects consist of Policy- and Product-component-types which are represented by the
+		usual icons <img src="../../../images/views_editors/modeloverview/icons/PolicyCmptType.gif"/> and
+		<img src="../../../images/views_editors/modeloverview/icons/ProductCmptType.gif"/>. The project structure
+		will be shown as is, that means it displays the inheritance structure and associations (aggregations or master-to
+		detail compositions) which are relevant for the selected project. Underlying projects and superfluous elements
+		from the base projects will not be shown. Components which are a subtype of the parent
+		component have the 	<img src="../../../images/views_editors/modeloverview/icons/over_co.gif"/>-icon and the 
+		<img src="../../../images/views_editors/modeloverview/icons/AssociationType-Aggregation.gif"/>-icon is used
+		for all associated types.
+	</p>
+	<p>
+ 		<img src="../../../images/views_editors/modeloverview/hausrat_komplett.PNG" alt="View of the complete policy models with inheritance structure and associations" />
+ 	</p>
+ 	<p>
+ 		<img src="../../../images/views_editors/modeloverview/hausrat_komplett_product.PNG" alt="View of the complete product models with inheritance structure and associations" />
+	</p>
+
+ 	<h2>Modeloverview with inherited associations (Inheritance View)</h2>
+ 	<p>
+ 		The purpose of the inheritance view is to visualize the associations, which have been defined in the base projects,
+ 		in the currently selected project. It allows a quick overview of the relations in a project. An example of
+ 		this view for the previously introduced <em>Hausratmodell</em> is given by the following figure. It contains
+ 		only elements from the <em>Hausratmodell</em>. Instead of the element <em>Vertrag</em> we have its subtype
+ 		<em>Hausratvertrag</em> as root-element. It inherits all associations from its parent element. Therefore it has
+ 		now four associatiated elements which are shown in the  view. In addition to the two direct associations it
+ 		has two indirect (inherited) associations to the same elements. They have been retrieved via the <em>Deckungstyp</em>
+ 		association of <em>Vertrag</em>. The <img src="../../../images/views_editors/modeloverview/icons/OverrideIndicator_orange.gif"/>-icon
+ 		marks them as <em>inherited associations</em> and allows to distinguish them from direct associations.
+ 		This icon will only be applied to associations which have been inherited from another project, inside of the
+ 		selected project no associations will be inherited!
+ 		
+ 	</p>
+ 	<p>
+ 		<img src="../../../images/views_editors/modeloverview/hausrat_vererbt.PNG" alt="View of the policy model with inherited associations" />
+	</p>
+
+ 	<h2>Switch views</h2>
+ 	<p>
+ 		Which view has to be displayed can be configured in the view-menu. Just select one of the provided views.
+ 	</p>
+ 	<p>
+ 		<img src="../../../images/views_editors/modeloverview/hausrat_info_menu.PNG" alt="Menu for the selection of the view" />
+	</p>	
+
+ 	<h2>Labels</h2>
+	<p>
+		Labels can be used to display additional information about the shown elements. They always contain the name
+		of the component type, but they can be configured to show information about the underlying association, cardinality
+		and corresponding project, too.
+	</p>
+	<p>
+ 		<img src="../../../images/views_editors/modeloverview/label.PNG" alt="Element with a label showing information
+ 		 about the association, cardinality and project" />
+	</p>
+	<p>
+		The labels are always structured as shown above. First comes the element name, which will always be displayed. Next
+		comes the <em>target role name</em> of the association. A <em>/</em> indicates an association which defines a 
+		<em>derived union</em>. The role name can be complemented by the associations <em>cardinality</em>. At last
+		it is possible to show the project name of the current type. This is especially useful when using the <em>
+		complete view</em>.
+	</p>
+	<p>
+		Which parts of the labels are displayed can be configured in the view-menu. 
+	</p>
+		<p>
+			<img src="../../../images/views_editors/modeloverview/hausrat_info_menu_label.PNG" alt="Menu for the configuration of the labels" />
+	</p>
+		
+		
+	<h2>Icons</h2>
+	<ul>
+		<li>
+			<img src="../../../images/views_editors/modeloverview/icons/PolicyCmptType.gif"/>:
+			Icon for PolicyComponentTypes; Button to switch to policy-model view
+		</li>
+		<li>
+			<img src="../../../images/views_editors/modeloverview/icons/ProductCmptType.gif"/>:
+			Icon for ProductComponentTypes; Button to switch to product-model view
+		</li>
+		<li>
+			<img src="../../../images/views_editors/modeloverview/icons/policy_AssociationType-Aggregation.gif"/>:
+			PolicyComponentType which is associated by the parent node
+		</li>
+		<li>
+			<img src="../../../images/views_editors/modeloverview/icons/policy_subtype.gif"/>:
+			PolicyComponentType which is subtyped from the parent node
+		</li>
+		<li>
+			<img src="../../../images/views_editors/modeloverview/icons/product_AssociationType-Aggregation.gif"/>:
+			ProductComponentType which is associated by the parent node
+		</li>
+		<li>
+			<img src="../../../images/views_editors/modeloverview/icons/product_subtype.gif"/>:
+			ProductComponentType which is subtyped from the parent node
+		</li>
+		<li>
+			<img src="../../../images/views_editors/modeloverview/icons/OverrideIndicator_orange.gif"/>:
+					<strong>Complete view</strong>:
+					Indicates if there is an association to this component, which has been defined in
+					another project. Will only be displayed for components from the selected project.
+				<p>
+					<strong>Inheritance view</strong>:
+					Indicates that this association has been inherited from a base project
+				</p>
+		</li>
+		<li>
+			<img src="../../../images/views_editors/modeloverview/icons/AbstractIndicator.gif"/>:
+			Abstract class marker.
+		</li>
+		<li>
+			<img src="../../../images/views_editors/modeloverview/icons/loop_ovr.gif"/>:
+			Indicates cyclic dependencies.
+		</li>
+		
+	</ul>
+ </body>
+ </html>
