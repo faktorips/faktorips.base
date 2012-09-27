@@ -343,13 +343,25 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         SHOW_PRODUCTS(2);
         private final int state;
 
-        ShowTypeState(int value) {
+        private ShowTypeState(int value) {
             this.state = value;
         }
 
         public int getState() {
             return state;
         }
+    }
+
+    @Override
+    public Object[] getChildren(Object parentElement) {
+        if (parentElement instanceof ComponentNode) {
+            ComponentNode node = (ComponentNode)parentElement;
+            if (node.isRepetition()) {
+                return new Object[0];
+            }
+            return getComponentNodeChildren(node).toArray();
+        }
+        return new Object[0];
     }
 
     /**

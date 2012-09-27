@@ -184,18 +184,6 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
     }
 
     @Override
-    public Object[] getChildren(Object parentElement) {
-        if (parentElement instanceof ComponentNode) {
-            if (((ComponentNode)parentElement).isRepetition()) {
-                return new Object[0];
-            }
-            List<ComponentNode> componentNodeChildren = getComponentNodeChildren((ComponentNode)parentElement);
-            return componentNodeChildren.toArray();
-        }
-        return new Object[0];
-    }
-
-    @Override
     List<SubtypeComponentNode> getComponentNodeSubtypeChildren(ComponentNode parent) {
         IIpsProject project = parent.getSourceIpsProject();
         List<IType> subtypes = parent.getValue().findSubtypes(false, false, project);

@@ -33,14 +33,6 @@ public class ModelOverviewInheritAssociationsContentProvider extends AbstractMod
             AssociationType.COMPOSITION_MASTER_TO_DETAIL };
 
     @Override
-    public Object[] getChildren(Object parentElement) {
-        if (parentElement instanceof ComponentNode) {
-            return getComponentNodeChildren((ComponentNode)parentElement).toArray();
-        }
-        return new Object[0];
-    }
-
-    @Override
     public Object getParent(Object element) {
         return ((ComponentNode)element).getParent();
     }

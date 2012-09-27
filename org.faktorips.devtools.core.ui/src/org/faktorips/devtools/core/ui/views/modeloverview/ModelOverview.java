@@ -90,6 +90,8 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     private static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType.gif"; //$NON-NLS-1$
     private static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType.gif"; //$NON-NLS-1$
     private static final String CARDINALITY_IMAGE = "Cardinality.gif"; //$NON-NLS-1$
+    private static final String PROVIDER_SHOW_STATE = "show_state"; //$NON-NLS-1$
+    private static final String INITIAL_CONTENT_PROVIDER = "initial_content_provider"; //$NON-NLS-1$
 
     private static final String MODEL_OVERVIEW_CONTENT_PROVIDER_EXTENSION_POINT_ID = "org.faktorips.devtools.core.ui.modelOverviewContentProvider"; //$NON-NLS-1$
 
@@ -108,22 +110,23 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     private Action toggleProductPolicyAction;
     private ExpandAllAction expandAllAction;
     private CollapseAllAction collapseAllAction;
+
     private boolean showCardinalities;
     private boolean showRolenames;
     private boolean showProjectnames;
+    private ShowTypeState providerShowState;
 
     private Action showCardinalitiesAction;
-
     private Action showRoleNameAction;
-
     private Action showProjectsAction;
 
     private List<IAction> contentProviderActions;
 
+    private String initialContentProvider;
+
     @Override
     public void createPartControl(Composite parent) {
         panel = uiToolkit.createGridComposite(parent, 1, false, true, new GridData(SWT.FILL, SWT.FILL, true, true));
-
         label = uiToolkit.createLabel(panel, "", SWT.LEFT, new GridData(SWT.FILL, SWT.FILL, //$NON-NLS-1$
                 true, false));
 
@@ -134,7 +137,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
         initContentProviders();
         // set default show state and the according toggle-button image
-        provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
+        provider.setShowTypeState(providerShowState);
         treeViewer.setContentProvider(provider);
 
         ColumnViewerToolTipSupport.enableFor(treeViewer);
@@ -157,8 +160,6 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         createContextMenu();
         initMenu();
         initToolBar();
-
-        setProductCmptTypeImage();
 
         treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));
         provider.addCollectorFinishedListener(this);
@@ -371,6 +372,12 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
         collapseAllAction = new CollapseAllAction(treeViewer);
         toolBarManager.add(collapseAllAction);
+
+        if (providerShowState == ShowTypeState.SHOW_POLICIES) {
+            setProductCmptTypeImage();
+        } else {
+            setPolicyCmptTypeImage();
+        }
     }
 
     private void initMenu() {
@@ -397,9 +404,6 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
         for (IAction contentProviderAction : getContentProviderActions()) {
             menuManager.appendToGroup(MENU_GROUP_CONTENT_PROVIDER, contentProviderAction);
-        }
-        if (!contentProviderActions.isEmpty()) {
-            contentProviderActions.get(0).setChecked(true);
         }
     }
 
@@ -428,15 +432,22 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
                         if (contentProvider instanceof AbstractModelOverviewContentProvider) {
                             String label = elements[j].getAttribute("label"); //$NON-NLS-1$
 
-                            contentProviderActions.add(createSetContentProviderAction(label,
-                                    (AbstractModelOverviewContentProvider)contentProvider));
+                            Action contentProviderAction = createContentProviderAction(label,
+                                    (AbstractModelOverviewContentProvider)contentProvider);
+                            contentProviderActions.add(contentProviderAction);
+                            if (initialContentProvider == null) {
+                                initialContentProvider = contentProvider.getClass().getCanonicalName();
+                            }
+                            if (initialContentProvider.equals(contentProvider.getClass().getCanonicalName())) {
+                                provider = (AbstractModelOverviewContentProvider)contentProvider;
+                                contentProviderAction.setChecked(true);
+                            }
                         }
                     } catch (CoreException e) {
                         throw new CoreRuntimeException(e);
                     }
                 }
             }
-            contentProviderActions.get(0).run();
         }
 
     }
@@ -522,7 +533,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         };
     }
 
-    private Action createSetContentProviderAction(final String label,
+    private Action createContentProviderAction(final String label,
             final AbstractModelOverviewContentProvider contentProvider) {
         return new Action(label, IAction.AS_RADIO_BUTTON) {
             AbstractModelOverviewContentProvider newProvider = contentProvider;
@@ -539,7 +550,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
             @Override
             public void run() {
-                setContentProvider(newProvider);
+                switchContentProvider(newProvider);
             }
         };
     }
@@ -552,13 +563,9 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         showCardinalitiesAction.setEnabled(state);
         showProjectsAction.setEnabled(state);
         showRoleNameAction.setEnabled(state);
-
-        for (IAction action : contentProviderActions) {
-            action.setEnabled(state);
-        }
     }
 
-    private void setContentProvider(AbstractModelOverviewContentProvider newProvider) {
+    private void switchContentProvider(AbstractModelOverviewContentProvider newProvider) {
         Object input = treeViewer.getInput();
         ShowTypeState currentShowTypeState;
         currentShowTypeState = provider.getShowTypeState();
@@ -674,11 +681,21 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         memento.putBoolean(SHOW_CARDINALITIES, this.labelProvider.getShowCardinalities());
         memento.putBoolean(SHOW_ROLENAMES, this.labelProvider.getShowRolenames());
         memento.putBoolean(SHOW_PROJECTS, this.labelProvider.getShowProjects());
+
+        memento.putInteger(PROVIDER_SHOW_STATE, this.provider.getShowTypeState().getState());
+
+        memento.putString(INITIAL_CONTENT_PROVIDER, this.provider.getClass().getCanonicalName());
     }
 
     @Override
     public void init(IViewSite site, IMemento memento) throws PartInitException {
         super.init(site, memento);
+
+        // initialize the parameter stored in the memento with meaningful values
+        showCardinalities = true;
+        showRolenames = true;
+        showProjectnames = true;
+        providerShowState = ShowTypeState.SHOW_POLICIES;
 
         if (memento != null) {
             // initialize the label settings
@@ -690,10 +707,14 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
             Boolean showProjects = memento.getBoolean(SHOW_PROJECTS);
             showProjectnames = showProjects == null ? true : showProjects;
-        } else {
-            showCardinalities = true;
-            showRolenames = true;
-            showProjectnames = true;
+
+            initialContentProvider = memento.getString(INITIAL_CONTENT_PROVIDER);
+
+            // initialize the provider show state
+            Integer state = memento.getInteger(PROVIDER_SHOW_STATE);
+            if (state != null && state == ShowTypeState.SHOW_PRODUCTS.getState()) {
+                providerShowState = ShowTypeState.SHOW_PRODUCTS;
+            }
         }
     }
 }
