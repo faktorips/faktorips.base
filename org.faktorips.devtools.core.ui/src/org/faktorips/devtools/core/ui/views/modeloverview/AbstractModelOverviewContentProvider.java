@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -57,6 +58,10 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         List<IType> rootComponents = new ArrayList<IType>();
         List<IType> rootCandidates = new ArrayList<IType>();
 
+        SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
+
+        SubMonitor loopProgress = subMonitor.newChild(30).setWorkRemaining(components.size());
+
         // compute the set of Supertype-root-candidates and real root-elements (no (existing)
         // Supertype and no incoming Association)
         for (IType iType : components) {
@@ -66,21 +71,25 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
                     rootComponents.add(iType);
                 }
             }
+            loopProgress.worked(1);
         }
-        monitor.worked(1);
 
         if (rootComponents.size() != rootCandidates.size()) {
             removeDescendants(rootCandidates, rootComponents, components, types);
+            SubMonitor whileProgress = subMonitor.newChild(40).setWorkRemaining(rootCandidates.size());
             // Remove an arbitrary element from the candidates list and add it to the root elements
             while (!rootCandidates.isEmpty()) {
                 IType newRoot = rootCandidates.remove(0);
                 rootComponents.add(newRoot);
                 removeDescendants(rootCandidates, rootComponents, components, types);
+                whileProgress.worked(1);
             }
         }
-        monitor.worked(1);
+        subMonitor.setWorkRemaining(30);
 
+        subMonitor.newChild(30);
         removeSuperfluousRootElements(rootComponents, sourceProject, types);
+        subMonitor.worked(30);
         return rootComponents;
     }
 

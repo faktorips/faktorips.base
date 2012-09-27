@@ -70,9 +70,9 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
                 overlayImages[IDecoration.TOP_RIGHT] = OVERLAY_ABSTRACT_IMAGE;
                 overlayed = true;
             }
-            if (element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited()
-                    || node.hasInheritedAssociation()) {
-                overlayImages[IDecoration.BOTTOM_RIGHT] = OVERLAY_INHERITED_ASSOCIATION_IMAGE;
+            if ((element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited())
+                    || node.isTargetOfInheritedAssociation()) {
+                overlayImages[IDecoration.TOP_LEFT] = OVERLAY_INHERITED_ASSOCIATION_IMAGE;
                 overlayed = true;
             }
             if (node instanceof AssociationComponentNode) {
@@ -236,7 +236,7 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
             if (element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited()) {
                 AssociationComponentNode node = (AssociationComponentNode)element;
                 text += "Dieser Beziehungsknoten wurde von " + node.getTargetingType().getQualifiedName() + " geerbt."; //$NON-NLS-1$ //$NON-NLS-2$
-            } else if (((ComponentNode)element).hasInheritedAssociation()) {
+            } else if (((ComponentNode)element).isTargetOfInheritedAssociation()) {
                 text += "Dieser Knoten hat mindestens eine vererbte Beziehung die über ein referenziertes Projekt zustande kommt."; //$NON-NLS-1$
             }
             if (!text.isEmpty()) {

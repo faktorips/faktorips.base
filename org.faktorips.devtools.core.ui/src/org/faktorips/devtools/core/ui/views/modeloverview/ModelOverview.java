@@ -140,7 +140,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
         labelProvider = new ModelOverviewLabelProvider();
         DecoratingStyledCellLabelProvider decoratingLabelProvider = new ModelOverviewDecoratingStyledCellLabelProvider(
                 labelProvider, IpsPlugin.getDefault().getWorkbench().getDecoratorManager().getLabelDecorator(),
-                new DecorationContext());
+                DecorationContext.DEFAULT_CONTEXT);
 
         treeViewer.setLabelProvider(decoratingLabelProvider);
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));

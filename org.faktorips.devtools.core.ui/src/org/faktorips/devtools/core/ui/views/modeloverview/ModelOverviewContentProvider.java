@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -38,6 +39,9 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
 
     @Override
     protected Object[] collectElements(Object inputElement, IProgressMonitor monitor) {
+
+        SubMonitor progress = SubMonitor.convert(monitor);
+        progress.beginTask(getWaitingLabel(), 100);
         IIpsProject ipsProject;
         if (inputElement instanceof IType) {
             ipsProject = ((IType)inputElement).getIpsProject();
@@ -50,28 +54,25 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
         if (inputElement instanceof IType) { // get the root elements if the input is an IType
 
             IType input = (IType)inputElement;
-            monitor.beginTask(getWaitingLabel(), 3);
             List<IType> projectTypes = getProjectITypes(ipsProject, getCurrentlyNeededIpsObjectType(input));
-            monitor.worked(1);
+            progress.worked(50);
 
             Collection<IType> rootCandidates = getRootElementsForIType(input, projectTypes,
                     ToChildAssociationType.SELF, new ArrayList<IType>(), new ArrayList<List<PathElement>>(),
                     new ArrayList<PathElement>());
-            monitor.worked(1);
+            progress.worked(25);
 
             paths = new ArrayList<List<PathElement>>();
             rootComponents = getRootElementsForIType(input, projectTypes, ToChildAssociationType.SELF, rootCandidates,
                     paths, new ArrayList<PathElement>());
-            monitor.worked(1);
+            progress.worked(25);
 
         } else { // get the root elements if the input is an IpsProject
-            monitor.beginTask(getWaitingLabel(), 4);
             List<IType> projectTypes = getProjectITypes(ipsProject, getCurrentlyNeededIpsObjectType());
-            monitor.worked(1);
+            progress.worked(70);
 
-            rootComponents = getProjectRootElementsFromComponentList(projectTypes, ipsProject, monitor,
+            rootComponents = getProjectRootElementsFromComponentList(projectTypes, ipsProject, progress.newChild(30),
                     ASSOCIATION_TYPES);
-            monitor.worked(1);
         }
         monitor.done();
         return ComponentNode.encapsulateComponentTypes(rootComponents, null, ipsProject).toArray();
@@ -204,16 +205,17 @@ public class ModelOverviewContentProvider extends AbstractModelOverviewContentPr
         List<IType> projectSpecificTypes = getProjectSpecificTypes(projectITypes, project);
 
         for (IType subtype : subtypes) {
-            SubtypeComponentNode componentNode = new SubtypeComponentNode(subtype, project);
+            SubtypeComponentNode componentNode = new SubtypeComponentNode(subtype, parent, project);
             boolean associated = false;
             if (subtype.getIpsProject().equals(project)) {
                 associated = isAssociated(subtype, projectSpecificTypes, projectITypes, project, ASSOCIATION_TYPES);
             }
             componentNode.setHasInheritedAssociation(associated);
+
             subtypeNodeChildren.add(componentNode);
         }
 
-        return SubtypeComponentNode.encapsulateSubtypeComponentTypes(subtypes, parent, project);
+        return subtypeNodeChildren;
     }
 
     @Override

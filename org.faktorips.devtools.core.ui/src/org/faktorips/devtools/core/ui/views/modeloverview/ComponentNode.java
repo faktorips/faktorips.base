@@ -142,7 +142,7 @@ class ComponentNode implements IIpsSrcFileViewItem {
         this.hasInheritedAssociation = hasInheritedAssociation;
     }
 
-    public boolean hasInheritedAssociation() {
+    public boolean isTargetOfInheritedAssociation() {
         return this.hasInheritedAssociation;
     }
 

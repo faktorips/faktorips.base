@@ -22,8 +22,9 @@ import org.faktorips.devtools.core.model.type.IType;
 
 public class SubtypeComponentNode extends ComponentNode {
 
-    public SubtypeComponentNode(IType value, IIpsProject sourceProject) {
+    public SubtypeComponentNode(IType value, ComponentNode parent, IIpsProject sourceProject) {
         super(value, sourceProject);
+        this.setParent(parent);
     }
 
     /**
@@ -40,7 +41,7 @@ public class SubtypeComponentNode extends ComponentNode {
             IIpsProject sourceProject) {
         List<SubtypeComponentNode> componentNodes = new ArrayList<SubtypeComponentNode>();
         for (IType component : components) {
-            SubtypeComponentNode componentNode = new SubtypeComponentNode(component, sourceProject);
+            SubtypeComponentNode componentNode = new SubtypeComponentNode(component, parent, sourceProject);
             componentNode.setParent(parent);
             componentNodes.add(componentNode);
         }

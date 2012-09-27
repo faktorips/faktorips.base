@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
@@ -180,6 +181,60 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         assertTrue(children[0] instanceof SubtypeComponentNode);
         assertEquals(typeB, ((SubtypeComponentNode)children[0]).getValue());
         assertEquals(typeA, ((ComponentNode)children[0]).getParent().getValue());
+    }
+
+    @Test
+    public void testGetChildren_HasInheritedAssociations() throws CoreException {
+        // setup
+        IIpsProject projectA = newIpsProject();
+        IType typeAA = newPolicyCmptTypeWithoutProductCmptType(projectA, "aA");
+        IType typeAB = newPolicyCmptTypeWithoutProductCmptType(projectA, "aB");
+
+        IIpsProject projectB = newIpsProject();
+        IType typeBA = newPolicyCmptTypeWithoutProductCmptType(projectB, "bA");
+        IType typeBB = newPolicyCmptTypeWithoutProductCmptType(projectB, "bB");
+
+        typeBA.setSupertype(typeAA.getQualifiedName());
+        typeBB.setSupertype(typeAB.getQualifiedName());
+
+        IAssociation association = typeAA.newAssociation();
+        association.setAssociationType(AssociationType.AGGREGATION);
+        association.setTarget(typeAB.getQualifiedName());
+
+        // set project dependencies
+        IIpsObjectPath path = projectB.getIpsObjectPath();
+        path.newIpsProjectRefEntry(projectA);
+        projectB.setIpsObjectPath(path);
+
+        // test
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] children = provider.getChildren(new ComponentNode(typeAB, projectB));
+        assertTrue(((ComponentNode)children[0]).isTargetOfInheritedAssociation());
+    }
+
+    @Test
+    public void testGetChildren_HasNoInheritedAssociations() throws CoreException {
+        // setup
+        IIpsProject projectA = newIpsProject();
+        IType typeAA = newPolicyCmptTypeWithoutProductCmptType(projectA, "aA");
+        IType typeAB = newPolicyCmptTypeWithoutProductCmptType(projectA, "aB");
+
+        IIpsProject projectB = newIpsProject();
+        IType typeBA = newPolicyCmptTypeWithoutProductCmptType(projectB, "bA");
+        IType typeBB = newPolicyCmptTypeWithoutProductCmptType(projectB, "bB");
+
+        typeBA.setSupertype(typeAA.getQualifiedName());
+        typeBB.setSupertype(typeAB.getQualifiedName());
+
+        // set project dependencies
+        IIpsObjectPath path = projectB.getIpsObjectPath();
+        path.newIpsProjectRefEntry(projectA);
+        projectB.setIpsObjectPath(path);
+
+        // test
+        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
+        Object[] children = provider.getChildren(new ComponentNode(typeAB, projectB));
+        assertFalse(((ComponentNode)children[0]).isTargetOfInheritedAssociation());
     }
 
     @Test
