@@ -85,7 +85,7 @@ public interface IProductCmptLinkContainer extends IIpsObjectPartContainer {
      * Checks whether a new link as instance of the given {@link IProductCmptTypeAssociation product
      * component type association} and the given target will be valid.
      * 
-     * @param ipsProject The project whose ips object path is used for the search. This is not
+     * @param ipsProject The project whose IPS object path is used for the search. This is not
      *            necessarily the project this component is an element of.
      * 
      * @return <code>true</code> if a new relation with the given values will be valid,
@@ -104,7 +104,7 @@ public interface IProductCmptLinkContainer extends IIpsObjectPartContainer {
      * <code>true</code> (the link could be moved) the moved link's association will be
      * "standardCoverage", independent of the above/below flag.
      * <p>
-     * With the boolean parameter <code>above</code> specify to move the link above or below the
+     * The boolean parameter <code>above</code> specifies to move the link either above or below the
      * target link.
      * 
      * @param toMove the link you want to move

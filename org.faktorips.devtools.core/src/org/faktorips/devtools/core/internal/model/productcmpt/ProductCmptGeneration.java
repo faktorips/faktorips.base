@@ -368,7 +368,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean before) {
+    public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean inFrontOf) {
         // if toMove and target are the same we have to do nothing
         if (toMove == target) {
             return true;
@@ -384,7 +384,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return false;
         }
         int index = links.indexOf(target);
-        if (!before) {
+        if (!inFrontOf) {
             index++;
         }
         links.add(index, toMove);
