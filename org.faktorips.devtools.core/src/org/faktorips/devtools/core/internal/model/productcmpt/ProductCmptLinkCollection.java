@@ -22,7 +22,6 @@ import org.apache.commons.lang.NullArgumentException;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
@@ -48,6 +47,8 @@ public class ProductCmptLinkCollection {
     /**
      * Returns all links in this collection for a given association. Returns an empty list if there
      * are no associations for the given name.
+     * <p>
+     * The links are returned in the same order they were inserted into this collection.
      * 
      * @param associationName the association name whose instances (links) should be returned.
      */
@@ -89,14 +90,15 @@ public class ProductCmptLinkCollection {
 
     /**
      * Returns all links in this collection.
-     * 
-     * 
-     * The associations are returned in their natural order. This includes the order in which the
-     * associations are defined in the corresponding {@link IProductCmptType} and the order of links
-     * for a specific association.
      * <p>
-     * e.g. links for the association "standardCoverages" will be returned in front of links for
-     * "additionalCoverages" if these associations were defined in the model that way. All links for
+     * The links are returned in a consistent order that is mostly defined by their insertion order.
+     * Firstly all links are ordered by their original association. Which means first all links for
+     * association "oneAssociation" are returned then all links for "anotherAssociation" follow. The
+     * order of those associations is defined by the occurrence of link instances. The links for
+     * each association are returned in the same order they were inserted into this collection.
+     * <p>
+     * e.g. links for the association "standardCoverages" will be returned above (or in front of)
+     * links for "additionalCoverages" if these associations were inserted that way. All links for
      * "additionalCoverages" will be returned in the order they are defined in the product component
      * (but after all "standardCoverages"-links).
      */
@@ -168,12 +170,72 @@ public class ProductCmptLinkCollection {
         return false;
     }
 
-    public void insertLink(IProductCmptLink link, IProductCmptLink insertInFrontOf) {
-
+    /**
+     * Adds <code>link</code> to this container and places it above (or in front of) the link
+     * <code>insertAbove</code>. Not though, that this does not necessarily mean <code>link</code>
+     * is returned above <code>insertAbove</code> when calling {@link #getLinks()}. The specified
+     * order is only retained if both links are instance of the same association.
+     * 
+     * @param link the link to insert
+     * @param insertAbove the link above (or in front of) which the link should be inserted. Ignored
+     *            if <code>null</code> or if not part of this collection.
+     */
+    public void insertLink(IProductCmptLink link, IProductCmptLink insertAbove) {
+        if (insertAbove == null) {
+            links.add(link);
+        } else {
+            int index = links.indexOf(insertAbove);
+            if (index == -1) {
+                links.add(link);
+            } else {
+                links.add(index, link);
+            }
+        }
     }
 
-    public void moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean before) {
-
+    /**
+     * Moves the link given with parameter <code>toMove</code> above or below the specified target
+     * link. If the target belongs to another association, the association of the toMove link will
+     * change, too. E.g. if the target link is based on association "standardCoverages" and the link
+     * to move is an instance of the association "additionalCoverages". If calling move() returns
+     * <code>true</code> (the link could be moved) the moved link's association will be
+     * "standardCoverage", independent of the above/below flag.
+     * <p>
+     * The boolean parameter <code>above</code> specifies to move the link either above or below the
+     * target link.
+     * 
+     * @param toMove the link you want to move
+     * @param target target link you want to move the <code>toMove</code>-Link
+     * @param above <code>true</code> to place the link above the target, <code>false</code> to
+     *            place it below the target
+     * 
+     * @return The method returns <code>true</code> if the link could be moved and returns
+     *         <code>false</code> if either the link or the target are <code>null</code> or if one
+     *         of the links is not a part of this container.
+     * 
+     */
+    public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean above) {
+        // if toMove and target are the same we have to do nothing
+        if (toMove == target) {
+            return true;
+        }
+        if (toMove == null || target == null) {
+            return false;
+        }
+        if (!links.contains(target)) {
+            return false;
+        }
+        boolean removed = links.remove(toMove);
+        if (!removed) {
+            return false;
+        }
+        int index = links.indexOf(target);
+        if (!above) {
+            index++;
+        }
+        links.add(index, toMove);
+        toMove.setAssociation(target.getAssociation());
+        return true;
     }
 
     /**

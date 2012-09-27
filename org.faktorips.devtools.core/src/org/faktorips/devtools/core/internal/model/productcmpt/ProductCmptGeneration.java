@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -66,6 +65,8 @@ import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Element;
 
 public class ProductCmptGeneration extends IpsObjectGeneration implements IProductCmptGeneration {
+
+    private final ProductCmptLinkCollection linkCollection = new ProductCmptLinkCollection();
 
     private final PropertyValueCollection propertyValueCollection = new PropertyValueCollection();
 
@@ -307,53 +308,15 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     public boolean canCreateValidLink(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
             throws CoreException {
-
-        if (association == null || target == null || !getIpsSrcFile().isMutable()) {
-            return false;
-        }
-        IProductCmptType type = findProductCmptType(ipsProject);
-        if (type == null) {
-            return false;
-        }
-        // it is not valid to create more than one relation with the same type and target.
-        if (!isFirstRelationOfThisType(association, target, ipsProject)) {
-            return false;
-        }
-        // is correct type
-        IProductCmptType targetType = target.findProductCmptType(ipsProject);
-        if (targetType == null) {
-            return false;
-        }
-        if (!targetType.isSubtypeOrSameType(association.findTarget(ipsProject), ipsProject)) {
-            return false;
-        }
-
-        return this.getLinks(association.getName()).length < association.getMaxCardinality()
-                && ProductCmptLink.willBeValid(target, association, ipsProject);
+        return ProductCmptLinkContainerUtil.canCreateValidLink(this, target, association, ipsProject);
     }
 
-    private boolean isFirstRelationOfThisType(IAssociation association, IProductCmpt target, IIpsProject ipsProject)
-            throws CoreException {
-
-        // TODO Sometimes there were concurrent modification when adding multiple links in the
-        // product component editor at once (add existing --> multi select). This fixes the problem
-        // but does not fix the root of the problem.
-        List<IProductCmptLink> copy = new CopyOnWriteArrayList<IProductCmptLink>(links);
-        for (IProductCmptLink link : copy) {
-            if (link.findAssociation(ipsProject).equals(association)
-                    && link.getTarget().equals(target.getQualifiedName())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private ProductCmptLink newLinkInternal(String id, IProductCmptLink insertBefore) {
+    private ProductCmptLink newLinkInternal(String id, IProductCmptLink insertAbove) {
         ProductCmptLink newRelation = new ProductCmptLink(this, id);
-        if (insertBefore == null) {
+        if (insertAbove == null) {
             links.add(newRelation);
         } else {
-            int index = links.indexOf(insertBefore);
+            int index = links.indexOf(insertAbove);
             if (index == -1) {
                 links.add(newRelation);
             } else {
@@ -368,29 +331,15 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean inFrontOf) {
-        // if toMove and target are the same we have to do nothing
-        if (toMove == target) {
-            return true;
-        }
-        if (toMove == null || target == null) {
-            return false;
-        }
-        if (!links.contains(target)) {
-            return false;
-        }
-        boolean removed = links.remove(toMove);
-        if (!removed) {
-            return false;
-        }
-        int index = links.indexOf(target);
-        if (!inFrontOf) {
-            index++;
-        }
-        links.add(index, toMove);
-        toMove.setAssociation(target.getAssociation());
+    public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean above) {
+        boolean moved = linkCollection.moveLink(toMove, target, above);
+        /*
+         * In 3.8 objectHasChanged() is called if toMove and target are identical, where before it
+         * wasn't. Even though true is returned in that case. Semantically it seems correct to mark
+         * as changed if link could be moved.
+         */
         objectHasChanged();
-        return true;
+        return moved;
     }
 
     @Override

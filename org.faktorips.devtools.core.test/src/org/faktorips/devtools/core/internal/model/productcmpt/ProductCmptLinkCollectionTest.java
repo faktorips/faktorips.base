@@ -81,12 +81,6 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
         when(link1.getAssociation()).thenReturn("anotherAssociation");
 
         List<IProductCmptLink> links = linkCollection.getLinks();
-        assertTrue(links.contains(link1));
-        assertTrue(links.contains(link2));
-        assertTrue(links.contains(link3));
-        assertTrue(links.contains(link4));
-        assertTrue(links.contains(link5));
-
         assertEquals(link1, links.get(0));
         assertEquals(link2, links.get(1));
         assertEquals(link4, links.get(2));
@@ -101,18 +95,11 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
         when(link5.getAssociation()).thenReturn("oneAssociation");
 
         List<IProductCmptLink> links = linkCollection.getLinks();
-        assertTrue(links.contains(link1));
-        assertTrue(links.contains(link2));
-        assertTrue(links.contains(link3));
-        assertTrue(links.contains(link4));
-        assertTrue(links.contains(link5));
-
         assertEquals(link1, links.get(0));
         assertEquals(link3, links.get(1));
         assertEquals(link5, links.get(2));
         assertEquals(link2, links.get(3));
         assertEquals(link4, links.get(4));
-
     }
 
     @Test
@@ -125,13 +112,8 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
     @Test
     public void testGetLinks() {
         setUpCollectionWithLinks();
-        List<IProductCmptLink> links = linkCollection.getLinks();
-        assertTrue(links.contains(link1));
-        assertTrue(links.contains(link2));
-        assertTrue(links.contains(link3));
-        assertTrue(links.contains(link4));
-        assertTrue(links.contains(link5));
 
+        List<IProductCmptLink> links = linkCollection.getLinks();
         assertEquals(link1, links.get(0));
         assertEquals(link3, links.get(1));
         assertEquals(link2, links.get(2));
@@ -140,7 +122,7 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetLinksAsMap() throws Exception {
+    public void testGetLinksAsMap() {
         setUpCollectionWithLinks();
         Map<String, List<IProductCmptLink>> map = linkCollection.getLinksAsMap();
         assertEquals(3, map.keySet().size());
@@ -158,6 +140,35 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
         List<IProductCmptLink> linksYetAnother = map.get("yetAnotherAssociation");
         assertEquals(link5, linksYetAnother.get(0));
         assertEquals(1, linksYetAnother.size());
+    }
+
+    @Test
+    public void testGetLinksAsMap_withNullAssociation() {
+        setUpCollectionWithLinks();
+        IProductCmptLink linkWithNullAssoc = mock(IProductCmptLink.class);
+        setUpAssociationAndID(linkWithNullAssoc, null, "idNullAssoc");
+        linkCollection.addLink(linkWithNullAssoc);
+
+        Map<String, List<IProductCmptLink>> map = linkCollection.getLinksAsMap();
+        assertEquals(4, map.keySet().size());
+
+        List<IProductCmptLink> linksOne = map.get("oneAssociation");
+        assertEquals(link1, linksOne.get(0));
+        assertEquals(link3, linksOne.get(1));
+        assertEquals(2, linksOne.size());
+
+        List<IProductCmptLink> linksAnother = map.get("anotherAssociation");
+        assertEquals(link2, linksAnother.get(0));
+        assertEquals(link4, linksAnother.get(1));
+        assertEquals(2, linksAnother.size());
+
+        List<IProductCmptLink> linksYetAnother = map.get("yetAnotherAssociation");
+        assertEquals(link5, linksYetAnother.get(0));
+        assertEquals(1, linksYetAnother.size());
+
+        List<IProductCmptLink> linksNullAssoc = map.get(null);
+        assertEquals(linkWithNullAssoc, linksNullAssoc.get(0));
+        assertEquals(1, linksNullAssoc.size());
     }
 
     @Test
@@ -316,7 +327,78 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
 
     @Test
     public void testInsertLink() {
+        setUpCollectionWithLinks();
+        IProductCmptLink linkToInsert = mock(IProductCmptLink.class);
+        setUpAssociationAndID(linkToInsert, "oneAssociation", "idX");
+        linkCollection.insertLink(linkToInsert, link3);
 
+        List<IProductCmptLink> links = linkCollection.getLinks();
+        assertEquals(6, links.size());
+
+        assertEquals(link1, links.get(0));
+        assertEquals(linkToInsert, links.get(1));
+        assertEquals(link3, links.get(2));
+        assertEquals(link2, links.get(3));
+        assertEquals(link4, links.get(4));
+        assertEquals(link5, links.get(5));
     }
 
+    /**
+     * linkToInsert belongs to a different association than link3. This test shows that it is
+     * expected that insert does not necessarily ensure the order of links.
+     */
+    @Test
+    public void testInsertLink_DifferentAssociation() {
+        setUpCollectionWithLinks();
+        IProductCmptLink linkToInsert = mock(IProductCmptLink.class);
+        setUpAssociationAndID(linkToInsert, "differentAssociation", "idX");
+        linkCollection.insertLink(linkToInsert, link3);
+
+        List<IProductCmptLink> links = linkCollection.getLinks();
+        assertEquals(6, links.size());
+
+        assertEquals(link1, links.get(0));
+        assertEquals(link3, links.get(1));
+        assertEquals(linkToInsert, links.get(2));
+        assertEquals(link2, links.get(3));
+        assertEquals(link4, links.get(4));
+        assertEquals(link5, links.get(5));
+    }
+
+    @Test
+    public void testInsertLink_aboveNull() {
+        setUpCollectionWithLinks();
+        IProductCmptLink linkToInsert = mock(IProductCmptLink.class);
+        setUpAssociationAndID(linkToInsert, null, "forthAssociation");
+        linkCollection.insertLink(linkToInsert, null);
+
+        List<IProductCmptLink> links = linkCollection.getLinks();
+        assertEquals(6, links.size());
+
+        assertEquals(link1, links.get(0));
+        assertEquals(link3, links.get(1));
+        assertEquals(link2, links.get(2));
+        assertEquals(link4, links.get(3));
+        assertEquals(link5, links.get(4));
+        assertEquals(linkToInsert, links.get(5));
+    }
+
+    @Test
+    public void testInsertLink_aboveNotInCollection() {
+        setUpCollectionWithLinks();
+        IProductCmptLink linkToInsert = mock(IProductCmptLink.class);
+        setUpAssociationAndID(linkToInsert, null, "forthAssociation");
+        IProductCmptLink linkNotInCollection = mock(IProductCmptLink.class);
+        linkCollection.insertLink(linkToInsert, linkNotInCollection);
+
+        List<IProductCmptLink> links = linkCollection.getLinks();
+        assertEquals(6, links.size());
+
+        assertEquals(link1, links.get(0));
+        assertEquals(link3, links.get(1));
+        assertEquals(link2, links.get(2));
+        assertEquals(link4, links.get(3));
+        assertEquals(link5, links.get(4));
+        assertEquals(linkToInsert, links.get(5));
+    }
 }

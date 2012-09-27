@@ -92,6 +92,7 @@ public interface IProductCmptLinkContainer extends IIpsObjectPartContainer {
      *         <code>false</code> otherwise.
      * 
      * @throws CoreException if a problem occur during the search of the type hierarchy.
+     * @see ProductCmptLinkContainerUtil
      */
     public boolean canCreateValidLink(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
             throws CoreException;
