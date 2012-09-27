@@ -72,7 +72,7 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
             }
             if ((element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited())
                     || node.isTargetOfInheritedAssociation()) {
-                overlayImages[IDecoration.TOP_LEFT] = OVERLAY_INHERITED_ASSOCIATION_IMAGE;
+                overlayImages[IDecoration.BOTTOM_RIGHT] = OVERLAY_INHERITED_ASSOCIATION_IMAGE;
                 overlayed = true;
             }
             if (node instanceof AssociationComponentNode) {

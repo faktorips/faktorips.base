@@ -17,13 +17,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.faktorips.devtools.core.internal.model.adapter.IIpsSrcFileWrapper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.IIpsSrcFileViewItem;
 import org.faktorips.util.ArgumentCheck;
 
-class ComponentNode implements IIpsSrcFileViewItem {
+class ComponentNode implements IIpsSrcFileWrapper {
 
     private IType value;
     private IIpsProject sourceProject;
@@ -123,7 +123,7 @@ class ComponentNode implements IIpsSrcFileViewItem {
 
     @Override
     public IIpsSrcFile getWrappedIpsSrcFile() {
-        return this.getIpsSrcFile();
+        return this.getValue().getIpsSrcFile();
     }
 
     @SuppressWarnings("rawtypes")
@@ -131,11 +131,6 @@ class ComponentNode implements IIpsSrcFileViewItem {
     @Override
     public Object getAdapter(Class adapter) {
         return this.getValue().getAdapter(adapter);
-    }
-
-    @Override
-    public IIpsSrcFile getIpsSrcFile() {
-        return this.getValue().getIpsSrcFile();
     }
 
     public void setHasInheritedAssociation(boolean hasInheritedAssociation) {
