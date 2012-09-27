@@ -17,13 +17,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.faktorips.devtools.core.internal.model.adapter.IIpsSrcFileWrapper;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.IpsSrcFileViewItem;
 import org.faktorips.util.ArgumentCheck;
 
-class ComponentNode implements IIpsSrcFileWrapper {
+class ComponentNode extends IpsSrcFileViewItem {
 
     private IType value;
     private IIpsProject sourceProject;
@@ -39,7 +38,7 @@ class ComponentNode implements IIpsSrcFileWrapper {
      * @throws NullPointerException if value or rootProject is null
      */
     public ComponentNode(IType value, IIpsProject sourceProject) {
-
+        super(value.getIpsSrcFile());
         ArgumentCheck.notNull(value, "The value of this node must not be null!"); //$NON-NLS-1$
         ArgumentCheck.notNull(sourceProject, "The rootProject parameter is mandatory"); //$NON-NLS-1$
 
@@ -121,18 +120,6 @@ class ComponentNode implements IIpsSrcFileWrapper {
         return componentNodes;
     }
 
-    @Override
-    public IIpsSrcFile getWrappedIpsSrcFile() {
-        return this.getValue().getIpsSrcFile();
-    }
-
-    @SuppressWarnings("rawtypes")
-    // method defined in supertype, cannot remove the warning here!
-    @Override
-    public Object getAdapter(Class adapter) {
-        return this.getValue().getAdapter(adapter);
-    }
-
     public void setHasInheritedAssociation(boolean hasInheritedAssociation) {
         this.hasInheritedAssociation = hasInheritedAssociation;
     }
@@ -186,5 +173,4 @@ class ComponentNode implements IIpsSrcFileWrapper {
         }
         return true;
     }
-
 }

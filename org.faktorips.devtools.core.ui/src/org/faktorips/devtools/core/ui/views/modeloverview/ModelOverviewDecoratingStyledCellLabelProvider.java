@@ -30,7 +30,6 @@ public class ModelOverviewDecoratingStyledCellLabelProvider extends DecoratingSt
             ILabelDecorator decorator, IDecorationContext decorationContext) {
         super(labelProvider, decorator, decorationContext);
         this.labelProvider = labelProvider;
-
     }
 
     @Override

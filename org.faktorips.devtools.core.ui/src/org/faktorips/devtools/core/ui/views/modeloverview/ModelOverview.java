@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IViewSite;
@@ -138,9 +139,11 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
 
         ColumnViewerToolTipSupport.enableFor(treeViewer);
         labelProvider = new ModelOverviewLabelProvider();
+        IDecoratorManager decoratorManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
+        // decoratorManager.setEnabled(decoratorId, enabled)
+
         DecoratingStyledCellLabelProvider decoratingLabelProvider = new ModelOverviewDecoratingStyledCellLabelProvider(
-                labelProvider, IpsPlugin.getDefault().getWorkbench().getDecoratorManager().getLabelDecorator(),
-                DecorationContext.DEFAULT_CONTEXT);
+                labelProvider, decoratorManager.getLabelDecorator(), DecorationContext.DEFAULT_CONTEXT);
 
         treeViewer.setLabelProvider(decoratingLabelProvider);
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
