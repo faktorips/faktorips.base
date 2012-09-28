@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -71,6 +72,7 @@ import org.w3c.dom.Element;
  */
 public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
+    private final ProductCmptLinkCollection linkCollection = new ProductCmptLinkCollection();
     private final PropertyValueCollection propertyValueCollection = new PropertyValueCollection();
     private String productCmptType = ""; //$NON-NLS-1$
     private String runtimeId = ""; //$NON-NLS-1$
@@ -373,6 +375,10 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if (xmlTagName.equals(IIpsObjectGeneration.TAG_NAME)) {
             return newGenerationInternal(id);
         }
+        if (xmlTagName.equals(IProductCmptLink.TAG_NAME)) {
+            IProductCmptLink newLinkInternal = createAndAddNewLinkInternal(id);
+            return newLinkInternal;
+        }
         if (xmlTagName.equals(AttributeValue.TAG_NAME)) {
             IIpsObjectPart newPartThis = propertyValueCollection.newPropertyValue(this, AttributeValue.TAG_NAME, id);
             return newPartThis;
@@ -386,12 +392,27 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if (part != null) {
             return part;
         }
-        if (IPropertyValue.class.isAssignableFrom(partType)) {
+        if (IPolicyCmptTypeAssociation.class.isAssignableFrom(partType)) {
+            return createAndAddNewLinkInternal(getNextPartId());
+        } else if (IPropertyValue.class.isAssignableFrom(partType)) {
             Class<? extends IPropertyValue> propertyValueType = partType.asSubclass(IPropertyValue.class);
             IPropertyValue newPart = propertyValueCollection.newPropertyValue(this, getNextPartId(), propertyValueType);
             return newPart;
         }
         return null;
+    }
+
+    /**
+     * Creates a link without a corresponding association name. The association thus remains
+     * undefined. Moreover the association must not be set as this method is used for XML
+     * initialization which in turn must not trigger value changes (and setAssociation() would).
+     * 
+     * @param id the future part id of the new link
+     */
+    private IProductCmptLink createAndAddNewLinkInternal(String id) {
+        ProductCmptLink newLink = new ProductCmptLink(this, id);
+        linkCollection.addLink(newLink);
+        return newLink;
     }
 
     @Override
@@ -412,8 +433,10 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     protected IIpsElement[] getChildrenThis() {
         IIpsElement[] childrenThis = super.getChildrenThis();
-        List<IIpsElement> children = new ArrayList<IIpsElement>(propertyValueCollection.getAllPropertyValues());
+        List<IIpsElement> children = new ArrayList<IIpsElement>();
         children.addAll(Arrays.asList(childrenThis));
+        children.addAll(propertyValueCollection.getAllPropertyValues());
+        children.addAll(getLinksAsList());
         return children.toArray(new IIpsElement[children.size()]);
     }
 
@@ -422,7 +445,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if (super.addPartThis(part)) {
             return true;
         }
-        if (part instanceof IPropertyValue) {
+        if (part instanceof IProductCmptLink) {
+            return linkCollection.addLink((IProductCmptLink)part);
+        } else if (part instanceof IPropertyValue) {
             IPropertyValue propertyValue = (IPropertyValue)part;
             return propertyValueCollection.addPropertyValue(propertyValue);
         } else {
@@ -435,7 +460,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if (super.removePartThis(part)) {
             return true;
         }
-        if (part instanceof IPropertyValue) {
+        if (part instanceof IProductCmptLink) {
+            return linkCollection.remove((IProductCmptLink)part);
+        } else if (part instanceof IPropertyValue) {
             IPropertyValue propertyValue = (IPropertyValue)part;
             return propertyValueCollection.removePropertyValue(propertyValue);
         } else {
@@ -447,6 +474,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     protected void reinitPartCollectionsThis() {
         super.reinitPartCollectionsThis();
         propertyValueCollection.clear();
+        linkCollection.clear();
     }
 
     @Override
@@ -520,51 +548,52 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public int getNumOfLinks() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public IProductCmptLink newLink(String associationName) {
-        // TODO Auto-generated method stub
-        return null;
+        return linkCollection.size();
     }
 
     @Override
     public IProductCmptLink newLink(IProductCmptTypeAssociation association) {
-        // TODO Auto-generated method stub
-        return null;
+        return newLink(association.getName());
     }
 
     @Override
-    public IProductCmptLink newLink(String association, IProductCmptLink insertAbove) {
-        // TODO Auto-generated method stub
-        return null;
+    public IProductCmptLink newLink(String associationName) {
+        IProductCmptLink newLink = linkCollection.createAndAddNewLink(this, associationName, getNextPartId());
+        objectHasChanged();
+        return newLink;
+    }
+
+    @Override
+    public IProductCmptLink newLink(String associationName, IProductCmptLink insertAbove) {
+        IProductCmptLink newLink = linkCollection.createAndInsertNewLink(this, associationName, getNextPartId(),
+                insertAbove);
+        objectHasChanged();
+        return newLink;
     }
 
     @Override
     public boolean canCreateValidLink(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
             throws CoreException {
-        // TODO Auto-generated method stub
-        return false;
+        return ProductCmptLinkContainerUtil.canCreateValidLink(this, target, association, ipsProject);
     }
 
     @Override
     public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean above) {
-        // TODO Auto-generated method stub
-        return false;
+        boolean moved = linkCollection.moveLink(toMove, target, above);
+        if (moved) {
+            objectHasChanged();
+        }
+        return moved;
     }
 
     @Override
     public List<IProductCmptLink> getLinksAsList() {
-        // TODO Auto-generated method stub
-        return null;
+        return linkCollection.getLinks();
     }
 
     @Override
     public List<IProductCmptLink> getLinksAsList(String associationName) {
-        // TODO Auto-generated method stub
-        return null;
+        return linkCollection.getLinks(associationName);
     }
 
     @Override
