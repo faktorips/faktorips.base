@@ -321,8 +321,119 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testMoveLink() {
+    public void testMoveLink_moveNull() {
+        setUpCollectionWithLinks();
 
+        linkCollection.moveLink(null, link3, true);
+
+        List<IProductCmptLink> links = linkCollection.getLinks();
+        assertEquals(link1, links.get(0));
+        assertEquals(link3, links.get(1));
+        assertEquals(link2, links.get(2));
+        assertEquals(link4, links.get(3));
+        assertEquals(link5, links.get(4));
+    }
+
+    @Test
+    public void testMoveLink_moveLinkNotInCollection() {
+        setUpCollectionWithLinks();
+        IProductCmptLink linkNotInCollection = mock(IProductCmptLink.class);
+        setUpAssociationAndID(linkNotInCollection, "differentAssociation", "idX");
+
+        linkCollection.moveLink(linkNotInCollection, link3, true);
+
+        List<IProductCmptLink> links = linkCollection.getLinks();
+        assertEquals(link1, links.get(0));
+        assertEquals(link3, links.get(1));
+        assertEquals(link2, links.get(2));
+        assertEquals(link4, links.get(3));
+        assertEquals(link5, links.get(4));
+    }
+
+    @Test
+    public void testMoveLink_moveAboveNull() {
+        setUpCollectionWithLinks();
+
+        linkCollection.moveLink(link1, null, true);
+
+        List<IProductCmptLink> links = linkCollection.getLinks();
+        assertEquals(link1, links.get(0));
+        assertEquals(link3, links.get(1));
+        assertEquals(link2, links.get(2));
+        assertEquals(link4, links.get(3));
+        assertEquals(link5, links.get(4));
+    }
+
+    @Test
+    public void testMoveLink_moveAboveLinkNotInCollection() {
+        setUpCollectionWithLinks();
+        IProductCmptLink linkNotInCollection = mock(IProductCmptLink.class);
+        setUpAssociationAndID(linkNotInCollection, "differentAssociation", "idX");
+
+        linkCollection.moveLink(link1, linkNotInCollection, true);
+
+        List<IProductCmptLink> links = linkCollection.getLinks();
+        assertEquals(link1, links.get(0));
+        assertEquals(link3, links.get(1));
+        assertEquals(link2, links.get(2));
+        assertEquals(link4, links.get(3));
+        assertEquals(link5, links.get(4));
+    }
+
+    @Test
+    public void testMoveLink_moveAbove() {
+        setUpCollectionWithLinks();
+
+        linkCollection.moveLink(link5, link2, true);
+
+        List<IProductCmptLink> links = linkCollection.getLinks();
+        assertEquals(link1, links.get(0));
+        assertEquals(link3, links.get(1));
+        assertEquals(link5, links.get(2));
+        assertEquals(link2, links.get(3));
+        assertEquals(link4, links.get(4));
+    }
+
+    @Test
+    public void testMoveLink_moveBelow() {
+        setUpCollectionWithLinks();
+
+        linkCollection.moveLink(link1, link4, false);
+
+        List<IProductCmptLink> links = linkCollection.getLinks();
+        assertEquals(link2, links.get(0));
+        assertEquals(link4, links.get(1));
+        assertEquals(link3, links.get(2));
+        assertEquals(link1, links.get(3));
+        assertEquals(link5, links.get(4));
+    }
+
+    @Test
+    public void testMoveLink_moveAboveFirst() {
+        setUpCollectionWithLinks();
+
+        linkCollection.moveLink(link5, link1, true);
+
+        List<IProductCmptLink> links = linkCollection.getLinks();
+        assertEquals(link5, links.get(0));
+        assertEquals(link1, links.get(1));
+        assertEquals(link3, links.get(2));
+        assertEquals(link2, links.get(3));
+        assertEquals(link4, links.get(4));
+    }
+
+    @Test
+    public void testMoveLink_moveBelowLast() {
+        setUpCollectionWithLinks();
+
+        linkCollection.moveLink(link1, link5, false);
+
+        List<IProductCmptLink> links = linkCollection.getLinks();
+        assertEquals(link2, links.get(0));
+        assertEquals(link4, links.get(1));
+        assertEquals(link3, links.get(2));
+        assertEquals(link1, links.get(3));
+        assertEquals(link5, links.get(4));
     }
 
     @Test
@@ -359,9 +470,9 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
 
         assertEquals(link1, links.get(0));
         assertEquals(link3, links.get(1));
-        assertEquals(linkToInsert, links.get(2));
-        assertEquals(link2, links.get(3));
-        assertEquals(link4, links.get(4));
+        assertEquals(link2, links.get(2));
+        assertEquals(link4, links.get(3));
+        assertEquals(linkToInsert, links.get(4));
         assertEquals(link5, links.get(5));
     }
 

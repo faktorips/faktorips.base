@@ -95,12 +95,13 @@ public class ProductCmptLinkCollection {
      * Firstly all links are ordered by their original association. Which means first all links for
      * association "oneAssociation" are returned then all links for "anotherAssociation" follow. The
      * order of those associations is defined by the occurrence of link instances. The links for
-     * each association are returned in the same order they were inserted into this collection.
+     * each association on the other hand are returned in the same order they were inserted into
+     * this collection.
      * <p>
      * e.g. links for the association "standardCoverages" will be returned above (or in front of)
      * links for "additionalCoverages" if these associations were inserted that way. All links for
      * "additionalCoverages" will be returned in the order they are defined in the product component
-     * (but after all "standardCoverages"-links).
+     * editor (but after all "standardCoverages"-links).
      */
     public List<IProductCmptLink> getLinks() {
         List<IProductCmptLink> allLinks = new ArrayList<IProductCmptLink>();

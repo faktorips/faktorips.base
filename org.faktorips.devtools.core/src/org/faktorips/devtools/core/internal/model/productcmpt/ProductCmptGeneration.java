@@ -332,13 +332,18 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean above) {
-        boolean moved = linkCollection.moveLink(toMove, target, above);
-        /*
-         * In 3.8 objectHasChanged() is called if toMove and target are identical, where before it
-         * wasn't. Even though true is returned in that case. Semantically it seems correct to mark
-         * as changed if link could be moved.
-         */
-        objectHasChanged();
+        // boolean moved = linkCollection.moveLink(toMove, target, above);
+        boolean moved = false;
+        if (moved) {
+            /*
+             * In 3.8 objectHasChanged() is now also called if toMove and target are identical,
+             * where before it wasn't. This is because moveLink() returns true in that case (even
+             * though no real "change" happened). However semantically it seems correct to mark as
+             * changed if a link could be moved. Maybe the moveLink() implementation (or java doc)
+             * needs to be re-thought?
+             */
+            objectHasChanged();
+        }
         return moved;
     }
 
