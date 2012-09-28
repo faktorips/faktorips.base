@@ -2,6 +2,6 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="Tasks" link_to="toc.xml#tasks"> 
-	<topic label="Main Topic"  href="html/tasks/maintopic.html"> 
+	<topic label="Main Topic"> 
 	</topic>
 </toc>
