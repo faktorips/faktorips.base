@@ -31,6 +31,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Item;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -224,9 +225,9 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             return result;
         } else if (target instanceof IProductCmptLink) {
             IProductCmptLink targetLink = (IProductCmptLink)target;
-            IProductCmptGeneration generation = targetLink.getProductCmptGeneration();
+            IProductCmptLinkContainer linkContainer = targetLink.getProductCmptLinkContainer();
             boolean before = getCurrentLocation() == LOCATION_BEFORE;
-            return generation.moveLink(link, targetLink, before);
+            return linkContainer.moveLink(link, targetLink, before);
         } else {
             return false;
         }
