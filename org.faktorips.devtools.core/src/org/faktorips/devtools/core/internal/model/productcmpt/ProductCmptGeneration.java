@@ -70,8 +70,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     private final PropertyValueCollection propertyValueCollection = new PropertyValueCollection();
 
-    private List<IProductCmptLink> links = new ArrayList<IProductCmptLink>(0);
-
     public ProductCmptGeneration(ITimedIpsObject ipsObject, String id) {
         super(ipsObject, id);
     }
@@ -265,23 +263,19 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IProductCmptLink[] getLinks() {
-        return links.toArray(new ProductCmptLink[links.size()]);
+        List<IProductCmptLink> result = getLinksAsList();
+        return result.toArray(new ProductCmptLink[result.size()]);
     }
 
     @Override
     public IProductCmptLink[] getLinks(String typeLink) {
-        List<IProductCmptLink> result = new ArrayList<IProductCmptLink>();
-        for (IProductCmptLink link : links) {
-            if (link.getAssociation().equals(typeLink)) {
-                result.add(link);
-            }
-        }
+        List<IProductCmptLink> result = getLinksAsList(typeLink);
         return result.toArray(new ProductCmptLink[result.size()]);
     }
 
     @Override
     public int getNumOfLinks() {
-        return links.size();
+        return linkCollection.size();
     }
 
     @Override
@@ -291,18 +285,17 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IProductCmptLink newLink(String associationName) {
-        ProductCmptLink newRelation = newLinkInternal(getNextPartId());
-        newRelation.setAssociation(associationName);
+        IProductCmptLink newLink = linkCollection.createAndAddNewLink(this, associationName, getNextPartId());
         objectHasChanged();
-        return newRelation;
+        return newLink;
     }
 
     @Override
-    public IProductCmptLink newLink(String associationName, IProductCmptLink insertBefore) {
-        ProductCmptLink newRelation = newLinkInternal(getNextPartId(), insertBefore);
-        newRelation.setAssociation(associationName);
+    public IProductCmptLink newLink(String associationName, IProductCmptLink insertAbove) {
+        IProductCmptLink newLink = linkCollection.createAndInsertNewLink(this, associationName, getNextPartId(),
+                insertAbove);
         objectHasChanged();
-        return newRelation;
+        return newLink;
     }
 
     @Override
@@ -311,29 +304,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return ProductCmptLinkContainerUtil.canCreateValidLink(this, target, association, ipsProject);
     }
 
-    private ProductCmptLink newLinkInternal(String id, IProductCmptLink insertAbove) {
-        ProductCmptLink newRelation = new ProductCmptLink(this, id);
-        if (insertAbove == null) {
-            links.add(newRelation);
-        } else {
-            int index = links.indexOf(insertAbove);
-            if (index == -1) {
-                links.add(newRelation);
-            } else {
-                links.add(index, newRelation);
-            }
-        }
-        return newRelation;
-    }
-
-    private ProductCmptLink newLinkInternal(String id) {
-        return newLinkInternal(id, null);
-    }
-
     @Override
     public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean above) {
-        // boolean moved = linkCollection.moveLink(toMove, target, above);
-        boolean moved = false;
+        boolean moved = linkCollection.moveLink(toMove, target, above);
         if (moved) {
             /*
              * In 3.8 objectHasChanged() is now also called if toMove and target are identical,
@@ -418,7 +391,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                 + getNumOfFormulas() + getNumOfValidationRules() + getNumOfLinks();
         List<IIpsElement> children = new ArrayList<IIpsElement>(size);
         children.addAll(propertyValueCollection.getAllPropertyValues());
-        children.addAll(links);
+        children.addAll(getLinksAsList());
         return children.toArray(new IIpsElement[children.size()]);
     }
 
@@ -426,7 +399,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
         IIpsObjectPart newPart = null;
         if (IPolicyCmptTypeAssociation.class.isAssignableFrom(partType)) {
-            newPart = newLinkInternal(getNextPartId());
+            newPart = createAndAddNewLinkInternal(getNextPartId());
         } else if (IPropertyValue.class.isAssignableFrom(partType)) {
             Class<? extends IPropertyValue> propertyValueType = partType.asSubclass(IPropertyValue.class);
             newPart = propertyValueCollection.newPropertyValue(this, getNextPartId(), propertyValueType);
@@ -438,7 +411,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(IProductCmptLink.TAG_NAME)) {
-            ProductCmptLink newLinkInternal = newLinkInternal(id);
+            IProductCmptLink newLinkInternal = createAndAddNewLinkInternal(id);
             return newLinkInternal;
         } else {
             IIpsObjectPart newPartThis = propertyValueCollection.newPropertyValue(this, xmlTagName, getNextPartId());
@@ -446,11 +419,24 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         }
     }
 
+    /**
+     * Creates a link without a corresponding association name. The association thus remains
+     * undefined. Moreover the association must not be set as this method is used for XML
+     * initialization which in turn must not trigger value changes (and setAssociation() would).
+     * 
+     * @param id the future part id of the new link
+     */
+    private IProductCmptLink createAndAddNewLinkInternal(String id) {
+        ProductCmptLink newLink = new ProductCmptLink(this, id);
+        linkCollection.addLink(newLink);
+        return newLink;
+    }
+
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
         boolean result = false;
         if (part instanceof IProductCmptLink) {
-            result = links.add((IProductCmptLink)part);
+            result = linkCollection.addLink((IProductCmptLink)part);
         } else if (part instanceof IPropertyValue) {
             result = propertyValueCollection.addPropertyValue((IPropertyValue)part);
         }
@@ -460,7 +446,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof IProductCmptLink) {
-            return links.remove(part);
+            return linkCollection.remove((IProductCmptLink)part);
         } else if (part instanceof IPropertyValue) {
             return propertyValueCollection.removePropertyValue((IPropertyValue)part);
         } else {
@@ -471,7 +457,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     protected void reinitPartCollectionsThis() {
         propertyValueCollection.clear();
-        links.clear();
+        linkCollection.clear();
     }
 
     @Override
@@ -653,15 +639,13 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public List<IProductCmptLink> getLinkList() {
-        // TODO Auto-generated method stub
-        return null;
+    public List<IProductCmptLink> getLinksAsList() {
+        return linkCollection.getLinks();
     }
 
     @Override
-    public List<IProductCmptLink> getLinkList(String associationName) {
-        // TODO Auto-generated method stub
-        return null;
+    public List<IProductCmptLink> getLinksAsList(String associationName) {
+        return linkCollection.getLinks(associationName);
     }
 
 }

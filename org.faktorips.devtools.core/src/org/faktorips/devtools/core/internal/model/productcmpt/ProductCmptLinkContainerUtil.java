@@ -70,7 +70,7 @@ public class ProductCmptLinkContainerUtil {
             return false;
         }
 
-        return linkContainer.getLinkList(association.getName()).size() < association.getMaxCardinality()
+        return linkContainer.getLinksAsList(association.getName()).size() < association.getMaxCardinality()
                 && ProductCmptLink.willBeValid(target, association, ipsProject);
     }
 
@@ -82,7 +82,7 @@ public class ProductCmptLinkContainerUtil {
         // TODO Sometimes there were concurrent modification when adding multiple links in the
         // product component editor at once (add existing --> multi select). This fixes the problem
         // but does not fix the root of the problem.
-        for (IProductCmptLink link : linkContainer.getLinkList()) {
+        for (IProductCmptLink link : linkContainer.getLinksAsList()) {
             if (link.findAssociation(ipsProject).equals(association)
                     && link.getTarget().equals(target.getQualifiedName())) {
                 return false;

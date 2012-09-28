@@ -18,6 +18,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.GregorianCalendar;
@@ -67,7 +68,7 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
         linkCollection.addLink(link4);
         linkCollection.addLink(link5);
 
-        assertEquals(5, linkCollection.getLinks().size());
+        assertEquals(5, linkCollection.size());
     }
 
     private void setUpAssociationAndID(IProductCmptLink link, String assoc, String id) {
@@ -212,19 +213,19 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewLink_addsLink() {
+    public void testCreateAndAddNewLink_addsLink() {
         IProductCmptGeneration container = createContainer();
-        linkCollection.newLink(container, "oneAssociation", "id1");
-        linkCollection.newLink(container, "anotherAssociation", "id2");
-        linkCollection.newLink(container, "oneAssociation", "id3");
+        linkCollection.createAndAddNewLink(container, "oneAssociation", "id1");
+        linkCollection.createAndAddNewLink(container, "anotherAssociation", "id2");
+        linkCollection.createAndAddNewLink(container, "oneAssociation", "id3");
 
-        assertEquals(3, linkCollection.getLinks().size());
+        assertEquals(3, linkCollection.size());
     }
 
     @Test
-    public void testNewLink() {
+    public void testCreateAndAddNewLink() {
         IProductCmptGeneration container = createContainer();
-        IProductCmptLink newLink = linkCollection.newLink(container, "oneAssociation", "id1");
+        IProductCmptLink newLink = linkCollection.createAndAddNewLink(container, "oneAssociation", "id1");
         assertEquals("id1", newLink.getId());
         assertEquals(container, newLink.getParent());
         assertEquals("oneAssociation", newLink.getAssociation());
@@ -245,7 +246,7 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
     public void testRemove() {
         setUpCollectionWithLinks();
         linkCollection.remove(link3);
-        assertEquals(4, linkCollection.getLinks().size());
+        assertEquals(4, linkCollection.size());
         assertFalse(linkCollection.getLinks().contains(link3));
     }
 
@@ -253,10 +254,10 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
     public void testRemoveMultipleTimes() {
         setUpCollectionWithLinks();
         linkCollection.remove(link3);
-        assertEquals(4, linkCollection.getLinks().size());
+        assertEquals(4, linkCollection.size());
         assertFalse(linkCollection.getLinks().contains(link3));
         linkCollection.remove(link3);
-        assertEquals(4, linkCollection.getLinks().size());
+        assertEquals(4, linkCollection.size());
         assertFalse(linkCollection.getLinks().contains(link3));
     }
 
@@ -264,7 +265,7 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
     public void testRemove_null() {
         setUpCollectionWithLinks();
         linkCollection.remove(null);
-        assertEquals(5, linkCollection.getLinks().size());
+        assertEquals(5, linkCollection.size());
         assertTrue(linkCollection.getLinks().contains(link3));
     }
 
@@ -278,7 +279,7 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
     public void testClear() {
         setUpCollectionWithLinks();
         linkCollection.clear();
-        assertEquals(0, linkCollection.getLinks().size());
+        assertEquals(0, linkCollection.size());
     }
 
     @Test
@@ -392,6 +393,7 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
         assertEquals(link5, links.get(2));
         assertEquals(link2, links.get(3));
         assertEquals(link4, links.get(4));
+        verify(link5).setAssociation(link2.getAssociation());
     }
 
     @Test
@@ -406,6 +408,7 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
         assertEquals(link3, links.get(2));
         assertEquals(link1, links.get(3));
         assertEquals(link5, links.get(4));
+        verify(link1).setAssociation(link4.getAssociation());
     }
 
     @Test
@@ -420,6 +423,7 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
         assertEquals(link3, links.get(2));
         assertEquals(link2, links.get(3));
         assertEquals(link4, links.get(4));
+        verify(link5).setAssociation(link1.getAssociation());
     }
 
     @Test
@@ -434,6 +438,7 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
         assertEquals(link3, links.get(2));
         assertEquals(link1, links.get(3));
         assertEquals(link5, links.get(4));
+        verify(link1).setAssociation(link5.getAssociation());
     }
 
     @Test
@@ -511,5 +516,16 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
         assertEquals(link4, links.get(3));
         assertEquals(link5, links.get(4));
         assertEquals(linkToInsert, links.get(5));
+    }
+
+    @Test
+    public void testSizeEmpty() {
+        assertEquals(0, linkCollection.size());
+    }
+
+    @Test
+    public void testSize() {
+        setUpCollectionWithLinks();
+        assertEquals(5, linkCollection.size());
     }
 }

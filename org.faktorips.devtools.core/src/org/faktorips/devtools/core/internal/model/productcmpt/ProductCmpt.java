@@ -556,13 +556,13 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public List<IProductCmptLink> getLinkList() {
+    public List<IProductCmptLink> getLinksAsList() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<IProductCmptLink> getLinkList(String associationName) {
+    public List<IProductCmptLink> getLinksAsList(String associationName) {
         // TODO Auto-generated method stub
         return null;
     }

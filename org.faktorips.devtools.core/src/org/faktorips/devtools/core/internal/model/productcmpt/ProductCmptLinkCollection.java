@@ -22,7 +22,6 @@ import org.apache.commons.lang.NullArgumentException;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
  * Contains all {@link IProductCmptLink link} instances for one {@link IProductCmptLinkContainer
@@ -136,27 +135,32 @@ public class ProductCmptLinkCollection {
      * Creates (and returns) a new link.
      * 
      * @param container the container the new link should be part of
-     * @param association the original association the new link is an instance of
-     * @param partId the part id the new link should have
-     * @return the newly creates
-     */
-    public IProductCmptLink newLink(IProductCmptLinkContainer container,
-            IProductCmptTypeAssociation association,
-            String partId) {
-        return null;
-    }
-
-    /**
-     * Creates (and returns) a new link.
-     * 
-     * @param container the container the new link should be part of
      * @param associationName the name of the original association the new link is an instance of
      * @param partId the part id the new link should have
      * @return the newly creates
      */
-    public IProductCmptLink newLink(IProductCmptLinkContainer container, String associationName, String partId) {
+    public IProductCmptLink createAndAddNewLink(IProductCmptLinkContainer container, String associationName, String partId) {
         IProductCmptLink link = createLink(container, associationName, partId);
         addLink(link);
+        return link;
+    }
+
+    /**
+     * Creates (and returns) a new link. The new link is inserted above the link
+     * <code>insertAbove</code> if possible.
+     * 
+     * @param container the container the new link should be part of
+     * @param associationName the name of the original association the new link is an instance of
+     * @param partId the part id the new link should have
+     * @param insertAbove the newly create link is inserted into this collection above this link
+     * @return the newly creates
+     */
+    public IProductCmptLink createAndInsertNewLink(IProductCmptLinkContainer container,
+            String associationName,
+            String partId,
+            IProductCmptLink insertAbove) {
+        IProductCmptLink link = createLink(container, associationName, partId);
+        insertLink(link, insertAbove);
         return link;
     }
 
@@ -283,4 +287,10 @@ public class ProductCmptLinkCollection {
         return links.contains(link);
     }
 
+    /**
+     * Returns the number links currently stored in this collection.
+     */
+    public int size() {
+        return links.size();
+    }
 }
