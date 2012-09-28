@@ -2,4 +2,4 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Help
 Bundle-SymbolicName: org.faktorips.devtools.core.ui.help;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 3.8.0.qualifier
