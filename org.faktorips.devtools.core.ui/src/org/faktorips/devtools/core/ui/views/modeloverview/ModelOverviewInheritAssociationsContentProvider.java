@@ -90,7 +90,6 @@ public final class ModelOverviewInheritAssociationsContentProvider extends Abstr
             try {
                 IType supertype = projectType.findSupertype(project);
 
-                // if
                 if ((supertype == null || !supertype.getIpsProject().equals(project))
                         && !isAssociated(projectType, projectSpecificITypes, allComponentITypes, project,
                                 ASSOCIATION_TYPES)) {
@@ -181,7 +180,7 @@ public final class ModelOverviewInheritAssociationsContentProvider extends Abstr
                 List<IAssociation> supertypeAssociations = new ArrayList<IAssociation>();
                 // collect all relevant supertype-associations
                 while (supertype != null && !supertype.getIpsProject().equals(project)) {
-                    supertypeAssociations.addAll(supertype.getAssociations(ASSOCIATION_TYPES));
+                    supertypeAssociations.addAll(0, supertype.getAssociations(ASSOCIATION_TYPES));
                     supertype = supertype.findSupertype(project);
                 }
 
@@ -189,10 +188,9 @@ public final class ModelOverviewInheritAssociationsContentProvider extends Abstr
                     List<IType> subtypes = findProjectSpecificSubtypes(supertypeAssociation.findTarget(project),
                             project);
                     for (IType subtype : subtypes) {
-                        AssociationComponentNode associationComponentNode = newAssociationComponentNode(
+                        AssociationComponentNode associationComponentNode = newAssociationComponentNode(subtype,
                                 supertypeAssociation, parent, project);
                         associationComponentNode.setInherited(true);
-                        associationComponentNode.setValue(subtype);
                         associationNodes.add(associationComponentNode);
                     }
                 }

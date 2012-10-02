@@ -78,6 +78,10 @@ import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewC
 
 public final class ModelOverview extends ViewPart implements ICollectorFinishedListener {
 
+    private static final String CONTEXT_MENU_GROUP_OPEN = "open"; //$NON-NLS-1$
+
+    private static final String OPEN_PARENT_ASSOCIATION_TYPE_EDITOR_ACTION_ID = "OpenParentAssociationTypeEditorAction"; //$NON-NLS-1$
+
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"; //$NON-NLS-1$
 
     private static final String MENU_GROUP_INFO = "group.info"; //$NON-NLS-1$
@@ -94,6 +98,10 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
     private static final String INITIAL_CONTENT_PROVIDER = "initial_content_provider"; //$NON-NLS-1$
 
     private static final String MODEL_OVERVIEW_CONTENT_PROVIDER_EXTENSION_POINT_ID = "org.faktorips.devtools.core.ui.modelOverviewContentProvider"; //$NON-NLS-1$
+
+    private static final boolean DEFAULT_SHOW_CARDINALITIES = true;
+    private static final boolean DEFAULT_SHOW_ROLENAMES = true;
+    private static final boolean DEFAULT_SHOW_PROJECTNAMES = false;
 
     private IPolicyCmptType toggledPolicyCmptInput;
     private IProductCmptType toggledProductCmptInput;
@@ -210,27 +218,63 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
 
     private void createContextMenu() {
         MenuManager manager = new MenuManager();
-        manager.add(new Separator("open")); //$NON-NLS-1$
+        manager.add(new Separator(CONTEXT_MENU_GROUP_OPEN));
         manager.add(new OpenEditorAction(treeViewer));
         manager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
         manager.add(new GroupMarker(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
+
         final Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
         getSite().registerContextMenu(manager, treeViewer);
         MenuCleaner.addAdditionsCleaner(manager);
 
         manager.addMenuListener(new IMenuListener() {
-
             @Override
             public void menuAboutToShow(IMenuManager manager) {
                 IIpsSrcFile srcFile = getCurrentlySelectedIpsSrcFile();
 
                 if (srcFile == null) { // show the menu only on non-structure nodes
                     contextMenu.setVisible(false);
+                } else {
+                    addOpenSourceAssociationTargetingTypeEditorAction(manager);
                 }
             }
+
         });
 
+    }
+
+    private void addOpenSourceAssociationTargetingTypeEditorAction(IMenuManager manager) {
+        final ComponentNode node = getCurrentlySelectedComponentNode();
+        manager.remove(OPEN_PARENT_ASSOCIATION_TYPE_EDITOR_ACTION_ID);
+        if (node instanceof AssociationComponentNode && ((AssociationComponentNode)node).isInherited()) {
+            Action openParentAssociationTypeEditorAction = new Action() {
+
+                @Override
+                public String getId() {
+                    return OPEN_PARENT_ASSOCIATION_TYPE_EDITOR_ACTION_ID;
+                }
+
+                @Override
+                public void run() {
+                    IpsUIPlugin.getDefault().openEditor(
+                            ((AssociationComponentNode)node).getTargetingType().getIpsSrcFile());
+                }
+
+            };
+            openParentAssociationTypeEditorAction
+                    .setText(Messages.IpsModelOverview_contextMenuOpenAssociationTargetingTypeEditor);
+            manager.appendToGroup(CONTEXT_MENU_GROUP_OPEN, openParentAssociationTypeEditorAction);
+        }
+    }
+
+    private ComponentNode getCurrentlySelectedComponentNode() {
+        TypedSelection<IAdaptable> typedSelection = getSelectionFromSelectionProvider();
+        if (typedSelection == null || !typedSelection.isValid()) {
+            return null;
+        }
+
+        return (ComponentNode)typedSelection.getFirstElement();
     }
 
     private IIpsSrcFile getCurrentlySelectedIpsSrcFile() {
@@ -513,7 +557,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
     }
 
     private Action createToggleProductPolicyAction() {
-        return new Action(Messages.IpsModelOverview_tooltipToggleButton, SWT.TOGGLE) {
+        return new Action(Messages.IpsModelOverview_tooltipToggleButton, SWT.DEFAULT) {
 
             @Override
             public ImageDescriptor getImageDescriptor() {
@@ -700,13 +744,13 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
         if (memento != null) {
             // initialize the label settings
             Boolean showcard = memento.getBoolean(SHOW_CARDINALITIES);
-            showCardinalities = showcard == null ? true : showcard;
+            showCardinalities = showcard == null ? DEFAULT_SHOW_CARDINALITIES : showcard;
 
             Boolean showRoles = memento.getBoolean(SHOW_ROLENAMES);
-            showRolenames = showRoles == null ? true : showRoles;
+            showRolenames = showRoles == null ? DEFAULT_SHOW_ROLENAMES : showRoles;
 
             Boolean showProjects = memento.getBoolean(SHOW_PROJECTS);
-            showProjectnames = showProjects == null ? true : showProjects;
+            showProjectnames = showProjects == null ? DEFAULT_SHOW_PROJECTNAMES : showProjects;
 
             initialContentProvider = memento.getString(INITIAL_CONTENT_PROVIDER);
 

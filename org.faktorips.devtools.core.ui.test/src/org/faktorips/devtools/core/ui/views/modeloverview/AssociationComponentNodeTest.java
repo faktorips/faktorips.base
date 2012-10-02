@@ -14,10 +14,6 @@
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -82,43 +78,5 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
                 .newAssociationComponentNode(association, null, project);
 
         assertEquals(deckung, node.getValue());
-    }
-
-    @Test
-    public void testEncapsulateAssociationComponentTypes_EmptyListInput() throws CoreException {
-        IIpsProject project = newIpsProject();
-        List<AssociationComponentNode> encapsulateAssociationComponentTypes = AssociationComponentNode
-                .encapsulateAssociationComponentTypes(new ArrayList<IAssociation>(), null, project);
-
-        assertTrue(encapsulateAssociationComponentTypes.isEmpty());
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testEncapsulateAssociationComponentTypes_NullListInput() throws CoreException {
-        IIpsProject project = newIpsProject();
-
-        AssociationComponentNode.encapsulateAssociationComponentTypes(null, null, project);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testEncapsulateAssociationComponentTypes_NullProjectAndNonEmptyListInput() throws CoreException {
-        IIpsProject project = newIpsProject();
-        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
-        PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
-
-        IAssociation association = vertrag.newAssociation();
-        association.setTarget(deckung.getQualifiedName());
-        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-
-        ArrayList<IAssociation> associations = new ArrayList<IAssociation>();
-        associations.add(association);
-        AssociationComponentNode.encapsulateAssociationComponentTypes(associations, null, null);
-    }
-
-    @Test
-    public void testEncapsulateAssociationComponentTypes_NullProjectAndEmptyListInput() {
-        List<AssociationComponentNode> encapsulateAssociationComponentTypes = AssociationComponentNode
-                .encapsulateAssociationComponentTypes(new ArrayList<IAssociation>(), null, null);
-        assertTrue(encapsulateAssociationComponentTypes.isEmpty());
     }
 }

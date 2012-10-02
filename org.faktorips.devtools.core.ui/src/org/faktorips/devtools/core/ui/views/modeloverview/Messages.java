@@ -32,9 +32,14 @@ public final class Messages extends NLS {
     public static String IpsModelOverview_menuShowCardinalities_tooltip;
     public static String IpsModelOverview_menuShowRoleName_name;
     public static String IpsModelOverview_menuShowRoleName_tooltip;
+    public static String IpsModelOverview_contextMenuOpenAssociationTargetingTypeEditor;
     public static String IpsModelOverview_waitingLabel;
     public static String IpsModelOverview_emptyMessage;
     public static String IpsModelOverview_menuShowProjects_name;
     public static String IpsModelOverview_menuShowProjects_tooltip;
     public static String IpsModelOverview_NothingToShow_message;
+
+    public static String IpsModelOverview_tooltipInheritedAssociations;
+    public static String IpsModelOverview_tooltipHasInheritedAssociation;
+
 }

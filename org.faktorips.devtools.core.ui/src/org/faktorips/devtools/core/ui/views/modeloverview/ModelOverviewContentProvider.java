@@ -212,8 +212,11 @@ public final class ModelOverviewContentProvider extends AbstractModelOverviewCon
                 AssociationType.COMPOSITION_MASTER_TO_DETAIL, AssociationType.AGGREGATION);
         if (!associations.isEmpty()) {
             List<AssociationComponentNode> compositeNodeChildren = new ArrayList<AssociationComponentNode>();
-            compositeNodeChildren.addAll(AssociationComponentNode.encapsulateAssociationComponentTypes(associations,
-                    parent, parent.getSourceIpsProject()));
+
+            for (IAssociation association : associations) {
+                compositeNodeChildren.add(AssociationComponentNode.newAssociationComponentNode(association, parent,
+                        parent.getSourceIpsProject()));
+            }
             return compositeNodeChildren;
         }
         return null;

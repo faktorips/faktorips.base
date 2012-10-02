@@ -208,7 +208,7 @@ public final class ModelOverviewLabelProvider extends LabelProvider implements I
     }
 
     /**
-     * @see #setShowProjects(boolean).
+     * @see #setShowProjects(boolean) .
      */
     public boolean getShowProjects() {
         return this.showProjects;
@@ -235,9 +235,10 @@ public final class ModelOverviewLabelProvider extends LabelProvider implements I
         if (element instanceof ComponentNode) {
             if (element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited()) {
                 AssociationComponentNode node = (AssociationComponentNode)element;
-                text += "Dieser Beziehungsknoten wurde von " + node.getTargetingType().getQualifiedName() + " geerbt."; //$NON-NLS-1$ //$NON-NLS-2$
+                text += Messages.IpsModelOverview_tooltipInheritedAssociations
+                        + node.getTargetingType().getQualifiedName();
             } else if (((ComponentNode)element).isTargetOfInheritedAssociation()) {
-                text += "Dieser Knoten hat mindestens eine vererbte Beziehung die über ein referenziertes Projekt zustande kommt."; //$NON-NLS-1$
+                text += Messages.IpsModelOverview_tooltipHasInheritedAssociation;
             }
             if (!text.isEmpty()) {
                 return text;

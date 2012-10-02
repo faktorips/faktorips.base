@@ -13,10 +13,6 @@
 
 package org.faktorips.devtools.core.ui.views.modeloverview;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -53,6 +49,22 @@ public final class AssociationComponentNode extends ComponentNode {
         this.isDerivedUnion = targetingAssociation.isDerivedUnion();
         this.isSubsetOfADerivedUnion = targetingAssociation.isSubsetOfADerivedUnion();
         this.setParent(parent);
+    }
+
+    /**
+     * Factory method for the creation of new {@link AssociationComponentNode
+     * AssociationComponentNodes}. It extracts all mandatory attributes, except the targetType, for
+     * the underlying {@link ComponentNode}, from the provided {@link IAssociation}.
+     * 
+     * @param targetType the corresponding IType element to this node
+     * @param targetingAssociation the {@link IAssociation} which contains the association target
+     * @param rootProject the {@link IIpsProject} which should be used to compute project references
+     */
+    public static AssociationComponentNode newAssociationComponentNode(IType targetType,
+            IAssociation targetingAssociation,
+            ComponentNode parent,
+            IIpsProject rootProject) {
+        return new AssociationComponentNode(targetType, parent, rootProject, targetingAssociation);
     }
 
     /**
@@ -99,26 +111,6 @@ public final class AssociationComponentNode extends ComponentNode {
      */
     public boolean isInherited() {
         return this.isInherited;
-    }
-
-    /**
-     * Encapsulates a {@link List} of {@link IAssociation IAssociations} into a {@link List} of
-     * {@link AssociationComponentNode AssociationComponentNodes}.
-     * 
-     * @param associations the elements which should be encapsulated
-     * @param parent the parent {@link ComponentNode} for this set of associations
-     * @param rootProject the selected {@link IIpsProject}
-     */
-    protected static List<AssociationComponentNode> encapsulateAssociationComponentTypes(Collection<IAssociation> associations,
-            ComponentNode parent,
-            IIpsProject rootProject) {
-        List<AssociationComponentNode> componentNodes = new ArrayList<AssociationComponentNode>();
-        for (IAssociation association : associations) {
-            AssociationComponentNode newAssociationComponentNode = AssociationComponentNode
-                    .newAssociationComponentNode(association, parent, rootProject);
-            componentNodes.add(newAssociationComponentNode);
-        }
-        return componentNodes;
     }
 
     @Override
