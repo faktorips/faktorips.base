@@ -20,7 +20,6 @@
 		<module>../../org.faktorips.devtools.ant</module>
 		<module>../../org.faktorips.devtools.core</module>
 		<module>../../org.faktorips.devtools.core.ui</module>
-		<module>../../org.faktorips.devtools.core.ui.help</module>
 		<module>../../org.faktorips.devtools.htmlexport</module>
 		<module>../../org.faktorips.devtools.htmlexport.nl1</module>
 		<module>../../org.faktorips.devtools.stdbuilder</module>
