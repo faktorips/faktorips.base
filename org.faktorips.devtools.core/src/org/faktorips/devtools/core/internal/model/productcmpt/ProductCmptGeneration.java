@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,10 +57,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Element;
 
 public class ProductCmptGeneration extends IpsObjectGeneration implements IProductCmptGeneration {
@@ -486,7 +483,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             }
         }
 
-        new AssociationsValidator(ipsProject, list).start(type);
+        new ProductCmptLinkContainerValidator(ipsProject, this, list).start(type);
 
         IIpsProjectProperties props = getIpsProject().getReadOnlyProperties();
         if (props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()) {
@@ -559,73 +556,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         IValidationRuleConfig ruleConfig = newValidationRuleInternal(ruleToBeConfigured, getNextPartId());
         objectHasChanged();
         return ruleConfig;
-    }
-
-    private class AssociationsValidator extends TypeHierarchyVisitor<IProductCmptType> {
-
-        private final MessageList list;
-
-        public AssociationsValidator(IIpsProject ipsProject, MessageList list) {
-            super(ipsProject);
-            this.list = list;
-        }
-
-        @Override
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
-            List<IAssociation> associations = currentType.getAssociations();
-            for (IAssociation association : associations) {
-                if (association.isDerivedUnion()) {
-                    continue;
-                }
-                IProductCmptLink[] relations = getLinks(association.getTargetRoleSingular());
-
-                // get all messages for the relation types and add them
-                MessageList relMessages = association.validate(ipsProject);
-                if (!relMessages.isEmpty()) {
-                    list.add(relMessages, new ObjectProperty(association.getTargetRoleSingular(), null), true);
-                }
-
-                if (association.getMinCardinality() > relations.length) {
-                    String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
-                    Object[] params = { new Integer(relations.length), associationLabel,
-                            new Integer(association.getMinCardinality()) };
-                    String msg = NLS.bind(Messages.ProductCmptGeneration_msgNotEnoughRelations, params);
-                    ObjectProperty prop1 = new ObjectProperty(this, null);
-                    ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
-                    list.add(new Message(MSGCODE_NOT_ENOUGH_RELATIONS, msg, Message.ERROR, new ObjectProperty[] {
-                            prop1, prop2 }));
-                }
-
-                int maxCardinality = association.getMaxCardinality();
-                if (maxCardinality < relations.length) {
-                    String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
-                    Object[] params = { new Integer(relations.length), "" + maxCardinality, associationLabel }; //$NON-NLS-1$
-                    String msg = NLS.bind(Messages.ProductCmptGeneration_msgTooManyRelations, params);
-                    ObjectProperty prop1 = new ObjectProperty(this, null);
-                    ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
-                    list.add(new Message(MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR, new ObjectProperty[] { prop1,
-                            prop2 }));
-                }
-
-                Set<String> targets = new HashSet<String>();
-                String msg = null;
-                for (IProductCmptLink relation : relations) {
-                    String target = relation.getTarget();
-                    if (!targets.add(target)) {
-                        if (msg == null) {
-                            String associationLabel = IpsPlugin.getMultiLanguageSupport()
-                                    .getLocalizedLabel(association);
-                            msg = NLS.bind(Messages.ProductCmptGeneration_msgDuplicateTarget, associationLabel, target);
-                        }
-                        list.add(new Message(MSGCODE_DUPLICATE_RELATION_TARGET, msg, Message.ERROR, association
-                                .getTargetRoleSingular()));
-                    }
-                }
-            }
-
-            return true;
-        }
-
     }
 
     @Override

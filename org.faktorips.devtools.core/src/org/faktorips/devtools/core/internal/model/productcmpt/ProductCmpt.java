@@ -187,6 +187,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
         list2 = getIpsProject().checkForDuplicateRuntimeIds(new IIpsSrcFile[] { getIpsSrcFile() });
         list.add(list2);
+
+        new ProductCmptLinkContainerValidator(ipsProject, this, list).start(type);
     }
 
     @Override
