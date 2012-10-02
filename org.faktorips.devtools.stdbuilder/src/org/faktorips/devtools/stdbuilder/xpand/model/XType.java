@@ -142,10 +142,9 @@ public abstract class XType extends XClass {
     @Override
     public List<String> getExtendedInterfaces() {
         ArrayList<String> list = new ArrayList<String>();
-        if (hasSupertype() && isGeneratePublishedInterfaces()) {
-            String importStatement = addImport(getJavaClassNaming().getQualifiedClassName(getType(),
-                    BuilderAspect.INTERFACE, getJavaClassNameProvider()));
-            list.add(importStatement);
+        if (hasSupertype()) {
+            String superInterfaceName = getSupertype().getQualifiedName(BuilderAspect.INTERFACE);
+            list.add(addImport(superInterfaceName));
         }
         return list;
     }

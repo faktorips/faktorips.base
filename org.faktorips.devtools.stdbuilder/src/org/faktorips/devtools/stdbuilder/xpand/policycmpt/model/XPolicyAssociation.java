@@ -292,6 +292,14 @@ public class XPolicyAssociation extends XAssociation {
         return "ASSOCIATION_" + constName.toUpperCase();
     }
 
+    public String getConstantNameMaxCardinalityFor() {
+        String constName = getName(isOneToMany());
+        if (isGenerateSeparatedCamelCase()) {
+            constName = StringUtil.camelCaseToUnderscore(constName, false);
+        }
+        return "MAX_MULTIPLICITY_OF_" + constName.toUpperCase();
+    }
+
     public String getOldValueVariable() {
         return "old" + StringUtils.capitalize(getName());
     }

@@ -5,15 +5,22 @@
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAssociationExtension»
 
-«DEFINE constantForPropertyName FOR XPolicyAssociation-»
-	«IF !generatePublishedInterfaces-»
+«DEFINE constants FOR XPolicyAssociation-»
+	«IF !compositionDetailToMaster && !derived-»
 	    /**
-	     * «localizedJDoc("FIELD_ASSOCIATION_NAME", name)»
+	     * «localizedJDoc("!!!", name)»
 	     * 
 	     * @generated
 	     */
-	    public final static String «constantNamePropertyName» = "«fieldName»";
+	    public static final IntegerRange «constantNameMaxCardinalityFor» = new «IntegerRange()»(«minCardinality», «maxCardinality»);
 	«ENDIF-»
+
+    /**
+     * «localizedJDoc("FIELD_ASSOCIATION_NAME", name)»
+     * 
+     * @generated
+     */
+    public final static String «constantNamePropertyName» = "«fieldName»";
 «ENDDEFINE»
 
 «DEFINE field FOR XPolicyAssociation-»
@@ -44,77 +51,91 @@
 	«ENDIF-»
 «ENDDEFINE»
 	
-«DEFINE methods FOR XPolicyAssociation-»
-	«EXPAND Association::getNumOf-»
-	«EXPAND contains-»
-	«EXPAND getters-»
-	«EXPAND setterOrAdder-»
-	«EXPAND newChildMethods-»
-	«EXPAND remove-»
-	«EXPAND Association::abstractMethods»
+«DEFINE methods(boolean interface) FOR XPolicyAssociation-»
+	«EXPAND Association::getNumOf(interface)-»
+	«EXPAND contains(interface)-»
+	«EXPAND getters(interface)-»
+	«EXPAND setterOrAdder(interface)-»
+	«EXPAND newChildMethods(interface)-»
+	«EXPAND remove(interface)-»
+	«EXPAND Association::abstractMethods(interface)»
 «ENDDEFINE»
 
-«DEFINE contains FOR XAssociation-»
+«DEFINE contains(boolean interface) FOR XAssociation-»
 	«IF oneToMany-»
 	    /**
-	     * «inheritDocOrJavaDoc("METHOD_CONTAINS_OBJECT")»
+	     * «inheritDocOrJavaDocIf(interface, "METHOD_CONTAINS_OBJECT")»
 	     * 
 	     * @generated
 	     */
-     	«overrideAnnotationForPublishedMethod()-»
-	    public boolean «method(methodNameContains, targetInterfaceName, "objectToTest")» {
+     	«overrideAnnotationForPublishedMethodAndIf(!interface)-»
+	    public boolean «method(methodNameContains, targetInterfaceName, "objectToTest")»
+	    «IF interface-»;«ELSE-»
+	    {
 	    	«IF derivedUnion-»
 		        return «methodNameGetter»().contains(objectToTest);
 	    	«ELSE-»
 		        return «fieldName».contains(objectToTest);
 	    	«ENDIF-»
 	    }
+	    «ENDIF-»
     «ENDIF»
 «ENDDEFINE»
 
-«DEFINE getters FOR XPolicyAssociation-»
+«DEFINE getters(boolean interface) FOR XPolicyAssociation-»
 	«IF generateGetter»
 		«IF oneToMany-»
 		    /**
-		     * «inheritDocOrJavaDoc("METHOD_GET_MANY", getName(true))»
+		     * «inheritDocOrJavaDocIf(interface, "METHOD_GET_MANY", getName(true))»
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethod()-»
-		    public «List_(targetInterfaceName)» «method(methodNameGetter)» {
+		    «overrideAnnotationForPublishedMethodAndIf(!interface)-»
+		    public «List_(targetInterfaceName)» «method(methodNameGetter)»
+		    «IF interface-»;«ELSE-»
+		    {
 		        return «Collections()».unmodifiableList(«fieldName»);
 		    }
-		
+		    «ENDIF»
+
 		    /**
-		     * «inheritDocOrJavaDoc("METHOD_GET_REF_OBJECT_BY_INDEX", name)»
+		     * «inheritDocOrJavaDocIf(interface, "METHOD_GET_REF_OBJECT_BY_INDEX", name)»
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethod()-»
-		    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")» {
+		    «overrideAnnotationForPublishedMethodAndIf(!interface)-»
+		    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
+		    «IF interface-»;«ELSE-»
+		    {
 		        return «fieldName».get(index);
 		    }
+		    «ENDIF»
 	    «ELSE-»
 		    /**
-		     * «inheritDocOrJavaDoc("METHOD_GET_ONE", name)»
+		     * «inheritDocOrJavaDocIf(interface, "METHOD_GET_ONE", name)»
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethod()-»
-		    public «targetInterfaceName» «method(methodNameGetter)» {
+		    «overrideAnnotationForPublishedMethodAndIf(!interface)-»
+		    public «targetInterfaceName» «method(methodNameGetter)»
+		    «IF interface-»;«ELSE-»
+		    {
 		        return «fieldName»;
 		    }
+		    «ENDIF»
 	    «ENDIF-»
     «ENDIF»
     «IF generateQualifiedGetter»
 	    /**
-	     * «inheritDocOrJavaDoc("METHOD_GET_REF_OBJECT_BY_QUALIFIER", name)»
+	     * «inheritDocOrJavaDocIf(interface, "METHOD_GET_REF_OBJECT_BY_QUALIFIER", name)»
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotationForPublishedMethod()-»
+	    «overrideAnnotationForPublishedMethodAndIf(!interface)-»
 	     «IF oneToManyIgnoringQualifier-»
-		    public  «List_(targetInterfaceName)» «method(methodNameGetSingle, targetProductCmptInterfaceName, "qualifier")» {
+		    public  «List_(targetInterfaceName)» «method(methodNameGetSingle, targetProductCmptInterfaceName, "qualifier")»
+		    «IF interface-»;«ELSE-»
+		    {
 		        if (qualifier == null) {
 		            return null;
 		        }
@@ -140,8 +161,11 @@
 		        «ENDIF-»
 		        return result;
 		    }
+		   	«ENDIF-»
 		«ELSE-»
-		    public  «targetInterfaceName» «method(methodNameGetSingle, targetProductCmptInterfaceName, "qualifier")» {
+		    public  «targetInterfaceName» «method(methodNameGetSingle, targetProductCmptInterfaceName, "qualifier")»
+		     «IF interface-»;«ELSE-»
+		    {
 		        if (qualifier == null) {
 		            return null;
 		        }
@@ -165,14 +189,15 @@
 		        «ENDIF-»
 		        return null;
 		    }
+		    «ENDIF-»
 		«ENDIF-»
 	«ENDIF»
 «ENDDEFINE»
 
-«DEFINE setterOrAdder FOR XPolicyAssociation-»
+«DEFINE setterOrAdder(boolean interface) FOR XPolicyAssociation-»
 	«IF generateSetter-»
 		«IF compositionDetailToMaster-»
-			«IF !sharedAssociationImplementedInSuperclass-»
+			«IF !sharedAssociationImplementedInSuperclass && !interface-»
 				/**
 			     * @generated
 			     */
@@ -192,12 +217,14 @@
 			«ENDIF-»
 		«ELSE-»
 		    /**
-	 	     * «inheritDocOrJavaDoc("METHOD_SET_OBJECT", name)»
+	 	     * «inheritDocOrJavaDocIf(interface, "METHOD_SET_OBJECT", name)»
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethod()-»
-		    public void «method(methodNameSetOrAdd, targetInterfaceName, "newObject")» {
+		    «overrideAnnotationForPublishedMethodAndIf(!interface)-»
+		    public void «method(methodNameSetOrAdd, targetInterfaceName, "newObject")»
+		     «IF interface-»;«ELSE-»
+		    {
 		    	«IF generateChangeSupport-»
 					«EXPAND PropertyChangeSupport::storeOldValue-»
 			        «methodNameSetOrAddInternal»(newObject);
@@ -206,8 +233,9 @@
 					«EXPAND setterMethodCode-»
 				«ENDIF-»
 		    }
+		    «ENDIF-»
 	
-	    	«IF generateChangeSupport-»
+	    	«IF generateChangeSupport && !interface-»
 			    /** «REM»TODO old codegenerator writes the comment only for compositions«ENDREM»
 			     «IF !typeAssociation-» 
 			     * «localizedJDoc("METHOD_SET_OBJECT_INTERNAL", name)»
@@ -222,12 +250,14 @@
 		«ENDIF-»
 	«ELSEIF generateAddAndRemoveMethod-»
 	    /**
- 	     * «inheritDocOrJavaDoc("METHOD_ADD_OBJECT", name)»
+ 	     * «inheritDocOrJavaDocIf(interface, "METHOD_ADD_OBJECT", name)»
 	     * 
 	     * @generated
 	     */
-	   	«overrideAnnotationForPublishedMethod()-»
-	    public void «method(methodNameSetOrAdd, targetInterfaceName, "objectToAdd")»{
+	   	«overrideAnnotationForPublishedMethodAndIf(!interface)-»
+	    public void «method(methodNameSetOrAdd, targetInterfaceName, "objectToAdd")»
+	    «IF interface-»;«ELSE-»
+	    {
 	    	«IF generateChangeSupport-»
 		        «methodNameSetOrAddInternal»(objectToAdd);
 		        «EXPAND PropertyChangeSupport::notifyNewAssociation("objectToAdd")-»
@@ -235,8 +265,9 @@
 		    	«EXPAND addMethodCode»
 		    «ENDIF-»
 	    }
+	    «ENDIF-»
 	
-    	«IF generateChangeSupport-»
+    	«IF generateChangeSupport && !interface-»
 		    /**
 		     * «localizedJDoc("METHOD_ADD_OBJECT_INTERNAL", name)»
 		     * 
@@ -334,30 +365,35 @@
 	«IF generatePublishedInterfaces-»(«targetClassName»)«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE newChildMethods FOR XPolicyAssociation-»
+«DEFINE newChildMethods(boolean interface) FOR XPolicyAssociation-»
 	«IF generateNewChildMethods-»
 	    /**
- 	     * «inheritDocOrJavaDoc("METHOD_NEW_CHILD", targetClassName, name)»
+ 	     * «inheritDocOrJavaDocIf(interface, "METHOD_NEW_CHILD", targetClassName, name)»
 	     * 
 	     * @generated
 	     */
-		«overrideAnnotationForPublishedMethod()-»
-	    public «targetInterfaceName» «method(methodNameNew)»{
+		«overrideAnnotationForPublishedMethodAndIf(!interface)-»
+	    public «targetInterfaceName» «method(methodNameNew)»
+	    «IF interface-»;«ELSE-»
+	    {
 	        «targetClassName» «variableNameNewInstance» = new «targetClassName»();
 			«EXPAND addOrSetNewInstance-»
 	        «variableNameNewInstance».«initialize()»;
 	        «EXPAND PropertyChangeSupport::notifyNewAssociation(variableNameNewInstance)-»
 	        return «variableNameNewInstance»;
 	    }
+	    «ENDIF-»
 	
 		«IF generateNewChildWithArgumentsMethod-»
 		    /**
- 	     	 * «inheritDocOrJavaDoc("METHOD_NEW_CHILD_WITH_PRODUCTCMPT_ARG", targetClassName, getName(false), targetProductCmptVariableName)»
+ 	     	 * «inheritDocOrJavaDocIf(interface, "METHOD_NEW_CHILD_WITH_PRODUCTCMPT_ARG", targetClassName, getName(false), targetProductCmptVariableName)»
 		     * 
 		     * @generated
 		     */
-			«overrideAnnotationForPublishedMethod()-»
-		    public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceName, targetProductCmptVariableName)» {
+			«overrideAnnotationForPublishedMethodAndIf(!interface)-»
+		    public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceName, targetProductCmptVariableName)»
+		     «IF interface-»;«ELSE-»
+		    {
 		        if («targetProductCmptVariableName» == null) {
 		            return «methodNameNew»();
 		        }
@@ -367,6 +403,7 @@
 		        «EXPAND PropertyChangeSupport::notifyNewAssociation(variableNameNewInstance)-»
 		        return «variableNameNewInstance»;
 		    }
+		    «ENDIF-»
 	    «ENDIF-»
     «ENDIF-»
 «ENDDEFINE»
@@ -407,21 +444,24 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE remove FOR XPolicyAssociation-»
+«DEFINE remove(boolean interface) FOR XPolicyAssociation-»
 	«IF generateAddAndRemoveMethod-»
 	    /**
-	     * «inheritDocOrJavaDoc("METHOD_REMOVE_OBJECT", name)»
+	     * «inheritDocOrJavaDocIf(interface, "METHOD_REMOVE_OBJECT", name)»
 	     * 
 	     * @generated
 	     */
-		«overrideAnnotationForPublishedMethod()-»
-	    public void «method(methodNameRemove, targetInterfaceName, "objectToRemove")»{
+		«overrideAnnotationForPublishedMethodAndIf(!interface)-»
+	    public void «method(methodNameRemove, targetInterfaceName, "objectToRemove")»
+	    «IF interface-»;«ELSE-»
+	    {
 	        if (objectToRemove == null) {
 	            return;
 	        }
 			«EXPAND removeAndDetach-»
 	        «EXPAND PropertyChangeSupport::notifyRemovedAssociation("objectToRemove")-»
 	    }
+	    «ENDIF-»
     «ENDIF-»
 «ENDDEFINE»
 

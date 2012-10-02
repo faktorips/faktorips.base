@@ -57,7 +57,7 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
     /*
      * If this debug switch is set to true we reload the template with every build!
      */
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     private final IJavaClassNameProvider javaClassNameProvider;
 

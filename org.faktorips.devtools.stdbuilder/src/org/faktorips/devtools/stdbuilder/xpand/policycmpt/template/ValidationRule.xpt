@@ -11,10 +11,8 @@
 «ENDDEFINE»
 
 «DEFINE constants FOR XValidationRule-»
-	«IF !generatePublishedInterfaces-»
-		«EXPAND constantMsgCode-»
-		«EXPAND constantRuleName-»
-	«ENDIF-»
+	«EXPAND constantMsgCode-»
+	«EXPAND constantRuleName-»
 «ENDDEFINE»
 
 «DEFINE validationRuleMethods FOR XValidationRule-»

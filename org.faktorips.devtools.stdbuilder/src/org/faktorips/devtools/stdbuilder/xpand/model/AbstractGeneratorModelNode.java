@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
@@ -154,6 +155,11 @@ public abstract class AbstractGeneratorModelNode {
             }
         }
         return description;
+    }
+
+    public String getDescriptionForJDoc() {
+        String description = getDescription();
+        return StringUtils.isEmpty(description) ? "" : "<p>\n" + description;
     }
 
     /**

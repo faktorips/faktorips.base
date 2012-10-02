@@ -143,6 +143,9 @@ EnumValues(AbstractGeneratorModelNode this):
 Range(AbstractGeneratorModelNode this):
 	addImport(org::faktorips::runtime::internal::Range.name);
 
+IntegerRange(AbstractGeneratorModelNode this):
+	addImport(IntegerRange.name);
+
 // EXECPTIONS
 NoSuchElementException(AbstractGeneratorModelNode this) :
 	addImport(NoSuchElementException.name);

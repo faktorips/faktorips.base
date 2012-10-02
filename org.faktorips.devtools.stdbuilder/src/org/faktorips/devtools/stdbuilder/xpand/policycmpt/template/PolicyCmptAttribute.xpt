@@ -25,37 +25,41 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE memberField FOR XPolicyAttribute-»
-	«IF generateField-»
-		«IF constant && !published-»
+«DEFINE constantField FOR XPolicyAttribute-»
+	«IF constant-»
 			/**
 			 * «localizedJDoc("FIELD_ATTRIBUTE_CONSTANT", name)»
 			 *
 			 * @generated
 			 */
 			public static final «javaClassName» «field(fieldName)» = «defaultValueCode»;
-		«ELSEIF !constant-»
-			/**
-			 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
-			 *
-			 * @generated
-			 */
-			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD)-»
-			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)-»
-			private «javaClassName» «field(fieldName)» = «defaultValueCode»;
-		«ENDIF-»
-	«ENDIF-»
+	«ENDIF»
 «ENDDEFINE»
 
-«DEFINE getter FOR XPolicyAttribute-» 
-	«IF generateGetter-»
+«DEFINE memberField FOR XPolicyAttribute-»
+	«IF generateField-»
 		/**
-		 * «inheritDocOrJavaDoc("METHOD_GETVALUE", name, description)»
+		 * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
 		 *
 		 * @generated
 		 */
-		«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
-		public «javaClassName» «method(methodNameGetter)»{
+		«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD)-»
+		«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)-»
+		private «javaClassName» «field(fieldName)» = «defaultValueCode»;
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE getter(boolean interface) FOR XPolicyAttribute-» 
+	«IF generateGetter-»
+		/**
+		 * «inheritDocOrJavaDocIf(interface, "METHOD_GETVALUE", name, descriptionForJDoc)»
+		 *
+		 * @generated
+		 */
+		«overrideAnnotationForPublishedMethodOrIf(!interface && published, overwrite)-»
+		public «javaClassName» «method(methodNameGetter)»
+		«IF interface-»;«ELSE-»
+		{
 			«IF generateField-»
 				return «IF constant»«fieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(fieldName)»«ENDIF»;
 			«ELSE-»
@@ -68,41 +72,48 @@
 				«ENDIF-»
 			«ENDIF-»
 		}
+		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
 
 
-«DEFINE setter FOR XPolicyAttribute-»
+«DEFINE setter(boolean interface) FOR XPolicyAttribute-»
 	«IF generateSetter-»
 		/**
-		 * «inheritDocOrJavaDoc("METHOD_SETVALUE", name, description)»
+		 * «inheritDocOrJavaDocIf(interface, "METHOD_SETVALUE", name, descriptionForJDoc)»
 		 *
 		 * @generated
 		 */
-		«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
-		public void «method(methodNameSetter, javaClassName, "newValue")»{
+		«overrideAnnotationForPublishedMethodOrIf(!interface && published, overwrite)-»
+		public void «method(methodNameSetter, javaClassName, "newValue")»
+		«IF interface-»;«ELSE-»
+		{
 			«EXPAND PropertyChangeSupport::storeOldValue-»
 			this.«fieldName» = «getReferenceOrSafeCopyIfNecessary("newValue")»;
 			«EXPAND PropertyChangeSupport::notify-»
 		}
+		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE allowedValuesMethod FOR XPolicyAttribute-»
+«DEFINE allowedValuesMethod(boolean interface) FOR XPolicyAttribute-»
 	«IF generateGetAllowedValuesFor-»
 		/**
-		 * «inheritDocOrJavaDoc(getJavadocKey("METHOD_GET"), name, description)»
+		 * «inheritDocOrJavaDocIf(interface, getJavadocKey("METHOD_GET"), name, descriptionForJDoc)»
 		 *
 		 * @generated
 		 */
-		«overrideAnnotationForPublishedMethodOrIf(published, overwrite && overwrittenAttribute.generateGetAllowedValuesFor)-»
-		public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»{
+		«overrideAnnotationForPublishedMethodOrIf(!interface && published, overwrite && overwrittenAttribute.generateGetAllowedValuesFor)-»
+		public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»
+		«IF interface-»;«ELSE-»
+		{
 			«IF productRelevant-»
 				return «getProductCmptGeneration(published)».«methodNameGetAllowedValuesFor»(context);
 			«ELSE-»
 				return «IF overwrite»«typeName».«ENDIF»«constantNameValueSet»;
 			«ENDIF-»
 		}
+		«ENDIF-»
 	«ENDIF-»
 «ENDDEFINE»
 

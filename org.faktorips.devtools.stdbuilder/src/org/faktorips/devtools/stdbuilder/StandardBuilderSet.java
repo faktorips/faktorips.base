@@ -344,7 +344,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     protected ClassToInstancesMap<IIpsArtefactBuilder> createBuilders() throws CoreException {
         // create policy component type builders
         ClassToInstancesMap<IIpsArtefactBuilder> builders = new ClassToInstancesMap<IIpsArtefactBuilder>();
-        builders.put(new PolicyCmptInterfaceBuilder(this));
+        builders.put(new PolicyCmptImplClassBuilder(true, this, generatorModelContext, modelService) {
+        });
         PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(false, this,
                 generatorModelContext, modelService);
         builders.put(policyCmptImplClassBuilder);

@@ -2,43 +2,46 @@
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
-«DEFINE getNumOf FOR XAssociation-»
+«DEFINE getNumOf(boolean interface) FOR XAssociation-»
 	«IF oneToMany && !derived -»
-    /**
-     * «inheritDocOrJavaDoc("METHOD_GET_NUM_OF", getName(true))»
-     * 
-     * @generated
-     */
-    «overrideAnnotationForPublishedMethod()-»
-    public int «method(methodNameGetNumOf)» {
-        return «fieldName».size();
-    }
+	    /**
+	     * «inheritDocOrJavaDocIf(interface, "METHOD_GET_NUM_OF", getName(true))»
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotationForPublishedMethodAndIf(!interface)-»
+	    public int «method(methodNameGetNumOf)»
+	    «IF interface-»;«ELSE-»
+	    {
+	        return «fieldName».size();
+	    }
+	    «ENDIF-»
     «ENDIF»
 «ENDDEFINE»
 
-«DEFINE abstractMethods FOR XAssociation-»
-	«IF !generatePublishedInterfaces && derived-»
+«DEFINE abstractMethods(boolean interface) FOR XAssociation-»
+	«IF (!generatePublishedInterfaces || interface) && derived-»
 		«IF masterToDetail-»
 			/**
 		     * «localizedJDoc("METHOD_GET_MANY", getName(true))»
 			 *
 			 * @generated
 			 */
-		     public abstract «List_(targetInterfaceName)» «methodNameGetter»();
+		     public «IF !interface»abstract«ENDIF» «List_(targetInterfaceName)» «methodNameGetter»();
 
 			/**
 		     * «localizedJDoc("METHOD_GET_NUM_OF", getName(true))»
 			 *
 			 * @generated
 			 */
-			 public abstract int «methodNameGetNumOf»();
+			 public «IF !interface»abstract«ENDIF» int «methodNameGetNumOf»();
 		«ELSE-»
 			/**
-		     * «localizedJDoc("METHOD_GET_ONE", getName(true))»
+		     * «localizedJDoc("METHOD_GET_ONE", name)»
 			 *
 			 * @generated
 			 */
-		    public abstract «targetInterfaceName» «methodNameGetter»();
+		    public «IF !interface»abstract«ENDIF» «targetInterfaceName» «methodNameGetter»();
 		«ENDIF-»
 	«ENDIF»
 «ENDDEFINE»

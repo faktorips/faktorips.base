@@ -22,7 +22,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -116,10 +115,7 @@ public class XPolicyCmptClass extends XType {
     @Override
     public List<String> getExtendedInterfaces() {
         List<String> extendedInterfaces = super.getExtendedInterfaces();
-        if (hasSupertype()) {
-            String superInterfaceName = getSupertype().getQualifiedName(BuilderAspect.INTERFACE);
-            extendedInterfaces.add(addImport(superInterfaceName));
-        } else {
+        if (!hasSupertype()) {
             if (isGeneratePublishedInterfaces()) {
                 // in case of not generating published interfaces we use all extended interfaces as
                 // implemented interfaces in the implementation. These interfaces are already

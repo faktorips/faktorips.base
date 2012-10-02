@@ -161,6 +161,14 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         }
     }
 
+    public int getMinCardinality() {
+        return getAssociation().getMinCardinality();
+    }
+
+    public int getMaxCardinality() {
+        return getAssociation().getMaxCardinality();
+    }
+
     /**
      * Getting the type of the association
      * 

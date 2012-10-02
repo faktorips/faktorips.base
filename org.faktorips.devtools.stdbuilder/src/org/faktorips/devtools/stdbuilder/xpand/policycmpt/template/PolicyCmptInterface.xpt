@@ -14,12 +14,42 @@
 		 * @generated
 		 */
 		public interface «getSimpleName(BuilderAspect::INTERFACE)» 
-		«IF hasSupertype()-»
-		«REM»extends «superInterfaceName-»«ENDREM»
+		«IF extendsInterface-»
+			extends «FOREACH extendedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH»
 		«ENDIF-»
 		{
-			
+			«EXPAND PolicyCmptAssociation::constants FOREACH associations»
 		
+			«EXPAND ValidationRule::constants FOREACH validationRules»
+			
+			«FOREACH attributes AS this-»
+				«IF published-»
+					«EXPAND PolicyCmptAttribute::constantForPropertyName-»
+					«EXPAND PolicyCmptAttribute::constantForValueSet-»
+				«ENDIF-»
+			«ENDFOREACH-»
+			
+			«FOREACH attributes AS this-»
+				«IF published-»
+					«EXPAND PolicyCmptAttribute::constantField-»
+				«ENDIF-»
+			«ENDFOREACH-»
+			
+			«FOREACH attributes AS this-»
+				«EXPAND PolicyCmptAttribute::allowedValuesMethod(true)-»
+				«EXPAND PolicyCmptAttribute::getter(true)-»
+				«EXPAND PolicyCmptAttribute::setter(true)-»
+			«ENDFOREACH-»
+
+			«EXPAND PolicyCmptAssociation::methods(true) FOREACH associations-»
+			
+			«IF configured-»
+				«EXPAND PolicyCmpt::getAndSetProductComponent(true) FOR productCmptNode-»
+				«EXPAND PolicyCmpt::getProductComponentGeneration(true) FOR productCmptGenerationNode-»
+			«ENDIF-»
+
+			«EXPAND Methods::method(true) FOREACH methods-»
+
 		}
 	«ENDFILE»
 «ENDDEFINE»

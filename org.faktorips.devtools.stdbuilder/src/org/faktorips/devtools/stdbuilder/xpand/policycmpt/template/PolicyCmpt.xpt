@@ -24,9 +24,10 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	 «getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS)-»
 	public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces»{
 
-		«EXPAND PolicyCmptAssociation::constantForPropertyName FOREACH associations»
-		
-		«EXPAND ValidationRule::constants FOREACH validationRules»
+		«IF !generatePublishedInterfaces-»
+			«EXPAND PolicyCmptAssociation::constants FOREACH associations»
+			«EXPAND ValidationRule::constants FOREACH validationRules»
+		«ENDIF-»
 
 		«FOREACH attributes AS this-»
 			«IF !published || !generatePublishedInterfaces-»
@@ -36,8 +37,8 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		«ENDFOREACH-»
 		
 		«FOREACH attributes AS this-»
-			«IF constant-»
-				«EXPAND PolicyCmptAttribute::memberField-»
+			«IF !published || !generatePublishedInterfaces-»
+				«EXPAND PolicyCmptAttribute::constantField-»
 			«ENDIF-»
 		«ENDFOREACH-»
 		
@@ -56,16 +57,16 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		«EXPAND getterForProductAttributes(this) FOREACH productAttributes-»
 		
 		«FOREACH attributes AS this-»
-			«EXPAND PolicyCmptAttribute::allowedValuesMethod-»
-			«EXPAND PolicyCmptAttribute::getter-»
-			«EXPAND PolicyCmptAttribute::setter-»
+			«EXPAND PolicyCmptAttribute::allowedValuesMethod(false)-»
+			«EXPAND PolicyCmptAttribute::getter(false)-»
+			«EXPAND PolicyCmptAttribute::setter(false)-»
 		«ENDFOREACH-»
 
-		«EXPAND PolicyCmptAssociation::methods FOREACH associations-»
+		«EXPAND PolicyCmptAssociation::methods(false) FOREACH associations-»
 		
 		«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH subsettedDerivedUnions-»
 
-		«EXPAND Methods::method FOREACH methods-»
+		«EXPAND Methods::method(false) FOREACH methods-»
 		
 		«EXPAND getterForTables(this) FOREACH productTables-»
 		
@@ -97,8 +98,8 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	    }
 		
 		«IF configured-»
-			«EXPAND getAndSetProductComponent FOR productCmptNode-»
-			«EXPAND getProductComponentGeneration FOR productCmptGenerationNode-»
+			«EXPAND getAndSetProductComponent(false) FOR productCmptNode-»
+			«EXPAND getProductComponentGeneration(false) FOR productCmptGenerationNode-»
 			«EXPAND generalMethodsForConfiguredPolicyCmpts-»
 		«ENDIF-»
 		
@@ -181,41 +182,50 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	«ENDFOREACH-»
 «ENDDEFINE»
 
-«DEFINE getAndSetProductComponent FOR XProductCmptClass-» 
+«DEFINE getAndSetProductComponent(boolean interface) FOR XProductCmptClass-» 
 		/**
-		 * «inheritDocOrJavaDoc("METHOD_GET_PRODUCTCMPT", name, policyCmptClass.name)»
+		 * «inheritDocOrJavaDocIf(interface, "METHOD_GET_PRODUCTCMPT", name, policyCmptClass.name)»
 		 *
 		 * @generated
 		 */
-		 «overrideAnnotationForPublishedMethod()-»
-		 public «interfaceName» «method(methodNameGetProductCmpt)» {
+		 «overrideAnnotationForPublishedMethodAndIf(!interface)-»
+		 public «interfaceName» «method(methodNameGetProductCmpt)»
+		 «IF interface»;«ELSE-»
+		 {
 		 	return («interfaceName») «getProductComponent()»;
 		 }
+		 «ENDIF»
 
 		/**
-		 * «inheritDocOrJavaDoc("METHOD_SET_PRODUCTCMPT",  name, nameForVariable, "initPropertiesWithConfiguratedDefaults")»
+		 * «inheritDocOrJavaDocIf(interface, "METHOD_SET_PRODUCTCMPT",  name, nameForVariable, "initPropertiesWithConfiguratedDefaults")»
 		 *
 		 * @generated
 		 */
-		 «overrideAnnotationForPublishedMethod()-»
-		 public void «method(methodNameSetProductCmpt, interfaceName, nameForVariable, "boolean", "initPropertiesWithConfiguratedDefaults")» {
+		 «overrideAnnotationForPublishedMethodAndIf(!interface)-»
+		 public void «method(methodNameSetProductCmpt, interfaceName, nameForVariable, "boolean", "initPropertiesWithConfiguratedDefaults")»
+		 «IF interface»;«ELSE-»
+		 {
 	        «setProductComponent(nameForVariable)»;
 	        if (initPropertiesWithConfiguratedDefaults) {
 	            «initialize()»;
 	        }
 		 }
+		 «ENDIF»
 «ENDDEFINE»
 		 
-«DEFINE getProductComponentGeneration FOR XProductCmptGenerationClass-» 
+«DEFINE getProductComponentGeneration(boolean interface) FOR XProductCmptGenerationClass-» 
 		/**
-		 * «inheritDocOrJavaDoc("METHOD_GET_PRODUCTCMPT_GENERATION", generationConceptNameSingular, name, policyCmptClass.name)»
+		 * «inheritDocOrJavaDocIf(interface, "METHOD_GET_PRODUCTCMPT_GENERATION", generationConceptNameSingular, name, policyCmptClass.name)»
 		 *
 		 * @generated
 		 */
-		 «overrideAnnotationForPublishedMethod()-»
-		 public «interfaceName» «method(methodNameGetProductComponentGeneration)» {
+		 «overrideAnnotationForPublishedMethodAndIf(!interface)-»
+		 public «interfaceName» «method(methodNameGetProductComponentGeneration)»
+		 «IF interface»;«ELSE-»
+		 {
 		 	return («interfaceName») «getProductCmptGeneration()»;
 		 }
+		 «ENDIF»
 	
 «ENDDEFINE»
 

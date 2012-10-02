@@ -20,6 +20,13 @@ overrideAnnotation(AbstractGeneratorModelNode this, boolean interfaceMethodImple
 overrideAnnotationForPublishedMethod(AbstractGeneratorModelNode this) :
 	if generatePublishedInterfaces && needOverrideAnnotation(true) then "@Override";
 
+// Use this function for published methods. i.e. methods that are defined in a published interface.
+// Returns the @Override annotation if the condition is true, published interfaces are beeing generated and if the compliance 
+// level is Java 6 or higher. (In Java 5 no @Override must be annotated when implementing an
+// interface method) 
+overrideAnnotationForPublishedMethodAndIf(AbstractGeneratorModelNode this, boolean condition) :
+	if (condition && generatePublishedInterfaces && needOverrideAnnotation(true)) then "@Override";
+
 // Use this function for published methods that require an override in a special condition. i.e. methods 
 // that are defined in a published interface (if generated) but may also be overridden in subclasses. Returns the 
 // @Override annotation if published interfaces are beeing generated and if the  compliance level is Java 6 or 
@@ -73,16 +80,28 @@ inheritDocOrText(AbstractGeneratorModelNode this, String text):
 	generatePublishedInterfaces?"{@inheritDoc}":text;
 	
 inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key):
-	generatePublishedInterfaces?"{@inheritDoc}":localizedJDoc(key);
+	inheritDocOrJavaDocIf(false, key);
 
-inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key, Object param):
-	generatePublishedInterfaces?"{@inheritDoc}":localizedJDoc(key, param);
+inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key, String param):
+	inheritDocOrJavaDocIf(false, key, param);
 	
-inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key, Object param1, Object param2):
-	generatePublishedInterfaces?"{@inheritDoc}":localizedJDoc(key, param1, param2);
+inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key, String param1, String param2):
+	inheritDocOrJavaDocIf(false, key, param1, param2);
 
-inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key, Object param1, Object param2, Object param3):
-	generatePublishedInterfaces?"{@inheritDoc}":localizedJDoc(key, param1, param2, param3);
+inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key, String param1, String param2, String param3):
+	inheritDocOrJavaDocIf(false, key, param1, param2, param3);
+
+inheritDocOrJavaDocIf(AbstractGeneratorModelNode this, boolean generatesInterface, String key):
+	(generatePublishedInterfaces && !generatesInterface)?"{@inheritDoc}":localizedJDoc(key);
+
+inheritDocOrJavaDocIf(AbstractGeneratorModelNode this, boolean generatesInterface, String key, String param):
+	(generatePublishedInterfaces && !generatesInterface)?"{@inheritDoc}":localizedJDoc(key, param);
+
+inheritDocOrJavaDocIf(AbstractGeneratorModelNode this, boolean generatesInterface, String key, String param1, String param2):
+	(generatePublishedInterfaces && !generatesInterface)?"{@inheritDoc}":localizedJDoc(key, param1, param2);
+	
+inheritDocOrJavaDocIf(AbstractGeneratorModelNode this, boolean generatesInterface, String key, String param1, String param2,String param3):
+	(generatePublishedInterfaces && !generatesInterface)?"{@inheritDoc}":localizedJDoc(key, param1, param2, param3);
 	
 abstract(XType this) :
 	if abstract then "abstract";
