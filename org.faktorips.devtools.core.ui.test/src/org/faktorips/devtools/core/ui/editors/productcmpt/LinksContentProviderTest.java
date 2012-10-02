@@ -95,21 +95,6 @@ public class LinksContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testWithTypedProductCmptButExcludedEmpty() throws CoreException {
-
-        IProductCmpt productCmpt = newProductCmpt(type, "product.Product");
-
-        IProductCmptGeneration generation = createGenerationWithAssociations(productCmpt);
-
-        Object[] elements = linksContentProvider.getElements(generation);
-
-        assertEquals(2, elements.length);
-        assertEquals(ASSOCIATION, elements[0]);
-        assertEquals(OTHER_ASSOCIATION, elements[1]);
-
-    }
-
-    @Test
     public void testWithNotTypedProductCmpt() throws CoreException {
 
         IProductCmpt productCmpt = newProductCmpt(ipsProject, "product.Product");

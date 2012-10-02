@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
  * 
  * @author dicker
  */
-final class EmptyAssociationFilter extends ViewerFilter {
+class EmptyAssociationFilter extends ViewerFilter {
 
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {

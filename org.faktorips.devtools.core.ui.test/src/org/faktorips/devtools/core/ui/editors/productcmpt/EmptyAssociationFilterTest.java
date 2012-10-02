@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class EmptyAssociationFilterTest {
+
     private ViewerFilter filter;
     private Viewer viewer;
 
@@ -36,12 +37,12 @@ public class EmptyAssociationFilterTest {
     }
 
     @Test
-    public void testOtherNode() {
+    public void testSomeNode() {
         assertTrue(filter.select(viewer, "TeilkaskoLvbArt", null));
     }
 
     @Test
-    public void testProductCmptGeneration() {
+    public void testFiltering() {
         IProductCmptGeneration generation = mock(IProductCmptGeneration.class);
 
         String association = "TeilkaskoLvbArt";
@@ -49,11 +50,15 @@ public class EmptyAssociationFilterTest {
 
         when(generation.getLinks(association)).thenReturn(new IProductCmptLink[] { link });
         assertTrue(filter.select(viewer, generation, association));
+    }
+
+    @Test
+    public void testNotFiltering() {
+        IProductCmptGeneration generation = mock(IProductCmptGeneration.class);
 
         String emptyAssociation = "EmptyArt";
         when(generation.getLinks(emptyAssociation)).thenReturn(new IProductCmptLink[0]);
 
         assertFalse(filter.select(viewer, generation, emptyAssociation));
-
     }
 }
