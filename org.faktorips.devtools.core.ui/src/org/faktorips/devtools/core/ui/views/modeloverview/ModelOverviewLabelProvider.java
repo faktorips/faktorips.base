@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
-public class ModelOverviewLabelProvider extends LabelProvider implements IStyledLabelProvider {
+public final class ModelOverviewLabelProvider extends LabelProvider implements IStyledLabelProvider {
 
     private static final String PRODUCT_SUBTYPE_IMAGE = "product_subtype.gif"; //$NON-NLS-1$
     private static final String POLICY_SUBTYPE_IMAGE = "policy_subtype.gif"; //$NON-NLS-1$
@@ -169,14 +169,14 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
     }
 
     /**
-     * Defines if cardinalities should be shown on AssociationComponentNode labels
+     * Defines if cardinalities should be shown on AssociationComponentNode labels.
      */
     public void setShowCardinalities(boolean showCardinalities) {
         this.showCardinalities = showCardinalities;
     }
 
     /**
-     * Toggles the show cardinalities state
+     * Toggles the show cardinalities state.
      * 
      * @see #setShowCardinalities(boolean)
      */
@@ -192,14 +192,14 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
     }
 
     /**
-     * Defines if role names should be shown on AssociationComponentNode labels
+     * Defines if role names should be shown on AssociationComponentNode labels.
      */
     public void setShowRolenames(boolean showRolenames) {
         this.showRolenames = showRolenames;
     }
 
     /**
-     * Toggles the show role names state
+     * Toggles the show role names state.
      * 
      * @see #setShowRolenames(boolean)
      */
@@ -208,21 +208,21 @@ public class ModelOverviewLabelProvider extends LabelProvider implements IStyled
     }
 
     /**
-     * @see #setShowProjects(boolean)
+     * @see #setShowProjects(boolean).
      */
     public boolean getShowProjects() {
         return this.showProjects;
     }
 
     /**
-     * Defines if the project names should be shown on ComponentNode labels
+     * Defines if the project names should be shown on ComponentNode labels.
      */
     public void setShowProjects(boolean showProjects) {
         this.showProjects = showProjects;
     }
 
     /**
-     * Toggles the show projects state
+     * Toggles the show projects state.
      * 
      * @see #setShowProjects(boolean)
      */

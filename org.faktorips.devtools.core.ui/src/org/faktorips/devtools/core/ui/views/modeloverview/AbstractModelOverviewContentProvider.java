@@ -95,7 +95,7 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
 
     /**
      * Removes all root-elements whose descendants does not include any element from the
-     * source-project
+     * source-project.
      */
     private static void removeSuperfluousRootElements(List<IType> rootCandidates,
             IIpsProject sourceProject,
@@ -111,7 +111,7 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
 
     /**
      * Checks if the tree of descendants of an {@IType} element contains an element of a
-     * specific {@link IIpsProject}
+     * specific {@link IIpsProject}.
      * 
      * @param element the {@link IType} root element of the tree
      * @param sourceProject the {@link IIpsProject} for which the existence of an element is
@@ -158,7 +158,7 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
     }
 
     /**
-     * Convenience function for {@link #getExistingSupertypeFromList(IType, List)} {@code != null}
+     * Convenience function for {@link #getExistingSupertypeFromList(IType, List)} {@code != null}.
      */
     protected static boolean hasExistingSupertype(IType type, List<IType> components) {
         return getExistingSupertypeFromList(type, components) != null;
@@ -310,10 +310,10 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
      * <li>{@link #getShowTypeState()} returns {@link ShowTypeState ShowTypeState.SHOW_POLICIES}</li>
      * <li>{@link #toggleShowTypeState()}</li>
      * <li>{@link #getShowTypeState()} return {@link ShowTypeState ShowTypeState.SHOW_PRODUCTS}</li>
-     * <br>
+     * </ol>
      * and the other way round
      */
-    public void toggleShowTypeState() {
+    public final void toggleShowTypeState() {
         if (this.showState == ShowTypeState.SHOW_POLICIES) {
             this.showState = ShowTypeState.SHOW_PRODUCTS;
         } else {
@@ -321,14 +321,14 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         }
     }
 
-    public ShowTypeState getShowTypeState() {
+    public final ShowTypeState getShowTypeState() {
         return showState;
     }
 
     /**
      * Sets the show type state of the content provider.
      */
-    public void setShowTypeState(ShowTypeState showState) {
+    public final void setShowTypeState(ShowTypeState showState) {
         this.showState = showState;
     }
 
@@ -353,7 +353,7 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
     }
 
     @Override
-    public Object[] getChildren(Object parentElement) {
+    public final Object[] getChildren(Object parentElement) {
         if (parentElement instanceof ComponentNode) {
             ComponentNode node = (ComponentNode)parentElement;
             if (node.isRepetition()) {
@@ -371,7 +371,7 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
      * 
      * @return a list with the computed children, or an empty list if there are no children
      */
-    List<ComponentNode> getComponentNodeChildren(ComponentNode parent) {
+    final List<ComponentNode> getComponentNodeChildren(ComponentNode parent) {
         List<ComponentNode> children = new ArrayList<ComponentNode>();
 
         List<SubtypeComponentNode> subtypeChildren = getComponentNodeSubtypeChildren(parent);
@@ -408,8 +408,8 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
     abstract List<AssociationComponentNode> getComponentNodeAssociationChildren(ComponentNode parent);
 
     /**
-     * Checks if this type is directly or indirectly associated by another {@link IType} of the same
-     * {@link IIpsProject}
+     * Checks if this type is directly or indirectly associated by another {@link IType} of the
+     * same. {@link IIpsProject}
      * 
      * @param type the {@link IType} for which the associations should be checked
      * @param projectSpecificITypes a {@link List} of {@link IType}s, containing all ITypes of the

@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
-public class AssociationComponentNode extends ComponentNode {
+public final class AssociationComponentNode extends ComponentNode {
 
     private int minCardinality;
     private int maxCardinality;

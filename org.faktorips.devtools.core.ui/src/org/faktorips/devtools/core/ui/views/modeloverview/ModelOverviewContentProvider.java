@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
-public class ModelOverviewContentProvider extends AbstractModelOverviewContentProvider {
+public final class ModelOverviewContentProvider extends AbstractModelOverviewContentProvider {
 
     private List<List<PathElement>> paths = new ArrayList<List<PathElement>>();
     // it is important that this list does not contain a set of AssociationTypes which would cause

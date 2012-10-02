@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
-public class ModelOverviewInheritAssociationsContentProvider extends AbstractModelOverviewContentProvider {
+public final class ModelOverviewInheritAssociationsContentProvider extends AbstractModelOverviewContentProvider {
 
     private final AssociationType[] ASSOCIATION_TYPES = { AssociationType.AGGREGATION,
             AssociationType.COMPOSITION_MASTER_TO_DETAIL };

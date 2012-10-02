@@ -22,7 +22,7 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.custom.StyleRange;
 
-public class ModelOverviewDecoratingStyledCellLabelProvider extends DecoratingStyledCellLabelProvider {
+public final class ModelOverviewDecoratingStyledCellLabelProvider extends DecoratingStyledCellLabelProvider {
 
     private ModelOverviewLabelProvider labelProvider;
 

@@ -35,7 +35,6 @@ class ComponentNode extends IpsSrcFileViewItem {
      * @param value the corresponding IType element to this node
      * @param sourceProject the {@link IIpsProject} which should be used to compute project
      *            references
-     * @throws NullPointerException if value or rootProject is null
      */
     public ComponentNode(IType value, IIpsProject sourceProject) {
         super(value.getIpsSrcFile());

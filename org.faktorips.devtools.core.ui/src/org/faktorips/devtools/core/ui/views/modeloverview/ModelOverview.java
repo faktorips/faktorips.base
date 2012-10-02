@@ -76,7 +76,7 @@ import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMe
 import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ShowTypeState;
 import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ToChildAssociationType;
 
-public class ModelOverview extends ViewPart implements ICollectorFinishedListener {
+public final class ModelOverview extends ViewPart implements ICollectorFinishedListener {
 
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modeloverview.ModelOverview"; //$NON-NLS-1$
 
@@ -413,7 +413,7 @@ public class ModelOverview extends ViewPart implements ICollectorFinishedListene
     }
 
     /**
-     * Initializes the set of content providers, if it has not been initialized yet
+     * Initializes the set of content providers, if it has not been initialized yet.
      */
     private void initContentProviders() {
         if (contentProviderActions == null || contentProviderActions.isEmpty()) {

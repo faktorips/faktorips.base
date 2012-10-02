@@ -83,7 +83,13 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         [Enter extension point usage example here.]
+          &lt;extension
+       point=&quot;org.faktorips.devtools.core.ui.modelOverviewContentProvider&quot;&gt;
+    &lt;contentprovider
+          class=&quot;org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewInheritAssociationsContentProvider&quot;
+          label=&quot;%org.faktorips.devtools.core.ui.views.modeloverview.ModelOverviewInheritAssociationsContentProvider_label&quot;&gt;
+    &lt;/contentprovider&gt;
+ &lt;/extension&gt;
       </documentation>
    </annotation>
 
