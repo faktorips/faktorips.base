@@ -39,11 +39,6 @@ import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 public class LinksContentProvider implements ITreeContentProvider {
 
     private IProductCmptGeneration generation;
-    private boolean excludeEmptyAssociations = false;
-
-    LinksContentProvider(boolean excludeEmptyAssociations) {
-        this.excludeEmptyAssociations = excludeEmptyAssociations;
-    }
 
     @Override
     public Object[] getElements(Object inputElement) {
@@ -82,26 +77,9 @@ public class LinksContentProvider implements ITreeContentProvider {
     private String[] getAssociationNames(IProductCmptType type, IIpsProject ipsProject) throws CoreException {
         NoneDerivedAssociationsCollector collector = new NoneDerivedAssociationsCollector(ipsProject);
         collector.start(type);
-        List<String> associations = filterAssociations(collector.associations);
+        List<String> associations = collector.associations;
 
         return associations.toArray(new String[associations.size()]);
-    }
-
-    private List<String> filterAssociations(List<String> associations) {
-
-        if (!excludeEmptyAssociations || generation == null) {
-            return associations;
-        }
-        List<String> filteredAssociations = new ArrayList<String>();
-
-        for (String association : associations) {
-            IProductCmptLink[] links = generation.getLinks(association);
-            if (links.length > 0) {
-                filteredAssociations.add(association);
-            }
-        }
-
-        return filteredAssociations;
     }
 
     @Override
@@ -145,14 +123,6 @@ public class LinksContentProvider implements ITreeContentProvider {
             return false;
         }
         return children.length > 0;
-    }
-
-    /**
-     * Sets flag, whether associations without link in the given {@link IProductCmptGeneration
-     * product component generation} should be excluded by this content provider or not.
-     */
-    public void setFilterEmptyAssociations(boolean excludeEmptyAssociations) {
-        this.excludeEmptyAssociations = excludeEmptyAssociations;
     }
 
     class NoneDerivedAssociationsCollector extends TypeHierarchyVisitor<IProductCmptType> {

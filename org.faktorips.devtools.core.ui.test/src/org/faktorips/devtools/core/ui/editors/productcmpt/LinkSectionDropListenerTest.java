@@ -95,7 +95,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         cmptC3 = newProductCmpt(typeC, "CmptC3");
         cmptC4 = newProductCmpt(typeC, "CmptC4");
 
-        LinksContentProvider contentProvider = new LinksContentProvider(false);
+        LinksContentProvider contentProvider = new LinksContentProvider();
         treeViewer = new TreeViewer(new Shell(Display.getDefault()));
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setInput(cmptAGeneration);

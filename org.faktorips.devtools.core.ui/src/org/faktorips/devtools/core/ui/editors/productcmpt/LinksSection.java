@@ -29,6 +29,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
@@ -99,6 +100,8 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
     private FilterEmptyAssociationsAction filterEmptyAssociationAction;
 
+    private final ViewerFilter emptyAssociationFilter = new EmptyAssociationFilter();
+
     /**
      * Creates a new RelationsSection which displays relations for the given generation.
      * 
@@ -121,7 +124,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         relationRootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
 
         boolean filterEmptyAssociations = loadFilterEmptyAssociations();
-        LinksContentProvider contentProvider = new LinksContentProvider(filterEmptyAssociations);
+        LinksContentProvider contentProvider = new LinksContentProvider();
         filterEmptyAssociationAction = new FilterEmptyAssociationsAction(filterEmptyAssociations);
 
         if (contentProvider.getElements(generation).length == 0) {
@@ -151,6 +154,8 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
             treeViewer = new TreeViewer(tree);
             treeViewer.setContentProvider(contentProvider);
+            setFilterEmptyAssociations(filterEmptyAssociations);
+
             treeViewer.setInput(generation);
             treeViewer.addSelectionChangedListener(selectionChangedListener);
             dropListener = new LinkSectionDropListener(editor, treeViewer, generation);
@@ -188,12 +193,13 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             return;
         }
 
-        LinksContentProvider contentProvider = (LinksContentProvider)treeViewer.getContentProvider();
+        if (exclude) {
+            treeViewer.addFilter(emptyAssociationFilter);
+        } else {
+            treeViewer.removeFilter(emptyAssociationFilter);
+        }
 
-        contentProvider.setFilterEmptyAssociations(exclude);
         storeFilterEmptyAssociations(exclude);
-
-        treeViewer.refresh();
     }
 
     private boolean loadFilterEmptyAssociations() {

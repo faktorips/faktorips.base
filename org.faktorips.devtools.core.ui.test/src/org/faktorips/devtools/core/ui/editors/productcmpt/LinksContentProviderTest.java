@@ -76,7 +76,7 @@ public class LinksContentProviderTest extends AbstractIpsPluginTest {
         emptyAssociation.setTarget(associatedType.getQualifiedName());
         emptyAssociation.setTargetRoleSingular(EMPTY_ASSOCIATION);
 
-        linksContentProvider = new LinksContentProvider(false);
+        linksContentProvider = new LinksContentProvider();
     }
 
     @Test
@@ -96,8 +96,6 @@ public class LinksContentProviderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testWithTypedProductCmptButExcludedEmpty() throws CoreException {
-
-        linksContentProvider.setFilterEmptyAssociations(true);
 
         IProductCmpt productCmpt = newProductCmpt(type, "product.Product");
 
