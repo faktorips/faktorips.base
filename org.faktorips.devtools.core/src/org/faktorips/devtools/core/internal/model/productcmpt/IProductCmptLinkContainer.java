@@ -22,7 +22,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
 
 /**
  * Common interface for all classes that can contain {@link IProductCmptLink product component
@@ -128,8 +127,9 @@ public interface IProductCmptLinkContainer extends IIpsObjectPartContainer {
      * @throws CoreException if a problem occur during the search of the type hierarchy.
      * @see ProductCmptLinkContainerUtil
      */
-    public boolean canCreateValidLink(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
-            throws CoreException;
+    public boolean canCreateValidLink(IProductCmpt target,
+            IProductCmptTypeAssociation association,
+            IIpsProject ipsProject) throws CoreException;
 
     /**
      * Moves the link given with parameter <code>toMove</code> above or below the specified target

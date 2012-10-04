@@ -296,8 +296,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public boolean canCreateValidLink(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
-            throws CoreException {
+    public boolean canCreateValidLink(IProductCmpt target,
+            IProductCmptTypeAssociation association,
+            IIpsProject ipsProject) throws CoreException {
         return ProductCmptLinkContainerUtil.canCreateValidLink(this, target, association, ipsProject);
     }
 

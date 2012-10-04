@@ -35,7 +35,7 @@ public class ProductCmptLinkContainerUtil {
 
     /**
      * Checks whether a new link as instance of the given {@link IProductCmptTypeAssociation product
-     * component type association} and the given target will be valid.
+     * component type association} and the given target will be valid for the link container.
      * 
      * @param ipsProject The project whose IPS object path is used for the search. This is not
      *            necessarily the project this component is an element of.
@@ -47,10 +47,13 @@ public class ProductCmptLinkContainerUtil {
      */
     public static boolean canCreateValidLink(IProductCmptLinkContainer linkContainer,
             IProductCmpt target,
-            IAssociation association,
+            IProductCmptTypeAssociation association,
             IIpsProject ipsProject) throws CoreException {
 
         if (association == null || target == null || !linkContainer.getProductCmpt().getIpsSrcFile().isMutable()) {
+            return false;
+        }
+        if (!linkContainer.isContainerFor(association)) {
             return false;
         }
         IProductCmptType type = linkContainer.getProductCmpt().findProductCmptType(ipsProject);

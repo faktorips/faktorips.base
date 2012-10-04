@@ -62,6 +62,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
     private ProductCmpt cmptC4;
     private TreeViewer treeViewer;
     private ProductCmptEditor productCmptEditor;
+    private IProductCmptTypeAssociation staticAssociationToB2;
 
     @Override
     @Before
@@ -85,8 +86,13 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         associationToC.setTargetRoleSingular("associationToC");
         associationToC.setTarget(typeC.getQualifiedName());
 
+        staticAssociationToB2 = typeA.newProductCmptTypeAssociation();
+        staticAssociationToB2.setTargetRoleSingular("staticAssociationToB2");
+        staticAssociationToB2.setTarget(typeB.getQualifiedName());
+        staticAssociationToB2.setChangingOverTime(false);
+
         cmptA = newProductCmpt(typeA, "CmptA");
-        cmptAGeneration = (IProductCmptGeneration)cmptA.getFirstGeneration();
+        cmptAGeneration = cmptA.getFirstGeneration();
         cmptB1 = newProductCmpt(typeB, "testPackX.CmptB1");
         cmptB2 = newProductCmpt(typeB, "CmptB2");
         cmptB3 = newProductCmpt(typeB, "testPackY.CmptB3");
@@ -111,7 +117,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         int operation = DND.DROP_LINK;
 
         // check (link) targets
-        IProductCmptLink link = ((IProductCmptGeneration)cmptA.getFirstGeneration()).newLink(associationToB1);
+        IProductCmptLink link = cmptAGeneration.newLink(associationToB1);
         link.setTarget(cmptB1.getQualifiedName());
         assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptB1)));
         assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptB1, cmptB2)));
@@ -129,7 +135,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
 
         int operation = DND.DROP_LINK;
 
-        IProductCmptLink link = ((IProductCmptGeneration)cmptA.getFirstGeneration()).newLink(associationToB1);
+        IProductCmptLink link = cmptA.getFirstGeneration().newLink(associationToB1);
         link.setTarget(cmptB1.getQualifiedName());
         assertTrue(dropListener.validateDrop(link, operation, getTransfer(cmptB2)));
 
@@ -158,7 +164,6 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         IProductCmptLink cLink3 = cmptAGeneration.newLink(associationToC);
         cLink3.setTarget(cmptC3.getQualifiedName());
 
-        // transfertype will be ignored --> just any transferType
         dropListener.setToMove(b1Link1);
         dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
         checkValidateMove(b1Link1, b1Link2, b2Link3, cLink1, cLink2, 1 << 0 | 1 << 1 | 1 << 2 | 0 << 3 | 0 << 4);
@@ -186,6 +191,35 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         dropListener.setToMove(b1Link1, cLink2);
         dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
         checkValidateMove(b1Link1, b1Link2, b2Link3, cLink1, cLink2, 0 << 0 | 0 << 1 | 0 << 2 | 0 << 3 | 0 << 4);
+
+        /*
+         * Static links.
+         */
+        IProductCmptLink staticLinkToB2 = cmptA.newLink(staticAssociationToB2);
+        staticLinkToB2.setTarget(cmptB2.getQualifiedName());
+        IProductCmptLink staticLinkToB1 = cmptA.newLink(staticAssociationToB2);
+        staticLinkToB1.setTarget(cmptB1.getQualifiedName());
+
+        /*
+         * Try to move static link into changing associations: not allowed.
+         */
+        dropListener.setToMove(staticLinkToB2);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
+        checkValidateMove(b1Link1, b1Link2, b2Link3, cLink1, cLink2, 0 << 0 | 0 << 1 | 0 << 2 | 0 << 3 | 0 << 4);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_BEFORE);
+        checkValidateMove(b1Link1, b1Link2, b2Link3, cLink1, cLink2, 0 << 0 | 0 << 1 | 0 << 2 | 0 << 3 | 0 << 4);
+
+        /*
+         * Try to move changing link into static associations: not allowed.
+         */
+        dropListener.setToMove(b1Link1);
+        assertFalse(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, getTransfer(cmptA)));
+
+        /*
+         * Try to move static link into a (matching) static association -> should work.
+         */
+        dropListener.setToMove(staticLinkToB1);
+        assertTrue(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, getTransfer(cmptA)));
     }
 
     private void checkValidateMove(IProductCmptLink b1Link1,
@@ -194,6 +228,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
             IProductCmptLink cLink1,
             IProductCmptLink cLink2,
             int bitmask) {
+        // transfertype will be ignored anyway. Ignore "getTransfer(cmptA)".
         assertEquals((bitmask & 1 << 0) == 1 << 0,
                 dropListener.validateDrop(b1Link1, DND.DROP_MOVE, getTransfer(cmptA)));
         assertEquals((bitmask & 1 << 1) == 1 << 1,
@@ -241,12 +276,12 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
     private void checkCreateNewLink(int linksBeforeTarget, int linksAfterTarget) {
         // drop single component on target with no possibility to add
         assertFalse(dropListener.performDrop(getFilenames(cmptA)));
-        IProductCmptLink[] links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        IProductCmptLink[] links = cmptA.getFirstGeneration().getLinks();
         assertEquals(linksBeforeTarget + linksAfterTarget, links.length);
 
         // drop single component on target with one possibility to add
         assertTrue(dropListener.performDrop(getFilenames(cmptC1)));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(1 + linksBeforeTarget + linksAfterTarget, links.length);
         assertEquals(cmptC1.getQualifiedName(), links[0 + linksBeforeTarget].getTarget());
         assertEquals(associationToC.getName(), links[0 + linksBeforeTarget].getAssociation());
@@ -254,7 +289,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
 
         // drop multiple component on target with one possibility to add
         assertTrue(dropListener.performDrop(getFilenames(cmptC1, cmptC2)));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(2 + linksBeforeTarget + linksAfterTarget, links.length);
         assertEquals(cmptC1.getQualifiedName(), links[0 + linksBeforeTarget].getTarget());
         assertEquals(cmptC2.getQualifiedName(), links[1 + linksBeforeTarget].getTarget());

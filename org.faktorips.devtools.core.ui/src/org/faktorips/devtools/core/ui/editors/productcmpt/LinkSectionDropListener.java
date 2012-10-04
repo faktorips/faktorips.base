@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsFileTransferViewerDropAdapter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -121,18 +122,22 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
                 if (getCurrentOperation() == DND.DROP_MOVE && movedCmptLinks != null) {
                     Object target = getCurrentTarget();
                     List<IProductCmptLink> listCopy = new ArrayList<IProductCmptLink>(movedCmptLinks);
-                    // if you drop a set of components you aspect them in the same order as the
-                    // selection to get this, we need to inverse the list, if insertion is after
-                    // a component
+                    /*
+                     * If you drop a set of components you expect them in the same order as they
+                     * were selected. To achieve this, we need to inverse the list, if insertion is
+                     * after a component.
+                     */
                     if (getCurrentLocation() == LOCATION_AFTER) {
                         Collections.reverse(listCopy);
                     }
                     result = moveLinks(listCopy, target);
                 } else if (getCurrentOperation() == DND.DROP_LINK && data instanceof String[]) {
                     List<IProductCmpt> droppedCmpts = getProductCmpts((String[])data);
-                    // if you drop a set of components you aspect them in the same order as the
-                    // selection to get this, we need to inverse the list, if insertion is after
-                    // a component
+                    /*
+                     * If you drop a set of components you expect them in the same order as they
+                     * were selected. To achieve this, we need to inverse the list, if insertion is
+                     * after a component.
+                     */
                     if (getCurrentLocation() == LOCATION_AFTER) {
                         Collections.reverse(droppedCmpts);
                     }
@@ -160,13 +165,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     private boolean canMove(Object target) {
         // allow moving within the same association
-        String associationName = null;
-        if (target instanceof IProductCmptLink) {
-            IProductCmptLink targetCmptLink = (IProductCmptLink)target;
-            associationName = targetCmptLink.getAssociation();
-        } else if (target instanceof String) {
-            associationName = (String)target;
-        }
+        String associationName = getAssociationName(target);
         boolean result = false;
         List<IProductCmpt> draggedCmpts = new ArrayList<IProductCmpt>();
         try {
@@ -235,7 +234,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     private boolean canCreateLinks(List<IProductCmpt> draggedCmpts, Object target) throws CoreException {
         // should only return true if all dragged cmpts are valid
-        IAssociation association = getAssociation(target);
+        IProductCmptTypeAssociation association = getAssociation(target);
         boolean result = false;
         for (IProductCmpt draggedCmpt : draggedCmpts) {
             if (generation != null
@@ -278,8 +277,8 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     /**
      * Override the determineLocation method because we have only location after or location before
-     * when moving an element. When D&N is not in moving mode, we do not have location feedback, but
-     * we although return the normal determined location.
+     * when moving an element. When D&D is not in moving mode, we do not have location feedback. In
+     * that case we return the normal determined location instead.
      */
     @Override
     protected int determineLocation(DropTargetEvent event) {
@@ -310,15 +309,21 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         movedCmptLinks = selectedLinks;
     }
 
-    private IAssociation getAssociation(Object target) throws CoreException {
+    private String getAssociationName(Object target) {
         String associationName = null;
         if (target instanceof IProductCmptLink) {
-            associationName = ((IProductCmptLink)target).getAssociation();
+            IProductCmptLink targetCmptLink = (IProductCmptLink)target;
+            associationName = targetCmptLink.getAssociation();
         } else if (target instanceof String) {
             associationName = (String)target;
         }
+        return associationName;
+    }
+
+    private IProductCmptTypeAssociation getAssociation(Object target) throws CoreException {
+        String associationName = getAssociationName(target);
         IProductCmptType type = generation.getProductCmpt().findProductCmptType(generation.getIpsProject());
-        return type.findAssociation(associationName, generation.getIpsProject());
+        return (IProductCmptTypeAssociation)type.findAssociation(associationName, generation.getIpsProject());
     }
 
     /**
