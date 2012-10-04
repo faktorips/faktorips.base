@@ -103,6 +103,16 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement {
     public final static String MSGCODE_INVALID_TARGET = MSGCODE_PREFIX + "InvalidTarget"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate a mismatch with the specification in the product
+     * component type association. A message with this message code is added if this link is part of
+     * a container that changes over time but the product component type association is defined as
+     * static (not changing over time), et vice versa.
+     * 
+     * @since 3.8
+     */
+    public final static String MSGCODE_CHANGING_OVER_TIME_MISMATCH = MSGCODE_PREFIX + "ChangingOverTimeMismatch"; //$NON-NLS-1$
+
+    /**
      * Returns the product component this configuration element belongs to.
      */
     public IProductCmpt getProductCmpt();

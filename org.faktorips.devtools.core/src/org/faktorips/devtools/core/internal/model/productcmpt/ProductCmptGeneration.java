@@ -483,7 +483,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             }
         }
 
-        new ProductCmptLinkContainerValidator(ipsProject, this, list).start(type);
+        new ProductCmptLinkContainerValidator(ipsProject, this).startAndAddMessagesToList(type, list);
 
         IIpsProjectProperties props = getIpsProject().getReadOnlyProperties();
         if (props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()) {

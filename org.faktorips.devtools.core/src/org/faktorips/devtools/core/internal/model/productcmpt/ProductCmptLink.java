@@ -209,6 +209,25 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             String msg = NLS.bind(Messages.ProductCmptRelation_msgInvalidTarget, target, associationLabel);
             list.add(new Message(MSGCODE_INVALID_TARGET, msg, Message.ERROR, this, PROPERTY_TARGET));
         }
+
+        validateChangingOverTimeProperty(list, associationObj);
+    }
+
+    private void validateChangingOverTimeProperty(MessageList list, IProductCmptTypeAssociation associationObj) {
+        if (!getProductCmptLinkContainer().isContainerFor(associationObj)) {
+            String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(associationObj);
+            String msg;
+            if (associationObj.isChangingOverTime()) {
+                msg = NLS
+                        .bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfComponent,
+                                associationLabel);
+            } else {
+                msg = NLS
+                        .bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfGeneration,
+                                associationLabel);
+            }
+            list.add(new Message(MSGCODE_CHANGING_OVER_TIME_MISMATCH, msg, Message.ERROR, this, PROPERTY_ASSOCIATION));
+        }
     }
 
     private void validateCardinality(MessageList list, IPolicyCmptTypeAssociation associationObj) {

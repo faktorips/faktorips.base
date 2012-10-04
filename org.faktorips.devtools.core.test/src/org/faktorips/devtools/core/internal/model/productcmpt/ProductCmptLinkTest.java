@@ -360,6 +360,35 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testChangingOverTimeMatchesContainer() throws CoreException {
+        setUpAssociation(true);
+
+        MessageList messageList = link.validate(ipsProject);
+        assertEquals(0, messageList.size());
+    }
+
+    @Test
+    public void testChangingOverTimeDoesNotMatchContainer() throws CoreException {
+        setUpAssociation(false);
+
+        MessageList messageList = link.validate(ipsProject);
+        assertEquals(1, messageList.size());
+    }
+
+    private void setUpAssociation(boolean changingOverTime) throws CoreException {
+        IPolicyCmptType coverageType = newPolicyAndProductCmptType(ipsProject, "TestCoverage", "TestCoverageType");
+        IProductCmptType coverageTypeType = coverageType.findProductCmptType(ipsProject);
+        IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
+        productAssociation.setTarget(coverageTypeType.getQualifiedName());
+        productAssociation.setTargetRoleSingular("CoverageType");
+
+        productAssociation.setChangingOverTime(changingOverTime);
+
+        IProductCmpt targetCmpt = newProductCmpt(coverageTypeType, "TestCoverage");
+        link.setTarget(targetCmpt.getQualifiedName());
+    }
+
+    @Test
     public void testGetCaption() throws CoreException {
         createAssociation();
         assertEquals("foo", link.getCaption(Locale.US));
