@@ -127,6 +127,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
     private Action showCardinalitiesAction;
     private Action showRoleNameAction;
     private Action showProjectsAction;
+    private Action refreshAction;
 
     private List<IAction> contentProviderActions;
 
@@ -172,7 +173,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
         treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));
         provider.addCollectorFinishedListener(this);
 
-        showInfoMessage(Messages.IpsModelOverview_emptyMessage);
+        showInfoMessage(Messages.ModelOverview_emptyMessage);
     }
 
     private void showInfoMessage(String message) {
@@ -263,7 +264,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
 
             };
             openParentAssociationTypeEditorAction
-                    .setText(Messages.IpsModelOverview_contextMenuOpenAssociationTargetingTypeEditor
+                    .setText(Messages.ModelOverview_contextMenuOpenAssociationTargetingTypeEditor
                             + ((AssociationComponentNode)node).getTargetingType().getName());
             manager.appendToGroup(CONTEXT_MENU_GROUP_OPEN, openParentAssociationTypeEditorAction);
         }
@@ -316,7 +317,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
         List<IType> projectSpecificITypes = AbstractModelOverviewContentProvider
                 .getProjectSpecificITypes(result, input);
         if (projectSpecificITypes.isEmpty()) {
-            showInfoMessage(Messages.IpsModelOverview_NothingToShow_message);
+            showInfoMessage(Messages.ModelOverview_NothingToShow_message);
         } else {
             this.treeViewer.setInput(input);
             this.showTree();
@@ -418,11 +419,31 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
         collapseAllAction = new CollapseAllAction(treeViewer);
         toolBarManager.add(collapseAllAction);
 
+        refreshAction = createRefreshAction();
+        toolBarManager.add(refreshAction);
+
         if (providerShowState == ShowTypeState.SHOW_POLICIES) {
             setProductCmptTypeImage();
         } else {
             setPolicyCmptTypeImage();
         }
+    }
+
+    private Action createRefreshAction() {
+        // refresh action
+        Action newRefreshAction = new Action(Messages.ModelOverview_tooltipRefreshContents, IpsUIPlugin
+                .getImageHandling().createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
+            @Override
+            public void run() {
+                refresh();
+            }
+
+            @Override
+            public String getToolTipText() {
+                return Messages.ModelOverview_tooltipRefreshContents;
+            }
+        };
+        return newRefreshAction;
     }
 
     private void initMenu() {
@@ -498,7 +519,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
     }
 
     private Action createShowCardinalitiesAction() {
-        return new Action(Messages.IpsModelOverview_menuShowCardinalities_name, IAction.AS_CHECK_BOX) {
+        return new Action(Messages.ModelOverview_menuShowCardinalities_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
                 return IpsUIPlugin.getImageHandling().createImageDescriptor(CARDINALITY_IMAGE);
@@ -512,13 +533,13 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
 
             @Override
             public String getToolTipText() {
-                return Messages.IpsModelOverview_menuShowCardinalities_tooltip;
+                return Messages.ModelOverview_menuShowCardinalities_tooltip;
             }
         };
     }
 
     private Action createShowRoleNameAction() {
-        return new Action(Messages.IpsModelOverview_menuShowRoleName_name, IAction.AS_CHECK_BOX) {
+        return new Action(Messages.ModelOverview_menuShowRoleName_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
                 return null;
@@ -532,13 +553,13 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
 
             @Override
             public String getToolTipText() {
-                return Messages.IpsModelOverview_menuShowRoleName_tooltip;
+                return Messages.ModelOverview_menuShowRoleName_tooltip;
             }
         };
     }
 
     private Action createShowProjectsAction() {
-        return new Action(Messages.IpsModelOverview_menuShowProjects_name, IAction.AS_CHECK_BOX) {
+        return new Action(Messages.ModelOverview_menuShowProjects_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
                 return null;
@@ -552,13 +573,13 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
 
             @Override
             public String getToolTipText() {
-                return Messages.IpsModelOverview_menuShowProjects_tooltip;
+                return Messages.ModelOverview_menuShowProjects_tooltip;
             }
         };
     }
 
     private Action createToggleProductPolicyAction() {
-        return new Action(Messages.IpsModelOverview_tooltipToggleButton, SWT.DEFAULT) {
+        return new Action(Messages.ModelOverview_tooltipToggleButton, SWT.DEFAULT) {
 
             @Override
             public ImageDescriptor getImageDescriptor() {
@@ -567,7 +588,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
 
             @Override
             public String getToolTipText() {
-                return Messages.IpsModelOverview_tooltipToggleButton;
+                return Messages.ModelOverview_tooltipToggleButton;
             }
 
             @Override
@@ -608,6 +629,8 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
         showCardinalitiesAction.setEnabled(state);
         showProjectsAction.setEnabled(state);
         showRoleNameAction.setEnabled(state);
+
+        refreshAction.setEnabled(state);
     }
 
     private void switchContentProvider(AbstractModelOverviewContentProvider newProvider) {

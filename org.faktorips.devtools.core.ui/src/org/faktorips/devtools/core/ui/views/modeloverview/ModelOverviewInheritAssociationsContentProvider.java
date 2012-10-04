@@ -45,7 +45,7 @@ public final class ModelOverviewInheritAssociationsContentProvider extends Abstr
 
     @Override
     protected String getWaitingLabel() {
-        return Messages.IpsModelOverview_waitingLabel;
+        return Messages.ModelOverview_waitingLabel;
     }
 
     @Override

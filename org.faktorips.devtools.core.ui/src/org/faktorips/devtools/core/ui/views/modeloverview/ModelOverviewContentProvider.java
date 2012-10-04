@@ -245,7 +245,7 @@ public final class ModelOverviewContentProvider extends AbstractModelOverviewCon
 
     @Override
     protected String getWaitingLabel() {
-        return Messages.IpsModelOverview_waitingLabel;
+        return Messages.ModelOverview_waitingLabel;
     }
 
     /**

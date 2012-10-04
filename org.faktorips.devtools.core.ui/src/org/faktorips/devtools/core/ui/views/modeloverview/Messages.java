@@ -27,19 +27,20 @@ public final class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
-    public static String IpsModelOverview_tooltipToggleButton;
-    public static String IpsModelOverview_menuShowCardinalities_name;
-    public static String IpsModelOverview_menuShowCardinalities_tooltip;
-    public static String IpsModelOverview_menuShowRoleName_name;
-    public static String IpsModelOverview_menuShowRoleName_tooltip;
-    public static String IpsModelOverview_contextMenuOpenAssociationTargetingTypeEditor;
-    public static String IpsModelOverview_waitingLabel;
-    public static String IpsModelOverview_emptyMessage;
-    public static String IpsModelOverview_menuShowProjects_name;
-    public static String IpsModelOverview_menuShowProjects_tooltip;
-    public static String IpsModelOverview_NothingToShow_message;
+    public static String ModelOverview_tooltipToggleButton;
+    public static String ModelOverview_menuShowCardinalities_name;
+    public static String ModelOverview_menuShowCardinalities_tooltip;
+    public static String ModelOverview_menuShowRoleName_name;
+    public static String ModelOverview_menuShowRoleName_tooltip;
+    public static String ModelOverview_contextMenuOpenAssociationTargetingTypeEditor;
+    public static String ModelOverview_waitingLabel;
+    public static String ModelOverview_emptyMessage;
+    public static String ModelOverview_menuShowProjects_name;
+    public static String ModelOverview_menuShowProjects_tooltip;
+    public static String ModelOverview_NothingToShow_message;
 
-    public static String IpsModelOverview_tooltipInheritedAssociations;
-    public static String IpsModelOverview_tooltipHasInheritedAssociation;
+    public static String ModelOverview_tooltipInheritedAssociations;
+    public static String ModelOverview_tooltipHasInheritedAssociation;
 
+    public static String ModelOverview_tooltipRefreshContents;
 }

@@ -235,10 +235,10 @@ public final class ModelOverviewLabelProvider extends LabelProvider implements I
         if (element instanceof ComponentNode) {
             if (element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited()) {
                 AssociationComponentNode node = (AssociationComponentNode)element;
-                text += Messages.IpsModelOverview_tooltipInheritedAssociations
+                text += Messages.ModelOverview_tooltipInheritedAssociations
                         + " " + node.getTargetingType().getQualifiedName(); //$NON-NLS-1$
             } else if (((ComponentNode)element).isTargetOfInheritedAssociation()) {
-                text += Messages.IpsModelOverview_tooltipHasInheritedAssociation;
+                text += Messages.ModelOverview_tooltipHasInheritedAssociation;
             }
             if (!text.isEmpty()) {
                 return text;
