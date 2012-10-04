@@ -158,7 +158,9 @@ public final class ModelOverviewInheritAssociationsContentProvider extends Abstr
         List<AssociationComponentNode> associationNodes = new ArrayList<AssociationComponentNode>();
 
         IType parentValue = parent.getValue();
-        IIpsProject project = parentValue.getIpsProject();
+        // IIpsProject project = parentValue.getIpsProject();
+        IIpsProject project = parent.getSourceIpsProject();
+
         // add direct associations (from the same project)
         associationNodes.addAll(getDirectAssociationComponentNodes(parent, project));
 
@@ -185,13 +187,15 @@ public final class ModelOverviewInheritAssociationsContentProvider extends Abstr
                 }
 
                 for (IAssociation supertypeAssociation : supertypeAssociations) {
-                    List<IType> subtypes = findProjectSpecificSubtypes(supertypeAssociation.findTarget(project),
-                            project);
-                    for (IType subtype : subtypes) {
-                        AssociationComponentNode associationComponentNode = newAssociationComponentNode(subtype,
-                                supertypeAssociation, parent, project);
-                        associationComponentNode.setInherited(true);
-                        associationNodes.add(associationComponentNode);
+                    if (!supertypeAssociation.isDerivedUnion()) {
+                        List<IType> subtypes = findProjectSpecificSubtypes(supertypeAssociation.findTarget(project),
+                                project);
+                        for (IType subtype : subtypes) {
+                            AssociationComponentNode associationComponentNode = newAssociationComponentNode(subtype,
+                                    supertypeAssociation, parent, project);
+                            associationComponentNode.setInherited(true);
+                            associationNodes.add(associationComponentNode);
+                        }
                     }
                 }
             }
