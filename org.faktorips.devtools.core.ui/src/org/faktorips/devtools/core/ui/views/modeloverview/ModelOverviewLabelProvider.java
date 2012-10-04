@@ -236,7 +236,7 @@ public final class ModelOverviewLabelProvider extends LabelProvider implements I
             if (element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited()) {
                 AssociationComponentNode node = (AssociationComponentNode)element;
                 text += Messages.IpsModelOverview_tooltipInheritedAssociations
-                        + node.getTargetingType().getQualifiedName();
+                        + " " + node.getTargetingType().getQualifiedName(); //$NON-NLS-1$
             } else if (((ComponentNode)element).isTargetOfInheritedAssociation()) {
                 text += Messages.IpsModelOverview_tooltipHasInheritedAssociation;
             }

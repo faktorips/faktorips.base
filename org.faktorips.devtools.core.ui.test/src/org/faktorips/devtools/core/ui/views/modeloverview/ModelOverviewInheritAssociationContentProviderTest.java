@@ -451,4 +451,41 @@ public class ModelOverviewInheritAssociationContentProviderTest extends Abstract
         assertTrue(associationChildrenList.contains(clauseType));
         assertTrue(associationChildrenList.contains(deductibleType));
     }
+
+    @Test
+    public void testGetChildren_DoNoInheritDerivedUnionAssociations() throws CoreException {
+        // setup
+        IIpsProject baseProject = newIpsProject();
+        IType vertrag = newPolicyCmptTypeWithoutProductCmptType(baseProject, "Vertrag");
+        IType deckung = newPolicyCmptTypeWithoutProductCmptType(baseProject, "Deckung");
+
+        IAssociation derivedUnionAssociation = vertrag.newAssociation();
+        derivedUnionAssociation.setTarget(deckung.getQualifiedName());
+        derivedUnionAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        derivedUnionAssociation.setDerivedUnion(true);
+
+        IIpsProject customProject = newIpsProject();
+        IType hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(customProject, "HausratVertrag");
+        IType hausratGrunddeckung = newPolicyCmptTypeWithoutProductCmptType(customProject, "HausratGrunddeckung");
+
+        IAssociation standardAssociation = hausratVertrag.newAssociation();
+        standardAssociation.setTarget(hausratGrunddeckung.getQualifiedName());
+        standardAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+
+        hausratVertrag.setSupertype(vertrag.getQualifiedName());
+        hausratGrunddeckung.setSupertype(deckung.getQualifiedName());
+
+        // set project dependencies
+        IIpsObjectPath path = customProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(baseProject);
+        customProject.setIpsObjectPath(path);
+
+        // test
+        AbstractModelOverviewContentProvider provider = new ModelOverviewInheritAssociationsContentProvider();
+        Object[] children = provider.getChildren(new SubtypeComponentNode(hausratVertrag, new ComponentNode(vertrag,
+                customProject), customProject));
+
+        assertEquals(1, children.length);
+        assertEquals(hausratGrunddeckung, ((ComponentNode)children[0]).getValue());
+    }
 }

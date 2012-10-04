@@ -247,7 +247,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
     private void addOpenSourceAssociationTargetingTypeEditorAction(IMenuManager manager) {
         final ComponentNode node = getCurrentlySelectedComponentNode();
         manager.remove(OPEN_PARENT_ASSOCIATION_TYPE_EDITOR_ACTION_ID);
-        if (node instanceof AssociationComponentNode && ((AssociationComponentNode)node).isInherited()) {
+        if (node instanceof AssociationComponentNode) {
             Action openParentAssociationTypeEditorAction = new Action() {
 
                 @Override
@@ -263,7 +263,8 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
 
             };
             openParentAssociationTypeEditorAction
-                    .setText(Messages.IpsModelOverview_contextMenuOpenAssociationTargetingTypeEditor);
+                    .setText(Messages.IpsModelOverview_contextMenuOpenAssociationTargetingTypeEditor
+                            + ((AssociationComponentNode)node).getTargetingType().getName());
             manager.appendToGroup(CONTEXT_MENU_GROUP_OPEN, openParentAssociationTypeEditorAction);
         }
     }
