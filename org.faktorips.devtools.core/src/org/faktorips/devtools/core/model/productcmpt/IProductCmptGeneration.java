@@ -37,26 +37,43 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     /**
      * Validation message code to indicate that the generation contains less relations of a specific
      * relation type than required by the relation type. E.g. a motor product must contain at least
-     * one collision coverage type, but the motor product does not contain a relation to a collision
-     * coverage type.
+     * one relation to a collision coverage component, but it does not.
      * <p>
      * Note that the message returned by the validate method contains two (Invalid)ObjectProperties.
      * The first one contains the generation and the second one the relation type as string. In both
      * cases the property part of the ObjectProperty is empty.
+     * 
+     * @deprecated As of 3.8. Use {@link IProductCmptLinkContainer#MSGCODE_NOT_ENOUGH_RELATIONS}
+     *             instead.
      */
+    @Deprecated
     public final static String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the generation contains more relations of a specific
-     * relation type than specified by the relation type. E.g. a motor product can contain only one
-     * collision coverage type, but the motor product contains two relations to a collision coverage
-     * type.
+     * relation type than specified by the relation type. E.g. a motor product can contain at most
+     * one relation to a collision coverage component, but contains two (or more) relations to
+     * collision coverage components.
      * <p>
      * Note that the message returned by the validate method contains two (Invalid)ObjectProperties.
      * The first one contains the generation and the second one the relation type as string. In both
      * cases the property part of the ObjectProperty is empty.
+     * 
+     * @deprecated As of 3.8. Use {@link IProductCmptLinkContainer#MSGCODE_TOO_MANY_RELATIONS}
+     *             instead.
      */
+    @Deprecated
     public final static String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that two or more relations of a specific type have the
+     * same target.
+     * 
+     * @deprecated As of 3.8. Use
+     *             {@link IProductCmptLinkContainer#MSGCODE_DUPLICATE_RELATION_TARGET} instead.
+     */
+    @Deprecated
+    public final static String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the template for the product this generation is for
@@ -71,12 +88,6 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      */
     public final static String MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT = MSGCODE_PREFIX
             + "AttributeWithMissingConfigElement"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that more than one relation of a specific type have the
-     * same target.
-     */
-    public final static String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
 
     /**
      * Validation message code to identify the message that informs about a link to a product
@@ -174,13 +185,13 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     /**
      * Returns the product component's relations to other product components.
      * 
-     * Use {@link #getLinkList()} instead
+     * Use {@link #getLinksAsList()} instead
      */
     public IProductCmptLink[] getLinks();
 
     /**
      * Returns the links that are instances of the given product component type association or an
-     * empty array if no such link is found. Use {@link #getLinkList(String)} instead
+     * empty array if no such link is found. Use {@link #getLinksAsList(String)} instead
      * 
      * @param association The name (=target role singular) of an association.
      * @throws IllegalArgumentException if type relation is null.

@@ -13,11 +13,9 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -26,7 +24,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -73,28 +70,16 @@ public class ProductCmptLinkContainerValidatorTest {
         return list;
     }
 
-    private List<IProductCmptLink> list(IProductCmptLink... links) {
-        return Arrays.asList(links);
-    }
-
     @Test
     public void testVisitIgnoredDerivedUnions() {
         IProductCmptTypeAssociation assoc = mock(IProductCmptTypeAssociation.class);
-        IProductCmptTypeAssociation assoc2 = mock(IProductCmptTypeAssociation.class);
         when(assoc.isDerivedUnion()).thenReturn(true);
+
         List<IAssociation> associations = new ArrayList<IAssociation>();
         associations.add(assoc);
-        associations.add(assoc2);
         when(prodCmptType.getAssociations()).thenReturn(associations);
 
         validator = spy(validator);
-        verif y (validator, never()).addMessageIfAssociationHasValidationMessages(eq(assoc), any(MessageList.class));
-        verify(validator, never()).addMessageIfDuplicateTargetPresent(eq(assoc), anyListOf(IProductCmptLink.class),
-                any(MessageList.class));
-        verify(validator, never()).addMessageIfLessLinksThanMinCard(eq(assoc), anyListOf(IProductCmptLink.class),
-                any(MessageList.class));
-        verify(validator, never()).addMessageIfMoreLinksThanMaxCard(eq(assoc), anyListOf(IProductCmptLink.class),
-                any(MessageList.class));
         callValidator();
 
         verify(validator, never()).addMessageIfAssociationHasValidationMessages(eq(assoc), any(MessageList.class));
@@ -105,37 +90,30 @@ public class ProductCmptLinkContainerValidatorTest {
         verify(validator, never()).addMessageIfMoreLinksThanMaxCard(eq(assoc), anyListOf(IProductCmptLink.class),
                 any(MessageList.class));
 
-        verify(validator, times(1)).addMessageIfAssociationHasValidationMessages(eq(assoc2), any(MessageList.class));
-        verify(validator, times(1)).addMessageIfDuplicateTargetPresent(eq(assoc2), anyListOf(IProductCmptLink.class),
+    }
+
+    @Test
+    public void testVisitCallsAddMessageMethods() throws CoreException {
+        IProductCmptTypeAssociation assoc = mock(IProductCmptTypeAssociation.class);
+        when(assoc.isDerivedUnion()).thenReturn(false);
+        MessageList messageList = mock(MessageList.class);
+        when(messageList.isEmpty()).thenReturn(true);
+        when(assoc.validate(any(IIpsProject.class))).thenReturn(messageList);
+
+        List<IAssociation> associations = new ArrayList<IAssociation>();
+        associations.add(assoc);
+        when(prodCmptType.getAssociations()).thenReturn(associations);
+
+        validator = spy(validator);
+        callValidator();
+
+        verify(validator, times(1)).addMessageIfAssociationHasValidationMessages(eq(assoc), any(MessageList.class));
+        verify(validator, times(1)).addMessageIfDuplicateTargetPresent(eq(assoc), anyListOf(IProductCmptLink.class),
                 any(MessageList.class));
-        verify(validator, times(1)).addMessageIfLessLinksThanMinCard(eq(assoc2), anyListOf(IProductCmptLink.class),
+        verify(validator, times(1)).addMessageIfLessLinksThanMinCard(eq(assoc), anyListOf(IProductCmptLink.class),
                 any(MessageList.class));
-        verify(validator, times(1)).addMessageIfMoreLinksThanMaxCard(eq(assoc2), anyListOf(IProductCmptLink.class),
+        verify(validator, times(1)).addMessageIfMoreLinksThanMaxCard(eq(assoc), anyListOf(IProductCmptLink.class),
                 any(MessageList.class));
     }
 
-    @Test
-    public void testVisitCallsAddMessageMethods() {
-    }
-
-    @Test
-    public void testValidateMinumumCardinality() {
-        MessageList list = callValidator();
-        assertEquals(1, list.size());
-    }
-
-    @Test
-    public void testValidateMaximumCardinality() {
-
-    }
-
-    @Test
-    public void testValidateDuplicateTarget() {
-
-    }
-
-    @Test
-    public void testValidateChangingOverTime() {
-
-    }
 }

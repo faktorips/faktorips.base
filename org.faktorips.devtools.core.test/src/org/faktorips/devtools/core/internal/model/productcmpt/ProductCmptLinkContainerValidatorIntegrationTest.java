@@ -15,20 +15,15 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.AssociationType;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +33,6 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
-    private IProductCmptGeneration generation;
     private IIpsProject ipsProject;
 
     private IPolicyCmptType targetPolicyType;
@@ -48,6 +42,7 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
     private IProductCmpt target2;
     private IProductCmptLink link1;
     private IProductCmptLink link2;
+    private ProductCmptLinkContainerValidator validator;
 
     @Override
     @Before
@@ -58,7 +53,6 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
         productCmpt = newProductCmpt(productCmptType, "TestProduct");
-        generation = productCmpt.getProductCmptGeneration(0);
 
         targetPolicyType = newPolicyAndProductCmptType(ipsProject, "TargetPolicyType", "TargetProductType");
         targetProductType = targetPolicyType.findProductCmptType(ipsProject);
@@ -75,17 +69,13 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
         link2 = productCmpt.newLink("testRelationProductSide");
         link1.setTarget(target1.getQualifiedName());
         link2.setTarget(target2.getQualifiedName());
+
+        validator = new ProductCmptLinkContainerValidator(ipsProject, productCmpt);
     }
 
     private MessageList callValidator() {
         MessageList list = new MessageList();
-        ProductCmptLinkContainerValidator validator = new ProductCmptLinkContainerValidator(ipsProject, productCmpt,
-                list);
-        try {
-            validator.start(productCmptType);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        validator.startAndAddMessagesToList(productCmptType, list);
         return list;
     }
 
@@ -96,24 +86,32 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
 
         MessageList list = callValidator();
         assertEquals(1, list.size());
-    }
-
-    private List<IProductCmptLink> list(IProductCmptLink... links) {
-        return Arrays.asList(links);
+        Message message = list.getMessage(0);
+        assertEquals(Message.ERROR, message.getSeverity());
+        assertEquals(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS, message.getCode());
     }
 
     @Test
     public void testValidateMaximumCardinality() {
+        association.setMinCardinality(0);
+        association.setMaxCardinality(1);
 
+        MessageList list = callValidator();
+        assertEquals(1, list.size());
+        Message message = list.getMessage(0);
+        assertEquals(Message.ERROR, message.getSeverity());
+        assertEquals(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS, message.getCode());
     }
 
     @Test
     public void testValidateDuplicateTarget() {
+        link2.setTarget(target1.getQualifiedName());
 
+        MessageList list = callValidator();
+        assertEquals(1, list.size());
+        Message message = list.getMessage(0);
+        assertEquals(Message.ERROR, message.getSeverity());
+        assertEquals(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET, message.getCode());
     }
 
-    @Test
-    public void testValidateChangingOverTime() {
-
-    }
 }

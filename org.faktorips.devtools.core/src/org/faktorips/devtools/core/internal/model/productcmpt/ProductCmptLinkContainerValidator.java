@@ -32,16 +32,17 @@ import org.faktorips.util.message.ObjectProperty;
 
 /**
  * Validates the links of a {@link IProductCmptLinkContainer} against their corresponding
- * associations in the product component type hierarchy. Ensures that the number of links for a
- * single association:
+ * associations in the product component type hierarchy. Ensures that
+ * <ul>
+ * <li>the number of links for a single association:</li>
  * <ul>
  * <li>
  * satisfies the minimum cardinality, and</li>
  * <li>
  * does not exceed the maximum cardinality defined by the type association.</li>
  * </ul>
- * Ensures that no duplicate targets exist. That is a product component is never linked (or used)
- * more than once by this container.
+ * <li>no duplicate targets exist. That is a product component is never linked (or used) more than
+ * once by this container.</li> </ul>
  * 
  */
 class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IProductCmptType> {
@@ -94,7 +95,7 @@ class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IProductCmp
                     String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
                     msg = NLS.bind(Messages.ProductCmptGeneration_msgDuplicateTarget, associationLabel, target);
                 }
-                messageList.add(new Message(ProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET, msg,
+                messageList.add(new Message(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET, msg,
                         Message.ERROR, association.getTargetRoleSingular()));
             }
         }
@@ -110,7 +111,7 @@ class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IProductCmp
             String msg = NLS.bind(Messages.ProductCmptGeneration_msgTooManyRelations, params);
             ObjectProperty prop1 = new ObjectProperty(this, null);
             ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
-            messageList.add(new Message(ProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR,
+            messageList.add(new Message(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR,
                     new ObjectProperty[] { prop1, prop2 }));
         }
     }
@@ -120,24 +121,30 @@ class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IProductCmp
             MessageList messageList) {
         int minCardinality = association.getMinCardinality();
         if (minCardinality > relations.size()) {
-            String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
-            Object[] params = { new Integer(relations.size()), associationLabel, new Integer(minCardinality) };
-            String msg = NLS.bind(Messages.ProductCmptGeneration_msgNotEnoughRelations, params);
-            ObjectProperty prop1 = new ObjectProperty(this, null);
-            ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
-            messageList.add(new Message(ProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS, msg, Message.ERROR,
-                    new ObjectProperty[] { prop1, prop2 }));
+            addBelowMinCardinalityErrorMessage(association, relations, messageList, minCardinality);
         }
     }
 
-    protected MessageList addMessageIfAssociationHasValidationMessages(IAssociation association, MessageList messageList) {
+    protected void addBelowMinCardinalityErrorMessage(IAssociation association,
+            List<IProductCmptLink> relations,
+            MessageList messageList,
+            int minCardinality) {
+        String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
+        Object[] params = { new Integer(relations.size()), associationLabel, new Integer(minCardinality) };
+        String msg = NLS.bind(Messages.ProductCmptGeneration_msgNotEnoughRelations, params);
+        ObjectProperty prop1 = new ObjectProperty(this, null);
+        ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
+        messageList.add(new Message(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS, msg, Message.ERROR,
+                new ObjectProperty[] { prop1, prop2 }));
+    }
+
+    protected void addMessageIfAssociationHasValidationMessages(IAssociation association, MessageList messageList) {
         try {
             // get all messages for the relation types and add them
             MessageList relMessages = association.validate(ipsProject);
             if (!relMessages.isEmpty()) {
                 messageList.add(relMessages, new ObjectProperty(association.getTargetRoleSingular(), null), true);
             }
-            return relMessages;
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

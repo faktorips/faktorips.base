@@ -38,6 +38,40 @@ import org.faktorips.devtools.core.model.type.IAssociation;
  */
 public interface IProductCmptLinkContainer extends IIpsObjectPartContainer {
 
+    public final static String MSGCODE_PREFIX = "ProductCmptLinkContainer"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this link container contains less relations of a
+     * specific relation type than specified in the model. E.g. a motor product must contain at
+     * least one relation to a collision coverage component, but it does not.
+     * <p>
+     * Note that the message returned by the validate method contains two (Invalid)ObjectProperties.
+     * The first one contains the container and the second one the relation type as string. In both
+     * cases the property part of the ObjectProperty is empty.
+     * 
+     */
+    public final static String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this link container contains more relations of a
+     * specific relation type than specified in the model. E.g. a motor product can contain at most
+     * one relation to a collision coverage component, but contains two (or more) relations to
+     * collision coverage components.
+     * <p>
+     * Note that the message returned by the validate method contains two (Invalid)ObjectProperties.
+     * The first one contains the container and the second one the relation type as string. In both
+     * cases the property part of the ObjectProperty is empty.
+     * 
+     */
+    public final static String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that two or more relations of a specific type have the
+     * same target.
+     * 
+     */
+    public final static String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
+
     /**
      * Returns <code>true</code> if this container is responsible for the given association. For
      * example a {@link IProductCmptGeneration} is only responsible for associations that may change
