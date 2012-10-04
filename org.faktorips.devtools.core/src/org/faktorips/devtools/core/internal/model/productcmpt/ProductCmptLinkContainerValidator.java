@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -45,14 +46,23 @@ import org.faktorips.util.message.ObjectProperty;
  */
 class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IProductCmptType> {
 
-    private final MessageList list;
+    private MessageList list;
     private final IProductCmptLinkContainer linkContainer;
 
-    public ProductCmptLinkContainerValidator(IIpsProject ipsProject, IProductCmptLinkContainer linkContainer,
-            MessageList list) {
+    public ProductCmptLinkContainerValidator(IIpsProject ipsProject, IProductCmptLinkContainer linkContainer) {
         super(ipsProject);
         this.linkContainer = linkContainer;
-        this.list = list;
+        this.list = new MessageList();
+    }
+
+    public void startAndAddMessagesToList(IProductCmptType type, MessageList parentList) {
+        try {
+            this.list = new MessageList();
+            start(type);
+            parentList.add(list);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
@@ -63,51 +73,74 @@ class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IProductCmp
                 continue;
             }
             List<IProductCmptLink> relations = linkContainer.getLinksAsList(association.getTargetRoleSingular());
-
-            // get all messages for the relation types and add them
-            MessageList relMessages = association.validate(ipsProject);
-            if (!relMessages.isEmpty()) {
-                list.add(relMessages, new ObjectProperty(association.getTargetRoleSingular(), null), true);
-            }
-
-            if (association.getMinCardinality() > relations.size()) {
-                String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
-                Object[] params = { new Integer(relations.size()), associationLabel,
-                        new Integer(association.getMinCardinality()) };
-                String msg = NLS.bind(Messages.ProductCmptGeneration_msgNotEnoughRelations, params);
-                ObjectProperty prop1 = new ObjectProperty(this, null);
-                ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
-                list.add(new Message(ProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS, msg, Message.ERROR,
-                        new ObjectProperty[] { prop1, prop2 }));
-            }
-
-            int maxCardinality = association.getMaxCardinality();
-            if (maxCardinality < relations.size()) {
-                String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
-                Object[] params = { new Integer(relations.size()), "" + maxCardinality, associationLabel }; //$NON-NLS-1$
-                String msg = NLS.bind(Messages.ProductCmptGeneration_msgTooManyRelations, params);
-                ObjectProperty prop1 = new ObjectProperty(this, null);
-                ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
-                list.add(new Message(ProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR,
-                        new ObjectProperty[] { prop1, prop2 }));
-            }
-
-            Set<String> targets = new HashSet<String>();
-            String msg = null;
-            for (IProductCmptLink relation : relations) {
-                String target = relation.getTarget();
-                if (!targets.add(target)) {
-                    if (msg == null) {
-                        String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
-                        msg = NLS.bind(Messages.ProductCmptGeneration_msgDuplicateTarget, associationLabel, target);
-                    }
-                    list.add(new Message(ProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET, msg, Message.ERROR,
-                            association.getTargetRoleSingular()));
-                }
-            }
+            addMessageIfAssociationHasValidationMessages(association, list);
+            addMessageIfLessLinksThanMinCard(association, relations, list);
+            addMessageIfMoreLinksThanMaxCard(association, relations, list);
+            addMessageIfDuplicateTargetPresent(association, relations, list);
         }
 
         return true;
+    }
+
+    protected void addMessageIfDuplicateTargetPresent(IAssociation association,
+            List<IProductCmptLink> relations,
+            MessageList messageList) {
+        Set<String> targets = new HashSet<String>();
+        String msg = null;
+        for (IProductCmptLink relation : relations) {
+            String target = relation.getTarget();
+            if (!targets.add(target)) {
+                if (msg == null) {
+                    String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
+                    msg = NLS.bind(Messages.ProductCmptGeneration_msgDuplicateTarget, associationLabel, target);
+                }
+                messageList.add(new Message(ProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET, msg,
+                        Message.ERROR, association.getTargetRoleSingular()));
+            }
+        }
+    }
+
+    protected void addMessageIfMoreLinksThanMaxCard(IAssociation association,
+            List<IProductCmptLink> relations,
+            MessageList messageList) {
+        int maxCardinality = association.getMaxCardinality();
+        if (maxCardinality < relations.size()) {
+            String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
+            Object[] params = { new Integer(relations.size()), "" + maxCardinality, associationLabel }; //$NON-NLS-1$
+            String msg = NLS.bind(Messages.ProductCmptGeneration_msgTooManyRelations, params);
+            ObjectProperty prop1 = new ObjectProperty(this, null);
+            ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
+            messageList.add(new Message(ProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR,
+                    new ObjectProperty[] { prop1, prop2 }));
+        }
+    }
+
+    protected void addMessageIfLessLinksThanMinCard(IAssociation association,
+            List<IProductCmptLink> relations,
+            MessageList messageList) {
+        int minCardinality = association.getMinCardinality();
+        if (minCardinality > relations.size()) {
+            String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
+            Object[] params = { new Integer(relations.size()), associationLabel, new Integer(minCardinality) };
+            String msg = NLS.bind(Messages.ProductCmptGeneration_msgNotEnoughRelations, params);
+            ObjectProperty prop1 = new ObjectProperty(this, null);
+            ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
+            messageList.add(new Message(ProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS, msg, Message.ERROR,
+                    new ObjectProperty[] { prop1, prop2 }));
+        }
+    }
+
+    protected MessageList addMessageIfAssociationHasValidationMessages(IAssociation association, MessageList messageList) {
+        try {
+            // get all messages for the relation types and add them
+            MessageList relMessages = association.validate(ipsProject);
+            if (!relMessages.isEmpty()) {
+                messageList.add(relMessages, new ObjectProperty(association.getTargetRoleSingular(), null), true);
+            }
+            return relMessages;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
 }
