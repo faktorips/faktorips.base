@@ -62,7 +62,18 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
     private ProductCmpt cmptC4;
     private TreeViewer treeViewer;
     private ProductCmptEditor productCmptEditor;
-    private IProductCmptTypeAssociation staticAssociationToB2;
+    private IProductCmptTypeAssociation staticAssociationToB;
+    private IProductCmptTypeAssociation staticAssociationToC;
+    private IProductCmptLink b1Link1;
+    private IProductCmptLink b1Link2;
+    private IProductCmptLink b2Link2;
+    private IProductCmptLink b2Link3;
+    private IProductCmptLink cLink1;
+    private IProductCmptLink cLink2;
+    private IProductCmptLink cLink3;
+    private IProductCmptLink staticLinkToB1;
+    private IProductCmptLink staticLinkToB2;
+    private IProductCmptLink staticLinkToC1;
 
     @Override
     @Before
@@ -86,10 +97,14 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         associationToC.setTargetRoleSingular("associationToC");
         associationToC.setTarget(typeC.getQualifiedName());
 
-        staticAssociationToB2 = typeA.newProductCmptTypeAssociation();
-        staticAssociationToB2.setTargetRoleSingular("staticAssociationToB2");
-        staticAssociationToB2.setTarget(typeB.getQualifiedName());
-        staticAssociationToB2.setChangingOverTime(false);
+        staticAssociationToB = typeA.newProductCmptTypeAssociation();
+        staticAssociationToB.setTargetRoleSingular("staticAssociationToB");
+        staticAssociationToB.setTarget(typeB.getQualifiedName());
+        staticAssociationToB.setChangingOverTime(false);
+        staticAssociationToC = typeA.newProductCmptTypeAssociation();
+        staticAssociationToC.setTargetRoleSingular("staticAssociationToC");
+        staticAssociationToC.setTarget(typeC.getQualifiedName());
+        staticAssociationToC.setChangingOverTime(false);
 
         cmptA = newProductCmpt(typeA, "CmptA");
         cmptAGeneration = cmptA.getFirstGeneration();
@@ -145,24 +160,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateDropMoveLink() {
-        when(productCmptEditor.isDataChangeable()).thenReturn(true);
-
-        IProductCmptLink b1Link1 = cmptAGeneration.newLink(associationToB1);
-        b1Link1.setTarget(cmptB1.getQualifiedName());
-        IProductCmptLink b1Link2 = cmptAGeneration.newLink(associationToB1);
-        b1Link2.setTarget(cmptB2.getQualifiedName());
-
-        IProductCmptLink b2Link2 = cmptAGeneration.newLink(associationToB2);
-        b2Link2.setTarget(cmptB2.getQualifiedName());
-        IProductCmptLink b2Link3 = cmptAGeneration.newLink(associationToB2);
-        b2Link3.setTarget(cmptB3.getQualifiedName());
-
-        IProductCmptLink cLink1 = cmptAGeneration.newLink(associationToC);
-        cLink1.setTarget(cmptC1.getQualifiedName());
-        IProductCmptLink cLink2 = cmptAGeneration.newLink(associationToC);
-        cLink2.setTarget(cmptC2.getQualifiedName());
-        IProductCmptLink cLink3 = cmptAGeneration.newLink(associationToC);
-        cLink3.setTarget(cmptC3.getQualifiedName());
+        setUpLinksAndSetEditorChangeable();
 
         dropListener.setToMove(b1Link1);
         dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
@@ -191,35 +189,78 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         dropListener.setToMove(b1Link1, cLink2);
         dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
         checkValidateMove(b1Link1, b1Link2, b2Link3, cLink1, cLink2, 0 << 0 | 0 << 1 | 0 << 2 | 0 << 3 | 0 << 4);
+    }
 
-        /*
-         * Static links.
-         */
-        IProductCmptLink staticLinkToB2 = cmptA.newLink(staticAssociationToB2);
-        staticLinkToB2.setTarget(cmptB2.getQualifiedName());
-        IProductCmptLink staticLinkToB1 = cmptA.newLink(staticAssociationToB2);
-        staticLinkToB1.setTarget(cmptB1.getQualifiedName());
+    @Test
+    public void testMoveChangingLinkToStaticAssociation() {
+        setUpLinksAndSetEditorChangeable();
 
-        /*
-         * Try to move static link into changing associations: not allowed.
-         */
+        dropListener.setToMove(b1Link1);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
+        assertFalse(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, getTransfer(cmptA)));
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_BEFORE);
+        assertFalse(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, getTransfer(cmptA)));
+    }
+
+    @Test
+    public void testMoveStaticLinkToMatchingStaticAssociation() {
+        setUpLinksAndSetEditorChangeable();
+
+        dropListener.setToMove(staticLinkToB1);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
+        assertTrue(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, getTransfer(cmptA)));
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_BEFORE);
+        assertTrue(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, getTransfer(cmptA)));
+    }
+
+    @Test
+    public void testMoveStaticLinkToMisMatchingStaticAssociation() {
+        setUpLinksAndSetEditorChangeable();
+
+        dropListener.setToMove(staticLinkToB1);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
+        assertFalse(dropListener.validateDrop(staticLinkToC1, DND.DROP_MOVE, getTransfer(cmptA)));
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_BEFORE);
+        assertFalse(dropListener.validateDrop(staticLinkToC1, DND.DROP_MOVE, getTransfer(cmptA)));
+    }
+
+    @Test
+    public void testMoveStaticLinkToChangingAssociation() {
+        setUpLinksAndSetEditorChangeable();
+
         dropListener.setToMove(staticLinkToB2);
         dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
         checkValidateMove(b1Link1, b1Link2, b2Link3, cLink1, cLink2, 0 << 0 | 0 << 1 | 0 << 2 | 0 << 3 | 0 << 4);
         dropListener.setLocation(ViewerDropAdapter.LOCATION_BEFORE);
         checkValidateMove(b1Link1, b1Link2, b2Link3, cLink1, cLink2, 0 << 0 | 0 << 1 | 0 << 2 | 0 << 3 | 0 << 4);
+    }
 
-        /*
-         * Try to move changing link into static associations: not allowed.
-         */
-        dropListener.setToMove(b1Link1);
-        assertFalse(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, getTransfer(cmptA)));
+    private void setUpLinksAndSetEditorChangeable() {
+        when(productCmptEditor.isDataChangeable()).thenReturn(true);
 
-        /*
-         * Try to move static link into a (matching) static association -> should work.
-         */
-        dropListener.setToMove(staticLinkToB1);
-        assertTrue(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, getTransfer(cmptA)));
+        b1Link1 = cmptAGeneration.newLink(associationToB1);
+        b1Link1.setTarget(cmptB1.getQualifiedName());
+        b1Link2 = cmptAGeneration.newLink(associationToB1);
+        b1Link2.setTarget(cmptB2.getQualifiedName());
+
+        b2Link2 = cmptAGeneration.newLink(associationToB2);
+        b2Link2.setTarget(cmptB2.getQualifiedName());
+        b2Link3 = cmptAGeneration.newLink(associationToB2);
+        b2Link3.setTarget(cmptB3.getQualifiedName());
+
+        cLink1 = cmptAGeneration.newLink(associationToC);
+        cLink1.setTarget(cmptC1.getQualifiedName());
+        cLink2 = cmptAGeneration.newLink(associationToC);
+        cLink2.setTarget(cmptC2.getQualifiedName());
+        cLink3 = cmptAGeneration.newLink(associationToC);
+        cLink3.setTarget(cmptC3.getQualifiedName());
+
+        staticLinkToB1 = cmptA.newLink(staticAssociationToB);
+        staticLinkToB1.setTarget(cmptB1.getQualifiedName());
+        staticLinkToB2 = cmptA.newLink(staticAssociationToB);
+        staticLinkToB2.setTarget(cmptB2.getQualifiedName());
+        staticLinkToC1 = cmptA.newLink(staticAssociationToC);
+        staticLinkToC1.setTarget(cmptC1.getQualifiedName());
     }
 
     private void checkValidateMove(IProductCmptLink b1Link1,
