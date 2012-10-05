@@ -119,7 +119,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
                     HandlerUtil.getActiveShell(event), Messages.AddLinkAction_selectDialogTitle, context, true);
             int rc = dialog.open();
             if (rc == Window.OK && !dialog.getSelectedObjects().isEmpty()) {
-                addLinksToActiveProductCmptGeneration((IProductCmptGeneration)productCmptEditor.getActiveGeneration(),
+                addLinksToGenerationOrProductCmpt((IProductCmptGeneration)productCmptEditor.getActiveGeneration(),
                         association, dialog.getSelectedObjects());
             }
 
@@ -149,7 +149,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
         return result;
     }
 
-    private void addLinksToActiveProductCmptGeneration(final IProductCmptGeneration activeProductCmptGeneration,
+    private void addLinksToGenerationOrProductCmpt(final IProductCmptGeneration activeProductCmptGeneration,
             final IProductCmptTypeAssociation association,
             final List<IIpsElement> selectedIpsElements) throws CoreException {
 
@@ -159,12 +159,10 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
                 for (IIpsElement element : selectedIpsElements) {
                     if (element instanceof IIpsSrcFile) {
                         IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
-                        IProductCmpt selectedProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-                        IProductCmptLink link = activeProductCmptGeneration.newLink(association);
-                        link.setAssociation(association.getName());
-                        link.setTarget(selectedProductCmpt.getQualifiedName());
-                        link.setMaxCardinality(1);
-                        link.setMinCardinality(0);
+                        IProductCmpt targetProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+
+                        LinkCreatorUtil util = new LinkCreatorUtil(false);
+                        util.createLink(association, activeProductCmptGeneration, targetProductCmpt.getQualifiedName());
                     }
                 }
             }

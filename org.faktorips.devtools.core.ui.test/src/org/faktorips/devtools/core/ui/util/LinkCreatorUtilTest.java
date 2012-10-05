@@ -16,6 +16,9 @@ package org.faktorips.devtools.core.ui.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.GregorianCalendar;
@@ -181,7 +184,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         // select first
         linkCreator.setSelection(1 << 0);
         assertTrue(linkCreator.createLinks(getList(cmptB1), structure.getRoot()));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(1, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
         assertEquals(associationToB1.getName(), links[0].getAssociation());
@@ -190,7 +193,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         // select second
         linkCreator.setSelection(1 << 1);
         assertTrue(linkCreator.createLinks(getList(cmptB1), structure.getRoot()));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(1, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
         assertEquals(associationToB2.getName(), links[0].getAssociation());
@@ -199,7 +202,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         // select both
         linkCreator.setSelection(1 << 0 | 1 << 1);
         assertTrue(linkCreator.createLinks(getList(cmptB1), structure.getRoot()));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(2, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
         assertEquals(cmptB1.getQualifiedName(), links[1].getTarget());
@@ -213,7 +216,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         // select first
         linkCreator.setSelection(1 << 0);
         assertTrue(linkCreator.createLinks(getList(cmptB1, cmptB2), structure.getRoot()));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(2, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
         assertEquals(cmptB2.getQualifiedName(), links[1].getTarget());
@@ -225,7 +228,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         // select second
         linkCreator.setSelection(1 << 1);
         assertTrue(linkCreator.createLinks(getList(cmptB1, cmptB2), structure.getRoot()));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertTrue(links.length == 2);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
         assertEquals(cmptB2.getQualifiedName(), links[1].getTarget());
@@ -237,20 +240,38 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         // select both
         linkCreator.setSelection(1 << 0 | 1 << 1);
         assertTrue(linkCreator.createLinks(getList(cmptB1, cmptSubB1), structure.getRoot()));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(4, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
-        assertEquals(cmptB1.getQualifiedName(), links[1].getTarget());
-        assertEquals(cmptSubB1.getQualifiedName(), links[2].getTarget());
+        assertEquals(cmptSubB1.getQualifiedName(), links[1].getTarget());
+        assertEquals(cmptB1.getQualifiedName(), links[2].getTarget());
         assertEquals(cmptSubB1.getQualifiedName(), links[3].getTarget());
         assertEquals(associationToB1.getName(), links[0].getAssociation());
-        assertEquals(associationToB2.getName(), links[1].getAssociation());
-        assertEquals(associationToB1.getName(), links[2].getAssociation());
+        assertEquals(associationToB1.getName(), links[1].getAssociation());
+        assertEquals(associationToB2.getName(), links[2].getAssociation());
         assertEquals(associationToB2.getName(), links[3].getAssociation());
         links[0].delete();
         links[1].delete();
         links[2].delete();
         links[3].delete();
+    }
+
+    @Test
+    public void testCreateLinkWithStaticAssociation() {
+        cmptA = spy(cmptA);
+        IProductCmptGeneration cmptGeneration = spy(cmptA.getFirstGeneration());
+        doReturn(cmptA).when(cmptGeneration).getProductCmpt();
+        associationToB1.setChangingOverTime(false);
+        linkCreator.createLink(associationToB1, cmptGeneration, cmptB1.getQualifiedName());
+        verify(cmptA).newLink("associationToB1");
+    }
+
+    @Test
+    public void testCreateLinkWithChangingAssociation() {
+        IProductCmptGeneration cmptGeneration = spy(cmptA.getFirstGeneration());
+        associationToB1.setChangingOverTime(true);
+        linkCreator.createLink(associationToB1, cmptGeneration, cmptB1.getQualifiedName());
+        verify(cmptGeneration).newLink("associationToB1");
     }
 
     @Test
@@ -269,7 +290,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         checkSaveFile(ipsSrcFile, references[2]);
 
         // test with link target
-        IProductCmptLink link = ((IProductCmptGeneration)cmptA.getFirstGeneration()).newLink(associationToC);
+        IProductCmptLink link = cmptA.getFirstGeneration().newLink(associationToC);
         link.setTarget(cmptC3.getQualifiedName());
         ipsSrcFile.save(false, null);
         checkSaveFile(ipsSrcFile, structure.getRoot());
@@ -288,7 +309,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         assertTrue(linkCreator.createLinks(getList(cmptC1), target));
         assertFalse(ipsSrcFile.isDirty());
 
-        IProductCmptLink[] links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        IProductCmptLink[] links = cmptA.getFirstGeneration().getLinks();
         // delete the last one
         links[links.length - 1].delete();
         assertTrue(ipsSrcFile.isDirty());
@@ -296,7 +317,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         assertTrue(ipsSrcFile.isDirty());
 
         // reset for next test
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         links[0].delete();
         ipsSrcFile.save(false, null);
     }
@@ -310,12 +331,12 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
     private void checkDropWithSinglePossibility(IProductCmptStructureReference target, int alreadyExistingLinks) {
         // drop single component on CmptReference with no possibility to add
         assertFalse(linkCreator.createLinks(getList(cmptA), target));
-        IProductCmptLink[] links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        IProductCmptLink[] links = cmptA.getFirstGeneration().getLinks();
         assertEquals(alreadyExistingLinks, links.length);
 
         // drop single component on CmptReference with one possibility to add
         assertTrue(linkCreator.createLinks(getList(cmptC1), target));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(1 + alreadyExistingLinks, links.length);
         assertEquals(cmptC1.getQualifiedName(), links[0 + alreadyExistingLinks].getTarget());
         assertEquals(associationToC.getName(), links[0 + alreadyExistingLinks].getAssociation());
@@ -323,7 +344,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
 
         // drop multiple component on CmptReference with one possibility to add
         assertTrue(linkCreator.createLinks(getList(cmptC1, cmptC2), target));
-        links = ((IProductCmptGeneration)cmptA.getFirstGeneration()).getLinks();
+        links = cmptA.getFirstGeneration().getLinks();
         assertEquals(2 + alreadyExistingLinks, links.length);
         assertEquals(cmptC1.getQualifiedName(), links[0 + alreadyExistingLinks].getTarget());
         assertEquals(cmptC2.getQualifiedName(), links[1 + alreadyExistingLinks].getTarget());
@@ -352,7 +373,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        protected Object[] selectAssociation(String droppedCmptName, List<IAssociation> possibleAssos) {
+        protected Object[] selectAssociation(String droppedCmptName, List<IProductCmptTypeAssociation> possibleAssos) {
             IAssociation[] result = new IAssociation[Integer.bitCount(getSelection())];
             int j = 0;
             for (int i = 0; i < possibleAssos.size(); i++) {

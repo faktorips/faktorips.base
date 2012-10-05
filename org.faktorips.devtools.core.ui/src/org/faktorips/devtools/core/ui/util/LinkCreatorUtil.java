@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.window.Window;
@@ -23,6 +24,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -112,9 +115,9 @@ public class LinkCreatorUtil {
         // should only return true if all dragged cmpts are valid
         boolean result = false;
         for (IProductCmpt draggedCmpt : draggedCmpts) {
-            List<IAssociation> possibleAssos = new ArrayList<IAssociation>();
+            List<IProductCmptTypeAssociation> possibleAssos = new ArrayList<IProductCmptTypeAssociation>();
             for (IProductCmptTypeAssociation aAssoziation : associations) {
-                if (generation.canCreateValidLink(draggedCmpt, aAssoziation, generation.getIpsProject())) {
+                if (canCreateValidLink(generation, draggedCmpt, aAssoziation)) {
                     possibleAssos.add(aAssoziation);
                 }
             }
@@ -125,15 +128,15 @@ public class LinkCreatorUtil {
             }
             if (createLinks) {
                 if (possibleAssos.size() == 1) {
-                    IAssociation association = possibleAssos.get(0);
-                    createLink(draggedCmpt.getQualifiedName(), generation, association);
+                    IProductCmptTypeAssociation association = possibleAssos.get(0);
+                    createLink(association, generation, draggedCmpt.getQualifiedName());
                 } else if (possibleAssos.size() > 1) {
                     Object[] selectedAssociations = selectAssociation(draggedCmpt.getQualifiedName(), possibleAssos);
                     if (selectedAssociations != null) {
                         for (Object object : selectedAssociations) {
-                            if (object instanceof IAssociation) {
-                                IAssociation association = (IAssociation)object;
-                                createLink(draggedCmpt.getQualifiedName(), generation, association);
+                            if (object instanceof IProductCmptTypeAssociation) {
+                                IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)object;
+                                createLink(association, generation, draggedCmpt.getQualifiedName());
                             }
                         }
                     }
@@ -143,16 +146,36 @@ public class LinkCreatorUtil {
         return result;
     }
 
+    private boolean canCreateValidLink(IProductCmptGeneration generation,
+            IProductCmpt draggedCmpt,
+            IProductCmptTypeAssociation aAssoziation) {
+        try {
+            if (generation == null) {
+                return false;
+            }
+            IProductCmptLinkContainer container;
+            if (generation.isContainerFor(aAssoziation)) {
+                container = generation;
+            } else {
+                container = generation.getProductCmpt();
+            }
+            return container.canCreateValidLink(draggedCmpt, aAssoziation, container.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
     /**
      * Set to protected to override in test class
      */
-    protected Object[] selectAssociation(String droppedCmptName, List<IAssociation> possibleAssos) {
+    protected Object[] selectAssociation(String droppedCmptName, List<IProductCmptTypeAssociation> possibleAssos) {
         Shell shell = Display.getDefault().getActiveShell();
         if (shell == null) {
             shell = new Shell(Display.getDefault());
         }
-        SelectionDialog dialog = new AssociationSelectionDialog(shell, possibleAssos, NLS.bind(
-                Messages.LinkDropListener_selectAssociation, droppedCmptName));
+        //
+        SelectionDialog dialog = new AssociationSelectionDialog(shell, new CopyOnWriteArrayList<IAssociation>(
+                possibleAssos), NLS.bind(Messages.LinkDropListener_selectAssociation, droppedCmptName));
         dialog.setBlockOnOpen(true);
         dialog.setHelpAvailable(false);
         if (dialog.open() == Window.OK) {
@@ -165,7 +188,7 @@ public class LinkCreatorUtil {
 
     protected boolean processAssociationReference(List<IProductCmpt> draggedCmpts,
             IProductCmptTypeAssociationReference target,
-            boolean createLink) throws CoreException {
+            boolean createLink) {
         IProductCmptTypeAssociation association;
         IProductCmptGeneration generation;
         IProductCmpt parentCmpt = ((IProductCmptReference)target.getParent()).getProductCmpt();
@@ -178,11 +201,10 @@ public class LinkCreatorUtil {
         // should only return true if all dragged cmpts are valid
         boolean result = false;
         for (IProductCmpt draggedCmpt : draggedCmpts) {
-            if (generation != null
-                    && generation.canCreateValidLink(draggedCmpt, association, generation.getIpsProject())) {
+            if (canCreateValidLink(generation, draggedCmpt, association)) {
                 result = true;
                 if (createLink) {
-                    createLink(draggedCmpt.getQualifiedName(), generation, association);
+                    createLink(association, generation, draggedCmpt.getQualifiedName());
                 }
             } else {
                 return false;
@@ -191,13 +213,38 @@ public class LinkCreatorUtil {
         return result;
     }
 
-    private void createLink(String droppedCmptQName, IProductCmptGeneration generation, IAssociation association) {
+    /**
+     * Creates a new link instance for the given association. If the association is defined as
+     * changing over time, the link instance will be added to the product component generation.
+     * Otherwise it will be added to the product component itself.
+     * 
+     * @param association the association the new link is an instance of.
+     * @param generation the generation currently active in the editor. The new link is not
+     *            necessarily added to this generation!
+     * @param targetQualifiedName the qualified name of the target product component
+     * @return the newly created link instance
+     */
+    public IProductCmptLink createLink(IProductCmptTypeAssociation association,
+            IProductCmptGeneration generation,
+            String targetQualifiedName) {
         if (generation != null && association != null && IpsUIPlugin.getDefault().isGenerationEditable(generation)) {
-            IProductCmptLink newLink = generation.newLink(association.getName());
-            newLink.setTarget(droppedCmptQName);
-            newLink.setMaxCardinality(1);
-            newLink.setMinCardinality(0);
+            if (generation.isContainerFor(association)) {
+                return createLinkForContainer(targetQualifiedName, generation, association);
+            } else {
+                return createLinkForContainer(targetQualifiedName, generation.getProductCmpt(), association);
+            }
         }
+        return null;
+    }
+
+    private IProductCmptLink createLinkForContainer(String droppedCmptQName,
+            IProductCmptLinkContainer container,
+            IAssociation association) {
+        IProductCmptLink newLink = container.newLink(association.getName());
+        newLink.setTarget(droppedCmptQName);
+        newLink.setMaxCardinality(1);
+        newLink.setMinCardinality(0);
+        return newLink;
     }
 
 }

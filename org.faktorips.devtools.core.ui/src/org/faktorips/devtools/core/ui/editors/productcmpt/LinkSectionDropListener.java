@@ -37,10 +37,10 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsFileTransferViewerDropAdapter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LinkDropListener;
+import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 
 /**
  * Drop Listener for the link section. This drop listener is able to move elements within the link
@@ -57,6 +57,8 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
     private List<IProductCmptLink> movedCmptLinks;
     private final IProductCmptGeneration generation;
     private final ProductCmptEditor editor;
+
+    private final LinkCreatorUtil linkCreatorUtil = new LinkCreatorUtil(false);
 
     public LinkSectionDropListener(ProductCmptEditor editor, Viewer viewer, IProductCmptGeneration generation) {
         super(viewer);
@@ -261,13 +263,9 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
     private IProductCmptLink createLink(String droppedCmptQName, IProductCmptGeneration generation, Object target)
             throws CoreException {
 
-        IAssociation association = getAssociation(target);
+        IProductCmptTypeAssociation association = getAssociation(target);
         if (generation != null && association != null && IpsUIPlugin.isEditable(generation.getIpsSrcFile())) {
-            IProductCmptLink newLink = null;
-            newLink = generation.newLink(association.getName());
-            newLink.setTarget(droppedCmptQName);
-            newLink.setMaxCardinality(1);
-            newLink.setMinCardinality(0);
+            IProductCmptLink newLink = linkCreatorUtil.createLink(association, generation, droppedCmptQName);
             moveLink(newLink, target);
             return newLink;
         } else {

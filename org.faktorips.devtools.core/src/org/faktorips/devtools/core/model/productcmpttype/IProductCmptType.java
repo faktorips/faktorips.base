@@ -248,7 +248,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public List<IAssociation> findAllNotDerivedAssociations() throws CoreException;
 
     /**
-     * Returns all not derived associations from this type and its super types.
+     * Returns all non-derived associations from this type and its super types.
      * 
      * @since 3.8
      */
