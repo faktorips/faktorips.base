@@ -82,9 +82,9 @@ import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -340,23 +340,23 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     protected ClassToInstancesMap<IIpsArtefactBuilder> createBuilders() throws CoreException {
         // create policy component type builders
         ClassToInstancesMap<IIpsArtefactBuilder> builders = new ClassToInstancesMap<IIpsArtefactBuilder>();
-        builders.put(new PolicyCmptImplClassBuilder(true, this, generatorModelContext, modelService) {
+        builders.put(new PolicyCmptClassBuilder(true, this, generatorModelContext, modelService) {
         });
-        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(false, this,
+        PolicyCmptClassBuilder policyCmptClassBuilder = new PolicyCmptClassBuilder(false, this,
                 generatorModelContext, modelService);
-        builders.put(policyCmptImplClassBuilder);
+        builders.put(policyCmptClassBuilder);
 
         // create product component type builders
-        builders.put(new ProductCmptImplClassBuilder(true, this, generatorModelContext, modelService) {
+        builders.put(new ProductCmptClassBuilder(true, this, generatorModelContext, modelService) {
         });
-        builders.put(new ProductCmptGenerationImplClassBuilder(true, this, generatorModelContext, modelService) {
+        builders.put(new ProductCmptGenerationClassBuilder(true, this, generatorModelContext, modelService) {
         });
-        ProductCmptGenerationImplClassBuilder productCmptGenerationImplClassBuilder = new ProductCmptGenerationImplClassBuilder(
+        ProductCmptGenerationClassBuilder productCmptGenerationClassBuilder = new ProductCmptGenerationClassBuilder(
                 false, this, generatorModelContext, modelService);
-        builders.put(productCmptGenerationImplClassBuilder);
-        ProductCmptImplClassBuilder productCmptImplClassBuilder = new ProductCmptImplClassBuilder(false, this,
+        builders.put(productCmptGenerationClassBuilder);
+        ProductCmptClassBuilder productCmptClassBuilder = new ProductCmptClassBuilder(false, this,
                 generatorModelContext, modelService);
-        builders.put(productCmptImplClassBuilder);
+        builders.put(productCmptClassBuilder);
 
         // table structure builders
         TableImplBuilder tableImplBuilder = new TableImplBuilder(this);
@@ -392,11 +392,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         IIpsArtefactBuilder productCmptXmlBuilder = new ProductCmptXMLBuilder(IpsObjectType.PRODUCT_CMPT, this);
         builders.put(productCmptXmlBuilder);
 
-        productCmptBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
-        productCmptBuilder.setProductCmptGenImplBuilder(productCmptGenerationImplClassBuilder);
+        productCmptBuilder.setProductCmptImplBuilder(productCmptClassBuilder);
+        productCmptBuilder.setProductCmptGenImplBuilder(productCmptGenerationClassBuilder);
 
         // test case builder
-        testCaseBuilder.setJavaSourceFileBuilder(policyCmptImplClassBuilder);
+        testCaseBuilder.setJavaSourceFileBuilder(policyCmptClassBuilder);
 
         builders.put(new ValidationRuleMessagesPropertiesBuilder(this));
 
@@ -683,8 +683,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * Returns the <tt>ProductCmptGenImplClassBuilder</tt> or <tt>null</tt> if non has been
      * assembled yet.
      */
-    public final ProductCmptGenerationImplClassBuilder getProductCmptGenImplClassBuilder() {
-        return getBuilderByClass(ProductCmptGenerationImplClassBuilder.class);
+    public final ProductCmptGenerationClassBuilder getProductCmptGenImplClassBuilder() {
+        return getBuilderByClass(ProductCmptGenerationClassBuilder.class);
     }
 
     public final ProductCmptBuilder getProductCmptBuilder() {
@@ -692,19 +692,19 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     /**
-     * Returns the <tt>PolicyCmptImplClassBuilder</tt> or <tt>null</tt> if non has been assembled
+     * Returns the <tt>PolicyCmptClassBuilder</tt> or <tt>null</tt> if non has been assembled
      * yet.
      */
-    public final PolicyCmptImplClassBuilder getPolicyCmptImplClassBuilder() {
-        return getBuilderByClass(PolicyCmptImplClassBuilder.class);
+    public final PolicyCmptClassBuilder getPolicyCmptImplClassBuilder() {
+        return getBuilderByClass(PolicyCmptClassBuilder.class);
     }
 
     /**
-     * Returns the <tt>ProductCmptImplClassBuilder</tt> or <tt>null</tt> if non has been assembled
+     * Returns the <tt>ProductCmptClassBuilder</tt> or <tt>null</tt> if non has been assembled
      * yet.
      */
-    public final ProductCmptImplClassBuilder getProductCmptImplClassBuilder() {
-        return getBuilderByClass(ProductCmptImplClassBuilder.class);
+    public final ProductCmptClassBuilder getProductCmptImplClassBuilder() {
+        return getBuilderByClass(ProductCmptClassBuilder.class);
     }
 
     public TableImplBuilder getTableImplBuilder() {

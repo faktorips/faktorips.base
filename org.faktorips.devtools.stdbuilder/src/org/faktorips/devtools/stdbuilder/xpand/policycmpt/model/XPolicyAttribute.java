@@ -33,7 +33,6 @@ import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAttribute;
@@ -108,9 +107,6 @@ public class XPolicyAttribute extends XAttribute {
         return getAttribute().getAttributeType() == AttributeType.CONSTANT;
     }
 
-    /**
-     * @see PolicyCmptImplClassBuilder line 1049
-     */
     public boolean isGenerateInitWithProductData() {
         return isProductRelevant() && isChangeable() && !isOverwrite();
     }

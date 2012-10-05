@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptClassBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
@@ -54,10 +54,10 @@ public class XpandBuilderTest {
         when(generatorModelContext.getResourceManager()).thenReturn(new OptimizedResourceManager());
         // Using PolicyCmptImlClassBuilder as concrete instance knowing that this also tests this
         // other class
-        PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(false, builderSet,
+        PolicyCmptClassBuilder policyCmptClassBuilder = new PolicyCmptClassBuilder(false, builderSet,
                 generatorModelContext, null);
-        policyCmptImplClassBuilder.beforeBuildProcess(ipsProject, 0);
-        assertNotNull(policyCmptImplClassBuilder.getOut());
-        assertNotNull(policyCmptImplClassBuilder.getTemplateDefinition());
+        policyCmptClassBuilder.beforeBuildProcess(ipsProject, 0);
+        assertNotNull(policyCmptClassBuilder.getOut());
+        assertNotNull(policyCmptClassBuilder.getTemplateDefinition());
     }
 }

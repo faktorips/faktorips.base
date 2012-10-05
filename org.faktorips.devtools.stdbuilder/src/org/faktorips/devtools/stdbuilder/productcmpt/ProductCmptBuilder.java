@@ -29,8 +29,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
 
 /**
  * 
@@ -51,11 +51,11 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         return (StandardBuilderSet)super.getBuilderSet();
     }
 
-    public void setProductCmptImplBuilder(ProductCmptImplClassBuilder builder) {
+    public void setProductCmptImplBuilder(ProductCmptClassBuilder builder) {
         generationBuilder.setProductCmptImplBuilder(builder);
     }
 
-    public void setProductCmptGenImplBuilder(ProductCmptGenerationImplClassBuilder builder) {
+    public void setProductCmptGenImplBuilder(ProductCmptGenerationClassBuilder builder) {
         generationBuilder.setProductCmptGenImplBuilder(builder);
     }
 

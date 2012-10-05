@@ -14,31 +14,21 @@
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.TypeBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class ProductCmptGenerationImplClassBuilder extends TypeBuilder<XProductCmptGenerationClass> {
+public class ProductCmptClassBuilder extends TypeBuilder<XProductCmptClass> {
 
-    private final IJavaClassNameProvider javaClassNameProvider;
-
-    public ProductCmptGenerationImplClassBuilder(boolean interfaceBuilder, StandardBuilderSet builderSet,
+    public ProductCmptClassBuilder(boolean interfaceBuilder, StandardBuilderSet builderSet,
             GeneratorModelContext modelContext, ModelService modelService) {
         super(interfaceBuilder, builderSet, modelContext, modelService, new LocalizedStringsSet(
-                ProductCmptGenerationImplClassBuilder.class));
-        javaClassNameProvider = XProductCmptGenerationClass.createProductCmptGenJavaClassNaming(
-                modelContext.isGeneratePublishedInterfaces(), getLanguageUsedInGeneratedSourceCode());
-    }
-
-    @Override
-    public IJavaClassNameProvider getJavaClassNameProvider() {
-        return javaClassNameProvider;
+                ProductCmptClassBuilder.class));
     }
 
     @Override
@@ -47,22 +37,17 @@ public class ProductCmptGenerationImplClassBuilder extends TypeBuilder<XProductC
     }
 
     @Override
-    protected Class<XProductCmptGenerationClass> getGeneratorModelNodeClass() {
-        return XProductCmptGenerationClass.class;
+    protected Class<XProductCmptClass> getGeneratorModelNodeClass() {
+        return XProductCmptClass.class;
     }
 
     @Override
     public String getTemplate() {
         if (isInterfaceBuilder()) {
-            return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponentGenInterface::main";
+            return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponentInterface::main";
         } else {
-            return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponentGen::main";
+            return "org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductComponent::main";
         }
-    }
-
-    @Override
-    protected boolean generatesInterface() {
-        return isInterfaceBuilder();
     }
 
 }
