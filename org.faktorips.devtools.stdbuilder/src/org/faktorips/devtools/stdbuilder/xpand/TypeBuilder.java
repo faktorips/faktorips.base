@@ -13,7 +13,10 @@
 
 package org.faktorips.devtools.stdbuilder.xpand;
 
+import java.util.Map;
+
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.xtend.expression.Variable;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -28,6 +31,7 @@ import org.faktorips.util.LocalizedStringsSet;
 
 public abstract class TypeBuilder<T extends AbstractGeneratorModelNode> extends XpandBuilder<T> {
 
+    private static final String GENERATE_INTERFACE = "generateInterface";
     private final boolean interfaceBuilder;
 
     public TypeBuilder(boolean interfaceBuilder, StandardBuilderSet builderSet, GeneratorModelContext modelContext,
@@ -76,6 +80,14 @@ public abstract class TypeBuilder<T extends AbstractGeneratorModelNode> extends 
     @Override
     public boolean isBuildingPublishedSourceFile() {
         return isInterfaceBuilder() || !getGeneratorModelContext().isGeneratePublishedInterfaces();
+    }
+
+    @Override
+    protected Map<String, Variable> getGlobalVars() {
+        Map<String, Variable> map = super.getGlobalVars();
+        Variable generateInterface = new Variable(GENERATE_INTERFACE, generatesInterface());
+        map.put(generateInterface.getName(), generateInterface);
+        return map;
     }
 
     @Override

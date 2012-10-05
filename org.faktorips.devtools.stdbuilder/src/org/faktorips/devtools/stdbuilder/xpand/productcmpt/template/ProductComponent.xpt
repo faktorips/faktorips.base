@@ -79,14 +79,17 @@
 
 «DEFINE getProductComponentGeneration FOR XProductCmptGenerationClass-»
 		    /**
-		     * «inheritDocOrJavaDoc("METHOD_GET_GENERATION", generationConceptNameSingular)»
+		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_GENERATION", generationConceptNameSingular)»
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethod()-»
-		    public «interfaceName» «method(methodNameGetProductComponentGeneration, Calendar(), varNameEffectiveDate)» {
+		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+		    public «interfaceName» «method(methodNameGetProductComponentGeneration, Calendar(), varNameEffectiveDate)»
+		    «IF genInterface()»;«ELSE-»
+		    {
 		        return («interfaceName»)«getRepository()».«getProductComponentGeneration("getId()", varNameEffectiveDate)»;
 		    }
+		    «ENDIF»
 «ENDDEFINE»
 
 «DEFINE writeToXmlMethods FOR XProductCmptClass-»
@@ -116,14 +119,17 @@
 «REM» TODO may use covariant return type«ENDREM»
 «DEFINE createPolicyCmpt(XProductCmptClass currentType) FOR XPolicyCmptClass»
 	«IF currentType.isGenerateMethodCreatePolicyCmpt(this)-»
-    /**
-     * «inheritDocOrJavaDoc("METHOD_CREATE_POLICY_CMPT", name)»
-     * 
-     * @generated
-     */
-     «overrideAnnotationForPublishedMethodOrIf(this.productCmptNode != currentType)-»
-    public «publishedInterfaceName» «method(methodNameCreatePolicyCmpt)» {
-        return new «currentType.policyImplClassName»(this);
-    }
+	    /**
+	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_CREATE_POLICY_CMPT", name)»
+	     * 
+	     * @generated
+	     */
+	     «overrideAnnotationForPublishedMethodOrIf(!genInterface(), this.productCmptNode != currentType)-»
+	    public «publishedInterfaceName» «method(methodNameCreatePolicyCmpt)»
+	    «IF genInterface()»;«ELSE-»
+	    {
+	        return new «currentType.policyImplClassName»(this);
+	    }
+		«ENDIF»
     «ENDIF»
 «ENDDEFINE»

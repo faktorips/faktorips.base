@@ -51,16 +51,16 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE getter(boolean interface) FOR XPolicyAttribute-» 
-	«IF generateGetter && !(overwrite && interface)-»
+«DEFINE getter FOR XPolicyAttribute-» 
+	«IF generateGetter && !(overwrite && genInterface())-»
 		/**
-		 * «inheritDocOrJavaDocIf(interface, "METHOD_GETVALUE", name, descriptionForJDoc)»
+		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
 		 *
 		 * @generated
 		 */
-		«overrideAnnotationForPublishedMethodOrIf(!interface && published, overwrite)-»
+		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)-»
 		public «javaClassName» «method(methodNameGetter)»
-		«IF interface-»;«ELSE-»
+		«IF genInterface()-»;«ELSE-»
 		{
 			«IF generateField-»
 				return «IF constant»«fieldName»«ELSE»«getReferenceOrSafeCopyIfNecessary(fieldName)»«ENDIF»;
@@ -79,16 +79,16 @@
 «ENDDEFINE»
 
 
-«DEFINE setter(boolean interface) FOR XPolicyAttribute-»
+«DEFINE setter FOR XPolicyAttribute-»
 	«IF generateSetter-»
 		/**
-		 * «inheritDocOrJavaDocIf(interface, "METHOD_SETVALUE", name, descriptionForJDoc)»
+		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE", name, descriptionForJDoc)»
 		 *
 		 * @generated
 		 */
-		«overrideAnnotationForPublishedMethodOrIf(!interface && published, overwrite)-»
+		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)-»
 		public void «method(methodNameSetter, javaClassName, "newValue")»
-		«IF interface-»;«ELSE-»
+		«IF genInterface()-»;«ELSE-»
 		{
 			«EXPAND PropertyChangeSupport::storeOldValue-»
 			this.«fieldName» = «getReferenceOrSafeCopyIfNecessary("newValue")»;
@@ -98,16 +98,16 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE allowedValuesMethod(boolean interface) FOR XPolicyAttribute-»
+«DEFINE allowedValuesMethod FOR XPolicyAttribute-»
 	«IF generateGetAllowedValuesFor-»
 		/**
-		 * «inheritDocOrJavaDocIf(interface, getJavadocKey("METHOD_GET"), name, descriptionForJDoc)»
+		 * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), name, descriptionForJDoc)»
 		 *
 		 * @generated
 		 */
-		«overrideAnnotationForPublishedMethodOrIf(!interface && published, overwrite && overwrittenAttribute.generateGetAllowedValuesFor)-»
+		«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite && overwrittenAttribute.generateGetAllowedValuesFor)-»
 		public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»
-		«IF interface-»;«ELSE-»
+		«IF genInterface()-»;«ELSE-»
 		{
 			«IF productRelevant-»
 				return «getProductCmptGeneration(published)».«methodNameGetAllowedValuesFor»(context);

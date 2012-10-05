@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.xpand;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -28,6 +30,7 @@ import org.eclipse.xpand2.XpandExecutionContextImpl;
 import org.eclipse.xpand2.output.Outlet;
 import org.eclipse.xtend.expression.ExceptionHandler;
 import org.eclipse.xtend.expression.NullEvaluationHandler;
+import org.eclipse.xtend.expression.Variable;
 import org.eclipse.xtend.type.impl.java.JavaBeansMetaModel;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
@@ -133,17 +136,21 @@ public abstract class XpandBuilder<T extends AbstractGeneratorModelNode> extends
 
     protected XpandExecutionContextImpl createXpandContext() {
         if (DEBUG) {
-            return new XpandExecutionContextImpl(getOut(), null);
+            return new XpandExecutionContextImpl(getOut(), null, getGlobalVars(), null, null);
         } else {
             // TODO maybe we want to instantiate one of these by our own?
             ProgressMonitor progressMonitor = null;
             ExceptionHandler exceptionHandler = null;
             NullEvaluationHandler nullEvaluationHandler = null;
             XpandExecutionContextImpl context = new XpandExecutionContextImpl(getGeneratorModelContext()
-                    .getResourceManager(), getOut(), null, null, progressMonitor, exceptionHandler,
+                    .getResourceManager(), getOut(), null, getGlobalVars(), progressMonitor, exceptionHandler,
                     nullEvaluationHandler, null);
             return context;
         }
+    }
+
+    protected Map<String, Variable> getGlobalVars() {
+        return new HashMap<String, Variable>();
     }
 
     @Override

@@ -3,6 +3,8 @@ import org::faktorips::devtools::stdbuilder::xpand::policycmpt::model;
 
 extension org::faktorips::devtools::stdbuilder::xpand::template::MethodNames reexport;
 
+boolean genInterface() : GLOBALVAR generateInterface;
+
 String camelCaseToUnderscore(String s) :
 	JAVA org.faktorips.util.StringUtil.camelCaseToUnderscore(java.lang.String); 
 

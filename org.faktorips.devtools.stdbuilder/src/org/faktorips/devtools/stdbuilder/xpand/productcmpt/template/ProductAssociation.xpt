@@ -32,9 +32,9 @@
 		«EXPAND addMethod»
 		«EXPAND addMethodWithCardinality»
 		«EXPAND getCardinalityFor»
-		«EXPAND Association::getNumOf(false)»
+		«EXPAND Association::getNumOf»
     «ENDIF»
-	«EXPAND Association::abstractMethods(false)»
+	«EXPAND Association::abstractMethods»
 «ENDDEFINE»
 
 «DEFINE getterProductCmpt FOR XProductAssociation-»

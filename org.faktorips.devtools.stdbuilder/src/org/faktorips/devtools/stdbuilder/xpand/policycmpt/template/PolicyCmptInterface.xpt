@@ -15,7 +15,7 @@
 		 *
 		 * @generated
 		 */
-		public interface «getSimpleName(BuilderAspect::INTERFACE)» 
+		public interface «interfaceName» 
 		«IF extendsInterface-»
 			extends «FOREACH extendedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH»
 		«ENDIF-»
@@ -38,20 +38,20 @@
 			
 			«FOREACH attributes AS this-»
 				«IF published-»
-					«EXPAND PolicyCmptAttribute::allowedValuesMethod(true)-»
-					«EXPAND PolicyCmptAttribute::getter(true)-»
-					«EXPAND PolicyCmptAttribute::setter(true)-»
+					«EXPAND PolicyCmptAttribute::allowedValuesMethod-»
+					«EXPAND PolicyCmptAttribute::getter-»
+					«EXPAND PolicyCmptAttribute::setter-»
 				«ENDIF-»
 			«ENDFOREACH-»
 
-			«EXPAND PolicyCmptAssociation::methods(true) FOREACH associations-»
+			«EXPAND PolicyCmptAssociation::methods FOREACH associations-»
 			
 			«IF configured-»
-				«EXPAND PolicyCmpt::getAndSetProductComponent(true) FOR productCmptNode-»
-				«EXPAND PolicyCmpt::getProductComponentGeneration(true) FOR productCmptGenerationNode-»
+				«EXPAND PolicyCmpt::getAndSetProductComponent FOR productCmptNode-»
+				«EXPAND PolicyCmpt::getProductComponentGeneration FOR productCmptGenerationNode-»
 			«ENDIF-»
 
-			«EXPAND Methods::method(true) FOREACH methods-»
+			«EXPAND Methods::method FOREACH methods-»
 		}
 	«ENDFILE»
 «ENDDEFINE»

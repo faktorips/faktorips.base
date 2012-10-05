@@ -1,0 +1,31 @@
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE main FOR XProductCmptClass-»
+	«FILE getFileName(BuilderAspect::INTERFACE) -»
+	package «getPackageName(BuilderAspect::INTERFACE)»;
+
+		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
+	
+		/**
+		 * «localizedJDoc("INTERFACE", interfaceName)»
+		 * @generated
+		 */
+		public interface «interfaceName» 
+		«IF extendsInterface-»
+			extends «FOREACH extendedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH»
+		«ENDIF-»
+		 {
+		 
+		 	«EXPAND ProductComponent::getProductComponentGeneration FOR productCmptGenerationNode-»
+		 
+			«EXPAND ProductComponent::createPolicyCmpt(this) FOREACH policyTypeClassHierarchy»
+		 }
+	«ENDFILE»
+«ENDDEFINE»
+

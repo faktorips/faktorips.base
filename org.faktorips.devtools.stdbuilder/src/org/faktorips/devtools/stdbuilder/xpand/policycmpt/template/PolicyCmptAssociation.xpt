@@ -53,26 +53,26 @@
 	«ENDIF-»
 «ENDDEFINE»
 	
-«DEFINE methods(boolean interface) FOR XPolicyAssociation-»
-	«EXPAND Association::getNumOf(interface)-»
-	«EXPAND contains(interface)-»
-	«EXPAND getters(interface)-»
-	«EXPAND setterOrAdder(interface)-»
-	«EXPAND newChildMethods(interface)-»
-	«EXPAND remove(interface)-»
-	«EXPAND Association::abstractMethods(interface)»
+«DEFINE methods FOR XPolicyAssociation-»
+	«EXPAND Association::getNumOf-»
+	«EXPAND contains-»
+	«EXPAND getters-»
+	«EXPAND setterOrAdder-»
+	«EXPAND newChildMethods-»
+	«EXPAND remove-»
+	«EXPAND Association::abstractMethods»
 «ENDDEFINE»
 
-«DEFINE contains(boolean interface) FOR XAssociation-»
+«DEFINE contains FOR XAssociation-»
 	«IF oneToMany-»
 	    /**
-	     * «inheritDocOrJavaDocIf(interface, "METHOD_CONTAINS_OBJECT")»
+	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_CONTAINS_OBJECT")»
 	     * 
 	     * @generated
 	     */
-     	«overrideAnnotationForPublishedMethodAndIf(!interface)-»
+     	«overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
 	    public boolean «method(methodNameContains, targetInterfaceName, "objectToTest")»
-	    «IF interface-»;«ELSE-»
+	    «IF genInterface()-»;«ELSE-»
 	    {
 	    	«IF derivedUnion-»
 		        return «methodNameGetter»().contains(objectToTest);
@@ -84,43 +84,43 @@
     «ENDIF»
 «ENDDEFINE»
 
-«DEFINE getters(boolean interface) FOR XPolicyAssociation-»
+«DEFINE getters FOR XPolicyAssociation-»
 	«IF generateGetter-»
 		«IF oneToMany-»
 		    /**
-		     * «inheritDocOrJavaDocIf(interface, "METHOD_GET_MANY", getName(true))»
+		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_MANY", getName(true))»
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethodAndIf(!interface)-»
+		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
 		    public «List_(targetInterfaceName)» «method(methodNameGetter)»
-		    «IF interface-»;«ELSE-»
+		    «IF genInterface()-»;«ELSE-»
 		    {
 		        return «Collections()».unmodifiableList(«fieldName»);
 		    }
 		    «ENDIF»
 
 		    /**
-		     * «inheritDocOrJavaDocIf(interface, "METHOD_GET_REF_OBJECT_BY_INDEX", name)»
+		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_REF_OBJECT_BY_INDEX", name)»
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethodAndIf(!interface)-»
+		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
 		    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
-		    «IF interface-»;«ELSE-»
+		    «IF genInterface()-»;«ELSE-»
 		    {
 		        return «fieldName».get(index);
 		    }
 		    «ENDIF»
 	    «ELSE-»
 		    /**
-		     * «inheritDocOrJavaDocIf(interface, "METHOD_GET_ONE", name)»
+		     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_ONE", name)»
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethodAndIf(!interface)-»
+		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
 		    public «targetInterfaceName» «method(methodNameGetter)»
-		    «IF interface-»;«ELSE-»
+		    «IF genInterface()-»;«ELSE-»
 		    {
 		        return «fieldName»;
 		    }
@@ -129,14 +129,14 @@
     «ENDIF»
     «IF generateQualifiedGetter»
 	    /**
-	     * «inheritDocOrJavaDocIf(interface, "METHOD_GET_REF_OBJECT_BY_QUALIFIER", name)»
+	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_REF_OBJECT_BY_QUALIFIER", name)»
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotationForPublishedMethodAndIf(!interface)-»
+	    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
 	     «IF oneToManyIgnoringQualifier-»
 		    public  «List_(targetInterfaceName)» «method(methodNameGetSingle, targetProductCmptInterfaceName, "qualifier")»
-		    «IF interface-»;«ELSE-»
+		    «IF genInterface()-»;«ELSE-»
 		    {
 		        if (qualifier == null) {
 		            return null;
@@ -166,7 +166,7 @@
 		   	«ENDIF-»
 		«ELSE-»
 		    public  «targetInterfaceName» «method(methodNameGetSingle, targetProductCmptInterfaceName, "qualifier")»
-		     «IF interface-»;«ELSE-»
+		     «IF genInterface()-»;«ELSE-»
 		    {
 		        if (qualifier == null) {
 		            return null;
@@ -196,10 +196,10 @@
 	«ENDIF»
 «ENDDEFINE»
 
-«DEFINE setterOrAdder(boolean interface) FOR XPolicyAssociation-»
+«DEFINE setterOrAdder FOR XPolicyAssociation-»
 	«IF generateSetter-»
 		«IF compositionDetailToMaster-»
-			«IF !sharedAssociationImplementedInSuperclass && !interface-»
+			«IF !sharedAssociationImplementedInSuperclass && !genInterface()-»
 				/**
 			     * @generated
 			     */
@@ -219,13 +219,13 @@
 			«ENDIF-»
 		«ELSE-»
 		    /**
-	 	     * «inheritDocOrJavaDocIf(interface, "METHOD_SET_OBJECT", name)»
+	 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SET_OBJECT", name)»
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethodAndIf(!interface)-»
+		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
 		    public void «method(methodNameSetOrAdd, targetInterfaceName, "newObject")»
-		     «IF interface-»;«ELSE-»
+		     «IF genInterface()-»;«ELSE-»
 		    {
 		    	«IF generateChangeSupport-»
 					«EXPAND PropertyChangeSupport::storeOldValue-»
@@ -237,7 +237,7 @@
 		    }
 		    «ENDIF-»
 	
-	    	«IF generateChangeSupport && !interface-»
+	    	«IF generateChangeSupport && !genInterface()-»
 			    /** «REM»TODO old codegenerator writes the comment only for compositions«ENDREM»
 			     «IF !typeAssociation-» 
 			     * «localizedJDoc("METHOD_SET_OBJECT_INTERNAL", name)»
@@ -252,13 +252,13 @@
 		«ENDIF-»
 	«ELSEIF generateAddAndRemoveMethod-»
 	    /**
- 	     * «inheritDocOrJavaDocIf(interface, "METHOD_ADD_OBJECT", name)»
+ 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_ADD_OBJECT", name)»
 	     * 
 	     * @generated
 	     */
-	   	«overrideAnnotationForPublishedMethodAndIf(!interface)-»
+	   	«overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
 	    public void «method(methodNameSetOrAdd, targetInterfaceName, "objectToAdd")»
-	    «IF interface-»;«ELSE-»
+	    «IF genInterface()-»;«ELSE-»
 	    {
 	    	«IF generateChangeSupport-»
 		        «methodNameSetOrAddInternal»(objectToAdd);
@@ -269,7 +269,7 @@
 	    }
 	    «ENDIF-»
 	
-    	«IF generateChangeSupport && !interface-»
+    	«IF generateChangeSupport && !genInterface()-»
 		    /**
 		     * «localizedJDoc("METHOD_ADD_OBJECT_INTERNAL", name)»
 		     * 
@@ -367,16 +367,16 @@
 	«IF generatePublishedInterfaces-»(«targetClassName»)«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE newChildMethods(boolean interface) FOR XPolicyAssociation-»
+«DEFINE newChildMethods FOR XPolicyAssociation-»
 	«IF generateNewChildMethods-»
 	    /**
- 	     * «inheritDocOrJavaDocIf(interface, "METHOD_NEW_CHILD", targetName, name)»
+ 	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_NEW_CHILD", targetName, name)»
 	     * 
 	     * @generated
 	     */
-		«overrideAnnotationForPublishedMethodAndIf(!interface)-»
+		«overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
 	    public «targetInterfaceName» «method(methodNameNew)»
-	    «IF interface-»;«ELSE-»
+	    «IF genInterface()-»;«ELSE-»
 	    {
 	        «targetClassName» «variableNameNewInstance» = new «targetClassName»();
 			«EXPAND addOrSetNewInstance-»
@@ -388,13 +388,13 @@
 	
 		«IF generateNewChildWithArgumentsMethod-»
 		    /**
- 	     	 * «inheritDocOrJavaDocIf(interface, "METHOD_NEW_CHILD_WITH_PRODUCTCMPT_ARG", targetName, getName(false), targetProductCmptVariableName)»
+ 	     	 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_NEW_CHILD_WITH_PRODUCTCMPT_ARG", targetName, getName(false), targetProductCmptVariableName)»
 		     * 
 		     * @generated
 		     */
-			«overrideAnnotationForPublishedMethodAndIf(!interface)-»
+			«overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
 		    public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceName, targetProductCmptVariableName)»
-		     «IF interface-»;«ELSE-»
+		     «IF genInterface()-»;«ELSE-»
 		    {
 		        if («targetProductCmptVariableName» == null) {
 		            return «methodNameNew»();
@@ -446,16 +446,16 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE remove(boolean interface) FOR XPolicyAssociation-»
+«DEFINE remove FOR XPolicyAssociation-»
 	«IF generateAddAndRemoveMethod-»
 	    /**
-	     * «inheritDocOrJavaDocIf(interface, "METHOD_REMOVE_OBJECT", name)»
+	     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_REMOVE_OBJECT", name)»
 	     * 
 	     * @generated
 	     */
-		«overrideAnnotationForPublishedMethodAndIf(!interface)-»
+		«overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
 	    public void «method(methodNameRemove, targetInterfaceName, "objectToRemove")»
-	    «IF interface-»;«ELSE-»
+	    «IF genInterface()-»;«ELSE-»
 	    {
 	        if (objectToRemove == null) {
 	            return;
