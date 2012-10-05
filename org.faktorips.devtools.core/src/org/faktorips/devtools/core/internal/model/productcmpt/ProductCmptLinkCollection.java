@@ -139,7 +139,9 @@ public class ProductCmptLinkCollection {
      * @param partId the part id the new link should have
      * @return the newly creates
      */
-    public IProductCmptLink createAndAddNewLink(IProductCmptLinkContainer container, String associationName, String partId) {
+    public IProductCmptLink createAndAddNewLink(IProductCmptLinkContainer container,
+            String associationName,
+            String partId) {
         IProductCmptLink link = createLink(container, associationName, partId);
         addLink(link);
         return link;
@@ -171,8 +173,7 @@ public class ProductCmptLinkCollection {
     }
 
     private boolean addLinkInternal(IProductCmptLink link) {
-        links.add(link);
-        return false;
+        return links.add(link);
     }
 
     /**

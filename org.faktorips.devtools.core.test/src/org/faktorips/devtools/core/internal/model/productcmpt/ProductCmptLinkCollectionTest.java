@@ -519,6 +519,18 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testAddLink_allowDuplicateLinks() {
+        setUpCollectionWithLinks();
+        boolean linkAdded = linkCollection.addLink(link1);
+        assertTrue(linkAdded);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddLink_disallowNull() {
+        linkCollection.addLink(null);
+    }
+
+    @Test
     public void testSizeEmpty() {
         assertEquals(0, linkCollection.size());
     }
