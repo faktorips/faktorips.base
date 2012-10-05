@@ -29,14 +29,17 @@
 
 «DEFINE getter FOR XProductAttribute-» 
 	/**
-	 * «inheritDocOrJavaDoc("METHOD_GETVALUE", name, description)»
+	 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
 	 *
 	 * @generated
 	 */
-	«overrideAnnotationForPublishedMethodOrIf(published, overwrite)-»
-	public «javaClassName» «method(methodNameGetter)»{
+	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)-»
+	public «javaClassName» «method(methodNameGetter)»
+	«IF genInterface()»;«ELSE-»
+	{
 		return «getReferenceOrSafeCopyIfNecessary(fieldName)»;
 	}
+	«ENDIF»
 «ENDDEFINE»
 
 

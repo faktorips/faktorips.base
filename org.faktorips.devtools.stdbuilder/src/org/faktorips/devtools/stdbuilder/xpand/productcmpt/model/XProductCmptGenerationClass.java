@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenJavaClassNameProvider;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 
 public class XProductCmptGenerationClass extends XProductClass {
@@ -34,6 +36,20 @@ public class XProductCmptGenerationClass extends XProductClass {
         super(productCmptType, modelContext, modelService);
         prodGenJavaClassNameProvider = createProductCmptGenJavaClassNaming(
                 modelContext.isGeneratePublishedInterfaces(), getLanguageUsedInGeneratedSourceCode());
+    }
+
+    @Override
+    public List<String> getExtendedInterfaces() {
+        List<String> extendedInterfaces = super.getExtendedInterfaces();
+        if (!hasSupertype()) {
+            if (isGeneratePublishedInterfaces()) {
+                // in case of not generating published interfaces we use all extended interfaces as
+                // implemented interfaces in the implementation. These interfaces are already
+                // implemented by the abstract super class
+                extendedInterfaces.add(addImport(IProductComponentGeneration.class));
+            }
+        }
+        return extendedInterfaces;
     }
 
     @Override

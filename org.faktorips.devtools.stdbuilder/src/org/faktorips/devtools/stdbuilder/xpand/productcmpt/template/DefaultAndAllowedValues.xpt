@@ -31,7 +31,7 @@
     private «valueSetJavaClassName» «field(fieldNameValueSet)»;
 «ENDDEFINE»
 
-«DEFINE getterSetter FOR XPolicyAttribute-»
+«DEFINE getter FOR XPolicyAttribute-»
 	«IF generateGetAllowedValuesFor-»
 		«EXPAND getterDefaultValue-»
 		«EXPAND getterAllowedValues-»
@@ -40,26 +40,32 @@
 
 «DEFINE getterDefaultValue FOR XPolicyAttribute-»
     /**
-     * «inheritDocOrJavaDoc("METHOD_GET_DEFAULTVALUE", name)»
+     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_DEFAULTVALUE", name)»
      * 
      * @generated
      */
-	«overrideAnnotationForPublishedMethodOrIf(published, overwrite && overwrittenAttribute.generateGetAllowedValuesFor)-»
-    public «javaClassName» «method(methodNameGetDefaultValue)» {
+	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite && overwrittenAttribute.generateGetAllowedValuesFor)-»
+    public «javaClassName» «method(methodNameGetDefaultValue)»
+    «IF genInterface()»;«ELSE-»
+    {
         return «fieldNameDefaultValue»;
     }
+    «ENDIF»
 «ENDDEFINE»
 
 «DEFINE getterAllowedValues FOR XPolicyAttribute-»
     /**
-     * «inheritDocOrJavaDoc(getJavadocKey("METHOD_GET"), name)»
+     * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), name)»
      * 
      * @generated
      */
-	«overrideAnnotationForPublishedMethodOrIf(published, overwrite && overwrittenAttribute.generateGetAllowedValuesFor)-»
-    public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")» {
+	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite && overwrittenAttribute.generateGetAllowedValuesFor)-»
+    public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»
+    «IF genInterface()»;«ELSE-»
+    {
         return «fieldNameValueSet»;
     }
+    «ENDIF»
 «ENDDEFINE»
 
 «DEFINE initAttributeFromXML FOR XPolicyAttribute-»

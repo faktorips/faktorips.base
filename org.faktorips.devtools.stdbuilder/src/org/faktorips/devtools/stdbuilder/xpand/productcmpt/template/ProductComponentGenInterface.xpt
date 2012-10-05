@@ -6,14 +6,14 @@
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
-«DEFINE main FOR XProductCmptClass-»
+«DEFINE main FOR XProductCmptGenerationClass-»
 	«FILE getFileName(BuilderAspect::INTERFACE) -»
 	package «getPackageName(BuilderAspect::INTERFACE)»;
 
 		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 	
 		/**
-		 * «localizedJDoc("INTERFACE", name)»
+		 * «localizedJDoc("INTERFACE", generationConceptNameSingular, name)»
 		 * @generated
 		 */
 		public interface «interfaceName» 
@@ -37,15 +37,32 @@
 					«EXPAND ProductAttribute::getter»
 		 	«ENDFOREACH-»
 
+			«FOREACH configuredAttributes AS this-»
+				«IF published-»
+					«EXPAND DefaultAndAllowedValues::getter»
+				«ENDIF»
+			«ENDFOREACH»
+			
 			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
 
-		 	«EXPAND ProductComponent::getProductComponentGeneration FOR productCmptGenerationNode»
+
+			
+			«FOREACH methods AS this-»
+				«IF published-»
+					«IF !formulaSignature-»
+						«EXPAND Methods::method-»
+					«ELSE-»
+						«EXPAND Methods::formulaMethod-»
+					«ENDIF-»
+				«ENDIF-»
+			«ENDFOREACH-»
+
+			«EXPAND ProductComponentGen::getProductCmpt FOR productCmptClassNode-»
 
 			«IF configurationForPolicyCmptType»
-				«EXPAND ProductComponent::createPolicyCmpt(this) FOR policyCmptClass»
+				«EXPAND ProductComponentGen::createPolicyCmpt(productCmptClassNode) FOR policyCmptClass»
 			«ENDIF»
 
-		 }
+	}
 	«ENDFILE»
 «ENDDEFINE»
-

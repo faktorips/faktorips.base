@@ -351,10 +351,10 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         builders.put(policyCmptImplClassBuilder);
 
         // create product component type builders
-        ProductCmptInterfaceBuilder productCmptInterfaceBuilder = new ProductCmptInterfaceBuilder(this);
-        builders.put(productCmptInterfaceBuilder);
-        ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder = new ProductCmptGenInterfaceBuilder(this);
-        builders.put(productCmptGenInterfaceBuilder);
+        builders.put(new ProductCmptImplClassBuilder(true, this, generatorModelContext, modelService) {
+        });
+        builders.put(new ProductCmptGenerationImplClassBuilder(true, this, generatorModelContext, modelService) {
+        });
         ProductCmptGenerationImplClassBuilder productCmptGenerationImplClassBuilder = new ProductCmptGenerationImplClassBuilder(
                 false, this, generatorModelContext, modelService);
         builders.put(productCmptGenerationImplClassBuilder);
@@ -402,13 +402,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         productCmptBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
         productCmptBuilder.setProductCmptGenImplBuilder(productCmptGenerationImplClassBuilder);
-        productCmptGenInterfaceBuilder.setProductCmptInterfaceBuilder(productCmptInterfaceBuilder);
 
         // test case builder
         testCaseBuilder.setJavaSourceFileBuilder(policyCmptImplClassBuilder);
 
         // formula test builder
-        formulaTestBuilder.setProductCmptInterfaceBuilder(productCmptInterfaceBuilder);
         formulaTestBuilder.setProductCmptBuilder(productCmptBuilder);
         formulaTestBuilder.setProductCmptGenImplClassBuilder(productCmptGenerationImplClassBuilder);
 

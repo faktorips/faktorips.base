@@ -222,7 +222,7 @@ public abstract class XProductClass extends XType {
         return new CopyOnWriteArraySet<XTableUsage>(tables);
     }
 
-    public boolean iscontainsTables() {
+    public boolean isContainsTables() {
         return !getTables().isEmpty();
     }
 

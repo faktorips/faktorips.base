@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -391,11 +392,11 @@ public class XPolicyCmptClass extends XType {
      *         policy component called 'Coverage'
      */
     public String getMethodNameCreatePolicyCmpt() {
-        return "create" + getImplClassName();
+        return "create" + StringUtils.capitalize(getName());
     }
 
     public String getLocalVarNameDeltaSupportOtherObject() {
-        return getJavaNamingConvention().getMemberVarName("other" + getImplClassName());
+        return getJavaNamingConvention().getMemberVarName("other" + StringUtils.capitalize(getName()));
     }
 
     public Set<XPolicyAttribute> getAttributesToCopy() {

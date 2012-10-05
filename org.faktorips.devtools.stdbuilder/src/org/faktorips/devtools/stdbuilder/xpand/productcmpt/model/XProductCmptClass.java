@@ -13,11 +13,13 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
+import java.util.List;
 import java.util.Set;
 
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.internal.ProductComponent;
 
 public class XProductCmptClass extends XProductClass {
@@ -58,6 +60,20 @@ public class XProductCmptClass extends XProductClass {
 
     public String getMethodNameSetProductCmpt() {
         return getJavaNamingConvention().getSetterMethodName(getName());
+    }
+
+    @Override
+    public List<String> getExtendedInterfaces() {
+        List<String> extendedInterfaces = super.getExtendedInterfaces();
+        if (!hasSupertype()) {
+            if (isGeneratePublishedInterfaces()) {
+                // in case of not generating published interfaces we use all extended interfaces as
+                // implemented interfaces in the implementation. These interfaces are already
+                // implemented by the abstract super class
+                extendedInterfaces.add(addImport(IProductComponent.class));
+            }
+        }
+        return extendedInterfaces;
     }
 
 }

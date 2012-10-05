@@ -79,8 +79,11 @@ inheritDoc() :
 	"{@inheritDoc}";
 
 inheritDocOrText(AbstractGeneratorModelNode this, String text):
-	generatePublishedInterfaces?"{@inheritDoc}":text;
-	
+	inheritDocOrTextIf(false, text);
+
+inheritDocOrTextIf(AbstractGeneratorModelNode this, boolean generateInterface, String text):
+	(generatePublishedInterfaces && !generateInterface)?inheritDoc():text;
+
 inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key):
 	inheritDocOrJavaDocIf(false, key);
 
@@ -94,16 +97,16 @@ inheritDocOrJavaDoc(AbstractGeneratorModelNode this, String key, String param1, 
 	inheritDocOrJavaDocIf(false, key, param1, param2, param3);
 
 inheritDocOrJavaDocIf(AbstractGeneratorModelNode this, boolean generatesInterface, String key):
-	(generatePublishedInterfaces && !generatesInterface)?"{@inheritDoc}":localizedJDoc(key);
+	(generatePublishedInterfaces && !generatesInterface)?inheritDoc():localizedJDoc(key);
 
 inheritDocOrJavaDocIf(AbstractGeneratorModelNode this, boolean generatesInterface, String key, String param):
-	(generatePublishedInterfaces && !generatesInterface)?"{@inheritDoc}":localizedJDoc(key, param);
+	(generatePublishedInterfaces && !generatesInterface)?inheritDoc():localizedJDoc(key, param);
 
 inheritDocOrJavaDocIf(AbstractGeneratorModelNode this, boolean generatesInterface, String key, String param1, String param2):
-	(generatePublishedInterfaces && !generatesInterface)?"{@inheritDoc}":localizedJDoc(key, param1, param2);
+	(generatePublishedInterfaces && !generatesInterface)?inheritDoc():localizedJDoc(key, param1, param2);
 	
 inheritDocOrJavaDocIf(AbstractGeneratorModelNode this, boolean generatesInterface, String key, String param1, String param2,String param3):
-	(generatePublishedInterfaces && !generatesInterface)?"{@inheritDoc}":localizedJDoc(key, param1, param2, param3);
+	(generatePublishedInterfaces && !generatesInterface)?inheritDoc():localizedJDoc(key, param1, param2, param3);
 	
 abstract(XType this) :
 	if abstract then "abstract";

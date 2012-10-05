@@ -7,15 +7,20 @@
 
 «DEFINE formulaMethod FOR XMethod-»
     /**
-     * {@inheritDoc}
+   	«IF description.length > 0-» 
+     * «inheritDocOrTextIf(genInterface(), description)»
      * 
+     «ENDIF-»
      * @generated
      */
-     «overrideAnnotationForPublishedMethodOrIf(published, overrides)-»
-    «getModifier(false)» «javaClassName» «method(methodName, methodParameters)» throws «FormulaExecutionException()» {
+     «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»
+    «getModifier(false)» «javaClassName» «method(methodName, methodParameters)» throws «FormulaExecutionException()»
+    «IF genInterface()»;«ELSE-»
+    {
         return («notPrimitiveJavaClassName»)getFormulaEvaluator().evaluate("«methodName»" «FOREACH methodParameters AS parameter», «parameter.name»«ENDFOREACH»);
     }
-    «IF overloadsFormula»
+    «ENDIF-»
+    «IF overloadsFormula && !genInterface()»
     	«LET overloadedFormulaMethod AS overloaded-»
 		    /**
 		     * «inheritDoc()»
@@ -34,14 +39,16 @@
 
 «DEFINE method FOR XMethod-»
     /**
-    «IF published-»
-     * {@inheritDoc}
+    «IF published && !genInterface()-»
+     * «inheritDoc()»
      * 
+    «ELSEIF description.length > 0-»
+     * «description»
     «ENDIF-»
      * @generated
      */
-     «overrideAnnotationForPublishedMethodOrIf(published, overrides)-»
-    «getModifier(false)» «javaClassName» «method(methodName, methodParameters)» «IF abstract-»
+     «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»
+    «getModifier(false)» «javaClassName» «method(methodName, methodParameters)» «IF abstract || genInterface()-»
     	;
     «ELSE-»
 	    {
