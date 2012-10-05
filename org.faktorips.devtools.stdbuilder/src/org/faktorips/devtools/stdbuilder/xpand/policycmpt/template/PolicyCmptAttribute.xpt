@@ -7,11 +7,13 @@
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::policycmpt::template::PolicyCmptAttributeExtension»
 
 «DEFINE constantForPropertyName FOR XPolicyAttribute-»
-	/**
-	 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
-	 * @generated
-	 */
-	public final static String «field(constantNamePropertyName)» = "«name»";
+	«IF !overwrite-»
+		/**
+		 * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
+		 * @generated
+		 */
+		public final static String «field(constantNamePropertyName)» = "«name»";
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE constantForValueSet FOR XPolicyAttribute-»
@@ -50,7 +52,7 @@
 «ENDDEFINE»
 
 «DEFINE getter(boolean interface) FOR XPolicyAttribute-» 
-	«IF generateGetter-»
+	«IF generateGetter && !(overwrite && interface)-»
 		/**
 		 * «inheritDocOrJavaDocIf(interface, "METHOD_GETVALUE", name, descriptionForJDoc)»
 		 *

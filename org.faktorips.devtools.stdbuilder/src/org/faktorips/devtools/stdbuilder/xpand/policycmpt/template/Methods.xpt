@@ -8,22 +8,24 @@
 «REM»TODO Sadly there are some minor differences between product methods and policy methos. Maybe we want to join these templates and generate more equal code«ENDREM» 
 
 «DEFINE method(boolean interface) FOR XMethod-»
-    /**
-    «IF published && !interface-»
-     * «inheritDocOrText(description)»
-     *
-«REM»TODO Simple else would be enough«ENDREM»     «ELSEIF description.length > 0-» 
-     * «description» 
-    «ENDIF-»
-     * @generated
-     */
-     «overrideAnnotationForPublishedMethodOrIf(!interface && published, overrides)-»
-    «modifier» «javaClassName» «method(methodName, methodParameters)» «IF abstract || interface-»
-    	;
-    «ELSE-»
-	    {
-	        // TODO implement model method.
-	        throw new RuntimeException("Not implemented yet!");
-	    }
-    «ENDIF-»
+	«IF published || !interface-»
+	    /**
+	    «IF published && !interface-»
+	     * «inheritDocOrText(description)»
+	     *
+	«REM»TODO Simple else would be enough«ENDREM»     «ELSEIF description.length > 0-» 
+	     * «description» 
+	    «ENDIF-»
+	     * @generated
+	     */
+	     «overrideAnnotationForPublishedMethodOrIf(!interface && published, overrides)-»
+	    «getModifier(interface)» «javaClassName» «method(methodName, methodParameters)» «IF abstract || interface-»
+	    	;
+	    «ELSE-»
+		    {
+		        // TODO implement model method.
+		        throw new RuntimeException("Not implemented yet!");
+		    }
+	    «ENDIF-»
+	«ENDIF-»
 «ENDDEFINE»

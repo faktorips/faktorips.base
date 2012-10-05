@@ -148,6 +148,10 @@ public class XPolicyAssociation extends XAssociation {
         }
     }
 
+    public boolean hasSuperAssociationWithSameName() {
+        return getSuperAssociationWithSameName() != null;
+    }
+
     /**
      * Returns true if this association is a derived union or an inverse of a derived union
      * association.
@@ -211,16 +215,18 @@ public class XPolicyAssociation extends XAssociation {
         if (isDerived() || isSharedAssociation()) {
             return false;
         } else if (isCompositionDetailToMaster()) {
-            try {
-                IPolicyCmptTypeAssociation associationWithSameName = getAssociation().findSuperAssociationWithSameName(
-                        getIpsProject());
-                return associationWithSameName == null;
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            return !hasSuperAssociationWithSameName();
         } else {
             return true;
         }
+    }
+
+    @Override
+    public boolean isGenerateAbstractGetter() {
+        if (isCompositionDetailToMaster()) {
+            return isDerived() && !hasSuperAssociationWithSameName();
+        }
+        return super.isGenerateAbstractGetter();
     }
 
     /**
@@ -293,7 +299,7 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     public String getConstantNameMaxCardinalityFor() {
-        String constName = getName(isOneToMany());
+        String constName = getName();
         if (isGenerateSeparatedCamelCase()) {
             constName = StringUtil.camelCaseToUnderscore(constName, false);
         }
@@ -464,15 +470,8 @@ public class XPolicyAssociation extends XAssociation {
      */
     public boolean isSharedAssociationImplementedInSuperclass() {
         if (isSharedAssociation()) {
-            try {
-                IPolicyCmptTypeAssociation superAssociationWithSameName = getAssociation()
-                        .findSuperAssociationWithSameName(getIpsProject());
-                XPolicyAssociation superAssociationNode = getModelNode(superAssociationWithSameName,
-                        XPolicyAssociation.class);
-                return !superAssociationNode.isDerived();
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            XPolicyAssociation superAssociationNode = getSuperAssociationWithSameName();
+            return !superAssociationNode.isDerived();
         } else {
             return false;
         }

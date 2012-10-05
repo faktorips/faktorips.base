@@ -12,7 +12,7 @@
      * @generated
      */
      «overrideAnnotationForPublishedMethodOrIf(published, overrides)-»
-    «modifier» «javaClassName» «method(methodName, methodParameters)» throws «FormulaExecutionException()» {
+    «getModifier(false)» «javaClassName» «method(methodName, methodParameters)» throws «FormulaExecutionException()» {
         return («notPrimitiveJavaClassName»)getFormulaEvaluator().evaluate("«methodName»" «FOREACH methodParameters AS parameter», «parameter.name»«ENDFOREACH»);
     }
     «IF overloadsFormula»
@@ -23,7 +23,7 @@
 		     * @generated
 		     */
 		    «overrideAnnotation(false)-»
-		    «overloaded.modifier» «overloaded.javaClassName» «overloaded.methodName»(«FOREACH overloadedFormulaMethod.parameters AS param SEPARATOR ", "»«param.javaClassName» «param.name»«ENDFOREACH») throws «FormulaExecutionException()» {
+		    «overloaded.getModifier(false)» «overloaded.javaClassName» «overloaded.methodName»(«FOREACH overloadedFormulaMethod.parameters AS param SEPARATOR ", "»«param.javaClassName» «param.name»«ENDFOREACH») throws «FormulaExecutionException()» {
 		        // TODO a delegation to the method «methodName»(«FOREACH parameters AS param SEPARATOR ", "»«param.javaClassName»«ENDFOREACH») needs to be implemented here
 		        // And make sure to disable the regeneration of this method.
 		        throw new RuntimeException("Not implemented yet.");
@@ -41,7 +41,7 @@
      * @generated
      */
      «overrideAnnotationForPublishedMethodOrIf(published, overrides)-»
-    «modifier» «javaClassName» «method(methodName, methodParameters)» «IF abstract-»
+    «getModifier(false)» «javaClassName» «method(methodName, methodParameters)» «IF abstract-»
     	;
     «ELSE-»
 	    {

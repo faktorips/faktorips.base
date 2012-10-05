@@ -95,11 +95,35 @@ public class XPolicyCmptClass extends XType {
         }
     }
 
+    /**
+     * Returns true if any super type (transitive) is an aggregate root
+     * 
+     */
     public boolean isSupertypeAggregateRoot() {
         if (!hasSupertype()) {
             return false;
         } else {
             return getSupertype().isAggregateRoot() || getSupertype().isSupertypeAggregateRoot();
+        }
+    }
+
+    public boolean isDependantType() {
+        try {
+            return getType().isDependantType();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    /**
+     * Returns true if any super type (transitive) is an dependant type
+     * 
+     */
+    public boolean isSupertypeDependantType() {
+        if (!hasSupertype()) {
+            return false;
+        } else {
+            return getSupertype().isDependantType() || getSupertype().isSupertypeDependantType();
         }
     }
 
@@ -126,11 +150,8 @@ public class XPolicyCmptClass extends XType {
                     extendedInterfaces.add(addImport(IModelObject.class));
                 }
             }
-            if (!isAggregateRoot()) {
-                extendedInterfaces.add(addImport(IDependantObject.class));
-            }
-            if (isGenerateChangeSupport()) {
-                extendedInterfaces.add(addImport(INotificationSupport.class));
+            if (isGenerateDeltaSupport()) {
+                extendedInterfaces.add(addImport(IDeltaSupport.class));
             }
             if (isGenerateCopySupport()) {
                 extendedInterfaces.add(addImport(ICopySupport.class));
@@ -138,9 +159,12 @@ public class XPolicyCmptClass extends XType {
             if (isGenerateVisitorSupport()) {
                 extendedInterfaces.add(addImport(IVisitorSupport.class));
             }
-            if (isGenerateDeltaSupport()) {
-                extendedInterfaces.add(addImport(IDeltaSupport.class));
+            if (isGenerateChangeSupport()) {
+                extendedInterfaces.add(addImport(INotificationSupport.class));
             }
+        }
+        if (isDependantType() && (!hasSupertype() || !isSupertypeDependantType())) {
+            extendedInterfaces.add(addImport(IDependantObject.class));
         }
         return extendedInterfaces;
     }

@@ -191,6 +191,11 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         }
     }
 
+    public String getTargetName() {
+        XClass xClass = getTargetModelNode();
+        return xClass.getName();
+    }
+
     public String getTargetInterfaceName() {
         XClass xClass = getTargetModelNode();
         return xClass.getSimpleName(BuilderAspect.getValue(isGeneratePublishedInterfaces()));
@@ -247,6 +252,15 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
 
     public String getMethodNameContains() {
         return "contains" + StringUtils.capitalize(getName(false));
+    }
+
+    /**
+     * Returns true if an abstract getter (normally in interface but may be in implementation if we
+     * do not generate published interfaces) needs to be generated for this association. This method
+     * may be overwritten for special cases.
+     */
+    public boolean isGenerateAbstractGetter() {
+        return isDerived();
     }
 
 }

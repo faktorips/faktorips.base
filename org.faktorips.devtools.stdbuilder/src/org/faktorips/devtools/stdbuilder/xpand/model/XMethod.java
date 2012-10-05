@@ -46,8 +46,9 @@ public class XMethod extends AbstractGeneratorModelNode {
         return getIpsObjectPartContainer();
     }
 
-    public String getModifier() {
-        return Modifier.toString(getMethod().getJavaModifier() | (isAbstract() ? Modifier.ABSTRACT : 0));
+    public String getModifier(boolean generateInterface) {
+        return Modifier.toString(getMethod().getJavaModifier()
+                ^ (generateInterface && isAbstract() ? Modifier.ABSTRACT : 0));
     }
 
     public String getMethodName() {

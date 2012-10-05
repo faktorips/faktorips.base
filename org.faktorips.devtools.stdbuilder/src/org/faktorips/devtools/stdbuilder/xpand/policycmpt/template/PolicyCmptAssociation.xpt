@@ -8,19 +8,21 @@
 «DEFINE constants FOR XPolicyAssociation-»
 	«IF !compositionDetailToMaster && !derived-»
 	    /**
-	     * «localizedJDoc("!!!", name)»
+	     * «localizedJDoc("FIELD_MAX_CARDINALITY", name)»
 	     * 
 	     * @generated
 	     */
 	    public static final IntegerRange «constantNameMaxCardinalityFor» = new «IntegerRange()»(«minCardinality», «maxCardinality»);
 	«ENDIF-»
 
-    /**
-     * «localizedJDoc("FIELD_ASSOCIATION_NAME", name)»
-     * 
-     * @generated
-     */
-    public final static String «constantNamePropertyName» = "«fieldName»";
+	«IF !hasSuperAssociationWithSameName()-»
+	    /**
+	     * «localizedJDoc("FIELD_ASSOCIATION_NAME", fieldName)»
+	     * 
+	     * @generated
+	     */
+	    public final static String «constantNamePropertyName» = "«fieldName»";
+    «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE field FOR XPolicyAssociation-»
@@ -83,7 +85,7 @@
 «ENDDEFINE»
 
 «DEFINE getters(boolean interface) FOR XPolicyAssociation-»
-	«IF generateGetter»
+	«IF generateGetter-»
 		«IF oneToMany-»
 		    /**
 		     * «inheritDocOrJavaDocIf(interface, "METHOD_GET_MANY", getName(true))»
@@ -368,7 +370,7 @@
 «DEFINE newChildMethods(boolean interface) FOR XPolicyAssociation-»
 	«IF generateNewChildMethods-»
 	    /**
- 	     * «inheritDocOrJavaDocIf(interface, "METHOD_NEW_CHILD", targetClassName, name)»
+ 	     * «inheritDocOrJavaDocIf(interface, "METHOD_NEW_CHILD", targetName, name)»
 	     * 
 	     * @generated
 	     */
@@ -386,7 +388,7 @@
 	
 		«IF generateNewChildWithArgumentsMethod-»
 		    /**
- 	     	 * «inheritDocOrJavaDocIf(interface, "METHOD_NEW_CHILD_WITH_PRODUCTCMPT_ARG", targetClassName, getName(false), targetProductCmptVariableName)»
+ 	     	 * «inheritDocOrJavaDocIf(interface, "METHOD_NEW_CHILD_WITH_PRODUCTCMPT_ARG", targetName, getName(false), targetProductCmptVariableName)»
 		     * 
 		     * @generated
 		     */

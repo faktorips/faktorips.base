@@ -338,7 +338,8 @@ public abstract class XProductClass extends XType {
     }
 
     public String getGenerationConceptNameSingular() {
-        return getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+        return getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(
+                getLanguageUsedInGeneratedSourceCode(), true);
     }
 
     private IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention() {

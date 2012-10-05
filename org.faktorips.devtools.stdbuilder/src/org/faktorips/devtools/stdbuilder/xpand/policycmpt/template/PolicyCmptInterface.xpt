@@ -11,6 +11,8 @@
 		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 	
 		/**
+		 * «localizedJDoc("INTERFACE", name)»
+		 *
 		 * @generated
 		 */
 		public interface «getSimpleName(BuilderAspect::INTERFACE)» 
@@ -19,7 +21,6 @@
 		«ENDIF-»
 		{
 			«EXPAND PolicyCmptAssociation::constants FOREACH associations»
-		
 			«EXPAND ValidationRule::constants FOREACH validationRules»
 			
 			«FOREACH attributes AS this-»
@@ -36,9 +37,11 @@
 			«ENDFOREACH-»
 			
 			«FOREACH attributes AS this-»
-				«EXPAND PolicyCmptAttribute::allowedValuesMethod(true)-»
-				«EXPAND PolicyCmptAttribute::getter(true)-»
-				«EXPAND PolicyCmptAttribute::setter(true)-»
+				«IF published-»
+					«EXPAND PolicyCmptAttribute::allowedValuesMethod(true)-»
+					«EXPAND PolicyCmptAttribute::getter(true)-»
+					«EXPAND PolicyCmptAttribute::setter(true)-»
+				«ENDIF-»
 			«ENDFOREACH-»
 
 			«EXPAND PolicyCmptAssociation::methods(true) FOREACH associations-»
@@ -49,7 +52,6 @@
 			«ENDIF-»
 
 			«EXPAND Methods::method(true) FOREACH methods-»
-
 		}
 	«ENDFILE»
 «ENDDEFINE»

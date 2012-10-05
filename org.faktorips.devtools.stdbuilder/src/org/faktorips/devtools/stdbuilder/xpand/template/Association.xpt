@@ -20,7 +20,7 @@
 «ENDDEFINE»
 
 «DEFINE abstractMethods(boolean interface) FOR XAssociation-»
-	«IF (!generatePublishedInterfaces || interface) && derived-»
+	«IF (!generatePublishedInterfaces || interface) && generateAbstractGetter-»
 		«IF masterToDetail-»
 			/**
 		     * «localizedJDoc("METHOD_GET_MANY", getName(true))»
