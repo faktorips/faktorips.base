@@ -45,7 +45,7 @@ import org.faktorips.util.message.ObjectProperty;
  * once by this container.</li> </ul>
  * 
  */
-class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IProductCmptType> {
+public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IProductCmptType> {
 
     private MessageList list;
     private final IProductCmptLinkContainer linkContainer;
