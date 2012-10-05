@@ -37,7 +37,6 @@ import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,12 +70,12 @@ public class DeepCopyTreeStatusTest {
         when(associations[2].getType()).thenReturn(types[1]);
         when(associations[3].getType()).thenReturn(types[2]);
 
-        when(types[0].findAllNotDerivedAssociations()).thenReturn(
-                new ArrayList<IAssociation>(Arrays.asList(new IAssociation[] { associations[0], associations[1] })));
-        when(types[1].findAllNotDerivedAssociations()).thenReturn(
-                new ArrayList<IAssociation>(Arrays.asList(new IAssociation[] { associations[2] })));
-        when(types[2].findAllNotDerivedAssociations()).thenReturn(
-                new ArrayList<IAssociation>(Arrays.asList(new IAssociation[] { associations[3] })));
+        when(types[0].findAllNotDerivedAssociations(any(IIpsProject.class))).thenReturn(
+                Arrays.asList(new IProductCmptTypeAssociation[] { associations[0], associations[1] }));
+        when(types[1].findAllNotDerivedAssociations(any(IIpsProject.class))).thenReturn(
+                Arrays.asList(new IProductCmptTypeAssociation[] { associations[2] }));
+        when(types[2].findAllNotDerivedAssociations(any(IIpsProject.class))).thenReturn(
+                Arrays.asList(new IProductCmptTypeAssociation[] { associations[3] }));
 
         productCmpts = new IProductCmpt[6];
         links = new IProductCmptLink[6];

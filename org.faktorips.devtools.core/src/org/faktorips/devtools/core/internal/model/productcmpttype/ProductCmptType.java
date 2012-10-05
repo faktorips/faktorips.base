@@ -28,6 +28,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -326,9 +327,18 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public List<IAssociation> findAllNotDerivedAssociations() throws CoreException {
-        NotDerivedAssociationCollector collector = new NotDerivedAssociationCollector(getIpsProject());
-        collector.start(this);
-        return collector.associations;
+        return new CopyOnWriteArrayList<IAssociation>(findAllNotDerivedAssociations(getIpsProject()));
+    }
+
+    @Override
+    public List<IProductCmptTypeAssociation> findAllNotDerivedAssociations(IIpsProject ipsProject) {
+        try {
+            NotDerivedAssociationCollector collector = new NotDerivedAssociationCollector(ipsProject);
+            collector.start(this);
+            return collector.getAssociations();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
@@ -1486,24 +1496,28 @@ public class ProductCmptType extends Type implements IProductCmptType {
             super(ipsProject);
         }
 
-        private List<IAssociation> associations = new ArrayList<IAssociation>();
+        private List<IProductCmptTypeAssociation> associations = new ArrayList<IProductCmptTypeAssociation>();
 
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
-            List<? extends IAssociation> typeAssociations = currentType.getAssociations();
+            List<IProductCmptTypeAssociation> typeAssociations = currentType.getProductCmptTypeAssociations();
             int index = 0;
-            for (IAssociation association : typeAssociations) {
+            for (IProductCmptTypeAssociation association : typeAssociations) {
                 /*
                  * To get the associations of the root type of the supertype hierarchy first, put in
                  * the list at first, but with unchanged order for all associations found in one
                  * type ...
                  */
                 if (!association.isDerived()) {
-                    associations.add(index, association);
+                    getAssociations().add(index, association);
                     index++;
                 }
             }
             return true;
+        }
+
+        public List<IProductCmptTypeAssociation> getAssociations() {
+            return associations;
         }
 
     }

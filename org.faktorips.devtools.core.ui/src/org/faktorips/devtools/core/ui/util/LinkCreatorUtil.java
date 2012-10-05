@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptR
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.Messages;
@@ -107,12 +108,12 @@ public class LinkCreatorUtil {
         if (generation == null || cmptType == null) {
             return false;
         }
-        List<IAssociation> associations = cmptType.findAllNotDerivedAssociations();
+        List<IProductCmptTypeAssociation> associations = cmptType.findAllNotDerivedAssociations(ipsProject);
         // should only return true if all dragged cmpts are valid
         boolean result = false;
         for (IProductCmpt draggedCmpt : draggedCmpts) {
             List<IAssociation> possibleAssos = new ArrayList<IAssociation>();
-            for (IAssociation aAssoziation : associations) {
+            for (IProductCmptTypeAssociation aAssoziation : associations) {
                 if (generation.canCreateValidLink(draggedCmpt, aAssoziation, generation.getIpsProject())) {
                     possibleAssos.add(aAssoziation);
                 }
@@ -165,7 +166,7 @@ public class LinkCreatorUtil {
     protected boolean processAssociationReference(List<IProductCmpt> draggedCmpts,
             IProductCmptTypeAssociationReference target,
             boolean createLink) throws CoreException {
-        IAssociation association;
+        IProductCmptTypeAssociation association;
         IProductCmptGeneration generation;
         IProductCmpt parentCmpt = ((IProductCmptReference)target.getParent()).getProductCmpt();
         IpsUIPlugin.getDefault();
