@@ -43,7 +43,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -61,7 +60,6 @@ import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
-import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableContentBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
@@ -70,7 +68,6 @@ import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.EnumXmlAdapterTocEntry;
-import org.faktorips.runtime.internal.toc.FormulaTestTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.PolicyCmptTypeTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
@@ -313,19 +310,6 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             object = ipsSrcFile.getIpsObject();
             IpsObjectType type = object.getIpsObjectType();
             if (type.equals(IpsObjectType.PRODUCT_CMPT)) {
-                // add entry for formula test, the formula test depends on the product cmpt
-                // source file, thus it will be implicit created or deleted here
-                TocEntryObject entry = createFormulaTestTocEntry((IProductCmpt)object);
-                if (entry != null) {
-                    // a new formula toc entry was created
-                    getToc(ipsSrcFile).addOrReplaceTocEntry(entry);
-                } else {
-                    // no entry for formula tests created,
-                    // delete previous created toc entries for formula tests,
-                    // this is the case e.g. if the type of the config element changed to a
-                    // non formula type
-                    removeFormulaTestEntry(ipsSrcFile);
-                }
                 // add entry for product cmpt
                 entries.add(createTocEntry((IProductCmpt)object));
             } else if (type.equals(IpsObjectType.TABLE_CONTENTS)) {
@@ -409,43 +393,6 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         }
         entry.setGenerationEntries(genEntries);
         return entry;
-    }
-
-    /**
-     * Creates a toc entry for the given formula test.
-     */
-    private TocEntryObject createFormulaTestTocEntry(IProductCmpt productCmpt) throws CoreException {
-        if (!productCmpt.containsFormulaTest()) {
-            // only build toc entry if at least one formula is specified
-            return null;
-        }
-
-        // generate the object id, the objectId for this element will be the package root name
-        // concatenated with the qualified name
-        String packageRootName = productCmpt.getIpsPackageFragment().getRoot().getName();
-        String objectId = packageRootName + "." + productCmpt.getQualifiedName(); //$NON-NLS-1$
-        objectId = objectId.replace('.', '/') + "." + IpsObjectType.PRODUCT_CMPT.getFileExtension(); //$NON-NLS-1$
-
-        String formulaTestCaseName = getBuilderSet().getBuilderByClass(FormulaTestBuilder.class).getQualifiedClassName(
-                productCmpt);
-
-        String kindId = productCmpt.findProductCmptKind().getName();
-        TocEntryObject entry = new FormulaTestTocEntry(objectId, productCmpt.getQualifiedName(), kindId,
-                productCmpt.getVersionId(), formulaTestCaseName);
-
-        return entry;
-    }
-
-    /*
-     * Removes the toc file and deletes the runtime content of the formula test. Do nothing if the
-     * given scr file doesn't contains a formula test case.
-     */
-    private void removeFormulaTestEntry(IIpsSrcFile ipsSrcFile) throws CoreException {
-        getToc(ipsSrcFile).removeEntry(new QualifiedNameType(ipsSrcFile.getIpsObjectName(), IpsObjectType.TEST_CASE));
-        FormulaTestBuilder formulaTestBuilder = getBuilderSet().getBuilderByClass(FormulaTestBuilder.class);
-        if (formulaTestBuilder != null) {
-            formulaTestBuilder.delete(ipsSrcFile);
-        }
     }
 
     public TocEntryObject createTocEntry(ITableContents tableContents) throws CoreException {

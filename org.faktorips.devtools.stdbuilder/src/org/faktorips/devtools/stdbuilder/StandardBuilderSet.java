@@ -62,7 +62,6 @@ import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
-import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink1PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.GenericJPA2PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
@@ -379,10 +378,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         TestCaseBuilder testCaseBuilder = new TestCaseBuilder(this);
         builders.put(testCaseBuilder);
 
-        // formula test builder
-        FormulaTestBuilder formulaTestBuilder = new FormulaTestBuilder(this);
-        builders.put(formulaTestBuilder);
-
         // toc file builder
         TocFileBuilder tocFileBuilder = new TocFileBuilder(this);
         builders.put(tocFileBuilder);
@@ -405,10 +400,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         // test case builder
         testCaseBuilder.setJavaSourceFileBuilder(policyCmptImplClassBuilder);
-
-        // formula test builder
-        formulaTestBuilder.setProductCmptBuilder(productCmptBuilder);
-        formulaTestBuilder.setProductCmptGenImplClassBuilder(productCmptGenerationImplClassBuilder);
 
         builders.put(new ValidationRuleMessagesPropertiesBuilder(this));
 
