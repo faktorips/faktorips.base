@@ -658,20 +658,18 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
     private void toggleShowTypeState() {
         Object input = treeViewer.getInput();
 
+        provider.toggleShowTypeState();
         if (input instanceof IIpsProject) { // switch the viewShowState for project selections
-            provider.toggleShowTypeState();
-            if (provider.getShowTypeState() == ShowTypeState.SHOW_POLICIES) {
-                setProductCmptTypeImage();
-            } else {
-                setPolicyCmptTypeImage();
-            }
             treeViewer.getContentProvider().inputChanged(this.treeViewer, input, treeViewer.getInput());
         } else if (input instanceof PolicyCmptType) {
             treeViewer.setInput(toggledProductCmptInput);
-            setPolicyCmptTypeImage();
         } else if (input instanceof ProductCmptType) {
             treeViewer.setInput(toggledPolicyCmptInput);
+        }
+        if (provider.getShowTypeState() == ShowTypeState.SHOW_POLICIES) {
             setProductCmptTypeImage();
+        } else {
+            setPolicyCmptTypeImage();
         }
         refresh();
     }
