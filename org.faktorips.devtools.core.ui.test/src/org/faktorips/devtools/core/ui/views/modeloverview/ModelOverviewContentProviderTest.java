@@ -19,10 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Deque;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -37,7 +34,6 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ShowTypeState;
-import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ToChildAssociationType;
 import org.junit.Test;
 
 public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
@@ -623,67 +619,6 @@ public class ModelOverviewContentProviderTest extends AbstractIpsPluginTest {
         Object[] elements = provider.collectElements(leafPolicy, new NullProgressMonitor());
         assertEquals(1, elements.length);
         assertEquals(leafPolicy, ((ComponentNode)elements[0]).getValue());
-    }
-
-    @Test
-    public void testCollectElements_ComputeRootToLeafHierarchyPaths() throws CoreException {
-        // setup
-        ModelOverviewContentProvider provider = new ModelOverviewContentProvider();
-
-        IIpsProject project = newIpsProject();
-        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
-        PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
-        PolicyCmptType hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
-        PolicyCmptType hausratGrunddeckung = newPolicyCmptTypeWithoutProductCmptType(project, "HausratGrunddeckung");
-
-        List<IType> componentList = new ArrayList<IType>();
-        componentList.add(vertrag);
-        componentList.add(deckung);
-        componentList.add(hausratVertrag);
-        componentList.add(hausratGrunddeckung);
-
-        hausratVertrag.setSupertype(vertrag.getQualifiedName());
-        hausratGrunddeckung.setSupertype(deckung.getQualifiedName());
-
-        IAssociation associationVertrag2Deckung = vertrag.newAssociation();
-        associationVertrag2Deckung.setTarget(deckung.getQualifiedName());
-        associationVertrag2Deckung.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-
-        IAssociation associationHausratVertrag2HausratGrunddeckung = hausratVertrag.newAssociation();
-        associationHausratVertrag2HausratGrunddeckung.setTarget(hausratGrunddeckung.getQualifiedName());
-        associationHausratVertrag2HausratGrunddeckung.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-
-        // get the rootCandidates
-        List<AssociationType> associationTypeFilter = new ArrayList<AssociationType>();
-        associationTypeFilter.add(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        associationTypeFilter.add(AssociationType.AGGREGATION);
-        Collection<IType> rootCandidatesForIType = provider.getRootElementsForIType(hausratGrunddeckung, componentList,
-                ModelOverviewContentProvider.ToChildAssociationType.SELF, new ArrayList<IType>(),
-                new ArrayList<List<PathElement>>(), new ArrayList<PathElement>());
-
-        // compute the actual list of root elements and most importantly the list of paths from the
-        // root elements to the selected element
-        List<List<PathElement>> paths = new ArrayList<List<PathElement>>();
-        provider.getRootElementsForIType(hausratGrunddeckung, componentList,
-                ModelOverviewContentProvider.ToChildAssociationType.SELF, rootCandidatesForIType, paths,
-                new ArrayList<PathElement>());
-
-        // expected paths
-        Deque<PathElement> paths1 = new ArrayDeque<PathElement>();
-        paths1.push(new PathElement(hausratGrunddeckung, ToChildAssociationType.SELF));
-        paths1.push(new PathElement(hausratVertrag, ToChildAssociationType.ASSOCIATION));
-        paths1.push(new PathElement(vertrag, ToChildAssociationType.SUPERTYPE));
-
-        Deque<PathElement> paths2 = new ArrayDeque<PathElement>();
-        paths1.push(new PathElement(hausratGrunddeckung, ToChildAssociationType.SELF));
-        paths1.push(new PathElement(deckung, ToChildAssociationType.SUPERTYPE));
-        paths1.push(new PathElement(vertrag, ToChildAssociationType.ASSOCIATION));
-
-        // tests
-        assertEquals(2, paths.size());
-
-        paths.contains(paths1);
-        paths.contains(paths2);
     }
 
     @Test

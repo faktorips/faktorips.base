@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.type.IType;
 
 public final class ModelOverviewInheritAssociationsContentProvider extends AbstractModelOverviewContentProvider {
 
+    private List<ComponentNode> storedRootElements;
     private final AssociationType[] ASSOCIATION_TYPES = { AssociationType.AGGREGATION,
             AssociationType.COMPOSITION_MASTER_TO_DETAIL };
 
@@ -39,7 +40,6 @@ public final class ModelOverviewInheritAssociationsContentProvider extends Abstr
 
     @Override
     public boolean hasChildren(Object element) {
-
         return this.getChildren(element) != null && this.getChildren(element).length > 0;
     }
 
@@ -51,17 +51,20 @@ public final class ModelOverviewInheritAssociationsContentProvider extends Abstr
     @Override
     protected Object[] collectElements(Object inputElement, IProgressMonitor monitor) {
         // if input is an IType, alter it to the corresponding IIpsProject
+        IIpsProject inputProject = null;
         if (inputElement instanceof IType) {
-            inputElement = ((IType)inputElement).getIpsProject();
+            inputProject = ((IType)inputElement).getIpsProject();
+        } else {
+            inputProject = (IIpsProject)inputElement;
         }
 
         // only accept project input
-        if (inputElement instanceof IIpsProject) {
-            IIpsProject project = (IIpsProject)inputElement;
+        if (inputProject != null) {
+            IIpsProject project = inputProject;
 
             monitor.beginTask(getWaitingLabel(), 3);
             List<IType> projectComponents;
-            if (showState == ShowTypeState.SHOW_POLICIES) {
+            if (getShowTypeState() == ShowTypeState.SHOW_POLICIES) {
                 projectComponents = getProjectITypes(project, IpsObjectType.POLICY_CMPT_TYPE);
             } else {
                 projectComponents = getProjectITypes(project, IpsObjectType.PRODUCT_CMPT_TYPE);
@@ -71,8 +74,8 @@ public final class ModelOverviewInheritAssociationsContentProvider extends Abstr
             List<IType> derivedRootElements = computeDerivedRootElements(
                     getProjectSpecificITypes(projectComponents, project), projectComponents, project);
             monitor.worked(1);
-            Object[] rootElements = ComponentNode.encapsulateComponentTypes(derivedRootElements, null, project)
-                    .toArray();
+            storedRootElements = ComponentNode.encapsulateComponentTypes(derivedRootElements, null, project);
+            Object[] rootElements = storedRootElements.toArray();
             monitor.worked(1);
             monitor.done();
             return rootElements;
@@ -227,5 +230,10 @@ public final class ModelOverviewInheritAssociationsContentProvider extends Abstr
             componentNodes.add(AssociationComponentNode.newAssociationComponentNode(association, parent, project));
         }
         return componentNodes;
+    }
+
+    @Override
+    List<ComponentNode> getStoredRootElements() {
+        return storedRootElements;
     }
 }

@@ -36,7 +36,7 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
      * Provides information about the currently shown {@link IType}s. It will be set by the
      * {@link ModelOverview}, but the content provider is responsible to act on this state.
      */
-    protected ShowTypeState showState = ShowTypeState.SHOW_POLICIES;
+    private ShowTypeState showState = ShowTypeState.SHOW_POLICIES;
 
     /**
      * Computes the root elements of a complete {@link IIpsProject}. An element is considered as
@@ -470,4 +470,6 @@ public abstract class AbstractModelOverviewContentProvider extends DeferredStruc
         }
         return projectComponents;
     }
+
+    abstract List<ComponentNode> getStoredRootElements();
 }

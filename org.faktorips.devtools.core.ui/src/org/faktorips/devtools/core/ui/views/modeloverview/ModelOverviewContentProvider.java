@@ -31,11 +31,11 @@ import org.faktorips.devtools.core.model.type.IType;
 
 public final class ModelOverviewContentProvider extends AbstractModelOverviewContentProvider {
 
-    private List<List<PathElement>> paths = new ArrayList<List<PathElement>>();
     // it is important that this list does not contain a set of AssociationTypes which would cause
     // association loops
     private final AssociationType[] ASSOCIATION_TYPES = { AssociationType.AGGREGATION,
             AssociationType.COMPOSITION_MASTER_TO_DETAIL };
+    private List<ComponentNode> storedRootElements;
 
     @Override
     protected Object[] collectElements(Object inputElement, IProgressMonitor monitor) {
@@ -58,13 +58,11 @@ public final class ModelOverviewContentProvider extends AbstractModelOverviewCon
             progress.worked(50);
 
             Collection<IType> rootCandidates = getRootElementsForIType(input, projectTypes,
-                    ToChildAssociationType.SELF, new ArrayList<IType>(), new ArrayList<List<PathElement>>(),
-                    new ArrayList<PathElement>());
+                    ToChildAssociationType.SELF, new ArrayList<IType>(), new ArrayList<PathElement>());
             progress.worked(25);
 
-            paths = new ArrayList<List<PathElement>>();
             rootComponents = getRootElementsForIType(input, projectTypes, ToChildAssociationType.SELF, rootCandidates,
-                    paths, new ArrayList<PathElement>());
+                    new ArrayList<PathElement>());
             progress.worked(25);
 
         } else { // get the root elements if the input is an IpsProject
@@ -75,7 +73,8 @@ public final class ModelOverviewContentProvider extends AbstractModelOverviewCon
                     ASSOCIATION_TYPES);
         }
         monitor.done();
-        return ComponentNode.encapsulateComponentTypes(rootComponents, null, ipsProject).toArray();
+        storedRootElements = ComponentNode.encapsulateComponentTypes(rootComponents, null, ipsProject);
+        return storedRootElements.toArray();
     }
 
     /**
@@ -83,7 +82,7 @@ public final class ModelOverviewContentProvider extends AbstractModelOverviewCon
      * elements for an IIpsProject have to be calculated.
      */
     private IpsObjectType getCurrentlyNeededIpsObjectType() {
-        if (showState == ShowTypeState.SHOW_POLICIES) {
+        if (getShowTypeState() == ShowTypeState.SHOW_POLICIES) {
             return IpsObjectType.POLICY_CMPT_TYPE;
         } else {
             return IpsObjectType.PRODUCT_CMPT_TYPE;
@@ -115,9 +114,7 @@ public final class ModelOverviewContentProvider extends AbstractModelOverviewCon
      * @param association the
      *            {@link org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ToChildAssociationType
      *            ToChildAssociationType} of the parent element to this element
-     * @param rootCandidates a {@link Collection} of {@link IType}.
-     * @param foundPaths a {@link List} of paths from the provided element to the computed root
-     *            elements
+     * @param rootCandidates a {@link Collection} of {@link IType}. elements
      * @param callHierarchy a {@link List} which contains the path from the current element to the
      *            source element
      */
@@ -125,7 +122,6 @@ public final class ModelOverviewContentProvider extends AbstractModelOverviewCon
             List<IType> componentList,
             ToChildAssociationType association,
             Collection<IType> rootCandidates,
-            List<List<PathElement>> foundPaths,
             List<PathElement> callHierarchy) {
 
         List<PathElement> callHierarchyTemp = new LinkedList<PathElement>(callHierarchy);
@@ -145,39 +141,35 @@ public final class ModelOverviewContentProvider extends AbstractModelOverviewCon
         if (associatingTypes.isEmpty() && supertype == null
                 && (association == ToChildAssociationType.SELF || association == ToChildAssociationType.ASSOCIATION)) {
             rootElements.add(element);
-            foundPaths.add(callHierarchyTemp);
         }
 
         // recursive call for all child elements
         for (IType associations : associatingTypes) {
             Collection<IType> rootElementsForIType = getRootElementsForIType(associations, componentList,
-                    ToChildAssociationType.ASSOCIATION, rootCandidates, foundPaths, callHierarchyTemp);
+                    ToChildAssociationType.ASSOCIATION, rootCandidates, callHierarchyTemp);
             rootElements.addAll(rootElementsForIType);
         }
 
         if (supertype != null) {
             rootElements.addAll(getRootElementsForIType(supertype, componentList, ToChildAssociationType.SUPERTYPE,
-                    rootCandidates, foundPaths, callHierarchyTemp));
+                    rootCandidates, callHierarchyTemp));
         }
 
         // If a supertype has been added in the first run, it has to be added now, too
         if (rootElements.isEmpty() && association == ToChildAssociationType.SUPERTYPE
                 && rootCandidates.contains(element)) {
             rootElements.add(element);
-            foundPaths.add(callHierarchyTemp);
         }
 
         // None of the child elements is a root element, therefore check the association type of the
         // current element
         if (rootElements.isEmpty() && association == ToChildAssociationType.ASSOCIATION) {
             rootElements.add(element);
-            foundPaths.add(callHierarchyTemp);
         }
 
         // If the hierarchy is solely build with supertypes, we must add the source element itself
         if (rootElements.isEmpty() && association == ToChildAssociationType.SELF) {
             rootElements.add(element);
-            foundPaths.add(callHierarchyTemp);
         }
 
         return rootElements;
@@ -248,12 +240,8 @@ public final class ModelOverviewContentProvider extends AbstractModelOverviewCon
         return Messages.ModelOverview_waitingLabel;
     }
 
-    /**
-     * Returns a {@link List} of {@link List}s of {@link PathElement}s which has been computed by
-     * {@link #getRootElementsForIType(IType, List, ToChildAssociationType, Collection, List, List)}
-     * or an empty {@link List} otherwise.
-     */
-    public List<List<PathElement>> getPaths() {
-        return paths;
+    @Override
+    List<ComponentNode> getStoredRootElements() {
+        return storedRootElements;
     }
 }

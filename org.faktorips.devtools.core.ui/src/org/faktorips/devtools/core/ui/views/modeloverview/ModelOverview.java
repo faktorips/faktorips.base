@@ -74,7 +74,6 @@ import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ShowTypeState;
-import org.faktorips.devtools.core.ui.views.modeloverview.AbstractModelOverviewContentProvider.ToChildAssociationType;
 
 public final class ModelOverview extends ViewPart implements ICollectorFinishedListener {
 
@@ -341,6 +340,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
                     toggleProductPolicyAction.setEnabled(false);
                 }
                 toggledPolicyCmptInput = (IPolicyCmptType)input;
+                this.provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
             } else if (input instanceof ProductCmptType) {
                 setPolicyCmptTypeImage();
                 IProductCmptType product = (IProductCmptType)input;
@@ -349,6 +349,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
                     toggleProductPolicyAction.setEnabled(false);
                 }
                 toggledProductCmptInput = (ProductCmptType)input;
+                this.provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
@@ -358,41 +359,35 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
         this.updateView();
     }
 
-    /**
-     * Returns a {@link TreePath} containing the corresponding {@link ComponentNode ComponentNodes}
-     * to the input types.
-     * 
-     * @param treePath a list of {@link PathElement PathElements}, ordered from the root-element
-     *            downwards
-     */
-    TreePath computePath(List<PathElement> treePath, ModelOverviewContentProvider contentProvider) {
-        // The IpsProject must be from the project which is the lowest in the project hierarchy
-        IIpsProject rootProject = treePath.get(treePath.size() - 1).getComponent().getIpsProject();
+    private TreePath[] computePathsForIType(IType typeToExpand) {
+        List<ComponentNode> rootElements = this.provider.getStoredRootElements();
+        List<List<ComponentNode>> paths = new ArrayList<List<ComponentNode>>();
 
-        // get the root node
-        PathElement root = treePath.get(0);
-        ComponentNode rootNode = new ComponentNode(root.getComponent(), rootProject);
-        List<ComponentNode> pathList = new ArrayList<ComponentNode>();
-        pathList.add(rootNode);
-
-        for (int i = 1; i < treePath.size(); i++) {
-            if (root.getAssociationType() == ToChildAssociationType.SELF) {
-                break;
-            }
-
-            // add the child node
-            for (Object child : contentProvider.getChildren(rootNode)) {
-                ComponentNode childNode = (ComponentNode)child;
-                // note that
-                if (childNode.getValue().equals(treePath.get(i).getComponent())) {
-                    pathList.add(childNode);
-                    rootNode = childNode;
-                    break;
-                }
-            }
-            root = treePath.get(i);
+        for (ComponentNode rootElement : rootElements) {
+            computePathForIType(typeToExpand, rootElement, new ArrayList<ComponentNode>(), paths);
         }
-        return new TreePath(pathList.toArray());
+
+        TreePath[] treePaths = new TreePath[paths.size()];
+        for (int i = 0; i < paths.size(); i++) {
+            treePaths[i] = new TreePath(paths.get(i).toArray());
+        }
+
+        return treePaths;
+    }
+
+    private void computePathForIType(IType typeToExpand,
+            ComponentNode position,
+            List<ComponentNode> pathHead,
+            List<List<ComponentNode>> foundPaths) {
+        pathHead.add(position);
+        if (position.getValue().equals(typeToExpand)) {
+            foundPaths.add(pathHead);
+        }
+
+        Object[] children = provider.getChildren(position);
+        for (Object child : children) {
+            computePathForIType(typeToExpand, (ComponentNode)child, new ArrayList<ComponentNode>(pathHead), foundPaths);
+        }
     }
 
     private void updateView() {
@@ -624,7 +619,7 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
     private void enableButtons(boolean state) {
         expandAllAction.setEnabled(state);
         collapseAllAction.setEnabled(state);
-        toggleProductPolicyAction.setEnabled(state);
+        // toggleProductPolicyAction.setEnabled(state);
 
         showCardinalitiesAction.setEnabled(state);
         showProjectsAction.setEnabled(state);
@@ -658,12 +653,14 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
     private void toggleShowTypeState() {
         Object input = treeViewer.getInput();
 
-        provider.toggleShowTypeState();
         if (input instanceof IIpsProject) { // switch the viewShowState for project selections
+            provider.toggleShowTypeState();
             treeViewer.getContentProvider().inputChanged(this.treeViewer, input, treeViewer.getInput());
         } else if (input instanceof PolicyCmptType) {
+            provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
             treeViewer.setInput(toggledProductCmptInput);
         } else if (input instanceof ProductCmptType) {
+            provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
             treeViewer.setInput(toggledPolicyCmptInput);
         }
         if (provider.getShowTypeState() == ShowTypeState.SHOW_POLICIES) {
@@ -723,18 +720,15 @@ public final class ModelOverview extends ViewPart implements ICollectorFinishedL
     @Override
     public void update(Observable o, Object arg) {
         if (o.equals(this.provider)) {
-            if (this.treeViewer.getInput() instanceof IType && provider instanceof ModelOverviewContentProvider) {
-                expandPaths((ModelOverviewContentProvider)this.provider);
+            if (this.treeViewer.getInput() instanceof IType && provider.getStoredRootElements() != null) {
+                expandPaths((IType)this.treeViewer.getInput());
             }
         }
     }
 
-    private void expandPaths(ModelOverviewContentProvider contentProvider) {
-        List<List<PathElement>> paths = contentProvider.getPaths();
-        TreePath[] treePaths = new TreePath[paths.size()];
-        for (int i = 0; i < paths.size(); i++) {
-            treePaths[i] = computePath(paths.get(i), contentProvider);
-        }
+    private void expandPaths(IType typeToExpand) {
+        TreePath[] treePaths = computePathsForIType(typeToExpand);
+
         for (TreePath treePath : treePaths) {
             this.treeViewer.expandToLevel(treePath, 0);
         }
