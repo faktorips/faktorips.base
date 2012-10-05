@@ -33,9 +33,7 @@ import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -647,15 +645,19 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      * @throws CoreException If an error occurs while searching for the <tt>IProductCmptType</tt>.
      */
     public IType findGeneratedJavaTypeForProductCmptTypeGen(boolean forPublishedInterface) throws CoreException {
-        IPolicyCmptType policyCmptType = (IPolicyCmptType)getGenType().getIpsPart();
-        JavaSourceFileBuilder productCmptTypeBuilder = forPublishedInterface ? getGenType().getBuilderSet()
-                .getProductCmptGenInterfaceBuilder() : getGenType().getBuilderSet().getProductCmptGenImplClassBuilder();
-
-        IProductCmptType productCmptType = policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
-        if (productCmptType == null) {
-            return null;
-        }
-        return productCmptTypeBuilder.getGeneratedJavaTypes(productCmptType).get(0);
+        // IPolicyCmptType policyCmptType = (IPolicyCmptType)getGenType().getIpsPart();
+        // JavaSourceFileBuilder productCmptTypeBuilder = forPublishedInterface ?
+        // getGenType().getBuilderSet()
+        // .getProductCmptGenInterfaceBuilder() :
+        // getGenType().getBuilderSet().getProductCmptGenImplClassBuilder();
+        //
+        // IProductCmptType productCmptType =
+        // policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
+        // if (productCmptType == null) {
+        // return null;
+        // }
+        // return productCmptTypeBuilder.getGeneratedJavaTypes(productCmptType).get(0);
+        return null;
     }
 
     private void addValueSetConstantToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {

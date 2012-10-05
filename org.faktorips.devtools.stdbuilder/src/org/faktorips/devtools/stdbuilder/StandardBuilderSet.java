@@ -67,7 +67,6 @@ import org.faktorips.devtools.stdbuilder.persistence.GenericJPA2PersistenceProvi
 import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGenFactory;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.persistence.PolicyCmptImplClassJpaAnnGenFactory;
@@ -75,8 +74,6 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.Validatio
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableContentBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableRowBuilder;
@@ -690,14 +687,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return getBuilderByClass(ProductCmptGenerationImplClassBuilder.class);
     }
 
-    /**
-     * Returns the <tt>ProductCmptGenInterfaceBuilder</tt> or <tt>null</tt> if non has been
-     * assembled yet.
-     */
-    public final ProductCmptGenInterfaceBuilder getProductCmptGenInterfaceBuilder() {
-        return getBuilderByClass(ProductCmptGenInterfaceBuilder.class);
-    }
-
     public final ProductCmptBuilder getProductCmptBuilder() {
         return getBuilderByClass(ProductCmptBuilder.class);
     }
@@ -711,27 +700,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     /**
-     * Returns the <tt>PolicyCmptInterfaceBuilder</tt> or <tt>null</tt> if non has been assembled
-     * yet.
-     */
-    public final PolicyCmptInterfaceBuilder getPolicyCmptInterfaceBuilder() {
-        return getBuilderByClass(PolicyCmptInterfaceBuilder.class);
-    }
-
-    /**
      * Returns the <tt>ProductCmptImplClassBuilder</tt> or <tt>null</tt> if non has been assembled
      * yet.
      */
     public final ProductCmptImplClassBuilder getProductCmptImplClassBuilder() {
         return getBuilderByClass(ProductCmptImplClassBuilder.class);
-    }
-
-    /**
-     * Returns the <tt>ProductCmptInterfaceBuilder</tt> or <tt>null</tt> if non has been assembled
-     * yet.
-     */
-    public final ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
-        return getBuilderByClass(ProductCmptInterfaceBuilder.class);
     }
 
     public TableImplBuilder getTableImplBuilder() {
