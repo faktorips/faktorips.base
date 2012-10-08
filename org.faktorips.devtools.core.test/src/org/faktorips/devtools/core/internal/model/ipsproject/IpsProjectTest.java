@@ -27,9 +27,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -65,6 +67,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
@@ -89,7 +92,6 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
-import org.faktorips.util.ClassToInstancesMap;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
@@ -1639,8 +1641,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsArtefactBuilderSet projectABuilderSet = new DefaultBuilderSet() {
 
             @Override
-            protected ClassToInstancesMap<IIpsArtefactBuilder> createBuilders() throws CoreException {
-                return new ClassToInstancesMap<IIpsArtefactBuilder>();
+            protected Map<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
+                return new HashMap<IBuilderKindId, IIpsArtefactBuilder>();
             }
 
         };
@@ -1681,8 +1683,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsArtefactBuilderSet projectBBuilderSet = new DefaultBuilderSet() {
 
             @Override
-            protected ClassToInstancesMap<IIpsArtefactBuilder> createBuilders() throws CoreException {
-                return new ClassToInstancesMap<IIpsArtefactBuilder>();
+            protected Map<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
+                return new HashMap<IBuilderKindId, IIpsArtefactBuilder>();
             }
 
         };

@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
+import org.faktorips.devtools.core.builder.GenericBuilderKindId;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
@@ -42,6 +43,7 @@ import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
@@ -83,8 +85,8 @@ import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptClassBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -93,7 +95,6 @@ import org.faktorips.runtime.ICopySupport;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.ClassToInstancesMap;
 
 /**
  * An <code>IpsArtefactBuilderSet</code> implementation that assembles the standard Faktor-IPS
@@ -337,60 +338,60 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    protected ClassToInstancesMap<IIpsArtefactBuilder> createBuilders() throws CoreException {
+    protected Map<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
         // create policy component type builders
-        ClassToInstancesMap<IIpsArtefactBuilder> builders = new ClassToInstancesMap<IIpsArtefactBuilder>();
-        builders.put(new PolicyCmptClassBuilder(true, this, generatorModelContext, modelService) {
-        });
-        PolicyCmptClassBuilder policyCmptClassBuilder = new PolicyCmptClassBuilder(false, this,
-                generatorModelContext, modelService);
-        builders.put(policyCmptClassBuilder);
+        Map<IBuilderKindId, IIpsArtefactBuilder> builders = new HashMap<IBuilderKindId, IIpsArtefactBuilder>();
+        builders.put(BuilderKindIds.POLICY_CMPT_TYPE_INTERFACE, new PolicyCmptClassBuilder(true, this,
+                generatorModelContext, modelService));
+        PolicyCmptClassBuilder policyCmptClassBuilder = new PolicyCmptClassBuilder(false, this, generatorModelContext,
+                modelService);
+        builders.put(BuilderKindIds.POLICY_CMPT_TYPE_IMPLEMEMENTATION, policyCmptClassBuilder);
 
         // create product component type builders
-        builders.put(new ProductCmptClassBuilder(true, this, generatorModelContext, modelService) {
-        });
-        builders.put(new ProductCmptGenerationClassBuilder(true, this, generatorModelContext, modelService) {
-        });
-        ProductCmptGenerationClassBuilder productCmptGenerationClassBuilder = new ProductCmptGenerationClassBuilder(
-                false, this, generatorModelContext, modelService);
-        builders.put(productCmptGenerationClassBuilder);
+        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_INTERFACE, new ProductCmptClassBuilder(true, this,
+                generatorModelContext, modelService));
         ProductCmptClassBuilder productCmptClassBuilder = new ProductCmptClassBuilder(false, this,
                 generatorModelContext, modelService);
-        builders.put(productCmptClassBuilder);
+        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_IMPLEMEMENTATION, productCmptClassBuilder);
+        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_INTERFACE, new ProductCmptGenerationClassBuilder(true,
+                this, generatorModelContext, modelService));
+        ProductCmptGenerationClassBuilder productCmptGenerationClassBuilder = new ProductCmptGenerationClassBuilder(
+                false, this, generatorModelContext, modelService);
+        builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_IMPLEMEMENTATION, productCmptGenerationClassBuilder);
 
         // table structure builders
         TableImplBuilder tableImplBuilder = new TableImplBuilder(this);
-        builders.put(tableImplBuilder);
+        builders.put(BuilderKindIds.TABLE, tableImplBuilder);
         TableRowBuilder tableRowBuilder = new TableRowBuilder(this);
-        builders.put(tableRowBuilder);
+        builders.put(BuilderKindIds.TABLE_ROW, tableRowBuilder);
         tableImplBuilder.setTableRowBuilder(tableRowBuilder);
 
         // table content builders
-        builders.put(new TableContentBuilder(this));
+        builders.put(BuilderKindIds.TABLE_CONTENT, new TableContentBuilder(this));
 
         // test case type builders
-        builders.put(new TestCaseTypeClassBuilder(this));
+        builders.put(BuilderKindIds.TEST_CASE_TYPE, new TestCaseTypeClassBuilder(this));
 
         // test case builder
         TestCaseBuilder testCaseBuilder = new TestCaseBuilder(this);
-        builders.put(testCaseBuilder);
+        builders.put(BuilderKindIds.TEST_CASE, testCaseBuilder);
 
         // toc file builder
         TocFileBuilder tocFileBuilder = new TocFileBuilder(this);
-        builders.put(tocFileBuilder);
+        builders.put(BuilderKindIds.TOC_FILE, tocFileBuilder);
 
-        builders.put(new BusinessFunctionBuilder(this));
+        builders.put(BuilderKindIds.BUSINESS_FUNCTION, new BusinessFunctionBuilder(this));
         // New enum type builder
         EnumTypeBuilder enumTypeBuilder = new EnumTypeBuilder(this);
-        builders.put(enumTypeBuilder);
-        builders.put(new EnumXmlAdapterBuilder(this, enumTypeBuilder));
-        builders.put(new EnumContentBuilder(this));
+        builders.put(BuilderKindIds.ENUM_TYPE, enumTypeBuilder);
+        builders.put(BuilderKindIds.ENUM_XML_ADAPTER, new EnumXmlAdapterBuilder(this, enumTypeBuilder));
+        builders.put(BuilderKindIds.ENUM_CONTENT, new EnumContentBuilder(this));
 
         // product component builders
         ProductCmptBuilder productCmptBuilder = new ProductCmptBuilder(this);
-        builders.put(productCmptBuilder);
+        builders.put(BuilderKindIds.PRODUCT_CMPT_IMPLEMENTATION, productCmptBuilder);
         IIpsArtefactBuilder productCmptXmlBuilder = new ProductCmptXMLBuilder(IpsObjectType.PRODUCT_CMPT, this);
-        builders.put(productCmptXmlBuilder);
+        builders.put(BuilderKindIds.PRODUCT_CMPT_XML, productCmptXmlBuilder);
 
         productCmptBuilder.setProductCmptImplBuilder(productCmptClassBuilder);
         productCmptBuilder.setProductCmptGenImplBuilder(productCmptGenerationClassBuilder);
@@ -398,15 +399,19 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // test case builder
         testCaseBuilder.setJavaSourceFileBuilder(policyCmptClassBuilder);
 
-        builders.put(new ValidationRuleMessagesPropertiesBuilder(this));
+        builders.put(BuilderKindIds.VALIDATION_RULE_MESSAGES, new ValidationRuleMessagesPropertiesBuilder(this));
 
         List<IIpsArtefactBuilder> extendingBuilders = getExtendingArtefactBuilders();
         for (IIpsArtefactBuilder ipsArtefactBuilder : extendingBuilders) {
-            builders.put(ipsArtefactBuilder);
+            GenericBuilderKindId id = new GenericBuilderKindId(ipsArtefactBuilder.getName());
+            if (builders.containsKey(id)) {
+                id = new GenericBuilderKindId();
+            }
+            builders.put(id, ipsArtefactBuilder);
         }
 
-        builders.put(new PolicyModelTypeXmlBuilder(this));
-        builders.put(new ProductModelTypeXmlBuilder(this));
+        builders.put(BuilderKindIds.POLICY_CMPT_MODEL_TYPE, new PolicyModelTypeXmlBuilder(this));
+        builders.put(BuilderKindIds.PRODUCT_CMPT_MODEL_TYPE, new ProductModelTypeXmlBuilder(this));
         tocFileBuilder.setGenerateEntriesForModelTypes(true);
 
         return builders;
@@ -684,39 +689,38 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * assembled yet.
      */
     public final ProductCmptGenerationClassBuilder getProductCmptGenImplClassBuilder() {
-        return getBuilderByClass(ProductCmptGenerationClassBuilder.class);
+        return getBuilderById(BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_IMPLEMEMENTATION,
+                ProductCmptGenerationClassBuilder.class);
     }
 
     public final ProductCmptBuilder getProductCmptBuilder() {
-        return getBuilderByClass(ProductCmptBuilder.class);
+        return getBuilderById(BuilderKindIds.PRODUCT_CMPT_IMPLEMENTATION, ProductCmptBuilder.class);
     }
 
     /**
-     * Returns the <tt>PolicyCmptClassBuilder</tt> or <tt>null</tt> if non has been assembled
-     * yet.
+     * Returns the <tt>PolicyCmptClassBuilder</tt> or <tt>null</tt> if non has been assembled yet.
      */
     public final PolicyCmptClassBuilder getPolicyCmptImplClassBuilder() {
-        return getBuilderByClass(PolicyCmptClassBuilder.class);
+        return getBuilderById(BuilderKindIds.POLICY_CMPT_TYPE_IMPLEMEMENTATION, PolicyCmptClassBuilder.class);
     }
 
     /**
-     * Returns the <tt>ProductCmptClassBuilder</tt> or <tt>null</tt> if non has been assembled
-     * yet.
+     * Returns the <tt>ProductCmptClassBuilder</tt> or <tt>null</tt> if non has been assembled yet.
      */
     public final ProductCmptClassBuilder getProductCmptImplClassBuilder() {
-        return getBuilderByClass(ProductCmptClassBuilder.class);
+        return getBuilderById(BuilderKindIds.PRODUCT_CMPT_TYPE_IMPLEMEMENTATION, ProductCmptClassBuilder.class);
     }
 
     public TableImplBuilder getTableImplBuilder() {
-        return getBuilderByClass(TableImplBuilder.class);
+        return getBuilderById(BuilderKindIds.TABLE, TableImplBuilder.class);
     }
 
     public TableRowBuilder getTableRowBuilder() {
-        return getBuilderByClass(TableRowBuilder.class);
+        return getBuilderById(BuilderKindIds.TABLE_ROW, TableRowBuilder.class);
     }
 
     public EnumTypeBuilder getEnumTypeBuilder() {
-        return getBuilderByClass(EnumTypeBuilder.class);
+        return getBuilderById(BuilderKindIds.ENUM_TYPE, EnumTypeBuilder.class);
     }
 
     public String getValidationMessageBundleBaseName(IIpsSrcFolderEntry entry) {

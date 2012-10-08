@@ -24,7 +24,9 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.faktorips.devtools.core.builder.GenericBuilderKindId;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -37,7 +39,6 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
-import org.faktorips.util.ClassToInstancesMap;
 
 public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
@@ -49,7 +50,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     private boolean isAggregateRootBuilder;
 
-    private final ClassToInstancesMap<IIpsArtefactBuilder> ipsArtefactBuilders;
+    private final Map<IBuilderKindId, IIpsArtefactBuilder> ipsArtefactBuilders;
 
     /**
      * You can put any object for any key into this map. Some of the test methods in this test
@@ -65,9 +66,9 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     public TestIpsArtefactBuilderSet(IIpsArtefactBuilder[] builders) throws CoreException {
         super();
-        ipsArtefactBuilders = new ClassToInstancesMap<IIpsArtefactBuilder>();
+        ipsArtefactBuilders = new HashMap<IBuilderKindId, IIpsArtefactBuilder>();
         for (IIpsArtefactBuilder ipsArtefactBuilder : builders) {
-            ipsArtefactBuilders.put(ipsArtefactBuilder);
+            ipsArtefactBuilders.put(new GenericBuilderKindId(), ipsArtefactBuilder);
         }
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(CONFIG_PROPERTY_GENERATOR_LOCALE, Locale.GERMAN.getLanguage());
@@ -81,7 +82,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    protected ClassToInstancesMap<IIpsArtefactBuilder> createBuilders() throws CoreException {
+    protected Map<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
         return ipsArtefactBuilders;
     }
 

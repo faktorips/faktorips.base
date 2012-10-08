@@ -209,7 +209,7 @@ public class XPolicyAssociationTest {
         XPolicyAssociation[] derivedUnions1 = mockAssociations("derivedUnion1", "same", true, null);
         XPolicyAssociation[] derivedUnions2 = mockAssociations("derivedUnion2", "same", true, asDU(derivedUnions1[0]));
         XPolicyAssociation[] subset = mockAssociations("subset", "inverseOfDerivedUnion", false,
-                asDU(derivedUnions1[0]));
+                asDU(derivedUnions2[0]));
         when(derivedUnions2[1].getSuperAssociationWithSameName()).thenReturn(derivedUnions1[1]);
 
         Set<XDetailToMasterDerivedUnionAssociation> detailToMasterAssociations = subset[1]

@@ -705,7 +705,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             boolean createDefaultCategories) throws CoreException {
         ProductCmptType productCmptType = (ProductCmptType)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE,
                 qualifiedName);
-        productCmptType.setConfigurationForPolicyCmptType(false);
         if (createDefaultCategories) {
             createDefaultCategoriesForProductCmptTypeAsNecessary(productCmptType);
         }

@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.stdbuilder.BuilderKindIds;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.devtools.stdbuilder.type.GenTypePart;
@@ -134,7 +135,8 @@ public class GenTableStructureUsage extends GenTypePart {
             if (tsuFile == null) {
                 return "";
             }
-            return getBuilderSet().getBuilderByClass(TableImplBuilder.class).getQualifiedClassName(tsuFile);
+            return getBuilderSet().getBuilderById(BuilderKindIds.TABLE, TableImplBuilder.class).getQualifiedClassName(
+                    tsuFile);
         } else {
             return ITable.class.getName();
         }

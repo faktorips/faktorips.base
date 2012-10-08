@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.ipsproject;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
@@ -269,14 +270,42 @@ public interface IIpsArtefactBuilderSet {
     public void afterBuildProcess(int buildKind) throws CoreException;
 
     /**
-     * Returns the builder which is of the same type as the provided builder class.
+     * Returns an array of builders which are sub types of or from the same type as the provided
+     * builder class.
      * 
      * @param builderClass The class of the builders you are searching for.
-     * @throws IllegalStateException if the builders are not initialized
-     * @throws RuntimeException if there is no builder for the requested class
      * 
+     * @see #getBuilderById(IBuilderKindId)
+     * @see #getBuilderById(IBuilderKindId, Class)
      */
-    public <T extends IIpsArtefactBuilder> T getBuilderByClass(Class<T> builderClass);
+    public <T extends IIpsArtefactBuilder> List<T> getBuildersByClass(Class<T> builderClass);
+
+    /**
+     * Returns the builder specified by the builder kind id.
+     * 
+     * @see #getBuilderById(IBuilderKindId, Class)
+     * 
+     * @param kindId The kind id of the builder you want to have
+     * 
+     * @return The builder registered by the specified kindId.
+     * @throws RuntimeException if there is no builder for the specified kind ID
+     */
+    public IIpsArtefactBuilder getBuilderById(IBuilderKindId kindId);
+
+    /**
+     * Returns the builder specified by the builder kind id. The builder must be of the specified
+     * class. If it is not this method throws a runtime exception.
+     * 
+     * @see #getBuilderById(IBuilderKindId)
+     * 
+     * @param kindId The kind id of the builder you want to have
+     * @param builderClass The class of the builder you need
+     * 
+     * @return The builder registered by the specified kindId.
+     * @throws RuntimeException if there is no builder for the specified kind ID matching the
+     *             specified class.
+     */
+    public <T extends IIpsArtefactBuilder> T getBuilderById(IBuilderKindId kindId, Class<T> builderClass);
 
     /**
      * Getting true if none mergeable resources should be marked as derived or not.

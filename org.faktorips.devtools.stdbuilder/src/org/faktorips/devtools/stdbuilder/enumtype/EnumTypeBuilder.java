@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
+import org.faktorips.devtools.stdbuilder.BuilderKindIds;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -172,7 +173,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         if (((StandardBuilderSet)getBuilderSet()).isGenerateJaxbSupport() && !enumType.isContainingValues()
                 && !enumType.isAbstract()) {
-            EnumXmlAdapterBuilder xmlAdapterBuilder = getBuilderSet().getBuilderByClass(EnumXmlAdapterBuilder.class);
+            EnumXmlAdapterBuilder xmlAdapterBuilder = getBuilderSet().getBuilderById(BuilderKindIds.ENUM_XML_ADAPTER,
+                    EnumXmlAdapterBuilder.class);
             mainSection.getAnnotationsForTypeBuilder().annotationClassValueLn(
                     "javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter", "value", //$NON-NLS-1$ //$NON-NLS-2$
                     xmlAdapterBuilder.getQualifiedClassName(enumType));

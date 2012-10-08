@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.stdbuilder.BuilderKindIds;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.type.GenTypePart;
@@ -294,8 +295,8 @@ public class GenValidationRule extends GenTypePart {
         // code to construct the message's text
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)getIpsPart().getIpsSrcFile().getIpsPackageFragment().getRoot()
                 .getIpsObjectPathEntry();
-        ValidationRuleMessagesPropertiesBuilder validationMessageBuilder = getBuilderSet().getBuilderByClass(
-                ValidationRuleMessagesPropertiesBuilder.class);
+        ValidationRuleMessagesPropertiesBuilder validationMessageBuilder = getBuilderSet().getBuilderById(
+                BuilderKindIds.VALIDATION_RULE_MESSAGES, ValidationRuleMessagesPropertiesBuilder.class);
         String messagesPropertiesName = validationMessageBuilder.getResourceBundleBaseName(entry);
         body.appendClassName(MessagesHelper.class).append(" ").append(localVarMessageHelper).append(" = ")//
                 .append("new ").appendClassName(MessagesHelper.class).append("(\"").append(messagesPropertiesName)//

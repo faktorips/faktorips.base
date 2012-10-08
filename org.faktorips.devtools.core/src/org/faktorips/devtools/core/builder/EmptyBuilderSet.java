@@ -13,12 +13,16 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -32,7 +36,6 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
-import org.faktorips.util.ClassToInstancesMap;
 
 /**
  * An IIpsArtefactBuilderSet implementation that is supposed to be used in cases where no builder
@@ -109,8 +112,8 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     @Override
-    protected ClassToInstancesMap<IIpsArtefactBuilder> createBuilders() throws CoreException {
-        return new ClassToInstancesMap<IIpsArtefactBuilder>();
+    protected Map<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
+        return new HashMap<IBuilderKindId, IIpsArtefactBuilder>();
     }
 
     @Override

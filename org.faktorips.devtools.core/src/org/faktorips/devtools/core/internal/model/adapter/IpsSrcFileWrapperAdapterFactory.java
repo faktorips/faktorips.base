@@ -37,7 +37,7 @@ public class IpsSrcFileWrapperAdapterFactory extends AbstractIpsAdapterFactory {
     @Override
     @SuppressWarnings("unchecked")
     // Can suppress warning as eclipse IAdapterFactory is not generic.
-    public Object getAdapter(Object adaptableObject, Class adapterType) {
+    public Object getAdapter(Object adaptableObject, @SuppressWarnings("rawtypes") Class adapterType) {
         if (!(adaptableObject instanceof IIpsSrcFileWrapper)) {
             return null;
         }
