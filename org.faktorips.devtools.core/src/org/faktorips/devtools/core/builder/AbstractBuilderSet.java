@@ -13,17 +13,18 @@
 
 package org.faktorips.devtools.core.builder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.ClassToInstancesMap;
 
 /**
  * Abstract implementation that can be used as a base class for real builder sets.
@@ -48,7 +49,7 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     private String label;
     private IIpsProject ipsProject;
     private IIpsArtefactBuilderSetConfig config;
-    private IIpsArtefactBuilder[] builders;
+    private ClassToInstancesMap<IIpsArtefactBuilder> builders;
 
     public AbstractBuilderSet() {
         super();
@@ -112,7 +113,7 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
 
     @Override
     public IIpsArtefactBuilder[] getArtefactBuilders() {
-        return builders;
+        return builders.values().toArray(new IIpsArtefactBuilder[builders.values().size()]);
     }
 
     @Override
@@ -156,7 +157,7 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     /**
      * Template method to create the set's builders.
      */
-    protected abstract IIpsArtefactBuilder[] createBuilders() throws CoreException;
+    protected abstract ClassToInstancesMap<IIpsArtefactBuilder> createBuilders() throws CoreException;
 
     @Override
     public void afterBuildProcess(int buildKind) throws CoreException {
@@ -169,18 +170,19 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     }
 
     @Override
-    public <T extends IIpsArtefactBuilder> List<T> getBuildersByClass(Class<T> builderClass) {
-        List<T> result = new ArrayList<T>();
+    public <T extends IIpsArtefactBuilder> T getBuilderByClass(Class<T> builderClass) {
         if (builders == null) {
-            return result;
+            throw new IllegalStateException("No builders initialized yet"); //$NON-NLS-1$
         }
-        for (IIpsArtefactBuilder builder : builders) {
-            // TODO Exactly this class or sub classes too?
-            if (builderClass.isAssignableFrom(builder.getClass())) {
-                result.add(builderClass.cast(builder));
-            }
+        List<T> buildersByClass = builders.get(builderClass);
+        if (buildersByClass.size() == 1) {
+            return buildersByClass.get(0);
+        } else if (buildersByClass.size() > 1) {
+            throw new RuntimeException(
+                    "Only one builder per class is allowed by this builder set: " + builderClass.getName() + " is " + buildersByClass.size() + " times registered"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        } else {
+            throw new RuntimeException("No builder registerd for: " + builderClass.getName()); //$NON-NLS-1$
         }
-        return result;
     }
 
     @Override
@@ -207,6 +209,11 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         } else {
             return true;
         }
+    }
+
+    @Override
+    public void clean(IProgressMonitor monitor) {
+        // default implementation does nothing
     }
 
 }

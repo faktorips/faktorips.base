@@ -1,0 +1,59 @@
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+
+
+«DEFINE main FOR XPolicyCmptClass»
+	«FILE getFileName(BuilderAspect::INTERFACE)-»
+	package «getPackageName(BuilderAspect::INTERFACE)»;
+
+		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
+	
+		/**
+		 * «localizedJDoc("INTERFACE", name)»
+		 *
+		 * @generated
+		 */
+		public interface «interfaceName» 
+		«IF extendsInterface-»
+			extends «FOREACH extendedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH»
+		«ENDIF-»
+		{
+			«EXPAND PolicyCmptAssociation::constants FOREACH associations»
+			«EXPAND ValidationRule::constants FOREACH validationRules»
+			
+			«FOREACH attributes AS this-»
+				«IF published-»
+					«EXPAND PolicyCmptAttribute::constantForPropertyName-»
+					«EXPAND PolicyCmptAttribute::constantForValueSet-»
+				«ENDIF-»
+			«ENDFOREACH-»
+			
+			«FOREACH attributes AS this-»
+				«IF published-»
+					«EXPAND PolicyCmptAttribute::constantField-»
+				«ENDIF-»
+			«ENDFOREACH-»
+			
+			«FOREACH attributes AS this-»
+				«IF published-»
+					«EXPAND PolicyCmptAttribute::allowedValuesMethod-»
+					«EXPAND PolicyCmptAttribute::getter-»
+					«EXPAND PolicyCmptAttribute::setter-»
+				«ENDIF-»
+			«ENDFOREACH-»
+
+			«EXPAND PolicyCmptAssociation::methods FOREACH associations-»
+			
+			«IF configured-»
+				«EXPAND PolicyCmpt::getAndSetProductComponent FOR productCmptNode-»
+				«EXPAND PolicyCmpt::getProductComponentGeneration FOR productCmptGenerationNode-»
+			«ENDIF-»
+
+			«EXPAND Methods::method FOREACH methods-»
+		}
+	«ENDFILE»
+«ENDDEFINE»
+
+

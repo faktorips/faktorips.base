@@ -1,0 +1,164 @@
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::runtime»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE defaultAndAllowedValuesFields FOR XPolicyAttribute-»
+	«IF generateGetAllowedValuesFor-»
+		«EXPAND defaultField-»
+		«EXPAND allowedValueSetField-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE defaultField FOR XPolicyAttribute-»
+    /**
+     * «localizedJDoc("FIELD_DEFAULTVALUE", name)»
+     * 
+     * @generated
+     */
+    private «javaClassName» «field(fieldNameDefaultValue)» = «defaultValueCode»;
+«ENDDEFINE»
+
+«DEFINE allowedValueSetField FOR XPolicyAttribute-»
+    /**
+     * «localizedJDoc(getJavadocKey("FIELD"), name)»
+     * 
+     * @generated
+     */
+    private «valueSetJavaClassName» «field(fieldNameValueSet)»;
+«ENDDEFINE»
+
+«DEFINE getter FOR XPolicyAttribute-»
+	«IF generateGetAllowedValuesFor-»
+		«EXPAND getterDefaultValue-»
+		«EXPAND getterAllowedValues-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE getterDefaultValue FOR XPolicyAttribute-»
+    /**
+     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_DEFAULTVALUE", name)»
+     * 
+     * @generated
+     */
+	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite && overwrittenAttribute.generateGetAllowedValuesFor)-»
+    public «javaClassName» «method(methodNameGetDefaultValue)»
+    «IF genInterface()»;«ELSE-»
+    {
+        return «fieldNameDefaultValue»;
+    }
+    «ENDIF»
+«ENDDEFINE»
+
+«DEFINE getterAllowedValues FOR XPolicyAttribute-»
+    /**
+     * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), name)»
+     * 
+     * @generated
+     */
+	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite && overwrittenAttribute.generateGetAllowedValuesFor)-»
+    public «valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»
+    «IF genInterface()»;«ELSE-»
+    {
+        return «fieldNameValueSet»;
+    }
+    «ENDIF»
+«ENDDEFINE»
+
+«DEFINE initAttributeFromXML FOR XPolicyAttribute-»
+	«IF generateGetAllowedValuesFor-»
+        configElement = configMap.get("«name»");
+        if (configElement != null) {
+            String value = «ValueToXmlHelper()».«getValueFromElement("configElement", "\"Value\"")»;
+            «fieldNameDefaultValue» = «getNewInstanceFromExpression("value", "getRepository()")»;
+            «IF valueSetUnrestricted-»
+            	«IF ipsEnum-»
+       	            «fieldNameValueSet» = «newEnumValueSetInstance(getAllEnumValuesCode("getRepository()"), "true")»;
+            	«ELSE-»
+	            	«fieldNameValueSet» = new «UnrestrictedValueSet(javaClassUsedForValueSet)»();
+            	«ENDIF-»
+            «ENDIF-»
+            «IF valueSetEnum || (valueSetUnrestricted && enumValueSetSupported)-»
+	            «EnumValues()» values = «ValueToXmlHelper()».«getEnumValueSetFromElement("configElement", "\"ValueSet\"")»;
+	            if (values != null) {
+	                «ArrayList(javaClassUsedForValueSet)» enumValues = new «ArrayList(javaClassUsedForValueSet)»();
+	                for (int i = 0; i < values.«getNumberOfValues()»; i++) {
+	                    enumValues.add(«getValueSetNewInstanceFromExpression("values.getValue(i)", "getRepository()")»);
+	                }
+	                «fieldNameValueSet» = «newEnumValueSetInstance("enumValues", "values
+	                        .containsNull()")»;
+	            }
+            «ENDIF-»
+            «IF valueSetRange || (valueSetUnrestricted && rangeSupported)-»
+	            «Range()» range = «ValueToXmlHelper()».«getRangeFromElement("configElement", "\"ValueSet\"")»;
+	            if (range != null) {
+	                «fieldNameValueSet» = «getNewRangeExpression("range.getLower()", "range
+	                        .getUpper()", "range.getStep()", "range.containsNull()")»;
+	            }
+            «ENDIF-»
+        }
+	«ENDIF-»
+«ENDDEFINE»
+
+
+«DEFINE writeAttributeToXML FOR XPolicyAttribute-»
+	«IF generateGetAllowedValuesFor-»
+        configElement = element.getOwnerDocument().createElement("ConfigElement");
+        configElement.setAttribute("attribute", "«name»");
+        «ValueToXmlHelper()».«addValueToElement(toStringExpression, "configElement", "\"Value\"")»;
+        valueSetElement = element.getOwnerDocument().createElement("ValueSet");
+        valueSetElement.setAttribute("abstract", "false");
+        «IF valueSetUnrestricted-»
+	        if («fieldNameValueSet» instanceof «UnrestrictedValueSet("?")») {
+	            Element unrestrictedValueSetElement = element.getOwnerDocument().createElement("Unrestricted");
+	            Element valueElement = unrestrictedValueSetElement.getOwnerDocument().createElement("AllValues");
+	            unrestrictedValueSetElement.appendChild(valueElement);
+	            valueSetElement.appendChild(unrestrictedValueSetElement);
+	        }
+        «ENDIF-»
+    	«IF valueSetUnrestricted && rangeSupported-»
+        	if («fieldNameValueSet» instanceof «qnameRange("?")») {
+	            «qnameRange(javaClassQualifiedNameUsedForValueSet)» range = («qnameRange(javaClassQualifiedNameUsedForValueSet)»)«fieldNameValueSet»;
+	            «EXPAND writeRange("range")-»
+	        }
+        «ELSEIF valueSetRange-»
+                «EXPAND writeRange(fieldNameValueSet)-»
+        «ENDIF-»
+        «IF valueSetUnrestricted && enumValueSetSupported-»
+    		if («fieldNameValueSet» instanceof «OrderedValueSet("?")») {
+    			«EXPAND writeEnumValueSet-»
+	        }
+	    «ELSEIF valueSetEnum-»
+       			«EXPAND writeEnumValueSet-»
+		«ENDIF-»
+        configElement.appendChild(valueSetElement);
+        element.appendChild(configElement);
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE writeRange(String rangeVar) FOR XPolicyAttribute-»
+	            valueSetValuesElement = element.getOwnerDocument().createElement("Range");
+	            valueSetValuesElement.setAttribute("containsNull", Boolean.toString(«fieldNameValueSet».«containsNull()»));
+	            «ValueToXmlHelper()».«addValueToElement(getToStringExpression(rangeVar + ".getLowerBound()"),
+	                    "valueSetValuesElement", "\"LowerBound\"")»;
+	            «ValueToXmlHelper()».«addValueToElement(getToStringExpression(rangeVar + ".getUpperBound()"),
+	                    "valueSetValuesElement", "\"UpperBound\"")»;
+	            «ValueToXmlHelper()».«addValueToElement(getToStringExpression(rangeVar + ".getStep()"),
+	                    "valueSetValuesElement", "\"Step\"")»;
+	            valueSetElement.appendChild(valueSetValuesElement);
+«ENDDEFINE»
+
+«DEFINE writeEnumValueSet FOR XPolicyAttribute-»
+	            valueSetValuesElement = element.getOwnerDocument().createElement("Enum");
+	            valueSetValuesElement.setAttribute("containsNull", Boolean.toString(«fieldNameValueSet».«containsNull()»));
+	            for («javaClassQualifiedName» value : «fieldNameValueSet».getValues(true)) {
+	                Element valueElement = element.getOwnerDocument().createElement("Value");
+	                «ValueToXmlHelper()».«addValueToElement(getToStringExpression("value"),"valueElement", "\"Data\"")»;
+	                valueSetValuesElement.appendChild(valueElement);
+	            }
+	            valueSetElement.appendChild(valueSetValuesElement);
+«ENDDEFINE»
+	            

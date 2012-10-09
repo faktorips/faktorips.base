@@ -53,14 +53,16 @@ public class PullUpRefactoringParticipantTest extends RefactoringParticipantTest
             throws CoreException {
 
         // Create target product component type configuring a policy component type
-        IPolicyCmptType targetPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "TargetPolicy", "TargetProduct");
+        IPolicyCmptType targetPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "TargetPolicy", "TargetProduct",
+                true);
         IProductCmptType targetProductCmptType = targetPolicyCmptType.findProductCmptType(ipsProject);
 
         // If useSuperTarget is true create another hierarchy level
         String sourcePolicySuperType;
         String sourceProductSuperType;
         if (useSuperTarget) {
-            IPolicyCmptType inBetweenPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "MidPolicy", "MidProduct");
+            IPolicyCmptType inBetweenPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "MidPolicy",
+                    "MidProduct", false);
             IProductCmptType inBetweenProductCmptType = inBetweenPolicyCmptType.findProductCmptType(ipsProject);
             inBetweenPolicyCmptType.setSupertype(targetPolicyCmptType.getQualifiedName());
             inBetweenProductCmptType.setSupertype(targetProductCmptType.getQualifiedName());
@@ -72,7 +74,8 @@ public class PullUpRefactoringParticipantTest extends RefactoringParticipantTest
         }
 
         // Create source product component type, also configuring a policy component type
-        IPolicyCmptType sourcePolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SourcePolicy", "SourceProduct");
+        IPolicyCmptType sourcePolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SourcePolicy", "SourceProduct",
+                false);
         IProductCmptType sourceProductCmptType = sourcePolicyCmptType.findProductCmptType(ipsProject);
         sourceProductCmptType.setSupertype(sourceProductSuperType);
         sourcePolicyCmptType.setSupertype(sourcePolicySuperType);
@@ -109,14 +112,16 @@ public class PullUpRefactoringParticipantTest extends RefactoringParticipantTest
 
     private void performTestPullUpProductCmptTypeAttribute(boolean useSuperTarget) throws CoreException {
         // Create target product component type configuring a policy component type
-        IPolicyCmptType targetPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "TargetPolicy", "TargetProduct");
+        IPolicyCmptType targetPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "TargetPolicy", "TargetProduct",
+                true);
         IProductCmptType targetProductCmptType = targetPolicyCmptType.findProductCmptType(ipsProject);
 
         // If useSuperTarget is true create another hierarchy level
         String sourcePolicySuperType;
         String sourceProductSuperType;
         if (useSuperTarget) {
-            IPolicyCmptType inBetweenPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "MidPolicy", "MidProduct");
+            IPolicyCmptType inBetweenPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "MidPolicy",
+                    "MidProduct", false);
             IProductCmptType inBetweenProductCmptType = inBetweenPolicyCmptType.findProductCmptType(ipsProject);
             inBetweenPolicyCmptType.setSupertype(targetPolicyCmptType.getQualifiedName());
             inBetweenProductCmptType.setSupertype(targetProductCmptType.getQualifiedName());
@@ -128,7 +133,8 @@ public class PullUpRefactoringParticipantTest extends RefactoringParticipantTest
         }
 
         // Create source product component type, also configuring a policy component type
-        IPolicyCmptType sourcePolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SourcePolicy", "SourceProduct");
+        IPolicyCmptType sourcePolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SourcePolicy", "SourceProduct",
+                false);
         IProductCmptType sourceProductCmptType = sourcePolicyCmptType.findProductCmptType(ipsProject);
         sourceProductCmptType.setSupertype(sourceProductSuperType);
         sourcePolicyCmptType.setSupertype(sourcePolicySuperType);

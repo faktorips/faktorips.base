@@ -19,7 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -45,10 +45,17 @@ import org.faktorips.util.StringUtil;
 public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
 
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
+    private final ProductCmptGenJavaClassNameProvider javaClassNameProvider;
 
     public ProductCmptGenInterfaceBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(ProductCmptGenInterfaceBuilder.class));
         setMergeEnabled(true);
+        javaClassNameProvider = new ProductCmptGenJavaClassNameProvider(true, getLanguageUsedInGeneratedSourceCode());
+    }
+
+    @Override
+    public IJavaClassNameProvider getJavaClassNameProvider() {
+        return javaClassNameProvider;
     }
 
     public ProductCmptInterfaceBuilder getProductCmptInterfaceBuilder() {
@@ -57,12 +64,6 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
 
     public void setProductCmptInterfaceBuilder(ProductCmptInterfaceBuilder productCmptInterfaceBuilder) {
         this.productCmptInterfaceBuilder = productCmptInterfaceBuilder;
-    }
-
-    @Override
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String name = ipsSrcFile.getIpsObjectName() + getAbbreviationForGenerationConcept(ipsSrcFile);
-        return getJavaNamingConvention().getPublishedInterfaceName(name);
     }
 
     @Override

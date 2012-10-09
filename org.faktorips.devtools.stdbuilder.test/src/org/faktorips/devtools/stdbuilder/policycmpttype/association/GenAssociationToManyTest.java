@@ -22,7 +22,6 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -81,7 +80,6 @@ public class GenAssociationToManyTest extends GenAssociationTest {
                 genAssociationToMany,
                 javaInterface,
                 getGeneratedJavaInterface(configurationForTarget, false,
-                        builderSet.getBuildersByClass(PolicyCmptInterfaceBuilder.class).get(0),
                         configurationForTarget.getName()));
         assertEquals(10, generatedJavaElements.size());
     }
@@ -108,12 +106,10 @@ public class GenAssociationToManyTest extends GenAssociationTest {
                 genAssociationToMany,
                 javaInterface,
                 getGeneratedJavaInterface(configurationForTarget, false,
-                        builderSet.getBuildersByClass(PolicyCmptInterfaceBuilder.class).get(0),
                         configurationForTarget.getName()));
         expectMethodGetRefObjectByQualifier(
                 javaInterface,
                 getGeneratedJavaInterface(configurationForTarget, false,
-                        builderSet.getBuildersByClass(PolicyCmptInterfaceBuilder.class).get(0),
                         configurationForTarget.getName()));
         assertEquals(11, generatedJavaElements.size());
     }
@@ -169,7 +165,6 @@ public class GenAssociationToManyTest extends GenAssociationTest {
                 genAssociationToMany,
                 javaClass,
                 getGeneratedJavaInterface(configurationForTarget, false,
-                        builderSet.getBuildersByClass(PolicyCmptInterfaceBuilder.class).get(0),
                         configurationForTarget.getName()));
         assertEquals(10, generatedJavaElements.size());
     }
@@ -195,12 +190,10 @@ public class GenAssociationToManyTest extends GenAssociationTest {
                 genAssociationToMany,
                 javaClass,
                 getGeneratedJavaInterface(configurationForTarget, false,
-                        builderSet.getBuildersByClass(PolicyCmptInterfaceBuilder.class).get(0),
                         configurationForTarget.getName()));
         expectMethodGetRefObjectByQualifier(
                 javaClass,
                 getGeneratedJavaInterface(configurationForTarget, false,
-                        builderSet.getBuildersByClass(PolicyCmptInterfaceBuilder.class).get(0),
                         configurationForTarget.getName()));
         assertEquals(11, generatedJavaElements.size());
     }

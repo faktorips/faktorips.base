@@ -23,4 +23,9 @@ public class TableContentBuilder extends XmlContentFileCopyBuilder {
         super(IpsObjectType.TABLE_CONTENTS, builderSet);
     }
 
+    @Override
+    public String getName() {
+        return "TableContentBuilde";
+    }
+
 }

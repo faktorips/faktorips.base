@@ -1,0 +1,61 @@
+«IMPORT java::util»
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
+
+«DEFINE formulaMethod FOR XMethod-»
+    /**
+   	«IF description.length > 0-» 
+     * «inheritDocOrTextIf(genInterface(), description)»
+     * 
+     «ENDIF-»
+     * @generated
+     */
+     «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»
+    «getModifier(false)» «javaClassName» «method(methodName, methodParameters)» throws «FormulaExecutionException()»
+    «IF genInterface()»;«ELSE-»
+    {
+        return («notPrimitiveJavaClassName»)getFormulaEvaluator().evaluate("«methodName»" «FOREACH methodParameters AS parameter», «parameter.name»«ENDFOREACH»);
+    }
+    «ENDIF-»
+    «IF overloadsFormula && !genInterface()»
+    	«LET overloadedFormulaMethod AS overloaded-»
+		    /**
+		     * «inheritDoc()»
+		     * 
+		     * @generated
+		     */
+		    «overrideAnnotation(false)-»
+		    «overloaded.getModifier(false)» «overloaded.javaClassName» «overloaded.methodName»(«FOREACH overloadedFormulaMethod.parameters AS param SEPARATOR ", "»«param.javaClassName» «param.name»«ENDFOREACH») throws «FormulaExecutionException()» {
+		        // TODO a delegation to the method «methodName»(«FOREACH parameters AS param SEPARATOR ", "»«param.javaClassName»«ENDFOREACH») needs to be implemented here
+		        // And make sure to disable the regeneration of this method.
+		        throw new RuntimeException("Not implemented yet.");
+		    }
+    	«ENDLET-»
+    «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE method FOR XMethod-»
+    /**
+    «IF published && !genInterface()-»
+     * «inheritDoc()»
+     * 
+    «ELSEIF description.length > 0-»
+     * «description»
+    «ENDIF-»
+     * @generated
+     */
+     «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»
+    «getModifier(false)» «javaClassName» «method(methodName, methodParameters)» «IF abstract || genInterface()-»
+    	;
+    «ELSE-»
+	    {
+	        // TODO implement method!
+	        «IF !returnVoid-»
+	        	return «defaultReturnValue»;
+	        «ENDIF-»
+	    }
+    «ENDIF-»
+«ENDDEFINE»

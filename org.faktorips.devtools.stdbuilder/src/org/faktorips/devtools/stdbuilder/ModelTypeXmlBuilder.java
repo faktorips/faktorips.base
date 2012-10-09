@@ -61,7 +61,7 @@ import org.w3c.dom.Element;
  * 
  * @author Daniel Hohenberger
  */
-public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
+public abstract class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
 
     private Document doc;
 
@@ -329,17 +329,6 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     @Override
     public boolean buildsDerivedArtefacts() {
         return true;
-    }
-
-    /**
-     * Returns the path to the (generated) XML resource as used by the Class.getResourceAsStream()
-     * Method.
-     * 
-     * @see Class#getResourceAsStream(java.lang.String)
-     */
-    public String getXmlResourcePath(IType type) throws CoreException {
-        String packageInternal = getBuilderSet().getPackage(this, type.getIpsSrcFile());
-        return packageInternal.replace('.', '/') + '/' + type.getName() + ".xml";
     }
 
     private StandardBuilderSet getStandardBuilderSet() {

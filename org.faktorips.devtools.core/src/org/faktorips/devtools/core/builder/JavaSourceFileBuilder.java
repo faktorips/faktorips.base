@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
@@ -43,10 +44,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
-import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
@@ -54,7 +53,13 @@ import org.eclipse.text.edits.TextEdit;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.naming.BuilderAspect;
+import org.faktorips.devtools.core.builder.naming.DefaultJavaClassNameProvider;
+import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.core.builder.organizeimports.IpsRemoveImportsOperation;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
@@ -127,8 +132,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public final static String MARKER_END_USER_CODE = "//end-user-code"; //$NON-NLS-1$
 
-    public final static String JAVA_EXTENSION = ".java"; //$NON-NLS-1$
-
     private final static String BEGIN_FAKTORIPS_GENERATOR_INFORMATION_SECTION = "BEGIN FAKTORIPS GENERATOR INFORMATION SECTION"; //$NON-NLS-1$
 
     private final static String END_FAKTORIPS_GENERATOR_INFORMATION_SECTION = "END FAKTORIPS GENERATOR INFORMATION SECTION"; //$NON-NLS-1$
@@ -151,11 +154,11 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     private JControlModel model;
 
-    private Integer javaOptionsSplitLength;
-
-    private Integer javaOptionsTabSize;
-
     private FacadeHelper facadeHelper;
+
+    private JavaClassNaming javaClassNaming;
+
+    private final IJavaClassNameProvider javaClassNameProvider;
 
     /**
      * Creates a new JavaSourceFileBuilder.
@@ -168,31 +171,13 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public JavaSourceFileBuilder(DefaultBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
-        initJavaOptions();
+        setJavaClassNaming(new JavaClassNaming(builderSet, !buildsDerivedArtefacts()));
+        javaClassNameProvider = createJavaClassNameProvider(builderSet.isGeneratePublishedInterfaces());
     }
 
     @Override
     public DefaultBuilderSet getBuilderSet() {
         return (DefaultBuilderSet)super.getBuilderSet();
-    }
-
-    // TODO duplicate code in LocalizedTextHelper
-    private void initJavaOptions() {
-        try {
-            javaOptionsSplitLength = Integer.valueOf(JavaCore
-                    .getOption(DefaultCodeFormatterConstants.FORMATTER_LINE_SPLIT));
-            javaOptionsTabSize = Integer.valueOf(JavaCore.getOption(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE));
-        } catch (Exception e) {
-            IpsPlugin.log(new IpsStatus("Unable to apply the java formatter options.", e)); //$NON-NLS-1$
-        }
-    }
-
-    public Integer getJavaOptionsSplitLength() {
-        return javaOptionsSplitLength;
-    }
-
-    public Integer getJavaOptionsTabSize() {
-        return javaOptionsTabSize;
     }
 
     @Override
@@ -205,6 +190,14 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         initJControlModel(project);
         createVersionSection();
+    }
+
+    protected JavaClassNaming getJavaClassNaming() {
+        return javaClassNaming;
+    }
+
+    protected void setJavaClassNaming(JavaClassNaming javaClassNaming) {
+        this.javaClassNaming = javaClassNaming;
     }
 
     @Override
@@ -256,6 +249,22 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         return getIpsProject().getJavaNamingConvention();
     }
 
+    public IJavaClassNameProvider getJavaClassNameProvider() {
+        return javaClassNameProvider;
+    }
+
+    private IJavaClassNameProvider createJavaClassNameProvider(boolean isGeneratePublishedInterface) {
+        // Interfaces are always published artifacts. But some implementations are also published
+        return new DefaultJavaClassNameProvider(isGeneratePublishedInterface) {
+
+            @Override
+            public boolean isImplClassPublishedArtifact() {
+                return isBuildingPublishedSourceFile();
+            }
+
+        };
+    }
+
     /**
      * Implementations of this class must override this method to provide the content of the java
      * source file.
@@ -294,25 +303,34 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Convenience method that delegates the call to the package structure and returns the package
      * name for the java class that is build by this builder.
+     * <p>
+     * It is not allowed to overwrite this method because other methods in {@link JavaClassNaming}
+     * uses the {@link JavaPackageStructure} object directly and this may impact an inconsistent
+     * package name.
      * 
      * @param ipsSrcFile The source file to get the package from
      * 
      * @throws CoreException is delegated from calls to other methods
      */
-    public String getPackage(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getPackageStructure().getPackage(this, ipsSrcFile);
+    public final String getPackage(IIpsSrcFile ipsSrcFile) throws CoreException {
+        return getPackageStructure().getPackageName(ipsSrcFile, !isBuildingInternalArtefacts(),
+                !buildsDerivedArtefacts());
     }
 
     /**
      * Calls getPackage(IpsObject). It is only allowed to call this method during the build cycle of
      * this builder.
+     * <p>
+     * It is not allowed to overwrite this method because other methods in {@link JavaClassNaming}
+     * uses the {@link JavaPackageStructure} object directly and this may impact an inconsistent
+     * package name.
      * 
      * @return the package string
      * 
      * @throws CoreException is delegated from calls to other methods
      */
-    public String getPackage() throws CoreException {
-        return getPackageStructure().getPackage(this, getIpsSrcFile());
+    public final String getPackage() throws CoreException {
+        return getPackage(getIpsSrcFile());
     }
 
     /**
@@ -324,14 +342,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @throws CoreException is delegated from calls to other methods
      */
     public String getQualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        StringBuffer buf = new StringBuffer();
-        String packageName = getPackageStructure().getPackage(this, ipsSrcFile);
-        if (packageName != null) {
-            buf.append(packageName);
-            buf.append('.');
-        }
-        buf.append(getUnqualifiedClassName(ipsSrcFile));
-        return buf.toString();
+        return getJavaClassNaming().getQualifiedClassName(ipsSrcFile, BuilderAspect.getValue(generatesInterface()),
+                getJavaClassNameProvider());
     }
 
     /**
@@ -359,13 +371,19 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the unqualified name for Java class generated by this builder for the given ips
      * source file.
+     * <p>
+     * It is not allowed to overwrite this class because other methods in the
+     * {@link JavaClassNaming} does also reference the unqualified name. If you want to change the
+     * unqualified name you have to set your own {@link IJavaClassNameProvider} to the
+     * {@link JavaClassNaming}.
      * 
      * @param ipsSrcFile the IPS source file
      * 
      * @throws CoreException is delegated from calls to other methods
      */
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
+    public final String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
+        return getJavaClassNaming().getUnqualifiedClassName(ipsSrcFile, BuilderAspect.getValue(generatesInterface()),
+                getJavaClassNameProvider());
     }
 
     /**
@@ -672,7 +690,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         if (!isBuilderFor(ipsSrcFile)) {
             return;
         }
-
+        if (!getBuilderSet().isGeneratePublishedInterfaces() && generatesInterface()) {
+            return;
+        }
         IFile javaFile = getJavaFile(ipsSrcFile);
         String content = generate();
         if (content == null || generationCanceled) {
@@ -842,26 +862,26 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the IFile for the provided IIpsSrcFile.
      */
+    /**
+     * Returns the IFile for the provided IIpsSrcFile.
+     */
     public IFile getJavaFile(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFolder destinationFolder = getArtefactDestination(ipsSrcFile);
 
-        String name = getQualifiedClassName(ipsSrcFile);
-        int index = name.lastIndexOf('.');
+        IPath javaFile = getRelativeJavaFile(ipsSrcFile);
 
-        if (index == name.length()) {
-            throw new RuntimeException("The qualified class name is not a valid java class name"); //$NON-NLS-1$
-        }
-        if (index == -1) {
-            return destinationFolder.getFile(name + JAVA_EXTENSION);
-        }
-        String packageName = name.substring(0, index);
-        String fileName = name.substring(index + 1, name.length());
-        String[] packageFolders = packageName.split("\\."); //$NON-NLS-1$
-        IFolder folder = destinationFolder;
-        for (String packageFolder : packageFolders) {
-            folder = folder.getFolder(packageFolder);
-        }
-        return folder.getFile(fileName + JAVA_EXTENSION);
+        return destinationFolder.getFile(javaFile);
+    }
+
+    /**
+     * Return the path to the java file relative to the destination folder.
+     * <p>
+     * If the java class name is org.example.MyExample this method would return an {@link IPath} of
+     * <em>/org/example/MyExample.java</em>
+     */
+    public IPath getRelativeJavaFile(IIpsSrcFile ipsSrcFile) {
+        return getJavaClassNaming().getRelativeJavaFile(ipsSrcFile, BuilderAspect.getValue(generatesInterface()),
+                getJavaClassNameProvider());
     }
 
     private JControlModel getJControlModel() {
@@ -905,7 +925,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     private void initJControlModel(IIpsProject project) throws CoreException {
-        model = new org.eclipse.emf.codegen.merge.java.JControlModel();
+        model = new JControlModel();
         if (ComplianceCheck.isComplianceLevelAtLeast5(project)) {
             facadeHelper = new ASTFacadeHelper();
         } else {
@@ -913,7 +933,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
         try {
             model.initialize(facadeHelper, getJMergeConfigLocation(project));
-
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(e));
         }
@@ -1016,13 +1035,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         if (ipsObjectPartContainer instanceof IIpsObject) {
-            try {
-                IIpsObject ipsObject = (IIpsObject)ipsObjectPartContainer;
-                if (isBuilderFor(ipsObject.getIpsSrcFile())) {
-                    javaElements.addAll(getGeneratedJavaTypes(ipsObject));
-                }
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
+            IIpsObject ipsObject = (IIpsObject)ipsObjectPartContainer;
+            if (isGeneratsArtifactsFor(ipsObject.getIpsSrcFile())) {
+                javaElements.addAll(getGeneratedJavaTypes(ipsObject));
             }
         }
 
@@ -1046,7 +1061,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                     .getArtefactDestination(buildsDerivedArtefacts());
             IPackageFragmentRoot javaRoot = ipsObject.getIpsProject().getJavaProject()
                     .getPackageFragmentRoot(outputFolder);
-            String packageName = getBuilderSet().getPackage(this, ipsObject.getIpsSrcFile());
+            String packageName = getPackage(ipsObject.getIpsSrcFile());
             IPackageFragment fragment = javaRoot.getPackageFragment(packageName);
             List<IType> javaTypes = new ArrayList<IType>(1);
             getGeneratedJavaTypesThis(ipsObject, fragment, javaTypes);
@@ -1063,7 +1078,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             throws CoreException {
 
         String typeName = getUnqualifiedClassName(ipsObject.getIpsSrcFile());
-        ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + JAVA_EXTENSION);
+        ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + JavaClassNaming.JAVA_EXTENSION);
         javaTypes.add(compilationUnit.getType(typeName));
     }
 
@@ -1081,7 +1096,37 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Must return <tt>true</tt> if the source file generated by this builder is considered
      * published, <tt>false</tt> if not.
+     * <p>
+     * This method is called by constructor and is intended to have static content!
      */
     public abstract boolean isBuildingPublishedSourceFile();
+
+    @Override
+    public boolean isBuildingInternalArtefacts() {
+        return !isBuildingPublishedSourceFile();
+    }
+
+    /**
+     * Returns true if an interface is generated, false if a class is generated.
+     */
+    protected abstract boolean generatesInterface();
+
+    /**
+     * Returns true if this builder generates artifacts for the specified source file.
+     * <p>
+     * The default implementation delegates to {@link #isBuilderFor(IIpsSrcFile)} but other builders
+     * may overwrite this method. For example a product component builder also generates artifacts
+     * for policy component types.
+     * 
+     * @param ipsSrcFile The {@link IIpsSrcFile} for which you want to get the generated artifacts
+     * @return true if this builder generates artifacts for the specified source file
+     */
+    public boolean isGeneratsArtifactsFor(IIpsSrcFile ipsSrcFile) {
+        try {
+            return isBuilderFor(ipsSrcFile);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
 
 }

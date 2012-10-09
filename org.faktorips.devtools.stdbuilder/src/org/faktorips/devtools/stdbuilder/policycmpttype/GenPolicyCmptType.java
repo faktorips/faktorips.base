@@ -43,7 +43,6 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenDerivedAttr
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.method.GenPolicyCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.GenValidationRule;
-import org.faktorips.devtools.stdbuilder.productcmpttype.BaseProductCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.type.GenType;
@@ -356,14 +355,17 @@ public class GenPolicyCmptType extends GenType {
      * @throws CoreException If an error occurs while searching for the <tt>IProductCmptType</tt>.
      */
     public IType findGeneratedJavaTypeForProductCmptType(boolean forInterface) throws CoreException {
-        BaseProductCmptTypeBuilder productCmptTypeBuilder = forInterface ? getBuilderSet()
-                .getProductCmptInterfaceBuilder() : getBuilderSet().getProductCmptImplClassBuilder();
-
-        IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(getPolicyCmptType().getIpsProject());
-        if (productCmptType == null) {
-            return null;
-        }
-        return productCmptTypeBuilder.getGeneratedJavaTypes(productCmptType).get(0);
+        // JavaSourceFileBuilder productCmptTypeBuilder = forInterface ?
+        // getBuilderSet().getProductCmptInterfaceBuilder()
+        // : getBuilderSet().getProductCmptImplClassBuilder();
+        //
+        // IProductCmptType productCmptType =
+        // getPolicyCmptType().findProductCmptType(getPolicyCmptType().getIpsProject());
+        // if (productCmptType == null) {
+        // return null;
+        // }
+        // return productCmptTypeBuilder.getGeneratedJavaTypes(productCmptType).get(0);
+        return null;
     }
 
 }

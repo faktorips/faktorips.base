@@ -13,30 +13,45 @@
 
 package org.faktorips.devtools.core.builder;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 
 /**
- * A <tt>JavaSourceFileBuilder</tt> needs an implementation of this interface. It provides the
- * package name of every kind of generated class within this package structure. Since it is possible
- * to generate multiple Java classes for an <tt>IIpsObject</tt> it is not enough to just provide the
- * <tt>IIpsObject</tt> instance to the methods of the package structure. An additional parameter
- * "kind" is necessary to uniquely identify the Java class in question.
+ * This interface provides the package name of every kind of generated class within this package
+ * structure. Since it is possible to generate multiple Java classes for an <tt>IIpsObject</tt> it
+ * is not enough to just provide the {@link IIpsSrcFile} instance to the methods of the package
+ * structure. The additional parameters specify the kind of artifact that is generated.
  * 
  * @author Peter Erzberger
  */
 public interface IJavaPackageStructure {
 
     /**
-     * Returns the package string for the provided IpsObject and kind.
+     * Returns the package string for the provided IpsObject depending on the parameter.
      * 
-     * @param builder the builder in which context the file should be generated
-     * @param ipsSrcFile the IPS source file that identifies in conjunction with the kind parameter
-     *            the package of the java class that exists within this package structure
+     * @param ipsSrcFile The {@link IIpsSrcFile} for which you want to get the generated package
+     * @param publishedArtifact <code>true</code> if you want the base package for published
+     *            artifacts <code>false</code> for internal
+     * @param mergableArtifacts <code>true</code> if you want the base package for mergable
+     *            artifacts <code>false</code> for derived
      * 
-     * @throws CoreException implementations can wrap rising checked exceptions into a CoreException
+     * @return The name of the package where the artifacts are generated for the given
+     *         {@link IIpsSrcFile} depending on the parameters
      */
-    public String getPackage(IIpsArtefactBuilder builder, IIpsSrcFile ipsSrcFile) throws CoreException;
+    public String getPackageName(IIpsSrcFile ipsSrcFile, boolean publishedArtifact, boolean mergableArtifacts);
+
+    /**
+     * Returns the base package for the given {@link IIpsSrcFolderEntry} depending on whether it is
+     * a published artifact and/or mergable artifact
+     * 
+     * @param entry The {@link IIpsSrcFolderEntry} you want to get the base package for
+     * @param publishedArtifact <code>true</code> if you want the base package for published
+     *            artifacts <code>false</code> for internal
+     * @param mergableArtifacts <code>true</code> if you want the base package for mergable
+     *            artifacts <code>false</code> for derived
+     * 
+     * @return The name of the base package generated for the given parameters
+     */
+    public String getBasePackageName(IIpsSrcFolderEntry entry, boolean publishedArtifact, boolean mergableArtifacts);
 
 }

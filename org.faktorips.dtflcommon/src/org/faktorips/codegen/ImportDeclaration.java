@@ -15,7 +15,9 @@ package org.faktorips.codegen;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.SystemUtils;
 import org.faktorips.util.StringUtil;
@@ -193,10 +195,14 @@ public class ImportDeclaration {
      * Returns an Iterator over the import statements as Strings.
      */
     public Iterator<String> iterator() {
-        List<String> allImports = new ArrayList<String>();
+        return getImports().iterator();
+    }
+
+    public Set<String> getImports() {
+        Set<String> allImports = new LinkedHashSet<String>();
         allImports.addAll(packages);
         allImports.addAll(classes);
-        return allImports.iterator();
+        return allImports;
     }
 
     /**

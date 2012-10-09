@@ -29,9 +29,8 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
@@ -71,53 +70,44 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     /**
      * Returns the generated Java implementation class for the given {@link IIpsObject}.
      */
-    protected final IType getGeneratedJavaClass(IIpsObject ipsObject,
-            boolean derivedSource,
-            IIpsArtefactBuilder builder,
-            String conceptName) {
+    protected final IType getGeneratedJavaClass(IIpsObject ipsObject, boolean derivedSource, String conceptName) {
 
         String javaTypeName = ipsObject.getIpsProject().getJavaNamingConvention()
                 .getImplementationClassName(conceptName);
-        return getGeneratedJavaType(ipsObject, derivedSource, builder, javaTypeName);
+        return getGeneratedJavaType(ipsObject, false, derivedSource, javaTypeName);
     }
 
     /**
      * Returns the generated Java enum for the given {@link IIpsObject}.
      */
-    protected final IType getGeneratedJavaEnum(IIpsObject ipsObject,
-            boolean derivedSource,
-            IIpsArtefactBuilder builder,
-            String conceptName) {
+    protected final IType getGeneratedJavaEnum(IIpsObject ipsObject, boolean derivedSource, String conceptName) {
 
-        return getGeneratedJavaType(ipsObject, derivedSource, builder, conceptName);
+        return getGeneratedJavaType(ipsObject, true, derivedSource, conceptName);
     }
 
     /**
      * Returns the generated published Java interface for the given {@link IIpsObject}.
      */
-    protected final IType getGeneratedJavaInterface(IIpsObject ipsObject,
-            boolean derivedSource,
-            IIpsArtefactBuilder builder,
-            String conceptName) {
+    protected final IType getGeneratedJavaInterface(IIpsObject ipsObject, boolean derivedSource, String conceptName) {
 
         String javaTypeName = ipsObject.getIpsProject().getJavaNamingConvention()
                 .getPublishedInterfaceName(conceptName);
-        return getGeneratedJavaType(ipsObject, derivedSource, builder, javaTypeName);
+        return getGeneratedJavaType(ipsObject, true, derivedSource, javaTypeName);
     }
 
     private final IType getGeneratedJavaType(IIpsObject ipsObject,
+            boolean published,
             boolean derivedSource,
-            IIpsArtefactBuilder builder,
             String javaTypeName) {
 
         try {
             IFolder outputFolder = ipsObject.getIpsPackageFragment().getRoot().getArtefactDestination(derivedSource);
             IPackageFragmentRoot javaRoot = ipsObject.getIpsProject().getJavaProject()
                     .getPackageFragmentRoot(outputFolder);
-            String packageName = builderSet.getPackage(builder, ipsObject.getIpsSrcFile());
+            String packageName = builderSet.getPackageName(ipsObject.getIpsSrcFile(), published, !derivedSource);
             IPackageFragment javaPackage = javaRoot.getPackageFragment(packageName);
             ICompilationUnit javaCompilationUnit = javaPackage.getCompilationUnit(javaTypeName
-                    + JavaSourceFileBuilder.JAVA_EXTENSION);
+                    + JavaClassNaming.JAVA_EXTENSION);
             return javaCompilationUnit.getType(javaTypeName);
         } catch (CoreException e) {
             throw new RuntimeException(e);

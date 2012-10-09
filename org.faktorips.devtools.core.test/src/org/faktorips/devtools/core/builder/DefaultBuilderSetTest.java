@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.util.ClassToInstancesMap;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -83,8 +84,8 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
-            return new IIpsArtefactBuilder[0];
+        protected ClassToInstancesMap<IIpsArtefactBuilder> createBuilders() throws CoreException {
+            return new ClassToInstancesMap<IIpsArtefactBuilder>();
         }
 
     }

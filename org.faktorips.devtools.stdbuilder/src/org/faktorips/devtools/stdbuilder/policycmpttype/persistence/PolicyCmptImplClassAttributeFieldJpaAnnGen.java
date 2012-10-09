@@ -21,7 +21,9 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.util.PersistenceUtil;
@@ -29,7 +31,8 @@ import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 
 /**
  * This class generates JPA annotations for fields derived from policy component type attributes.
@@ -47,62 +50,61 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
 
     private static final String ATTRIBUTE_TEMPORAL_TYPE = "TemporalType";
 
-    public PolicyCmptImplClassAttributeFieldJpaAnnGen(StandardBuilderSet builderSet) {
-        super(builderSet);
-    }
-
     @Override
-    public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
+    public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
         JavaCodeFragment fragment = new JavaCodeFragment();
+        if (generatorModelNode instanceof XPolicyAttribute) {
+            XPolicyAttribute xPolicyAttribute = (XPolicyAttribute)generatorModelNode;
 
-        IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)ipsElement;
-        ValueDatatype datatype = getDatatype(attribute);
-        IPersistentAttributeInfo jpaAttributeInfo = attribute.getPersistenceAttributeInfo();
+            IPolicyCmptTypeAttribute attribute = xPolicyAttribute.getAttribute();
+            ValueDatatype datatype = getDatatype(attribute);
+            IPersistentAttributeInfo jpaAttributeInfo = attribute.getPersistenceAttributeInfo();
 
-        String tableColumnName = jpaAttributeInfo.getTableColumnName();
+            String tableColumnName = jpaAttributeInfo.getTableColumnName();
 
-        boolean isNullable = jpaAttributeInfo.getTableColumnNullable();
-        boolean isUnique = jpaAttributeInfo.getTableColumnUnique();
+            boolean isNullable = jpaAttributeInfo.getTableColumnNullable();
+            boolean isUnique = jpaAttributeInfo.getTableColumnUnique();
 
-        fragment.addImport(IMPORT_COLUMN);
-        fragment.append(ANNOTATION_COLUMN);
+            fragment.addImport(IMPORT_COLUMN);
+            fragment.append(ANNOTATION_COLUMN);
 
-        List<String> attributesToAppend = new ArrayList<String>();
-        attributesToAppend.add("name=\"" + tableColumnName + "\"");
+            List<String> attributesToAppend = new ArrayList<String>();
+            attributesToAppend.add("name=\"" + tableColumnName + "\"");
 
-        if (StringUtils.isEmpty(jpaAttributeInfo.getSqlColumnDefinition())) {
-            attributesToAppend.add("nullable = " + isNullable);
-            attributesToAppend.add("unique = " + isUnique);
-            addDatatypeDendingJpaAttributes(attributesToAppend, jpaAttributeInfo, datatype);
-        } else {
-            // sql column definition overwrites nullable (not null), unique, scale, precision and
-            // length
-            attributesToAppend.add("columnDefinition=\"" + jpaAttributeInfo.getSqlColumnDefinition() + "\"");
-        }
-
-        fragment.append("(");
-        for (Iterator<String> iterator = attributesToAppend.iterator(); iterator.hasNext();) {
-            String attr = iterator.next();
-            fragment.append(attr);
-            if (iterator.hasNext()) {
-                fragment.append(", ");
+            if (StringUtils.isEmpty(jpaAttributeInfo.getSqlColumnDefinition())) {
+                attributesToAppend.add("nullable = " + isNullable);
+                attributesToAppend.add("unique = " + isUnique);
+                addDatatypeDendingJpaAttributes(attributesToAppend, jpaAttributeInfo, datatype);
+            } else {
+                // sql column definition overwrites nullable (not null), unique, scale, precision
+                // and
+                // length
+                attributesToAppend.add("columnDefinition=\"" + jpaAttributeInfo.getSqlColumnDefinition() + "\"");
             }
+
+            fragment.append("(");
+            for (Iterator<String> iterator = attributesToAppend.iterator(); iterator.hasNext();) {
+                String attr = iterator.next();
+                fragment.append(attr);
+                if (iterator.hasNext()) {
+                    fragment.append(", ");
+                }
+            }
+            fragment.append(')').appendln();
+            createTemporalAnnotationIfTemporalDatatype(fragment, jpaAttributeInfo, datatype);
+            createConverterAnnotation(fragment, jpaAttributeInfo);
+
         }
-        fragment.append(')').appendln();
-        createTemporalAnnotationIfTemporalDatatype(fragment, jpaAttributeInfo, datatype);
-        createConverterAnnotation(fragment, jpaAttributeInfo);
 
         return fragment;
     }
 
     private ValueDatatype getDatatype(IPolicyCmptTypeAttribute attribute) {
-        GenPolicyCmptTypeAttribute generator;
         try {
-            generator = getStandardBuilderSet().getGenerator(attribute.getPolicyCmptType()).getGenerator(attribute);
+            return attribute.findDatatype(attribute.getIpsProject());
         } catch (CoreException e) {
-            throw new RuntimeException(e);
+            throw new CoreRuntimeException(e);
         }
-        return generator.getDatatype();
     }
 
     private void addDatatypeDendingJpaAttributes(List<String> attributesToAppend,
@@ -127,16 +129,19 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractAnnotati
         if (StringUtils.isEmpty(jpaAttributeInfo.getConverterQualifiedClassName())) {
             return;
         }
+        IIpsArtefactBuilderSet builderSet = getBuilderSet(jpaAttributeInfo.getIpsProject());
+        if (builderSet instanceof StandardBuilderSet) {
+            IPersistenceProvider persistenceProviderImpl = ((StandardBuilderSet)builderSet)
+                    .getPersistenceProviderImplementation();
+            if (persistenceProviderImpl == null) {
+                return;
+            }
+            if (!persistenceProviderImpl.isSupportingConverters()) {
+                return;
+            }
 
-        IPersistenceProvider persistenceProviderImpl = getStandardBuilderSet().getPersistenceProviderImplementation();
-        if (persistenceProviderImpl == null) {
-            return;
+            persistenceProviderImpl.addAnnotationConverter(fragment, jpaAttributeInfo);
         }
-        if (!persistenceProviderImpl.isSupportingConverters()) {
-            return;
-        }
-
-        persistenceProviderImpl.addAnnotationConverter(fragment, jpaAttributeInfo);
     }
 
     private void createTemporalAnnotationIfTemporalDatatype(JavaCodeFragment fragment,

@@ -194,7 +194,6 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
 
         public StubJavaSourceFileBuilder(DefaultBuilderSet builderSet, LocalizedStringsSet localizedStringsSet,
                 IIpsSrcFile ipsSrcFile, boolean buildingPublishedSourceFile) {
-
             super(builderSet, localizedStringsSet);
             this.ipsSrcFile = ipsSrcFile;
             this.buildingPublishedSourceFile = buildingPublishedSourceFile;
@@ -219,6 +218,11 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         @Override
         public boolean isBuildingPublishedSourceFile() {
             return buildingPublishedSourceFile;
+        }
+
+        @Override
+        protected boolean generatesInterface() {
+            return false;
         }
 
     }

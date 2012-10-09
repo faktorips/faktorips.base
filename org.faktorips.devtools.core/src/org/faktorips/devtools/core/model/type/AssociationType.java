@@ -44,6 +44,15 @@ public enum AssociationType {
         return null;
     }
 
+    /**
+     * Returns true if this type is either {@link #COMPOSITION_MASTER_TO_DETAIL} or
+     * {@link #AGGREGATION};
+     * 
+     */
+    public boolean isMasterToDetail() {
+        return this == COMPOSITION_MASTER_TO_DETAIL || this == AGGREGATION;
+    }
+
     public boolean isCompositionMasterToDetail() {
         return this == COMPOSITION_MASTER_TO_DETAIL;
     }

@@ -29,8 +29,7 @@
                label="Use typesafe collections"
                name="useTypesafeCollections"
                type="boolean"/>
-         <builderSetPropertyDef
-               defaultValue="true"
+         <builderSetPropertyDef               defaultValue="true"
                description="Enables the generation of a delta determining mechanism for model objects"
                disableValue="false"
                label="Generate delta support"
@@ -139,6 +138,14 @@
                disableValue="false"
                label="CamelCase separation in constant names"
                name="camelCaseSeparated"
+               type="boolean">
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+               defaultValue="true"
+               description="Generate the published interfaces (true) or only implementation classes (false)"
+               disableValue="true"
+               label="Generate published Interfaces"
+               name="generatePublishedInterfaces"
                type="boolean">
          </builderSetPropertyDef>
       </builderSet>

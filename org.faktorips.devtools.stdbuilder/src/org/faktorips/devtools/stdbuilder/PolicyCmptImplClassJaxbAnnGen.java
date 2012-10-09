@@ -13,27 +13,22 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 
 public class PolicyCmptImplClassJaxbAnnGen extends AbstractAnnotationGenerator {
 
-    public PolicyCmptImplClassJaxbAnnGen(StandardBuilderSet builderSet) {
-        super(builderSet);
-    }
-
     @Override
-    public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
-        PolicyCmptImplClassBuilder builder = getStandardBuilderSet().getPolicyCmptImplClassBuilder();
+    public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
         JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
-        try {
-            codeBuilder.annotationLn("javax.xml.bind.annotation.XmlRootElement", "name",
-                    builder.getUnqualifiedClassName());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        if (generatorModelNode instanceof XPolicyCmptClass) {
+            XPolicyCmptClass xPolicyCmptClass = (XPolicyCmptClass)generatorModelNode;
+
+            String unqualifiedName = xPolicyCmptClass.getImplClassName();
+            codeBuilder.annotationLn("javax.xml.bind.annotation.XmlRootElement", "name", unqualifiedName);
         }
         return codeBuilder.getFragment();
     }

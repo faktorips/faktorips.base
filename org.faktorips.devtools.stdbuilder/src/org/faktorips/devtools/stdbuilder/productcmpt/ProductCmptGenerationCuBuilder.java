@@ -29,8 +29,8 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
+import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -44,8 +44,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
@@ -68,8 +68,8 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
 
     // builders needed
     private ProductCmptBuilder productCmptBuilder;
-    private ProductCmptImplClassBuilder productCmptImplBuilder;
-    private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
+    private ProductCmptClassBuilder productCmptImplBuilder;
+    private ProductCmptGenerationClassBuilder productCmptGenImplBuilder;
 
     private MultiStatus buildStatus;
 
@@ -91,11 +91,11 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         this.generation = generation;
     }
 
-    public void setProductCmptImplBuilder(ProductCmptImplClassBuilder builder) {
+    public void setProductCmptImplBuilder(ProductCmptClassBuilder builder) {
         productCmptImplBuilder = builder;
     }
 
-    public void setProductCmptGenImplBuilder(ProductCmptGenImplClassBuilder builder) {
+    public void setProductCmptGenImplBuilder(ProductCmptGenerationClassBuilder builder) {
         productCmptGenImplBuilder = builder;
     }
 
@@ -307,7 +307,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
             try {
                 String typeName = getUnqualifiedClassName(generationSrcFile);
                 ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName
-                        + JavaSourceFileBuilder.JAVA_EXTENSION);
+                        + JavaClassNaming.JAVA_EXTENSION);
                 javaTypes.add(compilationUnit.getType(typeName));
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e.getMessage(), e);
@@ -323,6 +323,11 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
+        return false;
+    }
+
+    @Override
+    protected boolean generatesInterface() {
         return false;
     }
 

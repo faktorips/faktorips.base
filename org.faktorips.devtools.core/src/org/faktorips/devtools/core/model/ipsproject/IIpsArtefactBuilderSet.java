@@ -13,13 +13,15 @@
 
 package org.faktorips.devtools.core.model.ipsproject;
 
-import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
@@ -170,26 +172,6 @@ public interface IIpsArtefactBuilderSet {
     public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root);
 
     /**
-     * Returns the package name of the generated TOC file.<br>
-     * Returns <code>null</code> if the builder doesn't create a TOC file.
-     * 
-     * @deprecated use getRuntimeRepositoryTocResourceName(root)
-     */
-    @Deprecated
-    public String getTocFilePackageName(IIpsPackageFragmentRoot root);
-
-    /**
-     * Getting the internal package for the given base package name and the specified sub package
-     * fragment.
-     * 
-     * @param basePackageName The name of the base package
-     * @param subPackageFragment The name of the sub package fragment
-     * 
-     * @return the name of the internal package for given basePackageName and subPackageFragment
-     */
-    public String getInternalPackage(String basePackageName, String subPackageFragment);
-
-    /**
      * Returns the locale of the language that is used by the generator to generate source code and
      * documentation.
      */
@@ -287,13 +269,14 @@ public interface IIpsArtefactBuilderSet {
     public void afterBuildProcess(int buildKind) throws CoreException;
 
     /**
-     * Returns an array of builders which are sub types of or from the same type as the provided
-     * builder class.
+     * Returns the builder which is of the same type as the provided builder class.
      * 
      * @param builderClass The class of the builders you are searching for.
+     * @throws IllegalStateException if the builders are not initialized
+     * @throws RuntimeException if there is no builder for the requested class
      * 
      */
-    public <T extends IIpsArtefactBuilder> List<T> getBuildersByClass(Class<T> builderClass);
+    public <T extends IIpsArtefactBuilder> T getBuilderByClass(Class<T> builderClass);
 
     /**
      * Getting true if none mergeable resources should be marked as derived or not.
@@ -301,5 +284,15 @@ public interface IIpsArtefactBuilderSet {
      * @return True to mark the files and folders as derived
      */
     public boolean isMarkNoneMergableResourcesAsDerived();
+
+    /**
+     * Called by the {@link IpsBuilder} when {@link IpsBuilder#clean(IProgressMonitor)} is called
+     * giving the builder set the opportunity to do additional clearing.
+     * 
+     * @see IncrementalProjectBuilder#clean(IProgressMonitor)
+     * 
+     */
+    @SuppressWarnings("javadoc")
+    public void clean(IProgressMonitor monitor);
 
 }

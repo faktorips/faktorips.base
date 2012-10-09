@@ -44,7 +44,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -52,6 +51,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.AbstractValidationMessagesBuilderTest;
 import org.junit.Test;
 
@@ -61,7 +61,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
     @Test
     public void testIsBuilderFor() throws Exception {
-        IIpsArtefactBuilderSet builderSet = mockBuilderSet();
+        StandardBuilderSet builderSet = mockBuilderSet();
         ValidationRuleMessagesPropertiesBuilder builder = new ValidationRuleMessagesPropertiesBuilder(builderSet);
         IIpsSrcFile ipsSrcFile = mockIpsSrcFile();
 
@@ -75,7 +75,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
     @Test
     public void testBuild() throws Exception {
-        IIpsArtefactBuilderSet builderSet = mockBuilderSet();
+        StandardBuilderSet builderSet = mockBuilderSet();
 
         // we use a spy object to insert the generatorMock
         ValidationRuleMessagesGenerator generatorMock = mock(ValidationRuleMessagesGenerator.class);
@@ -98,7 +98,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
     @Test
     public void shouldCreateDifferentMessageFilesForDifferentRoots() throws Exception {
-        IIpsArtefactBuilderSet builderSet = mockBuilderSet();
+        StandardBuilderSet builderSet = mockBuilderSet();
         ValidationRuleMessagesPropertiesBuilder builder = new ValidationRuleMessagesPropertiesBuilder(builderSet);
 
         IIpsPackageFragment pack = mockPackageFragment();
@@ -129,7 +129,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
     @Test
     public void testBuildIgnoresOtherTypes() throws Exception {
-        IIpsArtefactBuilderSet builderSet = mockBuilderSet();
+        StandardBuilderSet builderSet = mockBuilderSet();
 
         // we use a spy object to insert the generatorMock
         ValidationRuleMessagesGenerator generatorMock = mock(ValidationRuleMessagesGenerator.class);
@@ -155,7 +155,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
     @Test
     public void testDelete() throws Exception {
-        IIpsArtefactBuilderSet builderSet = mockBuilderSet();
+        StandardBuilderSet builderSet = mockBuilderSet();
         IIpsPackageFragment pack = mockPackageFragment();
 
         // we use a spy object to insert the generatorMock
@@ -180,7 +180,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
     @Test
     public void testDeleteIgnoresOtherTypes() throws Exception {
-        IIpsArtefactBuilderSet builderSet = mockBuilderSet();
+        StandardBuilderSet builderSet = mockBuilderSet();
 
         // we use a spy object to insert the generatorMock
         ValidationRuleMessagesGenerator generatorMock = mock(ValidationRuleMessagesGenerator.class);
@@ -209,21 +209,24 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
     @Test
     public void shouldBuildDerivedArtifacts() throws Exception {
-        IIpsArtefactBuilderSet builderSet = mockBuilderSet();
+        StandardBuilderSet builderSet = mockBuilderSet();
         ValidationRuleMessagesPropertiesBuilder builder = new ValidationRuleMessagesPropertiesBuilder(builderSet);
         assertTrue(builder.buildsDerivedArtefacts());
     }
 
     @Test
     public void testGetPropertyFile() throws Exception {
-        IIpsArtefactBuilderSet builderSet = mockBuilderSet();
+        StandardBuilderSet builderSet = mockBuilderSet();
+
         ValidationRuleMessagesPropertiesBuilder validationMessagesBuilder = new ValidationRuleMessagesPropertiesBuilder(
                 builderSet);
 
         IFile file = mock(IFile.class);
 
-        IPath path = new Path(ROOT_FOLDER + "/" + TEST_VALIDATION_MESSAGES.replace('.', '/')
-                + ValidationRuleMessagesPropertiesBuilder.MESSAGES_PREFIX);
+        IPath path = new Path(ROOT_FOLDER + "/" + TEST_VALIDATION_MESSAGES.replace('.', '/') + "."
+                + ValidationRuleMessagesPropertiesBuilder.MESSAGES_EXTENSION);
+        when(builderSet.getValidationMessageBundleBaseName(any(IIpsSrcFolderEntry.class))).thenReturn(
+                ROOT_FOLDER + "." + TEST_VALIDATION_MESSAGES);
 
         IFolder derivedFolder = mock(IFolder.class);
         when(derivedFolder.getFile(path)).thenReturn(file);
@@ -243,7 +246,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
     @Test
     public void testGetPropertyFileForLocale() throws Exception {
-        IIpsArtefactBuilderSet builderSet = mockBuilderSet();
+        StandardBuilderSet builderSet = mockBuilderSet();
         ValidationRuleMessagesPropertiesBuilder validationMessagesBuilder = new ValidationRuleMessagesPropertiesBuilder(
                 builderSet);
 
@@ -252,7 +255,9 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         IFile file = mock(IFile.class);
 
         IPath path = new Path(ROOT_FOLDER + "/" + TEST_VALIDATION_MESSAGES.replace('.', '/') + "_"
-                + locale.getLanguage() + ValidationRuleMessagesPropertiesBuilder.MESSAGES_PREFIX);
+                + locale.getLanguage() + "." + ValidationRuleMessagesPropertiesBuilder.MESSAGES_EXTENSION);
+        when(builderSet.getValidationMessageBundleBaseName(any(IIpsSrcFolderEntry.class))).thenReturn(
+                ROOT_FOLDER + "." + TEST_VALIDATION_MESSAGES);
 
         IFolder derivedFolder = mock(IFolder.class);
         when(derivedFolder.getFile(path)).thenReturn(file);
@@ -272,7 +277,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
     @Test
     public void testBeforeBuildProcess() throws Exception {
-        IIpsArtefactBuilderSet builderSet = mockBuilderSet();
+        StandardBuilderSet builderSet = mockBuilderSet();
         IIpsPackageFragment fragment = mockPackageFragment();
         IIpsPackageFragmentRoot root = fragment.getRoot();
 
@@ -301,7 +306,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
     @Test
     public void testAfterBuildProcess() throws Exception {
-        IIpsArtefactBuilderSet builderSet = mockBuilderSet();
+        StandardBuilderSet builderSet = mockBuilderSet();
         IIpsPackageFragment pack = mockPackageFragment();
         IIpsPackageFragmentRoot root = pack.getRoot();
 
@@ -325,7 +330,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
     @Test
     public void shouldCreateFolderIfNotExists() throws Exception {
-        IIpsArtefactBuilderSet builderSet = mockBuilderSet();
+        StandardBuilderSet builderSet = mockBuilderSet();
         IIpsPackageFragment fragment = mockPackageFragment();
         IIpsPackageFragmentRoot root = fragment.getRoot();
 

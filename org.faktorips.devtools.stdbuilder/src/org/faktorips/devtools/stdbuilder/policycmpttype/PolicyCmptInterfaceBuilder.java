@@ -49,11 +49,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     @Override
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getJavaNamingConvention().getPublishedInterfaceName(ipsSrcFile.getIpsObjectName());
-    }
-
-    @Override
     protected String getSuperclass() throws CoreException {
         return null;
     }

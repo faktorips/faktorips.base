@@ -32,11 +32,9 @@ import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
-import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.type.GenAttribute;
 import org.faktorips.runtime.internal.MultiValueXmlHelper;
@@ -485,14 +483,17 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
      * @throws CoreException If an error occurs while searching for the <tt>IPolicyCmptType</tt>.
      */
     public IType findGeneratedJavaTypeForPolicyCmptType(boolean forInterface) throws CoreException {
-        BasePolicyCmptTypeBuilder policyCmptTypeBuilder = forInterface ? getGenType().getBuilderSet()
-                .getPolicyCmptInterfaceBuilder() : getGenType().getBuilderSet().getPolicyCmptImplClassBuilder();
-
-        IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(getProductCmptType().getIpsProject());
-        if (policyCmptType == null) {
-            return null;
-        }
-        return policyCmptTypeBuilder.getGeneratedJavaTypes(policyCmptType).get(0);
+        // JavaSourceFileBuilder policyCmptTypeBuilder = forInterface ? getGenType().getBuilderSet()
+        // .getPolicyCmptInterfaceBuilder() :
+        // getGenType().getBuilderSet().getPolicyCmptImplClassBuilder();
+        //
+        // IPolicyCmptType policyCmptType =
+        // getProductCmptType().findPolicyCmptType(getProductCmptType().getIpsProject());
+        // if (policyCmptType == null) {
+        // return null;
+        // }
+        // return policyCmptTypeBuilder.getGeneratedJavaTypes(policyCmptType).get(0);
+        return null;
     }
 
     /** Returns the <tt>IProductCmptType</tt> of the parent <tt>GenType</tt>. */

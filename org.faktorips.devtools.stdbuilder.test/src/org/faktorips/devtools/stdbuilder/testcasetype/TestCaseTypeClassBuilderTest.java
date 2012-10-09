@@ -41,7 +41,7 @@ public class TestCaseTypeClassBuilderTest extends AbstractStdBuilderTest {
 
         testCaseType = newTestCaseType(ipsProject, TEST_CASE_TYPE_NAME);
         builder = new TestCaseTypeClassBuilder(builderSet);
-        javaClass = getGeneratedJavaClass(testCaseType, false, builder, TEST_CASE_TYPE_NAME);
+        javaClass = getGeneratedJavaClass(testCaseType, false, TEST_CASE_TYPE_NAME);
     }
 
     @Test

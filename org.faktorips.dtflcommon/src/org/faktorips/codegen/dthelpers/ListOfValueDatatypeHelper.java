@@ -75,6 +75,11 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
         return valueOfExpression(expression);
     }
 
+    @Override
+    public JavaCodeFragment referenceOrSafeCopyIfNeccessary(String expression) {
+        return newInstance(expression);
+    }
+
     /**
      * Returns code for a list-variable or -argument declarations. e.g. List &lt
      * ElementJavaClassName &gt
