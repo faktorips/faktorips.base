@@ -243,12 +243,12 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         links = cmptA.getFirstGeneration().getLinks();
         assertEquals(4, links.length);
         assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
-        assertEquals(cmptB1.getQualifiedName(), links[1].getTarget());
-        assertEquals(cmptB2.getQualifiedName(), links[2].getTarget());
+        assertEquals(cmptB2.getQualifiedName(), links[1].getTarget());
+        assertEquals(cmptB1.getQualifiedName(), links[2].getTarget());
         assertEquals(cmptB2.getQualifiedName(), links[3].getTarget());
         assertEquals(associationToB1.getName(), links[0].getAssociation());
-        assertEquals(associationToB2.getName(), links[1].getAssociation());
-        assertEquals(associationToB1.getName(), links[2].getAssociation());
+        assertEquals(associationToB1.getName(), links[1].getAssociation());
+        assertEquals(associationToB2.getName(), links[2].getAssociation());
         assertEquals(associationToB2.getName(), links[3].getAssociation());
         links[0].delete();
         links[1].delete();
