@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
@@ -218,13 +219,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(associationObj);
             String msg;
             if (associationObj.isChangingOverTime()) {
-                msg = NLS
-                        .bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfComponent,
-                                associationLabel);
+                msg = NLS.bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfComponent, associationLabel);
             } else {
-                msg = NLS
-                        .bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfGeneration,
-                                associationLabel);
+                msg = NLS.bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfGeneration, associationLabel);
             }
             list.add(new Message(MSGCODE_CHANGING_OVER_TIME_MISMATCH, msg, Message.ERROR, this, PROPERTY_ASSOCIATION));
         }
@@ -256,7 +253,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                 int maxType = associationObj.getMaxCardinality();
                 if (maxType != IProductCmptTypeAssociation.CARDINALITY_MANY) {
                     int sumMinCardinality = this.getMaxCardinality();
-                    IProductCmptLink[] links = getProductCmptGeneration().getLinks(getAssociation());
+                    List<IProductCmptLink> links = getProductCmptLinkContainer().getLinksAsList(getAssociation());
                     if (sumMinCardinality < IProductCmptLink.CARDINALITY_MANY) {
                         for (IProductCmptLink productCmptLink : links) {
                             if (!productCmptLink.equals(this)) {
@@ -276,7 +273,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                 // policyCmptAssociation.minCardinality
                 int minType = associationObj.getMinCardinality();
                 int sumMaxCardinality = this.getMinCardinality();
-                IProductCmptLink[] links = getProductCmptGeneration().getLinks(getAssociation());
+                List<IProductCmptLink> links = getProductCmptLinkContainer().getLinksAsList(getAssociation());
                 for (IProductCmptLink productCmptLink : links) {
                     if (!productCmptLink.equals(this)) {
                         if (productCmptLink.getMaxCardinality() == IProductCmptLink.CARDINALITY_MANY) {
