@@ -189,8 +189,7 @@ public abstract class XProductClass extends XType {
         Set<IProductCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IProductCmptTypeAssociation>();
         List<IProductCmptTypeAssociation> allAssociations = getType().getProductCmptTypeAssociations();
         for (IProductCmptTypeAssociation assoc : allAssociations) {
-            // TODO FIPS-989 Associations supporting changeOverTime
-            if (changableAssociations) {
+            if (changableAssociations == assoc.isChangingOverTime()) {
                 resultingAssociations.add(assoc);
             }
         }

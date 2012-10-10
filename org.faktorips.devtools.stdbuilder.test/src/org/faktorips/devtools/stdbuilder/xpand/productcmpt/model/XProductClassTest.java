@@ -128,6 +128,10 @@ public class XProductClassTest {
         IProductCmptTypeAssociation assoc1 = mock(IProductCmptTypeAssociation.class);
         IProductCmptTypeAssociation assoc2 = mock(IProductCmptTypeAssociation.class);
         IProductCmptTypeAssociation assoc3 = mock(IProductCmptTypeAssociation.class);
+        when(assoc1.isChangingOverTime()).thenReturn(false);
+        when(assoc2.isChangingOverTime()).thenReturn(true);
+        when(assoc3.isChangingOverTime()).thenReturn(false);
+
         assocList.add(assoc1);
         assocList.add(assoc2);
         assocList.add(assoc3);
@@ -175,11 +179,19 @@ public class XProductClassTest {
     }
 
     @Test
-    public void getStaticProductAssociations() {
+    public void getChangingProductAssociations() {
         XProductClass productClass = new XProductCmptGenerationClass(type, modelContext, modelService);
         Set<XProductAssociation> associations = productClass.getAssociations();
-        assertEquals(3, associations.size());
-        assertThat(associations, hasItems(assocNode1, assocNode2, assocNode3));
+        assertEquals(1, associations.size());
+        assertThat(associations, hasItems(assocNode2));
+    }
+
+    @Test
+    public void getStaticProductAssociations() {
+        XProductClass productClass = new XProductCmptClass(type, modelContext, modelService);
+        Set<XProductAssociation> associations = productClass.getAssociations();
+        assertEquals(2, associations.size());
+        assertThat(associations, hasItems(assocNode1, assocNode3));
     }
 
     @Test
@@ -247,6 +259,20 @@ public class XProductClassTest {
 
         assertEquals(1, xProductClass.getConfiguredAttributesInternal().size());
         assertThat(xProductClass.getConfiguredAttributesInternal(), hasItem(polAttrNode1));
+    }
+
+    @Test
+    public void testGetAssociationsInternal_changing() {
+        Set<IProductCmptTypeAssociation> associations = xProductClass.getAssociationsInternal(true);
+
+        assertEquals(1, associations.size());
+    }
+
+    @Test
+    public void testGetAssociationsInternal_static() {
+        Set<IProductCmptTypeAssociation> associations = xProductClass.getAssociationsInternal(false);
+
+        assertEquals(2, associations.size());
     }
 
 }
