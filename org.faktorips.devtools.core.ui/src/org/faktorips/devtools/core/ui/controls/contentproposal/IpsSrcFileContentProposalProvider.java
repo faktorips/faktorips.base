@@ -13,15 +13,9 @@
 
 package org.faktorips.devtools.core.ui.controls.contentproposal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.IFilter;
-import org.eclipse.ui.dialogs.SearchPattern;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -29,20 +23,14 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * A {@link IContentProposalProvider} for {@link IIpsSrcFile} proposals. The provider load all
- * source files of a given type
+ * source files of a given type within a given {@link IIpsProject}.
  * 
  * @author dirmeier
+ * 
  */
-public class IpsSrcFileContentProposalProvider implements ICachedContentProposalProvider {
-
-    private IIpsSrcFile[] ipsSrcFiles;
-
-    private SearchPattern searchPattern = new SearchPattern();
-
-    private IFilter filter;
+public class IpsSrcFileContentProposalProvider extends AbstractIpsSrcFileContentProposalProvider {
 
     private final IIpsProject ipsProject;
-
     private final IpsObjectType ipsObjectType;
 
     /**
@@ -62,37 +50,13 @@ public class IpsSrcFileContentProposalProvider implements ICachedContentProposal
         this.ipsObjectType = ipsObjectType;
     }
 
-    public void setFilter(IFilter filter) {
-        this.filter = filter;
-    }
-
     @Override
-    public IContentProposal[] getProposals(String contents, int position) {
-        if (ipsSrcFiles == null) {
-            try {
-                ipsSrcFiles = ipsProject.findIpsSrcFiles(ipsObjectType);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+    protected IIpsSrcFile[] findIpsSrcFiles() {
+        try {
+            return ipsProject.findIpsSrcFiles(ipsObjectType);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
-        String prefix = StringUtils.left(contents, position);
-        searchPattern.setPattern(prefix);
-        List<IContentProposal> result = new ArrayList<IContentProposal>();
-        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-            if (ipsSrcFile.exists() && (filter == null || filter.select(ipsSrcFile))) {
-                String unqualifiedName = ipsSrcFile.getIpsObjectName();
-                if (searchPattern.matches(unqualifiedName)) {
-                    IpsSrcFileContentProposal contentProposal = new IpsSrcFileContentProposal(ipsSrcFile);
-                    result.add(contentProposal);
-                }
-            }
-        }
-        return result.toArray(new IContentProposal[result.size()]);
-    }
-
-    @Override
-    public void clearCache() {
-        ipsSrcFiles = null;
     }
 
 }

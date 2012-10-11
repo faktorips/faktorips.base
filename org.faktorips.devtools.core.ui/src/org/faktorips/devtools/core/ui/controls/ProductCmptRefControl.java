@@ -13,8 +13,10 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
@@ -31,7 +33,11 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
     private IProductCmptType productCmptType;
 
     public ProductCmptRefControl(IIpsProject project, Composite parent, UIToolkit toolkit) {
-        super(project, parent, toolkit, Messages.ProductCmptRefControl_title,
+        this(Arrays.asList(project), parent, toolkit);
+    }
+
+    public ProductCmptRefControl(List<IIpsProject> projects, Composite parent, UIToolkit toolkit) {
+        super(projects, parent, toolkit, Messages.ProductCmptRefControl_title,
                 Messages.ProductCmptRefControl_description);
     }
 
@@ -48,25 +54,22 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
 
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
-        if (getIpsProject() == null) {
+
+        Set<IIpsSrcFile> ipsSrcFiles = new HashSet<IIpsSrcFile>();
+        for (IIpsProject ipsProject : getIpsProjects()) {
+            ipsSrcFiles.addAll(Arrays.asList(ipsProject.findAllProductCmptSrcFiles(productCmptType,
+                    includeCmptsForSubtypes)));
+        }
+
+        if (ipsSrcFiles.isEmpty()) {
             return new IIpsSrcFile[0];
         }
 
-        IIpsSrcFile[] ipsSrcFiles = getIpsProject()
-                .findAllProductCmptSrcFiles(productCmptType, includeCmptsForSubtypes);
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.length);
-        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-            result.add(ipsSrcFile);
-        }
-        if (result.size() > 0) {
-            for (IProductCmpt element : toExclude) {
-                if (element != null) {
-                    result.remove(element.getIpsSrcFile());
-                }
-            }
+        for (IProductCmpt productCmpt : toExclude) {
+            ipsSrcFiles.remove(productCmpt.getIpsSrcFile());
         }
 
-        return result.toArray(new IIpsSrcFile[result.size()]);
+        return ipsSrcFiles.toArray(new IIpsSrcFile[ipsSrcFiles.size()]);
     }
 
     /**

@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 
@@ -34,7 +35,7 @@ public class BusinessFunctionRefControl extends IpsObjectRefControl {
     private IBusinessFunction currentBusinessFunction;
 
     public BusinessFunctionRefControl(Composite parent, UIToolkit toolkit) {
-        super(null, parent, toolkit, Messages.BusinessFunctionRefControl_dialogMessage,
+        super(new ArrayList<IIpsProject>(), parent, toolkit, Messages.BusinessFunctionRefControl_dialogMessage,
                 Messages.BusinessFunctionRefControl_title);
     }
 

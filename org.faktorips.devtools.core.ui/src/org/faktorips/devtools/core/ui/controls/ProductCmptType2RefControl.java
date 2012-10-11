@@ -13,10 +13,14 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -32,27 +36,34 @@ public class ProductCmptType2RefControl extends IpsObjectRefControl {
 
     public ProductCmptType2RefControl(IIpsProject project, Composite parent, UIToolkit toolkit,
             boolean excludeAbstractTypes) {
+        this(Arrays.asList(project), parent, toolkit, excludeAbstractTypes);
+    }
 
-        super(project, parent, toolkit, Messages.ProductCmptTypeRefControl_title,
+    public ProductCmptType2RefControl(List<IIpsProject> projects, Composite parent, UIToolkit toolkit,
+            boolean excludeAbstractTypes) {
+        super(projects, parent, toolkit, Messages.ProductCmptTypeRefControl_title,
                 Messages.ProductCmptTypeRefControl_description);
         this.excludeAbstractTypes = excludeAbstractTypes;
     }
 
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
-        if (getIpsProject() == null) {
-            return new IIpsSrcFile[0];
+
+        IIpsSrcFile[] allProductCmptTypes = findIpsSrcFilesByType(IpsObjectType.PRODUCT_CMPT_TYPE);
+
+        if (!excludeAbstractTypes) {
+            return allProductCmptTypes;
         }
-        IIpsSrcFile[] allProductCmptTypes = getIpsProject().findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
-        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        for (int i = 0; i < allProductCmptTypes.length; i++) {
-            if (!excludeAbstractTypes
-                    || !Boolean.valueOf(allProductCmptTypes[i].getPropertyValue(IProductCmptType.PROPERTY_ABSTRACT))
-                            .booleanValue()) {
-                result.add(allProductCmptTypes[i]);
+
+        Set<IIpsSrcFile> filteredProductCmptTypes = new HashSet<IIpsSrcFile>();
+
+        for (IIpsSrcFile ipsSrcFile : allProductCmptTypes) {
+            if (!Boolean.valueOf(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_ABSTRACT))) {
+                filteredProductCmptTypes.add(ipsSrcFile);
             }
         }
-        return result.toArray(new IIpsSrcFile[result.size()]);
+
+        return filteredProductCmptTypes.toArray(new IIpsSrcFile[filteredProductCmptTypes.size()]);
     }
 
     /**
@@ -63,10 +74,7 @@ public class ProductCmptType2RefControl extends IpsObjectRefControl {
      * @throws CoreException if an exception occurs while searching for the type.
      */
     public IProductCmptType findProductCmptType() throws CoreException {
-        IIpsProject project = getIpsProject();
-        if (project != null) {
-            return project.findProductCmptType(getText());
-        }
-        return null;
+        IIpsObject object = findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE);
+        return (IProductCmptType)object;
     }
 }

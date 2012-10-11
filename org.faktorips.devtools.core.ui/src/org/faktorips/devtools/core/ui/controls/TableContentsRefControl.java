@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -27,7 +30,11 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 public class TableContentsRefControl extends IpsObjectRefControl {
 
     public TableContentsRefControl(IIpsProject project, Composite parent, UIToolkit toolkit) {
-        super(project, parent, toolkit, Messages.TableContentsRefControl_title,
+        this(Arrays.asList(project), parent, toolkit);
+    }
+
+    public TableContentsRefControl(List<IIpsProject> projects, Composite parent, UIToolkit toolkit) {
+        super(projects, parent, toolkit, Messages.TableContentsRefControl_title,
                 Messages.TableContentsRefControl_description);
     }
 
@@ -38,17 +45,11 @@ public class TableContentsRefControl extends IpsObjectRefControl {
      * @throws CoreException if an exception occurs while searching for the table contents.
      */
     public ITableContents findTableContents() throws CoreException {
-        if (getIpsProject() == null) {
-            return null;
-        }
-        return (ITableContents)getIpsProject().findIpsObject(IpsObjectType.TABLE_CONTENTS, getText());
+        return (ITableContents)findIpsObject(IpsObjectType.TABLE_CONTENTS);
     }
 
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
-        if (getIpsProject() == null) {
-            return new IIpsSrcFile[0];
-        }
-        return getIpsProject().findIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
+        return findIpsSrcFilesByType(IpsObjectType.TABLE_CONTENTS);
     }
 }
