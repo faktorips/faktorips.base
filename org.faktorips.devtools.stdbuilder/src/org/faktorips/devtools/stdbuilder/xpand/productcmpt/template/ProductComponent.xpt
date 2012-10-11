@@ -26,6 +26,8 @@
 		 	«ENDFOREACH-»
 		 
 			«EXPAND ProductAttribute::memberField FOREACH attributes-»
+			
+			«EXPAND ProductAssociation::field FOREACH associations-»
 
 		    /**
 		     * «localizedJDoc("CONSTRUCTOR", implClassName)»
@@ -39,6 +41,8 @@
 			«EXPAND getProductComponentGeneration FOR productCmptGenerationNode-»
 
 			«EXPAND ProductAttribute::getterSetter FOREACH attributes»
+			
+			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
 
 		    /**
 		     * «inheritDoc()»

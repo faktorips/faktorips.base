@@ -16,15 +16,13 @@ package org.faktorips.devtools.stdbuilder.productcmpt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -43,6 +41,11 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * 
@@ -53,6 +56,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
+    private IProductCmpt refTarget;
 
     @Override
     @Before
@@ -69,26 +73,34 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
 
         assertTrue(productCmptType.isValid(ipsProject));
 
-        IProductCmptTypeAssociation rel = productCmptType.newProductCmptTypeAssociation();
-        rel.setTargetRoleSingular("role");
-        rel.setTargetRolePlural("roles");
-        rel.setTarget(productCmptType.getQualifiedName());
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setTargetRoleSingular("role");
+        association.setTargetRolePlural("roles");
+        association.setTarget(productCmptType.getQualifiedName());
+
+        IProductCmptTypeAssociation staticAssociation = productCmptType.newProductCmptTypeAssociation();
+        staticAssociation.setTargetRoleSingular("staticRole");
+        staticAssociation.setTargetRolePlural("staticRoles");
+        staticAssociation.setChangingOverTime(false);
+        staticAssociation.setTarget(productCmptType.getQualifiedName());
 
         productCmptType.getIpsSrcFile().save(true, null);
 
-        productCmpt = newProductCmpt(productCmptType, "Product");
+        productCmpt = newProductCmpt(productCmptType, "ProductCmpt");
         IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
         gen.setValidFrom(new GregorianCalendar(2006, 0, 1));
         IFormula ce = gen.newFormula();
         ce.setFormulaSignature(method.getFormulaName());
         ce.setExpression("42");
 
-        IProductCmpt refTarget = newProductCmpt(productCmptType, "RefProduct");
+        refTarget = newProductCmpt(productCmptType, "RefProduct");
         refTarget.newGeneration(gen.getValidFrom());
         refTarget.setRuntimeId("RefProductRuntimeId");
 
         IProductCmptLink link = gen.newLink("role");
         link.setTarget(refTarget.getQualifiedName());
+        IProductCmptLink staticLink = productCmpt.newLink("staticRole");
+        staticLink.setTarget(refTarget.getQualifiedName());
 
         productCmpt.getIpsSrcFile().save(true, null);
         refTarget.getIpsSrcFile().save(true, null);
@@ -99,9 +111,10 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
     /**
      * Test if a runtime id change will be correctly updated in the product component which
      * referenced the product cmpt on which the runtime id was changed.
+     * 
      */
     @Test
-    public void testRuntimeIdDependency() throws CoreException, IOException {
+    public void testRuntimeIdDependency() throws CoreException, IOException, SAXException, ParserConfigurationException {
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
         IProductCmptType c = newProductCmptType(root, "C");
         IProductCmptType d = newProductCmptType(root, "D");
@@ -128,39 +141,61 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
 
         incrementalBuild();
 
-        // check if the target runtime id was updated in product cmpt c runtime xml
-        String packageOfProductC = ((DefaultBuilderSet)ipsProject.getIpsArtefactBuilderSet()).getPackageName(
-                productCmptC.getIpsSrcFile(), false, false);
-        String productCXmlFile = packageOfProductC + "." + "productC";
-        productCXmlFile = productCXmlFile.replaceAll("\\.", "/");
-        productCXmlFile += ".xml";
-        IFile file = ipsProject.getProject().getFile("bin//" + productCXmlFile);
-        InputStream is = null;
-        BufferedReader br = null;
-        try {
-            is = file.getContents();
-            if (is == null) {
-                fail("Can't find resource " + productCXmlFile);
-            }
-            StringBuffer generatedXml = new StringBuffer();
-            br = new BufferedReader(new InputStreamReader(is));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                generatedXml.append(line);
-            }
-            String patternStr = ".*targetRuntimeId=\"([^\"]*)\".*";
-            Pattern pattern = Pattern.compile(patternStr);
-            Matcher matcher = pattern.matcher(generatedXml);
-            assertTrue(matcher.find());
-            assertEquals("newRuntimeId", matcher.group(matcher.groupCount()));
-        } finally {
-            if (is != null) {
-                is.close();
-            }
-            if (br != null) {
-                br.close();
+        IFile file = getXmlFile(productCmptC);
+        assertTargetRuntimeID(file, "newRuntimeId", true);
+    }
+
+    private IFile getXmlFile(IProductCmpt productCmpt) {
+        String packageName = ((DefaultBuilderSet)ipsProject.getIpsArtefactBuilderSet()).getPackageName(
+                productCmpt.getIpsSrcFile(), false, false);
+        String productXmlFile = packageName + "." + productCmpt.getName();
+        productXmlFile = productXmlFile.replaceAll("\\.", "/");
+        productXmlFile += ".xml";
+        IFile file = ipsProject.getProject().getFile("bin//" + productXmlFile);
+        return file;
+    }
+
+    @Test
+    public void testSetRuntimeIdForStaticLinks() throws CoreException, IOException, SAXException,
+            ParserConfigurationException {
+        incrementalBuild();
+        IFile xmlFile = getXmlFile(productCmpt);
+        assertTargetRuntimeID(xmlFile, refTarget.getRuntimeId(), false);
+
+        refTarget.setRuntimeId("CornelisMussDasCodeReviewMachen_hahahahahaaa!=)");
+        refTarget.getIpsSrcFile().save(true, null);
+        incrementalBuild();
+
+        assertTargetRuntimeID(xmlFile, refTarget.getRuntimeId(), false);
+    }
+
+    private void assertTargetRuntimeID(IFile file, String expectedRuntimeId, boolean changingLinks)
+            throws SAXException, IOException, ParserConfigurationException, CoreException {
+        Document document = getDocumentBuilder().parse(file.getContents());
+        Element prodCmptElement = document.getDocumentElement();
+        List<Element> linkElements;
+        if (changingLinks) {
+            List<Element> generationElements = getChildElementsByTagName(prodCmptElement,
+                    IProductCmptGeneration.TAG_NAME);
+            linkElements = getChildElementsByTagName(generationElements.get(0), IProductCmptLink.TAG_NAME);
+        } else {
+            linkElements = getChildElementsByTagName(prodCmptElement, IProductCmptLink.TAG_NAME);
+        }
+        assertEquals(1, linkElements.size());
+        assertTrue(linkElements.get(0).hasAttribute("targetRuntimeId"));
+        assertEquals(expectedRuntimeId, linkElements.get(0).getAttribute("targetRuntimeId"));
+    }
+
+    private List<Element> getChildElementsByTagName(Element prodCmptElement, String tagName) {
+        List<Element> linkElements = new ArrayList<Element>();
+        NodeList nodeList = prodCmptElement.getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node node = nodeList.item(i);
+            if (node instanceof Element && ((Element)node).getNodeName().equals(tagName)) {
+                linkElements.add((Element)nodeList.item(i));
             }
         }
+        return linkElements;
     }
 
     @Test
