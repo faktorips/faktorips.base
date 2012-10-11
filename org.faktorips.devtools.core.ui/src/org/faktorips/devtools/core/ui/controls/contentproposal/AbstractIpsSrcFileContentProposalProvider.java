@@ -18,33 +18,26 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.fieldassist.IContentProposal;
+import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.IFilter;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
-public abstract class AbstractIpsSrcFileContentProposalProvider implements ICachedContentProposalProvider {
+public abstract class AbstractIpsSrcFileContentProposalProvider implements IContentProposalProvider {
 
-    private IIpsSrcFile[] ipsSrcFiles;
     private SearchPattern searchPattern = new SearchPattern();
-    private IFilter filter;
+    protected IFilter filter;
 
     public AbstractIpsSrcFileContentProposalProvider() {
         super();
     }
 
-    public void setFilter(IFilter filter) {
-        this.filter = filter;
-    }
-
     @Override
-    public final IContentProposal[] getProposals(String contents, int position) {
-
-        checkIpsSrcFiles();
-
+    public IContentProposal[] getProposals(String contents, int position) {
         String prefix = StringUtils.left(contents, position);
         searchPattern.setPattern(prefix);
         List<IContentProposal> result = new ArrayList<IContentProposal>();
-        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+        for (IIpsSrcFile ipsSrcFile : getIpsSrcFiles()) {
             if (ipsSrcFile.exists() && (filter == null || filter.select(ipsSrcFile))) {
                 String unqualifiedName = ipsSrcFile.getIpsObjectName();
                 if (searchPattern.matches(unqualifiedName)) {
@@ -56,26 +49,10 @@ public abstract class AbstractIpsSrcFileContentProposalProvider implements ICach
         return result.toArray(new IContentProposal[result.size()]);
     }
 
-    /**
-     * Checks, if there are cached {@link IIpsSrcFile source files}
-     */
-    protected void checkIpsSrcFiles() {
-        if (ipsSrcFiles == null) {
-            ipsSrcFiles = findIpsSrcFiles();
-            if (ipsSrcFiles == null) {
-                ipsSrcFiles = new IIpsSrcFile[0];
-            }
-        }
-    }
+    protected abstract IIpsSrcFile[] getIpsSrcFiles();
 
-    /**
-     * finds all {@link IIpsSrcFile source files} for this proposal provider.
-     */
-    protected abstract IIpsSrcFile[] findIpsSrcFiles();
-
-    @Override
-    public void clearCache() {
-        ipsSrcFiles = null;
+    public void setFilter(IFilter filter) {
+        this.filter = filter;
     }
 
 }

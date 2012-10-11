@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.controls.contentproposal;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.IFilter;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -28,8 +29,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * @author dirmeier
  * 
  */
-public class IpsSrcFileContentProposalProvider extends AbstractIpsSrcFileContentProposalProvider {
+public class IpsSrcFileContentProposalProvider extends AbstractIpsSrcFileContentProposalProvider implements
+        ICachedContentProposalProvider {
 
+    private IIpsSrcFile[] ipsSrcFiles;
     private final IIpsProject ipsProject;
     private final IpsObjectType ipsObjectType;
 
@@ -51,6 +54,11 @@ public class IpsSrcFileContentProposalProvider extends AbstractIpsSrcFileContent
     }
 
     @Override
+    public IContentProposal[] getProposals(String contents, int position) {
+        checkIpsSrcFiles();
+        return super.getProposals(contents, position);
+    }
+
     protected IIpsSrcFile[] findIpsSrcFiles() {
         try {
             return ipsProject.findIpsSrcFiles(ipsObjectType);
@@ -59,4 +67,26 @@ public class IpsSrcFileContentProposalProvider extends AbstractIpsSrcFileContent
         }
     }
 
+    /**
+     * Checks, if there are cached {@link IIpsSrcFile source files}
+     */
+    protected void checkIpsSrcFiles() {
+        if (getIpsSrcFiles() == null) {
+            setIpsSrcFiles(findIpsSrcFiles());
+        }
+    }
+
+    @Override
+    public void clearCache() {
+        setIpsSrcFiles(null);
+    }
+
+    @Override
+    public IIpsSrcFile[] getIpsSrcFiles() {
+        return ipsSrcFiles;
+    }
+
+    public void setIpsSrcFiles(IIpsSrcFile[] ipsSrcFiles) {
+        this.ipsSrcFiles = ipsSrcFiles;
+    }
 }

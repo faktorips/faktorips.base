@@ -18,8 +18,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Composite;
@@ -30,9 +32,9 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controls.contentproposal.AbstractIpsSrcFileContentProposalProvider;
-import org.faktorips.devtools.core.ui.controls.contentproposal.ICachedContentProposalProvider;
 import org.faktorips.devtools.core.ui.controls.contentproposal.IpsSrcFileContentProposalLabelProvider;
+import org.faktorips.devtools.core.ui.controls.contentproposal.IpsSrcFileProvider;
+import org.faktorips.devtools.core.ui.controls.contentproposal.ProvidedIpsSrcFileContentProposalProvider;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.dialogs.StaticContentSelectIpsObjectContext;
 import org.faktorips.util.StringUtil;
@@ -49,19 +51,7 @@ import org.faktorips.util.StringUtil;
  * methods.
  * 
  */
-public abstract class IpsObjectRefControl extends TextButtonControl {
-
-    private final class ProposalProviderForIpsObjectRefControl extends AbstractIpsSrcFileContentProposalProvider {
-
-        @Override
-        protected IIpsSrcFile[] findIpsSrcFiles() {
-            try {
-                return getIpsSrcFiles();
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-        }
-    }
+public abstract class IpsObjectRefControl extends TextButtonControl implements IpsSrcFileProvider {
 
     private List<IIpsProject> ipsProjects;
 
@@ -69,7 +59,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     private boolean enableDialogFilter = true;
     private String dialogMessage;
 
-    private ICachedContentProposalProvider proposalProvider;
+    private IContentProposalProvider proposalProvider;
 
     public IpsObjectRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, String dialogTitle,
             String dialogMessage) {
@@ -82,7 +72,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
         this.dialogTitle = dialogTitle;
         this.dialogMessage = dialogMessage;
 
-        proposalProvider = new ProposalProviderForIpsObjectRefControl();
+        proposalProvider = new ProvidedIpsSrcFileContentProposalProvider(this);
         toolkit.attachContentProposalAdapter(getTextControl(), proposalProvider,
                 new IpsSrcFileContentProposalLabelProvider());
 
@@ -90,8 +80,8 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     }
 
     /**
-     * This method is deprecated because of the refitting of this class for several projects. Use
-     * {@link #setIpsProjects(List)} instead of this method.
+     * @deprecated This method is deprecated because of the refitting of this class for several
+     *             projects. Use {@link #setIpsProjects(List)} instead of this method.
      */
     @Deprecated
     public void setIpsProject(IIpsProject project) {
@@ -108,18 +98,16 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
         }
 
         setButtonEnabled(!ipsProjects.isEmpty());
-
-        proposalProvider.clearCache();
     }
 
     /**
-     * This method is deprecated because of the refitting of this class for several projects.
-     * <p>
-     * This method is replaced by {@link #getIpsProjects()}.
-     * <p>
      * If you want to use the {@link IIpsProject ips projects} to find the chosen {@link IIpsObject}
      * or the {@link IIpsSrcFile src files} of a type, consider calling
      * {@link #findIpsObject(IpsObjectType)} or {@link #findIpsSrcFilesByType(IpsObjectType)}.
+     * 
+     * @deprecated This method is deprecated because of the refitting of this class for several
+     *             projects. This method is replaced by {@link #getIpsProjects()}.
+     * 
      */
     @Deprecated
     public IIpsProject getIpsProject() {
@@ -130,7 +118,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     }
 
     public List<IIpsProject> getIpsProjects() {
-        return new ArrayList<IIpsProject>(ipsProjects);
+        return new CopyOnWriteArrayList<IIpsProject>(ipsProjects);
     }
 
     @Override
@@ -196,6 +184,15 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
         enableDialogFilter = enable;
     }
 
+    @Override
+    public final IIpsSrcFile[] provideIpsSrcFile() {
+        try {
+            return getIpsSrcFiles();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
     /**
      * Returns all ips source files that can be chosen by the user.
      */
@@ -208,7 +205,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
      * <p>
      * This is a convenience method for subclasses to search the source files in all given projects.
      */
-    protected IIpsSrcFile[] findIpsSrcFilesByType(IpsObjectType type) throws CoreException {
+    protected final IIpsSrcFile[] findIpsSrcFilesByType(IpsObjectType type) throws CoreException {
         Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
         for (IIpsProject ipsProject : getIpsProjects()) {
             srcFiles.addAll(Arrays.asList(ipsProject.findIpsSrcFiles(type)));
@@ -223,7 +220,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
      * <p>
      * This is a convenience method for subclasses.
      */
-    protected IIpsObject findIpsObject(IpsObjectType type) throws CoreException {
+    protected final IIpsObject findIpsObject(IpsObjectType type) throws CoreException {
         for (IIpsProject project : getIpsProjects()) {
             IIpsObject object = project.findIpsObject(type, getText());
             if (object != null) {
